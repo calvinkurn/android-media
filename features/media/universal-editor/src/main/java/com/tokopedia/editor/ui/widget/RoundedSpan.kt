@@ -63,7 +63,7 @@ class RoundedSpan(
             }
 
             ALIGN_RIGHT -> {
-                shiftLeft = right - width + padding
+                shiftLeft = right - (width - (padding * 1.2f))
                 shiftRight = (right + padding).toFloat()
             }
 
@@ -74,7 +74,6 @@ class RoundedSpan(
         }
 
         rect.set(shiftLeft, top.toFloat(), shiftRight, bottom.toFloat())
-
 
         // ==================
         if (lnum == 0) {
