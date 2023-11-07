@@ -36,13 +36,7 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
             config?.let {
                 try {
                     Gson().fromJson(config, DataConfig::class.java)?.let { cdnConfig = it }
-                } catch (ignore: Exception) {
-                    cdnConfig = DataConfig(
-                        emptyList(), false,
-                        sendFailed = false,
-                        urlList = emptyList()
-                    )
-                }
+                } catch (ignore: Exception) { }
             }
         }
     }
