@@ -3,6 +3,7 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 import android.view.ViewGroup
 import com.tokopedia.digital.home.R
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
@@ -234,6 +235,38 @@ class RechargeHomepageTodoWidgetViewHolder(
                     tgFavoriteNumberTodoWidget.text = widget.label
                     tgPriceTodoWidget.text = widget.price
 
+                    if (widget.price.isEmpty()) {
+                        val labelParams = iconThreeButtonTodoWidget.layoutParams as ConstraintLayout.LayoutParams
+                        labelParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                        labelParams.topToTop = tgFavoriteNumberTodoWidget.id
+                        labelParams.bottomToBottom = tgFavoriteNumberTodoWidget.id
+                        iconThreeButtonTodoWidget.layoutParams = labelParams
+
+                        tgFavoriteNumberTodoWidget.apply {
+                            setMargin(
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_32),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            )
+                        }
+                    } else {
+                        val labelParams = iconThreeButtonTodoWidget.layoutParams as ConstraintLayout.LayoutParams
+                        labelParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                        labelParams.bottomToBottom = tgPriceTodoWidget.id
+                        labelParams.topToTop = tgPriceTodoWidget.id
+                        iconThreeButtonTodoWidget.layoutParams = labelParams
+
+                        tgFavoriteNumberTodoWidget.apply {
+                            setMargin(
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            )
+                        }
+                    }
+
                     if (widget.button.isNotEmpty()) {
                         btnMainTodoWidget.show()
                         btnMainTodoWidget.text = widget.button
@@ -249,22 +282,56 @@ class RechargeHomepageTodoWidgetViewHolder(
                         iconThreeButtonTodoWidget.setOnClickListener {
                             todoWidgetListener.onClickThreeButton(widget.optionButtons)
                         }
+
+                        btnMainTodoWidget.apply {
+                            setMargin(
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            )
+                        }
                     } else {
                         iconThreeButtonTodoWidget.hide()
+
+                        btnMainTodoWidget.apply {
+                            setMargin(
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            )
+                        }
                     }
 
                     if (widget.reason.isNotEmpty()) {
                         tgInfoTodoWidget.show()
                         viewInfoTodoWidget.show()
                         tgInfoTodoWidget.text = widget.reason
+
+                        val labelParams = btnMainTodoWidget.layoutParams as ConstraintLayout.LayoutParams
+                        labelParams.endToStart = iconThreeButtonTodoWidget.id
+                        labelParams.endToEnd = ConstraintLayout.LayoutParams.UNSET
+                        labelParams.bottomToBottom = iconThreeButtonTodoWidget.id
+                        labelParams.topToTop = iconThreeButtonTodoWidget.id
+                        btnMainTodoWidget.layoutParams = labelParams
                     } else {
                         tgInfoTodoWidget.hide()
                         viewInfoTodoWidget.hide()
+
+                        val labelParams = btnMainTodoWidget.layoutParams as ConstraintLayout.LayoutParams
+                        labelParams.endToStart = ConstraintLayout.LayoutParams.UNSET
+                        labelParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                        labelParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+                        labelParams.topToTop = ConstraintLayout.LayoutParams.UNSET
+                        btnMainTodoWidget.layoutParams = labelParams
                     }
 
                     root.setOnClickListener {
                         todoWidgetListener.onClickTodoWidget(widget.appLink)
                     }
+
+                    setCardHeightMatchParent()
                 }
             }
         }
@@ -317,6 +384,38 @@ class RechargeHomepageTodoWidgetViewHolder(
                     tgFavoriteNumberTodoWidget.text = widget.label
                     tgPriceTodoWidget.text = widget.price
 
+                    if (widget.price.isEmpty()) {
+                        val labelParams = iconThreeButtonTodoWidget.layoutParams as ConstraintLayout.LayoutParams
+                        labelParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                        labelParams.topToTop = tgFavoriteNumberTodoWidget.id
+                        labelParams.bottomToBottom = tgFavoriteNumberTodoWidget.id
+                        iconThreeButtonTodoWidget.layoutParams = labelParams
+
+                        tgFavoriteNumberTodoWidget.apply {
+                            setMargin(
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_32),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            )
+                        }
+                    } else {
+                        val labelParams = iconThreeButtonTodoWidget.layoutParams as ConstraintLayout.LayoutParams
+                        labelParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                        labelParams.bottomToBottom = tgPriceTodoWidget.id
+                        labelParams.topToTop = tgPriceTodoWidget.id
+                        iconThreeButtonTodoWidget.layoutParams = labelParams
+
+                        tgFavoriteNumberTodoWidget.apply {
+                            setMargin(
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            )
+                        }
+                    }
+
                     if (widget.button.isNotEmpty()) {
                         btnMainTodoWidget.show()
                         btnMainTodoWidget.text = widget.button
@@ -332,17 +431,49 @@ class RechargeHomepageTodoWidgetViewHolder(
                         iconThreeButtonTodoWidget.setOnClickListener {
                             todoWidgetListener.onClickThreeButton(widget.optionButtons)
                         }
+
+                        btnMainTodoWidget.apply {
+                            setMargin(
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            )
+                        }
                     } else {
                         iconThreeButtonTodoWidget.hide()
+
+                        btnMainTodoWidget.apply {
+                            setMargin(
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            )
+                        }
                     }
 
                     if (widget.reason.isNotEmpty()) {
                         tgInfoTodoWidget.show()
                         viewInfoTodoWidget.show()
                         tgInfoTodoWidget.text = widget.reason
+
+                        val labelParams = btnMainTodoWidget.layoutParams as ConstraintLayout.LayoutParams
+                        labelParams.endToStart = iconThreeButtonTodoWidget.id
+                        labelParams.endToEnd = ConstraintLayout.LayoutParams.UNSET
+                        labelParams.bottomToBottom = iconThreeButtonTodoWidget.id
+                        labelParams.topToTop = iconThreeButtonTodoWidget.id
+                        btnMainTodoWidget.layoutParams = labelParams
                     } else {
                         tgInfoTodoWidget.hide()
                         viewInfoTodoWidget.hide()
+
+                        val labelParams = btnMainTodoWidget.layoutParams as ConstraintLayout.LayoutParams
+                        labelParams.endToStart = ConstraintLayout.LayoutParams.UNSET
+                        labelParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                        labelParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+                        labelParams.topToTop = ConstraintLayout.LayoutParams.UNSET
+                        btnMainTodoWidget.layoutParams = labelParams
                     }
 
                     root.setOnClickListener {
