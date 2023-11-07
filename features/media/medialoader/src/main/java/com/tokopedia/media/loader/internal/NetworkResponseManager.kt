@@ -4,8 +4,7 @@ import android.content.Context
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.kotlin.extensions.clear
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.media.loader.data.Header
 import com.tokopedia.media.loader.data.toModel
 import okhttp3.Headers
@@ -59,13 +58,18 @@ class NetworkResponseManager(context: Context) {
     // clear cache if needed, it will be triggered by [properties.isForceClearHeaderCache]
     fun forceResetCache() {
         caches.clear()
-        editor.edit().clear().apply()
+
+        if (size().isMoreThanZero()) {
+            editor.edit().clear().apply()
+        }
     }
 
     // to mitigate the over heavy computation and storage, we have to limit the amount of caches.
     private fun hasReachedThreshold(): Boolean {
-        return editor.all.size == CACHE_THRESHOLD
+        return size() == CACHE_THRESHOLD
     }
+
+    private fun size() = editor.all.size
 
     private fun List<Header>.toJson(): String {
         return Gson().toJson(this)
