@@ -280,18 +280,16 @@ class CheckoutViewModel @Inject constructor(
 
                         val cost = CheckoutCostModel()
 
-                        val crossSellList = arrayListOf<CheckoutCrossSellItem>()
+                        val paymentLevelAddOnsMap = mutableMapOf<Long, CheckoutCrossSellItem>()
                         if (!tickerError.isError) {
                             val crossSellModel =
                                 saf.cartShipmentAddressFormData.crossSell.firstOrNull()
                             if (crossSellModel != null && !crossSellModel.checkboxDisabled) {
-                                crossSellList.add(
-                                    CheckoutCrossSellModel(
-                                        crossSellModel,
-                                        crossSellModel.isChecked,
-                                        !crossSellModel.checkboxDisabled,
-                                        0
-                                    )
+                                paymentLevelAddOnsMap[DG_ID] = CheckoutCrossSellModel(
+                                    crossSellModel,
+                                    crossSellModel.isChecked,
+                                    !crossSellModel.checkboxDisabled,
+                                    0
                                 )
                                 if (crossSellModel.isChecked) {
                                     val digitalCategoryName = crossSellModel.orderSummary.title
@@ -307,20 +305,16 @@ class CheckoutViewModel @Inject constructor(
                                 }
                             }
                             if (saf.cartShipmentAddressFormData.egoldAttributes != null && saf.cartShipmentAddressFormData.egoldAttributes!!.isEnabled && saf.cartShipmentAddressFormData.egoldAttributes!!.isEligible) {
-                                crossSellList.add(
-                                    CheckoutEgoldModel(
-                                        saf.cartShipmentAddressFormData.egoldAttributes!!,
-                                        saf.cartShipmentAddressFormData.egoldAttributes!!.isChecked,
-                                        saf.cartShipmentAddressFormData.egoldAttributes!!.buyEgoldValue
-                                    )
+                                paymentLevelAddOnsMap[EGOLD_ID] = CheckoutEgoldModel(
+                                    saf.cartShipmentAddressFormData.egoldAttributes!!,
+                                    saf.cartShipmentAddressFormData.egoldAttributes!!.isChecked,
+                                    saf.cartShipmentAddressFormData.egoldAttributes!!.buyEgoldValue
                                 )
                             }
                             if (saf.cartShipmentAddressFormData.donation != null && saf.cartShipmentAddressFormData.donation!!.title.isNotEmpty() && saf.cartShipmentAddressFormData.donation!!.nominal != 0) {
-                                crossSellList.add(
-                                    CheckoutDonationModel(
-                                        saf.cartShipmentAddressFormData.donation!!,
-                                        saf.cartShipmentAddressFormData.donation!!.isChecked
-                                    )
+                                paymentLevelAddOnsMap[DONATION_ID] = CheckoutDonationModel(
+                                    saf.cartShipmentAddressFormData.donation!!,
+                                    saf.cartShipmentAddressFormData.donation!!.isChecked
                                 )
                                 if (saf.cartShipmentAddressFormData.donation!!.isChecked) {
                                     mTrackerShipment.eventViewAutoCheckDonation(
@@ -329,6 +323,14 @@ class CheckoutViewModel @Inject constructor(
                                 }
                             }
                         }
+                        val crossSellList = arrayListOf<CheckoutCrossSellItem>()
+                        saf.cartShipmentAddressFormData.paymentLevelAddOnsPositions.forEach {
+                            val crossSellItem = paymentLevelAddOnsMap[it]
+                            if (crossSellItem != null) {
+                                crossSellList.add(crossSellItem)
+                            }
+                        }
+
                         val crossSellGroup =
                             CheckoutCrossSellGroupModel(crossSellList = crossSellList)
 
@@ -2701,6 +2703,10 @@ class CheckoutViewModel @Inject constructor(
 
     companion object {
         const val PLATFORM_FEE_CODE = "platform_fee"
+
+        const val EGOLD_ID = 1L
+        const val DG_ID = 2L
+        const val DONATION_ID = 3L
     }
 }
 

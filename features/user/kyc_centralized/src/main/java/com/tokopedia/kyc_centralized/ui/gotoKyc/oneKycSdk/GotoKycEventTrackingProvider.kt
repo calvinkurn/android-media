@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import com.gojek.kyc.sdk.config.KycSdkAnalyticsConfig
 import com.gojek.kyc.sdk.core.analytics.IKycSdkEventTrackingProvider
-import com.gojek.kyc.sdk.core.utils.KycSdkPartner
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.worker.GotoKycCleanupStorageWorker
@@ -40,10 +39,12 @@ class GotoKycEventTrackingProvider @Inject constructor(
         eventProperties: Map<String, Any?>,
         productName: String?
     ) {
-        if (eventProperties[SOURCE] == KycSdkPartner.TOKOPEDIA_CORE.name) {
+        val projectId = kycSharedPreference.getProjectId()
+        if (projectId.isNotEmpty()) {
             sendTracker(
                 eventName = eventName,
-                eventProperties = eventProperties
+                eventProperties = eventProperties,
+                projectId = projectId
             )
         }
 
@@ -53,8 +54,7 @@ class GotoKycEventTrackingProvider @Inject constructor(
     }
 
     @SuppressLint("PII Data Exposure")
-    private fun sendTracker(eventName: String, eventProperties: Map<String, Any?>) {
-        val projectId = kycSharedPreference.getProjectId()
+    private fun sendTracker(eventName: String, eventProperties: Map<String, Any?>, projectId: String) {
         when (eventName) {
             CAMERA_OPENED -> {
                 when (eventProperties[ACTUAL_USAGE]) {
@@ -471,7 +471,6 @@ class GotoKycEventTrackingProvider @Inject constructor(
     }
 
     companion object {
-        private const val SOURCE = "Source"
         private const val SCREEN_TYPE = "ScreenType"
         private const val SCREEN_TYPE_CAMERA = "Camera"
         private const val SCREEN_TYPE_ALL_PREVIEW = "All Document Preview"

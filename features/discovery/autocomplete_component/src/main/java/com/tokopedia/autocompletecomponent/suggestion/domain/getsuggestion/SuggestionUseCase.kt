@@ -62,8 +62,13 @@ open class SuggestionUseCase(
         return suggestionGraphqlUseCase.executeOnBackground()
     }
 
-    @GqlQuery("SuggestionUseCaseQuery", SUGGESTION_QUERY)
-    protected open fun getGraphqlQuery(): GqlQueryInterface = SuggestionUseCaseQuery()
+    protected open fun getGraphqlQuery(): GqlQueryInterface = object: GqlQueryInterface {
+        override fun getOperationNameList(): List<String> = listOf()
+
+        override fun getQuery(): String = SUGGESTION_QUERY
+
+        override fun getTopOperationName(): String = ""
+    }
 
     protected open fun createGraphqlRequestParams(requestParams: RequestParams): Map<String, String> {
         val params = UrlParamHelper.generateUrlParamString(requestParams.parameters)

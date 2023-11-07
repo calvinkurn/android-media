@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import rx.Emitter
 import rx.Observable
 import rx.Subscription
@@ -24,12 +25,7 @@ const val REVERSE_GEOCODE_DELAY = 1000L
 const val AUTOCOMPLETE_DELAY = 500L
 
 fun String.toKilometers(): String {
-    var number = 0.0
-    try {
-        number = this.trim().toDouble()
-    } catch (e: NumberFormatException) {
-        e.printStackTrace()
-    }
+    val number = this.trim().toDoubleOrZero()
     return String.format("%.1f km", number)
 }
 

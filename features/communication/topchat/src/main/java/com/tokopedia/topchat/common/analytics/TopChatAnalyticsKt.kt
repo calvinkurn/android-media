@@ -9,6 +9,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam.Companion.EVENT_ACTION_ATC
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam.Companion.EVENT_ACTION_BUY
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
@@ -1062,6 +1063,48 @@ object TopChatAnalyticsKt {
         TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
     }
 
+    fun eventImpressionAutoReply(
+        messageId: String,
+        contentList: List<TopChatRoomAutoReplyItemUiModel>
+    ) {
+        val contentHeader = contentList
+            .mapNotNull { it.type.takeIf { type -> type.isNotEmpty() } }
+            .joinToString()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.CHAT_DETAIL,
+                action = Action.IMPRESSION_BALASAN_OTOMATIS,
+                label = "$sourcePage - $messageId - $contentHeader",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "47757"
+            )
+        )
+    }
+
+    fun eventClickAutoReply(
+        messageId: String,
+        contentList: List<TopChatRoomAutoReplyItemUiModel>
+    ) {
+        val contentHeader = contentList
+            .mapNotNull { it.type.takeIf { type -> type.isNotEmpty() } }
+            .joinToString()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_BALASAN_OTOMATIS,
+                label = "$sourcePage - $messageId - $contentHeader",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "47758"
+            )
+        )
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -1216,6 +1259,8 @@ object TopChatAnalyticsKt {
         const val CLICK_LINK_INSIDE_TICKER = "user click link inside ticker"
         const val CLICK_CLOSE_TICKER = "user click close ticker"
         const val VIEW_ON_PRODUCT_THUMBNAIL = "view on product thumbnail"
+        const val IMPRESSION_BALASAN_OTOMATIS = "impression to balasan otomatis"
+        const val CLICK_BALASAN_OTOMATIS = "click to balasan otomatis"
     }
 
     private const val PRODUCT_INDEX = "0"
