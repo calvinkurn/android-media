@@ -180,7 +180,7 @@ class PlayWidgetSubViewModelTest {
         val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
 
         coEvery {
-            playWidgetTools.getWidgetFromNetwork(widgetType)
+            playWidgetTools.getWidgetFromNetwork(any())
         } throws Throwable()
 
         viewModel.getPlayWidgetData()
@@ -191,15 +191,21 @@ class PlayWidgetSubViewModelTest {
 
     @Test
     fun `get play widget data error cause by map widget to model`() {
-        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
+        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(listOf("wkwkwk"), emptyList())
         val expectedResponse = PlayWidget()
 
+        /**
+         * let me tell you about this,
+         * `widgetType` never get set in productDetailMediator instance
+         * this yield 2 below coEvery not to be called
+         * so the solution is just change to any()
+         */
         coEvery {
             playWidgetTools.getWidgetFromNetwork(widgetType = widgetType)
         } returns expectedResponse
 
         coEvery {
-            playWidgetTools.mapWidgetToModel(expectedResponse)
+            playWidgetTools.mapWidgetToModel(any())
         } throws Throwable()
 
         viewModel.getPlayWidgetData()

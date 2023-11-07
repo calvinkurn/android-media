@@ -25,11 +25,22 @@ class VideoPictureAdapter(
     val currentList: MutableList<MediaDataModel> = mutableListOf()
 
     fun submitList(newList: List<MediaDataModel>) {
+        obtainPrefetchMedia(newList)
+
         val diffCallback = VideoPictureDiffUtil(currentList.toMutableList(), newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         currentList.clear()
         currentList.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    private fun obtainPrefetchMedia(newList: List<MediaDataModel>) {
+        val prefetchMedia = currentList.firstOrNull { it.isPrefetch }
+        if (prefetchMedia != null) {
+            newList.firstOrNull()?.apply {
+                this.prefetchResource = prefetchMedia.prefetchResource
+            }
+        }
     }
 
     fun isPicture(position: Int): Boolean {
