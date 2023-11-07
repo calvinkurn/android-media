@@ -159,7 +159,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             }
 
             if (query["overrideNativeBackPress"] == "true") {
-                WebViewHelper.executeJs("handlePop()", f.webView) {}
+//                WebViewHelper.executeJs("handlePop()", f.webView) {}
+                f.webView.loadUrl("javascript:handlePop();")
                 return
             }
         }
