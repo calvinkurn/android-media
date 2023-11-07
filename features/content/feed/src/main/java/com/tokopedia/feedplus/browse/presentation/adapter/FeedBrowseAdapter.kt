@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.types.ResultState
-import com.tokopedia.content.common.types.isFailed
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
@@ -15,21 +14,25 @@ import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseH
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
-import com.tokopedia.feedplus.browse.presentation.model.ItemListState
+import com.tokopedia.feedplus.browse.presentation.model.SlotInfo
 import com.tokopedia.feedplus.browse.presentation.model.isNotEmpty
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * Created by kenny.hadisaputra on 25/09/23
  */
 internal class FeedBrowseAdapter(
+    private val scope: CoroutineScope,
     private val chipsListener: ChipsViewHolder.Listener,
     private val bannerListener: FeedBrowseBannerViewHolder.Listener,
-    private val channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener,
+    private val channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<FeedBrowseItemListModel>() {
         override fun areItemsTheSame(oldItem: FeedBrowseItemListModel, newItem: FeedBrowseItemListModel): Boolean {
-            return oldItem.slotId == newItem.slotId && oldItem::class == newItem::class
+            return oldItem.slotInfo.id == newItem.slotInfo.id && oldItem::class == newItem::class
         }
 
         override fun areContentsTheSame(oldItem: FeedBrowseItemListModel, newItem: FeedBrowseItemListModel): Boolean {
@@ -59,7 +62,7 @@ internal class FeedBrowseAdapter(
                 ChipsViewHolder.create(parent, chipsListener)
             }
             TYPE_HORIZONTAL_CHANNELS -> {
-                FeedBrowseHorizontalChannelsViewHolder.create(parent, channelListener)
+                FeedBrowseHorizontalChannelsViewHolder.create(parent, scope, channelListener)
             }
             TYPE_BANNER -> {
                 FeedBrowseBannerViewHolder.create(parent, bannerListener)
@@ -145,15 +148,21 @@ internal class FeedBrowseAdapter(
     }
 
     private fun List<FeedBrowseStatefulModel>.mapToItems(): List<FeedBrowseItemListModel> {
-        return flatMap {
-            when (it.model) {
-                is FeedBrowseSlotUiModel.ChannelsWithMenus -> it.model.mapToChannelBlocks(it.result)
-                is FeedBrowseSlotUiModel.InspirationBanner -> it.model.mapToItems()
+        return flatMapIndexed { index, item ->
+            when (item.model) {
+                is FeedBrowseSlotUiModel.ChannelsWithMenus -> item.model.mapToChannelBlocks(
+                    item.result,
+                    index
+                )
+                is FeedBrowseSlotUiModel.InspirationBanner -> item.model.mapToItems(index)
             }
         }
     }
 
-    private fun FeedBrowseSlotUiModel.ChannelsWithMenus.mapToChannelBlocks(state: ResultState): List<FeedBrowseItemListModel> {
+    private fun FeedBrowseSlotUiModel.ChannelsWithMenus.mapToChannelBlocks(
+        state: ResultState,
+        position: Int
+    ): List<FeedBrowseItemListModel> {
         return buildList {
             val isMenuEmpty = menus.keys.isEmpty() || menus.keys.any { !it.isValid }
             val selectedMenu = if (menus.keys.isNotEmpty()) {
@@ -163,13 +172,15 @@ internal class FeedBrowseAdapter(
             }
             val itemsInSelectedMenu = menus[selectedMenu]
 
+            val slotInfo = getSlotInfo(position)
+
             if (!isMenuEmpty || itemsInSelectedMenu?.isNotEmpty() == true || !state.isSuccess) {
-                add(FeedBrowseItemListModel.Title(slotId, title))
+                add(FeedBrowseItemListModel.Title(slotInfo, title))
             }
             if (!isMenuEmpty) {
                 add(
                     FeedBrowseItemListModel.Chips.Item(
-                        slotId,
+                        slotInfo,
                         menus.keys.toList().map {
                             ChipsModel(it, it == selectedMenu)
                         }
@@ -177,30 +188,34 @@ internal class FeedBrowseAdapter(
                 )
             }
 
-            if (state.isLoading) {
-                add(FeedBrowseItemListModel.HorizontalChannels(slotId, selectedMenu, ItemListState.initLoading()))
-                return@buildList
-            } else if (state.isFailed()) {
-                add(FeedBrowseItemListModel.HorizontalChannels(slotId, selectedMenu, ItemListState.initFail(state.error)))
-                return@buildList
-            }
-
             add(
                 FeedBrowseItemListModel.HorizontalChannels(
-                    slotId,
+                    slotInfo,
                     selectedMenu,
-                    itemsInSelectedMenu ?: ItemListState.initLoading()
+                    itemsInSelectedMenu ?: FeedBrowseItemListState.initLoading(),
+                    itemsInSelectedMenu?.config ?: PlayWidgetConfigUiModel.Empty
                 )
             )
         }
     }
 
-    private fun FeedBrowseSlotUiModel.InspirationBanner.mapToItems(): List<FeedBrowseItemListModel> {
+    private fun FeedBrowseSlotUiModel.InspirationBanner.mapToItems(
+        position: Int
+    ): List<FeedBrowseItemListModel> {
+        val slotInfo = getSlotInfo(position)
         return buildList {
-            add(FeedBrowseItemListModel.Title(slotId, title))
+            add(FeedBrowseItemListModel.Title(slotInfo, title))
             addAll(
-                bannerList.map { FeedBrowseItemListModel.Banner(slotId, it) }
+                bannerList.map { FeedBrowseItemListModel.Banner(slotInfo, it) }
             )
         }
+    }
+
+    private fun FeedBrowseSlotUiModel.getSlotInfo(position: Int): SlotInfo {
+        return SlotInfo(
+            id = slotId,
+            title = title,
+            position = position
+        )
     }
 }

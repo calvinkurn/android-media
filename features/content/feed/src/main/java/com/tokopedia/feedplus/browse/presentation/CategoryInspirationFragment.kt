@@ -42,17 +42,26 @@ internal class CategoryInspirationFragment @Inject constructor(
     private val binding get() = _binding!!
 
     private val chipsListener = object : ChipsViewHolder.Listener {
+        override fun onChipImpressed(
+            viewHolder: ChipsViewHolder,
+            widgetModel: FeedBrowseItemListModel.Chips.Item,
+            chip: WidgetMenuModel,
+            chipPosition: Int
+        ) {
+        }
+
         override fun onChipClicked(
             viewHolder: ChipsViewHolder,
-            slotId: String,
-            chip: WidgetMenuModel
+            widgetModel: FeedBrowseItemListModel.Chips.Item,
+            chip: WidgetMenuModel,
+            chipPosition: Int
         ) {
             viewModel.onAction(CategoryInspirationAction.SelectMenu(chip))
         }
 
         override fun onChipSelected(
             viewHolder: ChipsViewHolder,
-            slotId: String,
+            widgetModel: FeedBrowseItemListModel.Chips.Item,
             chip: WidgetMenuModel
         ) {
             viewModel.onAction(CategoryInspirationAction.LoadData(chip))

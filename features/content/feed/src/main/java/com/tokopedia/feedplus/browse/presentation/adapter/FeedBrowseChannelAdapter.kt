@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder2
-import com.tokopedia.feedplus.browse.presentation.model.ErrorModel
 import com.tokopedia.feedplus.browse.presentation.model.LoadingModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
@@ -14,8 +13,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
  * Created by meyta.taliti on 11/08/23.
  */
 internal class FeedBrowseChannelAdapter(
-    private val channelListener: FeedBrowseChannelViewHolder2.Channel.Listener,
-    private val errorListener: FeedBrowseChannelViewHolder2.Error.Listener,
+    private val channelListener: FeedBrowseChannelViewHolder2.Channel.Listener
 ) : ListAdapter<Any, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(
@@ -52,7 +50,6 @@ internal class FeedBrowseChannelAdapter(
         return when (viewType) {
             TYPE_LOADING -> FeedBrowseChannelViewHolder2.Loading.create(parent)
             TYPE_CHANNEL -> FeedBrowseChannelViewHolder2.Channel.create(parent, channelListener)
-            TYPE_ERROR -> FeedBrowseChannelViewHolder2.Error.create(parent, errorListener)
             else -> error("No ViewHolder found for view type $viewType")
         }
     }
@@ -62,9 +59,6 @@ internal class FeedBrowseChannelAdapter(
         when {
             holder is FeedBrowseChannelViewHolder2.Channel && item is PlayWidgetChannelUiModel -> {
                 holder.bind(item)
-            }
-            holder is FeedBrowseChannelViewHolder2.Error -> {
-                holder.stopAnimating()
             }
         }
     }
@@ -90,7 +84,6 @@ internal class FeedBrowseChannelAdapter(
         return when (val item = getItem(position)) {
             LoadingModel -> TYPE_LOADING
             is PlayWidgetChannelUiModel -> TYPE_CHANNEL
-            ErrorModel -> TYPE_ERROR
             else -> error("Type of item $item is not supported")
         }
     }
@@ -99,13 +92,8 @@ internal class FeedBrowseChannelAdapter(
         submitList(List(4) { LoadingModel })
     }
 
-    fun setFailed() {
-        submitList(List(3) { ErrorModel })
-    }
-
     companion object {
         private const val TYPE_LOADING = 0
         private const val TYPE_CHANNEL = 1
-        private const val TYPE_ERROR = 2
     }
 }

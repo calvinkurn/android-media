@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.browse.data.model
 
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 /**
  * Created by kenny.hadisaputra on 13/10/23
@@ -13,7 +14,8 @@ internal sealed interface ContentSlotModel {
 
     data class ChannelBlock(
         val channels: List<PlayWidgetChannelUiModel>,
-        val nextCursor: String,
+        val config: PlayWidgetConfigUiModel,
+        val nextCursor: String
     ) : ContentSlotModel {
         val hasNextPage: Boolean = nextCursor.isNotBlank()
     }

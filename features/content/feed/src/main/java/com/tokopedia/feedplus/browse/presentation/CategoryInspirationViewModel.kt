@@ -8,11 +8,11 @@ import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
+import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationAction
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationData
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
-import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationAction
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationUiState
-import com.tokopedia.feedplus.browse.presentation.model.ItemListState
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListState
 import com.tokopedia.feedplus.browse.presentation.model.isLoading
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,7 +48,7 @@ internal class CategoryInspirationViewModel @Inject constructor(
             loadContent(
                 WidgetMenuModel.Empty.copy(
 //                group = "browse_channel_slot_channelBlock:content_browse_promo",
-                    group = "browse_channel_slot_tabMenu:content_browse_category",
+                    group = "browse_channel_slot_tabMenu:content_browse_category"
                 )
             )
 
@@ -75,7 +75,7 @@ internal class CategoryInspirationViewModel @Inject constructor(
             it.copy(
                 selectedMenuId = menu.id,
                 items = it.items.updateById(menu.id) { data ->
-                    data.copy(items = ItemListState.initSuccess(emptyList()))
+                    data.copy(items = FeedBrowseItemListState.initSuccess(emptyList()))
                 }
             )
         }
@@ -93,7 +93,7 @@ internal class CategoryInspirationViewModel @Inject constructor(
                     data.copy(
                         items = data.items.copy(state = ResultState.Loading)
                     )
-                },
+                }
             )
         }
 
@@ -104,7 +104,7 @@ internal class CategoryInspirationViewModel @Inject constructor(
                     it.copy(
                         items = response.menu.associate { menu ->
                             menu.id to
-                                CategoryInspirationData(menu, ItemListState.initSuccess(emptyList()))
+                                CategoryInspirationData(menu, FeedBrowseItemListState.initSuccess(emptyList()))
                         },
                         selectedMenuId = response.menu.firstOrNull()?.id.orEmpty()
                     )
@@ -115,13 +115,13 @@ internal class CategoryInspirationViewModel @Inject constructor(
                     it.copy(
                         items = it.items.updateById(menu.id) { data ->
                             data.copy(
-                                items = ItemListState.initSuccess(
+                                items = FeedBrowseItemListState.initSuccess(
                                     items = data.items.items + response.channels,
                                     nextCursor = response.nextCursor,
-                                    hasNextPage = response.hasNextPage,
+                                    hasNextPage = response.hasNextPage
                                 )
                             )
-                        },
+                        }
                     )
                 }
             }
@@ -130,11 +130,11 @@ internal class CategoryInspirationViewModel @Inject constructor(
                     it.copy(
                         items = it.items.updateById(menu.id) { data ->
                             data.copy(
-                                items = ItemListState.initSuccess(
+                                items = FeedBrowseItemListState.initSuccess(
                                     data.items.items,
                                     nextCursor = response.nextCursor,
-                                    hasNextPage = response.hasNextPage,
-                                ),
+                                    hasNextPage = response.hasNextPage
+                                )
                             )
                         }
                     )
@@ -145,7 +145,7 @@ internal class CategoryInspirationViewModel @Inject constructor(
 
     private fun CategoryInspirationMap.updateById(
         id: String,
-        onUpdate: (CategoryInspirationData) -> CategoryInspirationData,
+        onUpdate: (CategoryInspirationData) -> CategoryInspirationData
     ): CategoryInspirationMap {
         val data = get(id) ?: return this
         return this + (id to onUpdate(data))
@@ -156,7 +156,7 @@ internal class CategoryInspirationViewModel @Inject constructor(
             group = group,
             sourceType = sourceType,
             sourceId = sourceId,
-            cursor = nextCursor,
+            cursor = nextCursor
         )
     }
 }

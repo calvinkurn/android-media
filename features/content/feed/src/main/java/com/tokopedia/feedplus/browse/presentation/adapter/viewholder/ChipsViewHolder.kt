@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
-import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseChipsItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowsePayloads
+import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseChipsItemDecoration
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
@@ -17,32 +17,46 @@ import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipsBinding
  * Created by kenny.hadisaputra on 25/09/23
  */
 internal class ChipsViewHolder private constructor(
-    binding: ItemFeedBrowseChipsBinding,
-    listener: Listener,
+    private val binding: ItemFeedBrowseChipsBinding,
+    listener: Listener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    private var mSlotId: String = ""
+    private var mItem: FeedBrowseItemListModel.Chips? = null
 
     private val adapter = FeedBrowseChipAdapter(
         object : ChipViewHolder.Listener {
             override fun onChipImpressed(model: FeedBrowseChipUiModel, position: Int) {
-
             }
 
             override fun onChipClicked(model: FeedBrowseChipUiModel) {
-
             }
 
             override fun onChipSelected(model: FeedBrowseChipUiModel, position: Int) {
-
             }
 
-            override fun onChipClicked(model: WidgetMenuModel) {
-                listener.onChipClicked(this@ChipsViewHolder, mSlotId, model)
+            override fun onChipImpressed(viewHolder: ChipViewHolder, model: WidgetMenuModel) {
+                val data = mItem as? FeedBrowseItemListModel.Chips.Item ?: return
+                listener.onChipImpressed(
+                    this@ChipsViewHolder,
+                    data,
+                    model,
+                    viewHolder.absoluteAdapterPosition
+                )
             }
 
-            override fun onChipSelected(model: WidgetMenuModel, position: Int) {
-                listener.onChipSelected(this@ChipsViewHolder, mSlotId, model)
+            override fun onChipClicked(viewHolder: ChipViewHolder, model: WidgetMenuModel) {
+                val data = mItem as? FeedBrowseItemListModel.Chips.Item ?: return
+                listener.onChipClicked(
+                    this@ChipsViewHolder,
+                    data,
+                    model,
+                    viewHolder.absoluteAdapterPosition
+                )
+            }
+
+            override fun onChipSelected(viewHolder: ChipViewHolder, model: WidgetMenuModel) {
+                val data = mItem as? FeedBrowseItemListModel.Chips.Item ?: return
+                listener.onChipSelected(this@ChipsViewHolder, data, model)
             }
         }
     )
@@ -53,7 +67,7 @@ internal class ChipsViewHolder private constructor(
     }
 
     fun bind(item: FeedBrowseItemListModel.Chips) {
-        mSlotId = item.slotId
+        mItem = item
 
         when (item) {
             is FeedBrowseItemListModel.Chips.Item -> bindItem(item.chips)
@@ -66,7 +80,9 @@ internal class ChipsViewHolder private constructor(
     }
 
     private fun bindItem(chips: List<ChipsModel>) {
-        adapter.submitList(chips)
+        adapter.submitList(chips) {
+            binding.root.invalidateItemDecorations()
+        }
     }
 
     private fun bindPlaceholder() {
@@ -82,7 +98,7 @@ internal class ChipsViewHolder private constructor(
                 ItemFeedBrowseChipsBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
-                    false,
+                    false
                 ),
                 listener
             )
@@ -90,15 +106,23 @@ internal class ChipsViewHolder private constructor(
     }
 
     interface Listener {
+
+        fun onChipImpressed(
+            viewHolder: ChipsViewHolder,
+            widgetModel: FeedBrowseItemListModel.Chips.Item,
+            chip: WidgetMenuModel,
+            chipPosition: Int
+        )
         fun onChipClicked(
             viewHolder: ChipsViewHolder,
-            slotId: String,
-            chip: WidgetMenuModel
+            widgetModel: FeedBrowseItemListModel.Chips.Item,
+            chip: WidgetMenuModel,
+            chipPosition: Int
         )
 
         fun onChipSelected(
             viewHolder: ChipsViewHolder,
-            slotId: String,
+            widgetModel: FeedBrowseItemListModel.Chips.Item,
             chip: WidgetMenuModel
         )
     }

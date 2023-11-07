@@ -12,9 +12,9 @@ import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
-import com.tokopedia.feedplus.browse.presentation.model.ItemListState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -126,7 +126,7 @@ internal class FeedBrowseViewModel @Inject constructor(
             updateWidget<FeedBrowseSlotUiModel.ChannelsWithMenus>(slotId, ResultState.Success) {
                 it.copy(
                     selectedMenuId = chip.id,
-                    menus = it.menus + (chip to ItemListState.initLoading())
+                    menus = it.menus + (chip to FeedBrowseItemListState.initLoading())
                 )
             }
         }
@@ -160,7 +160,7 @@ internal class FeedBrowseViewModel @Inject constructor(
                 is ContentSlotModel.TabMenus -> {
                     updateWidget<FeedBrowseSlotUiModel.ChannelsWithMenus>(slotId, ResultState.Success) {
                         it.copy(
-                            menus = response.menu.associateWith { ItemListState.initLoading() },
+                            menus = response.menu.associateWith { FeedBrowseItemListState.initLoading() },
                             selectedMenuId = response.menu.firstOrNull()?.id.orEmpty()
                         )
                     }
@@ -170,7 +170,7 @@ internal class FeedBrowseViewModel @Inject constructor(
                         updateWidget<FeedBrowseSlotUiModel.ChannelsWithMenus>(slotId, ResultState.Success) {
                             it.copy(
                                 menus = mapOf(
-                                    WidgetMenuModel.Empty to ItemListState.initSuccess(response.channels)
+                                    WidgetMenuModel.Empty.copy(group = it.group) to FeedBrowseItemListState.initSuccess(response.channels, config = response.config)
                                 )
                             )
                         }
@@ -178,7 +178,7 @@ internal class FeedBrowseViewModel @Inject constructor(
                         updateWidget<FeedBrowseSlotUiModel.ChannelsWithMenus>(slotId, ResultState.Success) {
                             val menu = selectedMenu ?: menuKeys.first()
                             it.copy(
-                                menus = menus + (menu to ItemListState.initSuccess(response.channels))
+                                menus = menus + (menu to FeedBrowseItemListState.initSuccess(response.channels, config = response.config))
                             )
                         }
                     }

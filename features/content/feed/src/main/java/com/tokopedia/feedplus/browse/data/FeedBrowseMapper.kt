@@ -104,7 +104,11 @@ class FeedBrowseMapper @Inject constructor() {
                 )
             }
             FEED_TYPE_CHANNEL_BLOCK -> {
-                ContentSlotModel.ChannelBlock(mapChannel(firstWidget), nextCursor)
+                ContentSlotModel.ChannelBlock(
+                    mapChannel(firstWidget),
+                    mapPlayWidgetConfig(response.playGetContentSlot.meta),
+                    nextCursor
+                )
             }
             else -> {
                 ContentSlotModel.NoData(nextCursor)
@@ -135,13 +139,17 @@ class FeedBrowseMapper @Inject constructor() {
 
     private fun mapConfig(data: ContentSlotMeta): FeedBrowseConfigUiModel {
         return FeedBrowseConfigUiModel(
-            data = PlayWidgetConfigUiModel.Empty.copy(
-                autoRefresh = data.autoRefresh,
-                autoRefreshTimer = data.autoRefreshTimer,
-                autoPlay = data.isAutoplay,
-                autoPlayAmount = data.maxAutoplayInCell
-            ),
+            data = mapPlayWidgetConfig(data),
             lastUpdated = System.currentTimeMillis()
+        )
+    }
+
+    private fun mapPlayWidgetConfig(data: ContentSlotMeta): PlayWidgetConfigUiModel {
+        return PlayWidgetConfigUiModel.Empty.copy(
+            autoRefresh = data.autoRefresh,
+            autoRefreshTimer = data.autoRefreshTimer,
+            autoPlay = data.isAutoplay,
+            autoPlayAmount = data.maxAutoplayInCell
         )
     }
 

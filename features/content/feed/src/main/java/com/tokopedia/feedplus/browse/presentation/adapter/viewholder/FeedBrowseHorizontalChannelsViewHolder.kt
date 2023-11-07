@@ -4,8 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnLayout
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
@@ -15,12 +13,12 @@ import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBro
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseHorizontalChannelsBinding
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetAutoRefreshCoordinator
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -28,24 +26,48 @@ import kotlin.time.Duration.Companion.seconds
  */
 internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
     private val binding: ItemFeedBrowseHorizontalChannelsBinding,
-    private val listener: Listener,
+    private val scope: CoroutineScope,
+    private val listener: Listener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var retryJob: Job? = null
 
-    private var mScope: CoroutineScope? = null
+    private var mData: FeedBrowseItemListModel.HorizontalChannels? = null
+
+    private val autoRefreshCoordinator = PlayWidgetAutoRefreshCoordinator(
+        scope,
+        listener = object : PlayWidgetAutoRefreshCoordinator.Listener {
+            override fun onWidgetShouldRefresh() {
+                val data = mData ?: return
+                listener.onRefresh(
+                    this@FeedBrowseHorizontalChannelsViewHolder,
+                    data.slotInfo.id,
+                    data.menu
+                )
+            }
+        }
+    )
 
     private val adapter = FeedBrowseChannelAdapter(
         object : FeedBrowseChannelViewHolder2.Channel.Listener {
             override fun onCardImpressed(item: PlayWidgetChannelUiModel, position: Int) {
+                val data = mData ?: return
+                listener.onCardImpressed(
+                    this@FeedBrowseHorizontalChannelsViewHolder,
+                    data,
+                    item,
+                    position
+                )
             }
 
             override fun onCardClicked(item: PlayWidgetChannelUiModel, position: Int) {
-            }
-        },
-        object : FeedBrowseChannelViewHolder2.Error.Listener {
-            override fun onRetry(viewHolder: FeedBrowseChannelViewHolder2.Error) {
-
+                val data = mData ?: return
+                listener.onCardClicked(
+                    this@FeedBrowseHorizontalChannelsViewHolder,
+                    data,
+                    item,
+                    position
+                )
             }
         }
     )
@@ -59,17 +81,17 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
 
         binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {
-                mScope = v.findViewTreeLifecycleOwner()?.lifecycleScope
             }
 
             override fun onViewDetachedFromWindow(v: View) {
                 retryJob?.cancel()
-                mScope = null
             }
         })
     }
 
     fun bind(item: FeedBrowseItemListModel.HorizontalChannels) {
+        mData = item
+
         binding.errorView.stop()
 
         when (item.itemState.state) {
@@ -83,7 +105,9 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
                     binding.rvChannels.doOnLayout {
                         binding.rvChannels.scrollToPosition(0)
                     }
+                    binding.rvChannels.invalidateItemDecorations()
                 }
+                autoRefreshCoordinator.configureAutoRefresh(item.config)
             }
             is ResultState.Fail -> {
                 showContent(false)
@@ -99,13 +123,13 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
 
     private fun retry(item: FeedBrowseItemListModel.HorizontalChannels) {
         if (retryJob?.isActive == true) return
-        retryJob = mScope?.launch {
+        retryJob = scope.launch {
             binding.errorView.startAnimating()
             delay(1.seconds)
             listener.onRetry(
                 this@FeedBrowseHorizontalChannelsViewHolder,
-                item.slotId,
-                item.menu,
+                item.slotInfo.id,
+                item.menu
             )
         }
     }
@@ -117,7 +141,8 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
     companion object {
         fun create(
             parent: ViewGroup,
-            listener: Listener,
+            scope: CoroutineScope,
+            listener: Listener
         ): FeedBrowseHorizontalChannelsViewHolder {
             return FeedBrowseHorizontalChannelsViewHolder(
                 ItemFeedBrowseHorizontalChannelsBinding.inflate(
@@ -125,7 +150,8 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
                     parent,
                     false
                 ),
-                listener,
+                scope,
+                listener
             )
         }
     }
@@ -134,7 +160,27 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
         fun onRetry(
             viewHolder: FeedBrowseHorizontalChannelsViewHolder,
             slotId: String,
-            menu: WidgetMenuModel,
+            menu: WidgetMenuModel
+        )
+
+        fun onRefresh(
+            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+            slotId: String,
+            menu: WidgetMenuModel
+        )
+
+        fun onCardImpressed(
+            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalChannels,
+            channel: PlayWidgetChannelUiModel,
+            channelPosition: Int
+        )
+
+        fun onCardClicked(
+            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalChannels,
+            channel: PlayWidgetChannelUiModel,
+            channelPosition: Int
         )
     }
 }

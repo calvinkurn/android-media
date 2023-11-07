@@ -15,6 +15,7 @@ import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.LoadingModel
+import com.tokopedia.feedplus.browse.presentation.model.SlotInfo
 import com.tokopedia.feedplus.browse.presentation.model.isEmpty
 import com.tokopedia.feedplus.browse.presentation.model.isLoading
 
@@ -140,7 +141,7 @@ internal class CategoryInspirationAdapter(
             if (!isMenuEmpty) {
                 add(
                     FeedBrowseItemListModel.Chips.Item(
-                        "",
+                        SlotInfo.Empty,
                         entries.map {
                             ChipsModel(it.value.menu, it.key == selectedMenuId)
                         }
@@ -153,7 +154,7 @@ internal class CategoryInspirationAdapter(
             } else {
                 addAll(
                     menuItem.items.map {
-                        FeedBrowseItemListModel.InspirationCard.Item("", it)
+                        FeedBrowseItemListModel.InspirationCard.Item(SlotInfo.Empty, it)
                     }
                 )
                 if (menuItem.isLoading && !pageState.isLoading) { add(LoadingModel) }

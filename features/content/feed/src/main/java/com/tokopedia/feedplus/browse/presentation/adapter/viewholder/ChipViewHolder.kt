@@ -7,7 +7,9 @@ import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipBinding
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.play_common.util.ImpressionListener
+import com.tokopedia.play_common.util.addImpressionListener
+import com.tokopedia.play_common.util.removeImpressionListener
 import com.tokopedia.unifycomponents.ChipsUnify
 
 /**
@@ -20,6 +22,8 @@ internal class ChipViewHolder private constructor(
 
     private val chipView = binding.cuFeedBrowseLabel
 
+    private var mImpressionListener: ImpressionListener? = null
+
     fun bind(item: FeedBrowseChipUiModel) {
         chipView.chipText = item.label
 
@@ -30,19 +34,24 @@ internal class ChipViewHolder private constructor(
             listener.onChipClicked(item)
         }
 
-        chipView.addOnImpressionListener(item.impressHolder) {
+        chipView.addImpressionListener {
             listener.onChipImpressed(item, bindingAdapterPosition)
         }
     }
 
     fun bind(item: ChipsModel) {
+        mImpressionListener?.let { chipView.removeImpressionListener(it) }
+        mImpressionListener = chipView.addImpressionListener {
+            listener.onChipImpressed(this, item.menu)
+        }
+
         chipView.chipText = item.menu.label
 
         onChipSelected(item.menu, item.isSelected)
 
         chipView.setOnClickListener {
             if (chipView.chipType == ChipsUnify.TYPE_SELECTED) return@setOnClickListener
-            listener.onChipClicked(item.menu)
+            listener.onChipClicked(this, item.menu)
         }
     }
 
@@ -72,14 +81,14 @@ internal class ChipViewHolder private constructor(
         }
 
         if (isSelected) {
-            listener.onChipSelected(item, bindingAdapterPosition)
+            listener.onChipSelected(this, item)
         }
     }
 
     companion object {
         fun create(
             parent: ViewGroup,
-            listener: Listener,
+            listener: Listener
         ): ChipViewHolder {
             return ChipViewHolder(
                 ItemFeedBrowseChipBinding.inflate(
@@ -95,12 +104,14 @@ internal class ChipViewHolder private constructor(
     interface Listener {
         fun onChipImpressed(model: FeedBrowseChipUiModel, position: Int)
 
+        fun onChipImpressed(viewHolder: ChipViewHolder, model: WidgetMenuModel) {}
+
         fun onChipClicked(model: FeedBrowseChipUiModel)
 
-        fun onChipClicked(model: WidgetMenuModel) {}
+        fun onChipClicked(viewHolder: ChipViewHolder, model: WidgetMenuModel) {}
 
         fun onChipSelected(model: FeedBrowseChipUiModel, position: Int)
 
-        fun onChipSelected(model: WidgetMenuModel, position: Int) {}
+        fun onChipSelected(viewHolder: ChipViewHolder, model: WidgetMenuModel) {}
     }
 }

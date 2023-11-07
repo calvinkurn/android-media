@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.browse.data.model
 
-import com.tokopedia.feedplus.browse.presentation.model.ItemListState
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
@@ -15,8 +15,8 @@ internal sealed interface FeedBrowseSlotUiModel {
         override val slotId: String,
         override val title: String,
         val group: String,
-        val menus: Map<WidgetMenuModel, ItemListState<PlayWidgetChannelUiModel>>,
-        val selectedMenuId: String,
+        val menus: Map<WidgetMenuModel, FeedBrowseItemListState<PlayWidgetChannelUiModel>>,
+        val selectedMenuId: String
     ) : FeedBrowseSlotUiModel {
 
         companion object {
@@ -25,7 +25,7 @@ internal sealed interface FeedBrowseSlotUiModel {
                 title = "",
                 group = "",
                 menus = emptyMap(),
-                selectedMenuId = "",
+                selectedMenuId = ""
             )
         }
     }
@@ -34,7 +34,7 @@ internal sealed interface FeedBrowseSlotUiModel {
         override val slotId: String,
         override val title: String,
         val identifier: String,
-        val bannerList: List<BannerWidgetModel>,
+        val bannerList: List<BannerWidgetModel>
     ) : FeedBrowseSlotUiModel
 }
 
@@ -43,7 +43,7 @@ internal data class WidgetMenuModel(
     val label: String,
     val group: String,
     val sourceType: String,
-    val sourceId: String,
+    val sourceId: String
 ) {
 
     val isValid: Boolean = id.isNotBlank()
@@ -53,7 +53,7 @@ internal data class WidgetMenuModel(
             label = "",
             group = "",
             sourceType = "",
-            sourceId = "",
+            sourceId = ""
         )
     }
 }
@@ -61,5 +61,5 @@ internal data class WidgetMenuModel(
 internal data class BannerWidgetModel(
     val title: String,
     val imageUrl: String,
-    val appLink: String,
+    val appLink: String
 )

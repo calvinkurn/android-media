@@ -9,14 +9,14 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
  */
 internal data class CategoryInspirationData(
     val menu: WidgetMenuModel,
-    val items: ItemListState<PlayWidgetChannelUiModel>,
+    val items: FeedBrowseItemListState<PlayWidgetChannelUiModel>
 )
 internal typealias CategoryInspirationMap = Map<String, CategoryInspirationData>
 internal data class CategoryInspirationUiState(
     val title: String,
     val items: CategoryInspirationMap,
     val selectedMenuId: String,
-    val state: ResultState,
+    val state: ResultState
 ) {
 
     companion object {
@@ -25,7 +25,7 @@ internal data class CategoryInspirationUiState(
                 title = "",
                 items = emptyMap(),
                 selectedMenuId = "",
-                state = state,
+                state = state
             )
         }
     }

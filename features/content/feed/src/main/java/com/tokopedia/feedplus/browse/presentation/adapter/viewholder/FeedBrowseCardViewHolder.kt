@@ -1,19 +1,16 @@
 package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.RotateAnimation
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowsePayloads
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseCardBinding
-import com.tokopedia.feedplus.databinding.ItemFeedBrowseChannelErrorBinding
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChannelLoadingBinding
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.widget.PlayWidgetCardView
-import com.tokopedia.unifyprinciples.UnifyMotion
+import com.tokopedia.play_common.util.ImpressionListener
+import com.tokopedia.play_common.util.addImpressionListener
+import com.tokopedia.play_common.util.removeImpressionListener
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -33,15 +30,18 @@ internal class FeedBrowseChannelViewHolder2 private constructor() {
             }
         }
 
+        private var mImpressionListener: ImpressionListener? = null
+
         init {
             playWidget.setListener(playWidgetListener)
         }
 
         fun bind(item: PlayWidgetChannelUiModel) {
-            playWidget.setData(item)
-            playWidget.addOnImpressionListener(item.impressHolder) {
+            mImpressionListener?.let { playWidget.removeImpressionListener(it) }
+            mImpressionListener = playWidget.addImpressionListener {
                 listener.onCardImpressed(item, absoluteAdapterPosition)
             }
+            playWidget.setData(item)
         }
 
         fun bindPayloads(item: PlayWidgetChannelUiModel, payloads: FeedBrowsePayloads) {
@@ -51,7 +51,7 @@ internal class FeedBrowseChannelViewHolder2 private constructor() {
         companion object {
             fun create(
                 parent: ViewGroup,
-                listener: Listener,
+                listener: Listener
             ): Channel {
                 return Channel(
                     ItemFeedBrowseCardBinding.inflate(
@@ -77,7 +77,7 @@ internal class FeedBrowseChannelViewHolder2 private constructor() {
     }
 
     internal class Loading private constructor(
-        binding: ItemFeedBrowseChannelLoadingBinding,
+        binding: ItemFeedBrowseChannelLoadingBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
@@ -90,66 +90,6 @@ internal class FeedBrowseChannelViewHolder2 private constructor() {
                     )
                 )
             }
-        }
-    }
-
-    internal class Error private constructor(
-        private val binding: ItemFeedBrowseChannelErrorBinding,
-        listener: Listener,
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-                override fun onViewAttachedToWindow(v: View) {
-
-                }
-
-                override fun onViewDetachedFromWindow(v: View) {
-                    stopAnimating()
-                }
-            })
-
-            binding.root.setOnClickListener {
-                startAnimating()
-                listener.onRetry(this)
-            }
-        }
-
-        private val rotateAnimation by lazy {
-            RotateAnimation(
-                0f, 359f,
-                Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f
-            ).apply {
-                duration = 1000
-                interpolator = UnifyMotion.LINEAR
-                repeatCount = Animation.INFINITE
-            }
-        }
-
-        private fun startAnimating() {
-            binding.btnRetry.startAnimation(rotateAnimation)
-        }
-
-        fun stopAnimating() {
-            binding.btnRetry.clearAnimation()
-        }
-
-        companion object {
-            fun create(parent: ViewGroup, listener: Listener): Error {
-                return Error(
-                    ItemFeedBrowseChannelErrorBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                    ),
-                    listener,
-                )
-            }
-        }
-
-        interface Listener {
-            fun onRetry(viewHolder: Error)
         }
     }
 }

@@ -1,52 +1,72 @@
 package com.tokopedia.feedplus.browse.presentation.model
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 /**
  * Created by kenny.hadisaputra on 13/10/23
  */
 internal sealed interface FeedBrowseItemListModel {
 
-    val slotId: String
+    val slotInfo: SlotInfo
 
     data class Title(
-        override val slotId: String,
-        val title: String,
+        override val slotInfo: SlotInfo,
+        val title: String
     ) : FeedBrowseItemListModel
 
     sealed interface Chips : FeedBrowseItemListModel {
-        data class Item(override val slotId: String, val chips: List<ChipsModel>) : Chips
+        data class Item(
+            override val slotInfo: SlotInfo,
+            val chips: List<ChipsModel>
+        ) : Chips
         object Placeholder : Chips {
-            override val slotId: String = ""
+            override val slotInfo: SlotInfo = SlotInfo.Empty
         }
     }
 
     data class HorizontalChannels(
-        override val slotId: String,
+        override val slotInfo: SlotInfo,
         val menu: WidgetMenuModel,
-        val itemState: ItemListState<PlayWidgetChannelUiModel>,
+        val itemState: FeedBrowseItemListState<PlayWidgetChannelUiModel>,
+        val config: PlayWidgetConfigUiModel
     ) : FeedBrowseItemListModel
 
     data class Banner(
-        override val slotId: String,
-        val banner: BannerWidgetModel,
+        override val slotInfo: SlotInfo,
+        val banner: BannerWidgetModel
     ) : FeedBrowseItemListModel
 
     sealed interface InspirationCard : FeedBrowseItemListModel {
         data class Item(
-            override val slotId: String,
-            val item: PlayWidgetChannelUiModel,
+            override val slotInfo: SlotInfo,
+            val item: PlayWidgetChannelUiModel
         ) : InspirationCard
 
         object Placeholder : InspirationCard {
-            override val slotId: String = ""
+            override val slotInfo: SlotInfo = SlotInfo.Empty
         }
     }
 }
 
 internal data class ChipsModel(
     val menu: WidgetMenuModel,
-    val isSelected: Boolean,
+    val isSelected: Boolean
 )
+
+internal data class SlotInfo(
+    val id: String,
+    val title: String,
+    val position: Int
+) {
+    companion object {
+        val Empty = SlotInfo(
+            id = "",
+            title = "",
+            position = RecyclerView.NO_POSITION
+        )
+    }
+}

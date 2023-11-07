@@ -12,7 +12,7 @@ import javax.inject.Inject
  * Created by meyta.taliti on 01/09/23.
  * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4134
  */
-class FeedBrowseTracker @Inject constructor(
+internal class FeedBrowseTracker @Inject constructor(
     channelTracker: FeedBrowseChannelTracker.Factory,
     private val userSession: UserSessionInterface
 ) : FeedBrowseChannelTracker by channelTracker.create(PREFIX_VALUE) {

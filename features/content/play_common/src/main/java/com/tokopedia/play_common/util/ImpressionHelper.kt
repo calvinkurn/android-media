@@ -3,6 +3,7 @@ package com.tokopedia.play_common.util
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewTreeObserver
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -17,19 +18,24 @@ fun View.addImpressionListener(onView: () -> Unit): ImpressionListener {
     }
     vto.addOnScrollChangedListener(scrollListener)
 
+    fun removeScrollListener() {
+        if (vto.isAlive) vto.removeOnScrollChangedListener(scrollListener)
+        if (viewTreeObserver.isAlive) viewTreeObserver.removeOnScrollChangedListener(scrollListener)
+    }
+
     val attachStateListener = object : View.OnAttachStateChangeListener {
         override fun onViewAttachedToWindow(v: View) {
+            removeScrollListener()
+            viewTreeObserver.addOnScrollChangedListener(scrollListener)
         }
 
         override fun onViewDetachedFromWindow(v: View) {
-            if (vto.isAlive) vto.removeOnScrollChangedListener(scrollListener)
-            if (viewTreeObserver.isAlive) viewTreeObserver.removeOnScrollChangedListener(scrollListener)
-            v.removeOnAttachStateChangeListener(this)
+            removeScrollListener()
         }
     }
     addOnAttachStateChangeListener(attachStateListener)
 
-    if (viewIsVisible(this)) onView()
+    addOneTimeGlobalLayoutListener { if (viewIsVisible(this)) onView() }
 
     return ImpressionListener(scrollListener, attachStateListener)
 }
