@@ -1467,7 +1467,7 @@ class OrderSummaryPageViewModel @Inject constructor(
     }
 
     fun generatePaymentRequest(orderCost: OrderCost): PaymentRequest {
-        val paymentRequest = paymentProcessor.get().generatePaymentRequest(
+        return paymentProcessor.get().generatePaymentRequest(
             orderCart,
             orderProducts.value,
             orderShop.value,
@@ -1477,7 +1477,6 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderCost,
             orderPromo.value
         )
-        return paymentRequest
     }
 
     override fun onCleared() {
