@@ -9,7 +9,7 @@ class RechargeTodoWidgetSpaceDecorator (private val space: Int, private val isSh
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val adapter = parent.adapter
         if (adapter != null && parent.getChildAdapterPosition(view) == 0) {
-            outRect.left = if (isShownBayarSekaligus) space else space * 2
+            outRect.left = 0
             outRect.right = space
         } else {
             outRect.left = 0

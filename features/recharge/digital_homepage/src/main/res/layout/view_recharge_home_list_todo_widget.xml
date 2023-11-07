@@ -27,8 +27,9 @@
             />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:paddingEnd="24dp"
             android:clipToPadding="false"
+            android:paddingEnd="24dp"
+            android:paddingStart="16dp"
             android:id="@+id/rv_todo_widget_first"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -58,6 +59,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:clipToPadding="false"
             android:paddingEnd="24dp"
+            android:paddingStart="16dp"
             android:id="@+id/rv_todo_widget_second"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
