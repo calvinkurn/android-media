@@ -17,10 +17,11 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.response.EPharmacyVerifyConsultationResponse
 import com.tokopedia.epharmacy.utils.CategoryKeys
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.epharmacy.utils.WEB_LINK_PREFIX
 import com.tokopedia.epharmacy.viewmodel.EPharmacyLoadingViewModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -35,7 +36,7 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private var ePharmacyGlobalError: GlobalError? = null
     private var illustrationImage: DeferredImageView? = null
-    private var tConsultationId = String.EMPTY
+    private var tConsultationId = 0L
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private var verifyRunnable: Runnable? = null
@@ -77,7 +78,7 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun extractArguments() {
-        tConsultationId = arguments?.getString(EPHARMACY_TOKO_CONSULTATION_ID, String.EMPTY).orEmpty()
+        tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
     }
 
     private fun setUpObservers() {
@@ -149,7 +150,7 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun routeAction(appLink: String) {
-        RouteManager.route(context, appLink)
+        RouteManager.route(context, "$WEB_LINK_PREFIX$appLink")
     }
 
     private fun onFailData(it: Fail) {

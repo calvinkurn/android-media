@@ -9,7 +9,6 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
 import com.tokopedia.epharmacy.component.viewholder.EPharmacyAttachmentViewHolder.Companion.MIN_VALUE_OF_PRODUCT_EDITOR
-import com.tokopedia.epharmacy.ui.fragment.EPharmacyQuantityChangeFragment
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
@@ -57,9 +56,10 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
     }
 
     private fun renderQuantityChangedLayout() {
-        if(dataModel?.product?.qtyComparison != null){
+        if (dataModel?.product?.qtyComparison != null) {
+            productAmount.show()
             productAmount.text = EPharmacyUtils.getTotalAmountFmt(dataModel?.product?.price)
-            if(dataModel?.product?.qtyComparison?.currentQty?.orZero().isZero()){
+            if (dataModel?.product?.qtyComparison?.currentQty?.orZero().isZero()) {
                 dataModel?.product?.qtyComparison?.currentQty = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
             }
 
@@ -73,9 +73,11 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
             quantityChangedEditor.minValue = MIN_VALUE_OF_PRODUCT_EDITOR
 
             quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
-                if(newValue == MIN_VALUE_OF_PRODUCT_EDITOR){
-                    ePharmacyListener?.onToast(Toaster.TYPE_ERROR,
-                        itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached) ?: "")
+                if (newValue == MIN_VALUE_OF_PRODUCT_EDITOR) {
+                    ePharmacyListener?.onToast(
+                        Toaster.TYPE_ERROR,
+                        itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached) ?: ""
+                    )
                     quantityChangedEditor.subtractButton.isEnabled = false
                 }
                 dataModel?.product?.qtyComparison?.currentQty = newValue
@@ -84,7 +86,7 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
             }
             quantityChangedEditor.setValue(dataModel?.product?.qtyComparison?.currentQty.orZero())
             reCalculateSubTotal()
-        }else {
+        } else {
             quantityEditorLayout?.hide()
         }
     }
@@ -93,9 +95,11 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
         val subtotal = EPharmacyUtils.getTotalAmount(dataModel?.product?.qtyComparison?.currentQty, dataModel?.product?.qtyComparison?.productPrice)
         dataModel?.product?.qtyComparison?.subTotal = subtotal
         totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmountFmt(subtotal))
-        totalQuantity.displayTextOrHide(java.lang.String.format(
-            itemView.context.getString(epharmacyR.string.epharmacy_subtotal_quantity_change),
-            dataModel?.product?.qtyComparison?.currentQty.toString()
-        ))
+        totalQuantity.displayTextOrHide(
+            java.lang.String.format(
+                itemView.context.getString(epharmacyR.string.epharmacy_subtotal_quantity_change),
+                dataModel?.product?.qtyComparison?.currentQty.toString()
+            )
+        )
     }
 }
