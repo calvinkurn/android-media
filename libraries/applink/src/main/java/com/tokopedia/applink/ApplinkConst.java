@@ -379,8 +379,6 @@ public interface ApplinkConst {
     String PLAY_SHORTS = "tokopedia://play-shorts";
     String PLAY_RECOM = "tokopedia://play/channel_recom";
 
-    String STORIES_CREATION = "tokopedia://stories/creation";
-
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
     String ADD_NAME_PROFILE = "tokopedia://addname";
@@ -872,5 +870,17 @@ public interface ApplinkConst {
 
     interface AppNotifSetting {
         String DEVICE_APP_NOTIF_SETTINGS_PAGE = "";
+    }
+
+    interface Stories {
+
+        String STORIES_VIEWER_ARG_SOURCE = "source";
+        String STORIES_VIEWER_ARG_SOURCE_ID = "source_id";
+        String STORIES_VIEWER_TYPE_SHOP = "shop";
+        String STORIES_VIEWER_TYPE_USER = "user";
+        String STORIES_VIEWER_SOURCE_SHARELINK = "sharelink";
+
+        String STORIES_VIEWER = "tokopedia://stories/{stories_type}/{author_id}";
+        String STORIES_CREATION = "tokopedia://stories/creation";
     }
 }

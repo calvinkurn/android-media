@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -34,6 +34,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
+import com.tokopedia.creation.common.upload.model.ContentMediaType
+import com.tokopedia.creation.common.util.RATIO_9_16
+import com.tokopedia.creation.common.util.isMediaRatioSame
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.NestButton
@@ -41,6 +44,7 @@ import com.tokopedia.nest.components.NestDivider
 import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.loader.NestLoader
+import com.tokopedia.nest.components.loader.NestLoaderSize
 import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.NestTypography
@@ -48,6 +52,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
 import com.tokopedia.stories.creation.R
+import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.view.model.StoriesMediaCover
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.nest.components.R as nestcomponentsR
@@ -64,7 +69,20 @@ fun StoriesCreationScreen(
     onClickAddProduct: () -> Unit,
     onClickUpload: () -> Unit,
 ) {
-    if (uiState.mediaFilePath.isEmpty()) {
+    if (uiState == StoriesCreationUiState.Empty) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            NestLoader(
+                modifier = Modifier.align(Alignment.Center),
+                variant = NestLoaderType.Circular(
+                    size = NestLoaderSize.Large
+                ),
+            )
+        }
+
+        return
+    }
+
+    if (uiState.media.filePath.isEmpty()) {
         return
     }
 
@@ -111,7 +129,8 @@ fun StoriesCreationScreen(
         )
 
         StoriesCreationMediaCover(
-            mediaFilePath = uiState.mediaFilePath,
+            mediaFilePath = uiState.media.filePath,
+            mediaType = uiState.media.type,
             onLoadMediaPreview = onLoadMediaPreview,
             modifier = Modifier.constrainAs(mediaCover) {
                 top.linkTo(headerDivider.bottom, 16.dp)
@@ -142,7 +161,7 @@ fun StoriesCreationScreen(
             }
         )
 
-        StoriesCreationShowDurationSection(
+        StoriesCreationStoryDurationSection(
             storyDuration = uiState.config.storyDuration,
             modifier = Modifier.constrainAs(showDurationSection) {
                 top.linkTo(addProductSection.bottom, 20.dp)
@@ -216,6 +235,7 @@ private fun StoriesCreationHeader(
 @Composable
 private fun StoriesCreationMediaCover(
     mediaFilePath: String,
+    mediaType: ContentMediaType,
     onLoadMediaPreview: suspend (filePath: String) -> StoriesMediaCover,
     modifier: Modifier = Modifier,
 ) {
@@ -223,6 +243,7 @@ private fun StoriesCreationMediaCover(
         .clip(RoundedCornerShape(8.dp))
         .width(108.dp)
         .height(192.dp)
+        .background(Color.Black)
 
     var storiesMediaCover: StoriesMediaCover by remember {
         mutableStateOf(StoriesMediaCover.Loading)
@@ -241,9 +262,13 @@ private fun StoriesCreationMediaCover(
         }
         is StoriesMediaCover.Success -> {
             NestImage(
-                source = ImageSource.ImageBitmap(mediaCover.bitmap.asImageBitmap()),
+                source = ImageSource.Remote(mediaCover.localFilePath),
                 modifier = storiesMediaPreviewModifier,
-                contentScale = ContentScale.Crop
+                contentScale = if (mediaType.isImage && !isMediaRatioSame(mediaCover.localFilePath, RATIO_9_16)) {
+                    ContentScale.Fit
+                } else {
+                    ContentScale.Crop
+                }
             )
         }
         is StoriesMediaCover.Error -> {
@@ -334,7 +359,7 @@ private fun StoriesCreationAddProductSection(
 }
 
 @Composable
-private fun StoriesCreationShowDurationSection(
+private fun StoriesCreationStoryDurationSection(
     storyDuration: String,
     modifier: Modifier = Modifier,
 ) {
@@ -392,7 +417,10 @@ private fun StoriesCreationScreenPreview() {
     NestTheme {
         Surface {
             val uiState = StoriesCreationUiState.Empty.copy(
-                mediaFilePath = "media_file_path"
+                media = StoriesMedia(
+                    filePath = "media_file_path",
+                    type = ContentMediaType.Video,
+                )
             )
 
             StoriesCreationScreen(

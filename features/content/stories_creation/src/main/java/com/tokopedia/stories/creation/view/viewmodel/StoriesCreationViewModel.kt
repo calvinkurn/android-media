@@ -1,18 +1,25 @@
 package com.tokopedia.stories.creation.view.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.tokopedia.creation.common.upload.model.ContentMediaType
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.uploader.CreationUploader
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
-import com.tokopedia.stories.creation.view.model.StoriesMediaType
+import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
+import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
+import com.tokopedia.stories.creation.view.model.exception.NotEligibleException
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
-import com.tokopedia.stories.creation.view.model.state.StoriesManualConfiguration
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -20,6 +27,7 @@ import javax.inject.Inject
  */
 class StoriesCreationViewModel @Inject constructor(
     private val repo: StoriesCreationRepository,
+    private val creationUploader: CreationUploader,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StoriesCreationUiState.Empty)
@@ -28,34 +36,91 @@ class StoriesCreationViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<StoriesCreationUiEvent>()
     val uiEvent: Flow<StoriesCreationUiEvent> = _uiEvent
 
-    val maxStoriesConfig: StoriesManualConfiguration.MaxStories
-        get() = _uiState.value.config.maxStories
+    val maxStoriesConfig: StoriesCreationConfiguration.MaxStoriesConfig
+        get() = _uiState.value.config.maxStoriesConfig
+
+    val minVideoDuration: Int
+        get() = _uiState.value.config.minVideoDuration
+
+    val maxVideoDuration: Int
+        get() = _uiState.value.config.maxVideoDuration
+
+    private val storyId: String
+        get() = _uiState.value.config.storiesId
+
+    private val selectedAccount: ContentAccountUiModel
+        get() = _uiState.value.selectedAccount
+
+    private val productTag: List<String>
+        get() = _uiState.value.productTags
 
     fun submitAction(action: StoriesCreationAction) {
         when (action) {
-            is StoriesCreationAction.SetMedia -> handleSetMedia(action.mediaFilePath, action.mediaType)
-            is StoriesCreationAction.ClickAddProduct -> handleClickAddProduct()
+            is StoriesCreationAction.Prepare -> handlePrepare()
+            is StoriesCreationAction.SetMedia -> handleSetMedia(action.media)
             is StoriesCreationAction.ClickUpload -> handleClickUpload()
         }
     }
 
-    private fun handleSetMedia(
-        mediaFilePath: String,
-        mediaType: StoriesMediaType,
-    ) {
-        _uiState.update {
-            it.copy(
-                mediaFilePath = mediaFilePath,
-                mediaType = mediaType,
+    private fun handlePrepare() {
+        viewModelScope.launchCatchError(block = {
+            /**
+             * Stories is only available for shop
+             * need FE development to support UGC account
+             * */
+            val accountList = repo.getCreationAccountList()
+            val selectedAccount = accountList.firstOrNull { it.isShop && it.enable }
+                ?: throw NotEligibleException()
+
+            val config = repo.getStoryPreparationInfo(selectedAccount)
+            val storyId = config.storiesId.ifEmpty { repo.createStory(selectedAccount) }
+
+            _uiState.update {
+                it.copy(
+                    config = config.copy(
+                        storiesId = storyId
+                    ),
+                    accountList = accountList,
+                    selectedAccount = selectedAccount,
+                )
+            }
+
+            if (config.maxStoriesConfig.isLimitReached) {
+                _uiEvent.emit(StoriesCreationUiEvent.ShowTooManyStoriesReminder)
+            } else {
+                _uiEvent.emit(StoriesCreationUiEvent.OpenMediaPicker)
+            }
+        }) { throwable ->
+            _uiEvent.emit(
+                StoriesCreationUiEvent.ErrorPreparePage(throwable)
             )
         }
     }
 
-    private fun handleClickAddProduct() {
-
+    private fun handleSetMedia(media: StoriesMedia) {
+        _uiState.update {
+            it.copy(media = media)
+        }
     }
 
     private fun handleClickUpload() {
+        viewModelScope.launch {
+            val state = _uiState.value
 
+            val data = CreationUploadData.buildForStories(
+                creationId = state.config.storiesId,
+                mediaUriList = listOf(state.media.filePath),
+                mediaTypeList = listOf(state.media.type.code),
+                coverUri = "",
+                authorId = state.selectedAccount.id,
+                authorType = state.selectedAccount.type,
+                imageSourceId = state.config.imageSourceId,
+                videoSourceId = state.config.videoSourceId,
+            )
+
+            creationUploader.upload(data)
+
+            _uiEvent.emit(StoriesCreationUiEvent.StoriesUploadQueued)
+        }
     }
 }

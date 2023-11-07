@@ -2,7 +2,6 @@ package com.tokopedia.stories.creation.view.activity
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
@@ -14,13 +13,14 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
-import com.tokopedia.play_common.view.getBitmapFromUrl
 import com.tokopedia.stories.creation.di.DaggerStoriesCreationComponent
 import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
 import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
@@ -28,10 +28,13 @@ import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBottomSheet
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottomSheet
+import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.view.model.StoriesMediaCover
-import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
+import com.tokopedia.stories.creation.view.model.activityResult.MediaPickerForResult
+import com.tokopedia.stories.creation.view.model.activityResult.MediaPickerIntentData
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
+import com.tokopedia.stories.creation.view.model.exception.NotEligibleException
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,16 +52,15 @@ class StoriesCreationActivity : BaseActivity() {
     @Inject
     lateinit var router: Router
 
+    @Inject
+    lateinit var contentCreationRemoteConfig: ContentCreationRemoteConfigManager
+
     private val viewModel by viewModels<StoriesCreationViewModel> { viewModelFactory }
 
     private val mediaPickerResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            val data = it.data
-            if (data != null) {
-                val mediaFilePath = MediaPicker.result(data).originalPaths.getOrNull(0).orEmpty()
-                val mediaType = StoriesMediaType.parse(mediaFilePath)
-
-                viewModel.submitAction(StoriesCreationAction.SetMedia(mediaFilePath, mediaType))
+        registerForActivityResult(MediaPickerForResult()) { media ->
+            if (media != StoriesMedia.Empty) {
+                viewModel.submitAction(StoriesCreationAction.SetMedia(media))
             } else {
                 finish()
             }
@@ -69,6 +71,11 @@ class StoriesCreationActivity : BaseActivity() {
         setupAttachFragmentListener()
         super.onCreate(savedInstanceState)
         setupContentView()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        videoSnapshotHelper.deleteLocalFile()
     }
 
     private fun inject() {
@@ -85,8 +92,18 @@ class StoriesCreationActivity : BaseActivity() {
             when (fragment) {
                 is StoriesCreationErrorBottomSheet -> {
                     fragment.listener = object : StoriesCreationErrorBottomSheet.Listener {
-                        override fun onRetry() {
+
+                        override fun onRetry(errorType: Int) {
                             fragment.dismiss()
+
+                            when (errorType) {
+                                GlobalError.PAGE_NOT_FOUND -> {
+                                    finish()
+                                }
+                                else -> {
+                                    viewModel.submitAction(StoriesCreationAction.Prepare)
+                                }
+                            }
                         }
 
                         override fun onClose() {
@@ -128,38 +145,33 @@ class StoriesCreationActivity : BaseActivity() {
 
     private fun setupContentView() {
         setContent {
+            LaunchedEffect(Unit) {
+                observeUiEvent()
+            }
+
             NestTheme {
                 Surface {
-
                     val context = LocalContext.current
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-                    LaunchedEffect(Unit) {
-                        observeUiEvent()
-                    }
-
-                    LaunchedEffect(Unit) {
-                        openMediaPicker()
-                    }
 
                     StoriesCreationScreen(
                         uiState = uiState,
                         onLoadMediaPreview = { mediaFilePath ->
-                            val bitmap = videoSnapshotHelper.snapVideoBitmap(this, mediaFilePath)
+                            val file = videoSnapshotHelper.snapVideo(this, mediaFilePath)
 
-                            if (bitmap != null)
-                                StoriesMediaCover.Success(bitmap)
+                            if (file != null)
+                                StoriesMediaCover.Success(file.absolutePath)
                             else
                                 StoriesMediaCover.Error
                         },
                         onBackPressed = {
-
+                            finish()
                         },
                         onClickChangeAccount = {
                             /** Won't handle for now since UGC is not supported yet */
                         },
                         onClickAddProduct = {
-                            viewModel.submitAction(StoriesCreationAction.ClickAddProduct)
+                            /** TODO JOE: handle this later */
                         },
                         onClickUpload = {
                             viewModel.submitAction(StoriesCreationAction.ClickUpload)
@@ -168,6 +180,13 @@ class StoriesCreationActivity : BaseActivity() {
                 }
             }
         }
+
+        if (!contentCreationRemoteConfig.isShowingCreation()) {
+            showErrorBottomSheet(NotEligibleException())
+            return
+        }
+
+        viewModel.submitAction(StoriesCreationAction.Prepare)
     }
 
     private fun observeUiEvent() {
@@ -176,34 +195,42 @@ class StoriesCreationActivity : BaseActivity() {
                 .flowWithLifecycle(lifecycle)
                 .collect { event ->
                     when (event) {
+                        is StoriesCreationUiEvent.OpenMediaPicker -> {
+                            openMediaPicker()
+                        }
                         is StoriesCreationUiEvent.ErrorPreparePage -> {
-                            StoriesCreationErrorBottomSheet
-                                .getFragment(supportFragmentManager, classLoader, event.throwable)
-                                .show(supportFragmentManager)
+                            showErrorBottomSheet(event.throwable)
                         }
                         is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
-                            StoriesCreationInfoBottomSheet
-                                .getFragment(supportFragmentManager, classLoader)
-                                .show(supportFragmentManager)
+                            showInfoBottomSheet()
+                        }
+                        is StoriesCreationUiEvent.StoriesUploadQueued -> {
+                            finish()
                         }
                     }
             }
         }
     }
 
-    private fun openMediaPicker() {
-        val intent = MediaPicker.intent(this) {
-            /** TODO JOE: setup media picker for stories */
-            pageSource(PageSource.Stories)
-            minVideoDuration(1000)
-            maxVideoDuration(90000)
-            pageType(PageType.GALLERY)
-            modeType(ModeType.COMMON)
-            singleSelectionMode()
-            withImmersiveEditor()
-            previewActionText(getString(R.string.stories_creation_continue))
-        }
+    private fun showErrorBottomSheet(throwable: Throwable) {
+        StoriesCreationErrorBottomSheet
+            .getFragment(supportFragmentManager, classLoader, throwable)
+            .show(supportFragmentManager)
+    }
 
-        router.route(mediaPickerResult, intent)
+    private fun showInfoBottomSheet() {
+        StoriesCreationInfoBottomSheet
+            .getFragment(supportFragmentManager, classLoader)
+            .show(supportFragmentManager)
+    }
+
+    private fun openMediaPicker() {
+        val intentData = MediaPickerIntentData(
+            minVideoDuration = viewModel.minVideoDuration,
+            maxVideoDuration = viewModel.maxVideoDuration,
+            previewActionText = getString(R.string.stories_creation_continue),
+        )
+
+        router.route(mediaPickerResult, intentData)
     }
 }
