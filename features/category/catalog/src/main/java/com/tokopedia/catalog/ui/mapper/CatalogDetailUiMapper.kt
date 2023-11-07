@@ -29,6 +29,7 @@ import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
+import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
@@ -39,6 +40,7 @@ import com.tokopedia.catalogcommon.uimodel.SupportFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
+import com.tokopedia.catalogcommon.uimodel.VideoUiModel
 import com.tokopedia.catalogcommon.util.colorMapping
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
@@ -57,6 +59,7 @@ class CatalogDetailUiMapper @Inject constructor(
         private const val LAYOUT_VERSION_4_VALUE = 4
         private const val COMPARISON_COUNT = 2
         private const val TOP_COMPARISON_SPEC_COUNT = 5
+        private const val COLUMN_INFO_SPEC_COUNT = 6
         private const val INVALID_CATALOG_ID = "0"
     }
 
@@ -68,7 +71,7 @@ class CatalogDetailUiMapper @Inject constructor(
             !it.data?.style?.isHidden.orTrue()
         }?.map {
             when (it.type) {
-                WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner(isDarkMode, remoteModel.version)
+                WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner(isDarkMode)
                 WidgetTypes.CATALOG_FEATURE_TOP.type -> it.mapToTopFeature(remoteModel)
                 WidgetTypes.CATALOG_TRUSTMAKER.type -> it.mapToTrustMaker(isDarkMode)
                 WidgetTypes.CATALOG_CHARACTERISTIC.type -> it.mapToCharacteristic(isDarkMode)
@@ -76,11 +79,13 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_BANNER_DOUBLE.type -> it.mapToDoubleBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation(remoteModel)
                 WidgetTypes.CATALOG_SLIDER_IMAGE.type -> it.mapToSliderImageText(isDarkMode)
-                WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode, remoteModel.version)
+                WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode)
                 WidgetTypes.CATALOG_REVIEW_EXPERT.type -> it.mapToExpertReview(isDarkMode)
                 WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> it.mapToSupportFeature(remoteModel)
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
                 WidgetTypes.CATALOG_COMPARISON.type -> it.mapToComparison(isDarkMode)
+                WidgetTypes.CATALOG_VIDEO.type -> it.mapToVideo(isDarkMode)
+                WidgetTypes.CATALOG_COLUMN_INFO.type -> it.mapToColumnInfo(isDarkMode)
                 else -> {
                     BlankUiModel()
                 }
@@ -161,22 +166,19 @@ class CatalogDetailUiMapper @Inject constructor(
     }
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToHeroBanner(
-        darkMode: Boolean,
-        layoutVersion: Int
-    ) =
-        HeroBannerUiModel(
-            isPremium = data?.style?.isPremium.orFalse(),
-            brandTitle = data?.hero?.name.orEmpty(),
-            brandImageUrls = data?.hero?.heroSlide?.map { heroSlide ->
-                heroSlide.imageUrl
-            }.orEmpty(),
-            brandDescriptions = data?.hero?.heroSlide?.map { heroSlide ->
-                heroSlide.subtitle
-            }.orEmpty(),
-            brandIconUrl = data?.hero?.brandLogoUrl.orEmpty(),
-            widgetTextColor = colorMapping(darkMode, DARK_COLOR_BANNER, LIGHT_COLOR_BANNER),
-            layoutVersion = layoutVersion
-        )
+        darkMode: Boolean
+    ) = HeroBannerUiModel(
+        isPremium = data?.style?.isPremium.orFalse(),
+        brandTitle = data?.hero?.name.orEmpty(),
+        brandImageUrls = data?.hero?.heroSlide?.map { heroSlide ->
+            heroSlide.imageUrl
+        }.orEmpty(),
+        brandDescriptions = data?.hero?.heroSlide?.map { heroSlide ->
+            heroSlide.subtitle
+        }.orEmpty(),
+        brandIconUrl = data?.hero?.brandLogoUrl.orEmpty(),
+        widgetTextColor = colorMapping(darkMode, DARK_COLOR_BANNER, LIGHT_COLOR_BANNER)
+    )
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTopFeature(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
@@ -310,17 +312,12 @@ class CatalogDetailUiMapper @Inject constructor(
     }
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTextDescription(
-        isDarkMode: Boolean, layoutVersion: Int
+        isDarkMode: Boolean
     ): TextDescriptionUiModel {
-        val title = if (layoutVersion == LAYOUT_VERSION_4_VALUE){
-            data?.text?.title.orEmpty()
-        } else {
-            "Deskripsi"
-        }
         return TextDescriptionUiModel(
             item = TextDescriptionUiModel.ItemTextDescriptionUiModel(
                 highlight = data?.text?.subtitle.orEmpty(),
-                title = title,
+                title = data?.text?.title.orEmpty(),
                 description = data?.text?.desc.orEmpty()
             ),
             isDarkMode = isDarkMode
@@ -461,6 +458,50 @@ class CatalogDetailUiMapper @Inject constructor(
                 }.toMutableList()
             )
         }
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToVideo(
+        darkMode: Boolean
+    ): VideoUiModel {
+        return VideoUiModel(
+            content = data?.video.orEmpty().map {
+                VideoUiModel.ItemVideoUiModel(
+                    thumbnailUrl = it.thumbnail,
+                    title = it.title,
+                    author = it.author,
+                    videoLink = it.url,
+                    textTitleColor = getTextColor(darkMode),
+                    textSubTitleColor = getTextColor(darkMode),
+                )
+            }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToColumnInfo(
+        darkMode: Boolean
+    ): ColumnedInfoUiModel {
+        val flattenDataRows = data?.infoColumn
+            .orEmpty()
+            .flatMap { it.row }
+        return ColumnedInfoUiModel(
+            sectionTitle = data?.section?.title.orEmpty(),
+            hasMoreData = flattenDataRows.size > COLUMN_INFO_SPEC_COUNT,
+            widgetContent = flattenDataRows
+                .take(COLUMN_INFO_SPEC_COUNT)
+                .map {
+                    Pair(it.key, it.value)
+                },
+            fullContent = data?.infoColumn
+                .orEmpty()
+                .map {
+                    ColumnedInfoUiModel.ColumnData(
+                        title = it.name,
+                        rowData = it.row.map { row ->
+                            Pair(row.key, row.value)
+                        }
+                    )
+                }
+        )
     }
 
     private fun getTextColor(darkMode: Boolean): Int {

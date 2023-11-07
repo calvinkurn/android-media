@@ -13,11 +13,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.ItemVideoBinding
-import com.tokopedia.catalogcommon.databinding.WidgetExpertsReviewBinding
+import com.tokopedia.catalogcommon.databinding.WidgetVideoBinding
 import com.tokopedia.catalogcommon.listener.VideoListener
 import com.tokopedia.catalogcommon.uimodel.VideoUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase.Companion.KEY_YOUTUBE_VIDEO_ID
 
@@ -32,9 +33,9 @@ class VideoViewHolder(
         val LAYOUT = R.layout.widget_video
     }
 
-    private val binding by viewBinding<WidgetExpertsReviewBinding>()
-
+    private val binding by viewBinding<WidgetVideoBinding>()
     private var onceCreateCarousel = false
+
     override fun bind(element: VideoUiModel) {
         binding?.carousel?.apply {
             autoplay = false
@@ -47,9 +48,10 @@ class VideoViewHolder(
                         false
                     )
                     setupColorIconPlayAndBackgroundColorCard(itemExpert, view)
+                    view.ivBanner.loadImage(itemExpert.thumbnailUrl)
                     view.tvTitle.text = itemExpert.title
                     view.tvTitle.setTextColor(itemExpert.textTitleColor)
-                    view.tvSubTitle.text = itemExpert.subTitle
+                    view.tvSubTitle.text = itemExpert.author
                     view.tvSubTitle.setTextColor(itemExpert.textSubTitleColor)
                     view.ivPlay.setOnClickListener {
                         playVideoYoutube(itemExpert.videoLink)

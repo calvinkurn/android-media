@@ -6,18 +6,14 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.Transformation
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.SCROLL_STATE_DRAGGING
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemBannerHeroBinding
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
@@ -28,10 +24,9 @@ import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -48,7 +43,6 @@ class HeroBannerViewHolder(
         private const val RECTANGULAR_CARD_RADIUS = 30F
         private const val BANNER_PREMIUM_RATIO = "1:1.5"
         private const val BANNER_REGULAR_RATIO = "1:1"
-        private const val FIFTH_LAYOUT = 5
     }
 
     private val binding by viewBinding<WidgetItemBannerHeroBinding>()
@@ -110,17 +104,14 @@ class HeroBannerViewHolder(
 
     private fun WidgetItemBannerHeroBinding.renderRegularBrandData(element: HeroBannerUiModel) {
         tfTitleBanner.text = element.brandTitle
-        iuBrand.loadImage(element.brandIconUrl) {
-            listener(onSuccess = { bitmap, _ ->
-                iuBrandCard.background = createCardBackground(bitmap ?: return@listener)
-            })
+        iuBrand.isVisible = element.brandIconUrl.isNotEmpty()
+        if (element.brandIconUrl.isNotEmpty()) {
+            iuBrand.loadImage(element.brandIconUrl) {
+                listener(onSuccess = { bitmap, _ ->
+                    iuBrandCard.background = createCardBackground(bitmap ?: return@listener)
+                })
+            }
         }
-        (binding?.carouselBanner?.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = BANNER_REGULAR_RATIO
-    }
-
-    private fun WidgetItemBannerHeroBinding.renderFifthLayoutData(element: HeroBannerUiModel) {
-        tfTitleBanner.text = element.brandTitle
-        iuBrand.gone()
         (binding?.carouselBanner?.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = BANNER_REGULAR_RATIO
     }
 
@@ -186,9 +177,7 @@ class HeroBannerViewHolder(
         brandImageUrl = element.brandImageUrls
         binding?.configViewsVisibility(element.isPremium)
 
-        if (element.layoutVersion == FIFTH_LAYOUT){
-            binding?.renderFifthLayoutData(element)
-        }else if (element.isPremium) {
+        if (element.isPremium) {
             binding?.renderPremiumBrandData(element)
         } else {
             binding?.renderRegularBrandData(element)
