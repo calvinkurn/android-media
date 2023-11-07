@@ -13,6 +13,7 @@ import com.tokopedia.media.loader.internal.NetworkResponseManager
 import com.tokopedia.media.loader.tracker.RequestLogger
 import com.tokopedia.media.loader.utils.FeatureToggleManager
 import okhttp3.Call
+import okhttp3.OkHttpClient
 import okhttp3.Response
 import java.io.InputStream
 
@@ -29,16 +30,25 @@ class OkHttpModelLoader constructor(
     }
 
     class Factory constructor(
-        private val context: Context,
-        private val client: Call.Factory
+        private val context: Context
     ) : ModelLoaderFactory<GlideUrl, InputStream> {
 
         override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<GlideUrl, InputStream> {
-            return OkHttpModelLoader(context, client)
+            return OkHttpModelLoader(context, instanceClient())
         }
 
-        override fun teardown() {
-            // no-op
+        override fun teardown() = Unit // no-op
+
+        companion object {
+            @Volatile var client: Call.Factory? = null
+
+            fun instanceClient(): Call.Factory {
+                return synchronized(Factory::class) {
+                    client ?: OkHttpClient().also {
+                        client = it
+                    }
+                }
+            }
         }
     }
 }
@@ -71,6 +81,7 @@ internal class CustomOkHttpStreamFetcher constructor(
                 )
             }
 
+            // logger
             RequestLogger.request(context) {
                 url = response.request.url.toString()
                 requestLoadTime = (endTime - startTime).toString()
