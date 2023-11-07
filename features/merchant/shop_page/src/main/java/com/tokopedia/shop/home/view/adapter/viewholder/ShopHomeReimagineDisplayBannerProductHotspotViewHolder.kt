@@ -200,7 +200,7 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
         val ratio = uiModel.header.ratio.takeIf { it.isNotEmpty() } ?: DEFAULT_RATIO
         val layoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true, false)
         layoutManager.setPostLayoutListener(CarouselZoomPostLayoutListener())
-        layoutManager.maxVisibleItems = MAX_VISIBLE_ITEM_CAROUSEL
+        layoutManager.maxVisibleItems = Int.ONE
         layoutManager.removeOnItemSelectionListener(itemSelectListener)
         layoutManager.addOnItemSelectionListener(itemSelectListener)
         recyclerViewProductHotspot?.apply {

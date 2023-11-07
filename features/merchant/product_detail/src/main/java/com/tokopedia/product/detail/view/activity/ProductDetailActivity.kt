@@ -20,6 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailPrefetch
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
@@ -241,7 +242,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         getSource(),
         affiliateChannel = affiliateChannel,
         campaignId = campaignId,
-        variantId = variantId
+        variantId = variantId,
+        prefetchCacheId = intent.getStringExtra(ProductDetailPrefetch.PREFETCH_DATA_CACHE_ID)
     )
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail

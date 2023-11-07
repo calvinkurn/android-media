@@ -5,12 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgMainShowcase"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="4dp"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -61,7 +60,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="4dp"
         android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@+id/imgMainShowcase"
         app:layout_constraintTop_toTopOf="parent"
@@ -92,7 +91,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="4dp"
         android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@+id/imgFirstShowcase"
         app:layout_constraintTop_toTopOf="parent"

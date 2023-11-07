@@ -66,6 +66,7 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
                                 .url(item.url)
                                 .addHeader("host", item.host)
                                 .addHeader("user-agent", getUserAgent())
+                                .addHeader("cname", item.cname)
                                 .build()
                             client.newCall(request).execute()
                         }

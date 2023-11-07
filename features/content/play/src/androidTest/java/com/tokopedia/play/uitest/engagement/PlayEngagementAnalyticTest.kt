@@ -77,6 +77,8 @@ class PlayEngagementAnalyticTest {
     private val mockUserSession = mockk<UserSessionInterface>(relaxed = true)
     private val mockRemoteConfig = mockk<RemoteConfig>(relaxed = true)
 
+    private val mockChannelStatus = uiModelBuilder.buildChannelStatus(waitingDuration = 5000)
+
     init {
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
             channelList = listOf(
@@ -115,6 +117,8 @@ class PlayEngagementAnalyticTest {
             ),
             cursor = "",
         )
+
+        coEvery { repo.getChannelStatus(channelId) } returns mockChannelStatus
 
         every { mockRemoteConfig.getBoolean(any(), any()) } returns true
 

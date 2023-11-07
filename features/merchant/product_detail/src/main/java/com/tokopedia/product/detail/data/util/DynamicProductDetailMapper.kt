@@ -163,25 +163,25 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(productList)
                 }
                 ProductDetailConstant.VIEW_TO_VIEW -> {
-                    val componentData = component.componentData.firstOrNull() ?: return@forEachIndexed
+                    val componentData = component.componentData.firstOrNull()
                     listOfComponent.add(
                         ViewToViewWidgetDataModel(
                             type = component.type,
                             name = component.componentName,
                             position = index,
-                            queryParam = componentData.queryParam,
-                            thematicId = componentData.thematicId
+                            queryParam = componentData?.queryParam.orEmpty(),
+                            thematicId = componentData?.thematicId.orEmpty()
                         )
                     )
                 }
                 ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
-                    val componentData = component.componentData.firstOrNull() ?: return@forEachIndexed
+                    val componentData = component.componentData.firstOrNull()
                     listOfComponent.add(
                         ProductRecommendationVerticalPlaceholderDataModel(
                             type = component.type,
                             name = component.componentName,
-                            queryParam = componentData.queryParam,
-                            thematicId = componentData.thematicId
+                            queryParam = componentData?.queryParam.orEmpty(),
+                            thematicId = componentData?.thematicId.orEmpty()
                         )
                     )
                     listOfComponent.add(LoadingDataModel())
@@ -551,7 +551,8 @@ object DynamicProductDetailMapper {
                 it.description,
                 it.videoURLAndroid,
                 it.isAutoplay,
-                it.variantOptionId
+                it.variantOptionId,
+                it.prefetch
             )
         }
     }

@@ -109,7 +109,7 @@ fun ImageView.loadImageCenterCrop(url: String){
 
 fun ImageView.loadImageWithoutPlaceholder(url: String){
     if(url.isGif()) {
-        this.loadImageWithoutPlaceholder(url) {
+        this.loadAsGif(url) {
             setPlaceHolder(-1)
         }
     } else {
