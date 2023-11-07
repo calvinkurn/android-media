@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.description.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
@@ -61,10 +60,7 @@ class GetYoutubeVideoSnippetUseCase @Inject constructor(
             putString(SQUAD, squad)
             putString(USECASE, useCase)
             putObject(VIDEO_IDS, videoIds)
-
         }
-
-
     }
 
     var params: RequestParams = RequestParams.EMPTY
