@@ -10,6 +10,7 @@ import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.targetedticker.ui.TargetedTickerViewModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -53,21 +54,13 @@ class TargetedTickerViewModelTest {
             tickerUseCase,
             coroutineTestRule.dispatchers
         )
-//        targetedTickerViewModel.getChosenAddress.observeForever(chosenAddressObserver)
-//        targetedTickerViewModel.setChosenAddress.observeForever(chosenAddressObserver)
-//        targetedTickerViewModel.setDefault.observeForever(observerManageAddressState)
-//        targetedTickerViewModel.addressList.observeForever(observerManageAddressStateAddressList)
-//        targetedTickerViewModel.resultRemovedAddress.observeForever(observerResultRemovedAddress)
-//        targetedTickerViewModel.validateShareAddressState.observeForever(
-//            observerValidateShareAddressState
-//        )
 
         targetedTickerViewModel.tickerState.observeForever(observerTickerUseCase)
     }
 
     @After
     fun tearDown() {
-        // TokopediaUrl.deleteInstance()
+        TokopediaUrl.deleteInstance()
     }
 
     private fun stubSharePrefs() {
@@ -113,18 +106,7 @@ class TargetedTickerViewModelTest {
     }
 
     @Test
-    fun `WHEN setupTicker failed but has first ticker content THEN return success`() {
-        // inject
-//        val firstTickerContent = "tokopedia"
-//
-//        // given
-//        coEvery { tickerUseCase.invoke(any()) } throws mockThrowable
-//
-//        // when
-//        targetedTickerViewModel.getTargetedTicker(firstTickerContent)
-//
-//        // then
-//        assertTrue(targetedTickerViewModel.tickerState.value is Success)
+    fun `WHEN setupTicker return with param  THEN return success with param`() {
     }
 
     @Test
@@ -144,22 +126,22 @@ class TargetedTickerViewModelTest {
         assertTrue(tickerUiModel?.type == Ticker.TYPE_ANNOUNCEMENT)
     }
 
-//    @Test
-//    fun `WHEN setupTicker with ticker type warning THEN return TickerModel with TYPE_WARNING`() {
-//        val tickerType = TargetedTickerMapper.TICKER_WARNING_TYPE
-//        val response = TickerDataProvider.provideDummy()
-//        val tickerItemInfoId =
-//            response.getTargetedTickerData.list.find { it.type == tickerType }?.id
-//        coEvery { tickerUseCase.invoke(any()) } returns response
-//
-//        // when
-//        targetedTickerViewModel.getTargetedTicker()
-//
-//        // then
-//        val result = targetedTickerViewModel.tickerState.value as Success
-//        val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
-//        assertTrue(tickerUiModel?.type == Ticker.TYPE_WARNING)
-//    }
+    @Test
+    fun `WHEN setupTicker with ticker type warning THEN return TickerModel with TYPE_WARNING`() {
+        val tickerType = TargetedTickerMapper.TICKER_WARNING_TYPE
+        val response = TickerDataProvider.provideDummy()
+        val tickerItemInfoId =
+            response.getTargetedTickerData.list.find { it.type == tickerType }?.id
+        coEvery { tickerUseCase.invoke(any()) } returns response
+
+        // when
+        targetedTickerViewModel.getTargetedTicker()
+
+        // then
+        val result = targetedTickerViewModel.tickerState.value as Success
+        val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
+        assertTrue(tickerUiModel?.type == Ticker.TYPE_WARNING)
+    }
 
     @Test
     fun `WHEN setupTicker with ticker type error THEN return TickerModel with TYPE_ERROR`() {
@@ -178,22 +160,22 @@ class TargetedTickerViewModelTest {
         assertTrue(tickerUiModel?.type == Ticker.TYPE_ERROR)
     }
 
-//    @Test
-//    fun `WHEN setupTicker with ticker type announcement THEN return TickerModel with TYPE_ANNOUNCEMENT`() {
-//        val tickerType = "announcement"
-//        val response = TickerDataProvider.provideDummy()
-//        val tickerItemInfoId =
-//            response.getTargetedTickerData.list.find { it.type == tickerType }?.id
-//        coEvery { tickerUseCase.invoke(any()) } returns response
-//
-//        // when
-//        targetedTickerViewModel.getTargetedTicker()
-//
-//        // then
-//        val result = targetedTickerViewModel.tickerState.value as Success
-//        val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
-//        assertTrue(tickerUiModel?.type == Ticker.TYPE_INFORMATION)
-//    }
+    @Test
+    fun `WHEN setupTicker with ticker type announcement THEN return TickerModel with TYPE_ANNOUNCEMENT`() {
+        val tickerType = "announcement"
+        val response = TickerDataProvider.provideDummy()
+        val tickerItemInfoId =
+            response.getTargetedTickerData.list.find { it.type == tickerType }?.id
+        coEvery { tickerUseCase.invoke(any()) } returns response
+
+        // when
+        targetedTickerViewModel.getTargetedTicker()
+
+        // then
+        val result = targetedTickerViewModel.tickerState.value as Success
+        val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
+        assertTrue(tickerUiModel?.type == Ticker.TYPE_ANNOUNCEMENT)
+    }
 
     @Test
     fun `WHEN setupTicker with action THEN return TickerModel content with hyperlink text`() {

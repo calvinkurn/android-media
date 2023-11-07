@@ -38,7 +38,7 @@ object TargetedTickerMapper {
     private fun GetTargetedTickerResponse.GetTargetedTickerData.ListItem.toTickerType(): Int {
         return when (this.type.lowercase()) {
             TICKER_INFO_TYPE -> Ticker.TYPE_ANNOUNCEMENT
-            TICKER_WARNING_TYPE -> Ticker.TYPE_ANNOUNCEMENT
+            TICKER_WARNING_TYPE -> Ticker.TYPE_WARNING
             TICKER_ERROR_TYPE -> Ticker.TYPE_ERROR
             else -> Ticker.TYPE_ANNOUNCEMENT
         }

@@ -129,7 +129,6 @@ class TargetedTickerWidget : FrameLayout {
     }
 
     // without target, page only
-
     fun loadAndShow(page: String) {
         observeTickerState()
         viewModel?.getTargetedTicker(

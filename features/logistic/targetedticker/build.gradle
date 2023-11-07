@@ -50,6 +50,8 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.dagger
@@ -77,6 +79,7 @@ dependencies {
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+
     //-------------------------------------------------------------------//
 
 }
