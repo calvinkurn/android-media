@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -47,40 +46,15 @@ class FollowerListingFragment @Inject constructor(
     private val router: Router
 ) : TkpdBaseV4Fragment(), AdapterCallback, UserFollowListener {
 
-    companion object {
-        const val PAGE_CONTENT = 0
-        const val PAGE_ERROR = 2
-        const val PAGE_LOADING = 1
-        const val PAGE_EMPTY = 3
-
-        private const val TAG = "FollowerListingFragment"
-
-        fun getFragment(
-            fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
-            bundle: Bundle
-        ): FollowerListingFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowerListingFragment
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
-                classLoader,
-                FollowerListingFragment::class.java.name
-            ).apply {
-                arguments = bundle
-            } as FollowerListingFragment
-        }
-    }
-
     private var followersContainer: ViewFlipper? = null
     private var globalError: LocalLoad? = null
     private var isLoggedIn: Boolean = false
     private var isSwipeRefresh: Boolean? = null
 
-    val userSessionInterface: UserSession by lazy {
-        UserSession(context)
-    }
+    private val userSessionInterface: UserSession by lazy { UserSession(context) }
 
     private val viewModel: FollowerFollowingViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
+        ViewModelProviders.of(this, viewModelFactory)[FollowerFollowingViewModel::class.java]
     }
 
     private val mAdapter: ProfileFollowersAdapter by lazy {
@@ -115,8 +89,6 @@ class FollowerListingFragment @Inject constructor(
     }
 
     private fun initMainUi() {
-        viewModel.username = arguments?.getString(UserProfileFragment.EXTRA_USER_ID).orEmpty()
-
         val rvFollowers = view?.findViewById<RecyclerView>(R.id.rv_followers)
         rvFollowers?.adapter = mAdapter
         mAdapter.resetAdapter()
@@ -129,8 +101,6 @@ class FollowerListingFragment @Inject constructor(
         }
     }
 
-    // todo: get response from followResult, show result, if its error then show error
-
     private fun refreshMainUi() {
         mAdapter.resetAdapter()
         mAdapter.lastCursor = ""
@@ -139,94 +109,94 @@ class FollowerListingFragment @Inject constructor(
 
     @SuppressLint("NotifyDataSetChanged")
     private fun addListObserver() =
-        viewModel.profileFollowersListLiveData.observe(
-            viewLifecycleOwner,
-            Observer {
-                it?.let {
-                    when (it) {
-                        is Loading -> {
-                            mAdapter.resetAdapter()
-                            mAdapter.notifyDataSetChanged()
-                        }
-                        is Success -> {
-                            if (isSwipeRefresh == true) {
-                                view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
-                                    false
-                                isSwipeRefresh = !isSwipeRefresh!!
-                                mAdapter.resetAdapter()
-                            }
+        viewModel.profileFollowersListLiveData.observe(viewLifecycleOwner) {
+            it?.let {
+                when (it) {
+                    is Loading -> {
+                        mAdapter.resetAdapter()
+                        mAdapter.notifyDataSetChanged()
+                    }
 
-                            mAdapter.onSuccess(it.data.followers, it.data.nextCursor)
+                    is Success -> {
+                        if (isSwipeRefresh == true) {
+                            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
+                                false
+                            isSwipeRefresh = !isSwipeRefresh!!
+                            mAdapter.resetAdapter()
                         }
-                        is ErrorMessage -> {
-                            mAdapter.onError()
-                        }
+
+                        mAdapter.onSuccess(it.data.followers, it.data.nextCursor)
+                    }
+
+                    is ErrorMessage -> {
+                        mAdapter.onError()
                     }
                 }
             }
-        )
+        }
 
     private fun addFollowersErrorObserver() =
-        viewModel.followersErrorLiveData.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (isSwipeRefresh == true) {
-                    view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
-                        false
-                    isSwipeRefresh = !isSwipeRefresh!!
-                } else {
-                    // Hide shimmer
-                }
+        viewModel.followersErrorLiveData.observe(viewLifecycleOwner) {
+            if (isSwipeRefresh == true) {
+                view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
+                    false
+                isSwipeRefresh = !isSwipeRefresh!!
+            } else {
+                // Hide shimmer
+            }
 
-                mAdapter.onError()
+            mAdapter.onError()
 
-                it?.let {
-                    when (it) {
-                        is UnknownHostException, is SocketTimeoutException -> {
-                            followersContainer?.displayedChild = PAGE_ERROR
+            it?.let {
+                when (it) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        followersContainer?.displayedChild = PAGE_ERROR
 
-                            globalError?.refreshBtn?.setOnClickListener {
-                                followersContainer?.displayedChild = PAGE_LOADING
-                                refreshMainUi()
-                            }
+                        globalError?.refreshBtn?.setOnClickListener {
+                            followersContainer?.displayedChild = PAGE_LOADING
+                            refreshMainUi()
                         }
-                        is IllegalStateException -> {
-                            followersContainer?.displayedChild = PAGE_ERROR
+                    }
 
-                            globalError?.refreshBtn?.setOnClickListener {
-                                followersContainer?.displayedChild = PAGE_LOADING
-                                refreshMainUi()
-                            }
+                    is IllegalStateException -> {
+                        followersContainer?.displayedChild = PAGE_ERROR
+
+                        globalError?.refreshBtn?.setOnClickListener {
+                            followersContainer?.displayedChild = PAGE_LOADING
+                            refreshMainUi()
                         }
-                        is RuntimeException -> {
-                            when (it.localizedMessage?.toIntOrNull()) {
-                                ReponseStatus.NOT_FOUND -> {
-                                    followersContainer?.displayedChild = PAGE_ERROR
-                                    globalError?.refreshBtn?.setOnClickListener {
-                                        followersContainer?.displayedChild = PAGE_LOADING
-                                        refreshMainUi()
-                                    }
+                    }
+
+                    is RuntimeException -> {
+                        when (it.localizedMessage?.toIntOrNull()) {
+                            ReponseStatus.NOT_FOUND -> {
+                                followersContainer?.displayedChild = PAGE_ERROR
+                                globalError?.refreshBtn?.setOnClickListener {
+                                    followersContainer?.displayedChild = PAGE_LOADING
+                                    refreshMainUi()
                                 }
-                                ReponseStatus.INTERNAL_SERVER_ERROR -> {
-                                    followersContainer?.displayedChild = PAGE_ERROR
-                                    globalError?.refreshBtn?.setOnClickListener {
-                                        followersContainer?.displayedChild = PAGE_LOADING
-                                        refreshMainUi()
-                                    }
+                            }
+
+                            ReponseStatus.INTERNAL_SERVER_ERROR -> {
+                                followersContainer?.displayedChild = PAGE_ERROR
+                                globalError?.refreshBtn?.setOnClickListener {
+                                    followersContainer?.displayedChild = PAGE_LOADING
+                                    refreshMainUi()
                                 }
-                                else -> {
-                                    followersContainer?.displayedChild = PAGE_ERROR
-                                    globalError?.refreshBtn?.setOnClickListener {
-                                        followersContainer?.displayedChild = PAGE_LOADING
-                                        refreshMainUi()
-                                    }
+                            }
+
+                            else -> {
+                                followersContainer?.displayedChild = PAGE_ERROR
+                                globalError?.refreshBtn?.setOnClickListener {
+                                    followersContainer?.displayedChild = PAGE_LOADING
+                                    refreshMainUi()
                                 }
                             }
                         }
                     }
                 }
             }
-        )
+        }
 
     private fun observeFollowResult() {
         viewModel.followResult.observe(viewLifecycleOwner) { result ->
@@ -242,6 +212,7 @@ class FollowerListingFragment @Inject constructor(
                     requireView().showErrorToast(errMessage)
                     updateItemPerPosition(result.itemPosition)
                 }
+
                 is FollowResultUiModel.Success -> {
                     if (result.message.isNotBlank()) requireView().showToast(result.message)
                 }
@@ -249,9 +220,7 @@ class FollowerListingFragment @Inject constructor(
         }
     }
 
-    override fun getScreenName(): String {
-        return ""
-    }
+    override fun getScreenName() = TAG
 
     override fun onResume() {
         super.onResume()
@@ -292,13 +261,12 @@ class FollowerListingFragment @Inject constructor(
         val textTitle = view?.findViewById<TextView>(R.id.text_error_empty_title)
         val textDescription = view?.findViewById<TextView>(R.id.text_error_empty_desc)
 
-        val currentUserId = arguments?.getString(UserProfileFragment.EXTRA_USER_ID)
-        if (currentUserId == userSessionInterface.userId) {
+        if (viewModel.username == userSessionInterface.userId) {
             textTitle?.text = getString(peopleR.string.up_empty_page_my_follower_title)
         } else {
             textTitle?.text = getString(peopleR.string.up_empty_page_follower_title)
         }
-        textDescription?.showWithCondition(currentUserId == userSessionInterface.userId)
+        textDescription?.showWithCondition(viewModel.username == userSessionInterface.userId)
         textDescription?.text = getString(peopleR.string.up_empty_page_my_follower_desc)
     }
 
@@ -392,6 +360,7 @@ class FollowerListingFragment @Inject constructor(
                 mAdapter.items[position] = item.copy(
                     isFollowed = !item.isFollowed
                 )
+
             is PeopleUiModel.UserUiModel ->
                 mAdapter.items[position] = item.copy(
                     isFollowed = !item.isFollowed
@@ -411,6 +380,26 @@ class FollowerListingFragment @Inject constructor(
             }
             requireView().showErrorToast(errorMessage)
             false
+        }
+    }
+
+    companion object {
+        const val PAGE_CONTENT = 0
+        const val PAGE_LOADING = 1
+        const val PAGE_ERROR = 2
+        const val PAGE_EMPTY = 3
+
+        private const val TAG = "FollowerListingFragment"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ): FollowerListingFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowerListingFragment
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                FollowerListingFragment::class.java.name
+            ) as FollowerListingFragment
         }
     }
 }

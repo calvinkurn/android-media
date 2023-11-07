@@ -1,7 +1,6 @@
 package com.tokopedia.people.views.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
@@ -71,6 +70,7 @@ import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.ProfileSettingsActivity
+import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileBadgeBottomSheet
@@ -106,6 +106,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.abs
 import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
@@ -169,7 +170,7 @@ class UserProfileFragment @Inject constructor(
     private val profileSettingsForActivityResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK &&
+        if (result.resultCode == RESULT_OK &&
             ProfileSettingsActivity.getIsAnySettingsChanged(result.data)
         ) {
             refreshLandingPageData(isRefreshPost = true)
@@ -353,8 +354,8 @@ class UserProfileFragment @Inject constructor(
 
     private fun initListener() {
         mainBinding.apply {
-            layoutUserProfileStats.llFollower.setOnClickListener { goToFollowingFollowerPage(isFollowers = true) }
-            layoutUserProfileStats.llFollowing.setOnClickListener { goToFollowingFollowerPage(isFollowers = false) }
+            layoutUserProfileStats.llFollower.setOnClickListener { goToFollowingFollowerPage(UserProfileActivity.EXTRA_FOLLOWERS) }
+            layoutUserProfileStats.llFollowing.setOnClickListener { goToFollowingFollowerPage(UserProfileActivity.EXTRA_FOLLOWING) }
             shopRecommendation.setListener(this@UserProfileFragment, this@UserProfileFragment)
 
             textSeeMore.setOnClickListener {
@@ -944,7 +945,7 @@ class UserProfileFragment @Inject constructor(
             imgShare.setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000
+                    unifyprinciplesR.color.Unify_NN1000
                 ),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
@@ -975,7 +976,7 @@ class UserProfileFragment @Inject constructor(
             setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000
+                    unifyprinciplesR.color.Unify_NN1000
                 ),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
@@ -1022,8 +1023,8 @@ class UserProfileFragment @Inject constructor(
 
     override fun getScreenName(): String = TAG
 
-    private fun goToFollowingFollowerPage(isFollowers: Boolean) {
-        if (isFollowers) {
+    private fun goToFollowingFollowerPage(activeTab: String) {
+        if (activeTab == UserProfileActivity.EXTRA_FOLLOWERS) {
             userProfileTracker.clickFollowers(userSession.userId, self = viewModel.isSelfProfile)
         } else {
             userProfileTracker.clickFollowing(userSession.userId, self = viewModel.isSelfProfile)
@@ -1033,7 +1034,7 @@ class UserProfileFragment @Inject constructor(
             activity?.let {
                 FollowerFollowingListingActivity.getCallingIntent(
                     it,
-                    getFollowersBundle(isFollowers)
+                    getFollowersBundle(activeTab)
                 )
             }
         )
@@ -1073,15 +1074,11 @@ class UserProfileFragment @Inject constructor(
         )
     }
 
-    private fun getFollowersBundle(isFollowers: Boolean): Bundle {
+    private fun getFollowersBundle(activeTab: String): Bundle {
         val bundle = Bundle()
-        bundle.putString(EXTRA_DISPLAY_NAME, viewModel.displayName)
-        bundle.putString(EXTRA_USER_NAME, viewModel.profileUsername)
-        bundle.putString(EXTRA_USER_ID, viewModel.profileUserID)
-        bundle.putString(EXTRA_PROFILE_USER_ID, viewModel.profileUserID)
-        bundle.putString(EXTRA_TOTAL_FOLLOWINGS, viewModel.totalFollowing)
-        bundle.putString(EXTRA_TOTAL_FOLLOWERS, viewModel.totalFollower)
-        bundle.putBoolean(EXTRA_IS_FOLLOWERS, isFollowers)
+        bundle.putString(EXTRA_USERNAME, viewModel.profileUserID)
+        bundle.putString(UserProfileActivity.EXTRA_ACTIVE_TAB, activeTab)
+
         return bundle
     }
 
@@ -1177,7 +1174,7 @@ class UserProfileFragment @Inject constructor(
         /** No need to check resultCode since edit profile page doesn't give specific result code */
         if (requestCode == REQUEST_CODE_EDIT_PROFILE) refreshLandingPageData(isRefreshPost = false)
 
-        if (resultCode != Activity.RESULT_OK) return
+        if (resultCode != RESULT_OK) return
 
         when (requestCode) {
             REQUEST_CODE_LOGIN_TO_FOLLOW -> doFollowUnfollow(isFromLogin = true)

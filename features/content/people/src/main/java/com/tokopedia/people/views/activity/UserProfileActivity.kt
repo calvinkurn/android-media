@@ -63,14 +63,15 @@ class UserProfileActivity : BaseSimpleActivity() {
         if (pathSegment == null || pathSegment.size == 1) return
 
         when (pathSegment.last()) {
-            EXTRA_FOLLOWING, EXTRA_FOLLOWERS -> openFollowingFollowersPage(pathSegment.last())
+            EXTRA_FOLLOWING, EXTRA_FOLLOWERS -> openFollowingFollowersPage(pathSegment)
             else -> return
         }
     }
 
-    private fun openFollowingFollowersPage(activeTab: String) {
+    private fun openFollowingFollowersPage(pathSegment: List<String>?) {
         val bundle = Bundle()
-        bundle.putString(EXTRA_ACTIVE_TAB, activeTab)
+        bundle.putString(EXTRA_USERNAME, pathSegment?.first())
+        bundle.putString(EXTRA_ACTIVE_TAB, pathSegment?.last())
 
         startActivity(FollowerFollowingListingActivity.getCallingIntent(this, bundle))
         finish()
