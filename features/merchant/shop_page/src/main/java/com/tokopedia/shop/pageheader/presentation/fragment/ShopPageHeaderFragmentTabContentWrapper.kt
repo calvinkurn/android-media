@@ -441,10 +441,8 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     internal fun updateShareIcon(newShareIconId: Int) {
-        navToolbar?.let {
-            iconShareId = newShareIconId
-            it.updateIcon(IconList.ID_SHARE, iconShareId)
-        }
+        iconShareId = newShareIconId
+        navToolbar?.updateIcon(IconList.ID_SHARE, iconShareId)
     }
 
     private fun isCartShownInNewNavToolbar(): Boolean {

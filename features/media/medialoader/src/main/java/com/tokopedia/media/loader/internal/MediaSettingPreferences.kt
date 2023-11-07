@@ -1,6 +1,7 @@
 package com.tokopedia.media.loader.internal
 
 import android.content.Context
+import androidx.compose.ui.res.painterResource
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.media.loader.data.MEDIA_QUALITY_PREF
 
@@ -39,6 +40,16 @@ class MediaSettingPreferences constructor(
         private const val KEY_QUALITY_SETTING = "index_image_quality_setting"
         private const val KEY_MEDIA_TOASTER = "index_media_toaster_visibility"
         private const val KEY_GLIDE_CLEAR_CACHE = "medialoader_clear_disk_cache"
+
+        @Volatile var preferences: MediaSettingPreferences? = null
+
+        fun instance(context: Context): MediaSettingPreferences {
+            return synchronized(this) {
+                preferences ?: MediaSettingPreferences(context).also {
+                    preferences = it
+                }
+            }
+        }
     }
 
 }

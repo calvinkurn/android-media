@@ -47,7 +47,7 @@ class ChooseAddressWidgetCallback(
     }
 
     override fun onChangeTextColor(): Int {
-        return homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN1000)
+        return homeThematicUtil.getThematicColorToken(unifyprinciplesR.color.Unify_NN1000)
     }
 
     override fun iconLocation(): Int {

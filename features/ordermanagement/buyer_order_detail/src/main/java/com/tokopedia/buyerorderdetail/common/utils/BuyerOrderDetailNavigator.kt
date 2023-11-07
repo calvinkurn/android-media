@@ -19,8 +19,8 @@ import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 
 class BuyerOrderDetailNavigator(
     private val activity: Activity,
@@ -158,7 +158,7 @@ class BuyerOrderDetailNavigator(
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, orderStatusUiModel.orderStatusHeaderUiModel.orderStatus)
         intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, paymentInfoUiModel.paymentGrandTotal.value)
-        intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.SOURCE_ASK_SELLER)
+        intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.Source.SOURCE_ASK_SELLER)
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }

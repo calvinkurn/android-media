@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
+import com.tokopedia.catalog.ui.model.ShareProperties
 import com.tokopedia.catalog.ui.model.WidgetTypes
 import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR
 import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_01
@@ -97,7 +98,8 @@ class CatalogDetailUiMapper @Inject constructor(
             navigationProperties = mapToNavigationProperties(remoteModel, widgets),
             priceCtaProperties = mapToPriceCtaProperties(remoteModel),
             remoteModel.basicInfo.productSortingStatus.orZero(),
-            catalogUrl = remoteModel.basicInfo.url.orEmpty()
+            catalogUrl = remoteModel.basicInfo.url.orEmpty(),
+            shareProperties = mapToShareProperties(remoteModel, widgets)
         )
     }
 
@@ -141,6 +143,19 @@ class CatalogDetailUiMapper @Inject constructor(
             isPremium = heroImage?.isPremium.orFalse(),
             bgColor = "#${remoteModel.globalStyle?.bgColor}".stringHexColorParseToInt(),
             title = remoteModel.basicInfo.name.orEmpty()
+        )
+    }
+
+    private fun mapToShareProperties(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular,
+        widgets: List<Visitable<*>>
+    ): ShareProperties {
+        val heroImage = widgets.firstOrNull { it is HeroBannerUiModel } as? HeroBannerUiModel
+        return ShareProperties(
+            catalogId = remoteModel.basicInfo.id,
+            title = remoteModel.basicInfo.name.orEmpty(),
+            images = heroImage?.brandImageUrls.orEmpty(),
+            catalogUrl = remoteModel.basicInfo.mobileURL.orEmpty()
         )
     }
 
