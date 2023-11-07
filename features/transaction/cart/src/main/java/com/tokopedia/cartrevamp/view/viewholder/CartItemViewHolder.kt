@@ -1,19 +1,14 @@
 package com.tokopedia.cartrevamp.view.viewholder
 
-import android.animation.Animator
 import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.OvershootInterpolator
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatEditText
@@ -109,12 +104,6 @@ class CartItemViewHolder constructor(
                 actionListener?.onAvailableCartItemImpression(listOf(data))
             }
         })
-
-        if (!data.isError) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                startSwipeLayoutOnboardingAnimation()
-            }, 3000)
-        }
 
         initSwipeLayout(data)
         initCoachMark()
@@ -1655,60 +1644,6 @@ class CartItemViewHolder constructor(
 
     fun getItemViewBinding(): ItemCartProductRevampBinding {
         return binding
-    }
-
-    private fun startSwipeLayoutOnboardingAnimation() {
-        val animation = binding.llProductContainer.animate()
-        animation.interpolator = AccelerateDecelerateInterpolator()
-        animation.duration = 300L
-        animation.translationX((-60f).dpToPx())
-        animation.setListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(p0: Animator) {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    stopSwipeLayoutOnboardingAnimation()
-                }, 600L)
-            }
-
-            override fun onAnimationEnd(p0: Animator) {
-                // no-op
-            }
-
-            override fun onAnimationCancel(p0: Animator) {
-                // no-op
-            }
-
-            override fun onAnimationRepeat(p0: Animator) {
-                // no-op
-            }
-        })
-        animation.start()
-    }
-
-    private fun stopSwipeLayoutOnboardingAnimation() {
-        val animation = binding.llProductContainer.animate()
-        animation.interpolator = OvershootInterpolator()
-        animation.duration = 200L
-        animation.translationX((0f).dpToPx())
-        animation.setListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(p0: Animator) {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    stopSwipeLayoutOnboardingAnimation()
-                }, 600L)
-            }
-
-            override fun onAnimationEnd(p0: Animator) {
-                // no-op
-            }
-
-            override fun onAnimationCancel(p0: Animator) {
-                // no-op
-            }
-
-            override fun onAnimationRepeat(p0: Animator) {
-                // no-op
-            }
-        })
-        animation.start()
     }
 
     interface ViewHolderListener {

@@ -15,6 +15,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import android.widget.CompoundButton
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
@@ -80,6 +82,7 @@ import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.RecentViewMapper
 import com.tokopedia.cartrevamp.view.mapper.WishlistMapper
+import com.tokopedia.cartrevamp.view.pref.CartOnBoardingPreferences
 import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
@@ -200,6 +203,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -213,6 +217,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -330,6 +335,11 @@ class CartRevampFragment :
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             onResultFromAddOnBottomSheet(result.resultCode, result.data)
         }
+
+    private val cartSwipeToDeleteOnBoardingPreferences: CartOnBoardingPreferences by lazy {
+        CartOnBoardingPreferences(requireContext())
+    }
+    private val swipeToDeleteOnBoardingFlow: MutableSharedFlow<Boolean> = MutableSharedFlow()
 
     companion object {
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
@@ -514,6 +524,7 @@ class CartRevampFragment :
                 refreshCartWithSwipeToRefresh()
             }
         }
+        initSharedFlow()
         initViewModel()
         initCoachMark()
         binding?.rvCart?.setViewBinderHelper(binderHelper)
@@ -1694,6 +1705,12 @@ class CartRevampFragment :
                     bulkActionCoachMark?.dismissCoachMark()
                 }
 
+                if (shouldShowSwipeToDeleteDefaultProductOnBoarding() || shouldShowSwipeToDeleteBundlingProductOnBoarding()) {
+                    lifecycleScope.launch {
+                        swipeToDeleteOnBoardingFlow.emit(true)
+                    }
+                }
+
                 handleSelectedAmountVisibilityOnScroll(dy)
                 handlePromoButtonVisibilityOnScroll(dy)
                 handleFloatingSelectedAmountVisibility(recyclerView)
@@ -2358,6 +2375,95 @@ class CartRevampFragment :
     private fun initCoachMark() {
         mainFlowCoachMark = CoachMark2(requireContext())
         bulkActionCoachMark = CoachMark2(requireContext())
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun initSharedFlow() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                swipeToDeleteOnBoardingFlow.debounce(1000L).collectLatest {
+                    handleProductSwipeToDeleteOnBoarding()
+                }
+            }
+        }
+    }
+
+    private fun handleProductSwipeToDeleteOnBoarding() {
+        val cartRecyclerView = binding?.rvCart ?: return
+        val layoutManager = cartRecyclerView.layoutManager as? GridLayoutManager ?: return
+        val shouldShowDefaultProductOnBoarding = shouldShowSwipeToDeleteDefaultProductOnBoarding()
+        val shouldShowBundlingProductOnBoarding = shouldShowSwipeToDeleteBundlingProductOnBoarding()
+        if (shouldShowDefaultProductOnBoarding || shouldShowBundlingProductOnBoarding) {
+            val firstVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+            if (firstVisibleItemPosition == RecyclerView.NO_POSITION) return
+
+            val lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
+            if (lastVisibleItemPosition == RecyclerView.NO_POSITION) return
+
+            val visibleItemPair = CartDataHelper.getDefaultAndMultipleBundlingProductPositionInPair(
+                viewModel.cartDataList.value,
+                firstVisibleItemPosition,
+                lastVisibleItemPosition
+            )
+
+            val defaultProductData =
+                cartRecyclerView.findViewHolderForAdapterPosition(visibleItemPair.first)
+
+            if (defaultProductData is CartItemViewHolder) {
+                val cartItemBinding = defaultProductData.getItemViewBinding()
+                if (shouldShowDefaultProductOnBoarding) {
+                    startSwipeLayoutOnboardingAnimation(cartItemBinding.llProductContainer)
+                    cartSwipeToDeleteOnBoardingPreferences.setHasShownSwipeToDeleteDefaultProductOnBoarding()
+                }
+            }
+
+            val bundlingProductData =
+                cartRecyclerView.findViewHolderForAdapterPosition(visibleItemPair.second)
+
+            if (bundlingProductData is CartItemViewHolder) {
+                val cartItemBinding = bundlingProductData.getItemViewBinding()
+                if (shouldShowBundlingProductOnBoarding) {
+                    startSwipeLayoutOnboardingAnimation(cartItemBinding.clProductBundlingInfo)
+                    cartSwipeToDeleteOnBoardingPreferences.setHasShownSwipeToDeleteBundlingProductOnBoarding()
+                }
+            }
+        }
+    }
+
+    private fun startSwipeLayoutOnboardingAnimation(targetView: View) {
+        val animation = targetView.animate()
+        animation.interpolator = AccelerateDecelerateInterpolator()
+        animation.duration = 300L
+        animation.translationX((-60f).dpToPx())
+        animation.setListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(p0: Animator) {
+                // no-op
+            }
+
+            override fun onAnimationEnd(p0: Animator) {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    stopSwipeLayoutOnboardingAnimation(targetView)
+                }, 300L)
+            }
+
+            override fun onAnimationCancel(p0: Animator) {
+                // no-op
+            }
+
+            override fun onAnimationRepeat(p0: Animator) {
+                // no-op
+            }
+        })
+        animation.start()
+    }
+
+    private fun stopSwipeLayoutOnboardingAnimation(targetView: View) {
+        val animation = targetView.animate()
+        animation.interpolator = OvershootInterpolator()
+        animation.duration = 200L
+        animation.translationX((0f).dpToPx())
+        animation.setListener(null)
+        animation.start()
     }
 
     private fun initViewModel() {
@@ -5448,11 +5554,18 @@ class CartRevampFragment :
     }
 
     private inline fun guardCartClick(onClick: () -> Unit) {
-//        if (binderHelper.openCount > 0) {
-//            binderHelper.closeAll()
-//        }
-//        else {
-        onClick()
-//        }
+        if (binderHelper.openCount > 0) {
+            binderHelper.closeAll()
+        } else {
+            onClick()
+        }
+    }
+
+    private fun shouldShowSwipeToDeleteDefaultProductOnBoarding(): Boolean {
+        return !cartSwipeToDeleteOnBoardingPreferences.getHasShownSwipeToDeleteDefaultProductOnBoarding()
+    }
+
+    private fun shouldShowSwipeToDeleteBundlingProductOnBoarding(): Boolean {
+        return !cartSwipeToDeleteOnBoardingPreferences.getHasShownSwipeToDeleteBundlingProductOnBoarding()
     }
 }
