@@ -39,14 +39,18 @@ class ShipmentViewHolder(
     private val context = view.context
     private val binding = ItemShipmentBinding.bind(view)
 
-    private val viewSuccess =
-        ShipmentView(binding.pdpShipmentStateSuccess) { ViewShipmentSuccessBinding.bind(it) }
-    private val viewError =
-        ShipmentView(binding.pdpShipmentStateError) { ViewShipmentErrorBinding.bind(it) }
-    private val viewLoading =
-        ShipmentView(binding.pdpShipmentStateLoading) { ViewShipmentLoadingBinding.bind(it) }
-    private val viewFailed =
-        ShipmentView(binding.pdpShipmentStateFailed) { ViewShipmentFailedBinding.bind(it) }
+    private val viewSuccess = ShipmentView(binding.pdpShipmentStateSuccess) {
+        ViewShipmentSuccessBinding.bind(it)
+    }
+    private val viewError = ShipmentView(binding.pdpShipmentStateError) {
+        ViewShipmentErrorBinding.bind(it)
+    }
+    private val viewLoading = ShipmentView(binding.pdpShipmentStateLoading) {
+        ViewShipmentLoadingBinding.bind(it)
+    }
+    private val viewFailed = ShipmentView(binding.pdpShipmentStateFailed) {
+        ViewShipmentFailedBinding.bind(it)
+    }
 
     private val viewPlus: ShipmentView<ViewShipmentPlusBinding> by lazy {
         ShipmentView(viewSuccess.binding.pdpShipmentPlus) { ViewShipmentPlusBinding.bind(it) }
@@ -99,7 +103,7 @@ class ShipmentViewHolder(
         viewSuccess.hide()
         viewError.hide()
         viewLoading.hide()
-        viewError.show()
+        viewFailed.show()
     }
 
     private fun ViewShipmentSuccessBinding.apply(
@@ -117,7 +121,6 @@ class ShipmentViewHolder(
                 }
             }
         }
-
 
         val title = data.title
         pdpShipmentHeaderPrice.showIfWithBlock(title.isNotEmpty()) {
