@@ -48,6 +48,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
     private var callback: ShareWidgetCallback? = null
     private var isDirectChannel = false
     private var isAffiliate = false
+
     // properties for generation link
     private var linkProperties: LinkShareWidgetProperties? = null
 
@@ -80,7 +81,9 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         context.theme.obtainStyledAttributes(
             attrs,
             universal_sharingR.styleable.UniversalShareWidget,
-            0, 0).apply {
+            0,
+            0
+        ).apply {
 
             try {
                 channelShareIconId = getInteger(universal_sharingR.styleable.UniversalShareWidget_channel_share, -1)
@@ -145,6 +148,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
 
             UniversalShareConst.RemoteConfigKey.VALUE_VARIANT_B -> {
                 if (SharingUtil.isAppInstalled(context, getPackageName())) {
+                    println("set wa icon here----- $iconUnifyId $icon")
                     binding?.shareChannel?.setImage(icon)
                     isDirectChannel = true
                 } else {
@@ -257,8 +261,10 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
             viewModel?.resultAffiliate?.observe(treeLifecycleOwner) { result ->
                 when (result) {
                     is Success -> {
-                        if (result.data.affiliateEligibility?.isEligible.orFalse()) {
-                            binding?.shareChannel?.setImage(IconUnify.SHARE_AFFILIATE)
+                        if (result.data.eligibleCommission?.isEligible.orFalse()) {
+                            if (isShowShareIcon()) {
+                                binding?.shareChannel?.setImage(IconUnify.SHARE_AFFILIATE)
+                            }
                             isAffiliate = true
                         }
                     }
@@ -329,6 +335,19 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
             UniversalShareConst.ImageType.KEY_NO_IMAGE
         }
         return "${linkProperties?.page}-${linkProperties?.userId}-${linkProperties?.id}-$sharingDate-$imageType"
+    }
+
+    /**
+     * show share when meets these conditions
+     * - user get variant A
+     * - user get variant B but Whatsapp is not installed
+     */
+    private fun isShowShareIcon(): Boolean {
+        return (getVariant() == UniversalShareConst.RemoteConfigKey.VALUE_VARIANT_A) ||
+            (
+                (getVariant() == UniversalShareConst.RemoteConfigKey.VALUE_VARIANT_B) &&
+                    SharingUtil.isAppInstalled(context, getPackageName()).not()
+                )
     }
 
     companion object {
