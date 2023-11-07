@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 /**
  * Created by kenny.hadisaputra on 13/10/23
@@ -31,8 +30,7 @@ internal sealed interface FeedBrowseItemListModel {
     data class HorizontalChannels(
         override val slotInfo: SlotInfo,
         val menu: WidgetMenuModel,
-        val itemState: FeedBrowseItemListState<PlayWidgetChannelUiModel>,
-        val config: PlayWidgetConfigUiModel
+        val itemState: FeedBrowseChannelListState<PlayWidgetChannelUiModel>
     ) : FeedBrowseItemListModel
 
     data class Banner(

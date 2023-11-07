@@ -6,7 +6,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 /**
  * Created by kenny.hadisaputra on 16/10/23
  */
-data class FeedBrowseItemListState<T>(
+data class FeedBrowseChannelListState<T>(
     val items: List<T>,
     val state: ResultState,
     val nextCursor: String,
@@ -15,8 +15,8 @@ data class FeedBrowseItemListState<T>(
 ) {
 
     companion object {
-        fun <T> init(state: ResultState): FeedBrowseItemListState<T> {
-            return FeedBrowseItemListState(
+        fun <T> init(state: ResultState): FeedBrowseChannelListState<T> {
+            return FeedBrowseChannelListState(
                 emptyList(),
                 state,
                 "",
@@ -25,11 +25,11 @@ data class FeedBrowseItemListState<T>(
             )
         }
 
-        fun <T> initLoading(): FeedBrowseItemListState<T> {
+        fun <T> initLoading(): FeedBrowseChannelListState<T> {
             return init(ResultState.Loading)
         }
 
-        fun <T> initFail(error: Throwable): FeedBrowseItemListState<T> {
+        fun <T> initFail(error: Throwable): FeedBrowseChannelListState<T> {
             return init(ResultState.Fail(error))
         }
 
@@ -38,24 +38,24 @@ data class FeedBrowseItemListState<T>(
             nextCursor: String = "",
             hasNextPage: Boolean = true,
             config: PlayWidgetConfigUiModel = PlayWidgetConfigUiModel.Empty
-        ): FeedBrowseItemListState<T> {
-            return FeedBrowseItemListState(items, ResultState.Success, nextCursor, hasNextPage, config)
+        ): FeedBrowseChannelListState<T> {
+            return FeedBrowseChannelListState(items, ResultState.Success, nextCursor, hasNextPage, config)
         }
     }
 }
-internal fun <T> FeedBrowseItemListState<T>.isNotEmpty(): Boolean {
+internal fun <T> FeedBrowseChannelListState<T>.isNotEmpty(): Boolean {
     return items.isNotEmpty()
 }
 
-internal fun <T> FeedBrowseItemListState<T>.isEmpty(): Boolean {
+internal fun <T> FeedBrowseChannelListState<T>.isEmpty(): Boolean {
     return items.isEmpty()
 }
 
-internal fun <T> FeedBrowseItemListState<T>?.orInitLoading(): FeedBrowseItemListState<T> {
-    return this ?: FeedBrowseItemListState.initLoading()
+internal fun <T> FeedBrowseChannelListState<T>?.orInitLoading(): FeedBrowseChannelListState<T> {
+    return this ?: FeedBrowseChannelListState.initLoading()
 }
 
-internal val <T> FeedBrowseItemListState<T>.isLoading: Boolean
+internal val <T> FeedBrowseChannelListState<T>.isLoading: Boolean
     get() = this.state == ResultState.Loading
 
 internal object LoadingModel

@@ -107,7 +107,7 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
                     }
                     binding.rvChannels.invalidateItemDecorations()
                 }
-                autoRefreshCoordinator.configureAutoRefresh(item.config)
+                autoRefreshCoordinator.configureAutoRefresh(item.itemState.config)
             }
             is ResultState.Fail -> {
                 showContent(false)

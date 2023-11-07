@@ -12,7 +12,7 @@ import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationActio
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationData
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationUiState
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListState
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
 import com.tokopedia.feedplus.browse.presentation.model.isLoading
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -75,7 +75,7 @@ internal class CategoryInspirationViewModel @Inject constructor(
             it.copy(
                 selectedMenuId = menu.id,
                 items = it.items.updateById(menu.id) { data ->
-                    data.copy(items = FeedBrowseItemListState.initSuccess(emptyList()))
+                    data.copy(items = FeedBrowseChannelListState.initSuccess(emptyList()))
                 }
             )
         }
@@ -104,7 +104,7 @@ internal class CategoryInspirationViewModel @Inject constructor(
                     it.copy(
                         items = response.menu.associate { menu ->
                             menu.id to
-                                CategoryInspirationData(menu, FeedBrowseItemListState.initSuccess(emptyList()))
+                                CategoryInspirationData(menu, FeedBrowseChannelListState.initSuccess(emptyList()))
                         },
                         selectedMenuId = response.menu.firstOrNull()?.id.orEmpty()
                     )
@@ -115,7 +115,7 @@ internal class CategoryInspirationViewModel @Inject constructor(
                     it.copy(
                         items = it.items.updateById(menu.id) { data ->
                             data.copy(
-                                items = FeedBrowseItemListState.initSuccess(
+                                items = FeedBrowseChannelListState.initSuccess(
                                     items = data.items.items + response.channels,
                                     nextCursor = response.nextCursor,
                                     hasNextPage = response.hasNextPage
@@ -130,7 +130,7 @@ internal class CategoryInspirationViewModel @Inject constructor(
                     it.copy(
                         items = it.items.updateById(menu.id) { data ->
                             data.copy(
-                                items = FeedBrowseItemListState.initSuccess(
+                                items = FeedBrowseChannelListState.initSuccess(
                                     data.items.items,
                                     nextCursor = response.nextCursor,
                                     hasNextPage = response.hasNextPage

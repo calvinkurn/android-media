@@ -9,7 +9,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
  */
 internal data class CategoryInspirationData(
     val menu: WidgetMenuModel,
-    val items: FeedBrowseItemListState<PlayWidgetChannelUiModel>
+    val items: FeedBrowseChannelListState<PlayWidgetChannelUiModel>
 )
 internal typealias CategoryInspirationMap = Map<String, CategoryInspirationData>
 internal data class CategoryInspirationUiState(

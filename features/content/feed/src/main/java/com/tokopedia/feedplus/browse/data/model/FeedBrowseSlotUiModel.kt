@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.browse.data.model
 
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListState
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
@@ -15,7 +15,7 @@ internal sealed interface FeedBrowseSlotUiModel {
         override val slotId: String,
         override val title: String,
         val group: String,
-        val menus: Map<WidgetMenuModel, FeedBrowseItemListState<PlayWidgetChannelUiModel>>,
+        val menus: Map<WidgetMenuModel, FeedBrowseChannelListState<PlayWidgetChannelUiModel>>,
         val selectedMenuId: String
     ) : FeedBrowseSlotUiModel {
 

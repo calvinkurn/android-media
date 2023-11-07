@@ -13,12 +13,11 @@ import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseB
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
 import com.tokopedia.feedplus.browse.presentation.model.SlotInfo
 import com.tokopedia.feedplus.browse.presentation.model.isNotEmpty
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -192,8 +191,7 @@ internal class FeedBrowseAdapter(
                 FeedBrowseItemListModel.HorizontalChannels(
                     slotInfo,
                     selectedMenu,
-                    itemsInSelectedMenu ?: FeedBrowseItemListState.initLoading(),
-                    itemsInSelectedMenu?.config ?: PlayWidgetConfigUiModel.Empty
+                    itemsInSelectedMenu ?: FeedBrowseChannelListState.initLoading()
                 )
             )
         }

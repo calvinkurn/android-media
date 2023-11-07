@@ -134,7 +134,7 @@ internal class FeedBrowseFragment @Inject constructor(
         ) {
             tracker.sendViewChannelCardEvent(
                 item = channel,
-                config = widgetModel.config,
+                config = widgetModel.itemState.config,
                 slotInfo = widgetModel.slotInfo,
                 channelPositionInList = channelPosition
             )
@@ -149,7 +149,7 @@ internal class FeedBrowseFragment @Inject constructor(
             router.route(context, channel.appLink)
             tracker.sendClickChannelCardEvent(
                 item = channel,
-                config = widgetModel.config,
+                config = widgetModel.itemState.config,
                 slotInfo = widgetModel.slotInfo,
                 channelPositionInList = channelPosition
             )
