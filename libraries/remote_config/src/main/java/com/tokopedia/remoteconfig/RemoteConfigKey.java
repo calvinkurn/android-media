@@ -296,5 +296,5 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_PDP_PREFETCH = "android_pdp_enable_prefetch";
 
-    public static final String ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST = "android_catalog_product_list_improvement";
+    public static final String ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST = "android_set_catalog_product_list_improvement";
 }
