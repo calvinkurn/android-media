@@ -26,8 +26,8 @@ class NetworkResponseManager(context: Context) {
      */
     fun set(url: String, header: Headers) {
         if (header.size <= 0) return
-        if (hasReachedThreshold()) forceResetCache()
         if (caches[url]?.isNotEmpty() == true || header(url).isNotEmpty()) return
+        if (hasReachedThreshold()) forceResetCache()
 
         val value = header
             .toMultimap()
