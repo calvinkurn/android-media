@@ -42,6 +42,7 @@ class RechargeHomepageTodoWidgetBottomSheet: BottomSheetUnify(), BottomSheetTodo
         isFullpage = false
         isDragable = false
         showCloseIcon = true
+        clearContentPadding = true
 
         binding = BottomsheetRechargeHomepageTodoWidgetBinding.inflate(LayoutInflater.from(context))
         binding?.run {

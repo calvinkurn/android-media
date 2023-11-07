@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:minHeight="98dp"
     android:layout_marginBottom="8dp"
-    android:padding="8dp"
+    android:padding="12dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -17,7 +17,6 @@
             android:id="@+id/img_icon_todo_widget"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,7 +24,6 @@
             android:id="@+id/img_close_todo_widget"
             android:layout_width="12dp"
             android:layout_height="12dp"
-            android:layout_marginEnd="8dp"
             app:icon_name="CLOSE"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -110,7 +108,6 @@
             app:icon_color_night_enable="@color/Unify_GN500"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tg_favorite_number_todo_widget"
-            android:layout_marginEnd="8dp"
             android:padding="4dp"
             app:icon_name="MENU_KEBAB_HORIZONTAL"
             android:background="@drawable/bg_todo_widget"
@@ -123,18 +120,17 @@
             app:layout_constraintTop_toTopOf="@+id/icon_three_button_todo_widget"
             app:layout_constraintBottom_toBottomOf="@+id/icon_three_button_todo_widget"
             app:layout_constraintEnd_toStartOf="@+id/icon_three_button_todo_widget"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="8dp"
             app:unifyButtonSize="micro"
             tools:text="Main" />
 
         <View
             android:id="@+id/view_info_todo_widget"
-            app:layout_constraintTop_toBottomOf="@+id/tg_price_todo_widget"
+            app:layout_constraintTop_toBottomOf="@+id/btn_main_todo_widget"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@drawable/bg_info_todo_widget"
