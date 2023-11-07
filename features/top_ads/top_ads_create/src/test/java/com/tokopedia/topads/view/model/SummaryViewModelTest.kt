@@ -179,7 +179,13 @@ class SummaryViewModelTest {
 
     @Test
     fun `topadscreated exception check`() {
-        every { topAdsCreateUseCase.setParam(any(), any(), any(), any()) } throws Throwable()
+        every {
+            topAdsCreateUseCase.setParam(any(),
+                any(),
+                any(),
+                any())
+        } returns mockk(relaxed = true)
+        coEvery { topAdsCreateUseCase.execute(requestParams = any()) } throws Throwable()
 
         var successCalled = false
         viewModel.topAdsCreated(mockk(), mockk(), mockk(), { successCalled = true }, {})

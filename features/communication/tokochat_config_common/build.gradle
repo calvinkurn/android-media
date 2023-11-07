@@ -15,8 +15,8 @@ buildscript {
 }
 
 android {
-    namespace 'com.tokochat.tokochat_config_common'
-    testNamespace 'com.tokochat.tokochat_config_common.test'
+    namespace 'com.tokopedia.tokochat_config_common'
+    testNamespace 'com.tokopedia.tokochat_config_common.test'
 }
 
 dependencies {

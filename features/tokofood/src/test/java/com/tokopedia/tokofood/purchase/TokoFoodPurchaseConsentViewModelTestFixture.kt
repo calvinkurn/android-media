@@ -15,6 +15,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.createTestCoroutineScope
 import kotlinx.coroutines.test.pauseDispatcher
 import kotlinx.coroutines.test.runCurrent
 import org.junit.After
@@ -52,9 +53,7 @@ abstract class TokoFoodPurchaseConsentViewModelTestFixture {
 
     protected fun collectFromSharedFlow(whenAction: () -> Unit,
                                         then: (Result<Boolean>?) -> Unit) {
-        val testCoroutineScope = TestCoroutineScope().apply {
-            pauseDispatcher()
-        }
+        val testCoroutineScope = createTestCoroutineScope()
         var actualUiModelState: Result<Boolean>? = null
         val job = testCoroutineScope.launch {
             viewModel.agreeConsentData.collect {
