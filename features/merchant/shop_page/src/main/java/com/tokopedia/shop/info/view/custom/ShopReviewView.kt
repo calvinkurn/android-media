@@ -73,8 +73,6 @@ class ShopReviewView @JvmOverloads constructor(
                 tabIndicator.renderTabIndicator(
                     config = config,
                     selectedTabIndicatorIndex = position,
-                    onTimerTick = {
-                    },
                     onTimerFinish = {
                         val currentItem = viewPager.currentItem
                         val isLastItem = currentItem == reviewCount - Int.ONE

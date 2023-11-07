@@ -38,14 +38,11 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         private const val DOT_INDICATOR_ACTIVE_HEIGHT = 5
         private const val DOT_INDICATOR_ACTIVE_WIDTH = 28
         private const val DOT_INDICATOR_MARGIN_START = 3
-
-        private const val ONE_HUNDRED = 100
     }
 
     fun renderTabIndicator(
         config: Config,
         selectedTabIndicatorIndex: Int,
-        onTimerTick: () -> Unit,
         onTimerFinish: () -> Unit
     ) {
         println("Timer. Executing renderTabIndicator")
@@ -58,7 +55,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         for (currentIndex in 0 until config.itemCount) {
             val item = if (currentIndex == selectedTabIndicatorIndex) {
                 println("Timer. Creating selected dot on $currentIndex")
-                createSelectedDot()
+                createSelectedDot(config.totalDuration)
             } else {
                 println("Timer. Creating unselected index on $currentIndex")
                 createUnselectedDot()
@@ -69,7 +66,6 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         setupCountDownTimer(
             totalDuration = config.totalDuration,
             intervalDuration = config.intervalDuration,
-            onTimerTick = onTimerTick,
             onTimerFinish = onTimerFinish
         )
 
@@ -90,7 +86,6 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     private fun setupCountDownTimer(
         totalDuration: Long,
         intervalDuration: Long,
-        onTimerTick: () -> Unit,
         onTimerFinish: () -> Unit
     ) {
         println("Timer. setupCountDownTimer")
@@ -98,24 +93,19 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
 
         progressAnimator = ObjectAnimator.ofInt(progressBar, "progress", 0)
         progressAnimator?.duration = totalDuration
-        
+
         println("Timer. setupCountDownTimer progressBar is $progressBar")
         countDownTimer = object : CountDownTimer(totalDuration, intervalDuration) {
             override fun onTick(millisUntilFinished: Long) {
-                val remainingProgressPercent = (millisUntilFinished.toFloat() / totalDuration.toFloat()) * ONE_HUNDRED.toFloat()
-                val progressPercent = ONE_HUNDRED.toFloat() - remainingProgressPercent
+                val completedMillis = totalDuration - millisUntilFinished
 
-                //progressBar?.progress = progressPercent.toInt()
-
-                onTimerTick()
-
-                progressAnimator?.setIntValues(progressPercent.toInt())
-                println("Timer. setupCountDownTimer onTick progress $progressPercent")
+                progressAnimator?.setIntValues(completedMillis.toInt())
+                println("Timer. setupCountDownTimer onTick completed millis $completedMillis, millisuntilfinished $millisUntilFinished")
             }
 
             override fun onFinish() {
-                //progressBar?.progress = ONE_HUNDRED
-                progressAnimator?.setIntValues(ONE_HUNDRED)
+                // progressBar?.progress = ONE_HUNDRED
+                progressAnimator?.setIntValues(totalDuration.toInt())
 
                 onTimerFinish()
 
@@ -128,6 +118,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         println("Timer. startTimer")
         cancelTimer()
         countDownTimer?.start()
+        progressAnimator?.setIntValues(Int.ZERO)
         progressAnimator?.start()
     }
 
@@ -138,7 +129,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     }
 
     @SuppressLint("UnifyComponentUsage")
-    private fun createSelectedDot(): ProgressBar {
+    private fun createSelectedDot(totalDuration: Long): ProgressBar {
         val progressBar =
             ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply {
                 layoutParams = LayoutParams(
@@ -147,7 +138,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
                 ).apply {
                     leftMargin = DOT_INDICATOR_MARGIN_START.toPx()
                 }
-                max = ONE_HUNDRED
+                max = totalDuration.toInt()
                 progress = Int.ZERO
             }
 
