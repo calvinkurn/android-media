@@ -13,7 +13,6 @@ import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
-import com.tokopedia.shop.info.domain.entity.ShopInfo as ReimagineShopInfo
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
@@ -29,6 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import com.tokopedia.shop.info.domain.entity.ShopInfo as ReimagineShopInfo
 
 class ShopInfoReimagineViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
@@ -39,7 +39,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val getShopReviewUseCase: ProductRevGetShopReviewReadingListUseCase,
     private val getShopGqlGetShopOperationalHoursListUseCase: GqlGetShopOperationalHoursListUseCase,
     private val getShopPageHeaderLayoutUseCase: GetShopPageHeaderLayoutUseCase,
-    private val getShopProductUseCase: GqlGetShopProductUseCase,
+    private val getShopProductUseCase: GqlGetShopProductUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     companion object {
@@ -47,7 +47,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
     private val _uiState = MutableStateFlow(ShopInfoUiState())
     val uiState = _uiState.asStateFlow()
-    
+
     fun getShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
         launchCatchError(
             context = coroutineDispatcherProvider.io,
@@ -63,10 +63,10 @@ class ShopInfoReimagineViewModel @Inject constructor(
                     limit = 5,
                     page = 1,
                     filterBy = "",
-                    sortBy = ""
+                    sortBy = "rating desc"
                 )
                 val shopReviewDeferred = async { getShopReviewUseCase.execute(shopReviewParam) }
-                
+
                 val shopInfoDeferred = async { getShopInfo(shopId.toIntOrZero()) }
                 val shopNotesDeferred = async { getShopNotes(shopId) }
                 val shopOperationalHoursDeferred = async { getShopOperationalHours(shopId) }
@@ -77,8 +77,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 val shopInfo = shopInfoDeferred.await()
                 val shopNotes = shopNotesDeferred.await()
                 val shopOperationalHours = shopOperationalHoursDeferred.await()
-                
-                
+
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -89,27 +88,27 @@ class ShopInfoReimagineViewModel @Inject constructor(
                             shopName = shopInfo.shopCore.name,
                             shopDescription = shopInfo.shopCore.description,
                             mainLocation = shopInfo.location,
-                            otherLocations = listOf(), //TODO replace with real data
+                            otherLocations = listOf(), // TODO replace with real data
                             operationalHours = shopOperationalHours.toFormattedOperationalHours(),
                             shopJoinDate = shopInfo.createdInfo.openSince,
-                            totalProduct = 2, //TODO replace with real data
+                            totalProduct = 2, // TODO replace with real data
                             shopUsp = shopHeaderLayout.shopPageGetHeaderLayout.toShopUsp(),
                             showPharmacyLicenseBadge = shouldShowPharmacyLicenseBadge(shopInfo)
                         ),
                         rating = shopRating,
                         review = shopReview,
                         shopPerformance = ShopPerformance(
-                            totalProductSoldCount = "", //TODO replace with real data
-                            chatPerformance = "", //TODO replace with real data
+                            totalProductSoldCount = "", // TODO replace with real data
+                            chatPerformance = "", // TODO replace with real data
                             orderProcessTime = shopHeaderLayout.shopPageGetHeaderLayout.toOrderProcessTime()
                         ),
                         shopNotes = shopNotes.toShopNotes(),
                         shipments = shopInfo.shipments.toShipments(),
                         showEpharmacyInfo = shouldShowPharmacyLicenseBadge(shopInfo),
                         epharmacy = ShopEpharmacyInfo(
-                            nearestPickupAddress = "", //TODO replace with real data
-                            nearPickupAddressAppLink = "", //TODO replace with real data
-                            pharmacistOperationalHour = "", //TODO replace with real data
+                            nearestPickupAddress = "", // TODO replace with real data
+                            nearPickupAddressAppLink = "", // TODO replace with real data
+                            pharmacistOperationalHour = "", // TODO replace with real data
                             pharmacistName = shopInfo.epharmacyInfo.apj,
                             siaNumber = shopInfo.epharmacyInfo.siaNumber,
                             sipaNumber = shopInfo.epharmacyInfo.sipaNumber,
@@ -117,28 +116,27 @@ class ShopInfoReimagineViewModel @Inject constructor(
                         )
                     )
                 }
-
             },
-            onError = {error ->
+            onError = { error ->
                 _uiState.update { it.copy(isLoading = false, error = error) }
             }
-        ) 
+        )
     }
 
     fun handleCtaExpandPharmacyInfoClick() {
-        _uiState.update { 
+        _uiState.update {
             it.copy(epharmacy = it.epharmacy.copy(collapseEpcharmacyInfo = false))
         }
     }
-    
+
     fun handleCtaViewPharmacyMapClick() {
-        //TODO emit event redirect to gmap
+        // TODO emit event redirect to gmap
     }
-    
+
     fun handleRetryGetShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
         getShopInfo(shopId, localCacheModel)
     }
-    
+
     private suspend fun getShopInfo(shopId: Int): ShopInfo {
         getShopInfoUseCase.isFromCacheFirst = false
         getShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(
@@ -178,18 +176,18 @@ class ShopInfoReimagineViewModel @Inject constructor(
             districtId = ""
             cityId = ""
         }
-        
+
         getShopPageHeaderLayoutUseCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId, districtId, cityId)
         getShopPageHeaderLayoutUseCase.isFromCloud = true
         return getShopPageHeaderLayoutUseCase.executeOnBackground()
     }
-    
-    private fun isMyShop(shopId: String) : Boolean {
+
+    private fun isMyShop(shopId: String): Boolean {
         return shopId == userSessionInterface.shopId
     }
-    
+
     private fun List<ShopNoteModel>.toShopNotes(): List<ShopNote> {
-        return map {shopNote -> 
+        return map { shopNote ->
             ShopNote(id = shopNote.id.orEmpty(), title = shopNote.title.orEmpty())
         }
     }
@@ -203,7 +201,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
             )
         }
     }
-    
+
     private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): Map<String, List<String>> {
         val operationalHours = mutableMapOf<String, String>()
 
@@ -223,18 +221,18 @@ class ShopInfoReimagineViewModel @Inject constructor(
         }
 
         val groupedByHours = operationalHours.groupByHours()
-        
+
         return groupedByHours
     }
-    
+
     private fun ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.toOrderProcessTime(): String {
-        val shopPerformance= this.widgets.firstOrNull { it.name == "shop_performance" }
+        val shopPerformance = this.widgets.firstOrNull { it.name == "shop_performance" }
         if (shopPerformance == null) return ""
-        
+
         val shopPerformanceListComponent = shopPerformance.listComponent
         val shopHandling = shopPerformanceListComponent.firstOrNull { it.name == "shop_handling" }
         if (shopHandling == null) return ""
-        
+
         val listText = shopHandling.data.listText
         val textHtmls = listText.map { it.textHtml }
         return textHtmls.firstOrNull().orEmpty()
@@ -261,14 +259,14 @@ class ShopInfoReimagineViewModel @Inject constructor(
         val hasPharmacyFulfilmentService = shopInfo.partnerInfo.any { partnerInfo ->
             partnerInfo.fsType == ID_FULFILLMENT_SERVICE_E_PHARMACY
         }
-        
+
         if (!hasPharmacyFulfilmentService) {
             return false
         }
-        
+
         return true
     }
-    
+
     private fun Map<String, String>.groupByHours(): Map<String, List<String>> {
         return this.entries.groupBy(
             keySelector = { it.value },
