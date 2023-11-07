@@ -24,7 +24,6 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
 
     private var countDownTimer: CountDownTimer? = null
     private var progressAnimator: ObjectAnimator? = null
-    private var previousTotalDuration: Long = 0
     private var intervalDuration: Long = 0
     private var previousProgressMillis: Long = 0
     private var onTimerFinish: () -> Unit = {}
@@ -56,7 +55,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     ) {
         lifecycle.addObserver(this)
 
-        this.previousTotalDuration = config.totalDuration
+        this.previousProgressMillis = config.totalDuration
         this.totalDuration = config.totalDuration
         this.intervalDuration = config.intervalDuration
         this.onTimerFinish = onTimerFinish
@@ -80,7 +79,6 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         }
 
         startTimer(
-            previousTotalDuration = previousTotalDuration,
             totalDuration = config.totalDuration,
             intervalDuration = config.intervalDuration,
             onTimerFinish = onTimerFinish
@@ -99,21 +97,11 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     }
 
     private fun startTimer(
-        previousTotalDuration: Long,
         totalDuration: Long,
         intervalDuration: Long,
         onTimerFinish: () -> Unit
     ) {
-        println("Timer. startTimer with total duration $totalDuration")
         val progressBar = getSelectedTabIndicator()
-
-        if (previousTotalDuration == totalDuration) {
-            // Start mode
-            progressAnimator?.setIntValues(Int.ZERO)
-        } else {
-            // Resume mode
-            progressAnimator?.setIntValues(previousTotalDuration.toInt())
-        }
 
         progressAnimator = ObjectAnimator.ofInt(progressBar, "progress", 0)
         progressAnimator?.duration = totalDuration
@@ -141,9 +129,11 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     }
 
     private fun resumeTimer() {
-        val remainingTime = totalDuration - previousProgressMillis
-        println("Timer. resumeTimer. Countdown from $remainingTime to 0")
-        startTimer(previousTotalDuration, remainingTime, intervalDuration, onTimerFinish)
+        startTimer(
+            totalDuration = totalDuration,
+            intervalDuration = intervalDuration,
+            onTimerFinish = onTimerFinish
+        )
     }
 
     private fun cancelTimer() {
