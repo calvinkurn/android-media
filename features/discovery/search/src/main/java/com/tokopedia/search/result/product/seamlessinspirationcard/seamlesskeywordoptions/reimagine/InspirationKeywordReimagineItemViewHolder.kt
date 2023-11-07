@@ -15,14 +15,15 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationKeywordReimagineItemBinding
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListener
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.dialog.R as dialogR
 
 class InspirationKeywordReimagineItemViewHolder(
@@ -64,21 +65,33 @@ class InspirationKeywordReimagineItemViewHolder(
         val containerView = binding?.searchInspirationKeywordReimagineContainer
         val context = containerView?.context?:return
         val heightContainer = context.getHeightImageDimension()
+        val marginToImage = context.getMarginLeftTextToImage()
+        setMarginLeftTextKeyword(marginToImage)
+        setContainerLayoutHeight(heightContainer)
         containerView.background = null
-        containerView.setLayoutHeight(heightContainer)
-        containerView.setMargin(0, 0, 0, 0)
     }
 
     private fun containerIconReimagine() {
         val containerView = binding?.searchInspirationKeywordReimagineContainer
         val context = containerView?.context?:return
         val heightContainer = context.getHeightIconDimension()
-        val marginTop = context.getMarginVertical()
+        val marginToIcon = context.getMarginLeftTextToIcon()
+        setMarginLeftTextKeyword(marginToIcon)
+        setContainerLayoutHeight(heightContainer)
         containerView.background = ContextCompat.getDrawable(
             context,
             R.drawable.search_background_inspiration_keyword_reimagine)
-        containerView.setLayoutHeight(heightContainer)
-        containerView.setMargin(0, marginTop, 0, 0)
+    }
+
+    private fun setMarginLeftTextKeyword(marginLeft: Int){
+        val textView = binding?.searchInspirationKeywordReimagineKeyword
+        val marginRight = textView?.context?.getMarginRight().orZero()
+        textView?.setMargin(marginLeft, 0,marginRight,0)
+    }
+
+    private fun setContainerLayoutHeight(height: Int) {
+        val containerView = binding?.searchInspirationKeywordReimagineContainer
+        containerView?.setLayoutHeight(height)
     }
 
     private fun setImage(inspirationKeywordDataView: InspirationKeywordDataView) {
@@ -96,7 +109,10 @@ class InspirationKeywordReimagineItemViewHolder(
     private fun setImageKeyword(inspirationKeywordDataView: InspirationKeywordDataView) {
         val iconKeyword = binding?.searchInspirationKeywordReimagineImage
         iconKeyword?.shouldShowWithAction(!type.isIconKeyword()){
-            iconKeyword.loadImage(inspirationKeywordDataView.imageKeyword)
+            iconKeyword.loadImageRounded(
+                inspirationKeywordDataView.imageKeyword,
+                8f.toPx()
+            )
         }
     }
 
@@ -135,12 +151,12 @@ class InspirationKeywordReimagineItemViewHolder(
             StyleSpan(Typeface.BOLD)
     }
 
-    private fun Context.getMarginVertical(): Int =
-        this
-            .resources
-            ?.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_8)
-            .orZero()
-
+    private fun Context.getMarginLeftTextToImage(): Int =
+        this.resources?.getDimensionPixelSize(dialogR.dimen.unify_space_8).orZero()
+    private fun Context.getMarginLeftTextToIcon(): Int =
+        this.resources?.getDimensionPixelSize(dialogR.dimen.unify_space_4).orZero()
+    private fun Context.getMarginRight(): Int? =
+        this.resources?.getDimensionPixelSize(dialogR.dimen.unify_space_8)
     private fun Context.getHeightIconDimension(): Int =
         this.resources?.getDimensionPixelSize(dialogR.dimen.unify_space_40).orZero()
     private fun Context.getHeightImageDimension(): Int =

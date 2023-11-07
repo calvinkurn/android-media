@@ -28,6 +28,6 @@
     <dimen name="search_bundle_carousel_padding_top">16dp</dimen>
     <dimen name="search_bundle_carousel_bundle_list_margin_top_reimagine">12dp</dimen>
     <dimen name="search_bundle_carousel_bundle_list_margin_control">8dp</dimen>
-    <dimen name="search_result_page_product_inspiration_keyword_vertical">6dp</dimen>
+    <dimen name="search_result_page_product_inspiration_keyword_height_image_container">52dp</dimen>
 
 </resources>
