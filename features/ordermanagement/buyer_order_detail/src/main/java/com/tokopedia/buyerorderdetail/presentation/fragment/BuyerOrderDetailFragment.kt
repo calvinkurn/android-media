@@ -619,8 +619,11 @@ open class BuyerOrderDetailFragment :
             is SavingsWidgetUiState.Error -> {
                 stickyActionButton?.hideSavingWidget()
             }
+            is SavingsWidgetUiState.Hide -> {
+                stickyActionButton?.hideSavingWidget()
+            }
             else -> {
-               //noop
+                //noop
             }
         }
     }

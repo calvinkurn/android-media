@@ -61,7 +61,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.emitAll
@@ -139,19 +138,10 @@ class BuyerOrderDetailViewModel @Inject constructor(
     ).toStateFlow(OrderInsuranceUiState.Loading)
     private val epharmacyInfoUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapEpharmacyInfoUiState
-    ).catch { t ->
-        // There is a case that additional_info returning null from backend, so make this default yet
-        // it will be hide in the section
-        emit(EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel()))
-    }.toStateFlow(EpharmacyInfoUiState.Loading)
-
+    ).toStateFlow(EpharmacyInfoUiState.Loading)
     private val savingsWidgetUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapSavingsWidgetUiState
-    ).catch { t ->
-        // There is a case that additional_info returning null from backend, so make this default yet
-        // it will be hide in the section
-        emit(SavingsWidgetUiState.Hide)
-    }.toStateFlow(SavingsWidgetUiState.Hide)
+    ).toStateFlow(SavingsWidgetUiState.Hide)
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState,
@@ -409,18 +399,26 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private fun mapEpharmacyInfoUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): EpharmacyInfoUiState {
-        return EpharmacyInfoUiStateMapper.map(
-            getBuyerOrderDetailDataRequestState,
-            epharmacyInfoUiState.value
-        )
+        return try {
+            EpharmacyInfoUiStateMapper.map(
+                getBuyerOrderDetailDataRequestState,
+                epharmacyInfoUiState.value
+            )
+        } catch (e:Throwable) {
+            EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel())
+        }
     }
 
     private fun mapSavingsWidgetUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): SavingsWidgetUiState {
-        return SavingsWidgetUiStateMapper.map(
-            getBuyerOrderDetailDataRequestState
-        )
+        return try {
+            SavingsWidgetUiStateMapper.map(
+                getBuyerOrderDetailDataRequestState
+            )
+        } catch (e: Throwable) {
+            SavingsWidgetUiState.Hide
+        }
     }
 
     private fun mapProductListUiState(
