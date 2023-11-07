@@ -121,7 +121,9 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         attachmentView.layoutParams = params
 
         val imgAttachmentImage = attachmentView.findViewById<ImageUnify>(R.id.imgAttachmentImage)
-        imgAttachmentImage.loadImage(attachment.thumbnailURL) val tpgCollapsedAttachmentCount = attachmentView.findViewById<Typography>(R.id.tpgCollapsedAttachmentCount)
+        imgAttachmentImage.loadImage(attachment.thumbnailURL) 
+        
+        val tpgCollapsedAttachmentCount = attachmentView.findViewById<Typography>(R.id.tpgCollapsedAttachmentCount)
         val collapsedAttachmentCount = totalAttachment - MAX_ATTACHMENT
         tpgCollapsedAttachmentCount.text = getString(
             R.string.shop_info_placeholder_attachment_text,
