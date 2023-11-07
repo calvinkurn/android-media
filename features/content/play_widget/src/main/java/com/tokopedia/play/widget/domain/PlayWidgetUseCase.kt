@@ -50,6 +50,9 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
             is WidgetType.ShopPageExclusiveLaunch -> {
                 param[PlayWidgetQueryParamBuilder.PARAM_CAMPAIGN_ID] = widgetType.campaignId
             }
+            is WidgetType.DiscoveryPage, is WidgetType.DiscoveryPageV2 -> {
+                param[PlayWidgetQueryParamBuilder.PARAM_IS_DYNAMIC_VIDEO] = widgetType.isDynamicVideo
+            }
             else -> {
                 //do nothing with other widget type
             }
@@ -164,6 +167,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
         open val authorType: String = ""
         open val channelTag: String = ""
         open val campaignId: String = ""
+        open val isDynamicVideo: Boolean = false
 
         data class ShopPage(val shopId: String) : WidgetType() {
             override val typeKey: String
@@ -216,9 +220,17 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 get() = "shop"
         }
 
-        data class DiscoveryPage(val widgetID: String) : WidgetType() {
+        data class DiscoveryPage(val widgetID: String, override val isDynamicVideo: Boolean) : WidgetType() {
             override val typeKey: String
                 get() = "DISCO_PAGE"
+
+            override val authorId: String
+                get() = widgetID
+        }
+
+        data class DiscoveryPageV2(val widgetID: String, override val isDynamicVideo: Boolean) : WidgetType() {
+            override val typeKey: String
+                get() = "DISCO_PAGE_V2"
 
             override val authorId: String
                 get() = widgetID

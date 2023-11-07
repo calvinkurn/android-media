@@ -87,7 +87,7 @@ class DiscoveryPlayWidgetViewModel(val application: Application, val components:
 
 
     private suspend fun processPlayWidget(widgetID: String): PlayWidgetState {
-        val response = playWidgetTools.getWidgetFromNetwork(widgetType = PlayWidgetUseCase.WidgetType.DiscoveryPage(widgetID))
+        val response = playWidgetTools.getWidgetFromNetwork(widgetType = PlayWidgetUseCase.WidgetType.DiscoveryPage(widgetID, false)) //please pass isDyanamic video here
         return playWidgetTools.mapWidgetToModel(response)
     }
 

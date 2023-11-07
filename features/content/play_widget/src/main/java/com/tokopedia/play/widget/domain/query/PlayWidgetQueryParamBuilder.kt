@@ -31,8 +31,7 @@ class PlayWidgetQueryParamBuilder {
             appendLine("${'$'}$PARAM_WIDGET_TYPE: String!,")
             appendLine("${'$'}$PARAM_AUTHOR_ID: String,")
             appendLine("${'$'}$PARAM_AUTHOR_TYPE: String,")
-            append("${'$'}$PARAM_IS_WIFI: Boolean, ")
-            append("${'$'}$PARAM_IS_DYNAMIC_VIDEO: Boolean")
+            append("${'$'}$PARAM_IS_WIFI: Boolean")
 
             when (widgetType) {
                 is PlayWidgetUseCase.WidgetType.PDPWidget -> {
@@ -43,6 +42,10 @@ class PlayWidgetQueryParamBuilder {
                 is PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch -> {
                     appendLine(",")
                     appendLine("${'$'}$PARAM_CAMPAIGN_ID: String")
+                }
+                is PlayWidgetUseCase.WidgetType.DiscoveryPage, is PlayWidgetUseCase.WidgetType.DiscoveryPageV2 -> {
+                    appendLine(",")
+                    appendLine("${'$'}$PARAM_IS_DYNAMIC_VIDEO: Boolean")
                 }
                 else -> {
                     //do nothing with other widget type
@@ -70,6 +73,10 @@ class PlayWidgetQueryParamBuilder {
                 is PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch -> {
                     appendLine(",")
                     appendLine("${PARAM_CAMPAIGN_ID}: ${'$'}${PARAM_CAMPAIGN_ID}")
+                }
+                is PlayWidgetUseCase.WidgetType.DiscoveryPage, is PlayWidgetUseCase.WidgetType.DiscoveryPageV2 -> {
+                    appendLine(",")
+                    appendLine("${'$'}$PARAM_IS_DYNAMIC_VIDEO: ${'$'}${PARAM_IS_DYNAMIC_VIDEO}")
                 }
                 else -> {
                     //do nothing with other widget type
