@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.core.content.ContextCompat
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.glide.loadImage
@@ -52,7 +51,7 @@ class LoginWidgetView : FrameLayout {
         this.button = itemView.findViewById(R.id.home_login_widget_button)
     }
 
-    fun bind(listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil = HomeThematicUtil()) {
+    fun bind(listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil) {
         this.listener = listener
         renderWidget(homeThematicUtil)
     }
@@ -106,7 +105,7 @@ class LoginWidgetView : FrameLayout {
     }
 
     fun renderTextColor(homeThematicUtil: HomeThematicUtil) {
-        this.title?.setTextColor(ContextCompat.getColor(context, homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN950)))
-        this.subtitle?.setTextColor(ContextCompat.getColor(context, homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN600)))
+        this.title?.setTextColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN950))
+        this.subtitle?.setTextColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN600))
     }
 }

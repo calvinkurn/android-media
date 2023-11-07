@@ -76,6 +76,7 @@ import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Compani
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
+import com.tokopedia.catalog.util.CatalogShareUtil
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.customview.CatalogToolbar
@@ -317,6 +318,14 @@ class CatalogDetailPageFragment :
                 widgetAdapter.addWidget(it.data.widgets)
                 binding?.stickySingleHeaderView?.stickyPosition =
                     widgetAdapter.findPositionNavigation()
+                binding?.toolbar?.shareButton?.setOnClickListener { view ->
+                    CatalogShareUtil(
+                        this@CatalogDetailPageFragment,
+                        it.data.shareProperties
+                    ).showUniversalShareBottomSheet(
+                        viewModel.getUserId()
+                    )
+                }
             } else if (it is Fail) {
                 binding?.showPageError(it.throwable)
             }
@@ -422,7 +431,7 @@ class CatalogDetailPageFragment :
         toolbar.setNavigationOnClickListener {
             activity?.finish()
         }
-        toolbar.shareButton?.gone()
+        toolbar.shareButton?.show()
         toolbar.cartButton?.setOnClickListener {
             if (viewModel.isUserLoggedIn()) {
                 RouteManager.route(context, ApplinkConst.CART)
