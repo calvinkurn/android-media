@@ -1,60 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify2
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/searchInspirationKeywordReimagineCard"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/searchInspirationKeywordReimagineContainer"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:background="?attr/selectableItemBackground"
-    app:card_type="border"
-    app:cardCornerRadius="12dp">
+    android:layout_height="40dp"
+    android:paddingHorizontal="6dp"
+    android:paddingVertical="8dp"
+    android:background="@drawable/search_background_inspiration_keyword_reimagine"
+    android:foreground="?attr/selectableItemBackground">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/searchInspirationKeywordReimagineContainer"
-        android:layout_width="match_parent"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/searchInspirationKeywordReimagineIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="6dp"
+        android:src="@drawable/ic_product_navigation_search_grayscale_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/searchInspirationKeywordReimagineImage"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription"
+        tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/searchInspirationKeywordBarrier"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="6dp"
-        android:layout_marginVertical="8dp">
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="searchInspirationKeywordReimagineIcon
+        ,searchInspirationKeywordReimagineImage" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/searchInspirationKeywordReimagineIcon"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_product_navigation_search_grayscale_24"/>
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/searchInspirationKeywordReimagineImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:visibility="gone"
-            tools:visibility="gone"
-            tools:ignore="ContentDescription" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/searchInspirationKeywordReimagineKeyword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN950_96"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/searchInspirationKeywordBarrier"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
+        tools:text="Product Name Product Name Product Name Product Name Product Name Product Name Product Name" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/searchInspirationKeywordReimagineKeyword"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textColor="@color/Unify_NN950_96"
-            android:visibility="visible"
-            android:layout_marginStart="8dp"
-            app:layout_goneMarginStart="20dp"
-            app:layout_constraintBottom_toBottomOf="@+id/searchInspirationKeywordReimagineImage"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/searchInspirationKeywordReimagineImage"
-            app:layout_constraintTop_toTopOf="@+id/searchInspirationKeywordReimagineImage"
-            app:typographyType="small"
-            tools:text="Product Name Product Name Product Name Product Name Product Name Product Name Product Name" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</com.tokopedia.unifycomponents.CardUnify2>
+</androidx.constraintlayout.widget.ConstraintLayout>

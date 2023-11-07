@@ -9,8 +9,10 @@ import android.text.style.StyleSpan
 import android.text.style.TypefaceSpan
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
@@ -18,11 +20,10 @@ import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationKeywordReimagineItemBinding
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListener
-import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_BORDER
-import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_CLEAR
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.dialog.R as dialogR
 
 class InspirationKeywordReimagineItemViewHolder(
     itemView: View,
@@ -51,12 +52,33 @@ class InspirationKeywordReimagineItemViewHolder(
     }
 
     private fun setContainerView() {
-        val cardView = binding?.searchInspirationKeywordReimagineCard
         val isIconKeyword = type.isIconKeyword()
-        cardView?.cardType = if(isIconKeyword) TYPE_BORDER else TYPE_CLEAR
-        val marginHorizontal = if (isIconKeyword) cardView?.context?.getMarginHorizontal().orZero() else 0
-        val marginVertical = if (isIconKeyword) cardView?.context?.getMarginVertical().orZero() else 0
-        binding?.searchInspirationKeywordReimagineContainer?.setMargin(marginHorizontal, marginVertical, marginHorizontal, marginVertical)
+        if(isIconKeyword) {
+            containerIconReimagine()
+        } else {
+            containerImageReimagine()
+        }
+    }
+
+    private fun containerImageReimagine() {
+        val containerView = binding?.searchInspirationKeywordReimagineContainer
+        val context = containerView?.context?:return
+        val heightContainer = context.getHeightImageDimension()
+        containerView.background = null
+        containerView.setLayoutHeight(heightContainer)
+        containerView.setMargin(0, 0, 0, 0)
+    }
+
+    private fun containerIconReimagine() {
+        val containerView = binding?.searchInspirationKeywordReimagineContainer
+        val context = containerView?.context?:return
+        val heightContainer = context.getHeightIconDimension()
+        val marginTop = context.getMarginVertical()
+        containerView.background = ContextCompat.getDrawable(
+            context,
+            R.drawable.search_background_inspiration_keyword_reimagine)
+        containerView.setLayoutHeight(heightContainer)
+        containerView.setMargin(0, marginTop, 0, 0)
     }
 
     private fun setImage(inspirationKeywordDataView: InspirationKeywordDataView) {
@@ -117,10 +139,10 @@ class InspirationKeywordReimagineItemViewHolder(
         this
             .resources
             ?.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_8)
-            ?: 0
-    private fun Context.getMarginHorizontal(): Int =
-        this
-            .resources
-            ?.getDimensionPixelSize(R.dimen.search_result_page_product_inspiration_keyword_vertical)
-            ?: 0
+            .orZero()
+
+    private fun Context.getHeightIconDimension(): Int =
+        this.resources?.getDimensionPixelSize(dialogR.dimen.unify_space_40).orZero()
+    private fun Context.getHeightImageDimension(): Int =
+        this.resources?.getDimensionPixelSize(dialogR.dimen.unify_space_48).orZero()
 }
