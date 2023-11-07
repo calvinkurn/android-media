@@ -32,14 +32,13 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
         return response.playWidget
     }
 
-    fun setQuery(widgetType: WidgetType, isWifi: Boolean, isDynamicVideo: Boolean = false) {
+    fun setQuery(widgetType: WidgetType, isWifi: Boolean) {
         val param = hashMapOf(
             PlayWidgetQueryParamBuilder.PARAM_AUTHOR_ID to widgetType.authorId,
             PlayWidgetQueryParamBuilder.PARAM_AUTHOR_TYPE to widgetType.authorType,
             PlayWidgetQueryParamBuilder.PARAM_WIDGET_TYPE to widgetType.typeKey,
             PlayWidgetQueryParamBuilder.PARAM_CHANNEL_TAG to widgetType.channelTag,
             PlayWidgetQueryParamBuilder.PARAM_IS_WIFI to isWifi,
-            PlayWidgetQueryParamBuilder.PARAM_IS_DYNAMIC_VIDEO to isDynamicVideo
         )
 
         when (widgetType) {
