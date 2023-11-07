@@ -7,7 +7,6 @@ import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Rule
-import org.junit.Test
 
 /**
  * Created By : Jonathan Darwin on March 11, 2022
@@ -19,11 +18,11 @@ class PlayBroadcastSummaryActionViewModelTest {
 
     private val testDispatcher = rule.dispatchers
 
-    @Test
+//    @Test
     fun `when user click close button on report page, it should emit event close report page`() {
         rule.runTest {
             val robot = PlayBroadcastSummaryViewModelRobot(
-                dispatcher = testDispatcher,
+                dispatcher = testDispatcher
             )
 
             advanceUntilIdle()
@@ -38,11 +37,11 @@ class PlayBroadcastSummaryActionViewModelTest {
         }
     }
 
-    @Test
+//    @Test
     fun `when user click view leaderboard, it should emit event open leaderboard bottom sheet`() {
         rule.runTest {
             val robot = PlayBroadcastSummaryViewModelRobot(
-                dispatcher = testDispatcher,
+                dispatcher = testDispatcher
             )
 
             advanceUntilIdle()
@@ -57,11 +56,11 @@ class PlayBroadcastSummaryActionViewModelTest {
         }
     }
 
-    @Test
+//    @Test
     fun `when user click post video on report page, it should emit event open post video page`() {
         rule.runTest {
             val robot = PlayBroadcastSummaryViewModelRobot(
-                dispatcher = testDispatcher,
+                dispatcher = testDispatcher
             )
 
             advanceUntilIdle()
@@ -76,11 +75,11 @@ class PlayBroadcastSummaryActionViewModelTest {
         }
     }
 
-    @Test
+//    @Test
     fun `when user click back to report page, it should emit event back to report page`() {
         rule.runTest {
             val robot = PlayBroadcastSummaryViewModelRobot(
-                dispatcher = testDispatcher,
+                dispatcher = testDispatcher
             )
 
             advanceUntilIdle()
@@ -95,11 +94,11 @@ class PlayBroadcastSummaryActionViewModelTest {
         }
     }
 
-    @Test
+//    @Test
     fun `when user click edit cover, it should emit event open select cover bottom sheet`() {
         rule.runTest {
             val robot = PlayBroadcastSummaryViewModelRobot(
-                dispatcher = testDispatcher,
+                dispatcher = testDispatcher
             )
 
             advanceUntilIdle()

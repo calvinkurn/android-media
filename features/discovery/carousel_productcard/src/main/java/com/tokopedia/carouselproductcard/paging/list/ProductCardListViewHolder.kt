@@ -5,14 +5,13 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.R
 import com.tokopedia.carouselproductcard.databinding.CarouselPagingItemLayoutBinding
-import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.carouselproductcard.helper.CarouselPagingUtil
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class ProductCardListViewHolder(
     itemView: View,
-    private val paddingStart: Int,
+    util: CarouselPagingUtil,
 ): AbstractViewHolder<ProductCardListDataView>(itemView) {
 
     private var binding: CarouselPagingItemLayoutBinding? by viewBinding()
@@ -21,19 +20,10 @@ internal class ProductCardListViewHolder(
         val layoutParams = binding?.carouselPagingProductCardListView?.layoutParams
 
         if (layoutParams != null) {
-            layoutParams.width = itemWidth()
+            layoutParams.width = util.getItemWidth()
             binding?.carouselPagingProductCardListView?.layoutParams = layoutParams
         }
     }
-
-    private fun itemWidth(): Int =
-        try {
-            val screenWidth = DeviceScreenInfo.getScreenWidth(itemView.context)
-
-            ((screenWidth * SCREEN_SIZE_PERCENTAGE) - paddingStart).toInt()
-        } catch (_: Throwable) {
-            DEFAULT_ITEM_WIDTH_DP.toPx()
-        }
 
     override fun bind(element: ProductCardListDataView) {
         binding?.carouselPagingProductCardListView?.setProductModel(element.productCardModel)
@@ -57,8 +47,5 @@ internal class ProductCardListViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.carousel_paging_item_layout
-
-        private const val DEFAULT_ITEM_WIDTH_DP = 300
-        private const val SCREEN_SIZE_PERCENTAGE = 0.8
     }
 }

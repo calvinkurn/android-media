@@ -323,12 +323,12 @@ open class MainEditorActivity : AppCompatActivity()
     }
 
     private fun defaultHeaderTitle(param: UniversalEditorParam): String {
-        if (param.headerTitle.isNotEmpty()) return param.headerTitle
+        if (param.custom.headerTitle.isNotEmpty()) return param.custom.headerTitle
         return getString(R.string.universal_editor_toolbar_title)
     }
 
     private fun defaultActionButtonText(param: UniversalEditorParam): String {
-        if (param.proceedButtonText.isNotEmpty()) return param.proceedButtonText
+        if (param.custom.headerActionButton.isNotEmpty()) return param.custom.headerActionButton
         return getString(R.string.universal_editor_toolbar_action_button)
     }
 
