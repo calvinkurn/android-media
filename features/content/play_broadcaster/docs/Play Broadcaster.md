@@ -112,37 +112,6 @@ After live stream, users are able to see live reports & transcode their live str
 To open Play Broadcaster without any parameter, all you need to do is using `RouteManager.route()` and use `ApplinkConst.PLAY_BROADCASTER` as the applink.
 
 
-
-```
-fun openPlayBroadcaster() {
-    RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER)
-}
-```
-
-But if you need to send some parameters, you need to add dependency to `content_common` as all the parameter field are stored in this module.
-
-
-
-```
-// your module build.gradle
-dependencies {
-    ...
-    implementation projectOrAar(rootProject.ext.features.contentCommon)
-    ...
-}
-
-// your code
-fun openPlayBroacaster() {
-    val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PLAY_BROADCASTER)
-    intent.putExtra(KEY_AUTHOR_TYPE, TYPE_USER)
-    startActivity(intent)
-}
-```
-
-Here is the list of parameter that you can use:
-
-
-
 | **Parameter** | **Description** | **Key** | **Value** |
 | --- | --- | --- | --- |
 | Author Type | to determine which author is preferred. If you don’t provide this, the last used account will be selected. | author\_type(or you can use `ContentCommonUserType.KEY_AUTHOR_TYPE` ) | - content-user<br/>- content-shop<br/><br/>(or you can use `ContentCommonUserType.TYPE_USER` || `ContentCommonUserType.TYPE_SHOP` |
