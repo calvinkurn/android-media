@@ -9,6 +9,7 @@ import android.widget.LinearLayout.LayoutParams
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
@@ -26,9 +27,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_REVIEW = "review"
         private const val MAX_ATTACHMENT = 5
         private const val LEFT_MARGIN = 4
-        private const val ATTACHMENT_CORNER_RADIUS = 12 
-        
-        fun newInstance(review: ShopReview.Review): ReviewViewPagerItemFragment {
+        private const val ATTACHMENT_CORNER_RADIUS = 12 fun newInstance(review: ShopReview.Review): ReviewViewPagerItemFragment {
             return ReviewViewPagerItemFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BUNDLE_KEY_REVIEW, review)
@@ -39,11 +38,10 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentReviewViewpagerItemBinding>()
     private val review by lazy { arguments?.getParcelable<ShopReview.Review>(BUNDLE_KEY_REVIEW) }
-    
+
     override fun getScreenName(): String = ReviewViewPagerItemFragment::class.java.simpleName
 
     override fun initInjector() {
-
     }
 
     override fun onCreateView(
@@ -65,16 +63,16 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
             binding?.tpgReviewText?.text = MethodChecker.fromHtml(review.reviewText)
             binding?.imgAvatar?.loadImage(review.avatar)
             binding?.tpgReviewerName?.text = review.reviewerName
-            
+
             val hasReviewerLabel = review.reviewerLabel.isNotEmpty()
             if (hasReviewerLabel) {
                 binding?.tpgBullet?.visible()
-                binding?.tpgReviewerLabel?.text = review.reviewerLabel    
+                binding?.tpgReviewerLabel?.text = review.reviewerLabel
             }
-            
+
             binding?.tpgCompletedReview?.text = getString(R.string.shop_info_placeholder_complete_review, review.likeDislike.totalLike)
             binding?.tpgReviewLikeCount?.text = getString(R.string.shop_info_placeholder_useful_review, review.likeDislike.likeStatus)
-            
+
             renderAttachments(review.attachments)
         }
     }
@@ -83,54 +81,54 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         attachments
             .take(MAX_ATTACHMENT)
             .forEachIndexed { index, attachment ->
+                val isFirstItem = index == Int.ZERO
                 val isLastItem = index == MAX_ATTACHMENT - Int.ONE
                 val context = binding?.layoutImagesContainer?.context ?: return
 
                 val attachmentImageView = if (isLastItem) {
                     createAttachmentImageWithCta(attachment, attachments.size)
                 } else {
-                    createAttachmentImage(context, attachment.thumbnailURL)
+                    val marginStart = if (isFirstItem) Int.ZERO else LEFT_MARGIN.toPx()
+                    createAttachmentImage(context, attachment.thumbnailURL, marginStart)
                 }
-                
+
                 binding?.layoutImagesContainer?.addView(attachmentImageView)
             }
     }
-    private fun createAttachmentImage(context: Context, imageUrl: String): ImageUnify {
-        val imageUnify = ImageUnify(context = context).apply { 
+    private fun createAttachmentImage(context: Context, imageUrl: String, marginStartPx: Int): ImageUnify {
+        val imageUnify = ImageUnify(context = context).apply {
             cornerRadius = ATTACHMENT_CORNER_RADIUS
             type = ImageUnify.TYPE_RECT
         }
-        
+
         val params = LayoutParams(IMAGE_REVIEW_SIZE.toPx(), IMAGE_REVIEW_SIZE.toPx())
-        params.marginStart = LEFT_MARGIN.toPx()
-        
+        params.marginStart = marginStartPx
+
         imageUnify.layoutParams = params
-        
+
         imageUnify.loadImage(imageUrl)
-        
+
         return imageUnify
     }
-    
+
     private fun createAttachmentImageWithCta(attachment: ShopReview.Review.Attachment, totalAttachment: Int): View {
         val attachmentView = layoutInflater.inflate(R.layout.item_shop_info_attachment, null, false)
         val params = LayoutParams(IMAGE_REVIEW_SIZE.toPx(), IMAGE_REVIEW_SIZE.toPx())
         params.marginStart = LEFT_MARGIN.toPx()
 
         attachmentView.layoutParams = params
-        
+
         val imgAttachmentImage = attachmentView.findViewById<ImageUnify>(R.id.imgAttachmentImage)
-        imgAttachmentImage.loadImage(attachment.thumbnailURL)    
-        
-        val tpgCollapsedAttachmentCount = attachmentView.findViewById<Typography>(R.id.tpgCollapsedAttachmentCount)
+        imgAttachmentImage.loadImage(attachment.thumbnailURL) val tpgCollapsedAttachmentCount = attachmentView.findViewById<Typography>(R.id.tpgCollapsedAttachmentCount)
         val collapsedAttachmentCount = totalAttachment - MAX_ATTACHMENT
         tpgCollapsedAttachmentCount.text = getString(
             R.string.shop_info_placeholder_attachment_text,
             collapsedAttachmentCount.toString()
         )
-        
+
         return attachmentView
     }
-    
+
     private fun expandReviewText() {
         binding?.tpgReviewText?.maxLines = Int.MAX_VALUE
     }

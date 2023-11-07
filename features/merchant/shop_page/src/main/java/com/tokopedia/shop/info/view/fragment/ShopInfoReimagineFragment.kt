@@ -1,7 +1,6 @@
 package com.tokopedia.shop.info.view.fragment
 
 import android.annotation.SuppressLint
-import com.tokopedia.shop.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,53 +23,51 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.FragmentShopInfoReimagineBinding
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.component.ShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
+import com.tokopedia.shop.info.domain.entity.ShopNote
+import com.tokopedia.shop.info.domain.entity.ShopRating
+import com.tokopedia.shop.info.domain.entity.ShopReview
+import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop.info.view.model.ShopInfoUiState
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoReimagineViewModel
+import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-import com.tokopedia.shop.info.domain.entity.ShopNote
-import com.tokopedia.shop.info.domain.entity.ShopRating
-import com.tokopedia.shop.info.domain.entity.ShopReview
-import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
-import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.ProgressBarUnify
 
 class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoComponent> {
 
     companion object {
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val MARGIN_4_DP = 4
-        
+
         @JvmStatic
         fun newInstance(shopId: String): ShopInfoReimagineFragment {
             return ShopInfoReimagineFragment().apply {
                 arguments = Bundle().apply {
-                   putString(BUNDLE_KEY_SHOP_ID, shopId)
+                    putString(BUNDLE_KEY_SHOP_ID, shopId)
                 }
             }
         }
-
     }
 
     private var binding by autoClearedNullable<FragmentShopInfoReimagineBinding>()
-   
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
-    lateinit var userSession : UserSessionInterface
-
+    lateinit var userSession: UserSessionInterface
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[ShopInfoReimagineViewModel::class.java] }
@@ -85,12 +82,10 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             .shopComponent(ShopComponentHelper().getComponent(application, this))
             .build()
     }
-    
 
     override fun initInjector() {
         component?.inject(this)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -123,49 +118,47 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun setupView() {
         binding?.run {
-            tpgShopPharmacyCtaViewAll.setOnClickListener {  }
-            tpgShopPharmacyCtaViewMaps.setOnClickListener {  }
+            tpgShopPharmacyCtaViewAll.setOnClickListener { }
+            tpgShopPharmacyCtaViewMaps.setOnClickListener { }
         }
     }
 
-    
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.collect { state -> handleUiState(state) }
         }
     }
-    
 
     private fun handleUiState(uiState: ShopInfoUiState) {
         val isLoading = uiState.isLoading
         val isError = uiState.error != null
-        
+
         when {
             isLoading -> renderLoadingState()
             isError -> renderErrorState()
             else -> renderMainContent(uiState)
         }
     }
-    
+
     private fun renderLoadingState() {
         binding?.loader?.visible()
         binding?.mainContent?.gone()
         binding?.globalError?.gone()
     }
-    
+
     private fun renderErrorState() {
         binding?.loader?.gone()
         binding?.mainContent?.gone()
         binding?.globalError?.visible()
     }
-    
+
     private fun renderMainContent(uiState: ShopInfoUiState) {
         binding?.loader?.gone()
         binding?.mainContent?.visible()
         binding?.globalError?.gone()
         renderContent(uiState)
     }
-    
+
     private fun renderContent(uiState: ShopInfoUiState) {
         renderShopCoreInfo(uiState)
         renderShopInfo(uiState)
@@ -176,11 +169,11 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         renderShopDescription(uiState)
         renderShopSupportedShipment(uiState)
     }
-    
+
     private fun renderShopCoreInfo(uiState: ShopInfoUiState) {
         val hasUsp = uiState.info.shopUsp.isNotEmpty()
         val hasPharmacyBadge = uiState.info.showPharmacyLicenseBadge && uiState.showEpharmacyInfo
-            
+
         binding?.run {
             imgShop.loadImage(uiState.info.shopImageUrl)
             imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
@@ -192,14 +185,14 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         val shopNameOnly = !hasUsp && !hasPharmacyBadge
         if (shopNameOnly) {
-            //TODO: Make shop name centered vertically with shop image url
+            // TODO: Make shop name centered vertically with shop image url
         }
     }
-    
+
     private fun renderShopInfo(uiState: ShopInfoUiState) {
         binding?.run {
             tpgShopInfoLocation.text = uiState.info.mainLocation
-            
+
             val isMultiLocation = uiState.info.otherLocations.isNotEmpty()
             tpgShopInfoOtherLocation.isVisible = isMultiLocation
             iconChevronShopLocation.isVisible = isMultiLocation
@@ -209,20 +202,20 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                     uiState.info.otherLocations.size
                 )
             }
-            
+
             renderOperationalHours(uiState.info.operationalHours)
             tpgShopInfoJoinDate.text = uiState.info.shopJoinDate
             tpgShopInfoTotalProduct.text = uiState.info.totalProduct.toString()
         }
     }
-    
+
     private fun renderOperationalHours(operationalHours: Map<String, List<String>>) {
         val linearLayout = binding?.layoutOperationalHoursContainer
         operationalHours.forEach {
             val hour = it.key
             val days = it.value
             val groupedDays = days.joinToString(separator = ", ", postfix = ": ") { it }
-            
+
             val textViewOperationalHour = Typography(context ?: return).apply {
                 val params = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -231,18 +224,17 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                 params.topMargin = MARGIN_4_DP.toPx()
                 layoutParams = params
             }
-            
+
             val operationalHourFormat = "%s %s"
             textViewOperationalHour.text = String.format(operationalHourFormat, groupedDays, hour)
             linearLayout?.addView(textViewOperationalHour)
         }
-        
     }
-    
+
     @SuppressLint("PII Data Exposure")
     private fun renderShopPharmacy(uiState: ShopInfoUiState) {
         val isePharmacy = uiState.showEpharmacyInfo
-        
+
         binding?.run {
             labelShopPharmacyNearestPickup.isVisible = isePharmacy
             labelShopPharmacyPharmacistOpsHour.isVisible = isePharmacy
@@ -251,14 +243,14 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             labelShopPharmacySipaNumber.isVisible = isePharmacy
             tpgShopPharmacyCtaViewMaps.isVisible = isePharmacy
             tpgShopPharmacyCtaViewAll.isVisible = isePharmacy
-            
+
             tpgSectionTitlePharmacyInformation.isVisible = isePharmacy
             tpgShopPharmacyNearestPickup.isVisible = isePharmacy
             tpgShopPharmacyPharmacistOpsHour.isVisible = isePharmacy
             tpgShopPharmacyPharmacistName.isVisible = isePharmacy
             tpgShopPharmacySiaNumber.isVisible = isePharmacy
             tpgShopPharmacySipaNumber.isVisible = isePharmacy
-            
+
             if (isePharmacy) {
                 tpgShopPharmacyNearestPickup.text = uiState.epharmacy.nearestPickupAddress
                 tpgShopPharmacyPharmacistOpsHour.text = uiState.epharmacy.pharmacistOperationalHour
@@ -277,12 +269,12 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun renderRatingAndReviewSummary(rating: ShopRating, review: ShopReview) {
         val showRating = rating.totalRating.isMoreThanZero()
-        
+
         binding?.tpgSectionTitleBuyerReview?.isVisible = showRating
         binding?.iconRating?.isVisible = showRating
         binding?.tpgShopRating?.isVisible = showRating
         binding?.tpgRatingAndReviewText?.isVisible = showRating
-        
+
         if (showRating) {
             val ratingAndReviewText = when {
                 rating.totalRating.isMoreThanZero() && review.totalReviews.isMoreThanZero() -> {
@@ -304,7 +296,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun renderRating(rating: ShopRating) {
         val showRating = rating.totalRating.isMoreThanZero()
-        
+
         binding?.layoutRating?.isVisible = rating.positivePercentageFmt.isNotEmpty()
         val satisfactionPercentage = rating.positivePercentageFmt.digitsOnly().toInt()
         binding?.tpgBuyerSatisfactionPercentage?.text = getString(R.string.shop_info_placeholder_discount_percentage, satisfactionPercentage)
@@ -315,7 +307,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             renderRatingList(rating.detail)
         }
     }
-    
+
     private fun renderRatingList(ratings: List<ShopRating.Detail>) {
         ratings.forEach { rating ->
 
@@ -324,27 +316,25 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             val progressBarRating = ratingView.findViewById<ProgressBarUnify?>(R.id.progressBarRating)
             val tpgTotalRatingNumber = ratingView.findViewById<Typography?>(R.id.tpgTotalRatingNumber)
 
-
             tpgRating.text = rating.rate.toString()
-            progressBarRating.setValue(rating.percentageFloat.toInt()) 
-            tpgTotalRatingNumber.text = rating.formattedTotalReviews
+            progressBarRating.setValue(rating.percentageFloat.toInt()) tpgTotalRatingNumber.text = rating.formattedTotalReviews
             progressBarRating?.progressBarColorType = ProgressBarUnify.COLOR_YELLOW
 
             binding?.layoutRatingBarContainer?.addView(ratingView)
         }
     }
-    
+
     private fun renderTopReview(review: ShopReview) {
         val showReview = review.totalReviews.isMoreThanZero()
-        
+
         binding?.layoutReviewContainer?.isVisible = showReview
         binding?.shopReviewView?.isVisible = showReview
-        
+
         if (showReview) {
-            binding?.shopReviewView?.render(review)    
+            binding?.shopReviewView?.render(viewLifecycleOwner.lifecycle, this, review)
         }
     }
-    
+
     private fun renderShopPerformance(uiState: ShopInfoUiState) {
         binding?.run {
             labelProductSoldCount.text = uiState.shopPerformance.totalProductSoldCount.ifEmpty { "-" }
@@ -355,17 +345,17 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun renderShopNotes(uiState: ShopInfoUiState) {
         val hasShopNotes = uiState.shopNotes.isNotEmpty()
-        
+
         binding?.run {
             tpgSectionTitleShopNotes.isVisible = hasShopNotes
             layoutShopNotesContainer.isVisible = hasShopNotes
-            
+
             if (hasShopNotes) {
                 renderShopNoteList(uiState.shopNotes)
             }
         }
     }
-    
+
     private fun renderShopNoteList(shopNotes: List<ShopNote>) {
         shopNotes.forEach { shopNote ->
             val shopNoteView = layoutInflater.inflate(R.layout.item_shop_info_shop_note, binding?.layoutShopNotesContainer, false)
@@ -380,26 +370,26 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             binding?.layoutShopNotesContainer?.addView(shopNoteView)
         }
     }
-    
+
     private fun renderShopDescription(uiState: ShopInfoUiState) {
         val hasShopDescription = uiState.info.shopDescription.isNotEmpty()
         binding?.tpgShopDescription?.isVisible = hasShopDescription
         binding?.tpgSectionTitleShopNotes?.isVisible = hasShopDescription
-        
+
         binding?.tpgShopDescription?.text = MethodChecker.fromHtml(uiState.info.shopDescription)
     }
 
     private fun renderShopSupportedShipment(uiState: ShopInfoUiState) {
         val hasSupportedShipment = uiState.shipments.isNotEmpty()
-        
+
         binding?.tpgSectionTitleShopShopSupportedShipment?.isVisible = hasSupportedShipment
         binding?.layoutShopSupportedShipmentContainer?.isVisible = hasSupportedShipment
-        
+
         if (hasSupportedShipment) {
             renderShopSupportedShipmentList(uiState.shipments)
         }
     }
-    
+
     private fun renderShopSupportedShipmentList(shipments: List<ShopSupportedShipment>) {
         shipments.forEachIndexed { index, shipment ->
             val shipmentView = layoutInflater.inflate(R.layout.item_shop_info_shipment, binding?.layoutShopSupportedShipmentContainer, false)
@@ -411,13 +401,11 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             imgShipment.loadImage(shipment.imageUrl)
             tpgShipmentName.text = shipment.title
             tpgShipmentServices.text = shipment.serviceNames.joinToString(separator = ", ") { it }
-            
+
             val isLastItem = index == (shipments.size - Int.ONE)
             divider.isVisible = !isLastItem
 
             binding?.layoutShopSupportedShipmentContainer?.addView(shipmentView)
         }
     }
-
-
 }

@@ -9,6 +9,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.R
 import com.tokopedia.unifycomponents.toPx
@@ -17,7 +20,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : LinearLayout(context, attrs, defStyleAttr) {
+) : LinearLayout(context, attrs, defStyleAttr), DefaultLifecycleObserver {
 
     private var countDownTimer: CountDownTimer? = null
     private var progressAnimator: ObjectAnimator? = null
@@ -42,9 +45,12 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
 
     fun renderTabIndicator(
         config: Config,
+        lifecycle: Lifecycle,
         selectedTabIndicatorIndex: Int,
         onTimerFinish: () -> Unit
     ) {
+        lifecycle.addObserver(this)
+
         println("Timer. Executing renderTabIndicator")
         cancelTimer()
         println("Timer. cancelling timer")
@@ -104,7 +110,6 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
             }
 
             override fun onFinish() {
-                // progressBar?.progress = ONE_HUNDRED
                 progressAnimator?.setIntValues(totalDuration.toInt())
 
                 onTimerFinish()
@@ -172,5 +177,29 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         )
 
         return imageView
+    }
+
+    override fun onResume(owner: LifecycleOwner) {
+        println("Timer. onResume")
+        super.onResume(owner)
+        startTimer()
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        println("Timer. onPause")
+        super.onPause(owner)
+        cancelTimer()
+    }
+
+    override fun onStop(owner: LifecycleOwner) {
+        println("Timer. onStop")
+        super.onStop(owner)
+        cancelTimer()
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        println("Timer. onDestroy")
+        super.onDestroy(owner)
+        cancelTimer()
     }
 }

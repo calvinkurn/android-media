@@ -1,12 +1,11 @@
 package com.tokopedia.shop.info.view.custom
 
 import android.content.Context
-import android.content.ContextWrapper
 import android.util.AttributeSet
 import android.view.Gravity
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -27,36 +26,39 @@ class ShopReviewView @JvmOverloads constructor(
 
     companion object {
         private const val COUNTDOWN_TIMER_TOTAL_TIME: Long = 5000
-        private const val COUNTDOWN_TIMER_INTERVAL: Long = 100
+        private const val COUNTDOWN_TIMER_INTERVAL: Long = 200
         private const val DOT_INDICATOR_MARGIN_TOP = 16
     }
 
-    fun render(review: ShopReview) {
+    fun render(lifecycle: Lifecycle, fragment: Fragment, review: ShopReview) {
         val viewpager = createViewpager()
         val tabIndicator = createTabIndicator()
+
         addView(viewpager)
         addView(tabIndicator)
 
-        setupViewPager(viewpager, review, tabIndicator)
+        setupViewPager(viewpager, review, fragment, lifecycle, tabIndicator)
     }
 
     private fun setupViewPager(
         viewPager: ViewPager2,
         review: ShopReview,
+        fragment: Fragment,
+        lifecycle: Lifecycle,
         tabIndicator: ProgressibleTabLayoutView
     ) {
         val fragments = createFragments(review.reviews)
-        val fragmentActivity = context.findActivity() ?: return
 
-        val pagerAdapter = ReviewViewPagerAdapter(fragmentActivity, fragments)
+        val pagerAdapter = ReviewViewPagerAdapter(fragment, fragments)
         viewPager.adapter = pagerAdapter
 
-        addViewPagerPageChangeListener(viewPager, review.reviews.size, tabIndicator)
+        addViewPagerPageChangeListener(viewPager, review.reviews.size, lifecycle, tabIndicator)
     }
 
     private fun addViewPagerPageChangeListener(
         viewPager: ViewPager2,
         reviewCount: Int,
+        lifecycle: Lifecycle,
         tabIndicator: ProgressibleTabLayoutView
     ) {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -72,6 +74,7 @@ class ShopReviewView @JvmOverloads constructor(
 
                 tabIndicator.renderTabIndicator(
                     config = config,
+                    lifecycle = lifecycle,
                     selectedTabIndicatorIndex = position,
                     onTimerFinish = {
                         val currentItem = viewPager.currentItem
@@ -116,19 +119,10 @@ class ShopReviewView @JvmOverloads constructor(
     }
 
     private class ReviewViewPagerAdapter(
-        fragmentActivity: FragmentActivity,
+        fragment: Fragment,
         private val fragments: List<Fragment>
-    ) : FragmentStateAdapter(fragmentActivity) {
+    ) : FragmentStateAdapter(fragment) {
         override fun getItemCount(): Int = fragments.size
         override fun createFragment(position: Int) = fragments[position]
-    }
-
-    private fun Context.findActivity(): FragmentActivity? {
-        var context = this
-        while (context is ContextWrapper) {
-            if (context is FragmentActivity) return context
-            context = context.baseContext
-        }
-        return null
     }
 }
