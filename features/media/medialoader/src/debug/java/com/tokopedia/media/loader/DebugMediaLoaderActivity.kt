@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.data.FailureType
 import com.tokopedia.unifycomponents.Label
 
 /** @suppress */
@@ -29,7 +30,7 @@ open class DebugMediaLoaderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_debug_medialoader)
 
-        edtUrl.setText("")
+        edtUrl.setText("https://images.tokopedia.net/img/cache/200/haryot/2023/10/10/6cf964e4-f3a9-4645-abd3-de8fc3725c83.jpg")
         edtProperties.setText("")
 
         btnEdit.setOnClickListener {
@@ -44,18 +45,24 @@ open class DebugMediaLoaderActivity : AppCompatActivity() {
 
         btnShow.setOnClickListener {
             val url = edtUrl.text.toString().trim()
+            var mType: FailureType? = null
 
-            imgSample.loadImage(url) {
-                shouldTrackNetworkResponse(true)
+            url.getBitmapImageUrl(
+                context = applicationContext,
+                properties = {
+                    shouldTrackNetworkResponse(true)
+                    networkResponse { _, type ->
+                        val isArchived = mType == FailureType.NotFound || mType == FailureType.Gone
 
-                networkResponse { _, failureType ->
-                    label.showWithCondition(failureType != null)
-
-                    if (failureType != null) {
-                        label.setLabel(failureType.toString())
+                        if (isArchived) {
+                            val archivalUrl = "https://images.tokopedia.net/img/android/order_management/img_product_archived_small.png"
+                            imgSample.loadImage(archivalUrl)
+                        } else {
+                            imgSample.loadImage(url)
+                        }
                     }
                 }
-            }
+            )
         }
     }
 }

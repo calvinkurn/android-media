@@ -9,10 +9,12 @@ import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
+import com.tokopedia.media.loader.module.interceptor.HeaderResponseHttpInterceptor
 import com.tokopedia.media.loader.module.model.AdaptiveImageSizeLoader
 import com.tokopedia.media.loader.module.model.M3U8ModelLoader
 import com.tokopedia.media.loader.module.model.OkHttpModelLoader
 import com.tokopedia.media.loader.utils.FeatureToggleManager
+import okhttp3.OkHttpClient
 import java.io.InputStream
 
 @GlideModule
@@ -42,10 +44,16 @@ class LoaderGlideModule : AppGlideModule() {
          * This method is hansel-able, simply switch the toggle of [hasNetworkClientOverridden].
          */
         if (hasNetworkClientOverridden()) {
+            val okHttpClient = OkHttpClient.Builder()
+
+            if (FeatureToggleManager.instance().shouldAbleToExposeResponseHeader(context)) {
+                okHttpClient.addInterceptor(HeaderResponseHttpInterceptor(context))
+            }
+
             registry.replace(
                 GlideUrl::class.java,
                 InputStream::class.java,
-                OkHttpModelLoader.Factory(context)
+                OkHttpModelLoader.Factory(context, okHttpClient.build())
             )
         }
 

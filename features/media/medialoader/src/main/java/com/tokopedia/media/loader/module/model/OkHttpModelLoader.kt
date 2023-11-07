@@ -13,7 +13,6 @@ import com.tokopedia.media.loader.internal.NetworkResponseManager
 import com.tokopedia.media.loader.tracker.RequestLogger
 import com.tokopedia.media.loader.utils.FeatureToggleManager
 import okhttp3.Call
-import okhttp3.OkHttpClient
 import okhttp3.Response
 import java.io.InputStream
 
@@ -29,26 +28,17 @@ class OkHttpModelLoader constructor(
         return true
     }
 
-    class Factory(private val context: Context) : ModelLoaderFactory<GlideUrl, InputStream> {
+    class Factory constructor(
+        private val context: Context,
+        private val client: Call.Factory
+    ) : ModelLoaderFactory<GlideUrl, InputStream> {
 
         override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<GlideUrl, InputStream> {
-            return OkHttpModelLoader(context, instanceClient())
+            return OkHttpModelLoader(context, client)
         }
 
         override fun teardown() {
             // no-op
-        }
-
-        companion object {
-            @Volatile var client: Call.Factory? = null
-
-            fun instanceClient(): Call.Factory {
-                return synchronized(Factory::class) {
-                    client ?: OkHttpClient().also {
-                        client = it
-                    }
-                }
-            }
         }
     }
 }
@@ -75,7 +65,7 @@ internal class CustomOkHttpStreamFetcher constructor(
 
             // expose headers for MediaListenerBuilder.
             if (FeatureToggleManager.instance().shouldAbleToExposeResponseHeader(context)) {
-                NetworkResponseManager.set(
+                NetworkResponseManager.instance(context).set(
                     response.request.url.toString(),
                     response.headers
                 )
