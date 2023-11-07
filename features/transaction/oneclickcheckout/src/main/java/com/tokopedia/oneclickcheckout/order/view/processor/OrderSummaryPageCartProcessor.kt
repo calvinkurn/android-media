@@ -178,6 +178,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                 }
                 metadata = parse.toString()
             } catch (e: Exception) {
+                Timber.d(e)
                 return null
             }
             val realServiceId = orderShipment.getRealServiceId()
