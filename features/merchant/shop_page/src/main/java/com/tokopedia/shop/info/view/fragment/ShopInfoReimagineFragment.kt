@@ -1,5 +1,6 @@
 package com.tokopedia.shop.info.view.fragment
 
+import android.annotation.SuppressLint
 import com.tokopedia.shop.R
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.digitsOnly
 import com.tokopedia.kotlin.extensions.view.gone
@@ -139,23 +141,29 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         val isError = uiState.error != null
         
         when {
-            isLoading -> {
-                binding?.loader?.visible()
-                binding?.mainContent?.gone()
-                binding?.globalError?.gone()
-            }
-            isError -> {
-                binding?.loader?.gone()
-                binding?.mainContent?.gone()
-                binding?.globalError?.visible()
-            }
-            else -> {
-                binding?.loader?.gone()
-                binding?.mainContent?.visible()
-                binding?.globalError?.gone()
-                renderContent(uiState)
-            }
+            isLoading -> renderLoadingState()
+            isError -> renderErrorState()
+            else -> renderMainContent(uiState)
         }
+    }
+    
+    private fun renderLoadingState() {
+        binding?.loader?.visible()
+        binding?.mainContent?.gone()
+        binding?.globalError?.gone()
+    }
+    
+    private fun renderErrorState() {
+        binding?.loader?.gone()
+        binding?.mainContent?.gone()
+        binding?.globalError?.visible()
+    }
+    
+    private fun renderMainContent(uiState: ShopInfoUiState) {
+        binding?.loader?.gone()
+        binding?.mainContent?.visible()
+        binding?.globalError?.gone()
+        renderContent(uiState)
     }
     
     private fun renderContent(uiState: ShopInfoUiState) {
@@ -184,9 +192,15 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         binding?.run {
             tpgShopInfoLocation.text = uiState.info.mainLocation
             
-            tpgShopInfoOtherLocation.text = getString(R.string.shop_info_placeholder_other_location, uiState.info.otherLocations.size)
-            tpgShopInfoOtherLocation.isVisible = uiState.info.otherLocations.isNotEmpty()
-            iconChevronShopLocation.isVisible = uiState.info.otherLocations.isNotEmpty()
+            val isMultiLocation = uiState.info.otherLocations.isNotEmpty()
+            tpgShopInfoOtherLocation.isVisible = isMultiLocation
+            iconChevronShopLocation.isVisible = isMultiLocation
+            if (isMultiLocation) {
+                tpgShopInfoOtherLocation.text = getString(
+                    R.string.shop_info_placeholder_other_location,
+                    uiState.info.otherLocations.size
+                )
+            }
             
             renderOperationalHours(uiState.info.operationalHours)
             tpgShopInfoJoinDate.text = uiState.info.shopJoinDate
@@ -216,24 +230,27 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         
     }
     
+    @SuppressLint("PII Data Exposure")
     private fun renderShopPharmacy(uiState: ShopInfoUiState) {
+        val isePharmacy = uiState.showEpharmacyInfo
+        
         binding?.run {
-            labelShopPharmacyNearestPickup.isVisible = uiState.showEpharmacyInfo
-            labelShopPharmacyPharmacistOpsHour.isVisible = uiState.showEpharmacyInfo
-            labelShopPharmacyPharmacistName.isVisible = uiState.showEpharmacyInfo
-            labelShopPharmacySiaNumber.isVisible = uiState.showEpharmacyInfo
-            labelShopPharmacySipaNumber.isVisible = uiState.showEpharmacyInfo
-            tpgShopPharmacyCtaViewMaps.isVisible = uiState.showEpharmacyInfo
-            tpgShopPharmacyCtaViewAll.isVisible = uiState.showEpharmacyInfo
+            labelShopPharmacyNearestPickup.isVisible = isePharmacy
+            labelShopPharmacyPharmacistOpsHour.isVisible = isePharmacy
+            labelShopPharmacyPharmacistName.isVisible = isePharmacy
+            labelShopPharmacySiaNumber.isVisible = isePharmacy
+            labelShopPharmacySipaNumber.isVisible = isePharmacy
+            tpgShopPharmacyCtaViewMaps.isVisible = isePharmacy
+            tpgShopPharmacyCtaViewAll.isVisible = isePharmacy
             
-            tpgSectionTitlePharmacyInformation.isVisible = uiState.showEpharmacyInfo
-            tpgShopPharmacyNearestPickup.isVisible = uiState.showEpharmacyInfo
-            tpgShopPharmacyPharmacistOpsHour.isVisible = uiState.showEpharmacyInfo
-            tpgShopPharmacyPharmacistName.isVisible = uiState.showEpharmacyInfo
-            tpgShopPharmacySiaNumber.isVisible = uiState.showEpharmacyInfo
-            tpgShopPharmacySipaNumber.isVisible = uiState.showEpharmacyInfo
+            tpgSectionTitlePharmacyInformation.isVisible = isePharmacy
+            tpgShopPharmacyNearestPickup.isVisible = isePharmacy
+            tpgShopPharmacyPharmacistOpsHour.isVisible = isePharmacy
+            tpgShopPharmacyPharmacistName.isVisible = isePharmacy
+            tpgShopPharmacySiaNumber.isVisible = isePharmacy
+            tpgShopPharmacySipaNumber.isVisible = isePharmacy
             
-            if (uiState.showEpharmacyInfo) {
+            if (isePharmacy) {
                 tpgShopPharmacyNearestPickup.text = uiState.epharmacy.nearestPickupAddress
                 tpgShopPharmacyPharmacistOpsHour.text = uiState.epharmacy.pharmacistOperationalHour
                 tpgShopPharmacyPharmacistName.text = uiState.epharmacy.pharmacistName
@@ -327,8 +344,9 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun renderShopNotes(uiState: ShopInfoUiState) {
+        val hasShopNotes = uiState.shopNotes.isNotEmpty()
+        
         binding?.run {
-            val hasShopNotes = uiState.shopNotes.isNotEmpty()
             tpgSectionTitleShopNotes.isVisible = hasShopNotes
             layoutShopNotesContainer.isVisible = hasShopNotes
             
@@ -354,18 +372,20 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
     
     private fun renderShopDescription(uiState: ShopInfoUiState) {
-        binding?.tpgShopDescription?.isVisible = uiState.info.shopDescription.isNotEmpty()
-        binding?.tpgSectionTitleShopNotes?.isVisible = uiState.info.shopDescription.isNotEmpty()
+        val hasShopDescription = uiState.info.shopDescription.isNotEmpty()
+        binding?.tpgShopDescription?.isVisible = hasShopDescription
+        binding?.tpgSectionTitleShopNotes?.isVisible = hasShopDescription
+        
         binding?.tpgShopDescription?.text = MethodChecker.fromHtml(uiState.info.shopDescription)
     }
 
     private fun renderShopSupportedShipment(uiState: ShopInfoUiState) {
-        val showShopSupportedShipment = uiState.shipments.isNotEmpty()
+        val hasSupportedShipment = uiState.shipments.isNotEmpty()
         
-        binding?.tpgSectionTitleShopShopSupportedShipment?.isVisible = showShopSupportedShipment
-        binding?.layoutShopSupportedShipmentContainer?.isVisible = showShopSupportedShipment
+        binding?.tpgSectionTitleShopShopSupportedShipment?.isVisible = hasSupportedShipment
+        binding?.layoutShopSupportedShipmentContainer?.isVisible = hasSupportedShipment
         
-        if (showShopSupportedShipment) {
+        if (hasSupportedShipment) {
             renderShopSupportedShipmentList(uiState.shipments)
         }
     }
@@ -381,7 +401,9 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             imgShipment.loadImage(shipment.imageUrl)
             tpgShipmentName.text = shipment.title
             tpgShipmentServices.text = shipment.serviceNames.joinToString(separator = ", ") { it }
-            divider.isVisible = index < (shipments.size - 1)
+            
+            val isLastItem = index == (shipments.size - Int.ONE)
+            divider.isVisible = !isLastItem
 
             binding?.layoutShopSupportedShipmentContainer?.addView(shipmentView)
         }

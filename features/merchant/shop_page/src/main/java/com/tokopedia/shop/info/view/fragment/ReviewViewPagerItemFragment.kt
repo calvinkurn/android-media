@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout.LayoutParams
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
@@ -15,6 +16,7 @@ import com.tokopedia.shop.databinding.FragmentReviewViewpagerItemBinding
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class ReviewViewPagerItemFragment : BaseDaggerFragment() {
@@ -22,7 +24,8 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
     companion object {
         private const val IMAGE_REVIEW_SIZE = 56
         private const val BUNDLE_KEY_REVIEW = "review"
-        private const val MAX_ATTACHMENT = 4
+        private const val MAX_ATTACHMENT = 5
+        private const val LEFT_MARGIN = 4
         
         fun newInstance(review: ShopReview.Review): ReviewViewPagerItemFragment {
             return ReviewViewPagerItemFragment().apply {
@@ -53,10 +56,10 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        render(review)
+        renderReview(review)
     }
 
-    private fun render(review: ShopReview.Review?) {
+    private fun renderReview(review: ShopReview.Review?) {
         review?.let {
             binding?.tpgReviewText?.text = MethodChecker.fromHtml(review.reviewText)
             binding?.imgAvatar?.loadImage(review.avatar)
@@ -79,33 +82,51 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         attachments
             .take(MAX_ATTACHMENT)
             .forEachIndexed { index, attachment ->
-                val isLastItem = index == MAX_ATTACHMENT - 1
+                val isLastItem = index == MAX_ATTACHMENT - Int.ONE
                 val context = binding?.layoutImagesContainer?.context ?: return
 
                 val attachmentImageView = if (isLastItem) {
-                    createAttachmentImageWithCta(context)
+                    createAttachmentImageWithCta(attachment, attachments.size)
                 } else {
-                    createAttachmentImage(context)
+                    createAttachmentImage(context, attachment.thumbnailURL)
                 }
                 
-                attachmentImageView.loadImage(attachment.thumbnailURL)
-
                 binding?.layoutImagesContainer?.addView(attachmentImageView)
             }
     }
-    private fun createAttachmentImage(context: Context): ImageUnify {
+    private fun createAttachmentImage(context: Context, imageUrl: String): ImageUnify {
         val imageUnify = ImageUnify(context = context)
         val params = LayoutParams(IMAGE_REVIEW_SIZE.toPx(), IMAGE_REVIEW_SIZE.toPx())
+        params.marginStart = LEFT_MARGIN.toPx()
+        
         imageUnify.layoutParams = params
+        
+        imageUnify.loadImage(imageUrl)
         
         return imageUnify
     }
     
-    private fun createAttachmentImageWithCta(context: Context): ImageUnify {
-        val imageUnify = ImageUnify(context = context)
+    private fun createAttachmentImageWithCta(attachment: ShopReview.Review.Attachment, totalAttachment: Int): View {
+        val attachmentView = layoutInflater.inflate(R.layout.item_shop_info_attachment, null, false)
         val params = LayoutParams(IMAGE_REVIEW_SIZE.toPx(), IMAGE_REVIEW_SIZE.toPx())
-        imageUnify.layoutParams = params
+        params.marginStart = LEFT_MARGIN.toPx()
 
-        return imageUnify
+        attachmentView.layoutParams = params
+        
+        val imgAttachmentImage = attachmentView.findViewById<ImageUnify>(R.id.imgAttachmentImage)
+        imgAttachmentImage.loadImage(attachment.thumbnailURL)    
+        
+        val tpgCollapsedAttachmentCount = attachmentView.findViewById<Typography>(R.id.tpgCollapsedAttachmentCount)
+        val collapsedAttachmentCount = totalAttachment - MAX_ATTACHMENT
+        tpgCollapsedAttachmentCount.text = getString(
+            R.string.shop_info_placeholder_attachment_text,
+            collapsedAttachmentCount.toString()
+        )
+        
+        return attachmentView
+    }
+    
+    private fun expandReviewText() {
+        binding?.tpgReviewText?.maxLines = Int.MAX_VALUE
     }
 }

@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.view.fragment.ReviewViewPagerItemFragment
 import com.tokopedia.unifycomponents.toPx
@@ -75,11 +77,11 @@ class ShopReviewView @JvmOverloads constructor(
                     },
                     onTimerFinish = {
                         val currentItem = viewPager.currentItem
-                        val isLastItem = currentItem == reviewCount - 1
-                        val nextItem = currentItem + 1
+                        val isLastItem = currentItem == reviewCount - Int.ONE
+                        val nextItem = currentItem + Int.ONE
 
                         if (isLastItem) {
-                            viewPager.setCurrentItem(0, true)
+                            viewPager.currentItem = Int.ZERO
                         } else {
                             viewPager.setCurrentItem(nextItem, true)
                         }

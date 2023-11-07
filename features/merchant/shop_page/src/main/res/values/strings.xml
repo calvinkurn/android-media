@@ -288,6 +288,7 @@
     <string name="shop_info_placeholder_rating">(%s rating)</string>
     <string name="shop_info_placeholder_review">(%s ulasan)</string>
     <string name="shop_info_placeholder_rating_and_review">(%s rating • %s ulasan)</string>
+    <string name="shop_info_placeholder_attachment_text">Lainnya +%s</string>
 
     <!--Performa Toko-->
     <string name="shop_info_shop_performance">Performa toko</string>
