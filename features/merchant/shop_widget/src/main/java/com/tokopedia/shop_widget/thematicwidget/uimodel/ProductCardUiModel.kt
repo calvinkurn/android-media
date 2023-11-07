@@ -36,8 +36,8 @@ data class ProductCardUiModel(
     var totalProduct: Int = 0,
     var totalProductWording: String = "",
     var rvState: Parcelable? = null,
-    var isFulfillment: Boolean?,
-    var warehouseId: String
+    var isFulfillment: Boolean? = null,
+    var warehouseId: String = ""
 ) : Visitable<ProductCardTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: ProductCardTypeFactory): Int {
         return typeFactory.type(this)
