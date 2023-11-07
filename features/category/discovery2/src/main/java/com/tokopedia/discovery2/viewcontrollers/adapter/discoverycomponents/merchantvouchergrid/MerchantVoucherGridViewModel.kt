@@ -55,15 +55,13 @@ class MerchantVoucherGridViewModel(
     @Inject
     var useCase: MerchantVoucherUseCase? = null
 
-    var isLoading = false
+    private var isLoading = true
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + SupervisorJob()
 
     fun loadFirstPageCoupon() {
         _couponList.value = Success(ArrayList(layout))
-
-        isLoading = true
 
         launchCatchError(
             block = {
@@ -87,8 +85,10 @@ class MerchantVoucherGridViewModel(
         )
     }
 
-    fun loadMore() {
-        if (getComponentAdditionalInfo()?.nextPage.isNullOrBlank()) return
+    fun loadMore(
+        isAtTheBottomOfThePage: Boolean
+    ) {
+        if (getComponentAdditionalInfo()?.nextPage.isNullOrBlank() || isLoading || !isAtTheBottomOfThePage) return
 
         isLoading = true
 
