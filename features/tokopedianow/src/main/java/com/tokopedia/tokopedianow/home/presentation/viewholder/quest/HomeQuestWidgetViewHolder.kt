@@ -105,6 +105,7 @@ class HomeQuestWidgetViewHolder(
                 if(!isSelected) {
                     shouldTrackSwipe = false
                     smoothSnapToPosition(index)
+                    listener?.onClickProgressiveBar()
                 }
             }
 
