@@ -10,83 +10,43 @@ import com.tokopedia.media.loader.data.Header
 import com.tokopedia.media.loader.data.toModel
 import okhttp3.Headers
 
-//class NetworkResponseManager private constructor() {
-//    private val headers = mutableMapOf<String, String>()
-//
-//    fun set(url: String, header: Headers) {
-//        if (header.size <= 0) return
-//        if (hasReachedThreshold()) forceResetCache()
-//
-//        headers[url] = header
-//            .toMultimap()
-//            .toModel()
-//            .toJson()
-//    }
-//
-//    fun header(url: String): List<Header> {
-//        val header = headers[url] ?: return emptyList()
-//
-//        return try {
-//            header.toModel()
-//        } catch (t: Throwable) {
-//            FirebaseCrashlytics.getInstance().recordException(t)
-//            emptyList()
-//        }
-//    }
-//
-//    fun forceResetCache() {
-//        headers.clear()
-//    }
-//
-//    private fun hasReachedThreshold(): Boolean {
-//        return headers.size == CACHE_THRESHOLD
-//    }
-//
-//    private fun List<Header>.toJson(): String {
-//        return Gson().toJson(this)
-//    }
-//
-//    private fun String.toModel(): List<Header> {
-//        return Gson().fromJson(
-//            this,
-//            object : TypeToken<List<Header>>() {}.type
-//        )
-//    }
-//
-//    companion object {
-//        private const val CACHE_THRESHOLD = 100 // 100 images cache limit
-//
-//        @Volatile
-//        private var manager: NetworkResponseManager? = null
-//
-//        fun instance(context: Context): NetworkResponseManager {
-//            return manager ?: synchronized(this) {
-//                NetworkResponseManager().also {
-//                    manager = it
-//                }
-//            }
-//        }
-//    }
-//}
 class NetworkResponseManager(context: Context) {
 
     private val editor = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
+    private val caches = mutableMapOf<String, String>()
 
+    /**
+     * A setter the cache of a response header.
+     *
+     * This setter maintain the caching mechanism to share the response header from [CustomOkHttpStreamFetcher]
+     * into [MediaListenerBuilder]. The setter has two pipelines to maintain the performance and
+     * efficiency, such shared-preferences for persistent data and Map literals for temporary data.
+     *
+     * If the url got hit at first, then we will gather the header response from Map. But if
+     * the second request occurred, then we will read the data from shared preferences.
+     */
     fun set(url: String, header: Headers) {
         if (header.size <= 0) return
         if (hasReachedThreshold()) forceResetCache()
+        if (caches[url]?.isNotEmpty() == true || header(url).isNotEmpty()) return
 
         val value = header
             .toMultimap()
             .toModel()
             .toJson()
 
+        caches[url] = value
         editor.edit().putString(url, value).apply()
     }
 
+    /**
+     * A getter of cache header.
+     *
+     * Get a cache of network response header. The data priority comes from Map literals. If the
+     * data from Map doesn't exist, then fetch from shared preferences.
+     */
     fun header(url: String): List<Header> {
-        val header = editor.getString(url, "") ?: return emptyList()
-        if (header.isEmpty()) return emptyList()
+        val header = caches[url] ?: editor.getString(url, "") ?: return emptyList()
 
         return try {
             header.toModel()
@@ -96,10 +56,13 @@ class NetworkResponseManager(context: Context) {
         }
     }
 
+    // clear cache if needed, it will be triggered by [properties.isForceClearHeaderCache]
     fun forceResetCache() {
+        caches.clear()
         editor.edit().clear().apply()
     }
 
+    // to mitigate the over heavy computation and storage, we have to limit the amount of caches.
     private fun hasReachedThreshold(): Boolean {
         return editor.all.size == CACHE_THRESHOLD
     }
@@ -123,9 +86,8 @@ class NetworkResponseManager(context: Context) {
 
         fun instance(context: Context): NetworkResponseManager {
             synchronized(this) {
-                return manager ?: NetworkResponseManager(context).also {
-                    manager = it
-                }
+                return manager ?: NetworkResponseManager(context.applicationContext)
+                    .also { manager = it }
             }
         }
     }
