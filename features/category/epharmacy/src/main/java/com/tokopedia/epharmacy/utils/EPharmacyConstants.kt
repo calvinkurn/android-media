@@ -123,9 +123,7 @@ const val REMINDER_ILLUSTRATION_IMAGE = "https://images.tokopedia.net/img/pharma
 
 const val EPHARMACY_ANDROID_SOURCE = "ANDROID"
 const val UPLOAD_PAGE_SOURCE_PAP = "PAP"
-const val QUANTITY_PAGE_SOURCE = "QTY"
 const val OUTSIDE_WORKING_HOURS_SOURCE = "outside_working_hours"
 const val WORKING_HOURS_SOURCE = "working_hours"
 const val EPHARMACY_HALF_ALPHA = 0.5f
 const val EPHARMACY_FULL_ALPHA = 1.0f
-const val EPHARMACY_MINI_CONSULT = "MINI_CONSULT"

@@ -65,7 +65,6 @@ import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewMode
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -569,9 +568,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             PrescriptionActionType.REDIRECT_OPTION.type -> {
                 startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note)
             }
-            PrescriptionActionType.REDIRECT_OPTION_ONLY_CONSULT.type -> {
-                startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note, true)
-            }
             PrescriptionActionType.REDIRECT_PRESCRIPTION.type -> {
                 tokoConsultationId?.let {
                     ePharmacyPrescriptionAttachmentViewModel.getConsultationDetails(it)
@@ -594,9 +590,9 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         operatingSchedule: EG.ConsultationSource.OperatingSchedule?,
         note: String?
     ) {
-        if (tokoConsultationId.isNullOrBlank()){
+        if (tokoConsultationId.isNullOrBlank()) {
             startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note, true)
-        }else {
+        } else {
             startMiniConsultation(enablerName, groupId)
         }
     }

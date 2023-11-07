@@ -225,28 +225,31 @@ object EPharmacyUtils {
             CheckoutCartGeneralParams.Transaction(
                 arrayListOf(
                     CheckoutCartGeneralParams.Transaction.BusinessData(
-                    ePharmacyCheckoutParams.businessId,
-                    arrayListOf(
-                        CheckoutCartGeneralParams.Transaction.BusinessData.CartGroup(
-                            ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.cartGroupId, arrayListOf(
-                                CheckoutCartGeneralParams.Transaction.BusinessData.CartGroup.Cart(
-                                    ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.cartId,
-                                    CheckoutCartGeneralParams.Transaction.BusinessData.CartGroup.Cart.Metadata(
-                                        ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.metadata?.enablerId,
-                                        ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.metadata?.epharmacyGroupId,
-                                        ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.metadata?.tokoConsultationId
-                                    ),
-                                    ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.price,
-                                    ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.productId,
-                                    ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.quantity,
-                                    ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.shopId
+                        ePharmacyCheckoutParams.businessId,
+                        arrayListOf(
+                            CheckoutCartGeneralParams.Transaction.BusinessData.CartGroup(
+                                ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.cartGroupId,
+                                arrayListOf(
+                                    CheckoutCartGeneralParams.Transaction.BusinessData.CartGroup.Cart(
+                                        ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.cartId,
+                                        CheckoutCartGeneralParams.Transaction.BusinessData.CartGroup.Cart.Metadata(
+                                            ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.metadata?.enablerId,
+                                            ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.metadata?.epharmacyGroupId,
+                                            ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.metadata?.tokoConsultationId
+                                        ),
+                                        ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.price,
+                                        ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.productId,
+                                        ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.quantity,
+                                        ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.shopId
+                                    )
                                 )
                             )
-                        )
-                    ),
-                    ePharmacyCheckoutParams.checkoutBusinessType,
-                    ePharmacyCheckoutParams.checkoutDataType,
-                )), ePharmacyCheckoutParams.flowType
+                        ),
+                        ePharmacyCheckoutParams.checkoutBusinessType,
+                        ePharmacyCheckoutParams.checkoutDataType
+                    )
+                ),
+                ePharmacyCheckoutParams.flowType
             )
         )
     }
@@ -289,7 +292,7 @@ object EPharmacyUtils {
     }
 
     fun getChatDokterNote(context: Context?, operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?, note: String?): String {
-        if(operatingSchedule?.isClosingHour == true){
+        if (operatingSchedule?.isClosingHour == true) {
             val openTimeLocal: Date? = formatDateToLocal(dateString = operatingSchedule.daily?.openTime.orEmpty())
             val closeTimeLocal: Date? = formatDateToLocal(dateString = operatingSchedule.daily?.closeTime.orEmpty())
             return context?.resources?.getString(
@@ -308,7 +311,8 @@ object EPharmacyUtils {
             ContextCompat.getColor(
                 context,
                 unifyprinciplesR.color.Unify_Static_Black
-            ), color
+            ),
+            color
         )
         drawable.colorFilter = filter
         return drawable
@@ -326,7 +330,6 @@ object EPharmacyUtils {
 enum class PrescriptionActionType(val type: String) {
     REDIRECT_PWA("REDIRECT_CONSULTATION_PWA"),
     REDIRECT_OPTION("SHOW_PRESCRIPTION_ATTACHMENT_OPTION"),
-    REDIRECT_OPTION_ONLY_CONSULT("SHOW_PRESCRIPTION_CONSULTATION_OPTION"),
     REDIRECT_UPLOAD("REDIRECT_UPLOAD_PRESC_PAGE"),
     REDIRECT_PRESCRIPTION("REDIRECT_CONSULTATION_PRESCRIPTION"),
     REDIRECT_CHECK_PRESCRIPTION("REDIRECT_CEK_PRESCRIPTION_PAGE")
