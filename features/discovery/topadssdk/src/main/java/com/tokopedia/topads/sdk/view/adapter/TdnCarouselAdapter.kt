@@ -177,7 +177,7 @@ class TdnCarouselAdapter(
             onTdnBannerClicked: (imageData: TopAdsImageViewModel) -> Unit
         ) {
             itemView.setOnClickListener {
-                imageData.applink?.let { applink -> onTdnBannerClicked(imageData) }
+                onTdnBannerClicked(imageData)
                 Timber.d("TDN Banner is clicked")
                 TopAdsUrlHitter(itemView.context).hitClickUrl(
                     this@TdnCarouselAdapter.javaClass.canonicalName,
