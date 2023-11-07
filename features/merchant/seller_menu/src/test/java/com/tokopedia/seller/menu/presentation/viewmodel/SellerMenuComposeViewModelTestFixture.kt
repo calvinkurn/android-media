@@ -1,6 +1,5 @@
 package com.tokopedia.seller.menu.presentation.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaData
@@ -21,8 +20,9 @@ import com.tokopedia.seller.menu.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
 import com.tokopedia.seller.menu.domain.usecase.GetShopScoreLevelUseCase
 import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
+import com.tokopedia.seller.menu.utils.MainCoroutineRule
 import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
-import com.tokopedia.unit.test.rule.UnconfinedTestRule
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -34,17 +34,14 @@ import org.junit.Rule
 open class SellerMenuComposeViewModelTestFixture {
 
     @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
-
-    @get:Rule
-    val coroutineTestRule = UnconfinedTestRule()
+    val instantTaskExecutorRule = MainCoroutineRule()
 
     private lateinit var getAllShopInfoUseCase: GetAllShopInfoUseCase
     private lateinit var getProductListMetaUseCase: GetProductListMetaUseCase
     private lateinit var getSellerMenuNotifications: GetSellerNotificationUseCase
     private lateinit var getShopCreatedInfoUseCase: GetShopCreatedInfoUseCase
     private lateinit var getShopScoreLevelUseCase: GetShopScoreLevelUseCase
-    private lateinit var userSession: UserSessionInterface
+    lateinit var userSession: UserSessionInterface
     private lateinit var adminPermissionMapper: AdminPermissionMapper
 
     protected lateinit var viewModel: SellerMenuComposeViewModel
@@ -66,8 +63,7 @@ open class SellerMenuComposeViewModelTestFixture {
             getSellerMenuNotifications,
             getShopScoreLevelUseCase,
             userSession,
-            adminPermissionMapper,
-            coroutineTestRule.dispatchers
+            CoroutineTestDispatchersProvider
         )
     }
 
