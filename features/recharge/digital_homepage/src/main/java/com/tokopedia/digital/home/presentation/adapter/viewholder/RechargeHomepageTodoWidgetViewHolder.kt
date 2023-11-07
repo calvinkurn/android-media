@@ -36,8 +36,8 @@ class RechargeHomepageTodoWidgetViewHolder(
         private const val SIZE_MAX = 2
         const val SPACE_DP = 8
         private const val BAYAR_SEKALIGUS_TYPE = "BAYAR_SEKALIGUS"
-        private const val POSTPAIDREMINDER_TYPE = "POSTPAIDREMINDER"
-        private const val AUTOPAY_TYPE = "AUTOPAY_ACTIVATE"
+        private const val POSTPAIDREMINDER_TYPE = "POSTPAID"
+        private const val AUTOPAY_TYPE = "AUTOPAY"
     }
 
     private val factory = RechargeHomepageTodoWidgetAdapterTypeFactory(todoWidgetListener, object : RechargeHomepageTodoWidgetCloseProcess {
@@ -118,7 +118,7 @@ class RechargeHomepageTodoWidgetViewHolder(
                         titleTodoWidgetSecond.hide()
                     } else {
                         titleTodoWidgetSecond.show()
-                        titleTodoWidgetSecond.text = element.section.items.first().title
+                        titleTodoWidgetSecond.text = element.section.items.second().title
                     }
                     val stickyLayoutSecond = getStickyLayout(element.section.items.second().widgets)
                     if (stickyLayoutSecond != null) {
@@ -359,12 +359,12 @@ class RechargeHomepageTodoWidgetViewHolder(
         widgets.filter {
             it.type != BAYAR_SEKALIGUS_TYPE
         }.forEach {
-            val item = when (it.type) {
-                AUTOPAY_TYPE -> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayItemModel(
+            val item = when {
+                it.type.startsWith(AUTOPAY_TYPE) -> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayItemModel(
                     it
                 )
 
-                POSTPAIDREMINDER_TYPE -> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetPostReminderItemModel(
+                it.type.startsWith(POSTPAIDREMINDER_TYPE)-> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetPostReminderItemModel(
                     it
                 )
 
