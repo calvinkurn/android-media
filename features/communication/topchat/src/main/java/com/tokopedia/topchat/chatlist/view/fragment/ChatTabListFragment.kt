@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatlist.view.fragment
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,6 +46,7 @@ import com.tokopedia.topchat.chatlist.view.uimodel.base.BaseIncomingItemWebSocke
 import com.tokopedia.topchat.chatlist.view.uimodel.base.BaseIncomingItemWebSocketModel.Companion.ROLE_SELLER
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.WebSocketViewModel
+import com.tokopedia.topchat.common.TopChatErrorLogger
 import com.tokopedia.topchat.common.custom.ToolTipSearchPopupWindow
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -216,7 +216,14 @@ class ChatTabListFragment constructor() :
 
     private suspend fun observeError() {
         viewModel.errorUiState.collectLatest {
-            Log.d("ERROR-TAB", "${it.error}")
+            it.error?.let { (throwable, methodName) ->
+                TopChatErrorLogger.logExceptionToServerLogger(
+                    TopChatErrorLogger.PAGE.TOPCHAT_LIST_TAB,
+                    throwable,
+                    userSession.deviceId.orEmpty(),
+                    methodName
+                )
+            }
         }
     }
 
