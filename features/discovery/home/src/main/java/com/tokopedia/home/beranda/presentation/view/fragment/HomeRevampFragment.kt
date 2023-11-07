@@ -821,6 +821,7 @@ open class HomeRevampFragment :
                 super.onScrolled(recyclerView, dx, dy)
                 scrollPositionY = recyclerView.computeVerticalScrollOffset()
                 updateThematicVerticalPosition()
+                setHomeBottomNavBasedOnScrolling()
                 evaluateHomeComponentOnScroll(recyclerView)
             }
         })
