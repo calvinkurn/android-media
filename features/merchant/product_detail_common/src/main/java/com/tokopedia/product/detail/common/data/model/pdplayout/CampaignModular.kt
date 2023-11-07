@@ -102,9 +102,6 @@ data class CampaignModular(
             originalPrice.getCurrencyFormatted()
         }
 
-        /**
-         * refer to [AtcCommonMapper]
-         */
         if (hideGimmick) {
             priceFmt = price.slashPriceFmt.ifNullOrBlank {
                 discountedPrice.getCurrencyFormatted()

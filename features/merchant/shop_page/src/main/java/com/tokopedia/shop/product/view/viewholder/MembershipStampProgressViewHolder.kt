@@ -38,6 +38,7 @@ class MembershipStampProgressViewHolder(itemView: View, listener: MembershipStam
 
         itemView.show()
         membershipAdapter?.setMembershipData(element.listOfData)
+        rvMembership?.isNestedScrollingEnabled = false
         rvMembership?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)

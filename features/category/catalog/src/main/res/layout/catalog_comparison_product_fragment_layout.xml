@@ -39,16 +39,16 @@
         android:visibility="visible"
         />
 
-    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+    <ImageView
         android:id="@+id/catalog_no_product_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_220"
         android:background="@color/Unify_NN0"
         android:gravity="center"
+        android:contentDescription="catalog_no_product_view"
         android:paddingTop="@dimen/dp_40"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/catalog_product_search"
-        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/catalog_no_products_state_big.png"
         app:imageDpiSupportType="singleDpi"
         tools:visibility="visible" />
 
