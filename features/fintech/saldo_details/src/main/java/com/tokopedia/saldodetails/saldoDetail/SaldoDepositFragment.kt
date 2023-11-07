@@ -730,7 +730,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showTickerMessage(withdrawalTicker: String) {
-        binding?.tickerSaldoWithdrawalInfo?.apply {
+        ticker_saldo_withdrawal_info?.apply {
             this.show()
             this.setHtmlDescription(withdrawalTicker)
         }
@@ -772,10 +772,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideTickerMessage() {
-        binding?.tickerSaldoWithdrawalInfo?.apply {
-            this.show()
-            this.setHtmlDescription("lalala")
-        }
+        ticker_saldo_withdrawal_info?.hide()
     }
 
     private fun setLateCount(count: Int) {
