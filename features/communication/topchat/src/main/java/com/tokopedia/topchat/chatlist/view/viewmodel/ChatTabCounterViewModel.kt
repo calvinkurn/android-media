@@ -1,10 +1,10 @@
 package com.tokopedia.topchat.chatlist.view.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chatlist.domain.pojo.NotificationsPojo
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListLastVisitedTabUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatNotificationCounterUseCase
 import com.tokopedia.topchat.chatlist.view.TopChatListAction
 import com.tokopedia.topchat.chatlist.view.uistate.TopChatListErrorUiState
@@ -26,6 +26,7 @@ import javax.inject.Inject
 
 class ChatTabCounterViewModel @Inject constructor(
     private val chatNotificationCounterUseCase: GetChatNotificationCounterUseCase,
+    private val chatLastVisitedTabUseCase: GetChatListLastVisitedTabUseCase,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -37,6 +38,11 @@ class ChatTabCounterViewModel @Inject constructor(
     )
     val chatListNotificationUiState = _chatListNotificationUiState.asStateFlow()
 
+    private val _chatLastSelectedTab = MutableStateFlow<TopChatResult<Int>>(
+        TopChatResult.Loading
+    )
+    val chatLastSelectedTab = _chatLastSelectedTab.asStateFlow()
+
     private val _errorUiState = MutableSharedFlow<TopChatListErrorUiState>(
         extraBufferCapacity = 16
     )
@@ -45,6 +51,7 @@ class ChatTabCounterViewModel @Inject constructor(
     fun setupViewModelObserver() {
         _actionFlow.process()
         observeNotificationCounter()
+        observeLastVisitedTab()
     }
 
     fun processAction(action: TopChatListAction) {
@@ -64,6 +71,9 @@ class ChatTabCounterViewModel @Inject constructor(
                         isSellerTab = it.isSellerTab,
                         adjustableCounter = it.adjustableCounter
                     )
+                }
+                is TopChatListAction.SetLastVisitedTab -> {
+                    setLastVisitedTab(it.position)
                 }
             }
         }
@@ -155,22 +165,29 @@ class ChatTabCounterViewModel @Inject constructor(
         }
     }
 
-    fun setLastVisitedTab(context: Context, position: Int) {
-        context.getSharedPreferences(PREF_CHAT_LIST_TAB, Context.MODE_PRIVATE)
-            .edit()
-            .apply {
-                putInt(KEY_LAST_POSITION, position)
-                apply()
+    private fun observeLastVisitedTab() {
+        viewModelScope.launch {
+            chatLastVisitedTabUseCase.observeLastVisitedTab().collectLatest {
+                _chatLastSelectedTab.value = TopChatResult.Success(it)
             }
+        }
     }
 
-    fun getLastVisitedTab(context: Context): Int {
-        return context.getSharedPreferences(PREF_CHAT_LIST_TAB, Context.MODE_PRIVATE)
-            .getInt(KEY_LAST_POSITION, -1)
-    }
-
-    companion object {
-        const val PREF_CHAT_LIST_TAB = "chatlist_tab_activity.pref"
-        const val KEY_LAST_POSITION = "key_last_seen_tab_position"
+    private fun setLastVisitedTab(position: Int) {
+        viewModelScope.launch {
+            try {
+                chatLastVisitedTabUseCase.setLastVisitedTab(position)
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                _errorUiState.tryEmit(
+                    TopChatListErrorUiState(
+                        Pair(
+                            throwable,
+                            ::setLastVisitedTab.name
+                        )
+                    )
+                )
+            }
+        }
     }
 }

@@ -48,8 +48,10 @@ import com.tokopedia.topchat.chatlist.view.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.WebSocketViewModel
 import com.tokopedia.topchat.common.TopChatErrorLogger
 import com.tokopedia.topchat.common.custom.ToolTipSearchPopupWindow
+import com.tokopedia.topchat.common.data.TopChatResult
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -107,12 +109,11 @@ class ChatTabListFragment constructor() :
         bindView(view)
         initViewModel()
         initTabList()
+        initObservers()
         initViewPagerAdapter()
         initViewPager()
-        initTabLayout()
         initViewModel()
         initOnBoarding()
-        initObservers()
         initToolTip()
         initBackground()
         initData()
@@ -200,6 +201,8 @@ class ChatTabListFragment constructor() :
                 observeError()
             }
         }
+
+        observeLastVisitedTab()
     }
 
     private suspend fun observeChatNotificationCounter() {
@@ -210,6 +213,21 @@ class ChatTabListFragment constructor() :
                     tabList[1].counter = uiState.unreadBuyer.toString()
                 }
                 setNotificationCounterOnTab()
+            }
+        }
+    }
+
+    private fun observeLastVisitedTab() {
+        var job: Job? = null
+        job = viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.chatLastSelectedTab.collectLatest {
+                when (it) {
+                    is TopChatResult.Success -> {
+                        initTabLayout(it.data)
+                        job?.cancel() // Cancel after init tab layout based on datastore cache
+                    }
+                    else -> Unit // no-op
+                }
             }
         }
     }
@@ -242,7 +260,7 @@ class ChatTabListFragment constructor() :
         }
     }
 
-    private fun initTabLayout() {
+    private fun initTabLayout(lastSeenPosition: Int) {
         if (tabList.size == 1) {
             tabLayout?.hide()
             return
@@ -290,7 +308,7 @@ class ChatTabListFragment constructor() :
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager?.setCurrentItem(tab.position, true)
-                context?.let { viewModel.setLastVisitedTab(it, tab.position) }
+                viewModel.processAction(TopChatListAction.SetLastVisitedTab(tab.position))
                 setTabViewColor(
                     tab.customView,
                     tab.position,
@@ -310,7 +328,7 @@ class ChatTabListFragment constructor() :
             if (selectedTab != null) {
                 goToSelectedTab(selectedTab)
             } else {
-                goToLastSeenTab()
+                goToLastSeenTab(lastSeenPosition)
             }
         }
     }
@@ -364,13 +382,9 @@ class ChatTabListFragment constructor() :
         viewPager?.setCurrentItem(selectedTab, false)
     }
 
-    private fun goToLastSeenTab() {
-        context?.let {
-            viewModel.getLastVisitedTab(it).apply {
-                if (this == -1) return@apply
-                viewPager?.setCurrentItem(this, false)
-            }
-        }
+    private fun goToLastSeenTab(lastSeenPosition: Int) {
+        if (lastSeenPosition == -1) return
+        viewPager?.setCurrentItem(lastSeenPosition, false)
     }
 
     private fun setTitleTab(title: String, counter: String): CharSequence? {

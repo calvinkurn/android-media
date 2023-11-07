@@ -146,6 +146,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.fragmentKtx
     implementation rootProject.ext.miscDependencies.coreKtx
+    implementation rootProject.ext.miscDependencies.dataStorePreferences
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger

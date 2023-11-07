@@ -6,4 +6,5 @@ sealed class TopChatListAction {
         val isSellerTab: Boolean,
         val adjustableCounter: Int // Could be + or -
     ) : TopChatListAction()
+    data class SetLastVisitedTab(val position: Int) : TopChatListAction()
 }
