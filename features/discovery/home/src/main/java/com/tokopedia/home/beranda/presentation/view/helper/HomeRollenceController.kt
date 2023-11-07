@@ -12,11 +12,24 @@ object HomeRollenceController {
     var rollenceAtfValue: String = ""
     var rollenceLoadTime: String = ""
     var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
+    var iconJumperValue: String = RollenceKey.ICON_JUMPER_DEFAULT
 
     fun fetchHomeRollenceValue() {
         fetchAtfRollenceValue()
         fetchLoadTimeRollenceValue()
         fetchAtfCacheRollenceValue()
+    }
+
+    @JvmStatic
+    fun fetchIconJumperValue() {
+        iconJumperValue = try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.ICON_JUMPER,
+                RollenceKey.ICON_JUMPER_DEFAULT
+            )
+        } catch (_: Exception) {
+            RollenceKey.ICON_JUMPER_DEFAULT
+        }
     }
 
     private fun fetchAtfRollenceValue() {
@@ -60,17 +73,20 @@ object HomeRollenceController {
         return rollenceLoadAtfCache == RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
     }
 
-    fun isUsingAtf2Variant(): Boolean {
-        return rollenceAtfValue != RollenceKey.HOME_COMPONENT_ATF_3
-    }
-
-    fun isUsingAtf3Variant(): Boolean {
-        return rollenceAtfValue == RollenceKey.HOME_COMPONENT_ATF_3
+    fun isUsingAtf3Variant(forceAtf3: Boolean): Boolean {
+        return forceAtf3 || rollenceAtfValue == RollenceKey.HOME_COMPONENT_ATF_3
     }
 
     fun getAtfRollence(forceAtf3: Boolean): String {
-        return if(forceAtf3)
+        return if (forceAtf3) {
             RollenceKey.HOME_COMPONENT_ATF_3
-        else rollenceAtfValue
+        } else {
+            rollenceAtfValue
+        }
+    }
+
+    @JvmStatic
+    fun isIconJumper(): Boolean {
+        return iconJumperValue == RollenceKey.ICON_JUMPER_EXP
     }
 }
