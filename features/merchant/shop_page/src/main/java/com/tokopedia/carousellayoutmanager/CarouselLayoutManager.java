@@ -67,6 +67,8 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
     private final List<OnCenterItemSelectionListener> mOnCenterItemSelectionListeners = new ArrayList<>();
     private int mCenterItemPosition = INVALID_POSITION;
     private int mItemsCount;
+    private int initialChildViewLeftMargin = 0;
+    private int initialChildViewRightMargin = 0;
 
     @Nullable
     private CarouselSavedState mPendingCarouselSavedState;
@@ -374,6 +376,10 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
                                 0 :
                                 Math.max(0, Math.min(itemsCount - 1, mPendingScrollPosition))
                 );
+                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+                initialChildViewLeftMargin = lp.leftMargin;
+                initialChildViewRightMargin = lp.rightMargin;
+                configViewSpacing(view, state.getItemCount());
                 addView(view);
             } else {
                 shouldRecycle = false;
@@ -414,6 +420,28 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
         }
 
         fillData(recycler, state);
+    }
+
+    /**
+     * This function is used to adjust child view horizontal margin, based on the number of items in the adapter
+     */
+    private void configViewSpacing(View view, int itemCount) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        int leftMargin;
+        int rightMargin;
+        if (itemCount == 2 && mOrientation == HORIZONTAL) {
+            leftMargin = initialChildViewLeftMargin /2;
+            rightMargin = initialChildViewRightMargin /2;
+        } else {
+            leftMargin = lp.leftMargin;
+            rightMargin = lp.rightMargin;
+        }
+        lp.setMargins(
+                leftMargin,
+                lp.topMargin,
+                rightMargin,
+                lp.bottomMargin
+        );
     }
 
     private int calculateScrollForSelectingPosition(final int itemPosition, final RecyclerView.State state) {
@@ -650,7 +678,7 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
 
     private View bindChild(final int position, @NonNull final RecyclerView.Recycler recycler) {
         final View view = recycler.getViewForPosition(position);
-
+        configViewSpacing(view, mItemsCount);
         addView(view);
         measureChildWithMargins(view, 0, 0);
 
