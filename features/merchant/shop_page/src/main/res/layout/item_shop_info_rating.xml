@@ -36,9 +36,10 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgTotalRatingNumber"
+        android:minWidth="48dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="6360"
+        tools:text="13.4rb"
         android:textColor="@color/Unify_NN950"
         app:typographyType="display_2" />
 

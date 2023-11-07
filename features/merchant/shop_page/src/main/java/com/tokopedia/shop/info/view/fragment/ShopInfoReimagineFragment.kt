@@ -178,6 +178,9 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
     
     private fun renderShopCoreInfo(uiState: ShopInfoUiState) {
+        val hasUsp = uiState.info.shopUsp.isNotEmpty()
+        val hasPharmacyBadge = uiState.info.showPharmacyLicenseBadge && uiState.showEpharmacyInfo
+            
         binding?.run {
             imgShop.loadImage(uiState.info.shopImageUrl)
             imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
@@ -185,6 +188,11 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgLicensedPharmacy.isVisible = uiState.showEpharmacyInfo
             tpgShopUsp.text = uiState.info.shopUsp.joinToString(separator = ", ") { it }
             tpgShopUsp.isVisible = uiState.info.shopUsp.isNotEmpty()
+        }
+
+        val shopNameOnly = !hasUsp && !hasPharmacyBadge
+        if (shopNameOnly) {
+            //TODO: Make shop name centered vertically with shop image url
         }
     }
     
@@ -224,7 +232,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                 layoutParams = params
             }
             
-            textViewOperationalHour.text = groupedDays + hour
+            val operationalHourFormat = "%s %s"
+            textViewOperationalHour.text = String.format(operationalHourFormat, groupedDays, hour)
             linearLayout?.addView(textViewOperationalHour)
         }
         
@@ -319,6 +328,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgRating.text = rating.rate.toString()
             progressBarRating.setValue(rating.percentageFloat.toInt()) 
             tpgTotalRatingNumber.text = rating.formattedTotalReviews
+            progressBarRating?.progressBarColorType = ProgressBarUnify.COLOR_YELLOW
 
             binding?.layoutRatingBarContainer?.addView(ratingView)
         }

@@ -26,6 +26,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_REVIEW = "review"
         private const val MAX_ATTACHMENT = 5
         private const val LEFT_MARGIN = 4
+        private const val ATTACHMENT_CORNER_RADIUS = 12 
         
         fun newInstance(review: ShopReview.Review): ReviewViewPagerItemFragment {
             return ReviewViewPagerItemFragment().apply {
@@ -95,7 +96,11 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
             }
     }
     private fun createAttachmentImage(context: Context, imageUrl: String): ImageUnify {
-        val imageUnify = ImageUnify(context = context)
+        val imageUnify = ImageUnify(context = context).apply { 
+            cornerRadius = ATTACHMENT_CORNER_RADIUS
+            type = ImageUnify.TYPE_RECT
+        }
+        
         val params = LayoutParams(IMAGE_REVIEW_SIZE.toPx(), IMAGE_REVIEW_SIZE.toPx())
         params.marginStart = LEFT_MARGIN.toPx()
         

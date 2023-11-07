@@ -1,5 +1,6 @@
 package com.tokopedia.shop.info.view.custom
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.CountDownTimer
@@ -19,6 +20,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     private var countDownTimer: CountDownTimer? = null
+    private var progressAnimator: ObjectAnimator? = null
 
     init {
         orientation = HORIZONTAL
@@ -94,21 +96,26 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         println("Timer. setupCountDownTimer")
         val progressBar = getSelectedTabIndicator()
 
+        progressAnimator = ObjectAnimator.ofInt(progressBar, "progress", 0)
+        progressAnimator?.duration = totalDuration
+        
         println("Timer. setupCountDownTimer progressBar is $progressBar")
         countDownTimer = object : CountDownTimer(totalDuration, intervalDuration) {
             override fun onTick(millisUntilFinished: Long) {
                 val remainingProgressPercent = (millisUntilFinished.toFloat() / totalDuration.toFloat()) * ONE_HUNDRED.toFloat()
                 val progressPercent = ONE_HUNDRED.toFloat() - remainingProgressPercent
 
-                progressBar?.progress = progressPercent.toInt()
+                //progressBar?.progress = progressPercent.toInt()
 
                 onTimerTick()
 
+                progressAnimator?.setIntValues(progressPercent.toInt())
                 println("Timer. setupCountDownTimer onTick progress $progressPercent")
             }
 
             override fun onFinish() {
-                progressBar?.progress = ONE_HUNDRED
+                //progressBar?.progress = ONE_HUNDRED
+                progressAnimator?.setIntValues(ONE_HUNDRED)
 
                 onTimerFinish()
 
@@ -121,11 +128,13 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         println("Timer. startTimer")
         cancelTimer()
         countDownTimer?.start()
+        progressAnimator?.start()
     }
 
     private fun cancelTimer() {
         println("Timer. cancelTimer")
         countDownTimer?.cancel()
+        progressAnimator?.cancel()
     }
 
     @SuppressLint("UnifyComponentUsage")
