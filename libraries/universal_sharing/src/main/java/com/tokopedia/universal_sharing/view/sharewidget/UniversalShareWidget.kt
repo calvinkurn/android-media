@@ -148,8 +148,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
 
             UniversalShareConst.RemoteConfigKey.VALUE_VARIANT_B -> {
                 if (SharingUtil.isAppInstalled(context, getPackageName())) {
-                    println("set wa icon here----- $iconUnifyId $icon")
-                    binding?.shareChannel?.setImage(icon)
+                    binding?.shareChannel?.setImage(iconUnifyId)
                     isDirectChannel = true
                 } else {
                     binding?.shareChannel?.setImage(IconUnify.SHARE_MOBILE)
