@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatlist.view.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -61,7 +60,10 @@ class ChatTabCounterViewModel @Inject constructor(
                     refreshNotifCounter(shopId = it.shopId)
                 }
                 is TopChatListAction.UpdateCounter -> {
-                    updateCounter(isSellerTab = it.isSellerTab)
+                    updateCounter(
+                        isSellerTab = it.isSellerTab,
+                        adjustableCounter = it.adjustableCounter
+                    )
                 }
             }
         }
@@ -138,8 +140,19 @@ class ChatTabCounterViewModel @Inject constructor(
         }
     }
 
-    private fun updateCounter(isSellerTab: Boolean) {
-        Log.d("UPDATED-TAB", "$isSellerTab - ${chatListNotificationUiState.value}")
+    private fun updateCounter(
+        isSellerTab: Boolean,
+        adjustableCounter: Int
+    ) {
+        if (isSellerTab) {
+            _chatListNotificationUiState.update {
+                it.copy(unreadSeller = it.unreadSeller + adjustableCounter)
+            }
+        } else {
+            _chatListNotificationUiState.update {
+                it.copy(unreadBuyer = it.unreadBuyer + adjustableCounter)
+            }
+        }
     }
 
     fun setLastVisitedTab(context: Context, position: Int) {

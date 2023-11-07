@@ -185,46 +185,6 @@ class ChatTabListFragment constructor() :
         }
     }
 
-    override fun increaseUserNotificationCounter() {
-        context?.let {
-            getIconUnifyDrawable(it, IconUnify.SMILE)?.let {
-                increaseNotificationCounter(
-                    it
-                )
-            }
-        }
-    }
-
-    override fun increaseSellerNotificationCounter() {
-        context?.let {
-            getIconUnifyDrawable(it, IconUnify.SHOP)?.let {
-                increaseNotificationCounter(
-                    it
-                )
-            }
-        }
-    }
-
-    override fun decreaseUserNotificationCounter() {
-        context?.let {
-            getIconUnifyDrawable(it, IconUnify.SMILE)?.let {
-                decreaseNotificationCounter(
-                    it
-                )
-            }
-        }
-    }
-
-    override fun decreaseSellerNotificationCounter() {
-        context?.let {
-            getIconUnifyDrawable(it, IconUnify.SHOP)?.let {
-                decreaseNotificationCounter(
-                    it
-                )
-            }
-        }
-    }
-
     private fun initObservers() {
         // Setup flow observer
         viewModel.setupViewModelObserver()
@@ -580,32 +540,6 @@ class ChatTabListFragment constructor() :
 
     override fun onScrollToTop() {
         (getSellerFragment() as? ChatListItemListener)?.onScrollToTop()
-    }
-
-    private fun decreaseNotificationCounter(iconId: Drawable) {
-        for ((tabIndex, tab) in tabList.withIndex()) {
-            if (tab.icon == iconId) {
-                decreaseTabCounter(tabIndex, tab)
-            }
-        }
-    }
-
-    private fun increaseNotificationCounter(iconId: Drawable) {
-        for ((tabIndex, tab) in tabList.withIndex()) {
-            if (tab.icon == iconId) {
-                increaseTabCounter(tabIndex, tab)
-            }
-        }
-    }
-
-    private fun increaseTabCounter(tabIndex: Int, tab: ChatListPagerAdapter.ChatListTab) {
-        tab.increaseTabCounter()
-        setupTabTitleAt(tabIndex)
-    }
-
-    private fun decreaseTabCounter(tabIndex: Int, tab: ChatListPagerAdapter.ChatListTab) {
-        tab.decreaseTabCounter()
-        setupTabTitleAt(tabIndex)
     }
 
     private fun initOnBoarding() {
