@@ -2,12 +2,14 @@ package com.tokopedia.kotlin.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.compose.runtime.Stable
 
 import com.google.gson.annotations.Expose
 
 /**
  * Author errysuprayogi on 29,January,2019
  */
+@Stable
 open class ImpressHolder(): Parcelable {
 
     @Expose(serialize = false, deserialize = false)

@@ -61,9 +61,14 @@ data class VariantHeaderDataModel(
 
 data class ProductHeaderData(
         val productMainPrice: String = "",
-        val productDiscountedPercentage: Float = 0f,
+        val productDiscountedPercentage: String = "",
         val isCampaignActive: Boolean = false,
         val productSlashPrice: String = "",
         val productStockFmt: String = "",
         val hideGimmick: Boolean = false
-)
+) {
+
+    val shouldShowDiscPercentage
+        get() = productDiscountedPercentage.isNotBlank() &&
+            !productDiscountedPercentage.startsWith("0") // ex: 0 or 0%
+}

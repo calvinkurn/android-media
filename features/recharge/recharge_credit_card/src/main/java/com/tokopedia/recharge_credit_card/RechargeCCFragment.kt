@@ -2,13 +2,22 @@ package com.tokopedia.recharge_credit_card
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.TextUtils
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
@@ -38,9 +47,13 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransacti
 import com.tokopedia.common.topupbills.widget.TopupBillsRecentNumberListener
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
 import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -81,12 +94,17 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class RechargeCCFragment :
     BaseDaggerFragment(),
+    MenuProvider,
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
@@ -162,11 +180,17 @@ class RechargeCCFragment :
         return binding?.root
     }
 
+    private fun setupToolbarMenu() {
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initializedViewModel()
         setupKeyboardWatcher()
+        setupToolbarMenu()
         getDataBundle()
         getTickerData()
         getFavoriteNumbers(
@@ -176,6 +200,7 @@ class RechargeCCFragment :
                 FavoriteNumberType.LIST
             )
         )
+        rechargeCCViewModel.getDppoConsent(categoryId.toIntOrZero())
 
         binding?.ccWidgetClientNumber?.run {
             setInputFieldType(InputFieldType.CreditCard, isGoogleWalletAutofillEnabled())
@@ -197,6 +222,28 @@ class RechargeCCFragment :
         } else if (childFragment is RechargeCCPromoFragment) {
             childFragment.setListener(this)
         }
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menu.clear()
+        try {
+            val dppoConsentData = rechargeCCViewModel.dppoConsent.value
+            menuInflater.inflate(R.menu.menu, menu)
+            if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
+                menu.showConsentIcon()
+                menu.setupConsentIcon(dppoConsentData.data.description)
+                menu.setupKebabIcon()
+            } else {
+                menu.hideConsentIcon()
+                menu.setupKebabIcon()
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        return false
     }
 
     private fun setupKeyboardWatcher() {
@@ -387,6 +434,15 @@ class RechargeCCFragment :
                 else -> {
                     // no-op
                 }
+            }
+        }
+
+        rechargeCCViewModel.dppoConsent.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    activity?.invalidateOptionsMenu()
+                }
+                is Fail -> {}
             }
         }
     }
@@ -982,7 +1038,61 @@ class RechargeCCFragment :
     }
 
     private fun isGoogleWalletAutofillEnabled(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CREDIT_CARD_ENABLE_AUTOFILL_GOOGLE_WALLET, true)
+        return remoteConfig.getBoolean(
+            RemoteConfigKey.ANDROID_CREDIT_CARD_ENABLE_AUTOFILL_GOOGLE_WALLET,
+            true
+        )
+    }
+
+    private fun Menu.hideConsentIcon() {
+        findItem(R.id.action_dppo_consent).isVisible = false
+    }
+
+    private fun Menu.showConsentIcon() {
+        findItem(R.id.action_dppo_consent).isVisible = true
+    }
+
+    private fun Menu.setupConsentIcon(description: String) {
+        if (description.isNotEmpty()) {
+            context?.let { ctx ->
+                val iconUnify = getIconUnifyDrawable(
+                    ctx,
+                    IconUnify.INFORMATION,
+                    ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN0)
+                )
+                iconUnify?.toBitmap()?.let {
+                    getItem(0).setOnMenuItemClickListener {
+                        val bottomSheet = DigitalDppoConsentBottomSheet(description)
+                        bottomSheet.show(childFragmentManager)
+                        true
+                    }
+                    getItem(0).icon = BitmapDrawable(
+                        ctx.resources,
+                        Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun Menu.setupKebabIcon() {
+        context?.let { ctx ->
+            val iconUnify = getIconUnifyDrawable(
+                ctx,
+                IconUnify.LIST_TRANSACTION,
+                ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN0)
+            )
+            iconUnify?.toBitmap()?.let {
+                getItem(1).setOnMenuItemClickListener {
+                    RouteManager.route(context, ApplinkConst.DIGITAL_ORDER)
+                    true
+                }
+                getItem(1).icon = BitmapDrawable(
+                    ctx.resources,
+                    Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                )
+            }
+        }
     }
 
     companion object {
@@ -1003,6 +1113,7 @@ class RechargeCCFragment :
         const val REQUEST_CODE_LOGIN_INSTANT_CHECKOUT = 1020
 
         const val CC_DIALOG_BOX_DESC_FORMAT = "%s<h3><b>%s</b></h3>"
+        private const val TOOLBAR_ICON_SIZE = 64
 
         fun newInstance(
             categoryId: String,

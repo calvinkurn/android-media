@@ -29,6 +29,7 @@ import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.AffiliateBalance
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.setAnnouncementData
+import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
@@ -49,14 +50,14 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.searchbar.navigation_component.NavSource
-import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -187,7 +188,7 @@ class AffiliateIncomeFragment :
                 ).show()
             }
         }
-        affiliateIncomeViewModel?.getValidateUserdata()?.observe(this) { validateUserdata ->
+        (activity as? AffiliateActivity)?.getValidateUserData()?.observe(this) { validateUserdata ->
             onGetValidateUserData(validateUserdata)
         }
         affiliateIncomeViewModel?.getAffiliateAnnouncement()?.observe(this) { announcementData ->
@@ -238,9 +239,7 @@ class AffiliateIncomeFragment :
                     show()
                 }
 
-                else -> {
-                    setErrorState(error?.message)
-                }
+                else -> setErrorState(error?.message)
             }
             setActionClickListener {
                 hide()
@@ -274,13 +273,12 @@ class AffiliateIncomeFragment :
 
     private fun onGetAffiliateKycData(kycProjectInfo: AffiliateKycDetailsData.KycProjectInfo) {
         when (kycProjectInfo.status) {
-            KYC_DONE -> {
-                if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+            KYC_DONE ->
+                if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
                     RouteManager.route(context, WITHDRAWAL_APPLINK_STAGING)
                 } else {
                     RouteManager.route(context, WITHDRAWAL_APPLINK_PROD)
                 }
-            }
 
             else -> RouteManager.route(context, APP_LINK_KYC)
         }
@@ -407,7 +405,8 @@ class AffiliateIncomeFragment :
             }
         }
         binding?.withdrawalNavToolbar?.run {
-            val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
+            val iconBuilder =
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
                     affiliateIncomeViewModel?.resetNotificationCount()
@@ -426,7 +425,6 @@ class AffiliateIncomeFragment :
                 )
         }
         initDateRangeClickListener()
-        affiliateIncomeViewModel?.getAffiliateValidateUser(userSession?.email.orEmpty())
         if (isAffiliateNCEnabled()) {
             affiliateIncomeViewModel?.fetchUnreadNotificationCount()
         }

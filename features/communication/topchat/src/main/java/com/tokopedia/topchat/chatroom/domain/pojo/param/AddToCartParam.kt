@@ -21,7 +21,7 @@ data class AddToCartParam(
 ) {
     fun getAtcDimension40(sourcePage: String): String {
         return when (sourcePage) {
-            ApplinkConst.Chat.SOURCE_CHAT_SEARCH -> "search chat"
+            ApplinkConst.Chat.Source.SOURCE_CHAT_SEARCH -> "search chat"
             else -> getField()
         }
     }

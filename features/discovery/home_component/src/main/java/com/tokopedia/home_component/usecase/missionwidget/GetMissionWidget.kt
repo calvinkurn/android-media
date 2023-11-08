@@ -29,6 +29,7 @@ class GetMissionWidget @Inject constructor(
         private const val TYPE = "type"
         private const val DEFAULT_TYPE = "home_mission"
         const val BANNER_LOCATION_PARAM = "location"
+        const val PARAM = "param"
     }
 
     override suspend fun executeOnBackground(): HomeMissionWidgetData.HomeMissionWidget {
@@ -41,6 +42,9 @@ class GetMissionWidget @Inject constructor(
     fun generateParam(bundle: Bundle) {
         bundle.getString(BANNER_LOCATION_PARAM, "")?.let {
             params.putString(BANNER_LOCATION_PARAM, it)
+        }
+        bundle.getString(PARAM, "")?.let {
+            params.putString(PARAM, it)
         }
         params.putString(TYPE, DEFAULT_TYPE)
     }
