@@ -17,9 +17,13 @@ import com.tokopedia.oneclickcheckout.order.data.payment.CartProductCategoryData
 import com.tokopedia.oneclickcheckout.order.data.payment.CartProductData
 import com.tokopedia.oneclickcheckout.order.data.payment.CartShippingInfoData
 import com.tokopedia.oneclickcheckout.order.data.payment.CartShopOrderData
+import com.tokopedia.oneclickcheckout.order.data.payment.DetailsItemData
 import com.tokopedia.oneclickcheckout.order.data.payment.PaymentData
 import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
 import com.tokopedia.oneclickcheckout.order.data.payment.PromoDetail
+import com.tokopedia.oneclickcheckout.order.data.payment.SummariesItemData
+import com.tokopedia.oneclickcheckout.order.data.payment.UsageSummariesData
+import com.tokopedia.oneclickcheckout.order.data.payment.VoucherOrderItemData
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
@@ -30,6 +34,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdd
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
@@ -37,6 +42,14 @@ import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.A
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingButtonModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -165,6 +178,102 @@ class OrderSummaryPageViewModelPaymentTest : BaseOrderSummaryPageViewModelTest()
                 )
             )
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            lastApply = LastApplyUiModel(
+                benefitSummaryInfo = BenefitSummaryInfoUiModel(
+                    summaries = listOf(
+                        SummariesItemUiModel(
+                            type = "type1",
+                            details = listOf(
+                                DetailsItemUiModel(
+                                    amount = 1,
+                                    type = "subtype1"
+                                ),
+                                DetailsItemUiModel(
+                                    amount = 3,
+                                    type = "subtype3"
+                                )
+                            )
+                        ),
+                        SummariesItemUiModel(
+                            type = "type2",
+                            details = listOf(
+                                DetailsItemUiModel(
+                                    amount = 2,
+                                    type = "subtype2"
+                                )
+                            )
+                        )
+                    )
+                ),
+                voucherOrders = listOf(
+                    LastApplyVoucherOrdersItemUiModel(
+                        uniqueId = "123",
+                        message = LastApplyMessageUiModel(state = "green"),
+                        code = "a",
+                        type = "a",
+                        cartStringGroup = "1231",
+                        shippingId = 1,
+                        spId = 1,
+                        success = true
+                    ),
+                    LastApplyVoucherOrdersItemUiModel(
+                        uniqueId = "123",
+                        message = LastApplyMessageUiModel(state = "green"),
+                        code = "",
+                        type = "a",
+                        cartStringGroup = "1231",
+                        shippingId = 1,
+                        spId = 1,
+                        success = true
+                    ),
+                    LastApplyVoucherOrdersItemUiModel(
+                        uniqueId = "123",
+                        message = LastApplyMessageUiModel(state = "green"),
+                        code = "a",
+                        type = "",
+                        cartStringGroup = "1231",
+                        shippingId = 1,
+                        spId = 1,
+                        success = true
+                    ),
+                    LastApplyVoucherOrdersItemUiModel(
+                        uniqueId = "123",
+                        message = LastApplyMessageUiModel(state = "red"),
+                        code = "a",
+                        type = "a",
+                        cartStringGroup = "1231",
+                        shippingId = 1,
+                        spId = 1,
+                        success = true
+                    ),
+                    LastApplyVoucherOrdersItemUiModel(
+                        uniqueId = "321",
+                        message = LastApplyMessageUiModel(state = "green"),
+                        code = "a",
+                        type = "a",
+                        cartStringGroup = "1231",
+                        shippingId = 1,
+                        spId = 1,
+                        success = true
+                    )
+                ),
+                additionalInfo = LastApplyAdditionalInfoUiModel(
+                    usageSummaries = listOf(
+                        LastApplyUsageSummariesUiModel(
+                            type = "type1",
+                            amount = 1,
+                            amountStr = "1.0"
+                        ),
+                        LastApplyUsageSummariesUiModel(
+                            type = "type2",
+                            amount = 2,
+                            amountStr = "2.0"
+                        )
+                    )
+                )
+            )
+        )
 
         // When
         val paymentRequest =
@@ -259,9 +368,57 @@ class OrderSummaryPageViewModelPaymentTest : BaseOrderSummaryPageViewModelTest()
                     )
                 ),
                 promoDetail = PromoDetail(
-                    benefitSummaryInfo = BenefitSummaryInfoData(),
-                    voucherOrders = emptyList(),
-                    additionalInfo = AdditionalInfoData()
+                    benefitSummaryInfo = BenefitSummaryInfoData(
+                        summaries = listOf(
+                            SummariesItemData(
+                                details = listOf(
+                                    DetailsItemData(
+                                        amount = 1,
+                                        type = "subtype1"
+                                    ),
+                                    DetailsItemData(
+                                        amount = 3,
+                                        type = "subtype3"
+                                    )
+                                ),
+                                type = "type1"
+                            ),
+                            SummariesItemData(
+                                details = listOf(
+                                    DetailsItemData(
+                                        amount = 2,
+                                        type = "subtype2"
+                                    )
+                                ),
+                                type = "type2"
+                            )
+                        )
+                    ),
+                    voucherOrders = listOf(
+                        VoucherOrderItemData(
+                            code = "a",
+                            uniqueId = "123",
+                            shippingId = 1,
+                            spId = 1,
+                            type = "a",
+                            success = true,
+                            cartStringGroup = "1231"
+                        )
+                    ),
+                    additionalInfo = AdditionalInfoData(
+                        usageSummaries = listOf(
+                            UsageSummariesData(
+                                type = "type1",
+                                amount = 1,
+                                amountString = "1.0"
+                            ),
+                            UsageSummariesData(
+                                type = "type2",
+                                amount = 2,
+                                amountString = "2.0"
+                            )
+                        )
+                    )
                 )
             ),
             paymentRequest
