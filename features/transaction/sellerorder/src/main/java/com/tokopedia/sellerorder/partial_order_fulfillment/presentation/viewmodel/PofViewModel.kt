@@ -284,7 +284,9 @@ class PofViewModel @Inject constructor(
                 getPofEstimateRequestState = RequestState.Error(requestState.throwable)
             }
             is RequestState.Success -> {
-                updateQuantityEditorDataList(requestState.data)
+                if (cacheType == CacheType.ALWAYS_CLOUD) {
+                    updateQuantityEditorDataList(requestState.data)
+                }
                 updateDetailInfo()
                 getPofEstimate(DELAY_FETCH_INITIAL_POF_ESTIMATE, cacheType)
             }

@@ -12,6 +12,7 @@ data class GetPofInfoRequestParams(
     val orderId: Long = 0,
     @SerializedName("delay")
     @Expose(serialize = false, deserialize = false)
+    @Transient
     val delay: Long = 0,
     @SerializedName("cache_type")
     @Expose(serialize = false, deserialize = false)
