@@ -82,7 +82,7 @@ class ChatTabListFragment constructor() :
 
     private lateinit var viewModelProvider: ViewModelProvider
     private lateinit var webSocketViewModel: WebSocketViewModel
-    private lateinit var viewModel: ChatTabCounterViewModel
+    private var viewModel: ChatTabCounterViewModel? = null
     private var searchToolTip: ToolTipSearchPopupWindow? = null
 
     private var coachMarkOnBoarding = CoachMarkBuilder().build()
@@ -188,7 +188,7 @@ class ChatTabListFragment constructor() :
 
     private fun initObservers() {
         // Setup flow observer
-        viewModel.setupViewModelObserver()
+        viewModel?.setupViewModelObserver()
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -206,7 +206,7 @@ class ChatTabListFragment constructor() :
     }
 
     private suspend fun observeChatNotificationCounter() {
-        viewModel.chatListNotificationUiState.collectLatest { uiState ->
+        viewModel?.chatListNotificationUiState?.collectLatest { uiState ->
             if (tabList.isNotEmpty()) {
                 tabList[0].counter = uiState.unreadSeller.toString()
                 if (tabList.size > 1) {
@@ -220,7 +220,7 @@ class ChatTabListFragment constructor() :
     private fun observeLastVisitedTab() {
         var job: Job? = null
         job = viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.chatLastSelectedTab.collectLatest {
+            viewModel?.chatLastSelectedTab?.collectLatest {
                 when (it) {
                     is TopChatResult.Success -> {
                         initTabLayout(it.data)
@@ -233,7 +233,7 @@ class ChatTabListFragment constructor() :
     }
 
     private suspend fun observeError() {
-        viewModel.errorUiState.collectLatest {
+        viewModel?.errorUiState?.collectLatest {
             it.error?.let { (throwable, methodName) ->
                 TopChatErrorLogger.logExceptionToServerLogger(
                     TopChatErrorLogger.PAGE.TOPCHAT_LIST_TAB,
@@ -308,7 +308,7 @@ class ChatTabListFragment constructor() :
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager?.setCurrentItem(tab.position, true)
-                viewModel.processAction(TopChatListAction.SetLastVisitedTab(tab.position))
+                viewModel?.processAction(TopChatListAction.SetLastVisitedTab(tab.position))
                 setTabViewColor(
                     tab.customView,
                     tab.position,
@@ -537,7 +537,7 @@ class ChatTabListFragment constructor() :
     }
 
     override fun loadNotificationCounter() {
-        viewModel.processAction(TopChatListAction.RefreshCounter(userSession.shopId))
+        viewModel?.processAction(TopChatListAction.RefreshCounter(userSession.shopId))
     }
 
     override fun showSearchOnBoardingTooltip() {
