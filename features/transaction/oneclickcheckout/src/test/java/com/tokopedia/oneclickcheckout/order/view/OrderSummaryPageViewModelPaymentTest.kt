@@ -276,7 +276,23 @@ class OrderSummaryPageViewModelPaymentTest : BaseOrderSummaryPageViewModelTest()
             orderCost = OrderCost(totalPriceWithoutPaymentFees = 1.1)
         )
         orderSummaryPageViewModel.orderShop.value =
-            OrderShop(shopId = "234", warehouseId = "345", shopTier = 456)
+            OrderShop(
+                shopId = "234",
+                warehouseId = "345",
+                shopTier = 456,
+                addOn = AddOnGiftingDataModel(
+                    status = 1,
+                    addOnsDataItemModelList = listOf(
+                        AddOnGiftingDataItemModel(
+                            addOnPrice = 12.0,
+                            addOnQty = 2
+                        )
+                    ),
+                    addOnsButtonModel = AddOnGiftingButtonModel(
+                        title = "gift"
+                    )
+                )
+            )
         orderSummaryPageViewModel.orderCart =
             OrderCart(cartString = "123", shop = orderSummaryPageViewModel.orderShop.value)
         orderSummaryPageViewModel.orderProducts.value = listOf(
@@ -408,7 +424,14 @@ class OrderSummaryPageViewModelPaymentTest : BaseOrderSummaryPageViewModelTest()
                                                     )
                                                 ),
                                                 bundle = emptyList(),
-                                                addonItems = emptyList(),
+                                                addonItems = listOf(
+                                                    CartAddOnData(
+                                                        name = "gift",
+                                                        price = 6.0,
+                                                        quantity = 2,
+                                                        totalPrice = 12.0
+                                                    )
+                                                ),
                                                 cartStringOrder = "123"
                                             )
                                         )
