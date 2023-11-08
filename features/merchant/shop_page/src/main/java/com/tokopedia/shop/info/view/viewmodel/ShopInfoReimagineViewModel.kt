@@ -208,7 +208,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): Map<String, List<String>> {
         val operationalHours = getShopOperationalHoursList?.data ?: emptyList()
-        
+
         val formattedOperationalHours = mutableMapOf<String, String>()
 
         val daysDictionary = mapOf(
@@ -232,7 +232,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
         }
 
         val result = formattedOperationalHours.groupByHours()
-        
+
         return result
     }
 
@@ -288,8 +288,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private fun String.hourAndMinuteOnly(): String {
         return toDate(DateTimeConstant.TIME_SECOND_PRECISION).formatTo(DateTimeConstant.TIME_MINUTE_PRECISION)
     }
-    
+
     private fun String.toShopJoinDate(): String {
-        return toDate(DateTimeConstant.DATE_TIME_SECOND_PRECISION).formatTo(DateTimeConstant.DATE_TIME_YEAR_PRECISION)
+        return toDate(DateTimeConstant.DATE_TIME_DAY_PRECISION).formatTo(DateTimeConstant.DATE_TIME_YEAR_PRECISION)
     }
 }
