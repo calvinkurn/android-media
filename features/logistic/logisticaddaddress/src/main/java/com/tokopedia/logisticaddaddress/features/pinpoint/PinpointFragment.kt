@@ -880,7 +880,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 invalidLayout.visible()
                 wholeLoadingContainer.gone()
                 districtLayout.gone()
-                imgInvalidLoc.setImageUrl(TokopediaImageUrl.LOCATION_NOT_FOUND)
+                imgInvalidLoc.setImageUrl(data.image)
                 if (data.title.isNotEmpty()) {
                     tvInvalidLoc.text = data.title
                 }
@@ -989,6 +989,14 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 getString(R.string.undetected_location_desc_edit_w_pinpoint)
             } else {
                 getString(R.string.undetected_location_desc_edit_wo_pinpoint)
+            }
+        }
+
+    private val PinpointBottomSheetState.LocationInvalid.image: String
+        get() {
+            return when (this.type) {
+                PinpointBottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE -> TokopediaImageUrl.IMAGE_OUTSIDE_INDONESIA
+                PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> TokopediaImageUrl.LOCATION_NOT_FOUND
             }
         }
 
