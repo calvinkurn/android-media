@@ -52,7 +52,7 @@ class RoundedSpan(
     ) {
         path.reset()
 
-        val width = p.measureText(text, start, end) + 2f * padding
+        val width = p.measureText(text, start, end) + (DOUBLE * padding)
         val shiftLeft: Float
         val shiftRight: Float
 
@@ -63,12 +63,12 @@ class RoundedSpan(
             }
 
             ALIGN_RIGHT -> {
-                shiftLeft = right - (width - (padding * 1.2f))
+                shiftLeft = right - (width - (padding * ALIGN_RIGHT_PADDING_REDUCTION))
                 shiftRight = (right + padding).toFloat()
             }
 
             else -> {
-                shiftLeft = (right - width) / 2
+                shiftLeft = (right - width) / DOUBLE
                 shiftRight = right - shiftLeft
             }
         }
@@ -108,9 +108,9 @@ class RoundedSpan(
 
         // skip spike on index 0
         val skipSpike = if (lnum == 0) true else listOfEmptyLine[lnum - 1]?.isNotEmpty() ?: false
-        val isWiderThenPrev = (width + (radius * 1.5f)) > prevWidth
+        val isWiderThenPrev = (width + (radius * ONE_AND_HALF)) > prevWidth
 
-        val bridgeBlendWidth = radius * 2
+        val bridgeBlendWidth = radius * DOUBLE
 
         val onTransitionSize =
             ((prevLeft - bridgeBlendWidth) <= rect.left && (prevRight + bridgeBlendWidth) >= rect.right)
@@ -120,7 +120,7 @@ class RoundedSpan(
          * universal-editor/src/debug/assets/center_alignment.png || etc
          */
 
-        val startPoint = Pair(prevRight - ((prevRight - prevLeft) / 2), rect.top)
+        val startPoint = Pair(prevRight - ((prevRight - prevLeft) / DOUBLE), rect.top)
         path.moveTo(startPoint.first, startPoint.second)
 
         if (isWiderThenPrev && !skipSpike) {
@@ -278,5 +278,10 @@ class RoundedSpan(
 
         private const val TOP_GAP_ON_BETWEEN_ROW = 6f
         private const val BOTTOM_GAP_BETWEEN_ROW = 6f
+
+        private const val ONE_AND_HALF = 1.5f
+        private const val DOUBLE = 2f
+
+        private const val ALIGN_RIGHT_PADDING_REDUCTION = 1.2f
     }
 }
