@@ -1,6 +1,5 @@
 package com.tokopedia.creation.common.presentation.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.creation.common.domain.ContentCreationConfigUseCase
 import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
@@ -24,9 +23,6 @@ import org.junit.Test
  * Created By : Muhammad Furqan on 23/10/23
  */
 class ContentCreationViewModelTest {
-
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
     val coroutineTestRule = UnconfinedTestRule()
@@ -180,7 +176,6 @@ class ContentCreationViewModelTest {
         assert(applink == ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK)
     }
 
-
     private fun getCreationConfigModelData() = ContentCreationConfigModel(
         isActive = true,
         statisticApplink = "tokopedia://test-applink/statistic",
@@ -191,10 +186,10 @@ class ContentCreationViewModelTest {
                 type = "shop",
                 image = "http://...",
                 hasUsername = true,
-                hasAcceptTnc = true,
+                hasAcceptTnc = true
             )
         ),
-        creationItems = getCreationItemList(),
+        creationItems = getCreationItemList()
     )
 
     private fun getCreationItemList() = listOf(
@@ -207,11 +202,11 @@ class ContentCreationViewModelTest {
                 type = "image",
                 id = "123",
                 coverUrl = "https://...",
-                mediaUrl = "https://...",
+                mediaUrl = "https://..."
             ),
             descriptionApplink = "tokopedia://test-applink/description",
             drawableIconId = 0,
-            authorType = ContentCreationAuthorEnum.SHOP,
+            authorType = ContentCreationAuthorEnum.SHOP
         ),
         ContentCreationItemModel(
             isActive = true,
@@ -222,11 +217,11 @@ class ContentCreationViewModelTest {
                 type = "video",
                 id = "123",
                 coverUrl = "https://...",
-                mediaUrl = "https://...",
+                mediaUrl = "https://..."
             ),
             descriptionApplink = "tokopedia://test-applink/description",
             drawableIconId = 0,
-            authorType = ContentCreationAuthorEnum.SHOP,
+            authorType = ContentCreationAuthorEnum.SHOP
         ),
         ContentCreationItemModel(
             isActive = false,
@@ -237,11 +232,11 @@ class ContentCreationViewModelTest {
                 type = "video",
                 id = "123",
                 coverUrl = "https://...",
-                mediaUrl = "https://...",
+                mediaUrl = "https://..."
             ),
             descriptionApplink = "tokopedia://test-applink/description",
             drawableIconId = 0,
-            authorType = ContentCreationAuthorEnum.SHOP,
+            authorType = ContentCreationAuthorEnum.SHOP
         )
     )
 }
