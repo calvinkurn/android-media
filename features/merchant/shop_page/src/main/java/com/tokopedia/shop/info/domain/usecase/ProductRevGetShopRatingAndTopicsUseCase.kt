@@ -33,6 +33,8 @@ class ProductRevGetShopRatingAndTopicsUseCase @Inject constructor(
       totalRatingFmt
       positivePercentageFmt
       totalRating
+      totalRatingTextAndImage
+      totalRatingTextAndImageFmt
       detail {
         totalReviews
         percentageFloat

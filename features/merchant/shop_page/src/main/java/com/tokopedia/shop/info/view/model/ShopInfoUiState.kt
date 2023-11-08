@@ -28,7 +28,9 @@ data class ShopInfoUiState(
         positivePercentageFmt = "",
         ratingScore = "",
         totalRating = 0,
-        totalRatingFmt = ""
+        totalRatingFmt = "",
+        totalRatingTextAndImage = 0,
+        totalRatingTextAndImageFmt = ""
     ),
     val review: ShopReview = ShopReview(
         totalReviews = 0,

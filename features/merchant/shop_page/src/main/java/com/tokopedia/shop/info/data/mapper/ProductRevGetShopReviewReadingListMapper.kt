@@ -17,7 +17,7 @@ class ProductRevGetShopReviewReadingListMapper @Inject constructor(){
                     review.reviewerLabel,
                     ShopReview.Review.LikeDislike(
                         review.likeDislike.totalLike,
-                        review.likeDislike.totalLike
+                        review.likeDislike.likeStatus
                     ),
                     review.avatar,
                     review.toAttachments()

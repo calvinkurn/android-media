@@ -5,7 +5,9 @@ data class ShopRating(
     val positivePercentageFmt: String,
     val ratingScore: String,
     val totalRating: Int,
-    val totalRatingFmt: String
+    val totalRatingFmt: String,
+    val totalRatingTextAndImage: Int,
+    val totalRatingTextAndImageFmt: String
 ) {
     data class Detail(
         val formattedTotalReviews: String,

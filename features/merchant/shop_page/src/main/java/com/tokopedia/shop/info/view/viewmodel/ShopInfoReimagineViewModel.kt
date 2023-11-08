@@ -93,10 +93,10 @@ class ShopInfoReimagineViewModel @Inject constructor(
                             mainLocation = shopInfo.location,
                             otherLocations = listOf(), // TODO replace with real data
                             operationalHours = shopOperationalHours.toFormattedOperationalHours(),
-                            shopJoinDate = shopInfo.createdInfo.openSince,
-                            totalProduct = 2, // TODO replace with real data
+                            shopJoinDate = shopInfo.createdInfo.shopCreated.toShopJoinDate(),
+                            totalProduct = shopInfo.activeProduct.toIntOrZero(),
                             shopUsp = shopHeaderLayout.shopPageGetHeaderLayout.toShopUsp(),
-                            showPharmacyLicenseBadge = shouldShowPharmacyLicenseBadge(shopInfo)
+                            showPharmacyLicenseBadge = isEpharmacy(shopInfo)
                         ),
                         rating = shopRating,
                         review = shopReview,
@@ -107,7 +107,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                         ),
                         shopNotes = shopNotes.toShopNotes(),
                         shipments = shopInfo.shipments.toShipments(),
-                        showEpharmacyInfo = shouldShowPharmacyLicenseBadge(shopInfo),
+                        showEpharmacyInfo = isEpharmacy(shopInfo),
                         epharmacy = ShopEpharmacyInfo(
                             nearestPickupAddress = "", // TODO replace with real data
                             nearPickupAddressAppLink = "", // TODO replace with real data
@@ -148,7 +148,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
             fields = GQLGetShopInfoUseCase.getDefaultShopFields() + listOf(
                 GQLGetShopInfoUseCase.FIELD_OS,
                 GQLGetShopInfoUseCase.FIELD_GOLD_OS,
-                GQLGetShopInfoUseCase.FIELD_GOLD
+                GQLGetShopInfoUseCase.FIELD_GOLD,
+                GQLGetShopInfoUseCase.FIELD_ACTIVE_PRODUCT
             )
         )
         return getShopInfoUseCase.executeOnBackground()
@@ -231,7 +232,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
         }
 
         val result = formattedOperationalHours.groupByHours()
-
+        
         return result
     }
 
@@ -261,7 +262,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return textHtmls
     }
 
-    private fun shouldShowPharmacyLicenseBadge(shopInfo: ShopInfo): Boolean {
+    private fun isEpharmacy(shopInfo: ShopInfo): Boolean {
         if (!shopInfo.isGoApotik) {
             return false
         }
@@ -286,5 +287,9 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private fun String.hourAndMinuteOnly(): String {
         return toDate(DateTimeConstant.TIME_SECOND_PRECISION).formatTo(DateTimeConstant.TIME_MINUTE_PRECISION)
+    }
+    
+    private fun String.toShopJoinDate(): String {
+        return toDate(DateTimeConstant.DATE_TIME_SECOND_PRECISION).formatTo(DateTimeConstant.DATE_TIME_YEAR_PRECISION)
     }
 }

@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
@@ -72,11 +74,36 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
                 binding?.tpgReviewerLabel?.text = review.reviewerLabel
             }
 
-            binding?.tpgCompletedReview?.text = getString(R.string.shop_info_placeholder_complete_review, review.likeDislike.likeStatus)
-            binding?.tpgReviewLikeCount?.text = getString(R.string.shop_info_placeholder_useful_review, review.likeDislike.totalLike)
-
+            renderCompletedReview(review.likeDislike.likeStatus)
+            renderLikeCount(review.likeDislike.likeStatus, review.likeDislike.totalLike)
+            
             renderAttachments(review.attachments)
         }
+    }
+
+    private fun renderCompletedReview(completedReviewCount: Int) {
+        val showCompletedReview = completedReviewCount.isMoreThanZero()
+        
+        if (showCompletedReview) {
+            binding?.tpgCompletedReview?.text =
+                getString(R.string.shop_info_placeholder_complete_review, completedReviewCount)    
+        }
+        
+    }
+
+    private fun renderLikeCount(completedReviewCount: Int, totalLike: Int) {
+        val showTotalLike = totalLike.isMoreThanZero()
+        val showCompletedReview = completedReviewCount.isMoreThanZero()
+        val showBullet = showCompletedReview && showTotalLike
+        
+        binding?.tpgReviewLikeCount?.isVisible = showTotalLike
+        binding?.tpgBulletReview?.isVisible = showBullet
+        
+        if (showTotalLike) {
+            binding?.tpgReviewLikeCount?.text =
+                getString(R.string.shop_info_placeholder_useful_review, totalLike)    
+        }
+        
     }
 
     private fun renderAttachments(attachments: List<ShopReview.Review.Attachment>) {

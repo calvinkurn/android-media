@@ -21,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.digitsOnly
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
@@ -187,7 +186,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
             tpgShopName.text = uiState.info.shopName
             tpgLicensedPharmacy.isVisible = uiState.showEpharmacyInfo
-            tpgShopUsp.text = uiState.info.shopUsp.joinToString(separator = ", ") { it }
+            tpgShopUsp.text = uiState.info.shopUsp.joinToString(separator = " • ") { it }
             tpgShopUsp.isVisible = uiState.info.shopUsp.isNotEmpty()
         }
 
@@ -273,12 +272,12 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun renderShopRatingAndReview(uiState: ShopInfoUiState) {
-        renderRatingAndReviewSummary(uiState.rating, uiState.review)
+        renderRatingAndReviewSummary(uiState.rating)
         renderRating(uiState.rating)
         renderTopReview(uiState.review)
     }
 
-    private fun renderRatingAndReviewSummary(rating: ShopRating, review: ShopReview) {
+    private fun renderRatingAndReviewSummary(rating: ShopRating) {
         val showRating = rating.totalRating.isMoreThanZero()
 
         binding?.tpgSectionTitleBuyerReview?.isVisible = showRating
@@ -288,14 +287,14 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         if (showRating) {
             val ratingAndReviewText = when {
-                rating.totalRating.isMoreThanZero() && review.totalReviews.isMoreThanZero() -> {
-                    getString(R.string.shop_info_placeholder_rating_and_review, rating.totalRatingFmt, review.totalReviews.splitByThousand())
+                rating.totalRating.isMoreThanZero() && rating.totalRatingTextAndImage.isMoreThanZero() -> {
+                    getString(R.string.shop_info_placeholder_rating_and_review, rating.totalRatingFmt, rating.totalRatingTextAndImageFmt)
                 }
                 rating.totalRating.isMoreThanZero() -> {
                     getString(R.string.shop_info_placeholder_rating, rating.totalRatingFmt)
                 }
-                review.totalReviews.isMoreThanZero() -> {
-                    getString(R.string.shop_info_placeholder_review, review.totalReviews.splitByThousand())
+                rating.totalRatingTextAndImage.isMoreThanZero() -> {
+                    getString(R.string.shop_info_placeholder_review, rating.totalRatingTextAndImageFmt)
                 }
                 else -> ""
             }
