@@ -86,7 +86,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
                 this.setPadding(
                     this.paddingLeft,
                     this.paddingTop,
-                    24.toPx() + this.paddingRight,
+                    ICON_1_PADDING.toPx() + this.paddingRight,
                     this.paddingBottom
                 )
             }
@@ -166,5 +166,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
 
     companion object {
         val LAYOUT = R.layout.customview_chatbot_small_reply_box
+
+        const val ICON_1_PADDING = 32
     }
 }
