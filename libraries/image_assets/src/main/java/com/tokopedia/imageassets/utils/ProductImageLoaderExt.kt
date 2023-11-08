@@ -22,17 +22,16 @@ fun ImageView.loadProductImage(
     val remoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
     val isEnabled = remoteConfig.getBoolean(RemoteConfigKey.LOAD_PRODUCT_IMAGE_ARCHIVAL_KEY, false)
     if (isEnabled) {
-        var type: FailureType? = null
+        var isArchived = false
         url.getBitmapImageUrl(
             context = context, properties = {
                 shouldTrackNetworkResponse(true)
                 networkResponse { _, failure ->
-                    type = failure
+                    isArchived = failure == FailureType.Gone || failure == FailureType.NotFound
                 }
                 setRoundedRadius(cornerRadius)
             }, target = MediaBitmapEmptyTarget(
                 onReady = {
-                    val isArchived = type == FailureType.Gone || type == FailureType.NotFound
                     onLoaded?.invoke(isArchived)
 
                     if (isArchived) {
@@ -44,6 +43,10 @@ fun ImageView.loadProductImage(
             )
         )
     } else {
-        loadImage(url)
+        loadImage(url) {
+            listener(onSuccess = { _, _ ->
+                onLoaded?.invoke(false)
+            })
+        }
     }
 }
