@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -179,20 +180,20 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun renderShopCoreInfo(uiState: ShopInfoUiState) {
         val hasUsp = uiState.info.shopUsp.isNotEmpty()
-        val hasPharmacyBadge = uiState.info.showPharmacyLicenseBadge && uiState.showEpharmacyInfo
+        val hasPharmacyLicenseBadge = uiState.info.showPharmacyLicenseBadge && uiState.pharmacy.showPharmacyInfoSection
 
         binding?.run {
             imgShop.loadImage(uiState.info.shopImageUrl)
             imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
             tpgShopName.text = uiState.info.shopName
-            tpgLicensedPharmacy.isVisible = uiState.showEpharmacyInfo
+            tpgLicensedPharmacy.isVisible = uiState.pharmacy.showPharmacyInfoSection
             tpgShopUsp.text = uiState.info.shopUsp.joinToString(separator = " • ") { it }
             tpgShopUsp.isVisible = uiState.info.shopUsp.isNotEmpty()
         }
 
-        val shopNameOnly = !hasUsp && !hasPharmacyBadge
+        val shopNameOnly = !hasUsp && !hasPharmacyLicenseBadge
         if (shopNameOnly) {
-            // TODO: Make shop name centered vertically with shop image url
+            makeShopNameCenteredVertically()
         }
     }
 
@@ -218,6 +219,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun renderOperationalHours(operationalHours: Map<String, List<String>>) {
         val linearLayout = binding?.layoutOperationalHoursContainer
+        linearLayout?.removeAllViews()
+        
         operationalHours.forEach {
             val hour = it.key
             val days = it.value
@@ -243,30 +246,34 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     @SuppressLint("PII Data Exposure")
     private fun renderShopPharmacy(uiState: ShopInfoUiState) {
-        val isePharmacy = uiState.showEpharmacyInfo
+        val isPharmacy = uiState.pharmacy.showPharmacyInfoSection
+        val expandPharmacyInfo = uiState.pharmacy.expandPharmacyInfo
 
         binding?.run {
-            labelShopPharmacyNearestPickup.isVisible = isePharmacy
-            labelShopPharmacyPharmacistOpsHour.isVisible = isePharmacy
-            labelShopPharmacyPharmacistName.isVisible = isePharmacy
-            labelShopPharmacySiaNumber.isVisible = isePharmacy
-            labelShopPharmacySipaNumber.isVisible = isePharmacy
-            tpgShopPharmacyCtaViewMaps.isVisible = isePharmacy
-            tpgShopPharmacyCtaViewAll.isVisible = isePharmacy
+            labelShopPharmacyNearestPickup.isVisible = isPharmacy
+            labelShopPharmacyPharmacistOpsHour.isVisible = isPharmacy && expandPharmacyInfo
+            labelShopPharmacyPharmacistName.isVisible = isPharmacy && expandPharmacyInfo
+            labelShopPharmacySiaNumber.isVisible = isPharmacy && expandPharmacyInfo
+            labelShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
+            
+            tpgShopPharmacyCtaViewAll.isVisible = isPharmacy && !expandPharmacyInfo
+            tpgShopPharmacyCtaViewAll.setOnClickListener { viewModel.handleCtaExpandPharmacyInfoClick() }
+            tpgShopPharmacyCtaViewMaps.isVisible = isPharmacy && expandPharmacyInfo
+            tpgShopPharmacyCtaViewMaps.setOnClickListener { viewModel.handleCtaViewPharmacyMapClick() }
 
-            tpgSectionTitlePharmacyInformation.isVisible = isePharmacy
-            tpgShopPharmacyNearestPickup.isVisible = isePharmacy
-            tpgShopPharmacyPharmacistOpsHour.isVisible = isePharmacy
-            tpgShopPharmacyPharmacistName.isVisible = isePharmacy
-            tpgShopPharmacySiaNumber.isVisible = isePharmacy
-            tpgShopPharmacySipaNumber.isVisible = isePharmacy
+            tpgSectionTitlePharmacyInformation.isVisible = isPharmacy
+            tpgShopPharmacyNearestPickup.isVisible = isPharmacy
+            tpgShopPharmacyPharmacistOpsHour.isVisible = isPharmacy && expandPharmacyInfo
+            tpgShopPharmacyPharmacistName.isVisible = isPharmacy && expandPharmacyInfo
+            tpgShopPharmacySiaNumber.isVisible = isPharmacy && expandPharmacyInfo
+            tpgShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
 
-            if (isePharmacy) {
-                tpgShopPharmacyNearestPickup.text = uiState.epharmacy.nearestPickupAddress
-                tpgShopPharmacyPharmacistOpsHour.text = uiState.epharmacy.pharmacistOperationalHour
-                tpgShopPharmacyPharmacistName.text = uiState.epharmacy.pharmacistName
-                tpgShopPharmacySiaNumber.text = uiState.epharmacy.siaNumber
-                tpgShopPharmacySipaNumber.text = uiState.epharmacy.sipaNumber
+            if (isPharmacy) {
+                tpgShopPharmacyNearestPickup.text = uiState.pharmacy.nearestPickupAddress.ifEmpty { "-" }
+                tpgShopPharmacyPharmacistOpsHour.text = uiState.pharmacy.pharmacistOperationalHour.joinToString(separator = "\n") { it }.ifEmpty { "-" }
+                tpgShopPharmacyPharmacistName.text = uiState.pharmacy.pharmacistName.ifEmpty { "-" }
+                tpgShopPharmacySiaNumber.text = uiState.pharmacy.siaNumber.ifEmpty { "-" }
+                tpgShopPharmacySipaNumber.text = uiState.pharmacy.sipaNumber.ifEmpty { "-" }
             }
         }
     }
@@ -319,6 +326,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun renderRatingList(ratings: List<ShopRating.Detail>) {
+        binding?.layoutRatingBarContainer?.removeAllViews()
+        
         ratings.forEach { rating ->
 
             val ratingView = layoutInflater.inflate(R.layout.item_shop_info_rating, binding?.layoutRatingBarContainer, false)
@@ -368,6 +377,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun renderShopNoteList(shopNotes: List<ShopNote>) {
+        binding?.layoutShopNotesContainer?.removeAllViews()
+        
         shopNotes.forEach { shopNote ->
             val shopNoteView = layoutInflater.inflate(R.layout.item_shop_info_shop_note, binding?.layoutShopNotesContainer, false)
             val shopNoteTitle = shopNoteView.findViewById<Typography?>(R.id.tpgShopNote)
@@ -418,5 +429,19 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
             binding?.layoutShopSupportedShipmentContainer?.addView(shipmentView)
         }
+    }
+
+
+    private fun makeShopNameCenteredVertically() {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(binding?.constraintLayout)
+
+        constraintSet.connect(R.id.tpgShopName, ConstraintSet.TOP, R.id.imgShop, ConstraintSet.TOP)
+        constraintSet.connect(R.id.tpgShopName, ConstraintSet.BOTTOM, R.id.imgShop, ConstraintSet.BOTTOM)
+
+        constraintSet.connect(R.id.imgShopBadge, ConstraintSet.TOP, R.id.imgShop, ConstraintSet.TOP)
+        constraintSet.connect(R.id.imgShopBadge, ConstraintSet.BOTTOM, R.id.imgShop, ConstraintSet.BOTTOM)
+
+        constraintSet.applyTo(binding?.constraintLayout)
     }
 }

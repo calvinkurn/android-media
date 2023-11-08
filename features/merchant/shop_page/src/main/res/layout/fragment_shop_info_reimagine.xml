@@ -29,6 +29,7 @@
         tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -109,6 +110,17 @@
                 app:typographyType="paragraph_3"
                 tools:text="Produk Terjamin Original | 30 Hari | Pengembalian | Bisa Virtual Fitting" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrierShopInfoHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:visibility="gone"
+                app:constraint_referenced_ids="imgShop, tpgLicensedPharmacy, tpgShopUsp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:barrierDirection="bottom" />
+            
+            
             <View
                 android:id="@+id/divider"
                 android:layout_width="0dp"
@@ -117,7 +129,7 @@
                 android:background="@color/Unify_NN50"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tpgShopUsp" />
+                app:layout_constraintTop_toBottomOf="@+id/barrierShopInfoHeader" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgSectionTitleShopInformation"
@@ -702,10 +714,9 @@
                 android:id="@+id/tpgChatPerformance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:text="@string/shop_info_chat_performance"
                 android:textColor="@color/Unify_NN600"
-                app:layout_constraintStart_toEndOf="@id/dividerProductSoldCount"
+                app:layout_constraintStart_toStartOf="@+id/labelChatPerformance"
                 app:layout_constraintTop_toBottomOf="@+id/labelChatPerformance"
                 app:typographyType="display_3" />
 
@@ -736,10 +747,9 @@
                 android:id="@+id/tpgOrderProcessDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:text="@string/shop_info_process_time"
                 android:textColor="@color/Unify_NN600"
-                app:layout_constraintStart_toEndOf="@id/dividerChatPerformance"
+                app:layout_constraintStart_toStartOf="@+id/labelOrderProcessTime"
                 app:layout_constraintTop_toBottomOf="@+id/labelOrderProcessTime"
                 app:typographyType="display_3" />
 
@@ -875,9 +885,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/dividerShopSupportedShipment"
                 app:typographyType="paragraph_3" />
-
+            
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
+  
 
 </RelativeLayout>

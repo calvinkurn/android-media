@@ -1,6 +1,6 @@
 package com.tokopedia.shop.info.view.model
 
-import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
+import com.tokopedia.shop.info.domain.entity.ShopPharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopInfo
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopNote
@@ -43,15 +43,16 @@ data class ShopInfoUiState(
     ),
     val shopNotes: List<ShopNote> = emptyList(),
     val shipments: List<ShopSupportedShipment> = emptyList(),
-    val showEpharmacyInfo: Boolean = false,
-    val epharmacy: ShopEpharmacyInfo = ShopEpharmacyInfo(
-        nearPickupAddressAppLink = "",
+    
+    val pharmacy: ShopPharmacyInfo = ShopPharmacyInfo(
+        showPharmacyInfoSection = false,
+        nearPickupAddressGmapsUrl = "",
         nearestPickupAddress = "",
         pharmacistName = "",
-        pharmacistOperationalHour = "",
+        pharmacistOperationalHour = emptyList(),
         siaNumber = "",
         sipaNumber = "",
-        collapseEpcharmacyInfo = true
+        expandPharmacyInfo = true
     ),
     val error: Throwable? = null
 )

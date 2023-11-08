@@ -1,10 +1,13 @@
 package com.tokopedia.shop.info.view.viewmodel
 
+import android.annotation.SuppressLint
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
@@ -15,7 +18,9 @@ import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.common.util.DateTimeConstant
-import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
+import com.tokopedia.shop.info.domain.GetEpharmacyShopInfoUseCase
+import com.tokopedia.shop.info.domain.GetNearestEpharmacyWarehouseLocationUseCase
+import com.tokopedia.shop.info.domain.entity.ShopPharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
@@ -24,7 +29,6 @@ import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopReviewReadingList
 import com.tokopedia.shop.info.view.model.ShopInfoUiState
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
-import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,14 +46,18 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val getShopReviewUseCase: ProductRevGetShopReviewReadingListUseCase,
     private val getShopGqlGetShopOperationalHoursListUseCase: GqlGetShopOperationalHoursListUseCase,
     private val getShopPageHeaderLayoutUseCase: GetShopPageHeaderLayoutUseCase,
-    private val getShopProductUseCase: GqlGetShopProductUseCase
+    private val getEpharmacyShopInfoUseCase: GetEpharmacyShopInfoUseCase,
+    private val getNearestEpharmacyWarehouseLocationUseCase: GetNearestEpharmacyWarehouseLocationUseCase,
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     companion object {
         private const val ID_FULFILLMENT_SERVICE_E_PHARMACY = 2
     }
+    
+    
     private val _uiState = MutableStateFlow(ShopInfoUiState())
     val uiState = _uiState.asStateFlow()
+    
 
     fun getShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
         launchCatchError(
@@ -81,6 +89,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 val shopNotes = shopNotesDeferred.await()
                 val shopOperationalHours = shopOperationalHoursDeferred.await()
 
+                val pharmacyInfo = getPharmacyInfo(shopId.toLongOrZero(), localCacheModel.district_id.toLongOrZero())
+                
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -107,16 +117,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                         ),
                         shopNotes = shopNotes.toShopNotes(),
                         shipments = shopInfo.shipments.toShipments(),
-                        showEpharmacyInfo = isEpharmacy(shopInfo),
-                        epharmacy = ShopEpharmacyInfo(
-                            nearestPickupAddress = "", // TODO replace with real data
-                            nearPickupAddressAppLink = "", // TODO replace with real data
-                            pharmacistOperationalHour = "", // TODO replace with real data
-                            pharmacistName = shopInfo.epharmacyInfo.apj,
-                            siaNumber = shopInfo.epharmacyInfo.siaNumber,
-                            sipaNumber = shopInfo.epharmacyInfo.sipaNumber,
-                            collapseEpcharmacyInfo = true
-                        )
+                        pharmacy = pharmacyInfo
                     )
                 }
             },
@@ -128,7 +129,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     fun handleCtaExpandPharmacyInfoClick() {
         _uiState.update {
-            it.copy(epharmacy = it.epharmacy.copy(collapseEpcharmacyInfo = false))
+            it.copy(pharmacy = it.pharmacy.copy(expandPharmacyInfo = true))
         }
     }
 
@@ -184,6 +185,42 @@ class ShopInfoReimagineViewModel @Inject constructor(
         getShopPageHeaderLayoutUseCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId, districtId, cityId)
         getShopPageHeaderLayoutUseCase.isFromCloud = true
         return getShopPageHeaderLayoutUseCase.executeOnBackground()
+    }
+    
+    @SuppressLint("PII Data Exposure")
+    private suspend fun getPharmacyInfo(shopId: Long, districtId: Long): ShopPharmacyInfo {
+        return try {
+            getNearestEpharmacyWarehouseLocationUseCase.params = GetNearestEpharmacyWarehouseLocationUseCase.createParams(shopId = shopId, districtId = districtId)
+            val nearestWarehouseLocation = getNearestEpharmacyWarehouseLocationUseCase.executeOnBackground()
+            val nearestWarehouseId = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.warehouseID
+
+            getEpharmacyShopInfoUseCase.params = GetEpharmacyShopInfoUseCase.createParams(shopId, nearestWarehouseId)
+            val ePharmacyInfo = getEpharmacyShopInfoUseCase.executeOnBackground()
+
+            ShopPharmacyInfo(
+                showPharmacyInfoSection = true,
+                nearestPickupAddress = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.address,
+                nearPickupAddressGmapsUrl = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.gMapsURL,
+                pharmacistOperationalHour = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.epharmacyWorkingHoursFmt,
+                pharmacistName = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.apj,
+                siaNumber = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.siaNumber,
+                sipaNumber = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.sipaNumber,
+                expandPharmacyInfo = false
+            )
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            ShopPharmacyInfo(
+                showPharmacyInfoSection = true,
+                nearPickupAddressGmapsUrl = "",
+                nearestPickupAddress = "",
+                pharmacistName = "",
+                pharmacistOperationalHour = emptyList(),
+                siaNumber = "",
+                sipaNumber = "",
+                expandPharmacyInfo = false
+            )
+        }
+        
     }
 
     private fun isMyShop(shopId: String): Boolean {

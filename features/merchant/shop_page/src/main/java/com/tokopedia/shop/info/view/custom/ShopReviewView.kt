@@ -31,6 +31,8 @@ class ShopReviewView @JvmOverloads constructor(
     }
 
     fun render(lifecycle: Lifecycle, fragment: Fragment, review: ShopReview) {
+        removeAllViews()
+        
         val viewpager = createViewpager()
         val tabIndicator = createTabIndicator()
 
