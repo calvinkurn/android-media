@@ -891,7 +891,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     quantity = "1",
                                                     qtyComparison = null,
                                                     price = 3.0,
-                                                    cartId = ""
+                                                    cartId = 0
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -913,7 +913,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     quantity = "1",
                                                     qtyComparison = null,
                                                     price = 3.0,
-                                                    cartId = ""
+                                                    cartId = 0
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1058,7 +1058,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     quantity = "1",
                                                     qtyComparison = null,
                                                     price = 3.0,
-                                                    cartId = ""
+                                                    cartId = 0
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1162,7 +1162,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     quantity = "1",
                                                     qtyComparison = null,
                                                     price = 3.0,
-                                                    cartId = ""
+                                                    cartId = 0
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389389,
@@ -1174,7 +1174,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     quantity = "1",
                                                     qtyComparison = null,
                                                     price = 3.0,
-                                                    cartId = ""
+                                                    cartId = 0
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1357,7 +1357,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     quantity = "1",
                                                     qtyComparison = null,
                                                     price = 3.0,
-                                                    cartId = ""
+                                                    cartId = 0
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389388,
@@ -1369,7 +1369,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     quantity = "1",
                                                     qtyComparison = null,
                                                     price = 3.0,
-                                                    cartId = ""
+                                                    cartId = 0
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1391,7 +1391,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     quantity = "1",
                                                     qtyComparison = null,
                                                     price = 3.0,
-                                                    cartId = ""
+                                                    cartId = 0
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1435,7 +1435,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     quantity = "1",
                                                     qtyComparison = null,
                                                     price = 3.0,
-                                                    cartId = ""
+                                                    cartId = 0
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389386,
@@ -1447,7 +1447,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     quantity = "1",
                                                     qtyComparison = null,
                                                     price = 3.0,
-                                                    cartId = ""
+                                                    cartId = 0
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1504,7 +1504,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     quantity = "1",
                                                     qtyComparison = null,
                                                     price = 3.0,
-                                                    cartId = ""
+                                                    cartId = 0
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389385,
@@ -1516,7 +1516,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     quantity = "1",
                                                     qtyComparison = null,
                                                     price = 3.0,
-                                                    cartId = ""
+                                                    cartId = 0
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1779,7 +1779,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 0.0,
                                 "",
                                 2150389388,
-                                "",
+                                0,
                                 "",
                                 "",
                                 "1",
@@ -1846,7 +1846,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 0.0,
                                 "",
                                 2150389388,
-                                "",
+                                0,
                                 "",
                                 "",
                                 "1",
@@ -2087,7 +2087,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 0.0,
                                 "",
                                 2150389388,
-                                "",
+                                0,
                                 "",
                                 "",
                                 "1",
@@ -2362,7 +2362,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 0.0,
                                 "",
                                 2150389388,
-                                "",
+                                0,
                                 "",
                                 "",
                                 "1",
@@ -2506,7 +2506,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 0.0,
                                 "",
                                 2150389388,
-                                "",
+                                0,
                                 "",
                                 "",
                                 "1",
@@ -2707,7 +2707,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 quantity = "1",
                                 qtyComparison = null,
                                 price = 3.0,
-                                cartId = ""
+                                cartId = 0
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2729,7 +2729,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 quantity = "1",
                                 qtyComparison = null,
                                 price = 3.0,
-                                cartId = ""
+                                cartId = 0
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2865,7 +2865,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 quantity = "1",
                                 qtyComparison = null,
                                 price = 3.0,
-                                cartId = ""
+                                cartId = 0
                             ),
                             ProductsInfo.Product(
                                 productId = 2150389388,
@@ -2877,7 +2877,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 quantity = "1",
                                 qtyComparison = null,
                                 price = 3.0,
-                                cartId = ""
+                                cartId = 0
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2899,7 +2899,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 quantity = "1",
                                 qtyComparison = null,
                                 price = 3.0,
-                                cartId = ""
+                                cartId = 0
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2932,7 +2932,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 quantity = "1",
                                 qtyComparison = null,
                                 price = 3.0,
-                                cartId = ""
+                                cartId = 0
                             ),
                             ProductsInfo.Product(
                                 productId = 2150389386,
@@ -2944,7 +2944,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 quantity = "1",
                                 qtyComparison = null,
                                 price = 3.0,
-                                cartId = ""
+                                cartId = 0
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2990,7 +2990,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 quantity = "1",
                                 qtyComparison = null,
                                 price = 3.0,
-                                cartId = ""
+                                cartId = 0
                             ),
                             ProductsInfo.Product(
                                 productId = 2150389385,
@@ -3002,7 +3002,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 quantity = "1",
                                 qtyComparison = null,
                                 price = 3.0,
-                                cartId = ""
+                                cartId = 0
                             )
                         ),
                         partnerLogoUrl = "",
