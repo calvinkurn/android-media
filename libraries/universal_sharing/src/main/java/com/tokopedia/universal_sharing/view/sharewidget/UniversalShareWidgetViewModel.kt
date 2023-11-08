@@ -73,11 +73,11 @@ class UniversalShareWidgetViewModel @Inject constructor(
                     linkerShareData,
                     object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                            _linkerResult.value = LinkerResultWidget.Success(linkerShareData)
+                            _linkerResult.postValue(LinkerResultWidget.Success(linkerShareData))
                         }
 
                         override fun onError(linkerError: LinkerError?) {
-                            _linkerResult.value = LinkerResultWidget.Failed(linkerError)
+                            _linkerResult.postValue(LinkerResultWidget.Failed(linkerError))
                         }
                     }
                 )

@@ -723,7 +723,7 @@ object DynamicProductDetailTracking {
             val userType = if (isAffiliate) "affiliate" else "general"
 
             trackShare(
-                eventLabel = "$userType - $productId - $campaignId - $bundleId",
+                eventLabel = "$channel - $userType - $productId - $campaignId - $bundleId",
                 event = UniversalSharebottomSheetTracker.VALUE_EVENT_CLICK,
                 eventCategory = UniversalSharebottomSheetTracker.VALUE_CATEGORY_PRODUCT_DETAIL_PAGE,
                 eventAction = UniversalSharebottomSheetTracker.VALUE_ACTION_CLICK_DIRECT_CHANNEL,

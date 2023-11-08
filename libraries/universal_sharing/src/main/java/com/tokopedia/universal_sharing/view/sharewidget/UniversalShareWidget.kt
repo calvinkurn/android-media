@@ -156,12 +156,13 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                 }
             }
 
-            UniversalShareConst.RemoteConfigKey.CONTROL_VARIANT -> {
+            UniversalShareConst.RemoteConfigKey.CONTROL_VARIANT, "" -> {
                 this.gone()
             }
 
             else -> {
                 /* no-op */
+                this.gone()
             }
         }
         setOnClickChannel()
@@ -175,6 +176,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                 linkProperties?.let {
                     val linkerData = createLinkerData()
                     viewModel?.executeLinkRequest(linkerData, sourceId, imageGeneratorModel)
+                    loading.show()
                 }
             }
             callback?.onClickShareWidget(linkProperties?.id.orEmpty(), getLinkChannel(), isAffiliate, isDirectChannel)
@@ -193,7 +195,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
             campaign = createUtmCampaign()
             feature = FEATURE_SHARE
             type = linkProperties?.linkerType ?: ""
-            isAffiliate = isAffiliate
+            isAffiliate = this@UniversalShareWidget.isAffiliate
             ogImageUrl = linkProperties?.ogImageUrl
             ogTitle = linkProperties?.ogTitle
             ogDescription = linkProperties?.ogDescription
@@ -224,6 +226,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
             }
 
             viewModel?.linkerResult?.observe(treeLifecycleOwner) { result ->
+                loading.dismiss()
                 when (result) {
                     is LinkerResultWidget.Success -> {
                         result.linkerShareResult?.let {
@@ -266,6 +269,11 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                             if (isShowShareIcon()) {
                                 binding?.shareChannel?.setImage(IconUnify.SHARE_AFFILIATE)
                             }
+                        }
+
+                        if (result.data.affiliateEligibility?.isEligible.orFalse() &&
+                            result.data.affiliateEligibility?.isRegistered.orFalse()
+                        ) {
                             isAffiliate = true
                         }
                     }
@@ -287,7 +295,11 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
     }
 
     fun show() {
-        if (getVariant() == UniversalShareConst.RemoteConfigKey.CONTROL_VARIANT) return
+        if (getVariant() == UniversalShareConst.RemoteConfigKey.CONTROL_VARIANT ||
+            getVariant() == ""
+        ) {
+            return
+        }
 
         this.visible()
         tracker.viewShareWidget(
@@ -302,7 +314,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
      */
     private fun getIconUnifyId(): Int {
         return when (channelShareIconId) {
-            CHANNEL_WHATSAPP -> IconUnify.WHATSAPP
+            CHANNEL_WHATSAPP -> IconUnify.WHATSAPP_SHARE
             CHANNEL_TELEGRAM -> IconUnify.TELEGRAM
             CHANNEL_SMS -> IconUnify.MESSAGE
             else -> IconUnify.WARNING
