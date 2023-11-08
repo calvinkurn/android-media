@@ -40,8 +40,8 @@ class TargetedTickerWidget : FrameLayout {
     private val binding = WidgetTargetedTickerBinding.inflate(LayoutInflater.from(context)).also { addView(it.root) }
 
     private val viewModel: TargetedTickerViewModel? by lazy {
-        findViewTreeViewModelStoreOwner().let { viewModelOwner ->
-            ViewModelProvider(viewModelOwner!!, viewModelFactory)[TargetedTickerViewModel::class.java]
+        findViewTreeViewModelStoreOwner()?.let { viewModelOwner ->
+            ViewModelProvider(viewModelOwner, viewModelFactory)[TargetedTickerViewModel::class.java]
         }
     }
 

@@ -13,9 +13,9 @@ import dagger.Component
     modules = [
         TargetedTickerModule::class,
         TargetedTickerViewModelModule::class
-    ], dependencies = [BaseAppComponent::class]
+    ],
+    dependencies = [BaseAppComponent::class]
 )
 interface TargetedTickerComponent {
     fun inject(widget: TargetedTickerWidget)
 }
-

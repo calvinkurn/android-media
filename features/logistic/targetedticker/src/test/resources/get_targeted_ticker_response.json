@@ -84,6 +84,31 @@
             ]
           }
         ]
+      },
+      {
+        "ID": 132,
+        "Title": "Ticker test 4",
+        "Content": "Notification content baru sedang berkendala, Mohon cek berkala.",
+        "Action": {
+          "Label": "",
+          "Type": "",
+          "AppURL": "",
+          "WebURL": ""
+        },
+        "Type": "announcement",
+        "Priority": 3,
+        "Metadata": [
+          {
+            "Type": "layout",
+            "Values": [
+              "layout_A"
+            ],
+            "Type": "tracking_page_id",
+            "Values": [
+              "191"
+            ]
+          }
+        ]
       }
     ]
   }

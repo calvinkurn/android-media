@@ -6,6 +6,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
 import com.tokopedia.targetedticker.domain.TargetedTickerMapper
+import com.tokopedia.targetedticker.domain.TargetedTickerPage
+import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.targetedticker.ui.TargetedTickerViewModel
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -106,10 +108,6 @@ class TargetedTickerViewModelTest {
     }
 
     @Test
-    fun `WHEN setupTicker return with param  THEN return success with param`() {
-    }
-
-    @Test
     fun `WHEN setupTicker with ticker type info THEN return TickerModel with TYPE_INFORMATION`() {
         val tickerType = TargetedTickerMapper.TICKER_INFO_TYPE
         val response = TickerDataProvider.provideDummy()
@@ -119,6 +117,32 @@ class TargetedTickerViewModelTest {
 
         // when
         targetedTickerViewModel.getTargetedTicker()
+
+        // then
+        val result = targetedTickerViewModel.tickerState.value as Success
+        val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
+        assertTrue(tickerUiModel?.type == Ticker.TYPE_ANNOUNCEMENT)
+    }
+
+    @Test
+    fun `WHEN setupTicker return with param and ticker info THEN return success`() {
+        val tickerType = TargetedTickerMapper.TICKER_INFO_TYPE
+        val response = TickerDataProvider.provideDummy()
+        val tickerItemInfoId =
+            response.getTargetedTickerData.list.find { it.type == tickerType }?.id
+        coEvery { tickerUseCase.invoke(any()) } returns response
+
+        // when
+        val param = TargetedTickerParamModel(
+            page = TargetedTickerPage.TRACKING_PAGE,
+            listOf(
+                TargetedTickerParamModel.Target(
+                    "type1",
+                    listOf("111")
+                )
+            )
+        )
+        targetedTickerViewModel.getTargetedTicker(param)
 
         // then
         val result = targetedTickerViewModel.tickerState.value as Success
