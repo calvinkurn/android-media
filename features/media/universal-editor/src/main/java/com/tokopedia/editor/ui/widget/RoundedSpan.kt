@@ -228,7 +228,6 @@ class RoundedSpan(
                     pathEightPosX, rect.top
                 )
             }
-
         }
 
         if (isWiderThenPrev && !skipSpike) {
