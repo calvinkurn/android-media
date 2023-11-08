@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.media.loader.data.Header
+import com.tokopedia.media.loader.data.failureTypeKey
 import com.tokopedia.media.loader.data.toModel
 import okhttp3.Headers
 
@@ -25,17 +26,21 @@ class NetworkResponseManager(context: Context) {
      * the second request occurred, then we will read the data from shared preferences.
      */
     fun set(url: String, header: Headers) {
+        val headerMap = header.toMultimap()
         if (header.size <= 0) return
+
         if (caches[url]?.isNotEmpty() == true || header(url).isNotEmpty()) return
+        if (headerMap.containsKey(failureTypeKey()).not()) return
         if (hasReachedThreshold()) forceResetCache()
 
-        val value = header
-            .toMultimap()
-            .toModel()
-            .toJson()
+        try {
+            val value = headerMap.toModel().toJson()
 
-        caches[url] = value
-        editor.edit().putString(url, value).apply()
+            caches[url] = value
+            editor.edit().putString(url, value).apply()
+        } catch (t: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(t)
+        }
     }
 
     /**

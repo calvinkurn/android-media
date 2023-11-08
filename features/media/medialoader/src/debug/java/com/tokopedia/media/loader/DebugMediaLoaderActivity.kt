@@ -47,24 +47,23 @@ open class DebugMediaLoaderActivity : AppCompatActivity() {
         btnShow.setOnClickListener {
             val url = edtUrl.text.toString().trim()
             var isArchived = false
-
-            val properties: Properties.() -> Unit = {
-                setRoundedRadius(80f) // sample rounded
-                shouldTrackNetworkResponse(true)
-                networkResponse { _, type ->
-                    isArchived = type == FailureType.NotFound || type == FailureType.Gone
-                }
-            }
+            val roundedRadius = 80f
 
             url.getBitmapImageUrl(
                 context = applicationContext,
-                properties = properties
+                properties = {
+                    setRoundedRadius(roundedRadius) // sample rounded
+                    shouldTrackNetworkResponse(true)
+                    networkResponse { _, type ->
+                        isArchived = type == FailureType.NotFound || type == FailureType.Gone
+                    }
+                }
             ) {
                 if (isArchived) {
                     val archivalUrl = "https://images.tokopedia.net/img/android/order_management/img_product_archived_small.png"
-                    imgSample.loadImage(archivalUrl, properties)
+                    imgSample.loadImageRounded(archivalUrl, roundedRadius)
                 } else {
-                    imgSample.setImageBitmap(it)
+                    imgSample.loadImageRounded(it, roundedRadius)
                 }
             }
         }
