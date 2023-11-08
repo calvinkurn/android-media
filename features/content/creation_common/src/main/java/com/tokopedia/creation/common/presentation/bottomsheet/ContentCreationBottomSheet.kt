@@ -90,7 +90,6 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                                 widgetSource
                             )
                             listener?.onCreationNextClicked(it)
-                            RouteManager.route(context, it.applink)
                         }
                     },
                     onRetryClicked = {
