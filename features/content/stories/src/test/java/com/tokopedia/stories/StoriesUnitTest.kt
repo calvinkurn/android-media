@@ -427,6 +427,24 @@ class StoriesUnitTest {
     }
 
     @Test
+    fun `when has seen all stories`() {
+        val selectedGroup = 2
+        val selectedDetail = 2
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.setStoriesTrackActivity(any()) } returns true
+        coEvery { mockRepository.setHasSeenAllStories(any(), any()) } coAnswers {}
+
+        getStoriesRobot().use { robot ->
+            robot.setTrackActivity(selectedGroup)
+
+            val actualDetail = robot.getViewModel().mDetail
+            actualDetail.isContentLoaded.assertTrue()
+        }
+    }
+
+    @Test
     fun `when stories open and index out of bound hit stories track activity`() {
         val selectedGroup = 0
         val selectedDetail = -1
