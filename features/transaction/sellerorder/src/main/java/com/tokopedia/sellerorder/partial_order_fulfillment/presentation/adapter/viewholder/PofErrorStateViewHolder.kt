@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.viewholder
 
+import android.annotation.SuppressLint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.globalerror.GlobalError
@@ -39,6 +40,7 @@ class PofErrorStateViewHolder(
         binding.root.setActionClickListener { listener.onEvent(UiEvent.ClickRetryOnErrorState) }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupErrorState(throwable: Throwable) {
         binding.root.setType(
             if (throwable is SocketTimeoutException || throwable is UnknownHostException) {
@@ -47,6 +49,9 @@ class PofErrorStateViewHolder(
                 GlobalError.SERVER_ERROR
             }
         )
-        binding.root.errorDescription.text = ErrorHandler.getErrorMessage(binding.root.context, throwable)
+        val errorCode = ErrorHandler
+            .getErrorMessagePair(binding.root.context, throwable, ErrorHandler.Builder().build())
+            .second
+        binding.root.errorDescription.text = "${binding.root.errorDescription.text} $errorCode"
     }
 }
