@@ -1,7 +1,6 @@
 package com.ilhamsuaib.darkmodeconfig.view.bottomsheet
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,17 +9,20 @@ import android.widget.LinearLayout
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
-import com.ilhamsuaib.darkmodeconfig.view.activity.DarkModeConfigActivity
+import com.ilhamsuaib.darkmodeconfig.model.UiMode
 import com.ilhamsuaib.darkmodeconfig.view.screen.DarkModeIntroScreen
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 
 /**
  * Created by @ilhamsuaib on 07/11/23.
  */
 
 internal class DarkModeIntroBottomSheet : BottomSheetUnify() {
+
+    private var setOnApplyConfig: ((UiMode) -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,9 +41,10 @@ internal class DarkModeIntroBottomSheet : BottomSheetUnify() {
         bottomSheetTitle.gone()
     }
 
-    fun show(fm: FragmentManager) {
+    fun show(fm: FragmentManager, onApplyConfig: (UiMode) -> Unit) {
         if (fm.isStateSaved || isAdded) return
 
+        this.setOnApplyConfig = onApplyConfig
         show(fm, TAG)
     }
 
@@ -53,7 +56,7 @@ internal class DarkModeIntroBottomSheet : BottomSheetUnify() {
                     NestTheme {
                         DarkModeIntroScreen(
                             onPrimaryClicked = {
-                                navigateToDarkModeConfig()
+                                applyFollowSystemSetting()
                             },
                             onSecondaryClicked = {
                                 dismissBottomSheet()
@@ -65,10 +68,15 @@ internal class DarkModeIntroBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun navigateToDarkModeConfig() {
-        val context = context ?: return
-        context.startActivity(Intent(context, DarkModeConfigActivity::class.java))
+    private fun applyFollowSystemSetting() {
+        showToaster()
+        setOnApplyConfig?.invoke(UiMode.FollowSystemSetting())
         dismissBottomSheet()
+    }
+
+    private fun showToaster() {
+        val view = view ?: return
+        Toaster.build(view.rootView, "")
     }
 
     private fun dismissBottomSheet() {

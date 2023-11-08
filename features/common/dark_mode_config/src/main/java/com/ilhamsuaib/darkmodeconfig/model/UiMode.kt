@@ -9,7 +9,7 @@ import com.ilhamsuaib.darkmodeconfig.R
  * Created by @ilhamsuaib on 05/11/23.
  */
 
-internal sealed class UiMode(
+sealed class UiMode(
     val screenMode: Int,
     @StringRes val nameResId: Int,
     @StringRes val descriptionResId: Int,
@@ -40,7 +40,7 @@ internal sealed class UiMode(
         }
     }
 
-    data class FollowSystemSetting(override val isSelected: Boolean) : UiMode(
+    data class FollowSystemSetting(override val isSelected: Boolean = false) : UiMode(
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
         R.string.dmc_follow_system_name,
         R.string.dmc_follow_system_description,
@@ -54,9 +54,9 @@ internal sealed class UiMode(
     companion object {
         fun getOptionList(screenMode: Int): List<UiMode> {
             return listOf(
+                FollowSystemSetting(isSelected = screenMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM),
                 Light(isSelected = screenMode == AppCompatDelegate.MODE_NIGHT_NO),
-                Dark(isSelected = screenMode == AppCompatDelegate.MODE_NIGHT_YES),
-                FollowSystemSetting(isSelected = screenMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                Dark(isSelected = screenMode == AppCompatDelegate.MODE_NIGHT_YES)
             )
         }
     }

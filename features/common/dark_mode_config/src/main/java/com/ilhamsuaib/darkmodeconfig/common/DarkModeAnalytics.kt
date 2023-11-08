@@ -15,11 +15,15 @@ internal object DarkModeAnalytics {
     private const val CATEGORY_SETTING_PAGE = "setting page"
     private const val ACTION_SAVE_THEME_SELECTION = "click simpan on theme selection"
 
-    fun eventClickThemeSetting(mode: UiMode) {
+    private const val LIGHT = "light"
+    private const val DARK = "dark"
+    private const val FOLLOW_SYSTEM_SETTING = "followSystemSetting - %s"
+
+    fun eventClickThemeSetting(mode: UiMode, isDarkModeOS: Boolean) {
         val label: String = when (mode) {
-            is UiMode.Light -> "light"
-            is UiMode.Dark -> "dark"
-            is UiMode.FollowSystemSetting -> "followSystemSetting"
+            is UiMode.Light -> LIGHT
+            is UiMode.Dark -> DARK
+            is UiMode.FollowSystemSetting -> getFollowSystemSettingLabel(isDarkModeOS)
         }
         val analytics: Analytics = TrackApp.getInstance().gtm
         analytics.sendGeneralEvent(
@@ -30,5 +34,10 @@ internal object DarkModeAnalytics {
                 label
             )
         )
+    }
+
+    private fun getFollowSystemSettingLabel(isDarkModeOS: Boolean): String {
+        val label = if (isDarkModeOS) DARK else LIGHT
+        return String.format(FOLLOW_SYSTEM_SETTING, label)
     }
 }

@@ -6,13 +6,12 @@ import android.os.Build
 import android.os.Bundle
 import androidx.core.view.WindowCompat
 import com.ilhamsuaib.darkmodeconfig.view.bottomsheet.DarkModeIntroBottomSheet
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
 
 /**
  * Created by @ilhamsuaib on 07/11/23.
  */
 
-class DarkModeIntroActivity : BaseActivity() {
+class DarkModeIntroActivity : DarkModeActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +34,14 @@ class DarkModeIntroActivity : BaseActivity() {
 
     private fun showBottomSheet() {
         val fm = supportFragmentManager
-        DarkModeIntroBottomSheet.getInstance(fm).apply {
-            setOnDismissListener {
-                this@DarkModeIntroActivity.finish()
+        DarkModeIntroBottomSheet.getInstance(fm)
+            .apply {
+                setOnDismissListener {
+                    this@DarkModeIntroActivity.finish()
+                }
             }
-        }.show(fm)
+            .show(fm) {
+                super.applyAppTheme(it)
+            }
     }
 }
