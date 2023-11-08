@@ -34,11 +34,13 @@ import com.tokopedia.topads.common.utils.TopadsCommonUtil.showErrorAutoAds
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
+import com.tokopedia.topads.common.view.sheet.TopAdsOutofCreditSheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.NumberTextWatcher
+import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.topads.common.R as topadscommonR
 
@@ -128,10 +130,26 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
             }
             binding?.btnSubmit?.isLoading = false
         }
+
+        viewModel?.budgetrecommendation?.observe(viewLifecycleOwner){
+            when(it){
+                is Success -> {
+                    // under discussion
+                }
+                is Fail -> {
+                    // under discussion
+                }
+            }
+        }
     }
 
     private fun postAutoPsSuccess() {
-        moveToDashboard()
+        if(viewModel?.checkDeposits() == true){
+//            moveToDashboard()
+            showInsufficientCredits()
+        } else {
+            showInsufficientCredits()
+        }
     }
 
     private fun moveToDashboard() {
@@ -142,13 +160,15 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                 TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED,
                 TopAdsCommonConstant.PARAM_AUTOADS_BUDGET
             )
-            putExtra(
-                TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD,
-                TopAdsCommonConstant.PARAM_PRODUK_IKLAN
-            )
         }
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+    }
+
+    private fun showInsufficientCredits(){
+        val sheet = TopAdsOutofCreditSheet()
+        sheet.overlayClickDismiss = false
+        sheet.show(childFragmentManager)
     }
 
     private fun setupListeners() {
