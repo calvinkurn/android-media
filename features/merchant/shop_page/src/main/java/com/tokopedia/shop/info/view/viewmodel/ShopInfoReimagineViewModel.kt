@@ -221,8 +221,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
         getShopOperationalHoursList?.data?.forEach { operationalHour ->
             val formattedDay = daysDictionary[operationalHour.day].orEmpty()
 
-            val startTime = operationalHour.startTime.toDate(DateTimeConstant.TIME_SECOND_PRECISION).formatTo(DateTimeConstant.TIME_MINUTE_PRECISION)
-            val endTime = operationalHour.endTime.toDate(DateTimeConstant.TIME_SECOND_PRECISION).formatTo(DateTimeConstant.TIME_MINUTE_PRECISION)
+            val startTime = operationalHour.startTime.hourAndMinuteOnly()
+            val endTime = operationalHour.endTime.hourAndMinuteOnly()
             val operationalHourFormat = "%s - %s"
 
             operationalHours[formattedDay] = String.format(operationalHourFormat, startTime, endTime)
@@ -280,5 +280,9 @@ class ShopInfoReimagineViewModel @Inject constructor(
             keySelector = { it.value },
             valueTransform = { it.key }
         )
+    }
+
+    private fun String.hourAndMinuteOnly(): String {
+        return toDate(DateTimeConstant.TIME_SECOND_PRECISION).formatTo(DateTimeConstant.TIME_MINUTE_PRECISION)
     }
 }
