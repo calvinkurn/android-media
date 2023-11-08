@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mer
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentAdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -11,6 +10,8 @@ import com.tokopedia.discovery2.data.Redirection
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase.Companion.VOUCHER_PER_PAGE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridComponentExtension.addShimmer
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridComponentExtension.addVoucherList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -36,13 +37,11 @@ class MerchantVoucherGridViewModel(
     private val _seeMore: MutableLiveData<Redirection> = MutableLiveData()
     private val _noMorePages: MutableLiveData<Unit> = MutableLiveData()
 
-    private val shimmerComponent = ComponentsItem(
-        name = ComponentNames.Shimmer.componentName,
-        shimmerHeight = SHIMMER_COMPONENT_HEIGHT,
-        shouldRefreshComponent = true
-    )
+    private val layout: ArrayList<ComponentsItem> = arrayListOf()
 
-    private val layout: ArrayList<ComponentsItem> = arrayListOf(shimmerComponent, shimmerComponent)
+    init {
+        layout.addShimmer()
+    }
 
     val couponList: LiveData<Result<ArrayList<ComponentsItem>>>
         get() = _couponList
@@ -134,16 +133,4 @@ class MerchantVoucherGridViewModel(
     }
 
     private fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = component.getComponentAdditionalInfo()
-
-    private fun ArrayList<ComponentsItem>.addVoucherList(
-        voucherList: List<ComponentsItem>
-    ) {
-        layout.clear()
-        addAll(voucherList)
-    }
-
-    private fun ArrayList<ComponentsItem>.addShimmer() {
-        add(shimmerComponent)
-        add(shimmerComponent)
-    }
 }

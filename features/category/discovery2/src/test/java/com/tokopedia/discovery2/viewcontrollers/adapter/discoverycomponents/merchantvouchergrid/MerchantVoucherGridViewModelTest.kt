@@ -2,17 +2,34 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mer
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.utils.URLParser
+import com.tokopedia.discovery2.common.TestUtils.verifyEquals
+import com.tokopedia.discovery2.data.ComponentAdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.TotalProductData
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridComponentExtension.addShimmer
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridComponentExtension.addVoucherList
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridViewModel.Companion.ERROR_MESSAGE_EMPTY_DATA
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.unit.test.ext.getOrAwaitValue
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkConstructor
 import io.mockk.spyk
+import io.mockk.unmockkConstructor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.junit.Assert.assertEquals
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -20,90 +37,180 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class MerchantVoucherGridViewModelTest {
 
-    @get: Rule
+    @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val application = mockk<Application>()
-    private val component = mockk<ComponentsItem>(relaxed = true)
+    private val useCase: MerchantVoucherUseCase = mockk(relaxed = true)
+    private val component: ComponentsItem = mockk(relaxed = true)
 
-    private val useCase: MerchantVoucherUseCase by lazy { mockk(relaxed = true) }
+    private val application: Application = mockk()
+    private val position: Int = 99
 
     private lateinit var viewModel: MerchantVoucherGridViewModel
+    private lateinit var searchParameter: SearchParameter
+    private lateinit var filterController: FilterController
 
     @Before
-    fun setup() {
+    fun setUp() {
+        Dispatchers.setMain(Dispatchers.Default)
         MockKAnnotations.init(this)
-        Dispatchers.setMain(UnconfinedTestDispatcher())
+        mockkConstructor(URLParser::class)
+        mockUrlParser()
 
         viewModel = spyk(
             MerchantVoucherGridViewModel(
-                application,
-                component,
-                99
+                application = application,
+                component = component,
+                position = position
             )
         )
 
         viewModel.useCase = useCase
+        searchParameter = SearchParameter()
+        filterController = FilterController()
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+        unmockkConstructor(URLParser::class)
+    }
+
+    private fun mockUrlParser() {
+        every {
+            anyConstructed<URLParser>().paramKeyValueMapDecoded
+        } returns hashMapOf()
     }
 
     @Test
-    fun `given successfully fetch with empty vouchers, should not post any value for voucher list`() {
-        val componentId = (0..Integer.MAX_VALUE).random().toString()
-        val pageEndpoint = "discopagev2-mvc-grid-infinite-test"
+    fun `test 1`() = runTest {
+        viewModel.loadFirstPageCoupon()
 
-        coEvery { component.id } returns componentId
+        val expected = arrayListOf<ComponentsItem>()
 
-        coEvery { component.pageEndPoint } returns pageEndpoint
+        expected.addShimmer()
 
-        val componentsItem = arrayListOf<ComponentsItem>()
+        val couponListActualResult = viewModel.couponList.getOrAwaitValue()
 
-        coEvery { component.getComponentsItem() } returns componentsItem
-
-        coEvery { useCase.loadFirstPageComponents(componentId, pageEndpoint) } returns true
-
-        viewModel.fetchCoupons()
-
-        assertEquals(true, viewModel.loadError.value)
-        assertEquals(null, viewModel.couponList.value)
+        couponListActualResult
+            .verifySuccessEquals(expected)
     }
 
     @Test
-    fun `given successfully fetch vouchers, should post the vouchers and should not treat as error`() {
+    fun `test 2 voucher list empty`() = runTest {
         val componentId = (0..Integer.MAX_VALUE).random().toString()
         val pageEndpoint = "discopagev2-mvc-grid-infinite-test"
 
-        coEvery { component.id } returns componentId
+        every {
+            component.id
+        } returns componentId
 
-        coEvery { component.pageEndPoint } returns pageEndpoint
+        every {
+            component.pageEndPoint
+        } returns pageEndpoint
 
-        val componentsItem = arrayListOf<ComponentsItem>(mockk())
+        every {
+            component.getComponentsItem()
+        } returns listOf()
 
-        coEvery { component.getComponentsItem() } returns componentsItem
+        every {
+            component.getComponentAdditionalInfo()
+        } returns ComponentAdditionalInfo(nextPage = "", enabled = false, totalProductData = TotalProductData())
 
-        coEvery { useCase.loadFirstPageComponents(componentId, pageEndpoint) } returns true
+        coEvery {
+            useCase.loadFirstPageComponents(componentId = componentId, pageEndPoint = pageEndpoint)
+        } returns true
 
-        viewModel.fetchCoupons()
+        viewModel.loadFirstPageCoupon()
 
-        assertEquals(false, viewModel.loadError.value)
-        assertEquals(componentsItem, viewModel.couponList.value)
+        val couponListActualResult = viewModel.couponList.getOrAwaitValue()
+
+        couponListActualResult
+            .verifyFailEquals(ERROR_MESSAGE_EMPTY_DATA)
     }
 
     @Test
-    fun `given failed to fetch vouchers, should post load error value`() {
+    fun `test 3 voucher list not empty`() = runTest  {
         val componentId = (0..Integer.MAX_VALUE).random().toString()
         val pageEndpoint = "discopagev2-mvc-grid-infinite-test"
 
-        coEvery { component.id } returns componentId
+        val componentList = listOf(ComponentsItem(
+            searchParameter = searchParameter,
+            filterController = filterController,
+        ), ComponentsItem(
+            searchParameter = searchParameter,
+            filterController = filterController,
+        ), ComponentsItem(
+            searchParameter = searchParameter,
+            filterController = filterController,
+        )
+        )
 
-        coEvery { component.pageEndPoint } returns pageEndpoint
+        every {
+            component.id
+        } returns componentId
 
-        coEvery { component.getComponentsItem() } throws Throwable()
+        every {
+            component.pageEndPoint
+        } returns pageEndpoint
 
-        coEvery { useCase.loadFirstPageComponents(componentId, pageEndpoint) } returns true
+        every {
+            component.getComponentAdditionalInfo()
+        } returns ComponentAdditionalInfo(nextPage = "", enabled = false, totalProductData = TotalProductData())
 
-        viewModel.fetchCoupons()
+        every {
+            component.getComponentsItem()
+        } returns componentList
 
-        assertEquals(true, viewModel.loadError.value)
-        assertEquals(null, viewModel.couponList.value)
+        coEvery {
+            useCase.loadFirstPageComponents(componentId = componentId, pageEndPoint = pageEndpoint)
+        } returns true
+
+        viewModel.loadFirstPageCoupon()
+
+        val expected = arrayListOf<ComponentsItem>()
+
+        expected.addVoucherList(componentList)
+
+        val noMorePagesActualResult = viewModel.noMorePages.getOrAwaitValue()
+        val seeMoreActualResult = viewModel.seeMore.getOrAwaitValue()
+        val couponListActualResult = viewModel.couponList.getOrAwaitValue()
+
+        noMorePagesActualResult
+            .verifyEquals(Unit)
+        seeMoreActualResult
+            .verifyEquals(null)
+        couponListActualResult
+            .verifySuccessEquals(expected)
+    }
+
+    private fun Result<ArrayList<ComponentsItem>>.verifySuccessEquals(
+        expected: ArrayList<ComponentsItem>
+    ) {
+        val expectedResult = expected.map { component ->
+            component.copy(
+                searchParameter = searchParameter,
+                filterController = filterController,
+            )
+        }
+        val actualResult = (this as? Success<ArrayList<ComponentsItem>>)?.data?.map { component ->
+            component.copy(
+                searchParameter = searchParameter,
+                filterController = filterController,
+            )
+        }
+        actualResult
+            ?.verifyEquals(expectedResult)
+    }
+
+    private fun Result<ArrayList<ComponentsItem>>?.verifyFailEquals(
+        message: String
+    ) {
+        val actualResult = (this as? Fail)?.throwable?.message
+        actualResult
+            ?.verifyEquals(message)
     }
 }
+
+
+
