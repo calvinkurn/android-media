@@ -106,7 +106,6 @@ class PinpointViewModel @Inject constructor(
         cityName: String = "",
         lat: Double = 0.0,
         long: Double = 0.0,
-        placeId: String = "",
         districtId: Long = 0L,
         whDistrictId: Long = 0L,
         addressId: String = "",
@@ -121,7 +120,6 @@ class PinpointViewModel @Inject constructor(
             cityName = cityName,
             lat = lat,
             long = long,
-            placeId = placeId,
             districtId = districtId
         )
         this.whDistrictId = whDistrictId

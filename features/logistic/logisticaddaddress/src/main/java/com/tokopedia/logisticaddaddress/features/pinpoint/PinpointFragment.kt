@@ -91,7 +91,6 @@ import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.PinpointAction
 import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.PinpointBottomSheetState
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.PinpointWebviewActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_AUTOCOMPLETE
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.MAPS_EMPTY
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENIED
@@ -417,7 +416,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
             viewModel.onViewCreated(
                 districtName = getString(EXTRA_DISTRICT_NAME).orEmpty(),
                 cityName = getString(EXTRA_CITY_NAME).orEmpty(),
-                placeId = getString(EXTRA_PLACE_ID).orEmpty(),
                 lat = getDouble(EXTRA_LAT),
                 long = getDouble(EXTRA_LONG),
                 districtId = getLong(EXTRA_DISTRICT_ID),
