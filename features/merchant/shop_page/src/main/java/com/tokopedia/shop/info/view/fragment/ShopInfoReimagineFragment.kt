@@ -43,6 +43,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 import javax.inject.Inject
 
 class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoComponent> {

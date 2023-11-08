@@ -3,15 +3,18 @@ package com.tokopedia.shop.info.view.viewmodel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
+import com.tokopedia.shop.common.extension.toDate
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
+import com.tokopedia.shop.common.util.DateTimeConstant
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
@@ -217,7 +220,12 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
         getShopOperationalHoursList?.data?.forEach { operationalHour ->
             val formattedDay = daysDictionary[operationalHour.day].orEmpty()
-            operationalHours[formattedDay] = "${operationalHour.startTime} - ${operationalHour.endTime}"
+
+            val startTime = operationalHour.startTime.toDate(DateTimeConstant.TIME_SECOND_PRECISION).formatTo(DateTimeConstant.TIME_MINUTE_PRECISION)
+            val endTime = operationalHour.endTime.toDate(DateTimeConstant.TIME_SECOND_PRECISION).formatTo(DateTimeConstant.TIME_MINUTE_PRECISION)
+            val operationalHourFormat = "%s - %s"
+
+            operationalHours[formattedDay] = String.format(operationalHourFormat, startTime, endTime)
         }
 
         val groupedByHours = operationalHours.groupByHours()
