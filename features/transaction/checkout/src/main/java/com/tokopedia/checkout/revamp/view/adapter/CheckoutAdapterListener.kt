@@ -143,4 +143,6 @@ interface CheckoutAdapterListener {
         offerId: String,
         shopId: String
     )
+
+    fun onPaymentLevelAddOnsImpressed()
 }

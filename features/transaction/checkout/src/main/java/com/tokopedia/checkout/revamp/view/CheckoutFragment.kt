@@ -35,6 +35,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
+import com.tokopedia.checkout.analytics.CheckoutPaymentAddOnsAnalytics
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.CornerAnalytics
 import com.tokopedia.checkout.databinding.BottomSheetPlatformFeeInfoBinding
@@ -195,6 +196,9 @@ class CheckoutFragment :
 
     @Inject
     lateinit var checkoutEgoldAnalytics: CheckoutEgoldAnalytics
+
+    @Inject
+    lateinit var paymentAddOnsAnalytics: CheckoutPaymentAddOnsAnalytics
 
     @Inject
     lateinit var shippingCourierConverter: ShippingCourierConverter
@@ -2074,6 +2078,11 @@ class CheckoutFragment :
         val digitalProductId = crossSellModel.crossSellModel.id
         val eventLabel = "$digitalCategoryName - $digitalProductId"
         val digitalProductName = crossSellModel.crossSellModel.info.title
+        if (checked) {
+            paymentAddOnsAnalytics.eventCheckCrossSellIcon()
+        } else {
+            paymentAddOnsAnalytics.eventUncheckCrossSellIcon()
+        }
         checkoutAnalyticsCourierSelection.eventClickCheckboxCrossSell(
             checked,
             userSessionInterface.userId,
@@ -2599,5 +2608,9 @@ class CheckoutFragment :
 
     override fun onClearPromoFailed(throwable: Throwable) {
         showToast(throwable.message)
+    }
+
+    override fun onPaymentLevelAddOnsImpressed() {
+        paymentAddOnsAnalytics.eventImpressCrossSellIcon()
     }
 }
