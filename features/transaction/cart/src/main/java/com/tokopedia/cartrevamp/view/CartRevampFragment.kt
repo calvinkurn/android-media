@@ -366,6 +366,7 @@ class CartRevampFragment :
         const val PROMO_ANIMATION_DURATION = 500L
         const val SELECTED_AMOUNT_ANIMATION_DURATION = 500L
         const val COACHMARK_VISIBLE_DELAY_DURATION = 500L
+        const val DELAY_SHOW_SWIPE_TO_DELETE_ONBOARDING = 1000L
         const val DELAY_CHECK_BOX_GLOBAL = 500L
         const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
         const val KEY_NEW_BUNDLE_ID = "new_bundle_id"
@@ -2397,7 +2398,7 @@ class CartRevampFragment :
     private fun initSharedFlow() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                swipeToDeleteOnBoardingFlow.debounce(1000L).collectLatest {
+                swipeToDeleteOnBoardingFlow.debounce(DELAY_SHOW_SWIPE_TO_DELETE_ONBOARDING).collectLatest {
                     handleProductSwipeToDeleteOnBoarding()
                 }
             }
