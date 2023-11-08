@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -81,7 +80,6 @@ import com.tokopedia.nest.components.ticker.TickerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
-import com.tokopedia.nest.principles.utils.ImpressionHolder
 import com.tokopedia.nest.principles.utils.addImpression
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.seller.menu.R
@@ -189,8 +187,10 @@ fun SellerMenuScreen(
                             onShowToaster(message)
                         }
                     },
-                    onShopInfoImpressed = onShopInfoImpressed,
-                    onShopScoreImpressed = onShopScoreImpressed
+                    onShopInfoImpressed = { shopType ->
+                        onShopInfoImpressed(shopType)
+                        onShopScoreImpressed()
+                    }
                 )
 
                 PullRefreshIndicator(
@@ -212,7 +212,6 @@ fun SellerMenuContent(
     onTickerClick: (String) -> Unit,
     onShowToaster: (String) -> Unit,
     onShopInfoImpressed: (ShopType?) -> Unit,
-    onShopScoreImpressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (uiState) {
@@ -226,7 +225,6 @@ fun SellerMenuContent(
                 onReload,
                 onTickerClick,
                 onShopInfoImpressed,
-                onShopScoreImpressed,
                 modifier
             )
         }
@@ -241,7 +239,6 @@ fun SellerMenuContent(
                 onReload,
                 onTickerClick,
                 onShopInfoImpressed,
-                onShopScoreImpressed,
                 modifier
             )
         }
@@ -252,7 +249,6 @@ fun SellerMenuContent(
             onReload,
             onTickerClick,
             onShopInfoImpressed,
-            onShopScoreImpressed,
             modifier
         )
     }
@@ -265,7 +261,6 @@ fun SellerMenuSuccessState(
     onReload: (Boolean) -> Unit,
     onTickerClick: (String) -> Unit,
     onShopInfoImpressed: (ShopType?) -> Unit,
-    onShopScoreImpressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val lazyListState = rememberLazyListState()
@@ -275,6 +270,9 @@ fun SellerMenuSuccessState(
     ) {
         items(
             items,
+            key = {
+                it.key
+            },
             contentType = {
                 it.itemType
             },
@@ -404,10 +402,7 @@ fun SellerMenuSuccessState(
                             partialResponseStatus = it.partialResponseStatus,
                             totalBalance = it.balanceValue,
                             userShopInfoWrapper = it.userShopInfoWrapper,
-                            shopScoreImpressionHolder = it.shopScoreImpressionHolder,
-                            lazyListState = lazyListState,
                             onActionClick = onActionClick,
-                            onShopScoreImpressed = onShopScoreImpressed,
                             isLoading = loading,
                             onReload = { isLoading ->
                                 loading = isLoading
@@ -418,7 +413,7 @@ fun SellerMenuSuccessState(
                             },
                             modifier = Modifier
                                 .addImpression(
-                                    uniqueIdentifier = it.shopName,
+                                    uniqueIdentifier = it.key,
                                     impressionState = it.impressHolder,
                                     state = lazyListState,
                                     onItemViewed = { _ ->
@@ -608,10 +603,7 @@ fun SellerMenuShopInfo(
     partialResponseStatus: Pair<Boolean, Boolean>,
     totalBalance: String,
     userShopInfoWrapper: UserShopInfoWrapper,
-    shopScoreImpressionHolder: ImpressionHolder,
-    lazyListState: LazyListState,
     onActionClick: (SellerMenuActionClick) -> Unit,
-    onShopScoreImpressed: () -> Unit,
     isLoading: Boolean,
     onReload: (Boolean) -> Unit,
     onClickText: ((spannedRange: AnnotatedString.Range<String>) -> Unit)? = null
@@ -809,14 +801,6 @@ fun SellerMenuShopInfo(
                 .clickable {
                     onActionClick(SellerMenuActionClick.SHOP_SCORE)
                 }
-                .addImpression(
-                    uniqueIdentifier = shopScoreString,
-                    impressionState = shopScoreImpressionHolder,
-                    state = lazyListState,
-                    onItemViewed = {
-                        onShopScoreImpressed()
-                    }
-                )
         )
 
         var hasLocalLoadShown = false
@@ -2001,6 +1985,9 @@ fun SellerMenuFeatureSection(
             iconUrl = SellerMigrationConstants.URL_STATISTICS_ICON,
             titleString = stringResource(id = R.string.seller_menu_shop_statistics),
             descString = stringResource(id = R.string.seller_menu_shop_statistics_description),
+            onActionClick = {
+                onActionClick(SellerMenuActionClick.MIGRATION_STATISTIC)
+            },
             modifier = Modifier
                 .constrainAs(statisticCardRef) {
                     top.linkTo(titleRef.bottom)
@@ -2009,15 +1996,15 @@ fun SellerMenuFeatureSection(
                     width = Dimension.fillToConstraints
                 }
                 .padding(start = 16.dp, top = 16.dp)
-                .clickable {
-                    onActionClick(SellerMenuActionClick.MIGRATION_STATISTIC)
-                }
         )
 
         SellerMenuFeatureCard(
             iconUrl = SellerMigrationConstants.URL_PROMO_ICON,
             titleString = stringResource(id = R.string.seller_menu_ads_and_promo),
             descString = stringResource(id = R.string.seller_menu_ads_and_promo_description),
+            onActionClick = {
+                onActionClick(SellerMenuActionClick.MIGRATION_PROMO)
+            },
             modifier = Modifier
                 .constrainAs(promoCardRef) {
                     top.linkTo(titleRef.bottom)
@@ -2026,15 +2013,15 @@ fun SellerMenuFeatureSection(
                     width = Dimension.fillToConstraints
                 }
                 .padding(start = 8.dp, top = 16.dp, end = 16.dp)
-                .clickable {
-                    onActionClick(SellerMenuActionClick.MIGRATION_PROMO)
-                }
         )
 
         SellerMenuFeatureCard(
             iconUrl = SellerMigrationConstants.URL_FEED_ICON,
             titleString = stringResource(id = R.string.seller_menu_feed_and_play),
             descString = stringResource(id = R.string.seller_menu_feed_and_play_description),
+            onActionClick = {
+                onActionClick(SellerMenuActionClick.MIGRATION_FEED)
+            },
             modifier = Modifier
                 .constrainAs(feedCardRef) {
                     top.linkTo(statisticCardRef.bottom)
@@ -2043,15 +2030,15 @@ fun SellerMenuFeatureSection(
                     width = Dimension.fillToConstraints
                 }
                 .padding(start = 16.dp, top = 8.dp)
-                .clickable {
-                    onActionClick(SellerMenuActionClick.MIGRATION_FEED)
-                }
         )
 
         SellerMenuFeatureCard(
             iconUrl = SellerMigrationConstants.URL_FINANCE_ICON,
             titleString = stringResource(id = R.string.seller_menu_financial_service),
             descString = stringResource(id = R.string.seller_menu_financial_service_description),
+            onActionClick = {
+                onActionClick(SellerMenuActionClick.MIGRATION_FINANCE)
+            },
             modifier = Modifier
                 .constrainAs(financialCardRef) {
                     top.linkTo(promoCardRef.bottom)
@@ -2060,9 +2047,6 @@ fun SellerMenuFeatureSection(
                     width = Dimension.fillToConstraints
                 }
                 .padding(start = 8.dp, top = 8.dp, end = 16.dp)
-                .clickable {
-                    onActionClick(SellerMenuActionClick.MIGRATION_FINANCE)
-                }
         )
     }
 }
@@ -2072,13 +2056,15 @@ fun SellerMenuFeatureCard(
     iconUrl: String,
     titleString: String,
     descString: String,
+    onActionClick: () -> Unit,
     modifier: Modifier
 ) {
     NestCard(
         modifier = modifier
             .fillMaxWidth()
             .height(110.dp),
-        type = NestCardType.Shadow
+        type = NestCardType.Shadow,
+        onClick = onActionClick
     ) {
         ConstraintLayout(
             modifier = Modifier

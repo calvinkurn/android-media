@@ -4,9 +4,11 @@ import androidx.annotation.StringRes
 
 data class SellerMenuSectionTitleUiModel(
     @StringRes val titleRes: Int
-): SellerMenuComposeItem {
+) : SellerMenuComposeItem {
 
     override val itemType: String
         get() = this::class.java.name
 
+    override val key: String
+        get() = this::class.java.name + titleRes
 }

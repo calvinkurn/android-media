@@ -6,9 +6,11 @@ data class SellerMenuOrderUiModel(
     val newOrderCount: Int = Int.ZERO,
     val readyToShip: Int = Int.ZERO,
     val isShopOwner: Boolean = false
-): SellerMenuComposeItem {
+) : SellerMenuComposeItem {
 
     override val itemType: String
         get() = this::class.java.name
 
+    override val key: String
+        get() = this::class.java.name
 }

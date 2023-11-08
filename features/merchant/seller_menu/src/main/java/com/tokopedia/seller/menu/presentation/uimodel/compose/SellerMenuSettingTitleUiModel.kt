@@ -12,4 +12,7 @@ data class SellerMenuSettingTitleUiModel(
 
     override val itemType: String
         get() = this::class.java.name
+
+    override val key: String
+        get() = this::class.java.name + titleRes
 }

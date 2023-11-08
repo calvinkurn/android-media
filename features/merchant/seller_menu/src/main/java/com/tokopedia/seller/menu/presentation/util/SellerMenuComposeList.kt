@@ -26,7 +26,7 @@ object SellerMenuComposeList {
         val otherInfoMenu = createOtherInfoMenu()
 
         menuList.add(SellerMenuInfoLoadingUiModel)
-        menuList.add(SellerMenuDividerUiModel(DividerType.THICK))
+        menuList.add(SellerMenuDividerUiModel(DividerType.THICK, "1"))
         menuList.add(
             SellerMenuSettingTitleUiModel(
                 titleRes = R.string.seller_menu_order_section,
@@ -36,7 +36,7 @@ object SellerMenuComposeList {
             )
         )
         menuList.add(SellerMenuOrderUiModel())
-        menuList.add(SellerMenuDividerUiModel(DividerType.THIN_PARTIAL))
+        menuList.add(SellerMenuDividerUiModel(DividerType.THIN_PARTIAL, "2"))
 
         menuList.add(
             SellerMenuSettingTitleUiModel(
@@ -47,11 +47,11 @@ object SellerMenuComposeList {
             )
         )
         menuList.add(SellerMenuProductUiModel())
-        menuList.add(SellerMenuDividerUiModel(DividerType.THIN_PARTIAL))
+        menuList.add(SellerMenuDividerUiModel(DividerType.THIN_PARTIAL, "3"))
 
         menuList.addAll(buyerInfoMenu)
         menuList.addAll(otherInfoMenu)
-        menuList.add(SellerMenuDividerUiModel(DividerType.THICK))
+        menuList.add(SellerMenuDividerUiModel(DividerType.THICK, "4"))
         menuList.add(SellerMenuFeatureUiModel)
 
         return menuList.toList()
@@ -91,7 +91,7 @@ object SellerMenuComposeList {
 
     private fun createOtherInfoMenu(): List<SellerMenuComposeItem> {
         return listOf(
-            SellerMenuDividerUiModel(DividerType.THICK),
+            SellerMenuDividerUiModel(DividerType.THICK, "5"),
             SellerMenuSectionTitleUiModel(
                 titleRes = R.string.setting_menu_other_info
             ),
