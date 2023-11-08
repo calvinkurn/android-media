@@ -4,7 +4,10 @@ import android.content.Context
 import android.graphics.Region
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.cartrevamp.view.customview.CartSwipeRevealLayout
 import com.tokopedia.cartrevamp.view.customview.ViewBinderHelper
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -26,14 +29,21 @@ class CartRecyclerView : RecyclerView {
     }
 
     override fun onInterceptTouchEvent(e: MotionEvent?): Boolean {
-        if (viewBinderHelper.openCount > 0) {
+        if (shouldInterceptTouchEvent()) {
             val layouts = viewBinderHelper.getOpenedLayout()
             for (layout in layouts) {
-                val start = layout.right - 100.dpToPx(layout.context.resources.displayMetrics)
+                val start = layout.right - 80.dpToPx(layout.context.resources.displayMetrics)
                 val end = layout.right
                 val top = layout.top
                 val bottom = layout.bottom
-                val region = Region(start, top, end, bottom)
+                val region = if (isBundlingSwipeLayout(layout)) {
+                    val outerSwipeRevealLayout = getOuterSwipeRevealLayout(layout)
+                    val newSwipeRevealLayoutBottom = outerSwipeRevealLayout.top + layout.bottom
+                    Region(start, outerSwipeRevealLayout.top, end, newSwipeRevealLayoutBottom)
+                }
+                else {
+                    Region(start, top, end, bottom)
+                }
                 if (region.contains(e?.x.toIntSafely(), e?.y.toIntSafely())) {
                     return false
                 }
@@ -42,5 +52,26 @@ class CartRecyclerView : RecyclerView {
             return true
         }
         return super.onInterceptTouchEvent(e)
+    }
+
+    private fun shouldInterceptTouchEvent(): Boolean {
+        return viewBinderHelper.openCount > 0
+    }
+
+    private fun isBundlingSwipeLayout(cartSwipeRevealLayout: CartSwipeRevealLayout): Boolean {
+        return cartSwipeRevealLayout.parent is ConstraintLayout
+    }
+
+    private fun getOuterSwipeRevealLayout(cartSwipeRevealLayout: CartSwipeRevealLayout): CartSwipeRevealLayout {
+        val clContainerProductInformation = cartSwipeRevealLayout.parent
+        if (clContainerProductInformation !is ConstraintLayout) return cartSwipeRevealLayout
+
+        val llProductInformation = clContainerProductInformation.parent
+        if (llProductInformation !is LinearLayout) return cartSwipeRevealLayout
+
+        val outerSwipeRevealLayout = llProductInformation.parent
+        if (outerSwipeRevealLayout !is CartSwipeRevealLayout) return cartSwipeRevealLayout
+
+        return outerSwipeRevealLayout
     }
 }

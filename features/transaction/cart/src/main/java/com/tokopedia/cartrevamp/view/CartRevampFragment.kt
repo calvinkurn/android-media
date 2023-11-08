@@ -2358,9 +2358,6 @@ class CartRevampFragment :
             setSpanSize(gridLayoutManager)
             addRecyclerViewScrollListener(this)
             addEndlessRecyclerViewScrollListener(this, gridLayoutManager)
-//            val swipeController = CartItemTouchHelper(context)
-//            val itemTouchHelper = ItemTouchHelper(swipeController)
-//            itemTouchHelper.attachToRecyclerView(this)
         }
     }
 

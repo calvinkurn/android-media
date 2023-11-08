@@ -9,7 +9,7 @@
 
     <FrameLayout
         android:id="@+id/fl_swipe_delete"
-        android:layout_width="100dp"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:background="@color/Unify_RN100">
 
@@ -113,7 +113,7 @@
 
                 <FrameLayout
                     android:id="@+id/fl_swipe_delete_bundling"
-                    android:layout_width="100dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:background="@color/Unify_RN100">
 
