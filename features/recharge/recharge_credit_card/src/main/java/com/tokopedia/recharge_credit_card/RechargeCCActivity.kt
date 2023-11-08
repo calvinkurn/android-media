@@ -63,7 +63,7 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
         super.onCreate(savedInstanceState)
         toolbarCreditCard = findViewById(R.id.toolbar_credit_card)
 
-//        setSecureWindowFlag()
+        setSecureWindowFlag()
         component.inject(this)
 
         toolbarCreditCard?.addRightIcon(com.tokopedia.common_digital.R.drawable.digital_common_ic_tagihan)

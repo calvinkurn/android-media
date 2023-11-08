@@ -293,4 +293,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_PDP_P1_CACHE_AGE = "android_pdp_p1_cache_age";
 
     public static final String SELLER_SEARCH_COMPOSE = "android_seller_search_compose";
+
+    public static final String ANDROID_CREDIT_CARD_ENABLE_AUTOFILL_GOOGLE_WALLET = "android_credit_card_enable_autofill_google_wallet";
 }

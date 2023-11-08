@@ -286,12 +286,12 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
         )
     }
 
-    fun setInputFieldType(type: InputFieldType) {
+    fun setInputFieldType(type: InputFieldType, enableGoogleAutofill: Boolean = false) {
         with(binding) {
             inputFieldType = type
             clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.run {
                 editText.inputType = type.inputType
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && enableGoogleAutofill) {
                     editText.setAutofillHints(type.autoFillHintsType)
                 }
             }
