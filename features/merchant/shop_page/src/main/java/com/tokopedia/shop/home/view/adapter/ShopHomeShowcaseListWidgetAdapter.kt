@@ -3,11 +3,7 @@ package com.tokopedia.shop.home.view.adapter
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_BIG
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_MEDIUM
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_SMALL
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_MEDIUM
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_SMALL
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListGridViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListSliderMediumViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListSliderSmallViewHolder
@@ -84,11 +80,11 @@ class ShopHomeShowcaseListWidgetAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (showcaseListItem[position].viewType) {
-            SHOWCASE_GRID_SMALL,
-            SHOWCASE_GRID_MEDIUM,
-            SHOWCASE_GRID_BIG -> ShopHomeShowcaseListGridViewHolder.ITEM_GRID_LAYOUT
-            SHOWCASE_SLIDER_SMALL -> ShopHomeShowcaseListSliderSmallViewHolder.ITEM_SLIDER_SMALL_LAYOUT
-            SHOWCASE_SLIDER_MEDIUM -> ShopHomeShowcaseListSliderMediumViewHolder.ITEM_SLIDER_MEDIUM_LAYOUT
+            WidgetNameEnum.SHOWCASE_GRID_SMALL.value,
+            WidgetNameEnum.SHOWCASE_GRID_MEDIUM.value,
+            WidgetNameEnum.SHOWCASE_GRID_BIG.value -> ShopHomeShowcaseListGridViewHolder.ITEM_GRID_LAYOUT
+            WidgetNameEnum.SHOWCASE_SLIDER_SMALL.value -> ShopHomeShowcaseListSliderSmallViewHolder.ITEM_SLIDER_SMALL_LAYOUT
+            WidgetNameEnum.SHOWCASE_SLIDER_MEDIUM.value -> ShopHomeShowcaseListSliderMediumViewHolder.ITEM_SLIDER_MEDIUM_LAYOUT
             else -> ShopHomeShowcaseListSliderSmallViewHolder.ITEM_SLIDER_SMALL_LAYOUT
         }
     }
