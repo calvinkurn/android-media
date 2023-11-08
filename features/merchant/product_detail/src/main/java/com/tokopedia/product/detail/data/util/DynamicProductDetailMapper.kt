@@ -820,12 +820,16 @@ object DynamicProductDetailMapper {
      * @return startTime and endTime as Pair<String, String>
      */
     private fun getDurationCampaign(product: DynamicProductInfoP1, upcomingCampaign: ProductUpcomingData?): Pair<Long, Long> {
-        if (product.data.campaign.campaignID != "") {
-            val startDateUnix = SimpleDateFormat("yyyy-MM-dd").parse(product.data.campaign.startDate)?.time?.div(DateUtil.ONE_THOUSAND)
-            return startDateUnix.orZero() to product.data.campaign.endDateUnix.toLongOrZero()
-        } else if (upcomingCampaign != null) {
-            return upcomingCampaign.startDate.toLongOrZero() to upcomingCampaign.endDate.toLongOrZero()
-        } else {
+        try {
+            if (product.data.campaign.isActive) {
+                val startDateUnix = SimpleDateFormat("yyyy-MM-dd").parse(product.data.campaign.startDate)?.time?.div(DateUtil.ONE_THOUSAND)
+                return startDateUnix.orZero() to product.data.campaign.endDateUnix.toLongOrZero()
+            } else if (upcomingCampaign != null) {
+                return upcomingCampaign.startDate.toLongOrZero() to upcomingCampaign.endDate.toLongOrZero()
+            } else {
+                return 0L to 0L
+            }
+        } catch (e: Exception) {
             return 0L to 0L
         }
     }
