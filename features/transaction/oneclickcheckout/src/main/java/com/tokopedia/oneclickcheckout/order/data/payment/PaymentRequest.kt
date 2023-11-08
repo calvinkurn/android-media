@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.data.payment
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class PaymentRequest(
@@ -45,7 +46,11 @@ data class CrossSellData(
 
 data class CrossSellItem(
     @SerializedName("name")
-    val name: String = ""
+    val name: String = "",
+    @SerializedName("id")
+    val id: String = "",
+    @SerializedName("price")
+    val price: Double = 0.0
 )
 
 data class CartDetailData(
@@ -116,12 +121,14 @@ data class CartProductData(
     val productId: String,
     @SerializedName("name")
     val name: String,
+    @SuppressLint("Invalid Data Type")
     @SerializedName("price")
-    val price: Double,
+    val price: Long,
     @SerializedName("quantity")
     val quantity: Long,
+    @SuppressLint("Invalid Data Type")
     @SerializedName("total_price")
-    val totalPrice: Double,
+    val totalPrice: Long,
     @SerializedName("bundle_group_id")
     val bundleGroupId: String,
     @SerializedName("addon_items")
@@ -133,12 +140,14 @@ data class CartProductData(
 data class CartAddOnData(
     @SerializedName("name")
     val name: String,
+    @SuppressLint("Invalid Data Type")
     @SerializedName("price")
-    val price: Double,
+    val price: Long,
     @SerializedName("quantity")
     val quantity: Long,
+    @SuppressLint("Invalid Data Type")
     @SerializedName("total_price")
-    val totalPrice: Double
+    val totalPrice: Long
 )
 
 data class CartProductCategoryData(
@@ -220,7 +229,7 @@ data class SummariesItemData(
 
 data class DetailsItemData(
     @SerializedName("amount")
-    val amount: Int = 0,
+    val amount: Double = 0.0,
     @SerializedName("type")
     val type: String = ""
 )
@@ -236,5 +245,5 @@ data class UsageSummariesData(
     @SerializedName("amount_str")
     val amountString: String = "",
     @SerializedName("amount")
-    val amount: Int = -1
+    val amount: Double = 0.0
 )

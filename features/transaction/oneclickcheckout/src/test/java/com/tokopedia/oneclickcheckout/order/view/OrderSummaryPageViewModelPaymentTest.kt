@@ -319,34 +319,34 @@ class OrderSummaryPageViewModelPaymentTest : BaseOrderSummaryPageViewModelTest()
                                                     CartProductData(
                                                         productId = "9223372036854775807",
                                                         name = "asdf",
-                                                        price = 4.0,
+                                                        price = 4,
                                                         quantity = 2,
-                                                        totalPrice = 8.0,
+                                                        totalPrice = 8,
                                                         bundleGroupId = "",
                                                         addonItems = listOf(
                                                             CartAddOnData(
                                                                 name = "gift",
-                                                                price = 6.0,
+                                                                price = 6,
                                                                 quantity = 2,
-                                                                totalPrice = 12.0
+                                                                totalPrice = 12
                                                             ),
                                                             CartAddOnData(
                                                                 name = "addon1",
-                                                                price = 21.0,
+                                                                price = 21,
                                                                 quantity = 2,
-                                                                totalPrice = 42.0
+                                                                totalPrice = 42
                                                             ),
                                                             CartAddOnData(
                                                                 name = "addon3",
-                                                                price = 23.0,
+                                                                price = 23,
                                                                 quantity = 2,
-                                                                totalPrice = 46.0
+                                                                totalPrice = 46
                                                             ),
                                                             CartAddOnData(
                                                                 name = "addon4",
-                                                                price = 24.0,
+                                                                price = 24,
                                                                 quantity = 1,
-                                                                totalPrice = 24.0
+                                                                totalPrice = 24
                                                             )
                                                         ),
                                                         category = CartProductCategoryData(
@@ -373,11 +373,11 @@ class OrderSummaryPageViewModelPaymentTest : BaseOrderSummaryPageViewModelTest()
                             SummariesItemData(
                                 details = listOf(
                                     DetailsItemData(
-                                        amount = 1,
+                                        amount = 1.0,
                                         type = "subtype1"
                                     ),
                                     DetailsItemData(
-                                        amount = 3,
+                                        amount = 3.0,
                                         type = "subtype3"
                                     )
                                 ),
@@ -386,7 +386,7 @@ class OrderSummaryPageViewModelPaymentTest : BaseOrderSummaryPageViewModelTest()
                             SummariesItemData(
                                 details = listOf(
                                     DetailsItemData(
-                                        amount = 2,
+                                        amount = 2.0,
                                         type = "subtype2"
                                     )
                                 ),
@@ -409,12 +409,12 @@ class OrderSummaryPageViewModelPaymentTest : BaseOrderSummaryPageViewModelTest()
                         usageSummaries = listOf(
                             UsageSummariesData(
                                 type = "type1",
-                                amount = 1,
+                                amount = 1.0,
                                 amountString = "1.0"
                             ),
                             UsageSummariesData(
                                 type = "type2",
-                                amount = 2,
+                                amount = 2.0,
                                 amountString = "2.0"
                             )
                         )
@@ -568,9 +568,9 @@ class OrderSummaryPageViewModelPaymentTest : BaseOrderSummaryPageViewModelTest()
                                                     CartProductData(
                                                         productId = "9223372036854775807",
                                                         name = "asdf",
-                                                        price = 4.0,
+                                                        price = 4,
                                                         quantity = 2,
-                                                        totalPrice = 8.0,
+                                                        totalPrice = 8,
                                                         bundleGroupId = "",
                                                         addonItems = emptyList(),
                                                         category = CartProductCategoryData(
@@ -584,9 +584,9 @@ class OrderSummaryPageViewModelPaymentTest : BaseOrderSummaryPageViewModelTest()
                                                 addonItems = listOf(
                                                     CartAddOnData(
                                                         name = "gift",
-                                                        price = 6.0,
+                                                        price = 6,
                                                         quantity = 2,
-                                                        totalPrice = 12.0
+                                                        totalPrice = 12
                                                     )
                                                 ),
                                                 cartStringOrder = "123"

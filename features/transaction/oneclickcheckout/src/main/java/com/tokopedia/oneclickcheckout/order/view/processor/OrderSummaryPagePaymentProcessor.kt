@@ -316,9 +316,9 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                                                     CartProductData(
                                                         productId = orderProduct.productId,
                                                         name = orderProduct.productName,
-                                                        price = orderProduct.finalPrice,
+                                                        price = orderProduct.finalPrice.toLong(),
                                                         quantity = orderProduct.orderQuantity.toLong(),
-                                                        totalPrice = orderProduct.finalPrice * orderProduct.orderQuantity,
+                                                        totalPrice = orderProduct.finalPrice.toLong() * orderProduct.orderQuantity,
                                                         bundleGroupId = "",
                                                         addonItems = generateAddonProductLevel(
                                                             orderProduct
@@ -351,7 +351,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                             type = summary.type,
                             details = summary.details.map { detail ->
                                 DetailsItemData(
-                                    amount = detail.amount,
+                                    amount = detail.amount.toDouble(),
                                     type = detail.type
                                 )
                             }
@@ -382,7 +382,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                         UsageSummariesData(
                             type = usage.type,
                             amountString = usage.amountStr,
-                            amount = usage.amount
+                            amount = usage.amount.toDouble()
                         )
                     }
                 )
@@ -396,9 +396,9 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             return listOf(
                 CartAddOnData(
                     name = orderShop.addOn.addOnsButtonModel.title,
-                    price = addOnItemModel.addOnPrice / addOnItemModel.addOnQty,
+                    price = addOnItemModel.addOnPrice.toLong() / addOnItemModel.addOnQty,
                     quantity = addOnItemModel.addOnQty,
-                    totalPrice = addOnItemModel.addOnPrice
+                    totalPrice = addOnItemModel.addOnPrice.toLong()
                 )
             )
         }
@@ -412,9 +412,9 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             addOnProductLevelItems.add(
                 CartAddOnData(
                     name = orderProduct.addOn.addOnsButtonModel.title,
-                    price = addOnItemModel.addOnPrice / addOnItemModel.addOnQty,
+                    price = addOnItemModel.addOnPrice.toLong() / addOnItemModel.addOnQty,
                     quantity = addOnItemModel.addOnQty,
-                    totalPrice = addOnItemModel.addOnPrice
+                    totalPrice = addOnItemModel.addOnPrice.toLong()
                 )
             )
         }
@@ -425,9 +425,9 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                 addOnProductLevelItems.add(
                     CartAddOnData(
                         name = addOnsProduct.name,
-                        price = addOnsProduct.price.toDouble(),
+                        price = addOnsProduct.price,
                         quantity = addOnQty,
-                        totalPrice = (addOnsProduct.price * addOnQty).toDouble()
+                        totalPrice = addOnsProduct.price * addOnQty
                     )
                 )
             }
