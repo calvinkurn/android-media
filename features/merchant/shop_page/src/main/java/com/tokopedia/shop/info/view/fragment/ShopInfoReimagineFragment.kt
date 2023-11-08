@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -45,6 +46,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoComponent> {
 
@@ -88,6 +90,11 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         component?.inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Typography.setUnifyTypographyOSO(true)
+    }
+    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -215,9 +222,12 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         operationalHours.forEach {
             val hour = it.key
             val days = it.value
-            val groupedDays = days.joinToString(separator = ", ", postfix = ": ") { it }
+            val groupedDays = days.joinToString(separator = ", ", postfix = ": ") { day -> day }
 
             val textViewOperationalHour = Typography(context ?: return).apply {
+                setType(Typography.DISPLAY_2)
+                setTextColor(ContextCompat.getColor(this.context, unifyprinciplesR.color.Unify_NN950))
+                
                 val params = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
