@@ -7,10 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemColumnedInfoBinding
 import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
-import com.tokopedia.catalogcommon.viewholder.columnedinfo.ColumnedInfoAdapter
+import com.tokopedia.catalogcommon.viewholder.columnedinfo.ColumnedInfoListItemAdapter
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.utils.view.binding.viewBinding
-
 
 class ColumnedInfoViewHolder(itemView: View) : AbstractViewHolder<ColumnedInfoUiModel>(itemView) {
 
@@ -24,7 +23,7 @@ class ColumnedInfoViewHolder(itemView: View) : AbstractViewHolder<ColumnedInfoUi
     override fun bind(element: ColumnedInfoUiModel) {
         binding?.tfTitle?.text = element.sectionTitle
         binding?.rvColumnInfo?.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
-        binding?.rvColumnInfo?.adapter = ColumnedInfoAdapter(element.widgetContent)
+        binding?.rvColumnInfo?.adapter = ColumnedInfoListItemAdapter(element.widgetContent)
         binding?.btnSeeMore?.isVisible = element.hasMoreData
     }
 }

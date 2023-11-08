@@ -9,7 +9,7 @@ import com.tokopedia.catalogcommon.databinding.WidgetItemColumnedInfoListItemBin
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ColumnedInfoViewHolder(
+class ColumnedInfoListItemViewHolder(
     itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
 
@@ -20,10 +20,12 @@ class ColumnedInfoViewHolder(
 
     private val binding: WidgetItemColumnedInfoListItemBinding? by viewBinding()
 
-    fun bind(item: Pair<String, String>, displayDivider: Boolean) {
+    fun bind(item: Pair<String, String>, rowColor: Pair<Int, Int>, displayDivider: Boolean) {
         binding?.apply {
             tfTitle.text = item.first
             tfValue.text = item.second
+            tfTitle.setTextColor(rowColor.first)
+            tfValue.setTextColor(rowColor.second)
             divItem.isVisible = displayDivider
         }
     }

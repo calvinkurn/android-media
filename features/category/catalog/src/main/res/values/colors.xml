@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="catalog_dms_floating_background">#B32E3137</color>
+    <color name="catalog_dms_column_info_title_color">#AEB2BF</color>
+    <color name="catalog_dms_column_info_value_color_light">#212121</color>
+    <color name="catalog_dms_column_info_value_color_dark">#F5F6FF</color>
 </resources>

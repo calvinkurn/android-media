@@ -1,6 +1,7 @@
 package com.tokopedia.catalogcommon.uimodel
 
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 data class ColumnedInfoUiModel(
     override var idWidget: String = "",
@@ -10,7 +11,7 @@ data class ColumnedInfoUiModel(
     override var widgetTextColor: Int? = null,
     override var darkMode: Boolean = false,
     val sectionTitle: String = "",
-    val widgetContent: List<Pair<String, String>> = emptyList(),
+    val widgetContent: ColumnData = ColumnData(),
     val fullContent: List<ColumnData> = emptyList(),
     val hasMoreData: Boolean = false
 ) : BaseCatalogUiModel(
@@ -23,7 +24,8 @@ data class ColumnedInfoUiModel(
 ) {
     data class ColumnData (
         val title: String = "",
-        val rowData: List<Pair<String, String>> = emptyList()
+        val rowData: List<Pair<String, String>> = emptyList(),
+        val rowColor: Pair<Int, Int> = Pair(Int.ZERO, Int.ZERO)
     )
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {

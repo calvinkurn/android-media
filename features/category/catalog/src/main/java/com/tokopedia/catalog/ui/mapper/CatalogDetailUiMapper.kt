@@ -48,6 +48,7 @@ import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
 import javax.inject.Inject
+import com.tokopedia.catalog.R as catalogR
 import com.tokopedia.catalogcommon.R as catalogcommonR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -486,11 +487,20 @@ class CatalogDetailUiMapper @Inject constructor(
         return ColumnedInfoUiModel(
             sectionTitle = data?.section?.title.orEmpty(),
             hasMoreData = flattenDataRows.size > COLUMN_INFO_SPEC_COUNT,
-            widgetContent = flattenDataRows
-                .take(COLUMN_INFO_SPEC_COUNT)
-                .map {
-                    Pair(it.key, it.value)
-                },
+            widgetContent = ColumnedInfoUiModel.ColumnData(
+                rowData = flattenDataRows
+                    .take(COLUMN_INFO_SPEC_COUNT)
+                    .map {
+                        Pair(it.key, it.value)
+                    },
+                rowColor = Pair(
+                    MethodChecker.getColor(context, catalogR.color.catalog_dms_column_info_title_color),
+                    MethodChecker.getColor(context,
+                        if (darkMode) catalogR.color.catalog_dms_column_info_value_color_dark
+                        else catalogR.color.catalog_dms_column_info_value_color_light
+                    )
+                )
+            ),
             fullContent = data?.infoColumn
                 .orEmpty()
                 .map {
