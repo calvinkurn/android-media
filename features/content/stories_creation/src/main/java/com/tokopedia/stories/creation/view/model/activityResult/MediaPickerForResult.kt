@@ -3,12 +3,15 @@ package com.tokopedia.stories.creation.view.model.activityResult
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.stories.creation.R
+import com.tokopedia.stories.creation.util.DeviceUtil
 import com.tokopedia.stories.creation.view.model.StoriesMedia
 
 /**
@@ -17,7 +20,7 @@ import com.tokopedia.stories.creation.view.model.StoriesMedia
 class MediaPickerForResult : ActivityResultContract<MediaPickerIntentData, StoriesMedia>() {
 
     override fun createIntent(context: Context, input: MediaPickerIntentData): Intent {
-        return MediaPicker.intentWithGalleryFirst(context) {
+        val pickerParam: PickerParam.() -> Unit = {
             pageSource(PageSource.Stories)
             minVideoDuration(input.minVideoDuration)
             maxVideoDuration(input.maxVideoDuration)
@@ -26,6 +29,12 @@ class MediaPickerForResult : ActivityResultContract<MediaPickerIntentData, Stori
             singleSelectionMode()
             withImmersiveEditor()
             previewActionText(input.previewActionText)
+        }
+
+        return if (GlobalConfig.DEBUG && DeviceUtil.isProbablyEmulator) {
+            MediaPicker.intent(context, pickerParam)
+        } else {
+            MediaPicker.intentWithGalleryFirst(context, pickerParam)
         }
     }
 
