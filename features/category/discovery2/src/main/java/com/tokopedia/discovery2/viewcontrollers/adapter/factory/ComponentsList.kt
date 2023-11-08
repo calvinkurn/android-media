@@ -132,5 +132,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductCardColumnList(
         id = R.layout.item_discovery_product_card_column_list_layout,
         componentName = ComponentNames.ProductCardColumnList.componentName
-    )
+    ),
+
+    MerchantVoucherGrid(R.layout.merchant_voucher_grid_layout, ComponentNames.MerchantVoucherGrid.componentName),
+    MerchantVoucherGridItem(R.layout.merchant_voucher_grid_item_layout, ComponentNames.MerchantVoucherGridItem.componentName)
 }

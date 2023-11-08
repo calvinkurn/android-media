@@ -47,16 +47,14 @@ class BalanceWidgetView : FrameLayout {
     }
 
     init {
-        val layout = if(HomeRollenceController.isUsingAtf2Variant())
-            R.layout.layout_item_widget_balance_widget_atf2
-        else R.layout.layout_item_widget_balance_widget
+        val layout = R.layout.layout_item_widget_balance_widget_atf2
         val view = LayoutInflater.from(context).inflate(layout, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
         this.itemView = view
         this.itemContext = view.context
     }
 
-    fun bind(element: HomeBalanceModel, listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil = HomeThematicUtil()) {
+    fun bind(element: HomeBalanceModel, listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW)
         this.listener = listener
         renderWidget(element, homeThematicUtil)
@@ -90,14 +88,7 @@ class BalanceWidgetView : FrameLayout {
         if (element.balanceDrawerItemModels.isNotEmpty()) {
             subscriptionPosition = element.balancePositionSubscriptions
             balanceWidgetAdapter?.setVisitables(listOf(element))
-            if(!HomeRollenceController.isUsingAtf2Variant()) {
-                listener?.showHomeCoachmark(true, element)
-                rvBalance?.post {
-                    listener?.showHomeCoachmark(true, element)
-                }
-            } else {
-                listener?.showHomeCoachmark(false, element)
-            }
+            listener?.showHomeCoachmark(false, element)
         } else {
             balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))
         }
@@ -106,9 +97,8 @@ class BalanceWidgetView : FrameLayout {
     fun getSubscriptionView(): View? {
         val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(DEFAULT_POSITION_BALANCE_WIDGET)
         firstViewHolder?.let {
-            if (it is BalanceWidgetViewHolder) {
-                return it.getSubscriptionView(subscriptionPosition)
-            }
+            // temporary removed,
+            // will need to be readded to show PLUS coachmark
         }
         return null
     }

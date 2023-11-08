@@ -3,7 +3,7 @@ package com.tokopedia.promousage.domain.entity
 data class PromoEntryPointInfo(
     val iconUrl: String = "",
     val messages: List<String> = emptyList(),
-    val color: String = "",
+    val color: String = COLOR_GREY,
     val isClickable: Boolean = false,
 
     val isSuccess: Boolean = false,

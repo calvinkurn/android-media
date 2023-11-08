@@ -1,6 +1,8 @@
 package com.tokopedia.applink
 
+import android.content.Context
 import android.net.Uri
+import com.tokopedia.applink.centralizedpromo.DeeplinkMapperCentralizedPromo
 import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -13,6 +15,7 @@ import com.tokopedia.applink.model.DLP
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.DeeplinkMapperPromo
+import com.tokopedia.applink.sellersearch.SellerSearchDeeplinkMapper
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
 import com.tokopedia.applink.shopscore.ShopScoreDeepLinkMapper
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
@@ -26,7 +29,11 @@ object DeeplinkSellerApp {
             DLP.goToLink { ApplinkConstInternalSellerapp.CAMPAIGN_LIST }
         ),
         "centralized-promo" to mutableListOf(
-            DLP.goToLink { ApplinkConstInternalSellerapp.CENTRALIZED_PROMO }
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperCentralizedPromo.getRegisteredNavigationCentralizedPromo(
+                    context
+                )
+            }
         ),
         "chatsettings" to mutableListOf(
             DLP.matchPattern("bubble-activation") { _, _, deeplink, _ ->
@@ -114,7 +121,9 @@ object DeeplinkSellerApp {
             DLP.goToLink { ApplinkConstInternalSellerapp.SELLER_PERSONA }
         ),
         "seller-search" to mutableListOf(
-            DLP.goToLink { ApplinkConstInternalSellerapp.SELLER_SEARCH }
+            DLP.goTo { context, _, _, _ ->
+                SellerSearchDeeplinkMapper.getInternalApplinkSellerSearch(context)
+            }
         ),
         "setting" to mutableListOf(
             DLP.matchPattern("shipping-editor") { _: String ->
