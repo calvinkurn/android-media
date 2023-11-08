@@ -1,6 +1,5 @@
 package com.tokopedia.contactus.inboxtickets.view.inbox
 
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.inboxtickets.data.model.InboxTicketListResponse
@@ -57,8 +56,12 @@ class InboxContactUsViewModel @Inject constructor(
         return optionsFilter
     }
 
-    fun getItemTicketOnPosition(position: Int): InboxTicketListResponse.Ticket.Data.TicketItem {
-        return currentState.ticketItems[position]
+    fun getItemTicketOnPosition(position: Int): InboxTicketListResponse.Ticket.Data.TicketItem? {
+        return if (position < currentState.ticketItems.size) {
+            currentState.ticketItems[position]
+        } else {
+            null
+        }
     }
 
     fun markOptionsFilterWithSelected(options: List<InboxFilterSelection>) {
