@@ -82,6 +82,7 @@ import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShop
 import com.tokopedia.product.detail.data.model.review.ProductReviewImageListQuery
 import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.model.social_proof.asUiModel
+import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
@@ -110,9 +111,11 @@ import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.tracker.PageType
+import com.tokopedia.universal_sharing.util.DateUtil
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
+import java.text.SimpleDateFormat
 
 object DynamicProductDetailMapper {
     /**
@@ -797,16 +800,34 @@ object DynamicProductDetailMapper {
 
     fun generatePersonalizedData(product: DynamicProductInfoP1, productP2: ProductInfoP2UiData?): PersonalizedCampaignModel {
         val upcomingCampaign = productP2?.upcomingCampaigns?.get(product.basic.productID)
-        val startTime = upcomingCampaign?.startDate.toLongOrZero()
-        return PersonalizedCampaignModel(
-            product.data.campaign.campaignTypeName,
-            upcomingCampaign?.campaignTypeName ?: "",
-            product.data.price.priceFmt,
-            product.data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN,
-            product.data.campaign.percentageAmount,
-            startTime,
-            product.data.campaign.endDateUnix.toLongOrZero()
-        )
+        val durationCampaign = getDurationCampaign(product, upcomingCampaign)
+        val startTime =
+            return PersonalizedCampaignModel(
+                product.data.campaign.campaignTypeName,
+                upcomingCampaign?.campaignTypeName ?: "",
+                product.data.price.priceFmt,
+                product.data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN,
+                product.data.campaign.percentageAmount,
+                durationCampaign.first,
+                durationCampaign.second
+            )
+    }
+
+    /**
+     * get startTime and endTime of campaign
+     * if ongoing campaign empty then get from upcoming campaign
+     * if upcoming still empty then there are no ongoing or upcoming campaign on that product
+     * @return startTime and endTime as Pair<String, String>
+     */
+    private fun getDurationCampaign(product: DynamicProductInfoP1, upcomingCampaign: ProductUpcomingData?): Pair<Long, Long> {
+        if (product.data.campaign.campaignID != "") {
+            val startDateUnix = SimpleDateFormat("yyyy-MM-dd").parse(product.data.campaign.startDate)?.time?.div(DateUtil.ONE_THOUSAND)
+            return startDateUnix.orZero() to product.data.campaign.endDateUnix.toLongOrZero()
+        } else if (upcomingCampaign != null) {
+            return upcomingCampaign.startDate.toLongOrZero() to upcomingCampaign.endDate.toLongOrZero()
+        } else {
+            return 0L to 0L
+        }
     }
 
     fun generateAffiliateShareData(
@@ -843,7 +864,7 @@ object DynamicProductDetailMapper {
             productPrice = getProductOriginalPrice(product),
             productRating = product.basic.stats.rating,
             productTitle = product.data.name,
-            hasCampaign = product.data.campaign.activeAndHasId.compareTo(false).toString(),
+            hasCampaign = product.data.campaign.isActive.compareTo(false).toString(),
             campaignName = product.data.campaign.campaignTypeName,
             campaignDiscount = product.data.campaign.percentageAmount.toInt(),
             newProductPrice = product.data.price.priceFmt
