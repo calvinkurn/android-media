@@ -2426,23 +2426,19 @@ class CartRevampFragment :
             val defaultProductData =
                 cartRecyclerView.findViewHolderForAdapterPosition(visibleItemPair.first)
 
-            if (defaultProductData is CartItemViewHolder) {
+            if (defaultProductData is CartItemViewHolder && shouldShowDefaultProductOnBoarding) {
                 val cartItemBinding = defaultProductData.getItemViewBinding()
-                if (shouldShowDefaultProductOnBoarding) {
-                    startSwipeLayoutOnboardingAnimation(cartItemBinding.llProductContainer)
-                    cartSwipeToDeleteOnBoardingPreferences.setHasShownSwipeToDeleteDefaultProductOnBoarding()
-                }
+                startSwipeLayoutOnboardingAnimation(cartItemBinding.llProductContainer)
+                cartSwipeToDeleteOnBoardingPreferences.setHasShownSwipeToDeleteDefaultProductOnBoarding()
             }
 
             val bundlingProductData =
                 cartRecyclerView.findViewHolderForAdapterPosition(visibleItemPair.second)
 
-            if (bundlingProductData is CartItemViewHolder) {
+            if (bundlingProductData is CartItemViewHolder && shouldShowBundlingProductOnBoarding) {
                 val cartItemBinding = bundlingProductData.getItemViewBinding()
-                if (shouldShowBundlingProductOnBoarding) {
-                    startSwipeLayoutOnboardingAnimation(cartItemBinding.clProductBundlingInfo)
-                    cartSwipeToDeleteOnBoardingPreferences.setHasShownSwipeToDeleteBundlingProductOnBoarding()
-                }
+                startSwipeLayoutOnboardingAnimation(cartItemBinding.clProductBundlingInfo)
+                cartSwipeToDeleteOnBoardingPreferences.setHasShownSwipeToDeleteBundlingProductOnBoarding()
             }
         }
     }
