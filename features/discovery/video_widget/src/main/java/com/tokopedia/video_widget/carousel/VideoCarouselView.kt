@@ -7,6 +7,9 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ExoPlayer
+import com.tokopedia.home_component_header.model.ChannelHeader
+import com.tokopedia.home_component_header.view.HomeChannelHeaderView
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.R
@@ -26,6 +29,10 @@ class VideoCarouselView : BaseCustomView, VideoPlayer {
 
     private val titleTextView: Typography by lazy {
         findViewById(R.id.carousel_title_textview)
+    }
+
+    private val headerTitle: HomeChannelHeaderView by lazy {
+        findViewById(R.id.videoCarouselViewHeader)
     }
 
     private val recyclerView: RecyclerView by lazy {
@@ -96,9 +103,32 @@ class VideoCarouselView : BaseCustomView, VideoPlayer {
         recyclerView.addOnScrollListener(scrollChangeListener)
     }
 
-    fun setCarouselModel(carouselDataView: VideoCarouselDataView) {
+    fun setCarouselModel(carouselDataView: VideoCarouselDataView, isReimagine: Boolean) {
+        setHeaderTitleReimagine(carouselDataView, isReimagine)
+        setHeaderTitle(carouselDataView.title, isReimagine)
         titleTextView.text = carouselDataView.title
         adapter.submitList(carouselDataView.itemList)
+    }
+
+    private fun setHeaderTitleReimagine(
+        carouselDataView: VideoCarouselDataView,
+        isReimagine: Boolean,
+    ) {
+        headerTitle.shouldShowWithAction(isReimagine){
+            headerTitle.bind(
+                ChannelHeader(
+                    name = carouselDataView.title,
+                    applink = carouselDataView.applink,
+                    url = carouselDataView.url
+                )
+            )
+        }
+    }
+
+    private fun setHeaderTitle(title: String, isReimagine: Boolean) {
+        titleTextView.shouldShowWithAction(!isReimagine) {
+            titleTextView.text = title
+        }
     }
 
     fun recycle() {

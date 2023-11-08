@@ -307,7 +307,8 @@ class ProductListTypeFactoryImpl(
                 view,
                 videoCarouselListener,
                 videoCarouselWidgetCoordinator,
-                networkMonitor
+                networkMonitor,
+                reimagineSearch2Component.isReimagineCarousel()
             )
             InspirationProductBundleViewHolder.LAYOUT -> InspirationProductBundleViewHolder(
                 view,
