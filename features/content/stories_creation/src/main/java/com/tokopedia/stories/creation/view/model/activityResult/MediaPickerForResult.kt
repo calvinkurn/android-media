@@ -12,6 +12,7 @@ import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.util.DeviceUtil
+import com.tokopedia.stories.creation.util.firstNotEmptyOrNull
 import com.tokopedia.stories.creation.view.model.StoriesMedia
 
 /**
@@ -41,9 +42,9 @@ class MediaPickerForResult : ActivityResultContract<MediaPickerIntentData, Stori
     override fun parseResult(resultCode: Int, intent: Intent?): StoriesMedia {
         return if (intent != null) {
             val mediaData = MediaPicker.result(intent)
-            val mediaFilePath = mediaData.editedPaths.firstOrNull()
-                            ?: mediaData.editedImages.firstOrNull()
-                            ?: mediaData.originalPaths.firstOrNull().orEmpty()
+            val mediaFilePath = mediaData.editedPaths.firstNotEmptyOrNull()
+                            ?: mediaData.editedImages.firstNotEmptyOrNull()
+                            ?: mediaData.originalPaths.firstNotEmptyOrNull().orEmpty()
             val mediaType = ContentMediaType.parse(mediaFilePath)
 
             StoriesMedia(mediaFilePath, mediaType)
