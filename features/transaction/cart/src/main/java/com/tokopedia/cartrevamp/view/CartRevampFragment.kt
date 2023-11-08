@@ -12,6 +12,7 @@ import android.os.Looper
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -679,7 +680,8 @@ class CartRevampFragment :
         if (cartGroupHolderData.cartGroupBmGmHolderData.hasBmGmOffer) {
             val listCartStringOrderWithBmGmOfferId = arrayListOf<String>()
             cartGroupHolderData.productUiModelList.forEach {
-                val cartStringOrderWithBmGmOfferId = "${it.cartStringOrder}||${it.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}"
+                val cartStringOrderWithBmGmOfferId =
+                    "${it.cartStringOrder}||${it.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}"
                 if (it.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM &&
                     !listCartStringOrderWithBmGmOfferId.contains(cartStringOrderWithBmGmOfferId)
                 ) {
@@ -697,7 +699,8 @@ class CartRevampFragment :
                         )
                         if (index > RecyclerView.NO_POSITION) {
                             for (cartItem in cartItems) {
-                                cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+                                cartItem.cartBmGmTickerData.stateTickerBmGm =
+                                    CART_BMGM_STATE_TICKER_LOADING
                             }
                             cartAdapter?.notifyItemChanged(index)
                             getGroupProductTicker(cartItems)
@@ -713,8 +716,10 @@ class CartRevampFragment :
             binding?.vDisabledGoToCourierPageButton?.gone()
             binding?.goToCourierPageButton?.isEnabled = true
             binding?.goToCourierPageButton?.setOnClickListener {
-                EmbraceMonitoring.startMoments(EmbraceKey.KEY_ACT_BUY)
-                checkGoToShipment("")
+                guardCartClick {
+                    EmbraceMonitoring.startMoments(EmbraceKey.KEY_ACT_BUY)
+                    checkGoToShipment("")
+                }
             }
         }
     }
@@ -2398,9 +2403,10 @@ class CartRevampFragment :
     private fun initSharedFlow() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                swipeToDeleteOnBoardingFlow.debounce(DELAY_SHOW_SWIPE_TO_DELETE_ONBOARDING).collectLatest {
-                    handleProductSwipeToDeleteOnBoarding()
-                }
+                swipeToDeleteOnBoardingFlow.debounce(DELAY_SHOW_SWIPE_TO_DELETE_ONBOARDING)
+                    .collectLatest {
+                        handleProductSwipeToDeleteOnBoarding()
+                    }
             }
         }
     }
@@ -2543,15 +2549,25 @@ class CartRevampFragment :
         binding?.navToolbar?.show()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @OptIn(FlowPreview::class)
     private fun initTopLayout() {
+        binding?.checkboxGlobal?.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN && binderHelper.openCount > 0) {
+                binderHelper.closeAll()
+                return@setOnTouchListener true
+            }
+            return@setOnTouchListener false
+        }
         binding?.checkboxGlobal?.checks()?.debounce(DELAY_CHECK_BOX_GLOBAL)?.onEach { pair ->
             handleCheckboxGlobalChangeEvent()
             if (pair.first) {
-                val listCartStringOrderWithBmGmOfferId = CartDataHelper.getAllCartStringOrderWithBmGmOfferId(viewModel.cartDataList.value)
+                val listCartStringOrderWithBmGmOfferId =
+                    CartDataHelper.getAllCartStringOrderWithBmGmOfferId(viewModel.cartDataList.value)
                 if (listCartStringOrderWithBmGmOfferId.isNotEmpty()) {
                     listCartStringOrderWithBmGmOfferId.forEach { cartStringOrderWithBmGmOfferId ->
-                        val cartStringOrderWithBmGmOfferIdSplit = cartStringOrderWithBmGmOfferId.split("||")
+                        val cartStringOrderWithBmGmOfferIdSplit =
+                            cartStringOrderWithBmGmOfferId.split("||")
                         if (cartStringOrderWithBmGmOfferIdSplit.isNotEmpty() && cartStringOrderWithBmGmOfferIdSplit.size > 1) {
                             val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByCartStringOrderAndOfferId(
                                 viewModel.cartDataList.value,
@@ -2989,18 +3005,20 @@ class CartRevampFragment :
                             leftImageUrl = iconUrl,
                             wording = message,
                             onClickListener = {
-                                if (data.isNoItemSelected) {
-                                    showToastMessageGreen(getString(R.string.promo_choose_item_cart))
-                                } else if (data.entryPointInfo.isClickable) {
-                                    checkGoToPromo()
-                                    promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
-                                        userId = userSession.userId,
-                                        entryPoint = PromoPageEntryPoint.CART_PAGE,
-                                        entryPointMessages = listOf(message),
-                                        entryPointInfo = data.entryPointInfo,
-                                        lastApply = data.lastApply,
-                                        recommendedPromoCodes = data.recommendedPromoCodes
-                                    )
+                                guardCartClick {
+                                    if (data.isNoItemSelected) {
+                                        showToastMessageGreen(getString(R.string.promo_choose_item_cart))
+                                    } else if (data.entryPointInfo.isClickable) {
+                                        checkGoToPromo()
+                                        promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
+                                            userId = userSession.userId,
+                                            entryPoint = PromoPageEntryPoint.CART_PAGE,
+                                            entryPointMessages = listOf(message),
+                                            entryPointInfo = data.entryPointInfo,
+                                            lastApply = data.lastApply,
+                                            recommendedPromoCodes = data.recommendedPromoCodes
+                                        )
+                                    }
                                 }
                             }
                         )
@@ -3026,9 +3044,11 @@ class CartRevampFragment :
                         binding?.promoCheckoutBtnCart?.showInactive(
                             message,
                             onClickListener = {
-                                if (data.isNoItemSelected) {
-                                    showToastMessageGreen(getString(R.string.promo_choose_item_cart))
-                                    PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
+                                guardCartClick {
+                                    if (data.isNoItemSelected) {
+                                        showToastMessageGreen(getString(R.string.promo_choose_item_cart))
+                                        PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
+                                    }
                                 }
                             }
                         )
@@ -3045,16 +3065,18 @@ class CartRevampFragment :
                             flippingDurationInMs = 5_000,
                             maximumFlippingCount = 5,
                             onClickListener = {
-                                if (data.entryPointInfo.isClickable) {
-                                    checkGoToPromo()
-                                    promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
-                                        userId = userSession.userId,
-                                        entryPoint = PromoPageEntryPoint.CART_PAGE,
-                                        entryPointMessages = messages,
-                                        entryPointInfo = data.entryPointInfo,
-                                        lastApply = data.lastApply,
-                                        recommendedPromoCodes = data.recommendedPromoCodes
-                                    )
+                                guardCartClick {
+                                    if (data.entryPointInfo.isClickable) {
+                                        checkGoToPromo()
+                                        promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
+                                            userId = userSession.userId,
+                                            entryPoint = PromoPageEntryPoint.CART_PAGE,
+                                            entryPointMessages = messages,
+                                            entryPointInfo = data.entryPointInfo,
+                                            lastApply = data.lastApply,
+                                            recommendedPromoCodes = data.recommendedPromoCodes
+                                        )
+                                    }
                                 }
                             }
                         )
@@ -3073,16 +3095,18 @@ class CartRevampFragment :
                             wording = messages.first(),
                             rightIcon = IconUnify.CHEVRON_RIGHT,
                             onClickListener = {
-                                if (data.entryPointInfo.isClickable) {
-                                    checkGoToPromo()
-                                    promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
-                                        userId = userSession.userId,
-                                        entryPoint = PromoPageEntryPoint.CART_PAGE,
-                                        entryPointMessages = messages,
-                                        entryPointInfo = data.entryPointInfo,
-                                        lastApply = data.lastApply,
-                                        recommendedPromoCodes = data.recommendedPromoCodes
-                                    )
+                                guardCartClick {
+                                    if (data.entryPointInfo.isClickable) {
+                                        checkGoToPromo()
+                                        promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
+                                            userId = userSession.userId,
+                                            entryPoint = PromoPageEntryPoint.CART_PAGE,
+                                            entryPointMessages = messages,
+                                            entryPointInfo = data.entryPointInfo,
+                                            lastApply = data.lastApply,
+                                            recommendedPromoCodes = data.recommendedPromoCodes
+                                        )
+                                    }
                                 }
                             }
                         )
@@ -3105,12 +3129,14 @@ class CartRevampFragment :
                         wording = getString(purchase_platformcommonR.string.promo_funnel_label),
                         rightIcon = IconUnify.CHEVRON_RIGHT,
                         onClickListener = {
-                            checkGoToPromo()
-                            PromoRevampAnalytics.eventCartClickPromoSection(
-                                listPromoCodes = data.appliedPromos,
-                                isApplied = false,
-                                userId = userSession.userId
-                            )
+                            guardCartClick {
+                                checkGoToPromo()
+                                PromoRevampAnalytics.eventCartClickPromoSection(
+                                    listPromoCodes = data.appliedPromos,
+                                    isApplied = false,
+                                    userId = userSession.userId
+                                )
+                            }
                         }
                     )
                 }
@@ -3121,12 +3147,14 @@ class CartRevampFragment :
                             wording = data.message,
                             rightIcon = IconUnify.CHEVRON_RIGHT,
                             onClickListener = {
-                                checkGoToPromo()
-                                PromoRevampAnalytics.eventCartClickPromoSection(
-                                    listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
-                                    isApplied = false,
-                                    userId = userSession.userId
-                                )
+                                guardCartClick {
+                                    checkGoToPromo()
+                                    PromoRevampAnalytics.eventCartClickPromoSection(
+                                        listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
+                                        isApplied = false,
+                                        userId = userSession.userId
+                                    )
+                                }
                             }
                         )
                     }
@@ -3139,15 +3167,17 @@ class CartRevampFragment :
                             wording = data.message,
                             rightIcon = IconUnify.CHEVRON_RIGHT,
                             onClickListener = {
-                                checkGoToPromo()
-                                promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
-                                    userId = userSession.userId,
-                                    entryPoint = PromoPageEntryPoint.CART_PAGE,
-                                    entryPointMessages = listOf(data.message),
-                                    entryPointInfo = null,
-                                    lastApply = data.lastApply,
-                                    recommendedPromoCodes = data.recommendedPromoCodes
-                                )
+                                guardCartClick {
+                                    checkGoToPromo()
+                                    promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
+                                        userId = userSession.userId,
+                                        entryPoint = PromoPageEntryPoint.CART_PAGE,
+                                        entryPointMessages = listOf(data.message),
+                                        entryPointInfo = null,
+                                        lastApply = data.lastApply,
+                                        recommendedPromoCodes = data.recommendedPromoCodes
+                                    )
+                                }
                             }
                         )
                         promoEntryPointAnalytics
@@ -3170,12 +3200,14 @@ class CartRevampFragment :
                             rightIcon = IconUnify.CHEVRON_RIGHT,
                             summaries = emptyList(),
                             onClickListener = {
-                                checkGoToPromo()
-                                PromoRevampAnalytics.eventCartClickPromoSection(
-                                    listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
-                                    isApplied = true,
-                                    userId = userSession.userId
-                                )
+                                guardCartClick {
+                                    checkGoToPromo()
+                                    PromoRevampAnalytics.eventCartClickPromoSection(
+                                        listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
+                                        isApplied = true,
+                                        userId = userSession.userId
+                                    )
+                                }
                             }
                         )
                         PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
@@ -3567,8 +3599,10 @@ class CartRevampFragment :
     }
 
     private fun onNavigationToolbarWishlistClicked() {
-        cartPageAnalytics.eventClickWishlistIcon(userSession.userId)
-        routeToWishlist()
+        guardCartClick {
+            cartPageAnalytics.eventClickWishlistIcon(userSession.userId)
+            routeToWishlist()
+        }
     }
 
     private fun onNeedToInsertMultipleViewItem(positionStart: Int, itemCount: Int) {
