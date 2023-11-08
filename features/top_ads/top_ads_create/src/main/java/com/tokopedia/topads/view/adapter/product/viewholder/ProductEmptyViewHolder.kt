@@ -2,17 +2,17 @@ package com.tokopedia.topads.view.adapter.product.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductEmptyViewModel
-import com.tokopedia.unifycomponents.ImageUnify
 
 /**
  * Author errysuprayogi on 11,November,2019
  */
-class ProductEmptyViewHolder(val view: View): ProductViewHolder<ProductEmptyViewModel>(view) {
+class ProductEmptyViewHolder(private val mView: View): ProductViewHolder<ProductEmptyViewModel>(mView) {
 
-    private val imageView8 : ImageUnify? = view.findViewById(R.id.imageView8)
+    private val emptyStateProductList : GlobalError? = mView.findViewById(R.id.emptyStateProductList)
 
     companion object {
         @LayoutRes
@@ -20,7 +20,11 @@ class ProductEmptyViewHolder(val view: View): ProductViewHolder<ProductEmptyView
     }
 
     override fun bind(item: ProductEmptyViewModel) {
-        imageView8?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
+        emptyStateProductList?.apply{
+            errorAction.hide()
+            errorTitle.text = mView.context.getString(R.string.topads_ads_empty_view_title)
+            errorDescription.text = mView.context.getString(R.string.topads_ads_empty_view_description)
+        }
     }
 
 }

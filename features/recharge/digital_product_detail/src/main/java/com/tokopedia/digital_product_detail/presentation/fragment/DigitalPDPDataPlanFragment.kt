@@ -618,18 +618,22 @@ class DigitalPDPDataPlanFragment :
         )
     }
     private fun onSuccessOmniChannel(otherComponents: List<TelcoOtherComponent>) {
-        otherComponents.forEach {
-            if (it.name == OTHER_COMPONENT_APPLINK_OMNI) {
-                val collection = it.otherComponentDataCollection.firstOrNull { collection ->
-                    collection.key == APPLINK_OMNI_DATA_CODE
-                }
-                if (collection != null) {
-                    renderOmniChannel(collection.value)
+        if (otherComponents.isEmpty()) {
+            binding?.rechargePdpPaketDataOmniWidget?.hide()
+        } else {
+            otherComponents.forEach {
+                    if (it.name == OTHER_COMPONENT_APPLINK_OMNI) {
+                        val collection = it.otherComponentDataCollection.firstOrNull { collection ->
+                            collection.key == APPLINK_OMNI_DATA_CODE
+                    }
+                    if (collection != null) {
+                        renderOmniChannel(collection.value)
+                    } else {
+                        binding?.rechargePdpPaketDataOmniWidget?.hide()
+                    }
                 } else {
                     binding?.rechargePdpPaketDataOmniWidget?.hide()
                 }
-            } else {
-                binding?.rechargePdpPaketDataOmniWidget?.hide()
             }
         }
     }
@@ -807,6 +811,7 @@ class DigitalPDPDataPlanFragment :
                     inputNumberActionType = InputNumberActionType.NOTHING
                 }
             }
+            clearFocusAutoComplete()
         }
     }
 
@@ -1576,6 +1581,7 @@ class DigitalPDPDataPlanFragment :
     }
 
     override fun onCloseCoachmark() {
+        binding?.rechargePdpPaketDataBuyWidget?.closeCoachmark()
         commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             loyaltyStatus
