@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.producthighlight
 
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -16,7 +17,6 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.producthighlight.DiscoveryOCSDataModel
-import com.tokopedia.discovery2.databinding.MultiBannerLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -29,8 +29,13 @@ import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.item_empty_error_state.view.*
 
-class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private val binding: MultiBannerLayoutBinding = MultiBannerLayoutBinding.bind(itemView)
+class ProductHighlightViewHolder(
+    itemView: View,
+    private val fragment: Fragment
+) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+
+    private val container: ConstraintLayout = itemView.findViewById(R.id.banner_container_layout)
+
     private var mProductHighlightViewModel: ProductHighlightViewModel? = null
     private var bannerName: String = ""
     var productHighlightItemList: ArrayList<BaseProductHighlightItem> = arrayListOf()
@@ -48,7 +53,7 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
         lifecycleOwner?.let {
             mProductHighlightViewModel?.getProductHighlightCardItemsListData()?.observe(it) { item ->
                 if (!item.data.isNullOrEmpty()) {
-                    binding.bannerContainerLayout.removeAllViews()
+                    container.removeAllViews()
                     productHighlightItemList = ArrayList()
                     bannerName = item?.name ?: ""
                     addProductHighlightCard(item.data!!, item.properties?.type)
@@ -61,7 +66,7 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
 
             mProductHighlightViewModel?.hideShimmer?.observe(it) { shouldHideShimmer ->
                 if (shouldHideShimmer) {
-                    binding.bannerContainerLayout.removeAllViews()
+                    container.removeAllViews()
                 }
             }
 
@@ -125,7 +130,7 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
                 ProductHighlightRevampItem(
                     productHighlightItem,
                     properties,
-                    binding.bannerContainerLayout,
+                    container,
                     constraintSet,
                     index,
                     previous,
@@ -137,7 +142,7 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
                 ProductHighlightItem(
                     productHighlightItem,
                     properties,
-                    binding.bannerContainerLayout,
+                    container,
                     constraintSet,
                     index,
                     previous,
@@ -203,9 +208,9 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
     }
 
     private fun handleErrorState() {
-        with(binding) {
-            bannerContainerLayout.removeAllViews()
-            val emptyStateParentView = bannerContainerLayout.inflateLayout(R.layout.item_empty_error_state, false)
+        with(container) {
+            removeAllViews()
+            val emptyStateParentView = inflateLayout(R.layout.item_empty_error_state, false)
             val emptyStateView: LocalLoad = emptyStateParentView.findViewById(R.id.viewEmptyState)
             emptyStateView.apply {
                 val errorLoadUnifyView = emptyStateView.viewEmptyState
@@ -214,14 +219,14 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
                     context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
                 errorLoadUnifyView.refreshBtn?.setOnClickListener {
                     hide()
-                    bannerContainerLayout.removeAllViews()
-                    val shimmerView = mProductHighlightViewModel?.layoutSelector()?.let { it1 -> bannerContainerLayout.inflateLayout(it1, false) }
-                    bannerContainerLayout.addView(shimmerView)
+                    removeAllViews()
+                    val shimmerView = mProductHighlightViewModel?.layoutSelector()?.let { it1 -> inflateLayout(it1, false) }
+                    addView(shimmerView)
                     mProductHighlightViewModel?.reload()
                 }
             }
             emptyStateView.isVisible = true
-            bannerContainerLayout.addView(emptyStateParentView)
+            addView(emptyStateParentView)
         }
     }
 
@@ -238,10 +243,10 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
     private fun addShimmer() {
         mProductHighlightViewModel?.let { viewModel ->
             if (viewModel.shouldShowShimmer()) {
-                with(binding) {
-                    bannerContainerLayout.removeAllViews()
-                    val shimmerView = bannerContainerLayout.inflateLayout(viewModel.layoutSelector(), false)
-                    bannerContainerLayout.addView(shimmerView)
+                with(container) {
+                    removeAllViews()
+                    val shimmerView = inflateLayout(viewModel.layoutSelector(), false)
+                    addView(shimmerView)
                 }
             }
         }
