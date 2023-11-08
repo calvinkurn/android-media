@@ -84,7 +84,7 @@ class ChatTabCounterViewModel @Inject constructor(
     private fun observeNotificationCounter() {
         viewModelScope.launch {
             try {
-                chatNotificationCounterUseCase.notificationsCounterFlow.collectLatest {
+                chatNotificationCounterUseCase.observe().collectLatest {
                     when (it) {
                         is TopChatResult.Success -> {
                             onSuccessRefreshNotification(it.data)

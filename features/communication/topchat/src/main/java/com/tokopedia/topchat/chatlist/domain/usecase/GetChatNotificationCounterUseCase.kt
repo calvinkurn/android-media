@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topchat.chatlist.domain.pojo.NotificationsPojo
 import com.tokopedia.topchat.common.data.TopChatResult
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
@@ -20,7 +21,8 @@ class GetChatNotificationCounterUseCase @Inject constructor(
     private val _notificationsCounterFlow = MutableStateFlow<TopChatResult<NotificationsPojo>>(
         TopChatResult.Loading
     )
-    val notificationsCounterFlow = _notificationsCounterFlow.asStateFlow()
+
+    fun observe(): Flow<TopChatResult<NotificationsPojo>> = _notificationsCounterFlow.asStateFlow()
 
     private fun graphqlQuery(): String = """
         query get_chat_notif($$PARAM_SHOP_ID: String) {
