@@ -4,8 +4,7 @@ import android.widget.ImageView
 import com.tokopedia.media.loader.data.DEFAULT_ROUNDED
 import com.tokopedia.media.loader.data.FailureType
 import com.tokopedia.media.loader.getBitmapImageUrl
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
@@ -24,26 +23,23 @@ fun ImageView.loadProductImage(
     if (isEnabled) {
         var isArchived = false
         url.getBitmapImageUrl(
-            context = context, properties = {
+            context = context,
+            properties = {
                 shouldTrackNetworkResponse(true)
                 networkResponse { _, failure ->
                     isArchived = failure == FailureType.Gone || failure == FailureType.NotFound
                 }
-                setRoundedRadius(cornerRadius)
-            }, target = MediaBitmapEmptyTarget(
-                onReady = {
-                    onLoaded?.invoke(isArchived)
-
-                    if (isArchived) {
-                        loadImage(archivedUrl)
-                    } else {
-                        this.setImageBitmap(it)
-                    }
-                }
-            )
-        )
+            }
+        ) {
+            if (isArchived) {
+                loadImageRounded(archivedUrl, cornerRadius)
+            } else {
+                loadImageRounded(it, cornerRadius)
+            }
+            onLoaded?.invoke(isArchived)
+        }
     } else {
-        loadImage(url) {
+        loadImageRounded(url, cornerRadius) {
             listener(onSuccess = { _, _ ->
                 onLoaded?.invoke(false)
             })
