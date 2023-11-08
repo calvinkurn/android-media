@@ -295,6 +295,7 @@ class StoriesDetailFragment @Inject constructor(
 
         showPageLoading(false)
         binding.vStoriesKebabIcon.showWithCondition(currentItem.menus.isNotEmpty())
+        binding.vStoriesShareIcon.showWithCondition(currentItem.share.isShareable)
     }
 
     private fun renderMedia(content: StoriesItemContent, status: StoryStatus) {
