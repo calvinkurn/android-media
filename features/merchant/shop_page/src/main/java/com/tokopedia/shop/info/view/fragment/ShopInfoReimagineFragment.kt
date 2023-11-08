@@ -126,8 +126,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun setupView() {
         binding?.run {
-            tpgShopPharmacyCtaViewAll.setOnClickListener { }
-            tpgShopPharmacyCtaViewMaps.setOnClickListener { }
+            tpgShopPharmacyCtaViewAll.setOnClickListener { viewModel.handleCtaExpandPharmacyInfoClick() }
+            tpgShopPharmacyCtaViewMaps.setOnClickListener { viewModel.handleCtaViewPharmacyMapClick() }
         }
     }
 
@@ -257,10 +257,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             labelShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
             
             tpgShopPharmacyCtaViewAll.isVisible = isPharmacy && !expandPharmacyInfo
-            tpgShopPharmacyCtaViewAll.setOnClickListener { viewModel.handleCtaExpandPharmacyInfoClick() }
             tpgShopPharmacyCtaViewMaps.isVisible = isPharmacy && expandPharmacyInfo
-            tpgShopPharmacyCtaViewMaps.setOnClickListener { viewModel.handleCtaViewPharmacyMapClick() }
-
+            
             tpgSectionTitlePharmacyInformation.isVisible = isPharmacy
             tpgShopPharmacyNearestPickup.isVisible = isPharmacy
             tpgShopPharmacyPharmacistOpsHour.isVisible = isPharmacy && expandPharmacyInfo
@@ -413,6 +411,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun renderShopSupportedShipmentList(shipments: List<ShopSupportedShipment>) {
+        binding?.layoutShopSupportedShipmentContainer?.removeAllViews()
+        
         shipments.forEachIndexed { index, shipment ->
             val shipmentView = layoutInflater.inflate(R.layout.item_shop_info_shipment, binding?.layoutShopSupportedShipmentContainer, false)
             val imgShipment = shipmentView.findViewById<ImageUnify?>(R.id.imgShipment)

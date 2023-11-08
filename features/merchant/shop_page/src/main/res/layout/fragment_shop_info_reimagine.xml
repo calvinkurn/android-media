@@ -383,6 +383,17 @@
                 app:typographyType="display_3"
                 app:typographyWeight="bold" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrierPharmacyNearestPickup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:visibility="gone"
+                app:constraint_referenced_ids="tpgShopPharmacyCtaViewAll, tpgShopPharmacyCtaViewMaps"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:barrierDirection="bottom" />
+            
+            
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/labelShopPharmacyPharmacistOpsHour"
                 android:layout_width="match_parent"
@@ -396,7 +407,7 @@
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tpgShopPharmacyCtaViewAll"
+                app:layout_constraintTop_toBottomOf="@+id/barrierPharmacyNearestPickup"
                 app:typographyType="display_3" />
 
             <com.tokopedia.unifyprinciples.Typography
