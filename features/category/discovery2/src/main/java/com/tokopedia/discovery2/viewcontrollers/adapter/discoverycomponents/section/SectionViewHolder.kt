@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section
 
+import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -27,6 +29,8 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
     val shimmer: ConstraintLayout = itemView.findViewById(R.id.section_shimmer)
     private var carouselEmptyState: LocalLoad = itemView.findViewById(R.id.viewEmptyState)
     private val container = itemView.findViewById<LinearLayoutCompat>(R.id.section_container)
+
+    private val festiveContainer: LinearLayoutCompat = itemView.findViewById(R.id.festiveContainer)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as SectionViewModel
@@ -182,6 +186,35 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                     handleError()
                 }
             }
+        }
+    }
+
+    private fun addChildComponent() {
+        val items = viewModel?.components?.getComponentsItem()
+
+        val backgroundColor = arrayOf(
+            unifyprinciplesR.color.Unify_RN200_96,
+            unifyprinciplesR.color.Unify_G200_96,
+            unifyprinciplesR.color.Unify_B200_96,
+            unifyprinciplesR.color.Unify_Y200_96
+        ).random()
+
+        festiveContainer.setBackgroundColor(ContextCompat.getColor(itemView.context, backgroundColor))
+
+        if (items == null) return
+
+        for (item in items) {
+            addComponentView(item)
+        }
+    }
+
+    private fun addComponentView(item: ComponentsItem) {
+        val component = ComponentsList.values().find { it.componentName == item.name } ?: return
+
+        component.let {
+            festiveContainer.addView(
+                CustomViewCreator.getCustomViewObject(itemView.context, it, item, fragment)
+            )
         }
     }
 
