@@ -1423,7 +1423,8 @@ class CartRevampFragment :
         if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartAdapter != null) {
             val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByCartStringOrderAndOfferId(
                 viewModel.cartDataList.value,
-               cartItemHolderData.cartStringOrder, cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
+                cartItemHolderData.cartStringOrder,
+                cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
             )
             if (index > RecyclerView.NO_POSITION) {
                 for (cartItem in cartItems) {
@@ -2303,17 +2304,6 @@ class CartRevampFragment :
         }
     }
 
-    private var lastCartId: String = ""
-
-    override fun onSwipeOpened(id: String) {
-        lastCartId = id
-//        disableSwipeRefresh()
-    }
-
-    override fun onSwipeClosed() {
-//        enableSwipeRefresh()
-    }
-
     private fun isAtcExternalFlow(): Boolean {
         return getAtcProductId() != 0L
     }
@@ -2567,19 +2557,20 @@ class CartRevampFragment :
                         val cartStringOrderWithBmGmOfferIdSplit = cartStringOrderWithBmGmOfferId.split("||")
                         if (cartStringOrderWithBmGmOfferIdSplit.isNotEmpty() && cartStringOrderWithBmGmOfferIdSplit.size > 1) {
                             val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByCartStringOrderAndOfferId(
-                            viewModel.cartDataList.value,
-                            cartStringOrderWithBmGmOfferIdSplit[0],
+                                viewModel.cartDataList.value,
+                                cartStringOrderWithBmGmOfferIdSplit[0],
                                 cartStringOrderWithBmGmOfferIdSplit[1].toLongOrZero()
-                        )
-                        if (index > RecyclerView.NO_POSITION) {
-                            for (cartItem in cartItems) {
-                                cartItem.cartBmGmTickerData.stateTickerBmGm =
-                                    CART_BMGM_STATE_TICKER_LOADING
-                            }
+                            )
+                            if (index > RecyclerView.NO_POSITION) {
+                                for (cartItem in cartItems) {
+                                    cartItem.cartBmGmTickerData.stateTickerBmGm =
+                                        CART_BMGM_STATE_TICKER_LOADING
+                                }
 
-                            cartAdapter?.notifyItemChanged(index)
-                            getGroupProductTicker(
-                                cartItems)
+                                cartAdapter?.notifyItemChanged(index)
+                                getGroupProductTicker(
+                                    cartItems
+                                )
                             }
                         }
                     }
@@ -3345,7 +3336,7 @@ class CartRevampFragment :
                     val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByCartStringOrderAndOfferId(
                         viewModel.cartDataList.value,
                         data.pairOfferIdBmGmTickerResponse.first
-                    .cartStringOrder,
+                            .cartStringOrder,
                         data.pairOfferIdBmGmTickerResponse.first.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
                     )
                     if (index > RecyclerView.NO_POSITION) {
@@ -3376,7 +3367,7 @@ class CartRevampFragment :
                     val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByCartStringOrderAndOfferId(
                         viewModel.cartDataList.value,
                         data.pairOfferIdThrowable.first
-                    .cartStringOrder,
+                            .cartStringOrder,
                         data.pairOfferIdThrowable.first.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
                     )
 
@@ -3533,10 +3524,10 @@ class CartRevampFragment :
             listCartStringOrderAndOfferId.forEach { cartStringOrderAndOfferId ->
                 val splitCartStringOrderAndOfferId = cartStringOrderAndOfferId.split("||")
                 if (splitCartStringOrderAndOfferId.isNotEmpty() && splitCartStringOrderAndOfferId.size > 1) {
-                getGroupProductTicker(
-                    CartDataHelper.getListProductByOfferIdAndCartStringOrder(
-                        viewModel.cartDataList.value,
-                        splitCartStringOrderAndOfferId[1].toLongOrZero(),
+                    getGroupProductTicker(
+                        CartDataHelper.getListProductByOfferIdAndCartStringOrder(
+                            viewModel.cartDataList.value,
+                            splitCartStringOrderAndOfferId[1].toLongOrZero(),
                             splitCartStringOrderAndOfferId[0]
                         )
                     )
@@ -5605,31 +5596,31 @@ class CartRevampFragment :
     override fun onChangeAddressClicked() {
         val chooseAddressBottomSheet = ChooseAddressBottomSheet()
         chooseAddressBottomSheet.setListener(object :
-            ChooseAddressBottomSheet.ChooseAddressBottomSheetListener{
-            override fun onLocalizingAddressServerDown() {
-                // no-op
-            }
-
-            override fun onAddressDataChanged() {
-                val clearBoPromo = generateParamClearBo()
-                if (clearBoPromo != null) {
-                    viewModel.clearAllBo(clearBoPromo)
+                ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+                override fun onLocalizingAddressServerDown() {
+                    // no-op
                 }
-                refreshCartWithProgressDialog(GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
-            }
 
-            override fun getLocalizingAddressHostSourceBottomSheet(): String {
-                return CART_PAGE
-            }
+                override fun onAddressDataChanged() {
+                    val clearBoPromo = generateParamClearBo()
+                    if (clearBoPromo != null) {
+                        viewModel.clearAllBo(clearBoPromo)
+                    }
+                    refreshCartWithProgressDialog(GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
+                }
 
-            override fun onLocalizingAddressLoginSuccessBottomSheet() {
-                // no-op
-            }
+                override fun getLocalizingAddressHostSourceBottomSheet(): String {
+                    return CART_PAGE
+                }
 
-            override fun onDismissChooseAddressBottomSheet() {
-                // no-op
-            }
-        })
+                override fun onLocalizingAddressLoginSuccessBottomSheet() {
+                    // no-op
+                }
+
+                override fun onDismissChooseAddressBottomSheet() {
+                    // no-op
+                }
+            })
         chooseAddressBottomSheet.show(childFragmentManager)
     }
 }

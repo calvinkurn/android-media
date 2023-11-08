@@ -6,7 +6,6 @@ import android.graphics.drawable.GradientDrawable
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.inputmethod.EditorInfo
@@ -24,7 +23,6 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
 import com.tokopedia.cartrevamp.view.BmGmWidgetView
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
-import com.tokopedia.cartrevamp.view.customview.CartSwipeRevealLayout
 import com.tokopedia.cartrevamp.view.customview.ViewBinderHelper
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
@@ -49,7 +47,6 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.resources.isDarkMode
@@ -191,40 +188,6 @@ class CartItemViewHolder constructor(
                     actionListener?.onCartItemDeleteButtonClicked(data, true)
                 }
             }
-
-            swipeLayout.setSwipeListener(object : CartSwipeRevealLayout.SwipeListener {
-                override fun onClosed(view: CartSwipeRevealLayout?) {
-                    Log.d("<APP>", "onClosed: ")
-                    actionListener?.onSwipeClosed()
-                }
-
-                override fun onOpened(view: CartSwipeRevealLayout?) {
-                    Log.d("<APP>", "onOpened: ")
-                    actionListener?.onSwipeOpened(data.cartId)
-                }
-
-                override fun onSlide(view: CartSwipeRevealLayout?, slideOffset: Float) {
-                    Log.d("<APP>", "onSlide: ")
-                    actionListener?.onSwipeClosed()
-                }
-            })
-
-            swipeLayoutBundling.setSwipeListener(object : CartSwipeRevealLayout.SwipeListener {
-                override fun onClosed(view: CartSwipeRevealLayout?) {
-                    Log.d("<APP>", "onClosed: ")
-                    actionListener?.onSwipeClosed()
-                }
-
-                override fun onOpened(view: CartSwipeRevealLayout?) {
-                    Log.d("<APP>", "onOpened: ")
-                    actionListener?.onSwipeOpened("${data.cartId}|${data.bundleId}")
-                }
-
-                override fun onSlide(view: CartSwipeRevealLayout?, slideOffset: Float) {
-                    Log.d("<APP>", "onSlide: ")
-                    actionListener?.onSwipeClosed()
-                }
-            })
         }
     }
 

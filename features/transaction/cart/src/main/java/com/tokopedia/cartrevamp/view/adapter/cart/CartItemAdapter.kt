@@ -41,9 +41,5 @@ class CartItemAdapter {
         fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData, isChecked: Boolean)
 
         fun onCartViewBmGmTicker(offerId: Long, widgetCaption: String, shopId: String)
-
-        fun onSwipeOpened(id: String)
-
-        fun onSwipeClosed()
     }
 }
