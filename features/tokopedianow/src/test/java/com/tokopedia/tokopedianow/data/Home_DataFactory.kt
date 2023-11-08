@@ -70,7 +70,7 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
             ),
             HomeLayoutResponse(
                     id = "2222",
-                    layout = "banner_carousel_v2",
+                    layout = "tokonow_banner",
                     header = Header(
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
