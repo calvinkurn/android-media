@@ -43,7 +43,7 @@ class EditorEditTextView @JvmOverloads constructor(
         // set for edittext background color, to remove underline
         setBackgroundColor(Color.TRANSPARENT)
 
-        addTextChangedListener(object: TextWatcher{
+        addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(newText: Editable?) {
                 if ((newText?.toString()?.length ?: 0) <= 0) {
                     isSpanImplemented = false
@@ -70,7 +70,12 @@ class EditorEditTextView @JvmOverloads constructor(
         ).apply {
             this.setAlignment(alignment)
         }
-        spanString.setSpan(roundedSpan,0, text?.length ?: 1, SpannableString.SPAN_EXCLUSIVE_INCLUSIVE)
+        spanString.setSpan(
+            roundedSpan,
+            0,
+            text?.length ?: 1,
+            SpannableString.SPAN_EXCLUSIVE_INCLUSIVE
+        )
         return spanString
     }
 
@@ -93,7 +98,7 @@ class EditorEditTextView @JvmOverloads constructor(
         setSelection(spanString?.length ?: 0)
     }
 
-    fun setColor(textColor: Int, backgroundColor: Int){
+    fun setColor(textColor: Int, backgroundColor: Int) {
         setTextColor(textColor)
         this.backgroundColor = backgroundColor
 
