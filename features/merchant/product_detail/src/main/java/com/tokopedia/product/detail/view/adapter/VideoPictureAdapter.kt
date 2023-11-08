@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.adapter
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -19,13 +20,15 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 class VideoPictureAdapter(
     private val listener: DynamicProductDetailListener?,
     private val componentTrackDataModel: ComponentTrackDataModel?,
-    private val containerType: MediaContainerType
+    private val containerType: MediaContainerType,
 ) : RecyclerView.Adapter<AbstractViewHolder<MediaDataModel>>() {
 
     val currentList: MutableList<MediaDataModel> = mutableListOf()
 
-    fun submitList(newList: List<MediaDataModel>) {
-        obtainPrefetchMedia(newList)
+    var prefetchResource: Drawable? = null
+
+    fun submitList(newList: List<MediaDataModel>, previouslyPrefetch: Boolean) {
+        if (previouslyPrefetch) attachPrefetchResource(newList)
 
         val diffCallback = VideoPictureDiffUtil(currentList.toMutableList(), newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
@@ -34,13 +37,8 @@ class VideoPictureAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    private fun obtainPrefetchMedia(newList: List<MediaDataModel>) {
-        val prefetchMedia = currentList.firstOrNull { it.isPrefetch }
-        if (prefetchMedia != null) {
-            newList.firstOrNull()?.apply {
-                this.prefetchResource = prefetchMedia.prefetchResource
-            }
-        }
+    private fun attachPrefetchResource(newList: List<MediaDataModel>) {
+        newList.firstOrNull()?.prefetchResource = prefetchResource
     }
 
     fun isPicture(position: Int): Boolean {
