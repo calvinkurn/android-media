@@ -249,6 +249,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         renderLoadingDialog(false)
+        removeObserveKeyboardVisibility()
         recyclerViewAdapter.clear()
         binding = null
         listener = null
@@ -454,6 +455,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 }
                 return@setOnApplyWindowInsetsListener ViewCompat.onApplyWindowInsets(view, insets)
             }
+        }
+    }
+
+    private fun removeObserveKeyboardVisibility() {
+        activity?.let {
+            ViewCompat.setOnApplyWindowInsetsListener(it.window.decorView, null)
         }
     }
 

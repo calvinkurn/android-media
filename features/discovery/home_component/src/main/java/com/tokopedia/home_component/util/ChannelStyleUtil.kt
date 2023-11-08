@@ -14,7 +14,7 @@ object ChannelStyleUtil {
     const val IMAGE_STYLE_FULL = "full"
     const val IMAGE_STYLE_DEFAULT = ""
 
-    private const val KEY_WITH_SUBTITLE = "with_subtitle"
+    private const val KEY_WITH_SUBTITLE = "withSubtitle"
 
     private fun String.parseStyleParamAsMap(): Map<String, String> {
         return split("&").associate {
