@@ -6,12 +6,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemColumnedInfoBinding
+import com.tokopedia.catalogcommon.listener.ColumnedInfoListener
 import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.catalogcommon.viewholder.columnedinfo.ColumnedInfoListItemAdapter
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ColumnedInfoViewHolder(itemView: View) : AbstractViewHolder<ColumnedInfoUiModel>(itemView) {
+class ColumnedInfoViewHolder(
+    itemView: View,
+    private val columnedInfoListener: ColumnedInfoListener? = null
+): AbstractViewHolder<ColumnedInfoUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -21,9 +26,19 @@ class ColumnedInfoViewHolder(itemView: View) : AbstractViewHolder<ColumnedInfoUi
     private val binding by viewBinding<WidgetItemColumnedInfoBinding>()
 
     override fun bind(element: ColumnedInfoUiModel) {
-        binding?.tfTitle?.text = element.sectionTitle
-        binding?.rvColumnInfo?.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
-        binding?.rvColumnInfo?.adapter = ColumnedInfoListItemAdapter(element.widgetContent)
-        binding?.btnSeeMore?.isVisible = element.hasMoreData
+        binding?.apply {
+            tfTitle.text = element.sectionTitle
+            rvColumnInfo.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+            rvColumnInfo.adapter = ColumnedInfoListItemAdapter(element.widgetContent)
+            btnSeeMore.isVisible = element.hasMoreData
+            btnSeeMore.setOnClickListener {
+                columnedInfoListener?.onColumnedInfoSeeMoreClicked(element.sectionTitle, element.fullContent)
+            }
+            if (element.darkMode) {
+                btnSeeMore.applyColorMode(ColorMode.DARK_MODE)
+            } else {
+                btnSeeMore.applyColorMode(ColorMode.LIGHT_MODE)
+            }
+        }
     }
 }

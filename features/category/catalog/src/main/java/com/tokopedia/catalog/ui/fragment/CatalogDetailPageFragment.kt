@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,9 +72,11 @@ import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
+import com.tokopedia.catalogcommon.bottomsheet.ColumnedInfoBottomSheet
 import com.tokopedia.catalogcommon.customview.CatalogToolbar
 import com.tokopedia.catalogcommon.listener.AccordionListener
 import com.tokopedia.catalogcommon.listener.BannerListener
+import com.tokopedia.catalogcommon.listener.ColumnedInfoListener
 import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.listener.TextDescriptionListener
@@ -84,6 +85,7 @@ import com.tokopedia.catalogcommon.listener.TrustMakerListener
 import com.tokopedia.catalogcommon.listener.VideoExpertListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
@@ -127,7 +129,7 @@ class CatalogDetailPageFragment :
     TopFeatureListener,
     DoubleBannerListener,
     ComparisonViewHolder.ComparisonItemListener,
-    CatalogDetailListener {
+    CatalogDetailListener, ColumnedInfoListener {
 
     companion object {
         private const val QUERY_CATALOG_ID = "catalog_id"
@@ -166,7 +168,8 @@ class CatalogDetailPageFragment :
                 videoExpertListener = this,
                 topFeatureListener = this,
                 doubleBannerListener = this,
-                comparisonItemListener = this
+                comparisonItemListener = this,
+                columnedInfoListener = this
             )
         )
     }
@@ -744,5 +747,12 @@ class CatalogDetailPageFragment :
     override fun changeComparison(selectedComparedCatalogId: String) {
         compareCatalogId = selectedComparedCatalogId
         viewModel.getProductCatalogComparisons(catalogId, compareCatalogId)
+    }
+
+    override fun onColumnedInfoSeeMoreClicked(
+        sectionTitle: String,
+        columnData: List<ColumnedInfoUiModel.ColumnData>
+    ) {
+        ColumnedInfoBottomSheet.show(childFragmentManager, sectionTitle, columnData)
     }
 }

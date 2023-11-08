@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemColumnedInfoListItemBinding
+import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -20,13 +21,28 @@ class ColumnedInfoListItemViewHolder(
 
     private val binding: WidgetItemColumnedInfoListItemBinding? by viewBinding()
 
-    fun bind(item: Pair<String, String>, rowColor: Pair<Int, Int>, displayDivider: Boolean) {
+    fun bind(
+        columnData: ColumnedInfoUiModel.ColumnData,
+        position: Int,
+    ) {
+        val rowData = columnData.rowData.getOrNull(position) ?: return
+        val rowColor = columnData.rowColor
         binding?.apply {
-            tfTitle.text = item.first
-            tfValue.text = item.second
+            if (columnData.rowIsBold?.first == true) {
+                tfTitle.setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
+            } else {
+                tfTitle.setWeight(com.tokopedia.unifyprinciples.Typography.REGULAR)
+            }
+            if (columnData.rowIsBold?.second == true) {
+                tfValue.setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
+            } else {
+                tfValue.setWeight(com.tokopedia.unifyprinciples.Typography.REGULAR)
+            }
+            tfTitle.text = rowData.first
+            tfValue.text = rowData.second
             tfTitle.setTextColor(rowColor.first)
             tfValue.setTextColor(rowColor.second)
-            divItem.isVisible = displayDivider
+            divItem.isVisible = position < columnData.rowData.size.dec()
         }
     }
 }

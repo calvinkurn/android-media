@@ -508,7 +508,8 @@ class CatalogDetailUiMapper @Inject constructor(
                         title = it.name,
                         rowData = it.row.map { row ->
                             Pair(row.key, row.value)
-                        }
+                        },
+                        rowIsBold = Pair(true, false)
                     )
                 }
         )

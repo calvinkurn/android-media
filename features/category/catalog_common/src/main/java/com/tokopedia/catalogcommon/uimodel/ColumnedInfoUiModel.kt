@@ -1,7 +1,9 @@
 package com.tokopedia.catalogcommon.uimodel
 
+import android.os.Parcelable
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
+import kotlinx.parcelize.Parcelize
 
 data class ColumnedInfoUiModel(
     override var idWidget: String = "",
@@ -22,11 +24,13 @@ data class ColumnedInfoUiModel(
     widgetTextColor,
     darkMode
 ) {
+    @Parcelize
     data class ColumnData (
         val title: String = "",
         val rowData: List<Pair<String, String>> = emptyList(),
-        val rowColor: Pair<Int, Int> = Pair(Int.ZERO, Int.ZERO)
-    )
+        val rowColor: Pair<Int, Int> = Pair(Int.ZERO, Int.ZERO),
+        val rowIsBold: Pair<Boolean, Boolean>? = null
+    ) : Parcelable
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {
         return typeFactory.type(this)

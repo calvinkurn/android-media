@@ -14,7 +14,7 @@ class ColumnedInfoListItemAdapter(
     }
 
     override fun onBindViewHolder(holder: ColumnedInfoListItemViewHolder, position: Int) {
-        holder.bind(items.rowData[position], items.rowColor, position < itemCount.dec())
+        holder.bind(items, position)
     }
 
     override fun getItemCount() = items.rowData.size
