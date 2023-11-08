@@ -41,7 +41,9 @@ class MediaPickerForResult : ActivityResultContract<MediaPickerIntentData, Stori
     override fun parseResult(resultCode: Int, intent: Intent?): StoriesMedia {
         return if (intent != null) {
             val mediaData = MediaPicker.result(intent)
-            val mediaFilePath = mediaData.editedPaths.firstOrNull() ?: mediaData.originalPaths.firstOrNull().orEmpty()
+            val mediaFilePath = mediaData.editedPaths.firstOrNull()
+                            ?: mediaData.editedImages.firstOrNull()
+                            ?: mediaData.originalPaths.firstOrNull().orEmpty()
             val mediaType = ContentMediaType.parse(mediaFilePath)
 
             StoriesMedia(mediaFilePath, mediaType)
