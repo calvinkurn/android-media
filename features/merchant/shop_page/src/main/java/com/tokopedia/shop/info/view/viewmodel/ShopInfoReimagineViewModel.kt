@@ -206,7 +206,9 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
 
     private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): Map<String, List<String>> {
-        val operationalHours = mutableMapOf<String, String>()
+        val operationalHours = getShopOperationalHoursList?.data ?: emptyList()
+        
+        val formattedOperationalHours = mutableMapOf<String, String>()
 
         val daysDictionary = mapOf(
             1 to "Senin",
@@ -218,19 +220,19 @@ class ShopInfoReimagineViewModel @Inject constructor(
             7 to "Minggu"
         )
 
-        getShopOperationalHoursList?.data?.forEach { operationalHour ->
+        operationalHours.forEach { operationalHour ->
             val formattedDay = daysDictionary[operationalHour.day].orEmpty()
 
             val startTime = operationalHour.startTime.hourAndMinuteOnly()
             val endTime = operationalHour.endTime.hourAndMinuteOnly()
             val operationalHourFormat = "%s - %s"
 
-            operationalHours[formattedDay] = String.format(operationalHourFormat, startTime, endTime)
+            formattedOperationalHours[formattedDay] = String.format(operationalHourFormat, startTime, endTime)
         }
 
-        val groupedByHours = operationalHours.groupByHours()
+        val result = formattedOperationalHours.groupByHours()
 
-        return groupedByHours
+        return result
     }
 
     private fun ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.toOrderProcessTime(): String {
