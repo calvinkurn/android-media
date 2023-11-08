@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyResourceIdRef
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
@@ -43,8 +42,8 @@ import com.tokopedia.universal_sharing.R as universal_sharingR
 
 class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
 
-    private var channelShareIconId: Int = -1
-    private var iconUnifyId: Int = IconUnify.WARNING
+    private var channelShareIconId: Int = CHANNEL_SHARE
+    private var iconUnifyId: Int = IconUnify.SHARE_MOBILE
     private var callback: ShareWidgetCallback? = null
     private var isDirectChannel = false
     private var isAffiliate = false
@@ -90,8 +89,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                 if (channelShareIconId != -1) {
                     iconUnifyId = getIconUnifyId()
                     if (iconUnifyId != IconUnify.WARNING) {
-                        val iconId = getIconUnifyResourceIdRef(iconUnifyId)
-                        populateView(iconId)
+                        populateView()
                     }
                 } else {
                     /* no-op */
@@ -140,10 +138,11 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         callback = shareWidgetCallback
     }
 
-    private fun populateView(icon: Int) {
+    private fun populateView() {
         when (getVariant()) {
             UniversalShareConst.RemoteConfigKey.VALUE_VARIANT_A -> {
                 binding?.shareChannel?.setImage(IconUnify.SHARE_MOBILE)
+                channelShareIconId = CHANNEL_SHARE
             }
 
             UniversalShareConst.RemoteConfigKey.VALUE_VARIANT_B -> {
@@ -152,6 +151,8 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                     isDirectChannel = true
                 } else {
                     binding?.shareChannel?.setImage(IconUnify.SHARE_MOBILE)
+                    channelShareIconId = CHANNEL_SHARE
+                    iconUnifyId = IconUnify.SHARE_MOBILE
                 }
             }
 
@@ -211,6 +212,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
             CHANNEL_WHATSAPP -> SharingUtil.labelWhatsapp
             CHANNEL_SMS -> SharingUtil.labelSms
             CHANNEL_TELEGRAM -> SharingUtil.labelTelegram
+            CHANNEL_SHARE -> SHARING_CHANNEL
             else -> ""
         }
     }
@@ -353,7 +355,9 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         private const val CHANNEL_WHATSAPP = 0
         private const val CHANNEL_TELEGRAM = 1
         private const val CHANNEL_SMS = 2
+        private const val CHANNEL_SHARE = -1
         private const val FEATURE_SHARE = "share"
+        private const val SHARING_CHANNEL = "share button"
         const val EMPTY_ATTRS = "-1"
     }
 }
