@@ -43,7 +43,7 @@ class GetProductUseCase @Inject constructor(
         """.trimIndent()
 
         private val QUERY_PARAM = """
-            productID:${'$'}productID, options:${'$'}options, extraInfo: { aggregate: true }
+            productID:${'$'}productID, options:${'$'}options, extraInfo: { aggregate: false }
         """.trimIndent()
 
         private val QUERY_REQUEST = """

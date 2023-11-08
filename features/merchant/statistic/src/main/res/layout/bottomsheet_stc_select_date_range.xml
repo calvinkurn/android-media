@@ -67,7 +67,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvStcDateRage"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/Unify_NN0"
         app:layout_constrainedHeight="true"

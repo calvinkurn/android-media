@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.ParamsForOpenScreen
+import com.tokopedia.discovery2.data.producthighlight.DiscoveryOCSDataModel
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
@@ -173,6 +174,7 @@ open class BaseDiscoveryAnalytics(
     open fun trackContentCardClick(componentsItems: ComponentsItem, userID: String?) {}
     open fun trackPromoProductHighlightImpression(productHighlightData: List<DataItem>, components: ComponentsItem?) {}
     open fun trackProductHighlightClick(productHighlightData: DataItem, productHighlightPosition: Int, components: ComponentsItem?, isLogin: Boolean) {}
+    open fun trackProductHighlightOCSClick(ocsDataModel: DiscoveryOCSDataModel, parentPosition: Int?, parentComponentId: String?) {}
     open fun trackCouponImpression(properties: List<CouponTrackingProperties>) {}
     open fun trackCouponClickEvent(properties: CouponTrackingProperties) {}
     open fun trackCouponCTAClickEvent(properties: CouponTrackingProperties) {}

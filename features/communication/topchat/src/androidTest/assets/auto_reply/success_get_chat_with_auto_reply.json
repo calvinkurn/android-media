@@ -1,0 +1,121 @@
+{
+  "status": "OK",
+  "chatReplies": {
+    "minReplyTime": "1638934640547",
+    "maxReplyTime": "1638958606899",
+    "block": {
+      "blockedUntil": "2021-04-03T12:07:47.598824+07:00",
+      "isBlocked": false,
+      "isPromoBlocked": false
+    },
+    "hasNext": false,
+    "hasNextAfter": false,
+    "textareaReply": 1,
+    "attachmentIDs": "",
+    "replyIDsAttachment": "",
+    "contacts": [
+      {
+        "role": "User",
+        "userId": 12299592,
+        "shopId": 3987128,
+        "interlocutor": false,
+        "name": "Try",
+        "tag": "Pengguna",
+        "thumbnail": "https://accounts.tokopedia.com/image/v1/u/12299592/user_thumbnail/desktop",
+        "domain": "",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "Shop Owner",
+        "userId": 39467501,
+        "shopId": 3987128,
+        "interlocutor": true,
+        "name": "Meraih mimpi",
+        "tag": "Penjual",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/3987128/shop_xs_thumbnail/desktop",
+        "domain": "totokaku",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 1619070591,
+          "timestampStr": "1619070591",
+          "isOnline": true
+        }
+      }
+    ],
+    "list": [
+      {
+        "date": "8 Dec 2021",
+        "chats": [
+          {
+            "time": "12:55",
+            "replies": [
+              {
+                "msgId": 1401834176,
+                "replyId": "24186478505",
+                "senderId": 39467501,
+                "senderName": "yunitatujuh",
+                "role": "User",
+                "msg": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                "fraudStatus": 0,
+                "replyTime": "16389429244281000",
+                "status": 1,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": false,
+                "blastId": 0,
+                "source": "auto_reply",
+                "label": "Dikirim otomatis oleh penjual",
+                "parentReply": null,
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              },
+              {
+                "msgId": 1401834176,
+                "replyId": "24186478505",
+                "senderId": 12299592,
+                "senderName": "yunitatujuh",
+                "role": "User",
+                "msg": "[{\"type\":\"welcoming_message\",\"title\":\"\",\"message\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\"},{\"type\":\"product_message\",\"title\":\"Produk\",\"message\":\"<p>iSmile adalah APPLE ONLINE RESELLER yang khusus menjual produk <u><i>APPLE ORIGINAL dan BERGARANSI RESMI</i></u>.</p><p>iSmile adalah Tokopedia OFFICIAL STORE & REKOMENDASI SELLER APPLE PILIHAN Tokopedia</p>\"},{\"type\":\"delivery_message\",\"title\":\"Pengiriman\",\"message\":\"<ul><li>Pengiriman setiap hari Senin sampai Jumat.</li><li>Weekend dan libur nasional <b>TIDAK ADA</b> pengiriman.</li><li>Paket selalu <b>DIKIRIM MALAM HARI</b> (jadi yg nanya kok belum dikirim padahal baru bayar kemarin gak akan kita bales ya).</li><li>Transfer hari <b>JUMAT</b> dikirimnya hari SENIN ya, <b>BUKAN</b> hari jumat atau sabtu.</li><li>Berlaku untuk semua pengiriman, termasuk <b>GOSEND/GRAB EXPRESS.</b></li></ul>\"},{\"type\":\"operational_message\",\"title\":\"Jam Operasional\",\"message\":\"Toko kami buka jam 07.00-24.00.\"}]",
+                "fraudStatus": 0,
+                "replyTime": "1638942924424081000",
+                "status": 1,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": false,
+                "blastId": 0,
+                "source": "auto_reply",
+                "label": "Dikirim otomatis oleh penjual",
+                "parentReply": null,
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

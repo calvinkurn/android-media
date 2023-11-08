@@ -456,6 +456,10 @@ class CartItemViewHolder constructor(
                             data,
                             isChecked
                         )
+                        viewHolderListener?.onNeedToRefreshSingleShop(
+                            data,
+                            bindingAdapterPosition
+                        )
                     }
                 }
             }

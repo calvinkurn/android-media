@@ -29,39 +29,59 @@ class CartBmGmTest : BaseCartViewModelTest() {
     fun `WHEN getBmGmGroupProductTicker success THEN should render ticker success`() {
         // GIVEN
         val valueOfferId = 1L
+        val cartItemHolderData = CartItemHolderData(
+            cartStringOrder = "cart-string-order",
+            cartBmGmTickerData = CartBmGmTickerData(
+                bmGmCartInfoData = CartDetailInfo(
+                    bmGmData = CartDetailInfo.BmGmData(
+                        offerId = 1L
+                    )
+                )
+            )
+        )
         val bmGmData = BmGmGetGroupProductTickerResponse()
-        cartViewModel.cartModel.lastOfferId = 1L
+        cartViewModel.cartModel.lastOfferId = "1L-cart-string-order"
 
         coEvery { bmGmGetGroupProductTickerUseCase(any()) } returns bmGmData
 
         // WHEN
         cartViewModel.getBmGmGroupProductTicker(
-            offerId = valueOfferId,
+            cartItemHolderData = cartItemHolderData,
             params = BmGmGetGroupProductTickerParams()
         )
 
         // THEN
-        assertEquals(GetBmGmGroupProductTickerState.Success(Pair(valueOfferId, bmGmData)), cartViewModel.bmGmGroupProductTickerState.value)
+        assertEquals(GetBmGmGroupProductTickerState.Success(Pair(cartItemHolderData, bmGmData)), cartViewModel.bmGmGroupProductTickerState.value)
     }
 
     @Test
     fun `WHEN getBmGmGroupProductTicker failed THEN should render ticker error`() {
         // GIVEN
         val valueOfferId = 1L
+        val cartItemHolderData = CartItemHolderData(
+            cartStringOrder = "cart-string-order",
+            cartBmGmTickerData = CartBmGmTickerData(
+                bmGmCartInfoData = CartDetailInfo(
+                    bmGmData = CartDetailInfo.BmGmData(
+                        offerId = 1L
+                    )
+                )
+            )
+        )
         val exception =
             ResponseErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
-        cartViewModel.cartModel.lastOfferId = 1L
+        cartViewModel.cartModel.lastOfferId = "1L-cart-string-order"
 
         coEvery { bmGmGetGroupProductTickerUseCase(any()) } throws exception
 
         // WHEN
         cartViewModel.getBmGmGroupProductTicker(
-            offerId = valueOfferId,
+            cartItemHolderData = cartItemHolderData,
             params = BmGmGetGroupProductTickerParams()
         )
 
         // THEN
-        assertEquals(GetBmGmGroupProductTickerState.Failed(Pair(valueOfferId, exception)), cartViewModel.bmGmGroupProductTickerState.value)
+        assertEquals(GetBmGmGroupProductTickerState.Failed(Pair(cartItemHolderData, exception)), cartViewModel.bmGmGroupProductTickerState.value)
     }
 
     @Test

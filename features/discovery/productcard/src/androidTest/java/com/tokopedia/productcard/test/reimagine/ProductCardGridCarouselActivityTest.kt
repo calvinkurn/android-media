@@ -12,15 +12,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
 import com.tokopedia.productcard.reimagine.ProductCardModel
-import com.tokopedia.productcard.test.R as productcardtestR
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.R as productcardR
+import com.tokopedia.productcard.test.R as productcardtestR
 
 class ProductCardGridCarouselActivityTest: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(productcardtestR.layout.product_card_reimagine_grid_carousel_activity_test_layout)
+
+        Typography.isFontTypeOpenSauceOne = true
 
         val recyclerView = findViewById<RecyclerView>(
             productcardtestR.id.productCardReimagineGridCarouselTestRecyclerView

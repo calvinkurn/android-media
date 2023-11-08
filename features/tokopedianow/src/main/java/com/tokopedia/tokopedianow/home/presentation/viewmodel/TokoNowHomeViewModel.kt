@@ -1098,6 +1098,7 @@ class TokoNowHomeViewModel @Inject constructor(
                     channelId,
                     recommendationWidgets.first(),
                     miniCartData,
+                    hasBlockedAddToCart,
                     type
                 )
             } else {
@@ -1156,7 +1157,8 @@ class TokoNowHomeViewModel @Inject constructor(
             carouselModel,
             recommendationWidget,
             miniCartData,
-            selectedChip
+            selectedChip,
+            hasBlockedAddToCart
         )
     }
 

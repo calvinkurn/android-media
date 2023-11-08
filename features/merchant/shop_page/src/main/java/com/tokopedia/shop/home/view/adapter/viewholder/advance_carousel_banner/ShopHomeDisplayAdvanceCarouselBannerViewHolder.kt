@@ -4,6 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -22,6 +23,7 @@ import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.view.adapter.ShopWidgetAdvanceCarouselBannerAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.PageControl
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
@@ -36,8 +38,8 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
         @LayoutRes
         val LAYOUT_RES = R.layout.shop_advance_carousel_banner_viewholder_layout
         private const val DEFAULT_RATIO = "1:1"
-        private const val MAX_VISIBLE_ITEM_CAROUSEL = 3
         private const val AUTO_SCROLL_DURATION = 5000L
+        private const val RV_HORIZONTAL_PADDING_FOR_MORE_THAT_ONE_DATA = 16
     }
 
     private val viewBinding: ShopAdvanceCarouselBannerViewholderLayoutBinding? by viewBinding()
@@ -177,7 +179,7 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
         val ratio = uiModel.header.ratio.takeIf { it.isNotEmpty() } ?: DEFAULT_RATIO
         val layoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true, false)
         layoutManager.setPostLayoutListener(CarouselZoomPostLayoutListener())
-        layoutManager.maxVisibleItems = MAX_VISIBLE_ITEM_CAROUSEL
+        layoutManager.maxVisibleItems = Int.ONE
         layoutManager.removeOnItemSelectionListener(itemSelectionListener)
         layoutManager.addOnItemSelectionListener(itemSelectionListener)
         recyclerView?.apply {
@@ -194,6 +196,16 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
             this.adapter = adapterShopWidgetAdvanceCarouselBanner
             this.removeOnItemTouchListener(itemTouchListener)
             this.addOnItemTouchListener(itemTouchListener)
+            if (uiModel.data?.size.orZero() > Int.ONE) {
+                setPadding(
+                    RV_HORIZONTAL_PADDING_FOR_MORE_THAT_ONE_DATA.toPx(),
+                    Int.ZERO,
+                    RV_HORIZONTAL_PADDING_FOR_MORE_THAT_ONE_DATA.toPx(),
+                    Int.ZERO
+                )
+            } else {
+                setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
+            }
         }
         updateRecyclerViewHeightBasedOnFirstChild()
     }
@@ -206,7 +218,9 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
                 val firstChildHeight = recyclerView.findViewHolderForAdapterPosition(
                     Int.ZERO
                 )?.itemView?.height.orZero()
-                recyclerView.setLayoutHeight(firstChildHeight)
+                val lp = recyclerView.layoutParams as? ViewGroup.LayoutParams
+                lp?.height = firstChildHeight
+                recyclerView.layoutParams = lp
                 recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })

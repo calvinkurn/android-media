@@ -24,12 +24,12 @@ class CatalogStaggeredProductCardItemVH(itemView: View, val catalogDetailListene
     }
 
     override fun bind(element: CatalogStaggeredProductModel?) {
-        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_brand).displayTextOrHide("${element?.comparisonItem?.brand}")
-        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_name).apply {
+        itemView.findViewById<Typography>(R.id.catalog_comparison_product_brand).displayTextOrHide("${element?.comparisonItem?.brand}")
+        itemView.findViewById<Typography>(R.id.catalog_comparison_product_name).apply {
             displayTextOrHide(element?.comparisonItem?.name ?: "")
             setWeight(Typography.BOLD)
         }
-        itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_price).apply {
+        itemView.findViewById<Typography>(R.id.catalog_comparison_product_price).apply {
             displayTextOrHide("${element?.comparisonItem?.marketPrice?.firstOrNull()?.minFmt} - ${element?.comparisonItem?.marketPrice?.firstOrNull()?.maxFmt}")
             setType(Typography.BODY_3)
             setWeight(Typography.REGULAR)
@@ -41,9 +41,11 @@ class CatalogStaggeredProductCardItemVH(itemView: View, val catalogDetailListene
             show()
             if(element?.comparisonItem?.isActive == false){
                 isEnabled = false
+                text = getString(R.string.catalog_selected)
                 setOnClickListener(null)
             }else {
                 isEnabled = true
+                text = getString(R.string.catalog_bandingkan)
                 setOnClickListener {
                     catalogDetailListener?.changeComparison(element?.comparisonItem?.id ?: "")
                 }

@@ -8,13 +8,29 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
 @Parcelize
+data class ConfigurableUniversalEditorParam(
+    var headerTitle: String = "",
+    var headerActionButton: String = "",
+    var trackerExtra: Map<String, String> = mapOf(),
+) : Parcelable {
+
+    /**
+     * Customize the header and action button of toolbar
+     *
+     * [setHeaderTitle] for a header title
+     * [setActionButtonText] for a action button text
+     */
+    fun setHeaderTitle(text: String) = apply { headerTitle = text }
+    fun setActionButtonText(text: String) = apply { headerActionButton = text }
+
+    // additional custom trackers
+    fun setTrackerExtra(value: Map<String, String>) = apply { trackerExtra = value }
+}
+
+@Parcelize
 data class UniversalEditorParam(
     // A list of medias (images or videos)
     var paths: List<String> = mutableListOf(),
-
-    // Toolbar content
-    var headerTitle: String = "",
-    var proceedButtonText: String = "",
 
     // Editor tool list
     val tools: @RawValue Map<MediaType, List<Int>> = defaultToolList(),
@@ -22,8 +38,7 @@ data class UniversalEditorParam(
     // page source
     var pageSource: PageSource = PageSource.Unknown,
 
-    // custom tracker data
-    var trackerExtra: Map<String, String> = mapOf()
+    var custom: ConfigurableUniversalEditorParam = ConfigurableUniversalEditorParam()
 ) : Parcelable {
 
     @IgnoredOnParcel
@@ -33,24 +48,19 @@ data class UniversalEditorParam(
      * Page source is a mandatory field to detect
      * the page owner in editor (for tracker purpose).
      */
-    fun setPageSource(source: PageSource) = apply { pageSource = source }
+    fun setPageSource(source: PageSource) =
+        apply { pageSource = source }
 
     /**
      * set the list of media files (image or video) to passing
      * into Universal Media Editor.
      */
-    fun filePaths(list: List<String>) = apply { paths = list }
+    fun filePaths(list: List<String>) =
+        apply { paths = list }
 
-    /**
-     * Customize the header and action button of toolbar
-     *
-     * [setHeaderTitle] for a header title
-     * [setActionButtonText] for a action button text
-     */
-    fun setHeaderTitle(text: String) = apply { headerTitle = text }
-    fun setActionButtonText(text: String) = apply { proceedButtonText = text }
-
-    fun setTrackerExtra(value: Map<String, String>) = apply { trackerExtra = value }
+    // configurable parameters
+    fun setCustomParam(param: ConfigurableUniversalEditorParam) =
+        apply { custom = param }
 }
 
 internal fun defaultToolList() = mapOf(

@@ -122,6 +122,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeCarouselsWidgets()
+        observeVerticalProductCarousel()
         setupRecyclerView()
     }
 
@@ -142,9 +143,13 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         val showMainBanner = (hasMainBanner && isHorizontalMainBanner) || (hasMainBanner && isUnspecifiedOrientationMainBanner) 
         
         if (showMainBanner) {
+            binding?.spaceMainBannerTop?.visible()
+            
             binding?.imgMainBanner?.visible()
             binding?.imgMainBanner?.cornerRadius = CORNER_RADIUS_IMAGE_BANNER
-
+            
+            binding?.spaceProductCarouselTop?.visible()
+            
             val mainBanner = displaySingleColumnComponent?.data?.getOrNull(0)
             val mainBannerImageUrl = mainBanner?.imageUrl.orEmpty()
 
@@ -156,7 +161,9 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             )
 
         } else {
+            binding?.spaceMainBannerTop?.gone()
             binding?.imgMainBanner?.gone()
+            binding?.spaceProductCarouselTop?.gone()
         }
     }
 
@@ -195,6 +202,12 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                 userSession.userId,
                 index
             )
+        }
+        
+        bannerProductGroupAdapter.setOnProductCardDrawn { productCardHeight -> 
+            if (widgetStyle == WidgetStyle.VERTICAL.id) {
+                viewModel.refreshVerticalBannerHeight(productCardHeight)   
+            }
         }
 
         bannerProductGroupAdapter.setOnVerticalBannerClick { verticalBanner ->
@@ -235,6 +248,12 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                     onProductSuccessfullyLoaded(false)
                 }
             }
+        }
+    }
+
+    private fun observeVerticalProductCarousel() {
+        viewModel.verticalProductCarousel.observe(viewLifecycleOwner) { verticalProductCarousels ->
+            showProducts(verticalProductCarousels)
         }
     }
 

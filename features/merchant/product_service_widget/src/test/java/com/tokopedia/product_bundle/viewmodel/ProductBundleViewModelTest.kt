@@ -369,10 +369,18 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
 
     @Test
     fun `when getBundleInfo expect return correct value`() = coroutineTestRule.runTest {
+        // positive case case
+        coEvery {
+            getBundleInfoUseCase.executeOnBackground()
+        } throws RuntimeException("wkwk")
+
         // negative case
         viewModel.getBundleInfo(123, "1")
         val pageStateError = viewModel.pageState.getOrAwaitValue()
         val getBundleInfoResultFail = viewModel.getBundleInfoResult.getOrAwaitValue()
+
+        assertEquals(ProductBundleState.ERROR, pageStateError)
+        assert(getBundleInfoResultFail is Fail)
 
         // positive case case
         coEvery {
@@ -384,8 +392,6 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         val pageStateSuccess = viewModel.pageState.getOrAwaitValue()
         val getBundleInfoResultSuccess = viewModel.getBundleInfoResult.getOrAwaitValue()
 
-        assertEquals(ProductBundleState.ERROR, pageStateError)
-        assert(getBundleInfoResultFail is Fail)
         assertEquals(ProductBundleState.SUCCESS, pageStateSuccess)
         assert(getBundleInfoResultSuccess is Success)
     }
@@ -397,8 +403,15 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
             resourceProvider.getErrorMessage(any())
         } returns "error"
 
+        // error server case
+        coEvery {
+            addToCartBundleUseCase.executeOnBackground()
+        } throws RuntimeException("wkwk")
+
         viewModel.addProductBundleToCart(123, 123, 123, emptyList())
         val errorMessage = viewModel.errorMessage.getOrAwaitValue()
+
+
 
         // error server case
         coEvery {

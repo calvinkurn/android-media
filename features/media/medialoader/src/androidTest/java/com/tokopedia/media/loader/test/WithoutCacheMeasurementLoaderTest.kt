@@ -35,7 +35,7 @@ class WithoutCacheMeasurementLoaderTest : BaseMeasurementTest() {
 
         // v2
         results.forEach {
-            loadImageV2Test(
+            loadImageTest(
                 skipCache = true
             ) { prop, _ ->
                 it.improvedLoadTime = prop.loadTime
@@ -43,6 +43,6 @@ class WithoutCacheMeasurementLoaderTest : BaseMeasurementTest() {
         }
 
         // save as csv
-        saveResult(results)
+        saveComparisonResult(results)
     }
 }

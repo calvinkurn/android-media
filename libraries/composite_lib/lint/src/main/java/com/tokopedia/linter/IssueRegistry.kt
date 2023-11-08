@@ -20,7 +20,6 @@ import com.tokopedia.linter.detectors.UnsupportedNestColorDetector
 import com.tokopedia.linter.detectors.VectorDrawableDetector
 import com.tokopedia.linter.detectors.gradle.BannedDependencyDetector.DEPENDENCY_BANNED
 import com.tokopedia.linter.detectors.gradle.DeprecatedDependencyDetector.DEPENDENCY_DEPRECATED
-import com.tokopedia.linter.detectors.gradle.HANSEL_REQUIRED
 import com.tokopedia.linter.detectors.resources.FullyQualifiedResourceDetector
 import com.tokopedia.linter.detectors.resources.MissingResourceImportAliasDetector
 import com.tokopedia.linter.detectors.resources.WrongResourceImportAliasDetector
@@ -61,8 +60,7 @@ class IssueRegistry : IssueRegistry() {
             UnsupportedNestColorDetector.JAVA_ISSUE,
             FullyQualifiedResourceDetector.ISSUE,
             MissingResourceImportAliasDetector.ISSUE,
-            WrongResourceImportAliasDetector.ISSUE,
-            HANSEL_REQUIRED
+            WrongResourceImportAliasDetector.ISSUE
         )
 
     override val minApi: Int

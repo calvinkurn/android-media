@@ -59,6 +59,7 @@ class BulkReviewViewHolder(
             thumbnailContainer.addView(imageUnify)
         }
 
+        bulkReviewStars.resetStars()
         bulkReviewStars.setListener(object :
                 AnimatedRatingPickerReviewPendingView.AnimatedReputationListener {
                 private var disableClick = false

@@ -7,11 +7,13 @@ data class CatalogDetailUiModel(
     val navigationProperties: NavigationProperties,
     val priceCtaProperties: PriceCtaProperties,
     val productSortingStatus: Int,
-    val catalogUrl: String
+    val catalogUrl: String,
+    val shareProperties: ShareProperties = ShareProperties()
 )
 
 data class PriceCtaProperties (
     val catalogId: String = "",
+    val departmentId : String = "",
     val price: String = "",
     val productName: String = "",
     val bgColor: Int = 0,
@@ -23,4 +25,11 @@ data class NavigationProperties(
     val isPremium: Boolean = false,
     val bgColor: Int = 0,
     val title: String = ""
+)
+
+data class ShareProperties(
+    val catalogId: String = "",
+    val title: String = "",
+    val images: List<String> = emptyList(),
+    val catalogUrl: String = ""
 )

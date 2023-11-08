@@ -37,6 +37,7 @@ object SomConsts {
     const val DETAIL_PRODUCTS_TYPE = "products"
     const val DETAIL_SHIPPING_TYPE = "shipping"
     const val DETAIL_PAYMENT_TYPE = "payment"
+    const val DETAIL_INCOME_TYPE = "income"
     const val DETAIL_MVC_USAGE_TYPE = "mvc_usage"
     const val DETAIL_POF_DATA_TYPE = "pof_data"
 
@@ -90,7 +91,6 @@ object SomConsts {
 
     const val LIST_ORDER_SCREEN_NAME = "/myorder"
     const val DETAIL_ORDER_SCREEN_NAME = "myorder/detail/"
-    const val PARAM_SOURCE_ASK_BUYER = "tx_ask_buyer"
     const val ATTRIBUTE_ID = "id"
 
     const val STATUS_CODE_ORDER_CANCELLED = 0

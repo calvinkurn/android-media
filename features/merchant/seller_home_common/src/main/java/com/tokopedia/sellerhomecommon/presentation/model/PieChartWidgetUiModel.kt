@@ -29,6 +29,7 @@ data class PieChartWidgetUiModel(
     override var showLoadingState: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
     override var useRealtime: Boolean = false,
+    var isMultiComponentWidget: Boolean = false
 ) : BaseWidgetUiModel<PieChartDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

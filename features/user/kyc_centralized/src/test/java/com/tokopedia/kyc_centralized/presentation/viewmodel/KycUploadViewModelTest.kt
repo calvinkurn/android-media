@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.kyc_centralized.data.model.KycData
+import com.tokopedia.kyc_centralized.data.model.KycHeaderDataModel
 import com.tokopedia.kyc_centralized.data.model.KycResponse
 import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel
@@ -13,6 +14,7 @@ import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -484,14 +486,26 @@ class KycUploadViewModelTest {
         assert(result.throwable.message?.contains(KycUploadErrorCodeUtil.FAILED_ENCRYPTION) == true)
     }
 
+    //this test case to make sure if sharedPreference return null when using encryption, then ktpPath and facePath will not decrypted
     @Test
     fun `test sharedPref null`() {
+        val response = KycResponse(
+            header = KycHeaderDataModel(
+                message = mutableListOf("error")
+            )
+        )
+
         coEvery {
             sharedPreference.getByteArrayCache(any())
         } returns null
+        coEvery {
+            useCase.uploadImages(ktpPath = ktpPath, facePath = facePath, tkpdProjectId = any(), isLiveness = any())
+        } returns response
 
         uploadWithEncrypt()
-        assert(viewModel.kycResponseLiveData.value is Fail)
+
+        val result = viewModel.kycResponseLiveData.getOrAwaitValue()
+        assertTrue(result is Fail)
     }
 
     @Test
