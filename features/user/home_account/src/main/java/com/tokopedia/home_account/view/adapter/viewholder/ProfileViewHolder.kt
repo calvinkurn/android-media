@@ -27,7 +27,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
@@ -243,9 +243,7 @@ class ProfileViewHolder(
     }
 
     private fun loadImage(imageView: ImageView, imageUrl: String) {
-        imageView.loadImage(imageUrl) {
-            isCircular(true)
-        }
+        imageView.loadImageCircle(imageUrl)
     }
 
     private fun setupBalanceAndPointAdapter(itemView: View) {

@@ -11,6 +11,7 @@ import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.constants.SpanConstant
 import com.tokopedia.topads.create.databinding.MpAdCreationOnboardingFragmentBinding
 import com.tokopedia.topads.trackers.MpTracker
@@ -78,11 +79,9 @@ class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
 
     private fun loadOnboardingImage(){
         binding?.onboardingImage?.let {
-            ImageUtils.loadImage(
-                it,
-                ONBOARDING_IMG_URL,
-                com.tokopedia.unifycomponents.R.drawable.unify_loader_shimmer
-            )
+            it.loadImage(ONBOARDING_IMG_URL) {
+                setPlaceHolder(com.tokopedia.unifycomponents.R.drawable.unify_loader_shimmer)
+            }
         }
     }
 
