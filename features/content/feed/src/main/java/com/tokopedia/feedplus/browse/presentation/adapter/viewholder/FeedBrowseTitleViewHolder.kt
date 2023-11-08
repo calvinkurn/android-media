@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseTitleBinding
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 /**
  * Created by kenny.hadisaputra on 18/09/23
@@ -15,11 +16,13 @@ internal class FeedBrowseTitleViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: FeedBrowseUiModel.Title) {
-        binding.root.text = item.title
+//        binding.root.text = item.title
     }
 
     fun bind(item: FeedBrowseItemListModel.Title) {
-        binding.root.text = item.title
+        binding.tvTitle.text = item.title
+        binding.tvTitle.showWithCondition(!item.isLoading)
+        binding.placeholder.showWithCondition(item.isLoading)
     }
 
     companion object {

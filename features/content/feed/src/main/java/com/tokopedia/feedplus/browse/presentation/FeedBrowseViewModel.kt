@@ -11,10 +11,10 @@ import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -67,7 +67,6 @@ internal class FeedBrowseViewModel @Inject constructor(
             is FeedBrowseIntent.FetchCards -> {
                 handleFetchWidget(action.extraParam, action.widgetId)
             }
-            is FeedBrowseIntent.SelectChip -> handleSelectChip(action.model, action.widgetId)
             is FeedBrowseIntent.FetchCardsWidget -> {
                 handleFetchWidget(WidgetRequestModel.Empty, action.slotId)
             }
@@ -92,6 +91,7 @@ internal class FeedBrowseViewModel @Inject constructor(
     private fun handleFetchSlots() {
         viewModelScope.launch {
             try {
+                delay(2000)
                 val slots = repository.getSlots()
                 _widgets.value = slots.associate {
                     it.slotId to FeedBrowseStatefulModel(ResultState.Loading, it)
@@ -110,14 +110,6 @@ internal class FeedBrowseViewModel @Inject constructor(
             val widgets = _widgets.value
             val widget = widgets[slotId]?.model ?: return@launch
             getAndUpdateData(widget)
-        }
-    }
-
-    private fun handleSelectChip(chip: FeedBrowseChipUiModel, widgetId: String) {
-        viewModelScope.launch {
-            updateWidget<FeedBrowseSlotUiModel.ChannelsWithMenus>(widgetId, ResultState.Success) {
-                it.copy(selectedMenuId = chip.id)
-            }
         }
     }
 
@@ -144,7 +136,6 @@ internal class FeedBrowseViewModel @Inject constructor(
         val selectedMenu = menuKeys.firstOrNull { it.id == selectedMenuId }
 
         val requestModel = if (menus.isEmpty()) {
-            Log.d("FeedBrowse", "Requesting: Slot $slotId, Group: $group")
             WidgetRequestModel(group = group)
         } else {
             val menu = selectedMenu ?: menuKeys.first()

@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.ChipsUnify
+<com.tokopedia.play_common.view.RoundedFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="80dp"
-    android:layout_height="wrap_content"
-    app:centerText="true"
-    app:chipSize="small"
-    app:chipType="disabled"
-    tools:chipText="Sample"
+    android:layout_height="32dp"
+    android:background="@color/feed_dms_browse_placeholder_bg"
+    app:rfl_cornerRadius="8dp"
     />

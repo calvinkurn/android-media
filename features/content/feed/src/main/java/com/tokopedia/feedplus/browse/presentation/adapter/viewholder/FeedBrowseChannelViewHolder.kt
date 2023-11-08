@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.adapter.CenterScrollLayoutManager
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChannelAdapter
@@ -16,7 +17,6 @@ import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowsePayloads
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseChannelItemDecoration
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseConfigUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.browse.presentation.view.FeedBrowseErrorView
@@ -69,19 +69,16 @@ internal class FeedBrowseChannelViewHolder private constructor(
     private val recyclerViewCard = binding.feedBrowseCards
 
     private val chipListener = object : ChipViewHolder.Listener {
-        override fun onChipImpressed(model: FeedBrowseChipUiModel, position: Int) {
-            val widgetData = mData ?: return
-            listener.onChipImpressed(model, widgetData, position, bindingAdapterPosition)
+        override fun onChipImpressed(viewHolder: ChipViewHolder, model: WidgetMenuModel) {
+
         }
 
-        override fun onChipClicked(model: FeedBrowseChipUiModel) {
-            val widgetData = mData ?: return
-            listener.onChipClicked(model, widgetData)
+        override fun onChipClicked(viewHolder: ChipViewHolder, model: WidgetMenuModel) {
+
         }
 
-        override fun onChipSelected(model: FeedBrowseChipUiModel, position: Int) {
-            val widgetData = mData ?: return
-            listener.onChipSelected(model, widgetData, position, bindingAdapterPosition)
+        override fun onChipSelected(viewHolder: ChipViewHolder, model: WidgetMenuModel) {
+
         }
     }
     private val chipAdapter by lazy { FeedBrowseChipAdapter(chipListener) }
@@ -296,25 +293,6 @@ internal class FeedBrowseChannelViewHolder private constructor(
             config: PlayWidgetConfigUiModel,
             widgetModel: FeedBrowseUiModel.Channel,
             channelPositionInList: Int,
-            verticalWidgetPosition: Int
-        )
-
-        fun onChipImpressed(
-            chipModel: FeedBrowseChipUiModel,
-            widgetModel: FeedBrowseUiModel.Channel,
-            chipPositionInList: Int,
-            verticalWidgetPosition: Int
-        )
-
-        fun onChipClicked(
-            chipModel: FeedBrowseChipUiModel,
-            widgetModel: FeedBrowseUiModel.Channel
-        )
-
-        fun onChipSelected(
-            chipModel: FeedBrowseChipUiModel,
-            widgetModel: FeedBrowseUiModel.Channel,
-            chipPositionInList: Int,
             verticalWidgetPosition: Int
         )
 

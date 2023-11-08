@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipBinding
 import com.tokopedia.play_common.util.ImpressionListener
 import com.tokopedia.play_common.util.addImpressionListener
@@ -24,21 +23,6 @@ internal class ChipViewHolder private constructor(
 
     private var mImpressionListener: ImpressionListener? = null
 
-    fun bind(item: FeedBrowseChipUiModel) {
-        chipView.chipText = item.label
-
-        onChipSelected(item)
-
-        chipView.setOnClickListener {
-            if (chipView.chipType == ChipsUnify.TYPE_SELECTED) return@setOnClickListener
-            listener.onChipClicked(item)
-        }
-
-        chipView.addImpressionListener {
-            listener.onChipImpressed(item, bindingAdapterPosition)
-        }
-    }
-
     fun bind(item: ChipsModel) {
         mImpressionListener?.let { chipView.removeImpressionListener(it) }
         mImpressionListener = chipView.addImpressionListener {
@@ -52,21 +36,6 @@ internal class ChipViewHolder private constructor(
         chipView.setOnClickListener {
             if (chipView.chipType == ChipsUnify.TYPE_SELECTED) return@setOnClickListener
             listener.onChipClicked(this, item.menu)
-        }
-    }
-
-    private fun onChipSelected(item: FeedBrowseChipUiModel) {
-        val newChipType = if (item.isSelected) {
-            ChipsUnify.TYPE_SELECTED
-        } else {
-            ChipsUnify.TYPE_NORMAL
-        }
-        if (chipView.chipType != newChipType) {
-            chipView.chipType = newChipType
-        }
-
-        if (item.isSelected) {
-            listener.onChipSelected(item, bindingAdapterPosition)
         }
     }
 
@@ -102,16 +71,10 @@ internal class ChipViewHolder private constructor(
     }
 
     interface Listener {
-        fun onChipImpressed(model: FeedBrowseChipUiModel, position: Int)
+        fun onChipImpressed(viewHolder: ChipViewHolder, model: WidgetMenuModel)
 
-        fun onChipImpressed(viewHolder: ChipViewHolder, model: WidgetMenuModel) {}
+        fun onChipClicked(viewHolder: ChipViewHolder, model: WidgetMenuModel)
 
-        fun onChipClicked(model: FeedBrowseChipUiModel)
-
-        fun onChipClicked(viewHolder: ChipViewHolder, model: WidgetMenuModel) {}
-
-        fun onChipSelected(model: FeedBrowseChipUiModel, position: Int)
-
-        fun onChipSelected(viewHolder: ChipViewHolder, model: WidgetMenuModel) {}
+        fun onChipSelected(viewHolder: ChipViewHolder, model: WidgetMenuModel)
     }
 }

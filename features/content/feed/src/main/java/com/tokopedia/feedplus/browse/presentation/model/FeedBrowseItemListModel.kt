@@ -14,8 +14,14 @@ internal sealed interface FeedBrowseItemListModel {
 
     data class Title(
         override val slotInfo: SlotInfo,
-        val title: String
-    ) : FeedBrowseItemListModel
+        val title: String,
+        val isLoading: Boolean = false,
+    ) : FeedBrowseItemListModel {
+
+        companion object {
+            val Loading = Title(SlotInfo.Empty, "", true)
+        }
+    }
 
     sealed interface Chips : FeedBrowseItemListModel {
         data class Item(
@@ -25,13 +31,26 @@ internal sealed interface FeedBrowseItemListModel {
         object Placeholder : Chips {
             override val slotInfo: SlotInfo = SlotInfo.Empty
         }
+
+        companion object {
+            val Loading = Placeholder
+        }
     }
 
     data class HorizontalChannels(
         override val slotInfo: SlotInfo,
         val menu: WidgetMenuModel,
         val itemState: FeedBrowseChannelListState<PlayWidgetChannelUiModel>
-    ) : FeedBrowseItemListModel
+    ) : FeedBrowseItemListModel {
+
+        companion object {
+            val Loading = HorizontalChannels(
+                SlotInfo.Empty,
+                WidgetMenuModel.Empty,
+                FeedBrowseChannelListState.initLoading(),
+            )
+        }
+    }
 
     data class Banner(
         override val slotInfo: SlotInfo,

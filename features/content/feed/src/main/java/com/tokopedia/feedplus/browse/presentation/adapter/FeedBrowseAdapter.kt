@@ -146,6 +146,10 @@ internal class FeedBrowseAdapter(
         submitList(items.mapToItems(), onCommit)
     }
 
+    fun setPlaceholder() {
+        submitList(getPlaceholders())
+    }
+
     private fun List<FeedBrowseStatefulModel>.mapToItems(): List<FeedBrowseItemListModel> {
         return flatMapIndexed { index, item ->
             when (item.model) {
@@ -207,6 +211,20 @@ internal class FeedBrowseAdapter(
                 bannerList.map { FeedBrowseItemListModel.Banner(slotInfo, it) }
             )
         }
+    }
+
+    private fun getPlaceholders(): List<FeedBrowseItemListModel> {
+        return listOf(
+            FeedBrowseItemListModel.Title.Loading,
+            FeedBrowseItemListModel.Chips.Loading,
+            FeedBrowseItemListModel.HorizontalChannels.Loading,
+
+            FeedBrowseItemListModel.Title.Loading,
+            FeedBrowseItemListModel.HorizontalChannels.Loading,
+
+            FeedBrowseItemListModel.Title.Loading,
+            FeedBrowseItemListModel.HorizontalChannels.Loading,
+        )
     }
 
     private fun FeedBrowseSlotUiModel.getSlotInfo(position: Int): SlotInfo {

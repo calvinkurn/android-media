@@ -10,11 +10,6 @@ internal sealed interface FeedBrowseIntent {
 
     object LoadInitialPage : FeedBrowseIntent
 
-    data class SelectChip(
-        val model: FeedBrowseChipUiModel,
-        val widgetId: String
-    ) : FeedBrowseIntent
-
     data class SelectChipWidget(
         val slotId: String,
         val model: WidgetMenuModel,

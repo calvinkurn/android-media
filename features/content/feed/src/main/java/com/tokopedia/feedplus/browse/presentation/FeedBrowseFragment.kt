@@ -228,7 +228,7 @@ internal class FeedBrowseFragment @Inject constructor(
                     when (state) {
                         FeedBrowseUiState.Placeholder -> {
                             hideError()
-                            showPlaceholder()
+                            adapter.setPlaceholder()
                         }
                         is FeedBrowseUiState.Success -> {
                             hideError()
@@ -265,18 +265,6 @@ internal class FeedBrowseFragment @Inject constructor(
             )
         )
         binding.feedBrowseList.adapter = adapter
-    }
-
-    private fun showPlaceholder() {
-//        renderContent(
-//            listOf(
-//                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
-//                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Chips),
-//                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards),
-//                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
-//                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards)
-//            )
-//        )
     }
 
     private fun showError(throwable: Throwable) {
@@ -327,9 +315,12 @@ internal class FeedBrowseFragment @Inject constructor(
 
     private fun renderContent(widgets: List<FeedBrowseStatefulModel>) {
         impressionManager.onNewWidgets(widgets.map { it.model })
-        adapter.setList(widgets) {
-            if (_binding == null) return@setList
-            binding.feedBrowseList.invalidateItemDecorations()
+        if (widgets.isEmpty()) adapter.setPlaceholder()
+        else {
+            adapter.setList(widgets) {
+                if (_binding == null) return@setList
+                binding.feedBrowseList.invalidateItemDecorations()
+            }
         }
     }
 

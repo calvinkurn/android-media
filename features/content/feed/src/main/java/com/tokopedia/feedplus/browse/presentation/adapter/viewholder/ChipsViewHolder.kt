@@ -8,7 +8,6 @@ import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowsePayloads
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseChipsItemDecoration
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.LoadingModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipsBinding
@@ -25,15 +24,6 @@ internal class ChipsViewHolder private constructor(
 
     private val adapter = FeedBrowseChipAdapter(
         object : ChipViewHolder.Listener {
-            override fun onChipImpressed(model: FeedBrowseChipUiModel, position: Int) {
-            }
-
-            override fun onChipClicked(model: FeedBrowseChipUiModel) {
-            }
-
-            override fun onChipSelected(model: FeedBrowseChipUiModel, position: Int) {
-            }
-
             override fun onChipImpressed(viewHolder: ChipViewHolder, model: WidgetMenuModel) {
                 val data = mItem as? FeedBrowseItemListModel.Chips.Item ?: return
                 listener.onChipImpressed(

@@ -8,12 +8,6 @@ import com.tokopedia.content.common.model.WidgetSlot
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
-import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
-import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
-import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseConfigUiModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXHomeEntity
 import com.tokopedia.play.widget.ui.model.PartnerType
@@ -68,23 +62,6 @@ class FeedBrowseMapper @Inject constructor() {
         }
     }
 
-    fun mapWidget(response: WidgetSlot): FeedBrowseItemUiModel {
-        val data = response.playGetContentSlot.data
-        val firstWidget = data.first()
-        return when (firstWidget.type) {
-            FEED_TYPE_TAB_MENU -> {
-                ChipUiState.Data(mapChips(firstWidget))
-            }
-            FEED_TYPE_CHANNEL_BLOCK -> {
-                ChannelUiState.Data(
-                    mapChannel(firstWidget),
-                    mapConfig(response.playGetContentSlot.meta)
-                )
-            }
-            else -> ChannelUiState.Error(IllegalStateException())
-        }
-    }
-
     internal fun mapWidgetResponse(response: WidgetSlot): ContentSlotModel {
         val data = response.playGetContentSlot.data
         val firstWidget = data.firstOrNull()
@@ -116,32 +93,10 @@ class FeedBrowseMapper @Inject constructor() {
         }
     }
 
-    private fun mapChips(data: Content): List<FeedBrowseChipUiModel> {
-        return data.items.mapIndexed { index, item ->
-            FeedBrowseChipUiModel(
-                id = item.id,
-                label = item.label,
-                extraParam = WidgetRequestModel(
-                    group = item.group,
-                    sourceType = item.sourceType,
-                    sourceId = item.sourceId
-                ),
-                isSelected = index == 0 // select first chip
-            )
-        }
-    }
-
     private fun mapChannel(data: Content): List<PlayWidgetChannelUiModel> {
         return data.items.map { item ->
             mapChannel(item)
         }
-    }
-
-    private fun mapConfig(data: ContentSlotMeta): FeedBrowseConfigUiModel {
-        return FeedBrowseConfigUiModel(
-            data = mapPlayWidgetConfig(data),
-            lastUpdated = System.currentTimeMillis()
-        )
     }
 
     private fun mapPlayWidgetConfig(data: ContentSlotMeta): PlayWidgetConfigUiModel {
