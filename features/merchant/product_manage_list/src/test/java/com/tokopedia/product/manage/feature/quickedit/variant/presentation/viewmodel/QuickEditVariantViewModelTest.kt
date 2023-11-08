@@ -44,8 +44,8 @@ class QuickEditVariantViewModelTest : QuickEditVariantViewModelTestFixture() {
         viewModel.getData("1")
 
         val productVariants = listOf(
-            createProductVariant(name = "Biru | M", combination = listOf(0, 1)),
-            createProductVariant(name = "Hijau | S", combination = listOf(1, 0))
+            createProductVariant(name = "Biru | M", combination = listOf(0, 1), maxStock = 0),
+            createProductVariant(name = "Hijau | S", combination = listOf(1, 0), maxStock = 0)
         )
         val expectedResult = GetVariantResult(productName, Int.ZERO, productVariants, selections, emptyList())
 
@@ -97,8 +97,8 @@ class QuickEditVariantViewModelTest : QuickEditVariantViewModelTestFixture() {
         viewModel.saveVariants()
 
         val productVariants = listOf(
-            createProductVariant(id = "1", price = 150.0),
-            createProductVariant(id = "2", price = 300.0)
+            createProductVariant(id = "1", price = 150.0, maxStock = 0),
+            createProductVariant(id = "2", price = 300.0, maxStock = 0)
         )
         val expectedResult = EditVariantResult(productId, productName, productVariants, emptyList(), emptyList())
 
@@ -124,8 +124,8 @@ class QuickEditVariantViewModelTest : QuickEditVariantViewModelTestFixture() {
         viewModel.saveVariants()
 
         val productVariants = listOf(
-            createProductVariant(id = "1", stock = 4, isAllStockEmpty = false),
-            createProductVariant(id = "2", stock = 5, isAllStockEmpty = false)
+            createProductVariant(id = "1", stock = 4, isAllStockEmpty = false, maxStock = 0),
+            createProductVariant(id = "2", stock = 5, isAllStockEmpty = false, maxStock = 0)
         )
         val expectedResult = EditVariantResult(
             productId,
@@ -159,8 +159,8 @@ class QuickEditVariantViewModelTest : QuickEditVariantViewModelTestFixture() {
         viewModel.saveVariants()
 
         val productVariants = listOf(
-            createProductVariant(id = "1", status = ProductStatus.INACTIVE),
-            createProductVariant(id = "2", status = ProductStatus.ACTIVE)
+            createProductVariant(id = "1", status = ProductStatus.INACTIVE, maxStock = 0),
+            createProductVariant(id = "2", status = ProductStatus.ACTIVE, maxStock = 0)
         )
         val expectedResult = EditVariantResult(
             productId,

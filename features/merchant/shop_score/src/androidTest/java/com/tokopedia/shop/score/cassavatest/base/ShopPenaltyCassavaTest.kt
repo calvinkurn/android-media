@@ -1,17 +1,17 @@
 package com.tokopedia.shop.score.cassavatest.base
 
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions.click
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.BaseShopPenaltyTest
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
-import com.tokopedia.shop.score.stub.common.util.clickClickableSpan
-import com.tokopedia.shop.score.stub.common.util.getHyperlinkText
 import com.tokopedia.shop.score.stub.common.util.getShopPenaltyFragment
 import com.tokopedia.shop.score.stub.common.util.isViewDisplayed
 import com.tokopedia.shop.score.stub.common.util.onClick
 import com.tokopedia.shop.score.stub.common.util.onIdView
+import com.tokopedia.shop.score.stub.common.util.onIndexedChild
 import com.tokopedia.shop.score.stub.common.util.scrollTo
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.MatcherAssert
@@ -36,13 +36,8 @@ open class ShopPenaltyCassavaTest : BaseShopPenaltyTest() {
     }
 
     protected fun clickLearnMorePenalty() {
-        onIdView(R.id.tvContentPenalty).isViewDisplayed().perform(
-            clickClickableSpan(
-                getHyperlinkText(
-                    context,
-                    context.getString(R.string.content_penalty_label)
-                )
-            )
+        onIndexedChild(com.tokopedia.header.R.id.rightContentID, 1).isViewDisplayed().perform(
+            click()
         )
         validate(CLICK_LEARN_MORE_PENALTY_PATH)
     }

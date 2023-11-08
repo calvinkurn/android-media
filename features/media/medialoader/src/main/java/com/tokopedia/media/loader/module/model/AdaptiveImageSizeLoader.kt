@@ -16,6 +16,7 @@ import com.tokopedia.media.loader.data.HIGH_QUALITY
 import com.tokopedia.media.loader.data.PARAM_ECT
 import com.tokopedia.media.loader.internal.MediaSettingPreferences
 import com.tokopedia.media.loader.internal.NetworkManager
+import com.tokopedia.media.loader.utils.isFromInternalCdnImageUrl
 import timber.log.Timber
 import java.io.InputStream
 
@@ -25,18 +26,12 @@ internal class AdaptiveImageSizeLoader constructor(
     cache: ModelCache<String, GlideUrl?>
 ) : BaseGlideUrlLoader<String>(loader, cache) {
 
-    private var preferences: MediaSettingPreferences? = null
-
-    init {
-        if (preferences == null) {
-            preferences = MediaSettingPreferences(context)
-        }
-    }
+    private var preferences = MediaSettingPreferences.instance(context)
 
     override fun handles(model: String) = true
 
     override fun getUrl(model: String, width: Int, height: Int, options: Options?): String {
-        val setting = preferences?.qualitySettings()?: 0
+        val setting = preferences.qualitySettings()
         val url = buildUrl(setting, model)
 
         return url.also {
@@ -44,12 +39,8 @@ internal class AdaptiveImageSizeLoader constructor(
         }
     }
 
-    private fun isAdaptiveImageSupported(model: String): Boolean {
-        return model.startsWith("https://images.tokopedia.net/")
-    }
-
     private fun buildUrl(qualitySettings: Int, url: String): String {
-        if (isAdaptiveImageSupported(url).not()) return url
+        if (url.isFromInternalCdnImageUrl().not()) return url
 
         val connectionType = when(qualitySettings) {
             LOW_QUALITY_SETTINGS -> LOW_QUALITY // (2g / 3g)

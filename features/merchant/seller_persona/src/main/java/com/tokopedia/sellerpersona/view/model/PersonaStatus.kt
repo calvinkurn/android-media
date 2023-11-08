@@ -14,3 +14,7 @@ enum class PersonaStatus(val value: Int) {
     ACTIVE(PERSONA_STATUS_ACTIVE),
     UNDEFINED(PERSONA_STATUS_UNDEFINED)
 }
+
+fun PersonaStatus.isActive(): Boolean {
+    return this == PersonaStatus.ACTIVE
+}
