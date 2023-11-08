@@ -18,7 +18,6 @@ import androidx.core.animation.addListener
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.pxToDp
-import com.tokopedia.stories.widget.R
 import com.tokopedia.stories.widget.animation.LinearEasingInterpolator
 import kotlin.math.min
 
@@ -87,6 +86,7 @@ internal class StoriesBorderView : View {
 
     override fun onDraw(canvas: Canvas) {
         val checkPoint = canvas.saveLayer(null, null)
+        if (mStoriesStatus == StoriesStatus.NoStories) return
 
         canvas.drawCircle(
             width / 2f,
