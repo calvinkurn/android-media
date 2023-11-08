@@ -54,7 +54,7 @@ class EPharmacyAttachPrescriptionActivity : BaseSimpleActivity(), HasComponent<E
             putInt(EPHARMACY_CONSULTATION_REQUEST_CODE, intent.getIntExtra(EPHARMACY_CONSULTATION_REQUEST_CODE, 0))
             intent?.data?.let { uri ->
                 putLong(EPHARMACY_TOKO_CONSULTATION_ID, uri.getQueryParameter(EPHARMACY_TOKO_CONSULTATION_ID).toLongOrZero())
-                putString(EPHARMACY_TOKO_CONSULTATION_ID, uri.getQueryParameter(EPHARMACY_SOURCE).orEmpty())
+                putString(EPHARMACY_SOURCE, uri.getQueryParameter(EPHARMACY_SOURCE).orEmpty())
             }
         }
     }

@@ -514,6 +514,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             model.epharmacyGroupId,
             model.prescriptionCTA,
             model.tokoConsultationId,
+            model.consultationData,
             model.price,
             model.operatingSchedule,
             model.note
@@ -555,22 +556,20 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         groupId: String?,
         prescriptionCTA: EG.PrescriptionCTA?,
         tokoConsultationId: String?,
+        consultationData: EG.ConsultationData?,
         price: String?,
         operatingSchedule: EG.ConsultationSource.OperatingSchedule?,
         note: String?
     ) {
         when (prescriptionCTA?.actionType) {
             PrescriptionActionType.REDIRECT_PWA.type -> {
-                redirectActionPWA(tokoConsultationId, chooserLogo, groupId, enablerName, price, operatingSchedule, note)
+                redirectActionPWA(consultationData, chooserLogo, groupId, enablerName, price, operatingSchedule, note)
             }
             PrescriptionActionType.REDIRECT_UPLOAD.type -> {
                 startPhotoUpload(enablerName, groupId)
             }
             PrescriptionActionType.REDIRECT_OPTION.type -> {
                 startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note)
-            }
-            PrescriptionActionType.REDIRECT_OPTION_ONLY_CONSULT.type -> {
-                startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note, true)
             }
             PrescriptionActionType.REDIRECT_PRESCRIPTION.type -> {
                 tokoConsultationId?.let {
@@ -586,7 +585,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun redirectActionPWA(
-        tokoConsultationId: String?,
+        consultationData: EG.ConsultationData?,
         chooserLogo: String?,
         groupId: String?,
         enablerName: String?,
@@ -594,10 +593,14 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         operatingSchedule: EG.ConsultationSource.OperatingSchedule?,
         note: String?
     ) {
-        if (tokoConsultationId.isNullOrBlank()){
+        consultationData?.let {
+            if (consultationData.consultationStatus.orZero().isZero()) {
+                startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note, true)
+            } else {
+                startMiniConsultation(enablerName, groupId)
+            }
+        } ?: kotlin.run {
             startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note, true)
-        }else {
-            startMiniConsultation(enablerName, groupId)
         }
     }
 
