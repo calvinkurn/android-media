@@ -12,7 +12,6 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_NN950_44"
-        android:ems="10"
         android:focusedByDefault="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

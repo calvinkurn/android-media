@@ -1,7 +1,6 @@
 package com.tokopedia.recharge_component.model.client_number
 
 import android.text.InputType
-import android.view.View
 import com.tokopedia.iconunify.IconUnify
 
 enum class InputFieldType(
