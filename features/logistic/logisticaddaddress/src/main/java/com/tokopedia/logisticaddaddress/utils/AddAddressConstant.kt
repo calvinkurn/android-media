@@ -5,6 +5,7 @@ import com.tokopedia.imageassets.TokopediaImageUrl
 object AddAddressConstant {
     const val EXTRA_BUNDLE = "extra_bundle"
     const val EXTRA_PLACE_ID = "EXTRA_PLACE_ID"
+    const val EXTRA_AUTOCOMPLETE = "EXTRA_AUTOCOMPLETE"
     const val PERMISSION_GRANTED = 1
     const val PERMISSION_DENIED = 2
     const val PERMISSION_DONT_ASK_AGAIN = 3

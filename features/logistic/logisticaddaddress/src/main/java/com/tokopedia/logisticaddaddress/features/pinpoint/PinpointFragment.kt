@@ -90,6 +90,7 @@ import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.ChoosePinpoint
 import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.PinpointAction
 import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.PinpointBottomSheetState
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.PinpointWebviewActivity
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_AUTOCOMPLETE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.MAPS_EMPTY
@@ -144,7 +145,8 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     putLong(EXTRA_DISTRICT_ID, extra.getLong(EXTRA_DISTRICT_ID))
 
                     // from search page
-                    putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
+//                    putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
+                    putParcelable(EXTRA_AUTOCOMPLETE, extra.getParcelable(EXTRA_AUTOCOMPLETE))
 
                     // pinpoint only
                     putParcelable(
@@ -424,7 +426,8 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 uiState = getString(EXTRA_ADDRESS_STATE).toAddressUiState(),
                 isEditWarehouse = getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false),
                 source = getString(PARAM_SOURCE, ""),
-                isPositiveFlow = isPositiveFlow
+                isPositiveFlow = isPositiveFlow,
+                searchAddressData = getParcelable(EXTRA_AUTOCOMPLETE)
             )
             source = getString(PARAM_SOURCE, "")
 
@@ -474,6 +477,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         PinpointAction.InvalidDistrictPinpoint.InvalidDistrictPinpointSource.ADD_ADDRESS_BUYER -> {
                             getString(R.string.txt_toaster_pinpoint_unmatched)
                         }
+
                         PinpointAction.InvalidDistrictPinpoint.InvalidDistrictPinpointSource.SHOP_ADDRESS -> {
                             getString(R.string.toaster_not_avail_shop_loc)
                         }
@@ -897,6 +901,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                                             userSession.userId
                                         )
                                     }
+
                                     PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> {
                                         LogisticAddAddressAnalytics.onClickIsiAlamatManualUndetectedLocation(
                                             userSession.userId
@@ -935,6 +940,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                 }
             }
+
             PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> {
                 when (addressUiState) {
                     AddressUiState.EditAddress -> {
@@ -963,6 +969,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 PinpointBottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE -> {
                     getString(R.string.out_of_indonesia_title)
                 }
+
                 PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> {
                     getString(R.string.undetected_location_new_edit)
                 }
@@ -1091,17 +1098,27 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun onResultFromSearchPage(data: Intent?) {
-        currentPlaceId = data?.getStringExtra(EXTRA_PLACE_ID).orEmpty()
         val currentLat = data?.getDoubleExtra(EXTRA_LAT, 0.0).orZero()
         val currentLong = data?.getDoubleExtra(EXTRA_LONG, 0.0).orZero()
-        viewModel.onResultFromSearchAddress(placeId = currentPlaceId, lat = currentLat, long = currentLong)
+        viewModel.onResultFromSearchAddress(
+            searchAddressData = data?.getParcelableExtra(
+                EXTRA_AUTOCOMPLETE
+            ),
+            lat = currentLat,
+            long = currentLong
+        )
     }
 
     fun onNewIntent(bundle: Bundle) {
-        currentPlaceId = bundle.getString(EXTRA_PLACE_ID).orEmpty()
         val currentLat = bundle.getDouble(EXTRA_LAT, 0.0).orZero()
         val currentLong = bundle.getDouble(EXTRA_LONG, 0.0).orZero()
-        viewModel.onResultFromSearchAddress(placeId = currentPlaceId, lat = currentLat, long = currentLong)
+        viewModel.onResultFromSearchAddress(
+            searchAddressData = bundle.getParcelable(
+                EXTRA_AUTOCOMPLETE
+            ),
+            lat = currentLat,
+            long = currentLong
+        )
     }
 
     // region navigation
