@@ -138,7 +138,7 @@ class ProductVariantStockViewHolder(
             variant.isEmpty() || currentStock == Int.ZERO -> {
                 setupEmptyStockInfo(variant)
             }
-            variant.isBelowStockAlert ||
+            variant.isBelowStockAlert &&
                     (currentStock < variant.stockAlertCount && variant.haveStockAlertActive()) -> {
                 setupStockAlertActiveInfo(variant)
             }
