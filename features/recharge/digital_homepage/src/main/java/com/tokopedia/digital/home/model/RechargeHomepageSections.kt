@@ -781,14 +781,7 @@ class RechargeHomepageTodoWidgetModel(val section: RechargeHomepageSections.Sect
         return typeFactory.type(this)
     }
 
-    class RechargeHomepageTodoWidgetPostReminderItemModel(val widget: RechargeHomepageSections.Widgets)
-        :Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory> {
-        override fun type(typeFactory: RechargeHomepageTodoWidgetAdapterTypeFactory): Int {
-            return typeFactory.type(this)
-        }
-    }
-
-    class RechargeHomepageTodoWidgetAutoPayItemModel(val widget: RechargeHomepageSections.Widgets)
+    class RechargeHomepageTodoWidgetAutoPayPostReminderItemModel(val widget: RechargeHomepageSections.Widgets)
         :Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory> {
         override fun type(typeFactory: RechargeHomepageTodoWidgetAdapterTypeFactory): Int {
             return typeFactory.type(this)
