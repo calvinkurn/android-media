@@ -23,6 +23,7 @@ object GqlQueryConstant {
         "            }\n" +
         "            createInfo{\n" +
         "                openSince\n" +
+        "                shopCreated\n" +
         "            }\n" +
         "            shopAssets{\n" +
         "                avatar\n" +
@@ -45,10 +46,12 @@ object GqlQueryConstant {
         "                awbStatus\n" +
         "            }\n" +
         "            shopLastActive\n" +
+        "            activeProduct\n" +
         "            location\n" +
         "            isAllowManage\n" +
         "            goldOS {\n" +
         "                isGold\n" +
+        "                badge\n" +
         "                isGoldBadge\n" +
         "                isOfficial\n" +
         "            }\n" +
