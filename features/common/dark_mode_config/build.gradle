@@ -42,6 +42,8 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeRuntime
     implementation rootProject.ext.composeDependencies.composeUi
 
+    implementation rootProject.ext.miscDependencies.lottie
+
     implementation rootProject.ext.supportLibDependencies.preferenceV7
 
     implementation rootProject.ext.unifyDependencies.components
@@ -50,6 +52,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.utils)
 }
 

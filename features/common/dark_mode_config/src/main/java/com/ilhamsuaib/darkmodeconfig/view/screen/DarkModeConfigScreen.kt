@@ -1,5 +1,6 @@
-package com.ilhamsuaib.darkmodeconfig.screen
+package com.ilhamsuaib.darkmodeconfig.view.screen
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,10 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.ilhamsuaib.darkmodeconfig.model.ThemeOptionUiModel
+import com.ilhamsuaib.darkmodeconfig.model.UiMode
 import com.tokopedia.nest.components.NestDivider
 import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.principles.NestTypography
@@ -27,9 +29,9 @@ import com.tokopedia.unifycomponents.compose.NestRadioButton
 
 @Composable
 internal fun DarkModeConfigScreen(
-    modifier: Modifier,
-    options: List<ThemeOptionUiModel>,
-    onSelectedChanged: (ThemeOptionUiModel) -> Unit
+    modifier: Modifier = Modifier,
+    options: List<UiMode>,
+    onSelectedChanged: (UiMode) -> Unit
 ) {
     LazyColumn(modifier = modifier) {
         items(items = options, key = { it.nameResId }) {
@@ -40,8 +42,8 @@ internal fun DarkModeConfigScreen(
 
 @Composable
 private fun ThemeOptionComponent(
-    option: ThemeOptionUiModel,
-    onSelectedChanged: (ThemeOptionUiModel) -> Unit
+    option: UiMode,
+    onSelectedChanged: (UiMode) -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -106,4 +108,13 @@ private fun ThemeOptionComponent(
             }
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DarkModeConfigScreenPreview() {
+    DarkModeConfigScreen(
+        options = UiMode.getOptionList(AppCompatDelegate.MODE_NIGHT_NO),
+        onSelectedChanged = {}
+    )
 }
