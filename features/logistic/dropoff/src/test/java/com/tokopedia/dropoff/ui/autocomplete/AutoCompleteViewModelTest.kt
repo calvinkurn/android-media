@@ -3,10 +3,8 @@ package com.tokopedia.dropoff.ui.autocomplete
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.dropoff.domain.mapper.AutoCompleteMapper
-import com.tokopedia.dropoff.ui.autocomplete.model.ValidatedDistrict
 import com.tokopedia.logisticCommon.data.response.AddressResponse
 import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
-import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.domain.model.SavedAddress
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressUseCase
@@ -41,7 +39,6 @@ class AutoCompleteViewModelTest {
     lateinit var viewModel: AutoCompleteViewModel
 
     private val autoCompleteObserver: Observer<Result<List<SuggestedPlace>>> = mockk(relaxed = true)
-    private val validateObserver: Observer<Result<ValidatedDistrict>> = mockk(relaxed = true)
     private val savedObserver: Observer<Result<List<SavedAddress>>> = mockk(relaxed = true)
 
     private val defaultThrowable = Throwable("test error")
@@ -62,20 +59,6 @@ class AutoCompleteViewModelTest {
     }
 
     @Test
-    fun `When get district Given success callback Then livedata is changed to success`() {
-        coEvery { getDistrict(any()) } returns GetDistrictResponse()
-        viewModel.getLatLng("")
-        verify { validateObserver.onChanged(match { it is Success }) }
-    }
-
-    @Test
-    fun `When get district Given error callback Then livedata is changed to fail`() {
-        coEvery { getDistrict(any()) } throws defaultThrowable
-        viewModel.getLatLng("")
-        verify { validateObserver.onChanged(match { it is Fail }) }
-    }
-
-    @Test
     fun `When get saved address Given success callback Then livedata is changed to success`() {
         coEvery { getAddress(any()) } returns AddressResponse()
         viewModel.getSavedAddress()
@@ -92,9 +75,8 @@ class AutoCompleteViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        viewModel = AutoCompleteViewModel(getAutoCompleteUseCase, getDistrict, getAddress, mapper)
+        viewModel = AutoCompleteViewModel(getAutoCompleteUseCase, getAddress, mapper)
         viewModel.autoCompleteList.observeForever(autoCompleteObserver)
-        viewModel.validatedDistrict.observeForever(validateObserver)
         viewModel.savedAddress.observeForever(savedObserver)
     }
 

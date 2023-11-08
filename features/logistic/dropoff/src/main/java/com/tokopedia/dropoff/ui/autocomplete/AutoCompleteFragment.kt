@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -99,7 +98,7 @@ class AutoCompleteFragment :
                 data.mainText,
                 data.secondaryText
             )
-            viewModel.getLatLng(data.placeId)
+            sendResult(data.lat.toString(), data.long.toString())
         } else if (data is SavedAddress) {
             sendResult(data.latitude, data.longitude)
         }
@@ -146,15 +145,6 @@ class AutoCompleteFragment :
                     is Fail -> when (it.throwable) {
                         is MessageErrorException -> adapter.setNoResult()
                     }
-                }
-            }
-        )
-        viewModel.validatedDistrict.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> sendResult(it.data.latitude, it.data.longitude)
-                    is Fail -> Toast.makeText(context, "Oops.. something went wrong", Toast.LENGTH_SHORT).show()
                 }
             }
         )
