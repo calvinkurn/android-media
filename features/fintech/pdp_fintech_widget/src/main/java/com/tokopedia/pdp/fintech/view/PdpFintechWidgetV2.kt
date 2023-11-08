@@ -225,7 +225,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
         val firstTextView = Typography(context).apply {
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             text = HtmlLinkHelper(context, messages.getOrNull(Int.ZERO) ?: String.EMPTY).spannedString
-            fontType = Typography.DISPLAY_3
+            setType(Typography.DISPLAY_3)
             typeface = Typography.getFontType(context, false, Typography.DISPLAY_3)
             setSingleLine()
             ellipsize = TextUtils.TruncateAt.END
@@ -234,7 +234,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
         val secondTextView = Typography(context).apply {
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             text = HtmlLinkHelper(context, messages.getOrNull(Int.ONE) ?: String.EMPTY).spannedString
-            fontType = Typography.DISPLAY_3
+            setType(Typography.DISPLAY_3)
             typeface = Typography.getFontType(context, false, Typography.DISPLAY_3)
             setSingleLine()
             ellipsize = TextUtils.TruncateAt.END
