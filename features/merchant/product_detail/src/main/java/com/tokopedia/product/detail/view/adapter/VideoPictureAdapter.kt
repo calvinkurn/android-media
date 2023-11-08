@@ -20,7 +20,7 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 class VideoPictureAdapter(
     private val listener: DynamicProductDetailListener?,
     private val componentTrackDataModel: ComponentTrackDataModel?,
-    private val containerType: MediaContainerType,
+    private val containerType: MediaContainerType
 ) : RecyclerView.Adapter<AbstractViewHolder<MediaDataModel>>() {
 
     val currentList: MutableList<MediaDataModel> = mutableListOf()
@@ -105,8 +105,8 @@ class VideoPictureDiffUtil(
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return oldList[oldItemPosition].urlOriginal == newList[newItemPosition].urlOriginal &&
-                oldList[oldItemPosition].url300 == newList[newItemPosition].url300 &&
-                oldList[oldItemPosition].type == newList[newItemPosition].type &&
-                oldList[oldItemPosition].urlThumbnail == newList[newItemPosition].urlThumbnail
+            oldList[oldItemPosition].url300 == newList[newItemPosition].url300 &&
+            oldList[oldItemPosition].type == newList[newItemPosition].type &&
+            oldList[oldItemPosition].urlThumbnail == newList[newItemPosition].urlThumbnail
     }
 }
