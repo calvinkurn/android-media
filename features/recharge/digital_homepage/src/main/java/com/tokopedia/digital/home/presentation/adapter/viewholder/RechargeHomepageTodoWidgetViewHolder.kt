@@ -471,8 +471,14 @@ class RechargeHomepageTodoWidgetViewHolder(
                         val labelParams = btnMainTodoWidget.layoutParams as ConstraintLayout.LayoutParams
                         labelParams.endToStart = ConstraintLayout.LayoutParams.UNSET
                         labelParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
-                        labelParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
-                        labelParams.topToTop = ConstraintLayout.LayoutParams.UNSET
+                        if (widget.price.isNotEmpty()) {
+                            labelParams.bottomToBottom = tgPriceTodoWidget.id
+                            labelParams.topToTop = tgPriceTodoWidget.id
+                        } else {
+                            labelParams.bottomToBottom = tgFavoriteNumberTodoWidget.id
+                            labelParams.topToTop = tgFavoriteNumberTodoWidget.id
+                        }
+
                         btnMainTodoWidget.layoutParams = labelParams
                     }
 
