@@ -177,34 +177,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/labelShopInfoLocation"
                 app:typographyType="display_2"
                 tools:text="Jakarta Selatan" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgShopInfoOtherLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginStart="4dp"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:maxLines="1"
-                android:textColor="@color/Unify_NN600"
-                app:layout_constraintBottom_toBottomOf="@id/tpgShopInfoLocation"
-                app:layout_constraintStart_toEndOf="@+id/tpgShopInfoLocation"
-                app:layout_constraintTop_toTopOf="@+id/tpgShopInfoLocation"
-                app:typographyType="display_3"
-                tools:text="+10 lainnya" />
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/iconChevronShopLocation"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                app:icon_color_light_enable="@color/Unify_NN950"
-                app:icon_color_night_enable="@color/Unify_NN950"
-                app:icon_name="CHEVRON_DOWN"
-                app:layout_constraintBottom_toBottomOf="@+id/tpgShopInfoOtherLocation"
-                app:layout_constraintStart_toEndOf="@id/tpgShopInfoOtherLocation"
-                app:layout_constraintTop_toTopOf="@+id/tpgShopInfoOtherLocation" />
             
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/labelShopInfoOpsHour"
                 android:layout_width="match_parent"

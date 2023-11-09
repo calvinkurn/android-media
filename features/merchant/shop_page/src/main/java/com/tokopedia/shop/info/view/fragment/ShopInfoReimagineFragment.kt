@@ -271,17 +271,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun renderShopInfo(uiState: ShopInfoUiState) {
         binding?.run {
             tpgShopInfoLocation.text = uiState.info.mainLocation
-
-            val isMultiLocation = uiState.info.otherLocations.isNotEmpty()
-            tpgShopInfoOtherLocation.isVisible = isMultiLocation
-            iconChevronShopLocation.isVisible = isMultiLocation
-            if (isMultiLocation) {
-                tpgShopInfoOtherLocation.text = getString(
-                    R.string.shop_info_placeholder_other_location,
-                    uiState.info.otherLocations.size
-                )
-            }
-
             renderOperationalHours(uiState.info.operationalHours)
             tpgShopInfoJoinDate.text = uiState.info.shopJoinDate
             tpgShopInfoTotalProduct.text = uiState.info.totalProduct.toString()
