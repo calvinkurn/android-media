@@ -277,7 +277,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
             ShopSupportedShipment(
                 title = shipment.name,
                 imageUrl = shipment.image,
-                serviceNames = shipment.product.map { it.name }
+                serviceNames = shipment.product.filter { it.uiHidden.not() }.map { it.name }
             )
         }
     }
