@@ -357,6 +357,7 @@
                 android:layout_marginEnd="16dp"
                 android:ellipsize="end"
                 android:maxLines="2"
+                tools:visibility="gone"
                 android:text="@string/shop_info_view_more"
                 android:textColor="@color/Unify_GN500"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -365,23 +366,33 @@
                 app:typographyType="display_3"
                 app:typographyWeight="bold" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgCtaViewPharmacyMap"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/iconViewPharmacyLocation"
+                android:layout_width="16dp"
+                tools:visibility="visible"
+                android:layout_height="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
-                android:layout_marginEnd="16dp"
-                android:ellipsize="end"
-                android:maxLines="2"
+                app:layout_constraintTop_toBottomOf="@+id/tpgShopPharmacyNearestPickup"
+                app:layout_constraintStart_toStartOf="parent"
+                app:icon_color_light_enable="@color/Unify_GN500"
+                app:icon_color_night_enable="@color/Unify_GN500"
+                app:icon_name="MAP" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgCtaViewPharmacyMap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/shop_info_view_location"
                 android:textColor="@color/Unify_GN500"
                 android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tpgShopPharmacyNearestPickup"
+                android:layout_marginStart="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/iconViewPharmacyLocation"
+                app:layout_constraintStart_toEndOf="@+id/iconViewPharmacyLocation"
+                app:layout_constraintTop_toTopOf="@+id/iconViewPharmacyLocation"
                 app:typographyType="display_3"
-                app:typographyWeight="bold" />
+                app:typographyWeight="bold"
+                tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrierPharmacyNearestPickup"

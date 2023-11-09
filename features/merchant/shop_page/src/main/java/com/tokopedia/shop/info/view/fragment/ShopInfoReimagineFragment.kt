@@ -138,6 +138,9 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgCtaExpandPharmacyInfo.setOnClickListener {
                 viewModel.processEvent(ShopInfoUiEvent.TapCtaExpandShopPharmacyInfo)
             }
+            iconViewPharmacyLocation.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapCtaViewPharmacyLocation)
+            }
             tpgCtaViewPharmacyMap.setOnClickListener {
                 viewModel.processEvent(ShopInfoUiEvent.TapCtaViewPharmacyLocation)
             }
@@ -299,6 +302,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
             tpgCtaExpandPharmacyInfo.isVisible = isPharmacy && !expandPharmacyInfo
             tpgCtaViewPharmacyMap.isVisible = isPharmacy && expandPharmacyInfo
+            iconViewPharmacyLocation.isVisible = isPharmacy && expandPharmacyInfo
 
             tpgSectionTitlePharmacyInformation.isVisible = isPharmacy
             tpgShopPharmacyNearestPickup.isVisible = isPharmacy
