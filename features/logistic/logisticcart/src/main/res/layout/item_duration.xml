@@ -82,12 +82,13 @@
     <!--price in old view, duration in ETA-->
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_price_or_duration"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="@id/tv_duration_or_price"
         app:layout_constraintTop_toBottomOf="@id/tv_duration_or_price"
+        app:layout_constraintEnd_toStartOf="@id/img_check"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="@string/tv_price" />
