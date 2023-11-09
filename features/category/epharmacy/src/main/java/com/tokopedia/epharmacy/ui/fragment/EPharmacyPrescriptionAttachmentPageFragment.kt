@@ -341,7 +341,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun openConsultationRedirection(consultationResponse: EPharmacyInitiateConsultationResponse) {
         consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink?.let { link ->
-            RouteManager.route(context, link)
+            startActivityForResult(RouteManager.getIntent(context, link), EPHARMACY_MINI_CONSULTATION_REQUEST_CODE)
         }
     }
 
