@@ -371,7 +371,15 @@ open class DiscoveryAnalytics(
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    override fun trackPlayWidgetImpression(componentsItem: ComponentsItem, userID: String?, channelId: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {
+    override fun trackPlayWidgetImpression(
+        componentsItem: ComponentsItem,
+        userID: String?,
+        channelId: String,
+        shopId: String,
+        widgetPosition: Int,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
         val list = ArrayList<Map<String, Any>>()
         val creativeName = componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING
         list.add(
