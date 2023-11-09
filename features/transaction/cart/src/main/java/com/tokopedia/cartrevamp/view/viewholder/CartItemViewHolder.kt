@@ -117,20 +117,27 @@ class CartItemViewHolder constructor(
     }
 
     private fun initSwipeLayout(data: CartItemHolderData) {
-        binderHelper.bind(binding.swipeLayout, data.cartId)
-        if (data.isError) {
-            binderHelper.lockSwipe(data.cartId)
-        }
-        if (data.isBundlingItem && data.isMultipleBundleProduct) {
-            binderHelper.lockSwipe(data.cartId)
-            if (data.bundlingItemPosition == BUNDLING_ITEM_HEADER) {
-                binderHelper.bind(binding.swipeLayoutBundling, "${data.cartId}|${data.bundleId}")
-            }
+        if (shouldInitSwipeLayout()) {
+            binderHelper.bind(binding.swipeLayout, data.cartId)
             if (data.isError) {
-                binderHelper.lockSwipe("${data.cartId}|${data.bundleId}")
+                binderHelper.lockSwipe(data.cartId)
             }
-        }
+            if (data.isBundlingItem && data.isMultipleBundleProduct) {
+                binderHelper.lockSwipe(data.cartId)
+                if (data.bundlingItemPosition == BUNDLING_ITEM_HEADER) {
+                    binderHelper.bind(binding.swipeLayoutBundling, "${data.cartId}|${data.bundleId}")
+                }
+                if (data.isError) {
+                    binderHelper.lockSwipe("${data.cartId}|${data.bundleId}")
+                }
+            }
 
+            setSwipeLayoutColor()
+            setSwipeLayoutClickListener(data)
+        }
+    }
+
+    private fun setSwipeLayoutColor() {
         // Icon Delete Color for Light & Dark
         val rn500Color = ResourcesCompat.getColor(
             itemView.context.resources,
@@ -177,7 +184,11 @@ class CartItemViewHolder constructor(
                 flSwipeDelete.setBackgroundColor(rn100Color)
                 flSwipeDeleteBundling.setBackgroundColor(rn100Color)
             }
+        }
+    }
 
+    private fun setSwipeLayoutClickListener(data: CartItemHolderData) {
+        binding.apply {
             btnSwipeDelete.setOnClickListener {
                 if (swipeLayout.isOpen()) {
                     actionListener?.onCartItemDeleteButtonClicked(data, true)
@@ -189,6 +200,10 @@ class CartItemViewHolder constructor(
                 }
             }
         }
+    }
+
+    private fun shouldInitSwipeLayout(): Boolean {
+        return true
     }
 
     private fun initCoachMark() {
