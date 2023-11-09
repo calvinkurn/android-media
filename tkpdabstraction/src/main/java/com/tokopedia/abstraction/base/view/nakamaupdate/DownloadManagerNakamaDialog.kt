@@ -54,7 +54,6 @@ class DownloadManagerNakamaDialog(
                                 setCacheExpire()
                             }
                         )
-
                     downloadManagerUpdateDialog?.show()
                 }
             }

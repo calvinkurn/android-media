@@ -3,23 +3,31 @@ package com.tokopedia.abstraction.base.view.nakamaupdate
 import android.app.Activity
 import android.app.DownloadManager
 import android.app.ProgressDialog
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.net.Uri
 import android.os.Environment
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.ref.WeakReference
+import kotlin.coroutines.CoroutineContext
 
 class DownloadManagerNakamaProgressDialog(
     private val progressDialog: ProgressDialog?,
     private val weakActivity: WeakReference<Activity>
-) {
+) : CoroutineScope {
 
     companion object {
         private const val MAX_PROGRESS = 100
+        private const val DELAY_UPDATE_PROGRESS = 500L
         private const val MESSAGE_PREPARE_DOWNLOAD = "Preparing to download..."
         private const val MESSAGE_DOWNLOADING = "Downloading new version..."
         private const val VERSION_PARAM = "version"
@@ -33,15 +41,10 @@ class DownloadManagerNakamaProgressDialog(
         weakActivity.get()?.let { ContextCompat.getSystemService(it, DownloadManager::class.java) }
     }
 
-    private val downloadProcessReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            setDialogPending()
-            handleDownloadCompletion()
-        }
-    }
+    private val job = SupervisorJob()
 
     private var downloadID = -1L
-    private var fileName = ""
+    private var fileNamePath = ""
 
     fun startDownload(
         apkUrl: String
@@ -49,71 +52,93 @@ class DownloadManagerNakamaProgressDialog(
         showProgressDialog()
         val request = getDownloadRequest(apkUrl)
 
-        weakActivity.get()?.registerReceiver(
-            downloadProcessReceiver,
-            IntentFilter(DownloadManager.ACTION_NOTIFICATION_CLICKED)
-        )
-
-        downloadID = downloadManager?.enqueue(request) ?: -1L
+        handleDownloadCompletion(request)
     }
 
-    private fun handleDownloadCompletion() {
-        val query = DownloadManager.Query()
-        query.setFilterById(downloadID)
-
+    private fun handleDownloadCompletion(request: DownloadManager.Request) {
         var finishDownload = false
-        while (!finishDownload) {
-            val cursor = downloadManager?.query(query)
 
-            val statusColumnIndex = cursor?.getColumnIndex(DownloadManager.COLUMN_STATUS) ?: -1
-            val totalSizeColumnIndex =
-                cursor?.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES) ?: -1
-            val downloadedColumnIndex =
-                cursor?.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR) ?: -1
+        launch {
+            downloadID = downloadManager?.enqueue(request) ?: -1L
 
-            if (statusColumnIndex != -1) {
-                if (cursor?.moveToFirst() == true) {
-                    when (cursor.getInt(statusColumnIndex)) {
-                        DownloadManager.STATUS_SUCCESSFUL -> {
-                            progressDialog?.progress = MAX_PROGRESS
-                            finishDownload = true
-                            changeStyleAndHideProgressDialog()
-                            updateInstallApk(fileName)
-                        }
+            withContext(Dispatchers.Main) {
+                setDialogPending()
+            }
 
-                        DownloadManager.STATUS_FAILED -> {
-                            finishDownload = true
-                            changeStyleAndHideProgressDialog()
-                        }
+            val query = DownloadManager.Query()
 
-                        DownloadManager.STATUS_RUNNING -> {
-                            if (totalSizeColumnIndex != -1 && downloadedColumnIndex != -1) {
-                                val apkTotalSize = cursor.getLong(totalSizeColumnIndex)
-                                val downloadedProgress = cursor.getLong(downloadedColumnIndex)
+            if (downloadID != -1L) {
+                query.setFilterById(downloadID)
 
-                                if (apkTotalSize >= 0) {
-                                    val currentProgress =
-                                        ((downloadedProgress * MAX_PROGRESS.toLong()) / apkTotalSize).toInt()
+                while (!finishDownload) {
+                    val cursor = downloadManager?.query(query)
 
-                                    progressDialog?.progress = currentProgress
+                    val statusColumnIndex =
+                        cursor?.getColumnIndex(DownloadManager.COLUMN_STATUS) ?: -1
+                    val totalSizeColumnIndex =
+                        cursor?.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES) ?: -1
+                    val downloadedColumnIndex =
+                        cursor?.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR) ?: -1
+
+                    if (statusColumnIndex != -1) {
+                        if (cursor?.moveToFirst() == true) {
+                            when (cursor.getInt(statusColumnIndex)) {
+                                DownloadManager.STATUS_SUCCESSFUL -> {
+                                    finishDownload = true
+                                    withContext(Dispatchers.Main) {
+                                        progressDialog?.progress = MAX_PROGRESS
+                                        changeStyleAndHideProgressDialog()
+                                    }
+                                    updateInstallApk(fileNamePath)
+                                }
+
+                                DownloadManager.STATUS_FAILED -> {
+                                    finishDownload = true
+                                    withContext(Dispatchers.Main) {
+                                        changeStyleAndHideProgressDialog()
+                                    }
+                                }
+
+                                DownloadManager.STATUS_RUNNING -> {
+                                    if (totalSizeColumnIndex != -1 && downloadedColumnIndex != -1) {
+                                        val apkTotalSize = cursor.getLong(totalSizeColumnIndex)
+                                        val downloadedProgress =
+                                            cursor.getLong(downloadedColumnIndex)
+
+                                        if (apkTotalSize > 0) {
+                                            val currentProgress =
+                                                ((downloadedProgress * MAX_PROGRESS.toLong()) / apkTotalSize).toInt()
+
+                                            withContext(Dispatchers.Main) {
+                                                progressDialog?.progress = currentProgress
+                                            }
+
+                                            delay(DELAY_UPDATE_PROGRESS)
+                                        }
+                                    }
+                                }
+                                else -> {
+                                    // no op
                                 }
                             }
                         }
+                    }
+                    cursor?.close()
 
-                        else -> {
-                            changeStyleAndHideProgressDialog()
-                        }
+                    if (isActive && finishDownload) {
+                        job.cancel()
                     }
                 }
             }
-            cursor?.close()
         }
     }
 
     private fun getDownloadRequest(
         apkUrl: String
     ): DownloadManager.Request {
-        this.fileName = getFileNameFromUrl(apkUrl)
+        val fileName = getFileNameFromUrl(apkUrl)
+
+        this.fileNamePath = "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)}/$fileName"
 
         return DownloadManager.Request(Uri.parse(apkUrl))
             .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
@@ -123,15 +148,27 @@ class DownloadManagerNakamaProgressDialog(
             .setAllowedOverMetered(true)
             .setDescription(fileName)
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setMimeType("application/vnd.android.package-archive")
     }
 
     private fun updateInstallApk(fileName: String) {
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(
-            Uri.fromFile(File(fileName)),
-            "application/vnd.android.package-archive"
-        )
-        weakActivity.get()?.startActivity(intent)
+        weakActivity.get()?.let {
+            val uri = FileProvider.getUriForFile(
+                it,
+                it.applicationContext.packageName + ".provider",
+                File(fileName)
+            )
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(
+                    uri,
+                    "application/vnd.android.package-archive"
+                )
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            it.runOnUiThread {
+                it.startActivity(intent)
+            }
+        }
     }
 
     private fun getFileNameFromUrl(url: String): String {
@@ -149,11 +186,11 @@ class DownloadManagerNakamaProgressDialog(
     }
 
     private fun setDialogPending() {
-        progressDialog?.let {
-            it.setMessage(MESSAGE_DOWNLOADING)
-            it.isIndeterminate = false
-            it.max = MAX_PROGRESS
-            it.progress = 0
+        progressDialog?.run {
+            setMessage(MESSAGE_DOWNLOADING)
+            isIndeterminate = false
+            max = MAX_PROGRESS
+            progress = 0
         }
     }
 
@@ -173,4 +210,7 @@ class DownloadManagerNakamaProgressDialog(
             progressDialog.hide()
         }
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Default
 }
