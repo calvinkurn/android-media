@@ -9,10 +9,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cartrevamp.view.customview.CartSwipeRevealLayout
 import com.tokopedia.cartrevamp.view.customview.ViewBinderHelper
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 class CartRecyclerView : RecyclerView {
+
+    companion object {
+        private const val SWIPE_LAYOUT_SUB_VIEW_WIDTH = 80
+    }
 
     private var viewBinderHelper: ViewBinderHelper = ViewBinderHelper()
 
@@ -32,7 +37,8 @@ class CartRecyclerView : RecyclerView {
         if (shouldInterceptTouchEvent()) {
             val layouts = viewBinderHelper.getOpenedLayout()
             for (layout in layouts) {
-                val start = layout.right - 80.dpToPx(layout.context.resources.displayMetrics)
+                val start = layout.right - SWIPE_LAYOUT_SUB_VIEW_WIDTH
+                    .dpToPx(layout.context.resources.displayMetrics)
                 val end = layout.right
                 val top = layout.top
                 val bottom = layout.bottom
@@ -40,8 +46,7 @@ class CartRecyclerView : RecyclerView {
                     val outerSwipeRevealLayout = getOuterSwipeRevealLayout(layout)
                     val newSwipeRevealLayoutBottom = outerSwipeRevealLayout.top + layout.bottom
                     Region(start, outerSwipeRevealLayout.top, end, newSwipeRevealLayoutBottom)
-                }
-                else {
+                } else {
                     Region(start, top, end, bottom)
                 }
                 if (region.contains(e?.x.toIntSafely(), e?.y.toIntSafely())) {
@@ -55,7 +60,7 @@ class CartRecyclerView : RecyclerView {
     }
 
     private fun shouldInterceptTouchEvent(): Boolean {
-        return viewBinderHelper.openCount > 0
+        return viewBinderHelper.openCount > Int.ZERO
     }
 
     private fun isBundlingSwipeLayout(cartSwipeRevealLayout: CartSwipeRevealLayout): Boolean {
