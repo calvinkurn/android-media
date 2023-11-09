@@ -19,12 +19,12 @@ import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.common.util.DateTimeConstant
-import com.tokopedia.shop.info.domain.GetEpharmacyShopInfoUseCase
-import com.tokopedia.shop.info.domain.GetNearestEpharmacyWarehouseLocationUseCase
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopPharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
+import com.tokopedia.shop.info.domain.usecase.GetEpharmacyShopInfoUseCase
+import com.tokopedia.shop.info.domain.usecase.GetNearestEpharmacyWarehouseLocationUseCase
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopRatingAndTopicsUseCase
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopReviewReadingListUseCase
 import com.tokopedia.shop.info.view.model.ShopInfoUiEffect
@@ -80,7 +80,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
             ShopInfoUiEvent.ReportShop -> handleReportShop()
         }
     }
-    
+
     private fun handleGetShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
         launchCatchError(
             context = coroutineDispatcherProvider.io,
@@ -123,7 +123,6 @@ class ShopInfoReimagineViewModel @Inject constructor(
                             shopName = shopInfo.shopCore.name,
                             shopDescription = shopInfo.shopCore.description,
                             mainLocation = shopInfo.location,
-                            otherLocations = listOf(), // TODO replace with real data
                             operationalHours = shopOperationalHours.toFormattedOperationalHours(),
                             shopJoinDate = shopInfo.createdInfo.shopCreated.toShopJoinDate(),
                             totalProduct = shopInfo.activeProduct.toIntOrZero(),
@@ -269,20 +268,20 @@ class ShopInfoReimagineViewModel @Inject constructor(
             coroutineDispatcherProvider.io,
             block = {
                 _uiState.update { it.copy(isLoadingShopReport = true) }
-                
+
                 getMessageIdChatUseCase.params = GetMessageIdChatUseCase.createParams(currentState.shopId)
                 val response = getMessageIdChatUseCase.executeOnBackground()
                 val messageId = response.chatExistingChat.messageId
-                
+
                 _uiEffect.tryEmit(ShopInfoUiEffect.RedirectToChatWebView(messageId))
                 _uiState.update { it.copy(isLoadingShopReport = false) }
-          
-            }, onError = {
+            },
+            onError = {
                 _uiState.update { it.copy(isLoadingShopReport = false) }
             }
         )
     }
-    
+
     private fun isMyShop(shopId: String): Boolean {
         return shopId == userSessionInterface.shopId
     }

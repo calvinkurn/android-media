@@ -16,9 +16,9 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
-import com.tokopedia.shop.info.data.GetNearestEpharmacyWarehouseLocationResponse
-import com.tokopedia.shop.info.domain.GetEpharmacyShopInfoUseCase
-import com.tokopedia.shop.info.domain.GetNearestEpharmacyWarehouseLocationUseCase
+import com.tokopedia.shop.info.data.response.GetNearestEpharmacyWarehouseLocationResponse
+import com.tokopedia.shop.info.domain.usecase.GetEpharmacyShopInfoUseCase
+import com.tokopedia.shop.info.domain.usecase.GetNearestEpharmacyWarehouseLocationUseCase
 import com.tokopedia.shop.info.view.model.ShopEpharmacyDetailData
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
