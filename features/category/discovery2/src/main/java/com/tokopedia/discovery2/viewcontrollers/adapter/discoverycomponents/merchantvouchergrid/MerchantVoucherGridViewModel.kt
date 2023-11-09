@@ -91,7 +91,7 @@ class MerchantVoucherGridViewModel(
                     setVoucherList(
                         redirection = redirection,
                         onEventAfterVoucherListSet = {
-                            _seeMore.value = redirection
+                            this@MerchantVoucherGridViewModel._seeMore.value = redirection
                             _noMorePages.value = Unit
                         }
                     )
