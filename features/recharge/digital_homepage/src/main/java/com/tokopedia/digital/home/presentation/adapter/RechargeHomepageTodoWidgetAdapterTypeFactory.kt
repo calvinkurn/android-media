@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetAutopayBinding
 import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetAutoPayViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetViewHolder
 
 class RechargeHomepageTodoWidgetAdapterTypeFactory(
@@ -16,18 +17,18 @@ class RechargeHomepageTodoWidgetAdapterTypeFactory(
 ) : BaseAdapterTypeFactory() {
 
     fun type(model: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel): Int {
-        return RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetAutoPayViewHolder.LAYOUT
+        return RechargeHomepageTodoWidgetAutoPayViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetAutoPayViewHolder.LAYOUT -> {
+            RechargeHomepageTodoWidgetAutoPayViewHolder.LAYOUT -> {
                 val binding = ViewRechargeHomeTodoWidgetAutopayBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent as ViewGroup,
                     false
                 )
-                RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetAutoPayViewHolder(binding, rechargeHomepageTodoWidgetListener, closeItemListener)
+                RechargeHomepageTodoWidgetAutoPayViewHolder(binding, rechargeHomepageTodoWidgetListener, closeItemListener)
             }
 
             else -> super.createViewHolder(parent, type)
