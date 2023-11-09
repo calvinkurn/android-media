@@ -145,9 +145,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgCtaViewPharmacyMap.setOnClickListener {
                 viewModel.processEvent(ShopInfoUiEvent.TapCtaViewPharmacyLocation)
             }
-            iconChevronShopLocation.setOnClickListener {
-                viewModel.processEvent(ShopInfoUiEvent.TapIconViewShopLocation)
-            }
             iconChevronReview.setOnClickListener {
                 viewModel.processEvent(ShopInfoUiEvent.TapIconViewAllShopReview)
             }
@@ -188,7 +185,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             is ShopInfoUiEffect.RedirectToGmaps -> redirectToGmaps(effect.gmapsUrl)
             is ShopInfoUiEffect.RedirectToReviewDetailPage -> redirectToReviewDetailPage(effect.reviewId)
             is ShopInfoUiEffect.RedirectToShopReviewPage -> redirectToShopReviewPage(effect.shopId)
-            is ShopInfoUiEffect.ShowShopLocationBottomSheet -> showShopLocationBottomSheet(effect.locations)
             is ShopInfoUiEffect.RedirectToShopNoteDetailPage -> redirectToShopNoteDetailPage(effect.shopId, effect.noteId)
         }
     }
@@ -550,12 +546,5 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         val intent = ShopNoteDetailActivity.createIntent(context, shopId, noteId)
         startActivity(intent)
-    }
-
-    private fun showShopLocationBottomSheet(locations: List<String>) {
-        if (!isAdded) return
-        if (locations.isEmpty()) return
-
-        // TODO route to location bottomsheet
     }
 }
