@@ -17,6 +17,8 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_WEBVIEW_BACK_PRESSED
 import com.tokopedia.track.TrackApp
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
@@ -146,7 +148,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         // special behavior to handle finish if the url is paylater AN-34892
         if (f is BaseSessionWebViewFragment) {
             val currentUrl = f.webView?.url
-            val query = UriUtil.uriQueryParamsToMap(currentUrl ?: "")
 
             if (currentUrl != null &&
                 (
@@ -158,11 +159,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 return
             }
 
-            if (query["overrideNativeBackPress"] == "true") {
-//                WebViewHelper.executeJs("handlePop()", f.webView) {}
-                f.webView.loadUrl("javascript:handlePop();")
-                return
-            }
+            checkShouldOverrideBackPress(currentUrl)
         }
         if (f is BaseSessionWebViewFragment && f.webView.canGoBack()) {
             if (checkForSameUrlInPreviousIndex(f.webView)) {
@@ -188,6 +185,20 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 }
             } else {
                 showOnBackPressedDisabledMessage()
+            }
+        }
+    }
+
+    private fun checkShouldOverrideBackPress(url: String?) {
+        val shouldOverrideRc = FirebaseRemoteConfigImpl(this)
+            .getBoolean(ENABLE_WEBVIEW_BACK_PRESSED, false)
+
+        if (fragment is BaseSessionWebViewFragment && shouldOverrideRc) {
+            val query = UriUtil.uriQueryParamsToMap(url ?: "")
+
+            if (query[OVERRIDE_NATIVE_BACK_PRESSED] == "true") {
+                (fragment as BaseSessionWebViewFragment).webView.loadUrl(JAVASCRIPT_HANDLE_POP)
+                return
             }
         }
     }
@@ -343,6 +354,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     companion object {
         const val KEY_BACK_URL = "back_url"
+        private const val OVERRIDE_NATIVE_BACK_PRESSED = "overrideNativeBackPress"
+        private const val JAVASCRIPT_HANDLE_POP = "javascript:handlePop();"
 
         fun getStartIntent(
             context: Context,

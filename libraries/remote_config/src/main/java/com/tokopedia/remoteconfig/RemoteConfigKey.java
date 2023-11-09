@@ -291,4 +291,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_PDP_P1_CACHE_AGE = "android_pdp_p1_cache_age";
 
     public static final String SELLER_SEARCH_COMPOSE = "android_seller_search_compose";
+
+    public static final String ENABLE_WEBVIEW_BACK_PRESSED = "android_webview_enable_override_back_pressed";
 }
