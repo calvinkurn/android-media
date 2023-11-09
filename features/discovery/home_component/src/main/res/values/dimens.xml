@@ -78,4 +78,9 @@
     <dimen name="home_flash_sale_right_margin">12dp</dimen>
     <dimen name="home_flash_sale_top_margin">-4dp</dimen>
     <dimen name="home_flash_sale_bottom_margin">12dp</dimen>
+
+    <!--Paddings-->
+    <dimen name="home_card_rv_translation_y">-4dp</dimen>
+    <dimen name="home_padding_bottom_with_compat_padding">12dp</dimen>
+    <dimen name="home_padding_bottom_with_compat_padding_translated">8dp</dimen>
 </resources>
