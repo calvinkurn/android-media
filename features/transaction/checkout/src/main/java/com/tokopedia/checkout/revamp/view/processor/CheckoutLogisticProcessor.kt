@@ -679,12 +679,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                     shippingCourierUiModel.isSelected = false
                                 }
-                                val currentSelectedSpId =
-                                    if (shippingDurationUiModel.serviceData.selectedShipperProductId > 0) {
-                                        shippingDurationUiModel.serviceData.selectedShipperProductId
-                                    } else {
-                                        selectedSpId
-                                    }
+                                val currentSelectedSpId = selectedSpId
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                     if (shippingCourierUiModel.productData.shipperProductId == currentSelectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
                                         if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
