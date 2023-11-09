@@ -122,16 +122,15 @@ class CartItemViewHolder constructor(
             if (data.isError) {
                 binderHelper.lockSwipe(data.cartId)
             }
-            if (data.isBundlingItem && data.isMultipleBundleProduct) {
-                binderHelper.lockSwipe(data.cartId)
-                if (data.bundlingItemPosition == BUNDLING_ITEM_HEADER) {
-                    binderHelper.bind(binding.swipeLayoutBundling, "${data.cartId}|${data.bundleId}")
+            if (data.isBundlingItem) {
+                binderHelper.bind(binding.swipeLayoutBundling, "${data.cartId}|${data.bundleId}")
+                if (data.isMultipleBundleProduct) {
+                    binderHelper.lockSwipe(data.cartId)
                 }
-                if (data.isError) {
+                if (data.isError || !data.isMultipleBundleProduct) {
                     binderHelper.lockSwipe("${data.cartId}|${data.bundleId}")
                 }
             }
-
             setSwipeLayoutColor()
             setSwipeLayoutClickListener(data)
         }
