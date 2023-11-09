@@ -38,10 +38,7 @@ class MerchantVoucherGridViewModel(
     private val _noMorePages: MutableLiveData<Unit> = MutableLiveData()
 
     private val layout: ArrayList<ComponentsItem> = arrayListOf()
-
-    init {
-        layout.addShimmer()
-    }
+    private var isLoading = true
 
     val couponList: LiveData<Result<ArrayList<ComponentsItem>>>
         get() = _couponList
@@ -54,10 +51,35 @@ class MerchantVoucherGridViewModel(
     @Inject
     var useCase: MerchantVoucherUseCase? = null
 
-    private var isLoading = true
+    init {
+        layout.addShimmer()
+    }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main.immediate + SupervisorJob()
+
+    private fun hasNextPage(): Boolean = Utils.nextPageAvailable(component, VOUCHER_PER_PAGE)
+
+    private fun setVoucherList(
+        redirection: Redirection?,
+        onEventAfterVoucherListSet: () -> Unit,
+    ) {
+        val components = component.getComponentsItem()
+        if (!components.isNullOrEmpty()) {
+            if (hasNextPage() && redirection?.ctaText.isNullOrBlank()) {
+                layout.addVoucherList(components)
+                layout.addShimmer()
+            } else {
+                onEventAfterVoucherListSet.invoke()
+                layout.addVoucherList(components)
+            }
+            _couponList.value = Success(ArrayList(layout))
+        } else {
+            _couponList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))
+        }
+    }
+
+    private fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = component.getComponentAdditionalInfo()
 
     fun loadFirstPageCoupon() {
         _couponList.value = Success(ArrayList(layout))
@@ -109,27 +131,4 @@ class MerchantVoucherGridViewModel(
             }
         )
     }
-
-    private fun hasNextPage(): Boolean = Utils.nextPageAvailable(component, VOUCHER_PER_PAGE)
-
-    private fun setVoucherList(
-        redirection: Redirection?,
-        onEventAfterVoucherListSet: () -> Unit,
-    ) {
-        val components = component.getComponentsItem()
-        if (!components.isNullOrEmpty()) {
-            if (hasNextPage() && redirection?.ctaText.isNullOrBlank()) {
-                layout.addVoucherList(components)
-                layout.addShimmer()
-            } else {
-                onEventAfterVoucherListSet.invoke()
-                layout.addVoucherList(components)
-            }
-            _couponList.value = Success(ArrayList(layout))
-        } else {
-            _couponList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))
-        }
-    }
-
-    private fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = component.getComponentAdditionalInfo()
 }

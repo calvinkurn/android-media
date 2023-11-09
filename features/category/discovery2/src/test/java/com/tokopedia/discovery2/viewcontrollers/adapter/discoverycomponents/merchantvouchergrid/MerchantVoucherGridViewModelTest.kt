@@ -83,12 +83,6 @@ class MerchantVoucherGridViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun stubUrlParser() {
-        every {
-            anyConstructed<URLParser>().paramKeyValueMapDecoded
-        } returns hashMapOf()
-    }
-
     @Test
     fun `When use case is null then the result of loading the first page coupon should be shimmer`() {
         // inject use case
@@ -105,6 +99,60 @@ class MerchantVoucherGridViewModelTest {
         // compare to the expected result
         viewModel.couponList
             .verifySuccessEquals(expected)
+    }
+
+    @Test
+    fun `When use case is false then the result of loading the first page coupon should be shimmer`() {
+        // stub necessary data
+        stubComponent(
+            componentAdditionalInfo = ComponentAdditionalInfo(
+                nextPage = String.EMPTY,
+                enabled = false,
+                totalProductData = TotalProductData()
+            ),
+            componentItems = emptyList()
+        )
+
+        stubLoadFirstPage(
+            hasLoaded = false
+        )
+
+        // create expected result
+        val expected = arrayListOf<ComponentsItem>()
+
+        expected.addShimmer()
+
+        // load first page
+        viewModel.loadFirstPageCoupon()
+
+        // compare to the expected result
+        viewModel.couponList
+            .verifySuccessEquals(expected)
+    }
+
+    @Test
+    fun `When use case throws an error then the result of loading the first page coupon should be an error too`() {
+        // stub necessary data
+        stubComponent(
+            componentAdditionalInfo = ComponentAdditionalInfo(
+                nextPage = String.EMPTY,
+                enabled = false,
+                totalProductData = TotalProductData()
+            ),
+            componentItems = emptyList()
+        )
+
+        val throwable = Throwable(ERROR_MESSAGE_EMPTY_DATA)
+        stubLoadFirstPage(
+            throwable = throwable
+        )
+
+        // load first page
+        viewModel.loadFirstPageCoupon()
+
+        // compare to the expected result
+        viewModel.couponList
+            .verifyFailEquals(ERROR_MESSAGE_EMPTY_DATA)
     }
 
     @Test
@@ -153,6 +201,54 @@ class MerchantVoucherGridViewModelTest {
         // compare to the expected result
         viewModel.couponList
             .verifyFailEquals(ERROR_MESSAGE_EMPTY_DATA)
+    }
+
+    @Test
+    fun `When use case is true and voucher list has 3 items with additional info that is component doesn't have next page && component additional info is null, so the result should get only voucher list`()  {
+        // stub necessary data
+        val componentItems = listOf(
+            ComponentsItem(
+                searchParameter = searchParameter,
+                filterController = filterController,
+            ),
+            ComponentsItem(
+                searchParameter = searchParameter,
+                filterController = filterController,
+            ),
+            ComponentsItem(
+                searchParameter = searchParameter,
+                filterController = filterController,
+            )
+        )
+
+        stubComponent(
+            componentAdditionalInfo = null,
+            componentItems = componentItems
+        )
+
+        stubNextPageAvailable(
+            hasNextPage = false
+        )
+
+        stubLoadFirstPage(
+            hasLoaded = true
+        )
+
+        // create expected result
+        val expected = arrayListOf<ComponentsItem>()
+
+        expected.addVoucherList(componentItems)
+
+        // load first page
+        viewModel.loadFirstPageCoupon()
+
+        // compare to the expected result
+        viewModel.noMorePages
+            .verifyValueEquals(Unit)
+        viewModel.seeMore
+            .verifyValueEquals(null)
+        viewModel.couponList
+            .verifySuccessEquals(expected)
     }
 
     @Test
@@ -588,12 +684,26 @@ class MerchantVoucherGridViewModelTest {
             .verifySuccessEquals(expected)
     }
 
+    private fun stubUrlParser() {
+        every {
+            anyConstructed<URLParser>().paramKeyValueMapDecoded
+        } returns hashMapOf()
+    }
+
     private fun stubLoadFirstPage(
         hasLoaded: Boolean
     ) {
         coEvery {
             useCase.loadFirstPageComponents(componentId = componentId, pageEndPoint = componentPageEndPoint)
         } returns hasLoaded
+    }
+
+    private fun stubLoadFirstPage(
+        throwable: Throwable
+    ) {
+        coEvery {
+            useCase.loadFirstPageComponents(componentId = componentId, pageEndPoint = componentPageEndPoint)
+        } throws throwable
     }
 
     private fun stubNextPageAvailable(
@@ -605,7 +715,7 @@ class MerchantVoucherGridViewModelTest {
     }
 
     private fun stubComponent(
-        componentAdditionalInfo: ComponentAdditionalInfo,
+        componentAdditionalInfo: ComponentAdditionalInfo?,
         componentItems: List<ComponentsItem>?
     ) {
         every {
