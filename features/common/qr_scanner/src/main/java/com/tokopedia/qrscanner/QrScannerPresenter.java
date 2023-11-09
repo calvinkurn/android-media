@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -225,11 +226,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     }
 
     public void openActivity(String url) {
-        Uri uri = Uri.parse("" + url);
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(uri);
-        getView().startActivity(intent);
-
+        RouteManager.route(context, url);
     }
 
     @Override
