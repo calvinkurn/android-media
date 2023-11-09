@@ -7,7 +7,7 @@ import com.tokopedia.home.beranda.domain.gql.recommendationcard.AdsBannerItemRes
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationPlayWidgetResponse
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
@@ -67,7 +67,10 @@ class HomeRecommendationCardMapper @Inject constructor(
 
                         adsBannerItemResponse?.let { bannerItemResponse ->
                             homeRecommendationTypeFactoryImplList.add(
-                                HomeRecommendationBannerTopAdsDataModel(
+                                HomeRecommendationBannerTopAdsUiModel(
+                                    layoutCard = card.layout,
+                                    layoutItem = card.layoutTracker,
+                                    categoryId = card.categoryID,
                                     position = index,
                                     topAdsImageViewModel = mapToTopAdsImageViewModel(
                                         bannerItemResponse
@@ -79,7 +82,7 @@ class HomeRecommendationCardMapper @Inject constructor(
                     }
                 }
 
-                TYPE_VIDEO_CARD -> {
+                TYPE_VIDEO -> {
                     val recommendationPlayWidgetResponse = convertDataJsonToRecommendationPlayWidget(
                         card.dataStringJson
                     )
@@ -261,11 +264,7 @@ class HomeRecommendationCardMapper @Inject constructor(
         const val TYPE_BANNER = "banner"
         private const val TYPE_BANNER_ADS = "banner_ads"
         private const val TYPE_RECOM_CARD = "recom_card"
-        private const val TYPE_VIDEO_CARD = "video_card"
-
-        const val RECOMMENDATION_CARD = "recommendation card"
-        const val VIDEO_CARD = "video card"
-        const val BANNER_CARD = "banner card"
+        private const val TYPE_VIDEO = "video"
 
         const val TYPE_VERTICAL_BANNER_ADS = "banner_ads_vertical"
     }

@@ -1,11 +1,19 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_VERTICAL_BANNER_ADS
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
-import com.tokopedia.home.databinding.ItemHomeBannerTopadsLayoutBinding
+import com.tokopedia.home.databinding.ItemHomeBannerTopadsOldLayoutBinding
 import com.tokopedia.home_component.util.toDpFloat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -14,10 +22,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.BaseRecommendationForYouViewHolder
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.widget.BANNER_TYPE_HORIZONTAL
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
 import com.tokopedia.utils.view.binding.viewBinding
 
-class HomeRecommendationBannerTopAdsViewHolder(
+class HomeRecommendationBannerTopAdsOldViewHolder(
     view: View,
     private val homeRecommendationListener: HomeRecommendationListener
 ) : BaseRecommendationForYouViewHolder<HomeRecommendationBannerTopAdsOldDataModel>(
@@ -25,44 +34,81 @@ class HomeRecommendationBannerTopAdsViewHolder(
     HomeRecommendationBannerTopAdsOldDataModel::class.java
 ) {
     companion object {
-        val LAYOUT = R.layout.item_home_banner_topads_layout
+        val LAYOUT = R.layout.item_home_banner_topads_old_layout
         private const val HOME_RECOM_TAB_BANNER = "home_recom_tab_banner"
 
         private const val TDN_BANNER_ROUNDED = 8F
     }
 
-    private val binding: ItemHomeBannerTopadsLayoutBinding? by viewBinding()
+    private val binding: ItemHomeBannerTopadsOldLayoutBinding? by viewBinding()
 
     override fun bind(element: HomeRecommendationBannerTopAdsOldDataModel) {
-        setImageTopAdsNewQuery(element)
+        setImageTopAdsOldQuery(element)
     }
 
     override fun bindPayload(newItem: HomeRecommendationBannerTopAdsOldDataModel?) {
         newItem?.let {
-            setImageTopAdsNewQuery(it)
+            setImageTopAdsOldQuery(it)
         }
     }
 
-    private fun setImageTopAdsNewQuery(element: HomeRecommendationBannerTopAdsOldDataModel) {
-        loadImageTopAdsNewQuery(element)
+    private fun setImageTopAdsOldQuery(element: HomeRecommendationBannerTopAdsOldDataModel) {
+        loadImageTopAdsOldQuery(element, homeRecommendationListener)
         setBannerTopAdsClickListener(element)
     }
 
-    private fun loadImageTopAdsNewQuery(
-        recommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsOldDataModel
+    private fun loadImageTopAdsOldQuery(
+        recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsOldDataModel,
+        listener: HomeRecommendationListener
     ) {
-        recommendationBannerTopAdsDataModel.topAdsImageViewModel?.let { topAdsImageViewModel ->
+        recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.let { topAdsImageViewModel ->
+
             setBannerTopAdsImpressionListener(
-                recommendationBannerTopAdsDataModel,
-                homeRecommendationListener
+                recommendationBannerTopAdsDataModelDataModel,
+                listener
             )
 
             binding?.homeRecomTopadsLoaderImage?.show()
             binding?.homeRecomTopadsImageView?.let {
-                it.imageWidth = topAdsImageViewModel.imageWidth
-                it.imageHeight = topAdsImageViewModel.imageHeight
-                it.bannerType = BANNER_TYPE_VERTICAL
-                loadVerticalBanner(recommendationBannerTopAdsDataModel, it)
+                it.imageWidth =
+                    topAdsImageViewModel.imageWidth
+                it.imageHeight =
+                    topAdsImageViewModel.imageHeight
+                if (recommendationBannerTopAdsDataModelDataModel.bannerType == TYPE_VERTICAL_BANNER_ADS) {
+                    it.bannerType = BANNER_TYPE_VERTICAL
+                    loadVerticalBanner(recommendationBannerTopAdsDataModelDataModel, it)
+                } else {
+                    it.bannerType = BANNER_TYPE_HORIZONTAL
+                    Glide.with(itemView.context)
+                        .load(topAdsImageViewModel.imageUrl)
+                        .transform(RoundedCorners(8))
+                        .fitCenter()
+                        .addListener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                it.hide()
+                                binding?.homeRecomTopadsLoaderImage?.hide()
+                                return false
+                            }
+
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                it.show()
+                                binding?.homeRecomTopadsLoaderImage?.hide()
+                                return false
+                            }
+                        })
+                        .into(it)
+                }
             }
         }
     }
@@ -83,7 +129,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
                         recommendationBannerTopAdsDataModel.topAdsImageViewModel?.imageUrl,
                         HOME_RECOM_TAB_BANNER
                     )
-                    listener.onBannerTopAdsImpress(
+                    listener.onBannerTopAdsOldImpress(
                         recommendationBannerTopAdsDataModel,
                         bindingAdapterPosition
                     )
@@ -104,7 +150,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
                 element.topAdsImageViewModel?.imageUrl,
                 HOME_RECOM_TAB_BANNER
             )
-            homeRecommendationListener.onBannerTopAdsClick(element, bindingAdapterPosition)
+            homeRecommendationListener.onBannerTopAdsOldClick(element, bindingAdapterPosition)
         }
     }
 

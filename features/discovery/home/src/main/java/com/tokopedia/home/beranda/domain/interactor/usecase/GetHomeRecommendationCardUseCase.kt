@@ -123,6 +123,6 @@ class GetHomeRecommendationCardUseCase @Inject constructor(
         private const val PARAM_PRODUCT_PAGE = "productPage"
         private const val PARAM_LAYOUTS = "layouts"
 
-        private const val LAYOUTS_VALUE = "product,recom_card,banner_ads,video_card"
+        private const val LAYOUTS_VALUE = "product,recom_card,banner_ads,video"
     }
 }

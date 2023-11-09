@@ -5,8 +5,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommen
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
-data class HomeRecommendationBannerTopAdsDataModel(
+data class HomeRecommendationBannerTopAdsUiModel(
     val topAdsImageViewModel: TopAdsImageViewModel? = null,
+    val layoutCard: String,
+    val layoutItem: String,
+    val categoryId: String,
     val position: Int = -1,
     val bannerType: String
 ) : Visitable<HomeRecommendationTypeFactoryImpl>, ImpressHolder() {

@@ -5,7 +5,7 @@ import com.tokopedia.home.beranda.domain.gql.feed.Banner
 import com.tokopedia.home.beranda.domain.gql.feed.GetHomeRecommendationContent
 import com.tokopedia.home.beranda.domain.gql.feed.Product
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.LAYOUT_NAME_LIST
@@ -48,10 +48,10 @@ class HomeRecommendationMapper {
                 }
                 // horizontal
                 TYPE_BANNER_ADS -> {
-                    visitables.add(HomeRecommendationBannerTopAdsDataModel(position = index, bannerType = TYPE_BANNER_ADS))
+                    visitables.add(HomeRecommendationBannerTopAdsOldDataModel(position = index, bannerType = TYPE_BANNER_ADS))
                 }
                 TYPE_VERTICAL_BANNER_ADS -> {
-                    visitables.add(HomeRecommendationBannerTopAdsDataModel(position = index, bannerType = TYPE_VERTICAL_BANNER_ADS))
+                    visitables.add(HomeRecommendationBannerTopAdsOldDataModel(position = index, bannerType = TYPE_VERTICAL_BANNER_ADS))
                 }
             }
         }

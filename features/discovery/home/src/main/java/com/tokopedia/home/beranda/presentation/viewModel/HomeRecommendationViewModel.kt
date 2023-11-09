@@ -188,9 +188,9 @@ class HomeRecommendationViewModel @Inject constructor(
                 try {
                     val headlineAds = fetchHeadlineAds(tabIndex)
                     val homeBannerTopAds =
-                        data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
+                        data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsOldDataModel>()
                     val homeBannerTopAdsMutable =
-                        data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
+                        data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsOldDataModel>()
                             .toMutableList()
                     val newList = data.homeRecommendations.toMutableList()
                     val topAdsBanner =
@@ -244,7 +244,7 @@ class HomeRecommendationViewModel @Inject constructor(
                 } catch (e: Exception) {
                     _homeRecommendationLiveData.postValue(
                         data.copy(
-                            homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel }
+                            homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsOldDataModel }
                         )
                     )
                 }
@@ -265,7 +265,7 @@ class HomeRecommendationViewModel @Inject constructor(
     private fun handleTopAdsWidgets(
         data: HomeRecommendationDataModel,
         topAdsBanner: ArrayList<Pair<String, ArrayList<TopAdsImageViewModel>>>,
-        homeBannerTopAds: List<HomeRecommendationBannerTopAdsDataModel>,
+        homeBannerTopAds: List<HomeRecommendationBannerTopAdsOldDataModel>,
         headlineAds: TopAdsHeadlineResponse,
         newList: MutableList<Visitable<HomeRecommendationTypeFactoryImpl>>
     ) {
@@ -294,7 +294,7 @@ class HomeRecommendationViewModel @Inject constructor(
                     val visitableBanner = homeBannerTopAds[index]
                     if (newList.size > visitableBanner.position + Int.ONE) {
                         newList[visitableBanner.position + Int.ONE] =
-                            HomeRecommendationBannerTopAdsDataModel(
+                            HomeRecommendationBannerTopAdsOldDataModel(
                                 pair.second.firstOrNull(),
                                 bannerType = pair.first
                             )
@@ -305,7 +305,7 @@ class HomeRecommendationViewModel @Inject constructor(
                     val visitableBanner = homeBannerTopAds[index]
                     if (newList.size > visitableBanner.position) {
                         newList[visitableBanner.position] =
-                            HomeRecommendationBannerTopAdsDataModel(
+                            HomeRecommendationBannerTopAdsOldDataModel(
                                 pair.second.firstOrNull(),
                                 bannerType = pair.first
                             )
@@ -368,9 +368,9 @@ class HomeRecommendationViewModel @Inject constructor(
 
             try {
                 val homeBannerTopAds =
-                    data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
+                    data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsOldDataModel>()
                 val homeBannerTopAdsMutable =
-                    data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
+                    data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsOldDataModel>()
                         .toMutableList()
                 val newList = data.homeRecommendations.toMutableList()
                 val topAdsBanner2 = arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
@@ -419,7 +419,7 @@ class HomeRecommendationViewModel @Inject constructor(
                     val visitableBanner = homeBannerTopAds[index]
                     if (newList.size > visitableBanner.position) {
                         newList[visitableBanner.position] =
-                            HomeRecommendationBannerTopAdsDataModel(
+                            HomeRecommendationBannerTopAdsOldDataModel(
                                 pair.second.firstOrNull(),
                                 bannerType = pair.first
                             )
@@ -427,7 +427,7 @@ class HomeRecommendationViewModel @Inject constructor(
                 }
                 list.addAll(newList)
             } catch (e: Exception) {
-                list.addAll(data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel })
+                list.addAll(data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsOldDataModel })
             }
             _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = list.copy()))
             _homeRecommendationNetworkLiveData.postValue(Result.success(data))

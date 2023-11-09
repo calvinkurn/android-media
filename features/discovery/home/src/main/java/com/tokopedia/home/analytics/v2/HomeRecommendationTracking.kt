@@ -11,7 +11,7 @@ import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.R
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_47626
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_47716
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
@@ -182,34 +182,34 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         ).build()
     }
 
-    fun getImpressionBannerTopAds(homeRecommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel, tabPosition: Int, position: Int) = BaseTrackerBuilder().constructBasicPromotionView(
+    fun getImpressionBannerTopAds(homeRecommendationBannerTopAdsOldDataModel: HomeRecommendationBannerTopAdsOldDataModel, tabPosition: Int, position: Int) = BaseTrackerBuilder().constructBasicPromotionView(
         Event.PROMO_VIEW,
         Category.HOMEPAGE,
         Action.IMPRESSION_ON.format(BANNER_ADS_INSIDE_RECOMMENDATION),
         Label.NONE,
         listOf(
             Promotion(
-                id = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.bannerId.toString(),
+                id = homeRecommendationBannerTopAdsOldDataModel.topAdsImageViewModel?.bannerId.toString(),
                 name = CustomAction.BANNER_ADS_FIELD.format(tabPosition.toString()),
                 position = position.toString(),
-                creative = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.imageUrl ?: "",
-                creativeUrl = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.imageUrl ?: ""
+                creative = homeRecommendationBannerTopAdsOldDataModel.topAdsImageViewModel?.imageUrl ?: "",
+                creativeUrl = homeRecommendationBannerTopAdsOldDataModel.topAdsImageViewModel?.imageUrl ?: ""
             )
         )
     ).build()
 
-    fun getClickBannerTopAds(homeRecommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel, tabPosition: Int, position: Int) = BaseTrackerBuilder().constructBasicPromotionClick(
+    fun getClickBannerTopAds(homeRecommendationBannerTopAdsOldDataModel: HomeRecommendationBannerTopAdsOldDataModel, tabPosition: Int, position: Int) = BaseTrackerBuilder().constructBasicPromotionClick(
         event = Event.PROMO_CLICK,
         eventCategory = Category.HOMEPAGE,
         eventAction = Action.CLICK_ON.format(BANNER_ADS_INSIDE_RECOMMENDATION),
         eventLabel = Label.NONE,
         promotions = listOf(
             Promotion(
-                id = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.bannerId.toString(),
+                id = homeRecommendationBannerTopAdsOldDataModel.topAdsImageViewModel?.bannerId.toString(),
                 name = CustomAction.BANNER_ADS_FIELD.format(tabPosition.toString()),
                 position = position.toString(),
-                creative = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.imageUrl ?: "",
-                creativeUrl = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.imageUrl ?: ""
+                creative = homeRecommendationBannerTopAdsOldDataModel.topAdsImageViewModel?.imageUrl ?: "",
+                creativeUrl = homeRecommendationBannerTopAdsOldDataModel.topAdsImageViewModel?.imageUrl ?: ""
             )
         )
     ).build()

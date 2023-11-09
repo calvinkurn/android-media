@@ -47,7 +47,8 @@ import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
@@ -493,8 +494,8 @@ class HomeRecommendationFragment :
         )
     }
 
-    override fun onBannerTopAdsClick(
-        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel,
+    override fun onBannerTopAdsOldClick(
+        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsOldDataModel,
         position: Int
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -510,8 +511,8 @@ class HomeRecommendationFragment :
         )
     }
 
-    override fun onBannerTopAdsImpress(
-        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel,
+    override fun onBannerTopAdsOldImpress(
+        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsOldDataModel,
         position: Int
     ) {
         trackingQueue.putEETracking(
@@ -521,6 +522,20 @@ class HomeRecommendationFragment :
                 position
             ) as HashMap<String, Any>
         )
+    }
+
+    override fun onBannerTopAdsClick(
+        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsUiModel,
+        position: Int
+    ) {
+
+    }
+
+    override fun onBannerTopAdsImpress(
+        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsUiModel,
+        position: Int
+    ) {
+
     }
 
     override fun onEntityCardImpressionListener(
@@ -622,13 +637,6 @@ class HomeRecommendationFragment :
                 )
             }
         }
-    }
-
-    private fun isValidToShowCoachMark(): Boolean {
-        activity?.let {
-            return !it.isFinishing
-        }
-        return false
     }
 
     fun scrollToTop() {

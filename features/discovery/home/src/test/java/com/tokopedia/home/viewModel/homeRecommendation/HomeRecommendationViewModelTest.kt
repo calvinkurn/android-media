@@ -689,7 +689,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
+                HomeRecommendationBannerTopAdsOldDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = false
         )
@@ -717,7 +717,7 @@ class HomeRecommendationViewModelTest {
             observerHomeRecommendation.onChanged(
                 match {
                     it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel &&
-                        it.homeRecommendations[1] is HomeRecommendationBannerTopAdsDataModel
+                        it.homeRecommendations[1] is HomeRecommendationBannerTopAdsOldDataModel
                 }
             )
         }
@@ -740,7 +740,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
+                HomeRecommendationBannerTopAdsOldDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = false
         )
@@ -789,7 +789,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
+                HomeRecommendationBannerTopAdsOldDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = false
         )
@@ -838,7 +838,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
+                HomeRecommendationBannerTopAdsOldDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = true
         )
@@ -854,7 +854,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 2
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
+                HomeRecommendationBannerTopAdsOldDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = true
         )
@@ -888,7 +888,7 @@ class HomeRecommendationViewModelTest {
                 match {
                     it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel &&
                         it.homeRecommendations.size == homeRecommendationDataModel.homeRecommendations.size &&
-                        it.homeRecommendations[1] is HomeRecommendationBannerTopAdsDataModel
+                        it.homeRecommendations[1] is HomeRecommendationBannerTopAdsOldDataModel
                 }
             )
             // check on end data is home recommendation loading
@@ -903,7 +903,7 @@ class HomeRecommendationViewModelTest {
                 match {
                     it.homeRecommendations.isNotEmpty() &&
                         it.homeRecommendations.size == homeRecommendationDataModel.homeRecommendations.size + homeRecommendationDataModel2.homeRecommendations.size &&
-                        it.homeRecommendations[it.homeRecommendations.size - 1] is HomeRecommendationBannerTopAdsDataModel
+                        it.homeRecommendations[it.homeRecommendations.size - 1] is HomeRecommendationBannerTopAdsOldDataModel
                 }
             )
         }
@@ -936,7 +936,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 2
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
+                HomeRecommendationBannerTopAdsOldDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = true
         )
@@ -962,7 +962,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 2
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
+                HomeRecommendationBannerTopAdsOldDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = true
         )
@@ -996,7 +996,7 @@ class HomeRecommendationViewModelTest {
                 match {
                     it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel &&
                         it.homeRecommendations.size == homeRecommendationDataModel.homeRecommendations.size &&
-                        it.homeRecommendations[it.homeRecommendations.size - 1] is HomeRecommendationBannerTopAdsDataModel
+                        it.homeRecommendations[it.homeRecommendations.size - 1] is HomeRecommendationBannerTopAdsOldDataModel
                 }
             )
             // check on end data is home recommendation loading
@@ -1010,7 +1010,7 @@ class HomeRecommendationViewModelTest {
             observerHomeRecommendation.onChanged(
                 match {
                     it.homeRecommendations.isNotEmpty() &&
-                        it.homeRecommendations[it.homeRecommendations.size - 1] !is HomeRecommendationBannerTopAdsDataModel
+                        it.homeRecommendations[it.homeRecommendations.size - 1] !is HomeRecommendationBannerTopAdsOldDataModel
                 }
             )
         }
@@ -1043,7 +1043,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 2
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
+                HomeRecommendationBannerTopAdsOldDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = true
         )
@@ -1069,7 +1069,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
+                HomeRecommendationBannerTopAdsOldDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = true
         )
@@ -1103,7 +1103,7 @@ class HomeRecommendationViewModelTest {
                 match {
                     it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel &&
                         it.homeRecommendations.size == homeRecommendationDataModel.homeRecommendations.size &&
-                        it.homeRecommendations[it.homeRecommendations.size - 1] is HomeRecommendationBannerTopAdsDataModel
+                        it.homeRecommendations[it.homeRecommendations.size - 1] is HomeRecommendationBannerTopAdsOldDataModel
                 }
             )
             // check on end data is home recommendation loading
@@ -1117,7 +1117,7 @@ class HomeRecommendationViewModelTest {
             observerHomeRecommendation.onChanged(
                 match {
                     it.homeRecommendations.isNotEmpty() &&
-                        it.homeRecommendations[it.homeRecommendations.size - 1] !is HomeRecommendationBannerTopAdsDataModel
+                        it.homeRecommendations[it.homeRecommendations.size - 1] !is HomeRecommendationBannerTopAdsOldDataModel
                 }
             )
         }
@@ -1246,7 +1246,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
+                HomeRecommendationBannerTopAdsOldDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = false
         )
@@ -1304,7 +1304,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
+                HomeRecommendationBannerTopAdsOldDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = false
         )
@@ -1341,7 +1341,7 @@ class HomeRecommendationViewModelTest {
             observerHomeRecommendation.onChanged(
                 match {
                     it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationHeadlineTopAdsDataModel &&
-                        it.homeRecommendations[2] is HomeRecommendationBannerTopAdsDataModel
+                        it.homeRecommendations[2] is HomeRecommendationBannerTopAdsOldDataModel
                 }
             )
         }
@@ -1364,7 +1364,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER),
+                HomeRecommendationBannerTopAdsOldDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER),
                 HomeRecommendationItemDataModel(
                     recommendationProductItem = HomeRecommendationItemDataModel.HomeRecommendationProductItem(
                         id = "12",
@@ -1411,7 +1411,7 @@ class HomeRecommendationViewModelTest {
 //             check on first data is home headline ads item and topAds banner at next index
             observerHomeRecommendation.onChanged(
                 match {
-                    it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel && it.homeRecommendations[1] is HomeRecommendationBannerTopAdsDataModel &&
+                    it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel && it.homeRecommendations[1] is HomeRecommendationBannerTopAdsOldDataModel &&
                         it.homeRecommendations[3] is HomeRecommendationHeadlineTopAdsDataModel
                 }
             )
@@ -1435,7 +1435,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 4, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
+                HomeRecommendationBannerTopAdsOldDataModel(position = 4, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = false
         )
@@ -1504,7 +1504,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER),
+                HomeRecommendationBannerTopAdsOldDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER),
                 HomeRecommendationItemDataModel(
                     recommendationProductItem = HomeRecommendationItemDataModel.HomeRecommendationProductItem(
                         id = "12",
@@ -1541,7 +1541,7 @@ class HomeRecommendationViewModelTest {
             observerHomeRecommendation.onChanged(
                 match {
                     it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel &&
-                        it.homeRecommendations[2] is HomeRecommendationBannerTopAdsDataModel
+                        it.homeRecommendations[2] is HomeRecommendationBannerTopAdsOldDataModel
                 }
             )
         }
@@ -1574,7 +1574,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 2
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 7, bannerType = HomeRecommendationCardMapper.TYPE_BANNER),
+                HomeRecommendationBannerTopAdsOldDataModel(position = 7, bannerType = HomeRecommendationCardMapper.TYPE_BANNER),
                 HomeRecommendationItemDataModel(
                     recommendationProductItem = HomeRecommendationItemDataModel.HomeRecommendationProductItem(
                         id = "12",
@@ -1611,7 +1611,7 @@ class HomeRecommendationViewModelTest {
             observerHomeRecommendation.onChanged(
                 match {
                     it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel &&
-                        it.homeRecommendations[2] is HomeRecommendationBannerTopAdsDataModel
+                        it.homeRecommendations[2] is HomeRecommendationBannerTopAdsOldDataModel
                 }
             )
         }

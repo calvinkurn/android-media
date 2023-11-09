@@ -39,7 +39,7 @@ class HomeRecommendationAdapter(
             is HomeRecommendationEmpty,
             is HomeRecommendationLoadMore -> layout.isFullSpan = true
 
-            is HomeRecommendationBannerTopAdsDataModel ->
+            is HomeRecommendationBannerTopAdsOldDataModel ->
                 layout.isFullSpan =
                     item.bannerType != TYPE_VERTICAL_BANNER_ADS
 
@@ -83,13 +83,23 @@ interface HomeRecommendationListener : RecomEntityCardViewHolder.Listener {
     )
 
     fun onBannerImpression(bannerRecommendationDataModel: BannerRecommendationDataModel)
+    fun onBannerTopAdsOldClick(
+        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsOldDataModel,
+        position: Int
+    )
+
+    fun onBannerTopAdsOldImpress(
+        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsOldDataModel,
+        position: Int
+    )
+
     fun onBannerTopAdsClick(
-        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel,
+        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsUiModel,
         position: Int
     )
 
     fun onBannerTopAdsImpress(
-        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel,
+        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsUiModel,
         position: Int
     )
 

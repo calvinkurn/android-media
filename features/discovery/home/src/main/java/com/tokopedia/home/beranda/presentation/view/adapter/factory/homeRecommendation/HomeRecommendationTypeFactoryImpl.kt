@@ -43,8 +43,8 @@ class HomeRecommendationTypeFactoryImpl(
         return HomeRecommendationLoadingMoreViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationBannerTopAdsDataModel): Int {
-        return HomeRecommendationBannerTopAdsViewHolder.LAYOUT
+    override fun type(dataModel: HomeRecommendationBannerTopAdsOldDataModel): Int {
+        return HomeRecommendationBannerTopAdsOldViewHolder.LAYOUT
     }
 
     override fun type(dataModel: HomeRecommendationHeadlineTopAdsDataModel): Int {
@@ -53,6 +53,10 @@ class HomeRecommendationTypeFactoryImpl(
 
     override fun type(dataModel: HomeRecommendationPlayWidgetUiModel): Int {
         return HomeRecommendationPlayWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(dataModel: HomeRecommendationBannerTopAdsUiModel): Int {
+        return HomeRecommendationBannerTopAdsViewHolder.LAYOUT
     }
 
     override fun type(uiModel: RecomEntityCardUiModel): Int {
@@ -93,7 +97,7 @@ class HomeRecommendationTypeFactoryImpl(
                 parent
             )
 
-            HomeRecommendationBannerTopAdsViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsViewHolder(
+            HomeRecommendationBannerTopAdsOldViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsOldViewHolder(
                 parent,
                 homeRecommendationListener
             )
@@ -104,6 +108,8 @@ class HomeRecommendationTypeFactoryImpl(
             )
 
             HomeRecommendationPlayWidgetViewHolder.LAYOUT -> HomeRecommendationPlayWidgetViewHolder(parent, homeRecommendationVideoWidgetManager)
+
+            HomeRecommendationBannerTopAdsViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsViewHolder(parent, homeRecommendationListener)
 
             else -> super.createViewHolder(parent, type)
         }
