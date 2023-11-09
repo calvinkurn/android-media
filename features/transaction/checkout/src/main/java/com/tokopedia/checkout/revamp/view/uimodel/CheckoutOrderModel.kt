@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
 import android.os.Parcelable
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -133,7 +134,7 @@ data class CheckoutOrderModel(
     val shippingComponents: ShippingComponents = ShippingComponents.RATES,
     var hasSentScheduleDeliveryAnalytics: Boolean = false,
     val startDate: String = "",
-    val isRecommend: Boolean = false,
+    val isRecommendScheduleDelivery: Boolean = false,
 
     // OFOC
     val groupingState: Int = 0,
@@ -162,7 +163,7 @@ data class CheckoutOrderModel(
     var subtotalAddOnMap: HashMap<Int, String> = hashMapOf(),
 
     // ofoc
-    val shipmentAction: HashMap<Long, String> = HashMap()
+    val shipmentAction: HashMap<Long, ShipmentAction> = HashMap()
 ) : CheckoutItem {
 
     val isCustomPinpointError: Boolean

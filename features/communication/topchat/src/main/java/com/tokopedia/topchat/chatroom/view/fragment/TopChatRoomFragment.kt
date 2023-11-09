@@ -137,10 +137,11 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredVie
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.banned.BannedChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatGuideChatBottomSheet
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatRoomAutoReplyDetailBottomSheet
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_COPY_TO_CLIPBOARD
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
@@ -148,12 +149,12 @@ import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
-import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatRoomFlexBoxListener
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
@@ -173,6 +174,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
@@ -204,8 +206,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Locale
-import java.util.Stack
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
 import com.tokopedia.localizationchooseaddress.R as localizationchooseaddressR
@@ -238,7 +239,7 @@ open class TopChatRoomFragment :
     SrwQuestionViewHolder.Listener,
     ReplyBoxTextListener,
     SrwBubbleViewHolder.Listener,
-    FlexBoxChatLayout.Listener,
+    TopChatRoomFlexBoxListener,
     ReplyBubbleAreaMessage.Listener,
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
@@ -745,7 +746,7 @@ open class TopChatRoomFragment :
             webSocketViewModel.connectWebSocket()
             viewModel.getOrderProgress(messageId)
         } else {
-            viewModel.getMessageId(toUserId, toShopId, source)
+            viewModel.getMessageId(toUserId, toShopId, sourcePage)
         }
     }
 
@@ -803,7 +804,12 @@ open class TopChatRoomFragment :
     private fun setupArguments(savedInstanceState: Bundle?) {
         customMessage =
             getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
-        sourcePage = getParamString(ApplinkConst.Chat.SOURCE_PAGE, arguments, savedInstanceState)
+        sourcePage = getParamString(
+            ApplinkConst.Chat.SOURCE,
+            arguments,
+            savedInstanceState,
+            defaultValue = ApplinkConst.Chat.Source.SOURCE_REGULAR_CHAT
+        )
         indexFromInbox = getParamInt(
             TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX,
             arguments,
@@ -1075,20 +1081,8 @@ open class TopChatRoomFragment :
 
     private fun handleProductApplink(element: ProductAttachmentUiModel) {
         if (!GlobalConfig.isSellerApp() || opponentRole != "shop") {
-            context?.let {
-                if (element.androidUrl.isNotBlank()) {
-                    redirectionUtil.getRedirectionUrl(
-                        originalApplink = element.androidUrl,
-                        onStart = {
-                            addFullPageGeneralLoading()
-                        },
-                        onCompleted = { applink ->
-                            removeFullPageGeneralLoading()
-                            val intent = RouteManager.getIntent(it, applink)
-                            startActivity(intent)
-                        }
-                    )
-                }
+            if (element.androidUrl.isNotBlank()) {
+                redirectToPdp(element)
             }
         } else {
             // Necessary to do it this way to prevent PDP opened in seller app
@@ -1098,17 +1092,45 @@ open class TopChatRoomFragment :
         }
     }
 
+    private fun redirectToPdp(element: ProductAttachmentUiModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                addFullPageGeneralLoading()
+                val applink = redirectionUtil.getRedirectionUrl(
+                    originalApplink = element.androidUrl
+                )
+                removeFullPageGeneralLoading()
+                goToApplinkSafely(applink)
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                // When fail, remove the loading & use old product click handler
+                removeFullPageGeneralLoading()
+                super.onProductClicked(element)
+            }
+        }
+    }
+
+    private fun goToApplinkSafely(applink: String) {
+        // Check if fragment is still added and not detached
+        if (this.isAdded && !this.isDetached) {
+            context?.let {
+                val intent = RouteManager.getIntent(it, applink)
+                startActivity(intent)
+            }
+        }
+    }
+
     private fun addFullPageGeneralLoading() {
         try {
             if (generalLoading == null) {
-                val rootView = view as ViewGroup
+                val rootView = view as? ViewGroup
                 val inflater = LayoutInflater.from(context)
                 generalLoading = inflater.inflate(
                     R.layout.topchat_room_general_loading,
                     rootView,
                     false
                 )
-                rootView.addView(generalLoading)
+                rootView?.addView(generalLoading)
             }
         } catch (throwable: Throwable) {
             Timber.d(throwable)
@@ -1119,8 +1141,8 @@ open class TopChatRoomFragment :
         lifecycleScope.launch(dispatcher.main) {
             try {
                 if (generalLoading != null) {
-                    val rootView = view as ViewGroup
-                    rootView.removeView(generalLoading)
+                    val rootView = view as? ViewGroup
+                    rootView?.removeView(generalLoading)
                     generalLoading = null
                 }
             } catch (throwable: Throwable) {
@@ -3580,10 +3602,6 @@ open class TopChatRoomFragment :
         return getBooleanArgument(IS_FROM_ANOTHER_CALL, savedInstanceState)
     }
 
-    private fun isSrwNewDesign(): Boolean {
-        return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
-    }
-
     protected fun isUploadImageSecure(): Boolean {
         return abTestPlatform.getString(
             key = ROLLENCE_UPLOAD_SECURE,
@@ -3594,6 +3612,33 @@ open class TopChatRoomFragment :
     override fun onClickCheckGuide() {
         view?.hideKeyboard()
         TopChatGuideChatBottomSheet().show(childFragmentManager)
+    }
+
+    override fun onClickReadMoreAutoReply(
+        mainMessage: TopChatRoomAutoReplyItemUiModel,
+        list: List<TopChatRoomAutoReplyItemUiModel>
+    ) {
+        TopChatAnalyticsKt.eventClickAutoReply(
+            messageId,
+            listOf(mainMessage) + list
+        )
+        view?.hideKeyboard()
+        TopChatRoomAutoReplyDetailBottomSheet().show(
+            childFragmentManager,
+            mainMessage,
+            list
+        )
+    }
+
+    override fun onViewAutoReply(
+        list: List<TopChatRoomAutoReplyItemUiModel>
+    ) {
+        if (!isSeller()) {
+            TopChatAnalyticsKt.eventImpressionAutoReply(
+                messageId,
+                list
+            )
+        }
     }
 
     companion object {
@@ -3615,8 +3660,6 @@ open class TopChatRoomFragment :
         private const val ELLIPSIZE_MAX_CHAR = 20
         private const val PREFIX_SELLER_APPLINK = "sellerapp://"
 
-        const val AB_TEST_NEW_SRW = "srw_new_design"
-        const val AB_TEST_OLD_SRW = "control_variant"
         const val ROLLENCE_UPLOAD_SECURE = "chat_upsecure_an"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {

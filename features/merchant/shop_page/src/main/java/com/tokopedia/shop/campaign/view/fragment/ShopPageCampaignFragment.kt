@@ -38,6 +38,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.extension.stepScrollToPositionWithDelay
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
@@ -1268,6 +1269,8 @@ class ShopPageCampaignFragment :
 
     override fun onPlayWidgetImpression(model: CarouselPlayWidgetUiModel, position: Int) {
     }
+
+    override fun onPlayWidgetCtaClicked(model: PlayWidgetUiModel) {}
 
     override fun onImpressionVoucherSliderWidget(
         model: ShopWidgetVoucherSliderUiModel,

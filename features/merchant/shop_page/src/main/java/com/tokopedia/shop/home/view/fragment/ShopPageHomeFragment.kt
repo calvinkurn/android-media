@@ -86,6 +86,7 @@ import com.tokopedia.play.widget.ui.dialog.PlayWidgetWatchDialogContainer
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -165,9 +166,9 @@ import com.tokopedia.shop.home.util.ShopHomeReimagineShowcaseNavigationDependenc
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineDisplayBannerProductHotspotViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineDisplayBannerProductHotspotViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineTerlarisViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerWidgetListener
@@ -179,14 +180,14 @@ import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
-import com.tokopedia.shop.home.view.listener.ShopHomeReimagineDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeReimagineShowcaseNavigationListener
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
@@ -3690,7 +3691,7 @@ open class ShopPageHomeFragment :
     private fun handleWishlistActionAddToWishlistV2(productCardOptionsModel: ProductCardOptionsModel) {
         context?.let { context ->
             view?.let { v ->
-                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v)
+                AddRemoveWishlistV2Handler.buildAddToWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
         if (productCardOptionsModel.wishlistResult.isSuccess) {
@@ -3708,7 +3709,7 @@ open class ShopPageHomeFragment :
     private fun handleWishlistActionRemoveFromWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         context?.let { context ->
             view?.let { v ->
-                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
+                AddRemoveWishlistV2Handler.buildRemoveWishlistV2SuccessToaster(wishlistResult, context, v).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
         if (wishlistResult.isSuccess) {
@@ -4897,6 +4898,10 @@ open class ShopPageHomeFragment :
             model.widgetMasterId,
             model.isFestivity
         )
+    }
+
+    override fun onPlayWidgetCtaClicked(model: PlayWidgetUiModel) {
+        RouteManager.route(context, model.actionAppLink)
     }
     //endregion
 

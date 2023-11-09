@@ -424,6 +424,12 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                   shipment_action {
                     sp_id
                     action
+                    popup {
+                      title
+                      body
+                      button_ok
+                      button_cancel
+                    }
                   }
                   dropshipper {
                     name
@@ -671,6 +677,9 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 profile_code
                 additional_data
                 error_wording
+              }
+              payment_level_add_ons {
+                id  
               }
             }
           }

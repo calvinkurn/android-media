@@ -355,6 +355,26 @@ public static com.tokopedia.stability.ChangeDelegate *;
 
 # kyc ds sdk
 -keep class com.gojek.ojosdk.** {*;}
+
+
+-dontwarn org.conscrypt.**
+-dontwarn org.openjsse.**
+-dontwarn retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+
+-keep class com.huawei.hms.ads.** { *; }
+-keep interface com.huawei.hms.ads.** { *; }
+-if class *
+-keep, allowobfuscation, allowoptimization class <1> {
+    <init>(...);
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+-dontwarn com.gojek.clickstream.common.EventMeta$Builder
+-dontwarn com.gojek.clickstream.common.EventMeta
+
+-keepattributes EnclosingClass,InnerClasses
+-keep,allowshrinking,allowobfuscation class * implements android.os.Parcelable {}
+-keep,allowshrinking,allowobfuscation class * implements android.os.Parcelable$Creator {}
 -keepclassmembers enum com.gojek.kyc.** {*;}
 
 # FFMPEG
@@ -369,3 +389,5 @@ public static com.tokopedia.stability.ChangeDelegate *;
 }
 
 -keep class com.arthenica.mobileffmpeg.** { *; }
+-dontwarn kotlin.jvm.internal.SourceDebugExtension
+-dontwarn com.gojek.onekyc.R$drawable

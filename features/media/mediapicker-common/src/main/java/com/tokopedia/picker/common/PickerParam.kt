@@ -31,6 +31,7 @@ data class PickerParam(
     @SerializedName("excludedMedias") private var excludedMedias: List<File> = emptyList(),
     @SerializedName("previewActionText") private var previewActionText: String = "",
     @SerializedName("editorParam") private var editorParam: EditorParam? = null,
+    @SerializedName("immersiveEditorParam") private var immersiveEditorParam: ConfigurableUniversalEditorParam? = null,
     @SerializedName("immersiveTrackerData") private var immersiveTrackerData: Map<String, String> = mapOf()
 ) : Parcelable {
 
@@ -77,6 +78,7 @@ data class PickerParam(
         }
     }
 
+    fun immersiveEditorParam() = immersiveEditorParam
     fun immersiveTrackerData() = immersiveTrackerData
 
     // setter
@@ -97,9 +99,14 @@ data class PickerParam(
         editorParam = EditorParam().apply(param)
     }
 
-    fun withImmersiveEditor() = apply {
+    fun withImmersiveEditor(param: ConfigurableUniversalEditorParam.() -> Unit = {}) = apply {
         withImmersiveEditor = true
-        previewActionText("Lanjut")
+        immersiveEditorParam = ConfigurableUniversalEditorParam().apply(param)
+
+        // default for preview page
+        if (previewActionText.isEmpty()) {
+            previewActionText("Lanjut")
+        }
     }
 
     fun withoutEditor() = apply { withEditor = false }

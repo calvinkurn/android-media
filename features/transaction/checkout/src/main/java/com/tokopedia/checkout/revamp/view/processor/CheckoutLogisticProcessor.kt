@@ -608,7 +608,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                         ratesParam,
                         fullfilmentId,
                         startDate = orderModel.startDate,
-                        isRecommend = orderModel.isRecommend
+                        isRecommend = orderModel.isRecommendScheduleDelivery
                     )
                 var shippingRecommendationData =
                     ratesWithScheduleUseCase(ratesParam to schellyParam)
@@ -813,7 +813,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                         schellyMapper.map(
                             ratesParam,
                             fullfilmentId,
-                            isRecommend = orderModel.isRecommend,
+                            isRecommend = orderModel.isRecommendScheduleDelivery,
                             startDate = orderModel.startDate
                         )
                     )

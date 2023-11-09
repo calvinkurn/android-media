@@ -67,7 +67,7 @@ class ImagePlacementAnalyticsImpl @Inject constructor(
         paramFetcher.get().let {
             pageSourceString = it.pageSource.value
             editorType = getMediaTypeString(it.firstFile)
-            customTrackerData = it.trackerExtra
+            customTrackerData = it.custom.trackerExtra
         }
     }
 

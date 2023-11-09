@@ -52,7 +52,7 @@ ext {
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
     constraintLayoutVersion = '2.0.0-beta3'
-    materialVersion = '1.2.1'
+    materialVersion = '1.4.0'
     swipeRefreshVersion = '1.0.0'
 
     exoPlayerVersion = '2.11.8'
@@ -84,7 +84,7 @@ ext {
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.7.2'
-    MockkVersion = '1.11.0'
+    MockkVersion = '1.13.3'
     kotlinTestVersion = '1.5.31'
     KotlinMockitoVersion = '1.5.0'
     SpekVersion = "1.1.5"
@@ -99,14 +99,14 @@ ext {
     robolectricVersion = "4.9"
     orchestratorVersion = '1.4.1'
     leakCanaryVersion = '2.9.1'
-    embraceVersion = '4.15.0'
-    newRelicVersion = '6.6.0'
+    embraceVersion = '5.22.0'
+    newRelicVersion = '7.0.0'
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
-    gotoLsdkVersion = '1.1.0-70670034-SNAPSHOT'
-    gotoCvsdkVersion = '2.0.1'
-    gotoPinSdkVersion = '0.1.2-dev-4-g1348aec'
+    gotoLsdkVersion = '2.0.1'
+    gotoCvsdkVersion = '2.1.1'
+    gotoPinSdkVersion = '0.2.1'
     playIntegrityVersion = '1.0.1'
     wearRemoteInteractionVersion = '1.0.0'
     conversationsVersion = '7.9.1-54af4674'
@@ -260,10 +260,10 @@ ext {
     ]
 
     gotoOneKyc = [
-            resource : "com.gojek.android:OneKycResources:2.0.0@aar",
-            oneKycSdk : "com.gojek.android:OneKycSdk:2.0.0@aar",
-            clickStream : "com.gojek.android:clickstream:2.0.1-alpha",
-            protoToko : "com.gojek.clickstream:proto-toko:4.219.0-snapshot-toko-1",
+            resource : "com.gojek.android:OneKycResources:2.2.2@aar",
+            oneKycSdk : "com.gojek.android:OneKycSdk:2.2.2@aar",
+            clickStream : "com.gojek.android:clickstream:4.0.3-alpha",
+            protoToko : "com.gojek.clickstream:proto-toko:4.273.5",
             protoSdk : "com.gojek.clickstream:proto-sdk:1.18.2"
     ]
 

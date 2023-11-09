@@ -153,7 +153,8 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     appLink = "tokopedia://product/1444",
                     id = "https://images.tokopedia.net/img/VqbcmM/2023/8/24/76bf4387-e3f6-4dd3-b041-c03dcfebc9e4.jpg",
                     overrideTheme = false,
-                    colorSchema = ShopPageColorSchema()
+                    colorSchema = ShopPageColorSchema(),
+                    verticalBannerHeight = 0
                 ),
                 ProductItemType(
                     "",
