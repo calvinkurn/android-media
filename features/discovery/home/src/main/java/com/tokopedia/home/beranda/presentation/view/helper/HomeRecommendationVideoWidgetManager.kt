@@ -12,9 +12,9 @@ import com.tokopedia.play_common.util.extension.getVisiblePortion
 import com.tokopedia.play_common.util.extension.globalVisibleRect
 
 class HomeRecommendationVideoWidgetManager(
-    private val recyclerView: RecyclerView,
+    private val recyclerView: RecyclerView?,
     private val lifecycleOwner: LifecycleOwner,
-    private val config: ConfigVideoWidget
+    private val config: ConfigVideoWidget = ConfigVideoWidget()
 ) {
 
     private val widgets = mutableSetOf<PlayVideoWidgetView>()
@@ -32,15 +32,18 @@ class HomeRecommendationVideoWidgetManager(
                 when (event) {
                     Lifecycle.Event.ON_PAUSE -> pause()
                     Lifecycle.Event.ON_RESUME -> resume()
-                    Lifecycle.Event.ON_DESTROY -> release()
+                    Lifecycle.Event.ON_DESTROY -> {
+                        release()
+                        recyclerView?.removeOnScrollListener(scrollListener)
+                    }
                     else -> {}
                 }
             }
         })
 
-        recyclerView.addOnScrollListener(scrollListener)
+        recyclerView?.addOnScrollListener(scrollListener)
 
-        recyclerView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+        recyclerView?.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {
             }
 
@@ -54,16 +57,14 @@ class HomeRecommendationVideoWidgetManager(
         widgets.add(videoWidget)
     }
 
-    fun showCoverWhenVideoFinished(videoWidget: PlayVideoWidgetView) {
-        val videoWidgetIndex = widgets
-    }
-
     fun pause() {
         widgets.forEach { it.pauseVideo() }
     }
 
     fun resume() {
-        setupVideoAutoplay(recyclerView, recyclerView.scrollState, recyclerView.layoutManager)
+        recyclerView?.let {
+            setupVideoAutoplay(it, it.scrollState, it.layoutManager)
+        }
     }
 
     fun release() {
@@ -98,9 +99,7 @@ class HomeRecommendationVideoWidgetManager(
             }
         }
         val playableVideoWidgets =
-            visibleVideoWidgets.filter { isVideoWidgetConsideredVisible(parent, it) }
-                .take(config.autoPlayAmount)
-                .toSet()
+            visibleVideoWidgets.filter { isVideoWidgetConsideredVisible(parent, it) }.toSet()
         val otherVideoWidgets = widgets - playableVideoWidgets
 
         playableVideoWidgets.forEach {
@@ -126,7 +125,6 @@ class HomeRecommendationVideoWidgetManager(
     }
 
     data class ConfigVideoWidget(
-        val autoPlayAmount: Int,
         val visiblePercentageBeforeAutoplay: Float = 0.7f
     )
 }

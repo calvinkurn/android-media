@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationLi
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.getLayout
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.*
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationVideoWidgetManager
 import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
 import com.tokopedia.recommendation_widget_common.widget.entitycard.typefactory.RecomEntityCardTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.RecomEntityCardViewHolder
@@ -15,7 +16,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 
 class HomeRecommendationTypeFactoryImpl(
     private val topAdsBannerClickListener: TopAdsBannerClickListener,
-    private val homeRecommendationListener: HomeRecommendationListener
+    private val homeRecommendationListener: HomeRecommendationListener,
+    private val homeRecommendationVideoWidgetManager: HomeRecommendationVideoWidgetManager
 ) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory, RecomEntityCardTypeFactory {
     override fun type(dataModel: HomeRecommendationItemDataModel): Int {
         return dataModel.getLayout()
@@ -101,7 +103,7 @@ class HomeRecommendationTypeFactoryImpl(
                 topAdsBannerClickListener
             )
 
-            HomeRecommendationPlayWidgetViewHolder.LAYOUT -> HomeRecommendationPlayWidgetViewHolder(parent)
+            HomeRecommendationPlayWidgetViewHolder.LAYOUT -> HomeRecommendationPlayWidgetViewHolder(parent, homeRecommendationVideoWidgetManager)
 
             else -> super.createViewHolder(parent, type)
         }

@@ -52,7 +52,7 @@ class PlayVideoWidgetView : CardUnify2 {
 
             if (isIdleOrEnded) {
                 Log.d("VideoPlayer", "Id: ${mModel.id}")
-                mListener?.onVideoFinishedPlaying(this@PlayVideoWidgetView, 0) // todo
+                mListener?.onVideoFinishedPlaying(this@PlayVideoWidgetView)
             }
         }
 
@@ -212,7 +212,7 @@ class PlayVideoWidgetView : CardUnify2 {
     }
 
     interface Listener {
-        fun onVideoFinishedPlaying(view: PlayVideoWidgetView, position: Int)
+        fun onVideoFinishedPlaying(view: PlayVideoWidgetView)
 
         fun onVideoError(view: PlayVideoWidgetView, error: ExoPlaybackException)
     }

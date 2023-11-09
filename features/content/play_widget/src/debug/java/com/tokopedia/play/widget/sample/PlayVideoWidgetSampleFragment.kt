@@ -122,7 +122,6 @@ class PlayVideoWidgetSampleFragment : Fragment() {
         init {
             binding.root.setListener(object : PlayVideoWidgetView.Listener {
                 override fun onVideoFinishedPlaying(view: PlayVideoWidgetView) {
-//                    Toast.makeText(view.context, "Video finished playing: ", Toast.LENGTH_SHORT).show()
                     Log.d("VideoPlayer", "Video finished playing")
                 }
 

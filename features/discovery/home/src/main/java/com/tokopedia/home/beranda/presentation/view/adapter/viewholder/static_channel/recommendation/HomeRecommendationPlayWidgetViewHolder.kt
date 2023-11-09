@@ -27,7 +27,7 @@ class HomeRecommendationPlayWidgetViewHolder(
 
     init {
         binding.homeRecomPlayWidgetVideo.setListener(object : PlayVideoWidgetView.Listener {
-            override fun onVideoFinishedPlaying(view: PlayVideoWidgetView, position: Int) {
+            override fun onVideoFinishedPlaying(view: PlayVideoWidgetView) {
 //                homeRecommendationPlayWidgetManager.bind()
             }
 
@@ -39,7 +39,6 @@ class HomeRecommendationPlayWidgetViewHolder(
     }
 
     override fun bind(element: HomeRecommendationPlayWidgetUiModel) {
-        // todo adding PlayWidgetVideoManager
         bindHomeRecomPlayWidgetVideo(element)
     }
 
