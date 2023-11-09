@@ -5,10 +5,6 @@ apply plugin: 'io.hansel.preprocessor.module'
 android {
     namespace 'com.ilhamsuaib.darkmodeconfig'
 
-    defaultConfig {
-        multiDexEnabled true
-    }
-
     buildFeatures {
         compose true
     }
@@ -42,8 +38,6 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeRuntime
     implementation rootProject.ext.composeDependencies.composeUi
 
-    implementation rootProject.ext.miscDependencies.lottie
-
     implementation rootProject.ext.supportLibDependencies.preferenceV7
 
     implementation rootProject.ext.unifyDependencies.components
@@ -64,5 +58,4 @@ project.ext {
     artifactName ="dark_mode_config"
 }
 
-apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'

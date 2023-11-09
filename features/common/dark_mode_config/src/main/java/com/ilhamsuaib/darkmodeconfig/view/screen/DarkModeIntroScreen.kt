@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ilhamsuaib.darkmodeconfig.view.component.LottieAnimationComponent
+import com.ilhamsuaib.darkmodeconfig.view.component.GifImageView
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
@@ -40,15 +40,15 @@ internal fun DarkModeIntroScreen(
             .padding(start = 16.dp, end = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val lottieRes = rememberSaveable { TokopediaImageUrl.DARK_MODE_INTRO_LOTTIE }
-        LottieAnimationComponent(
-            source = lottieRes,
+        val gifImageUrl = rememberSaveable { TokopediaImageUrl.DARK_MODE_INTRO_ANIMATION }
+        GifImageView(
+            source = gifImageUrl,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(240.dp)
+                .height(256.dp)
                 .background(
-                    color = NestTheme.colors.NN._50,
-                    shape = RoundedCornerShape(16.dp)
+                    color = NestTheme.colors.NN._950,
+                    shape = RoundedCornerShape(32.dp)
                 )
         )
         NestTypography(
