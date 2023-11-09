@@ -19,9 +19,7 @@ import kotlinx.coroutines.launch
 abstract class DarkModeActivity : BaseActivity() {
 
     protected val sharedPref: SharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(
-            applicationContext
-        )
+        PreferenceManager.getDefaultSharedPreferences(applicationContext)
     }
 
     protected fun applyAppTheme(mode: UiMode) {

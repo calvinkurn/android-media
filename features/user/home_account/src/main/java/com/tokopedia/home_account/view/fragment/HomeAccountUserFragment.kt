@@ -20,7 +20,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -35,7 +34,6 @@ import com.scp.login.core.domain.contracts.listener.LSdkCheckOneTapStatusListene
 import com.scp.login.core.domain.onetaplogin.mappers.OneTapLoginError
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -428,10 +426,6 @@ open class HomeAccountUserFragment :
                 homeAccountAnalytic.eventClickAppSettingSafeMode(isActive)
                 switch.isChecked = !isActive
                 createAndShowSafeModeAlertDialog(isActive)
-            }
-
-            AccountConstants.SettingCode.SETTING_DARK_MODE -> {
-                setupDarkMode(isActive)
             }
 
             AccountConstants.SettingCode.SETTING_PLAY_WIDGET_AUTOPLAY -> {
@@ -1259,31 +1253,6 @@ open class HomeAccountUserFragment :
         }
     }
 
-    private fun setupDarkMode(isDarkMode: Boolean) {
-        setAppCompatMode(isDarkMode)
-        saveDarkModeToSharefPreference(isDarkMode)
-        homeAccountAnalytic.eventClickThemeSetting(isDarkMode)
-        recreateView()
-    }
-
-    private fun setAppCompatMode(isDarkMode: Boolean) {
-        val screenMode =
-            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        AppCompatDelegate.setDefaultNightMode(screenMode)
-    }
-
-    private fun saveDarkModeToSharefPreference(isDarkMode: Boolean) {
-        accountPref.saveSettingValue(TkpdCache.Key.KEY_DARK_MODE, isDarkMode)
-    }
-
-    private fun recreateView() {
-        activity?.run {
-            finish()
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-            startActivity(Intent(this, this.javaClass))
-        }
-    }
-
     private fun createAndShowSafeModeAlertDialog(currentValue: Boolean) {
         var dialogTitleMsg = getString(R.string.new_home_account_safe_mode_selected_dialog_title)
         var dialogBodyMsg = getString(R.string.new_home_account_safe_mode_selected_dialog_msg)
@@ -1424,6 +1393,10 @@ open class HomeAccountUserFragment :
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
                 checkLogoutOffering()
+            }
+
+            AccountConstants.SettingCode.SETTING_DARK_MODE -> {
+                goToApplink(item.applink)
             }
 
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {

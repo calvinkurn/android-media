@@ -38,17 +38,15 @@ class DarkModeConfigActivity : DarkModeActivity() {
         saveHasOpenConfigState()
         setContent {
             NestTheme {
-                Scaffold(
-                    topBar = {
-                        NestHeader(
-                            modifier = Modifier.fillMaxWidth(),
-                            type = NestHeaderType.SingleLine().copy(
-                                title = stringResource(id = R.string.dmc_set_theme),
-                                onBackClicked = ::closePage
-                            )
+                Scaffold(topBar = {
+                    NestHeader(
+                        modifier = Modifier.fillMaxWidth(),
+                        type = NestHeaderType.SingleLine(
+                            title = stringResource(id = R.string.dmc_set_theme),
+                            onBackClicked = ::closePage
                         )
-                    }
-                ) { padding ->
+                    )
+                }) { padding ->
                     val options = uiModeOptions.collectAsStateWithLifecycle()
                     DarkModeConfigScreen(
                         modifier = Modifier.padding(padding),

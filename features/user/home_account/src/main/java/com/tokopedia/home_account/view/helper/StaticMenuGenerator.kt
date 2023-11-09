@@ -112,10 +112,9 @@ class StaticMenuGenerator @Inject constructor(val context: Context, val abTestPl
                     id = AccountConstants.SettingCode.SETTING_DARK_MODE,
                     title = context.getString(R.string.menu_account_title_dark_mode),
                     body = context.getString(R.string.menu_account_desc_dark_mode),
-                    type = CommonViewHolder.TYPE_SWITCH,
+                    type = CommonViewHolder.TYPE_DEFAULT,
                     icon = IconUnify.MODE_SCREEN,
-                    isChecked = accountPref.isItemSelected(TkpdCache.Key.KEY_DARK_MODE, false),
-                    labelText = getLabelText(R.string.new_home_account_label_beta)
+                    applink = ApplinkConstInternalGlobal.DARK_MODE_CONFIG
                 )
             )
         }

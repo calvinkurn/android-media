@@ -2,10 +2,13 @@ package com.ilhamsuaib.darkmodeconfig.common
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.ilhamsuaib.darkmodeconfig.view.bottomsheet.DarkModeIntroBottomSheet
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,12 +16,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
+import com.ilhamsuaib.darkmodeconfig.R as darkmodeconfigR
 
 /**
  * Created by @ilhamsuaib on 07/11/23.
  */
 
-object DarkModeIntroductionPopup : CoroutineScope {
+object DarkModeIntroductionLauncher : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default
@@ -30,24 +34,25 @@ object DarkModeIntroductionPopup : CoroutineScope {
      * 1. User activating the dark theme system/OS, and
      * 2. Still using light theme in Tokopedia app, and
      * 3. 3 days opened Tokopedia App, and
-     * 4. Is logged in
-     * 5. Never opened the introduction popup
+     * 4. Is logged in, and
+     * 5. Never opened the introduction popup, and
      * 6. Never opened the dark mode config page
      * */
-    fun requestLaunch(context: Context, isLoggedIn: Boolean) {
+    fun launch(view: View, fm: FragmentManager, isLoggedIn: Boolean) {
+        val context = view.context
         launch {
-            val sharedPref = getSharedPref(context)
+            val sharedPref = getSharedPref(context.applicationContext)
             val isDarkModeOS = context.applicationContext.isDarkMode()
             val isLightModeApp = !isDarkModeApp()
             val isEligibleTimeRange = has3DaysOpenedApp(sharedPref)
             val neverOpenedPopup = !hasOpenedPopup(sharedPref)
             val neverOpenedConfigPage = hasOpenedConfigPage(sharedPref)
-            if (isEligibleTimeRange && isLightModeApp &&
-                isDarkModeOS && isLoggedIn && neverOpenedPopup && neverOpenedConfigPage
-            ) {
+            val shouldShowPopup = isEligibleTimeRange && isLightModeApp &&
+                    isDarkModeOS && isLoggedIn && neverOpenedPopup && neverOpenedConfigPage
+            if (shouldShowPopup) {
                 markAsOpenedPopup(sharedPref)
                 withContext(Dispatchers.Main) {
-                    showPupUp(context)
+                    showPupUp(view, fm)
                 }
             }
         }
@@ -55,10 +60,6 @@ object DarkModeIntroductionPopup : CoroutineScope {
 
     private fun hasOpenedConfigPage(sharedPref: SharedPreferences): Boolean {
         return sharedPref.getBoolean(PrefKey.HAS_OPENED_CONFIG_PAGE, true)
-    }
-
-    private fun showPupUp(context: Context) {
-        RouteManager.route(context, ApplinkConstInternalGlobal.DARK_MODE_INTRO)
     }
 
     private fun hasOpenedPopup(sharedPref: SharedPreferences): Boolean {
@@ -90,11 +91,32 @@ object DarkModeIntroductionPopup : CoroutineScope {
     }
 
     private fun getSharedPref(context: Context): SharedPreferences {
-        return PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
+        return PreferenceManager.getDefaultSharedPreferences(context)
     }
 
     private fun isDarkModeApp(): Boolean {
         val currentNightMode = AppCompatDelegate.getDefaultNightMode()
         return currentNightMode == AppCompatDelegate.MODE_NIGHT_YES
+    }
+
+    private fun showPupUp(view: View, fm: FragmentManager) {
+        DarkModeIntroBottomSheet.getInstance(fm)
+            .show(fm, onApplyConfig = {
+                showToaster(view)
+            })
+    }
+
+    private fun showToaster(view: View) {
+        val context = view.context.applicationContext
+        val message = context.getString(darkmodeconfigR.string.dmc_apply_dark_mode_toaster_message)
+        val cta = context.getString(darkmodeconfigR.string.dmc_apply_dark_mode_toaster_cta)
+        Toaster.toasterCustomBottomHeight = context.dpToPx(96).toInt()
+        Toaster.build(
+            view,
+            message,
+            Toaster.LENGTH_SHORT,
+            Toaster.TYPE_NORMAL,
+            cta
+        ).show()
     }
 }

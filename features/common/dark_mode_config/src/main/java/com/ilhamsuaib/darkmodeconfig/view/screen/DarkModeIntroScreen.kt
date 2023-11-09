@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ilhamsuaib.darkmodeconfig.view.component.LottieAnimationComponent
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
@@ -26,8 +27,6 @@ import com.ilhamsuaib.darkmodeconfig.R as darkmodeconfigR
 /**
  * Created by @ilhamsuaib on 07/11/23.
  */
-
-private const val LOTTIE_ANIMATION = "https://assets.tokopedia.net/asts/lottie/android/tokonow/tokonow_animation_referral.json"
 
 @Composable
 internal fun DarkModeIntroScreen(
@@ -41,7 +40,7 @@ internal fun DarkModeIntroScreen(
             .padding(start = 16.dp, end = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val lottieRes = rememberSaveable { LOTTIE_ANIMATION }
+        val lottieRes = rememberSaveable { TokopediaImageUrl.DARK_MODE_INTRO_LOTTIE }
         LottieAnimationComponent(
             source = lottieRes,
             modifier = Modifier

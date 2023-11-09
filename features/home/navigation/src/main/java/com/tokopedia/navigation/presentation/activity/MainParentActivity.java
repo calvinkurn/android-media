@@ -37,6 +37,7 @@ import androidx.lifecycle.LifecycleOwnerKt;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.ilhamsuaib.darkmodeconfig.common.DarkModeIntroductionLauncher;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
@@ -310,6 +311,7 @@ public class MainParentActivity extends BaseActivity implements
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
         }
         sendNotificationUserSetting();
+        requestDarkModeInto();
     }
 
     private void sendNotificationUserSetting() {
@@ -1356,6 +1358,12 @@ public class MainParentActivity extends BaseActivity implements
 
         startActivities(new Intent[]{intentHome, intentNewUser});
         finish();
+    }
+
+    private void requestDarkModeInto() {
+        View view = getWindow().getDecorView();
+        DarkModeIntroductionLauncher.INSTANCE
+                .launch(view, getSupportFragmentManager(), userSession.get().isLoggedIn());
     }
 
     @NonNull

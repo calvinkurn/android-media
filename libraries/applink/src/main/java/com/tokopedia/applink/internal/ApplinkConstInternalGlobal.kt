@@ -267,7 +267,6 @@ object ApplinkConstInternalGlobal {
 
     const val BMGM_MINI_CART = "$INTERNAL_GLOBAL/bmgm-mini-cart"
 
-    /*tokopedia-android-internal://global/dark-mode-config*/
+    //tokopedia-android-internal://global/dark-mode-config
     const val DARK_MODE_CONFIG = "$INTERNAL_GLOBAL/dark-mode-config"
-    const val DARK_MODE_INTRO = "$INTERNAL_GLOBAL/dark-mode-intro"
 }

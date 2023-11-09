@@ -6,15 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
+import com.ilhamsuaib.darkmodeconfig.common.DarkModeAnalytics
 import com.ilhamsuaib.darkmodeconfig.model.UiMode
 import com.ilhamsuaib.darkmodeconfig.view.screen.DarkModeIntroScreen
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * Created by @ilhamsuaib on 07/11/23.
@@ -22,7 +29,7 @@ import com.tokopedia.unifycomponents.Toaster
 
 internal class DarkModeIntroBottomSheet : BottomSheetUnify() {
 
-    private var setOnApplyConfig: ((UiMode) -> Unit)? = null
+    private var setOnApplyConfig: (() -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +48,7 @@ internal class DarkModeIntroBottomSheet : BottomSheetUnify() {
         bottomSheetTitle.gone()
     }
 
-    fun show(fm: FragmentManager, onApplyConfig: (UiMode) -> Unit) {
+    fun show(fm: FragmentManager, onApplyConfig: () -> Unit) {
         if (fm.isStateSaved || isAdded) return
 
         this.setOnApplyConfig = onApplyConfig
@@ -69,14 +76,31 @@ internal class DarkModeIntroBottomSheet : BottomSheetUnify() {
     }
 
     private fun applyFollowSystemSetting() {
-        showToaster()
-        setOnApplyConfig?.invoke(UiMode.FollowSystemSetting())
+        setOnApplyConfig?.invoke()
+        applyAppTheme()
         dismissBottomSheet()
     }
 
-    private fun showToaster() {
-        val view = view ?: return
-        Toaster.build(view.rootView, "")
+    private fun applyAppTheme() {
+        val mode = UiMode.FollowSystemSetting()
+        sendAnalytics(mode)
+        saveDarkModeState(mode)
+        AppCompatDelegate.setDefaultNightMode(mode.screenMode)
+    }
+
+    private fun saveDarkModeState(mode: UiMode) {
+        val context = activity?.applicationContext ?: return
+        val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
+        activity?.lifecycleScope?.launch(Dispatchers.Default) {
+            editor.putInt(TkpdCache.Key.KEY_DARK_MODE_CONFIG_SCREEN_MODE, mode.screenMode)
+            editor.apply()
+        }
+    }
+
+    private fun sendAnalytics(mode: UiMode) {
+        val context = activity?.applicationContext ?: return
+        val isDarkModeOS = context.isDarkMode()
+        DarkModeAnalytics.eventClickThemeSetting(mode, isDarkModeOS)
     }
 
     private fun dismissBottomSheet() {
