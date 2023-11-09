@@ -81,15 +81,13 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     }
 
     private fun setEditTextPadding() {
-        commentEditText?.icon1?.post {
-            commentEditText?.editText?.apply {
-                this.setPadding(
-                    this.paddingLeft,
-                    this.paddingTop,
-                    ICON_1_PADDING.toPx() + this.paddingRight,
-                    this.paddingBottom
-                )
-            }
+        commentEditText?.editText?.apply {
+            this.setPadding(
+                this.paddingLeft,
+                this.paddingTop,
+                ICON_1_PADDING.toPx() + this.paddingRight,
+                this.paddingBottom
+            )
         }
     }
 
