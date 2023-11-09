@@ -12,9 +12,10 @@ import com.tokopedia.stories.creation.util.assertEmpty
 import com.tokopedia.stories.creation.util.assertEqualTo
 import com.tokopedia.stories.creation.util.assertType
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
+import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
-import com.tokopedia.stories.creation.view.model.exception.AccountNotEligibleException
+import com.tokopedia.stories.creation.view.model.exception.NotEligibleException
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -167,7 +168,7 @@ class StoriesCreationPreparationViewModelTest {
             val lastEvent = events.last()
 
             if (lastEvent is StoriesCreationUiEvent.ErrorPreparePage) {
-                lastEvent.throwable.assertType<AccountNotEligibleException>()
+                lastEvent.throwable.assertType<NotEligibleException>()
             } else {
                 fail("Event should be ErrorPreparePage")
             }
@@ -227,11 +228,11 @@ class StoriesCreationPreparationViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                submitAction(StoriesCreationAction.SetMedia(mockMediaFilePath, mockMediaType))
+                submitAction(StoriesCreationAction.SetMedia(StoriesMedia(mockMediaFilePath, mockMediaType)))
             }
 
-            state.mediaFilePath.assertEqualTo(mockMediaFilePath)
-            state.mediaType.assertEqualTo(mockMediaType)
+            state.media.filePath.assertEqualTo(mockMediaFilePath)
+            state.media.type.assertEqualTo(mockMediaType)
         }
     }
 
@@ -274,7 +275,7 @@ class StoriesCreationPreparationViewModelTest {
         robot.use {
             it.recordState {
                 submitAction(StoriesCreationAction.Prepare)
-                submitAction(StoriesCreationAction.SetMedia(mockMediaFilePath, mockMediaType))
+                submitAction(StoriesCreationAction.SetMedia(StoriesMedia(mockMediaFilePath, mockMediaType)))
                 submitAction(StoriesCreationAction.ClickUpload)
             }
 
