@@ -25,7 +25,7 @@ internal object GetDashboardProductStatisticsV2 : GqlQueryInterface {
                   stat_total_conversion
                   stat_total_sold
                   stat_total_gross_profit
-                  stat_total_roas
+                  stat_direct_roas
                   stat_total_top_slot_impression
                 }
               }
