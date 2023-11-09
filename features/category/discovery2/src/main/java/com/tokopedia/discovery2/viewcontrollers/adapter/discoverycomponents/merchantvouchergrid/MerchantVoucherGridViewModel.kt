@@ -57,7 +57,7 @@ class MerchantVoucherGridViewModel(
     private var isLoading = true
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + SupervisorJob()
+        get() = Dispatchers.Main.immediate + SupervisorJob()
 
     fun loadFirstPageCoupon() {
         _couponList.value = Success(ArrayList(layout))
@@ -69,8 +69,8 @@ class MerchantVoucherGridViewModel(
                     setVoucherList(
                         redirection = redirection,
                         onEventAfterVoucherListSet = {
-                            _seeMore.postValue(redirection)
-                            _noMorePages.postValue(Unit)
+                            _seeMore.value = redirection
+                            _noMorePages.value = Unit
                         }
                     )
                 }
@@ -78,7 +78,8 @@ class MerchantVoucherGridViewModel(
             },
             onError = {
                 Timber.e(it)
-                _couponList.postValue(Fail(it))
+                println("ERROR APA ${it}")
+                _couponList.value = Fail(it)
                 isLoading = false
             }
         )
@@ -97,14 +98,14 @@ class MerchantVoucherGridViewModel(
                     setVoucherList(
                         redirection = getComponentAdditionalInfo()?.redirection,
                         onEventAfterVoucherListSet = {
-                            _noMorePages.postValue(Unit)
+                            _noMorePages.value = Unit
                         }
                     )
                 }
                 isLoading = false
             },
             onError = {
-                _couponList.postValue(Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA)))
+                _couponList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))
                 isLoading = false
             }
         )
@@ -116,19 +117,18 @@ class MerchantVoucherGridViewModel(
         redirection: Redirection?,
         onEventAfterVoucherListSet: () -> Unit,
     ) {
-        component.getComponentsItem()?.let { voucherList ->
-            if (voucherList.isNotEmpty()) {
-                if (hasNextPage() && redirection?.ctaText.isNullOrBlank()) {
-                    layout.addVoucherList(voucherList)
-                    layout.addShimmer()
-                } else {
-                    onEventAfterVoucherListSet.invoke()
-                    layout.addVoucherList(voucherList)
-                }
-                _couponList.postValue(Success(ArrayList(layout)))
+        val components = component.getComponentsItem()
+        if (!components.isNullOrEmpty()) {
+            if (hasNextPage() && redirection?.ctaText.isNullOrBlank()) {
+                layout.addVoucherList(components)
+                layout.addShimmer()
             } else {
-                _couponList.postValue(Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA)))
+                onEventAfterVoucherListSet.invoke()
+                layout.addVoucherList(components)
             }
+            _couponList.value = Success(ArrayList(layout))
+        } else {
+            _couponList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))
         }
     }
 
