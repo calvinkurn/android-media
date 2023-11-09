@@ -79,6 +79,12 @@ class RechargeHomepageTodoWidgetAdapter(
                             getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
                             getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                         )
+                        setPadding(
+                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
+                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        )
                     }
                     viewStickyLayout.root.show()
                     viewStickyLayout.tgTitleTodoWidget.text = stickyLayout.title
@@ -95,6 +101,13 @@ class RechargeHomepageTodoWidgetAdapter(
                             getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
                             getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
                             getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        )
+
+                        setPadding(
+                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
                             getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                         )
                     }
