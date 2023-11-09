@@ -662,7 +662,7 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
         expected.addVoucherList(componentItems)
         expected.addShimmer()
 
-        // load first page
+        // load more
         viewModel.loadMore(true)
 
         // compare to the expected result

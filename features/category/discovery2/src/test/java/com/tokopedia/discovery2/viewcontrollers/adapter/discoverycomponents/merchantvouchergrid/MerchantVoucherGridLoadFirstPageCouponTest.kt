@@ -132,7 +132,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that is component doesn't have next page && component additional info is null, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && component additional info is null, so the result should get only voucher list`()  {
         // stub necessary data
         val componentItems = listOf(
             ComponentsItem(
@@ -180,7 +180,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that is component doesn't have next page && redirection is null, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && redirection is null, so the result should get only voucher list`()  {
         // stub necessary data
         val componentItems = listOf(
             ComponentsItem(
