@@ -12,6 +12,7 @@ import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.T
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_47716
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
@@ -182,7 +183,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         ).build()
     }
 
-    fun getImpressionBannerTopAds(homeRecommendationBannerTopAdsOldDataModel: HomeRecommendationBannerTopAdsOldDataModel, tabPosition: Int, position: Int) = BaseTrackerBuilder().constructBasicPromotionView(
+    fun getImpressionBannerTopAdsOld(homeRecommendationBannerTopAdsOldDataModel: HomeRecommendationBannerTopAdsOldDataModel, tabPosition: Int, position: Int) = BaseTrackerBuilder().constructBasicPromotionView(
         Event.PROMO_VIEW,
         Category.HOMEPAGE,
         Action.IMPRESSION_ON.format(BANNER_ADS_INSIDE_RECOMMENDATION),
@@ -198,7 +199,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         )
     ).build()
 
-    fun getClickBannerTopAds(homeRecommendationBannerTopAdsOldDataModel: HomeRecommendationBannerTopAdsOldDataModel, tabPosition: Int, position: Int) = BaseTrackerBuilder().constructBasicPromotionClick(
+    fun getClickBannerTopAdsOld(homeRecommendationBannerTopAdsOldDataModel: HomeRecommendationBannerTopAdsOldDataModel, tabPosition: Int, position: Int) = BaseTrackerBuilder().constructBasicPromotionClick(
         event = Event.PROMO_CLICK,
         eventCategory = Category.HOMEPAGE,
         eventAction = Action.CLICK_ON.format(BANNER_ADS_INSIDE_RECOMMENDATION),
@@ -289,6 +290,90 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                 TrackerId.KEY,
                 TRACKER_ID_47626
             ).build()
+    }
+
+    fun getImpressBannerTopAdsTracking(
+        homeTopAdsRecommendationBannerTopAdsUiModel: HomeRecommendationBannerTopAdsUiModel,
+        position: Int,
+        userId: String
+    ): Map<String, Any> {
+        val trackingBuilder = BaseTrackerBuilder()
+        val creativeSlot = (position + Int.ONE).toString()
+        val itemName = ITEM_NAME_NEW_FOR_YOU_FORMAT.format(
+            creativeSlot,
+            RECOMMENDATION_CARD_FOR_YOU,
+            homeTopAdsRecommendationBannerTopAdsUiModel.categoryId,
+            homeTopAdsRecommendationBannerTopAdsUiModel.layoutCard,
+            homeTopAdsRecommendationBannerTopAdsUiModel.layoutItem,
+            homeTopAdsRecommendationBannerTopAdsUiModel.topAdsImageViewModel?.bannerName.orEmpty()
+        )
+
+        val listPromotions = arrayListOf(
+            Promotion(
+                creative = "",
+                position = creativeSlot,
+                id = "",
+                name = itemName
+            )
+        )
+
+        return trackingBuilder.constructBasicPromotionView(
+            event = Event.VIEW_ITEM,
+            eventCategory = Category.HOMEPAGE,
+            eventAction = IMPRESSION_ON_BANNER_RECOMMENDATION_CARD_FOR_YOU,
+            eventLabel = "${homeTopAdsRecommendationBannerTopAdsUiModel.layoutCard} - ${homeTopAdsRecommendationBannerTopAdsUiModel.layoutItem} - ${homeTopAdsRecommendationBannerTopAdsUiModel.topAdsImageViewModel?.bannerName.orEmpty()}",
+            promotions = listPromotions
+        ).appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendUserId(userId)
+            .appendCustomKeyValue(
+                TrackerId.KEY,
+                TRACKER_ID_47626
+            ).build()
+    }
+
+    fun sendClickBannerTopAdsTracking(
+        bannerTopAdsUiModel: HomeRecommendationBannerTopAdsUiModel,
+        position: Int,
+        userId: String
+    ) {
+        val bundle = Bundle().apply {
+            putString(Event.KEY, Event.SELECT_CONTENT)
+            putString(Action.KEY, CLICK_ON_BANNER_FOR_YOU_WIDGET)
+            putString(Category.KEY, Category.HOMEPAGE)
+            putString(
+                Label.KEY,
+                "${bannerTopAdsUiModel.layoutCard} - ${bannerTopAdsUiModel.layoutItem} - ${bannerTopAdsUiModel.topAdsImageViewModel?.bannerName.orEmpty()}"
+            )
+            putString(
+                TrackerId.KEY,
+                TRACKER_ID_47716
+            )
+            putString(
+                BusinessUnit.KEY,
+                BusinessUnit.DEFAULT
+            )
+            putString(
+                CurrentSite.KEY,
+                CurrentSite.DEFAULT
+            )
+            val creativeSlot = (position + Int.ONE).toString()
+            putBundle(
+                Promotion.KEY,
+                Bundle().also {
+                    it.putString(Promotion.CREATIVE_NAME, "")
+                    it.putString(Promotion.CREATIVE_SLOT, creativeSlot)
+                    it.putString(Promotion.ITEM_ID, "")
+                    it.putString(
+                        Promotion.ITEM_NAME,
+                        ITEM_NAME_NEW_FOR_YOU_FORMAT.format(creativeSlot, RECOMMENDATION_CARD_FOR_YOU, bannerTopAdsUiModel.categoryId, bannerTopAdsUiModel.layoutCard, bannerTopAdsUiModel.layoutItem, bannerTopAdsUiModel.topAdsImageViewModel?.bannerName.orEmpty())
+                    )
+                }
+            )
+            putString(UserId.KEY, userId)
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.PROMO_CLICK, bundle)
     }
 
     private fun mapToProductTracking(homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = Product(

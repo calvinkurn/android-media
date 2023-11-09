@@ -499,7 +499,7 @@ class HomeRecommendationFragment :
         position: Int
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            HomeRecommendationTracking.getClickBannerTopAds(
+            HomeRecommendationTracking.getClickBannerTopAdsOld(
                 homeTopAdsRecommendationBannerDataModelDataModel,
                 tabIndex,
                 position
@@ -516,7 +516,7 @@ class HomeRecommendationFragment :
         position: Int
     ) {
         trackingQueue.putEETracking(
-            HomeRecommendationTracking.getImpressionBannerTopAds(
+            HomeRecommendationTracking.getImpressionBannerTopAdsOld(
                 homeTopAdsRecommendationBannerDataModelDataModel,
                 tabIndex,
                 position
@@ -525,17 +525,31 @@ class HomeRecommendationFragment :
     }
 
     override fun onBannerTopAdsClick(
-        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsUiModel,
+        homeTopAdsRecommendationBannerDataUiModel: HomeRecommendationBannerTopAdsUiModel,
         position: Int
     ) {
-
+        HomeRecommendationTracking.sendClickBannerTopAdsTracking(
+            homeTopAdsRecommendationBannerDataUiModel,
+            position,
+            userSessionInterface.userId
+        )
+        RouteManager.route(
+            context,
+            homeTopAdsRecommendationBannerDataUiModel.topAdsImageViewModel?.applink
+        )
     }
 
     override fun onBannerTopAdsImpress(
         homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsUiModel,
         position: Int
     ) {
-
+        trackingQueue.putEETracking(
+            HomeRecommendationTracking.getImpressBannerTopAdsTracking(
+                homeTopAdsRecommendationBannerDataModelDataModel,
+                position,
+                userSessionInterface.userId
+            ) as HashMap<String, Any>
+        )
     }
 
     override fun onEntityCardImpressionListener(
