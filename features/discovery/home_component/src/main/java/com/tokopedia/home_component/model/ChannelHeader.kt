@@ -14,7 +14,7 @@ data class ChannelHeader(
         val backColor: String = "",
         val backImage: String = "",
         val textColor: String = "",
-        val headerType: HeaderType = HeaderType.CONTROL,
+        val headerType: HeaderType = HeaderType.CHEVRON,
 ) {
     internal val layoutStrategy: HeaderLayoutStrategy = HeaderLayoutStrategyFactory.create(headerType)
 
@@ -24,7 +24,6 @@ data class ChannelHeader(
     }
 
     enum class HeaderType {
-        CONTROL,
-        REVAMP
+        CHEVRON
     }
 }

@@ -5,7 +5,7 @@ import com.tokopedia.home_component.model.ChannelHeader.HeaderType
 internal object HeaderLayoutStrategyFactory {
     fun create(headerType: HeaderType) : HeaderLayoutStrategy {
         return when(headerType) {
-            HeaderType.REVAMP -> HeaderRevampLayoutStrategy()
+            HeaderType.CHEVRON -> HeaderRevampLayoutStrategy()
             else -> HeaderControlLayoutStrategy()
         }
     }

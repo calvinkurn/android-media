@@ -8,8 +8,6 @@ import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseImageStyle
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.home_component_header.model.ChannelHeader as HomeComponentHeader
-import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
-import com.tokopedia.home_component_header.util.getHomeComponentHeaderType
 
 object DynamicChannelComponentMapper {
     fun mapHomeChannelToComponent(
@@ -39,7 +37,7 @@ object DynamicChannelComponentMapper {
                 channel.header.backColor,
                 channel.header.backImage,
                 channel.header.textColor,
-                getHeaderType(),
+                headerType = ChannelHeader.HeaderType.CHEVRON
             ),
             channelBanner = channel.banner.mapToChannelBanner(),
             channelConfig = channel.mapToChannelConfig(),
@@ -80,7 +78,7 @@ object DynamicChannelComponentMapper {
                 channel.header.backColor,
                 channel.header.backImage,
                 channel.header.textColor,
-                getHeaderType(),
+                headerType = ChannelHeader.HeaderType.CHEVRON,
             ),
             channelBanner = ChannelBanner(
                 id = channel.banner.id,
@@ -197,7 +195,6 @@ object DynamicChannelComponentMapper {
         backColor,
         backImage,
         textColor,
-        headerType = getHomeComponentHeaderType(),
     )
 
     fun Array<DynamicHomeChannel.Grid>.mapToChannelGrids() = mapIndexed { index, grid ->
@@ -371,10 +368,4 @@ object DynamicChannelComponentMapper {
         categoryBreadcrumbs = categoryBreadcrumbs,
         position = index
     )
-
-    fun getHeaderType(): ChannelHeader.HeaderType {
-        return if(HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
-            ChannelHeader.HeaderType.REVAMP
-        } else ChannelHeader.HeaderType.CONTROL
-    }
 }

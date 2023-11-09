@@ -79,7 +79,7 @@ class InspirationListAtcViewHolder(
                     subtitle = item.option.subtitle,
                     applink = item.option.applink,
                     iconSubtitleUrl = item.option.iconSubtitle,
-                    headerType = ChannelHeader.HeaderType.REVAMP,
+                    headerType = ChannelHeader.HeaderType.CHEVRON,
                 ),
                 listener = object : HomeChannelHeaderListener {
                     override fun onSeeAllClick(link: String) {

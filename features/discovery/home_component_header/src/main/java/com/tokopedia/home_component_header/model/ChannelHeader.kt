@@ -17,13 +17,12 @@ data class ChannelHeader(
         //  Data from channel level
     val channelId: String = "",
     val serverTimeOffset: Long = 0,
-    val headerType: HeaderType = HeaderType.CONTROL,
+    val headerType: HeaderType = HeaderType.CHEVRON,
     val iconSubtitleUrl: String = "",
 ) {
     internal val layoutStrategy: HeaderLayoutStrategy = HeaderLayoutStrategyFactory.create(headerType)
 
     enum class HeaderType {
-        CONTROL,
-        REVAMP
+        CHEVRON
     }
 }
