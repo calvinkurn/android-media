@@ -44,7 +44,7 @@ class StoriesCreationViewModelRobot(
         get() = viewModel.selectedAccount
 
     val productTag: List<ProductTagSectionUiModel>
-        get() = viewModel.productTag
+        get() = viewModel.productTagSection
 
     val maxProductTag: Int
         get() = viewModel.maxProductTag
