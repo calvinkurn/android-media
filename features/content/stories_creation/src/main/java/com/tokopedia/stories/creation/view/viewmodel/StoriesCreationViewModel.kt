@@ -73,8 +73,8 @@ class StoriesCreationViewModel @Inject constructor(
              * Stories is only available for shop
              * need FE development to support UGC account
              * */
-            val accountList = repo.getCreationAccountList()
-            val selectedAccount = accountList.firstOrNull { it.isShop && it.enable }
+            val accountList = repo.getCreationAccountList().filter { it.isShop }
+            val selectedAccount = accountList.firstOrNull { it.enable }
                 ?: throw NotEligibleException()
 
             val config = repo.getStoryPreparationInfo(selectedAccount)
