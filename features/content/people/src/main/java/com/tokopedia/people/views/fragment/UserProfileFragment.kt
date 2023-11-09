@@ -69,10 +69,12 @@ import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
+import com.tokopedia.people.views.activity.FollowerFollowingListingActivity.Companion.EXTRA_ACTIVE_TAB
 import com.tokopedia.people.views.activity.ProfileSettingsActivity
-import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
+import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment.Companion.EXTRA_FOLLOWERS
+import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment.Companion.EXTRA_FOLLOWING
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileBadgeBottomSheet
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileReviewOnboardingBottomSheet
@@ -354,12 +356,23 @@ class UserProfileFragment @Inject constructor(
 
     private fun initListener() {
         mainBinding.apply {
-            layoutUserProfileStats.llFollower.setOnClickListener { goToFollowingFollowerPage(UserProfileActivity.EXTRA_FOLLOWERS) }
-            layoutUserProfileStats.llFollowing.setOnClickListener { goToFollowingFollowerPage(UserProfileActivity.EXTRA_FOLLOWING) }
+            layoutUserProfileStats.llFollower.setOnClickListener {
+                goToFollowingFollowerPage(
+                    EXTRA_FOLLOWERS
+                )
+            }
+            layoutUserProfileStats.llFollowing.setOnClickListener {
+                goToFollowingFollowerPage(
+                    EXTRA_FOLLOWING
+                )
+            }
             shopRecommendation.setListener(this@UserProfileFragment, this@UserProfileFragment)
 
             textSeeMore.setOnClickListener {
-                userProfileTracker.clickSelengkapnya(userSession.userId, self = viewModel.isSelfProfile)
+                userProfileTracker.clickSelengkapnya(
+                    userSession.userId,
+                    self = viewModel.isSelfProfile
+                )
                 textBio.maxLines = MAX_LINE
                 textSeeMore.hide()
                 isViewMoreClickedBio = true
@@ -1024,7 +1037,7 @@ class UserProfileFragment @Inject constructor(
     override fun getScreenName(): String = TAG
 
     private fun goToFollowingFollowerPage(activeTab: String) {
-        if (activeTab == UserProfileActivity.EXTRA_FOLLOWERS) {
+        if (activeTab == EXTRA_FOLLOWERS) {
             userProfileTracker.clickFollowers(userSession.userId, self = viewModel.isSelfProfile)
         } else {
             userProfileTracker.clickFollowing(userSession.userId, self = viewModel.isSelfProfile)
@@ -1077,7 +1090,7 @@ class UserProfileFragment @Inject constructor(
     private fun getFollowersBundle(activeTab: String): Bundle {
         val bundle = Bundle()
         bundle.putString(EXTRA_USERNAME, viewModel.profileUserID)
-        bundle.putString(UserProfileActivity.EXTRA_ACTIVE_TAB, activeTab)
+        bundle.putString(EXTRA_ACTIVE_TAB, activeTab)
 
         return bundle
     }

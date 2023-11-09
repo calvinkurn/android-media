@@ -24,7 +24,8 @@ import com.tokopedia.people.databinding.UpFollowFollowingParentShimmerBinding
 import com.tokopedia.people.databinding.UpFragmentFollowerFollowingListingBinding
 import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
-import com.tokopedia.people.views.activity.UserProfileActivity
+import com.tokopedia.people.views.activity.FollowerFollowingListingActivity.Companion.EXTRA_ACTIVE_TAB
+import com.tokopedia.people.views.activity.FollowerFollowingListingActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.LoadingState
@@ -56,10 +57,10 @@ class FollowerFollowingListingFragment @Inject constructor(
     }
 
     private val userId: String
-        get() = arguments?.getString(UserProfileActivity.EXTRA_USERNAME).orEmpty()
+        get() = arguments?.getString(EXTRA_USERNAME).orEmpty()
 
     private val selectedTab: String
-        get() = arguments?.getString(UserProfileActivity.EXTRA_ACTIVE_TAB).orEmpty()
+        get() = arguments?.getString(EXTRA_ACTIVE_TAB).orEmpty()
 
     private val onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
@@ -146,7 +147,7 @@ class FollowerFollowingListingFragment @Inject constructor(
         bindingContent.viewPager.registerOnPageChangeCallback(onPageChangeCallback)
 
         bindingContent.viewPager.setCurrentItem(
-            if (selectedTab == UserProfileActivity.EXTRA_FOLLOWING) {
+            if (selectedTab == EXTRA_FOLLOWING) {
                 FOLLOWING_PAGE_POSITION
             } else {
                 FOLLOWERS_PAGE_POSITION
@@ -256,9 +257,11 @@ class FollowerFollowingListingFragment @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "FollowerFollowingListingFragment"
         const val REQUEST_CODE_LOGIN_TO_FOLLOW = 100
+        const val EXTRA_FOLLOWING = "following"
+        const val EXTRA_FOLLOWERS = "followers"
 
+        private const val TAG = "FollowerFollowingListingFragment"
         private const val FOLLOWERS_PAGE_POSITION = 0
         private const val FOLLOWING_PAGE_POSITION = 1
         private const val DEFAULT_TAB_TOTAL = 2

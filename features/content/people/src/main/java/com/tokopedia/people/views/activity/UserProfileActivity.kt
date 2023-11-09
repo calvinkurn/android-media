@@ -56,32 +56,9 @@ class UserProfileActivity : BaseSimpleActivity() {
             bundle,
         )
         bundle?.putString(EXTRA_USERNAME, intent.data?.pathSegments?.first())
-        directToOtherPage(intent.data?.pathSegments)
-    }
-
-    private fun directToOtherPage(pathSegment: List<String>?) {
-        if (pathSegment == null || pathSegment.size == 1) return
-
-        when (pathSegment.last()) {
-            EXTRA_FOLLOWING, EXTRA_FOLLOWERS -> openFollowingFollowersPage(pathSegment)
-            else -> return
-        }
-    }
-
-    private fun openFollowingFollowersPage(pathSegment: List<String>?) {
-        val bundle = Bundle()
-        bundle.putString(EXTRA_USERNAME, pathSegment?.first())
-        bundle.putString(EXTRA_ACTIVE_TAB, pathSegment?.last())
-
-        startActivity(FollowerFollowingListingActivity.getCallingIntent(this, bundle))
-        finish()
     }
 
     companion object {
         const val EXTRA_USERNAME = "user_name"
-        const val EXTRA_FOLLOWING = "following"
-        const val EXTRA_FOLLOWERS = "followers"
-
-        const val EXTRA_ACTIVE_TAB = "active_tab"
     }
 }
