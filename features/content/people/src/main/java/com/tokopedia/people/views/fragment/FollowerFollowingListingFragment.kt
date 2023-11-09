@@ -98,7 +98,7 @@ class FollowerFollowingListingFragment @Inject constructor(
 
     private fun setTabs(
         prevState: ProfileUiModel?,
-        currState: ProfileUiModel,
+        currState: ProfileUiModel
     ) {
         if (prevState == currState || currState == ProfileUiModel.Empty) return
 
@@ -121,7 +121,7 @@ class FollowerFollowingListingFragment @Inject constructor(
                 ),
                 FollowerListingFragment.getFragment(
                     childFragmentManager,
-                    requireContext().classLoader,
+                    requireContext().classLoader
                 )
             ),
             Pair(
@@ -131,12 +131,13 @@ class FollowerFollowingListingFragment @Inject constructor(
                 ),
                 FollowingListingFragment.getFragment(
                     childFragmentManager,
-                    requireContext().classLoader,
+                    requireContext().classLoader
                 )
             )
         )
 
-        bindingContent.viewPager.adapter = ViewPagerAdapter(this, listOfPages.map(Pair<String, Fragment>::second))
+        bindingContent.viewPager.adapter =
+            ViewPagerAdapter(this, listOfPages.map(Pair<String, Fragment>::second))
 
         TabsUnifyMediator(bindingContent.tpFollow, bindingContent.viewPager) { tab, position ->
             tab.setCustomText(listOfPages[position].first)
@@ -145,8 +146,12 @@ class FollowerFollowingListingFragment @Inject constructor(
         bindingContent.viewPager.registerOnPageChangeCallback(onPageChangeCallback)
 
         bindingContent.viewPager.setCurrentItem(
-            if (selectedTab == UserProfileActivity.EXTRA_FOLLOWING) FOLLOWING_PAGE_POSITION
-            else FOLLOWERS_PAGE_POSITION, false
+            if (selectedTab == UserProfileActivity.EXTRA_FOLLOWING) {
+                FOLLOWING_PAGE_POSITION
+            } else {
+                FOLLOWERS_PAGE_POSITION
+            },
+            false
         )
     }
 

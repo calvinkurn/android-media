@@ -34,7 +34,7 @@ import com.tokopedia.people.views.adapter.listener.UserFollowListener
 import com.tokopedia.people.views.uimodel.FollowResultUiModel
 import com.tokopedia.people.views.uimodel.PeopleUiModel
 import com.tokopedia.unifycomponents.LocalLoad
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -43,15 +43,14 @@ import com.tokopedia.people.R as peopleR
 class FollowerListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val userProfileTracker: UserProfileTracker,
-    private val router: Router
+    private val router: Router,
+    private val userSession: UserSessionInterface
 ) : TkpdBaseV4Fragment(), AdapterCallback, UserFollowListener {
 
     private var followersContainer: ViewFlipper? = null
     private var globalError: LocalLoad? = null
     private var isLoggedIn: Boolean = false
     private var isSwipeRefresh: Boolean? = null
-
-    private val userSessionInterface: UserSession by lazy { UserSession(context) }
 
     private val viewModel: FollowerFollowingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[FollowerFollowingViewModel::class.java]
@@ -70,7 +69,7 @@ class FollowerListingFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        isLoggedIn = userSessionInterface.isLoggedIn
+        isLoggedIn = userSession.isLoggedIn
         return inflater.inflate(R.layout.up_fragment_psger_item, container, false)
     }
 
@@ -225,16 +224,16 @@ class FollowerListingFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        if (isLoggedIn != userSessionInterface.isLoggedIn) {
+        if (isLoggedIn != userSession.isLoggedIn) {
             refreshMainUi()
-            isLoggedIn = userSessionInterface.isLoggedIn
+            isLoggedIn = userSession.isLoggedIn
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW && resultCode == Activity.RESULT_OK) {
-            isLoggedIn = userSessionInterface.isLoggedIn
+            isLoggedIn = userSession.isLoggedIn
             refreshMainUi()
         } else if (requestCode == UserProfileFragment.REQUEST_CODE_USER_PROFILE) {
             val position = data?.getIntExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, -1)
@@ -261,12 +260,12 @@ class FollowerListingFragment @Inject constructor(
         val textTitle = view?.findViewById<TextView>(R.id.text_error_empty_title)
         val textDescription = view?.findViewById<TextView>(R.id.text_error_empty_desc)
 
-        if (viewModel.username == userSessionInterface.userId) {
+        if (viewModel.username == userSession.userId) {
             textTitle?.text = getString(peopleR.string.up_empty_page_my_follower_title)
         } else {
             textTitle?.text = getString(peopleR.string.up_empty_page_follower_title)
         }
-        textDescription?.showWithCondition(viewModel.username == userSessionInterface.userId)
+        textDescription?.showWithCondition(viewModel.username == userSession.userId)
         textDescription?.text = getString(peopleR.string.up_empty_page_my_follower_desc)
     }
 
@@ -333,7 +332,7 @@ class FollowerListingFragment @Inject constructor(
     private fun doFollowAction(isFollowed: Boolean, callNetworkRequest: () -> Unit) {
         if (!isInternetAvailable(isFollowed)) return
 
-        if (!userSessionInterface.isLoggedIn) {
+        if (!userSession.isLoggedIn) {
             val requestCode = FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
             startActivityForResult(
                 router.getIntent(context, ApplinkConst.LOGIN),
@@ -393,7 +392,7 @@ class FollowerListingFragment @Inject constructor(
 
         fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): FollowerListingFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowerListingFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
