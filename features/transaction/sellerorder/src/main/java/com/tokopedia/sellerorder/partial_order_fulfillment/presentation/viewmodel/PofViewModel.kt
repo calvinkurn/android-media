@@ -357,7 +357,9 @@ class PofViewModel @Inject constructor(
                             quantity = quantity,
                             updateTimestamp = System.currentTimeMillis()
                         )
-                    } else quantityEditorData
+                    } else {
+                        quantityEditorData.copy(updateTimestamp = System.currentTimeMillis())
+                    }
                 } else {
                     val othersQuantityIsEmpty = quantityEditorDataList.none {
                         it.orderDetailId != orderDetailId && it.quantity.isMoreThanZero()
@@ -370,7 +372,7 @@ class PofViewModel @Inject constructor(
                         )
                     } else {
                         allQuantityEmpty = true
-                        quantityEditorData
+                        quantityEditorData.copy(updateTimestamp = System.currentTimeMillis())
                     }
                 }
             } else quantityEditorData
