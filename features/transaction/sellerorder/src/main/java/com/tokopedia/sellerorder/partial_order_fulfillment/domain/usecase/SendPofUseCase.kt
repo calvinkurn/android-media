@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.RequestState
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.SendPofRequestParams
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.SendPofResponse
@@ -18,6 +20,7 @@ class SendPofUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository
 ) : FlowUseCase<SendPofRequestParams, RequestState<SendPofResponse.Data>>(dispatcher.io) {
     companion object {
+        private const val ERROR_MESSAGE_BE_RETURN_NON_SUCCESS = "request_partial_order_fulfillment.success is "
         private const val PARAM_INPUT = "input"
         private val QUERY = """
             mutation RequestPartialOrderFulfillment($$PARAM_INPUT: RequestPartialOrderFulfillmentArgs!) {
@@ -35,7 +38,12 @@ class SendPofUseCase @Inject constructor(
     override suspend fun execute(params: SendPofRequestParams) = flow {
         if (params.valid()) {
             emit(RequestState.Requesting)
-            emit(RequestState.Success(sendRequest(params)))
+            val response = sendRequest(params)
+            if (response.requestPartialOrderFulfillment?.success != Int.ONE) {
+                emit(RequestState.Error(MessageErrorException("$ERROR_MESSAGE_BE_RETURN_NON_SUCCESS ${response.requestPartialOrderFulfillment?.success}")))
+            } else {
+                emit(RequestState.Success(response))
+            }
         }
     }.catch {
         emit(RequestState.Error(it))

@@ -42,16 +42,18 @@ class PofErrorStateViewHolder(
 
     @SuppressLint("SetTextI18n")
     private fun setupErrorState(throwable: Throwable) {
-        binding.root.setType(
-            if (throwable is SocketTimeoutException || throwable is UnknownHostException) {
-                GlobalError.NO_CONNECTION
-            } else {
-                GlobalError.SERVER_ERROR
-            }
-        )
-        val errorCode = ErrorHandler
-            .getErrorMessagePair(binding.root.context, throwable, ErrorHandler.Builder().build())
-            .second
-        binding.root.errorDescription.text = "${binding.root.errorDescription.text} $errorCode"
+        with(binding.root) {
+            setType(
+                if (throwable is SocketTimeoutException || throwable is UnknownHostException) {
+                    GlobalError.NO_CONNECTION
+                } else {
+                    GlobalError.SERVER_ERROR
+                }
+            )
+            val errorCode = ErrorHandler
+                .getErrorMessagePair(context, throwable, ErrorHandler.Builder().build())
+                .second
+            errorDescription.text = context.getString(R.string.som_error_message, errorDescription.text, errorCode)
+        }
     }
 }

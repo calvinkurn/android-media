@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofEstimateRequestParams
@@ -193,15 +192,15 @@ class PofViewModel @Inject constructor(
         }
     }
 
-    private fun showToasterErrorSendPof() {
+    private fun showToasterErrorSendPof(throwable: Throwable) {
         viewModelScope.launch {
-            _toasterQueue.emit(pofToasterMapper.mapToasterErrorSendPof())
+            _toasterQueue.emit(pofToasterMapper.mapToasterErrorSendPof(throwable))
         }
     }
 
-    private fun showToasterErrorReFetchPofEstimate() {
+    private fun showToasterErrorReFetchPofEstimate(throwable: Throwable) {
         viewModelScope.launch {
-            _toasterQueue.emit(pofToasterMapper.mapToasterErrorReFetchPofEstimate())
+            _toasterQueue.emit(pofToasterMapper.mapToasterErrorReFetchPofEstimate(throwable))
         }
     }
 
@@ -313,23 +312,20 @@ class PofViewModel @Inject constructor(
     private fun onSendPofRequestStateChanged(requestState: RequestState<SendPofResponse.Data>) {
         sendPofRequestState = requestState
         when (requestState) {
-            is RequestState.Error -> showToasterErrorSendPof()
-            is RequestState.Success -> {
-                if (requestState.data.requestPartialOrderFulfillment?.success == Int.ONE) {
-                    viewModelScope.launch { _uiEffect.emit(UiEffect.FinishActivity) }
-                } else {
-                    showToasterErrorSendPof()
-                }
-            }
+            is RequestState.Error -> showToasterErrorSendPof(requestState.throwable)
+            is RequestState.Success -> viewModelScope.launch { _uiEffect.emit(UiEffect.FinishActivity) }
             else -> { /* noop */ }
         }
         updateUiState()
     }
 
     private fun shouldShowErrorReFetchEstimateToaster() {
-        val isErrorReFetchPofEstimate = getPofInfoRequestState is RequestState.Success && getPofEstimateRequestState is RequestState.Error
-        if (isErrorReFetchPofEstimate) {
-            showToasterErrorReFetchPofEstimate()
+        val reFetchEstimateRequestState = getPofEstimateRequestState
+        if (reFetchEstimateRequestState is RequestState.Error) {
+            val isErrorReFetchPofEstimate = getPofInfoRequestState is RequestState.Success
+            if (isErrorReFetchPofEstimate) {
+                showToasterErrorReFetchPofEstimate(reFetchEstimateRequestState.throwable)
+            }
         }
     }
 
