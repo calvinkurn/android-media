@@ -35,13 +35,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:maxLines="1"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toStartOf="@+id/img_close_todo_widget"
             app:layout_constraintStart_toEndOf="@+id/img_icon_todo_widget"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="small"
             app:typographyWeight="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
             tools:text="This is Category Name This is Category Name This is Category Name This is Category Name" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -53,6 +54,8 @@
             app:layout_constraintStart_toEndOf="@+id/img_icon_todo_widget"
             app:layout_constraintTop_toBottomOf="@+id/tg_category_name_todo_widget"
             app:typographyType="display_3"
+            android:maxLines="1"
+            android:ellipsize="end"
             tools:text="Product name, max. 28 character, 1 line" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -64,6 +67,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tg_product_name_todo_widget"
             app:typographyType="display_3"
+            android:maxLines="1"
+            android:ellipsize="end"
             tools:text="Fav. no. name - 000000000000" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -74,6 +79,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tg_favorite_number_todo_widget"
             app:typographyType="display_3"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:typographyWeight="bold"
             tools:text="Rp9.999.999" />
 
@@ -87,6 +94,8 @@
             app:layout_constraintTop_toTopOf="@+id/tg_price_todo_widget"
             app:layout_constraintBottom_toBottomOf="@id/tg_price_todo_widget"
             app:typographyType="small"
+            android:maxLines="1"
+            android:ellipsize="end"
             tools:text="Rp9.999.999" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -99,6 +108,8 @@
             app:layout_constraintTop_toTopOf="@+id/tg_price_todo_widget"
             app:layout_constraintBottom_toBottomOf="@id/tg_price_todo_widget"
             app:typographyType="small"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:typographyWeight="bold"
             tools:text="10%" />
 

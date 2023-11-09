@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetAutopayBinding
 import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
+import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.CATEGORY_TYPE
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.POSTPAIDREMINDER_TYPE
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
@@ -52,6 +53,12 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
                 tgProductNameTodoWidget.text = widget.subtitle
                 tgFavoriteNumberTodoWidget.text = widget.label
                 tgPriceTodoWidget.text = widget.price
+
+                if (widget.type.startsWith(CATEGORY_TYPE)) {
+                    tgFavoriteNumberTodoWidget.maxLines = 2
+                } else {
+                    tgFavoriteNumberTodoWidget.maxLines = 1
+                }
 
                 if (widget.price.isEmpty()) {
                     val labelParams = iconThreeButtonTodoWidget.layoutParams as ConstraintLayout.LayoutParams
