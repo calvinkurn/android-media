@@ -30,6 +30,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 open class MerchantVoucherGridViewModelFixture {
@@ -75,6 +76,14 @@ open class MerchantVoucherGridViewModelFixture {
         Dispatchers.resetMain()
     }
 
+    @Test
+    fun testVariables() {
+        viewModel.component
+            .verifyEquals(component)
+        viewModel.position
+            .verifyEquals(position)
+    }
+
     private fun stubUrlParser() {
         every {
             anyConstructed<URLParser>().paramKeyValueMapDecoded
@@ -94,6 +103,22 @@ open class MerchantVoucherGridViewModelFixture {
     ) {
         coEvery {
             useCase.loadFirstPageComponents(componentId = componentId, pageEndPoint = componentPageEndPoint)
+        } throws throwable
+    }
+
+    protected fun stubLoadMore(
+        hasLoaded: Boolean
+    ) {
+        coEvery {
+            useCase.getCarouselPaginatedData(componentId = componentId, pageEndPoint = componentPageEndPoint)
+        } returns hasLoaded
+    }
+
+    protected fun stubLoadMore(
+        throwable: Throwable
+    ) {
+        coEvery {
+            useCase.getCarouselPaginatedData(componentId = componentId, pageEndPoint = componentPageEndPoint)
         } throws throwable
     }
 
@@ -127,9 +152,9 @@ open class MerchantVoucherGridViewModelFixture {
     }
 
     protected fun LiveData<Result<ArrayList<ComponentsItem>>>.verifySuccessEquals(
-        expected: ArrayList<ComponentsItem>
+        expected: ArrayList<ComponentsItem>?
     ) {
-        val expectedResult = expected.map { component ->
+        val expectedResult = expected?.map { component ->
             component.copy(
                 searchParameter = searchParameter,
                 filterController = filterController,

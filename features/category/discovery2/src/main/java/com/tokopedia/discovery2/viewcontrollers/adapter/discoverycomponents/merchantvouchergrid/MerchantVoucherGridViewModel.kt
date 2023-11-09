@@ -109,7 +109,7 @@ class MerchantVoucherGridViewModel(
     fun loadMore(
         isAtTheBottomOfThePage: Boolean
     ) {
-        if (getComponentAdditionalInfo()?.nextPage.isNullOrBlank() || isLoading || !isAtTheBottomOfThePage) return
+        if (isLoading || !isAtTheBottomOfThePage) return
 
         isLoading = true
 
