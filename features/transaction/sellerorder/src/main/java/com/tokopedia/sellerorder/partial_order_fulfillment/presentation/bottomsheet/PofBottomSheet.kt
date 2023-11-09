@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.bottomsheet
 
-import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -159,7 +158,7 @@ class PofBottomSheet : BottomSheetUnify(),
         lifecycleScope.launchWhenResumed {
             viewModel.uiEffect.collectLatest { uiEffect ->
                 when (uiEffect) {
-                    is UiEffect.FinishActivity -> onCloseBottomSheet()
+                    is UiEffect.FinishActivity -> onCloseBottomSheet(uiEffect.result)
                 }
             }
         }
@@ -177,8 +176,8 @@ class PofBottomSheet : BottomSheetUnify(),
         }
     }
 
-    private fun onCloseBottomSheet() {
-        activity?.setResult(Activity.RESULT_OK)
+    private fun onCloseBottomSheet(result: Int) {
+        activity?.setResult(result)
         activity?.finish()
     }
 

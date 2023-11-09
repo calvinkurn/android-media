@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.viewmodel
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.graphql.data.model.CacheType
@@ -115,7 +116,7 @@ class PofViewModel @Inject constructor(
     }
 
     private fun onClickDismissPofBottomSheet() {
-        viewModelScope.launch { _uiEffect.emit(UiEffect.FinishActivity) }
+        viewModelScope.launch { _uiEffect.emit(UiEffect.FinishActivity(Activity.RESULT_CANCELED)) }
     }
 
     private fun onClickDismissSummaryBottomSheet() {
@@ -319,7 +320,7 @@ class PofViewModel @Inject constructor(
                 showToasterErrorSendPof()
             }
             is RequestState.Success -> {
-                viewModelScope.launch { _uiEffect.emit(UiEffect.FinishActivity) }
+                viewModelScope.launch { _uiEffect.emit(UiEffect.FinishActivity(Activity.RESULT_OK)) }
             }
             else -> { /* noop */ }
         }
