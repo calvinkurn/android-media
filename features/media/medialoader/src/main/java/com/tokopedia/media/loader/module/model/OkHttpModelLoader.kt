@@ -29,15 +29,15 @@ class OkHttpModelLoader constructor(
         return true
     }
 
-    class Factory(private val context: Context) : ModelLoaderFactory<GlideUrl, InputStream> {
+    class Factory constructor(
+        private val context: Context
+    ) : ModelLoaderFactory<GlideUrl, InputStream> {
 
         override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<GlideUrl, InputStream> {
             return OkHttpModelLoader(context, instanceClient())
         }
 
-        override fun teardown() {
-            // no-op
-        }
+        override fun teardown() = Unit // no-op
 
         companion object {
             @Volatile var client: Call.Factory? = null
@@ -75,12 +75,13 @@ internal class CustomOkHttpStreamFetcher constructor(
 
             // expose headers for MediaListenerBuilder.
             if (FeatureToggleManager.instance().shouldAbleToExposeResponseHeader(context)) {
-                NetworkResponseManager.set(
+                NetworkResponseManager.instance(context).set(
                     response.request.url.toString(),
                     response.headers
                 )
             }
 
+            // logger
             RequestLogger.request(context) {
                 url = response.request.url.toString()
                 requestLoadTime = (endTime - startTime).toString()
