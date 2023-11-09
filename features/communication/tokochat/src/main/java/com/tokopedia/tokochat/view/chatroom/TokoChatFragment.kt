@@ -192,6 +192,7 @@ open class TokoChatFragment @Inject constructor(
         setupTrackers()
         setupAttachmentMenu()
         setDataFromArguments(savedInstanceState)
+        addInitialShimmering()
         askTokoChatConsent()
         setupLifeCycleObserver()
         setupListeners()
@@ -260,7 +261,6 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun loadChatRoomData() {
-        addInitialShimmering()
         // Do not init when order id empty
         if (viewModel.gojekOrderId.isNotBlank()) {
             // All trackers need tkpd order id
@@ -1061,13 +1061,14 @@ open class TokoChatFragment @Inject constructor(
 
     private fun handleOnErrorCreateGroupBooking(error: Throwable) {
         try {
+            var errorCode = ""
             if (error is ConversationsNetworkError) {
-                val errorCode = error.errorList.firstOrNull()?.code ?: ""
-                if (errorCode.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
-                    showUnavailableBottomSheet()
-                } else {
-                    showGlobalErrorWithRefreshAction()
-                }
+                errorCode = error.errorList.firstOrNull()?.code ?: ""
+            }
+            if (errorCode.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
+                showUnavailableBottomSheet()
+            } else {
+                showGlobalErrorWithRefreshAction()
             }
             logExceptionTokoChat(error, TokoChatErrorLogger.ErrorType.ERROR_PAGE, ::initGroupBooking.name)
         } catch (throwable: Throwable) {

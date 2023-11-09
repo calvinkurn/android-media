@@ -613,12 +613,13 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun getUserConsent() {
-        launch {
+        viewModelScope.launch {
             try {
                 val result = getNeedConsentUseCase(TokoChatValueUtil.consentParam)
                 _isNeedConsent.value = result
             } catch (throwable: Throwable) {
                 _error.value = Pair(throwable, ::getUserConsent.name)
+                _isNeedConsent.value = Fail(throwable)
             }
         }
     }
@@ -666,6 +667,11 @@ class TokoChatViewModel @Inject constructor(
                 _error.value = Pair(throwable, ::translateGojekOrderId.name)
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        groupBookingUseCase.cancel()
     }
 
     companion object {
