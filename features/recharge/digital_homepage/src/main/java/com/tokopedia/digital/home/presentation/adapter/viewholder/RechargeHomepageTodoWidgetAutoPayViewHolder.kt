@@ -163,7 +163,8 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
                 }
 
                 setCardHeightMatchParent()
-                setCardWidth(widget.type.startsWith(POSTPAIDREMINDER_TYPE))
+                setCardWidth(widget.type.startsWith(POSTPAIDREMINDER_TYPE) ||
+                    widget.type.startsWith(CATEGORY_TYPE))
             }
         }
     }

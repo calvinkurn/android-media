@@ -69,8 +69,8 @@ class RechargeHomepageTodoWidgetAdapter(
                     titleTodoWidget.show()
                     titleTodoWidget.text = item.title
                 }
-                val stickyLayoutFirst = getStickyLayout(item.widgets)
-                if (stickyLayoutFirst != null) {
+                val stickyLayout = getStickyLayout(item.widgets)
+                if (stickyLayout != null) {
                     rvTodoWidget.apply {
                         setMargin(
                             getDimens(com.tokopedia.digital.home.R.dimen.product_card_width_bayar_sekaligus_todo_widget),
@@ -80,11 +80,11 @@ class RechargeHomepageTodoWidgetAdapter(
                         )
                     }
                     viewStickyLayout.root.show()
-                    viewStickyLayout.tgTitleTodoWidget.text = stickyLayoutFirst.title
-                    viewStickyLayout.tgSubTitleTodoWidget.text = stickyLayoutFirst.subtitle
+                    viewStickyLayout.tgTitleTodoWidget.text = stickyLayout.title
+                    viewStickyLayout.tgSubTitleTodoWidget.text = stickyLayout.subtitle
                     viewStickyLayout.imgTodoWidgetBackground.loadImage(TokopediaImageUrl.RECHARGE_SUBHOME_TODO_WIDGET)
                     viewStickyLayout.root.setOnClickListener {
-                        todoWidgetListener.onClickTodoWidget(stickyLayoutFirst.appLink)
+                        todoWidgetListener.onClickTodoWidget(stickyLayout.appLink)
                     }
                 } else {
                     viewStickyLayout.root.hide()
@@ -109,7 +109,7 @@ class RechargeHomepageTodoWidgetAdapter(
                     addItemDecoration(
                         RechargeTodoWidgetSpaceDecorator(
                             SPACE_DP.dpToPx(displayMetrics),
-                            (stickyLayoutFirst != null)
+                            (stickyLayout != null)
                         )
                     )
                 }
