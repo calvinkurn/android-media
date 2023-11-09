@@ -15,7 +15,8 @@ android {
                     pathSources,
                     pathSources + 'detail',
                     pathSources + 'detail/a_plus_content',
-                    pathSources + 'detail/bmgm'
+                    pathSources + 'detail/bmgm',
+                    pathSources + 'detail/review',
             ]
         }
         androidTest {
