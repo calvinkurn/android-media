@@ -10,6 +10,8 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
 import com.tokopedia.logisticcart.shipping.model.InsuranceWidgetUiModel
@@ -36,6 +38,7 @@ class CheckoutOrderViewHolder(
         renderAddOnOrderLevel(order)
         renderShippingWidget(order, addressModel)
         renderVibration(order)
+        renderDropshipWidget(order)
     }
 
     private fun renderAddOnOrderLevel(order: CheckoutOrderModel) {
@@ -322,6 +325,18 @@ class CheckoutOrderViewHolder(
             )
             coachMark.showCoachMark(coachMarkItem, null, 0)
             plusCoachmarkPrefs.setPlusCoachmarkHasShown(true)
+        }
+    }
+
+    private fun renderDropshipWidget(order: CheckoutOrderModel) {
+        if (order.shipment.courierItemData?.isSelected == true && order.shipment.courierItemData.isAllowDropshiper) {
+            binding.dropshipWidget.visible()
+        } else {
+            binding.dropshipWidget.apply {
+                gone()
+                dropshipName?.editText?.setText("")
+                dropshipPhone?.editText?.setText("")
+            }
         }
     }
 
