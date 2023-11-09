@@ -306,18 +306,40 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
             tpgSectionTitlePharmacyInformation.isVisible = isPharmacy
             tpgShopPharmacyNearestPickup.isVisible = isPharmacy
-            tpgShopPharmacyPharmacistOpsHour.isVisible = isPharmacy && expandPharmacyInfo
+            layoutShopPharmacyOpsHourContainer.isVisible = isPharmacy && expandPharmacyInfo
             tpgShopPharmacyPharmacistName.isVisible = isPharmacy && expandPharmacyInfo
             tpgShopPharmacySiaNumber.isVisible = isPharmacy && expandPharmacyInfo
             tpgShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
 
             if (isPharmacy) {
                 tpgShopPharmacyNearestPickup.text = uiState.pharmacy.nearestPickupAddress.ifEmpty { "-" }
-                tpgShopPharmacyPharmacistOpsHour.text = uiState.pharmacy.pharmacistOperationalHour.joinToString(separator = "\n") { it }.ifEmpty { "-" }
+                renderPharmacyOperationalHours(uiState.pharmacy.pharmacistOperationalHour)
                 tpgShopPharmacyPharmacistName.text = uiState.pharmacy.pharmacistName.ifEmpty { "-" }
                 tpgShopPharmacySiaNumber.text = uiState.pharmacy.siaNumber.ifEmpty { "-" }
                 tpgShopPharmacySipaNumber.text = uiState.pharmacy.sipaNumber.ifEmpty { "-" }
             }
+        }
+    }
+    
+    private fun renderPharmacyOperationalHours(pharmacyOperationalHours: List<String>) {
+        binding?.layoutShopPharmacyOpsHourContainer?.removeAllViews()
+        
+        pharmacyOperationalHours.forEach { operationalHour ->
+            val textViewOperationalHour = Typography(context ?: return).apply {
+                setType(Typography.DISPLAY_2)
+                setTextColor(ContextCompat.getColor(this.context, unifyprinciplesR.color.Unify_NN950))
+
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                
+                params.topMargin = MARGIN_4_DP.toPx()
+                layoutParams = params
+            }
+
+            textViewOperationalHour.text = operationalHour
+            binding?.layoutShopPharmacyOpsHourContainer?.addView(textViewOperationalHour)
         }
     }
 

@@ -357,7 +357,7 @@
                 android:layout_marginEnd="16dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                tools:visibility="gone"
+                tools:visibility="visible"
                 android:text="@string/shop_info_view_more"
                 android:textColor="@color/Unify_GN500"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -369,7 +369,7 @@
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/iconViewPharmacyLocation"
                 android:layout_width="16dp"
-                tools:visibility="visible"
+                tools:visibility="gone"
                 android:layout_height="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
@@ -392,7 +392,7 @@
                 app:layout_constraintTop_toTopOf="@+id/iconViewPharmacyLocation"
                 app:typographyType="display_3"
                 app:typographyWeight="bold"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrierPharmacyNearestPickup"
@@ -421,18 +421,18 @@
                 app:layout_constraintTop_toBottomOf="@+id/barrierPharmacyNearestPickup"
                 app:typographyType="display_3" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgShopPharmacyPharmacistOpsHour"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/layoutShopPharmacyOpsHourContainer"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
+                android:orientation="vertical"
                 android:layout_marginEnd="16dp"
-                android:textColor="@color/Unify_NN950"
+                tools:layout_heigh="140dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/labelShopPharmacyPharmacistOpsHour"
-                app:typographyType="display_2"
                 tools:text="Senin-Rabu, Jumat: 07:00 - 18:00" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -448,7 +448,7 @@
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tpgShopPharmacyPharmacistOpsHour"
+                app:layout_constraintTop_toBottomOf="@+id/layoutShopPharmacyOpsHourContainer"
                 app:typographyType="display_3" />
 
             <com.tokopedia.unifyprinciples.Typography
