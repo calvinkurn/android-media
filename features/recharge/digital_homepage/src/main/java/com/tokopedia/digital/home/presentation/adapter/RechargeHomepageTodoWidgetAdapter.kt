@@ -21,6 +21,8 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.digital.home.R as digitalhomeR
 
 class RechargeHomepageTodoWidgetAdapter(
     var items: List<RechargeHomepageSections.Item>,
@@ -74,16 +76,16 @@ class RechargeHomepageTodoWidgetAdapter(
                 if (stickyLayout != null) {
                     rvTodoWidget.apply {
                         setMargin(
-                            getDimens(com.tokopedia.digital.home.R.dimen.product_card_width_bayar_sekaligus_todo_widget),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            getDimens(digitalhomeR.dimen.product_card_width_bayar_sekaligus_todo_widget),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0)
                         )
                         setPadding(
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            getDimens(unifyprinciplesR.dimen.unify_space_8),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_24),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0)
                         )
                     }
                     viewStickyLayout.root.show()
@@ -98,17 +100,17 @@ class RechargeHomepageTodoWidgetAdapter(
                     viewStickyLayout.root.hide()
                     rvTodoWidget.apply {
                         setMargin(
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0)
                         )
 
                         setPadding(
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            getDimens(unifyprinciplesR.dimen.unify_space_16),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_24),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0)
                         )
                     }
                 }
@@ -135,7 +137,7 @@ class RechargeHomepageTodoWidgetAdapter(
     private fun setStickyHeightMatchParent(binding: ViewRechargeHomeTodoWidgetBinding) {
         with(binding) {
             val layoutParams = viewStickyLayout.root.layoutParams
-            layoutParams?.height = android.view.ViewGroup.LayoutParams.MATCH_PARENT
+            layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
             viewStickyLayout.root.layoutParams = layoutParams
         }
     }

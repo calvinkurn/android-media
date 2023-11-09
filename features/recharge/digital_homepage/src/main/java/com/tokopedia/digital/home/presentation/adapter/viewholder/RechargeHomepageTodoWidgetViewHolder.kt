@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 class RechargeHomepageTodoWidgetViewHolder(
     val binding: ViewRechargeHomeListTodoWidgetBinding,
     val listener: RechargeHomepageItemListener,
-    val todoWidgetListener: RechargeHomepageTodoWidgetListener,
+    private val todoWidgetListener: RechargeHomepageTodoWidgetListener,
 ) : AbstractViewHolder<RechargeHomepageTodoWidgetModel>(binding.root) {
 
     companion object {

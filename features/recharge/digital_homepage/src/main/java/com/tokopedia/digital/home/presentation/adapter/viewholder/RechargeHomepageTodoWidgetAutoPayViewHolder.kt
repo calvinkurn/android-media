@@ -14,11 +14,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.digital.home.R as digitalhomeR
 
 class RechargeHomepageTodoWidgetAutoPayViewHolder(
     val binding: ViewRechargeHomeTodoWidgetAutopayBinding,
-    val todoWidgetListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener,
-    val closeItemListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetCloseProcess
+    private val todoWidgetListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener,
+    private val closeItemListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetCloseProcess
 ) : AbstractViewHolder<RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel>(
     binding.root
 ) {
@@ -26,13 +28,15 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_todo_widget_autopay
+        private const val MAX_LINE_NON_CATEGORY = 1
+        private const val MAX_LINE_CATEGORY = 2
     }
 
     override fun bind(element: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel) {
-        renderCommonTodoLayout(binding, element)
+        renderTodoLayout(binding, element)
     }
 
-    fun renderCommonTodoLayout(
+    private fun renderTodoLayout(
         binding: ViewRechargeHomeTodoWidgetAutopayBinding,
         element: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel
     ) {
@@ -55,9 +59,9 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
                 tgPriceTodoWidget.text = widget.price
 
                 if (widget.type.startsWith(CATEGORY_TYPE)) {
-                    tgFavoriteNumberTodoWidget.maxLines = 2
+                    tgFavoriteNumberTodoWidget.maxLines = MAX_LINE_CATEGORY
                 } else {
-                    tgFavoriteNumberTodoWidget.maxLines = 1
+                    tgFavoriteNumberTodoWidget.maxLines = MAX_LINE_NON_CATEGORY
                 }
 
                 if (widget.price.isEmpty()) {
@@ -69,10 +73,10 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
 
                     tgFavoriteNumberTodoWidget.apply {
                         setMargin(
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_32),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_32),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0)
                         )
                     }
                 } else {
@@ -84,10 +88,10 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
 
                     tgFavoriteNumberTodoWidget.apply {
                         setMargin(
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_12),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0)
                         )
                     }
                 }
@@ -110,10 +114,10 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
 
                     btnMainTodoWidget.apply {
                         setMargin(
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_8),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0)
                         )
                     }
                 } else {
@@ -121,10 +125,10 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
 
                     btnMainTodoWidget.apply {
                         setMargin(
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0),
+                            getDimens(unifyprinciplesR.dimen.unify_space_0)
                         )
                     }
                 }
@@ -163,8 +167,10 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
                 }
 
                 setCardHeightMatchParent()
-                setCardWidth(widget.type.startsWith(POSTPAIDREMINDER_TYPE) ||
-                    widget.type.startsWith(CATEGORY_TYPE))
+                setCardWidth(
+                    widget.type.startsWith(POSTPAIDREMINDER_TYPE) ||
+                    widget.type.startsWith(CATEGORY_TYPE)
+                )
             }
         }
     }
@@ -180,7 +186,11 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
     private fun setCardWidth(isPostPaid: Boolean) {
         with(binding) {
             val layoutParams = todoWidgetMainCard.layoutParams
-            layoutParams?.width = if (isPostPaid)  todoWidgetMainCard.getDimens(com.tokopedia.digital.home.R.dimen.todo_widget_autopay) else ViewGroup.LayoutParams.MATCH_PARENT
+            layoutParams?.width = if (isPostPaid) {
+                todoWidgetMainCard.getDimens(digitalhomeR.dimen.todo_widget_autopay)
+            } else {
+                ViewGroup.LayoutParams.MATCH_PARENT
+            }
             todoWidgetMainCard.layoutParams = layoutParams
         }
     }
