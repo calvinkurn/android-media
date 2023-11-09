@@ -1,11 +1,11 @@
-package com.tokopedia.promocheckout.common.view.widget
+package com.tokopedia.promousage.view.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextSwitcher
-import com.tokopedia.promocheckout.common.R
+import com.tokopedia.promousage.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 /**
