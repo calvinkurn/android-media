@@ -63,7 +63,7 @@ object ViewToViewBottomSheetTracker : BaseTrackerConst() {
         anchorProductId: String,
         trackingQueue: TrackingQueue?
     ) {
-        val productList = arrayListOf(product.asDataLayer(position + 1))
+        val productList = arrayListOf(product.asDataLayer(position + 1, anchorProductId))
 
         val dataLayer = DataLayer.mapOf(
             Event.KEY, PRODUCT_VIEW,
@@ -73,7 +73,7 @@ object ViewToViewBottomSheetTracker : BaseTrackerConst() {
             BusinessUnit.KEY, BusinessUnit.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
             TRACKER_ID, IMPRESSION_TRACKER_ID,
-            ITEM_LIST, product.asItemList(),
+            ITEM_LIST, product.asItemList(anchorProductId),
             Ecommerce.KEY,
             DataLayer.mapOf(
                 CURRENCY_CODE,
@@ -102,9 +102,9 @@ object ViewToViewBottomSheetTracker : BaseTrackerConst() {
             putString(BUSINESS_UNIT, BUSINESS_UNIT_HOME)
             putString(CURRENT_SITE, CURRENT_SITE_MP)
             putString(TRACKER_ID, CLICK_TRACKER_ID)
-            putString(ITEM_LIST, product.asItemList())
+            putString(ITEM_LIST, product.asItemList(anchorProductId))
 
-            val bundlePromotion = product.asBundle(position + 1)
+            val bundlePromotion = product.asBundle(position + 1, anchorProductId = anchorProductId)
             val list = arrayListOf(bundlePromotion)
             putParcelableArrayList(ITEMS, list)
 
@@ -129,7 +129,7 @@ object ViewToViewBottomSheetTracker : BaseTrackerConst() {
             putString(CURRENT_SITE, CURRENT_SITE_MP)
             putString(TRACKER_ID, ATC_TRACKER_ID)
 
-            val bundlePromotion = product.asBundle(product.position + 1, isAtc = true)
+            val bundlePromotion = product.asBundle(product.position + 1, isAtc = true, anchorProductId = anchorProductId)
             val list = arrayListOf(bundlePromotion)
             putParcelableArrayList(ITEMS, list)
 
@@ -139,14 +139,14 @@ object ViewToViewBottomSheetTracker : BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, itemBundle)
     }
 
-    private fun RecommendationItem.asItemList(): String {
+    private fun RecommendationItem.asItemList(anchorProductId: String): String {
         val isTopAds = if (isTopAds) TOPADS else NONTOPADS
         return ITEM_LIST_TEMPLATE.format((position + 1).toString(), recommendationType, isTopAds, anchorProductId)
     }
 
-    private fun RecommendationItem.asBundle(position: Int, isAtc: Boolean = false): Bundle {
+    private fun RecommendationItem.asBundle(position: Int, isAtc: Boolean = false, anchorProductId: String): Bundle {
         return Bundle().apply {
-            putString(DIMENSION_40, asItemList())
+            putString(DIMENSION_40, asItemList(anchorProductId))
             if (isAtc) {
                 putString(CATEGORY_ID, departmentId.toString())
                 putString(DIMENSION_45, cartId)
@@ -166,9 +166,9 @@ object ViewToViewBottomSheetTracker : BaseTrackerConst() {
         }
     }
 
-    private fun RecommendationItem.asDataLayer(position: Int): Map<String, Any> {
+    private fun RecommendationItem.asDataLayer(position: Int, anchorProductId: String): Map<String, Any> {
         return hashMapOf(
-            DIMENSION_40 to asItemList(),
+            DIMENSION_40 to asItemList(anchorProductId),
             ITEM_BRAND to "",
             ITEM_CATEGORY to categoryBreadcrumbs,
             ITEM_ID to productId.toString(),
