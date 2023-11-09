@@ -10,9 +10,8 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Environment
 import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.ONE
+import java.io.File
 import java.lang.ref.WeakReference
-import java.net.URI
 
 class DownloadManagerNakamaProgressDialog(
     private val progressDialog: ProgressDialog?,
@@ -23,6 +22,7 @@ class DownloadManagerNakamaProgressDialog(
         private const val MAX_PROGRESS = 100
         private const val MESSAGE_PREPARE_DOWNLOAD = "Preparing to download..."
         private const val MESSAGE_DOWNLOADING = "Downloading new version..."
+        private const val VERSION_PARAM = "version"
     }
 
     init {
@@ -33,17 +33,15 @@ class DownloadManagerNakamaProgressDialog(
         weakActivity.get()?.let { ContextCompat.getSystemService(it, DownloadManager::class.java) }
     }
 
-    private val downloadCompleteReceiver = object : BroadcastReceiver() {
+    private val downloadProcessReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            if (downloadID == id) {
-                setDialogPending()
-                handleDownloadCompletion()
-            }
+            setDialogPending()
+            handleDownloadCompletion()
         }
     }
 
     private var downloadID = -1L
+    private var fileName = ""
 
     fun startDownload(
         apkUrl: String
@@ -52,8 +50,8 @@ class DownloadManagerNakamaProgressDialog(
         val request = getDownloadRequest(apkUrl)
 
         weakActivity.get()?.registerReceiver(
-            downloadCompleteReceiver,
-            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+            downloadProcessReceiver,
+            IntentFilter(DownloadManager.ACTION_NOTIFICATION_CLICKED)
         )
 
         downloadID = downloadManager?.enqueue(request) ?: -1L
@@ -80,6 +78,7 @@ class DownloadManagerNakamaProgressDialog(
                             progressDialog?.progress = MAX_PROGRESS
                             finishDownload = true
                             changeStyleAndHideProgressDialog()
+                            updateInstallApk(fileName)
                         }
 
                         DownloadManager.STATUS_FAILED -> {
@@ -112,25 +111,32 @@ class DownloadManagerNakamaProgressDialog(
     }
 
     private fun getDownloadRequest(
-        apkUrl: String,
-        authorization: String = ""
+        apkUrl: String
     ): DownloadManager.Request {
-        val fileName = getFileNameFromUrl(apkUrl)
+        this.fileName = getFileNameFromUrl(apkUrl)
 
         return DownloadManager.Request(Uri.parse(apkUrl))
             .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
             .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
             .setTitle(fileName)
-//            .addRequestHeader(HEADER_AUTHORIZATION, authorization)
             .setAllowedOverRoaming(true)
             .setAllowedOverMetered(true)
             .setDescription(fileName)
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
     }
 
+    private fun updateInstallApk(fileName: String) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(
+            Uri.fromFile(File(fileName)),
+            "application/vnd.android.package-archive"
+        )
+        weakActivity.get()?.startActivity(intent)
+    }
+
     private fun getFileNameFromUrl(url: String): String {
-        val path = URI(url).path
-        return path.substring(path.lastIndexOf('/') + Int.ONE)
+        val uri = Uri.parse(url)
+        return "${uri.getQueryParameter(VERSION_PARAM).orEmpty()}.apk"
     }
 
     private fun initDialog() {
