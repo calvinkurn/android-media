@@ -222,15 +222,13 @@ class WidgetPofFooter @JvmOverloads constructor(
                 binding.tvPofFooterTitle.id,
                 ConstraintSet.TOP,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.TOP,
-                getDimens(R.dimen.som_pof_footer_vertical_distance)
+                ConstraintSet.TOP
             )
             connect(
                 binding.tvPofFooterTitle.id,
                 ConstraintSet.BOTTOM,
                 binding.layoutPofFooterPrice.id,
-                ConstraintSet.TOP,
-                Int.ZERO
+                ConstraintSet.TOP
             )
             connect(
                 binding.tvPofFooterTitle.id,
@@ -254,15 +252,13 @@ class WidgetPofFooter @JvmOverloads constructor(
                 binding.tvPofFooterTitle.id,
                 ConstraintSet.TOP,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.TOP,
-                getDimens(R.dimen.som_pof_footer_vertical_distance)
+                ConstraintSet.TOP
             )
             connect(
                 binding.tvPofFooterTitle.id,
                 ConstraintSet.BOTTOM,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.BOTTOM,
-                getDimens(R.dimen.som_pof_footer_vertical_distance)
+                ConstraintSet.BOTTOM
             )
             connect(
                 binding.tvPofFooterTitle.id,
@@ -289,15 +285,13 @@ class WidgetPofFooter @JvmOverloads constructor(
                 binding.layoutPofFooterPrice.id,
                 ConstraintSet.TOP,
                 binding.tvPofFooterTitle.id,
-                ConstraintSet.BOTTOM,
-                Int.ZERO
+                ConstraintSet.BOTTOM
             )
             connect(
                 binding.layoutPofFooterPrice.id,
                 ConstraintSet.BOTTOM,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.BOTTOM,
-                getDimens(R.dimen.som_pof_footer_vertical_distance)
+                ConstraintSet.BOTTOM
             )
             connect(
                 binding.layoutPofFooterPrice.id,
@@ -320,15 +314,13 @@ class WidgetPofFooter @JvmOverloads constructor(
                 binding.layoutPofFooterPrice.id,
                 ConstraintSet.TOP,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.TOP,
-                getDimens(R.dimen.som_pof_footer_vertical_distance)
+                ConstraintSet.TOP
             )
             connect(
                 binding.layoutPofFooterPrice.id,
                 ConstraintSet.BOTTOM,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.BOTTOM,
-                getDimens(R.dimen.som_pof_footer_vertical_distance)
+                ConstraintSet.BOTTOM
             )
             clear(binding.layoutPofFooterPrice.id, ConstraintSet.START)
             connect(
