@@ -73,7 +73,7 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
 
         if (rv_comparison_widget?.itemDecorationCount == 0) {
             rv_comparison_widget?.addItemDecoration(ComparisonWidgetDecoration())
-            rv_compared_item?.addItemDecoration(ComparisonWidgetDecoration())
+            rv_compared_item?.addItemDecoration(ComparisonWidgetAnchorDecoration())
         }
         switchToCollapsedState(resources.getDimensionPixelSize(R.dimen.comparison_widget_collapsed_height))
     }
@@ -188,40 +188,27 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
 
     private fun switchToCollapsedState(collapsedHeight: Int) {
         if (isExpandingState()) {
-            val layoutParams = rv_comparison_widget?.layoutParams
-            layoutParams?.height = collapsedHeight
-            rv_comparison_widget?.layoutParams = layoutParams
-            adapter?.notifyDataSetChanged()
-
             val layoutParamsComparedItem = rv_compared_item?.layoutParams
             layoutParamsComparedItem?.height = collapsedHeight
             rv_compared_item?.layoutParams = layoutParamsComparedItem
             comparedAdapter?.notifyDataSetChanged()
+            adapter?.notifyDataSetChanged()
         }
     }
 
     private fun switchToExpandState() {
         if (!isExpandingState()) {
-            val layoutParams = ConstraintLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            rv_comparison_widget?.layoutParams = layoutParams
-            adapter?.notifyDataSetChanged()
-
-            val layoutParamsComparedItem = ConstraintLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
+            val layoutParamsComparedItem = rv_compared_item?.layoutParams
+            layoutParamsComparedItem?.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
             rv_compared_item?.layoutParams = layoutParamsComparedItem
             btn_collapse?.visibility = View.GONE
             comparedAdapter?.notifyDataSetChanged()
+            adapter?.notifyDataSetChanged()
         }
     }
 
     private fun isExpandingState(): Boolean {
-        return rv_comparison_widget?.layoutParams?.width == LinearLayout.LayoutParams.MATCH_PARENT &&
-            rv_comparison_widget?.layoutParams?.height == LinearLayout.LayoutParams.WRAP_CONTENT
+        return rv_compared_item?.layoutParams?.height == ConstraintLayout.LayoutParams.WRAP_CONTENT
     }
 
     override fun onDetachedFromWindow() {

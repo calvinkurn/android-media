@@ -32,7 +32,7 @@ class ComparedItemAdapter(
     }
 
     override fun getItemCount(): Int {
-        return comparisonListModel.comparisonData.size
+        return comparisonListModel.comparisonData.size - 1
     }
 
     //viewType == position
@@ -41,15 +41,15 @@ class ComparedItemAdapter(
     }
 
     override fun onBindViewHolder(holder: ComparisonWidgetComparedItemViewHolder, position: Int) {
-        if (position < comparisonListModel.comparisonData.size) {
+        val nonAnchorPosition = position + 1
+        if (nonAnchorPosition < comparisonListModel.comparisonData.size) {
             holder.bind(
-                comparisonListModel.comparisonData[position],
+                comparisonListModel.comparisonData[nonAnchorPosition],
                 comparisonListModel,
                 comparisonWidgetInterface,
                 recommendationTrackingModel,
                 trackingQueue,
                 userSessionInterface,
-                position
             )
         }
     }
