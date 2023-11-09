@@ -90,6 +90,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                                 widgetSource
                             )
                             listener?.onCreationNextClicked(it)
+                            dismiss()
                         }
                     },
                     onRetryClicked = {
