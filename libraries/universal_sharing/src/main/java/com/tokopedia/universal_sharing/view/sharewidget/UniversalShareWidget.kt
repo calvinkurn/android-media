@@ -29,6 +29,7 @@ import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.model.LinkShareWidgetProperties
 import com.tokopedia.universal_sharing.view.model.ShareWidgetParam
 import com.tokopedia.universal_sharing.view.sharewidget.LinkerResultWidget
@@ -38,6 +39,7 @@ import com.tokopedia.usecase.coroutines.Success
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.universal_sharing.R as universal_sharingR
 
 class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
@@ -148,6 +150,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
             UniversalShareConst.RemoteConfigKey.VALUE_VARIANT_B -> {
                 if (SharingUtil.isAppInstalled(context, getPackageName())) {
                     binding?.shareChannel?.setImage(iconUnifyId)
+                    mapColorIcon()
                     isDirectChannel = true
                 } else {
                     binding?.shareChannel?.setImage(IconUnify.SHARE_MOBILE)
@@ -166,6 +169,15 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
             }
         }
         setOnClickChannel()
+    }
+
+    private fun mapColorIcon() {
+        when (iconUnifyId) {
+            IconUnify.WHATSAPP_SHARE -> {
+                val colorRes = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
+                binding?.shareChannel?.setColorFilter(colorRes, PorterDuff.Mode.SRC_ATOP)
+            }
+        }
     }
 
     private fun setOnClickChannel() {
@@ -271,9 +283,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                             }
                         }
 
-                        if (result.data.affiliateEligibility?.isEligible.orFalse() &&
-                            result.data.affiliateEligibility?.isRegistered.orFalse()
-                        ) {
+                        if (eligibleGenerateAffiliateLink(result.data)) {
                             isAffiliate = true
                         }
                     }
@@ -284,6 +294,11 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                 }
             }
         }
+    }
+
+    private fun eligibleGenerateAffiliateLink(data: GenerateAffiliateLinkEligibility): Boolean {
+        return data.affiliateEligibility?.isEligible.orFalse() &&
+            data.affiliateEligibility?.isRegistered.orFalse()
     }
 
     /**
