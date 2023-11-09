@@ -63,7 +63,7 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
 
     private fun getViewHolder(classType: Class<*>): AbstractViewHolder<out Visitable<*>>? {
         val index = currentList.indexOfFirst { it::class.java == classType }
-        return mRecyclerView?.findViewHolderForAdapterPosition(index) as AbstractViewHolder<out Visitable<*>>?
+        return mRecyclerView?.findViewHolderForAdapterPosition(index) as? AbstractViewHolder<out Visitable<*>>
     }
 
     private fun onResumeSpecialRelease() {
