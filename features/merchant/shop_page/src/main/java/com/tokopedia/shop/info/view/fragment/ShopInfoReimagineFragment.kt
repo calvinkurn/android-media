@@ -15,6 +15,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
@@ -37,6 +40,8 @@ import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
+import com.tokopedia.shop.info.view.model.ShopInfoUiEffect
+import com.tokopedia.shop.info.view.model.ShopInfoUiEvent
 import com.tokopedia.shop.info.view.model.ShopInfoUiState
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoReimagineViewModel
 import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
@@ -111,9 +116,10 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         applyUnifyBackgroundColor()
         setupView()
         observeUiState()
+        observeUiEffect()
 
         val localCacheModel = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: return
-        viewModel.getShopInfo(shopId, localCacheModel)
+        viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, localCacheModel))
         registerBackPressEvent()
     }
 
@@ -128,8 +134,18 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun setupView() {
         binding?.run {
-            tpgShopPharmacyCtaViewAll.setOnClickListener { viewModel.handleCtaExpandPharmacyInfoClick() }
-            tpgShopPharmacyCtaViewMaps.setOnClickListener { viewModel.handleCtaViewPharmacyMapClick() }
+            tpgCtaExpandPharmacyInfo.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapCtaExpandShopPharmacyInfo)
+            }
+            tpgCtaViewPharmacyMap.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapCtaViewPharmacyLocation)
+            }
+            iconChevronShopLocation.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapIconViewShopLocation)
+            }
+            iconChevronReview.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapIconViewAllShopReview)
+            }
         }
     }
 
@@ -149,7 +165,21 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             else -> renderMainContent(uiState)
         }
     }
+    private fun observeUiEffect() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEffect.collect { event -> handleEffect(event) }
+        }
+    }
 
+    private fun handleEffect(effect: ShopInfoUiEffect) {
+        when (effect) {
+            is ShopInfoUiEffect.RedirectToGmaps -> redirectToGmaps(effect.gmapsUrl)
+            is ShopInfoUiEffect.RedirectToReviewDetailPage -> redirectToReviewDetailPage(effect.reviewId)
+            is ShopInfoUiEffect.RedirectToShopReviewPage -> redirectToShopReviewPage(effect.shopId)
+            is ShopInfoUiEffect.ShowShopLocationBottomSheet -> showShopLocationBottomSheet(effect.locations)
+        }
+    }
+    
     private fun renderLoadingState() {
         binding?.loader?.visible()
         binding?.mainContent?.gone()
@@ -258,8 +288,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             labelShopPharmacySiaNumber.isVisible = isPharmacy && expandPharmacyInfo
             labelShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
             
-            tpgShopPharmacyCtaViewAll.isVisible = isPharmacy && !expandPharmacyInfo
-            tpgShopPharmacyCtaViewMaps.isVisible = isPharmacy && expandPharmacyInfo
+            tpgCtaExpandPharmacyInfo.isVisible = isPharmacy && !expandPharmacyInfo
+            tpgCtaViewPharmacyMap.isVisible = isPharmacy && expandPharmacyInfo
             
             tpgSectionTitlePharmacyInformation.isVisible = isPharmacy
             tpgShopPharmacyNearestPickup.isVisible = isPharmacy
@@ -445,5 +475,28 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         constraintSet.connect(R.id.imgShopBadge, ConstraintSet.BOTTOM, R.id.imgShop, ConstraintSet.BOTTOM)
 
         constraintSet.applyTo(binding?.constraintLayout)
+    }
+
+    private fun redirectToGmaps(gmapsUrl: String) {
+        if (!isAdded) return
+        if (gmapsUrl.isEmpty()) return
+    }
+    private fun redirectToReviewDetailPage(reviewId: String) {
+        if (!isAdded) return
+        if (reviewId.isEmpty()) return
+        
+    }
+    private fun redirectToShopReviewPage(shopId: String) {
+        if (!isAdded) return
+        if (shopId.isEmpty()) return
+
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, shopId, "shop-page")
+        RouteManager.route(context, appLink)
+    }
+
+    private fun showShopLocationBottomSheet(locations: List<String>) {
+        if (!isAdded) return
+        if (locations.isEmpty()) return
+
     }
 }

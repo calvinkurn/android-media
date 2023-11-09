@@ -54,5 +54,6 @@ data class ShopInfoUiState(
         sipaNumber = "",
         expandPharmacyInfo = true
     ),
-    val error: Throwable? = null
+    val error: Throwable? = null,
+    val shopId: String = ""
 )

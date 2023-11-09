@@ -26,12 +26,16 @@ import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopRatingAndTopicsUseCase
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopReviewReadingListUseCase
+import com.tokopedia.shop.info.view.model.ShopInfoUiEffect
+import com.tokopedia.shop.info.view.model.ShopInfoUiEvent
 import com.tokopedia.shop.info.view.model.ShopInfoUiState
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
@@ -57,13 +61,29 @@ class ShopInfoReimagineViewModel @Inject constructor(
     
     private val _uiState = MutableStateFlow(ShopInfoUiState())
     val uiState = _uiState.asStateFlow()
-    
 
-    fun getShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
+    private val _uiEffect = MutableSharedFlow<ShopInfoUiEffect>(replay = 1)
+    val uiEffect = _uiEffect.asSharedFlow()
+
+    private val currentState: ShopInfoUiState
+        get() = _uiState.value
+    
+    fun processEvent(event: ShopInfoUiEvent) {
+        when(event) {
+            is ShopInfoUiEvent.GetShopInfo -> handleGetShopInfo(event.shopId, event.localCacheModel)
+            ShopInfoUiEvent.TapCtaExpandShopPharmacyInfo -> handleCtaExpandShopPharmacyInfo()
+            ShopInfoUiEvent.TapCtaViewPharmacyLocation -> handleCtaViewPharmacyLocation()
+            ShopInfoUiEvent.TapIconViewAllShopReview -> handleViewAllReviewClick()
+            ShopInfoUiEvent.TapIconViewShopLocation -> handleViewShopLocation()
+            is ShopInfoUiEvent.RetryGetShopInfo -> handleRetryGetShopInfo(event.shopId, event.localCacheModel)
+        }
+    }
+    
+    private fun handleGetShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
         launchCatchError(
             context = coroutineDispatcherProvider.io,
             block = {
-                _uiState.update { it.copy(isLoading = true) }
+                _uiState.update { it.copy(isLoading = true, error = null, shopId = shopId) }
 
                 val shopHeaderLayoutDeferred = async { getShopPageHeaderLayout(shopId, localCacheModel) }
                 val shopRatingParam = ProductRevGetShopRatingAndTopicsUseCase.Param(shopId)
@@ -78,7 +98,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 )
                 val shopReviewDeferred = async { getShopReviewUseCase.execute(shopReviewParam) }
 
-                val shopInfoDeferred = async { getShopInfo(shopId.toIntOrZero()) }
+                val shopInfoDeferred = async { handleGetShopInfo(shopId.toIntOrZero()) }
                 val shopNotesDeferred = async { getShopNotes(shopId) }
                 val shopOperationalHoursDeferred = async { getShopOperationalHours(shopId) }
 
@@ -127,21 +147,34 @@ class ShopInfoReimagineViewModel @Inject constructor(
         )
     }
 
-    fun handleCtaExpandPharmacyInfoClick() {
+    private fun handleCtaExpandShopPharmacyInfo() {
         _uiState.update {
             it.copy(pharmacy = it.pharmacy.copy(expandPharmacyInfo = true))
         }
     }
 
-    fun handleCtaViewPharmacyMapClick() {
-        // TODO emit event redirect to gmap
+    private fun handleCtaViewPharmacyLocation() {
+        val effect =
+            ShopInfoUiEffect.RedirectToGmaps(currentState.pharmacy.nearPickupAddressGmapsUrl)
+        _uiEffect.tryEmit(effect)
     }
 
-    fun handleRetryGetShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
-        getShopInfo(shopId, localCacheModel)
+    private fun handleRetryGetShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
+        handleGetShopInfo(shopId, localCacheModel)
     }
 
-    private suspend fun getShopInfo(shopId: Int): ShopInfo {
+    private fun handleViewShopLocation() {
+        val effect = ShopInfoUiEffect.ShowShopLocationBottomSheet(currentState.info.otherLocations)
+        _uiEffect.tryEmit(effect)
+    }
+
+    private fun handleViewAllReviewClick() {
+        val effect = ShopInfoUiEffect.RedirectToShopReviewPage(currentState.shopId)
+        _uiEffect.tryEmit(effect)
+    }
+
+
+    private suspend fun handleGetShopInfo(shopId: Int): ShopInfo {
         getShopInfoUseCase.isFromCacheFirst = false
         getShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(
             shopIds = listOf(shopId),
