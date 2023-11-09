@@ -47,7 +47,7 @@ class TokoChatGeneralTest : BaseTokoChatRoomTest() {
     fun should_show_disabled_call_button() {
         // Given
         chatOrderHistoryResponse.editAndGetResponseObject {
-            it.tokochatOrderProgress.state = OrderStatusType.COMPLETED
+            it.tokochatOrderProgress.state = OrderStatusType.TOKOFOOD_COMPLETED
         }
 
         // When

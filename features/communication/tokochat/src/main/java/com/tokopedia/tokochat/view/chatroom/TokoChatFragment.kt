@@ -558,8 +558,10 @@ open class TokoChatFragment @Inject constructor(
                         updateCallIcon(state)
                         updateShowTransactionWidget(it.data.tokochatOrderProgress)
                         if (state !in listOf(
-                                OrderStatusType.CANCELLED,
-                                OrderStatusType.COMPLETED
+                                OrderStatusType.TOKOFOOD_CANCELLED,
+                                OrderStatusType.TOKOFOOD_COMPLETED,
+                                OrderStatusType.LOGISTIC_CANCELLED,
+                                OrderStatusType.LOGISTIC_COMPLETED
                             )
                         ) {
                             viewModel.updateOrderStatusParam(
@@ -589,8 +591,10 @@ open class TokoChatFragment @Inject constructor(
                 is Success -> {
                     setShowTransactionWidget(it.data.tokochatOrderProgress)
                     if (it.data.tokochatOrderProgress.state !in listOf(
-                            OrderStatusType.CANCELLED,
-                            OrderStatusType.COMPLETED
+                            OrderStatusType.TOKOFOOD_CANCELLED,
+                            OrderStatusType.TOKOFOOD_COMPLETED,
+                            OrderStatusType.LOGISTIC_CANCELLED,
+                            OrderStatusType.LOGISTIC_COMPLETED
                         )
                     ) {
                         viewModel.updateOrderStatusParam(
@@ -920,7 +924,12 @@ open class TokoChatFragment @Inject constructor(
 
             callMenu.run {
                 val isCallIconDisabled = getOrderState() in
-                    listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)
+                    listOf(
+                        OrderStatusType.TOKOFOOD_CANCELLED,
+                        OrderStatusType.TOKOFOOD_COMPLETED,
+                        OrderStatusType.LOGISTIC_CANCELLED,
+                        OrderStatusType.LOGISTIC_COMPLETED
+                    )
                 val isCallHidden = getOrderState().isBlank()
 
                 when {
@@ -977,7 +986,12 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun updateCallIcon(orderState: String) {
-        val isCompletedOrder = orderState in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)
+        val isCompletedOrder = orderState in listOf(
+            OrderStatusType.TOKOFOOD_CANCELLED,
+            OrderStatusType.TOKOFOOD_COMPLETED,
+            OrderStatusType.LOGISTIC_CANCELLED,
+            OrderStatusType.LOGISTIC_COMPLETED
+        )
         val isSameOrderStatus = orderState == getOrderState()
 
         if (isCompletedOrder) {
