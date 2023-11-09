@@ -116,8 +116,8 @@ class StoriesUploadManager @AssistedInject constructor(
                 try {
                     snapshotHelper.deleteLocalFile()
                     updateStoryStatus(uploadData, StoriesStatus.TranscodingFailed)
-                } catch (throwable: Throwable) {
-                    loggedThrowable += throwable
+                } catch (fallbackThrowable: Throwable) {
+                    loggedThrowable += fallbackThrowable
                 }
 
                 broadcastFail(uploadData)
