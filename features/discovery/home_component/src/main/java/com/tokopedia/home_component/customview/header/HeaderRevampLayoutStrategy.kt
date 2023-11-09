@@ -23,6 +23,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.home_component.R as home_componentR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
     companion object {
@@ -51,8 +53,6 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         itemView: View,
         channelHeaderContainer: ConstraintLayout?,
         stubCtaButton: View?,
-        stubSeeAllButton: View?,
-        stubSeeAllButtonUnify: View?,
         channel: ChannelModel,
         hasSeeMoreApplink: Boolean,
         hasExpiredTime: Boolean,
@@ -124,16 +124,16 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
                 ctaBorder?.loadImage(ContextCompat.getDrawable(context, R.drawable.bg_dynamic_channel_header_cta))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
-                    newLightEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900),
-                    newDarkEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                    newLightEnable = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900),
+                    newDarkEnable = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
                 )
             }
             DynamicChannelHeaderView.COLOR_MODE_INVERTED -> {
-                ctaBorder?.loadImage(ContextCompat.getDrawable(context, R.drawable.bg_dynamic_channel_header_cta_inverted))
+                ctaBorder?.loadImage(ContextCompat.getDrawable(context, home_componentR.drawable.bg_dynamic_channel_header_cta_inverted))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
-                    newLightEnable = ContextCompat.getColor(context, com.tokopedia.home_component.R.color.dms_header_cta_inverted_icon),
-                    newDarkEnable = ContextCompat.getColor(context, com.tokopedia.home_component.R.color.dms_header_cta_inverted_icon)
+                    newLightEnable = ContextCompat.getColor(context, home_componentR.color.dms_header_cta_inverted_icon),
+                    newDarkEnable = ContextCompat.getColor(context, home_componentR.color.dms_header_cta_inverted_icon)
                 )
             }
         }
@@ -147,11 +147,11 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
     ) {
         channelTitle?.setTextColor(
             if (headerColorMode == DynamicChannelHeaderView.COLOR_MODE_INVERTED) {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
             } else if (channelHeader.textColor.isNotEmpty()) {
                 Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
             } else {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
             }
         )
     }

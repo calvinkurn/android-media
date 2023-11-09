@@ -83,8 +83,6 @@ class DynamicChannelHeaderView : FrameLayout {
     private fun handleHeaderComponent(channel: ChannelModel) {
         val stubChannelTitle: View? = findViewById(home_component_headerR.id.channel_title)
         val stubCountDownView: View? = findViewById(home_component_headerR.id.count_down)
-        val stubSeeAllButton: View? = findViewById(home_component_headerR.id.see_all_button)
-        val stubSeeAllButtonUnify: View? = findViewById(home_component_headerR.id.see_all_button_unify)
         val stubChannelSubtitle: View? = findViewById(home_component_headerR.id.channel_subtitle)
         val stubCtaButton: View? = findViewById(home_component_headerR.id.cta_button)
         channelHeaderContainer?.let { channelHeaderContainer ->
@@ -94,8 +92,6 @@ class DynamicChannelHeaderView : FrameLayout {
                 this,
                 channelHeaderContainer,
                 stubCtaButton,
-                stubSeeAllButton,
-                stubSeeAllButtonUnify,
                 channel,
                 isHasSeeMoreApplink(channel),
                 hasExpiredTime(channel),
@@ -104,7 +100,7 @@ class DynamicChannelHeaderView : FrameLayout {
                 headerColorMode
             )
             handleHeaderExpiredTime(channel, stubCountDownView, channelHeaderContainer)
-            handleBackgroundColor(channel, channelHeaderContainer, stubCtaButton, stubSeeAllButtonUnify)
+            handleBackgroundColor(channel, channelHeaderContainer, stubCtaButton)
         }
     }
 
@@ -224,10 +220,9 @@ class DynamicChannelHeaderView : FrameLayout {
         channel.channelHeader.layoutStrategy.setContainerPadding(channelHeaderContainer, hasExpiredTime(channel), context.resources)
     }
 
-    private fun handleBackgroundColor(channel: ChannelModel, titleContainer: ConstraintLayout, stubSeeAllButton: View?, stubSeeAllButtonUnify: View?) {
+    private fun handleBackgroundColor(channel: ChannelModel, titleContainer: ConstraintLayout, stubSeeAllButton: View?) {
         if (channel.channelHeader.backColor.isNotEmpty()) {
             stubSeeAllButton?.gone()
-            stubSeeAllButtonUnify?.gone()
             titleContainer.setBackgroundColor(Color.parseColor(channel.channelHeader.backColor))
 
             titleContainer.setPadding(

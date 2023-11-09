@@ -6,7 +6,6 @@ internal object HeaderLayoutStrategyFactory {
     fun create(headerType: HeaderType) : HeaderLayoutStrategy {
         return when(headerType) {
             HeaderType.CHEVRON -> HeaderRevampLayoutStrategy()
-            else -> HeaderControlLayoutStrategy()
         }
     }
 }

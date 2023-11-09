@@ -11,6 +11,7 @@ import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal interface HeaderLayoutStrategy {
     fun getLayout(): Int
@@ -19,8 +20,6 @@ internal interface HeaderLayoutStrategy {
         itemView: View,
         channelHeaderContainer: ConstraintLayout?,
         stubCtaButton: View?,
-        stubSeeAllButton: View?,
-        stubSeeAllButtonUnify: View?,
         channel: ChannelModel,
         hasSeeMoreApplink: Boolean,
         hasExpiredTime: Boolean,
@@ -63,7 +62,7 @@ internal interface HeaderLayoutStrategy {
 
     fun Int.staticIfDarkMode(context: Context?): Int {
         return if(context != null && context.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
         } else this
     }
 

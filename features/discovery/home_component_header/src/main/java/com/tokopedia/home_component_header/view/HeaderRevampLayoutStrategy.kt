@@ -53,8 +53,6 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         itemView: View,
         channelHeaderContainer: ConstraintLayout?,
         stubCtaButton: View?,
-        stubSeeAllButton: View?,
-        stubSeeAllButtonUnify: View?,
         channelHeader: ChannelHeader,
         hasSeeMoreApplink: Boolean,
         hasExpiredTime: Boolean,

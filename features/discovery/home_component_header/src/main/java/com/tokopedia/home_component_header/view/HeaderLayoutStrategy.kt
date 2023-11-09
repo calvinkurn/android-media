@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal interface HeaderLayoutStrategy {
     fun getLayout(): Int
@@ -17,8 +18,6 @@ internal interface HeaderLayoutStrategy {
         itemView: View,
         channelHeaderContainer: ConstraintLayout?,
         stubCtaButton: View?,
-        stubSeeAllButton: View?,
-        stubSeeAllButtonUnify: View?,
         channelHeader: ChannelHeader,
         hasSeeMoreApplink: Boolean,
         hasExpiredTime: Boolean,
@@ -77,7 +76,7 @@ internal interface HeaderLayoutStrategy {
 
     fun Int.staticIfDarkMode(context: Context?): Int {
         return if(context != null && context.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
         } else this
     }
 
