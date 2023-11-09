@@ -27,6 +27,7 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.tokopedianow.buyercomm.domain.model.GetBuyerCommunication.GetBuyerCommunicationResponse
 import com.tokopedia.tokopedianow.buyercomm.domain.usecase.GetBuyerCommunicationUseCase
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
@@ -36,7 +37,6 @@ import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -64,6 +64,9 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestFinishedWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
@@ -91,6 +94,10 @@ import org.mockito.ArgumentMatchers.anyString
 
 @ExperimentalCoroutinesApi
 abstract class TokoNowHomeViewModelTestFixture {
+
+    protected companion object {
+        const val EXPERIMENT_VARIANT = "experiment_variant"
+    }
 
     @RelaxedMockK
     lateinit var getHomeLayoutDataUseCase: GetHomeLayoutDataUseCase
@@ -156,6 +163,9 @@ abstract class TokoNowHomeViewModelTestFixture {
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
+    lateinit var abTestPlatform: AbTestPlatform
+
+    @RelaxedMockK
     lateinit var affiliateService: NowAffiliateService
 
     @RelaxedMockK
@@ -195,6 +205,7 @@ abstract class TokoNowHomeViewModelTestFixture {
             playWidgetTools,
             addressData,
             userSession,
+            abTestPlatform,
             coroutineTestRule.dispatchers,
             addToCartUseCase,
             updateCartUseCase,
@@ -258,10 +269,28 @@ abstract class TokoNowHomeViewModelTestFixture {
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyQuestWidgetItem(expectedResponse: Visitable<*>?) {
+    protected fun verifyQuestWidgetItem(expectedVisitableItem: Visitable<*>?) {
         val homeLayoutList = viewModel.homeLayoutList.value
-        val actualResponse = (homeLayoutList as Success).data.items.find { it is HomeQuestSequenceWidgetUiModel }
-        Assert.assertEquals(expectedResponse, actualResponse)
+        val actualVisitableItem = (homeLayoutList as Success).data.items.find { it is HomeQuestSequenceWidgetUiModel }
+        Assert.assertEquals(expectedVisitableItem, actualVisitableItem)
+    }
+
+    protected fun verifyQuestWidgetItem(expectedVisitableItem: HomeQuestWidgetUiModel) {
+        val homeLayoutList = viewModel.homeLayoutList.value
+        val actualVisitableItem = (homeLayoutList as Success).data.items.find { it is HomeQuestWidgetUiModel }
+        Assert.assertEquals(expectedVisitableItem, actualVisitableItem)
+    }
+
+    protected fun verifyFinishedQuestWidgetItem(expectedVisitableItem: Visitable<*>?) {
+        val homeLayoutList = viewModel.homeLayoutList.value
+        val actualVisitableItem = (homeLayoutList as Success).data.items.find { it is HomeQuestFinishedWidgetUiModel }
+        Assert.assertEquals(expectedVisitableItem, actualVisitableItem)
+    }
+
+    protected fun verifyReloadQuestWidgetItem(expectedVisitableItem: Visitable<*>?) {
+        val homeLayoutList = viewModel.homeLayoutList.value
+        val actualVisitableItem = (homeLayoutList as Success).data.items.find { it is HomeQuestReloadWidgetUiModel }
+        Assert.assertEquals(expectedVisitableItem, actualVisitableItem)
     }
 
     protected fun verifyGetCatalogCouponListResponseSuccess(expectedResponse: Visitable<*>?) {
@@ -670,11 +699,10 @@ abstract class TokoNowHomeViewModelTestFixture {
         } throws error
     }
 
-    protected fun getOldRepurchaseProduct(): List<TokoNowProductCardUiModel> {
-        val items = (viewModel.homeLayoutList.value as? Success<HomeLayoutListUiModel>)?.data?.items.orEmpty()
-        val item = items.firstOrNull { it is com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel }
-        val repurchase = item as? com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
-        return repurchase?.productList.orEmpty()
+    protected fun onGetQuestWidgetAbTest_thenReturn(value: String) {
+        coEvery {
+            abTestPlatform.getString("now_quest")
+        } returns value
     }
 
     object UnknownHomeLayout : HomeLayoutUiModel("1") {
