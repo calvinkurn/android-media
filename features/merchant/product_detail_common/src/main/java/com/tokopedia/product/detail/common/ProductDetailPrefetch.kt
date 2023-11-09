@@ -37,12 +37,6 @@ object ProductDetailPrefetch {
         val discount: Int,
         val freeShippingLogo: String,
         val rating: String,
-        val integrity: String,
-        val containerType: String
-    ){
-        companion object{
-            const val CONTAINER_TYPE_SQUARE = "square"
-            const val CONTAINER_TYPE_PORTRAIT = "portrait"
-        }
-    }
+        val integrity: String
+    )
 }
