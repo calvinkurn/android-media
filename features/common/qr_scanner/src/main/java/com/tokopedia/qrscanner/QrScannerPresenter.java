@@ -95,7 +95,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             } else if (host.contains("tokopedia.link")) {
                 onScanBranchIOLink(barcodeData);
             } else if (host.contains("tokopedia")) {
-                openActivity(barcodeData);
+                getView().openActivity(barcodeData);
             } else {
                 getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
             }
@@ -106,7 +106,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             checkEventRedeem(barcodeData);
         } else if(isEnabledPeduliLindungi && (barcodeData.contains(PEDULI_LINDUNGI_CHECK_IN) || barcodeData.contains(PEDULI_LINDUNGI_CHECK_OUT))){
             String path = ApplinkConst.WEBVIEW + "?url=" + getView().getCallbackUrlFromPeduliLindungi() + "&payload="+barcodeData;
-            openActivity(path);
+            getView().openActivity(path);
         }
         else {
             getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
@@ -192,7 +192,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 if (!path.startsWith("tokopedia://")) {
                     path = "tokopedia://" + path;
                 }
-                openActivity(path);
+                getView().openActivity(path);
                 QRTracking.eventScanQRCode("success", "", branchIOAndroidDeepLink.getAndroidDeeplinkPath());
             }
         });
@@ -206,7 +206,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 getView().hideProgressDialog();
 
                 if (!verificationResponse.getData().getUrl().isEmpty()) {
-                    openActivity(verificationResponse.getData().getUrl());
+                    getView().openActivity(verificationResponse.getData().getUrl());
                     QRTracking.eventScanQRCode("success", idCampaign, verificationResponse.getData().getUrl());
                     getView().finish();
                     return Unit.INSTANCE;
@@ -223,10 +223,6 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 return Unit.INSTANCE;
             }
         );
-    }
-
-    public void openActivity(String url) {
-        RouteManager.route(context, url);
     }
 
     @Override
