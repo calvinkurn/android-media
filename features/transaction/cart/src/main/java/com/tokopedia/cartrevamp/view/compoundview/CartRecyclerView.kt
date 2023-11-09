@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 class CartRecyclerView : RecyclerView {
 
-    private lateinit var viewBinderHelper: ViewBinderHelper
+    private var viewBinderHelper: ViewBinderHelper = ViewBinderHelper()
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)

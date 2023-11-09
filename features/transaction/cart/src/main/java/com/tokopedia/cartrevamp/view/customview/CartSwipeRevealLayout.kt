@@ -1,5 +1,6 @@
 package com.tokopedia.cartrevamp.view.customview
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Rect
@@ -79,6 +80,7 @@ class CartSwipeRevealLayout : ViewGroup {
         defStyleAttr
     )
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         mGestureDetector!!.onTouchEvent(event)
         mDragHelper!!.processTouchEvent(event)
