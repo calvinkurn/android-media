@@ -60,6 +60,13 @@
         android:paddingEnd="12dp"
         android:paddingBottom="10dp">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/tokochat_logistic_iv_order_thumbnail"
             android:layout_width="46dp"
@@ -77,6 +84,7 @@
             app:layout_constraintTop_toTopOf="@id/tokochat_logistic_iv_order_thumbnail"
             app:layout_constraintStart_toEndOf="@id/tokochat_logistic_iv_order_thumbnail"
             app:layout_constraintEnd_toStartOf="@id/tokochat_logistic_btn_order_progress"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
             android:layout_marginStart="9dp"
             android:layout_marginEnd="8dp"
             app:typographyType="display_2"
@@ -84,6 +92,7 @@
             android:includeFontPadding="false"
             android:ellipsize="end"
             android:maxLines="1"
+            app:layout_constraintVertical_bias="1"
             android:textColor="@color/Unify_NN950"
             tools:text="Buku Disney Anak 7 Tahun"/>
 
@@ -99,19 +108,22 @@
             app:typographyType="small"
             android:ellipsize="end"
             android:maxLines="1"
-            tools:text="+2 produk lainnya"/>
+            android:visibility="gone"
+            tools:text="+2 produk lainnya"
+            tools:visibility="visible"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tokochat_logistic_tp_estimate_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tokochat_logistic_tp_additional_info"
-            app:layout_constraintStart_toStartOf="@id/tokochat_logistic_tp_additional_info"
+            app:layout_constraintStart_toStartOf="@id/tokochat_logistic_tp_order_name"
             app:layout_constraintEnd_toStartOf="@id/tokochat_logistic_tp_estimate_value"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/tokochat_logistic_iv_order_thumbnail"
             app:layout_constraintWidth_default="wrap"
             app:layout_constrainedWidth="true"
             android:layout_marginTop="8dp"
+            app:layout_goneMarginTop="0dp"
             android:includeFontPadding="false"
             android:ellipsize="end"
             android:maxLines="1"
@@ -141,9 +153,9 @@
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:minWidth="88dp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tokochat_logistic_iv_order_thumbnail"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/tokochat_logistic_iv_order_thumbnail"
             tools:text="Ulas"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

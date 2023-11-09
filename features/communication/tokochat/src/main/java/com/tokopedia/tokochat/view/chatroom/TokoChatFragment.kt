@@ -53,6 +53,7 @@ import com.tokopedia.tokochat.common.util.TokoChatValueUtil.CUSTOMER
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.DRIVER
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getFirstNameDriver
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSourceCategory
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSourceIcon
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil
@@ -718,7 +719,7 @@ open class TokoChatFragment @Inject constructor(
             if (member.ownerType == DRIVER) {
                 headerUiModel = TokoChatHeaderUiModel(
                     member.id,
-                    member.name,
+                    getFirstNameDriver(member.name),
                     member.userMetadata?.licencePlate ?: "",
                     member.profileUrl ?: "",
                     member.phone
