@@ -437,8 +437,7 @@ open class ShopHomeAdapterTypeFactory(
             }
             ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(
                 parent,
-                shopProductEtalaseListViewHolderListener,
-                shopHomeListener.isOverrideTheme()
+                shopProductEtalaseListViewHolderListener
             )
             ShopHomeNplCampaignViewHolder.LAYOUT -> {
                 ShopHomeNplCampaignViewHolder(parent, shopHomeCampaignNplWidgetListener)

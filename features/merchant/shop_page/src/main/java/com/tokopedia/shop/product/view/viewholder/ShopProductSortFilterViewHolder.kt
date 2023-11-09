@@ -15,7 +15,6 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
@@ -25,10 +24,9 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShopProductSortFilterViewHolder(
     itemView: View,
-    private val shopProductSortFilterViewHolderListener: ShopProductSortFilterViewHolderListener?,
-    private val isOverrideTheme: Boolean
+    private val shopProductSortFilterViewHolderListener: ShopProductSortFilterViewHolderListener?
 ) : AbstractViewHolder<ShopProductSortFilterUiModel>(itemView) {
-    
+
     companion object {
         @JvmStatic
         @LayoutRes
@@ -127,7 +125,6 @@ class ShopProductSortFilterViewHolder(
         }
         itemView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
         shopProductSortFilterViewHolderListener?.setSortFilterMeasureHeight(itemView.measuredHeight)
-        setupSortFilterColor()
     }
 
     /**
@@ -165,11 +162,5 @@ class ShopProductSortFilterViewHolder(
 
     private fun removeOnScrollChangedListener() {
         sortFilterWidget?.sortFilterHorizontalScrollView?.viewTreeObserver?.removeOnScrollChangedListener(scrollListener)
-    }
-    
-    private fun setupSortFilterColor() {
-        if (isOverrideTheme) {
-            viewBinding?.sortFilter?.applyColorMode(ColorMode.LIGHT_MODE)
-        }
     }
 }
