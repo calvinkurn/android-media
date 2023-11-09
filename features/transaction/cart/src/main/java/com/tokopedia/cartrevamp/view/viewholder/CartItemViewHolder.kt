@@ -188,12 +188,12 @@ class CartItemViewHolder constructor(
 
     private fun setSwipeLayoutClickListener(data: CartItemHolderData) {
         binding.apply {
-            btnSwipeDelete.setOnClickListener {
+            flSwipeDelete.setOnClickListener {
                 if (swipeLayout.isOpen()) {
                     actionListener?.onCartItemDeleteButtonClicked(data, true)
                 }
             }
-            btnSwipeDeleteBundling.setOnClickListener {
+            flSwipeDeleteBundling.setOnClickListener {
                 if (swipeLayoutBundling.isOpen()) {
                     actionListener?.onCartItemDeleteButtonClicked(data, true)
                 }
