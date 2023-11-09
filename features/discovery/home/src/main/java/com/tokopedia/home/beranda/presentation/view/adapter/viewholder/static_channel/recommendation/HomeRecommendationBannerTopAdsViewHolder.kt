@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.databinding.ItemHomeBannerTopadsLayoutBinding
+import com.tokopedia.home_component.util.toDpFloat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -37,6 +38,8 @@ class HomeRecommendationBannerTopAdsViewHolder(
     companion object {
         val LAYOUT = R.layout.item_home_banner_topads_layout
         private const val HOME_RECOM_TAB_BANNER = "home_recom_tab_banner"
+
+        private const val TDN_BANNER_ROUNDED = 8F
     }
 
     private val binding: ItemHomeBannerTopadsLayoutBinding? by viewBinding()
@@ -197,8 +200,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
         appCompatImageView: AppCompatImageView
     ) {
         recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.imageUrl?.let {
-            // todo check image rounded, 8.toDpFloat()
-            appCompatImageView.loadImageRounded(it, 16f) {
+            appCompatImageView.loadImageRounded(it, TDN_BANNER_ROUNDED.toDpFloat()) {
                 fitCenter()
                 listener(onSuccess = { _, _ ->
                     appCompatImageView.show()
