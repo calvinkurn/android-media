@@ -63,7 +63,7 @@ class CreationUploaderImpl @Inject constructor(
                                 CreationUploadResult.Unknown
                             }
                         }
-                    } catch (throwable: Throwable) {
+                    } catch (_: Throwable) {
 
                     }
                 }
