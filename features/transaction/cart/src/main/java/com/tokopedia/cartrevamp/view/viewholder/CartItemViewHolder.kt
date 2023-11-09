@@ -118,17 +118,17 @@ class CartItemViewHolder constructor(
 
     private fun initSwipeLayout(data: CartItemHolderData) {
         if (shouldInitSwipeLayout()) {
-            binderHelper.bind(binding.swipeLayout, data.cartId)
+            binderHelper.bind(binding.swipeLayout, data.getSwipeLayoutId())
             if (data.isError) {
-                binderHelper.lockSwipe(data.cartId)
+                binderHelper.lockSwipe(data.getSwipeLayoutId())
             }
             if (data.isBundlingItem) {
-                binderHelper.bind(binding.swipeLayoutBundling, "${data.cartId}|${data.bundleId}")
+                binderHelper.bind(binding.swipeLayoutBundling, data.getSwipeLayoutBundlingId())
                 if (data.isMultipleBundleProduct) {
-                    binderHelper.lockSwipe(data.cartId)
+                    binderHelper.lockSwipe(data.getSwipeLayoutId())
                 }
                 if (data.isError || !data.isMultipleBundleProduct) {
-                    binderHelper.lockSwipe("${data.cartId}|${data.bundleId}")
+                    binderHelper.lockSwipe(data.getSwipeLayoutBundlingId())
                 }
             }
             setSwipeLayoutColor()
@@ -191,11 +191,13 @@ class CartItemViewHolder constructor(
             flSwipeDelete.setOnClickListener {
                 if (swipeLayout.isOpen()) {
                     actionListener?.onCartItemDeleteButtonClicked(data, true)
+                    binderHelper.closeAll()
                 }
             }
             flSwipeDeleteBundling.setOnClickListener {
                 if (swipeLayoutBundling.isOpen()) {
                     actionListener?.onCartItemDeleteButtonClicked(data, true)
+                    binderHelper.closeAll()
                 }
             }
         }
