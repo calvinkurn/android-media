@@ -94,6 +94,7 @@ class PofViewModel @Inject constructor(
             _uiEvent.collect { event ->
                 when (event) {
                     is UiEvent.ClickRetryOnErrorState -> onClickRetryOnErrorState()
+                    is UiEvent.OnClickDismissPofBottomSheet -> onClickDismissPofBottomSheet()
                     is UiEvent.OnClickDismissSummaryBottomSheet -> onClickDismissSummaryBottomSheet()
                     is UiEvent.OnClickOpenPofInfoSummary -> onClickOpenPofInfoSummary()
                     is UiEvent.OnClickResetPofForm -> onClickResetPofForm()
@@ -111,6 +112,10 @@ class PofViewModel @Inject constructor(
 
     private fun onClickRetryOnErrorState() {
         getPofInfo(DELAY_FETCH_POF_INFO_ON_ERROR)
+    }
+
+    private fun onClickDismissPofBottomSheet() {
+        viewModelScope.launch { _uiEffect.emit(UiEffect.FinishActivity) }
     }
 
     private fun onClickDismissSummaryBottomSheet() {

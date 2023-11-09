@@ -89,10 +89,22 @@ class PofBottomSheet : BottomSheetUnify(),
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupFooter()
+        setupBottomSheet()
         collectUiState()
         collectToasterQueue()
         collectUiEffect()
         init(savedInstanceState)
+    }
+
+    private fun setupBottomSheet() {
+        setCloseClickListener { viewModel.onEvent(UiEvent.OnClickDismissPofBottomSheet) }
+        isCancelable = false
+        dialog?.setCanceledOnTouchOutside(false)
+        dialog
+            ?.window
+            ?.decorView
+            ?.findViewById<View>(materialR.id.touch_outside)
+            ?.setOnClickListener { viewModel.onEvent(UiEvent.OnClickDismissPofBottomSheet) }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

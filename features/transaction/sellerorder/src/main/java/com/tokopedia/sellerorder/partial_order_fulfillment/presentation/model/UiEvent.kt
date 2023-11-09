@@ -35,4 +35,5 @@ sealed interface UiEvent {
     object OnClickRetryFetchPofEstimate : UiEvent
     object OnClickOpenPofInfoSummary : UiEvent
     object OnClickDismissSummaryBottomSheet : UiEvent
+    object OnClickDismissPofBottomSheet : UiEvent
 }

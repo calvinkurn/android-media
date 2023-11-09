@@ -36,7 +36,7 @@ class PofActivity : BaseSimpleActivity(), HasComponent<PofComponent> {
         super.onCreate(savedInstanceState)
         handleDimming()
         hideToolbar()
-        showWriteFormBottomSheet()
+        showPofBottomSheet()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -63,7 +63,7 @@ class PofActivity : BaseSimpleActivity(), HasComponent<PofComponent> {
         findViewById<Toolbar>(abstractionR.id.toolbar)?.hide()
     }
 
-    private fun showWriteFormBottomSheet() {
+    private fun showPofBottomSheet() {
         supportFragmentManager.findFragmentByTag(PofBottomSheet.TAG).let {
             if (it == null) {
                 PofBottomSheet.createInstance(orderId, pofStatus).run {
