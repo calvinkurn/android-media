@@ -3,7 +3,6 @@ package com.tokopedia.stories.view.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.types.ResultState
@@ -56,8 +55,7 @@ import kotlinx.coroutines.launch
 class StoriesViewModel @AssistedInject constructor(
     @Assisted private val args: StoriesArgsModel,
     private val repository: StoriesRepository,
-    val userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers
+    val userSession: UserSessionInterface
 ) : ViewModel() {
 
     @AssistedFactory
