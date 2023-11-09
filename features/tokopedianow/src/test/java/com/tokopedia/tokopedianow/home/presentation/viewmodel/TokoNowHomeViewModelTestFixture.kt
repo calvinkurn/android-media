@@ -275,7 +275,7 @@ abstract class TokoNowHomeViewModelTestFixture {
         Assert.assertEquals(expectedVisitableItem, actualVisitableItem)
     }
 
-    protected fun verifyQuestWidgetItem(expectedVisitableItem: HomeQuestWidgetUiModel) {
+    protected fun verifyQuestWidgetVisitableItem(expectedVisitableItem: Visitable<*>?) {
         val homeLayoutList = viewModel.homeLayoutList.value
         val actualVisitableItem = (homeLayoutList as Success).data.items.find { it is HomeQuestWidgetUiModel }
         Assert.assertEquals(expectedVisitableItem, actualVisitableItem)

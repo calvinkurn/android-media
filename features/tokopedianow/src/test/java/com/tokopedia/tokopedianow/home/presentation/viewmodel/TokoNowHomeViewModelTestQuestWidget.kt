@@ -20,32 +20,28 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given empty quest list response when get quest list should remove widget item from visitable list`() {
-        // set mock data
         val successCode = "200"
         onGetQuestWidgetAbTest_thenReturn(EXPERIMENT_VARIANT)
         onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly())
         onGetQuestWidgetList_thenReturn(createQuestWidgetListEmpty(code = successCode))
 
-        // fetch homeLayout
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
-        // verify use case called and response
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetQuestWidgetListUseCaseCalled()
-        verifyQuestWidgetItem(null)
+        verifyQuestWidgetVisitableItem(null)
     }
 
     @Test
     fun `given error code when get quest list should add reload quest widget item to visitable list`() {
+        val errorCode = "12231"
         val finishedWidgetTitle = "\uD83C\uDF89 Hebat, semua misi berhasil selesai!"
         val finishedWidgetContentDescription = "120rb"
 
-        // set mock data
-        val errorCode = "12231"
         onGetQuestWidgetAbTest_thenReturn(EXPERIMENT_VARIANT)
         onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly(
             subtitle = finishedWidgetTitle,
@@ -53,14 +49,12 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
         ))
         onGetQuestWidgetList_thenReturn(createQuestWidgetListEmpty(code = errorCode))
 
-        // fetch homeLayout
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
-        // prepare model for expectedResult
         val expectedQuestWidgetItem = HomeQuestReloadWidgetUiModel(
             id = "55678",
             mainTitle = "Main Quest",
@@ -68,7 +62,6 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
             finishedWidgetContentDescription = finishedWidgetContentDescription
         )
 
-        // verify use case called and response
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetQuestWidgetListUseCaseCalled()
         verifyReloadQuestWidgetItem(expectedQuestWidgetItem)
@@ -76,6 +69,7 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given all quest finished when get quest list should add finished widget item to visitable list`() {
+        val successCode = "200"
         val finishedWidgetTitle = "\uD83C\uDF89 Hebat, semua misi berhasil selesai!"
         val finishedWidgetContentDescription = "120rb"
 
@@ -99,8 +93,6 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
             )
         )
 
-        // set mock data
-        val successCode = "200"
         onGetQuestWidgetAbTest_thenReturn(EXPERIMENT_VARIANT)
         onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly(
             subtitle = finishedWidgetTitle,
@@ -111,21 +103,18 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
             questWidgetList = questWidgetList
         ))
 
-        // fetch homeLayout
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
-        // prepare model for expectedResult
         val expectedQuestWidgetItem = HomeQuestFinishedWidgetUiModel(
             id = "55678",
             title = finishedWidgetTitle,
             contentDescription = finishedWidgetContentDescription
         )
 
-        // verify use case called and response
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetQuestWidgetListUseCaseCalled()
         verifyFinishedQuestWidgetItem(expectedQuestWidgetItem)
@@ -133,27 +122,23 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given get quest list throws error when get quest list should catch exception and remove the widget`() {
-        // set mock data
         onGetQuestWidgetAbTest_thenReturn(EXPERIMENT_VARIANT)
         onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly())
         onGetQuestWidgetList_thenReturn(Exception())
 
-        // fetch homeLayout
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
-        // verify use case called and response
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetQuestWidgetListUseCaseCalled()
-        verifyQuestWidgetItem(null)
+        verifyQuestWidgetVisitableItem(null)
     }
 
     @Test
-    fun `given error code when refreshQuestList should add quest widget item to visitable list`() {
-        // set the code here to make it error and need to refresh
+    fun `given error code when refreshQuestWidget should add quest widget item to visitable list`() {
         var code = "12300"
         val finishedWidgetTitle = "\uD83C\uDF89 Hebat, semua misi berhasil selesai!"
         val finishedWidgetContentDescription = "120rb"
@@ -228,24 +213,20 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
         ))
         onGetQuestWidgetList_thenReturn(createQuestWidgetList(code))
 
-        // fetch homeLayout
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
-        // set the code to make it success and get the list
         code = "200"
         onGetQuestWidgetList_thenReturn(createQuestWidgetList(
             code = code,
             questWidgetList = questWidgetList
         ))
 
-        // put home sequence ui model as param and re-fetch quest list
         viewModel.refreshQuestWidget()
 
-        // prepare model for expectedResult
         val expectedQuestWidgetItem = HomeQuestWidgetUiModel(
             id = "55678",
             title = "Main Quest",
@@ -278,36 +259,59 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
             currentProgressPosition = 1
         )
 
-        // verify use case called and response
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetQuestWidgetListUseCaseCalled()
-        verifyQuestWidgetItem(expectedQuestWidgetItem)
+        verifyQuestWidgetVisitableItem(expectedQuestWidgetItem)
     }
 
     @Test
-    fun `given get quest list throws exception when refreshQuestList should catch exception and remove the widget`() {
-        // set mock data
+    fun `given get quest list throws exception when refreshQuestWidget should catch exception and remove the widget`() {
         val successCode = "200"
         onGetQuestWidgetAbTest_thenReturn(EXPERIMENT_VARIANT)
         onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly())
         onGetQuestWidgetList_thenReturn(createQuestWidgetList(successCode))
 
-        // fetch homeLayout
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
-        // set quest widget list to throw an exception
         onGetQuestWidgetList_thenReturn(Exception())
 
-        // put home sequence ui model as param and re-fetch quest list
-        viewModel.refreshQuestList()
+        viewModel.refreshQuestWidget()
 
-        // verify use case called and response
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetQuestWidgetListUseCaseCalled()
-        verifyQuestWidgetItem(null)
+        verifyQuestWidgetVisitableItem(null)
+    }
+
+    @Test
+    fun `given get quest list throws error when refreshQuestWidget should catch exception and remove the widget`() {
+        val successCode = "200"
+        onGetQuestWidgetAbTest_thenReturn(EXPERIMENT_VARIANT)
+        onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly())
+        onGetQuestWidgetList_thenReturn(createQuestWidgetList(successCode))
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+
+        onGetQuestWidgetList_thenReturn(Exception())
+
+        viewModel.refreshQuestWidget()
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetQuestWidgetListUseCaseCalled()
+        verifyQuestWidgetVisitableItem(null)
+    }
+
+    @Test
+    fun `given get quest item not in visitable list when refreshQuestWidget should not call get quest list`() {
+        viewModel.refreshQuestWidget()
+
+        verifyGetQuestWidgetListUseCaseNotCalled()
     }
 }
