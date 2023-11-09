@@ -214,7 +214,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private fun setUpSecondaryButton(thanksPageData: ThanksPageData) {
         btn_see_transaction_list.shouldShowWithAction(
-            thanksPageData.configFlagData?.shouldHideOrderButton != false
+            thanksPageData.configFlagData?.shouldHideOrderButton == false
         ) {
             btn_see_transaction_list.setOnClickListener {
                 if (thanksPageData.customDataAppLink == null ||
