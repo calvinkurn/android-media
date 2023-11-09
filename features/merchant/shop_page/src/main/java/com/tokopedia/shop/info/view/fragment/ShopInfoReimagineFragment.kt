@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -320,10 +321,10 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             }
         }
     }
-    
+
     private fun renderPharmacyOperationalHours(pharmacyOperationalHours: List<String>) {
         binding?.layoutShopPharmacyOpsHourContainer?.removeAllViews()
-        
+
         pharmacyOperationalHours.forEach { operationalHour ->
             val textViewOperationalHour = Typography(context ?: return).apply {
                 setType(Typography.DISPLAY_2)
@@ -333,7 +334,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
-                
+
                 params.topMargin = MARGIN_4_DP.toPx()
                 layoutParams = params
             }
@@ -521,7 +522,13 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         if (!isAdded) return
         if (gmapsUrl.isEmpty()) return
 
-        // TODO route to gmap app
+        val webViewUrl = "tokopedia://webview?url=$gmapsUrl"
+
+        try {
+            RouteManager.route(context, webViewUrl)
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+        }
     }
     private fun redirectToReviewDetailPage(reviewId: String) {
         if (!isAdded) return
