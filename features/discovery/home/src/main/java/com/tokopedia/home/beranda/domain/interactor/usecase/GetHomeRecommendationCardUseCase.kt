@@ -16,7 +16,9 @@ const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
             hasNextPage
             cards {
               id
+              categoryID
               layout
+              layoutTracker
               dataStringJson
               gradientColor
               url

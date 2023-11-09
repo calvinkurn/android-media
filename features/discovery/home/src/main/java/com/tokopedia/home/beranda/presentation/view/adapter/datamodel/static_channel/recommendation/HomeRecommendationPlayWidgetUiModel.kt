@@ -6,6 +6,9 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 
 data class HomeRecommendationPlayWidgetUiModel(
+    val layoutCard: String,
+    val layoutItem: String,
+    val categoryId: String,
     val playVideoWidgetUiModel: PlayVideoWidgetUiModel
 ) : Visitable<HomeRecommendationTypeFactoryImpl>, ImpressHolder() {
     override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {

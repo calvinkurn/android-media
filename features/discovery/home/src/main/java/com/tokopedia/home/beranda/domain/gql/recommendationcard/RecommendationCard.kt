@@ -26,6 +26,8 @@ data class RecommendationCard(
     val iconUrl: String = "",
     @SerializedName("id")
     val id: String = "0",
+    @SerializedName("categoryID")
+    val categoryID: String = "0",
     @SerializedName("imageUrl")
     val imageUrl: String = "",
     @SerializedName("isTopads")
@@ -36,6 +38,8 @@ data class RecommendationCard(
     val labelGroup: List<LabelGroup> = emptyList(),
     @SerializedName("layout")
     val layout: String = "",
+    @SerializedName("layoutTracker")
+    val layoutTracker: String = "",
     @SerializedName("dataStringJson")
     val dataStringJson: String = "",
     @SerializedName("gradientColor")

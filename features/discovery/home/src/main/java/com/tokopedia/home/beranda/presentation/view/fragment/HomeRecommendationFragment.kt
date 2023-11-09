@@ -58,7 +58,6 @@ import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.recommendation_widget_common.widget.entitycard.analytics.RecomEntityCardTracking
 import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -519,15 +518,13 @@ class HomeRecommendationFragment :
         item: RecomEntityCardUiModel,
         position: Int
     ) {
-        // todo add tracker impression
+        trackingQueue.putEETracking(
+            HomeRecommendationTracking.getImpressEntityCardTracking(item, position, userSessionInterface.userId) as HashMap<String, Any>
+        )
     }
 
     override fun onEntityCardClickListener(item: RecomEntityCardUiModel, position: Int) {
-        RecomEntityCardTracking.sendClickEntityCardTracking(
-            item,
-            position,
-            userSessionInterface.userId
-        )
+        HomeRecommendationTracking.sendClickEntityCardTracking(item, position, userSessionInterface.userId)
         goToProductDetail(item.id, position)
     }
 

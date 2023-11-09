@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.data.model
+package com.tokopedia.home.beranda.domain.gql.recommendationcard
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,10 +1,12 @@
 package com.tokopedia.home.beranda.data.mapper
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home.beranda.data.model.AdsBannerItemResponse
+import com.tokopedia.home.beranda.domain.gql.recommendationcard.AdsBannerItemResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
+import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationPlayWidgetResponse
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
@@ -78,12 +80,19 @@ class HomeRecommendationCardMapper @Inject constructor(
                 }
 
                 TYPE_VIDEO_CARD -> {
-                    homeRecommendationTypeFactoryImplList.add(
-                        HomeRecommendationPlayWidgetUiModel(
-                            // todo will adjust later
-                            playVideoWidgetUiModel = PlayVideoWidgetUiModel("", "", "", "", "", "")
-                        )
+                    val recommendationPlayWidgetResponse = convertDataJsonToRecommendationPlayWidget(
+                        card.dataStringJson
                     )
+                    recommendationPlayWidgetResponse?.let {
+                        homeRecommendationTypeFactoryImplList.add(
+                            mapToHomeRecommendationPlayWidget(
+                                layoutCard = card.layout,
+                                layoutTracker = card.layoutTracker,
+                                categoryId = card.categoryID,
+                                recommendationPlayWidgetResponse = it
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -94,10 +103,40 @@ class HomeRecommendationCardMapper @Inject constructor(
         )
     }
 
-    private fun mapToEntryPointRecommendationCard(recommendationCard: RecommendationCard): RecomEntityCardUiModel {
+    private fun mapToHomeRecommendationPlayWidget(
+        layoutCard: String,
+        layoutTracker: String,
+        categoryId: String,
+        recommendationPlayWidgetResponse: RecommendationPlayWidgetResponse
+    ): HomeRecommendationPlayWidgetUiModel {
+        return HomeRecommendationPlayWidgetUiModel(
+            layoutCard = layoutCard,
+            layoutItem = layoutTracker,
+            categoryId = categoryId,
+            playVideoWidgetUiModel = PlayVideoWidgetUiModel(
+                id = recommendationPlayWidgetResponse.id,
+                totalView = recommendationPlayWidgetResponse.stats.viewFmt,
+                title = recommendationPlayWidgetResponse.basic.title,
+                avatarUrl = recommendationPlayWidgetResponse.author.thumbnailURL,
+                partnerName = recommendationPlayWidgetResponse.author.name,
+                coverUrl = recommendationPlayWidgetResponse.basic.coverURL,
+                // todo will updated later
+                videoUrl = "",
+                badgeUrl = recommendationPlayWidgetResponse.author.badge,
+                // todo will updated later
+                isLive = false
+            )
+        )
+    }
+
+    private fun mapToEntryPointRecommendationCard(
+        recommendationCard: RecommendationCard
+    ): RecomEntityCardUiModel {
         return RecomEntityCardUiModel(
             id = recommendationCard.id,
-            layoutCard = RECOMMENDATION_CARD,
+            layoutCard = recommendationCard.layout,
+            layoutItem = recommendationCard.layoutTracker,
+            categoryId = recommendationCard.categoryID,
             title = recommendationCard.name,
             subTitle = recommendationCard.subtitle,
             imageUrl = recommendationCard.imageUrl,
@@ -111,10 +150,19 @@ class HomeRecommendationCardMapper @Inject constructor(
     }
 
     private fun convertDataJsonToAdsBannerItem(dataStringJson: String): AdsBannerItemResponse? {
+        return convertDataJsonToModel<AdsBannerItemResponse>(dataStringJson)
+    }
+
+    private fun convertDataJsonToRecommendationPlayWidget(dataStringJson: String): RecommendationPlayWidgetResponse? {
+        return convertDataJsonToModel<RecommendationPlayWidgetResponse>(dataStringJson)
+    }
+
+    private inline fun <reified T> convertDataJsonToModel(dataStringJson: String): T? {
         return try {
             val unescapedJsonString = dataStringJson.replace("\\\"", "\"")
-            gson.get().fromJson(unescapedJsonString, AdsBannerItemResponse::class.java)
+            gson.get().fromJson(unescapedJsonString, T::class.java)
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             null
         }
     }

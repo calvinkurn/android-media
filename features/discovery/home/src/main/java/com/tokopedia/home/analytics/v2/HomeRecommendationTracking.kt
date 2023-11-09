@@ -1,12 +1,22 @@
 package com.tokopedia.home.analytics.v2
 
+import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.BANNER_ADS_INSIDE_RECOMMENDATION
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.BANNER_INSIDE_RECOMMENDATION
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.CLICK_ON_BANNER_FOR_YOU_WIDGET
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.IMPRESSION_ON_BANNER_RECOMMENDATION_CARD_FOR_YOU
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.ITEM_NAME_NEW_FOR_YOU_FORMAT
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.RECOMMENDATION_CARD_FOR_YOU
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_47626
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_47716
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
+import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
+import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
@@ -27,6 +37,14 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         const val BANNER_FIELD = "/ - banner inside recom tab - %s - "
         const val BANNER_ADS_FIELD = "/ - p%s - banner inside recomm tab ads"
         private const val LABEL_FULFILLMENT = "fulfillment"
+
+        const val CLICK_ON_BANNER_FOR_YOU_WIDGET = "click on banner recommendation card for you"
+        const val IMPRESSION_ON_BANNER_RECOMMENDATION_CARD_FOR_YOU = "impression on banner recommendation card for you"
+        const val RECOMMENDATION_CARD_FOR_YOU = "recommendation card for you"
+        const val TRACKER_ID_47716 = "47716"
+        const val TRACKER_ID_47626 = "47626"
+
+        const val ITEM_NAME_NEW_FOR_YOU_FORMAT = "/ - p%s - %s - banner - %s - %s - %s - %s"
     }
 
     private object ActionField {
@@ -195,6 +213,83 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             )
         )
     ).build()
+
+    fun sendClickEntityCardTracking(
+        recomEntityCardUiModel: RecomEntityCardUiModel,
+        position: Int,
+        userId: String
+    ) {
+        val bundle = Bundle().apply {
+            putString(Event.KEY, Event.SELECT_CONTENT)
+            putString(Action.KEY, CLICK_ON_BANNER_FOR_YOU_WIDGET)
+            putString(Category.KEY, Category.HOMEPAGE)
+            putString(
+                Label.KEY,
+                "${recomEntityCardUiModel.layoutCard} - ${recomEntityCardUiModel.layoutItem} - ${recomEntityCardUiModel.title}"
+            )
+            putString(
+                TrackerId.KEY,
+                TRACKER_ID_47716
+            )
+            putString(
+                BusinessUnit.KEY,
+                BusinessUnit.DEFAULT
+            )
+            putString(
+                CurrentSite.KEY,
+                CurrentSite.DEFAULT
+            )
+            val creativeSlot = (position + Int.ONE).toString()
+            putBundle(
+                Promotion.KEY,
+                Bundle().also {
+                    it.putString(Promotion.CREATIVE_NAME, "")
+                    it.putString(Promotion.CREATIVE_SLOT, creativeSlot)
+                    it.putString(Promotion.ITEM_ID, "")
+                    it.putString(
+                        Promotion.ITEM_NAME,
+                        ITEM_NAME_NEW_FOR_YOU_FORMAT.format(creativeSlot, RECOMMENDATION_CARD_FOR_YOU, recomEntityCardUiModel.categoryId, recomEntityCardUiModel.layoutCard, recomEntityCardUiModel.layoutItem, recomEntityCardUiModel.title)
+                    )
+                }
+            )
+            putString(UserId.KEY, userId)
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.PROMO_CLICK, bundle)
+    }
+
+    fun getImpressEntityCardTracking(
+        recomEntityCardUiModel: RecomEntityCardUiModel,
+        position: Int,
+        userId: String
+    ): Map<String, Any> {
+        val trackingBuilder = BaseTrackerBuilder()
+        val creativeSlot = (position + Int.ONE).toString()
+        val itemName = ITEM_NAME_NEW_FOR_YOU_FORMAT.format(creativeSlot, RECOMMENDATION_CARD_FOR_YOU, recomEntityCardUiModel.categoryId, recomEntityCardUiModel.layoutCard, recomEntityCardUiModel.layoutItem, recomEntityCardUiModel.title)
+
+        val listPromotions = arrayListOf(
+            Promotion(
+                creative = "",
+                position = creativeSlot,
+                id = "",
+                name = itemName
+            )
+        )
+
+        return trackingBuilder.constructBasicPromotionView(
+            event = Event.VIEW_ITEM,
+            eventCategory = Category.HOMEPAGE,
+            eventAction = IMPRESSION_ON_BANNER_RECOMMENDATION_CARD_FOR_YOU,
+            eventLabel = "${recomEntityCardUiModel.layoutCard} - ${recomEntityCardUiModel.layoutItem} - ${recomEntityCardUiModel.title}",
+            promotions = listPromotions
+        ).appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendUserId(userId)
+            .appendCustomKeyValue(
+                TrackerId.KEY,
+                TRACKER_ID_47626
+            ).build()
+    }
 
     private fun mapToProductTracking(homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = Product(
         id = homeRecommendationItemDataModel.recommendationProductItem.id,

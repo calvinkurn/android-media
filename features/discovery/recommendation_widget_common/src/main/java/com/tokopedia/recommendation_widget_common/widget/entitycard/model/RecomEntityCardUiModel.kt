@@ -6,7 +6,9 @@ import com.tokopedia.recommendation_widget_common.widget.entitycard.typefactory.
 
 data class RecomEntityCardUiModel(
     val id: String,
-    val layoutCard: String,
+    val layoutCard: String, // layout
+    val layoutItem: String, // layoutTracker
+    val categoryId: String,
     val title: String,
     val subTitle: String,
     val imageUrl: String,
