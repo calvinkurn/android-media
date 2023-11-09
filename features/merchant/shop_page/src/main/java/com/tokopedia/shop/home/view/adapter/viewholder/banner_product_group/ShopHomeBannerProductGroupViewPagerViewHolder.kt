@@ -11,9 +11,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -42,6 +42,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         val LAYOUT = R.layout.item_shop_home_banner_product_group_viewpager
         private const val ONE_TAB = 1
         private const val MARGIN_16_DP = 16f
+        private const val THREE_TAB = 3
     }
 
     private val viewBinding: ItemShopHomeBannerProductGroupViewpagerBinding? by viewBinding()
@@ -53,7 +54,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     }
 
     override fun bind(model: BannerProductGroupUiModel) {
-        if (!isProductSuccessfullyLoaded){
+        if (!isProductSuccessfullyLoaded) {
             setupTitle(model)
             setupViewAllChevron(model)
             setupTabs(model)
@@ -94,7 +95,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
                 val tabView = LayoutInflater.from(tabsUnify.context).inflate(R.layout.item_viewpager_showcase_navigation_tab, tabsUnify, false)
                 tab.customView = tabView
 
-                val tabTitle : Typography? = tabView.findViewById(R.id.tpgTabTitle)
+                val tabTitle: Typography? = tabView.findViewById(R.id.tpgTabTitle)
                 tabTitle?.text = fragments[currentPosition].first
 
                 if (currentPosition == 0) tab.select(model) else tab.unselect(model)
@@ -107,7 +108,6 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
             handleTabChange(tabsUnify, model)
             applyTabRuleWidth(model.tabs, tabsUnify)
         }
-
     }
 
     private fun handleTabChange(tabsUnify: TabsUnify, model: BannerProductGroupUiModel) {
@@ -121,7 +121,6 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {}
-
         })
     }
 
@@ -165,8 +164,9 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
                 else -> {
                     tabsUnify.visible()
 
-                    val screenWidth = DeviceScreenInfo.getScreenWidth(tabsUnify.context) - MARGIN_16_DP.dpToPx() - MARGIN_16_DP.dpToPx()
-                    if (tabTotalWidth < screenWidth) {
+                    val screenWidth = getScreenWidth()
+
+                    if (tabTotalWidth < screenWidth || tabs.size <= THREE_TAB) {
                         tabsUnify.customTabMode = TabLayout.MODE_FIXED
                         tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
                     } else {
