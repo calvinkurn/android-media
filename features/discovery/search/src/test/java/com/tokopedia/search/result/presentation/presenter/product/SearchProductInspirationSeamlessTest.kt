@@ -66,7 +66,6 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         val searchProductModel: SearchProductModel = inspirationProductWithAllImage.jsonToObject()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
         `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel,
             LayoutType.DEFAULT_SEAMLESS,
@@ -80,7 +79,6 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
             inspirationProductWithOneKeywordNoImage.jsonToObject()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
         `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel,
             LayoutType.DEFAULT_SEAMLESS,
@@ -94,7 +92,6 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
             inspirationProductWithAllKeywordNoImage.jsonToObject()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
         `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel,
             LayoutType.DEFAULT_SEAMLESS,
@@ -148,7 +145,6 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `Given search reimagine rollence product card will return non control variant`()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
         `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel,
             LayoutType.ICON_DRIFTING,
@@ -163,7 +159,6 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `Given search reimagine rollence product card will return non control variant`()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
         `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel,
             LayoutType.ICON_FUNNELING,
@@ -178,7 +173,6 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `Given search reimagine rollence product card will return non control variant`()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
         `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel,
             LayoutType.ICON_FUNNELING,
@@ -193,7 +187,6 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `Given search reimagine rollence product card will return non control variant`()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
         `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel,
             LayoutType.ICON_DRIFTING,
@@ -208,7 +201,6 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `Given search reimagine rollence product card will return non control variant`()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
         `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel,
             LayoutType.IMAGE_DRIFTING,
@@ -223,7 +215,6 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `Given search reimagine rollence product card will return non control variant`()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
         `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel,
             LayoutType.IMAGE_FUNNELING,
@@ -238,7 +229,6 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `Given search reimagine rollence product card will return non control variant`()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
         `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel,
             LayoutType.IMAGE_DRIFTING,
@@ -253,7 +243,6 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `Given search reimagine rollence product card will return non control variant`()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
         `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel,
             LayoutType.IMAGE_FUNNELING,
@@ -274,7 +263,6 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `Given search reimagine rollence product card will return non control variant`()
         `load Data Product Search With Data`(searchProductModel, searchParams)
 
-        `Then verify view set product list`()
         `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel,
             LayoutType.IMAGE_FUNNELING,
