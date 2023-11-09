@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.listener.AccordionListener
 import com.tokopedia.catalogcommon.listener.BannerListener
+import com.tokopedia.catalogcommon.listener.ColumnedInfoListener
 import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.listener.TextDescriptionListener
@@ -62,6 +63,7 @@ class CatalogAdapterFactoryImpl(
     private val doubleBannerListener: DoubleBannerListener? = null,
     private val comparisonItemListener: ComparisonViewHolder.ComparisonItemListener? = null,
     private val videoListener: VideoListener? = null,
+    private val columnedInfoListener: ColumnedInfoListener? = null,
     private val isDisplayingTopSpec: Boolean = true
 ) : BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
@@ -81,9 +83,9 @@ class CatalogAdapterFactoryImpl(
             DoubleBannerViewHolder.LAYOUT -> DoubleBannerViewHolder(view, doubleBannerListener)
             ExpertReviewViewHolder.LAYOUT -> ExpertReviewViewHolder(view, videoExpertListener)
             SupportFeatureViewHolder.LAYOUT -> SupportFeatureViewHolder(view)
-            ComparisonViewHolder.LAYOUT -> ComparisonViewHolder(view, comparisonItemListener,isDisplayingTopSpec)
+            ComparisonViewHolder.LAYOUT -> ComparisonViewHolder(view, comparisonItemListener, isDisplayingTopSpec)
             VideoViewHolder.LAYOUT -> VideoViewHolder(view, videoListener)
-            ColumnedInfoViewHolder.LAYOUT -> ColumnedInfoViewHolder(view)
+            ColumnedInfoViewHolder.LAYOUT -> ColumnedInfoViewHolder(view, columnedInfoListener)
             BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
