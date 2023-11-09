@@ -73,12 +73,12 @@ class ShopInfoReimagineViewModel @Inject constructor(
             ShopInfoUiEvent.TapCtaExpandShopPharmacyInfo -> handleCtaExpandShopPharmacyInfo()
             ShopInfoUiEvent.TapCtaViewPharmacyLocation -> handleCtaViewPharmacyLocation()
             ShopInfoUiEvent.TapIconViewAllShopReview -> handleViewAllReviewClick()
-            ShopInfoUiEvent.TapIconViewShopLocation -> handleViewShopLocation()
             is ShopInfoUiEvent.RetryGetShopInfo -> handleRetryGetShopInfo(event.localCacheModel)
             is ShopInfoUiEvent.TapShopNote -> handleTapShopNote(event.noteId)
+            ShopInfoUiEvent.ReportShop -> handleReportShop()
         }
     }
-
+    
     private fun handleGetShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
         launchCatchError(
             context = coroutineDispatcherProvider.io,
@@ -164,11 +164,6 @@ class ShopInfoReimagineViewModel @Inject constructor(
         handleGetShopInfo(currentState.shopId, localCacheModel)
     }
 
-    private fun handleViewShopLocation() {
-        val effect = ShopInfoUiEffect.ShowShopLocationBottomSheet(currentState.info.otherLocations)
-        _uiEffect.tryEmit(effect)
-    }
-
     private fun handleViewAllReviewClick() {
         val effect = ShopInfoUiEffect.RedirectToShopReviewPage(currentState.shopId)
         _uiEffect.tryEmit(effect)
@@ -193,6 +188,10 @@ class ShopInfoReimagineViewModel @Inject constructor(
             )
         )
         return getShopInfoUseCase.executeOnBackground()
+    }  
+    
+    private fun handleReportShop() {
+        
     }
 
     private suspend fun getShopNotes(shopId: String): List<ShopNoteModel> {

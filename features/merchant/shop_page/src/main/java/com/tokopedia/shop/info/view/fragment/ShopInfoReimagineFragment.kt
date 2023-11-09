@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
+import com.tokopedia.shop.common.extension.setHyperlinkText
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.FragmentShopInfoReimagineBinding
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
@@ -135,6 +136,11 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun setupView() {
+        setupReportShopHyperlink()
+        setupClickListener()
+    }
+
+    private fun setupClickListener() {
         binding?.run {
             tpgCtaExpandPharmacyInfo.setOnClickListener {
                 viewModel.processEvent(ShopInfoUiEvent.TapCtaExpandShopPharmacyInfo)
@@ -156,6 +162,19 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                 )
             }
         }
+    }
+
+    private fun setupReportShopHyperlink() {
+       binding?.run {
+           val wording = getString(R.string.shop_info_report_shop)
+           val hyperlink = getString(R.string.shop_info_report_here)
+           tpgReportShop.setHyperlinkText(
+               fullText = wording,
+               hyperlinkSubstring = hyperlink,
+               ignoreCase = true,
+               onHyperlinkClick = { viewModel.processEvent(ShopInfoUiEvent.ReportShop) }
+           )
+       }
     }
 
     private fun observeUiState() {

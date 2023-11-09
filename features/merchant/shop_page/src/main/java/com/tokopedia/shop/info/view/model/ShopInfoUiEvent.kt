@@ -9,4 +9,5 @@ sealed interface ShopInfoUiEvent {
     object TapCtaViewPharmacyLocation : ShopInfoUiEvent
     data class TapShopNote(val noteId: String) : ShopInfoUiEvent
     data class RetryGetShopInfo(val localCacheModel: LocalCacheModel) : ShopInfoUiEvent
+    object ReportShop : ShopInfoUiEvent
 }

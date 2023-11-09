@@ -312,5 +312,6 @@
     
     <!--Report Shop-->
     <string name="shop_info_report_shop">Toko ini bermasalah? Laporkan Di Sini</string>
+    <string name="shop_info_report_here">Laporkan Di Sini</string>
     
 </resources>
