@@ -45,22 +45,23 @@ class RechargeHomepageTodoWidgetAdapter(
         return RechargeHomeTodoWidgetListViewHolder(view)
     }
 
-    private val factory = RechargeHomepageTodoWidgetAdapterTypeFactory(todoWidgetListener, object :
-        RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetCloseProcess {
-        override fun onCloseWidget(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
-            removeItem(element)
-        }
-    })
-
-    private val baseAdapter = BaseAdapter(
-        factory
-    )
-
-    fun removeItem(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
-        baseAdapter.removeElement(element)
-    }
-
     inner class RechargeHomeTodoWidgetListViewHolder(val binding: ViewRechargeHomeTodoWidgetBinding): RecyclerView.ViewHolder(binding.root) {
+
+        private val factory = RechargeHomepageTodoWidgetAdapterTypeFactory(todoWidgetListener, object :
+            RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetCloseProcess {
+            override fun onCloseWidget(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
+                removeItem(element)
+            }
+        })
+
+        private val baseAdapter = BaseAdapter(
+            factory
+        )
+
+        fun removeItem(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
+            baseAdapter.removeElement(element)
+        }
+
         fun bind(item: RechargeHomepageSections.Item) {
             with(binding) {
                 if (item.title.isEmpty()) {
@@ -86,6 +87,7 @@ class RechargeHomepageTodoWidgetAdapter(
                     viewStickyLayout.root.setOnClickListener {
                         todoWidgetListener.onClickTodoWidget(stickyLayout.appLink)
                     }
+                    setStickyHeightMatchParent(binding)
                 } else {
                     viewStickyLayout.root.hide()
                     rvTodoWidget.apply {
@@ -114,6 +116,14 @@ class RechargeHomepageTodoWidgetAdapter(
                     )
                 }
             }
+        }
+    }
+
+    private fun setStickyHeightMatchParent(binding: ViewRechargeHomeTodoWidgetBinding) {
+        with(binding) {
+            val layoutParams = viewStickyLayout.root.layoutParams
+            layoutParams?.height = android.view.ViewGroup.LayoutParams.MATCH_PARENT
+            viewStickyLayout.root.layoutParams = layoutParams
         }
     }
 
