@@ -27,9 +27,6 @@
         android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_follower"
-        app:tabGravity="center"
-        app:tabMode="fixed"
-        app:tabTextAppearance="@style/UserProfileTabLayoutTextStyle" />
+        app:layout_constraintTop_toBottomOf="@id/header_follower" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
