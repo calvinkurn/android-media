@@ -14,6 +14,7 @@ import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepa
 class RechargeHomepageTodoWidgetAdapterTypeFactory(
     private val rechargeHomepageTodoWidgetListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener,
     private val closeItemListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetCloseProcess,
+    private val todoWidgetItemListener: RechargeHomepageTodoWidgetAutoPayViewHolder.TodoWidgetItemListener
 ) : BaseAdapterTypeFactory() {
 
     fun type(model: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel): Int {
@@ -28,7 +29,8 @@ class RechargeHomepageTodoWidgetAdapterTypeFactory(
                     parent as ViewGroup,
                     false
                 )
-                RechargeHomepageTodoWidgetAutoPayViewHolder(binding, rechargeHomepageTodoWidgetListener, closeItemListener)
+                RechargeHomepageTodoWidgetAutoPayViewHolder(binding, rechargeHomepageTodoWidgetListener,
+                    closeItemListener, todoWidgetItemListener)
             }
 
             else -> super.createViewHolder(parent, type)

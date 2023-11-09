@@ -10,6 +10,7 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeTodoWidgetSpaceDecorator
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetAutoPayViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetViewHolder
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.SPACE_DP
@@ -27,7 +28,7 @@ import com.tokopedia.digital.home.R as digitalhomeR
 class RechargeHomepageTodoWidgetAdapter(
     var items: List<RechargeHomepageSections.Item>,
     val todoWidgetListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener,
-): RecyclerView.Adapter<RechargeHomepageTodoWidgetAdapter.RechargeHomeTodoWidgetListViewHolder>(){
+) : RecyclerView.Adapter<RechargeHomepageTodoWidgetAdapter.RechargeHomeTodoWidgetListViewHolder>() {
 
     override fun getItemCount(): Int = items.size
 
@@ -47,14 +48,22 @@ class RechargeHomepageTodoWidgetAdapter(
         return RechargeHomeTodoWidgetListViewHolder(view)
     }
 
-    inner class RechargeHomeTodoWidgetListViewHolder(val binding: ViewRechargeHomeTodoWidgetBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class RechargeHomeTodoWidgetListViewHolder(val binding: ViewRechargeHomeTodoWidgetBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        private val factory = RechargeHomepageTodoWidgetAdapterTypeFactory(todoWidgetListener, object :
-            RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetCloseProcess {
-            override fun onCloseWidget(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
-                removeItem(element)
+        private val factory = RechargeHomepageTodoWidgetAdapterTypeFactory(
+            todoWidgetListener,
+            object : RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetCloseProcess {
+                override fun onCloseWidget(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
+                    removeItem(element)
+                }
+            },
+            object : RechargeHomepageTodoWidgetAutoPayViewHolder.TodoWidgetItemListener {
+                override fun getListSize(): Int {
+                    return getListCount()
+                }
             }
-        })
+        )
 
         private val baseAdapter = BaseAdapter(
             factory
@@ -62,6 +71,10 @@ class RechargeHomepageTodoWidgetAdapter(
 
         fun removeItem(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
             baseAdapter.removeElement(element)
+        }
+
+        fun getListCount(): Int {
+            return baseAdapter.list.size
         }
 
         fun bind(item: RechargeHomepageSections.Item) {
@@ -157,6 +170,7 @@ class RechargeHomepageTodoWidgetAdapter(
                 ) -> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel(
                     it
                 )
+
                 else -> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel(
                     it
                 )

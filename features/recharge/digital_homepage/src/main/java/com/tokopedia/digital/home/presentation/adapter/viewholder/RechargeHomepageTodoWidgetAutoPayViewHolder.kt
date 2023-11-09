@@ -9,6 +9,7 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetAutopayB
 import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.CATEGORY_TYPE
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.POSTPAIDREMINDER_TYPE
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -20,7 +21,8 @@ import com.tokopedia.digital.home.R as digitalhomeR
 class RechargeHomepageTodoWidgetAutoPayViewHolder(
     val binding: ViewRechargeHomeTodoWidgetAutopayBinding,
     private val todoWidgetListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener,
-    private val closeItemListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetCloseProcess
+    private val closeItemListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetCloseProcess,
+    private val todoWidgetItemListener: TodoWidgetItemListener,
 ) : AbstractViewHolder<RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel>(
     binding.root
 ) {
@@ -168,8 +170,8 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
 
                 setCardHeightMatchParent()
                 setCardWidth(
-                    widget.type.startsWith(POSTPAIDREMINDER_TYPE) ||
-                    widget.type.startsWith(CATEGORY_TYPE)
+                    (widget.type.startsWith(POSTPAIDREMINDER_TYPE) || widget.type.startsWith(CATEGORY_TYPE))
+                        && (todoWidgetItemListener.getListSize() > Int.ONE)
                 )
             }
         }
@@ -183,15 +185,19 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
         }
     }
 
-    private fun setCardWidth(isPostPaid: Boolean) {
+    private fun setCardWidth(isSmallWidth: Boolean) {
         with(binding) {
             val layoutParams = todoWidgetMainCard.layoutParams
-            layoutParams?.width = if (isPostPaid) {
+            layoutParams?.width = if (isSmallWidth) {
                 todoWidgetMainCard.getDimens(digitalhomeR.dimen.todo_widget_autopay)
             } else {
                 ViewGroup.LayoutParams.MATCH_PARENT
             }
             todoWidgetMainCard.layoutParams = layoutParams
         }
+    }
+
+    interface TodoWidgetItemListener {
+        fun getListSize(): Int
     }
 }
