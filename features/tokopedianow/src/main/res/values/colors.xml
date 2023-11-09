@@ -25,4 +25,7 @@
     <color name="tokopedianow_recipe_label_text_dms_color">#6D7588</color>
     <color name="tokopedianow_recipe_title_home_dms_color">#212121</color>
     <color name="tokopedianow_quest_progress_stroke_dms_color">#99D6DFEB</color>
+    <color name="tokopedianow_quest_bg_start_dms_color">#00B278</color>
+    <color name="tokopedianow_quest_bg_center_dms_color">#00A2D0</color>
+    <color name="tokopedianow_quest_bg_end_dms_color">#897EF1</color>
 </resources>
