@@ -111,7 +111,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                         rating = shopRating,
                         review = shopReview,
                         shopPerformance = ShopPerformance(
-                            totalProductSoldCount = "", // TODO replace with real data
+                            totalProductSoldCount = shopInfo.shopStats.productSold, // TODO replace with real data
                             chatPerformance = "", // TODO replace with real data
                             orderProcessTime = shopHeaderLayout.shopPageGetHeaderLayout.toOrderProcessTime()
                         ),
@@ -150,7 +150,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 GQLGetShopInfoUseCase.FIELD_OS,
                 GQLGetShopInfoUseCase.FIELD_GOLD_OS,
                 GQLGetShopInfoUseCase.FIELD_GOLD,
-                GQLGetShopInfoUseCase.FIELD_ACTIVE_PRODUCT
+                GQLGetShopInfoUseCase.FIELD_ACTIVE_PRODUCT,
+                GQLGetShopInfoUseCase.FIELD_SHOP_STATS
             )
         )
         return getShopInfoUseCase.executeOnBackground()

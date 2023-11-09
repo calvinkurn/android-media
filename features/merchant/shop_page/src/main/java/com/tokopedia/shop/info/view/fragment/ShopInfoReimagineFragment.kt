@@ -22,6 +22,8 @@ import com.tokopedia.kotlin.extensions.view.digitsOnly
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
@@ -180,13 +182,13 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun renderShopCoreInfo(uiState: ShopInfoUiState) {
         val hasUsp = uiState.info.shopUsp.isNotEmpty()
-        val hasPharmacyLicenseBadge = uiState.info.showPharmacyLicenseBadge && uiState.pharmacy.showPharmacyInfoSection
+        val hasPharmacyLicenseBadge = uiState.info.showPharmacyLicenseBadge
 
         binding?.run {
             imgShop.loadImage(uiState.info.shopImageUrl)
             imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
             tpgShopName.text = uiState.info.shopName
-            tpgLicensedPharmacy.isVisible = uiState.pharmacy.showPharmacyInfoSection
+            tpgLicensedPharmacy.isVisible = hasPharmacyLicenseBadge
             tpgShopUsp.text = uiState.info.shopUsp.joinToString(separator = " • ") { it }
             tpgShopUsp.isVisible = uiState.info.shopUsp.isNotEmpty()
         }
@@ -355,7 +357,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun renderShopPerformance(uiState: ShopInfoUiState) {
         binding?.run {
-            labelProductSoldCount.text = uiState.shopPerformance.totalProductSoldCount.ifEmpty { "-" }
+            labelProductSoldCount.text = uiState.shopPerformance.totalProductSoldCount.toIntOrZero().thousandFormatted(1).ifEmpty { "-" }
             labelChatPerformance.text = uiState.shopPerformance.chatPerformance.ifEmpty { "-" }
             labelOrderProcessTime.text = uiState.shopPerformance.orderProcessTime.ifEmpty { "-" }
         }

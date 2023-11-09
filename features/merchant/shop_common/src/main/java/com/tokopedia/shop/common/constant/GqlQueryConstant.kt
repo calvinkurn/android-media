@@ -25,6 +25,9 @@ object GqlQueryConstant {
         "                openSince\n" +
         "                shopCreated\n" +
         "            }\n" +
+        "            shopStats{\n" +
+        "                productSold\n" +
+        "            }\n" +
         "            shopAssets{\n" +
         "                avatar\n" +
         "                cover\n" +

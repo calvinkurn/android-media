@@ -91,7 +91,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tpgShopName"
                 app:typographyType="display_3"
                 app:typographyWeight="bold"
-                tools:text="Apotek Berlisensi"
+                android:text="@string/shop_info_licensed_pharmacy"
                 tools:visibility="visible" />
 
 
