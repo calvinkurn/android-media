@@ -1,7 +1,7 @@
 package com.tokopedia.common_epharmacy.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_PAP
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
 import com.tokopedia.common_epharmacy.network.gql.GetEPharmacyPrepareProductsGroupQuery
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -14,7 +14,7 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
     fun getEPharmacyPrepareProductsGroup(
         onSuccess: (EPharmacyPrepareProductsGroupResponse, String?) -> Unit,
         onError: (Throwable) -> Unit,
-        source: String? = EPHARMACY_PPG_SOURCE_PAP,
+        source: String? = EPHARMACY_PPG_SOURCE_CHECKOUT,
         params: MutableMap<String, Any?>
     ) {
         try {

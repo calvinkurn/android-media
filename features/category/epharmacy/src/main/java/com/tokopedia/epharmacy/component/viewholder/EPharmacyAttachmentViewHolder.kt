@@ -111,18 +111,18 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderTicker() {
-        if(!dataModel?.ticker?.message.isNullOrBlank()){
+        if (!dataModel?.ticker?.message.isNullOrBlank()) {
             ticker.show()
             ticker.tickerType = dataModel?.ticker?.tickerType ?: Ticker.TYPE_INFORMATION
             ticker.setHtmlDescription(dataModel?.ticker?.message.orEmpty())
-        }else {
+        } else {
             ticker.hide()
         }
     }
 
     private fun renderQuantityChangedLayout() {
-        if(dataModel?.quantityChangedModel != null && ePharmacyListener is EPharmacyQuantityChangeFragment){
-            if(dataModel?.quantityChangedModel?.currentQty?.orZero().isZero()){
+        if (dataModel?.quantityChangedModel != null && dataModel?.isAccordionEnable.orFalse()) {
+            if (dataModel?.quantityChangedModel?.currentQty?.orZero().isZero()) {
                 dataModel?.quantityChangedModel?.currentQty = dataModel?.quantityChangedModel?.recommendedQty.orZero()
             }
 
@@ -132,23 +132,24 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
                 dataModel?.quantityChangedModel?.initialQty.toString()
             )
             productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
-            reCalculateSubTotal()
 
-            quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.recommendedQty.orZero())
             quantityChangedEditor.maxValue = dataModel?.quantityChangedModel?.recommendedQty.orZero()
             quantityChangedEditor.minValue = MIN_VALUE_OF_PRODUCT_EDITOR
-
             quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
-                if(newValue == MIN_VALUE_OF_PRODUCT_EDITOR){
-                    ePharmacyListener.onToast(Toaster.TYPE_ERROR,
-                        itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached).orEmpty())
+                if (newValue == MIN_VALUE_OF_PRODUCT_EDITOR) {
+                    ePharmacyListener?.onToast(
+                        Toaster.TYPE_ERROR,
+                        itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached).orEmpty()
+                    )
                     quantityChangedEditor.subtractButton.isEnabled = false
                 }
                 dataModel?.quantityChangedModel?.currentQty = newValue
                 reCalculateSubTotal()
-                ePharmacyListener.onQuantityChanged()
+                ePharmacyListener?.onQuantityChanged()
             }
-        }else {
+            quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.currentQty.orZero())
+            reCalculateSubTotal()
+        } else {
             quantityEditorLayout?.hide()
         }
     }
@@ -157,17 +158,19 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         val subtotal = EPharmacyUtils.getTotalAmount(dataModel?.quantityChangedModel?.currentQty, dataModel?.quantityChangedModel?.productPrice)
         dataModel?.quantityChangedModel?.subTotal = subtotal
         totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmountFmt(subtotal))
-        totalQuantity.displayTextOrHide(java.lang.String.format(
-            itemView.context.getString(epharmacyR.string.epharmacy_subtotal_quantity_change),
-            dataModel?.quantityChangedModel?.currentQty.toString()
-        ))
+        totalQuantity.displayTextOrHide(
+            java.lang.String.format(
+                itemView.context.getString(epharmacyR.string.epharmacy_subtotal_quantity_change),
+                dataModel?.quantityChangedModel?.currentQty.toString()
+            )
+        )
     }
 
     private fun renderOrderTitle() {
-        if(!dataModel?.orderTitle.isNullOrBlank()){
+        if (!dataModel?.orderTitle.isNullOrBlank()) {
             orderTitleText.show()
             orderTitleText.text = dataModel?.orderTitle
-        }else {
+        } else {
             orderTitleText.hide()
         }
     }
@@ -198,8 +201,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderObstruction() {
-        if (dataModel?.consultationStatus == EPharmacyConsultationStatus.REJECTED.status ||
-            dataModel?.consultationStatus == EPharmacyConsultationStatus.EXPIRED.status
+        if (dataModel?.consultationStatus == EPharmacyConsultationStatus.REJECTED.status
         ) {
             topView?.run {
                 show()
@@ -243,7 +245,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         if ((dataModel?.shopInfo?.products?.size.orZero()) > 1) {
             productAccordionView.show()
 
-            if(ePharmacyListener is EPharmacyQuantityChangeFragment){
+            if (ePharmacyListener is EPharmacyQuantityChangeFragment) {
                 productAccordionViewRL.hide()
                 dataModel?.productsIsExpanded = true
             }
@@ -263,7 +265,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         }
     }
 
-    private fun toggleProductListExpansion(isExpanded : Boolean) {
+    private fun toggleProductListExpansion(isExpanded: Boolean) {
         if (isExpanded) {
             productChevronTitle.text = view.context.getString(R.string.epharmacy_show_less)
             productAccordionRV.show()

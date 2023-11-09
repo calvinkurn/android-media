@@ -63,6 +63,7 @@
         />
 
     <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ep_invoice_copy"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintStart_toEndOf="@id/ep_invoice_number"

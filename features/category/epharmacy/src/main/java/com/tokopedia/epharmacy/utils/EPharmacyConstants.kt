@@ -14,18 +14,17 @@ const val MAX_MEDIA_ITEM = 5
 const val MEDIA_PICKER_REQUEST_CODE = 10020
 const val EPHARMACY_PRESCRIPTION_IDS = "epharmacy_prescription_ids"
 const val EPHARMACY_GROUP_ID = "epharmacy_group_id"
-const val EPHARMACY_GROUP_IDS = "epharmacy_group_ids"
-const val EPHARMACY_ENABLER_NAME = "epharmacy_enabler_name"
-const val EPHARMACY_ENABLER_ID = "epharmacy_enabler_id"
-const val EPHARMACY_TOKO_CONSULTATION_ID = "epharmacy_toko_consultation_id"
+const val EPHARMACY_ENABLER_NAME = "enabler_name"
+const val EPHARMACY_ENABLER_ID = "enabler_id"
+const val EPHARMACY_TOKO_CONSULTATION_ID = "toko_consultation_id"
 const val EPHARMACY_CONS_DURATION = "epharmacy_cons_duration"
 const val EPHARMACY_CONS_PRICE = "epharmacy_cons_price"
 const val EPHARMACY_NOTE = "epharmacy_note"
 const val EPHARMACY_IS_ONLY_CONSULT = "epharmacy_is_only_consult"
 const val EPHARMACY_IS_OUTSIDE_WORKING_HOURS = "epharmacy_is_outside_working_hours"
-const val EPHARMACY_ORDER_ID = "epharmacy_order_id"
-const val EPHARMACY_VERTICAL_ID = "epharmacy_vertical_id"
-const val EPHARMACY_WAITING_INVOICE = "epharmacy_waiting_invoice"
+const val EPHARMACY_VERTICAL_ID = "vertical_id"
+const val EPHARMACY_WAITING_INVOICE = "waiting_invoice"
+const val EPHARMACY_SOURCE = "source"
 
 const val STATIC_INFO_COMPONENT = "static info component"
 const val PRESCRIPTION_COMPONENT = "prescription component"
@@ -72,7 +71,6 @@ const val MINI_CONS_CHOOSER_IMAGE_URL_DISABLED = "https://images.tokopedia.net/i
 
 const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
 const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser"
-const val EPHARMACY_CHECKOUT_APPLINK = "tokopedia://epharmacy/checkout"
 
 const val DATA_TYPE = "data_type"
 const val ENABLER_NAME = "enabler_name"
@@ -123,7 +121,6 @@ const val REMINDER_ILLUSTRATION_IMAGE = "https://images.tokopedia.net/img/pharma
 
 const val EPHARMACY_ANDROID_SOURCE = "ANDROID"
 const val UPLOAD_PAGE_SOURCE_PAP = "PAP"
-const val QUANTITY_PAGE_SOURCE = "QTY"
 const val OUTSIDE_WORKING_HOURS_SOURCE = "outside_working_hours"
 const val WORKING_HOURS_SOURCE = "working_hours"
 const val EPHARMACY_HALF_ALPHA = 0.5f

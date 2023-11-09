@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.unifycomponents.CardUnify
@@ -51,9 +52,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     private var ePharmacySecondaryButton: CardUnify? = null
     private var ePharmacyGlobalError: GlobalError? = null
 
-    // TODO get from backend
-    private var orderUUId = "9e7c7910-6cc9-4397-901e-55a21c7d7e98"
-    private var tConsultationId = String.EMPTY
+    private var tConsultationId = 0L
     private var waitingInvoice = false
     private var verticalId = String.EMPTY
 
@@ -105,7 +104,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun initArguments() {
-        tConsultationId = arguments?.getString(EPHARMACY_TOKO_CONSULTATION_ID, String.EMPTY).orEmpty()
+        tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
         waitingInvoice = arguments?.getBoolean(EPHARMACY_WAITING_INVOICE).orFalse()
         verticalId = arguments?.getString(EPHARMACY_VERTICAL_ID, String.EMPTY).orEmpty()
     }
@@ -130,7 +129,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
         addShimmer()
         ePharmacyOrderDetailViewModel?.getEPharmacyOrderDetail(
             tConsultationId,
-            if (waitingInvoice) verticalId else orderUUId,
+            verticalId,
             waitingInvoice
         )
     }
@@ -197,7 +196,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun onPrimaryButtonClick(appUrl: String?) {
-        RouteManager.route(context, appUrl)
+        redirectionAppLink(appUrl)
     }
 
     private fun onSecondaryButtonClick(secondaryButtonData: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>) {
@@ -205,10 +204,14 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             secondaryButtonData,
             object : EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener {
                 override fun onActionButtonClicked(isFromPrimaryButton: Boolean, button: EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?) {
-                    RouteManager.route(context, button?.appUrl)
+                    redirectionAppLink(button?.appUrl)
                 }
             }
         )
+    }
+
+    private fun redirectionAppLink(appLink: String?) {
+        RouteManager.route(context, appLink)
     }
 
     private fun showSecondaryActionButtonBottomSheet(secondaryActionButtons: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>, actionButtonClickListener: EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener?) {

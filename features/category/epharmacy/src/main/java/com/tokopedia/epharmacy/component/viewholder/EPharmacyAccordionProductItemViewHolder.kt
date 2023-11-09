@@ -9,7 +9,6 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
 import com.tokopedia.epharmacy.component.viewholder.EPharmacyAttachmentViewHolder.Companion.MIN_VALUE_OF_PRODUCT_EDITOR
-import com.tokopedia.epharmacy.ui.fragment.EPharmacyQuantityChangeFragment
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
@@ -26,6 +25,7 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
 
     private val productText = view.findViewById<Typography>(R.id.lbl_PAP_productName)
     private val productQuantity = view.findViewById<Typography>(R.id.lbl_PAP_productWeight)
+    private val productAmount = view.findViewById<Typography>(R.id.lbl_PAP_productAmount)
     private val productImageUnify = view.findViewById<ImageView>(R.id.product_image)
     private val quantityEditorLayout = view.findViewById<ConstraintLayout>(R.id.quantity_editor_layout)
     private val initialProductQuantity = view.findViewById<Typography>(R.id.initial_product_quantity)
@@ -56,8 +56,10 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
     }
 
     private fun renderQuantityChangedLayout() {
-        if(dataModel?.product?.qtyComparison != null && ePharmacyListener is EPharmacyQuantityChangeFragment){
-            if(dataModel?.product?.qtyComparison?.currentQty?.orZero().isZero()){
+        if (dataModel?.product?.qtyComparison != null) {
+            productAmount.show()
+            productAmount.text = EPharmacyUtils.getTotalAmountFmt(dataModel?.product?.price)
+            if (dataModel?.product?.qtyComparison?.currentQty?.orZero().isZero()) {
                 dataModel?.product?.qtyComparison?.currentQty = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
             }
 
@@ -67,23 +69,24 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
                 dataModel?.product?.qtyComparison?.initialQty.toString()
             )
             productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
-            reCalculateSubTotal()
-
-            quantityChangedEditor.setValue(dataModel?.product?.qtyComparison?.recommendedQty.orZero())
             quantityChangedEditor.maxValue = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
             quantityChangedEditor.minValue = MIN_VALUE_OF_PRODUCT_EDITOR
 
             quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
-                if(newValue == MIN_VALUE_OF_PRODUCT_EDITOR){
-                    ePharmacyListener.onToast(Toaster.TYPE_ERROR,
-                        itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached) ?: "")
+                if (newValue == MIN_VALUE_OF_PRODUCT_EDITOR) {
+                    ePharmacyListener?.onToast(
+                        Toaster.TYPE_ERROR,
+                        itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached) ?: ""
+                    )
                     quantityChangedEditor.subtractButton.isEnabled = false
                 }
                 dataModel?.product?.qtyComparison?.currentQty = newValue
                 reCalculateSubTotal()
-                ePharmacyListener.onQuantityChanged()
+                ePharmacyListener?.onQuantityChanged()
             }
-        }else {
+            quantityChangedEditor.setValue(dataModel?.product?.qtyComparison?.currentQty.orZero())
+            reCalculateSubTotal()
+        } else {
             quantityEditorLayout?.hide()
         }
     }
@@ -92,9 +95,11 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
         val subtotal = EPharmacyUtils.getTotalAmount(dataModel?.product?.qtyComparison?.currentQty, dataModel?.product?.qtyComparison?.productPrice)
         dataModel?.product?.qtyComparison?.subTotal = subtotal
         totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmountFmt(subtotal))
-        totalQuantity.displayTextOrHide(java.lang.String.format(
-            itemView.context.getString(epharmacyR.string.epharmacy_subtotal_quantity_change),
-            dataModel?.product?.qtyComparison?.currentQty.toString()
-        ))
+        totalQuantity.displayTextOrHide(
+            java.lang.String.format(
+                itemView.context.getString(epharmacyR.string.epharmacy_subtotal_quantity_change),
+                dataModel?.product?.qtyComparison?.currentQty.toString()
+            )
+        )
     }
 }

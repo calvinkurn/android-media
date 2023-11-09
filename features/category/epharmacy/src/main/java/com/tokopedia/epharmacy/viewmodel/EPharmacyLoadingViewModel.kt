@@ -20,7 +20,7 @@ class EPharmacyLoadingViewModel @Inject constructor(
     private val _ePharmacyVerifyConsultationData = MutableLiveData<Result<EPharmacyVerifyConsultationResponse>>()
     val ePharmacyVerifyConsultationData: LiveData<Result<EPharmacyVerifyConsultationResponse>> = _ePharmacyVerifyConsultationData
 
-    fun getVerifyConsultationOrder(tConsultationId: String) {
+    fun getVerifyConsultationOrder(tConsultationId: Long) {
         ePharmacyVerifyConsultationOrderUseCase.cancelJobs()
         ePharmacyVerifyConsultationOrderUseCase.getEPharmacyVerifyConsultationOrder(
             ::onAvailableVerifyConsultationOrder,

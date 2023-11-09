@@ -16,8 +16,6 @@ import com.tokopedia.common_epharmacy.EPHARMACY_CHOOSER_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
-import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_PAP
-import com.tokopedia.common_epharmacy.EPHARMACY_PPG_UOH
 import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.R
@@ -36,11 +34,13 @@ import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationRes
 import com.tokopedia.epharmacy.network.response.EPharmacyUpdateCartResponse
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.ATTACH_PRESCRIPTION_PAGE
+import com.tokopedia.epharmacy.utils.ENABLER_IMAGE_URL
 import com.tokopedia.epharmacy.utils.EPHARMACY_ANDROID_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_APPLINK
 import com.tokopedia.epharmacy.utils.EPHARMACY_APP_CHECKOUT_APPLINK
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
@@ -90,7 +90,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     private var trackingSentBoolean = false
 
     private var tConsultationId = 0L
-    private var source = EPHARMACY_PPG_SOURCE_PAP
+    private var source = EPHARMACY_PPG_SOURCE_CHECKOUT
     private var requestCode = 0
 
     @Inject
@@ -140,11 +140,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     private fun initArguments() {
         tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
         requestCode = arguments?.getInt(EPHARMACY_CONSULTATION_REQUEST_CODE).orZero()
-        source = if (!tConsultationId.isZero()) {
-            EPHARMACY_PPG_UOH
-        } else {
-            EPHARMACY_PPG_SOURCE_CHECKOUT
-        }
+        source = arguments?.getString(EPHARMACY_SOURCE).orEmpty()
     }
 
     private fun setUpObservers() {
@@ -339,13 +335,13 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 consultationResponse.epharmacyGroupId.orEmpty(),
                 consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.id.toString()
             )
-            openEPharmacyGeneralCheckoutPage(consultationResponse)
+            openConsultationRedirection(consultationResponse)
         }
     }
 
-    private fun openEPharmacyGeneralCheckoutPage(consultationResponse: EPharmacyInitiateConsultationResponse) {
-        EPharmacyNavigator.createEPharmacyCheckoutAppLink(consultationResponse).also { paramAppLink ->
-            RouteManager.route(activity, paramAppLink)
+    private fun openConsultationRedirection(consultationResponse: EPharmacyInitiateConsultationResponse) {
+        consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink?.let { link ->
+            RouteManager.route(context, link)
         }
     }
 
@@ -518,6 +514,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             model.epharmacyGroupId,
             model.prescriptionCTA,
             model.tokoConsultationId,
+            model.consultationData,
             model.price,
             model.operatingSchedule,
             model.note
@@ -559,13 +556,14 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         groupId: String?,
         prescriptionCTA: EG.PrescriptionCTA?,
         tokoConsultationId: String?,
+        consultationData: EG.ConsultationData?,
         price: String?,
         operatingSchedule: EG.ConsultationSource.OperatingSchedule?,
         note: String?
     ) {
         when (prescriptionCTA?.actionType) {
             PrescriptionActionType.REDIRECT_PWA.type -> {
-                startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note, true)
+                redirectActionPWA(consultationData, chooserLogo, groupId, enablerName, price, operatingSchedule, note)
             }
             PrescriptionActionType.REDIRECT_UPLOAD.type -> {
                 startPhotoUpload(enablerName, groupId)
@@ -583,6 +581,26 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                     startPhotoUpload(enablerName, ePharmacyGroupId, EPHARMACY_CEK_RESEP_REQUEST_CODE)
                 }
             }
+        }
+    }
+
+    private fun redirectActionPWA(
+        consultationData: EG.ConsultationData?,
+        chooserLogo: String?,
+        groupId: String?,
+        enablerName: String?,
+        price: String?,
+        operatingSchedule: EG.ConsultationSource.OperatingSchedule?,
+        note: String?
+    ) {
+        consultationData?.let {
+            if (consultationData.consultationStatus.orZero().isZero()) {
+                startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note, true)
+            } else {
+                startMiniConsultation(enablerName, groupId)
+            }
+        } ?: kotlin.run {
+            startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note, true)
         }
     }
 
@@ -608,6 +626,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 isOnlyConsult
             )
         )?.also {
+            it.putExtra(ENABLER_IMAGE_URL, enablerImage)
             startActivityForResult(it, EPHARMACY_CHOOSER_REQUEST_CODE)
         }
     }

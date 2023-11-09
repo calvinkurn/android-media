@@ -11,6 +11,8 @@ data class InitiateConsultationParam(
         @SerializedName("epharmacy_group_id")
         var epharmacyGroupId: String = "",
         @SerializedName("source")
-        var source: String = ""
+        var source: String = "",
+        @SerializedName("is_paid_consul")
+        var isPaidConsul: Boolean? = true
     )
 }

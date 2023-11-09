@@ -44,20 +44,10 @@ data class EPharmacyOrderDetailResponse(
     }
 
     data class GetConsultationOrderDetail(
-        @SerializedName("cta")
-        @Expose
-        val cta: List<EPharmacyOrderButtonModel?>?,
         @SerializedName("data")
         @Expose
-        val ePharmacyOrderData: EPharmacyOrderData?,
-        @SerializedName("tri_dots")
-        @Expose
-        val triDots: List<EPharmacyOrderButtonModel?>?
+        val ePharmacyOrderData: EPharmacyOrderData?
     ) {
-
-        val orderButtonData: OrderButtonData
-            get() = OrderButtonData(cta, triDots)
-
         data class EPharmacyOrderButtonModel(
             @SerializedName("action_type")
             @Expose
@@ -124,8 +114,18 @@ data class EPharmacyOrderDetailResponse(
             val orderExpiredDate: String?,
             @SerializedName("ticker")
             @Expose
-            val ticker: Ticker?
+            val ticker: Ticker?,
+            @SerializedName("cta")
+            @Expose
+            val cta: List<EPharmacyOrderButtonModel?>?,
+            @SerializedName("tri_dots")
+            @Expose
+            val triDots: List<EPharmacyOrderButtonModel?>?
         ) {
+
+            val orderButtonData: OrderButtonData
+                get() = OrderButtonData(cta, triDots)
+
             data class ConsultationSource(
                 @SerializedName("enabler_logo_url")
                 @Expose

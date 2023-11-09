@@ -180,9 +180,14 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         setUpHomeButton(btnShopAgain)
         setUpSecondaryButton(thanksPageData)
 
+        setUpAutoRedirect()
+    }
+
+    private fun setUpAutoRedirect() {
+        if (thanksPageData.configFlagData?.autoRedirect != true) return
+
         countDownTimer = object : CountDownTimer(
             thanksPageData.customDataOther?.delayDuration?.toLong() ?: 0L,
-//            5000L,
             1000
         ) {
             override fun onTick(millisUntilFinished: Long) {
@@ -190,7 +195,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
                 val secondsRemaining = millisUntilFinished / 1000
                 val spannableString = SpannableString(thanksPageData.customDataMessage?.loaderText + secondsRemaining.toString() + "detik")
-//                val spannableString = SpannableString("Kamu akan diarahkan ke sesi chat dengan Dokter dalam $secondsRemaining detik")
 
                 val secondIndex = spannableString.indexOf(secondsRemaining.toString())
                 spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)), secondIndex, secondIndex + secondsRemaining.toString().length, 0)
@@ -202,7 +206,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
                 if (context == null) return
 
                 RouteManager.route(requireContext(), thanksPageData.customDataAppLink?.autoRedirect)
-//                RouteManager.route(requireContext(), "tokopedia://home")
             }
         }
 

@@ -10,6 +10,7 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyPrescriptionAttachmentPageFragment
+import com.tokopedia.epharmacy.utils.EPHARMACY_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -53,6 +54,7 @@ class EPharmacyAttachPrescriptionActivity : BaseSimpleActivity(), HasComponent<E
             putInt(EPHARMACY_CONSULTATION_REQUEST_CODE, intent.getIntExtra(EPHARMACY_CONSULTATION_REQUEST_CODE, 0))
             intent?.data?.let { uri ->
                 putLong(EPHARMACY_TOKO_CONSULTATION_ID, uri.getQueryParameter(EPHARMACY_TOKO_CONSULTATION_ID).toLongOrZero())
+                putString(EPHARMACY_SOURCE, uri.getQueryParameter(EPHARMACY_SOURCE).orEmpty())
             }
         }
     }

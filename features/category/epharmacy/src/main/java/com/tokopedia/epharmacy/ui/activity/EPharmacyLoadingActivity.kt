@@ -1,5 +1,6 @@
 package com.tokopedia.epharmacy.ui.activity
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -10,11 +11,11 @@ import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyLoadingFragment
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
-import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 class EPharmacyLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
 
-    private var tConsultationId = String.EMPTY
+    private var tConsultationId = 0L
 
     private val ePharmacyComponent: EPharmacyComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
 
@@ -32,7 +33,7 @@ class EPharmacyLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmacyCom
         initView()
         return EPharmacyLoadingFragment.newInstance(
             Bundle().apply {
-                putString(EPHARMACY_TOKO_CONSULTATION_ID, tConsultationId)
+                putLong(EPHARMACY_TOKO_CONSULTATION_ID, tConsultationId)
             }
         )
     }
@@ -42,9 +43,8 @@ class EPharmacyLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmacyCom
     }
 
     private fun extractArguments() {
-        intent?.data?.let {
-            tConsultationId = it.getQueryParameter(EPHARMACY_TOKO_CONSULTATION_ID).orEmpty()
-        }
+        val pathSegments = Uri.parse(intent.data?.path.orEmpty()).pathSegments
+        tConsultationId = if (pathSegments.size > 1) pathSegments[1].toLongOrZero() else 0L
     }
 
     override fun getComponent() = ePharmacyComponent
