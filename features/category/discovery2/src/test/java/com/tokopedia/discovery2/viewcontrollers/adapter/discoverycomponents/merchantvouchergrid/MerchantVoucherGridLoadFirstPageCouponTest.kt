@@ -1,88 +1,16 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid
 
-import android.app.Application
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
-import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.discovery.common.utils.URLParser
-import com.tokopedia.discovery2.Utils
-import com.tokopedia.discovery2.common.TestUtils.verifyEquals
 import com.tokopedia.discovery2.data.ComponentAdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.Redirection
 import com.tokopedia.discovery2.data.TotalProductData
-import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
-import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase.Companion.VOUCHER_PER_PAGE
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridComponentExtension.addShimmer
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridComponentExtension.addVoucherList
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridViewModel.Companion.ERROR_MESSAGE_EMPTY_DATA
-import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.unit.test.ext.verifyValueEquals
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkConstructor
-import io.mockk.mockkObject
-import io.mockk.spyk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class MerchantVoucherGridViewModelTest {
-
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
-
-    private val useCase: MerchantVoucherUseCase = mockk(relaxed = true)
-    private val component: ComponentsItem = mockk(relaxed = true)
-
-    private val application: Application = mockk()
-    private val position: Int = 99
-    private val componentId = "12324432"
-    private val componentPageEndPoint = "discopagev2-mvc-grid-infinite-test"
-
-    private lateinit var viewModel: MerchantVoucherGridViewModel
-    private lateinit var searchParameter: SearchParameter
-    private lateinit var filterController: FilterController
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(UnconfinedTestDispatcher())
-        MockKAnnotations.init(this)
-        mockkObject(Utils.Companion)
-        mockkConstructor(URLParser::class)
-        stubUrlParser()
-
-        viewModel = spyk(
-            MerchantVoucherGridViewModel(
-                application = application,
-                component = component,
-                position = position
-            )
-        )
-
-        viewModel.useCase = useCase
-        searchParameter = SearchParameter()
-        filterController = FilterController()
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
-
+class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFixture() {
     @Test
     fun `When use case is null then the result of loading the first page coupon should be shimmer`() {
         // inject use case
@@ -142,7 +70,7 @@ class MerchantVoucherGridViewModelTest {
             componentItems = emptyList()
         )
 
-        val throwable = Throwable(ERROR_MESSAGE_EMPTY_DATA)
+        val throwable = Throwable(MerchantVoucherGridViewModel.ERROR_MESSAGE_EMPTY_DATA)
         stubLoadFirstPage(
             throwable = throwable
         )
@@ -152,7 +80,7 @@ class MerchantVoucherGridViewModelTest {
 
         // compare to the expected result
         viewModel.couponList
-            .verifyFailEquals(ERROR_MESSAGE_EMPTY_DATA)
+            .verifyFailEquals(MerchantVoucherGridViewModel.ERROR_MESSAGE_EMPTY_DATA)
     }
 
     @Test
@@ -176,7 +104,7 @@ class MerchantVoucherGridViewModelTest {
 
         // compare to the expected result
         viewModel.couponList
-            .verifyFailEquals(ERROR_MESSAGE_EMPTY_DATA)
+            .verifyFailEquals(MerchantVoucherGridViewModel.ERROR_MESSAGE_EMPTY_DATA)
     }
 
     @Test
@@ -200,7 +128,7 @@ class MerchantVoucherGridViewModelTest {
 
         // compare to the expected result
         viewModel.couponList
-            .verifyFailEquals(ERROR_MESSAGE_EMPTY_DATA)
+            .verifyFailEquals(MerchantVoucherGridViewModel.ERROR_MESSAGE_EMPTY_DATA)
     }
 
     @Test
@@ -683,83 +611,4 @@ class MerchantVoucherGridViewModelTest {
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
-
-    private fun stubUrlParser() {
-        every {
-            anyConstructed<URLParser>().paramKeyValueMapDecoded
-        } returns hashMapOf()
-    }
-
-    private fun stubLoadFirstPage(
-        hasLoaded: Boolean
-    ) {
-        coEvery {
-            useCase.loadFirstPageComponents(componentId = componentId, pageEndPoint = componentPageEndPoint)
-        } returns hasLoaded
-    }
-
-    private fun stubLoadFirstPage(
-        throwable: Throwable
-    ) {
-        coEvery {
-            useCase.loadFirstPageComponents(componentId = componentId, pageEndPoint = componentPageEndPoint)
-        } throws throwable
-    }
-
-    private fun stubNextPageAvailable(
-        hasNextPage: Boolean
-    ) {
-        every {
-            Utils.nextPageAvailable(component, VOUCHER_PER_PAGE)
-        } returns hasNextPage
-    }
-
-    private fun stubComponent(
-        componentAdditionalInfo: ComponentAdditionalInfo?,
-        componentItems: List<ComponentsItem>?
-    ) {
-        every {
-            component.id
-        } returns componentId
-
-        every {
-            component.pageEndPoint
-        } returns componentPageEndPoint
-
-        every {
-            component.getComponentAdditionalInfo()
-        } returns componentAdditionalInfo
-
-        every {
-            component.getComponentsItem()
-        } returns componentItems
-    }
-
-    private fun LiveData<Result<ArrayList<ComponentsItem>>>.verifySuccessEquals(
-        expected: ArrayList<ComponentsItem>
-    ) {
-        val expectedResult = expected.map { component ->
-            component.copy(
-                searchParameter = searchParameter,
-                filterController = filterController,
-            )
-        }
-        val actualResult = (value as? Success<ArrayList<ComponentsItem>>)?.data?.map { component ->
-            component.copy(
-                searchParameter = searchParameter,
-                filterController = filterController,
-            )
-        }
-        actualResult
-            .verifyEquals(expectedResult)
-    }
-
-    private fun LiveData<Result<ArrayList<ComponentsItem>>>.verifyFailEquals(
-        message: String
-    ) {
-        val actualResult = (value as? Fail)?.throwable?.message
-        actualResult
-            .verifyEquals(message)
-    }
 }
-
