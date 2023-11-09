@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.AbstractComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,6 +49,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.creation.common.R as creationcommonR
 
 /**
@@ -97,7 +98,6 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
         val creationConfig = viewModel?.creationConfig?.collectAsStateWithLifecycle()?.value
 
         if (creationConfig is Success && creationConfig.data.creationItems.isNotEmpty()) {
-
             if (widgetSource != ContentCreationEntryPointSource.Unknown) {
                 LaunchedEffect(Unit) {
                     analytics.eventImpressionContentCreationEndpointWidget(
@@ -124,7 +124,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
                         .getFragment(fm, context.classLoader)
                         .show(
                             fm,
-                            creationConfig = creationConfig.data,
+                            creationConfig = creationConfig.data
                         )
                 }
             }
@@ -184,12 +184,14 @@ fun ContentCreationEntryPointComponent(
     buttonText: String,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
+
     Row(
         modifier = Modifier
             .padding(vertical = 8.dp, horizontal = 2.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(if (isSystemInDarkTheme()) NestTheme.colors.NN._900 else NestTheme.colors.NN._0)
+            .background(if (context.isDarkMode()) NestTheme.colors.NN._900 else NestTheme.colors.NN._0)
             .border(1.dp, Color(0x40AAB4C8), RoundedCornerShape(12.dp))
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -203,7 +205,7 @@ fun ContentCreationEntryPointComponent(
         NestTypography(
             text = text,
             textStyle = NestTheme.typography.display3.copy(
-                color = if (isSystemInDarkTheme()) NestTheme.colors.NN._0 else Color.Unspecified
+                color = if (context.isDarkMode()) NestTheme.colors.NN._0 else Color.Unspecified
             ),
             modifier = Modifier
                 .padding(start = 4.dp, end = 8.dp)
