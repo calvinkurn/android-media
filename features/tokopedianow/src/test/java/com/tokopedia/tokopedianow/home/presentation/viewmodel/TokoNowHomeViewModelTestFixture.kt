@@ -701,7 +701,7 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetQuestWidgetAbTest_thenReturn(value: String) {
         coEvery {
-            abTestPlatform.getString("now_quest")
+            abTestPlatform.getString("now_experiment")
         } returns value
     }
 

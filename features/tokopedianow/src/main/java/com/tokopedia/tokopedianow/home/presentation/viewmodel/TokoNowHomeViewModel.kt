@@ -1446,5 +1446,5 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun getEnableNewQuestWidget() = abTestPlatform
-        .getString(RollenceKey.TOKOPEDIA_NOW_QUEST) == EXPERIMENT_ENABLED
+        .getString(RollenceKey.TOKOPEDIA_NOW_EXPERIMENT) == EXPERIMENT_ENABLED
 }
