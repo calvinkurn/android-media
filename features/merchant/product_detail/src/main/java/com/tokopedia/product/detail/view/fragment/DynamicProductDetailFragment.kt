@@ -5991,7 +5991,7 @@ open class DynamicProductDetailFragment :
         ).apply {
             productImageUrl = SharingUtil.transformOgImageURL(
                 context = context,
-                imageUrl = productInfo.data.getProductImageUrl().orEmpty()
+                imageURL = productInfo.data.getProductImageUrl().orEmpty()
             )
         }
         val affiliateInput = generateAffiliateShareData(
@@ -5999,7 +5999,6 @@ open class DynamicProductDetailFragment :
             shopInfo = viewModel.p2Data.value?.shopInfo,
             variantData = viewModel.variantData
         )
-
         shareProductInstance?.setWhatsappShareWidget(
             shareWidget = widget,
             productData = productData,
