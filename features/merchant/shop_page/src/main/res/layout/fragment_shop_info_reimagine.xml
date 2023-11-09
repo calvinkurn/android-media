@@ -926,6 +926,15 @@
 
     </ScrollView>
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderReportShop"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_margin="12dp"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        tools:visibility="visible" />
   
 
 </RelativeLayout>

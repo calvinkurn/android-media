@@ -5,4 +5,6 @@ sealed interface ShopInfoUiEffect {
     data class RedirectToShopReviewPage(val shopId: String) : ShopInfoUiEffect
     data class RedirectToReviewDetailPage(val reviewId: String) : ShopInfoUiEffect
     data class RedirectToShopNoteDetailPage(val shopId: String, val noteId: String) : ShopInfoUiEffect
+    object RedirectToLoginPage : ShopInfoUiEffect
+    data class RedirectToChatWebView(val messageId: String): ShopInfoUiEffect
 }

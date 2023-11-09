@@ -10,6 +10,7 @@ import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 
 data class ShopInfoUiState(
     val isLoading: Boolean = true,
+    val isLoadingShopReport: Boolean = false,
     val info : ShopInfo = ShopInfo(
         shopImageUrl = "",
         shopBadgeUrl = "",
@@ -56,4 +57,4 @@ data class ShopInfoUiState(
     ),
     val error: Throwable? = null,
     val shopId: String = ""
-)
+) 

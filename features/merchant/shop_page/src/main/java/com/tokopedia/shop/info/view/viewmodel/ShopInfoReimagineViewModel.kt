@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.shop.common.domain.GetMessageIdChatUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
 import com.tokopedia.shop.common.extension.toDate
@@ -51,7 +52,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val getShopGqlGetShopOperationalHoursListUseCase: GqlGetShopOperationalHoursListUseCase,
     private val getShopPageHeaderLayoutUseCase: GetShopPageHeaderLayoutUseCase,
     private val getEpharmacyShopInfoUseCase: GetEpharmacyShopInfoUseCase,
-    private val getNearestEpharmacyWarehouseLocationUseCase: GetNearestEpharmacyWarehouseLocationUseCase
+    private val getNearestEpharmacyWarehouseLocationUseCase: GetNearestEpharmacyWarehouseLocationUseCase,
+    private val getMessageIdChatUseCase: GetMessageIdChatUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     companion object {
@@ -188,10 +190,6 @@ class ShopInfoReimagineViewModel @Inject constructor(
             )
         )
         return getShopInfoUseCase.executeOnBackground()
-    }  
-    
-    private fun handleReportShop() {
-        
     }
 
     private suspend fun getShopNotes(shopId: String): List<ShopNoteModel> {
@@ -261,6 +259,30 @@ class ShopInfoReimagineViewModel @Inject constructor(
         }
     }
 
+    private fun handleReportShop() {
+        if (!userSessionInterface.isLoggedIn) {
+            _uiEffect.tryEmit(ShopInfoUiEffect.RedirectToLoginPage)
+            return
+        }
+
+        launchCatchError(
+            coroutineDispatcherProvider.io,
+            block = {
+                _uiState.update { it.copy(isLoadingShopReport = true) }
+                
+                getMessageIdChatUseCase.params = GetMessageIdChatUseCase.createParams(currentState.shopId)
+                val response = getMessageIdChatUseCase.executeOnBackground()
+                val messageId = response.chatExistingChat.messageId
+                
+                _uiEffect.tryEmit(ShopInfoUiEffect.RedirectToChatWebView(messageId))
+                _uiState.update { it.copy(isLoadingShopReport = false) }
+          
+            }, onError = {
+                _uiState.update { it.copy(isLoadingShopReport = false) }
+            }
+        )
+    }
+    
     private fun isMyShop(shopId: String): Boolean {
         return shopId == userSessionInterface.shopId
     }

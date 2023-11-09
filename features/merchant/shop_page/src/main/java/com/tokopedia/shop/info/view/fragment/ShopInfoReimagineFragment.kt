@@ -1,6 +1,8 @@
 package com.tokopedia.shop.info.view.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,12 +26,14 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.digitsOnly
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.extension.setHyperlinkText
@@ -46,9 +50,11 @@ import com.tokopedia.shop.info.view.model.ShopInfoUiEffect
 import com.tokopedia.shop.info.view.model.ShopInfoUiEvent
 import com.tokopedia.shop.info.view.model.ShopInfoUiState
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoReimagineViewModel
+import com.tokopedia.shop.report.activity.ReportShopWebViewActivity
 import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -63,7 +69,9 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val MARGIN_4_DP = 4
         private const val APPLINK_QUERY_STRING_REVIEW_SOURCE = "header"
-
+        private const val REQUEST_REPORT_SHOP = 110
+        private const val REQUEST_CODE_LOGIN = 100
+        
         @JvmStatic
         fun newInstance(shopId: String): ShopInfoReimagineFragment {
             return ShopInfoReimagineFragment().apply {
@@ -205,6 +213,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             is ShopInfoUiEffect.RedirectToReviewDetailPage -> redirectToReviewDetailPage(effect.reviewId)
             is ShopInfoUiEffect.RedirectToShopReviewPage -> redirectToShopReviewPage(effect.shopId)
             is ShopInfoUiEffect.RedirectToShopNoteDetailPage -> redirectToShopNoteDetailPage(effect.shopId, effect.noteId)
+            ShopInfoUiEffect.RedirectToLoginPage -> redirectToLoginPage()
+            is ShopInfoUiEffect.RedirectToChatWebView -> redirectToChatWebView(effect.messageId)
         }
     }
 
@@ -236,6 +246,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         renderShopNotes(uiState)
         renderShopDescription(uiState)
         renderShopSupportedShipment(uiState)
+        renderShopReport(uiState)
     }
 
     private fun renderShopCoreInfo(uiState: ShopInfoUiState) {
@@ -520,6 +531,16 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         }
     }
 
+    private fun renderShopReport(uiState: ShopInfoUiState) {
+        if (uiState.isLoadingShopReport) {
+            binding?.tpgReportShop?.invisible()
+            binding?.loaderReportShop?.visible()
+        } else {
+            binding?.tpgReportShop?.visible()
+            binding?.loaderReportShop?.gone()
+        }
+    }
+    
     private fun makeShopNameCenteredVertically() {
         val constraintSet = ConstraintSet()
         constraintSet.clone(binding?.constraintLayout)
@@ -565,5 +586,36 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         val intent = ShopNoteDetailActivity.createIntent(context, shopId, noteId)
         startActivity(intent)
+    }
+
+    private fun redirectToLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
+    
+    private fun redirectToChatWebView(messageId: String) {
+        val reportUrl = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId${ShopInfoFragment.SOURCE_PAGE}"
+
+        val intent = ReportShopWebViewActivity.getStartIntent(context ?: return, reportUrl)
+        startActivityForResult(intent, REQUEST_REPORT_SHOP)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_REPORT_SHOP -> onReturnFromReportUser(data, resultCode)
+        }
+    }
+
+    private fun onReturnFromReportUser(data: Intent?, resultCode: Int) {
+        if (data == null || resultCode != Activity.RESULT_OK) return
+        showToasterConfirmation(getString(R.string.label_report_success))
+    }
+
+    private fun showToasterConfirmation(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                .show()
+        }
     }
 }
