@@ -1,9 +1,12 @@
 package com.tokopedia.creation.common.presentation.customviews
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.AttributeSet
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,11 +14,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -186,18 +188,23 @@ fun ContentCreationEntryPointComponent(
         modifier = Modifier
             .padding(vertical = 8.dp, horizontal = 2.dp)
             .fillMaxWidth()
-            .shadow(
-                elevation = 4.dp,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .background(NestTheme.colors.NN._0)
+            .clip(RoundedCornerShape(12.dp))
+            .background(if (isSystemInDarkTheme()) NestTheme.colors.NN._900 else NestTheme.colors.NN._0)
+            .border(1.dp, Color(0x40AAB4C8), RoundedCornerShape(12.dp))
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        NestIcon(iconId = iconId, modifier = Modifier.size(24.dp))
+        NestIcon(
+            iconId = iconId,
+            modifier = Modifier.size(24.dp),
+            colorLightEnable = NestTheme.colors.NN._900,
+            colorNightEnable = NestTheme.colors.NN._0
+        )
         NestTypography(
             text = text,
-            textStyle = NestTheme.typography.display3,
+            textStyle = NestTheme.typography.display3.copy(
+                color = if (isSystemInDarkTheme()) NestTheme.colors.NN._0 else Color.Unspecified
+            ),
             modifier = Modifier
                 .padding(start = 4.dp, end = 8.dp)
                 .fillMaxWidth()
@@ -212,9 +219,20 @@ fun ContentCreationEntryPointComponent(
     }
 }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun ContentCreationEntryPointComponentPreview() {
+fun ContentCreationEntryPointComponentLightPreview() {
+    ContentCreationEntryPointComponent(
+        iconId = IconUnify.VIDEO,
+        text = "Promosikan produkmu dengan Live, Video, Foto & Story",
+        buttonText = "Buat Konten"
+    ) {
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun ContentCreationEntryPointComponentDarkPreview() {
     ContentCreationEntryPointComponent(
         iconId = IconUnify.VIDEO,
         text = "Promosikan produkmu dengan Live, Video, Foto & Story",
