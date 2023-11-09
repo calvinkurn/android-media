@@ -321,7 +321,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_INDEFINITE
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -330,9 +329,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListe
 import com.tokopedia.universal_sharing.view.customview.ShareWidgetCallback
 import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
-import com.tokopedia.universal_sharing.view.model.ImageGeneratorShareWidgetParam
-import com.tokopedia.universal_sharing.view.model.LinkShareWidgetProperties
-import com.tokopedia.universal_sharing.view.model.ShareWidgetParam
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -5944,6 +5940,39 @@ open class DynamicProductDetailFragment :
         )
     }
 
+    private val universalShareWidgetCallback
+        get() = object : ShareWidgetCallback {
+            override fun onShowNormalBottomSheet() {
+                val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+                shareProduct(productInfo)
+            }
+
+            override fun onClickShareWidget(
+                id: String,
+                channel: String,
+                isAffiliate: Boolean,
+                isDirectChannel: Boolean
+            ) {
+                val campaignId = campaignId.ifEmpty { Int.ZERO.toString() }
+                if (isDirectChannel) {
+                    DynamicProductDetailTracking.Click.clickDirectChannel(
+                        channel,
+                        isAffiliate,
+                        id,
+                        campaignId,
+                        Int.ZERO.toString()
+                    )
+                } else {
+                    DynamicProductDetailTracking.Click.clickShareWidget(
+                        isAffiliate,
+                        id,
+                        campaignId,
+                        Int.ZERO.toString()
+                    )
+                }
+            }
+        }
+
     override fun onUniversalShareWidget(widget: UniversalShareWidget) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         val productData = generateProductShareData(
@@ -5952,11 +5981,24 @@ open class DynamicProductDetailFragment :
             shopUrl = viewModel.getShopInfo().shopCore.url,
             bundleId = Int.ZERO.toString()
         )
-        val personalizedCampaignModel = generatePersonalizedData(productInfo, viewModel.p2Data.value)
-        val imageGenerator = generateImageGeneratorData(productInfo, viewModel.getBebasOngkirDataByProductId()).apply {
-            productImageUrl = SharingUtil.transformOgImageURL(context, productInfo.data.getProductImageUrl() ?: "")
+        val personalizedCampaignModel = generatePersonalizedData(
+            product = productInfo,
+            productP2 = viewModel.p2Data.value
+        )
+        val imageGenerator = generateImageGeneratorData(
+            product = productInfo,
+            bebasOngkir = viewModel.getBebasOngkirDataByProductId()
+        ).apply {
+            productImageUrl = SharingUtil.transformOgImageURL(
+                context = context,
+                imageURL = productInfo.data.getProductImageUrl().orEmpty()
+            )
         }
-        val affiliateInput = generateAffiliateShareData(productInfo, viewModel.p2Data.value?.shopInfo, viewModel.variantData)
+        val affiliateInput = generateAffiliateShareData(
+            productInfo = productInfo,
+            shopInfo = viewModel.p2Data.value?.shopInfo,
+            variantData = viewModel.variantData
+        )
         shareProductInstance?.setWhatsappShareWidget(
             shareWidget = widget,
             productData = productData,
@@ -5964,32 +6006,8 @@ open class DynamicProductDetailFragment :
             affiliateInput = affiliateInput,
             imageGeneratorParamModel = imageGenerator
         )
-        widget.setShareWidgetCallback(object: ShareWidgetCallback {
-            override fun onShowNormalBottomSheet() {
-                shareProduct(productInfo)
-            }
 
-            override fun onClickShareWidget(id: String, channel: String, isAffiliate: Boolean, isDirectChannel: Boolean) {
-                val campaignId = this@DynamicProductDetailFragment.campaignId.ifEmpty { "0" }
-                if (isDirectChannel) {
-                    DynamicProductDetailTracking.Click.clickDirectChannel(
-                        channel,
-                        isAffiliate,
-                        id,
-                        campaignId,
-                        "0"
-
-                    )
-                } else {
-                    DynamicProductDetailTracking.Click.clickShareWidget(
-                        isAffiliate,
-                        id,
-                        campaignId,
-                        "0"
-                    )
-                }
-            }
-        })
+        widget.setShareWidgetCallback(shareWidgetCallback = universalShareWidgetCallback)
     }
 
     override fun onImpressProductDetailNavigation(labels: List<String>) {
