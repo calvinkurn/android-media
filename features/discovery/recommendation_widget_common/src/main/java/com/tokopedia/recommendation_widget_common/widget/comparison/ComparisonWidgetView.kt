@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison
 
 import android.animation.LayoutTransition
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -186,6 +187,7 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun switchToCollapsedState(collapsedHeight: Int) {
         if (isExpandingState()) {
             val layoutParamsComparedItem = rv_compared_item?.layoutParams
@@ -196,6 +198,7 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun switchToExpandState() {
         if (!isExpandingState()) {
             val layoutParamsComparedItem = rv_compared_item?.layoutParams
