@@ -319,9 +319,7 @@ import com.tokopedia.shop.common.data.model.ShopPageProductDirectPurchaseWidgetA
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
-import com.tokopedia.shop.home.WidgetName.ADD_ONS
-import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
-import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.view.model.NotifyMeAction
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
@@ -575,9 +573,9 @@ class ShopPageHomeTracking(
 
     private fun getShopPersoWidgetType(widgetName: String): String {
         return when (widgetName) {
-            BUY_AGAIN -> WIDGET_TYPE_BUY_AGAIN
-            RECENT_ACTIVITY -> WIDGET_TYPE_CAROUSELL
-            ADD_ONS -> WIDGET_TYPE_ADD_ONS
+            WidgetNameEnum.BUY_AGAIN.value -> WIDGET_TYPE_BUY_AGAIN
+            WidgetNameEnum.RECENT_ACTIVITY.value -> WIDGET_TYPE_CAROUSELL
+            WidgetNameEnum.ADD_ONS.value -> WIDGET_TYPE_ADD_ONS
             else -> ""
         }
     }

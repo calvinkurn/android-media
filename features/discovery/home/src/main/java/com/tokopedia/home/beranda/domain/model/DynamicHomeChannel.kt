@@ -172,6 +172,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_PAYLATER_CICIL: String = "gpl_cicil"
             const val LAYOUT_CUE_WIDGET: String = "cue_widget"
             const val LAYOUT_MISSION_WIDGET: String = "mission_widget"
+            const val LAYOUT_MISSION_WIDGET_V2: String = "mission_widget_v2"
             const val LAYOUT_VPS_WIDGET: String = "4_banners_auto_vps_v2"
             const val LAYOUT_LEGO_4_PRODUCT: String = "lego_4_product"
             const val LAYOUT_TODO_WIDGET_REVAMP: String = "todo_widget_carousel"

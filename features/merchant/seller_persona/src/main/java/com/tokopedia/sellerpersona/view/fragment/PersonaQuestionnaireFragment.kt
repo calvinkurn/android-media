@@ -32,6 +32,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by @ilhamsuaib on 24/01/23.
@@ -226,22 +227,17 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
     private fun submitAnswer() {
         binding?.run {
             val answers = pagerAdapter.getPages().map { pager ->
-                QuestionnaireAnswerParam(
-                    id = pager.id.toLongOrZero(),
-                    answers = pager.options.orEmpty().filter { it.isSelected }.map { it.value }
-                )
+                QuestionnaireAnswerParam(id = pager.id.toLongOrZero(),
+                    answers = pager.options.filter { it.isSelected }.map { it.value })
             }
             showSubmitQuizLoadingState()
             viewModel.submitAnswer(answers)
             viewModel.setPersonaResult.observeOnce(viewLifecycleOwner) {
                 when (it) {
                     is Success -> {
-                        val action = PersonaQuestionnaireFragmentDirections
-                            .actionQuestionnaireToResult(
-                                paramPersona = it.data
-                            )
-                        findNavController().navigate(action)
+                        onSuccessPersonaResult(it.data)
                     }
+
                     is Fail -> {
                         dismissSubmitQuizLoadingState()
                         showErrorToaster()
@@ -249,6 +245,11 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
                 }
             }
         }
+    }
+
+    private fun onSuccessPersonaResult(persona: String) {
+        val action = PersonaQuestionnaireFragmentDirections.actionQuestionnaireToResult(paramPersona = persona)
+        findNavController().navigate(action)
     }
 
     private fun showSubmitQuizLoadingState() {
@@ -278,7 +279,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
     private fun showErrorToaster() {
         view?.run {
             val dp48 = context.resources.getDimensionPixelSize(
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl6
+                unifyprinciplesR.dimen.layout_lvl6
             )
             Toaster.toasterCustomBottomHeight = dp48
             Toaster.build(

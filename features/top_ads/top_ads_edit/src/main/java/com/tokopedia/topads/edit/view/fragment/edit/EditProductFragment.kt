@@ -13,13 +13,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.common.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.ADDED_PRODUCTS
+import com.tokopedia.topads.edit.utils.Constants.ADDED_PRODUCTS_NEW
 import com.tokopedia.topads.edit.utils.Constants.DELETED_PRODUCTS
+import com.tokopedia.topads.edit.utils.Constants.DELETED_PRODUCTS_NEW
 import com.tokopedia.topads.edit.utils.Constants.EXISTING_IDS
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.utils.Constants.REQUEST_OK
@@ -27,6 +30,8 @@ import com.tokopedia.topads.edit.utils.Constants.RESULT_IMAGE
 import com.tokopedia.topads.edit.utils.Constants.RESULT_NAME
 import com.tokopedia.topads.edit.utils.Constants.RESULT_PRICE
 import com.tokopedia.topads.edit.utils.Constants.RESULT_PROUCT
+import com.tokopedia.topads.edit.view.activity.EditAdGroupActivity
+import com.tokopedia.topads.edit.view.activity.OnProductAction
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.activity.SelectProductActivity
 import com.tokopedia.topads.edit.view.adapter.edit_product.EditProductListAdapter
@@ -35,8 +40,11 @@ import com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel.EditProduct
 import com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel.EditProductItemViewModel
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
+import com.tokopedia.topads.common.R as topadscommonR
 
 private const val CLICK_TAMBAH_PRODUK = "click - tambah produk"
 private const val PRODUCT_EDIT_NAME = "android.topads_edit"
@@ -46,8 +54,11 @@ class EditProductFragment : BaseDaggerFragment() {
     private var productCount: Typography? = null
     private var addImage: ImageUnify? = null
     private var addProduct: Typography? = null
+    private var ctaDeleteProduct: UnifyButton? = null
+    private var headerUnify: HeaderUnify? = null
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
+    private var onProductAction: OnProductAction? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -102,6 +113,8 @@ class EditProductFragment : BaseDaggerFragment() {
         productCount = view.findViewById(R.id.product_count)
         addImage = view.findViewById(R.id.add_image)
         addProduct = view.findViewById(R.id.add_product)
+        ctaDeleteProduct = view.findViewById(R.id.cta_delete_product)
+        headerUnify = view.findViewById(R.id.header)
         setAdapter()
         return view
     }
@@ -189,13 +202,22 @@ class EditProductFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        addImage?.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.topads_plus_add_keyword))
+        addImage?.setImageDrawable(AppCompatResources.getDrawable(view.context, topadscommonR.drawable.topads_plus_add_keyword))
         addProduct?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_TAMBAH_PRODUK, "")
             val intent = Intent(context, SelectProductActivity::class.java)
             intent.putStringArrayListExtra(EXISTING_IDS, adapter.getCurrentIds())
             startActivityForResult(intent, 1)
         }
+        ctaDeleteProduct?.setOnClickListener {
+            onProductAction = activity as? EditAdGroupActivity
+            onProductAction?.onAction(sendData())
+            val fragmentManager = requireActivity().supportFragmentManager
+            fragmentManager.popBackStack()
+        }
+        headerUnify?.setNavigationOnClickListener {
+            val fragmentManager = requireActivity().supportFragmentManager
+            fragmentManager.popBackStack() }
     }
 
     private fun onProductListDeleted(pos: Int) {
@@ -210,12 +232,11 @@ class EditProductFragment : BaseDaggerFragment() {
             buttonStateCallback?.setButtonState()
             adapter.notifyDataSetChanged()
         }
-        sharedViewModel.setProductIds(getProductIds())
 
     }
 
     private fun updateItemCount() {
-        productCount?.text = String.format(getString(com.tokopedia.topads.common.R.string.product_count), totalCount)
+        productCount?.text = String.format(getString(topadscommonR.string.product_count), totalCount)
     }
 
     private fun setVisibilityOperation(visiblity: Int) {
@@ -234,7 +255,6 @@ class EditProductFragment : BaseDaggerFragment() {
                     data?.getStringArrayListExtra(RESULT_PROUCT),
                     data?.getStringArrayListExtra(RESULT_NAME),
                     data?.getStringArrayListExtra(RESULT_IMAGE))
-                sharedViewModel.setProductIds(getProductIds())
             }
         }
     }
@@ -253,6 +273,7 @@ class EditProductFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         totalCount += product?.size ?: 0
         updateItemCount()
+        Toaster.build(requireView(), String.format(getString(R.string.top_ads_add_product_toast), product?.count()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
         btnState = true
         buttonStateCallback?.setButtonState()
     }
@@ -281,6 +302,8 @@ class EditProductFragment : BaseDaggerFragment() {
         deleted.addAll(getDeletedArray())
         bundle.putParcelableArrayList(ADDED_PRODUCTS, added)
         bundle.putParcelableArrayList(DELETED_PRODUCTS, deleted)
+        bundle.putParcelableArrayList(ADDED_PRODUCTS_NEW, added)
+        bundle.putParcelableArrayList(DELETED_PRODUCTS_NEW, deleted)
         return bundle
     }
 

@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitabl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.di.HomeScope
+import com.tokopedia.home.beranda.helper.DeviceScreenHelper
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
@@ -94,5 +95,11 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun provideHomeThematicUtil(): HomeThematicUtil = HomeThematicUtil()
+    fun provideHomeThematicUtil(
+        @ApplicationContext context: Context
+    ): HomeThematicUtil = HomeThematicUtil(context)
+
+    @HomeScope
+    @Provides
+    fun provideDeviceScreenHelper(@ApplicationContext context: Context) = DeviceScreenHelper(context)
 }
