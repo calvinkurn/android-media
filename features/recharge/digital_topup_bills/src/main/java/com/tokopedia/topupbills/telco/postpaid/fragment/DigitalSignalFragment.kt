@@ -120,6 +120,7 @@ class DigitalSignalFragment : DigitalBaseTelcoFragment() {
     private fun initSignalPage() {
         signalClientNumberWidget.run {
             hideContactIcon()
+            hideContactIcon2()
             setTextFieldStaticLabel(context.getString(R.string.digital_client_label_signal))
         }
         appBarSpacer.hide()

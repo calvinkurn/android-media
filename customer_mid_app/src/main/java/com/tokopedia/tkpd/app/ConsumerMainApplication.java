@@ -17,6 +17,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+
+import com.newrelic.agent.android.FeatureFlag;
 import com.scp.auth.GotoSdk;
 
 import androidx.annotation.NonNull;
@@ -223,6 +225,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 @NotNull
                 @Override
                 public Object execute() {
+                    enableNetworkRequestNewRelic();
+                    enableCrashReportingNewRelic();
                     NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(ConsumerMainApplication.this);
                     return true;
                 }

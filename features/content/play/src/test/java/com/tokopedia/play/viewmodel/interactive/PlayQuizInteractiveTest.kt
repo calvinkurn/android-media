@@ -117,6 +117,7 @@ class PlayQuizInteractiveTest {
         every { mockRemoteConfig.getBoolean(any(), any()) } returns true
         every { socket.listenAsFlow() } returns socketFlow
         coEvery { mockCurrentInteractiveUseCase.executeOnBackground() } returns GetCurrentInteractiveResponse()
+        coEvery { mockRepo.getChannelStatus(any()) } returns modelBuilder.buildChannelStatus(waitingDuration = waitingDuration.toInt())
     }
 
     @Test

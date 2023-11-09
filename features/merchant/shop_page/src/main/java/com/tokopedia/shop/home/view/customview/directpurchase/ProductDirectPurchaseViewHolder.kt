@@ -141,10 +141,10 @@ class ProductDirectPurchaseViewHolder private constructor() {
             )
             tvProductName.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
             tvPrice.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
-            tvSlashedPrice.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
-            tvRating.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
-            tvSoldCount.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
-            tvDotSeparator.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
+            tvSlashedPrice.setRetainTextColor(colorPallete, ColorPallete.ColorType.SECONDARY_TEXT)
+            tvRating.setRetainTextColor(colorPallete, ColorPallete.ColorType.SECONDARY_TEXT)
+            tvSoldCount.setRetainTextColor(colorPallete, ColorPallete.ColorType.SECONDARY_TEXT)
+            tvDotSeparator.setRetainTextColor(colorPallete, ColorPallete.ColorType.SECONDARY_TEXT)
         }
 
         companion object {
