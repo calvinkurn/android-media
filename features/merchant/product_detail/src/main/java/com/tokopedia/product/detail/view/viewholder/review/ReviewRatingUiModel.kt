@@ -18,5 +18,8 @@ data class ReviewRatingUiModel(
     data class Keyword(
         val text: String,
         val count: String
-    )
+    ) {
+        val label
+            get() = "$text ($count)"
+    }
 }
