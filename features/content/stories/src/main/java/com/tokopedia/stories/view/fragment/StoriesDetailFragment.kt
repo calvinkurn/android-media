@@ -391,6 +391,7 @@ class StoriesDetailFragment @Inject constructor(
                 type = Toaster.TYPE_ERROR,
             )
         }
+        viewModel.submitAction(StoriesUiAction.ResetReportState)
     }
 
     private fun renderStoriesGroupHeader(
