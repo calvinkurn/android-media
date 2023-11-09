@@ -78,7 +78,6 @@ class MerchantVoucherGridViewModel(
             },
             onError = {
                 Timber.e(it)
-                println("ERROR APA ${it}")
                 _couponList.value = Fail(it)
                 isLoading = false
             }

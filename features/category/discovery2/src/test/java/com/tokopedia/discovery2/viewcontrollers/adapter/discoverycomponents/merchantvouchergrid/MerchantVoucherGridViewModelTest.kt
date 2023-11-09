@@ -90,7 +90,8 @@ class MerchantVoucherGridViewModelTest {
     }
 
     @Test
-    fun `test 1`() {
+    fun `When use case is null then the result of loading the first page coupon should be shimmer`() {
+        // inject use case
         viewModel.useCase = null
 
         // create expected result
@@ -107,7 +108,7 @@ class MerchantVoucherGridViewModelTest {
     }
 
     @Test
-    fun `test 2 voucher list empty`() {
+    fun `When use case is true but voucher list is empty, then the result of loading the first page coupon should be an error`() {
         // stub necessary data
         stubComponent(
             componentAdditionalInfo = ComponentAdditionalInfo(
@@ -131,7 +132,7 @@ class MerchantVoucherGridViewModelTest {
     }
 
     @Test
-    fun `test 3 voucher list empty`() {
+    fun `When use case is true but voucher list is null, then the result of loading the first page coupon should be an error`() {
         // stub necessary data
         stubComponent(
             componentAdditionalInfo = ComponentAdditionalInfo(
@@ -155,7 +156,7 @@ class MerchantVoucherGridViewModelTest {
     }
 
     @Test
-    fun `test 3 voucher list not empty doesn't have next page & redirection is null`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that is component doesn't have next page && redirection is null, so the result should get only voucher list`()  {
         // stub necessary data
         val componentItems = listOf(
             ComponentsItem(
@@ -208,7 +209,7 @@ class MerchantVoucherGridViewModelTest {
     }
 
     @Test
-    fun `test 3-2 voucher list not empty doesn't have next page & cta is empty`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is empty, so the result should get only voucher list`()  {
         // stub necessary data
         val redirection = Redirection(
             ctaText = String.EMPTY
@@ -264,7 +265,7 @@ class MerchantVoucherGridViewModelTest {
     }
 
     @Test
-    fun `test 3-3 voucher list not empty doesn't have next page & cta is null`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is null, so the result should get only voucher list`()  {
         // stub necessary data
         val redirection = Redirection(
             ctaText = null
@@ -320,7 +321,119 @@ class MerchantVoucherGridViewModelTest {
     }
 
     @Test
-    fun `test 4 voucher list not empty has page & redirection is null`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is not empty, so the result should get only voucher list`()  {
+        // stub necessary data
+        val redirection = Redirection(
+            ctaText = "Lihat Semua Kupon"
+        )
+        val componentItems = listOf(
+            ComponentsItem(
+                searchParameter = searchParameter,
+                filterController = filterController,
+            ),
+            ComponentsItem(
+                searchParameter = searchParameter,
+                filterController = filterController,
+            ),
+            ComponentsItem(
+                searchParameter = searchParameter,
+                filterController = filterController,
+            )
+        )
+
+        stubComponent(
+            componentAdditionalInfo = ComponentAdditionalInfo(
+                nextPage = "p",
+                enabled = false,
+                totalProductData = TotalProductData(),
+                redirection = redirection
+            ),
+            componentItems = componentItems
+        )
+
+        stubNextPageAvailable(
+            hasNextPage = true
+        )
+
+        stubLoadFirstPage(
+            hasLoaded = true
+        )
+
+        // create expected result
+        val expected = arrayListOf<ComponentsItem>()
+
+        expected.addVoucherList(componentItems)
+
+        // load first page
+        viewModel.loadFirstPageCoupon()
+
+        // compare to the expected result
+        viewModel.noMorePages
+            .verifyValueEquals(Unit)
+        viewModel.seeMore
+            .verifyValueEquals(redirection)
+        viewModel.couponList
+            .verifySuccessEquals(expected)
+    }
+
+    @Test
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is not empty, so the result should get only voucher list`()  {
+        // stub necessary data
+        val redirection = Redirection(
+            ctaText = "Lihat Semua Kupon"
+        )
+        val componentItems = listOf(
+            ComponentsItem(
+                searchParameter = searchParameter,
+                filterController = filterController,
+            ),
+            ComponentsItem(
+                searchParameter = searchParameter,
+                filterController = filterController,
+            ),
+            ComponentsItem(
+                searchParameter = searchParameter,
+                filterController = filterController,
+            )
+        )
+
+        stubComponent(
+            componentAdditionalInfo = ComponentAdditionalInfo(
+                nextPage = String.EMPTY,
+                enabled = false,
+                totalProductData = TotalProductData(),
+                redirection = redirection
+            ),
+            componentItems = componentItems
+        )
+
+        stubNextPageAvailable(
+            hasNextPage = false
+        )
+
+        stubLoadFirstPage(
+            hasLoaded = true
+        )
+
+        // create expected result
+        val expected = arrayListOf<ComponentsItem>()
+
+        expected.addVoucherList(componentItems)
+
+        // load first page
+        viewModel.loadFirstPageCoupon()
+
+        // compare to the expected result
+        viewModel.noMorePages
+            .verifyValueEquals(Unit)
+        viewModel.seeMore
+            .verifyValueEquals(redirection)
+        viewModel.couponList
+            .verifySuccessEquals(expected)
+    }
+
+    @Test
+    fun `When use case is true and voucher list has 3 items with additional info that component has next page && redirection is null, so the result should get voucher list and shimmer`()  {
         // stub necessary data
         val componentItems = listOf(
             ComponentsItem(
@@ -370,7 +483,7 @@ class MerchantVoucherGridViewModelTest {
     }
 
     @Test
-    fun `test 4-1 voucher list not empty has page & cta text is null`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is null, so the result should get voucher list and shimmer`()  {
         // stub necessary data
         val redirection = Redirection(
             ctaText = null
@@ -423,7 +536,7 @@ class MerchantVoucherGridViewModelTest {
     }
 
     @Test
-    fun `test 4-1 voucher list not empty has page & cta text is empty`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is empty, so the result should get voucher list and shimmer`()  {
         // stub necessary data
         val redirection = Redirection(
             ctaText = String.EMPTY
@@ -471,118 +584,6 @@ class MerchantVoucherGridViewModelTest {
         viewModel.loadFirstPageCoupon()
 
         // compare to the expected result
-        viewModel.couponList
-            .verifySuccessEquals(expected)
-    }
-
-    @Test
-    fun `test 4-3 voucher list not empty has page & has cta text`()  {
-        // stub necessary data
-        val redirection = Redirection(
-            ctaText = "Lihat Semua Kupon"
-        )
-        val componentItems = listOf(
-            ComponentsItem(
-                searchParameter = searchParameter,
-                filterController = filterController,
-            ),
-            ComponentsItem(
-                searchParameter = searchParameter,
-                filterController = filterController,
-            ),
-            ComponentsItem(
-                searchParameter = searchParameter,
-                filterController = filterController,
-            )
-        )
-
-        stubComponent(
-            componentAdditionalInfo = ComponentAdditionalInfo(
-                nextPage = "p",
-                enabled = false,
-                totalProductData = TotalProductData(),
-                redirection = redirection
-            ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
-            hasNextPage = true
-        )
-
-        stubLoadFirstPage(
-            hasLoaded = true
-        )
-
-        // create expected result
-        val expected = arrayListOf<ComponentsItem>()
-
-        expected.addVoucherList(componentItems)
-
-        // load first page
-        viewModel.loadFirstPageCoupon()
-
-        // compare to the expected result
-        viewModel.noMorePages
-            .verifyValueEquals(Unit)
-        viewModel.seeMore
-            .verifyValueEquals(redirection)
-        viewModel.couponList
-            .verifySuccessEquals(expected)
-    }
-
-    @Test
-    fun `test 3-4 voucher list not empty doesn't have next page & has cta text`()  {
-        // stub necessary data
-        val redirection = Redirection(
-            ctaText = "Lihat Semua Kupon"
-        )
-        val componentItems = listOf(
-            ComponentsItem(
-                searchParameter = searchParameter,
-                filterController = filterController,
-            ),
-            ComponentsItem(
-                searchParameter = searchParameter,
-                filterController = filterController,
-            ),
-            ComponentsItem(
-                searchParameter = searchParameter,
-                filterController = filterController,
-            )
-        )
-
-        stubComponent(
-            componentAdditionalInfo = ComponentAdditionalInfo(
-                nextPage = String.EMPTY,
-                enabled = false,
-                totalProductData = TotalProductData(),
-                redirection = redirection
-            ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
-            hasNextPage = false
-        )
-
-        stubLoadFirstPage(
-            hasLoaded = true
-        )
-
-        // create expected result
-        val expected = arrayListOf<ComponentsItem>()
-
-        expected.addVoucherList(componentItems)
-
-        // load first page
-        viewModel.loadFirstPageCoupon()
-
-        // compare to the expected result
-        viewModel.noMorePages
-            .verifyValueEquals(Unit)
-        viewModel.seeMore
-            .verifyValueEquals(redirection)
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
