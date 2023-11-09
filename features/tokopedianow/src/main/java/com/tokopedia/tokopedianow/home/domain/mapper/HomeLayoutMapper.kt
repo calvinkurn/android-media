@@ -398,7 +398,7 @@ object HomeLayoutMapper {
         updateItemById(id) {
             val hasFinishedQuest = questList.lastOrNull { it.isFinished() } != null
             val currentProgressPosition = if(hasFinishedQuest) {
-                questList.indexOfLast { it.isFinished() }
+                questList.indexOfLast { it.isFinished() } + 1
             } else {
                 DEFAULT_QUEST_PROGRESS
             }
