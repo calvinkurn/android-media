@@ -19,7 +19,7 @@
             android:scaleType="fitXY"/>
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/thematic_foreground"
+            android:id="@+id/festiveForeground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

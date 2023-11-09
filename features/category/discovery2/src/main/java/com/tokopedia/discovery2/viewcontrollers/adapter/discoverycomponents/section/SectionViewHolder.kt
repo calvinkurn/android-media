@@ -1,13 +1,11 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section
 
-import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
@@ -39,6 +37,8 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
         }
         viewModel?.shouldShowShimmer()?.let { shimmer.showWithCondition(it) }
         viewModel?.shouldShowError()?.let { carouselEmptyState.showWithCondition(it) }
+
+        addChildComponent()
     }
 
     private fun addChildComponent() {
@@ -170,7 +170,6 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             viewModel?.getSyncPageLiveData()?.observe(it) { shouldSync ->
                 if (shouldSync) {
                     (fragment as DiscoveryFragment).reSync()
-                    addChildComponent()
                 }
             }
 
@@ -190,7 +189,9 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun addChildComponent() {
-        val items = viewModel?.components?.getComponentsItem()
+        val sectionComponent = viewModel?.components
+
+        val items = sectionComponent?.getComponentsItem()
 
         val backgroundColor = arrayOf(
             unifyprinciplesR.color.Unify_RN200_96,
@@ -199,11 +200,18 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             unifyprinciplesR.color.Unify_Y200_96
         ).random()
 
-        festiveContainer.setBackgroundColor(ContextCompat.getColor(itemView.context, backgroundColor))
+        festiveContainer.setBackgroundColor(
+            ContextCompat.getColor(
+                itemView.context,
+                backgroundColor
+            )
+        )
 
         if (items == null) return
 
-        for (item in items) {
+        festiveContainer.removeAllViews()
+
+        items.forEach { item ->
             addComponentView(item)
         }
     }
