@@ -39,18 +39,20 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     companion object {
         private const val MAX_LINES_REVIEW_DESCRIPTION = 3
         private val KEYWORD_ITEM_SPACING = 4.toPx()
-        val LAYOUT = R.layout.item_dynamˆic_review
+        val LAYOUT = R.layout.item_dynamic_review
     }
 
     private val binding = ItemDynamicReviewBinding.bind(view)
 
     private var element: ProductMostHelpfulReviewUiModel? = null
 
-    private val keywordAdapter by lazyThreadSafetyNone { RatingKeywordAdapter() }
+    private val keywordAdapter by lazyThreadSafetyNone {
+        RatingKeywordAdapter().also(::setupRvKeyword)
+    }
 
-    private val rvKeyword by lazyThreadSafetyNone {
+    private fun setupRvKeyword(ratingKeywordAdapter: RatingKeywordAdapter) {
         binding.rvKeyword.apply {
-            adapter = keywordAdapter
+            adapter = ratingKeywordAdapter
             layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
             addItemDecoration(ItemSpaceDecorator(space = KEYWORD_ITEM_SPACING))
         }
@@ -168,7 +170,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun renderKeyword(rating: ReviewRatingUiModel) {
-        rvKeyword.showIfWithBlock(rating.keywords.isNotEmpty()) {
+        binding.rvKeyword.showIfWithBlock(rating.keywords.isNotEmpty()) {
             keywordAdapter.submitList(rating.keywords)
         }
     }
