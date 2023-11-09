@@ -19,7 +19,7 @@ import org.junit.Test
 class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
 
     @Test
-    fun `when getting data quest list should run successfully with empty list result`() {
+    fun `given empty quest list response when get quest list should remove widget item from visitable list`() {
         // set mock data
         val successCode = "200"
         onGetQuestWidgetAbTest_thenReturn(EXPERIMENT_VARIANT)
@@ -132,7 +132,7 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when getting data quest list should throw an exception and remove the widget`() {
+    fun `given get quest list throws error when get quest list should catch exception and remove the widget`() {
         // set mock data
         onGetQuestWidgetAbTest_thenReturn(EXPERIMENT_VARIANT)
         onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly())
@@ -285,7 +285,7 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when getting data quest list should run, fetch quest list again, throw an exception and remove the widget`() {
+    fun `given get quest list throws exception when refreshQuestList should catch exception and remove the widget`() {
         // set mock data
         val successCode = "200"
         onGetQuestWidgetAbTest_thenReturn(EXPERIMENT_VARIANT)
