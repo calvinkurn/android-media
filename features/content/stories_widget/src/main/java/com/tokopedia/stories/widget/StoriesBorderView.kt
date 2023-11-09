@@ -85,8 +85,8 @@ internal class StoriesBorderView : View {
     }
 
     override fun onDraw(canvas: Canvas) {
-        val checkPoint = canvas.saveLayer(null, null)
         if (mStoriesStatus == StoriesStatus.NoStories) return
+        val checkPoint = canvas.saveLayer(null, null)
 
         canvas.drawCircle(
             width / 2f,
