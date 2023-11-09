@@ -15,8 +15,7 @@ import com.tokopedia.people.di.UserProfileScope
 import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.FollowResultUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
-import com.tokopedia.people.views.uimodel.state.FollowFollowingLoadingUiState
-import com.tokopedia.people.views.uimodel.state.FollowFollowingLoadingUiState.LoadingState
+import com.tokopedia.people.views.uimodel.state.LoadingState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +25,7 @@ import javax.inject.Inject
 @UserProfileScope
 class FollowerFollowingViewModel @Inject constructor(
     private val repo: UserFollowRepository,
-    private val repoProfile: UserProfileRepository,
+    private val repoProfile: UserProfileRepository
 ) : BaseViewModel(Dispatchers.Main) {
 
     private val profileFollowers = MutableLiveData<Resources<FollowListUiModel.Follower>>()
@@ -54,20 +53,20 @@ class FollowerFollowingViewModel @Inject constructor(
     val username: String
         get() = _profileInfo.value.username
 
-    private val _loadingState = MutableStateFlow(FollowFollowingLoadingUiState())
-    val loadingState: Flow<FollowFollowingLoadingUiState>
+    private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Hide)
+    val loadingState: Flow<LoadingState>
         get() = _loadingState
 
     fun getProfile(userId: String) {
         viewModelScope.launchCatchError(block = {
-            _loadingState.update { FollowFollowingLoadingUiState(LoadingState.ShowLoading) }
+            _loadingState.update { LoadingState.Show }
 
             _profileInfo.value = repoProfile.getProfile(userId)
 
-            _loadingState.update { FollowFollowingLoadingUiState(LoadingState.HideLoading) }
+            _loadingState.update { LoadingState.Hide }
         }, onError = { error ->
-            _loadingState.update { FollowFollowingLoadingUiState(LoadingState.Error(error)) }
-        })
+                _loadingState.update { LoadingState.Error(error) }
+            })
     }
 
     fun getFollowers(
@@ -84,8 +83,8 @@ class FollowerFollowingViewModel @Inject constructor(
             profileFollowers.value = Success(result)
             _followCount.value = result.total
         }, onError = {
-            followersError.value = it
-        })
+                followersError.value = it
+            })
     }
 
     fun getFollowings(
@@ -102,8 +101,8 @@ class FollowerFollowingViewModel @Inject constructor(
             profileFollowingsList.value = Success(result)
             _followCount.value = result.total
         }, onError = {
-            followersError.value = it
-        })
+                followersError.value = it
+            })
     }
 
     fun followUser(id: String, isFollowed: Boolean, position: Int) {

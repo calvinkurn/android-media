@@ -45,9 +45,7 @@ class FollowingListingFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val userProfileTracker: UserProfileTracker,
     private val router: Router
-) : TkpdBaseV4Fragment(),
-    AdapterCallback,
-    UserFollowListener {
+) : TkpdBaseV4Fragment(), AdapterCallback, UserFollowListener {
 
     private var followersContainer: ViewFlipper? = null
     private var globalError: LocalLoad? = null
@@ -392,7 +390,7 @@ class FollowingListingFragment @Inject constructor(
 
         fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): FollowingListingFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowingListingFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(

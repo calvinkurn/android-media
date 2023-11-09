@@ -27,7 +27,7 @@ import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
-import com.tokopedia.people.views.uimodel.state.FollowFollowingLoadingUiState
+import com.tokopedia.people.views.uimodel.state.LoadingState
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.unifycomponents.setCustomText
@@ -187,13 +187,13 @@ class FollowerFollowingListingFragment @Inject constructor(
     }
 
     private fun updateLoadingPage(
-        prevState: FollowFollowingLoadingUiState?,
-        currState: FollowFollowingLoadingUiState
+        prevState: LoadingState?,
+        currState: LoadingState
     ) {
         if (prevState == currState) return
 
-        when (currState.state) {
-            is FollowFollowingLoadingUiState.LoadingState.Error -> {
+        when (currState) {
+            is LoadingState.Error -> {
                 bindingContent.root.hide()
                 bindingShimmer.root.hide()
                 binding.globalError.show()
@@ -201,13 +201,13 @@ class FollowerFollowingListingFragment @Inject constructor(
                 binding.globalError.setActionClickListener { viewModel.getProfile(userId) }
             }
 
-            FollowFollowingLoadingUiState.LoadingState.HideLoading -> {
+            LoadingState.Hide -> {
                 bindingContent.root.show()
                 binding.globalError.hide()
                 bindingShimmer.root.hide()
             }
 
-            FollowFollowingLoadingUiState.LoadingState.ShowLoading -> {
+            LoadingState.Show -> {
                 bindingContent.root.hide()
                 binding.globalError.hide()
                 bindingShimmer.root.show()

@@ -43,8 +43,8 @@ import com.tokopedia.people.R as peopleR
 class FollowerListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val userProfileTracker: UserProfileTracker,
-    private val router: Router,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val router: Router
 ) : TkpdBaseV4Fragment(), AdapterCallback, UserFollowListener {
 
     private var followersContainer: ViewFlipper? = null
