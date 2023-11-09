@@ -67,6 +67,7 @@ import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -86,7 +87,6 @@ import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.navigation.util.FeedCoachMark;
-import com.tokopedia.navigation.util.IconJumperUtil;
 import com.tokopedia.navigation.util.MainParentServerLogger;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -149,7 +149,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
     public static final int REQUEST_CODE_LOGIN = 12137;
-    public static final String FEED_PAGE = "FeedIntermediaryFragment";
+    public static final String FEED_PAGE = "FeedBaseFragment";
     public static final int UOH_MENU = 4;
     public static final int WISHLIST_MENU = 3;
     public static final String DEFAULT_NO_SHOP = "0";
@@ -287,6 +287,7 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         super.onCreate(savedInstanceState);
+        HomeRollenceController.fetchIconJumperValue();
         initInjector();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
@@ -335,7 +336,6 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.get().hasShop()) {
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
         }
-        moduleNameList.add(DeeplinkDFMapper.DF_DIGITAL);
         moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
         moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         moduleNameList.add(DeeplinkDFMapper.DF_TOKOPEDIA_NOW);
@@ -512,7 +512,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void handleAppLinkBottomNavigation() {
+    private void handleAppLinkBottomNavigation(boolean isFirstInit) {
 
         if (bottomNavigation == null) return;
 
@@ -533,7 +533,7 @@ public class MainParentActivity extends BaseActivity implements
             case RECOMENDATION_LIST:
             case HOME_MENU:
             default:
-                bottomNavigation.setSelected(HOME_MENU);
+                setHomeNavSelected(isFirstInit, tabPosition);
                 break;
         }
     }
@@ -546,7 +546,7 @@ public class MainParentActivity extends BaseActivity implements
 
         setIntent(intent);
         showSelectedPage();
-        handleAppLinkBottomNavigation();
+        handleAppLinkBottomNavigation(false);
     }
 
     private void initInjector() {
@@ -1317,9 +1317,15 @@ public class MainParentActivity extends BaseActivity implements
         return embracePageName;
     }
 
+    private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
+        if (isFirstInit) {
+            bottomNavigation.setSelected(homePosition);
+        }
+    }
+
     public void populateBottomNavigationView() {
         BottomMenu homeOrForYouMenu;
-        if (IconJumperUtil.isEnabledIconJumper()) {
+        if (HomeRollenceController.isIconJumper()) {
             homeOrForYouMenu = new BottomMenu(R.id.menu_home, getResources().getString(R.string.home),
                     new HomeForYouMenu(
                             getResources().getString(R.string.home),
@@ -1347,7 +1353,7 @@ public class MainParentActivity extends BaseActivity implements
         menu.add(new BottomMenu(R.id.menu_wishlist, getResources().getString(R.string.wishlist), null, R.raw.bottom_nav_wishlist, R.raw.bottom_nav_wishlist_to_enabled, R.raw.bottom_nav_wishlist_dark, R.raw.bottom_nav_wishlist_to_enabled_dark, R.drawable.ic_bottom_nav_wishlist_active, R.drawable.ic_bottom_nav_wishlist_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_uoh, getResources().getString(R.string.uoh), null, R.raw.bottom_nav_transaction, R.raw.bottom_nav_transaction_to_enabled, R.raw.bottom_nav_transaction_dark, R.raw.bottom_nav_transaction_to_enabled_dark, R.drawable.ic_bottom_nav_uoh_active, R.drawable.ic_bottom_nav_uoh_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         bottomNavigation.setMenu(menu);
-        handleAppLinkBottomNavigation();
+        handleAppLinkBottomNavigation(true);
     }
 
     private void gotoNewUserZonePage() {
@@ -1393,7 +1399,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public boolean isIconJumperEnabled() {
-        return IconJumperUtil.isEnabledIconJumper();
+        return HomeRollenceController.isIconJumper();
     }
 
     @Override

@@ -195,20 +195,8 @@ class TrackingMapper {
                 item.put("iris_session_id", sessionId)
                 item.put("container", KEY_CONTAINER)
                 item.put(KEY_EVENT, valueEvent)
-                val hits_time = Calendar.getInstance().timeInMillis
-                item.put("hits_time", hits_time)
-                try {
-                    hits_time.toString().toLong()
-                } catch (e: Exception) {
-                    ServerLogger.log(
-                        Priority.P1,
-                        "IRIS",
-                        mapOf(
-                            "type" to "hitsTimeInvalid",
-                            "value" to hits_time.toString(),
-                            "exception" to e.toString()
-                        )
-                    )
+                if (!item.has(KEY_HITS_TIME)) {
+                    item.put(KEY_HITS_TIME, Calendar.getInstance().timeInMillis)
                 }
                 item
             } catch (e: JSONException) {

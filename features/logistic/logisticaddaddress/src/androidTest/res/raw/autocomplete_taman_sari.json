@@ -1,0 +1,118 @@
+[
+  {
+    "data": {
+      "kero_maps_autocomplete": {
+        "error_code": 0,
+        "data": {
+          "predictions": [
+            {
+              "description": "TM Harco Glodok, Jalan Hayam Wuruk, RT.1/RW.5, Mangga Besar, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta, Indonesia",
+              "place_id": "ChIJ-YYMN273aS4R620p-dDE0sc",
+              "types": [
+                "shopping_mall",
+                "point_of_interest",
+                "establishment"
+              ],
+              "matched_substrings": [
+                {
+                  "length": 14,
+                  "offset": 0
+                }
+              ],
+              "terms": [
+                {
+                  "value": "TM Harco Glodok",
+                  "offset": 0
+                },
+                {
+                  "value": "Jalan Hayam Wuruk",
+                  "offset": 17
+                },
+                {
+                  "value": "RT.1",
+                  "offset": 36
+                },
+                {
+                  "value": "RW.5",
+                  "offset": 41
+                },
+                {
+                  "value": "Mangga Besar",
+                  "offset": 47
+                },
+                {
+                  "value": "Kota Jakarta Barat",
+                  "offset": 61
+                },
+                {
+                  "value": "Daerah Khusus Ibukota Jakarta",
+                  "offset": 81
+                },
+                {
+                  "value": "Indonesia",
+                  "offset": 112
+                }
+              ],
+              "structured_formatting": {
+                "main_text": "TM Harco Glodok",
+                "main_text_matched_substrings": [
+                  {
+                    "length": 14,
+                    "offset": 0
+                  }
+                ],
+                "secondary_text": "Jalan Hayam Wuruk, Mangga Besar, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta"
+              }
+            },
+            {
+              "description": "TM Harco Glodok, Glodok, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta, Indonesia",
+              "place_id": "ChIJNyLH6uz3aS4RoA7Pz90HsW4",
+              "types": [
+                "point_of_interest",
+                "establishment"
+              ],
+              "matched_substrings": [
+                {
+                  "length": 14,
+                  "offset": 0
+                }
+              ],
+              "terms": [
+                {
+                  "value": "TM Harco Glodok",
+                  "offset": 0
+                },
+                {
+                  "value": "Glodok",
+                  "offset": 17
+                },
+                {
+                  "value": "Kota Jakarta Barat",
+                  "offset": 25
+                },
+                {
+                  "value": "Daerah Khusus Ibukota Jakarta",
+                  "offset": 45
+                },
+                {
+                  "value": "Indonesia",
+                  "offset": 76
+                }
+              ],
+              "structured_formatting": {
+                "main_text": "TM Harco Glodok",
+                "main_text_matched_substrings": [
+                  {
+                    "length": 14,
+                    "offset": 0
+                  }
+                ],
+                "secondary_text": "Glodok, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+]

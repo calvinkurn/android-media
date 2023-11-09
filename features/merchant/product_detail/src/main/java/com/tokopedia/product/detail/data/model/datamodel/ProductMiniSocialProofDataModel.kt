@@ -13,8 +13,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductMiniSocialProofDataModel(
     val type: String = "",
     val name: String = "",
-    var shouldRender: Boolean = false,
-    var items: List<SocialProofUiModel> = emptyList()
+    val items: List<SocialProofUiModel> = emptyList()
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
         isFinishedLoading = { false },
@@ -33,7 +32,7 @@ data class ProductMiniSocialProofDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductMiniSocialProofDataModel) {
-            shouldRender == newData.shouldRender && items.hashCode() == newData.items.hashCode()
+            items.hashCode() == newData.items.hashCode()
         } else {
             false
         }
