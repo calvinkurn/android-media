@@ -3,18 +3,25 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.viewholder.review.ReviewRatingUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 
-data class ProductMostHelpfulReviewDataModel(
-        val type: String = "",
-        val name: String = "",
-        var review: Review? = null,
-        var mediaThumbnails: ReviewMediaThumbnailUiModel? = null,
-        var formattedRating: String = "",
-        var totalRatingCount: String = "",
-        var totalReviewCount: String = ""
+data class ProductMostHelpfulReviewUiModel(
+    val type: String = "",
+    val name: String = ""
 ) : DynamicPdpDataModel {
+
+    var review: Review? = null
+        private set
+
+    var mediaThumbnails: ReviewMediaThumbnailUiModel? = null
+        private set
+
+    var rating: ReviewRatingUiModel = ReviewRatingUiModel()
+        private set
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
@@ -26,9 +33,10 @@ data class ProductMostHelpfulReviewDataModel(
     }
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return if (newData is ProductMostHelpfulReviewDataModel) {
+        return if (newData is ProductMostHelpfulReviewUiModel) {
             review == newData.review &&
-                    mediaThumbnails == newData.mediaThumbnails
+                mediaThumbnails == newData.mediaThumbnails &&
+                rating == newData.rating
         } else {
             false
         }
@@ -40,5 +48,11 @@ data class ProductMostHelpfulReviewDataModel(
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
+    }
+
+    fun setData(reviews: List<Review>, reviewImage: ReviewImage, rating: ReviewRatingUiModel) {
+        this.review = reviews.firstOrNull()
+        this.mediaThumbnails = reviewImage.reviewMediaThumbnails
+        this.rating = rating
     }
 }
