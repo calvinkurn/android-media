@@ -28,8 +28,9 @@ class InspirationCarouselVideoViewHolder(
     private val inspirationVideoCarouselListener: InspirationVideoCarouselListener,
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
     private val networkMonitor: NetworkMonitor,
-    private val isReimagine: Boolean = false
-) : AbstractViewHolder<Visitable<*>>(itemView),
+    private val isReimagine: Boolean = false,
+    isSneakPeekEnabled: Boolean = false,
+    ) : AbstractViewHolder<Visitable<*>>(itemView),
     VideoPlayerProvider,
     VideoCarouselItemListener,
     CoroutineScope {
@@ -98,7 +99,7 @@ class InspirationCarouselVideoViewHolder(
     override val videoPlayer: VideoPlayer?
         get() = binding?.videoCarousel
 
-    override val isAutoplayEnabled: Boolean = true
+    override val isAutoplayEnabled: Boolean = isSneakPeekEnabled
 
     override fun onVideoCarouselItemImpressed(videoItem: VideoCarouselDataView.VideoItem) {
         inspirationVideoCarouselListener.onInspirationVideoCarouselProductImpressed(videoItem)
