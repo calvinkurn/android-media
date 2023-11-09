@@ -8,7 +8,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -37,9 +36,13 @@ import javax.inject.Inject
 /**
  * @author : Steven 2019-08-06
  */
-open class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>(),
-        ChatSearchActivity.Listener, LifecycleOwner, EmptySearchChatViewHolder.Listener,
-        ContactLoadMoreViewHolder.Listener, ItemSearchChatReplyViewHolder.Listener {
+open class ChatSearchFragment :
+    BaseListFragment<Visitable<*>, ChatSearchTypeFactory>(),
+    ChatSearchActivity.Listener,
+    LifecycleOwner,
+    EmptySearchChatViewHolder.Listener,
+    ContactLoadMoreViewHolder.Listener,
+    ItemSearchChatReplyViewHolder.Listener {
 
     @Inject
     lateinit var analytic: ChatSearchAnalytic
@@ -131,42 +134,42 @@ open class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFac
     }
 
     private fun observeLoadInitialData() {
-        viewModel.loadInitialData.observe(viewLifecycleOwner, Observer {
-            if (!it) return@Observer
+        viewModel.loadInitialData.observe(viewLifecycleOwner) {
+            if (!it) return@observe
             clearAllData()
             showLoading()
-        })
+        }
     }
 
     private fun observeEmptyQuery() {
-        viewModel.emptyQuery.observe(viewLifecycleOwner, Observer {
-            if (!it) return@Observer
+        viewModel.emptyQuery.observe(viewLifecycleOwner) {
+            if (!it) return@observe
             clearAllData()
             showRecentSearch()
-        })
+        }
     }
 
     private fun observeErrorSearch() {
-        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { error ->
-            if (error == null) return@Observer
+        viewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+            if (error == null) return@observe
             if (viewModel.isFirstPage()) {
                 clearAllData()
             }
             showGetListError(error)
-        })
+        }
     }
 
     private fun observeSearchTriggered() {
-        viewModel.triggerSearch.observe(viewLifecycleOwner, Observer {
+        viewModel.triggerSearch.observe(viewLifecycleOwner) {
             analytic.eventQueryTriggered()
-        })
+        }
     }
 
     private fun observeSearchResult() {
-        viewModel.searchResults.observe(viewLifecycleOwner, Observer {
-            if (it == null) return@Observer
+        viewModel.searchResults.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
             renderList(it, viewModel.hasNext)
-        })
+        }
     }
 
     override fun onSearchQueryChanged(query: String) {
@@ -194,8 +197,8 @@ open class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFac
     }
 
     override fun onChatReplyClick(element: ChatReplyUiModel) {
-        val chatRoomIntent = RouteManager.getIntent(context, ApplinkConst.TOPCHAT, element.msgId.toString())
-        chatRoomIntent.putExtra(ApplinkConst.Chat.SOURCE_PAGE, ApplinkConst.Chat.SOURCE_CHAT_SEARCH)
+        val chatRoomIntent = RouteManager.getIntent(context, ApplinkConst.TOPCHAT, element.msgId)
+        chatRoomIntent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.Source.SOURCE_CHAT_SEARCH)
         chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_CREATE_TIME, element.modifiedTimeStamp)
         chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, getSearchKeyWord())
         Utils.putExtraForFoldable(chatRoomIntent, element.msgId, element.contact.role)
@@ -210,6 +213,5 @@ open class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFac
         fun createFragment(): ChatSearchFragment {
             return ChatSearchFragment()
         }
-
     }
 }
