@@ -104,7 +104,7 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
                     btnMainTodoWidget.show()
                     btnMainTodoWidget.text = widget.button
                     btnMainTodoWidget.setOnClickListener {
-                        todoWidgetListener.onClickTodoWidget(widget.buttonAppLink)
+                        todoWidgetListener.onClickTodoWidget(widget, true)
                     }
                 } else {
                     btnMainTodoWidget.hide()
@@ -166,8 +166,10 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
                     btnMainTodoWidget.layoutParams = labelParams
                 }
 
-                root.setOnClickListener {
-                    todoWidgetListener.onClickTodoWidget(widget.appLink)
+                if (widget.button.isEmpty()) {
+                    root.setOnClickListener {
+                        todoWidgetListener.onClickTodoWidget(widget, false)
+                    }
                 }
 
                 setCardHeightMatchParent()

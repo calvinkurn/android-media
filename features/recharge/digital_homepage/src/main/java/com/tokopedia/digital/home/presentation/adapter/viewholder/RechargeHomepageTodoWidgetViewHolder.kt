@@ -11,6 +11,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageTodoWidgetAdapter
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageTodoWidgetAdapterTypeFactory
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -34,6 +35,9 @@ class RechargeHomepageTodoWidgetViewHolder(
                     todoWidgetListener
                 )
                 layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+                binding.root.addOnImpressionListener(element.section) {
+                    listener.onRechargeSectionItemImpression(element.section)
+                }
             }
         } else {
             with(binding.rvTodoWidgetParent) {
@@ -44,7 +48,7 @@ class RechargeHomepageTodoWidgetViewHolder(
     }
 
     interface RechargeHomepageTodoWidgetListener {
-        fun onClickTodoWidget(applink: String)
+        fun onClickTodoWidget(widget: RechargeHomepageSections.Widgets, isButton: Boolean)
         fun onClickThreeButton(optionButtons: List<RechargeHomepageSections.OptionButton>)
     }
 

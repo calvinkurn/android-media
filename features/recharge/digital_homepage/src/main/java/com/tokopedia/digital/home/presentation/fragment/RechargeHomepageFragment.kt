@@ -518,8 +518,16 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onClickTodoWidget(applink: String) {
-        RouteManager.route(context, applink)
+    override fun onClickTodoWidget(widget: RechargeHomepageSections.Widgets, isButton: Boolean) {
+        widget.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_CLICK }?.run {
+            rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+        }
+
+        if (isButton) {
+            RouteManager.route(context, widget.buttonAppLink)
+        } else {
+            RouteManager.route(context, widget.appLink)
+        }
     }
 
     override fun onClickThreeButton(optionButtons: List<RechargeHomepageSections.OptionButton>) {

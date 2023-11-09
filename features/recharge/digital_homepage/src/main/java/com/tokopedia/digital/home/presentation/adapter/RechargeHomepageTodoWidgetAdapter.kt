@@ -106,7 +106,7 @@ class RechargeHomepageTodoWidgetAdapter(
                     viewStickyLayout.tgSubTitleTodoWidget.text = stickyLayout.subtitle
                     viewStickyLayout.imgTodoWidgetBackground.loadImage(TokopediaImageUrl.RECHARGE_SUBHOME_TODO_WIDGET)
                     viewStickyLayout.root.setOnClickListener {
-                        todoWidgetListener.onClickTodoWidget(stickyLayout.appLink)
+                        todoWidgetListener.onClickTodoWidget(stickyLayout, false)
                     }
                     setStickyHeightMatchParent(binding)
                 } else {
