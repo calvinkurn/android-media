@@ -393,6 +393,8 @@ object DeeplinkMapper {
 
             deeplink.startsWith(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO) -> getRegisteredNavigationCentralizedPromo(context)
 
+            deeplink.startsWith(ApplinkConstInternalUserPlatform.COTP) -> DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+
             else -> return ""
         }
     }

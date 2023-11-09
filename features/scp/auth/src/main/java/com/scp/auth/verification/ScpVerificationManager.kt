@@ -10,6 +10,7 @@ import com.gojek.pin.PinManager
 import com.gojek.pin.PinParam
 import com.gojek.pin.Success
 import com.gojek.pin.viewmodel.state.PinFlowType
+import com.scp.auth.GotoSdk
 import com.scp.auth.common.utils.ScpConstants
 import com.scp.auth.common.utils.TkpdAdditionalHeaders
 import com.scp.auth.common.utils.goToChangePIN
@@ -26,9 +27,10 @@ import com.scp.verification.core.domain.common.listener.PinListener
 import com.scp.verification.core.domain.common.listener.VerificationListener
 import com.scp.verification.features.gotopin.CVPinManager
 
-class ScpVerificationManager(private val pinManager: PinManager) {
+object ScpVerificationManager {
 
-    val cvSdkInstance = VerificationSdk.CVSDKINSTANCE
+    private val cvSdkInstance = VerificationSdk.getInstance()
+    private val pinManager = GotoSdk.getGotopinInstance()
 
     fun startVerification(
         activity: AppCompatActivity,
@@ -61,7 +63,7 @@ class ScpVerificationManager(private val pinManager: PinManager) {
             },
             pinListener = object : PinListener {
                 override fun openPinFlow(challengeId: String, onSuccessValidation: OnSuccessValidation, failure: (CVError) -> Unit, onCtaClicked: (activity: FragmentActivity, type: String, value: String, ctaClickHandledByClient: (deeplink: String) -> Unit) -> Unit, mapEvent: (String, Map<String, Any?>) -> Unit) {
-                    pinManager.manage(
+                    pinManager?.manage(
                         launchContext = activity,
                         param = PinParam(
                             source = source,

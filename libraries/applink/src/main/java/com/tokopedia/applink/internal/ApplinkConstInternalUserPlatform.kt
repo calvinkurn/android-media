@@ -136,6 +136,12 @@ object ApplinkConstInternalUserPlatform {
     const val COTP = "$NEW_INTERNAL_USER/cotp"
 
     /**
+     * please refer [com.scp.auth.verification.ScpVerificationActivity]
+     * Applink: tokopedia-android-internal://user/scp-otp
+     */
+    const val SCP_OTP = "$NEW_INTERNAL_USER/scp-otp"
+
+    /**
      * LoginByQrResultActivity
      * @Applink : tokopedia-android-internal://user/qr-login-result
      **/

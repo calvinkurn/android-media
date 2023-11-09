@@ -39,6 +39,7 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.REGISTER -> getRegisterApplink()
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             deeplink.startsWith(ApplinkConst.GOTO_KYC_WEBVIEW) -> ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
+            deeplink == ApplinkConst.OTP -> getOtpApplink()
             else -> deeplink
         }
     }
@@ -57,6 +58,18 @@ object DeeplinkMapperUser {
         } else {
             ApplinkConstInternalUserPlatform.LOGIN
         }
+    }
+
+    private fun getOtpApplink(): String {
+        return if (isGotoVerificationEnabled()) {
+            ApplinkConstInternalUserPlatform.SCP_OTP
+        } else {
+            ApplinkConstInternalUserPlatform.COTP
+        }
+    }
+
+    private fun isGotoVerificationEnabled(): Boolean {
+        return true
     }
 
     private fun getProfileApplink(): String {

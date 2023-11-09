@@ -64,6 +64,8 @@ object GotoSdk {
 
     fun getActivity(): AppCompatActivity? = scpAuthActivity
 
+    fun getGotopinInstance(): PinManager? = GOTOPINSDKINSTANCE
+
     @JvmStatic
     fun init(application: Application): LSdkProvider? {
         val appComponent = (application as BaseMainApplication)

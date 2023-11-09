@@ -640,8 +640,8 @@ object DeeplinkMainApp {
             }
         ),
         "otp" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.COTP
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "otp-verify" to mutableListOf(
