@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getAnimationScale
 import com.tokopedia.pdp.fintech.analytics.FintechWidgetAnalyticsEvent
 import com.tokopedia.pdp.fintech.analytics.PdpFintechWidgetAnalytics
 import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
@@ -242,10 +243,14 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
 
         binding?.sliderView?.setItems(
             arrayListOf(firstTextView, secondTextView),
-            messages.size > Int.ONE
+            messages.size > Int.ONE && isAnimationEnabled()
         ) {
             binding?.sliderContainer?.performClick()
         }
+    }
+
+    private fun isAnimationEnabled(): Boolean {
+        return getAnimationScale(context) != Float.ZERO
     }
 
     fun updateIdToPriceMap(
