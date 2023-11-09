@@ -3,6 +3,7 @@ package com.tokopedia.stories
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.stories.data.mock.mockContentTaggedProductUiModel
 import com.tokopedia.stories.data.mock.mockDetailResetValue
 import com.tokopedia.stories.data.mock.mockGroupResetValue
@@ -12,6 +13,7 @@ import com.tokopedia.stories.data.mock.mockInitialDataModelFetchPrev
 import com.tokopedia.stories.data.mock.mockInitialDataModelFetchPrevAndNext
 import com.tokopedia.stories.data.mock.mockInitialDataModelForDeleteStories
 import com.tokopedia.stories.data.mock.mockMainDataResetValue
+import com.tokopedia.stories.data.mock.mockReportReasonList
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.robot.StoriesViewModelRobot
 import com.tokopedia.stories.util.assertEqualTo
@@ -30,8 +32,11 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
+import com.tokopedia.stories.view.viewmodel.state.StoryReportStatusInfo
 import com.tokopedia.stories.view.viewmodel.state.isAnyShown
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
@@ -422,6 +427,24 @@ class StoriesUnitTest {
     }
 
     @Test
+    fun `when has seen all stories`() {
+        val selectedGroup = 2
+        val selectedDetail = 2
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.setStoriesTrackActivity(any()) } returns true
+        coEvery { mockRepository.setHasSeenAllStories(any(), any()) } coAnswers {}
+
+        getStoriesRobot().use { robot ->
+            robot.setTrackActivity(selectedGroup)
+
+            val actualDetail = robot.getViewModel().mDetail
+            actualDetail.isContentLoaded.assertTrue()
+        }
+    }
+
+    @Test
     fun `when stories open and index out of bound hit stories track activity`() {
         val selectedGroup = 0
         val selectedDetail = -1
@@ -785,7 +808,10 @@ class StoriesUnitTest {
     }
 
     @Test
-    fun `when open kebab bottom sheet and close`() {
+    fun `when open kebab bottom sheet should fetch reason list and when close should dismiss`() {
+        val reasonListData = mockReportReasonList()
+        coEvery { mockRepository.getReportReasonList() } returns reasonListData
+
         getStoriesRobot().use { robot ->
             val stateEventOpen = robot.recordStateAndEvents {
                 robot.openKebabBottomSheet()
@@ -797,6 +823,11 @@ class StoriesUnitTest {
                 if (it.key == BottomSheetType.Kebab) it.value.assertTrue()
                 else it.value.assertFalse()
             }
+
+            assert(robot.getViewModel().userReportReasonList is Success)
+            val successData = robot.getViewModel().userReportReasonList as Success
+            assert(successData.data == reasonListData)
+
             robot.recordState {
                 robot.closeBottomSheet(BottomSheetType.Kebab)
             }
@@ -806,7 +837,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when open product bottom sheet and close`() {
-    val expectedData = mockInitialDataModel(productCount = 5)
+        val expectedData = mockInitialDataModel(productCount = 5)
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
         coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
@@ -859,7 +890,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when open product bottom sheet and unable to open 2`() {
-    val expectedData = mockInitialDataModel(isProductCountEmpty = true)
+        val expectedData = mockInitialDataModel(isProductCountEmpty = true)
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
         coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
@@ -881,7 +912,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when open product bottom sheet and unable to open 3`() {
-    val expectedData = mockInitialDataModel(isProductCountEmpty = true)
+        val expectedData = mockInitialDataModel(isProductCountEmpty = true)
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
         coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
@@ -1067,6 +1098,199 @@ class StoriesUnitTest {
             }
 
             event.last().assertEqualTo(StoriesUiEvent.NavigateEvent(appLink))
+        }
+    }
+
+    @Test
+    fun `when reset report state should change report state to none`() {
+        getStoriesRobot().use { robot ->
+            val storiesState = robot.recordStateAndEvents {
+                robot.resetReportState()
+            }
+            storiesState.first.reportState.state.assertEqualTo(StoryReportStatusInfo.ReportState.None)
+            robot.getViewModel().isAnyBottomSheetShown.assertFalse()
+            robot.getBottomSheetState().isAnyShown.assertFalse()
+            robot.getBottomSheetState().mapValues {
+                it.value.assertFalse()
+            }
+        }
+    }
+
+    @Test
+    fun `when open report state should change report state to on select reason`() {
+        getStoriesRobot().use { robot ->
+            val storiesState = robot.recordStateAndEvents {
+                robot.openReport()
+            }
+            storiesState.first.reportState.state.assertEqualTo(StoryReportStatusInfo.ReportState.OnSelectReason)
+            robot.getViewModel().isAnyBottomSheetShown.assertTrue()
+            robot.getBottomSheetState().isAnyShown.assertTrue()
+            robot.getBottomSheetState().mapValues {
+                when (it.key) {
+                    BottomSheetType.Report -> it.value.assertTrue()
+                    else -> it.value.assertFalse()
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when select report reason should change the selected reason item`() {
+        val reasonListData = mockReportReasonList()
+        coEvery { mockRepository.getReportReasonList() } returns reasonListData
+
+        getStoriesRobot().use { robot ->
+            val stateEventOpen = robot.recordStateAndEvents {
+                robot.selectReason(reasonListData.first())
+            }
+
+            stateEventOpen.first.reportState.state.assertEqualTo(StoryReportStatusInfo.ReportState.OnSubmit)
+            stateEventOpen.first.reportState.report.selectedReason!!.assertEqualTo(reasonListData.first())
+
+            robot.getViewModel().isAnyBottomSheetShown.assertTrue()
+            robot.getBottomSheetState().isAnyShown.assertTrue()
+            robot.getBottomSheetState().mapValues {
+                if (it.key == BottomSheetType.SubmitReport) it.value.assertTrue()
+                else it.value.assertFalse()
+            }
+
+            robot.recordState {
+                robot.closeBottomSheet(BottomSheetType.SubmitReport)
+            }
+            robot.getBottomSheetState().isAnyShown.assertFalse()
+        }
+    }
+
+    @Test
+    fun `when submit report if fail should update as failed`() {
+        val reasonListData = mockReportReasonList()
+
+        coEvery { mockRepository.getReportReasonList() } returns reasonListData
+        coEvery {
+            mockRepository.submitReport(
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } throws Throwable("Failed")
+
+        getStoriesRobot().use { robot ->
+            val stateEventOpen = robot.recordStateAndEvents {
+                robot.selectReason(reasonListData.first())
+                robot.getViewModel().submitReport("Description", 0)
+            }
+
+            stateEventOpen.first.reportState.state.assertEqualTo(StoryReportStatusInfo.ReportState.Submitted)
+            assert(stateEventOpen.first.reportState.report.submitStatus is Fail)
+            (stateEventOpen.first.reportState.report.submitStatus as Fail).throwable.assertType<Throwable> {
+                it.message!!.assertEqualTo("Failed")
+            }
+        }
+    }
+
+    @Test
+    fun `when submit report result is false should update as failed`() {
+        val reasonListData = mockReportReasonList()
+
+        coEvery { mockRepository.getReportReasonList() } returns reasonListData
+        coEvery {
+            mockRepository.submitReport(
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns false
+
+        getStoriesRobot().use { robot ->
+            val stateEventOpen = robot.recordStateAndEvents {
+                robot.selectReason(reasonListData.first())
+                robot.getViewModel().submitReport("Description", 0)
+            }
+
+            stateEventOpen.first.reportState.state.assertEqualTo(StoryReportStatusInfo.ReportState.Submitted)
+            assert(stateEventOpen.first.reportState.report.submitStatus is Fail)
+            (stateEventOpen.first.reportState.report.submitStatus as Fail).throwable.assertType<MessageErrorException> {}
+        }
+    }
+
+    @Test
+    fun `when submit report result is true should update as success`() {
+        val reasonListData = mockReportReasonList()
+
+        coEvery { mockRepository.getReportReasonList() } returns reasonListData
+        coEvery {
+            mockRepository.submitReport(
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns true
+
+        getStoriesRobot().use { robot ->
+            val stateEventOpen = robot.recordStateAndEvents {
+                robot.selectReason(reasonListData.first())
+                robot.getViewModel().submitReport("Description", 0)
+            }
+
+            stateEventOpen.first.reportState.state.assertEqualTo(StoryReportStatusInfo.ReportState.Submitted)
+            assert(stateEventOpen.first.reportState.report.submitStatus is Success)
+        }
+    }
+
+    @Test
+    fun `when update duration should change the duration value`() {
+        val defaultDuration = 5000
+        val newDuration = 10000
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData =
+            mockInitialDataModel(selectedGroup, selectedDetail, duration = defaultDuration)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockUserSession.userId } returns "123"
+
+        getStoriesRobot().use { robot ->
+            val state = robot.recordStateAndEvents {
+                robot.entryPointTestCase(selectedGroup)
+                robot.updateDuration(newDuration)
+            }
+
+            state.first.storiesMainData.groupItems[selectedGroup].detail.detailItems.forEachIndexed { index, storiesDetailItem ->
+                if (index == selectedDetail) {
+                    storiesDetailItem.content.duration.assertEqualTo(newDuration)
+                } else {
+                    storiesDetailItem.content.duration.assertEqualTo(defaultDuration)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when buffering should change detail items to buffering`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData =
+            mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockUserSession.userId } returns "123"
+
+        getStoriesRobot().use { robot ->
+            val state = robot.recordStateAndEvents {
+                robot.entryPointTestCase(selectedGroup)
+                robot.buffering()
+            }
+
+            state.first.storiesMainData.groupItems[selectedGroup].detail.detailItems.forEachIndexed { index, storiesDetailItem ->
+                if (index == selectedDetail) {
+                    storiesDetailItem.event.assertEqualTo(StoriesDetailItemUiEvent.BUFFERING)
+                } else {
+                    storiesDetailItem.event.assertEqualTo(StoriesDetailItemUiEvent.PAUSE)
+                }
+            }
         }
     }
 }

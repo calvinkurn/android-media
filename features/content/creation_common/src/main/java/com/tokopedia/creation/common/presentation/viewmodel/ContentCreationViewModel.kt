@@ -2,6 +2,7 @@ package com.tokopedia.creation.common.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.creation.common.domain.ContentCreationConfigUseCase
 import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
@@ -16,6 +17,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -23,7 +25,8 @@ import javax.inject.Inject
  */
 class ContentCreationViewModel @Inject constructor(
     private val contentCreationConfigUseCase: ContentCreationConfigUseCase,
-    private val contentCreationConfigManager: ContentCreationRemoteConfigManager
+    private val contentCreationConfigManager: ContentCreationRemoteConfigManager,
+    private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
     private val _selectedCreationType = MutableStateFlow<ContentCreationItemModel?>(null)
@@ -56,11 +59,13 @@ class ContentCreationViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                val formattedCreationConfig = if (creationConfig.isActive) {
-                    formatCreationConfig(creationConfig, widgetSource)
-                } else {
-                    val response = contentCreationConfigUseCase(Unit)
-                    formatCreationConfig(response, widgetSource)
+                val formattedCreationConfig = withContext(dispatchers.io) {
+                    if (creationConfig.isActive) {
+                        formatCreationConfig(creationConfig, widgetSource)
+                    } else {
+                        val response = contentCreationConfigUseCase(Unit)
+                        formatCreationConfig(response, widgetSource)
+                    }
                 }
 
                 _creationConfig.value = Success(formattedCreationConfig)
