@@ -47,6 +47,7 @@ class StoriesCreationPreparationViewModelTest {
         val mockStoryId = "jkadsjflk"
         val mockConfig = configModelBuilder.build(storiesId = "")
         val mockAccountList = accountModelBuilder.build()
+        val mockAccountListWithoutUgc = mockAccountList.filter { it.isShop }
 
         coEvery { mockRepo.getCreationAccountList() } returns mockAccountList
         coEvery { mockRepo.getStoryPreparationInfo(any()) } returns mockConfig
@@ -71,7 +72,7 @@ class StoriesCreationPreparationViewModelTest {
             robot.selectedAccount.assertEqualTo(mockAccountList[0])
             robot.maxProductTag.assertEqualTo(mockConfig.maxProductTag)
             state.config.storiesId.assertEqualTo(mockStoryId)
-            state.accountList.assertEqualTo(mockAccountList)
+            state.accountList.assertEqualTo(mockAccountListWithoutUgc)
 
             events.last().assertEqualTo(StoriesCreationUiEvent.OpenMediaPicker)
         }
@@ -81,6 +82,7 @@ class StoriesCreationPreparationViewModelTest {
     fun `storiesCreation_prepare_success_withDraft`() {
         val mockConfig = configModelBuilder.build()
         val mockAccountList = accountModelBuilder.build()
+        val mockAccountListWithoutUgc = mockAccountList.filter { it.isShop }
 
         coEvery { mockRepo.getCreationAccountList() } returns mockAccountList
         coEvery { mockRepo.getStoryPreparationInfo(any()) } returns mockConfig
@@ -104,7 +106,7 @@ class StoriesCreationPreparationViewModelTest {
             robot.selectedAccount.assertEqualTo(mockAccountList[0])
             robot.maxProductTag.assertEqualTo(mockConfig.maxProductTag)
             state.config.assertEqualTo(mockConfig)
-            state.accountList.assertEqualTo(mockAccountList)
+            state.accountList.assertEqualTo(mockAccountListWithoutUgc)
 
             events.last().assertEqualTo(StoriesCreationUiEvent.OpenMediaPicker)
         }
@@ -188,6 +190,7 @@ class StoriesCreationPreparationViewModelTest {
             )
         )
         val mockAccountList = accountModelBuilder.build()
+        val mockAccountListWithoutUgc = mockAccountList.filter { it.isShop }
 
         coEvery { mockRepo.getCreationAccountList() } returns mockAccountList
         coEvery { mockRepo.getStoryPreparationInfo(any()) } returns mockConfig
@@ -209,7 +212,7 @@ class StoriesCreationPreparationViewModelTest {
 
             robot.maxStoriesConfig.assertEqualTo(mockConfig.maxStoriesConfig)
             state.config.assertEqualTo(mockConfig)
-            state.accountList.assertEqualTo(mockAccountList)
+            state.accountList.assertEqualTo(mockAccountListWithoutUgc)
 
             events.last().assertEqualTo(StoriesCreationUiEvent.ShowTooManyStoriesReminder)
         }
