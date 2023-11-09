@@ -1,5 +1,7 @@
 package com.tokopedia.stories.data.mock
 
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
@@ -693,3 +695,18 @@ fun mockContentTaggedProductUiModel(): ContentTaggedProductUiModel {
         stock = ContentTaggedProductUiModel.Stock.OutOfStock,
     )
 }
+
+fun mockReportReasonList(): List<PlayUserReportReasoningUiModel.Reasoning> = listOf(
+    PlayUserReportReasoningUiModel.Reasoning(
+        reasoningId = 1,
+        title = "Reason One",
+        detail = "Report Reason",
+        submissionData = UserReportOptions.OptionAdditionalField(),
+    ),
+    PlayUserReportReasoningUiModel.Reasoning(
+        reasoningId = 2,
+        title = "Reason Two",
+        detail = "Report Reason",
+        submissionData = UserReportOptions.OptionAdditionalField(),
+    ),
+)
