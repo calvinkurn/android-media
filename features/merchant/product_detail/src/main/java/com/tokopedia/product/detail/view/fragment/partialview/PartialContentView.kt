@@ -99,6 +99,8 @@ class PartialContentView(
             listener.onUniversalShareWidget(this)
             setColorShareIcon(unifyprinciplesR.color.Unify_NN700)
             show()
+        } else {
+            hide()
         }
     }
 
