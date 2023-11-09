@@ -60,6 +60,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     companion object {
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val MARGIN_4_DP = 4
+        private const val APPLINK_QUERY_STRING_REVIEW_SOURCE = "header"
 
         @JvmStatic
         fun newInstance(shopId: String): ShopInfoReimagineFragment {
@@ -375,9 +376,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             val tpgTotalRatingNumber = ratingView.findViewById<Typography?>(R.id.tpgTotalRatingNumber)
 
             tpgRating.text = rating.rate.toString()
-            progressBarRating.setValue(rating.percentageFloat.toInt()) 
-            
-            tpgTotalRatingNumber.text = rating.formattedTotalReviews
+            progressBarRating.setValue(rating.percentageFloat.toInt()) tpgTotalRatingNumber.text = rating.formattedTotalReviews
             progressBarRating?.progressBarColorType = ProgressBarUnify.COLOR_YELLOW
 
             binding?.layoutRatingBarContainer?.addView(ratingView)
@@ -492,16 +491,20 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun redirectToGmaps(gmapsUrl: String) {
         if (!isAdded) return
         if (gmapsUrl.isEmpty()) return
+
+        // TODO route to gmap app
     }
     private fun redirectToReviewDetailPage(reviewId: String) {
         if (!isAdded) return
         if (reviewId.isEmpty()) return
+
+        // TODO route to review detail
     }
     private fun redirectToShopReviewPage(shopId: String) {
         if (!isAdded) return
         if (shopId.isEmpty()) return
 
-        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, shopId, "shop-page")
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, shopId, APPLINK_QUERY_STRING_REVIEW_SOURCE)
         RouteManager.route(context, appLink)
     }
 
@@ -516,5 +519,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun showShopLocationBottomSheet(locations: List<String>) {
         if (!isAdded) return
         if (locations.isEmpty()) return
+
+        // TODO route to location bottomsheet
     }
 }
