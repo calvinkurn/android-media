@@ -287,11 +287,11 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `given get quest list throws error when refreshQuestWidget should catch exception and remove the widget`() {
-        val successCode = "200"
+    fun `given get quest list error when refreshQuestWidget should catch exception and remove the widget`() {
+        val errorCode = "12231"
         onGetQuestWidgetAbTest_thenReturn(EXPERIMENT_VARIANT)
         onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly())
-        onGetQuestWidgetList_thenReturn(createQuestWidgetList(successCode))
+        onGetQuestWidgetList_thenReturn(createQuestWidgetList(errorCode))
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
