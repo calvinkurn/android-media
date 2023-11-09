@@ -28,6 +28,15 @@ data class TokoChatListItemUiModel(
         }
     }
 
+    fun getBusinessName(): String {
+        return when (serviceType) {
+            TOKOFOOD_SERVICE_TYPE -> {
+                business
+            }
+            else -> "" // default empty
+        }
+    }
+
     override fun compareTo(other: TokoChatListItemUiModel): Int {
         val result = createAt - other.createAt
         return when {

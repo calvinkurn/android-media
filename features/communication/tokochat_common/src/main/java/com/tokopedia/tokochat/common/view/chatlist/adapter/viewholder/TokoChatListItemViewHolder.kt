@@ -9,11 +9,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTime
-import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IC_SHOPPING_LOGISTIC_SOURCE
-import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.GOSEND_INSTANT_SERVICE_TYPE
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.GOSEND_SAMEDAY_SERVICE_TYPE
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getFirstNameDriver
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSourceIcon
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
@@ -69,8 +64,8 @@ class TokoChatListItemViewHolder(
 
     private fun bindBusiness(element: TokoChatListItemUiModel) {
         binding?.tokochatListTvBusinessName?.apply {
-            if (element.business.isNotBlank()) {
-                text = element.business
+            if (element.getBusinessName().isNotBlank()) {
+                text = element.getBusinessName()
                 show()
             } else {
                 hide()
