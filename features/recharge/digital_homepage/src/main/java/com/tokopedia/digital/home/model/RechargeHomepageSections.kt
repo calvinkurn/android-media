@@ -175,6 +175,15 @@ data class RechargeHomepageSections(
         @SerializedName("is_sticky")
         @Expose
         val isSticky: Boolean = false,
+        @SerializedName("fav_id")
+        @Expose
+        val favId: String = "",
+        @SerializedName("discount")
+        @Expose
+        val discount: String = "",
+        @SerializedName("slashed_price")
+        @Expose
+        val slashedPrice: String = "",
     )
 
     data class Attributes(

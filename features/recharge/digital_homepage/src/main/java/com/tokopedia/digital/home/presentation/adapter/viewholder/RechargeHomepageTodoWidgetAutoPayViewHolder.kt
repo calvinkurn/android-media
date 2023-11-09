@@ -59,6 +59,8 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
                 tgProductNameTodoWidget.text = widget.subtitle
                 tgFavoriteNumberTodoWidget.text = widget.label
                 tgPriceTodoWidget.text = widget.price
+                tgSlashPriceTodoWidget.text = widget.slashedPrice
+                tgPercentageTodoWidget.text = widget.discount
 
                 if (widget.type.startsWith(CATEGORY_TYPE)) {
                     tgFavoriteNumberTodoWidget.maxLines = MAX_LINE_CATEGORY

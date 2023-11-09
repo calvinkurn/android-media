@@ -55,6 +55,9 @@ internal object RechargeHomepageSectionQuery{
                   }
                   items {
                     widgets{
+                      fav_id
+                      discount
+                      slashed_price
                       title
                       subtitle
                       label
