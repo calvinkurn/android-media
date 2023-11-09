@@ -10,6 +10,7 @@ import androidx.viewbinding.ViewBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -52,7 +53,7 @@ class ShipmentViewHolder(
         ViewShipmentFailedBinding.bind(it)
     }
 
-    private val viewPlus: ShipmentView<ViewShipmentPlusBinding> by lazy {
+    private val viewPlus: ShipmentView<ViewShipmentPlusBinding> by lazyThreadSafetyNone {
         ShipmentView(viewSuccess.binding.pdpShipmentPlus) { ViewShipmentPlusBinding.bind(it) }
     }
 
@@ -273,10 +274,10 @@ class ShipmentViewHolder(
         private val viewStub: ViewStub,
         private val inflater: (View) -> T
     ) {
-        private val inflateDelegate = lazy { viewStub.inflate() }
+        private val inflateDelegate = lazyThreadSafetyNone { viewStub.inflate() }
         val view: View by inflateDelegate
 
-        val binding: T by lazy {
+        val binding: T by lazyThreadSafetyNone {
             inflater.invoke(view)
         }
 
