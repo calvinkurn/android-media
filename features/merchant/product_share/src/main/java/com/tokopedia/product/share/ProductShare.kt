@@ -13,6 +13,8 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -550,11 +552,13 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         }
     }
 
-    fun setWhatsappShareWidget(shareWidget: UniversalShareWidget,
-                               productData: ProductData,
-                               personalizedCampaignModel: PersonalizedCampaignModel,
-                               affiliateInput: AffiliateInput,
-                               imageGeneratorParamModel: PdpParamModel) {
+    fun setWhatsappShareWidget(
+        shareWidget: UniversalShareWidget,
+        productData: ProductData,
+        personalizedCampaignModel: PersonalizedCampaignModel,
+        affiliateInput: AffiliateInput,
+        imageGeneratorParamModel: PdpParamModel
+    ) {
         var imageGenerator = imageGeneratorParamModel
         var personalizedMessage = ""
         var shareMessage = ""
@@ -582,7 +586,6 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             }
         } else {
             shareMessage = "$personalizedMessage %s"
-
         }
         shareWidget.setData(
             shareWidgetParam = ShareWidgetParam(
@@ -591,7 +594,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 imageGenerator = ImageGeneratorShareWidgetParam(
                     ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP,
                     imageGenerator
-                ),
+                )
             )
         )
     }
@@ -616,7 +619,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         return LinkShareWidgetProperties(
             page = "PDP",
             message = message,
-            deeplink = "tokopedia://product/${productData.productId}",
+            deeplink = UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, productData.productId),
             id = productData.productId,
             desktopUrl = productData.productUrl.toString(),
             linkerType = LinkerData.PRODUCT_TYPE,
