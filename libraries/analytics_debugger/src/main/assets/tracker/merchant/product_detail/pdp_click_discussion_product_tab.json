@@ -13,6 +13,7 @@
       "businessUnit": ".*",
       "currentSite": ".*",
       "userId": ".*",
+      "hits_time": ".*",
       "layout": "layout:.*;catName:.*;catId:\\d{1,};",
       "component": "comp:.*;temp:.*;elem:.*;cpos:\\d{1,};",
       "warehouseId": ".*",
