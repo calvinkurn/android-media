@@ -446,6 +446,8 @@ class StoriesDetailFragment @Inject constructor(
     private fun renderNudge(prevState: StoriesDetailItem?, state: StoriesDetailItem) {
         binding.vStoriesProductIcon.root.showWithCondition(state.isProductAvailable)
         binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
+
+        if (!state.isProductAvailable) return
         with(binding.nudgeStoriesProduct) {
             setContent {
                 StoriesProductNudge(state.productCount) {
