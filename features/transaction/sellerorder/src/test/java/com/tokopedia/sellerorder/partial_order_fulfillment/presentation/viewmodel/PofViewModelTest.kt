@@ -720,7 +720,27 @@ class PofViewModelTest : PofViewModelTestFixture() {
             }
             //endregion verify use-cases
             //region verify items
-            assertEquals(initialVisitableListWithStatus0, uiState.items)
+            uiState.items.forEachIndexed { index, visitable ->
+                if (
+                    visitable is PofProductEditableUiModel &&
+                    visitable.orderDetailId == getFirstOriginalOrderDetailId()
+                ) {
+                    Assertions
+                        .assertThat(visitable)
+                        .isEqualToIgnoringGivenFields(
+                            initialVisitableListWithStatus0[index] as PofProductEditableUiModel,
+                            PofProductEditableUiModel::quantityEditorData.name
+                        )
+                    Assertions
+                        .assertThat(visitable.quantityEditorData)
+                        .isEqualToIgnoringGivenFields(
+                            (initialVisitableListWithStatus0[index] as PofProductEditableUiModel).quantityEditorData,
+                            PofProductEditableUiModel.QuantityEditorData::updateTimestamp.name
+                        )
+                } else {
+                    assertEquals(initialVisitableListWithStatus0[index], visitable)
+                }
+            }
             //endregion verify items
             //region verify summary bottom sheet should hidden
             assertEquals(PofBottomSheetSummaryUiState.Hidden, uiState.bottomSheetSummaryUiState)

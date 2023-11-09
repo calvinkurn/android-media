@@ -57,7 +57,6 @@ abstract class PofViewModelTestFixture {
         const val SUCCESS_RESPONSE_GET_POF_ESTIMATE_RESULT_WITH_FIRST_PRODUCT_ZERO = "json/get_pof_estimate_result.json"
         const val SUCCESS_RESPONSE_GET_POF_INFO_RESULT_WITH_STATUS_0 = "json/get_pof_info_result_with_status_0.json"
         const val SUCCESS_RESPONSE_SEND_POF = "json/send_pof_success.json"
-        const val ERROR_RESPONSE_SEND_POF = "json/send_pof_error.json"
     }
 
     @RelaxedMockK
@@ -519,14 +518,11 @@ abstract class PofViewModelTestFixture {
     }
 
     protected fun createBEErrorSendPof() {
-        val originalResponse = TestHelper.createSuccessResponse<SendPofResponse.Data>(
-            ERROR_RESPONSE_SEND_POF
-        )
         coEvery {
             sendPofUseCase(any())
         } returns flow {
             emit(RequestState.Requesting)
-            emit(RequestState.Success(originalResponse))
+            emit(RequestState.Error(throwable))
         }
     }
 
