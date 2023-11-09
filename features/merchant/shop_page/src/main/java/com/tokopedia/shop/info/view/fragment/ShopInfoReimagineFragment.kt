@@ -83,6 +83,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private val viewModel by lazy { viewModelProvider[ShopInfoReimagineViewModel::class.java] }
 
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID, "").orEmpty() }
+    private val localCacheModel by lazy { ShopUtil.getShopPageWidgetUserAddressLocalData(context) }
 
     override fun getScreenName(): String = ShopInfoReimagineFragment::class.java.canonicalName.orEmpty()
 
@@ -101,7 +102,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         super.onCreate(savedInstanceState)
         Typography.setUnifyTypographyOSO(true)
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -118,8 +119,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         observeUiState()
         observeUiEffect()
 
-        val localCacheModel = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: return
-        viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, localCacheModel))
+        viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, localCacheModel ?: return))
         registerBackPressEvent()
     }
 
@@ -145,6 +145,13 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             }
             iconChevronReview.setOnClickListener {
                 viewModel.processEvent(ShopInfoUiEvent.TapIconViewAllShopReview)
+            }
+            globalError.setActionClickListener {
+                viewModel.processEvent(
+                    ShopInfoUiEvent.RetryGetShopInfo(
+                        localCacheModel ?: return@setActionClickListener
+                    )
+                )
             }
         }
     }
@@ -177,9 +184,10 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             is ShopInfoUiEffect.RedirectToReviewDetailPage -> redirectToReviewDetailPage(effect.reviewId)
             is ShopInfoUiEffect.RedirectToShopReviewPage -> redirectToShopReviewPage(effect.shopId)
             is ShopInfoUiEffect.ShowShopLocationBottomSheet -> showShopLocationBottomSheet(effect.locations)
+            is ShopInfoUiEffect.RedirectToShopNoteDetailPage -> redirectToShopNoteDetailPage(effect.shopId, effect.noteId)
         }
     }
-    
+
     private fun renderLoadingState() {
         binding?.loader?.visible()
         binding?.mainContent?.gone()
@@ -215,7 +223,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         val hasPharmacyLicenseBadge = uiState.info.showPharmacyLicenseBadge
 
         binding?.run {
-            imgShop.loadImage(uiState.info.shopImageUrl)
+            imgShop.loadImage(uiState.info.shopImageUrl) // TODO add circle border
             imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
             tpgShopName.text = uiState.info.shopName
             tpgLicensedPharmacy.isVisible = hasPharmacyLicenseBadge
@@ -252,7 +260,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun renderOperationalHours(operationalHours: Map<String, List<String>>) {
         val linearLayout = binding?.layoutOperationalHoursContainer
         linearLayout?.removeAllViews()
-        
+
         operationalHours.forEach {
             val hour = it.key
             val days = it.value
@@ -261,7 +269,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             val textViewOperationalHour = Typography(context ?: return).apply {
                 setType(Typography.DISPLAY_2)
                 setTextColor(ContextCompat.getColor(this.context, unifyprinciplesR.color.Unify_NN950))
-                
+
                 val params = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -287,10 +295,10 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             labelShopPharmacyPharmacistName.isVisible = isPharmacy && expandPharmacyInfo
             labelShopPharmacySiaNumber.isVisible = isPharmacy && expandPharmacyInfo
             labelShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
-            
+
             tpgCtaExpandPharmacyInfo.isVisible = isPharmacy && !expandPharmacyInfo
             tpgCtaViewPharmacyMap.isVisible = isPharmacy && expandPharmacyInfo
-            
+
             tpgSectionTitlePharmacyInformation.isVisible = isPharmacy
             tpgShopPharmacyNearestPickup.isVisible = isPharmacy
             tpgShopPharmacyPharmacistOpsHour.isVisible = isPharmacy && expandPharmacyInfo
@@ -321,6 +329,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         binding?.iconRating?.isVisible = showRating
         binding?.tpgShopRating?.isVisible = showRating
         binding?.tpgRatingAndReviewText?.isVisible = showRating
+        binding?.iconChevronReview?.isVisible = showRating
 
         if (showRating) {
             val ratingAndReviewText = when {
@@ -357,7 +366,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun renderRatingList(ratings: List<ShopRating.Detail>) {
         binding?.layoutRatingBarContainer?.removeAllViews()
-        
+
         ratings.forEach { rating ->
 
             val ratingView = layoutInflater.inflate(R.layout.item_shop_info_rating, binding?.layoutRatingBarContainer, false)
@@ -366,8 +375,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             val tpgTotalRatingNumber = ratingView.findViewById<Typography?>(R.id.tpgTotalRatingNumber)
 
             tpgRating.text = rating.rate.toString()
-            progressBarRating.setValue(rating.percentageFloat.toInt()) 
-            tpgTotalRatingNumber.text = rating.formattedTotalReviews
+            progressBarRating.setValue(rating.percentageFloat.toInt()) tpgTotalRatingNumber.text = rating.formattedTotalReviews
             progressBarRating?.progressBarColorType = ProgressBarUnify.COLOR_YELLOW
 
             binding?.layoutRatingBarContainer?.addView(ratingView)
@@ -408,15 +416,18 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun renderShopNoteList(shopNotes: List<ShopNote>) {
         binding?.layoutShopNotesContainer?.removeAllViews()
-        
+
         shopNotes.forEach { shopNote ->
             val shopNoteView = layoutInflater.inflate(R.layout.item_shop_info_shop_note, binding?.layoutShopNotesContainer, false)
             val shopNoteTitle = shopNoteView.findViewById<Typography?>(R.id.tpgShopNote)
             val shopNoteChevron = shopNoteView.findViewById<IconUnify?>(R.id.iconChevron)
 
             shopNoteTitle.text = shopNote.title
+            shopNoteTitle?.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote.id))
+            }
             shopNoteChevron.setOnClickListener {
-                ShopNoteDetailActivity.createIntent(context, shopId, shopNote.id)
+                viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote.id))
             }
 
             binding?.layoutShopNotesContainer?.addView(shopNoteView)
@@ -444,7 +455,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun renderShopSupportedShipmentList(shipments: List<ShopSupportedShipment>) {
         binding?.layoutShopSupportedShipmentContainer?.removeAllViews()
-        
+
         shipments.forEachIndexed { index, shipment ->
             val shipmentView = layoutInflater.inflate(R.layout.item_shop_info_shipment, binding?.layoutShopSupportedShipmentContainer, false)
             val imgShipment = shipmentView.findViewById<ImageUnify?>(R.id.imgShipment)
@@ -462,7 +473,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             binding?.layoutShopSupportedShipmentContainer?.addView(shipmentView)
         }
     }
-
 
     private fun makeShopNameCenteredVertically() {
         val constraintSet = ConstraintSet()
@@ -484,7 +494,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun redirectToReviewDetailPage(reviewId: String) {
         if (!isAdded) return
         if (reviewId.isEmpty()) return
-        
     }
     private fun redirectToShopReviewPage(shopId: String) {
         if (!isAdded) return
@@ -494,9 +503,16 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         RouteManager.route(context, appLink)
     }
 
+    private fun redirectToShopNoteDetailPage(shopId: String, noteId: String) {
+        if (!isAdded) return
+        if (noteId.isEmpty()) return
+
+        val intent = ShopNoteDetailActivity.createIntent(context, shopId, noteId)
+        startActivity(intent)
+    }
+
     private fun showShopLocationBottomSheet(locations: List<String>) {
         if (!isAdded) return
         if (locations.isEmpty()) return
-
     }
 }

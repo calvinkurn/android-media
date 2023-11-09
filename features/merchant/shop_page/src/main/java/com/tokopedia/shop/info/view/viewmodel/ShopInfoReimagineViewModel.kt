@@ -20,9 +20,9 @@ import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOpera
 import com.tokopedia.shop.common.util.DateTimeConstant
 import com.tokopedia.shop.info.domain.GetEpharmacyShopInfoUseCase
 import com.tokopedia.shop.info.domain.GetNearestEpharmacyWarehouseLocationUseCase
-import com.tokopedia.shop.info.domain.entity.ShopPharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
+import com.tokopedia.shop.info.domain.entity.ShopPharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopRatingAndTopicsUseCase
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopReviewReadingListUseCase
@@ -51,14 +51,13 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val getShopGqlGetShopOperationalHoursListUseCase: GqlGetShopOperationalHoursListUseCase,
     private val getShopPageHeaderLayoutUseCase: GetShopPageHeaderLayoutUseCase,
     private val getEpharmacyShopInfoUseCase: GetEpharmacyShopInfoUseCase,
-    private val getNearestEpharmacyWarehouseLocationUseCase: GetNearestEpharmacyWarehouseLocationUseCase,
+    private val getNearestEpharmacyWarehouseLocationUseCase: GetNearestEpharmacyWarehouseLocationUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     companion object {
         private const val ID_FULFILLMENT_SERVICE_E_PHARMACY = 2
     }
-    
-    
+
     private val _uiState = MutableStateFlow(ShopInfoUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -67,18 +66,19 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private val currentState: ShopInfoUiState
         get() = _uiState.value
-    
+
     fun processEvent(event: ShopInfoUiEvent) {
-        when(event) {
+        when (event) {
             is ShopInfoUiEvent.GetShopInfo -> handleGetShopInfo(event.shopId, event.localCacheModel)
             ShopInfoUiEvent.TapCtaExpandShopPharmacyInfo -> handleCtaExpandShopPharmacyInfo()
             ShopInfoUiEvent.TapCtaViewPharmacyLocation -> handleCtaViewPharmacyLocation()
             ShopInfoUiEvent.TapIconViewAllShopReview -> handleViewAllReviewClick()
             ShopInfoUiEvent.TapIconViewShopLocation -> handleViewShopLocation()
-            is ShopInfoUiEvent.RetryGetShopInfo -> handleRetryGetShopInfo(event.shopId, event.localCacheModel)
+            is ShopInfoUiEvent.RetryGetShopInfo -> handleRetryGetShopInfo(event.localCacheModel)
+            is ShopInfoUiEvent.TapShopNote -> handleTapShopNote(event.noteId)
         }
     }
-    
+
     private fun handleGetShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
         launchCatchError(
             context = coroutineDispatcherProvider.io,
@@ -110,7 +110,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 val shopOperationalHours = shopOperationalHoursDeferred.await()
 
                 val pharmacyInfo = getPharmacyInfo(shopId.toLongOrZero(), localCacheModel.district_id.toLongOrZero())
-                
+
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -153,14 +153,15 @@ class ShopInfoReimagineViewModel @Inject constructor(
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun handleCtaViewPharmacyLocation() {
         val effect =
             ShopInfoUiEffect.RedirectToGmaps(currentState.pharmacy.nearPickupAddressGmapsUrl)
         _uiEffect.tryEmit(effect)
     }
 
-    private fun handleRetryGetShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
-        handleGetShopInfo(shopId, localCacheModel)
+    private fun handleRetryGetShopInfo(localCacheModel: LocalCacheModel) {
+        handleGetShopInfo(currentState.shopId, localCacheModel)
     }
 
     private fun handleViewShopLocation() {
@@ -173,6 +174,10 @@ class ShopInfoReimagineViewModel @Inject constructor(
         _uiEffect.tryEmit(effect)
     }
 
+    private fun handleTapShopNote(noteId: String) {
+        val effect = ShopInfoUiEffect.RedirectToShopNoteDetailPage(currentState.shopId, noteId)
+        _uiEffect.tryEmit(effect)
+    }
 
     private suspend fun handleGetShopInfo(shopId: Int): ShopInfo {
         getShopInfoUseCase.isFromCacheFirst = false
@@ -202,6 +207,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return getShopGqlGetShopOperationalHoursListUseCase.executeOnBackground()
     }
 
+    @SuppressLint("PII Data Exposure")
     private suspend fun getShopPageHeaderLayout(
         shopId: String,
         widgetUserAddressLocalData: LocalCacheModel
@@ -220,7 +226,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
         getShopPageHeaderLayoutUseCase.isFromCloud = true
         return getShopPageHeaderLayoutUseCase.executeOnBackground()
     }
-    
+
     @SuppressLint("PII Data Exposure")
     private suspend fun getPharmacyInfo(shopId: Long, districtId: Long): ShopPharmacyInfo {
         return try {
@@ -254,7 +260,6 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 expandPharmacyInfo = false
             )
         }
-        
     }
 
     private fun isMyShop(shopId: String): Boolean {
