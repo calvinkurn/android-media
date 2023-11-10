@@ -437,7 +437,12 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 
     private fun generateOgTitle(productData: ProductData): String {
-        return "${productData.productName} - ${productData.priceText}"
+        return if (productData.hasMaskingPrice) {
+            "${productData.productName}"
+        }
+        else {
+            "${productData.productName} - ${productData.priceText}"
+        }
     }
 
     private fun generateOgDescription(productData: ProductData): String {
@@ -495,7 +500,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 }
                 getImageFromMedia(true)
                 setupAffiliate(affiliateInput, this)
-                setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP)
+                setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.PDP_WITH_PRICE_STRING)
                 if (!personalizedCampaignModel.isThematicCampaign && !(personalizedCampaignModel.startTime == 0L && personalizedCampaignModel.endTime == 0L)) {
                     setPersonalizedCampaign(personalizedCampaignModel)
                 }

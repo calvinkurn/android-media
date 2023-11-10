@@ -261,7 +261,10 @@ open class DiscoveryFragment :
     val trackingQueue: TrackingQueue by lazy {
         provideTrackingQueue()
     }
+
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
+    var onMerchantVoucherScrolledCallback: ((parentRecyclerView: RecyclerView) -> Unit)? = null
+
     open fun provideTrackingQueue(): TrackingQueue {
         return (context as DiscoveryActivity).trackingQueue
     }
@@ -476,6 +479,7 @@ open class DiscoveryFragment :
                     }
                 }
                 enableRefreshWhenFirstItemCompletelyVisible()
+                onMerchantVoucherScrolledCallback?.invoke(recyclerView)
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

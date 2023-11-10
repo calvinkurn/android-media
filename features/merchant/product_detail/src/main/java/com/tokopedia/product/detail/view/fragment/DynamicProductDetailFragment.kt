@@ -146,7 +146,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
-import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
@@ -163,6 +163,7 @@ import com.tokopedia.product.detail.common.view.ProductDetailCoachMarkHelper
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
+import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -2758,7 +2759,7 @@ open class DynamicProductDetailFragment :
         pdpUiUpdater?.updateTicker(selectedTicker)
 
         pdpUiUpdater?.updateShipmentData(
-            viewModel.getP2RatesEstimateDataByProductId(),
+            viewModel.getP2RatesEstimateByProductId(),
             viewModel.getMultiOriginByProductId().isFulfillment,
             viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
             boeData,
@@ -3065,7 +3066,7 @@ open class DynamicProductDetailFragment :
     private fun observeP2Data() {
         viewLifecycleOwner.observe(viewModel.p2Data) {
             val boeData = viewModel.getBebasOngkirDataByProductId()
-            val ratesData = viewModel.getP2RatesEstimateDataByProductId()
+            val ratesData = viewModel.getP2RatesEstimateByProductId()
             val shipmentPlus = viewModel.getP2ShipmentPlusByProductId()
 
             shareProductInstance?.updateAffiliate(it.shopInfo.statusInfo.shopStatus)
@@ -3511,10 +3512,16 @@ open class DynamicProductDetailFragment :
             // prevent interaction loading state for several component
             val submitInitialList = viewModel.getDynamicProductInfoP1?.cacheState?.cacheFirstThenCloud == false
             if (submitInitialList) {
-                submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
+                submitInitialList(
+                    pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty(),
+                    viewModel.getDynamicProductInfoP1?.cacheState
+                )
             }
         } else {
-            submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
+            submitInitialList(
+                pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty(),
+                viewModel.getDynamicProductInfoP1?.cacheState
+            )
         }
     }
 
@@ -3570,10 +3577,10 @@ open class DynamicProductDetailFragment :
     private fun onSuccessGetDataP2(
         it: ProductInfoP2UiData,
         boeData: BebasOngkirImage,
-        ratesData: P2RatesEstimateData?,
+        ratesData: P2RatesEstimate?,
         shipmentPlus: ShipmentPlus?
     ) {
-        val minimumShippingPriceP2 = ratesData?.cheapestShippingPrice ?: 0.0
+        val minimumShippingPriceP2 = ratesData?.p2RatesData?.cheapestShippingPrice ?: 0.0
         if (minimumShippingPriceP2 != 0.0) {
             viewModel.shippingMinimumPrice = minimumShippingPriceP2
         }
@@ -6196,6 +6203,28 @@ open class DynamicProductDetailFragment :
     override fun onClickShipmentPlusBanner(
         link: String,
         trackerData: ShipmentPlusData.TrackerData,
+        componentTrackDataModel: ComponentTrackDataModel?
+    ) {
+        ShipmentTracking.sendClickShipmentPlusBanner(
+            trackerData = trackerData,
+            common = generateCommonTracker(),
+            component = componentTrackDataModel
+        )
+        val processedLink = if (link.startsWith(ProductDetailConstant.HTTP_PREFIX)) {
+            UriUtil
+                .buildUriAppendParam(
+                    ApplinkConst.WEBVIEW,
+                    mapOf(ProductDetailConstant.WEBVIEW_URL_PARAM to link)
+                )
+        } else {
+            link
+        }
+        goToApplink(processedLink)
+    }
+
+    override fun onClickShipmentPlusBanner(
+        link: String,
+        trackerData: ShipmentUiModel.ShipmentPlusData.TrackerData,
         componentTrackDataModel: ComponentTrackDataModel?
     ) {
         ShipmentTracking.sendClickShipmentPlusBanner(

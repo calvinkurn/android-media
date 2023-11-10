@@ -23,7 +23,7 @@ data class PersonalizedCampaignModel(
      * if [endTime] is not [ZERO_UNIX] then the campaign is on going
      */
     fun getCampaignStatus(): CampaignStatus {
-        return if (startTime == ZERO_UNIX && endTime != ZERO_UNIX) {
+        return if (DateUtil.timeIsOutDated(startTime) && DateUtil.timeIsOutDated(endTime).not()) {
             if (DateUtil.timeIsUnderThresholdMinute(endTime, THRESHOLD_ENDSOON)) {
                 CampaignStatus.END_SOON
             } else if (DateUtil.timeIsUnderThresholdWeek(endTime, THRESHOLD_END_A_WEEK)) {
