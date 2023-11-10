@@ -26,7 +26,6 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
     var viewModel: SectionViewModel? = null
     val shimmer: ConstraintLayout = itemView.findViewById(R.id.section_shimmer)
     private var carouselEmptyState: LocalLoad = itemView.findViewById(R.id.viewEmptyState)
-    private val container = itemView.findViewById<LinearLayoutCompat>(R.id.section_container)
 
     private val festiveContainer: LinearLayoutCompat = itemView.findViewById(R.id.festiveContainer)
 
@@ -46,124 +45,6 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         resetFestiveSection()
         addChildComponent()
-    }
-
-    private fun addChildComponent() {
-        val items = viewModel?.components?.getComponentsItem()
-
-        val backgroundColor = arrayOf(
-            unifyprinciplesR.color.Unify_RN200_96,
-            unifyprinciplesR.color.Unify_G200_96,
-            unifyprinciplesR.color.Unify_B200_96,
-            unifyprinciplesR.color.Unify_Y200_96
-        ).random()
-
-        container.setBackgroundColor(ContextCompat.getColor(itemView.context, backgroundColor))
-
-        if (items != null) {
-            for (item in items) {
-                when (item.name) {
-                    ComponentNames.ProductCardCarousel.componentName -> {
-                        container.addView(
-                            CustomViewCreator.getCustomViewObject(
-                                itemView.context,
-                                ComponentsList.ProductCardCarousel,
-                                item,
-                                fragment
-                            )
-                        )
-                    }
-
-                    ComponentNames.LihatSemua.componentName -> {
-                        container.addView(
-                            CustomViewCreator.getCustomViewObject(
-                                itemView.context,
-                                ComponentsList.LihatSemua,
-                                item,
-                                fragment
-                            )
-                        )
-                    }
-
-                    ComponentNames.ProductCardSingle.componentName -> {
-                        container.addView(
-                            CustomViewCreator.getCustomViewObject(
-                                itemView.context,
-                                ComponentsList.ProductCardSingle,
-                                item,
-                                fragment
-                            )
-                        )
-                    }
-
-                    ComponentNames.SingleBanner.componentName -> {
-                        container.addView(
-                            CustomViewCreator.getCustomViewObject(
-                                itemView.context,
-                                ComponentsList.SingleBanner,
-                                item,
-                                fragment
-                            )
-                        )
-                    }
-
-                    ComponentNames.DoubleBanner.componentName -> {
-                        container.addView(
-                            CustomViewCreator.getCustomViewObject(
-                                itemView.context,
-                                ComponentsList.DoubleBanner,
-                                item,
-                                fragment
-                            )
-                        )
-                    }
-
-                    ComponentNames.TripleBanner.componentName -> {
-                        container.addView(
-                            CustomViewCreator.getCustomViewObject(
-                                itemView.context,
-                                ComponentsList.TripleBanner,
-                                item,
-                                fragment
-                            )
-                        )
-                    }
-
-                    ComponentNames.QuadrupleBanner.componentName -> {
-                        container.addView(
-                            CustomViewCreator.getCustomViewObject(
-                                itemView.context,
-                                ComponentsList.QuadrupleBanner,
-                                item,
-                                fragment
-                            )
-                        )
-                    }
-
-                    ComponentNames.CalendarWidgetCarousel.componentName -> {
-                        container.addView(
-                            CustomViewCreator.getCustomViewObject(
-                                itemView.context,
-                                ComponentsList.CalendarWidgetCarousel,
-                                item,
-                                fragment
-                            )
-                        )
-                    }
-
-                    ComponentNames.ProductHighlight.componentName -> {
-                        container.addView(
-                            CustomViewCreator.getCustomViewObject(
-                                itemView.context,
-                                ComponentsList.ProductHighlight,
-                                item,
-                                fragment
-                            )
-                        )
-                    }
-                }
-            }
-        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
