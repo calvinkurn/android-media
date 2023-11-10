@@ -160,7 +160,7 @@ class DigitalPDPTagihanFragment :
                 is RechargeNetworkResult.Success -> onSuccessGetMenuDetail(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetMenuDetail(it.error)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         })
@@ -172,7 +172,7 @@ class DigitalPDPTagihanFragment :
                     binding?.rechargePdpTagihanListrikClientNumberWidget?.setFilterChipShimmer(true)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         })
@@ -181,7 +181,7 @@ class DigitalPDPTagihanFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         })
@@ -190,7 +190,7 @@ class DigitalPDPTagihanFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         })
@@ -200,7 +200,7 @@ class DigitalPDPTagihanFragment :
                 is RechargeNetworkResult.Success -> onSuccessGetOperatorSelectGroup(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetOperatorSelectGroup(it.error)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         })
@@ -211,7 +211,7 @@ class DigitalPDPTagihanFragment :
                     productId = it.data.id.toIntOrZero()
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         })
@@ -406,6 +406,7 @@ class DigitalPDPTagihanFragment :
                     setInputNumber(prefill.clientNumber)
                 }
             }
+            clearFocusAutoComplete()
         }
     }
 

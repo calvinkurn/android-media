@@ -32,6 +32,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
+import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
@@ -163,25 +164,25 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(productList)
                 }
                 ProductDetailConstant.VIEW_TO_VIEW -> {
-                    val componentData = component.componentData.firstOrNull() ?: return@forEachIndexed
+                    val componentData = component.componentData.firstOrNull()
                     listOfComponent.add(
                         ViewToViewWidgetDataModel(
                             type = component.type,
                             name = component.componentName,
                             position = index,
-                            queryParam = componentData.queryParam,
-                            thematicId = componentData.thematicId
+                            queryParam = componentData?.queryParam.orEmpty(),
+                            thematicId = componentData?.thematicId.orEmpty()
                         )
                     )
                 }
                 ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
-                    val componentData = component.componentData.firstOrNull() ?: return@forEachIndexed
+                    val componentData = component.componentData.firstOrNull()
                     listOfComponent.add(
                         ProductRecommendationVerticalPlaceholderDataModel(
                             type = component.type,
                             name = component.componentName,
-                            queryParam = componentData.queryParam,
-                            thematicId = componentData.thematicId
+                            queryParam = componentData?.queryParam.orEmpty(),
+                            thematicId = componentData?.thematicId.orEmpty()
                         )
                     )
                     listOfComponent.add(LoadingDataModel())
@@ -360,6 +361,11 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.BMGM_TYPE -> {
                     listOfComponent.add(
                         BMGMUiModel(type = component.type, name = component.componentName)
+                    )
+                }
+                ProductDetailConstant.SHIPMENT_V3 -> {
+                    listOfComponent.add(
+                        ShipmentUiModel(type = component.type, name = component.componentName)
                     )
                 }
             }
@@ -551,7 +557,8 @@ object DynamicProductDetailMapper {
                 it.description,
                 it.videoURLAndroid,
                 it.isAutoplay,
-                it.variantOptionId
+                it.variantOptionId,
+                it.prefetch
             )
         }
     }

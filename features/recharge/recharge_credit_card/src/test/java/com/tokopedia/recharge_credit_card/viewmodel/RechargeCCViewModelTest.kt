@@ -7,6 +7,10 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteGroupMod
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.repository.RechargeFavoriteNumberRepository
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
+import com.tokopedia.common_digital.common.presentation.model.DigiPersoRecommendationData
+import com.tokopedia.common_digital.common.presentation.model.DigiPersoRecommendationItem
+import com.tokopedia.common_digital.common.presentation.model.DigitalDppoConsent
+import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -26,15 +30,14 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCUserPerso
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.Validation
-import com.tokopedia.recharge_credit_card.util.RechargeCCConst
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -57,6 +60,9 @@ class RechargeCCViewModelTest {
     @RelaxedMockK
     lateinit var rechargeFavoriteNumberRepo: RechargeFavoriteNumberRepository
 
+    @RelaxedMockK
+    lateinit var dppoConsentUseCase: GetDppoConsentUseCase
+
     lateinit var rechargeCCViewModel: RechargeCCViewModel
 
     @Before
@@ -65,7 +71,8 @@ class RechargeCCViewModelTest {
         rechargeCCViewModel = RechargeCCViewModel(
             graphqlRepository,
             testCoroutineRule.dispatchers.coroutineDispatcher,
-            rechargeFavoriteNumberRepo
+            rechargeFavoriteNumberRepo,
+            dppoConsentUseCase
         )
     }
 
@@ -493,6 +500,68 @@ class RechargeCCViewModelTest {
         Assert.assertNull(rechargeCCViewModel.prefillData.value)
         Assert.assertNull(rechargeCCViewModel.autoCompleteData.value)
         Assert.assertNull(rechargeCCViewModel.favoriteChipsData.value)
+    }
+
+    @Test
+    fun getDppoConsentRecharge_Success() {
+        // given
+        val consentDesc = "Tokopedia"
+        val digitalDPPOConsent = DigitalDppoConsent(
+            DigiPersoRecommendationData(
+                items = listOf(
+                    DigiPersoRecommendationItem(
+                        id = "1",
+                        title = consentDesc
+                    )
+                )
+            )
+        )
+
+        coEvery { dppoConsentUseCase.execute(any()) } returns digitalDPPOConsent
+
+        // when
+        rechargeCCViewModel.getDppoConsent(1)
+
+        // then
+        val actualData = rechargeCCViewModel.dppoConsent.value
+        Assert.assertNotNull(actualData)
+        Assert.assertTrue(actualData is Success)
+        Assert.assertTrue((actualData as Success).data.description == consentDesc)
+    }
+
+    @Test
+    fun getDppoConsentRecharge_EmptyData() {
+        // given
+        val digitalDPPOConsent = DigitalDppoConsent(
+            DigiPersoRecommendationData(emptyList())
+        )
+
+        coEvery { dppoConsentUseCase.execute(any()) } returns digitalDPPOConsent
+
+        // when
+        rechargeCCViewModel.getDppoConsent(1)
+
+        // then
+        val actualData = rechargeCCViewModel.dppoConsent.value
+        Assert.assertNotNull(actualData)
+        Assert.assertTrue(actualData is Success)
+        Assert.assertTrue((actualData as Success).data.description == "")
+    }
+
+    @Test
+    fun getDppoConsentRecharge_Fail() {
+        // given
+        val errorMessage = "Tokopedia"
+        coEvery { dppoConsentUseCase.execute(any()) } throws MessageErrorException(errorMessage)
+
+        // when
+        rechargeCCViewModel.getDppoConsent(1)
+
+        // then
+        val actualData = rechargeCCViewModel.dppoConsent.value
+        Assert.assertNotNull(actualData)
+        Assert.assertTrue(actualData is Fail)
+        Assert.assertTrue((actualData as Fail).throwable.message == errorMessage)
     }
 
     // ======================================= Mock Data ===========================================

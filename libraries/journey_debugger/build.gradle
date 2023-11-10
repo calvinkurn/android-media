@@ -16,7 +16,7 @@ android {
     namespace 'com.tokopedia.journeydebugger'
     testNamespace 'com.tokopedia.journeydebugger.test'
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
     }
     buildFeatures {
         viewBinding true

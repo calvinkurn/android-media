@@ -645,6 +645,7 @@ class DigitalPDPPulsaFragment :
                     inputNumberActionType = InputNumberActionType.NOTHING
                 }
             }
+            clearFocusAutoComplete()
         }
     }
 

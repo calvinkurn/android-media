@@ -810,14 +810,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check promo with dash appLink then should return promo detail in customerapp`() {
         val appLink = UriUtil.buildUri(ApplinkConst.PROMO_WITH_DASH, "abc")
-        val expected = UriUtil.buildUri(ApplinkConstInternalPromo.PROMO_DETAIL, "abc")
+        val expected = "${DeeplinkConstant.SCHEME_INTERNAL}://global/discovery/deals"
         assertEqualsDeepLinkMapper(appLink, expected)
     }
 
     @Test
     fun `check promo detail appLink then should return promo detail in customerapp`() {
         val appLink = UriUtil.buildUri(ApplinkConst.PROMO_DETAIL, "abc")
-        val expected = UriUtil.buildUri(ApplinkConstInternalPromo.PROMO_DETAIL, "abc")
+        val expected = "${DeeplinkConstant.SCHEME_INTERNAL}://global/discovery/deals"
         assertEqualsDeepLinkMapper(appLink, expected)
     }
 

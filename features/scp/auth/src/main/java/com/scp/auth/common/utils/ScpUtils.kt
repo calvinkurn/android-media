@@ -10,7 +10,7 @@ import com.tokopedia.user.session.UserSession
 
 object ScpUtils {
 
-    private val ROLLENCE_KEY_SCP_LOGIN = "exp_scp_goto_login_sdk"
+    private val ROLLENCE_KEY_SCP_LOGIN = "scp_goto_login_and"
     fun isGotoLoginEnabled(): Boolean {
         return RemoteConfigInstance.getInstance()
             .abTestPlatform
