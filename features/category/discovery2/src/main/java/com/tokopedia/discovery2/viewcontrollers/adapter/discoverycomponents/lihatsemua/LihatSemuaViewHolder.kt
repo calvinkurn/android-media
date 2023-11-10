@@ -138,7 +138,8 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     }
 
     private fun setupTextColours(fontColor: String?, backgroundPresent: Boolean) {
-        if (!fontColor.isNullOrEmpty()) {
+        val isFestiveBackgroundEnabled = lihatSemuaViewModel?.component?.isBackgroundPresent == true
+        if (isFestiveBackgroundEnabled && !fontColor.isNullOrEmpty()) {
             lihatTitleTextView.setTextColor(Color.parseColor(fontColor))
             return
         }

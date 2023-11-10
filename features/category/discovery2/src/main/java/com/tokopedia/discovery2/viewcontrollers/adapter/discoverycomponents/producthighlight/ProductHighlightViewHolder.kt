@@ -127,6 +127,8 @@ class ProductHighlightViewHolder(
             val previous = if (index == 0) null else productHighlightItemList[index - 1]
 
             productHighlightView = if (properties?.style == V2_STYLE) {
+                val isBackgroundPresent = mProductHighlightViewModel?.components?.isBackgroundPresent ?: false
+
                 ProductHighlightRevampItem(
                     productHighlightItem,
                     properties,
@@ -136,7 +138,8 @@ class ProductHighlightViewHolder(
                     previous,
                     itemView.context,
                     isLastItem,
-                    compType
+                    compType,
+                    isBackgroundPresent
                 )
             } else {
                 ProductHighlightItem(
