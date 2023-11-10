@@ -9,5 +9,7 @@ interface CreationUploadLogger {
 
     fun sendLog(uploadData: CreationUploadData, throwable: Throwable)
 
+    fun sendLog(uploadData: String, throwable: Throwable)
+
     fun sendLog(throwable: Throwable)
 }

@@ -16,6 +16,7 @@ import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.model.CreationUploadStatus
 import com.tokopedia.creation.common.upload.uploader.worker.CreationUploaderWorker
+import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +32,8 @@ class CreationUploaderImpl @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val workManager: WorkManager,
     private val creationUploadQueueRepository: CreationUploadQueueRepository,
-    private val gson: Gson
+    private val gson: Gson,
+    private val logger: CreationUploadLogger,
 ) : CreationUploader {
 
     private val workManagerLiveData: LiveData<CreationUploadResult>
@@ -41,9 +43,11 @@ class CreationUploaderImpl @Inject constructor(
         ) {
             it.firstOrNull()?.let { workInfo ->
                 if(workInfo.state == WorkInfo.State.RUNNING) {
+                    val rawUploadData = workInfo.progress.getString(CreationUploadConst.UPLOAD_DATA).orEmpty()
+
                     try {
                         val progress = workInfo.progress.getInt(CreationUploadConst.PROGRESS, 0)
-                        val uploadData = CreationUploadData.parseFromJson(workInfo.progress.getString(CreationUploadConst.UPLOAD_DATA).orEmpty(), gson)
+                        val uploadData = CreationUploadData.parseFromJson(rawUploadData, gson)
                         val uploadStatus = CreationUploadStatus.parse(workInfo.progress.getString(CreationUploadConst.UPLOAD_STATUS).orEmpty())
 
                         return@map when (uploadStatus) {
@@ -63,8 +67,8 @@ class CreationUploaderImpl @Inject constructor(
                                 CreationUploadResult.Unknown
                             }
                         }
-                    } catch (_: Throwable) {
-
+                    } catch (throwable: Throwable) {
+                        logger.sendLog(rawUploadData, throwable)
                     }
                 }
             }
