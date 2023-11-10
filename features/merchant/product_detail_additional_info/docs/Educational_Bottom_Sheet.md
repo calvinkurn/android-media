@@ -75,7 +75,7 @@ The error state will be in view stub. It will lazily render.
 
 ## Flow Diagram
 
-![](http://docs-android.tokopedia.net/images/docs/features/edu_bs_flow_diagram.png)
+![](res/edu_bs_flow_diagram.png)
 
 ## Navigation
 
@@ -83,9 +83,9 @@ One of the feature that using educational bottom sheet; Weight per Variant.
 
 
 
-| ![](http://docs-android.tokopedia.net/images/docs/features/edu_bs_navigation_1.png)<br/> | ![](http://docs-android.tokopedia.net/images/docs/features/edu_bs_navigation_2.png)<br/> |
+| ![](res/edu_bs_navigation_1.png)<br/> | ![](res/edu_bs_navigation_2.png)<br/> |
 |---------------------------------------|---------------------------------------|
-| ![](http://docs-android.tokopedia.net/images/docs/features/edu_bs_navigation_3.png)<br/> | ![](http://docs-android.tokopedia.net/images/docs/features/edu_bs_navigation_4.png)<br/> |
+| ![](res/edu_bs_navigation_3.png)<br/> | ![](res/edu_bs_navigation_4.png)<br/> |
 
 ## How-to
 

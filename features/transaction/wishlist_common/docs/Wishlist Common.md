@@ -41,21 +41,21 @@ There are some different UI entry points/usage of this wishlist common module, f
 - on PDP, when icon heart is click, then this common module will be called   
   Note: for current implementation, bottomsheet wishlist collection will be shown if user add to wishlist from PDP page
 
-![](http://docs-android.tokopedia.net/images/docs/features/wishlist_common_1.png)*For now, this bottomsheet is only show from PDP page when add, and the rest will use toaster below*
+![](res/wishlist_common_1.png)*For now, this bottomsheet is only show from PDP page when add, and the rest will use toaster below*
 
 - on Search Product Page, when three dots menu is clicked, then this bottomsheet will be show, and choose ***Simpan ke Wishlist***
 
-![](http://docs-android.tokopedia.net/images/docs/features/wishlist_common_2.png)If item is not on wishlist, the menu will show **“Simpan ke Wishlist”**
+![](res/wishlist_common_2.png)If item is not on wishlist, the menu will show **“Simpan ke Wishlist”**
 
 
 
-![](http://docs-android.tokopedia.net/images/docs/features/wishlist_common_3.png)If item is already on wishlist, the menu will show **“Hapus dari Wishlist”**
+![](res/wishlist_common_3.png)If item is already on wishlist, the menu will show **“Hapus dari Wishlist”**
 
 
-![](http://docs-android.tokopedia.net/images/docs/features/wishlist_common_4.png)*This is the toaster that will be show after **add to wishlist** is **success***
+![](res/wishlist_common_4.png)*This is the toaster that will be show after **add to wishlist** is **success***
 
 
-![](http://docs-android.tokopedia.net/images/docs/features/wishlist_common_5.png)*This is the toaster that will be show after **remove from wishlist** is **success***
+![](res/wishlist_common_5.png)*This is the toaster that will be show after **remove from wishlist** is **success***
 
 Current implementation :
 

@@ -33,7 +33,7 @@ TokoFood is a new service that will provide the optimal experience for hungry an
 
 ## Buyer Journey
 
-![](http://docs-android.tokopedia.net/images/docs/features/tokofood/buyer_journey.png)
+![](res/tokofood/buyer_journey.png)
 
 ## Release Notes
 

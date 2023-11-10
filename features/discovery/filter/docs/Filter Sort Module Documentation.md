@@ -30,7 +30,7 @@ There are two components required to implement Filter and Sort functionality:
 ### Quick Filter
 **Quick Filter** component is provided by Unify Component called `SortFilter`. Please check this technical documentation from Unify: [Sort Filter](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/706251184/Sort+Filter)
 
-![](http://docs-android.tokopedia.net/images/docs/features/quick_filter.png)
+![](res/quick_filter.png)
 
 ### Bottom Sheet Filter
 **Bottom Sheet** component is `SortFilterBottomSheet` from module `features/discovery/filter`. It is a `Fragment` subclass of `BottomSheetUnify`.
@@ -67,7 +67,7 @@ Show function takes four arguments:
     4. `selectedSortName: String` → This is the name of sort generated after user select another Sort.
 2. **getResultCount** → This function is called when any Filter and Sort Chips is selected from the `SortFilterBottomSheet`. This is usually used to show the result count in the apply button at the bottom of the Bottom Sheet. You need to override and implement the functionality to get result count of your page from Back End. It will send a parameter `Map<String, String>`, which is the parameters generated when user select / unselect Filter and Sort Chips. After receiving result count data from Back End, you need to call function `SortFilterBottomSheet.setResultCountText`, with the parameter String to show the result count, for example: "Tampilkan 204 rb Produk" ("Show 204 thousand Product"). If you don't need to show the result count, you can just call `SortFilterBottomSheet.setResultCountText` with any String that shows the user to press this button to apply the sort and filter, for example "Tampilkan Produk" ("Show Products").  
 
-![](http://docs-android.tokopedia.net/images/docs/features/show_products_button.png)
+![](res/show_products_button.png)
 
 More info for **onApplySortFilter(ApplySortFilterModel)** implementations:
 
@@ -89,7 +89,7 @@ sortFilterBottomSheet?.setOnDismissListener {
 
 Bottom Sheet Filter Detail can also be used directly by using class `FilterGeneralDetailBottomSheet`.
 
-![](http://docs-android.tokopedia.net/images/docs/features/bottom_sheet_filter_detail/sample.png)
+![](res/bottom_sheet_filter_detail/sample.png)
 
 To use this component, create a new instance and call `show` like this:
 
@@ -113,12 +113,12 @@ Bottom Sheet Filter Detail configuration:
 
 1. Title from the bottom sheet comes from `Filter.title`.
 2. Reset on the top right will be shown if there are any checked option. Clicking the reset button will clear all the selected option.
-3. Search bar inside the bottom sheet will be shown if `Filter.search.searchable` value is `1`. Placeholder for the search bar comes from `Filter.search.placeholder`. ![](http://docs-android.tokopedia.net/images/docs/features/bottom_sheet_filter_detail/search_bar.png)
+3. Search bar inside the bottom sheet will be shown if `Filter.search.searchable` value is `1`. Placeholder for the search bar comes from `Filter.search.placeholder`. ![](res/bottom_sheet_filter_detail/search_bar.png)
 4. All `Option` inside `Filter` will be shown as an item in the list.  
-![](http://docs-android.tokopedia.net/images/docs/features/bottom_sheet_filter_detail/sample_checkbox_filter_option.png)
-![](http://docs-android.tokopedia.net/images/docs/features/bottom_sheet_filter_detail/sample_color_filter_option.png)
-![](http://docs-android.tokopedia.net/images/docs/features/bottom_sheet_filter_detail/sample_option_with_new_badge.png)
-![](http://docs-android.tokopedia.net/images/docs/features/bottom_sheet_filter_detail/sample_radio_filter_option.png)  
+![](res/bottom_sheet_filter_detail/sample_checkbox_filter_option.png)
+![](res/bottom_sheet_filter_detail/sample_color_filter_option.png)
+![](res/bottom_sheet_filter_detail/sample_option_with_new_badge.png)
+![](res/bottom_sheet_filter_detail/sample_radio_filter_option.png)  
 
 	1. Title is taken from `Option.name`
 	2. Description below the title is taken from `Option.description` (optional).

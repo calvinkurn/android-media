@@ -34,7 +34,7 @@ URL: [MyNakama](https://mynakama.tokopedia.com/)
 
 To access some of the Data Tracking platforms. We usually called the platform *Thanos or Arceus.* In MyNakama there are information of how the tracker should be created, such as action, label, and result of the tracker.
 
-![](http://docs-android.tokopedia.net/images/docs/libraries/tracker_guidelines_mynakama.png)
+![](res/tracker_guidelines_mynakama.png)
 
 For more information you can start exploration from this [pages](https://tokopedia.atlassian.net/wiki/spaces/DT/pages/974030175).
 

@@ -38,11 +38,11 @@ Therefore, mediauploader has developed in Q4 so that it is possible to upload vi
 
 Let's take a look at mediauploader's module architecture overview.
 
-![](http://docs-android.tokopedia.net/images/docs/features/Untitled%20Diagram.drawio%20%281%29.png)
+![](res/Untitled%20Diagram.drawio%20%281%29.png)
 
 And this is the overview of how we set the flow of the video (large) uploaders.
 
-![](http://docs-android.tokopedia.net/images/docs/features/image-20211207-014024.png)
+![](res/image-20211207-014024.png)
 
 ## How-to
 
@@ -176,7 +176,7 @@ On video large uploader, if the uploader fails in the middle of the progress of 
 
 Maybe some of you are curious about how does mediauploader know which file to resume and which part will be uploaded? We use a local db to store the last state of the uploader. This is the session flow look like:
 
-![](http://docs-android.tokopedia.net/images/docs/features/Untitled%20Diagram.drawio%20%282%29.png)
+![](res/Untitled%20Diagram.drawio%20%282%29.png)
 <!--end expand-->
 
 <!--start expand:Session Expired-->

@@ -46,22 +46,22 @@ This module serve two purposes, which are:
 
 
 
-| ![](http://docs-android.tokopedia.net/images/docs/features/seller_migration_top_cut.png) Seller Migration Dedicated Page (Top Cut) <br/> | ![](http://docs-android.tokopedia.net/images/docs/features/seller_migration_bottom_cut.png) Seller Migration Dedicated Page (Bottom Cut) <br/> |
+| ![](res/seller_migration_top_cut.png) Seller Migration Dedicated Page (Top Cut) <br/> | ![](res/seller_migration_bottom_cut.png) Seller Migration Dedicated Page (Bottom Cut) <br/> |
 |---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
 
 ## Flow Diagram
 
-![](http://docs-android.tokopedia.net/images/docs/features/seller_migration.png)
+![](res/seller_migration.png)
 
 ## Navigation
 
 There are numerous ways to activate seller migration function. These often found on the seller related pages that still exist in Tokopedia Main App, such as Seller chat, product manage, etc.
 
-![](http://docs-android.tokopedia.net/images/docs/features/seller_migration_entry_point_chat.png)
+![](res/seller_migration_entry_point_chat.png)
 
 Entry point to seller migration in Chat Setting
 
-![](http://docs-android.tokopedia.net/images/docs/features/seller_migration_entry_point_product_manage.png)
+![](res/seller_migration_entry_point_product_manage.png)
 
 Entry point to seller migration in Product Manage
 

@@ -72,23 +72,23 @@ Ticket: [AN-16750](https://tokopedia.atlassian.net/browse/AN-16750)
 
 ## Flow Chart
 
-![](http://docs-android.tokopedia.net/images/docs/features/seller_search_flow_chart.png)
+![](res/seller_search_flow_chart.png)
 <p style="text-align:center">Seller Search - Flow Chart</p>
 
 ## Pages
 
 
-![](http://docs-android.tokopedia.net/images/docs/features/seller_search_entry_point.png)
+![](res/seller_search_entry_point.png)
 <p style="text-align:center">Seller Search - Entry Point</p>
 
 
 
-![](http://docs-android.tokopedia.net/images/docs/features/seller_search_history.png)
+![](res/seller_search_history.png)
 <p style="text-align:center">Seller Search - History</p>
 
 
 
-![](http://docs-android.tokopedia.net/images/docs/features/seller_search_suggestion.png)
+![](res/seller_search_suggestion.png)
 <p style="text-align:center">Seller Search - Suggestion</p>
 
 

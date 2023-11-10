@@ -82,5 +82,5 @@ FoldableInfo provides access to important information related to the device over
 
 ---
 
-![](http://docs-android.tokopedia.net/images/docs/libraries/_IiKPq5UytGBfQaoViqY-NgdVmPuePQqbzGKT6ECFlZhsMtMpZ3E6A3-nxc4ZNoEIt_p9gILTyKDqrlPVeQm7OeQpvdotJgjaHABuOeahL2Xj3BTD7pRFymobJ-lSif28yIsUGt0dCONpr4KZzjzuI8Xqe6GKlMhFQH0tE5vBYyCnrffiDMOngFIl_c)
+![](res/_IiKPq5UytGBfQaoViqY-NgdVmPuePQqbzGKT6ECFlZhsMtMpZ3E6A3-nxc4ZNoEIt_p9gILTyKDqrlPVeQm7OeQpvdotJgjaHABuOeahL2Xj3BTD7pRFymobJ-lSif28yIsUGt0dCONpr4KZzjzuI8Xqe6GKlMhFQH0tE5vBYyCnrffiDMOngFIl_c)
 

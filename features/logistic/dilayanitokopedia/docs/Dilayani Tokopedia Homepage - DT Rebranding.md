@@ -38,7 +38,7 @@ With the introduction of a dedicated DT Homepage, we aim to improve our buyer’
 
 here is UI Dilayani Tokopedia homepage
 
-![](http://docs-android.tokopedia.net/images/docs/features/Dilayani%20Tokopedia%20Homepage%202.png)
+![](res/Dilayani%20Tokopedia%20Homepage%202.png)
 
 ### Dilayani Tokopedia Widgets
 
@@ -46,7 +46,7 @@ here is UI Dilayani Tokopedia homepage
 
 using navigation toolbar from `tokopedia home/searchbar` to navigate to search, share, cart, and main menu. 
 
-![](http://docs-android.tokopedia.net/images/docs/features/Screenshot%202023-02-23%20at%2014.07.07.png)
+![](res/Screenshot%202023-02-23%20at%2014.07.07.png)
 
 related doc attached in [Useful Links](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2039617794/Dilayani+Tokopedia+Homepage+-+DT+Rebranding#Useful-Links) 
 
@@ -54,7 +54,7 @@ related doc attached in [Useful Links](https://tokopedia.atlassian.net/wiki/spac
 
 Using localization choose address from `logistic/localizationchooseaddress`. 
 
-![](http://docs-android.tokopedia.net/images/docs/features/Screenshot%202023-02-23%20at%2014.06.48.png)
+![](res/Screenshot%202023-02-23%20at%2014.06.48.png)
 
 related doc attached in [Useful Links](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2039617794/Dilayani+Tokopedia+Homepage+-+DT+Rebranding#Useful-Links) 
 
@@ -62,37 +62,37 @@ related doc attached in [Useful Links](https://tokopedia.atlassian.net/wiki/spac
 
 Currently this widget part of page of Dilayani Tokopedia inside module `logistic/dilayanitokopedia`
 
-![](http://docs-android.tokopedia.net/images/docs/features/Screenshot%202023-02-23%20at%2014.06.02.png)
+![](res/Screenshot%202023-02-23%20at%2014.06.02.png)
 
 #### Sliding Banner
 
 using `BannerComponentViewHolder` from `discovery/home_component`
 
-![](http://docs-android.tokopedia.net/images/docs/features/Banner.png)
+![](res/Banner.png)
 
 #### Products Recommendation
 
 using `MixTopComponentViewHolder` from `discovery/home_component`
 
-![](http://docs-android.tokopedia.net/images/docs/features/Frame%203126176.png)
+![](res/Frame%203126176.png)
 
 #### Flash Sale
 
 using `MixLeftComponentViewHolder` from `discovery/home_component`
 
-![](http://docs-android.tokopedia.net/images/docs/features/Kejar%20Diskon.png)
+![](res/Kejar%20Diskon.png)
 
 #### Brand Recommendation
 
 using `MixLeftComponentViewHolder` from `discovery/home_component`
 
-![](http://docs-android.tokopedia.net/images/docs/features/Product%20Campaign.png)
+![](res/Product%20Campaign.png)
 
 #### Dilayani Tokopedia Recommendation For You
 
 Currently this widget part of page of Dilayani Tokopedia inside module `logistic/dilayanitokopedia`
 
-![](http://docs-android.tokopedia.net/images/docs/features/Screenshot%202023-02-23%20at%2010.19.49.png)
+![](res/Screenshot%202023-02-23%20at%2010.19.49.png)
 
 ## Navigation
 
@@ -112,7 +112,7 @@ Phase 1 Dilayani Tokopedia Homepage development will have entry point from exist
 
 # Flow Diagram
 
-![](http://docs-android.tokopedia.net/images/docs/features/Untitled%20Diagram.drawio%20%282%29.png)
+![](res/Untitled%20Diagram.drawio%20%282%29.png)
 
 
 

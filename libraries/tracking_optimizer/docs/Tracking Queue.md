@@ -51,7 +51,7 @@ implementation projectOrAar(rootProject.ext.libraries.trackOptimizer)
 
 Check the *Thanos* in <https://mynakama.tokopedia.com/datatracker/requestdetail/view/2980>. For this example take a look at No. 1 tracker (first row). Find the *Event Name* and Result V5.
 
-![](http://docs-android.tokopedia.net/images/docs/libraries/tracking_queue_illustration_1.png)
+![](res/tracking_queue_illustration_1.png)
 
 
 By assuming you already read the General Event. This documentation will be less specific.  
@@ -273,7 +273,7 @@ fun sendImpressionPdpNavigationBarEvent(
 
 
 
-![](http://docs-android.tokopedia.net/images/docs/libraries/tracking_queue_illustration_2.png)
+![](res/tracking_queue_illustration_2.png)
 
 
 

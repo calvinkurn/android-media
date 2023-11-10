@@ -40,7 +40,7 @@ implementation projectOrAar(rootProject.ext.libraries.track)
 
 Ask PO for MyNakama link for *Thanos* or *Arceus*: <https://mynakama.tokopedia.com/datatracker/requestdetail/view/2980>. In this MyNakama, the General Event part is at second row. Scroll to the right, find the column of *Event Name* and *Result V5*.
 
-![](http://docs-android.tokopedia.net/images/docs/libraries/general_event_illustration_1.png)
+![](res/general_event_illustration_1.png)
 
 The JSON Result V5.
 
@@ -215,13 +215,13 @@ Search your tracker/event. Make sure everything correct.
 
 
 
-![](http://docs-android.tokopedia.net/images/docs/libraries/general_event_illustration_2.png)
+![](res/general_event_illustration_2.png)
 
 
 
 
 
-![](http://docs-android.tokopedia.net/images/docs/libraries/general_event_illustration_3.png)
+![](res/general_event_illustration_3.png)
 
 
 
@@ -229,13 +229,13 @@ Search your tracker/event. Make sure everything correct.
 
 
 
-![](http://docs-android.tokopedia.net/images/docs/libraries/general_event_illustration_4.png)
+![](res/general_event_illustration_4.png)
 
 
 
 
 
-![](http://docs-android.tokopedia.net/images/docs/libraries/general_event_illustration_5.png)
+![](res/general_event_illustration_5.png)
 
 
 
