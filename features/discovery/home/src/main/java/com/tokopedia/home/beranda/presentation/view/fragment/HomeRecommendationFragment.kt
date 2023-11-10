@@ -500,7 +500,7 @@ class HomeRecommendationFragment :
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
-                homeTopAdsRecommendationBannerDataModelDataModel,
+                homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel,
                 tabIndex,
                 position
             )
@@ -517,7 +517,7 @@ class HomeRecommendationFragment :
     ) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                homeTopAdsRecommendationBannerDataModelDataModel,
+                homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel,
                 tabIndex,
                 position
             ) as HashMap<String, Any>
@@ -528,6 +528,14 @@ class HomeRecommendationFragment :
         homeTopAdsRecommendationBannerDataUiModel: HomeRecommendationBannerTopAdsUiModel,
         position: Int
     ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            HomeRecommendationTracking.getClickBannerTopAdsOld(
+                homeTopAdsRecommendationBannerDataUiModel.topAdsImageViewModel,
+                tabIndex,
+                position
+            )
+        )
+
         HomeRecommendationTracking.sendClickBannerTopAdsTracking(
             homeTopAdsRecommendationBannerDataUiModel,
             position,
@@ -543,6 +551,14 @@ class HomeRecommendationFragment :
         homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsUiModel,
         position: Int
     ) {
+        trackingQueue.putEETracking(
+            HomeRecommendationTracking.getImpressionBannerTopAdsOld(
+                homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel,
+                tabIndex,
+                position
+            ) as HashMap<String, Any>
+        )
+
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressBannerTopAdsTracking(
                 homeTopAdsRecommendationBannerDataModelDataModel,
