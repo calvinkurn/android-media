@@ -5,6 +5,7 @@ import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
 import java.time.Duration
 import java.time.ZonedDateTime
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -31,7 +32,7 @@ object ContentDateConverter {
             Converted(minute = diff.toMinutes(), hour = diff.toHours(), day = diff.toDays(), yearMonth = "${convert.month.name.take(3).lowercase().replaceFirstChar { it.uppercaseChar() }} ${convert.year}")
         } else {
             val convert = date.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
-            val diff = DateUtil.getCurrentCalendar().time.time - convert.time
+            val diff = Calendar.getInstance(DateUtil.DEFAULT_TIMEZONE).time.time - convert.time
             val minute = TimeUnit.MINUTES.convert(diff, TimeUnit.MILLISECONDS)
             val hour = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)
             val day = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
