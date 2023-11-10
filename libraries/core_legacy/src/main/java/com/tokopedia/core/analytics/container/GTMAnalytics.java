@@ -47,7 +47,6 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.relic.track.NewRelicUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -1187,7 +1186,6 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
                 bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
             }
-            publishNewRelic(eventName, bundle);
             FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
             fa.logEvent(eventName, bundle);
 
@@ -1437,23 +1435,6 @@ public class GTMAnalytics extends ContextAnalytics {
             //Handle exception here
         }
         return json;
-    }
-
-    public void publishNewRelic(String eventName, Bundle bundle) {
-        Map<String, Object> map = bundleToMap(bundle);
-        for (Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry<String, Object> entry = it.next();
-            Object value = entry.getValue();
-            if (value != null & value instanceof String) {
-                String value2 = (String) value;
-                if (TextUtils.isEmpty(value2)) {
-                    it.remove();
-                }
-            }
-        }
-        if (GlobalConfig.isSellerApp()) {
-            NewRelicUtil.sendTrack(eventName, map);
-        }
     }
 
     private void pushGeneralEcommerce(Bundle values) {

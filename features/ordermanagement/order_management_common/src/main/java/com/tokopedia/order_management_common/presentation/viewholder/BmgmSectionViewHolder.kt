@@ -97,6 +97,10 @@ class BmgmSectionViewHolder(
         listener.onBmgmItemWarrantyClaim(uiModel)
     }
 
+    override fun onBmgmItemImpressed(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        listener.onBmgmItemWarrantyClaim(uiModel)
+    }
+
     private fun showToaster(message: String) {
         itemView.parent?.parent?.parent?.let {
             if (it is View) {
@@ -161,5 +165,6 @@ class BmgmSectionViewHolder(
         fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
         fun onBmgmItemSeeSimilarProducts(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
         fun onBmgmItemWarrantyClaim(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
+        fun onBmgmItemImpressed(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
     }
 }

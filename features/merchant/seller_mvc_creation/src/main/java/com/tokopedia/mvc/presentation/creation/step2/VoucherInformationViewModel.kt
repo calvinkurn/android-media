@@ -47,24 +47,29 @@ class VoucherInformationViewModel @Inject constructor(
                 event.pageMode,
                 event.voucherConfiguration
             )
+
             is VoucherCreationStepTwoEvent.ChooseVoucherTarget -> handleVoucherTargetSelection(
                 event.isPublic,
                 event.isChangingTargetBuyer
             )
+
             is VoucherCreationStepTwoEvent.TapBackButton -> handleBackToPreviousStep()
             is VoucherCreationStepTwoEvent.OnVoucherNameChanged -> handleVoucherNameChanges(event.voucherName)
             is VoucherCreationStepTwoEvent.OnVoucherCodeChanged -> handleVoucherCodeChanges(event.voucherCode)
             is VoucherCreationStepTwoEvent.OnVoucherRecurringToggled -> handleVoucherRecurringToggleChanges(
                 event.isActive
             )
+
             is VoucherCreationStepTwoEvent.OnVoucherStartDateChanged -> setStartDateTime(event.calendar)
             is VoucherCreationStepTwoEvent.OnVoucherEndDateChanged -> setEndDateTime(event.calendar)
             is VoucherCreationStepTwoEvent.OnVoucherRecurringPeriodSelected -> setRecurringPeriod(
                 event.selectedRecurringPeriod
             )
+
             is VoucherCreationStepTwoEvent.NavigateToNextStep -> {
                 handleNavigateToNextStep()
             }
+
             is VoucherCreationStepTwoEvent.HandleCoachMark -> {
                 handleCoachmark()
             }
@@ -169,8 +174,11 @@ class VoucherInformationViewModel @Inject constructor(
                         isLoading = false,
                         isVoucherNameError = validationResult.validationError.couponName.isNotBlank(),
                         voucherNameErrorMsg = validationResult.validationError.couponName,
-                        isVoucherCodeError = validationResult.validationError.code.isNotBlank(),
-                        voucherCodeErrorMsg = validationResult.validationError.code,
+                        isVoucherCodeError = validationResult.validationError.code.isNotBlank()
+                            .and(currentState.pageMode != PageMode.EDIT),
+                        voucherCodeErrorMsg = validationResult.validationError.code
+                            .takeIf { currentState.pageMode != PageMode.EDIT }
+                            .orEmpty(),
                         isStartDateError = validationResult.validationError.dateStart.isNotBlank(),
                         startDateErrorMsg = validationResult.validationError.dateStart,
                         isEndDateError = validationResult.validationError.dateEnd.isNotBlank(),
