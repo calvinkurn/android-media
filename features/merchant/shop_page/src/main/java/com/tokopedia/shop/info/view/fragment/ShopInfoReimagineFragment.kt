@@ -346,25 +346,37 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun renderPharmacyOperationalHours(pharmacyOperationalHours: List<String>) {
         binding?.layoutShopPharmacyOpsHourContainer?.removeAllViews()
 
-        pharmacyOperationalHours.forEach { operationalHour ->
-            val textViewOperationalHour = Typography(context ?: return).apply {
-                setType(Typography.DISPLAY_2)
-                setTextColor(ContextCompat.getColor(this.context, unifyprinciplesR.color.Unify_NN950))
-
-                val params = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-
-                params.topMargin = MARGIN_4_DP.toPx()
-                layoutParams = params
+        if (pharmacyOperationalHours.isEmpty()) {
+            val operationalHourTypography = createOperationalHoursTypography("-")
+            binding?.layoutShopPharmacyOpsHourContainer?.addView(operationalHourTypography)
+            
+        } else {
+            pharmacyOperationalHours.forEach { operationalHour ->
+                val operationalHourTypography = createOperationalHoursTypography(operationalHour)
+                binding?.layoutShopPharmacyOpsHourContainer?.addView(operationalHourTypography)
             }
-
-            textViewOperationalHour.text = operationalHour
-            binding?.layoutShopPharmacyOpsHourContainer?.addView(textViewOperationalHour)
         }
     }
 
+    private fun createOperationalHoursTypography(text: String) : Typography {
+        val textViewOperationalHour = Typography(requireContext()).apply {
+            setType(Typography.DISPLAY_2)
+            setTextColor(ContextCompat.getColor(this.context, unifyprinciplesR.color.Unify_NN950))
+
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+
+            params.topMargin = MARGIN_4_DP.toPx()
+            layoutParams = params
+        }
+
+        textViewOperationalHour.text = text
+        
+        return textViewOperationalHour
+    }
+    
     private fun renderShopRatingAndReview(uiState: ShopInfoUiState) {
         renderRatingAndReviewSummary(uiState.rating)
         renderRating(uiState.rating)
@@ -488,10 +500,13 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun renderShopDescription(uiState: ShopInfoUiState) {
         val hasShopDescription = uiState.info.shopDescription.isNotEmpty()
+        
+        binding?.tpgSectionTitleShopDescription?.isVisible = hasShopDescription
         binding?.tpgShopDescription?.isVisible = hasShopDescription
-        binding?.tpgSectionTitleShopNotes?.isVisible = hasShopDescription
 
-        binding?.tpgShopDescription?.text = MethodChecker.fromHtml(uiState.info.shopDescription)
+        if (hasShopDescription) {
+            binding?.tpgShopDescription?.text = MethodChecker.fromHtml(uiState.info.shopDescription)    
+        }
     }
 
     private fun renderShopSupportedShipment(uiState: ShopInfoUiState) {

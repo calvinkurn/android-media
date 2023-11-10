@@ -116,7 +116,20 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 val shopOperationalHours = shopOperationalHoursDeferred.await()
                 val shopChatPerformance = shopChatPerformanceDeferred.await()
 
-                val pharmacyInfo = getPharmacyInfo(shopId.toLongOrZero(), localCacheModel.district_id.toLongOrZero())
+                val pharmacyInfo = if (isEpharmacy(shopInfo)) {
+                    getPharmacyInfo(shopId.toLongOrZero(), localCacheModel.district_id.toLongOrZero())
+                } else {
+                    ShopPharmacyInfo(
+                        showPharmacyInfoSection = false,
+                        nearPickupAddressGmapsUrl = "",
+                        nearestPickupAddress = "",
+                        pharmacistName = "",
+                        pharmacistOperationalHour = emptyList(),
+                        siaNumber = "",
+                        sipaNumber = "",
+                        expandPharmacyInfo = false
+                    )
+                }
 
                 _uiState.update {
                     it.copy(
@@ -251,7 +264,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(e)
             ShopPharmacyInfo(
-                showPharmacyInfoSection = true,
+                showPharmacyInfoSection = false,
                 nearPickupAddressGmapsUrl = "",
                 nearestPickupAddress = "",
                 pharmacistName = "",
@@ -400,6 +413,17 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
 
     private fun ShopStatsRawData.toChatPerformance(): String {
-        return this.chatAndDiscussionReplySpeed.toString() + "menit"
+        val chatAndDiscussionReplySpeedMinute = chatAndDiscussionReplySpeed.toInt()
+        val chatAndDiscussionReplySpeedHour = chatAndDiscussionReplySpeedMinute / 60
+        val chatAndDiscussionReplySpeedDay = chatAndDiscussionReplySpeedHour / 24
+        
+        return when {
+            chatAndDiscussionReplySpeedMinute < 60 -> "$chatAndDiscussionReplySpeedMinute menit"
+            chatAndDiscussionReplySpeedHour < 24 -> "$chatAndDiscussionReplySpeedHour jam"
+            chatAndDiscussionReplySpeedDay == 1 -> "1 hari"
+            chatAndDiscussionReplySpeedDay > 1 -> "$chatAndDiscussionReplySpeedDay hari"
+            else -> ""
+        }
+        
     }
 }
