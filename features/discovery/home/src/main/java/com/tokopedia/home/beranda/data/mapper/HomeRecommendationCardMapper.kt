@@ -5,8 +5,8 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.AdsBannerItemResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
+import com.tokopedia.home.beranda.domain.gql.recommendationcard.PlayVideoWidgetResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
-import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationPlayWidgetResponse
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
@@ -92,7 +92,7 @@ class HomeRecommendationCardMapper @Inject constructor(
                                 layoutCard = card.layout,
                                 layoutTracker = card.layoutTracker,
                                 categoryId = card.categoryID,
-                                recommendationPlayWidgetResponse = it
+                                playVideoWidgetResponse = it
                             )
                         )
                     }
@@ -110,24 +110,22 @@ class HomeRecommendationCardMapper @Inject constructor(
         layoutCard: String,
         layoutTracker: String,
         categoryId: String,
-        recommendationPlayWidgetResponse: RecommendationPlayWidgetResponse
+        playVideoWidgetResponse: PlayVideoWidgetResponse
     ): HomeRecommendationPlayWidgetUiModel {
         return HomeRecommendationPlayWidgetUiModel(
             layoutCard = layoutCard,
             layoutItem = layoutTracker,
             categoryId = categoryId,
             playVideoWidgetUiModel = PlayVideoWidgetUiModel(
-                id = recommendationPlayWidgetResponse.id,
-                totalView = recommendationPlayWidgetResponse.stats.viewFmt,
-                title = recommendationPlayWidgetResponse.basic.title,
-                avatarUrl = recommendationPlayWidgetResponse.author.thumbnailURL,
-                partnerName = recommendationPlayWidgetResponse.author.name,
-                coverUrl = recommendationPlayWidgetResponse.basic.coverURL,
-                // todo will updated later
-                videoUrl = "",
-                badgeUrl = recommendationPlayWidgetResponse.author.badge,
-                // todo will updated later
-                isLive = false
+                id = playVideoWidgetResponse.id,
+                totalView = playVideoWidgetResponse.stats.viewFmt,
+                title = playVideoWidgetResponse.basic.title,
+                avatarUrl = playVideoWidgetResponse.author.thumbnailURL,
+                partnerName = playVideoWidgetResponse.author.name,
+                coverUrl = playVideoWidgetResponse.basic.coverURL,
+                videoUrl = playVideoWidgetResponse.medias.firstOrNull()?.mediaURL.orEmpty(),
+                badgeUrl = playVideoWidgetResponse.author.badge,
+                isLive = playVideoWidgetResponse.basic.isLive
             )
         )
     }
@@ -156,8 +154,8 @@ class HomeRecommendationCardMapper @Inject constructor(
         return convertDataJsonToModel<AdsBannerItemResponse>(dataStringJson)
     }
 
-    private fun convertDataJsonToRecommendationPlayWidget(dataStringJson: String): RecommendationPlayWidgetResponse? {
-        return convertDataJsonToModel<RecommendationPlayWidgetResponse>(dataStringJson)
+    private fun convertDataJsonToRecommendationPlayWidget(dataStringJson: String): PlayVideoWidgetResponse? {
+        return convertDataJsonToModel<PlayVideoWidgetResponse>(dataStringJson)
     }
 
     private inline fun <reified T> convertDataJsonToModel(dataStringJson: String): T? {

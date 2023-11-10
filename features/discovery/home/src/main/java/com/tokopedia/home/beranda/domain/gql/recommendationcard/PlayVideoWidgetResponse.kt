@@ -1,10 +1,11 @@
 package com.tokopedia.home.beranda.domain.gql.recommendationcard
 
+
 import com.google.gson.annotations.SerializedName
 
-data class RecommendationPlayWidgetResponse(
+data class PlayVideoWidgetResponse(
     @SerializedName("activityID")
-    val activityID: String = "",
+    val activityID: String = "0",
     @SerializedName("author")
     val author: Author = Author(),
     @SerializedName("basic")
@@ -21,16 +22,14 @@ data class RecommendationPlayWidgetResponse(
     val feedsContentType: Int = 0,
     @SerializedName("id")
     val id: String = "",
-    @SerializedName("categoryID")
-    val categoryID: String = "",
     @SerializedName("link")
     val link: Link = Link(),
+    @SerializedName("medias")
+    val medias: List<Media> = listOf(),
     @SerializedName("product")
     val product: Product = Product(),
     @SerializedName("promo")
     val promo: Promo = Promo(),
-    @SerializedName("recommendationType")
-    val recommendationType: String = "",
     @SerializedName("share")
     val share: Share = Share(),
     @SerializedName("stats")
@@ -53,11 +52,13 @@ data class RecommendationPlayWidgetResponse(
         val type: Type = Type(),
         @SerializedName("webLink")
         val webLink: String = ""
-    )
+    ) {
+
+    }
 
     data class Basic(
         @SerializedName("activeMediaID")
-        val activeMediaID: String = "",
+        val activeMediaID: Int = 0,
         @SerializedName("autoPlay")
         val autoPlay: Boolean = false,
         @SerializedName("coverURL")
@@ -65,7 +66,9 @@ data class RecommendationPlayWidgetResponse(
         @SerializedName("endTime")
         val endTime: String = "",
         @SerializedName("groupID")
-        val groupID: String = "",
+        val groupID: String = "0",
+        @SerializedName("isLive")
+        val isLive: Boolean = false,
         @SerializedName("pinnedMessage")
         val pinnedMessage: PinnedMessage = PinnedMessage(),
         @SerializedName("startTime")
@@ -78,21 +81,23 @@ data class RecommendationPlayWidgetResponse(
         val title: String = "",
         @SerializedName("type")
         val type: Type = Type()
-    )
+    ) {
+        class PinnedMessage
+    }
 
     data class Category(
         @SerializedName("availableL1")
-        val availableL1: List<String> = emptyList(),
+        val availableL1: List<Int> = listOf(),
         @SerializedName("availableL2")
-        val availableL2: List<String> = emptyList(),
+        val availableL2: List<Int> = listOf(),
         @SerializedName("availableL3")
-        val availableL3: List<String> = emptyList(),
+        val availableL3: List<Int> = listOf(),
         @SerializedName("dominantL1")
-        val dominantL1: List<String> = emptyList(),
+        val dominantL1: List<Int> = listOf(),
         @SerializedName("dominantL2")
-        val dominantL2: List<String> = emptyList(),
+        val dominantL2: List<Int> = listOf(),
         @SerializedName("dominantL3")
-        val dominantL3: List<String> = emptyList()
+        val dominantL3: List<Int> = listOf()
     )
 
     data class Link(
@@ -102,15 +107,19 @@ data class RecommendationPlayWidgetResponse(
         val weblink: String = ""
     )
 
-    data class Product(
-        @SerializedName("productAttributes")
-        val productAttributes: List<ProductAttribute> = emptyList(),
-        @SerializedName("totalProduct")
-        val totalProduct: String = ""
+    data class Media(
+        @SerializedName("id")
+        val id: String = "0",
+        @SerializedName("mediaURL")
+        val mediaURL: String = "",
+        @SerializedName("orientation")
+        val orientation: Orientation = Orientation(),
+        @SerializedName("type")
+        val type: Type = Type()
     ) {
-        data class ProductAttribute(
-            @SerializedName("productID")
-            val productID: String = ""
+        data class Orientation(
+            @SerializedName("text")
+            val text: String = ""
         )
     }
 
@@ -123,6 +132,38 @@ data class RecommendationPlayWidgetResponse(
         val text: String = ""
     )
 
+    data class Product(
+        @SerializedName("productAttributes")
+        val productAttributes: List<ProductAttribute> = listOf(),
+        @SerializedName("totalProduct")
+        val totalProduct: Int = 0
+    ) {
+        data class ProductAttribute(
+            @SerializedName("productID")
+            val productID: Long = 0
+        )
+    }
+
+    data class Stats(
+        @SerializedName("commentFmt")
+        val commentFmt: String = "",
+        @SerializedName("like")
+        val like: Int = 0,
+        @SerializedName("likeFmt")
+        val likeFmt: String = "",
+        @SerializedName("view")
+        val view: Int = 0,
+        @SerializedName("viewFmt")
+        val viewFmt: String = ""
+    )
+
+    data class Promo(
+        @SerializedName("state")
+        val state: State = State()
+    ) {
+        class State
+    }
+
     data class Status(
         @SerializedName("id")
         val id: String = "0",
@@ -131,29 +172,11 @@ data class RecommendationPlayWidgetResponse(
     )
 }
 
-data class Promo(
-    @SerializedName("state")
-    val state: State = State()
-) {
-    data class State(
-        @SerializedName("description")
-        val description: String = "",
-        @SerializedName("id")
-        val id: String = "0"
-    )
-}
-
-data class Stats(
-    @SerializedName("commentFmt")
-    val commentFmt: String = "",
-    @SerializedName("like")
-    val like: String = "",
-    @SerializedName("likeFmt")
-    val likeFmt: String = "",
-    @SerializedName("view")
-    val view: String = "",
-    @SerializedName("viewFmt")
-    val viewFmt: String = ""
+data class Type(
+    @SerializedName("id")
+    val id: String = "0",
+    @SerializedName("text")
+    val text: String = ""
 )
 
 data class Timestamp(
@@ -162,12 +185,3 @@ data class Timestamp(
     @SerializedName("publishedAt")
     val publishedAt: String = ""
 )
-
-data class Type(
-    @SerializedName("id")
-    val id: String = "0",
-    @SerializedName("text")
-    val text: String = ""
-)
-
-class PinnedMessage

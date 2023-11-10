@@ -4,7 +4,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.databinding.ItemHomeBannerTopadsLayoutBinding
 import com.tokopedia.home_component.util.toDpFloat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -20,9 +20,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 class HomeRecommendationBannerTopAdsViewHolder(
     view: View,
     private val homeRecommendationListener: HomeRecommendationListener
-) : BaseRecommendationForYouViewHolder<HomeRecommendationBannerTopAdsOldDataModel>(
+) : BaseRecommendationForYouViewHolder<HomeRecommendationBannerTopAdsUiModel>(
     view,
-    HomeRecommendationBannerTopAdsOldDataModel::class.java
+    HomeRecommendationBannerTopAdsUiModel::class.java
 ) {
     companion object {
         val LAYOUT = R.layout.item_home_banner_topads_layout
@@ -33,23 +33,23 @@ class HomeRecommendationBannerTopAdsViewHolder(
 
     private val binding: ItemHomeBannerTopadsLayoutBinding? by viewBinding()
 
-    override fun bind(element: HomeRecommendationBannerTopAdsOldDataModel) {
+    override fun bind(element: HomeRecommendationBannerTopAdsUiModel) {
         setImageTopAdsNewQuery(element)
     }
 
-    override fun bindPayload(newItem: HomeRecommendationBannerTopAdsOldDataModel?) {
+    override fun bindPayload(newItem: HomeRecommendationBannerTopAdsUiModel?) {
         newItem?.let {
             setImageTopAdsNewQuery(it)
         }
     }
 
-    private fun setImageTopAdsNewQuery(element: HomeRecommendationBannerTopAdsOldDataModel) {
+    private fun setImageTopAdsNewQuery(element: HomeRecommendationBannerTopAdsUiModel) {
         loadImageTopAdsNewQuery(element)
         setBannerTopAdsClickListener(element)
     }
 
     private fun loadImageTopAdsNewQuery(
-        recommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsOldDataModel
+        recommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsUiModel
     ) {
         recommendationBannerTopAdsDataModel.topAdsImageViewModel?.let { topAdsImageViewModel ->
             setBannerTopAdsImpressionListener(
@@ -68,23 +68,23 @@ class HomeRecommendationBannerTopAdsViewHolder(
     }
 
     private fun setBannerTopAdsImpressionListener(
-        recommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsOldDataModel,
+        recommendationBannerTopAdsUiModel: HomeRecommendationBannerTopAdsUiModel,
         listener: HomeRecommendationListener
     ) {
         itemView.addOnImpressionListener(
-            recommendationBannerTopAdsDataModel,
+            recommendationBannerTopAdsUiModel,
             object : ViewHintListener {
                 override fun onViewHint() {
                     TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                         this::class.java.simpleName,
-                        recommendationBannerTopAdsDataModel.topAdsImageViewModel?.adViewUrl,
+                        recommendationBannerTopAdsUiModel.topAdsImageViewModel?.adViewUrl,
                         "",
                         "",
-                        recommendationBannerTopAdsDataModel.topAdsImageViewModel?.imageUrl,
+                        recommendationBannerTopAdsUiModel.topAdsImageViewModel?.imageUrl,
                         HOME_RECOM_TAB_BANNER
                     )
                     listener.onBannerTopAdsImpress(
-                        recommendationBannerTopAdsDataModel,
+                        recommendationBannerTopAdsUiModel,
                         bindingAdapterPosition
                     )
                 }
@@ -93,7 +93,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
     }
 
     private fun setBannerTopAdsClickListener(
-        element: HomeRecommendationBannerTopAdsOldDataModel
+        element: HomeRecommendationBannerTopAdsUiModel
     ) {
         binding?.homeRecomTopadsImageView?.setOnClickListener {
             TopAdsUrlHitter(itemView.context).hitClickUrl(
@@ -109,7 +109,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
     }
 
     private fun loadVerticalBanner(
-        recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsOldDataModel,
+        recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsUiModel,
         appCompatImageView: AppCompatImageView
     ) {
         recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.imageUrl?.let {
@@ -119,9 +119,9 @@ class HomeRecommendationBannerTopAdsViewHolder(
                     appCompatImageView.show()
                     binding?.homeRecomTopadsLoaderImage?.hide()
                 }, onError = {
-                    appCompatImageView.hide()
-                    binding?.homeRecomTopadsLoaderImage?.hide()
-                })
+                        appCompatImageView.hide()
+                        binding?.homeRecomTopadsLoaderImage?.hide()
+                    })
             }
         }
     }
