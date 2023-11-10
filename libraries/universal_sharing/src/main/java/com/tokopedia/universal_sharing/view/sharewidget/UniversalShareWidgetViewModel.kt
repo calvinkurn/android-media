@@ -95,8 +95,7 @@ class UniversalShareWidgetViewModel @Inject constructor(
                 params = ImageGeneratorUseCase.createParam(sourceId, listOfParams)
             }.executeOnBackground()
             linkerShareData.linkerData.ogImageUrl = resultImageGenerator.imageUrl
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (ignored: Exception) {
             /* no-op */
         }
     }
