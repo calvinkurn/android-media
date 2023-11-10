@@ -1490,8 +1490,8 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
     }
 
     protected open fun handlePof(resultCode: Int, data: Intent?) {
+        loadDetail()
         if (resultCode == Activity.RESULT_OK) {
-            loadDetail()
             showCommonToaster(getString(R.string.som_pof_toaster_success_send_pof))
         }
     }
