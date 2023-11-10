@@ -1428,8 +1428,8 @@
                       "popup": {
                         "title": "Pesananmu akan dikirim terpisah",
                         "body": "Ada beberapa produk dikirim dari lokasi  berbeda, dan tidak bisa 2 jam tiba. ",
-                        "buttonOK": "Oke, Lanjutkan",
-                        "buttonCancel": "Kembali"
+                        "button_ok": "Oke, Lanjutkan",
+                        "button_cancel": "Kembali"
                       }
                     },
                     {

@@ -377,6 +377,10 @@ class CheckoutPageRevampRobot {
         onView(ViewMatchers.withId(dialogR.id.dialog_btn_primary)).perform(ViewActions.click())
     }
 
+    fun clickSecondaryButtonDialogUnify() {
+        onView(ViewMatchers.withId(dialogR.id.dialog_btn_secondary_long)).perform(ViewActions.click())
+    }
+
     infix fun validateAnalytics(func: ResultRevampRobot.() -> Unit): ResultRevampRobot {
         return ResultRevampRobot().apply(func)
     }
