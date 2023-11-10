@@ -11,14 +11,14 @@
         android:layout_height="48dp"
         android:layout_centerInParent="true"
         tools:visibility="gone" />
-    
+
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/globalError"
         android:layout_width="match_parent"
-        app:globalerrors_type="SERVER_ERROR"
-        android:visibility="gone"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_height="wrap_content"/>
+        android:visibility="gone"
+        app:globalerrors_type="SERVER_ERROR" />
 
     <ScrollView
         android:id="@+id/mainContent"
@@ -43,7 +43,7 @@
                 app:unify_header_is_show_back_button="true"
                 app:unify_header_is_show_shadow="false"
                 app:unify_header_title="Profil Toko" />
-
+            
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imgShop"
                 android:layout_width="52dp"
@@ -54,6 +54,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/headerUnify"
                 app:unify_image_type="circle" />
 
+            <RelativeLayout
+                android:id="@+id/layoutContainerImgShop"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:elevation="1dp"
+                android:background="@drawable/shape_shop_info_shop_logo"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/headerUnify">
+
+            </RelativeLayout>
+            
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imgShopBadge"
                 android:layout_width="16dp"

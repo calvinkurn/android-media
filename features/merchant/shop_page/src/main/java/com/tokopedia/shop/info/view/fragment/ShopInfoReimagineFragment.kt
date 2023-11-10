@@ -42,6 +42,7 @@ import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.extension.setHyperlinkText
+import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.FragmentShopInfoReimagineBinding
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
@@ -151,7 +152,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun setupView() {
         setupReportShopHyperlink()
         setupClickListener()
-        binding?.imgShop?.circularStroke()
     }
 
     private fun setupClickListener() {
@@ -261,7 +261,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         val hasPharmacyLicenseBadge = uiState.info.showPharmacyLicenseBadge
 
         binding?.run {
-            imgShop.loadImage(uiState.info.shopImageUrl) // TODO add circle border
+            imgShop.loadImage(uiState.info.shopImageUrl) //TODO add circle border
             imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
             tpgShopName.text = uiState.info.shopName
             tpgLicensedPharmacy.isVisible = hasPharmacyLicenseBadge
@@ -453,6 +453,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         binding?.shopReviewView?.isVisible = showReview
 
         if (showReview) {
+            //TODO: Keep previous selected tab indicator when tap cta view all pharmacy info
             binding?.shopReviewView?.render(viewLifecycleOwner.lifecycle, this, review)
             binding?.shopReviewView?.setOnAttachmentImageClick {
                 viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(it.product.productId))
@@ -617,39 +618,37 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun redirectToProductReviewPage(productId: String) {
+        val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_REPUTATION, productId)
+        RouteManager.route(context, appLink)
     }
 
     private fun redirectToProductReviewGalleryPage(productId: String) {
+        val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_REPUTATION, productId)
+        RouteManager.route(context, appLink)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CODE_REPORT_SHOP -> onReturnFromReportUser(data, resultCode)
-            REQUEST_CODE_LOGIN -> viewModel.processEvent(ShopInfoUiEvent.ReportShop)
+            REQUEST_CODE_LOGIN -> onReturnFromLogin(data, resultCode)
         }
+    }
+    
+    private fun onReturnFromLogin(data: Intent?, resultCode: Int) {
+        if (data == null || resultCode != Activity.RESULT_OK) return
+        viewModel.processEvent(ShopInfoUiEvent.ReportShop)
     }
 
     private fun onReturnFromReportUser(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != Activity.RESULT_OK) return
-        showToasterConfirmation(getString(R.string.label_report_success))
-    }
-
-    private fun showToasterConfirmation(message: String) {
-        view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-                .show()
-        }
-    }
-
-    private fun ImageView.circularStroke() {
-        // Create a circular border
-        val borderDrawable = ShapeDrawable(OvalShape())
-        borderDrawable.paint.color = Color.RED
-        borderDrawable.paint.strokeWidth = 2.toPx().toFloat()
-        borderDrawable.paint.style = Paint.Style.STROKE
-
-        // Set the circular border as the background of the ImageView
-        background = borderDrawable
+        
+        showToaster(
+            message = getString(R.string.label_report_success),
+            view = view ?: return,
+            ctaText = "",
+            onCtaClicked = {},
+            anchorView = null
+        )
     }
 }
