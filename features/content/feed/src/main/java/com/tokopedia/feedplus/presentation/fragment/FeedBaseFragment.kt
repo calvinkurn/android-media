@@ -505,14 +505,14 @@ class FeedBaseFragment :
                         is CreationUploadResult.Success -> {
                             binding.uploadView.hide()
 
-                            when (uploadResult.data.uploadType) {
-                                CreationUploadType.Post -> {
+                            when (val uploadData = uploadResult.data) {
+                                is CreationUploadData.Post -> {
                                     showNormalToaster(
                                         getString(R.string.feed_upload_content_success),
                                         duration = Toaster.LENGTH_LONG
                                     )
                                 }
-                                CreationUploadType.Shorts -> {
+                                is CreationUploadData.Shorts -> {
                                     showNormalToaster(
                                         getString(R.string.feed_upload_content_success),
                                         duration = Toaster.LENGTH_LONG,
@@ -527,6 +527,19 @@ class FeedBaseFragment :
                                                 requireContext(),
                                                 ApplinkConst.PLAY_DETAIL,
                                                 uploadResult.data.creationId
+                                            )
+                                        }
+                                    )
+                                }
+                                is CreationUploadData.Stories -> {
+                                    showNormalToaster(
+                                        getString(R.string.feed_upload_story_success),
+                                        duration = Toaster.LENGTH_LONG,
+                                        actionText = getString(R.string.feed_upload_shorts_see_video),
+                                        actionListener = {
+                                            router.route(
+                                                requireContext(),
+                                                uploadData.applink
                                             )
                                         }
                                     )

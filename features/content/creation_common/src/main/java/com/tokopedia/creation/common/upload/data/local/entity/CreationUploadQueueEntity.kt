@@ -82,5 +82,8 @@ data class CreationUploadQueueEntity(
 
         @SerializedName("video_source_id")
         val videoSourceId: String = "",
+
+        @SerializedName("applink")
+        val applink: String = "",
     )
 }

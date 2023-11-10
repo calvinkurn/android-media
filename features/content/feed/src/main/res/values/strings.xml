@@ -82,6 +82,7 @@ dari Feed.</string>
     <string name="cp_common_progress_bar_text">Memproses...</string>
     <string name="cp_common_progress_bar_failed_text">Gagal Diproses</string>
     <string name="feed_upload_content_success">Yay, konten kamu berhasil di-upload!</string>
+    <string name="feed_upload_story_success">Yay, Story kamu berhasil di-upload!</string>
     <string name="feed_upload_shorts_see_video">Lihat</string>
     <string name="feed_uploading_title">Diproses</string>
     <string name="feed_upload_failed_title">Gagal Upload</string>

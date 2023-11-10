@@ -7,6 +7,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
+import com.tokopedia.creation.common.util.StoriesAppLinkBuilder
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
@@ -131,6 +132,11 @@ class StoriesCreationViewModel @Inject constructor(
                 authorType = state.selectedAccount.type,
                 imageSourceId = state.config.imageSourceId,
                 videoSourceId = state.config.videoSourceId,
+                applink = StoriesAppLinkBuilder.buildForShareLink(
+                    state.config.storiesId,
+                    state.selectedAccount.id,
+                    state.selectedAccount.type,
+                )
             )
 
             creationUploader.upload(data)
