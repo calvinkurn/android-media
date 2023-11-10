@@ -1,5 +1,6 @@
 package com.ilhamsuaib.darkmodeconfig.view.screen
 
+import android.widget.ImageView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,17 +12,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ilhamsuaib.darkmodeconfig.view.component.GifImageView
+import androidx.compose.ui.viewinterop.AndroidView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.unifycomponents.ImageUnify
 import com.ilhamsuaib.darkmodeconfig.R as darkmodeconfigR
 
 /**
@@ -47,7 +52,7 @@ internal fun DarkModeIntroScreen(
                 .fillMaxWidth()
                 .height(256.dp)
                 .background(
-                    color = NestTheme.colors.NN._950,
+                    color = Color.Transparent,
                     shape = RoundedCornerShape(32.dp)
                 )
         )
@@ -88,6 +93,29 @@ internal fun DarkModeIntroScreen(
             variant = ButtonVariant.GHOST_ALTERNATE
         )
     }
+}
+
+@Composable
+private fun GifImageView(
+    source: String,
+    modifier: Modifier
+) {
+    AndroidView(
+        modifier = modifier,
+        factory = {
+            ImageUnify(it).apply {
+                cornerRadius = 20
+                scaleType = ImageView.ScaleType.CENTER_CROP
+            }
+        },
+        update = { imageUnify ->
+            Glide.with(imageUnify.context)
+                .asGif()
+                .load(source)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .into(imageUnify)
+        }
+    )
 }
 
 @Preview(showBackground = true)
