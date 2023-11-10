@@ -25,6 +25,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.report_content.bottomsheet.ContentReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentSubmitReportBottomSheet
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.util.ContentDateConverter
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
@@ -496,13 +497,30 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun buildEventLabel(): String =
-        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - ${if (viewModel.mDetail.category == StoriesDetailItem.StoryCategory.Manual) "organic" else "asgc"} - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
             tvPartnerName.text = state.author.name
             ivIcon.setImageUrl(state.author.thumbnailUrl)
             btnFollow.gone()
+
+            when (state.category) {
+                StoriesDetailItem.StoryCategory.Manual -> {
+                    val creationTimestamp = ContentDateConverter.convertTime(state.publishedAt)
+
+                    tvStoriesTimestamp.text = getString(
+                        storiesR.string.story_creation_timestamp,
+                        creationTimestamp
+                    )
+                    tvStoriesTimestamp.show()
+                }
+
+                StoriesDetailItem.StoryCategory.ASGC -> {
+                    tvStoriesTimestamp.hide()
+                }
+            }
+
             if (state.author is StoryAuthor.Shop) {
                 ivBadge.setImageUrl(state.author.badgeUrl)
             }
