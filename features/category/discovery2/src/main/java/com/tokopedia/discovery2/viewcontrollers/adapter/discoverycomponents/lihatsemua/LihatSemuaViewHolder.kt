@@ -31,6 +31,8 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
@@ -66,7 +68,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                         setupTitleImage(data)
                         setupBackgroundImage(data)
                         setupLihat(data, componentItem, backgroundImageView.isVisible)
-                        setupTextColours(backgroundImageView.isVisible)
+                        setupTextColours(data.fontColor, backgroundImageView.isVisible)
                         setupTimer(data, backgroundImageView.isVisible)
                         setupPadding(backgroundImageView.isVisible, titleImageViewParent.isVisible)
                     }
@@ -135,14 +137,19 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         lihatSubTitleTextView.setTextAndCheckShow(subtitle)
     }
 
-    private fun setupTextColours(backgroundPresent: Boolean) {
+    private fun setupTextColours(fontColor: String?, backgroundPresent: Boolean) {
+        if (!fontColor.isNullOrEmpty()) {
+            lihatTitleTextView.setTextColor(Color.parseColor(fontColor))
+            return
+        }
+
         fragment.context?.let {
             if (backgroundPresent) {
                 lihatTitleTextView.setTextColor(MethodChecker.getColor(it, R.color.discovery2_dms_white))
                 lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, R.color.discovery2_dms_white_95))
             } else {
-                lihatTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
-                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+                lihatTitleTextView.setTextColor(MethodChecker.getColor(it, unifyprinciplesR.color.Unify_NN950_96))
+                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, unifyprinciplesR.color.Unify_NN950_68))
             }
         }
     }
@@ -197,7 +204,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
             } else {
                 textTitleParent.setPadding(
                     if (isTitleImagePresent) {
-                        it.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_4)
+                        it.getDimensionPixelOffset(abstractionR.dimen.dp_4)
                     } else {
                         it.getDimensionPixelOffset(
                             R.dimen.dp_16
