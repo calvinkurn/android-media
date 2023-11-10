@@ -17,13 +17,6 @@ class TokoChatLongTextBottomSheet: BottomSheetUnify() {
     private var longMessage: String = ""
     private var senderName: String = ""
 
-    init {
-        this.overlayClickDismiss = true
-        this.showCloseIcon = false
-        this.isDragable = true
-        this.isHideable = true
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,8 +25,17 @@ class TokoChatLongTextBottomSheet: BottomSheetUnify() {
         val view = inflater.inflate(
             tokochat_commonR.layout.tokochat_long_message_bottomsheet, container, false)
         binding = TokochatLongMessageBottomsheetBinding.bind(view)
+        setupBottomSheetConfig()
         setChild(view)
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun setupBottomSheetConfig() {
+        this.overlayClickDismiss = true
+        this.showCloseIcon = false
+        this.isDragable = true
+        this.isHideable = true
+        this.clearContentPadding = true
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
