@@ -12,7 +12,7 @@
 
 <!--toc-->
 
-![image](res/Screenshot_2021-11-12-14-04-57-323_com.tokopedia.tkpd.jpg)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/Screenshot_2021-11-12-14-04-57-323_com.tokopedia.tkpd.jpg)
 
 ## Technical Description
 
