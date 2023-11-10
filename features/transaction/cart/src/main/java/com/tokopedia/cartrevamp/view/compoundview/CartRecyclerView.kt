@@ -49,8 +49,9 @@ class CartRecyclerView : RecyclerView {
                 } else {
                     Region(start, top, end, bottom)
                 }
-                if (region.contains(e?.x.toIntSafely(), e?.y.toIntSafely())) {
-                    return false
+                val inRegion = region.contains(e?.x.toIntSafely(), e?.y.toIntSafely())
+                if (inRegion) {
+                    return super.onInterceptTouchEvent(e)
                 }
             }
             viewBinderHelper.closeAll()
