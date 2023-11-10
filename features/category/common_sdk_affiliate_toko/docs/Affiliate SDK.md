@@ -49,9 +49,9 @@ In the future, if we have another page introduced, it would be seamless integrat
 - Solution Diagram - <https://app.diagrams.net/#G106ssXAnX6zbYqrB17RDcYH42SsQDhueV>
 - SDK Flow -
 
-![](http://docs-android.tokopedia.net/images/docs/common_sdk_affiliate_toko/image-20220621-045518.png)
+![](res/image-20220621-045518.png)
 
-![](http://docs-android.tokopedia.net/images/docs/common_sdk_affiliate_toko/image-20220622-060817.png)
+![](res/image-20220622-060817.png)
 
 ## How-to
 

@@ -57,7 +57,7 @@ Tokopedia has partnered with 5 pharmacy aggregators (GoApotik, Halodoc, KlikDokt
 
 ## Flow Diagram
 
-[![](../res/mini-consultation/EP%20MC.drawio.png)](https://app.diagrams.net/#G1Kkc2uOCDAHncUZlcfnB3hgwxrGbtcygU)![](http://docs-android.tokopedia.net/images/docs/epharmacy/Epharmacy%20Web%20view.drawio%20%281%29.png)
+[![](../res/mini-consultation/EP%20MC.drawio.png)](https://app.diagrams.net/#G1Kkc2uOCDAHncUZlcfnB3hgwxrGbtcygU)![](res/Epharmacy%20Web%20view.drawio%20%281%29.png)
 
 ## Navigation
 

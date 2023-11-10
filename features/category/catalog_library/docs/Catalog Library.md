@@ -73,15 +73,15 @@ Catalog Library provides a way to view all the listed catalogs in tokopedia. Use
 
 ## Navigation
 
-![](http://docs-android.tokopedia.net/images/docs/catalog_library/Screenshot%202023-05-24%20at%208.39.12%20PM.png)
+![](res/Screenshot%202023-05-24%20at%208.39.12%20PM.png)
 
-![](http://docs-android.tokopedia.net/images/docs/catalog_library/Screenshot%202023-05-24%20at%208.39.25%20PM.png)
+![](res/Screenshot%202023-05-24%20at%208.39.25%20PM.png)
 
-![](http://docs-android.tokopedia.net/images/docs/catalog_library/Screenshot%202023-05-24%20at%208.39.39%20PM.png)
+![](res/Screenshot%202023-05-24%20at%208.39.39%20PM.png)
 
-![](http://docs-android.tokopedia.net/images/docs/catalog_library/Screenshot%202023-05-24%20at%208.40.01%20PM.png)
+![](res/Screenshot%202023-05-24%20at%208.40.01%20PM.png)
 
-![](http://docs-android.tokopedia.net/images/docs/catalog_library/Screenshot%202023-05-24%20at%208.42.21%20PM.png)
+![](res/Screenshot%202023-05-24%20at%208.42.21%20PM.png)
 
 ## How-to
 

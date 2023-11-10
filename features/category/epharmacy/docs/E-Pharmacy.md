@@ -34,7 +34,7 @@ labels:
 
 Upload Prescription: Upload prescription images max 5 using media picker and sending the image as encodedString . Return prescription ids to the caller i.e checkout.
 
-![](http://docs-android.tokopedia.net/images/docs/epharmacy/Screenshot%202023-01-19%20at%201.13.53%20PM.png)
+![](res/Screenshot%202023-01-19%20at%201.13.53%20PM.png)
 
 ### Project Description
 
@@ -48,7 +48,7 @@ Tokopedia was warned for its ethical drugs purchase flow where it placed the upl
 
 ## Flow Diagram
 
-![](http://docs-android.tokopedia.net/images/docs/epharmacy/image-20230119-073818.png)
+![](res/image-20230119-073818.png)
 
 
 
@@ -60,13 +60,13 @@ Tokopedia was warned for its ethical drugs purchase flow where it placed the upl
 
 ## Navigation
 
-![](http://docs-android.tokopedia.net/images/docs/epharmacy/Screenshot%202023-01-19%20at%201.11.19%20PM.png)
+![](res/Screenshot%202023-01-19%20at%201.11.19%20PM.png)
 
-![](http://docs-android.tokopedia.net/images/docs/epharmacy/Screenshot%202023-01-19%20at%201.13.53%20PM.png)
+![](res/Screenshot%202023-01-19%20at%201.13.53%20PM.png)
 
-![](http://docs-android.tokopedia.net/images/docs/epharmacy/Screenshot%202023-01-19%20at%201.14.06%20PM.png)
+![](res/Screenshot%202023-01-19%20at%201.14.06%20PM.png)
 
-![](http://docs-android.tokopedia.net/images/docs/epharmacy/Screenshot%202023-01-19%20at%201.14.18%20PM.png)
+![](res/Screenshot%202023-01-19%20at%201.14.18%20PM.png)
 
 ## How-to
 

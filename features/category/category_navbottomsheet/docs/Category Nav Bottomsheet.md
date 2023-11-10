@@ -102,13 +102,13 @@ interface GtmProviderListener {
 
 
 
-![](http://docs-android.tokopedia.net/images/docs/category_navbottomsheet/Best%20Seller%20Entry.gif)
+![](res/Best%20Seller%20Entry.gif)
 
 
 
 
 
-![](http://docs-android.tokopedia.net/images/docs/category_navbottomsheet/CLP%20Entry.gif)
+![](res/CLP%20Entry.gif)
 
 
 
@@ -124,7 +124,7 @@ interface GtmProviderListener {
 
 
 
-![](http://docs-android.tokopedia.net/images/docs/category_navbottomsheet/Screenshot%202023-01-02%20at%201.58.56%20PM.png)
+![](res/Screenshot%202023-01-02%20at%201.58.56%20PM.png)
 
 With L1 category showing
 
@@ -132,7 +132,7 @@ With L1 category showing
 
 
 
-![](http://docs-android.tokopedia.net/images/docs/category_navbottomsheet/Screenshot%202023-01-02%20at%201.59.58%20PM.png)
+![](res/Screenshot%202023-01-02%20at%201.59.58%20PM.png)
 
 With L1 category Hidden
 
