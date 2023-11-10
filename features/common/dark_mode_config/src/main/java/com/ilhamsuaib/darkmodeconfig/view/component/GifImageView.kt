@@ -1,5 +1,6 @@
 package com.ilhamsuaib.darkmodeconfig.view.component
 
+import android.widget.ImageView
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
@@ -21,6 +22,7 @@ internal fun GifImageView(
         factory = {
             ImageUnify(it).apply {
                 cornerRadius = 20
+                scaleType = ImageView.ScaleType.CENTER_CROP
             }
         },
         update = { imageUnify ->
