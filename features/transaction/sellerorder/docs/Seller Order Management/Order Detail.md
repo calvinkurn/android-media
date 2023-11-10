@@ -30,13 +30,13 @@ labels:
 
 The order detail page is a page that shows the detail of an order for the seller side. On this page, the seller can see the detail of an order they received and perform an action on the order like &#34;Terima Pesanan&#34;, or &#34;Kirim Pesanan&#34;. The list of actions that can be performed is controlled by the backend team and it depends on the order status.
 
-![](../res/somdetail/som_detail_page.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somdetail/som_detail_page.png)
 
 # Flow Diagram
 
 When we open the page, there are several things we need to do. The flow of the logic is described in the following diagram:
 
-![](../res/somdetail/som_detail_flow_diagram.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somdetail/som_detail_flow_diagram.png)
 
 On this page, the seller can do several actions such as:
 
@@ -49,7 +49,7 @@ On this page, the seller can do several actions such as:
 
 The complete flow of this action can be seen in the flowchart below.
 
-![](../res/somdetail/som_detail_accept_order_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somdetail/som_detail_accept_order_drawio.png)
 
 - Confirm order (&#34;Kirim Pesanan&#34;): This action allows the seller to confirm the buyer&#39;s order or send the buyer&#39;s order. In this flow, the app will need to check whether the order has a buyer cancellation request that is not closed yet. This validation flow is required to cover this case:
 
@@ -60,19 +60,19 @@ The complete flow of this action can be seen in the flowchart below.
 
 The complete flow of this action can be seen in the flowchart below.
 
-![](../res/somdetail/som_detail_confirm_order_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somdetail/som_detail_confirm_order_drawio.png)
 
 - Reject order: This action allows the seller to approve the buyer&#39;s order cancellation request. The flow can be seen in the flowchart below.
 
-![](../res/somdetail/som_detail_reject_order_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somdetail/som_detail_reject_order_drawio.png)
 
 - Edit AWB: This action allows the seller to edit the order AWB number. The flow can be seen in the flowchart below.
 
-![](../res/somdetail/som_detail_edit_awb_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somdetail/som_detail_edit_awb_drawio.png)
 
 - Reject buyer&#39;s order cancellation request: This action allows the reject buyer&#39;s order cancellation request and continue to process the order. The flow can be seen in the flowchart below.
 
-![](../res/somdetail/som_detail_reject_order_cancellation_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somdetail/som_detail_reject_order_cancellation_drawio.png)
 
 # Navigation
 

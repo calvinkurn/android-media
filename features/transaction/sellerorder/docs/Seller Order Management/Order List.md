@@ -44,13 +44,13 @@ The order list page is a page that shows the list of orders. On this page, the s
 
 
 
-![](../res/somlist/som_list_page_on_customerapp.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_page_on_customerapp.png)
 
 
 
 
 
-![](../res/somlist/som_list_page_on_sellerapp.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_page_on_sellerapp.png)
 
 
 
@@ -64,11 +64,11 @@ There are 2 flows used on the order list page:
 
 - The flow when the user enters the page with no order status filter (using `tokopedia://seller/history?search={searchParam}` app link). This flow is used in this case because when we enter the order list page with no order status filter, the app doesn&#39;t need to send order filter ids when sending the `orderList` query therefore we don&#39;t need to wait for the get the filter data request to be completed.
 
-![](../res/somlist/som_list_no_status_filter_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_no_status_filter_drawio.png)
 
 - The flow when the user enters the page with the order status filter. This flow is used in this case because when we enter the order list page with any order status filter, the app need to send order filter ids belonging to that order status when sending the `orderList` query therefore we need to wait for the get the filter data request to be completed.
 
-![](../res/somlist/som_list_with_status_filter_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_with_status_filter_drawio.png)
 
 # Seller Actions
 
@@ -83,19 +83,19 @@ On this page, the seller can do several actions such as:
 
 The complete flow of this action can be seen in the flowchart below.
 
-![](../res/somlist/som_list_accept_order_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_accept_order_drawio.png)
 
 - Reject order: This action allows the seller to approve the buyer&#39;s order cancellation request. The flow can be seen in the flowchart below.
 
-![](../res/somlist/som_list_reject_order_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_reject_order_drawio.png)
 
 - Edit AWB: This action allows the seller to edit the order AWB number. The flow can be seen in the flowchart below.
 
-![](../res/somlist/som_list_edit_awb_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_edit_awb_drawio.png)
 
 - Reject buyer&#39;s order cancellation request: This action allows the reject buyer&#39;s order cancellation request and continue to process the order. The flow can be seen in the flowchart below.
 
-![](../res/somlist/som_list_reject_order_cancellation_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_reject_order_cancellation_drawio.png)
 
 # Navigation
 

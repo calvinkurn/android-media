@@ -38,7 +38,7 @@ Mini Consultation page aggregates all the checked out products and groups them i
 
 User can then consult and get prescription attached. The prescription can then be viewed.
 
-![](../res/mini-consultation/Screenshot%202023-02-21%20at%202.23.32%20PM.png)
+![](https://docs-android.tokopedia.net/images/docs/epharmacy/mini-consultation/Screenshot%202023-02-21%20at%202.23.32%20PM.png)
 
 ### Background
 
@@ -57,19 +57,19 @@ Tokopedia has partnered with 5 pharmacy aggregators (GoApotik, Halodoc, KlikDokt
 
 ## Flow Diagram
 
-[![](../res/mini-consultation/EP%20MC.drawio.png)](https://app.diagrams.net/#G1Kkc2uOCDAHncUZlcfnB3hgwxrGbtcygU)![](https://docs-android.tokopedia.net/images/docs/epharmacy/Epharmacy%20Web%20view.drawio%20%281%29.png)
+[![](https://docs-android.tokopedia.net/images/docs/epharmacy/mini-consultation/EP%20MC.drawio.png)](https://app.diagrams.net/#G1Kkc2uOCDAHncUZlcfnB3hgwxrGbtcygU)![](https://docs-android.tokopedia.net/images/docs/epharmacy/Epharmacy%20Web%20view.drawio%20%281%29.png)
 
 ## Navigation
 
-![](../res/mini-consultation/Screenshot%202023-02-21%20at%202.23.32%20PM.png)
+![](https://docs-android.tokopedia.net/images/docs/epharmacy/mini-consultation/Screenshot%202023-02-21%20at%202.23.32%20PM.png)
 
-![](../res/mini-consultation/Screenshot%202023-02-21%20at%202.23.56%20PM.png)
+![](https://docs-android.tokopedia.net/images/docs/epharmacy/mini-consultation/Screenshot%202023-02-21%20at%202.23.56%20PM.png)
 
-![](../res/mini-consultation/Screenshot%202023-02-21%20at%202.24.14%20PM.png)
+![](https://docs-android.tokopedia.net/images/docs/epharmacy/mini-consultation/Screenshot%202023-02-21%20at%202.24.14%20PM.png)
 
-![](../res/mini-consultation/Screenshot%202023-02-21%20at%202.24.54%20PM.png)
+![](https://docs-android.tokopedia.net/images/docs/epharmacy/mini-consultation/Screenshot%202023-02-21%20at%202.24.54%20PM.png)
 
-![](../res/mini-consultation/Screenshot%202023-02-21%20at%202.25.13%20PM.png)
+![](https://docs-android.tokopedia.net/images/docs/epharmacy/mini-consultation/Screenshot%202023-02-21%20at%202.25.13%20PM.png)
 
 ## How-to
 
