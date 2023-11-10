@@ -167,8 +167,6 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
                         )
                     }
 
-                    is StoriesUiEvent.ShowStoriesTimeCoachmark -> {}// TODO
-
                     else -> {}
                 }
             }

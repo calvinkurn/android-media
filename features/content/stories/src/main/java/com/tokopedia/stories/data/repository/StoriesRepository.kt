@@ -24,7 +24,7 @@ interface StoriesRepository {
 
     suspend fun setHasSeenManualStoriesDurationCoachmark()
 
-    suspend fun hasSeenManualStoriesDurationCoachmark()
+    suspend fun hasSeenManualStoriesDurationCoachmark(): Boolean
 
     suspend fun getStoriesProducts(
         shopId: String,

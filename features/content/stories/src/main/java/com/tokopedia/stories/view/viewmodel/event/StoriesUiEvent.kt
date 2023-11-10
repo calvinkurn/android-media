@@ -30,5 +30,5 @@ sealed interface StoriesUiEvent {
     data class ProductSuccessEvent(val action: StoriesProductAction, @StringRes val message: Int) :
         StoriesUiEvent
 
-    data class ShowStoriesTimeCoachmark(val title: String, val text: String) : StoriesUiEvent
+    object ShowStoriesTimeCoachmark : StoriesUiEvent
 }

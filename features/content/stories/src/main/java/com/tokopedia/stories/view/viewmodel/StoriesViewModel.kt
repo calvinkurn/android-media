@@ -222,6 +222,7 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.VideoBuffering -> handleVideoBuffering()
             StoriesUiAction.OpenReport -> handleOpenReport()
             StoriesUiAction.ResetReportState -> handleReportState(StoryReportStatusInfo.ReportState.None) {}
+            StoriesUiAction.HasSeenDurationCoachMark -> handleHasSeenDurationCoachMark()
         }
     }
 
@@ -405,7 +406,16 @@ class StoriesViewModel @AssistedInject constructor(
         val maxPos = mDetailSize.minus(1)
         val position = if (cachedPos > maxPos) maxPos else cachedPos
         updateDetailData(position = position, isReset = true)
-        if (currentDetail == StoriesDetail()) _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
+
+        if (currentDetail == StoriesDetail()) {
+            _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
+        } else if (
+            currentDetail.detailItems[position].category == StoriesDetailItem.StoryCategory.Manual &&
+            !repository.hasSeenManualStoriesDurationCoachmark()
+        ) {
+            _storiesEvent.emit(StoriesUiEvent.ShowStoriesTimeCoachmark)
+        }
+
     }
 
     private fun setCachingData() {
@@ -746,6 +756,12 @@ class StoriesViewModel @AssistedInject constructor(
             action = StoriesTrackActivityActionType.LAST_SEEN.value
         )
         return repository.setStoriesTrackActivity(request)
+    }
+
+    private fun handleHasSeenDurationCoachMark() {
+        viewModelScope.launch {
+            repository.setHasSeenManualStoriesDurationCoachmark()
+        }
     }
 
 }
