@@ -40,7 +40,7 @@ import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
-import com.tokopedia.media.editor.R as editorR
+import com.tokopedia.media.editor.R as mediaeditorR
 
 class EditorFragment @Inject constructor(
     private val editorHomeAnalytics: EditorHomeAnalytics,
@@ -80,7 +80,7 @@ class EditorFragment @Inject constructor(
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            editorR.layout.fragment_main_editor,
+            mediaeditorR.layout.fragment_main_editor,
             container,
             false
         )
@@ -103,7 +103,7 @@ class EditorFragment @Inject constructor(
             setLoadingText("")
             customView = View.inflate(
                 requireContext(),
-                editorR.layout.fragment_main_crop_loader_layout,
+                mediaeditorR.layout.fragment_main_crop_loader_layout,
                 null
             ) as LinearLayout
             show()
@@ -181,6 +181,7 @@ class EditorFragment @Inject constructor(
     override fun initObserver() {
         observeEditorParam()
         observeUpdateIndex()
+        observeEditorResult()
     }
 
     private fun imageCrop(bitmap: Bitmap, originalPath: String) {
@@ -357,9 +358,9 @@ class EditorFragment @Inject constructor(
 
         val toastEditText = getString(sourceInt)
         val toastStateChangeText = if (toastKey == TOAST_UNDO)
-            getString(editorR.string.editor_undo_state_format, toastEditText)
+            getString(mediaeditorR.string.editor_undo_state_format, toastEditText)
         else
-            getString(editorR.string.editor_redo_state_format, toastEditText)
+            getString(mediaeditorR.string.editor_redo_state_format, toastEditText)
 
 
         viewBinding?.undoRedoToast?.let {
@@ -433,6 +434,20 @@ class EditorFragment @Inject constructor(
         }
     }
 
+    // need to stop all video when editor trigger finish
+    private fun observeEditorResult() {
+        viewModel.isVideoStop.observe(viewLifecycleOwner) {
+            if (it) {
+                viewBinding?.viewPager?.let {
+                    val totalItem = it.adapter?.count ?: -1
+                    for (i in 0 until totalItem) {
+                        it.stopVideoPlayer(i)
+                    }
+                }
+            }
+        }
+    }
+
     private fun showAutoCropToaster() {
         loader?.dismiss()
 
@@ -444,7 +459,7 @@ class EditorFragment @Inject constructor(
             toaster = Toaster.build(
                 editorFragmentContainer,
                 getString(
-                    editorR.string.editor_auto_crop_format,
+                    mediaeditorR.string.editor_auto_crop_format,
                     ratioWidth.toInt(),
                     ratioHeight.toInt()
                 ),
