@@ -311,9 +311,7 @@
     <string name="topads_ads_optimal_bid">Biaya optimal ✔️</string>
     <string name="topads_ads_error_multiple_fifty">Biaya harus kelipatan 50</string>
     <string name="topads_ads_search_bid_tooltip_title">Biaya Iklan di Pencarian</string>
-    <string name="topads_ads_search_bid_tooltip_description">Biaya iklan baru akan dikenakan setiap ada calon pembeli yang klik iklan produkmu baik itu secara organik ataupun saat iklanmu tampil sesuai dengan kata kunci pilihanmu.
-Tips:
-Semakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan.</string>
+    <string name="topads_ads_search_bid_tooltip_description">Biaya iklan baru akan dikenakan setiap ada calon pembeli yang klik iklan produkmu baik itu secara organik ataupun saat iklanmu tampil sesuai dengan kata kunci pilihanmu.\n\nTips:\nSemakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan.</string>
     <string name="topads_ads_performance_search_stats">Di Pencarian</string>
     <string name="topads_ads_performance_browse_stats">Di Rekomendasi</string>
     <string name="topads_ads_performance_total_stats">Total Tampil </string>

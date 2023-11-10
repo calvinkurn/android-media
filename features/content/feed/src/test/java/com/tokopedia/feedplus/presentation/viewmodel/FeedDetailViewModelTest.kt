@@ -2,8 +2,8 @@ package com.tokopedia.feedplus.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.feedplus.detail.data.FeedDetailRepository
+import com.tokopedia.feedplus.helper.assertEqualTo
 import com.tokopedia.feedplus.presentation.robot.createFeedDetailViewModelRobot
-import com.tokopedia.tokopedia.feedplus.helper.assertEqualTo
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.mockk

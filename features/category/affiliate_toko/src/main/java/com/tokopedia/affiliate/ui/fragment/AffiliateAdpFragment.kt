@@ -33,7 +33,6 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
-import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
 import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
 import com.tokopedia.affiliate.interfaces.AffiliatePerformanceChipClick
@@ -112,7 +111,6 @@ class AffiliateAdpFragment :
     private var binding by autoClearedNullable<AffiliateAdpFragmentLayoutBinding>()
 
     private var bottomNavBarClickListener: AffiliateBottomNavBarInterface? = null
-    private var affiliateActivityInterface: AffiliateActivityInterface? = null
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     private var affiliateAdpViewModel: AffiliateAdpViewModel? = null
@@ -137,7 +135,7 @@ class AffiliateAdpFragment :
         registerForActivityResult(StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
                 setUserDetails()
-                affiliateAdpViewModel?.getAffiliateValidateUser()
+                (activity as? AffiliateActivity)?.refreshValidateUserData()
             } else {
                 activity?.finish()
             }
@@ -172,12 +170,10 @@ class AffiliateAdpFragment :
         private const val TICKER_ID = "tickerId"
         private const val RANGE_TODAY = "0"
         fun getFragmentInstance(
-            affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface,
-            affiliateActivity: AffiliateActivityInterface
+            affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface
         ): Fragment {
             return AffiliateAdpFragment().apply {
                 bottomNavBarClickListener = affiliateBottomNavBarClickListener
-                affiliateActivityInterface = affiliateActivity
             }
         }
     }
@@ -214,8 +210,6 @@ class AffiliateAdpFragment :
     private fun afterViewCreated() {
         if (affiliateAdpViewModel?.isUserLoggedIn() == false) {
             loginRequest.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
-        } else {
-            affiliateAdpViewModel?.getAffiliateValidateUser()
         }
         setAffiliateGreeting()
         binding?.navHeaderGroup?.isVisible = !isAffiliatePromoteHomeEnabled()
@@ -259,13 +253,6 @@ class AffiliateAdpFragment :
             }
         }
 
-//        if (!CoachMarkPreference.hasShown(
-//                requireContext(),
-//                COACHMARK_TAG
-//            )
-//        ) {
-//            affiliateActivityInterface?.showCoachMarker()
-//        }
         setUserDetails()
         if (isAffiliateNCEnabled()) {
             affiliateAdpViewModel?.fetchUnreadNotificationCount()
@@ -334,9 +321,10 @@ class AffiliateAdpFragment :
         affiliateAdpViewModel?.getShimmerVisibility()?.observe(this) { visibility ->
             setShimmerVisibility(visibility)
         }
-        affiliateAdpViewModel?.getDataShimmerVisibility()?.observe(this) { visibility ->
-            setDataShimmerVisibility(visibility)
-        }
+        affiliateAdpViewModel?.getDataShimmerVisibility()
+            ?.observe(this) { visibility ->
+                setDataShimmerVisibility(visibility)
+            }
         affiliateAdpViewModel?.getRangeChanged()?.observe(this) { changed ->
             if (changed) resetItems()
         }
@@ -346,11 +334,12 @@ class AffiliateAdpFragment :
         affiliateAdpViewModel?.getErrorMessage()?.observe(this) { error ->
             onGetError(error)
         }
-        affiliateAdpViewModel?.getValidateUserdata()?.observe(this) { validateUserdata ->
-            binding?.affiliateProgressBar?.gone()
-            binding?.swipeRefreshLayout?.show()
-            onGetValidateUserData(validateUserdata)
-        }
+        (activity as? AffiliateActivity)?.getValidateUserData()
+            ?.observe(this) { validateUserdata ->
+                binding?.affiliateProgressBar?.gone()
+                binding?.swipeRefreshLayout?.show()
+                onGetValidateUserData(validateUserdata)
+            }
 
         affiliateAdpViewModel?.getAffiliateDataItems()?.observe(this) { dataList ->
             isNoPromoItem = dataList.firstOrNull { it is AffiliateNoPromoItemFoundModel } != null
@@ -358,46 +347,49 @@ class AffiliateAdpFragment :
             onGetAffiliateDataItems(dataList)
         }
 
-        affiliateAdpViewModel?.getAffiliateAnnouncement()?.observe(this) { announcementData ->
-            if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType == TICKER_BOTTOM_SHEET &&
-                !isAffiliatePromoteHomeEnabled()
-            ) {
-                context?.getSharedPreferences(TICKER_SHARED_PREF, Context.MODE_PRIVATE)?.let {
-                    if (it.getString(
-                            USER_ID,
-                            null
-                        ) != userSessionInterface?.userId.orEmpty() || it.getLong(
-                                TICKER_ID,
-                                -1
-                            ) != announcementData.getAffiliateAnnouncementV2?.announcementData?.id
-                    ) {
-                        it.edit().apply {
-                            putLong(
-                                TICKER_ID,
-                                announcementData.getAffiliateAnnouncementV2?.announcementData?.id ?: 0
-                            )
-                            putString(USER_ID, userSessionInterface?.userId.orEmpty())
-                            apply()
-                        }
+        affiliateAdpViewModel?.getAffiliateAnnouncement()
+            ?.observe(this) { announcementData ->
+                if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType == TICKER_BOTTOM_SHEET &&
+                    !isAffiliatePromoteHomeEnabled()
+                ) {
+                    context?.getSharedPreferences(TICKER_SHARED_PREF, Context.MODE_PRIVATE)?.let {
+                        if (it.getString(
+                                USER_ID,
+                                null
+                            ) != userSessionInterface?.userId.orEmpty() || it.getLong(
+                                    TICKER_ID,
+                                    -1
+                                ) != announcementData.getAffiliateAnnouncementV2?.announcementData?.id
+                        ) {
+                            it.edit().apply {
+                                putLong(
+                                    TICKER_ID,
+                                    announcementData.getAffiliateAnnouncementV2?.announcementData?.id
+                                        ?: 0
+                                )
+                                putString(USER_ID, userSessionInterface?.userId.orEmpty())
+                                apply()
+                            }
 
-                        AffiliateBottomSheetInfo.newInstance(
-                            announcementData.getAffiliateAnnouncementV2?.announcementData?.id ?: 0,
-                            announcementData.getAffiliateAnnouncementV2?.announcementData?.tickerData?.first()
-                        ).show(childFragmentManager, "")
+                            AffiliateBottomSheetInfo.newInstance(
+                                announcementData.getAffiliateAnnouncementV2?.announcementData?.id
+                                    ?: 0,
+                                announcementData.getAffiliateAnnouncementV2?.announcementData?.tickerData?.first()
+                            ).show(childFragmentManager, "")
+                        }
                     }
+                } else {
+                    sendTickerImpression(
+                        announcementData.getAffiliateAnnouncementV2?.announcementData?.type,
+                        announcementData.getAffiliateAnnouncementV2?.announcementData?.id
+                    )
+                    binding?.affiliateAnnouncementTicker?.setAnnouncementData(
+                        announcementData,
+                        activity,
+                        source = PAGE_ANNOUNCEMENT_HOME
+                    )
                 }
-            } else {
-                sendTickerImpression(
-                    announcementData.getAffiliateAnnouncementV2?.announcementData?.type,
-                    announcementData.getAffiliateAnnouncementV2?.announcementData?.id
-                )
-                binding?.affiliateAnnouncementTicker?.setAnnouncementData(
-                    announcementData,
-                    activity,
-                    source = PAGE_ANNOUNCEMENT_HOME
-                )
             }
-        }
         affiliateAdpViewModel?.noMoreDataAvailable()?.observe(this) { noDataAvailable ->
             isNoMoreData = noDataAvailable
         }
@@ -450,7 +442,7 @@ class AffiliateAdpFragment :
             show()
             setActionClickListener {
                 hide()
-                affiliateAdpViewModel?.getAffiliateValidateUser()
+                (activity as? AffiliateActivity)?.refreshValidateUserData()
             }
         }
     }

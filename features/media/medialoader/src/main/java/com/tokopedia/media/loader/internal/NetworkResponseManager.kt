@@ -7,9 +7,10 @@ import com.tokopedia.media.loader.data.Header
 import com.tokopedia.media.loader.data.toModel
 import okhttp3.Headers
 
-class NetworkResponseManager private constructor() {
+object NetworkResponseManager {
 
     private val headers = mutableMapOf<String, String>()
+    private const val CACHE_THRESHOLD = 100 // 100 images cache limit
 
     fun set(url: String, header: Headers) {
         if (header.size <= 0) return
@@ -49,19 +50,5 @@ class NetworkResponseManager private constructor() {
             this,
             object : TypeToken<List<Header>>() {}.type
         )
-    }
-
-    companion object {
-        private const val CACHE_THRESHOLD = 50 // 50 images cache limit
-
-        @Volatile private var manager: NetworkResponseManager? = null
-
-        fun getInstance(): NetworkResponseManager {
-            return manager ?: synchronized(this) {
-                NetworkResponseManager().also {
-                    manager = it
-                }
-            }
-        }
     }
 }

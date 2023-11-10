@@ -22,6 +22,7 @@ import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetail
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetailReserve
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetailSellable
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationEventInfo
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.*
 import com.tokopedia.product.manage.feature.campaignstock.ui.util.CampaignStockMapper
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -32,28 +33,46 @@ import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.time.DateFormatUtils
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.util.Calendar
 
 class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
     @Test
     fun `success get non variant stock allocation result`() = runBlocking {
+
+        val calendar = Calendar.getInstance()
+        val mockDate = calendar.timeInMillis
+        val endDate = calendar.timeInMillis + 1000
+
+
+
         val productId = "1"
         val shopId = "1"
         val getStockAllocationData = GetStockAllocationData(
             detail = GetStockAllocationDetail(
                 reserve = listOf(
-                    GetStockAllocationDetailReserve()
+                    GetStockAllocationDetailReserve(
+                        eventInfo = GetStockAllocationEventInfo(
+                            startTimeNanos = mockDate.toString(),
+                            endTimeNanos = endDate.toString()
+                        )
+                    )
                 )
             )
         )
         val otherCampaignStockData = OtherCampaignStockData(status = ProductStatus.ACTIVE)
+
+        // q: unit test for mock DateFormatUtils without using `and`
+        // a: mockkStatic(DateFormatUtils::class) and every { DateFormatUtils.(any(), any()) } returns "date"
 
         val nonVariantReservedEventInfoUiModels = getStockAllocationData.detail.reserve.map {
             CampaignStockMapper.mapToParcellableReserved(it)
@@ -81,7 +100,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         verifyGetOtherCampaignStockDataCalled()
 
         val expectedResult = Success(NonVariantStockAllocationResult(
-            null,
+            0,
             nonVariantReservedEventInfoUiModels,
             getStockAllocationData.summary,
             sellableProducts,
@@ -94,12 +113,20 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
     @Test
     fun `success get non variant stock allocation result with active campaign`() = runBlocking {
+        val calendar = Calendar.getInstance()
+        val mockDate = calendar.timeInMillis
+        val endDate = calendar.timeInMillis + 1000
         val productId = "1"
         val shopId = "1"
         val getStockAllocationData = GetStockAllocationData(
             detail = GetStockAllocationDetail(
                 reserve = listOf(
-                    GetStockAllocationDetailReserve()
+                    GetStockAllocationDetailReserve(
+                        eventInfo = GetStockAllocationEventInfo(
+                            startTimeNanos = mockDate.toString(),
+                            endTimeNanos = endDate.toString()
+                        )
+                    )
                 )
             )
         )
@@ -134,7 +161,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         verifyGetOtherCampaignStockDataCalled()
 
         val expectedResult = Success(NonVariantStockAllocationResult(
-            null,
+            0,
             nonVariantReservedEventInfoUiModels,
             getStockAllocationData.summary,
             sellableProducts,
@@ -147,12 +174,20 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
     @Test
     fun `success get non variant stock allocation result with inactive campaign`() = runBlocking {
+        val calendar = Calendar.getInstance()
+        val mockDate = calendar.timeInMillis
+        val endDate = calendar.timeInMillis + 1000
         val productId = "1"
         val shopId = "1"
         val getStockAllocationData = GetStockAllocationData(
             detail = GetStockAllocationDetail(
                 reserve = listOf(
-                    GetStockAllocationDetailReserve()
+                    GetStockAllocationDetailReserve(
+                        eventInfo = GetStockAllocationEventInfo(
+                            startTimeNanos = mockDate.toString(),
+                            endTimeNanos = endDate.toString()
+                        )
+                    )
                 )
             )
         )
@@ -172,7 +207,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             isActive = otherCampaignStockData.getIsActive(),
             access = access,
             isCampaign = otherCampaignStockData.campaign?.isActive == true,
-            maxStock = null,
+            maxStock = 0,
             sellableList = getStockAllocationData.detail.sellable
         ) as ArrayList
 
@@ -187,7 +222,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         verifyGetOtherCampaignStockDataCalled()
 
         val expectedResult = Success(NonVariantStockAllocationResult(
-            null,
+            0,
             nonVariantReservedEventInfoUiModels,
             getStockAllocationData.summary,
             sellableProducts,

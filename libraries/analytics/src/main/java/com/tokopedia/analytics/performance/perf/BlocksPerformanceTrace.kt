@@ -35,6 +35,7 @@ class BlocksPerformanceTrace(
     val traceName: String,
     scope: LifecycleCoroutineScope,
     val touchListenerActivity: TouchListenerActivity?,
+    val onPerformanceTraceCancelled: ((state: BlocksPerfState) -> Unit)? = null,
     onLaunchTimeFinished: ((summaryModel: BlocksSummaryModel, capturedBlocks: Set<String>) -> Unit)? = null
 ) {
     companion object {
@@ -80,6 +81,8 @@ class BlocksPerformanceTrace(
 
         emit(performanceBlocksTemp.size)
     }.stateIn(scope, SharingStarted.WhileSubscribed(5000), 0)
+
+    var onBlocksRendered: ((summaryModel: BlocksSummaryModel, capturedBlocks: Set<String>, elapsedTime: Long, identifier: String) -> Unit)? = null
 
     enum class BlocksPerfState {
         STATE_ERROR,
@@ -206,10 +209,22 @@ class BlocksPerformanceTrace(
         }
     }
 
-    fun setBlock(list: List<Any>) {
-        if (list.allLoadableComponentFinished()) {
+    fun setBlock(list: List<Any>, identifier: String = "", blockLimit: Int = 0) {
+        if (list.allLoadableComponentFinished() && list.size >= blockLimit) {
             setLoadableComponentListPerformanceBlocks(
                 list.getFinishedLoadableComponent()
+            )
+        }
+        val allFinishedLoadableComponent = list.filter { it is LoadableComponent && !it.isLoading() }
+        viewHierarchyInUsableState {
+            val currentElapsedTime = System.currentTimeMillis() - startCurrentTimeMillis
+            onBlocksRendered?.invoke(
+                summaryModel.get(),
+                allFinishedLoadableComponent.map {
+                    (it as? LoadableComponent)?.name() ?: ""
+                }.toSet(),
+                currentElapsedTime,
+                identifier
             )
         }
     }
@@ -253,6 +268,7 @@ class BlocksPerformanceTrace(
         )
         targetPerfMonitoring?.stopTrace()
 
+        onPerformanceTraceCancelled?.invoke(state)
         if (summaryModel.get().timeToInitialLayout != null) {
             PerformanceTraceDebugger.logTrace(
                 "Performance TTFL trace finished."

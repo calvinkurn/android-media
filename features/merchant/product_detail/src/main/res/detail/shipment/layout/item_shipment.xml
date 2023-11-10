@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pdp_shipment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/thick_divider_height_component" />
+
+    <ViewStub
+        android:id="@+id/pdp_shipment_state_success"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/view_shipment_success" />
+
+    <ViewStub
+        android:id="@+id/pdp_shipment_state_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/view_shipment_error" />
+
+    <ViewStub
+        android:id="@+id/pdp_shipment_state_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/view_shipment_loading" />
+
+    <ViewStub
+        android:id="@+id/pdp_shipment_state_failed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/view_shipment_failed" />
+
+</LinearLayout>

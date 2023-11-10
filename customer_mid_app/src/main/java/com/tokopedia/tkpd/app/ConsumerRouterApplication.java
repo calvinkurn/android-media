@@ -18,13 +18,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.newrelic.agent.android.FeatureFlag;
 import com.newrelic.agent.android.NewRelic;
 import com.scp.auth.common.utils.ScpRefreshHelper;
 import com.scp.auth.common.utils.ScpUtils;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.app.common.MainApplication;
@@ -67,8 +67,6 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker;
-import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
-import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.data.model.ScpTokenModel;
@@ -76,9 +74,7 @@ import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
 import com.tokopedia.notifications.worker.PushWorker;
-import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
-import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.GraphqlHelper;
@@ -104,11 +100,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.TaskStackBuilder;
+import androidx.preference.PreferenceManager;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Callback;
-import rx.Observable;
 import timber.log.Timber;
 
 /**
@@ -118,7 +116,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdCoreRouter,
         AbstractionRouter,
         ApplinkRouter,
-        LoyaltyModuleRouter,
         NetworkRouter,
         TkpdAppsFlyerRouter,
         LinkerRouter {
@@ -137,8 +134,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private static final int REDIRECTION_HOME = 1;
     private static final int REDIRECTION_WEBVIEW = 2;
     private static final int REDIRECTION_DEFAULT = 0;
-
-    private static final String ENABLE_REMOTERESOURCE = "android_mainapp_enable_remote_resource";
 
     @Override
     public void onCreate() {
@@ -176,8 +171,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void initializationNewRelic() {
         boolean isEnableInitNrInAct = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
         if (isEnableInitNrInAct) {
+            enableNetworkRequestNewRelic();
+            enableCrashReportingNewRelic();
             NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(ConsumerRouterApplication.this);
         }
+    }
+
+    protected void enableNetworkRequestNewRelic() {
+        NewRelic.enableFeature(FeatureFlag.NetworkRequests);
+    }
+
+    protected void enableCrashReportingNewRelic() {
+        NewRelic.enableFeature(FeatureFlag.CrashReporting);
     }
 
     private void syncFcmToken() {
@@ -285,9 +290,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initResourceDownloadManager() {
-        if (remoteConfig.getBoolean(ENABLE_REMOTERESOURCE, false)) {
-            (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
-        }
+        (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
     }
 
     private void initIris() {
@@ -449,17 +452,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
-        if (omsComponent == null) {
-            omsComponent = DaggerOmsComponent.builder()
-                    .baseAppComponent((ConsumerRouterApplication.this).getBaseAppComponent())
-                    .build();
-        }
-        return new PostVerifyCartWrapper(this, omsComponent.getPostVerifyCartUseCase())
-                .verifyPromo(requestParams);
-    }
-
-    @Override
     public boolean isSupportApplink(String appLink) {
         return false;
     }
@@ -487,13 +479,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getApplinkIntent(Context context, String applink) {
         return RouteManager.getIntent(context, applink);
-    }
-
-    @Override
-    public Observable<VoucherViewModel> checkTrainVoucher(String trainReservationId,
-                                                          String trainReservationCode,
-                                                          String galaCode) {
-        return Observable.just(new VoucherViewModel());
     }
 
     @Override

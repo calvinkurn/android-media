@@ -234,7 +234,6 @@ import java.net.URLEncoder
 import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import com.tokopedia.loyalty.R as loyaltyR
 import com.tokopedia.play.widget.R as playwidgetR
 import com.tokopedia.searchbar.R as searchbarR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -1087,7 +1086,7 @@ open class HomeRevampFragment :
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         createAndCallSendScreen()
-        adapter?.onResumeBanner()
+        adapter?.onResume()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
@@ -1095,8 +1094,6 @@ open class HomeRevampFragment :
         if (getHomeViewModel().isFirstLoad) {
             getHomeViewModel().isFirstLoad = false
         }
-
-        adapter?.onResumeSpecialRelease()
 
         // refresh home-to-do-widget data if needed
         getHomeViewModel().getCMHomeWidgetData(false)
@@ -1146,7 +1143,7 @@ open class HomeRevampFragment :
     override fun onPause() {
         playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
-        adapter?.onPauseBanner()
+        adapter?.onPause()
         getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
@@ -1777,7 +1774,7 @@ open class HomeRevampFragment :
             if (activity != null) {
                 showBannerWebViewOnAllPromoClickFromHomeIntent(
                     BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP,
-                    getString(loyaltyR.string.title_activity_promo)
+                    getString(R.string.title_activity_promo)
                 )
             }
         }
@@ -2306,11 +2303,13 @@ open class HomeRevampFragment :
             trackScreen(isVisibleToUser)
             if (isVisibleToUser) {
                 conditionalViewModelRefresh()
+                adapter?.onResume()
+            } else {
+                adapter?.onPause()
             }
             playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
             )
-            adapter?.onResumeSpecialRelease()
             manageCoachmarkOnFragmentVisible(isVisibleToUser)
         }
     }
