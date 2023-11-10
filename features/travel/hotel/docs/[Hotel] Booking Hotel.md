@@ -35,7 +35,7 @@ When the user wants to book a hotel, we need to inform the booking details such 
 
 ## Flow Diagram
 
-![](https://docs-android.tokopedia.net/images/docs/hotel/Hotel-Order-Page.png)
+<img src="https://docs-android.tokopedia.net/images/docs/hotel/Hotel-Order-Page.png"/>
 
 ![](https://docs-android.tokopedia.net/images/docs/hotel/Hotel-Contact-Form-on-Order.png)
 
