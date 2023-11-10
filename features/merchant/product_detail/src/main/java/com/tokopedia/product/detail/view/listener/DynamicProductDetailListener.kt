@@ -36,6 +36,8 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
+import com.tokopedia.universal_sharing.view.model.ShareWidgetParam
 import com.tokopedia.user.session.UserSessionInterface
 
 interface DynamicProductDetailListener {
@@ -498,6 +500,7 @@ interface DynamicProductDetailListener {
         item: PlayWidgetChannelUiModel,
         isRemindMe: Boolean
     )
+    fun onUniversalShareWidget(widget: UniversalShareWidget)
 
     /**
      * ProductDetailNavigation / Navigation Bar / Tab

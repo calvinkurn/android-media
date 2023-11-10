@@ -878,8 +878,8 @@ object DynamicProductDetailMapper {
             hasCampaign = product.data.campaign.isActive.compareTo(false).toString(),
             campaignName = product.data.campaign.campaignTypeName,
             campaignDiscount = product.data.campaign.percentageAmount.toInt(),
-            newProductPrice = product.data.price.priceFmt
-
+            newProductPrice = product.data.price.priceFmt,
+            productImageUrl = product.data.getProductImageUrl() ?: ""
         )
     }
 
