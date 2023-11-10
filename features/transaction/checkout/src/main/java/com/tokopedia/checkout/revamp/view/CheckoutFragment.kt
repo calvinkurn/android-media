@@ -1855,7 +1855,8 @@ class CheckoutFragment :
         if (!viewModel.isLoading()) {
             val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
             if (viewModel.useNewPromoPage()) {
-                val validateUseRequestParam = viewModel.generateValidateUsePromoRequestForPromoUsage()
+                val validateUseRequestParam =
+                    viewModel.generateValidateUsePromoRequestForPromoUsage()
                 val totalAmount = viewModel.listData.value.buttonPayment()!!.totalPriceNum
                 val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
                     entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,
@@ -2157,6 +2158,7 @@ class CheckoutFragment :
             viewModel.checkout(publicKey, { onTriggerEpharmacyTracker(it) }) {
                 onSuccessCheckout(it)
             }
+            sendProcessToPaymentAnalytic()
         }
     }
 
@@ -2503,7 +2505,11 @@ class CheckoutFragment :
                     )
                 val clearPromoUiModel =
                     data.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
-                onResultFromPromo(validateUsePromoRequest, validateUsePromoRevampUiModel, clearPromoUiModel)
+                onResultFromPromo(
+                    validateUsePromoRequest,
+                    validateUsePromoRevampUiModel,
+                    clearPromoUiModel
+                )
             }
         }
     }
@@ -2621,6 +2627,19 @@ class CheckoutFragment :
 
     override fun onPaymentLevelAddOnsImpressed(categoryName: String, crossSellProductId: String) {
         val productCatIds = viewModel.getProductCatIds()
-        paymentAddOnsAnalytics.eventImpressCrossSellIcon(categoryName, crossSellProductId, productCatIds)
+        paymentAddOnsAnalytics.eventImpressCrossSellIcon(
+            categoryName,
+            crossSellProductId,
+            productCatIds
+        )
+    }
+
+    private fun sendProcessToPaymentAnalytic() {
+        val productCatIds = viewModel.getProductCatIds()
+        val paymentAddOnsAnalyticData = viewModel.generatePaymentLevelAddOnsAnalyticData()
+        paymentAddOnsAnalytics.eventClickPaymentMethodWithCrossSell(
+            paymentAddOnsAnalyticData,
+            productCatIds
+        )
     }
 }

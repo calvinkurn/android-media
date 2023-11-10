@@ -97,27 +97,29 @@ class CheckoutPaymentAddOnsAnalytics @Inject constructor(
     }
 
     fun eventClickPaymentMethodWithCrossSell(
-        categoryName: String,
-        crossSellProductId: String,
+        crossSellData: List<Pair<String, String>>,
         productCatIds: List<Long>
     ) {
-        val gtmData = getGtmData(
-            ConstantTransactionAnalytics.EventName.SELECT_CONTENT,
-            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
-            EVENT_CLICK_PAYMENT_METHOD_WITH_CROSS_SELL,
-            "" // todo: change event label
-        )
+        for (crossSell in crossSellData) {
+            val (categoryName, crossSellProductId) = crossSell
+            val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.SELECT_CONTENT,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                EVENT_CLICK_PAYMENT_METHOD_WITH_CROSS_SELL,
+                generateEventLabel(categoryName, crossSellProductId, productCatIds)
+            )
 
-        gtmData[ConstantTransactionAnalytics.ExtraKey.TRACKER_ID] =
-            EVENT_CLICK_PAYMENT_METHOD_WITH_CROSS_SELL_TRACKER_ID
-        gtmData[ConstantTransactionAnalytics.Key.CURRENT_SITE] =
-            ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-        gtmData[ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT] =
-            ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
-        gtmData[ConstantTransactionAnalytics.ExtraKey.USER_ID] = userSession.userId
-        gtmData[ConstantTransactionAnalytics.ExtraKey.PROMOTIONS] = mutableMapOf<String, String>()
+            gtmData[ConstantTransactionAnalytics.ExtraKey.TRACKER_ID] =
+                EVENT_CLICK_PAYMENT_METHOD_WITH_CROSS_SELL_TRACKER_ID
+            gtmData[ConstantTransactionAnalytics.Key.CURRENT_SITE] =
+                ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+            gtmData[ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT] =
+                ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+            gtmData[ConstantTransactionAnalytics.ExtraKey.USER_ID] = userSession.userId
+            gtmData[ConstantTransactionAnalytics.ExtraKey.PROMOTIONS] = mutableMapOf<String, String>()
 
-        sendEnhancedEcommerce(gtmData)
+            sendEnhancedEcommerce(gtmData)
+        }
     }
 
     private fun generateEventLabel(
