@@ -503,6 +503,8 @@ object DeeplinkDFApp {
         // people
         DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/settings/.*"),
         DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*"),
+        DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*/followers"),
+        DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*/following"),
     )
 
     private fun getDfPromoGamification() = mutableListOf(
