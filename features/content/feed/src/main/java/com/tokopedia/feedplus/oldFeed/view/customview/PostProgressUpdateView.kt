@@ -15,15 +15,17 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
 import com.tokopedia.createpost.common.view.service.SubmitPostService
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
+import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.oldFeed.view.analytics.shorts.PlayShortsInFeedAnalytic
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
-import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import com.tokopedia.createpost.common.R as createPostCommonR
 
@@ -95,9 +97,10 @@ class PostProgressUpdateView @JvmOverloads constructor(
     }
 
     fun handleShortsUploadFailed(
-        uploadData: PlayShortsUploadModel,
-        uploader: PlayShortsUploader,
-        analytic: PlayShortsInFeedAnalytic
+        uploadData: CreationUploadData,
+        uploader: CreationUploader,
+        analytic: PlayShortsInFeedAnalytic,
+        scope: CoroutineScope,
     ) {
         mPostUpdateSwipe?.updateVisibility(true)
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_RED
@@ -106,7 +109,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
         processingText?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         retryText?.setOnClickListener {
             analytic.clickRetryUploadShorts(uploadData.authorId, uploadData.authorType)
-            retryPostShorts(uploadData, uploader)
+            retryPostShorts(uploader, scope)
         }
     }
 
@@ -147,8 +150,8 @@ class PostProgressUpdateView @JvmOverloads constructor(
     }
 
     private fun retryPostShorts(
-        uploadData: PlayShortsUploadModel,
-        uploader: PlayShortsUploader
+        uploader: CreationUploader,
+        scope: CoroutineScope,
     ) {
         processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
         processingText?.setTextColor(
@@ -162,7 +165,9 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
         setProgressUpdate(0, 0)
 
-        uploader.upload(uploadData)
+        scope.launch {
+            uploader.retry(-1)
+        }
     }
 
     private val submitPostReceiver: BroadcastReceiver by lazy {

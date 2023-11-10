@@ -4,12 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
-import com.tokopedia.creation.common.upload.di.uploader.DaggerCreationUploaderComponent
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.creation.common.upload.uploader.dialog.PlayInstallMainAppDialog
 import com.tokopedia.kotlin.extensions.view.isAppInstalled
 import javax.inject.Inject
@@ -40,9 +39,8 @@ class PlayShortsPostUploadActivity : BaseActivity() {
     }
 
     private fun inject() {
-        DaggerCreationUploaderComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
+        CreationUploaderComponentProvider
+            .get(applicationContext)
             .inject(this)
     }
 

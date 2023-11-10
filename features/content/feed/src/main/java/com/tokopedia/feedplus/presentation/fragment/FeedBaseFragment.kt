@@ -31,6 +31,11 @@ import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBot
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
+import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
+import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.model.CreationUploadResult
+import com.tokopedia.creation.common.upload.model.CreationUploadType
+import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedNavigationAnalytics
@@ -46,9 +51,6 @@ import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
-import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
-import com.tokopedia.feedplus.presentation.receiver.UploadStatus
-import com.tokopedia.feedplus.presentation.receiver.UploadType
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
@@ -58,7 +60,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.FragmentListener
-import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -103,9 +104,6 @@ class FeedBaseFragment :
         }
 
     @Inject
-    lateinit var uploadReceiverFactory: FeedMultipleSourceUploadReceiver.Factory
-
-    @Inject
     lateinit var playShortsUploadAnalytic: PlayShortsUploadAnalytic
 
     @Inject
@@ -113,6 +111,9 @@ class FeedBaseFragment :
 
     @Inject
     lateinit var feedNavigationAnalytics: FeedNavigationAnalytics
+
+    @Inject
+    lateinit var creationUploader: CreationUploader
 
     private var mCoachMarkJob: Job? = null
 
@@ -484,65 +485,80 @@ class FeedBaseFragment :
     private fun observeUpload() {
         // we don't use repeatOnLifecycle here as we want to listen to upload receivers even when the page is not fully resumed
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            val uploadReceiver = uploadReceiverFactory.create(this@FeedBaseFragment)
-            uploadReceiver
+            creationUploader
                 .observe()
-                .collect { info ->
-                    when (val status = info.status) {
-                        is UploadStatus.Progress -> {
-                            binding.uploadView.show()
-                            binding.uploadView.setProgress(status.progress)
-                            binding.uploadView.setThumbnail(status.thumbnailUrl)
+                .collect { uploadResult ->
+                    when (uploadResult) {
+                        is CreationUploadResult.Empty -> {
+                            binding.uploadView.hide()
                         }
-
-                        is UploadStatus.Finished -> {
+                        is CreationUploadResult.Upload -> {
+                            binding.uploadView.show()
+                            binding.uploadView.setUploadProgress(uploadResult.progress)
+                            binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                        }
+                        is CreationUploadResult.OtherProcess -> {
+                            binding.uploadView.show()
+                            binding.uploadView.setOtherProgress(uploadResult.progress)
+                            binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                        }
+                        is CreationUploadResult.Success -> {
                             binding.uploadView.hide()
 
-                            if (info.type == UploadType.Shorts) {
-                                showNormalToaster(
-                                    getString(R.string.feed_upload_content_success),
-                                    duration = Toaster.LENGTH_LONG,
-                                    actionText = getString(R.string.feed_upload_shorts_see_video),
-                                    actionListener = {
-                                        playShortsUploadAnalytic.clickRedirectToChannelRoom(
-                                            status.authorId,
-                                            status.authorType,
-                                            status.contentId
-                                        )
-                                        router.route(
-                                            requireContext(),
-                                            ApplinkConst.PLAY_DETAIL,
-                                            status.contentId
-                                        )
-                                    }
-                                )
-                            } else {
-                                showNormalToaster(
-                                    getString(R.string.feed_upload_content_success),
-                                    duration = Toaster.LENGTH_LONG
-                                )
+                            when (uploadResult.data.uploadType) {
+                                CreationUploadType.Post -> {
+                                    showNormalToaster(
+                                        getString(R.string.feed_upload_content_success),
+                                        duration = Toaster.LENGTH_LONG
+                                    )
+                                }
+                                CreationUploadType.Shorts -> {
+                                    showNormalToaster(
+                                        getString(R.string.feed_upload_content_success),
+                                        duration = Toaster.LENGTH_LONG,
+                                        actionText = getString(R.string.feed_upload_shorts_see_video),
+                                        actionListener = {
+                                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
+                                                uploadResult.data.authorId,
+                                                uploadResult.data.authorType,
+                                                uploadResult.data.creationId
+                                            )
+                                            router.route(
+                                                requireContext(),
+                                                ApplinkConst.PLAY_DETAIL,
+                                                uploadResult.data.creationId
+                                            )
+                                        }
+                                    )
+                                }
+                                else -> {}
                             }
                         }
-
-                        is UploadStatus.Failed -> {
+                        is CreationUploadResult.Failed -> {
+                            binding.uploadView.show()
                             binding.uploadView.setFailed()
+                            binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
                             binding.uploadView.setListener(object : UploadInfoView.Listener {
                                 override fun onRetryClicked(view: UploadInfoView) {
-                                    status.onRetry()
+                                    launch {
+                                        creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
+                                    }
                                 }
 
                                 override fun onCloseWhenFailedClicked(view: UploadInfoView) {
                                     launch {
-                                        uploadReceiver.releaseCurrent()
+                                        creationUploader.deleteTopQueue()
+                                        creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
                                         binding.uploadView.hide()
                                     }
 
-                                    if (info.type == UploadType.Post) {
+                                    if (uploadResult.data.uploadType == CreationUploadType.Post) {
                                         feedMainViewModel.deletePostCache()
                                     }
                                 }
                             })
                         }
+                        else -> {}
                     }
                 }
         }

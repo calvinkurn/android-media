@@ -34,7 +34,7 @@ class StoriesUploadNotificationManager @Inject constructor(
         failRetryAction = context.getString(R.string.content_creation_upload_notification_stories_fail_retry),
     )
 
-    override fun generateSuccessPendingIntent(): PendingIntent {
+    override fun generateSuccessPendingIntent(): PendingIntent? {
         val uri = UriUtil.buildUri(
             ApplinkConst.Stories.STORIES_VIEWER,
             if (uploadData?.authorType == TYPE_CONTENT_SHOP) ApplinkConst.Stories.STORIES_VIEWER_TYPE_SHOP else ApplinkConst.Stories.STORIES_VIEWER_TYPE_USER,

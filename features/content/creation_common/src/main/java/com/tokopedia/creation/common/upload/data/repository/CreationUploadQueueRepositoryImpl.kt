@@ -21,39 +21,55 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
 ) : CreationUploadQueueRepository {
 
     override suspend fun insert(data: CreationUploadData) {
-        mutex.withLock {
-            withContext(dispatchers.io) {
-                creationUploadQueueDatabase.creationUploadQueueDao().insert(data.mapToEntity(gson))
-            }
+        lockAndSwitchContext(dispatchers) {
+            creationUploadQueueDatabase.creationUploadQueueDao().insert(data.mapToEntity(gson))
         }
     }
 
     override suspend fun getTopQueue(): CreationUploadData? {
-        return mutex.withLock {
-            withContext(dispatchers.io) {
-                val data = creationUploadQueueDatabase.creationUploadQueueDao().getTopQueue()
+        return lockAndSwitchContext(dispatchers) {
+            val data = creationUploadQueueDatabase.creationUploadQueueDao().getTopQueue()
 
-                if (data != null) {
-                    CreationUploadData.parseFromEntity(data, gson)
-                } else {
-                    null
-                }
+            if (data != null) {
+                CreationUploadData.parseFromEntity(data, gson)
+            } else {
+                null
             }
         }
     }
 
     override suspend fun deleteTopQueue() {
-        mutex.withLock {
-            withContext(dispatchers.io) {
-                creationUploadQueueDatabase.creationUploadQueueDao().deleteTopQueue()
-            }
+        lockAndSwitchContext(dispatchers) {
+            creationUploadQueueDatabase.creationUploadQueueDao().deleteTopQueue()
         }
     }
 
     override suspend fun delete(queueId: Int) {
-        mutex.withLock {
+        lockAndSwitchContext(dispatchers) {
+            creationUploadQueueDatabase.creationUploadQueueDao().delete(queueId)
+        }
+    }
+
+    override suspend fun updateProgress(
+        queueId: Int,
+        progress: Int,
+        uploadStatus: String,
+    ) {
+        lockAndSwitchContext(dispatchers) {
+            creationUploadQueueDatabase
+                .creationUploadQueueDao()
+                .updateProgress(
+                    queueId,
+                    progress,
+                    uploadStatus
+                )
+        }
+    }
+
+    private suspend fun <T> lockAndSwitchContext(dispatchers: CoroutineDispatchers, onExecute: suspend () -> T): T {
+        return mutex.withLock {
             withContext(dispatchers.io) {
-                creationUploadQueueDatabase.creationUploadQueueDao().delete(queueId)
+                onExecute()
             }
         }
     }

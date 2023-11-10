@@ -7,7 +7,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
-import com.tokopedia.creation.common.upload.di.CreationUploadDataModule
+import com.tokopedia.creation.common.upload.di.common.CreationUploadDataModule
+import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
+import com.tokopedia.creation.common.upload.util.logger.CreationUploadLoggerImpl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
@@ -31,7 +33,7 @@ import kotlinx.coroutines.CoroutineScope
         VideoUploaderModule::class
     ]
 )
-class CreationUploadWorkerModule {
+object CreationUploadWorkerModule {
 
     /** Need to use this because
      * MediaUploaderModule is not using graphqlRepository

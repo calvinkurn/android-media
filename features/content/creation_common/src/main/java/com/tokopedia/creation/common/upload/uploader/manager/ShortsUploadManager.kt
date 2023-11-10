@@ -3,11 +3,13 @@ package com.tokopedia.creation.common.upload.uploader.manager
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.creation.common.upload.const.CreationUploadConst
+import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.model.CreationUploadStatus
 import com.tokopedia.creation.common.upload.uploader.notification.ShortsUploadNotificationManager
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.creation.common.upload.util.plus
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.play_common.const.PlayUploadSourceIdConst
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -34,24 +36,14 @@ class ShortsUploadManager @AssistedInject constructor(
     private val addMediaUseCase: BroadcasterAddMediasUseCase,
     private val dispatchers: CoroutineDispatchers,
     private val snapshotHelper: VideoSnapshotHelper,
-) : CreationUploadManager {
+) : CreationUploadManager(notificationManager) {
 
     @AssistedFactory
     interface Factory {
         fun create(uploadData: CreationUploadData.Shorts): ShortsUploadManager
     }
 
-    private var currentProgress = 0
-
-    private var mListener: CreationUploadManagerListener? = null
-
-    private val step: Int by lazyThreadSafetyNone {
-        if (uploadData.coverUri.isEmpty()) STEP_WITHOUT_COVER else STEP_WITH_COVER
-    }
-
-    private val progressPerStep by lazyThreadSafetyNone {
-        PROGRESS_MAX / step
-    }
+    private var isUploadShortsMedia = false
 
     /**
      * Upload Flow
@@ -77,19 +69,33 @@ class ShortsUploadManager @AssistedInject constructor(
      * 100 : success
      * -1 : failed
      * else : loading
+     *
+     *
      */
     override suspend fun execute(
-        listener: CreationUploadManagerListener
-    ): Boolean {
+        notificationId: Int,
+    ): CreationUploadExecutionResult {
 
-        setupInitialData(listener)
+        setupInitialData()
+
+        withContext(dispatchers.main) {
+            uploaderUseCase.trackProgress { progress, type ->
+                if (type is ProgressType.Upload && isUploadShortsMedia) {
+                    if (progress == MAX_UPLOAD_PROGRESS) {
+                        broadcastProgress(uploadData, CreationUploadStatus.OtherProcess)
+                    } else {
+                        updateProgress(uploadData, progress)
+                    }
+                }
+            }
+        }
 
         return withContext(dispatchers.io) {
             try {
-                broadcastInit(uploadData)
+                broadcastInit(uploadData, notificationId)
                 updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
 
-                val mediaUrl = uploadMedia(UploadType.Video, uploadData.firstMediaUri, withUpdateProgress = true)
+                val mediaUrl = uploadShortsMedia(uploadData.firstMediaUri)
 
                 if (uploadData.coverUri.isEmpty()) {
                     uploadFirstSnapshotAsCover(uploadData)
@@ -98,52 +104,63 @@ class ShortsUploadManager @AssistedInject constructor(
                 val activeMediaId = addMedia(uploadData, mediaUrl)
                 updateChannelStatusWithMedia(activeMediaId, uploadData, PlayChannelStatusType.Active)
 
-                broadcastComplete()
+                broadcastComplete(uploadData)
 
-                true
-            } catch (e: Exception) {
+                CreationUploadExecutionResult.Success
+            } catch (throwable: Throwable) {
                 /**
                  * updateChannelStatus to TranscodingFailed may error
                  * if no network connection
                  */
+
+                var loggedThrowable = throwable
+
                 try {
                     snapshotHelper.deleteLocalFile()
                     updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
-                } catch (e: Exception) {
+                } catch (fallbackThrowable: Throwable) {
+                    loggedThrowable += fallbackThrowable
                 }
 
-                broadcastFail()
+                broadcastFail(uploadData)
 
-                false
+                CreationUploadExecutionResult.Error(
+                    uploadData,
+                    loggedThrowable
+                )
             }
         }
     }
 
-    private fun setupInitialData(
-        listener: CreationUploadManagerListener
-    ) {
-        this.currentProgress = 0
-        this.mListener = listener
+    private suspend fun uploadShortsMedia(
+        mediaUri: String,
+    ): String {
+        isUploadShortsMedia = true
+        val mediaUrl = uploadMedia(mediaUri, ContentMediaType.Video)
+        isUploadShortsMedia = false
+
+        return mediaUrl
+    }
+
+    private fun setupInitialData() {
+        this.isUploadShortsMedia = false
     }
 
     private suspend fun uploadMedia(
-        uploadType: UploadType,
         mediaUri: String,
-        withUpdateProgress: Boolean
+        mediaType: ContentMediaType,
     ): String {
         val param = uploaderUseCase.createParams(
-            sourceId = getSourceId(uploadType),
+            sourceId = getSourceId(mediaType),
             filePath = File(mediaUri),
-            withTranscode = uploadType.withTranscode
+            withTranscode = mediaType == ContentMediaType.Video
         )
 
         val result = uploaderUseCase(param)
 
         return when (result) {
             is UploadResult.Success -> {
-                if (withUpdateProgress) updateProgress()
-
-                if (uploadType.type == UPLOAD_TYPE_IMAGE) {
+                if (mediaType == ContentMediaType.Image) {
                     result.uploadId
                 } else {
                     result.videoUrl
@@ -161,7 +178,7 @@ class ShortsUploadManager @AssistedInject constructor(
         val bitmap = snapshotHelper.snapVideo(appContext, uploadData.firstMediaUri)
             ?: throw Exception("Gagal upload cover")
 
-        val uploadId = uploadMedia(UploadType.Image, bitmap.absolutePath, withUpdateProgress = false)
+        val uploadId = uploadMedia(bitmap.absolutePath, ContentMediaType.Image)
 
         updateChannelUseCase.apply {
             setQueryParams(
@@ -189,8 +206,6 @@ class ShortsUploadManager @AssistedInject constructor(
 
         if (result.wrapper.mediaIDs.isEmpty()) throw Exception("Active media ID is empty")
 
-        updateProgress()
-
         return result.wrapper.mediaIDs.first()
     }
 
@@ -207,10 +222,6 @@ class ShortsUploadManager @AssistedInject constructor(
                 )
             )
         }.executeOnBackground()
-
-        if (status != PlayChannelStatusType.TranscodingFailed) {
-            updateProgress()
-        }
     }
 
     private suspend fun updateChannelStatusWithMedia(
@@ -228,60 +239,13 @@ class ShortsUploadManager @AssistedInject constructor(
                 )
             )
         }.executeOnBackground()
-
-        updateProgress()
     }
 
-    private suspend fun updateProgress(progress: Int = progressPerStep) {
-        currentProgress += progress
-        broadcastProgress(currentProgress)
-        notificationManager.onProgress(currentProgress)
-    }
-
-    private suspend fun broadcastInit(uploadData: CreationUploadData) {
-        broadcastProgress(CreationUploadConst.PROGRESS_INIT)
-        notificationManager.init(uploadData)
-        mListener?.setupForegroundNotification(notificationManager.onStart())
-    }
-
-    private suspend fun broadcastComplete() {
-        broadcastProgress(CreationUploadConst.PROGRESS_COMPLETED)
-        notificationManager.onSuccess()
-        delay(UPLOAD_FINISH_DELAY)
-    }
-
-    private suspend fun broadcastFail() {
-        broadcastProgress(CreationUploadConst.PROGRESS_FAILED)
-        notificationManager.onError()
-        delay(UPLOAD_FINISH_DELAY)
-    }
-
-    private suspend fun broadcastProgress(progress: Int) {
-        mListener?.setProgress(uploadData, progress)
-    }
-
-    private fun getSourceId(uploadType: UploadType): String {
-        return when (uploadType) {
-            UploadType.Image -> PlayUploadSourceIdConst.uploadImageSourceId
-            UploadType.Video -> uploadData.sourceId
+    private fun getSourceId(mediaType: ContentMediaType): String {
+        return when (mediaType) {
+            ContentMediaType.Image -> PlayUploadSourceIdConst.uploadImageSourceId
+            ContentMediaType.Video -> uploadData.sourceId
+            else -> ""
         }
-    }
-
-    enum class UploadType(
-        val type: String,
-        val withTranscode: Boolean
-    ) {
-        Image(UPLOAD_TYPE_IMAGE, false),
-        Video(UPLOAD_TYPE_VIDEO, true)
-    }
-
-    companion object {
-        private const val UPLOAD_TYPE_IMAGE = "UPLOAD_TYPE_IMAGE"
-        private const val UPLOAD_TYPE_VIDEO = "UPLOAD_TYPE_VIDEO"
-
-        private const val PROGRESS_MAX = 100
-        private const val STEP_WITHOUT_COVER = 5
-        private const val STEP_WITH_COVER = 4
-        private const val UPLOAD_FINISH_DELAY = 1000L
     }
 }

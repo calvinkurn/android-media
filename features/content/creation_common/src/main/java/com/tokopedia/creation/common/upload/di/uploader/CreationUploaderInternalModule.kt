@@ -15,6 +15,7 @@ import dagger.Provides
 class CreationUploaderInternalModule {
 
     @Provides
+    @CreationUploaderScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }

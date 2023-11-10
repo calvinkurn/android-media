@@ -22,6 +22,7 @@ import com.tokopedia.createpost.view.activity.CreatePostActivityNew.Companion.PA
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew.Companion.PARAM_TYPE
 import com.tokopedia.createpost.view.util.ConnectionLiveData
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.feedcomponent.bottomsheets.FeedNetworkErrorBottomSheet
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
@@ -64,6 +65,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         DaggerCreatePostComponent.factory()
             .create(
                 baseAppComponent = (requireContext().applicationContext as BaseMainApplication).baseAppComponent,
+                creationUploaderComponent = CreationUploaderComponentProvider.get(requireContext()),
                 context = requireContext()
             )
             .inject(this)

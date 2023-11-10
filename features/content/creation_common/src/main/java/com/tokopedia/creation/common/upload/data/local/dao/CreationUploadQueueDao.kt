@@ -1,7 +1,6 @@
 package com.tokopedia.creation.common.upload.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.tokopedia.creation.common.upload.data.local.entity.CREATION_UPLOAD_QUEUE
@@ -19,9 +18,16 @@ interface CreationUploadQueueDao {
     @Insert
     suspend fun insert(entity: CreationUploadQueueEntity)
 
-    @Query("DELETE FROM $CREATION_UPLOAD_QUEUE WHERE queue_id IN (SELECT queue_id FROM $CREATION_UPLOAD_QUEUE ORDER BY timestamp DESC LIMIT 1)")
+    @Query("DELETE FROM $CREATION_UPLOAD_QUEUE WHERE queue_id IN (SELECT queue_id FROM $CREATION_UPLOAD_QUEUE ORDER BY timestamp ASC LIMIT 1)")
     suspend fun deleteTopQueue()
 
     @Query("DELETE FROM $CREATION_UPLOAD_QUEUE WHERE queue_id = :queueId")
     suspend fun delete(queueId: Int)
+
+    @Query("UPDATE $CREATION_UPLOAD_QUEUE SET upload_progress = :progress, upload_status = :uploadStatus WHERE queue_id = :queueId")
+    suspend fun updateProgress(
+        queueId: Int,
+        progress: Int,
+        uploadStatus: String,
+    )
 }

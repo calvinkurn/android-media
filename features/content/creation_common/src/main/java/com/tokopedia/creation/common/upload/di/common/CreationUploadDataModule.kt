@@ -1,4 +1,4 @@
-package com.tokopedia.creation.common.upload.di
+package com.tokopedia.creation.common.upload.di.common
 
 import android.content.Context
 import com.google.gson.Gson
@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.data.local.database.CreationUploadQueueDatabase
 import com.tokopedia.creation.common.upload.data.repository.CreationUploadQueueRepositoryImpl
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
+import com.tokopedia.creation.common.upload.util.CreationUploadMutex
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.sync.Mutex
@@ -24,7 +25,7 @@ class CreationUploadDataModule {
 
     @Provides
     fun provideMutex(): Mutex {
-        return Mutex()
+        return CreationUploadMutex.get()
     }
 
     @Provides

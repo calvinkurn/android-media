@@ -8,8 +8,23 @@ sealed interface CreationUploadResult {
 
     object Unknown : CreationUploadResult
 
-    data class Success(
+    object Empty : CreationUploadResult
+
+    data class Upload(
         val data: CreationUploadData,
         val progress: Int,
+    ) : CreationUploadResult
+
+    data class OtherProcess(
+        val data: CreationUploadData,
+        val progress: Int,
+    ) : CreationUploadResult
+
+    data class Success(
+        val data: CreationUploadData,
+    ) : CreationUploadResult
+
+    data class Failed(
+        val data: CreationUploadData,
     ) : CreationUploadResult
 }

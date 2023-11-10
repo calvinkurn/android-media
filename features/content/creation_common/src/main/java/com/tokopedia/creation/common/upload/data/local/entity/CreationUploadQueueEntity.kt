@@ -28,9 +28,13 @@ data class CreationUploadQueueEntity(
     @SerializedName("upload_type")
     val uploadType: String = "",
 
-    @ColumnInfo(name = "queue_status")
-    @SerializedName("queue_status")
-    val queueStatus: String = "",
+    @ColumnInfo(name = "upload_progress")
+    @SerializedName("upload_progress")
+    val uploadProgress: Int = 0,
+
+    @ColumnInfo(name = "upload_status")
+    @SerializedName("upload_status")
+    val uploadStatus: String = "",
 
     @ColumnInfo(name = "timestamp")
     @SerializedName("timestamp")

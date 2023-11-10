@@ -41,8 +41,7 @@ abstract class CreationUploadNotificationManager(
 
     protected var uploadData: CreationUploadData? = null
 
-    private val notificationId: Int
-        get() = uploadData?.notificationId.orZero()
+    private var notificationId: Int = -1
 
     private val notificationIdAfterUpload: Int
         get() = uploadData?.notificationIdAfterUpload.orZero()
@@ -61,7 +60,7 @@ abstract class CreationUploadNotificationManager(
 
     abstract val uploadNotificationText: CreationUploadNotificationText
 
-    abstract fun generateSuccessPendingIntent(): PendingIntent
+    abstract fun generateSuccessPendingIntent(): PendingIntent?
 
     private fun generatePendingIntentToReceiver(action: CreationUploadReceiver.Action): PendingIntent {
         val intent = CreationUploadReceiver.getIntent(
@@ -89,8 +88,12 @@ abstract class CreationUploadNotificationManager(
         }
     }
 
-    suspend fun init(uploadData: CreationUploadData) {
+    suspend fun init(
+        uploadData: CreationUploadData,
+        notificationId: Int,
+    ) {
         this.uploadData = uploadData
+        this.notificationId = notificationId
 
         withContext(dispatchers.io) {
             try {

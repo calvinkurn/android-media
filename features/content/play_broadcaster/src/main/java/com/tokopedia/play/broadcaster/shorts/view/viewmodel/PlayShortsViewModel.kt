@@ -28,8 +28,6 @@ import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
-import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import com.tokopedia.play_common.util.extension.combine
 import kotlinx.coroutines.CoroutineScope

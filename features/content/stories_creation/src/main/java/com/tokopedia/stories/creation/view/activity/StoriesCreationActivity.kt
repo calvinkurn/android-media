@@ -10,7 +10,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
@@ -21,11 +20,11 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
-import com.tokopedia.stories.creation.di.DaggerStoriesCreationComponent
 import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
 import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
+import com.tokopedia.stories.creation.di.StoriesCreationInjector
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBottomSheet
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottomSheet
 import com.tokopedia.stories.creation.view.model.StoriesMedia
@@ -79,11 +78,8 @@ class StoriesCreationActivity : BaseActivity() {
     }
 
     private fun inject() {
-        DaggerStoriesCreationComponent.factory()
-            .create(
-                baseAppComponent = (application as BaseMainApplication).baseAppComponent,
-                context = this,
-            )
+        StoriesCreationInjector
+            .get(this)
             .inject(this)
     }
 

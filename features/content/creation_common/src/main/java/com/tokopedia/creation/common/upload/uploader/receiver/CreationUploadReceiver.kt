@@ -3,12 +3,10 @@ package com.tokopedia.creation.common.upload.uploader.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.app.NotificationManagerCompat
 import com.google.gson.Gson
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
-import com.tokopedia.creation.common.upload.di.uploader.DaggerCreationUploaderComponent
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadType
@@ -46,8 +44,6 @@ class CreationUploadReceiver : BroadcastReceiver() {
         val uploadDataRaw = intent?.getStringExtra(EXTRA_UPLOAD_DATA).orEmpty()
         val uploadData = CreationUploadData.parseFromJson(uploadDataRaw, gson)
 
-        NotificationManagerCompat.from(context).cancel(uploadData.notificationIdAfterUpload)
-
         val action = intent?.getIntExtra(EXTRA_ACTION, 0).orZero()
 
         when(action) {
@@ -56,21 +52,21 @@ class CreationUploadReceiver : BroadcastReceiver() {
                     analytic.clickRetryUpload(uploadData.authorId, uploadData.authorType, uploadData.creationId)
 
                 scope.launch {
-                    creationUploader.retry()
+                    creationUploader.retry(uploadData.notificationIdAfterUpload)
                 }
             }
             Action.RemoveQueue.value -> {
                 scope.launch {
                     uploadQueueRepository.delete(uploadData.queueId)
+                    creationUploader.retry(uploadData.notificationIdAfterUpload)
                 }
             }
         }
     }
 
     private fun inject(context: Context) {
-        DaggerCreationUploaderComponent.builder()
-            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
+        CreationUploaderComponentProvider
+            .get(context)
             .inject(this)
     }
 

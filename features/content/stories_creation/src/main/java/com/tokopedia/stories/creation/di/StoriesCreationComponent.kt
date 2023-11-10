@@ -3,6 +3,7 @@ package com.tokopedia.stories.creation.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.content.common.di.ContentFragmentFactoryModule
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponent
 import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderModule
 import com.tokopedia.stories.creation.view.activity.StoriesCreationActivity
 import dagger.BindsInstance
@@ -17,9 +18,11 @@ import dagger.Component
         StoriesCreationBindModule::class,
         StoriesCreationViewModelModule::class,
         ContentFragmentFactoryModule::class,
-        CreationUploaderModule::class,
     ],
-    dependencies = [BaseAppComponent::class]
+    dependencies = [
+        BaseAppComponent::class,
+        CreationUploaderComponent::class,
+    ]
 )
 @StoriesCreationScope
 interface StoriesCreationComponent {
@@ -30,6 +33,7 @@ interface StoriesCreationComponent {
     interface Factory {
         fun create(
             baseAppComponent: BaseAppComponent,
+            creationUploaderComponent: CreationUploaderComponent,
             @BindsInstance context: Context
         ): StoriesCreationComponent
     }

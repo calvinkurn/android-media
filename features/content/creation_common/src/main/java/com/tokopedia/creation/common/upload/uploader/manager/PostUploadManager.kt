@@ -8,7 +8,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCase
 import com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
-import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -22,7 +21,7 @@ class PostUploadManager @AssistedInject constructor(
     @Assisted private val uploadData: CreationUploadData.Post,
     private val submitPostUseCase: SubmitPostUseCase,
     private val sellerAppReviewHelper: FeedSellerAppReviewHelper,
-) : CreationUploadManager {
+) : CreationUploadManager(null) {
 
     @AssistedFactory
     interface Factory {
@@ -30,16 +29,16 @@ class PostUploadManager @AssistedInject constructor(
     }
 
     override suspend fun execute(
-        listener: CreationUploadManagerListener
-    ): Boolean {
+        notificationId: Int,
+    ): CreationUploadExecutionResult {
         return try {
-            listener.setProgress(uploadData, CreationUploadConst.PROGRESS_INIT)
+            broadcastInit(uploadData, notificationId)
 
             val cacheManager = SaveInstanceCacheManager(appContext, uploadData.draftId)
             val viewModel: CreatePostViewModel = cacheManager.get(
                 CreatePostViewModel.TAG,
                 CreatePostViewModel::class.java
-            ) ?: return false
+            ) ?: throw Exception("Cache manager with id ${uploadData.draftId} is empty")
 
             var uploadedMedia = 0
 
@@ -58,19 +57,26 @@ class PostUploadManager @AssistedInject constructor(
                 onSuccessUploadPerMedia = {
                     if (viewModel.completeImageList.isNotEmpty()) {
                         uploadedMedia++
-                        listener.setProgress(uploadData, (uploadedMedia / viewModel.completeImageList.size.toDouble() * 100).toInt())
+                        updateProgress(
+                            uploadData,
+                            (uploadedMedia / viewModel.completeImageList.size.toDouble() * 100).toInt()
+                        )
                     }
                 }
             )
 
             addFlagOnCreatePostSuccess()
 
-            listener.setProgress(uploadData, CreationUploadConst.PROGRESS_COMPLETED)
+            broadcastComplete(uploadData)
 
-            true
-        } catch (e: Throwable) {
-            listener.setProgress(uploadData, CreationUploadConst.PROGRESS_FAILED)
-            false
+            CreationUploadExecutionResult.Success
+        } catch (throwable: Throwable) {
+            broadcastFail(uploadData)
+
+            CreationUploadExecutionResult.Error(
+                uploadData,
+                throwable
+            )
         }
     }
 
