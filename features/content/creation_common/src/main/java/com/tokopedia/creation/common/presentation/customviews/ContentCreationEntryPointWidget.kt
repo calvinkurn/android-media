@@ -195,13 +195,13 @@ fun ContentCreationEntryPointComponent(
         ) {
             NestIcon(
                 iconId = iconId,
-                modifier = Modifier.size(24.dp),
-                colorLightEnable = NestTheme.colors.NN._900,
-                colorNightEnable = NestTheme.colors.NN._0
+                modifier = Modifier.size(24.dp)
             )
             NestTypography(
                 text = text,
-                textStyle = NestTheme.typography.display3,
+                textStyle = NestTheme.typography.display3.copy(
+                    color = NestTheme.colors.NN._900
+                ),
                 modifier = Modifier
                     .padding(start = 4.dp, end = 8.dp)
                     .fillMaxWidth()
