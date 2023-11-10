@@ -31,8 +31,9 @@ object ContentDateConverter {
             val diff = Duration.between(convert, now)
             Converted(minute = diff.toMinutes(), hour = diff.toHours(), day = diff.toDays(), yearMonth = "${convert.month.name.take(3).lowercase().replaceFirstChar { it.uppercaseChar() }} ${convert.year}")
         } else {
+            TimeZone.setDefault(DateUtil.DEFAULT_TIMEZONE)
             val convert = date.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
-            val diff = Calendar.getInstance(DateUtil.DEFAULT_TIMEZONE).time.time - convert.time
+            val diff = DateUtil.getCurrentCalendar().time.time - convert.time
             val minute = TimeUnit.MINUTES.convert(diff, TimeUnit.MILLISECONDS)
             val hour = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)
             val day = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
