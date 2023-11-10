@@ -439,8 +439,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     private fun generateOgTitle(productData: ProductData): String {
         return if (productData.hasMaskingPrice) {
             "${productData.productName}"
-        }
-        else {
+        } else {
             "${productData.productName} - ${productData.priceText}"
         }
     }
@@ -597,7 +596,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 linkProperties = generateLinkProperties(productData, shareMessage),
                 affiliateInput = affiliateInput,
                 imageGenerator = ImageGeneratorShareWidgetParam(
-                    ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP,
+                    ImageGeneratorConstants.ImageGeneratorSourceId.PDP_WITH_PRICE_STRING,
                     imageGenerator
                 )
             )
