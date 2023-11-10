@@ -31,7 +31,7 @@
             android:layout_marginLeft="8dp"
             app:labelType="highlight_light_green"
             android:layout_gravity="center"
-            tools:text="Apotek Berlisensi"
+            android:text="@string/licensed_apotik_badge"
             tools:visibility="visible" />
 
     </LinearLayout>
