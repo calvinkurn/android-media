@@ -184,6 +184,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.tokopedia.topads.sdk.widget.ShopAdsSingleItemLayout
+        android:id="@+id/shopAdsWithSingleProduct"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:visibility="gone"

@@ -152,6 +152,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val container = findViewById<View>(R.id.container)
         val cpmData = cpmModel?.data?.getOrNull(index)
         val shopAdsWithThreeProducts = findViewById<ShopAdsWithThreeProducts>(R.id.shopAdsWithThreeProducts)
+        val shopAdsWithSingleProduct = findViewById<ShopAdsSingleItemLayout>(R.id.shopAdsWithSingleProduct)
         linearLayoutMerchantVoucher = findViewById(R.id.linearLayoutMerchantVoucher)
         topAdsFlashSaleTimer= findViewById(R.id.topAdsFlashSaleTimer)
 
@@ -300,6 +301,13 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             list?.hide()
             setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerViewClickListener, hasAddProductToCartButton)
         } else if(cpmData.cpm?.layout == LAYOUT_10 || cpmData.cpm?.layout == LAYOUT_11){
+            topAdsCarousel.hide()
+            shopDetail?.hide()
+            shopAdsProductView.hide()
+            adsBannerShopCardView?.hide()
+            shopAdsWithThreeProducts.hide()
+            list?.hide()
+            shopAdsWithSingleProduct.show()
 //            topAdsCarousel.hide()
 //            shopDetail?.hide()
 //            shopAdsProductView.hide()
