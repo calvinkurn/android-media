@@ -194,7 +194,6 @@ class TokoChatListFragment @Inject constructor(
     private fun resetChatList() {
         endlessRecyclerViewScrollListener?.resetState()
         adapter.clearAllItemsAndAnimateChanges()
-        viewModel.resetChatListData()
         initChatListData()
     }
 

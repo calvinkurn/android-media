@@ -87,11 +87,13 @@ class TokoChatListViewModel @Inject constructor(
     }
 
     private fun observeChatListItemFlow() {
-        if (chatListJob != null) {
-            chatListJob?.cancel()
-        }
+        // Cancel existing job first
+        val previousJob = chatListJob
+        previousJob?.cancel()
+
         chatListJob = viewModelScope.launch {
             try {
+                previousJob?.join() // Wait until previous job finished
                 chatListUseCase.conversationChannelFlow
                     .collectLatest { result ->
                         when (result) {
@@ -189,7 +191,7 @@ class TokoChatListViewModel @Inject constructor(
         return mapper.mapToListChat(filteredChannel)
     }
 
-    fun resetChatListData() {
+    private fun resetChatListData() {
         _chatListUiState.update {
             it.copy(
                 isLoading = false,
@@ -197,7 +199,8 @@ class TokoChatListViewModel @Inject constructor(
                 page = 0,
                 hasNextPage = false,
                 errorMessage = null,
-                trackerData = null
+                trackerData = null,
+                localListLoaded = false
             )
         }
     }
