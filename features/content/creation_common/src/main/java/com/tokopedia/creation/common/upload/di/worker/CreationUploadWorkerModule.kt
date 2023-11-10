@@ -76,9 +76,4 @@ object CreationUploadWorkerModule {
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
-
-    @Provides
-    fun provideCreationUploadLogger(): CreationUploadLogger {
-        return CreationUploadLoggerImpl()
-    }
 }

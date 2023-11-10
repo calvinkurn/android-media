@@ -93,7 +93,7 @@ open class SubmitPostUseCase @Inject constructor(
         val result = super.executeOnBackground()
 
         if (result.feedContentSubmit.success != SubmitPostData.SUCCESS) {
-            throw Exception("Submit post is not success")
+            throw Exception(result.feedContentSubmit.error)
         }
 
         deleteMediaPostCacheUseCase(Unit)
