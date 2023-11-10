@@ -49,6 +49,7 @@ import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.getTokoChatPhotoPath
 import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
+import com.tokopedia.tokochat.view.chatroom.uistate.TokoChatGroupBookingUiState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -60,6 +61,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -138,6 +140,9 @@ class TokoChatViewModel @Inject constructor(
     val error: LiveData<Pair<Throwable, String>>
         get() = _error
 
+    private val _groupBookingUiState = MutableSharedFlow<TokoChatGroupBookingUiState>()
+    val groupBookingUiState = _groupBookingUiState.asSharedFlow()
+
     var gojekOrderId: String = ""
     var source: String = ""
     var tkpdOrderId: String = ""
@@ -214,18 +219,43 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun initGroupBooking() {
-        try {
-            groupBookingUseCase.initGroupBookingChat(
-                orderId = gojekOrderId,
-                serviceType = getServiceType()
-            )
-        } catch (throwable: Throwable) {
-            _error.value = Pair(throwable, ::initGroupBooking.name)
+        viewModelScope.launch {
+            try {
+                groupBookingUseCase.initGroupBookingChat(
+                    orderId = gojekOrderId,
+                    serviceType = getServiceType()
+                ).collectLatest { result ->
+                    when (result) {
+                        is TokoChatResult.Success -> {
+                            onSuccessInitGroupBooking(result.data)
+                        }
+                        is TokoChatResult.Error -> {
+                            onErrorInitGroupBooking(result.throwable)
+                        }
+                        TokoChatResult.Loading -> Unit // no-op
+                    }
+                }
+            } catch (throwable: Throwable) {
+                _error.value = Pair(throwable, ::initGroupBooking.name)
+            }
         }
     }
 
-    fun getGroupBookingFlow(): SharedFlow<TokoChatResult<String>> {
-        return groupBookingUseCase.groupBookingResultFlow
+    private suspend fun onSuccessInitGroupBooking(channelUrl: String) {
+        _groupBookingUiState.emit(
+            TokoChatGroupBookingUiState(
+                channelUrl = channelUrl
+            )
+        )
+    }
+
+    private suspend fun onErrorInitGroupBooking(throwable: Throwable) {
+        _groupBookingUiState.emit(
+            TokoChatGroupBookingUiState(
+                error = throwable
+            )
+        )
+        _error.value = Pair(throwable, ::onErrorInitGroupBooking.name)
     }
 
     private fun getServiceType(): TokoChatServiceType {

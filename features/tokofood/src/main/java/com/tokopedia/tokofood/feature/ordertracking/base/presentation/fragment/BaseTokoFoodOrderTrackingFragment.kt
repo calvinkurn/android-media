@@ -28,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.config.util.TokoChatConnection
-import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
@@ -271,16 +270,12 @@ open class BaseTokoFoodOrderTrackingFragment :
     private fun observeGroupBooking() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getGroupBookingFlow().collectLatest {
-                    when (it) {
-                        is TokoChatResult.Success -> {
-                            viewModel.channelId = it.data
-                            viewModel.fetchUnReadChatCount()
-                        }
-                        is TokoChatResult.Error -> {
-                            updateUnreadChatCounter(Int.ZERO)
-                        }
-                        TokoChatResult.Loading -> Unit // no-op
+                viewModel.groupBookingUiState.collectLatest {
+                    if (it.error == null) {
+                        viewModel.channelId = it.channelUrl
+                        viewModel.fetchUnReadChatCount()
+                    } else {
+                        updateUnreadChatCounter(Int.ZERO)
                     }
                 }
             }
@@ -290,16 +285,12 @@ open class BaseTokoFoodOrderTrackingFragment :
     private fun observeUnreadChatCount() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getUnReadChatCountFlow().collectLatest {
-                    when (it) {
-                        is TokoChatResult.Success -> {
-                            updateUnreadChatCounter(it.data)
-                        }
-                        is TokoChatResult.Error -> {
-                            logExceptionReadCounterToServerLogger(it.throwable)
-                            updateUnreadChatCounter(Int.ZERO)
-                        }
-                        TokoChatResult.Loading -> Unit // no-op
+                viewModel.chatCounterUiState.collectLatest {
+                    if (it.error == null) {
+                        updateUnreadChatCounter(it.counter)
+                    } else {
+                        logExceptionReadCounterToServerLogger(it.error)
+                        updateUnreadChatCounter(Int.ZERO)
                     }
                 }
             }
