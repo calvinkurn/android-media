@@ -4,6 +4,10 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 
+private const val E_GOLD_CATEGORY_NAME = "egold"
+private const val DG_CATEGORY_NAME = "tm"
+private const val DONATION_CATEGORY_NAME = "donation"
+
 data class CheckoutCrossSellGroupModel(
     override val cartStringGroup: String = "",
     val crossSellList: List<CheckoutCrossSellItem> = emptyList(),
@@ -12,6 +16,13 @@ data class CheckoutCrossSellGroupModel(
 
 sealed class CheckoutCrossSellItem {
     var hasSentImpressionAnalytics: Boolean = false
+    var productId: String = "0"
+
+    abstract fun getCategoryName(): String
+
+    open fun getCrossSellProductId(): String {
+        return productId
+    }
 }
 
 data class CheckoutCrossSellModel(
@@ -19,16 +30,35 @@ data class CheckoutCrossSellModel(
     var isChecked: Boolean = false,
     var isEnabled: Boolean = true,
     var index: Int = -1
-) : CheckoutCrossSellItem()
+) : CheckoutCrossSellItem() {
+
+    override fun getCategoryName(): String {
+        return crossSellModel.orderSummary.title
+    }
+
+    override fun getCrossSellProductId(): String {
+        return crossSellModel.id
+    }
+}
 
 data class CheckoutEgoldModel(
     val egoldAttributeModel: EgoldAttributeModel,
     val isChecked: Boolean = false,
     val buyEgoldValue: Long = 0
-) : CheckoutCrossSellItem()
+) : CheckoutCrossSellItem() {
+
+    override fun getCategoryName(): String {
+        return E_GOLD_CATEGORY_NAME
+    }
+}
 
 data class CheckoutDonationModel(
     var donation: Donation = Donation(),
     var isChecked: Boolean = false,
     var isEnabled: Boolean = true
-) : CheckoutCrossSellItem()
+) : CheckoutCrossSellItem() {
+
+    override fun getCategoryName(): String {
+        return DONATION_CATEGORY_NAME
+    }
+}

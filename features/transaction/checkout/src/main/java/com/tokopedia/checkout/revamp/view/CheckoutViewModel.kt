@@ -2503,6 +2503,10 @@ class CheckoutViewModel @Inject constructor(
         return helper.getOrderProducts(listData.value, cartStringGroup)
     }
 
+    fun getProductCatIds(): List<Long> {
+        return helper.getAllProductCategoryIds(listData.value)
+    }
+
     fun cancelUpsell(
         isReloadData: Boolean,
         skipUpdateOnboardingState: Boolean,

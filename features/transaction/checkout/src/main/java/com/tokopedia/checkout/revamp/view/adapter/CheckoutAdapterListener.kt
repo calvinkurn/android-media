@@ -144,5 +144,8 @@ interface CheckoutAdapterListener {
         shopId: String
     )
 
-    fun onPaymentLevelAddOnsImpressed()
+    fun onPaymentLevelAddOnsImpressed(
+        categoryName: String,
+        crossSellProductId: String
+    )
 }

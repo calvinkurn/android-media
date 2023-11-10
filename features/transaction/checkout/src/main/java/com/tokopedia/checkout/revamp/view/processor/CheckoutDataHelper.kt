@@ -19,4 +19,14 @@ class CheckoutDataHelper @Inject constructor() {
         }
         return products
     }
+
+    fun getAllProductCategoryIds(listData: List<CheckoutItem>): List<Long> {
+        val productCatIds = arrayListOf<Long>()
+        for (checkoutItem in listData) {
+            if (checkoutItem is CheckoutProductModel) {
+                productCatIds.add(checkoutItem.productCatId)
+            }
+        }
+        return productCatIds
+    }
 }

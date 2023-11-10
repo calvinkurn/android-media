@@ -24,12 +24,16 @@ class CheckoutPaymentAddOnsAnalytics @Inject constructor(
         const val EVENT_CLICK_PAYMENT_METHOD_WITH_CROSS_SELL_TRACKER_ID = "17229"
     }
 
-    fun eventImpressCrossSellIcon() {
+    fun eventImpressCrossSellIcon(
+        categoryName: String,
+        crossSellProductId: String,
+        productCatIds: List<Long>
+    ) {
         val gtmData = getGtmData(
             ConstantTransactionAnalytics.EventName.VIEW_ITEM,
             ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
             EVENT_IMPRESSION_CROSS_SELL_ICON,
-            "" // todo: change event label
+            generateEventLabel(categoryName, crossSellProductId, productCatIds)
         )
 
         gtmData[ConstantTransactionAnalytics.ExtraKey.TRACKER_ID] =
@@ -44,12 +48,16 @@ class CheckoutPaymentAddOnsAnalytics @Inject constructor(
         sendEnhancedEcommerce(gtmData)
     }
 
-    fun eventCheckCrossSellIcon() {
+    fun eventCheckCrossSellIcon(
+        categoryName: String,
+        crossSellProductId: String,
+        productCatIds: List<Long>
+    ) {
         val gtmData = getGtmData(
             ConstantTransactionAnalytics.EventName.SELECT_CONTENT,
             ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
             EVENT_CHECK_CROSS_SELL_ICON,
-            "" // todo: change event label
+            generateEventLabel(categoryName, crossSellProductId, productCatIds)
         )
 
         gtmData[ConstantTransactionAnalytics.ExtraKey.TRACKER_ID] =
@@ -64,12 +72,16 @@ class CheckoutPaymentAddOnsAnalytics @Inject constructor(
         sendEnhancedEcommerce(gtmData)
     }
 
-    fun eventUncheckCrossSellIcon() {
+    fun eventUncheckCrossSellIcon(
+        categoryName: String,
+        crossSellProductId: String,
+        productCatIds: List<Long>
+    ) {
         val gtmData = getGtmData(
             ConstantTransactionAnalytics.EventName.SELECT_CONTENT,
             ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
             EVENT_UNCHECK_CROSS_SELL_ICON,
-            "" // todo: change event label
+            generateEventLabel(categoryName, crossSellProductId, productCatIds)
         )
 
         gtmData[ConstantTransactionAnalytics.ExtraKey.TRACKER_ID] =
@@ -84,7 +96,11 @@ class CheckoutPaymentAddOnsAnalytics @Inject constructor(
         sendEnhancedEcommerce(gtmData)
     }
 
-    fun eventClickPaymentMethodWithCrossSell() {
+    fun eventClickPaymentMethodWithCrossSell(
+        categoryName: String,
+        crossSellProductId: String,
+        productCatIds: List<Long>
+    ) {
         val gtmData = getGtmData(
             ConstantTransactionAnalytics.EventName.SELECT_CONTENT,
             ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
@@ -102,5 +118,13 @@ class CheckoutPaymentAddOnsAnalytics @Inject constructor(
         gtmData[ConstantTransactionAnalytics.ExtraKey.PROMOTIONS] = mutableMapOf<String, String>()
 
         sendEnhancedEcommerce(gtmData)
+    }
+
+    private fun generateEventLabel(
+        categoryName: String,
+        crossSellProductId: String,
+        productCatIds: List<Long>
+    ): String {
+        return "$categoryName - $crossSellProductId - ${productCatIds.joinToString()}"
     }
 }

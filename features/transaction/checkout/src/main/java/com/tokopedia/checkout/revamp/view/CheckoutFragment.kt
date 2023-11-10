@@ -2078,10 +2078,19 @@ class CheckoutFragment :
         val digitalProductId = crossSellModel.crossSellModel.id
         val eventLabel = "$digitalCategoryName - $digitalProductId"
         val digitalProductName = crossSellModel.crossSellModel.info.title
+        val productCatIds = viewModel.getProductCatIds()
         if (checked) {
-            paymentAddOnsAnalytics.eventCheckCrossSellIcon()
+            paymentAddOnsAnalytics.eventCheckCrossSellIcon(
+                digitalCategoryName,
+                digitalProductId,
+                productCatIds
+            )
         } else {
-            paymentAddOnsAnalytics.eventUncheckCrossSellIcon()
+            paymentAddOnsAnalytics.eventUncheckCrossSellIcon(
+                digitalCategoryName,
+                digitalProductId,
+                productCatIds
+            )
         }
         checkoutAnalyticsCourierSelection.eventClickCheckboxCrossSell(
             checked,
@@ -2610,7 +2619,8 @@ class CheckoutFragment :
         showToast(throwable.message)
     }
 
-    override fun onPaymentLevelAddOnsImpressed() {
-        paymentAddOnsAnalytics.eventImpressCrossSellIcon()
+    override fun onPaymentLevelAddOnsImpressed(categoryName: String, crossSellProductId: String) {
+        val productCatIds = viewModel.getProductCatIds()
+        paymentAddOnsAnalytics.eventImpressCrossSellIcon(categoryName, crossSellProductId, productCatIds)
     }
 }

@@ -15,7 +15,10 @@ class CheckoutCrossSellItemViewHolder(
         val expectedWidth = parentWidth - 50.dpToPx(binding.root.context.resources.displayMetrics)
         binding.root.layoutParams.width = expectedWidth
         if (!checkoutCrossSellItem.hasSentImpressionAnalytics) {
-            listener.onPaymentLevelAddOnsImpressed()
+            listener.onPaymentLevelAddOnsImpressed(
+                checkoutCrossSellItem.getCategoryName(),
+                checkoutCrossSellItem.getCrossSellProductId()
+            )
             checkoutCrossSellItem.hasSentImpressionAnalytics = true
         }
         CheckoutCrossSellItemView.renderCrossSellItem(checkoutCrossSellItem, binding, listener)
