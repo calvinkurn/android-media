@@ -82,7 +82,7 @@ class PlayBroInteractiveInitViewModelTest {
                 it.getViewModel().submitAction(PlayBroadcastAction.CreateGiveaway("Giveaway",1000L))
             }
             Assertions.assertThat(events.last())
-                .isInstanceOf(PlayBroadcastEvent.CreateInteractive.Error(mockException)::class.java)
+                .isInstanceOf(PlayBroadcastEvent.ShowError::class.java)
         }
     }
 

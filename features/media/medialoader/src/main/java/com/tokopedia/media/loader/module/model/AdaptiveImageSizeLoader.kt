@@ -26,18 +26,12 @@ internal class AdaptiveImageSizeLoader constructor(
     cache: ModelCache<String, GlideUrl?>
 ) : BaseGlideUrlLoader<String>(loader, cache) {
 
-    private var preferences: MediaSettingPreferences? = null
-
-    init {
-        if (preferences == null) {
-            preferences = MediaSettingPreferences(context)
-        }
-    }
+    private var preferences = MediaSettingPreferences.instance(context)
 
     override fun handles(model: String) = true
 
     override fun getUrl(model: String, width: Int, height: Int, options: Options?): String {
-        val setting = preferences?.qualitySettings()?: 0
+        val setting = preferences.qualitySettings()
         val url = buildUrl(setting, model)
 
         return url.also {
