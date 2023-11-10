@@ -123,8 +123,7 @@
     <string name="top_ads_maximum_budget">Maksimum Rp%s</string>
     <string name="top_ads_recommendation_performance">%dx</string>
     <string name="top_ads_recommendation_performance_default_increment">0% meningkat</string>
-    <string name="top_ads_browse_bid_tooltip_desxription">Iklanmu akan tampil pada berbagai halaman strategis seperti di halaman home, keranjang, inbox dan detail produk.
-Sistem Tokopedia akan menampilkan iklan produkmu dengan kemampuan teknologi yang dapat menyesuaikan ketertarikan dan riwayat penjelajahan calon pembeli memungkinkan iklanmu menjangkau calon pembeli dengan lebih luas dan tepat.</string>
+    <string name="top_ads_browse_bid_tooltip_desxription">Iklanmu akan tampil pada berbagai halaman strategis seperti di halaman home, keranjang, inbox dan detail produk.\n\nSistem Tokopedia akan menampilkan iklan produkmu dengan kemampuan teknologi yang dapat menyesuaikan ketertarikan dan riwayat penjelajahan calon pembeli memungkinkan iklanmu menjangkau calon pembeli dengan lebih luas dan tepat.</string>
 
 
 </resources>

@@ -301,4 +301,9 @@ yang ditemukan</string>
     <string name="topchat_message_censored_desc_three_sub_two">&#8226; Hindari promosi situs lain atau berkomunikasi lewat saluran selain Tokopedia.</string>
     <string name="topchat_message_censored_terms_condition">Buat tahu lebih lanjut, cek Syarat &amp; Ketentuan</string>
     <string name="topchat_message_censored_terms_condition_span">Syarat &amp; Ketentuan</string>
+
+    <!-- Topchat Auto Reply -->
+    <string name="topchat_message_auto_reply_read_more">Baca Selengkapnya</string>
+    <string name="topchat_message_auto_reply_label">Dikirim otomatis oleh penjual</string>
+    <string name="topchat_message_auto_reply_bs_title">Informasi Toko</string>
 </resources>
