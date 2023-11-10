@@ -42,6 +42,7 @@ class CheckoutCartProcessor @Inject constructor(
     private val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
     private val changeShippingAddressGqlUseCase: Lazy<ChangeShippingAddressGqlUseCase>,
     private val releaseBookingUseCase: Lazy<ReleaseBookingUseCase>,
+    private val helper: CheckoutDataHelper,
     private val dispatchers: CoroutineDispatchers
 ) {
 
@@ -181,7 +182,7 @@ class CheckoutCartProcessor @Inject constructor(
             val dataChangeAddressRequests: MutableList<DataChangeAddressRequest> = ArrayList()
             for (item in items) {
                 if (item is CheckoutOrderModel) {
-                    for (product in item.products) {
+                    for (product in helper.getOrderProducts(items, item.cartStringGroup)) {
                         val dataChangeAddressRequest = DataChangeAddressRequest()
                         dataChangeAddressRequest.quantity = product.quantity
                         dataChangeAddressRequest.productId = product.productId
@@ -321,7 +322,7 @@ class CheckoutCartProcessor @Inject constructor(
         if (courierData != null) {
             val shipmentStateProductDataList: MutableList<ShipmentStateProductData> =
                 ArrayList()
-            for (cartItemModel in shipmentCartItemModel.products) {
+            for (cartItemModel in shipmentCartItemModel.checkoutProducts) {
                 val shipmentStateProductData = ShipmentStateProductData()
                 shipmentStateProductData.shopId = cartItemModel.shopId.toLongOrZero()
                 shipmentStateProductData.productId = cartItemModel.productId

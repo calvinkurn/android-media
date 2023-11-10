@@ -63,7 +63,7 @@ data class CheckoutOrderModel(
     val isProductIsPreorder: Boolean = false,
 
     // todo check this usage
-    var products: List<CheckoutProductModel> = ArrayList(),
+    private var checkoutProducts: List<CheckoutProductModel> = ArrayList(),
     var preOrderDurationDay: Int = 0,
 
     // View state
@@ -160,8 +160,11 @@ data class CheckoutOrderModel(
         get() = isDisableChangeCourier && !hasGeolocation
 
     val cartItemModelsGroupByOrder: Map<String, List<CheckoutProductModel>>
-        get() = products.filter { !it.isError }
+        get() = checkoutProducts.filter { !it.isError }
             .groupBy { it.cartStringOrder }
+
+    val productIds: List<String>
+        get() = checkoutProducts.map { it.productId.toString() }
 }
 
 @Parcelize

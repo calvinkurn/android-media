@@ -67,10 +67,8 @@ class CheckoutProcessor @Inject constructor(
             var devicePrice = 0L
             var diagnosticId = ""
             if (listData.isNotEmpty()) {
-                val cartItemModels =
-                    (listData.first { it is CheckoutOrderModel } as CheckoutOrderModel).products
-                if (cartItemModels.isNotEmpty()) {
-                    val cartItemModel = cartItemModels[0]
+                val cartItemModel = listData.firstOrNullInstanceOf(CheckoutProductModel::class.java)
+                if (cartItemModel != null) {
                     deviceModel = cartItemModel.deviceModel
                     devicePrice = cartItemModel.oldDevicePrice
                     diagnosticId = cartItemModel.diagnosticId
@@ -381,7 +379,7 @@ class CheckoutProcessor @Inject constructor(
                     orderProducts = arrayListOf()
                     continue
                 }
-                newShipmentCartItemModelList.add(shipmentCartItemModel.copy(products = orderProducts))
+                newShipmentCartItemModelList.add(shipmentCartItemModel.copy(checkoutProducts = orderProducts))
                 orderProducts = arrayListOf()
             }
         }

@@ -357,7 +357,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
             orderMetadata.add(OrderMetadata(OrderMetadata.FREE_SHIPPING_METADATA, selectedShipper.freeShippingMetadata))
         }
         if (shipmentCartItemModel.hasEthicalProducts) {
-            for (cartItemModel in shipmentCartItemModel.products) {
+            for (cartItemModel in shipmentCartItemModel.checkoutProducts) {
                 if (!cartItemModel.isError && cartItemModel.ethicalDrugDataModel.needPrescription) {
                     if (shipmentCartItemModel.prescriptionIds.isNotEmpty()) {
                         orderMetadata.add(
