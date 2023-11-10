@@ -133,12 +133,42 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                     }
                 }
             }
+
+            if (!it.properties?.backgroundImageUrl.isNullOrEmpty() && components.allowedToHaveBackground()) {
+                components.forEach { item ->
+                    item.isBackgroundPresent = true
+                }
+            }
+
             it.setComponentsItem(components, component.tabName)
             it.noOfPagesLoaded = 1
             it.verticalProductFailState = false
             return true
         }
         return false
+    }
+
+    private fun List<ComponentsItem>.allowedToHaveBackground(): Boolean {
+        val componentsSupportBG = arrayOf(
+            ComponentNames.LihatSemua.componentName,
+            ComponentNames.ProductCardSingle.componentName,
+            ComponentNames.SingleBanner.componentName,
+            ComponentNames.DoubleBanner.componentName,
+            ComponentNames.TripleBanner.componentName,
+            ComponentNames.QuadrupleBanner.componentName,
+            ComponentNames.CalendarWidgetCarousel.componentName,
+            ComponentNames.ProductHighlight.componentName,
+            ComponentNames.ProductCardCarousel.componentName,
+            ComponentNames.MerchantVoucherGrid.componentName
+        )
+
+        var areComponentsSupportBG = true
+
+        forEach { item ->
+            areComponentsSupportBG = componentsSupportBG.find { item.name == it } != null
+        }
+
+        return areComponentsSupportBG
     }
 
     private fun getQueryFilterString(

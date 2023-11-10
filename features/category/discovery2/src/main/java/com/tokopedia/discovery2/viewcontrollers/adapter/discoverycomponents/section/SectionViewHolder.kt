@@ -1,9 +1,9 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section
 
 import android.view.View
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.R
@@ -14,12 +14,12 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.LocalLoad
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class SectionViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -30,6 +30,12 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
     private val festiveContainer: LinearLayoutCompat = itemView.findViewById(R.id.festiveContainer)
 
+    private val festiveBackground: AppCompatImageView =
+        itemView.findViewById(R.id.festiveBackground)
+
+    private val festiveForeground: AppCompatImageView =
+        itemView.findViewById(R.id.festiveForeground)
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as SectionViewModel
         viewModel?.let {
@@ -38,6 +44,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
         viewModel?.shouldShowShimmer()?.let { shimmer.showWithCondition(it) }
         viewModel?.shouldShowError()?.let { carouselEmptyState.showWithCondition(it) }
 
+        resetFestiveSection()
         addChildComponent()
     }
 
@@ -191,29 +198,35 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
     private fun addChildComponent() {
         val sectionComponent = viewModel?.components
 
-        val items = sectionComponent?.getComponentsItem()
+        val items = sectionComponent?.getComponentsItem() ?: return
 
-        val backgroundColor = arrayOf(
-            unifyprinciplesR.color.Unify_RN200_96,
-            unifyprinciplesR.color.Unify_G200_96,
-            unifyprinciplesR.color.Unify_B200_96,
-            unifyprinciplesR.color.Unify_Y200_96
-        ).random()
+        val shouldSupportFestive = items.find { !it.isBackgroundPresent } == null
 
-        festiveContainer.setBackgroundColor(
-            ContextCompat.getColor(
-                itemView.context,
-                backgroundColor
-            )
-        )
-
-        if (items == null) return
-
-        festiveContainer.removeAllViews()
+        if (!shouldSupportFestive) return
 
         items.forEach { item ->
             addComponentView(item)
         }
+
+        sectionComponent.properties?.backgroundImageUrl?.let {
+            festiveBackground.show()
+            festiveBackground.loadImageWithoutPlaceholder(it, skipErrorPlaceholder = true)
+        }
+
+        sectionComponent.properties?.supergraphicImageUrl?.let {
+            festiveForeground.show()
+            festiveForeground.loadImageWithoutPlaceholder(it, skipErrorPlaceholder = true)
+        }
+    }
+
+    private fun resetFestiveSection() {
+        festiveContainer.removeAllViews()
+
+        festiveBackground.layout(0, 0, 0, 0)
+        festiveBackground.hide()
+
+        festiveForeground.layout(0, 0, 0, 0)
+        festiveForeground.hide()
     }
 
     private fun addComponentView(item: ComponentsItem) {

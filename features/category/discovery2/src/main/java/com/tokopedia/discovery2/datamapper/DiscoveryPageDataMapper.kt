@@ -792,62 +792,15 @@ class DiscoveryPageDataMapper(
 
         val componentsItem = component.getComponentsItem()
 
-        if (componentsItem?.isEmpty() == false) {
-            val isBackgroundAvailable = !component.properties?.backgroundImageUrl.isNullOrEmpty()
+        val shouldSupportFestive = componentsItem?.find { !it.isBackgroundPresent } == null
 
-            if (true && componentsItem.allowedToHaveBackground()) {
-                componentsItem.forEachIndexed { index, item ->
-                    item.position = component.position + 1 + index
-                }
-
-//                val festiveSection = ComponentsItem(
-//                    name = ComponentNames.FestiveSection.componentName,
-//                    sectionId = component.sectionId,
-//                    id = component.sectionId,
-//                    position = component.position,
-//                    noOfPagesLoaded = component.noOfPagesLoaded,
-//                    shouldRefreshComponent = component.shouldRefreshComponent
-//                ).apply {
-//                    setComponentsItem(componentsItem)
-//                }
-
-//                Log.e("ketai", "create festive section id ${component.sectionId} and noOfPagesLoaded ${component.noOfPagesLoaded} and shouldRefresh ${component.shouldRefreshComponent}")
-
-//                val festiveSection = component.copy(name = ComponentNames.FestiveSection.componentName)
-//
-//                festiveSection.setComponentsItem(componentsItem)
-//                listComponents.add(festiveSection)
-            } else {
-                componentsItem.let {
-                    listComponents.addAll(getSectionComponentList(it, component.position + 1))
-                }
+        if (!shouldSupportFestive) {
+            componentsItem?.let {
+                listComponents.addAll(getSectionComponentList(it, component.position + 1))
             }
         }
 
         return listComponents
-    }
-
-    private fun List<ComponentsItem>.allowedToHaveBackground(): Boolean {
-        val componentsSupportBG = arrayOf(
-            ComponentNames.LihatSemua.componentName,
-            ComponentNames.ProductCardSingle.componentName,
-            ComponentNames.SingleBanner.componentName,
-            ComponentNames.DoubleBanner.componentName,
-            ComponentNames.TripleBanner.componentName,
-            ComponentNames.QuadrupleBanner.componentName,
-            ComponentNames.CalendarWidgetCarousel.componentName,
-            ComponentNames.ProductHighlight.componentName,
-            ComponentNames.ProductCardCarousel.componentName,
-            ComponentNames.MerchantVoucherGrid.componentName
-        )
-
-        var areComponentsSupportBG = true
-
-        forEach { item ->
-            areComponentsSupportBG = componentsSupportBG.find { item.name == it } != null
-        }
-
-        return areComponentsSupportBG
     }
 
     private fun getSectionComponentList(
