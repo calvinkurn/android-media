@@ -13,9 +13,13 @@ import javax.inject.Inject
 class CreationUploadLoggerImpl @Inject constructor() : CreationUploadLogger {
 
     override fun sendLog(uploadData: CreationUploadData, throwable: Throwable) {
+        sendLog(uploadData.toString(), throwable)
+    }
+
+    override fun sendLog(uploadData: String, throwable: Throwable) {
         sendLog(
             mapOf(
-                FIELD_UPLOAD_DATA to uploadData.toString(),
+                FIELD_UPLOAD_DATA to uploadData,
                 FIELD_STACK_TRACE to throwable.stackTraceToString()
             )
         )
