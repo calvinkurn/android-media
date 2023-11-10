@@ -8,6 +8,7 @@ object RegisterInitialQueryConstant {
     const val PARAM_ID = "id"
     const val PARAM_EMAIL = "email"
     const val PARAM_VALIDATE_TOKEN = "validate_token"
+    const val PARAM_GOTO_VERIFICATION_TOKEN = "goto_verification_token"
     const val PARAM_REG_TYPE = "reg_type"
     const val PARAM_PHONE = "phone"
     const val PARAM_FULLNAME = "fullname"

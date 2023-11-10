@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentActivity
 import com.gojek.pin.Cancelled
 import com.gojek.pin.CtaClicked
 import com.gojek.pin.Failed
-import com.gojek.pin.PinManager
 import com.gojek.pin.PinParam
 import com.gojek.pin.Success
 import com.gojek.pin.viewmodel.state.PinFlowType
@@ -48,6 +47,7 @@ object ScpVerificationManager {
             ),
             verificationListener = object : VerificationListener {
                 override fun verificationFailed(error: CVError) {
+                    cvSdkInstance.closeScreenAndExit()
                     onFailed.invoke(error)
                 }
 

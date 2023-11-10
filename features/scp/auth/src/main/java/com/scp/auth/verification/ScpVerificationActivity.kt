@@ -1,11 +1,9 @@
 package com.scp.auth.verification
 
-import android.content.Context
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.util.AttributeSet
-import android.util.Log
-import android.view.View
-import com.scp.auth.common.utils.ScpConstants
+import android.widget.Toast
 import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.verification.core.domain.common.entities.VerificationCredential
 import com.scp.verification.core.domain.common.entities.VerificationData
@@ -25,17 +23,12 @@ class ScpVerificationActivity : BaseActivity() {
     lateinit var userSession: UserSessionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("ScpVerificationActivity", "scp verif activity")
         super.onCreate(savedInstanceState)
         val binding = ActivityScpAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
-    }
-
-    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
         inject()
         getVerifParam()
         startVerification()
-        return super.onCreateView(name, context, attrs)
     }
 
     private fun inject() {
@@ -54,7 +47,8 @@ class ScpVerificationActivity : BaseActivity() {
         return CvSdkParam(
             otpType = otpType,
             email = email,
-            phone = phoneNumber).apply {
+            phone = phoneNumber
+        ).apply {
             cvSdkParam = this
         }
     }
@@ -67,14 +61,27 @@ class ScpVerificationActivity : BaseActivity() {
                 flow.value,
                 createVerificationData(flow, it),
                 onSuccess = {
-
+                    Toast.makeText(this, "Sukses Verifikasi", Toast.LENGTH_LONG).show()
+                    val bundle = Bundle().apply {
+                        putString(ApplinkConstInternalGlobal.PARAM_UUID, it)
+                        putString(ApplinkConstInternalGlobal.PARAM_TOKEN, it)
+                        putString(ApplinkConstInternalGlobal.PARAM_MSISDN, cvSdkParam?.phone.toEmptyStringIfNull())
+                        putString(ApplinkConstInternalGlobal.PARAM_EMAIL, cvSdkParam?.email.toEmptyStringIfNull())
+                        putString(
+                            ApplinkConstInternalGlobal.PARAM_SOURCE,
+                            getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "")
+                        )
+                        putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, true)
+                    }
+                    setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+                    finish()
                 },
                 onFailed = {
-
+                    Toast.makeText(this, "Terjadi Kesalahan", Toast.LENGTH_LONG).show()
+                    finish()
                 }
             )
         }
-
     }
 
     private fun createVerificationData(flowType: VerificationFlowType, param: CvSdkParam): VerificationData {
@@ -112,5 +119,9 @@ data class CvSdkParam(
 )
 
 enum class VerificationFlowType(val value: String) {
-    REGISTER_EMAIL("register_email")
+    REGISTER_EMAIL("register_email"),
+    REGISTER_PHONE("register_phone"),
+    RESET_PASSWORD("reset_password"),
+    RESET_TOKOPEDIA_PIN("reset_tokopedia_pin"),
+    SQCP("sqcp")
 }

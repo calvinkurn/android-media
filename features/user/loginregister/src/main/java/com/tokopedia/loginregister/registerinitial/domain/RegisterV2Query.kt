@@ -9,6 +9,7 @@ object RegisterV2Query {
                 email   : ${'$'}email
                 password: ${'$'}password
                 os_type : ${'$'}os_type
+                goto_verification_token : ${'$'}goto_verification_token
                 validate_token: ${'$'}validate_token
                 h:${'$'}h
             }) {

@@ -1,5 +1,6 @@
 package com.tokopedia.applink.user
 
+import android.util.Log
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
@@ -20,6 +21,7 @@ object DeeplinkMapperUser {
     const val ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE = "android_fundinvest"
 
     fun getRegisteredNavigationUser(deeplink: String): String {
+        Log.d("DeeplinkMapperUser", "deeplink mapper $deeplink")
         return when {
             deeplink.startsWith(ApplinkConst.CHANGE_INACTIVE_PHONE) -> deeplink.replace(
                 ApplinkConst.CHANGE_INACTIVE_PHONE,
@@ -39,7 +41,7 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.REGISTER -> getRegisterApplink()
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             deeplink.startsWith(ApplinkConst.GOTO_KYC_WEBVIEW) -> ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
-            deeplink == ApplinkConst.OTP -> getOtpApplink()
+            deeplink == ApplinkConst.OTP || deeplink.startsWith(ApplinkConstInternalUserPlatform.COTP) -> getOtpApplink()
             else -> deeplink
         }
     }
@@ -62,6 +64,7 @@ object DeeplinkMapperUser {
 
     private fun getOtpApplink(): String {
         return if (isGotoVerificationEnabled()) {
+            Log.d("ScpVerificationActivity", "deeplink mapper user")
             ApplinkConstInternalUserPlatform.SCP_OTP
         } else {
             ApplinkConstInternalUserPlatform.COTP
@@ -135,7 +138,8 @@ object DeeplinkMapperUser {
     fun getRegisteredUserNavigation(deeplink: String): String {
         return deeplink.replace(
             DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH,
-            ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER+"/")
+            ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER + "/"
+        )
     }
 
     fun isGotoLoginDisabled(): Boolean {
@@ -153,6 +157,4 @@ object DeeplinkMapperUser {
 
     private fun getAbTestPlatform(): AbTestPlatform =
         RemoteConfigInstance.getInstance().abTestPlatform
-
-
 }

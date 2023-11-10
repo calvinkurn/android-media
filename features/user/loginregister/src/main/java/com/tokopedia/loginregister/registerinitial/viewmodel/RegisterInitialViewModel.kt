@@ -220,15 +220,22 @@ class RegisterInitialViewModel @Inject constructor(
         email: String,
         password: String,
         fullname: String,
-        validateToken: String
+        validateToken: String,
+        isScpToken: Boolean
     ): MutableMap<String, String> {
+        val keyToken = if (isScpToken) {
+            RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN
+        } else {
+            RegisterInitialQueryConstant.PARAM_GOTO_VERIFICATION_TOKEN
+        }
+
         return mutableMapOf(
             RegisterInitialQueryConstant.PARAM_EMAIL to email,
             RegisterInitialQueryConstant.PARAM_PASSWORD to password,
             RegisterInitialQueryConstant.PARAM_OS_TYPE to OS_TYPE_ANDROID,
             RegisterInitialQueryConstant.PARAM_REG_TYPE to REG_TYPE_EMAIL,
             RegisterInitialQueryConstant.PARAM_FULLNAME to fullname,
-            RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN to validateToken
+            keyToken to validateToken
         )
     }
 
@@ -236,11 +243,18 @@ class RegisterInitialViewModel @Inject constructor(
         email: String,
         password: String,
         fullname: String,
-        validateToken: String
+        validateToken: String,
+        isScpToken: Boolean = false
     ) {
         launchCatchError(coroutineContext, {
             rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST]?.let { query ->
-                val params = createRegisterBasicParams(email, password, fullname, validateToken)
+                val params = createRegisterBasicParams(
+                    email = email,
+                    password = password,
+                    fullname = fullname,
+                    validateToken = validateToken,
+                    isScpToken = isScpToken
+                )
                 userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
                 registerRequestUseCase.setTypeClass(RegisterRequestPojo::class.java)
                 registerRequestUseCase.setRequestParams(params)
@@ -257,15 +271,21 @@ class RegisterInitialViewModel @Inject constructor(
         email: String,
         password: String,
         fullname: String,
-        validateToken: String
+        validateToken: String,
+        isScpToken: Boolean = false
     ) {
         launchCatchError(coroutineContext, {
             val keyData = generatePublicKeyUseCase().keyData
             if (keyData.key.isNotEmpty()) {
                 val encryptedPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), true)
 
-                val params =
-                    createRegisterBasicParams(email, encryptedPassword, fullname, validateToken)
+                val params = createRegisterBasicParams(
+                    email = email,
+                    password = encryptedPassword,
+                    fullname = fullname,
+                    validateToken = validateToken,
+                    isScpToken = isScpToken
+                )
                 params[RegisterInitialQueryConstant.PARAM_HASH] = keyData.hash
 
                 userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")

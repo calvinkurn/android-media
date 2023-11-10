@@ -872,11 +872,11 @@ class RegisterInitialFragment :
         registerInitialRouter.goToRegisterEmail(this)
     }
 
-    override fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String) {
+    override fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String, isFromScp: Boolean) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
         activity?.let {
             showProgressBar()
-            registerInitialRouter.goToRegisterEmailPageWithParams(this, email, token, source)
+            registerInitialRouter.goToRegisterEmailPageWithParams(this, email, token, source, isFromScp)
         }
     }
 
@@ -1026,15 +1026,17 @@ class RegisterInitialFragment :
                     val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
                     val source = bundle.getString(ApplinkConstInternalGlobal.PARAM_SOURCE)
+                    val isFromScp = bundle.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, false)
                     if (!email.isNullOrEmpty() && !token.isNullOrEmpty()) {
                         if (!source.isNullOrEmpty()) {
                             goToRegisterEmailPageWithEmail(
                                 email,
                                 token,
-                                source
+                                source,
+                                isFromScp
                             )
                         } else {
-                            goToRegisterEmailPageWithEmail(email, token, "")
+                            goToRegisterEmailPageWithEmail(email, token, "", isFromScp)
                         }
                     }
                 }

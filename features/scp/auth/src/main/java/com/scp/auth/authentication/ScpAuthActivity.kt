@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -105,7 +106,7 @@ class ScpAuthActivity : BaseActivity() {
         }
     }
 
-    private fun handleError(){
+    private fun handleError() {
         try {
             ScpUtils.clearTokens()
             Toast.makeText(this@ScpAuthActivity, "Terjadi Kesalahan", Toast.LENGTH_LONG).show()
@@ -160,6 +161,7 @@ class ScpAuthActivity : BaseActivity() {
                 }
 
                 override fun onUserNotRegistered(credential: UserCredential, activity: Activity?) {
+                    Log.d("ScpVerificationActivity", "go to register")
                     gotoRegisterInitial(credential)
                 }
             },
