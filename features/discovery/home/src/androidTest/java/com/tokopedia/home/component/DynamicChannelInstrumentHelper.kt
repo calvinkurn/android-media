@@ -484,9 +484,9 @@ private fun clickLihatSemuaPopularKeyword(view: View, position: Int) {
         if (view.findViewById<View?>(R.id.tv_reload).isVisible) {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
                 .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, clickOnViewChild(R.id.tv_reload, 0)))
-        } else if (view.findViewById<View?>(com.tokopedia.home_component.R.id.cta_button_revamp).isVisible) {
+        } else if (view.findViewById<View?>(com.tokopedia.home_component.R.id.cta_chevron_icon).isVisible) {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, clickOnViewChild(com.tokopedia.home_component.R.id.cta_button_revamp, 0)))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, clickOnViewChild(com.tokopedia.home_component.R.id.cta_chevron_icon, 0)))
         }
     } catch (e: PerformException) {
         e.printStackTrace()
@@ -519,7 +519,7 @@ private fun clickTickerItem(view: View) {
 private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int, scrollVerticalBy: Int = 0) {
     val childView = view
     val seeAllButton = childView.findViewById<View>(R.id.see_all_button)
-    val ctaButton = childView.findViewById<View>(com.tokopedia.home_component.R.id.cta_button_revamp)
+    val ctaButton = childView.findViewById<View>(com.tokopedia.home_component.R.id.cta_chevron_icon)
     if (seeAllButton != null && seeAllButton.isVisible) {
         try {
             Espresso.onView(ViewMatchers.withId(com.tokopedia.home.R.id.home_fragment_recycler_view))
@@ -528,7 +528,7 @@ private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int, scrollVer
     } else if (ctaButton != null && ctaButton.isVisible) {
         try {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(com.tokopedia.home_component.R.id.cta_button_revamp, scrollVerticalBy)))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(com.tokopedia.home_component.R.id.cta_chevron_icon, scrollVerticalBy)))
         } catch (_: PerformException) { }
     }
 }

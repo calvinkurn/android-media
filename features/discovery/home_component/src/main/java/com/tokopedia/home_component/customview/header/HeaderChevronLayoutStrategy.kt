@@ -1,10 +1,8 @@
 package com.tokopedia.home_component.customview.header
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Color
 import android.view.View
-import android.view.ViewStub
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
@@ -12,21 +10,21 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.getLink
+import com.tokopedia.home_component_header.R as home_component_headerR
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
+class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
     companion object {
         private const val ROTATE_TO_DEGREES = 360f
         private const val PIVOT_X_VALUE = 0.5f
@@ -47,33 +45,20 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
             }
     }
 
-    override fun getLayout(): Int = R.layout.home_component_dynamic_channel_header_revamp
+    override fun getLayout(): Int = home_component_headerR.layout.home_component_header_chevron_layout
 
     override fun renderCta(
         itemView: View,
-        channelHeaderContainer: ConstraintLayout?,
-        stubCtaButton: View?,
         channel: ChannelModel,
-        hasSeeMoreApplink: Boolean,
-        hasExpiredTime: Boolean,
         listener: HeaderListener?,
         ctaMode: Int?,
         colorMode: Int?
     ) {
-        if (hasSeeMoreApplink || ctaMode != DynamicChannelHeaderView.CTA_MODE_SEE_ALL) {
-            if (stubCtaButton is ViewStub &&
-                !isViewStubHasBeenInflated(stubCtaButton)
-            ) {
-                stubCtaButton.inflate()?.apply {
-                    ctaButtonRevamp = findViewById(R.id.cta_button_revamp)
-                    ctaButtonRevampContainer = findViewById(R.id.cta_container)
-                    ctaBorder = findViewById(R.id.cta_border_revamp)
-                }
-            } else {
-                ctaButtonRevamp = itemView.findViewById(R.id.cta_button_revamp)
-                ctaButtonRevampContainer = itemView.findViewById(R.id.cta_container)
-                ctaBorder = itemView.findViewById(R.id.cta_border_revamp)
-            }
+        val header = channel.channelHeader
+        if (header.hasSeeMoreApplink() || ctaMode != DynamicChannelHeaderView.CTA_MODE_SEE_ALL) {
+            ctaButtonRevamp = itemView.findViewById(home_component_headerR.id.cta_chevron_icon)
+            ctaButtonRevampContainer = itemView.findViewById(home_component_headerR.id.cta_chevron_container)
+            ctaBorder = itemView.findViewById(home_component_headerR.id.cta_chevron_border)
 
             setCtaIcon(
                 itemView.context,
@@ -81,12 +66,6 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
                 ctaButtonRevamp,
                 ctaMode,
                 colorMode
-            )
-
-            handleCtaConstraints(
-                channel.channelHeader,
-                hasExpiredTime,
-                channelHeaderContainer
             )
 
             ctaButtonRevampContainer?.show()
@@ -101,7 +80,6 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
                 }
             }
         } else {
-            stubCtaButton?.hide()
             ctaButtonRevampContainer?.hide()
         }
     }
@@ -121,7 +99,7 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         }
         when (colorMode) {
             DynamicChannelHeaderView.COLOR_MODE_NORMAL -> {
-                ctaBorder?.loadImage(ContextCompat.getDrawable(context, R.drawable.bg_dynamic_channel_header_cta))
+                ctaBorder?.loadImage(ContextCompat.getDrawable(context, home_component_headerR.drawable.home_component_header_bg_header_cta))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
                     newLightEnable = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900),
@@ -129,11 +107,11 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
                 )
             }
             DynamicChannelHeaderView.COLOR_MODE_INVERTED -> {
-                ctaBorder?.loadImage(ContextCompat.getDrawable(context, home_componentR.drawable.bg_dynamic_channel_header_cta_inverted))
+                ctaBorder?.loadImage(ContextCompat.getDrawable(context, home_component_headerR.drawable.home_component_header_bg_channel_header_cta_inverted))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
-                    newLightEnable = ContextCompat.getColor(context, home_componentR.color.dms_header_cta_inverted_icon),
-                    newDarkEnable = ContextCompat.getColor(context, home_componentR.color.dms_header_cta_inverted_icon)
+                    newLightEnable = ContextCompat.getColor(context, home_component_headerR.color.dms_header_cta_inverted_icon),
+                    newDarkEnable = ContextCompat.getColor(context, home_component_headerR.color.dms_header_cta_inverted_icon)
                 )
             }
         }
@@ -142,10 +120,10 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
     override fun renderTitle(
         context: Context,
         channelHeader: ChannelHeader,
-        channelTitle: Typography?,
+        txtTitle: Typography?,
         headerColorMode: Int?
     ) {
-        channelTitle?.setTextColor(
+        txtTitle?.setTextColor(
             if (headerColorMode == DynamicChannelHeaderView.COLOR_MODE_INVERTED) {
                 ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
             } else if (channelHeader.textColor.isNotEmpty()) {
@@ -159,68 +137,36 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
     override fun renderSubtitle(
         context: Context,
         channelHeader: ChannelHeader,
-        channelSubtitle: Typography?,
+        txtSubtitle: Typography?,
         headerColorMode: Int?
     ) {
-        channelSubtitle?.setTextColor(
+        txtSubtitle?.setTextColor(
             if (headerColorMode == DynamicChannelHeaderView.COLOR_MODE_INVERTED) {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
             } else if (channelHeader.textColor.isNotEmpty()) {
                 Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
             } else {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN600)
             }
         )
     }
 
-    /**
-     * Requirement (revamp):
-     * `see all` button align to center between title and subtitle/countdown timer
-     */
-    override fun handleCtaConstraints(
-        channelHeader: ChannelHeader,
-        hasExpiredTime: Boolean,
-        channelHeaderContainer: ConstraintLayout?
+    override fun renderIconSubtitle(
+        itemView: View,
+        channelHeader: ChannelHeader
     ) {
-        val bottomAnchor = if (channelHeader.subtitle.isEmpty() && !hasExpiredTime) {
-            R.id.channel_title
-        } else if (hasExpiredTime) {
-            R.id.count_down
-        } else {
-            R.id.channel_subtitle
-        }
+        val subtitleIcon: ImageView = itemView.findViewById(home_component_headerR.id.header_icon_subtitle)
+        subtitleIcon.gone()
+    }
+
+    override fun setConstraints(headerContainer: ConstraintLayout?, channelHeader: ChannelHeader) {
         val constraintSet = ConstraintSet()
-        constraintSet.clone(channelHeaderContainer)
-        constraintSet.connect(R.id.cta_button_revamp, ConstraintSet.TOP, R.id.channel_title, ConstraintSet.TOP, 0)
-        constraintSet.connect(R.id.cta_button_revamp, ConstraintSet.BOTTOM, bottomAnchor, ConstraintSet.BOTTOM, 0)
-        constraintSet.applyTo(channelHeaderContainer)
-    }
-
-    override fun setSubtitleConstraints(
-        hasExpiredTime: Boolean,
-        channelHeaderContainer: ConstraintLayout?,
-        resources: Resources
-    ) {
-        if (hasExpiredTime) {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(channelHeaderContainer)
-            constraintSet.connect(R.id.channel_subtitle, ConstraintSet.TOP, R.id.count_down, ConstraintSet.TOP, 0)
-            constraintSet.connect(R.id.channel_subtitle, ConstraintSet.BOTTOM, R.id.count_down, ConstraintSet.BOTTOM, 0)
-            constraintSet.applyTo(channelHeaderContainer)
+        constraintSet.clone(headerContainer)
+        if(channelHeader.hasTitleOnly()) {
+            constraintSet.connect(home_component_headerR.id.header_title, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0)
         } else {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(channelHeaderContainer)
-            constraintSet.connect(R.id.channel_subtitle, ConstraintSet.TOP, R.id.channel_title, ConstraintSet.BOTTOM, resources.getDimensionPixelSize(R.dimen.home_dynamic_header_subtitle_top_padding))
-            constraintSet.connect(R.id.channel_subtitle, ConstraintSet.BOTTOM, R.id.channel_title_container, ConstraintSet.BOTTOM, 0)
-            constraintSet.applyTo(channelHeaderContainer)
+            constraintSet.clear(home_component_headerR.id.header_title, ConstraintSet.BOTTOM)
         }
-    }
-
-    override fun setContainerPadding(
-        channelHeaderContainer: ConstraintLayout,
-        hasExpiredTime: Boolean,
-        resources: Resources
-    ) {
-        channelHeaderContainer.setPadding(channelHeaderContainer.paddingLeft, channelHeaderContainer.paddingTop, channelHeaderContainer.paddingRight, resources.getDimensionPixelSize(R.dimen.home_dynamic_header_bottom_padding))
+        constraintSet.applyTo(headerContainer)
     }
 }
