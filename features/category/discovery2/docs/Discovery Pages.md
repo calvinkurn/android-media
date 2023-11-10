@@ -27,7 +27,7 @@ The Discovery page is a dynamic page that offers numerous possibilities for comp
 
 As a landing page, the Discovery page serves as a gateway for users to explore the various products and services offered on the Tokopedia platform. To enhance the user experience, the page is designed to be highly customizable so that each campaign can have a unique look and feel that reflects the brand and message of the campaign.
 
-![](res/Screenshot%202023-02-06%20at%202.37.00%20PM.png)
+![](http://docs-android.tokopedia.net/images/docs/discovery2/Screenshot%202023-02-06%20at%202.37.00%20PM.png)
 
 ### Background
 
@@ -50,13 +50,13 @@ One advantage of this approach is that it allows for greater flexibility in how 
 
 ### Project Architecture/Flow Diagram (Widget Architecture)
 
-![](res/Untitled%20Diagram.drawio.png)
+![](http://docs-android.tokopedia.net/images/docs/discovery2/Untitled%20Diagram.drawio.png)
 
 ## **HTTP Request (GQL)**
 
 ## *Main Queries for the whole Discovery page*
 
-![](res/DiscoveryPage%20network%20flow.drawio.png)
+![](http://docs-android.tokopedia.net/images/docs/discovery2/DiscoveryPage%20network%20flow.drawio.png)
 
 
 
@@ -166,8 +166,8 @@ Applink 👇🏻- tokopedia://discovery/kejar-diskon
 | **S.No** | **How to Access** | **Video** |
 | --- | --- | --- |
 | 1. | You can access the Discovery page from Home, then click “promo Hari Ini” menu or you can scroll down to products / campaigns and click “lihat semua”  | [Screen Recording 2023-02-06 at 2.34.00 PM.mov](/wiki/download/attachments/2106098856/Screen%20Recording%202023-02-06%20at%202.34.00%20PM.mov?version=1&modificationDate=1675674371525&cacheVersion=1&api=v2&width=340)<br/> |
-| 2. | You can also access the page directly using developer tools or test app page by inserting the discovery page applink i.e - tokopedia://discovery/{page name}(page shown in picture is - kejar diskon page)(applink of this page - tokopedia://discovery/kejar-diskon) | ![](res/Screenshot%202023-02-06%20at%202.37.00%20PM.png)<br/> |
-| 3. | (page shown in picture is - toserba page)(applink of this page - tokopedia://discovery/toserba) | ![](res/Screenshot%202023-02-06%20at%202.37.44%20PM.png)<br/> |
+| 2. | You can also access the page directly using developer tools or test app page by inserting the discovery page applink i.e - tokopedia://discovery/{page name}(page shown in picture is - kejar diskon page)(applink of this page - tokopedia://discovery/kejar-diskon) | ![](http://docs-android.tokopedia.net/images/docs/discovery2/Screenshot%202023-02-06%20at%202.37.00%20PM.png)<br/> |
+| 3. | (page shown in picture is - toserba page)(applink of this page - tokopedia://discovery/toserba) | ![](http://docs-android.tokopedia.net/images/docs/discovery2/Screenshot%202023-02-06%20at%202.37.44%20PM.png)<br/> |
 
 ## Useful Links
 
