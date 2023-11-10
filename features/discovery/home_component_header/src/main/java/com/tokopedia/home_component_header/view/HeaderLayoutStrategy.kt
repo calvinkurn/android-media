@@ -15,7 +15,7 @@ internal interface HeaderLayoutStrategy {
     fun renderCta(
         itemView: View,
         channelHeader: ChannelHeader,
-        listener: HomeChannelHeaderListener?,
+        listener: HomeComponentHeaderListener?,
         ctaMode: Int?,
         colorMode: Int?
     )

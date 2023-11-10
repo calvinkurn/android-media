@@ -49,11 +49,11 @@ internal class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
     override fun renderCta(
         itemView: View,
         channelHeader: ChannelHeader,
-        listener: HomeChannelHeaderListener?,
+        listener: HomeComponentHeaderListener?,
         ctaMode: Int?,
         colorMode: Int?
     ) {
-        if (channelHeader.hasSeeMoreApplink() || ctaMode != HomeChannelHeaderView.CTA_MODE_SEE_ALL) {
+        if (channelHeader.hasSeeMoreApplink() || ctaMode != HomeComponentHeaderView.CTA_MODE_SEE_ALL) {
             ctaButtonRevamp = itemView.findViewById(home_component_headerR.id.cta_chevron_icon)
             ctaButtonRevampContainer = itemView.findViewById(home_component_headerR.id.cta_chevron_container)
             ctaBorder = itemView.findViewById(home_component_headerR.id.cta_chevron_border)
@@ -69,12 +69,12 @@ internal class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
             ctaButtonRevampContainer?.show()
             ctaButtonRevamp?.setOnClickListener {
                 when (ctaMode) {
-                    HomeChannelHeaderView.CTA_MODE_SEE_ALL -> listener?.onSeeAllClick(channelHeader.getLink())
-                    HomeChannelHeaderView.CTA_MODE_RELOAD -> {
+                    HomeComponentHeaderView.CTA_MODE_SEE_ALL -> listener?.onSeeAllClick(channelHeader.getLink())
+                    HomeComponentHeaderView.CTA_MODE_RELOAD -> {
                         it.startAnimation(rotateAnimation)
                         listener?.onReloadClick(channelHeader.channelId)
                     }
-                    HomeChannelHeaderView.CTA_MODE_CLOSE -> listener?.onDismissClick(channelHeader.channelId)
+                    HomeComponentHeaderView.CTA_MODE_CLOSE -> listener?.onDismissClick(channelHeader.channelId)
                 }
             }
         } else {
@@ -90,13 +90,13 @@ internal class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
         colorMode: Int?
     ) {
         val iconId = when (ctaMode) {
-            HomeChannelHeaderView.CTA_MODE_SEE_ALL -> IconUnify.CHEVRON_RIGHT
-            HomeChannelHeaderView.CTA_MODE_RELOAD -> IconUnify.RELOAD
-            HomeChannelHeaderView.CTA_MODE_CLOSE -> IconUnify.CLOSE
+            HomeComponentHeaderView.CTA_MODE_SEE_ALL -> IconUnify.CHEVRON_RIGHT
+            HomeComponentHeaderView.CTA_MODE_RELOAD -> IconUnify.RELOAD
+            HomeComponentHeaderView.CTA_MODE_CLOSE -> IconUnify.CLOSE
             else -> IconUnify.CHEVRON_RIGHT
         }
         when (colorMode) {
-            HomeChannelHeaderView.COLOR_MODE_NORMAL -> {
+            HomeComponentHeaderView.COLOR_MODE_NORMAL -> {
                 ctaBorder?.loadImage(ContextCompat.getDrawable(context, home_component_headerR.drawable.home_component_header_bg_header_cta))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
@@ -104,7 +104,7 @@ internal class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
                     newDarkEnable = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
                 )
             }
-            HomeChannelHeaderView.COLOR_MODE_INVERTED -> {
+            HomeComponentHeaderView.COLOR_MODE_INVERTED -> {
                 ctaBorder?.loadImage(ContextCompat.getDrawable(context, home_component_headerR.drawable.home_component_header_bg_channel_header_cta_inverted))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
@@ -122,7 +122,7 @@ internal class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
         headerColorMode: Int?
     ) {
         txtTitle?.setTextColor(
-            if (headerColorMode == HomeChannelHeaderView.COLOR_MODE_INVERTED) {
+            if (headerColorMode == HomeComponentHeaderView.COLOR_MODE_INVERTED) {
                 ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
             } else if (channelHeader.textColor.isNotEmpty()) {
                 Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
@@ -139,7 +139,7 @@ internal class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
         headerColorMode: Int?
     ) {
         txtSubtitle?.setTextColor(
-            if (headerColorMode == HomeChannelHeaderView.COLOR_MODE_INVERTED) {
+            if (headerColorMode == HomeComponentHeaderView.COLOR_MODE_INVERTED) {
                 ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
             } else if (channelHeader.textColor.isNotEmpty()) {
                 Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)

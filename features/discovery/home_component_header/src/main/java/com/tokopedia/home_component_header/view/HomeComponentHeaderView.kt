@@ -19,7 +19,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
-class HomeChannelHeaderView : FrameLayout {
+class HomeComponentHeaderView : FrameLayout {
     private var headerContainer: ConstraintLayout? = null
     private var txtTitle: Typography? = null
     private var txtSubtitle: Typography? = null
@@ -27,7 +27,7 @@ class HomeChannelHeaderView : FrameLayout {
 
     private var headerColorMode: Int = COLOR_MODE_NORMAL
     private var headerCtaMode: Int = CTA_MODE_SEE_ALL
-    private var listener: HomeChannelHeaderListener? = null
+    private var listener: HomeComponentHeaderListener? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -49,7 +49,7 @@ class HomeChannelHeaderView : FrameLayout {
 
     fun bind(
         channelHeader: ChannelHeader,
-        listener: HomeChannelHeaderListener? = null,
+        listener: HomeComponentHeaderListener? = null,
         colorMode: Int? = null,
         ctaMode: Int? = null,
         maxLines: Int = ONE_MAX_LINE,
