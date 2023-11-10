@@ -56,10 +56,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationVideoWidgetManager
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
-import com.tokopedia.home.databinding.LayoutHomeFeedFragmentBinding
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
@@ -73,7 +71,6 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.launch
 import java.util.*
@@ -97,13 +94,17 @@ class HomeRecommendationFragment :
     private val viewModel: HomeRecommendationViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[HomeRecommendationViewModel::class.java]
     }
+
+    private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
+
     private val adapterFactory by lazy(LazyThreadSafetyMode.NONE) {
         HomeRecommendationTypeFactoryImpl(
             this,
             this,
-            HomeRecommendationVideoWidgetManager(binding?.homeFeedFragmentRecyclerView, viewLifecycleOwner)
+            HomeRecommendationVideoWidgetManager(recyclerView, viewLifecycleOwner)
         )
     }
+
     private val adapter by lazy { HomeRecommendationAdapter(adapterFactory) }
 
     private val staggeredGridLayoutManager by lazy {
@@ -129,15 +130,12 @@ class HomeRecommendationFragment :
     private var component: BerandaComponent? = null
     private var coachmarkLocalCache: CoachMarkLocalCache? = null
 
-    private var binding by autoClearedNullable<LayoutHomeFeedFragmentBinding>()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = LayoutHomeFeedFragmentBinding.inflate(inflater, container, false)
-        return binding?.root
+        return inflater.inflate(R.layout.layout_home_feed_fragment, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -324,20 +322,18 @@ class HomeRecommendationFragment :
     }
 
     private fun setupRecyclerView() {
-        binding?.homeFeedFragmentRecyclerView?.run {
-            layoutManager = staggeredGridLayoutManager
-            (layoutManager as? StaggeredGridLayoutManager?)?.gapStrategy =
-                StaggeredGridLayoutManager.GAP_HANDLING_NONE
-            addItemDecoration(HomeFeedItemDecoration(4f.toDpInt()))
-            adapter = adapter
-            parentPool?.setMaxRecycledViews(
-                LAYOUT,
-                MAX_RECYCLED_VIEWS
-            )
-            setRecycledViewPool(parentPool)
-            createEndlessRecyclerViewListener()
-            endlessRecyclerViewScrollListener?.let { addOnScrollListener(it) }
-        }
+        recyclerView?.layoutManager = staggeredGridLayoutManager
+        (recyclerView?.layoutManager as? StaggeredGridLayoutManager?)?.gapStrategy =
+            StaggeredGridLayoutManager.GAP_HANDLING_NONE
+        recyclerView?.addItemDecoration(HomeFeedItemDecoration(4f.toDpInt()))
+        recyclerView?.adapter = adapter
+        parentPool?.setMaxRecycledViews(
+            LAYOUT,
+            MAX_RECYCLED_VIEWS
+        )
+        recyclerView?.setRecycledViewPool(parentPool)
+        createEndlessRecyclerViewListener()
+        endlessRecyclerViewScrollListener?.let { recyclerView?.addOnScrollListener(it) }
     }
 
     fun setListener(
@@ -356,7 +352,7 @@ class HomeRecommendationFragment :
 
     private fun createEndlessRecyclerViewListener() {
         endlessRecyclerViewScrollListener =
-            object : HomeFeedEndlessScrollListener(binding?.homeFeedFragmentRecyclerView?.layoutManager) {
+            object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     if (isNewForYouQueryEnabled()) {
                         viewModel.fetchNextHomeRecommendationCard(
@@ -598,7 +594,7 @@ class HomeRecommendationFragment :
 
     private fun initListeners() {
         if (view == null) return
-        binding?.homeFeedFragmentRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 totalScrollY += dy
                 if (!userVisibleHint) {
@@ -673,17 +669,14 @@ class HomeRecommendationFragment :
         if (view == null) {
             return
         }
-        binding?.homeFeedFragmentRecyclerView?.run {
-            val staggeredGridLayoutManager =
-                binding?.homeFeedFragmentRecyclerView?.layoutManager as StaggeredGridLayoutManager?
-            if (staggeredGridLayoutManager != null && staggeredGridLayoutManager.findFirstVisibleItemPositions(
-                    null
-                )[0] > BASE_POSITION
-            ) {
-                scrollToPosition(BASE_POSITION)
-            }
-            smoothScrollToPosition(Int.ZERO)
+        val staggeredGridLayoutManager = recyclerView?.layoutManager as StaggeredGridLayoutManager?
+        if (staggeredGridLayoutManager != null && staggeredGridLayoutManager.findFirstVisibleItemPositions(
+                null
+            )[0] > BASE_POSITION
+        ) {
+            recyclerView?.scrollToPosition(BASE_POSITION)
         }
+        recyclerView?.smoothScrollToPosition(0)
     }
 
     private fun createProductCardOptionsModel(
