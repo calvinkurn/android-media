@@ -17,7 +17,8 @@ data class ShopReview(
         val reviewerLabel: String,
         val likeDislike: LikeDislike,
         val avatar: String,
-        val attachments: List<Attachment>
+        val attachments: List<Attachment>,
+        val product: Product
     ) : Parcelable {
         @Parcelize
         data class LikeDislike(val totalLike: Int, val likeStatus: Int) : Parcelable
@@ -27,6 +28,12 @@ data class ShopReview(
             val attachmentId: String,
             val thumbnailURL: String,
             val fullSizeURL: String
+        ) : Parcelable
+
+        @Parcelize
+        data class Product(
+            val productId: String,
+            val productName: String
         ) : Parcelable
     }
 }

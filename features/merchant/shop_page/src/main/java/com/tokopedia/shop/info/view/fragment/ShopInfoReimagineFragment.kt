@@ -216,11 +216,12 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun handleEffect(effect: ShopInfoUiEffect) {
         when (effect) {
             is ShopInfoUiEffect.RedirectToGmaps -> redirectToGmaps(effect.gmapsUrl)
-            is ShopInfoUiEffect.RedirectToReviewDetailPage -> redirectToReviewDetailPage(effect.reviewId)
-            is ShopInfoUiEffect.RedirectToShopReviewPage -> redirectToShopReviewPage(effect.shopId)
             is ShopInfoUiEffect.RedirectToShopNoteDetailPage -> redirectToShopNoteDetailPage(effect.shopId, effect.noteId)
             ShopInfoUiEffect.RedirectToLoginPage -> redirectToLoginPage()
             is ShopInfoUiEffect.RedirectToChatWebView -> redirectToChatWebView(effect.messageId)
+            is ShopInfoUiEffect.RedirectToShopReviewPage -> redirectToShopReviewPage(effect.shopId)
+            is ShopInfoUiEffect.RedirectToProductReviewGalleryPage -> redirectToProductReviewGalleryPage(effect.productId)
+            is ShopInfoUiEffect.RedirectToProductReviewPage -> redirectToProductReviewPage(effect.productId)
         }
     }
 
@@ -349,7 +350,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         if (pharmacyOperationalHours.isEmpty()) {
             val operationalHourTypography = createOperationalHoursTypography("-")
             binding?.layoutShopPharmacyOpsHourContainer?.addView(operationalHourTypography)
-            
         } else {
             pharmacyOperationalHours.forEach { operationalHour ->
                 val operationalHourTypography = createOperationalHoursTypography(operationalHour)
@@ -358,7 +358,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         }
     }
 
-    private fun createOperationalHoursTypography(text: String) : Typography {
+    private fun createOperationalHoursTypography(text: String): Typography {
         val textViewOperationalHour = Typography(requireContext()).apply {
             setType(Typography.DISPLAY_2)
             setTextColor(ContextCompat.getColor(this.context, unifyprinciplesR.color.Unify_NN950))
@@ -373,10 +373,10 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         }
 
         textViewOperationalHour.text = text
-        
+
         return textViewOperationalHour
     }
-    
+
     private fun renderShopRatingAndReview(uiState: ShopInfoUiState) {
         renderRatingAndReviewSummary(uiState.rating)
         renderRating(uiState.rating)
@@ -454,6 +454,12 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         if (showReview) {
             binding?.shopReviewView?.render(viewLifecycleOwner.lifecycle, this, review)
+            binding?.shopReviewView?.setOnAttachmentImageClick {
+                viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(it.product.productId))
+            }
+            binding?.shopReviewView?.setOnAttachmentImageViewAllClick {
+                viewModel.processEvent(ShopInfoUiEvent.TapReviewImageViewAll(it.product.productId))
+            }
         }
     }
 
@@ -500,12 +506,12 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun renderShopDescription(uiState: ShopInfoUiState) {
         val hasShopDescription = uiState.info.shopDescription.isNotEmpty()
-        
+
         binding?.tpgSectionTitleShopDescription?.isVisible = hasShopDescription
         binding?.tpgShopDescription?.isVisible = hasShopDescription
 
         if (hasShopDescription) {
-            binding?.tpgShopDescription?.text = MethodChecker.fromHtml(uiState.info.shopDescription)    
+            binding?.tpgShopDescription?.text = MethodChecker.fromHtml(uiState.info.shopDescription)
         }
     }
 
@@ -608,6 +614,12 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         val intent = ReportShopWebViewActivity.getStartIntent(context ?: return, reportUrl)
         startActivityForResult(intent, REQUEST_CODE_REPORT_SHOP)
+    }
+
+    private fun redirectToProductReviewPage(productId: String) {
+    }
+
+    private fun redirectToProductReviewGalleryPage(productId: String) {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

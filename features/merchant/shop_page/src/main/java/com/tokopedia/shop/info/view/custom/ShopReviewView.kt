@@ -30,9 +30,12 @@ class ShopReviewView @JvmOverloads constructor(
         private const val DOT_INDICATOR_MARGIN_TOP = 16
     }
 
+    private var onAttachmentImageClick: (ShopReview.Review) -> Unit = {}
+    private var onAttachmentImageViewAllClick: (ShopReview.Review) -> Unit = {}
+
     fun render(lifecycle: Lifecycle, fragment: Fragment, review: ShopReview) {
         removeAllViews()
-        
+
         val viewpager = createViewpager()
         val tabIndicator = createTabIndicator()
 
@@ -49,6 +52,7 @@ class ShopReviewView @JvmOverloads constructor(
         lifecycle: Lifecycle,
         tabIndicator: ProgressibleTabLayoutView
     ) {
+        // TODO: If only one review, remove tab indicator
         val fragments = createFragments(review.reviews)
 
         val pagerAdapter = ReviewViewPagerAdapter(fragment, fragments)
@@ -116,7 +120,20 @@ class ShopReviewView @JvmOverloads constructor(
     }
 
     private fun createFragments(reviews: List<ShopReview.Review>): List<Fragment> {
-        return reviews.map { review -> ReviewViewPagerItemFragment.newInstance(review) }
+        return reviews.map { review ->
+            val fragment = ReviewViewPagerItemFragment.newInstance(review)
+            fragment.setOnAttachmentImageClick { onAttachmentImageClick(it) }
+            fragment.setOnAttachmentImageViewAllClick { onAttachmentImageViewAllClick(it) }
+            fragment
+        }
+    }
+
+    fun setOnAttachmentImageClick(onAttachmentImageClick: (ShopReview.Review) -> Unit) {
+        this.onAttachmentImageClick = onAttachmentImageClick
+    }
+
+    fun setOnAttachmentImageViewAllClick(onAttachmentImageViewAllClick: (ShopReview.Review) -> Unit) {
+        this.onAttachmentImageViewAllClick = onAttachmentImageViewAllClick
     }
 
     private class ReviewViewPagerAdapter(

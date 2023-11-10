@@ -4,8 +4,8 @@ import com.tokopedia.shop.info.data.response.ProductRevGetShopReviewReadingListR
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import javax.inject.Inject
 
-class ProductRevGetShopReviewReadingListMapper @Inject constructor(){
-    fun map(response: ProductRevGetShopReviewReadingListResponse) : ShopReview {
+class ProductRevGetShopReviewReadingListMapper @Inject constructor() {
+    fun map(response: ProductRevGetShopReviewReadingListResponse): ShopReview {
         return ShopReview(
             totalReviews = response.productrevGetShopReviewReadingList.totalReviews,
             reviews = response.productrevGetShopReviewReadingList.list.map { review ->
@@ -16,11 +16,12 @@ class ProductRevGetShopReviewReadingListMapper @Inject constructor(){
                     review.reviewerName,
                     review.reviewerLabel,
                     ShopReview.Review.LikeDislike(
-                        review.likeDislike.totalLike,
-                        review.likeDislike.likeStatus
+                        totalLike = review.likeDislike.totalLike,
+                        likeStatus = review.likeDislike.likeStatus
                     ),
                     review.avatar,
-                    review.toAttachments()
+                    review.toAttachments(),
+                    ShopReview.Review.Product(review.product.productID, review.product.productName)
                 )
             }
         )

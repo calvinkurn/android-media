@@ -81,6 +81,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
             is ShopInfoUiEvent.RetryGetShopInfo -> handleRetryGetShopInfo(event.localCacheModel)
             is ShopInfoUiEvent.TapShopNote -> handleTapShopNote(event.noteId)
             ShopInfoUiEvent.ReportShop -> handleReportShop()
+            is ShopInfoUiEvent.TapReviewImage -> handleTapReviewImage(event.productId)
+            is ShopInfoUiEvent.TapReviewImageViewAll -> handleTapReviewImageViewAll(event.productId)
         }
     }
 
@@ -98,7 +100,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                     shopID = shopId,
                     limit = 5,
                     page = 1,
-                    filterBy = "",
+                    filterBy = "topic=pelayanan",
                     sortBy = "informative_score desc"
                 )
                 val shopReviewDeferred = async { getShopReviewUseCase.execute(shopReviewParam) }
@@ -207,6 +209,16 @@ class ShopInfoReimagineViewModel @Inject constructor(
             )
         )
         return getShopInfoUseCase.executeOnBackground()
+    }
+
+    private fun handleTapReviewImage(productId: String) {
+        val effect = ShopInfoUiEffect.RedirectToProductReviewPage(productId)
+        _uiEffect.tryEmit(effect)
+    }
+
+    private fun handleTapReviewImageViewAll(productId: String) {
+        val effect = ShopInfoUiEffect.RedirectToProductReviewGalleryPage(productId)
+        _uiEffect.tryEmit(effect)
     }
 
     private suspend fun getShopNotes(shopId: String): List<ShopNoteModel> {
@@ -416,7 +428,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
         val chatAndDiscussionReplySpeedMinute = chatAndDiscussionReplySpeed.toInt()
         val chatAndDiscussionReplySpeedHour = chatAndDiscussionReplySpeedMinute / 60
         val chatAndDiscussionReplySpeedDay = chatAndDiscussionReplySpeedHour / 24
-        
+
         return when {
             chatAndDiscussionReplySpeedMinute < 60 -> "$chatAndDiscussionReplySpeedMinute menit"
             chatAndDiscussionReplySpeedHour < 24 -> "$chatAndDiscussionReplySpeedHour jam"
@@ -424,6 +436,5 @@ class ShopInfoReimagineViewModel @Inject constructor(
             chatAndDiscussionReplySpeedDay > 1 -> "$chatAndDiscussionReplySpeedDay hari"
             else -> ""
         }
-        
     }
 }
