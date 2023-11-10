@@ -1,10 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceAtf2DividerModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BaseBalanceViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.databinding.ItemBalanceWidgetAtf2DividerBinding
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -26,19 +24,9 @@ class BalanceDividerViewHolder(
 
     override fun bind(model: BalanceAtf2DividerModel?, listener: HomeCategoryListener?) {
         if ((itemView.context.isDarkMode() && homeThematicUtil.isDefault()) || homeThematicUtil.isDarkMode()) {
-            binding?.dividerBalance?.setBackgroundColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN100)
-                )
-            )
+            binding?.dividerBalance?.setBackgroundColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN100))
         } else {
-            binding?.dividerBalance?.setBackgroundColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN50)
-                )
-            )
+            binding?.dividerBalance?.setBackgroundColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN50))
         }
     }
 

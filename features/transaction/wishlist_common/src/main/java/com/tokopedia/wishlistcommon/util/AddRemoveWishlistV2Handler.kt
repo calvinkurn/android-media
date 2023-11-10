@@ -2,6 +2,7 @@ package com.tokopedia.wishlistcommon.util
 
 import android.content.Context
 import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
@@ -52,6 +53,14 @@ object AddRemoveWishlistV2Handler {
         context: Context,
         view: View
     ) {
+        buildAddToWishlistV2SuccessToaster(result, context, view).show()
+    }
+
+    fun buildAddToWishlistV2SuccessToaster(
+        result: ProductCardOptionsModel.WishlistResult,
+        context: Context,
+        view: View
+    ): Snackbar {
         val msg = result.messageV2.ifEmpty {
             if (result.isSuccess) {
                 context.getString(R.string.on_success_add_to_wishlist_msg)
@@ -67,7 +76,7 @@ object AddRemoveWishlistV2Handler {
             context.getString(R.string.cta_ok_wishlist)
         }
 
-        Toaster.build(
+        return Toaster.build(
             view,
             msg,
             Toaster.LENGTH_SHORT,
@@ -77,7 +86,7 @@ object AddRemoveWishlistV2Handler {
             if (result.ctaActionV2 == OPEN_WISHLIST) {
                 goToWishlistCollectionDetailAll(context)
             }
-        }.show()
+        }
     }
 
     fun showRemoveWishlistV2SuccessToaster(
@@ -118,6 +127,14 @@ object AddRemoveWishlistV2Handler {
         context: Context,
         view: View
     ) {
+        buildRemoveWishlistV2SuccessToaster(result, context, view).show()
+    }
+
+    fun buildRemoveWishlistV2SuccessToaster(
+        result: ProductCardOptionsModel.WishlistResult,
+        context: Context,
+        view: View
+    ): Snackbar {
         val msg = result.messageV2.ifEmpty {
             if (result.isSuccess) {
                 context.getString(R.string.on_success_remove_from_wishlist_msg)
@@ -133,7 +150,7 @@ object AddRemoveWishlistV2Handler {
             context.getString(R.string.cta_ok_wishlist)
         }
 
-        Toaster.build(
+        return Toaster.build(
             view,
             msg,
             Toaster.LENGTH_SHORT,
@@ -143,7 +160,7 @@ object AddRemoveWishlistV2Handler {
             if (result.ctaActionV2 == OPEN_WISHLIST) {
                 goToWishlistCollectionDetailAll(context)
             }
-        }.show()
+        }
     }
 
     fun showWishlistV2ErrorToaster(errorMsg: String, view: View) {

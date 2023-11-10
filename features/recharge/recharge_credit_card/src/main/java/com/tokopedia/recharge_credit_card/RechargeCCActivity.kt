@@ -6,8 +6,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
@@ -65,13 +63,6 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
 
         setSecureWindowFlag()
         component.inject(this)
-
-        toolbarCreditCard?.addRightIcon(com.tokopedia.common_digital.R.drawable.digital_common_ic_tagihan)
-        toolbarCreditCard?.rightIcons?.let {
-            it[0].setOnClickListener {
-                RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
-            }
-        }
     }
 
     override fun onResume() {

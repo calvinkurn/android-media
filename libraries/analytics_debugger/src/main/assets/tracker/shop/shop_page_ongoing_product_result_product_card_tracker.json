@@ -31,7 +31,8 @@
       "businessUnit":"physical goods",
       "userId":".*",
       "trackerId":".*",
-      "currentSite":"tokopediamarketplace"
+      "currentSite":"tokopediamarketplace",
+      "hits_time":".*"
     },
     {
       "pageType": "/shoppage",

@@ -20,6 +20,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -95,6 +96,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
         private const val DEBOUNCE = 300L
         private const val minimumActivePeriodCountToShowFullSchedule = 2
+        private const val MAX_VOUCHER_CODE_COUNT = 10
     }
 
     // binding
@@ -342,7 +344,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
         if (pageMode == PageMode.EDIT) {
             voucherCodeSectionBinding?.run {
-                tfVoucherCode.disable()
+                tfVoucherCode.apply {
+                    disable()
+                }
             }
             voucherPeriodSectionBinding?.run {
                 cbRepeatPeriod.disable()
@@ -543,6 +547,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
         voucherCodeSectionBinding?.run {
             tfVoucherCode.apply {
+                if (pageMode != PageMode.EDIT) setCounter(MAX_VOUCHER_CODE_COUNT)
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldKodeKuponEvent(voucherConfiguration.voucherId)
                 }

@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
@@ -145,13 +146,26 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
     private fun showPersonaList(data: List<PersonaUiModel>) {
         binding?.run {
             val persona = args.paramPersona
-            data.forEach {
-                it.isSelected = it.value == persona
+            var selectedIndex = RecyclerView.NO_POSITION
+            data.forEachIndexed { index, p ->
+                if (p.value == persona) {
+                    p.isSelected = true
+                    selectedIndex = index
+                } else {
+                    p.isSelected = false
+                }
             }
             personaTypeAdapter.clearAllElements()
             personaTypeAdapter.addElement(data)
+            scrollToSelected(selectedIndex)
             dividerSpSelectType.visible()
             btnSpSelectType.visible()
+        }
+    }
+
+    private fun scrollToSelected(selectedIndex: Int) {
+        if (selectedIndex != RecyclerView.NO_POSITION) {
+            binding?.rvSpSelectType?.smoothScrollToPosition(selectedIndex)
         }
     }
 

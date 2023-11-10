@@ -4,12 +4,15 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
+import com.tokopedia.play.model.PlayChannelInfoModelBuilder
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.assertNotEqualTo
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductSectionType
+import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.websocket.response.PlayProductTagSocketResponse
 import com.tokopedia.play_common.websocket.PlayWebSocket
@@ -106,11 +109,12 @@ class PlayProductTest {
     @Test
     fun `given product section can be shown, when page is focused, then it should return sections from network`() {
         val repo: PlayViewerRepository = mockk(relaxed = true)
-        every { repo.getChannelData(any()) } returns channelDataBuilder.buildChannelData(
+        val mockChannelData = channelDataBuilder.buildChannelData(
             tagItems = modelBuilder.buildTagItem(
                 product = modelBuilder.buildProductModel(canShow = true)
             )
         )
+        every { repo.getChannelData(any()) } returns mockChannelData
 
         val mockProductList = List(3) {
             modelBuilder.buildProductSection(
@@ -144,8 +148,8 @@ class PlayProductTest {
 
         robot.use {
             val state = it.recordState {
-                createPage(repo.getChannelData("1")!!)
-                focusPage(mockk(relaxed = true))
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
             }
             state.tagItems.product.productSectionList
                 .assertEqualTo(mockProductList)
@@ -156,7 +160,7 @@ class PlayProductTest {
     fun `given product section cannot be shown, when page is focused, then it should return initial product`() {
         val repo: PlayViewerRepository = mockk(relaxed = true)
         val initialProductList = emptyList<ProductSectionUiModel>()
-        every { repo.getChannelData(any()) } returns channelDataBuilder.buildChannelData(
+        val mockChannelData =  channelDataBuilder.buildChannelData(
             tagItems = modelBuilder.buildTagItem(
                 product = modelBuilder.buildProductModel(
                     productList = initialProductList,
@@ -164,6 +168,7 @@ class PlayProductTest {
                 )
             )
         )
+        every { repo.getChannelData(any()) } returns mockChannelData
 
         val mockProductList = List(3) {
             modelBuilder.buildProductSection(
@@ -197,7 +202,7 @@ class PlayProductTest {
 
         robot.use {
             val state = it.recordState {
-                focusPage(mockk(relaxed = true))
+                focusPage(mockChannelData)
             }
             state.tagItems.product.productSectionList
                 .assertEqualTo(initialProductList)
@@ -227,11 +232,13 @@ class PlayProductTest {
 
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
 
-        every { mockRepo.getChannelData(any()) } returns channelDataBuilder.buildChannelData(
+        val mockChannelData = channelDataBuilder.buildChannelData(
             tagItems = modelBuilder.buildTagItem(
                 product = modelBuilder.buildProductModel(emptyList())
             )
         )
+
+        every { mockRepo.getChannelData(any()) } returns mockChannelData
 
         coEvery { mockRepo.updateCampaignReminderStatus(any()) } returnsArgument 0
 
@@ -243,7 +250,7 @@ class PlayProductTest {
 
         robot.use {
             val state = it.recordState {
-                focusPage(mockk(relaxed = true))
+                focusPage(mockChannelData)
                 socketFlow.emit(
                     WebSocketAction.NewMessage(mockProductsSocketResponse)
                 )

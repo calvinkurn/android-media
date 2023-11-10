@@ -47,7 +47,6 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.relic.track.NewRelicUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -892,24 +891,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribe(getDefaultSubscriber());
     }
 
-    @Override
-    public void sendGTMGeneralEvent(String event, String category, String action, String label,
-                                    String shopId, String shopType, String userId,
-                                    @Nullable Map<String, Object> customDimension) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(KEY_EVENT, event);
-        map.put(KEY_CATEGORY, category);
-        map.put(KEY_ACTION, action);
-        map.put(KEY_LABEL, label);
-        map.put(USER_ID, userId);
-        map.put(SHOP_TYPE, shopType);
-        map.put(SHOP_ID, shopId);
-        if (customDimension != null) {
-            map.putAll(customDimension);
-        }
-        pushGeneral(map);
-    }
-
     private void logV5(Context context, String eventName, Bundle bundle) {
         log(context, eventName, bundleToMap(bundle), true);
     }
@@ -1169,7 +1150,6 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private boolean pushGeneralGtmV5InternalOrigin(Map<String, Object> params) {
-        pushGeneral(params);
 
         if (TextUtils.isEmpty((String) params.get(KEY_EVENT)))
             return false;
@@ -1206,7 +1186,6 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
                 bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
             }
-            publishNewRelic(eventName, bundle);
             FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
             fa.logEvent(eventName, bundle);
 
@@ -1456,29 +1435,6 @@ public class GTMAnalytics extends ContextAnalytics {
             //Handle exception here
         }
         return json;
-    }
-
-    public void publishNewRelic(String eventName, Bundle bundle) {
-        Map<String, Object> map = bundleToMap(bundle);
-        for (Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry<String, Object> entry = it.next();
-            Object value = entry.getValue();
-            if (value != null & value instanceof String) {
-                String value2 = (String) value;
-                if (TextUtils.isEmpty(value2)) {
-                    it.remove();
-                }
-            }
-        }
-        if (GlobalConfig.isSellerApp()) {
-            NewRelicUtil.sendTrack(eventName, map);
-        }
-    }
-
-    private void pushGeneral(Map<String, Object> values) {
-        Map<String, Object> data = new HashMap<>(values);
-        // push Iris already launch in coroutine in background. No need to wrap this with Observable.
-        pushIris("", data);
     }
 
     private void pushGeneralEcommerce(Bundle values) {

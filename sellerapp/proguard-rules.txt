@@ -320,6 +320,17 @@ public static com.tokopedia.stability.ChangeDelegate *;
 -keep class com.bef.effectsdk.* {*;}
 -keep class com.bytedance.labcv.licenselibrary.** {*;}
 
+-keep class com.huawei.hms.ads.** { *; }
+-keep interface com.huawei.hms.ads.** { *; }
+-if class *
+-keep, allowobfuscation, allowoptimization class <1> {
+    <init>(...);
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+-dontwarn com.gojek.clickstream.common.EventMeta$Builder
+-dontwarn com.gojek.clickstream.common.EventMeta
+
 # kyc ds sdk
 -keep class com.gojek.ojosdk.** {*;}
 -keepclassmembers enum com.gojek.kyc.** {*;}
@@ -336,3 +347,7 @@ public static com.tokopedia.stability.ChangeDelegate *;
 }
 
 -keep class com.arthenica.mobileffmpeg.** { *; }
+-dontwarn kotlin.jvm.internal.SourceDebugExtension
+-dontwarn org.slf4j.impl.StaticLoggerBinder
+-dontwarn org.slf4j.impl.StaticMDCBinder
+-dontwarn com.gojek.onekyc.R$drawable
