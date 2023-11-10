@@ -1365,13 +1365,13 @@ class DigitalPDPPulsaFragment :
         stopPageMonitoring()
     }
 
-    private lateinit var onRenderProductsGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
+    private var onRenderProductsGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
 
     private fun startProductsRenderMonitoring() {
         startRenderMonitoring()
 
-        if (!this::onRenderProductsGlobalLayoutListener.isInitialized) {
-            onRenderProductsGlobalLayoutListener = object: ViewTreeObserver.OnGlobalLayoutListener {
+        if (onRenderProductsGlobalLayoutListener == null) {
+            onRenderProductsGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     if (isAdded) {
                         stopRenderMonitoring()
