@@ -29,12 +29,12 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_star"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/tokopedianow_ic_quest_star" />
+        app:srcCompat="@drawable/tokopedianow_ic_star" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_star"

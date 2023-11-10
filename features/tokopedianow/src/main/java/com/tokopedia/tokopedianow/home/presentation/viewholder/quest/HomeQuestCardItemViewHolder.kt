@@ -4,9 +4,12 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.imageassets.TokopediaImageUrl.TOKOPEDIANOW_IC_QUEST_LOCKED_DARK
+import com.tokopedia.imageassets.TokopediaImageUrl.TOKOPEDIANOW_IC_QUEST_LOCKED_LIGHT
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ConstantUrl
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
@@ -61,10 +64,17 @@ class HomeQuestCardItemViewHolder(
         binding.apply {
             tpTitle.text = element.title
             tpDescription.text = element.description
-            aivIcon.showIfWithBlock(element.isLockedShown) {
-                setBackgroundResource(R.drawable.tokopedianow_bg_quest_locked)
-                setImageVectorDrawable(if (context.isDarkMode()) R.drawable.tokopedianow_ic_quest_locked_dark else R.drawable.tokopedianow_ic_quest_locked_light)
+            aivBackground.showIfWithBlock(element.isLockedShown) {
+                setImageVectorDrawable(R.drawable.tokopedianow_bg_quest_locked)
                 adjustTitleStartPadding()
+            }
+            aivIcon.showIfWithBlock(element.isLockedShown) {
+                loadImage(
+                    if (context.isDarkMode())
+                        TOKOPEDIANOW_IC_QUEST_LOCKED_DARK
+                    else
+                        TOKOPEDIANOW_IC_QUEST_LOCKED_LIGHT
+                )
             }
             root.setOnClickListener {
                 openQuestChannelPage()

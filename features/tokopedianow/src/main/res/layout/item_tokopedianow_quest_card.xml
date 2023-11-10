@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
@@ -13,7 +13,7 @@
     app:layout_constraintHorizontal_bias="0.0"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    tools:layout_width="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_quest_card"
@@ -23,13 +23,27 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/aiv_icon"
+            android:id="@+id/aiv_background"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:scaleType="center"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@drawable/tokopedianow_bg_quest_locked"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/aiv_icon"
+            android:layout_width="24dp"
+            android:layout_height="32dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/aiv_background"
+            app:layout_constraintEnd_toEndOf="@id/aiv_background"
+            app:layout_constraintStart_toStartOf="@id/aiv_background"
+            app:layout_constraintTop_toTopOf="@id/aiv_background"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_title"
@@ -41,7 +55,7 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.675"
-            app:layout_constraintStart_toEndOf="@+id/aiv_icon"
+            app:layout_constraintStart_toEndOf="@+id/aiv_background"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_3"
             app:typographyWeight="reguler"

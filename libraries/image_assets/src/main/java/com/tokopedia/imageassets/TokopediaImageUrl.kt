@@ -396,4 +396,6 @@ object TokopediaImageUrl {
     const val EVENT_SOFTBOOK_ENDED_BOTTOM_SHEET_IMG_URL = "https://images.tokopedia.net/img/event/event_checkout_softbook_ended_bottom_sheet_mini.png"
     const val CATALOG_IMAGE_ASSETS = "https://images.tokopedia.net/img/android/res/singleDpi/catalog_no_products_state_big.png"
     const val TOKOPEDIANOW_LOTTIE_QUEST_STAR = "https://assets.tokopedia.net/asts/tokopedianow/lottie/quest_widget_star.json"
+    const val TOKOPEDIANOW_IC_QUEST_LOCKED_DARK = "https://images.tokopedia.net/img/tokopedianow/icons/tokopedianow_ic_quest_locked_dark.png"
+    const val TOKOPEDIANOW_IC_QUEST_LOCKED_LIGHT = "https://images.tokopedia.net/img/tokopedianow/icons/tokopedianow_ic_quest_locked_light.png"
 }

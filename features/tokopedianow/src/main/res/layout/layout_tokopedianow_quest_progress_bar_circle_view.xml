@@ -4,7 +4,7 @@
     android:id="@+id/image_circle"
     android:layout_width="14dp"
     android:layout_height="14dp"
-    android:padding="0.9dp"
+    android:padding="1dp"
     app:shapeAppearanceOverlay="@style/circleImageDisplay"
     app:srcCompat="@color/Unify_BN600"
     app:strokeColor="@color/Unify_NN200"
