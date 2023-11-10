@@ -96,7 +96,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                     limit = 5,
                     page = 1,
                     filterBy = "",
-                    sortBy = "rating desc"
+                    sortBy = "informative_score desc"
                 )
                 val shopReviewDeferred = async { getShopReviewUseCase.execute(shopReviewParam) }
 
@@ -132,7 +132,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                         rating = shopRating,
                         review = shopReview,
                         shopPerformance = ShopPerformance(
-                            totalProductSoldCount = shopInfo.shopStats.productSold, // TODO replace with real data
+                            totalProductSoldCount = shopInfo.shopStats.productSold,
                             chatPerformance = "", // TODO replace with real data
                             orderProcessTime = shopHeaderLayout.shopPageGetHeaderLayout.toOrderProcessTime()
                         ),
