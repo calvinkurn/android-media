@@ -6,13 +6,11 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.DialogFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.orFalse
@@ -30,18 +28,22 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
 
-class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFinishedListener? = null,
-                                          private var product: ProductUiModel? = null) : BottomSheetUnify() {
+class ProductManageQuickEditPriceFragment(
+    private var onFinishedListener: OnFinishedListener? = null,
+    private var product: ProductUiModel? = null
+) : BottomSheetUnify() {
 
     companion object {
         private const val KEY_CACHE_MANAGER_ID = "cache_manager_id"
         private const val KEY_PRODUCT = "product"
         private const val KEY_IS_MULTILOCATION = "is_multilocation"
 
-        fun createInstance(context: Context,
-                           product: ProductUiModel,
-                           isMultiLocation: Boolean = false,
-                           onFinishedListener: OnFinishedListener) : ProductManageQuickEditPriceFragment {
+        fun createInstance(
+            context: Context,
+            product: ProductUiModel,
+            isMultiLocation: Boolean = false,
+            onFinishedListener: OnFinishedListener
+        ): ProductManageQuickEditPriceFragment {
             return ProductManageQuickEditPriceFragment(onFinishedListener, product).apply {
                 SaveInstanceCacheManager(context, KEY_CACHE_MANAGER_ID).apply {
                     put(KEY_IS_MULTILOCATION, isMultiLocation)
@@ -68,10 +70,9 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
         isMultiLocation =
             cacheManager?.get(KEY_IS_MULTILOCATION, Boolean::class.java, false).orFalse()
 
-        val view = View.inflate(context, R.layout.fragment_quick_edit_price,null)
+        val view = View.inflate(context, R.layout.fragment_quick_edit_price, null)
         setChild(view)
         setTitle(getString(R.string.product_manage_menu_set_price))
-        setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.product.manage.common.R.style.DialogStyle)
     }
 
     override fun onCreateView(
@@ -115,7 +116,7 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
                 binding?.quickEditPriceTextField?.textFieldInput?.text?.clear()
             }
             textFieldInput.setOnEditorActionListener { _, actionId, _ ->
-                if(actionId == EditorInfo.IME_ACTION_DONE){
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     val editedPrice = PriceUiModel(textFieldInput.text.toString(), product?.minPrice?.priceFormatted)
                     product = product?.copy(minPrice = editedPrice)
                     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -136,13 +137,12 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
                     val input = textFieldInput.text.toString()
                     val price = CurrencyFormatHelper.convertRupiahToDouble(input)
 
-                    if(price < MINIMUM_PRICE) {
+                    if (price < MINIMUM_PRICE) {
                         showErrorPriceTooLow()
                     } else {
                         hideError()
                     }
                 }
-
             })
             setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
@@ -187,7 +187,10 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
         product = product?.copy(
             minPrice = product?.minPrice?.copy(
                 price = CurrencyFormatHelper.convertRupiahToLong(
-                    binding?.quickEditPriceTextField?.textFieldInput?.text?.toString().orEmpty()).toString()))
+                    binding?.quickEditPriceTextField?.textFieldInput?.text?.toString().orEmpty()
+                ).toString()
+            )
+        )
         when {
             isPriceTooLow() -> {
                 showErrorPriceTooLow()
@@ -209,5 +212,4 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
     interface OnFinishedListener {
         fun onFinishEditPrice(product: ProductUiModel)
     }
-
 }
