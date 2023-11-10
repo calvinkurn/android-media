@@ -91,6 +91,14 @@ class StoriesRepositoryImpl @Inject constructor(
         storiesPrefUtil.setHasAckStoriesFeature()
     }
 
+    override suspend fun setHasSeenManualStoriesDurationCoachmark() {
+        storiesPrefUtil.setHasAckManualStoriesDuration()
+    }
+
+    override suspend fun hasSeenManualStoriesDurationCoachmark() {
+        storiesPrefUtil.hasAckManualStoriesDuration()
+    }
+
     override suspend fun getStoriesProducts(
         shopId: String,
         storyId: String,

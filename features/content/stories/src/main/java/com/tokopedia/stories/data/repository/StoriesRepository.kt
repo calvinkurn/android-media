@@ -22,6 +22,10 @@ interface StoriesRepository {
 
     suspend fun setHasAckStoriesFeature()
 
+    suspend fun setHasSeenManualStoriesDurationCoachmark()
+
+    suspend fun hasSeenManualStoriesDurationCoachmark()
+
     suspend fun getStoriesProducts(
         shopId: String,
         storyId: String,
