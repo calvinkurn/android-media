@@ -67,6 +67,7 @@ import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepa
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidgetListener
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
@@ -76,7 +77,7 @@ class RechargeHomepageAdapterTypeFactory(
     val listener: RechargeHomepageItemListener,
     private val reminderWidgetCallback: RechargeHomepageReminderWidgetCallback,
     private val dynamicLegoBannerCallback: RechargeHomepageDynamicLegoBannerCallback,
-    private val rechargeHomepageTodoWidgetListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener
+    private val rechargeHomepageTodoWidgetListener: RechargeHomepageTodoWidgetListener
 ) : BaseAdapterTypeFactory(), HomeComponentTypeFactory {
 
     fun type(bannerModel: RechargeHomepageBannerModel): Int {

@@ -9,12 +9,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetAutopayBinding
 import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetAutoPayViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetViewHolder
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidgetCloseProcessListener
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidgetListener
+import com.tokopedia.digital.home.presentation.listener.TodoWidgetItemListener
 
 class RechargeHomepageTodoWidgetAdapterTypeFactory(
-    private val rechargeHomepageTodoWidgetListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener,
-    private val closeItemListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetCloseProcess,
-    private val todoWidgetItemListener: RechargeHomepageTodoWidgetAutoPayViewHolder.TodoWidgetItemListener
+    private val rechargeHomepageTodoWidgetListener: RechargeHomepageTodoWidgetListener,
+    private val closeItemListener: RechargeHomepageTodoWidgetCloseProcessListener,
+    private val todoWidgetItemListener: TodoWidgetItemListener
 ) : BaseAdapterTypeFactory() {
 
     fun type(model: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel): Int {

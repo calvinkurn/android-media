@@ -44,6 +44,7 @@ import com.tokopedia.digital.home.presentation.bottomsheet.RechargeHomepageTodoW
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidgetListener
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
@@ -62,7 +63,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     RechargeHomepageItemListener,
     RechargeHomepageAdapter.LoaderListener,
     RechargeSearchBarWidget.FocusChangeListener,
-    RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener,
+    RechargeHomepageTodoWidgetListener,
     RechargeHomepageTodoWidgetBottomSheet.BottomSheetTodoWidgetListener
 {
 

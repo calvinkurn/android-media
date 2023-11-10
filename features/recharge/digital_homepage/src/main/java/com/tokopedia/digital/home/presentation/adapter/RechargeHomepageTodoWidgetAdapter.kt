@@ -10,8 +10,10 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeTodoWidgetSpaceDecorator
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetAutoPayViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetViewHolder
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidgetCloseProcessListener
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidgetListener
+import com.tokopedia.digital.home.presentation.listener.TodoWidgetItemListener
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.SPACE_DP
 import com.tokopedia.home_component.util.loadImage
@@ -27,7 +29,7 @@ import com.tokopedia.digital.home.R as digitalhomeR
 
 class RechargeHomepageTodoWidgetAdapter(
     var items: List<RechargeHomepageSections.Item>,
-    val todoWidgetListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener,
+    val todoWidgetListener: RechargeHomepageTodoWidgetListener,
 ) : RecyclerView.Adapter<RechargeHomepageTodoWidgetAdapter.RechargeHomeTodoWidgetListViewHolder>() {
 
     override fun getItemCount(): Int = items.size
@@ -53,12 +55,12 @@ class RechargeHomepageTodoWidgetAdapter(
 
         private val factory = RechargeHomepageTodoWidgetAdapterTypeFactory(
             todoWidgetListener,
-            object : RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetCloseProcess {
+            object : RechargeHomepageTodoWidgetCloseProcessListener {
                 override fun onCloseWidget(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
                     removeItem(element)
                 }
             },
-            object : RechargeHomepageTodoWidgetAutoPayViewHolder.TodoWidgetItemListener {
+            object : TodoWidgetItemListener {
                 override fun getListSize(): Int {
                     return getListCount()
                 }

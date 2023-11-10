@@ -7,6 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetAutopayBinding
 import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidgetCloseProcessListener
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidgetListener
+import com.tokopedia.digital.home.presentation.listener.TodoWidgetItemListener
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.CATEGORY_TYPE
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.POSTPAIDREMINDER_TYPE
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -20,8 +23,8 @@ import com.tokopedia.digital.home.R as digitalhomeR
 
 class RechargeHomepageTodoWidgetAutoPayViewHolder(
     val binding: ViewRechargeHomeTodoWidgetAutopayBinding,
-    private val todoWidgetListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener,
-    private val closeItemListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetCloseProcess,
+    private val todoWidgetListener: RechargeHomepageTodoWidgetListener,
+    private val closeItemListener: RechargeHomepageTodoWidgetCloseProcessListener,
     private val todoWidgetItemListener: TodoWidgetItemListener,
 ) : AbstractViewHolder<RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel>(
     binding.root
@@ -199,9 +202,5 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
             }
             todoWidgetMainCard.layoutParams = layoutParams
         }
-    }
-
-    interface TodoWidgetItemListener {
-        fun getListSize(): Int
     }
 }
