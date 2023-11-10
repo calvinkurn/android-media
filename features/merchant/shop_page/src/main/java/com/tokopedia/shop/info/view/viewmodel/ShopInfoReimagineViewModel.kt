@@ -22,9 +22,11 @@ import com.tokopedia.shop.common.util.DateTimeConstant
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopPharmacyInfo
+import com.tokopedia.shop.info.domain.entity.ShopStatsRawData
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop.info.domain.usecase.GetEpharmacyShopInfoUseCase
 import com.tokopedia.shop.info.domain.usecase.GetNearestEpharmacyWarehouseLocationUseCase
+import com.tokopedia.shop.info.domain.usecase.GetShopStatsRawDataUseCase
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopRatingAndTopicsUseCase
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopReviewReadingListUseCase
 import com.tokopedia.shop.info.view.model.ShopInfoUiEffect
@@ -53,7 +55,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val getShopPageHeaderLayoutUseCase: GetShopPageHeaderLayoutUseCase,
     private val getEpharmacyShopInfoUseCase: GetEpharmacyShopInfoUseCase,
     private val getNearestEpharmacyWarehouseLocationUseCase: GetNearestEpharmacyWarehouseLocationUseCase,
-    private val getMessageIdChatUseCase: GetMessageIdChatUseCase
+    private val getMessageIdChatUseCase: GetMessageIdChatUseCase,
+    private val getShopStatsRawDataUseCase: GetShopStatsRawDataUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     companion object {
@@ -103,6 +106,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 val shopInfoDeferred = async { handleGetShopInfo(shopId.toIntOrZero()) }
                 val shopNotesDeferred = async { getShopNotes(shopId) }
                 val shopOperationalHoursDeferred = async { getShopOperationalHours(shopId) }
+                val shopChatPerformanceDeferred = async { getShopChatPerformance(shopId) }
 
                 val shopHeaderLayout = shopHeaderLayoutDeferred.await()
                 val shopRating = shopRatingDeferred.await()
@@ -110,6 +114,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 val shopInfo = shopInfoDeferred.await()
                 val shopNotes = shopNotesDeferred.await()
                 val shopOperationalHours = shopOperationalHoursDeferred.await()
+                val shopChatPerformance = shopChatPerformanceDeferred.await()
 
                 val pharmacyInfo = getPharmacyInfo(shopId.toLongOrZero(), localCacheModel.district_id.toLongOrZero())
 
@@ -133,7 +138,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                         review = shopReview,
                         shopPerformance = ShopPerformance(
                             totalProductSoldCount = shopInfo.shopStats.productSold,
-                            chatPerformance = "", // TODO replace with real data
+                            chatPerformance = shopChatPerformance.toChatPerformance(), // TODO replace with real data
                             orderProcessTime = shopHeaderLayout.shopPageGetHeaderLayout.toOrderProcessTime()
                         ),
                         shopNotes = shopNotes.toShopNotes(),
@@ -256,6 +261,11 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 expandPharmacyInfo = false
             )
         }
+    }
+
+    private suspend fun getShopChatPerformance(shopId: String): ShopStatsRawData {
+        val param = GetShopStatsRawDataUseCase.Param(shopId = shopId, source = "shop_info_page")
+        return getShopStatsRawDataUseCase.execute(param)
     }
 
     private fun handleReportShop() {
@@ -387,5 +397,9 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private fun String.toShopJoinDate(): String {
         return toDate(DateTimeConstant.DATE_TIME_DAY_PRECISION).formatTo(DateTimeConstant.DATE_TIME_YEAR_PRECISION)
+    }
+
+    private fun ShopStatsRawData.toChatPerformance(): String {
+        return this.chatAndDiscussionReplySpeed.toString() + "menit"
     }
 }

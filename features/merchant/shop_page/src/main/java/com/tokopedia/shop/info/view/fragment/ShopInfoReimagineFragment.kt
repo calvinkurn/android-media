@@ -3,10 +3,15 @@ package com.tokopedia.shop.info.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintSet
@@ -69,9 +74,9 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val MARGIN_4_DP = 4
         private const val APPLINK_QUERY_STRING_REVIEW_SOURCE = "header"
-        private const val REQUEST_REPORT_SHOP = 110
+        private const val REQUEST_CODE_REPORT_SHOP = 110
         private const val REQUEST_CODE_LOGIN = 100
-        
+
         @JvmStatic
         fun newInstance(shopId: String): ShopInfoReimagineFragment {
             return ShopInfoReimagineFragment().apply {
@@ -146,6 +151,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun setupView() {
         setupReportShopHyperlink()
         setupClickListener()
+        binding?.imgShop?.circularStroke()
     }
 
     private fun setupClickListener() {
@@ -173,16 +179,16 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun setupReportShopHyperlink() {
-       binding?.run {
-           val wording = getString(R.string.shop_info_report_shop)
-           val hyperlink = getString(R.string.shop_info_report_here)
-           tpgReportShop.setHyperlinkText(
-               fullText = wording,
-               hyperlinkSubstring = hyperlink,
-               ignoreCase = true,
-               onHyperlinkClick = { viewModel.processEvent(ShopInfoUiEvent.ReportShop) }
-           )
-       }
+        binding?.run {
+            val wording = getString(R.string.shop_info_report_shop)
+            val hyperlink = getString(R.string.shop_info_report_here)
+            tpgReportShop.setHyperlinkText(
+                fullText = wording,
+                hyperlinkSubstring = hyperlink,
+                ignoreCase = true,
+                onHyperlinkClick = { viewModel.processEvent(ShopInfoUiEvent.ReportShop) }
+            )
+        }
     }
 
     private fun observeUiState() {
@@ -529,7 +535,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             binding?.loaderReportShop?.gone()
         }
     }
-    
+
     private fun makeShopNameCenteredVertically() {
         val constraintSet = ConstraintSet()
         constraintSet.clone(binding?.constraintLayout)
@@ -581,18 +587,19 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
-    
+
     private fun redirectToChatWebView(messageId: String) {
         val reportUrl = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId${ShopInfoFragment.SOURCE_PAGE}"
 
         val intent = ReportShopWebViewActivity.getStartIntent(context ?: return, reportUrl)
-        startActivityForResult(intent, REQUEST_REPORT_SHOP)
+        startActivityForResult(intent, REQUEST_CODE_REPORT_SHOP)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_REPORT_SHOP -> onReturnFromReportUser(data, resultCode)
+            REQUEST_CODE_REPORT_SHOP -> onReturnFromReportUser(data, resultCode)
+            REQUEST_CODE_LOGIN -> viewModel.processEvent(ShopInfoUiEvent.ReportShop)
         }
     }
 
@@ -606,5 +613,16 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                 .show()
         }
+    }
+
+    private fun ImageView.circularStroke() {
+        // Create a circular border
+        val borderDrawable = ShapeDrawable(OvalShape())
+        borderDrawable.paint.color = Color.RED
+        borderDrawable.paint.strokeWidth = 2.toPx().toFloat()
+        borderDrawable.paint.style = Paint.Style.STROKE
+
+        // Set the circular border as the background of the ImageView
+        background = borderDrawable
     }
 }
