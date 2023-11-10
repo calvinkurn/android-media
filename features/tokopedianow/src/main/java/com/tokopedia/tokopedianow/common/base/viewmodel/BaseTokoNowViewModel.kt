@@ -169,7 +169,7 @@ open class BaseTokoNowViewModel(
         }
     }
 
-    suspend fun getTickerDataAsync(
+    fun getTickerDataAsync(
         warehouseId: String,
         page: String
     ): Deferred<GetTickerData?> {

@@ -1,34 +1,6 @@
 <resources>
-    <string name="app_name">tkpdcustomer</string>
-    <!--Feed-->
-    <string name="label_close">Tutup</string>
-    <string name="title_detail_feed">Product Lainnya</string>
-    <string name="learn_more">Pelajari Selengkapnya</string>
-    <string name="promote_info_text">Promosi oleh TopAds yang muncul berdasarkan minat Anda.
-    </string>
-    <string name="feed_deleted">Feed ini telah dihapus.</string>
-    <string name="return_to_feed">Kembali ke Feed</string>
-    <string name="you_have_new_feed">Post Terbaru</string>
-    <string name="shop_success_follow"> berhasil difollow</string>
-    <string name="shop_success_unfollow"> dihapus dari toko yang difollow</string>
 
-    <string name="cta_refresh_feed">Refresh</string>
-
-    <string name="feed_content_reported">Konten berhasil dilaporkan</string>
     <string name="feed_delete">Hapus</string>
-    <string name="feed_after_post">Post sedang diunggah. Cek proses unggah di notifikasi.</string>
-
-    <string name="feed_delete_post">Ingin hapus postingan ini?</string>
-    <string name="feed_after_delete_cant">Postingan yang dihapus akan hilang
-dari Feed.</string>
-    <string name="feed_post_deleted">Post Kamu Berhasil di Hapus</string>
-
-    <!-- Onboarding -->
-    <string name="feed_onboarding_create_post_title">Coba post di Feed, yuk!</string>
-    <string name="feed_onboarding_create_post_detail">Post barang rekomendasimu ke pengguna lain atau promosiin tokomu secara gratis.</string>
-    <string name="feed_see_inspiration">Lihat Inspirasi Untukmu</string>
-    <string name="feed_choose_topic_you_like">Pilih %s topik yang kamu suka:</string>
-    <string name="feed_onboarding_name_format">Hai, %s</string>
 
     <!-- Coachmarks in Feed -->
     <string name="feed_onboarding_user_profile_coachmark_title">Cek profil kamu di sini, yuk!</string>
@@ -36,51 +8,13 @@ dari Feed.</string>
     <string name="feed_onboarding_video_tab_coachmark_title">Makin asik nontonin video!</string>
     <string name="feed_onboarding_video_tab_coachmark_description">Nonton live shopping dan cari inspirasi lewat video pendek di sini ✨</string>
 
-
-    <string name="feed_con_desc_btn_search">button search</string>
-    <!-- Empty feed result -->
-    <string name="feed_result_empty">Empty result</string>
-
     <!-- Like -->
     <string name="feed_like_error_message">Oops, tidak bisa memberi suka.</string>
-    <!-- Unfollow -->
-    <string name="feed_unfollow_error_message">Oops, tidak bisa unfollow toko</string>
-
-    <!--Toaster -->
-    <string name="feed_go_to_cart">Lihat Keranjang</string>
-    <string name="feed_added_to_cart">Barang berhasil ditambahkan.</string>
-
 
     <!--Share -->
-    <string name="feed_share_weblink">https://www.tokopedia.com/content/%s</string>
-    <string name="feed_vod_share_weblink">https://www.tokopedia.com/play/channel/%s</string>
-    <string name="feed_share_pdp">https://www.tokopedia.com/%s/%s</string>
-    <string name="feed_share_asgc_weblink">https://www.tokopedia.com/feedcommunicationdetail/%s</string>
-    <string name="feed_background_image">Feed background image</string>
-    <string name="feed_header_mask">searchbar feed header mask</string>
-    <string name="feed_fab_shop">Feed Fab Shop</string>
-    <string name="feed_copy_link_success_message">Link berhasil disalin!</string>
-
-    <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
-
-    <string name="feed_post_successful_toaster">Yay, post kamu berhasil di-upload!</string>
-
-    <!--Floating Action Button-->
-    <string name="feed_fab_create_content">Buat Konten</string>
-    <string name="feed_fab_create_post">Buat Post</string>
-    <string name="feed_fab_create_live">Buat Live</string>
-    <string name="feed_fab_create_shorts_video">Buat Video</string>
-    <string name="feed_detail_page_header">Dalam Post Ini</string>
-    <string name="feed_play_header_text">Lagi Live, Nih!</string>
-    <string name="feed_play_header_upcoming_text">Nantikan live seru lainnya!</string>
-    <string name="btn_add_to_cart_text">+ Keranjang</string>
-
-    <!-- User Profile Entry Point -->
-    <string name="feed_user_profile_entry_point_coach_mark">Kayak apa si halaman\nprofilmu? Cek di sini, yuk!</string>
+    <string name="feed_copy_link_success_message">Link berhasil disalin!</string>=
 
     <!-- Upload -->
-    <string name="cp_common_progress_bar_text">Memproses...</string>
-    <string name="cp_common_progress_bar_failed_text">Gagal Diproses</string>
     <string name="feed_upload_content_success">Yay, konten kamu berhasil di-upload!</string>
     <string name="feed_upload_shorts_see_video">Lihat</string>
     <string name="feed_uploading_title">Diproses</string>
@@ -136,10 +70,6 @@ dari Feed.</string>
 
     <string name="feed_message_success_unfollow">Berhasil unfollow %s ini!</string>
     <string name="feed_message_failed_unfollow">Oops, gagal unfollow akun ini.</string>
-
-    <!-- Transcoding Livestream to VOD -->
-    <string name="feed_transcoding_livestream_to_vod_message">Sedang menyimpan video. Kami akan infokan jika berhasil disimpan.</string>
-    <string name="feed_transcoding_livestream_to_vod_action">Lihat</string>
 
     <string name="feed_live_wave_label">Ketuk untuk nonton LIVE</string>
 

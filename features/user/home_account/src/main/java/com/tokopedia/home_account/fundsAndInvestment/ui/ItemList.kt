@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
@@ -58,8 +58,13 @@ fun ItemList(
             NestImage(
                 source = ImageSource.Remote(source = item.urlImage),
                 modifier = Modifier
-                    .padding(12.dp)
-                    .size(48.dp)
+                    .padding(
+                        start = dp_24,
+                        top = dp_16,
+                        end = dp_16,
+                        bottom = dp_16
+                    )
+                    .size(dp_48)
             )
 
             ContentText(
@@ -77,11 +82,11 @@ fun ItemList(
                 isFailed = item.isFailed
             )
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(dp_24))
         }
         NestDivider(
             modifier = Modifier
-                .padding(start = 72.dp)
+                .padding(start = dp_72)
                 .fillMaxWidth(),
             size = NestDividerSize.Small
         )
@@ -111,9 +116,11 @@ private fun ContentText(
 
         when {
             isFailed -> {
+                Spacer(modifier = Modifier.height(dp_4))
                 Subtitle(subtitle = LocalContext.current.getString(R.string.funds_and_investment_failed))
             }
             subtitle.isNotEmpty() && isActive || !isVertical -> {
+                Spacer(modifier = Modifier.height(dp_4))
                 Subtitle(subtitle = subtitle)
             }
         }
@@ -158,7 +165,7 @@ private fun IconAction(
     NestIcon(
         iconId = iconId,
         modifier = Modifier
-            .size(24.dp),
+            .size(dp_24),
         colorLightEnable = colorLightEnable,
         colorNightEnable = colorNightEnable
     )
@@ -202,7 +209,7 @@ fun ListItemFailedPreview() {
 
 @Preview(device = Devices.PIXEL_3A_XL, showBackground = true)
 @Composable
-fun ListItemSuccessPreview() {
+fun ListItemLinkedSuccessPreview() {
     NestTheme {
         ItemList(
             modifier = Modifier,
@@ -212,6 +219,28 @@ fun ListItemSuccessPreview() {
                 subtitle = "Test Subtitle 1",
                 isFailed = false,
                 isActive = true,
+                isVertical = true,
+                hideTitle = false
+            ),
+            userId = "12345"
+        ) {
+
+        }
+    }
+}
+
+@Preview(device = Devices.PIXEL_3A_XL, showBackground = true)
+@Composable
+fun ListItemUnlinkedSuccessPreview() {
+    NestTheme {
+        ItemList(
+            modifier = Modifier,
+            item = WalletUiModel(
+                id = "1",
+                title = "Test Title 1",
+                subtitle = "Test Subtitle 1",
+                isFailed = false,
+                isActive = false,
                 isVertical = true,
                 hideTitle = false
             ),

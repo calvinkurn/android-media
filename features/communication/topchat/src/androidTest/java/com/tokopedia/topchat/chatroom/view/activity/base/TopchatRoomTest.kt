@@ -45,7 +45,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
-import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.TopChatRoomFlexBoxLayout
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse
@@ -353,7 +353,7 @@ abstract class TopchatRoomTest {
         val intent = Intent().apply {
             putExtra(ApplinkConst.Chat.MESSAGE_ID, MSG_ID)
             sourcePage?.let {
-                putExtra(ApplinkConst.Chat.SOURCE_PAGE, it)
+                putExtra(ApplinkConst.Chat.SOURCE, it)
             }
         }
         intentModifier(intent)
@@ -448,8 +448,8 @@ abstract class TopchatRoomTest {
         val rv = activity.findViewById<RecyclerView>(rvChatRoomId)
         (rv.layoutManager as? LinearLayoutManager)?.let {
             val child = it.getChildAt(position)
-            val flexBox = child?.findViewById<FlexBoxChatLayout>(flexBoxBubbleId)
-            return flexBox?.message?.text ?: ""
+            val flexBox = child?.findViewById<TopChatRoomFlexBoxLayout>(flexBoxBubbleId)
+            return flexBox?.getMessageText() ?: ""
         }
         return ""
     }

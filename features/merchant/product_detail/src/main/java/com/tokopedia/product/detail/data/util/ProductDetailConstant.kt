@@ -60,6 +60,7 @@ object ProductDetailConstant {
     const val INFO = "info"
     const val SHIPMENT = "shipment"
     const val SHIPMENT_V2 = "shipment_v2"
+    const val SHIPMENT_V3 = "shipment_v3"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
     const val TICKER_INFO = "ticker_info"
@@ -141,6 +142,7 @@ object ProductDetailConstant {
     const val ARG_CHANNEL = "ARG_CHANNEL"
     const val ARG_CAMPAIGN_ID = "ARG_CAMPAIGN_ID"
     const val ARG_VARIANT_ID = "ARG_VARIANT_ID"
+    const val ARG_PREFETCH_CACHE_ID = "ARG_PREFETCH_CACHE_ID"
 
     // Animation
     const val CART_MAX_COUNT = 99

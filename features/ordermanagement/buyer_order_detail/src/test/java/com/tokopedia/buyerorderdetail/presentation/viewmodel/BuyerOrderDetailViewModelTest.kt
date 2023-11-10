@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.viewmodel
 
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
@@ -21,6 +22,8 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -1134,6 +1137,108 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                     buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
                         .last().scpRewardsMedalTouchPointWidgetUiState
                 )
+            }
+        }
+    }
+
+    @Test
+    fun `impressProduct should trigger warranty tracker if not yet triggered`() {
+        mockk<ProductListUiModel.ProductUiModel>(relaxed = true) {
+            every { orderDetailId } returns "123456789"
+            every { orderId } returns "987654321"
+            every { button.key } returns "warranty_claim"
+
+            mockkObject(BuyerOrderDetailTracker) {
+                viewModel.impressProduct(this)
+
+                verify(exactly = 1) { BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton("987654321") }
+            }
+        }
+    }
+
+    @Test
+    fun `impressProduct should not trigger warranty tracker if already triggered`() {
+        mockk<ProductListUiModel.ProductUiModel>(relaxed = true) {
+            every { orderDetailId } returns "123456789"
+            every { orderId } returns "987654321"
+            every { button.key } returns "warranty_claim"
+
+            mockkObject(BuyerOrderDetailTracker) {
+                viewModel.impressProduct(this)
+
+                verify(exactly = 1) { BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton("987654321") }
+            }
+
+            mockkObject(BuyerOrderDetailTracker) {
+                viewModel.impressProduct(this)
+
+                verify(inverse = true) { BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton("987654321") }
+            }
+        }
+    }
+
+    @Test
+    fun `impressProduct should not trigger warranty tracker if button key is not warranty_claim`() {
+        mockk<ProductListUiModel.ProductUiModel>(relaxed = true) {
+            every { orderDetailId } returns "123456789"
+            every { orderId } returns "987654321"
+            every { button.key } returns "not_warranty_claim"
+
+            mockkObject(BuyerOrderDetailTracker) {
+                viewModel.impressProduct(this)
+
+                verify(inverse = true) { BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton("987654321") }
+            }
+        }
+    }
+
+    @Test
+    fun `impressBmgmProduct should trigger warranty tracker if not yet triggered`() {
+        mockk<ProductBmgmSectionUiModel.ProductUiModel>(relaxed = true) {
+            every { orderDetailId } returns "123456789"
+            every { orderId } returns "987654321"
+            every { button?.key } returns "warranty_claim"
+
+            mockkObject(BuyerOrderDetailTracker) {
+                viewModel.impressBmgmProduct(this)
+
+                verify(exactly = 1) { BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton("987654321") }
+            }
+        }
+    }
+
+    @Test
+    fun `impressBmgmProduct should not trigger warranty tracker if already triggered`() {
+        mockk<ProductBmgmSectionUiModel.ProductUiModel>(relaxed = true) {
+            every { orderDetailId } returns "123456789"
+            every { orderId } returns "987654321"
+            every { button?.key } returns "warranty_claim"
+
+            mockkObject(BuyerOrderDetailTracker) {
+                viewModel.impressBmgmProduct(this)
+
+                verify(exactly = 1) { BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton("987654321") }
+            }
+
+            mockkObject(BuyerOrderDetailTracker) {
+                viewModel.impressBmgmProduct(this)
+
+                verify(inverse = true) { BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton("987654321") }
+            }
+        }
+    }
+
+    @Test
+    fun `impressBmgmProduct should not trigger warranty tracker if button key is not warranty_claim`() {
+        mockk<ProductBmgmSectionUiModel.ProductUiModel>(relaxed = true) {
+            every { orderDetailId } returns "123456789"
+            every { orderId } returns "987654321"
+            every { button?.key } returns "not_warranty_claim"
+
+            mockkObject(BuyerOrderDetailTracker) {
+                viewModel.impressBmgmProduct(this)
+
+                verify(inverse = true) { BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton("987654321") }
             }
         }
     }

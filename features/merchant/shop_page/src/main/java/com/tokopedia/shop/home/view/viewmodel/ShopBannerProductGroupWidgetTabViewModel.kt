@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -40,7 +41,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     companion object {
         private const val FIRST_LABEL_INDEX = 0
         private const val FIRST_PAGE = 1
-        private const val PRODUCT_COUNT_TO_FETCH = 5
+        private const val PRODUCT_COUNT_TO_FETCH = 10
         private const val LABEL_TITLE_PRODUCT_SOLD_COUNT = "Terjual"
         private const val SORT_ID_SORT_BY_SOLD_DESC = 8
     }
@@ -49,6 +50,10 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     val carouselWidgets: LiveData<UiState>
         get() = _carouselWidgets
 
+    private val _verticalProductCarousel = MutableLiveData<List<ShopHomeBannerProductGroupItemType>>()
+    val verticalProductCarousel: LiveData<List<ShopHomeBannerProductGroupItemType>>
+        get() = _verticalProductCarousel
+    
     sealed class UiState {
         object Loading: UiState()
         data class Success(val data: List<ShopHomeBannerProductGroupItemType>): UiState()
@@ -108,8 +113,28 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
             val bannerImageUrl = bannerWidgets[0].imageUrl
             val ctaLink = bannerWidgets[0].ctaLink
 
-            listOf(VerticalBannerItemType(componentId, componentName, bannerImageUrl, ctaLink))
+            listOf(VerticalBannerItemType(componentId, componentName, bannerImageUrl, ctaLink, Int.ZERO))
         }
+    }
+    
+    fun refreshVerticalBannerHeight(productCardHeight: Int) {
+        val currentCarouselWidgets = _carouselWidgets.value
+        
+        val widgets = if (currentCarouselWidgets is UiState.Success) {
+            currentCarouselWidgets.data
+        } else {
+            emptyList()
+        }
+
+        val updatedProductCarousels = widgets.map { itemType ->
+            if (itemType is VerticalBannerItemType) {
+                itemType.copy(verticalBannerHeight = productCardHeight)
+            } else {
+                itemType
+            }
+        }
+        
+        _verticalProductCarousel.postValue(updatedProductCarousels)
     }
 
     private fun getProductMetadata(
