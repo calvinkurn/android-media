@@ -56,4 +56,4 @@ labels:
 
 `tokopedia-android-internal://logistic/dropoff/`
 
-![](res/navigation.png)
+![](http://docs-android.tokopedia.net/images/docs/features/navigation.png)

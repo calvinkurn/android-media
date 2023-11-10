@@ -47,13 +47,13 @@ In this feature seller can explore and navigate through various pages, that cons
 
 | **Tab Name** | **Screenshot** | **Description** |
 | --- | --- | --- |
-| **Campaign List (Upcoming)** | ![](res/upcoming.png)<br/> | seller can see the list of campaign that they can register to, inside the upcoming tab along with information such as remaining time that they have to submit the product and the campaign quota. |
-| Campaign List (Registered) | ![](res/Registered.png)<br/> | seller can see the list of campaign that they’ve submitted during in submission period (Terdaftar)  and see the status progress |
-| Campaign List (Ongoing) | ![](res/ongoing.png)<br/> | seller can see the list of ongoing campaigns (Berlangsung) along with the information of stock sold and the countdown timer |
-| Campaign List (Finished) | ![](res/done.png)<br/> | Seller can see the list of finished campaign (Selesai) along with the status information |
-| Campaign Detail | ![](res/detail.png)<br/> | In this page, seller will be given a more complete information about the campaign they choose from the campaign list page. Each of data shown inside the Campaign detail page will be vary, based on the campaign status. |
-| Pilih Produk | ![](res/choose%20product.png)<br/> | Pilih produk page will be opened when seller register to a campaign, in this page seller can choose products and its variant that they want to register to the campaign. |
-| Atur Produk | ![](res/atur%20product.png)<br/> | 1. Inside the atur produk page, list of product that the seller selected will be shown in a list. In order to register their product, seller have to fill the product and its variant data<br/> |
+| **Campaign List (Upcoming)** | ![](http://docs-android.tokopedia.net/images/docs/features/upcoming.png)<br/> | seller can see the list of campaign that they can register to, inside the upcoming tab along with information such as remaining time that they have to submit the product and the campaign quota. |
+| Campaign List (Registered) | ![](http://docs-android.tokopedia.net/images/docs/features/Registered.png)<br/> | seller can see the list of campaign that they’ve submitted during in submission period (Terdaftar)  and see the status progress |
+| Campaign List (Ongoing) | ![](http://docs-android.tokopedia.net/images/docs/features/ongoing.png)<br/> | seller can see the list of ongoing campaigns (Berlangsung) along with the information of stock sold and the countdown timer |
+| Campaign List (Finished) | ![](http://docs-android.tokopedia.net/images/docs/features/done.png)<br/> | Seller can see the list of finished campaign (Selesai) along with the status information |
+| Campaign Detail | ![](http://docs-android.tokopedia.net/images/docs/features/detail.png)<br/> | In this page, seller will be given a more complete information about the campaign they choose from the campaign list page. Each of data shown inside the Campaign detail page will be vary, based on the campaign status. |
+| Pilih Produk | ![](http://docs-android.tokopedia.net/images/docs/features/choose%20product.png)<br/> | Pilih produk page will be opened when seller register to a campaign, in this page seller can choose products and its variant that they want to register to the campaign. |
+| Atur Produk | ![](http://docs-android.tokopedia.net/images/docs/features/atur%20product.png)<br/> | 1. Inside the atur produk page, list of product that the seller selected will be shown in a list. In order to register their product, seller have to fill the product and its variant data<br/> |
 
 
 
@@ -91,7 +91,7 @@ In this feature seller can explore and navigate through various pages, that cons
 
 ## Flow Diagram
 
-![](res/gjuKLcsGex67yyaDz2bFDJ9cFMRKTZ--mEtz73_dc0ebIhDc0oclUZdnkP6YrcfiiMfX0mN7p-MfPmy9SKlOWOwitfSb9mAs5tervUmjoKq_F1FN_IZ0xH3tVe-j0j5nRjVjd5JTlplRsVa8XM5bNoPbVPLCC-iVsg4Ysx8rbnEgVdNseMHLex2wlED78w)
+![](http://docs-android.tokopedia.net/images/docs/features/gjuKLcsGex67yyaDz2bFDJ9cFMRKTZ--mEtz73_dc0ebIhDc0oclUZdnkP6YrcfiiMfX0mN7p-MfPmy9SKlOWOwitfSb9mAs5tervUmjoKq_F1FN_IZ0xH3tVe-j0j5nRjVjd5JTlplRsVa8XM5bNoPbVPLCC-iVsg4Ysx8rbnEgVdNseMHLex2wlED78w)
 
 
 
@@ -123,9 +123,9 @@ Here are the applink to access each respective page :
 	```
 2. **Menu**
 
-![](res/Screenshot_20230105-160153_Tokopedia%20Seller.jpg)
+![](http://docs-android.tokopedia.net/images/docs/features/Screenshot_20230105-160153_Tokopedia%20Seller.jpg)
 
-![](res/Screenshot_20230105-160207_Tokopedia%20Seller.jpg)
+![](http://docs-android.tokopedia.net/images/docs/features/Screenshot_20230105-160207_Tokopedia%20Seller.jpg)
 
 If you tick the checkbox, this prompt will not showing again
 

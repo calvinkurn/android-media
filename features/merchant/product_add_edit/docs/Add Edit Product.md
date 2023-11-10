@@ -47,7 +47,7 @@ Add edit product is a feature that allows seller to manage their product and its
 <!--start expand:Product Preview Page-->
 **Fragment Class:** AddEditProductPreviewFragment
 
-![](res/Screenshot_1604306620.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Screenshot_1604306620.png)
 
 **GQL Usage**
 
@@ -67,7 +67,7 @@ Add edit product is a feature that allows seller to manage their product and its
 <!--start expand:Product Detail Page-->
 **Fragment Class:** AddEditProductDetailFragment
 
-![](res/image-20230329-094535.png)
+![](http://docs-android.tokopedia.net/images/docs/features/image-20230329-094535.png)
 
 **GQL Usage**
 
@@ -99,7 +99,7 @@ Add edit product is a feature that allows seller to manage their product and its
 <!--start expand:Product Description Page-->
 **Fragment Class:** AddEditProductDescriptionFragment
 
-![](res/image-20201102-041629.png)
+![](http://docs-android.tokopedia.net/images/docs/features/image-20201102-041629.png)
 
  
 
@@ -108,7 +108,7 @@ Add edit product is a feature that allows seller to manage their product and its
 - Description input validation  
 Input validation will works based on activity diagram below.
 
-![](res/image-20201102-031902.png)
+![](http://docs-android.tokopedia.net/images/docs/features/image-20201102-031902.png)
 
 - Video URL input validation  
 This validation is including these processes
@@ -123,20 +123,20 @@ This validation is including these processes
 <!--start expand:Product Shipment Page-->
 **Fragment Class:** AddEditProductShipmentFragment
 
-![](res/image-20201102-041547.png)
+![](http://docs-android.tokopedia.net/images/docs/features/image-20201102-041547.png)
 
 **Input Validations**
 
 - Shipment input validation  
 Input validation will works based on activity diagram below.
 
-![](res/image-20201102-035603.png)
+![](http://docs-android.tokopedia.net/images/docs/features/image-20201102-035603.png)
 <!--end expand-->
 
 <!--start expand:Product Variant Page-->
 **Fragment Class:** AddEditProductVariantFragment
 
-![](res/image-20201116-062656.png)
+![](http://docs-android.tokopedia.net/images/docs/features/image-20201116-062656.png)
 
 **GQL Usage**
 
@@ -147,7 +147,7 @@ Input validation will works based on activity diagram below.
 - Variant input validation  
 Input validation will works based on activity diagram below.
 
-![](res/image-20201116-070457.png)
+![](http://docs-android.tokopedia.net/images/docs/features/image-20201116-070457.png)
 <!--end expand-->
 
 <!--start expand:Upload Product Service-->
@@ -161,7 +161,7 @@ Input validation will works based on activity diagram below.
 
 Uploading product data will works based on diagram below.
 
-![](res/7bW04cPV7XSO4HcHC27GFPHVl_7mJjng7yDA9lkE4Ws9Y3S2R1e8dTaTVF2QAL98DvbXLkdC8C0JVNw1tw1kfSWaIZJAKTdtr_OIl7C2fJ5vn5rMSrh2oxMQ9T47JR8MPEF5IxcRqyd1HW-ilxmQwaI)
+![](http://docs-android.tokopedia.net/images/docs/features/7bW04cPV7XSO4HcHC27GFPHVl_7mJjng7yDA9lkE4Ws9Y3S2R1e8dTaTVF2QAL98DvbXLkdC8C0JVNw1tw1kfSWaIZJAKTdtr_OIl7C2fJ5vn5rMSrh2oxMQ9T47JR8MPEF5IxcRqyd1HW-ilxmQwaI)
 
 Uploading data will started after user input, after input were done the upload product service will upload product first. If uploading product data is failed, the product data will saved into draft and uploading product data will be canceled.  
 But, if product image data were success to upload, the flow will continue to upload product input process. After this process were done, the upload status will be appeared at notification center.
@@ -174,7 +174,7 @@ But, if product image data were success to upload, the flow will continue to upl
 <!--start expand:Add Product Flow Diagram-->
 Adding product data will works based on diagram below.
 
-![](res/add%20flow.png)
+![](http://docs-android.tokopedia.net/images/docs/features/add%20flow.png)
 
 **Details:**
 
@@ -194,7 +194,7 @@ Adding product data will works based on diagram below.
 <!--start expand:Edit Product Flow Diagram-->
 Editing product data will works based on diagram below.
 
-![](res/edit%20product.drawio.png)
+![](http://docs-android.tokopedia.net/images/docs/features/edit%20product.drawio.png)
 
 When editing product page user will redirected to Product Preview Page. At this page user can choose page based on data that user want to be edited.
 <!--end expand-->
@@ -204,7 +204,7 @@ When editing product page user will redirected to Product Preview Page. At this 
 <!--start expand:Duplicate Product Flow-->
 Duplicate product data will works based on diagram below.
 
-![](res/draft.png)
+![](http://docs-android.tokopedia.net/images/docs/features/draft.png)
 
 Duplicate product flow experience is actually will be the same like edit product did, but at the end of submission the data will be threated as adding data.
 <!--end expand-->
@@ -223,13 +223,13 @@ The first page in Add Edit Product is called Product Preview Page. User will alw
 
 
 
-![](res/Screen%20Shot%202023-01-27%20at%2014.28.16.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Screen%20Shot%202023-01-27%20at%2014.28.16.png)
 
 
 
 
 
-![](res/Screen%20Shot%202023-01-27%20at%2014.29.36.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Screen%20Shot%202023-01-27%20at%2014.29.36.png)
 
 
 
@@ -239,11 +239,11 @@ The first page in Add Edit Product is called Product Preview Page. User will alw
 
 You can **add** new product by pressing the plus button on action bar or **edit** the existing product information by clicking the product image in product list item. 
 
-![](res/Screen%20Shot%202023-01-25%20at%2011.45.20.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Screen%20Shot%202023-01-25%20at%2011.45.20.png)
 
 Moreover you can **duplicate** a product by pressing the overflow button and click duplicate product option. You will be landed into product preview page with 
 
-![](res/Screen%20Shot%202023-01-26%20at%2017.04.24.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Screen%20Shot%202023-01-26%20at%2017.04.24.png)
 
 ### Navigation using Applink
 

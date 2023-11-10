@@ -37,7 +37,7 @@ NOW! 15
 
 ### Background
 
-![](res/home_page_choose_address.jpeg)
+![](http://docs-android.tokopedia.net/images/docs/features/home_page_choose_address.jpeg)
 To deliver greater customer experience, Tokopedia wants to localize its front funnel (Home, Search and Discovery) so that products that cannot be delivered to a user's default address do not appear upon discovery. This is especially important since Tokopedia is growing its F&B categories and many F&B merchants which provide perishable products (example: frozen food, vegetables, meat, fruits) tend to only deliver within their city and exclusively ship with Instant and Same-Day Delivery.
 
 Building the capabilities to choose an address in the very beginning of a buyer's journey to have localized experience tailored based on that chosen address, can avoid situations where buyers cannot checkout the items they have added to cart due to the merchants' coverage is outside buyer's destination address, in the very end of their journey, therefore saving buyer time from eventual disappointment, and improve discoverability for relevant merchants, especially those offering perishable FMCG products
@@ -63,7 +63,7 @@ This UI Component will be created by Logistic FE, so the lifecycle and the funct
 
 ## Flow Diagram
 
-![](res/flow_diagram.png)![](res/choose_address.png)
+![](http://docs-android.tokopedia.net/images/docs/features/flow_diagram.png)![](http://docs-android.tokopedia.net/images/docs/features/choose_address.png)
 
 ## How-to
 
@@ -81,7 +81,7 @@ implementation project(rootProject.ext.features.localizationchooseaddress)
 
 ### **Choose Address Widget**
 
-![](res/choose_address_widget.jpeg)
+![](http://docs-android.tokopedia.net/images/docs/features/choose_address_widget.jpeg)
 If you want to use this widget, you need to add this widget to your xml, you can adjust the height and the width as you like, because on each page the layout and size are different. 
 
 - Implementation of widget in xml file.

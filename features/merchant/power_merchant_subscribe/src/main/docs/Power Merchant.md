@@ -32,13 +32,13 @@ Seller will be looking at this page when they want to register for **Power Merch
 
 
 
-![](res/pm_registration.png)
+![](http://docs-android.tokopedia.net/images/docs/features/pm_registration.png)
 
 
 
 
 
-![](res/pm_active.png)
+![](http://docs-android.tokopedia.net/images/docs/features/pm_active.png)
 
 
 
@@ -59,13 +59,13 @@ Seller will be looking at this page when they want to register for **Power Merch
 
 PM page code structure in general basically the same as the other page. Where there is an Activity and then a Fragment on above of it.
 
-![](res/pm_code_structure.png)
+![](http://docs-android.tokopedia.net/images/docs/features/pm_code_structure.png)
 
 ### Data Flow
 
 Here is the data flow Power Merchant Page
 
-![](res/pm_data_flow.png)
+![](http://docs-android.tokopedia.net/images/docs/features/pm_data_flow.png)
 
 ## Navigation
 
@@ -74,7 +74,7 @@ To open the PM page, below are the entry points :
 1. On Seller App, from ***Home*** → ***Other Menu*** → ***Power Merchant Card.*** This entry point is not visible for Official Store.  
 
 
-![](res/pm_entry_point_from_other_menu.png)
+![](http://docs-android.tokopedia.net/images/docs/features/pm_entry_point_from_other_menu.png)
 2. On Customer App, from **Home** → **Main Menu** *(on top right corner)* → **Shop Account** → **Upgrade Power Merchant**
 
 
@@ -82,19 +82,19 @@ To open the PM page, below are the entry points :
 
 
 
-![](res/pm_entry_point_ma_home.jpg)
+![](http://docs-android.tokopedia.net/images/docs/features/pm_entry_point_ma_home.jpg)
 
 
 
 
 
-![](res/pm_entry_point_ma_account.jpg)
+![](http://docs-android.tokopedia.net/images/docs/features/pm_entry_point_ma_account.jpg)
 
 
 
 
 
-![](res/pm_entry_point_ma_shop_account.jpg)
+![](http://docs-android.tokopedia.net/images/docs/features/pm_entry_point_ma_shop_account.jpg)
 
 
 

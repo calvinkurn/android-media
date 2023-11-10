@@ -35,9 +35,9 @@ labels:
 
 ## Flow Diagram
 
-![](res/Hotel-Flow-Class-Diagram-Page-4.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Hotel-Flow-Class-Diagram-Page-4.png)
 
-![](res/Rating-Hotel.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Rating-Hotel.png)
 
 ## How-to
 

@@ -52,11 +52,11 @@ Or if you have Seller App installed on your device, you can also follow these st
 2. Navigate to **Lainnya** bottom navigation menu
 3. Tap **Iklan & Promosi Toko**
 
-![](res/Screen%20Shot%202023-01-05%20at%2017.42.29.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Screen%20Shot%202023-01-05%20at%2017.42.29.png)
 
 4. Tap **Diskon Toko**
 
-![](res/Screen%20Shot%202023-01-05%20at%2017.43.02.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Screen%20Shot%202023-01-05%20at%2017.43.02.png)
 
 ## How to
 
@@ -76,13 +76,13 @@ In essence, it only takes 3 steps for sellers to create a new shop discount for 
 2. Pilih Produk Page
 3. Atur Diskon Page (submission)
 
-![](res/Screen%20Shot%202023-01-05%20at%2017.48.18.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Screen%20Shot%202023-01-05%20at%2017.48.18.png)
 
-![](res/Screen%20Shot%202023-01-05%20at%2017.48.43.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Screen%20Shot%202023-01-05%20at%2017.48.43.png)
 
-![](res/Screen%20Shot%202023-01-05%20at%2017.49.30.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Screen%20Shot%202023-01-05%20at%2017.49.30.png)
 
-![](res/Screen%20Shot%202023-01-05%20at%2017.49.47.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Screen%20Shot%202023-01-05%20at%2017.49.47.png)
 
 ## Pages
 

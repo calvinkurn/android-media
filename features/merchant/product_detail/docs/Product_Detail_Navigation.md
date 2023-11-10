@@ -29,7 +29,7 @@ Enable user to scroll easily within product detail page. Using navigation tab, u
 
 ## Flow Diagram
 
-![](res/product_detail_navigation_flow_diagram.png)
+![](http://docs-android.tokopedia.net/images/docs/features/product_detail_navigation_flow_diagram.png)
 
 ## Navigation
 
@@ -37,8 +37,8 @@ Open product detail page, then scroll over product image to show navigation tab.
 
 Click any item to navigate to the content.
 
-![](res/product_detail_navigation_screenshot_1.png)
-![](res/product_detail_navigation_demo.mp4)
+![](http://docs-android.tokopedia.net/images/docs/features/product_detail_navigation_screenshot_1.png)
+![](http://docs-android.tokopedia.net/images/docs/features/product_detail_navigation_demo.mp4)
 
 
 1. Navigation Tab visibility depends on the product image.

@@ -30,7 +30,7 @@ Hotel is a product allowing users to book hotels, guest houses, villas, etc. Sin
 
 ## Flow Diagram
 
-![](res/Hotel-Home-Page.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Hotel-Home-Page.png)
 
 ## How-to
 
@@ -114,9 +114,9 @@ Here is the gql for supporting dashboard hotel activity
 | **Main Page Filter Section** | **Main Page
  Promo and Popular** | **Calendar Dialog Options** |
 | --- | --- | --- |
-| ![](res/Hotel-Main-Page.png)<br/> | ![](res/Hotel-Promotion-And-Popular-City.png)<br/> | ![](res/Hotel-Calendar-Page.png)<br/> |
+| ![](http://docs-android.tokopedia.net/images/docs/features/Hotel-Main-Page.png)<br/> | ![](http://docs-android.tokopedia.net/images/docs/features/Hotel-Promotion-And-Popular-City.png)<br/> | ![](http://docs-android.tokopedia.net/images/docs/features/Hotel-Calendar-Page.png)<br/> |
 | **Main Page Filter Section** | **Recent Search** | **Menu** |
-| ![](res/Hotel-Options-Room-And-Guest.png)<br/> | ![](res/Last-Search.png)<br/> | ![](res/Menu.png)<br/> |
+| ![](http://docs-android.tokopedia.net/images/docs/features/Hotel-Options-Room-And-Guest.png)<br/> | ![](http://docs-android.tokopedia.net/images/docs/features/Last-Search.png)<br/> | ![](http://docs-android.tokopedia.net/images/docs/features/Menu.png)<br/> |
 
 ## Useful Links
 

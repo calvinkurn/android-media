@@ -55,7 +55,7 @@ Since there are 2 showcase journey on this module, each of journey can be descri
 `ShopPageShowcaseFragment.kt`  
 
 
-![](res/myflow.png)
+![](http://docs-android.tokopedia.net/images/docs/features/myflow.png)
 - **Seller Journey**
 
 
@@ -64,39 +64,39 @@ Since there are 2 showcase journey on this module, each of journey can be descri
 	`ShopShowcaseAddFragment.kt` , `ShopShowcaseProductAddFragment.kt`  
 	
 	
-	![](res/create-showcase-new-flow.png)
+	![](http://docs-android.tokopedia.net/images/docs/features/create-showcase-new-flow.png)
 	- **Edit showcase**  
 	Edit showcase data functionality  
 	`ShopShowcaseAddFragment.kt` , `ShopShowcaseProductAddFragment.kt`  
 	
 	
-	![](res/update-showcase-flow.png)
+	![](http://docs-android.tokopedia.net/images/docs/features/update-showcase-flow.png)
 	- **Delete showcase**  
 	Delete showcase functionality  
 	`ShopShowcaseListFragment.kt`  
 	
 	
-	![](res/delete-showcase-flow.png)
+	![](http://docs-android.tokopedia.net/images/docs/features/delete-showcase-flow.png)
 	- **Re-arrange showcase**  
 	Re-arrange showcase order functionality  
 	`ShopShowcaseListReorderFragment.kt`  
 	
 	
-	![](res/reorder-showcase-flow.png)
+	![](http://docs-android.tokopedia.net/images/docs/features/reorder-showcase-flow.png)
 
 ## Navigation
 
 - **Buyer Journey**  
 
 
-![](res/etalase-buyer.gif)
+![](http://docs-android.tokopedia.net/images/docs/features/etalase-buyer.gif)
 - **Seller Journey**  
 Seller’s facing page where users can fully manage their showcase, there are 2 entry points :   
 
 
-![](res/etalase-sellerapp.gif)
+![](http://docs-android.tokopedia.net/images/docs/features/etalase-sellerapp.gif)
 
-![](res/etalase-buyer2.gif)
+![](http://docs-android.tokopedia.net/images/docs/features/etalase-buyer2.gif)
 
 
 	- **New showcase**  
@@ -104,25 +104,25 @@ Seller’s facing page where users can fully manage their showcase, there are 2 
 	`ShopShowcaseAddFragment.kt` , `ShopShowcaseProductAddFragment.kt`  
 	
 	
-	![](res/etalase-create.gif)
+	![](http://docs-android.tokopedia.net/images/docs/features/etalase-create.gif)
 	- **Edit showcase**  
 	Edit showcase data functionality  
 	`ShopShowcaseAddFragment.kt` , `ShopShowcaseProductAddFragment.kt`  
 	
 	
-	![](res/etalase-update.gif)
+	![](http://docs-android.tokopedia.net/images/docs/features/etalase-update.gif)
 	- **Delete showcase**  
 	Delete showcase functionality  
 	`ShopShowcaseListFragment.kt`  
 	
 	
-	![](res/etalase-delete.gif)
+	![](http://docs-android.tokopedia.net/images/docs/features/etalase-delete.gif)
 	- **Re-arrange showcase**   
 	order functionality  
 	`ShopShowcaseListReorderFragment.kt`  
 	
 	
-	![](res/etalase-reorder.gif)
+	![](http://docs-android.tokopedia.net/images/docs/features/etalase-reorder.gif)
 
 ## How to Use
 
@@ -132,7 +132,7 @@ This following steps is required to access showcase for its each types :
 This type is use to explore all shop showcase for buyer  
 
 
-![](res/image-20210623-092007.png)
+![](http://docs-android.tokopedia.net/images/docs/features/image-20210623-092007.png)
 
 **Setup routing**
 
@@ -183,7 +183,7 @@ as for sellers there are 3 action type for showcases, each type is use for diffe
 	This type is use to manage all shop showcases  
 	
 	
-	![](res/image-20210623-085003.png)
+	![](http://docs-android.tokopedia.net/images/docs/features/image-20210623-085003.png)
 	
 	**Setup routing**
 	
@@ -224,7 +224,7 @@ as for sellers there are 3 action type for showcases, each type is use for diffe
 	This type is use to assign selected product to multi showcase at once, currently implemented on `Add Edit Product Page`   
 	
 	
-	![](res/image-20210623-073729.png)
+	![](http://docs-android.tokopedia.net/images/docs/features/image-20210623-073729.png)
 	
 	**Setup routing**
 	
@@ -262,7 +262,7 @@ as for sellers there are 3 action type for showcases, each type is use for diffe
 	- **Single Showcase Picker**  
 	This type is use to move selected product to another showcase, currently implemented on `Product Manage Page`
 	
-	![](res/image-20210623-080355.png)
+	![](http://docs-android.tokopedia.net/images/docs/features/image-20210623-080355.png)
 	
 	**Setup Routing**
 	

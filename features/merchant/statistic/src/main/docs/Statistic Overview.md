@@ -20,7 +20,7 @@ title: "Statistic Overview"
 
 ### Oeverview
 
-![](res/statistic_main_page)
+![](http://docs-android.tokopedia.net/images/docs/features/statistic_main_page)
 
 - **General Logic**
 
@@ -42,7 +42,7 @@ title: "Statistic Overview"
 
 ### Data Flow
 
-![](res/statistic_data_flow.png)
+![](http://docs-android.tokopedia.net/images/docs/features/statistic_data_flow.png)
 
 ### Statistic existing tabs
 
@@ -61,7 +61,7 @@ title: "Statistic Overview"
  **d.** `actionMenu` is variable that contains list of menu for the tab/page that you want to create.   
  for example you want to show `Beri Saran` and `Pelajari Selengkapnya` menu, here is the code in `StatisticPageHelper` :
 
-![](res/statistic_action_other_menu.jpg)
+![](http://docs-android.tokopedia.net/images/docs/features/statistic_action_other_menu.jpg)
 
 `listOf(ActionMenuUiModel(`   
 `title = context.getString(R.string.stc_give_suggestions), appLink = Const.Url.SHOP_GIVE_SUGGESTIONS,`   
@@ -70,7 +70,7 @@ title: "Statistic Overview"
 
  **e.** `dateFilters` is the list of filters that you want to show for your tab/page. for example in `StatisticPageHelper` :
 
-![](res/statistic_action_date_filter.jpg)
+![](http://docs-android.tokopedia.net/images/docs/features/statistic_action_date_filter.jpg)
 
 `listOf(`   
 `getDateRangeItemToday(context, true), getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, false), getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false), DateFilterItem.Divider, getDateFilterPerDay(context, Const.DAYS_365), getDateFilterPerWeek(context, false, Const.DAYS_365), getFilterPerMonth(context, true, Const.DAYS_365), DateFilterItem.ApplyButton`   

@@ -35,7 +35,7 @@ Today, activation page can be found in SellerApp and only handle COD Activation 
 
 Can be accessed only in seller app
 
-![](res/navigation.png)
+![](http://docs-android.tokopedia.net/images/docs/features/navigation.png)
 
 ## How-to
 

@@ -53,7 +53,7 @@ Here is the Flow Chart of Contact Us, the flow diagram will device into 2 diagra
 		1. do scrolls and if the page is not last then do (a)
 		2. do filter and after clicking the option do (a)
 
-![](res/Untitled-Diagram-drawio.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Untitled-Diagram-drawio.png)
 
 2. For the Conversation Page
 - Load Detail Inbox
@@ -68,7 +68,7 @@ Here is the Flow Chart of Contact Us, the flow diagram will device into 2 diagra
 				2. if not then show the replay layout
 		2. If failed then show an error message
 
-![](res/Load-detail-inbox-drawio.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Load-detail-inbox-drawio.png)
 
 - Send a Message
 	- Is image > 0 & Is image < 10Mb & comment character > 15?
@@ -84,13 +84,13 @@ Here is the Flow Chart of Contact Us, the flow diagram will device into 2 diagra
 				- if no, then show an error message
 		- is no then show a toast error message
 
-![](res/Send-Message-drawio.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Send-Message-drawio.png)
 
 - CSAT Ticket Close + CSAT Per Replay
 
 You can see CSAT flow on this UI Flow
 
-![](res/CSAT-agent-per-reply.png)
+![](http://docs-android.tokopedia.net/images/docs/features/CSAT-agent-per-reply.png)
 
 ## Navigation
 
@@ -108,8 +108,8 @@ You can see CSAT flow on this UI Flow
 | **No** | **How To** | **Video / Picture** |
 | --- | --- | --- |
 | 1. <br/> | Filter Item:You can filter the inbox item into 4 state :1. All<br/>2. Dalam Proses<br/>3. Beri Penilaian<br/>4. Ditutup<br/> | [Inbox Page.webm](/wiki/download/attachments/2168062023/Inbox%20Page.webm?version=1&modificationDate=1677335113249&cacheVersion=1&api=v2)<br/> |
-| 2.  | Here is the way to create the ticket :1. Open page [Artikel Ubah Nomor Saya](https://staging.tokopedia.com/help/article/t-1001-nomor-saya-sudah-tidak-aktif-bagaimana-cara-mengubahnya)<br/>2. Click Button Tulis kendala on the bottom of page<br/>3. Completed the form and click `Kirim`<br/>4. After that wait around 2 minutes until the ticket will shown on Inbox Page (Pesan Bantuan Page)<br/> | ![](res/ScreenShot20230225at212803.png)<br/>![](res/ScreenShot20230225at210754.png)<br/>![](res/ScreenShot20230225at210557.png)<br/> |
-|  3.  | CSAT :On Contact Us, there are two types of CSAT namely CSAT per ticket and CSAT per replay. You can see the flow on the column `Video/Picture` | ![](res/CSAT-agent-per-reply.png)<br/> |
+| 2.  | Here is the way to create the ticket :1. Open page [Artikel Ubah Nomor Saya](https://staging.tokopedia.com/help/article/t-1001-nomor-saya-sudah-tidak-aktif-bagaimana-cara-mengubahnya)<br/>2. Click Button Tulis kendala on the bottom of page<br/>3. Completed the form and click `Kirim`<br/>4. After that wait around 2 minutes until the ticket will shown on Inbox Page (Pesan Bantuan Page)<br/> | ![](http://docs-android.tokopedia.net/images/docs/features/ScreenShot20230225at212803.png)<br/>![](http://docs-android.tokopedia.net/images/docs/features/ScreenShot20230225at210754.png)<br/>![](http://docs-android.tokopedia.net/images/docs/features/ScreenShot20230225at210557.png)<br/> |
+|  3.  | CSAT :On Contact Us, there are two types of CSAT namely CSAT per ticket and CSAT per replay. You can see the flow on the column `Video/Picture` | ![](http://docs-android.tokopedia.net/images/docs/features/CSAT-agent-per-reply.png)<br/> |
 
 ## Useful Links
 

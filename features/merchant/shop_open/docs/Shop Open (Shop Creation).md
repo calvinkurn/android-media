@@ -50,27 +50,27 @@ This is a collaboration project between Shop tribe, User Tribe & Logistic Tribe.
 
 ## Flow Diagram
 
-![](res/8711690a-82a1-4f2c-8de5-2ea360ab70ef.png)
+![](http://docs-android.tokopedia.net/images/docs/features/8711690a-82a1-4f2c-8de5-2ea360ab70ef.png)
 
 `ShopOpenRevampActivity`
 
 `1. ShopOpenRevampInputShopFragment`
 
-![](res/db1fe5bc-4085-4c87-b65b-756130f0a23a.png)
+![](http://docs-android.tokopedia.net/images/docs/features/db1fe5bc-4085-4c87-b65b-756130f0a23a.png)
 
 `2. ShopOpenRevampSplashScreenFragment`
 
-![](res/Untitled%20Diagram.drawio%20%281%29.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Untitled%20Diagram.drawio%20%281%29.png)
 
 `3. ShopOpenRevampQuisionerFragment`
 
-![](res/shop%20open%20survey.drawio.png)
+![](http://docs-android.tokopedia.net/images/docs/features/shop%20open%20survey.drawio.png)
 
 `4. ShopOpenRevampFinishFragment`
 
 Diagram Flow:
 
-![](res/ShopOpenRevampFinishFragment%20%281%29.png)
+![](http://docs-android.tokopedia.net/images/docs/features/ShopOpenRevampFinishFragment%20%281%29.png)
 
 ## Navigation
 
@@ -78,9 +78,9 @@ Diagram Flow:
 
 1. Login use Account that doesn’t have Shop
 2. Click Buka Toko Gratis
-3. ![](res/Screenshot_20221215-142153.jpg)
+3. ![](http://docs-android.tokopedia.net/images/docs/features/Screenshot_20221215-142153.jpg)
 4. It will automatically redirected to the feature
-5. ![](res/Screenshot_20221215-143144_Tokopedia%20Seller.jpg)
+5. ![](http://docs-android.tokopedia.net/images/docs/features/Screenshot_20221215-143144_Tokopedia%20Seller.jpg)
 
 **Using SA:**
 
@@ -150,13 +150,13 @@ Yes, you can go to [tokopedia.com](http://tokopedia.com) (both staging & product
 <!--start expand:May I know the scope for User Tribe?-->
 You may check the image below to get better understanding
 
-![](res/Screen%20Shot%202023-01-12%20at%2017.39.26.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Screen%20Shot%202023-01-12%20at%2017.39.26.png)
 <!--end expand-->
 
 <!--start expand:What about the scope for Logistic tribe?-->
 Again, it’s better to check this image
 
-![](res/Screen%20Shot%202023-01-12%20at%2017.38.52.png)
+![](http://docs-android.tokopedia.net/images/docs/features/Screen%20Shot%202023-01-12%20at%2017.38.52.png)
 <!--end expand-->
 
 <!--start expand:What will happen if I already created a shop and try to access the shop creation feature again?-->

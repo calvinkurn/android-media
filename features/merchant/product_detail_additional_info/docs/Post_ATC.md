@@ -105,13 +105,13 @@ Post ATC have asynchronous process for each view holder. That why by using debou
 
 ## Flow Diagram
 
-![](res/post_atc_flow_diagram.png)
+![](http://docs-android.tokopedia.net/images/docs/features/post_atc_flow_diagram.png)
 
 ## Navigation
 
 
 
-| ![](res/post_atc_navigation_1.png)<br/> | ![](res/post_atc_navigation_2.png)<br/> |
+| ![](http://docs-android.tokopedia.net/images/docs/features/post_atc_navigation_1.png)<br/> | ![](http://docs-android.tokopedia.net/images/docs/features/post_atc_navigation_2.png)<br/> |
 |-----------------------------------------|-----------------------------------------|
 
 ## How-to

@@ -38,7 +38,7 @@ We want to provide a seamless user experience to make customers comfortable to n
 
 As you can see below each page has a different page to make the separate concern and to make scalability easier for each page. But on the domain site, we can reuse the repository using a delegate pattern.
 
-![](res/Digital%20PDP%20Revamp.jpg)
+![](http://docs-android.tokopedia.net/images/docs/features/Digital%20PDP%20Revamp.jpg)
 
 ## How-to
 

@@ -24,7 +24,7 @@ Tokopedia facilitates seller to set up courier with a feature called `Shipping E
 
 Shipping editor page is a page to show available courier that can be chosen by seller. There are two different shipping editors based on number of seller warehouse. If seller only support one warehouse, then system will direct seller to shipping editor single loc page. If seller support more than one warehouse, system will direct seller to shipping editor multi loc page. Seller can also setup courier for a specific product only in Custom Product Logistic (CPL) page.
 
-![](res/description.png)
+![](http://docs-android.tokopedia.net/images/docs/features/description.png)
 
 ## Sub-features / Widget / Interactions
 
