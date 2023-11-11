@@ -1,26 +1,25 @@
-package com.tokopedia.home_component.customview
+package com.tokopedia.home_component_header.view
 
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.home_component.customview.header.HeaderLayoutStrategy
-import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.DateHelper
-import com.tokopedia.home_component.util.convertDpToPixel
+import com.tokopedia.home_component_header.R as home_component_headerR
+import com.tokopedia.home_component_header.model.ChannelHeader
+import com.tokopedia.home_component_header.util.DateHelper
+import com.tokopedia.home_component_header.util.ViewUtils.convertDpToPixel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
-import com.tokopedia.home_component_header.R as home_component_headerR
 
-@Deprecated("Please use com.tokopedia.home_component_header.view.HomeChannelHeaderView")
-class DynamicChannelHeaderView : FrameLayout {
+class HomeComponentHeaderView : FrameLayout {
     private var headerContainer: ConstraintLayout? = null
     private var txtTitle: Typography? = null
     private var txtSubtitle: Typography? = null
@@ -28,7 +27,7 @@ class DynamicChannelHeaderView : FrameLayout {
 
     private var headerColorMode: Int = COLOR_MODE_NORMAL
     private var headerCtaMode: Int = CTA_MODE_SEE_ALL
-    private var listener: HeaderListener? = null
+    private var listener: HomeComponentHeaderListener? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -39,7 +38,7 @@ class DynamicChannelHeaderView : FrameLayout {
     }
 
     private fun initHeaderWithAttrs(attrs: AttributeSet?) {
-            val attributes: TypedArray = context.obtainStyledAttributes(attrs, home_component_headerR.styleable.HomeChannelHeaderView)
+        val attributes: TypedArray = context.obtainStyledAttributes(attrs, home_component_headerR.styleable.HomeChannelHeaderView)
         try {
             headerColorMode = attributes.getInt(home_component_headerR.styleable.HomeChannelHeaderView_color_mode, COLOR_MODE_NORMAL)
             headerCtaMode = attributes.getInt(home_component_headerR.styleable.HomeChannelHeaderView_cta_mode, CTA_MODE_SEE_ALL)
@@ -48,14 +47,14 @@ class DynamicChannelHeaderView : FrameLayout {
         }
     }
 
-    @Deprecated("Please use com.tokopedia.home_component_header.view.HomeChannelHeaderView.bind()")
-    fun setChannel(
-        channelModel: ChannelModel,
-        listener: HeaderListener,
+    fun bind(
+        channelHeader: ChannelHeader,
+        listener: HomeComponentHeaderListener? = null,
         colorMode: Int? = null,
-        ctaMode: Int? = null
+        ctaMode: Int? = null,
+        maxLines: Int = ONE_MAX_LINE,
     ) {
-        init(channelModel.channelHeader.layoutStrategy)
+        init(channelHeader.layoutStrategy)
         this.listener = listener
         colorMode?.let {
             this.headerColorMode = it
@@ -63,7 +62,8 @@ class DynamicChannelHeaderView : FrameLayout {
         ctaMode?.let {
             this.headerCtaMode = it
         }
-        handleHeaderComponent(channelModel)
+        handleHeaderComponent(channelHeader)
+        applyRuleHeaderTitleLine(maxLines)
     }
 
     private fun init(layoutStrategy: HeaderLayoutStrategy) {
@@ -77,34 +77,34 @@ class DynamicChannelHeaderView : FrameLayout {
         }
     }
 
-    private fun handleHeaderComponent(channel: ChannelModel) {
-        handleTitle(channel.channelHeader.name, channel)
-        channel.channelHeader.layoutStrategy.renderIconSubtitle(this, channel.channelHeader)
-        handleSubtitle(channel.channelHeader.subtitle, channel)
-        channel.channelHeader.layoutStrategy.renderCta(
+    private fun handleHeaderComponent(channelHeader: ChannelHeader) {
+        handleTitle(channelHeader.name, channelHeader)
+        channelHeader.layoutStrategy.renderIconSubtitle(this, channelHeader)
+        handleSubtitle(channelHeader.subtitle, channelHeader)
+        channelHeader.layoutStrategy.renderCta(
             this,
-            channel,
+            channelHeader,
             listener,
             headerCtaMode,
             headerColorMode
         )
-        handleHeaderExpiredTime(channel)
-        handleBackgroundColor(channel)
-        channel.channelHeader.layoutStrategy.setConstraints(headerContainer, channel.channelHeader)
+        handleHeaderExpiredTime(channelHeader)
+        handleBackgroundColor(channelHeader)
+        channelHeader.layoutStrategy.setConstraints(headerContainer, channelHeader)
     }
 
-    private fun handleTitle(title: String?, channel: ChannelModel) {
+    private fun handleTitle(title: String?, channelHeader: ChannelHeader) {
         /**
          * Requirement:
-         * Only show channel header name when it is exist
+         * Only show title when it is exist
          */
         if (title?.isNotEmpty() == true) {
             txtTitle?.text = title
             headerContainer?.show()
             txtTitle?.show()
-            channel.channelHeader.layoutStrategy.renderTitle(
+            channelHeader.layoutStrategy.renderTitle(
                 context,
-                channel.channelHeader,
+                channelHeader,
                 txtTitle,
                 headerColorMode
             )
@@ -113,17 +113,32 @@ class DynamicChannelHeaderView : FrameLayout {
         }
     }
 
-    private fun handleSubtitle(subtitle: String?, channel: ChannelModel) {
+    private fun applyRuleHeaderTitleLine(maxLines: Int) {
+        when (maxLines) {
+            TWO_MAX_LINE -> {
+                txtTitle?.applyMaxLineHeaderTitle(maxLines, TWO_LINE_MAX_EMS, null)
+            }
+            else -> txtTitle?.applyMaxLineHeaderTitle(maxLines, ONE_LINE_MAX_EMS, TextUtils.TruncateAt.END)
+        }
+    }
+
+    private fun Typography?.applyMaxLineHeaderTitle(maxLine: Int, maxEms: Int, ellipsize: TextUtils.TruncateAt?) {
+        this?.maxLines = maxLine
+        this?.maxEms = maxEms
+        this?.ellipsize = ellipsize
+    }
+
+    private fun handleSubtitle(subtitle: String?, channelHeader: ChannelHeader) {
         /**
          * Requirement:
-         * Only show channel subtitle when it is exist
+         * Only show subtitle when it is exist
          */
         if (subtitle?.isNotEmpty() == true) {
             txtSubtitle?.text = subtitle
             txtSubtitle?.show()
-            channel.channelHeader.layoutStrategy.renderSubtitle(
+            channelHeader.layoutStrategy.renderSubtitle(
                 context,
-                channel.channelHeader,
+                channelHeader,
                 txtSubtitle,
                 headerColorMode
             )
@@ -132,18 +147,17 @@ class DynamicChannelHeaderView : FrameLayout {
         }
     }
 
-    private fun handleHeaderExpiredTime(channel: ChannelModel) {
+    private fun handleHeaderExpiredTime(channelHeader: ChannelHeader) {
         /**
          * Requirement:
-         * Only show countDownView when expired time exist
-         * Don't start countDownView when it is expired from backend (possibly caused infinite refresh)
-         *  since onCountDownFinished would getting called and refresh home
+         * Only show timer when expired time exist
+         * Don't start timer when it is expired from backend
          */
-        if (channel.channelHeader.expiredTime.isNotEmpty()) {
-            val expiredTime = DateHelper.getExpiredTime(channel.channelHeader.expiredTime)
-            if (!DateHelper.isExpired(channel.channelConfig.serverTimeOffset, expiredTime)) {
+        if (channelHeader.expiredTime.isNotEmpty()) {
+            val expiredTime = DateHelper.getExpiredTime(channelHeader.expiredTime)
+            if (!DateHelper.isExpired(channelHeader.serverTimeOffset, expiredTime)) {
                 timerUnify?.run {
-                    timerVariant = if (channel.channelHeader.backColor.isNotEmpty() || headerColorMode == COLOR_MODE_INVERTED) {
+                    timerVariant = if (channelHeader.backColor.isNotEmpty() || headerColorMode == COLOR_MODE_INVERTED) {
                         TimerUnifySingle.VARIANT_ALTERNATE
                     } else {
                         TimerUnifySingle.VARIANT_MAIN
@@ -153,14 +167,14 @@ class DynamicChannelHeaderView : FrameLayout {
                     // calculate date diff
                     targetDate = Calendar.getInstance().apply {
                         val currentDate = Date()
-                        val currentMillisecond: Long = currentDate.time + channel.channelConfig.serverTimeOffset
+                        val currentMillisecond: Long = currentDate.time + channelHeader.serverTimeOffset
                         val timeDiff = expiredTime.time - currentMillisecond
                         add(Calendar.SECOND, (timeDiff / 1000 % 60).toInt())
                         add(Calendar.MINUTE, (timeDiff / (60 * 1000) % 60).toInt())
                         add(Calendar.HOUR, (timeDiff / (60 * 60 * 1000)).toInt())
                     }
                     onFinish = {
-                        listener?.onChannelExpired(channel)
+                        listener?.onChannelExpired(channelHeader.channelId)
                     }
                 }
             }
@@ -171,10 +185,10 @@ class DynamicChannelHeaderView : FrameLayout {
         }
     }
 
-    private fun handleBackgroundColor(channel: ChannelModel) {
-        if (channel.channelHeader.backColor.isNotEmpty()) {
+    private fun handleBackgroundColor(channelHeader: ChannelHeader) {
+        if (channelHeader.backColor.isNotEmpty()) {
             headerContainer?.let {
-                it.setBackgroundColor(Color.parseColor(channel.channelHeader.backColor))
+                it.setBackgroundColor(Color.parseColor(channelHeader.backColor))
 
                 it.setPadding(
                     it.paddingLeft,
@@ -195,5 +209,10 @@ class DynamicChannelHeaderView : FrameLayout {
         const val CTA_MODE_SEE_ALL = 0
         const val CTA_MODE_RELOAD = 1
         const val CTA_MODE_CLOSE = 2
+
+        private const val ONE_LINE_MAX_EMS = 12
+        private const val ONE_MAX_LINE = 1
+        private const val TWO_LINE_MAX_EMS = 32
+        private const val TWO_MAX_LINE = 2
     }
 }
