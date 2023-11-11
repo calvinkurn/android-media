@@ -32,6 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
+            app:layout_goneMarginTop="@dimen/home_component_padding_top_default"
             android:paddingStart="0dp"
             android:paddingEnd="11dp"
             android:paddingBottom="@dimen/home_component_padding_bottom_default"
