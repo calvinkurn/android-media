@@ -82,4 +82,6 @@
     <dimen name="home_card_rv_translation_y">-4dp</dimen>
     <dimen name="home_padding_bottom_with_compat_padding">12dp</dimen>
     <dimen name="home_padding_bottom_with_compat_padding_translated">8dp</dimen>
+    <dimen name="home_padding_horizontal_default">16dp</dimen>
+    <dimen name="home_padding_horizontal_with_compat_padding">12dp</dimen>
 </resources>
