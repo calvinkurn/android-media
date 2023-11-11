@@ -175,7 +175,7 @@ class MixTopComponentViewHolder(
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
             layoutParams.setMargins(0, 0, 0, 0)
             recyclerView.layoutParams = layoutParams
-            recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
+            recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_component_card_compat_padding_translation_y).toFloat()
             containerInside.setPadding(0, 0, 0, 5f.toDpInt())
         } else {
             background.visible()
@@ -184,7 +184,7 @@ class MixTopComponentViewHolder(
             layoutParams.setMargins(
                 0,
                 if (bannerTitle.isVisible || bannerDescription.isVisible) 6f.toDpInt() else itemView.context.resources.getDimensionPixelSize(
-                    R.dimen.home_margin_12_dp_product_card
+                    R.dimen.home_component_padding_12dp_with_compat_padding
                 ),
                 0,
                 0

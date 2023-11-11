@@ -28,8 +28,8 @@
         android:id="@+id/container_popular_keyword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:translationY="@dimen/home_card_rv_translation_y"
-        android:paddingBottom="@dimen/home_padding_bottom_with_compat_padding_translated">
+        android:translationY="@dimen/home_component_card_compat_padding_translation_y"
+        android:paddingBottom="@dimen/home_component_padding_bottom_with_compat_padding_translated">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_popular_keyword"

@@ -118,7 +118,7 @@ class DynamicLegoBannerViewHolder(
                     )
                 }
             }
-            val marginValue = if (isUsingPaddingStyle) itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt() else 0
+            val marginValue = if (isUsingPaddingStyle) itemView.resources.getDimension(R.dimen.home_component_padding_horizontal_default).toInt() else 0
             recyclerView.setPadding(
                 marginValue,
                 0,
