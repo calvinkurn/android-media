@@ -17,8 +17,8 @@
         android:id="@+id/card_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/home_component_padding_vertical_default"
-        android:layout_marginBottom="@dimen/home_component_padding_vertical_default"
+        android:layout_marginTop="@dimen/home_component_padding_top_default"
+        android:layout_marginBottom="@dimen/home_component_padding_bottom_default"
         android:layout_marginHorizontal="@dimen/home_component_padding_horizontal_default"
         app:cardCornerRadius="8dp"
         app:layout_constraintCircleRadius="8dp">
