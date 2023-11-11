@@ -71,7 +71,6 @@
     <dimen name="home_dynamic_header_bottom_padding">12dp</dimen>
     <dimen name="home_dynamic_header_bottom_padding_with_timer_old">8dp</dimen>
 
-    <dimen name="home_product_highlight_content_top_padding">9dp</dimen>
     <dimen name="home_product_highlight_content_horizontal_padding">12dp</dimen>
 
     <dimen name="home_flash_sale_left_margin">11dp</dimen>
