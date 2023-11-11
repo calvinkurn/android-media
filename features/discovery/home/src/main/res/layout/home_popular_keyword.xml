@@ -17,7 +17,7 @@
         android:id="@+id/home_component_header_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:visibility="gone"
+        tools:visibility="visible"
         android:visibility="gone"
         app:cta_mode="reload"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,7 +28,8 @@
         android:id="@+id/container_popular_keyword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="12dp">
+        android:translationY="@dimen/home_card_rv_translation_y"
+        android:paddingBottom="@dimen/home_padding_bottom_with_compat_padding_translated">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_popular_keyword"

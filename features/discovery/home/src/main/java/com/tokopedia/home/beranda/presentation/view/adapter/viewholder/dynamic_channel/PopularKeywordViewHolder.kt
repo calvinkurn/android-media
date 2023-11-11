@@ -8,10 +8,6 @@ import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.marginBottom
-import androidx.core.view.marginLeft
-import androidx.core.view.marginRight
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -29,7 +25,6 @@ import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
-import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.LocalLoad
@@ -51,7 +46,6 @@ class PopularKeywordViewHolder (val view: View,
         private const val PIVOT_Y_VALUE = 0.5f
         private const val ROTATE_FROM_DEGREES = 0f
         private const val ROTATE_DURATION = 500L
-        private val RECYCLER_VIEW_DEFAULT_MARGIN = 12f.toDpInt()
     }
 
     private var performanceMonitoring: PerformanceMonitoring? = null
@@ -65,7 +59,6 @@ class PopularKeywordViewHolder (val view: View,
     private val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
     private val homeComponentDividerHeader = view.findViewById<DividerUnify>(R.id.home_component_divider_header)
     private val homeComponentDividerFooter = view.findViewById<DividerUnify>(R.id.home_component_divider_footer)
-    private val containerPopularKeyword = view.findViewById<ConstraintLayout>(R.id.container_popular_keyword)
     private val headerView: DynamicChannelHeaderView by lazy { view.findViewById(R.id.home_component_header_view) }
 
 
