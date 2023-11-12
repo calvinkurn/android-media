@@ -152,16 +152,14 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         val imgReview = reviewImageView.findViewById<ImageUnify>(R.id.imgReview)
         val overlay = reviewImageView.findViewById<View>(R.id.overlay)
 
-        if (reviewCount >= MAX_ATTACHMENT) {
-            val layoutParams = FrameLayout.LayoutParams(reviewImageMaxWidth, reviewImageMaxHeight)
-            layoutParams.marginStart = if (currentIndex == Int.ZERO) {
-                MARGIN_START_REVIEW_IMAGE_NO_MARGIN.toPx()
-            } else {
-                MARGIN_START_REVIEW_IMAGE.toPx()
-            }
-            imgReview.layoutParams = layoutParams
-            overlay.layoutParams = layoutParams
+        val layoutParams = FrameLayout.LayoutParams(reviewImageMaxWidth, reviewImageMaxHeight)
+        layoutParams.marginStart = if (currentIndex == Int.ZERO) {
+            MARGIN_START_REVIEW_IMAGE_NO_MARGIN.toPx()
+        } else {
+            MARGIN_START_REVIEW_IMAGE.toPx()
         }
+        imgReview.layoutParams = layoutParams
+        overlay.layoutParams = layoutParams
 
         imgReview.loadImage(attachment.thumbnailURL)
         imgReview.setOnClickListener { onAttachmentImageViewAllClick(review) }
