@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.R
 import com.tokopedia.unifycomponents.toPx
 
+// TODO: Move to shop widget
 class ProgressibleTabLayoutView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -47,14 +48,21 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         private const val DOT_INDICATOR_MARGIN_START = 3
     }
 
-    fun renderTabIndicator(
+    fun renderTabIndicatorWithLifecycle(
         config: Config,
         lifecycle: Lifecycle,
         selectedTabIndicatorIndex: Int,
         onTimerFinish: () -> Unit
     ) {
         lifecycle.addObserver(this)
+        renderTabIndicator(config, selectedTabIndicatorIndex, onTimerFinish)
+    }
 
+    fun renderTabIndicator(
+        config: Config,
+        selectedTabIndicatorIndex: Int,
+        onTimerFinish: () -> Unit
+    ) {
         this.previousProgressMillis = config.totalDuration
         this.totalDuration = config.totalDuration
         this.intervalDuration = config.intervalDuration
@@ -62,7 +70,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
 
         cancelTimer()
 
-        // Remove current tab indicators
+        // Remove existing views before recreate new tab indicators
         removeAllViews()
 
         for (currentIndex in 0 until config.itemCount) {

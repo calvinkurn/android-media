@@ -217,7 +217,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
 
     private fun handleTapReviewImageViewAll(productId: String) {
-        val effect = ShopInfoUiEffect.RedirectToProductReviewGalleryPage(productId)
+        val effect = ShopInfoUiEffect.RedirectToProductReviewPage(productId)
         _uiEffect.tryEmit(effect)
     }
 

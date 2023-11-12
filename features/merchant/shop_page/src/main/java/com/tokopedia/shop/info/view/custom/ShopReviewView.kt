@@ -33,7 +33,7 @@ class ShopReviewView @JvmOverloads constructor(
     private var onAttachmentImageClick: (ShopReview.Review) -> Unit = {}
     private var onAttachmentImageViewAllClick: (ShopReview.Review) -> Unit = {}
 
-    fun render(lifecycle: Lifecycle, fragment: Fragment, review: ShopReview) {
+    fun renderReview(lifecycle: Lifecycle, fragment: Fragment, review: ShopReview) {
         removeAllViews()
 
         val viewpager = createViewpager()
@@ -77,7 +77,7 @@ class ShopReviewView @JvmOverloads constructor(
                     intervalDuration = COUNTDOWN_TIMER_INTERVAL
                 )
 
-                tabIndicator.renderTabIndicator(
+                tabIndicator.renderTabIndicatorWithLifecycle(
                     config = config,
                     lifecycle = lifecycle,
                     selectedTabIndicatorIndex = position,

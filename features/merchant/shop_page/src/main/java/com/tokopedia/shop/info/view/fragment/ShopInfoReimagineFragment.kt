@@ -3,15 +3,10 @@ package com.tokopedia.shop.info.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintSet
@@ -60,7 +55,6 @@ import com.tokopedia.shop.report.activity.ReportShopWebViewActivity
 import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -101,6 +95,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID, "").orEmpty() }
     private val localCacheModel by lazy { ShopUtil.getShopPageWidgetUserAddressLocalData(context) }
+    private var review: ShopReview? = null
 
     override fun getScreenName(): String = ShopInfoReimagineFragment::class.java.canonicalName.orEmpty()
 
@@ -220,7 +215,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             ShopInfoUiEffect.RedirectToLoginPage -> redirectToLoginPage()
             is ShopInfoUiEffect.RedirectToChatWebView -> redirectToChatWebView(effect.messageId)
             is ShopInfoUiEffect.RedirectToShopReviewPage -> redirectToShopReviewPage(effect.shopId)
-            is ShopInfoUiEffect.RedirectToProductReviewGalleryPage -> redirectToProductReviewGalleryPage(effect.productId)
             is ShopInfoUiEffect.RedirectToProductReviewPage -> redirectToProductReviewPage(effect.productId)
         }
     }
@@ -261,7 +255,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         val hasPharmacyLicenseBadge = uiState.info.showPharmacyLicenseBadge
 
         binding?.run {
-            imgShop.loadImage(uiState.info.shopImageUrl) //TODO add circle border
+            imgShop.loadImage(uiState.info.shopImageUrl)
             imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
             tpgShopName.text = uiState.info.shopName
             tpgLicensedPharmacy.isVisible = hasPharmacyLicenseBadge
@@ -447,19 +441,22 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun renderTopReview(review: ShopReview) {
+        if (this.review == review) return
+        this.review = review
+
         val showReview = review.totalReviews.isMoreThanZero()
 
         binding?.layoutReviewContainer?.isVisible = showReview
         binding?.shopReviewView?.isVisible = showReview
 
         if (showReview) {
-            //TODO: Keep previous selected tab indicator when tap cta view all pharmacy info
-            binding?.shopReviewView?.render(viewLifecycleOwner.lifecycle, this, review)
-            binding?.shopReviewView?.setOnAttachmentImageClick {
-                viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(it.product.productId))
+            binding?.shopReviewView?.renderReview(viewLifecycleOwner.lifecycle, this, review)
+            // TODO calculate max height for shop review view
+            binding?.shopReviewView?.setOnAttachmentImageClick { review ->
+                viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(review.product.productId))
             }
-            binding?.shopReviewView?.setOnAttachmentImageViewAllClick {
-                viewModel.processEvent(ShopInfoUiEvent.TapReviewImageViewAll(it.product.productId))
+            binding?.shopReviewView?.setOnAttachmentImageViewAllClick { review ->
+                viewModel.processEvent(ShopInfoUiEvent.TapReviewImageViewAll(review.product.productId))
             }
         }
     }
@@ -583,12 +580,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
-    private fun redirectToReviewDetailPage(reviewId: String) {
-        if (!isAdded) return
-        if (reviewId.isEmpty()) return
 
-        // TODO route to review detail
-    }
     private fun redirectToShopReviewPage(shopId: String) {
         if (!isAdded) return
         if (shopId.isEmpty()) return
@@ -622,11 +614,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         RouteManager.route(context, appLink)
     }
 
-    private fun redirectToProductReviewGalleryPage(productId: String) {
-        val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_REPUTATION, productId)
-        RouteManager.route(context, appLink)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -634,7 +621,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             REQUEST_CODE_LOGIN -> onReturnFromLogin(data, resultCode)
         }
     }
-    
+
     private fun onReturnFromLogin(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != Activity.RESULT_OK) return
         viewModel.processEvent(ShopInfoUiEvent.ReportShop)
@@ -642,7 +629,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun onReturnFromReportUser(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != Activity.RESULT_OK) return
-        
+
         showToaster(
             message = getString(R.string.label_report_success),
             view = view ?: return,
