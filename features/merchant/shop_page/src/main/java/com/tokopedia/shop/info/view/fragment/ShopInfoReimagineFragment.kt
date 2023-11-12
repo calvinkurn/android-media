@@ -427,7 +427,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             val ratingView = layoutInflater.inflate(R.layout.item_shop_info_rating, binding?.layoutRatingBarContainer, false)
 
             val progressBarRating = ratingView.findViewById<ProgressBarUnify?>(R.id.progressBarRating)
-            progressBarRating.setValue(rating.percentageFloat.toInt())
+            progressBarRating.setValue(rating.percentageFloat.toInt(), isSmooth = false)
             progressBarRating?.progressBarColorType = ProgressBarUnify.COLOR_YELLOW
 
             val tpgTotalRatingNumber = ratingView.findViewById<Typography?>(R.id.tpgTotalRatingNumber)
