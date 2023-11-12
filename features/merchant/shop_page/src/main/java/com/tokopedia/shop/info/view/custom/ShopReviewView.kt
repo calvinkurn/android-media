@@ -38,10 +38,15 @@ class ShopReviewView @JvmOverloads constructor(
         removeAllViews()
 
         val viewpager = createViewpager()
-        val tabIndicator = createTabIndicator()
-
         addView(viewpager)
-        addView(tabIndicator)
+
+        val tabIndicator = if (review.reviews.size == Int.ONE) {
+            null
+        } else {
+            val tabIndicator = createTabIndicator()
+            addView(tabIndicator)
+            tabIndicator
+        }
 
         setupViewPager(viewpager, review, fragment, lifecycle, tabIndicator)
     }
@@ -51,7 +56,7 @@ class ShopReviewView @JvmOverloads constructor(
         review: ShopReview,
         fragment: Fragment,
         lifecycle: Lifecycle,
-        tabIndicator: ProgressibleTabLayoutView
+        tabIndicator: ProgressibleTabLayoutView?
     ) {
         // TODO: If only one review, remove tab indicator
         val fragments = createFragments(review.reviews)
@@ -66,7 +71,7 @@ class ShopReviewView @JvmOverloads constructor(
         viewPager: ViewPager2,
         reviewCount: Int,
         lifecycle: Lifecycle,
-        tabIndicator: ProgressibleTabLayoutView
+        tabIndicator: ProgressibleTabLayoutView?
     ) {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -78,7 +83,7 @@ class ShopReviewView @JvmOverloads constructor(
                     intervalDuration = COUNTDOWN_TIMER_INTERVAL
                 )
 
-                tabIndicator.renderTabIndicatorWithLifecycle(
+                tabIndicator?.renderTabIndicatorWithLifecycle(
                     config = config,
                     lifecycle = lifecycle,
                     selectedTabIndicatorIndex = position,
