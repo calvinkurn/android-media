@@ -944,6 +944,7 @@ open class DiscoveryAnalytics(
             ComponentNames.ProductCardCarouselItem.componentName -> ComponentNames.ProductCardCarousel.componentName
             ComponentNames.ProductCardSprintSaleItem.componentName -> ComponentNames.ProductCardSprintSale.componentName
             ComponentNames.ProductCardSprintSaleCarouselItem.componentName -> ComponentNames.ProductCardSprintSaleCarousel.componentName
+            ComponentNames.ShopOfferHeroBrandProductItem.componentName -> ComponentNames.ShopOfferHeroBrand.componentName
             else -> ""
         }
     }

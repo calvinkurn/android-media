@@ -108,6 +108,15 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                                 parentSectionId = comp.parentSectionId
                             )
                         }
+                        ComponentNames.ShopOfferHeroBrand.componentName -> {
+                            DiscoveryDataMapper().mapListToComponentList(
+                                comp.data,
+                                ComponentNames.ShopOfferHeroBrandProductItem.componentName,
+                                comp.properties,
+                                creativeName,
+                                parentSectionId = comp.parentSectionId
+                            )
+                        }
                         else -> {
                             isProductComponent = false
                             null
