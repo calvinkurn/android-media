@@ -58,7 +58,6 @@ class ShopReviewView @JvmOverloads constructor(
         lifecycle: Lifecycle,
         tabIndicator: ProgressibleTabLayoutView?
     ) {
-        // TODO: If only one review, remove tab indicator
         val fragments = createFragments(review.reviews)
 
         val pagerAdapter = ReviewViewPagerAdapter(fragment, fragments)

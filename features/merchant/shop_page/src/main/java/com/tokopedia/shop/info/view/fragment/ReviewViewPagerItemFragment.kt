@@ -1,17 +1,27 @@
 package com.tokopedia.shop.info.view.fragment
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
@@ -21,6 +31,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+
 
 class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
@@ -31,6 +43,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         private const val MARGIN_START_REVIEW_IMAGE_NO_MARGIN = 0
         private const val MARGIN_PARENT_START = 32
         private const val MARGIN_PARENT_END = 32
+        private const val REVIEW_TEXT_MAX_LINES = 3
 
         fun newInstance(review: ShopReview.Review): ReviewViewPagerItemFragment {
             return ReviewViewPagerItemFragment().apply {
@@ -45,7 +58,8 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
     private val review by lazy { arguments?.getParcelable<ShopReview.Review>(BUNDLE_KEY_REVIEW) }
     private var onAttachmentImageClick: (ShopReview.Review) -> Unit = {}
     private var onAttachmentImageViewAllClick: (ShopReview.Review) -> Unit = {}
-
+    private var isReviewTextAlreadyExpanded = false
+    
     override fun getScreenName(): String = ReviewViewPagerItemFragment::class.java.simpleName
 
     override fun initInjector() {
@@ -59,15 +73,15 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         binding = FragmentReviewViewpagerItemBinding.inflate(inflater, container, false)
         return binding?.root
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    
+    override fun onResume() {
+        super.onResume()
         renderReview(review)
     }
 
     private fun renderReview(review: ShopReview.Review?) {
         review?.let {
-            binding?.tpgReviewText?.text = MethodChecker.fromHtml(review.reviewText)
+            binding?.root?.setOnClickListener { onAttachmentImageClick(review) }
             binding?.imgAvatar?.loadImage(review.avatar)
             binding?.tpgReviewerName?.text = review.reviewerName
 
@@ -77,12 +91,94 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
                 binding?.tpgReviewerLabel?.text = review.reviewerLabel
             }
 
+            if (isReviewTextAlreadyExpanded) {
+                binding?.tpgReviewText?.text = review.reviewText
+            } else {
+                renderReviewText(review)    
+            }
+            
             renderCompletedReview(review.likeDislike.likeStatus)
             renderLikeCount(review.likeDislike.likeStatus, review.likeDislike.totalLike)
             renderReviewImages(review.attachments)
         }
     }
 
+    
+    private fun renderReviewText(review: ShopReview.Review) {
+        binding?.tpgReviewText?.text = review.reviewText
+        
+        binding?.tpgReviewText?.viewTreeObserver?.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener{
+            override fun onPreDraw(): Boolean {
+                
+                binding?.tpgReviewText?.viewTreeObserver?.removeOnPreDrawListener(this)
+
+                val reviewTextView = binding?.tpgReviewText ?: return true
+
+                try {
+                    val lineCount = reviewTextView.lineCount
+                    if (lineCount >= REVIEW_TEXT_MAX_LINES) {
+                        handleMaxLines(reviewTextView, review.reviewText)
+                    }
+                } catch (e: Exception) {
+                    FirebaseCrashlytics.getInstance().recordException(e)
+                }
+
+                return true
+            }
+
+        })
+
+    }
+    
+    private fun handleMaxLines(reviewTextView: Typography, reviewText: String) {
+        val ctaText = context?.getString(R.string.shop_info_more).orEmpty()
+        val ctaTextLength = ctaText.length.orZero()
+
+        val ellipsisText = "... "
+        val ellipsisTextLength = ellipsisText.length
+
+        val layout = reviewTextView.layout
+        val start = layout.getLineStart(0)
+        val end = layout.getLineEnd(2)
+
+        val endIndex = end - ellipsisTextLength - ctaTextLength
+
+        val reviewTextSubstring = reviewText.substring(start, endIndex)
+        val reviewTextWithCta = "$reviewTextSubstring$ellipsisText$ctaText"
+
+        val spannableString = SpannableString(reviewTextWithCta)
+        val boldSpan = StyleSpan(Typeface.BOLD)
+        val clickableSpan: ClickableSpan = object : ClickableSpan() {
+            override fun onClick(textView: View) {
+                reviewTextView.text = reviewText
+                isReviewTextAlreadyExpanded = true
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = ContextCompat.getColor(context ?: return, unifyprinciplesR.color.Unify_GN500)
+                ds.isUnderlineText = false
+            }
+        }
+
+        val indexOfCtaText = reviewTextWithCta.indexOf(ctaText)
+
+        spannableString.setSpan(
+            boldSpan,
+            indexOfCtaText,
+            reviewTextWithCta.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableString.setSpan(
+            clickableSpan,
+            indexOfCtaText,
+            reviewTextWithCta.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        reviewTextView.movementMethod = LinkMovementMethod.getInstance()
+        reviewTextView.text = spannableString
+    }
     private fun renderCompletedReview(completedReviewCount: Int) {
         val showCompletedReview = completedReviewCount.isMoreThanZero()
 
@@ -114,6 +210,8 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         val reviewImageMaxHeight = usableScreenWidth / MAX_ATTACHMENT
         val reviewImageMaxWidth = usableScreenWidth / MAX_ATTACHMENT
 
+        binding?.layoutImagesContainer?.removeAllViews()
+        
         reviewImages
             .take(MAX_ATTACHMENT)
             .forEachIndexed { index, attachment ->
@@ -178,9 +276,5 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         )
 
         return reviewImageView
-    }
-
-    private fun expandReviewText() {
-        binding?.tpgReviewText?.maxLines = Int.MAX_VALUE
     }
 }
