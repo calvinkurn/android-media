@@ -31,8 +31,8 @@ class ShopReviewView @JvmOverloads constructor(
         private const val DOT_INDICATOR_MARGIN_TOP = 16
     }
 
-    private var onAttachmentImageClick: (ShopReview.Review) -> Unit = {}
-    private var onAttachmentImageViewAllClick: (ShopReview.Review) -> Unit = {}
+    private var onReviewImageClick: (ShopReview.Review) -> Unit = {}
+    private var onReviewImageViewAllClick: (ShopReview.Review) -> Unit = {}
 
     fun renderReview(lifecycle: Lifecycle, fragment: Fragment, review: ShopReview) {
         removeAllViews()
@@ -127,18 +127,18 @@ class ShopReviewView @JvmOverloads constructor(
     private fun createFragments(reviews: List<ShopReview.Review>): List<Fragment> {
         return reviews.map { review ->
             val fragment = ReviewViewPagerItemFragment.newInstance(review)
-            fragment.setOnAttachmentImageClick { onAttachmentImageClick(it) }
-            fragment.setOnAttachmentImageViewAllClick { onAttachmentImageViewAllClick(it) }
+            fragment.setOnReviewImageClick { onReviewImageClick(it) }
+            fragment.setOnReviewImageViewAllClick { onReviewImageViewAllClick(it) }
             fragment
         }
     }
 
-    fun setOnAttachmentImageClick(onAttachmentImageClick: (ShopReview.Review) -> Unit) {
-        this.onAttachmentImageClick = onAttachmentImageClick
+    fun setOnReviewImageClick(onReviewImageClick: (ShopReview.Review) -> Unit) {
+        this.onReviewImageClick = onReviewImageClick
     }
 
-    fun setOnAttachmentImageViewAllClick(onAttachmentImageViewAllClick: (ShopReview.Review) -> Unit) {
-        this.onAttachmentImageViewAllClick = onAttachmentImageViewAllClick
+    fun setOnReviewImageViewAllClick(onReviewImageViewAllClick: (ShopReview.Review) -> Unit) {
+        this.onReviewImageViewAllClick = onReviewImageViewAllClick
     }
 
     private class ReviewViewPagerAdapter(

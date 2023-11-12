@@ -451,12 +451,11 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         if (showReview) {
             binding?.shopReviewView?.renderReview(viewLifecycleOwner.lifecycle, this, review)
-            // TODO calculate max height for shop review view
-            binding?.shopReviewView?.setOnAttachmentImageClick { review ->
-                viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(review.product.productId))
+            binding?.shopReviewView?.setOnReviewImageClick { buyerReview ->
+                viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(buyerReview.product.productId))
             }
-            binding?.shopReviewView?.setOnAttachmentImageViewAllClick { review ->
-                viewModel.processEvent(ShopInfoUiEvent.TapReviewImageViewAll(review.product.productId))
+            binding?.shopReviewView?.setOnReviewImageViewAllClick { buyerReview ->
+                viewModel.processEvent(ShopInfoUiEvent.TapReviewImageViewAll(buyerReview.product.productId))
             }
         }
     }
