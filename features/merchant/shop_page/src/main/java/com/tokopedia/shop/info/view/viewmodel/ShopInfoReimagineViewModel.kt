@@ -430,9 +430,11 @@ class ShopInfoReimagineViewModel @Inject constructor(
         val chatAndDiscussionReplySpeedDay = chatAndDiscussionReplySpeedHour / 24
 
         return when {
-            chatAndDiscussionReplySpeedMinute < 60 -> "$chatAndDiscussionReplySpeedMinute menit"
+            chatAndDiscussionReplySpeedMinute in 0..1 -> "±1 menit"
+            chatAndDiscussionReplySpeedMinute in 1..59 -> "$chatAndDiscussionReplySpeedMinute menit"
+            chatAndDiscussionReplySpeedMinute == 60 -> "1 jam"
             chatAndDiscussionReplySpeedHour < 24 -> "$chatAndDiscussionReplySpeedHour jam"
-            chatAndDiscussionReplySpeedDay == 1 -> "1 hari"
+            chatAndDiscussionReplySpeedHour == 24 -> "1 hari"
             chatAndDiscussionReplySpeedDay > 1 -> "$chatAndDiscussionReplySpeedDay hari"
             else -> ""
         }
