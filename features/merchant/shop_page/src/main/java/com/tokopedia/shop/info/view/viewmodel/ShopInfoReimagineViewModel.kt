@@ -433,9 +433,9 @@ class ShopInfoReimagineViewModel @Inject constructor(
             chatAndDiscussionReplySpeedMinute in 0..1 -> "±1 menit"
             chatAndDiscussionReplySpeedMinute in 1..59 -> "$chatAndDiscussionReplySpeedMinute menit"
             chatAndDiscussionReplySpeedMinute == 60 -> "1 jam"
-            chatAndDiscussionReplySpeedHour < 24 -> "$chatAndDiscussionReplySpeedHour jam"
+            chatAndDiscussionReplySpeedHour in 1..23 -> "$chatAndDiscussionReplySpeedHour jam"
             chatAndDiscussionReplySpeedHour == 24 -> "1 hari"
-            chatAndDiscussionReplySpeedDay > 1 -> "$chatAndDiscussionReplySpeedDay hari"
+            chatAndDiscussionReplySpeedDay > 24 -> "$chatAndDiscussionReplySpeedDay hari"
             else -> ""
         }
     }
