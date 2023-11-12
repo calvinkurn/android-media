@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.view.fragment.ReviewViewPagerItemFragment
+import com.tokopedia.shop_widget.customview.ProgressibleTabLayoutView
 import com.tokopedia.unifycomponents.toPx
 
 class ShopReviewView @JvmOverloads constructor(

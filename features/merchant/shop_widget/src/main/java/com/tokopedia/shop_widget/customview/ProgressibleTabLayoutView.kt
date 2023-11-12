@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.view.custom
+package com.tokopedia.shop_widget.customview
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -13,10 +13,9 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.shop.R
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.shop_widget.R
 
-// TODO: Move to shop widget
 class ProgressibleTabLayoutView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -157,11 +156,11 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
 
         val backgroundDrawable = ContextCompat.getDrawable(
             context,
-            R.drawable.shape_shop_review_rounded_progressbar_background
+            R.drawable.shape_progressible_tab_indicator_progressbar_background
         )
         val progressDrawable = ContextCompat.getDrawable(
             context,
-            R.drawable.shape_shop_review_rounded_progressbar_progress
+            R.drawable.shape_progressible_tab_indicator_progressbar_progress
         )
 
         progressBar.progressDrawable = progressDrawable
@@ -180,7 +179,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         imageView.setImageDrawable(
             ContextCompat.getDrawable(
                 context,
-                R.drawable.shop_info_review_dot_indicator_unselected
+                R.drawable.shape_progressible_tab_indicator_unselected
             )
         )
 
