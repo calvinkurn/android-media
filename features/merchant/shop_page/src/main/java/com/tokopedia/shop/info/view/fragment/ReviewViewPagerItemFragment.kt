@@ -33,7 +33,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-
 class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
     companion object {
@@ -56,10 +55,10 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentReviewViewpagerItemBinding>()
     private val review by lazy { arguments?.getParcelable<ShopReview.Review>(BUNDLE_KEY_REVIEW) }
-    private var onAttachmentImageClick: (ShopReview.Review) -> Unit = {}
-    private var onAttachmentImageViewAllClick: (ShopReview.Review) -> Unit = {}
+    private var onReviewImageClick: (ShopReview.Review) -> Unit = {}
+    private var onReviewImageViewAllClick: (ShopReview.Review) -> Unit = {}
     private var isReviewTextAlreadyExpanded = false
-    
+
     override fun getScreenName(): String = ReviewViewPagerItemFragment::class.java.simpleName
 
     override fun initInjector() {
@@ -73,7 +72,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         binding = FragmentReviewViewpagerItemBinding.inflate(inflater, container, false)
         return binding?.root
     }
-    
+
     override fun onResume() {
         super.onResume()
         renderReview(review)
@@ -81,7 +80,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
     private fun renderReview(review: ShopReview.Review?) {
         review?.let {
-            binding?.root?.setOnClickListener { onAttachmentImageClick(review) }
+            binding?.root?.setOnClickListener { onReviewImageClick(review) }
             binding?.imgAvatar?.loadImage(review.avatar)
             binding?.tpgReviewerName?.text = review.reviewerName
 
@@ -94,22 +93,20 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
             if (isReviewTextAlreadyExpanded) {
                 binding?.tpgReviewText?.text = review.reviewText
             } else {
-                renderReviewText(review)    
+                renderReviewText(review)
             }
-            
+
             renderCompletedReview(review.likeDislike.likeStatus)
             renderLikeCount(review.likeDislike.likeStatus, review.likeDislike.totalLike)
             renderReviewImages(review.attachments)
         }
     }
 
-    
     private fun renderReviewText(review: ShopReview.Review) {
         binding?.tpgReviewText?.text = review.reviewText
-        
-        binding?.tpgReviewText?.viewTreeObserver?.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener{
+
+        binding?.tpgReviewText?.viewTreeObserver?.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
-                
                 binding?.tpgReviewText?.viewTreeObserver?.removeOnPreDrawListener(this)
 
                 val reviewTextView = binding?.tpgReviewText ?: return true
@@ -125,11 +122,9 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
                 return true
             }
-
         })
-
     }
-    
+
     private fun handleMaxLines(reviewTextView: Typography, reviewText: String) {
         val ctaText = context?.getString(R.string.shop_info_more).orEmpty()
         val ctaTextLength = ctaText.length.orZero()
@@ -211,7 +206,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         val reviewImageMaxWidth = usableScreenWidth / MAX_ATTACHMENT
 
         binding?.layoutImagesContainer?.removeAllViews()
-        
+
         reviewImages
             .take(MAX_ATTACHMENT)
             .forEachIndexed { index, attachment ->
@@ -229,12 +224,12 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
             }
     }
 
-    fun setOnAttachmentImageClick(onAttachmentImageClick: (ShopReview.Review) -> Unit) {
-        this.onAttachmentImageClick = onAttachmentImageClick
+    fun setOnReviewImageClick(onReviewImageClick: (ShopReview.Review) -> Unit) {
+        this.onReviewImageClick = onReviewImageClick
     }
 
-    fun setOnAttachmentImageViewAllClick(onAttachmentImageViewAllClick: (ShopReview.Review) -> Unit) {
-        this.onAttachmentImageViewAllClick = onAttachmentImageViewAllClick
+    fun setOnReviewImageViewAllClick(onReviewImageViewAllClick: (ShopReview.Review) -> Unit) {
+        this.onReviewImageViewAllClick = onReviewImageViewAllClick
     }
 
     private fun createReviewImage(
@@ -260,7 +255,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         overlay.layoutParams = layoutParams
 
         imgReview.loadImage(attachment.thumbnailURL)
-        imgReview.setOnClickListener { onAttachmentImageViewAllClick(review) }
+        imgReview.setOnClickListener { onReviewImageViewAllClick(review) }
 
         val isRenderingLastReviewImage = currentIndex == MAX_ATTACHMENT - Int.ONE
         val showCtaViewAll = reviewCount > MAX_ATTACHMENT && isRenderingLastReviewImage
