@@ -1,15 +1,14 @@
 package com.tokopedia.shop.info.view.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout.LayoutParams
+import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -28,8 +27,6 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         private const val IMAGE_REVIEW_SIZE = 56
         private const val BUNDLE_KEY_REVIEW = "review"
         private const val MAX_ATTACHMENT = 5
-        private const val LEFT_MARGIN = 4
-        private const val ATTACHMENT_CORNER_RADIUS = 12
 
         fun newInstance(review: ShopReview.Review): ReviewViewPagerItemFragment {
             return ReviewViewPagerItemFragment().apply {
@@ -78,8 +75,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
             renderCompletedReview(review.likeDislike.likeStatus)
             renderLikeCount(review.likeDislike.likeStatus, review.likeDislike.totalLike)
-
-            renderAttachments(review.attachments)
+            renderReviewImages(review.attachments)
         }
     }
 
@@ -106,44 +102,15 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderAttachments(attachments: List<ShopReview.Review.Attachment>) {
-        attachments
+    private fun renderReviewImages(reviewImages: List<ShopReview.Review.Attachment>) {
+        reviewImages
             .take(MAX_ATTACHMENT)
             .forEachIndexed { index, attachment ->
-                val isFirstItem = index == Int.ZERO
-                val isLastItem = index == MAX_ATTACHMENT - Int.ONE
-                val context = binding?.layoutImagesContainer?.context ?: return
-
-                val attachmentImageView = if (isLastItem) {
-                    createAttachmentImageWithCta(review ?: return, attachment, attachments.size)
-                } else {
-                    val marginStart = if (isFirstItem) Int.ZERO else LEFT_MARGIN.toPx()
-                    createAttachmentImage(review ?: return, context, attachment.thumbnailURL, marginStart)
-                }
-
-                binding?.layoutImagesContainer?.addView(attachmentImageView)
+                val review = review ?: return
+                val reviewImage = createReviewImage(review, index, attachment, reviewImages.size)
+                
+                binding?.layoutImagesContainer?.addView(reviewImage)
             }
-    }
-    private fun createAttachmentImage(
-        attachment: ShopReview.Review,
-        context: Context,
-        imageUrl: String,
-        marginStartPx: Int
-    ): ImageUnify {
-        val imageUnify = ImageUnify(context = context).apply {
-            cornerRadius = ATTACHMENT_CORNER_RADIUS
-            type = ImageUnify.TYPE_RECT
-        }
-
-        val params = LayoutParams(IMAGE_REVIEW_SIZE.toPx(), IMAGE_REVIEW_SIZE.toPx())
-        params.marginStart = marginStartPx
-
-        imageUnify.layoutParams = params
-
-        imageUnify.loadImage(imageUrl)
-        imageUnify.setOnClickListener { onAttachmentImageClick(review ?: return@setOnClickListener) }
-
-        return imageUnify
     }
 
     fun setOnAttachmentImageClick(onAttachmentImageClick: (ShopReview.Review) -> Unit) {
@@ -154,30 +121,47 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         this.onAttachmentImageViewAllClick = onAttachmentImageViewAllClick
     }
 
-    private fun createAttachmentImageWithCta(
+    private fun createReviewImage(
         review: ShopReview.Review,
+        currentIndex: Int,
         attachment: ShopReview.Review.Attachment,
-        totalAttachment: Int
+        reviewCount: Int
     ): View {
-        val attachmentView = layoutInflater.inflate(R.layout.item_shop_info_attachment, null, false)
-        val params = LayoutParams(IMAGE_REVIEW_SIZE.toPx(), IMAGE_REVIEW_SIZE.toPx())
-        params.marginStart = LEFT_MARGIN.toPx()
+        val reviewImageView = layoutInflater.inflate(R.layout.item_shop_info_attachment, null, false)
 
-        attachmentView.layoutParams = params
+        val imgReview = reviewImageView.findViewById<ImageUnify>(R.id.imgReview)
+        val overlay = reviewImageView.findViewById<View>(R.id.overlay)
+        
+        if (reviewCount >= MAX_ATTACHMENT) {
+            val screenWidth = getScreenWidth() - 16.toPx() - 16.toPx() - (4* 4.toPx()) - 16.toPx() - 16.toPx()
+            val maxHeight = screenWidth / MAX_ATTACHMENT
+            val maxWidth = screenWidth / MAX_ATTACHMENT
+            val layoutParams = FrameLayout.LayoutParams(maxWidth, maxHeight)
+            layoutParams.marginStart = if (currentIndex == 0) 0.toPx() else 4.toPx()
+            imgReview.layoutParams = layoutParams
+            
+            overlay.layoutParams = layoutParams
+        }
+       
+        
+        imgReview.loadImage(attachment.thumbnailURL)
+        imgReview.setOnClickListener { onAttachmentImageViewAllClick(review) }
 
-        val imgAttachmentImage = attachmentView.findViewById<ImageUnify>(R.id.imgAttachmentImage)
-        imgAttachmentImage.loadImage(attachment.thumbnailURL) 
+        val isRenderingLastReviewImage = currentIndex == MAX_ATTACHMENT - Int.ONE
+        val showCtaViewAll = reviewCount > MAX_ATTACHMENT && isRenderingLastReviewImage
+        val remainingReviewImageCount = reviewCount - MAX_ATTACHMENT
         
         
-        val tpgCollapsedAttachmentCount = attachmentView.findViewById<Typography>(R.id.tpgCollapsedAttachmentCount)
-        val collapsedAttachmentCount = totalAttachment - MAX_ATTACHMENT
-        tpgCollapsedAttachmentCount.text = getString(
+        overlay.isVisible = showCtaViewAll
+
+        val tpgCtaViewAll = reviewImageView.findViewById<Typography>(R.id.tpgCtaViewAll)
+        tpgCtaViewAll.isVisible = showCtaViewAll
+        tpgCtaViewAll.text = getString(
             R.string.shop_info_placeholder_attachment_text,
-            collapsedAttachmentCount.toString()
+            remainingReviewImageCount.toString()
         )
-
-        imgAttachmentImage.setOnClickListener { onAttachmentImageViewAllClick(review) }
-        return attachmentView
+        
+        return reviewImageView
     }
 
     private fun expandReviewText() {
