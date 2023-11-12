@@ -132,21 +132,17 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         observeUiEffect()
 
         viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, localCacheModel ?: return))
-        registerBackPressEvent()
     }
 
-    private fun registerBackPressEvent() {
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                activity?.finish()
-            }
-        }
-        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, callback)
-    }
 
     private fun setupView() {
         setupReportShopHyperlink()
         setupClickListener()
+        setupHeader()
+    }
+
+    private fun setupHeader() {
+        binding?.headerUnify?.setNavigationOnClickListener { activity?.finish() }
     }
 
     private fun setupClickListener() {

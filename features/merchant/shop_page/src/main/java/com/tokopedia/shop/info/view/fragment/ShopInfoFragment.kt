@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -37,6 +39,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingShopPageInfo
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.data.model.ShopInfoData
@@ -46,6 +49,7 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.FragmentShopInfoBinding
 import com.tokopedia.shop.extension.transformToVisitable
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
+import com.tokopedia.shop.info.di.component.ShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SHOP_INFO
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
@@ -71,7 +75,8 @@ import javax.inject.Inject
 class ShopInfoFragment :
     BaseDaggerFragment(),
     BaseEmptyViewHolder.Callback,
-    ShopNoteViewHolder.OnNoteClicked {
+    ShopNoteViewHolder.OnNoteClicked,
+    HasComponent<ShopInfoComponent> {
 
     companion object {
         private const val REQUEST_CODER_USER_LOGIN = 100
@@ -129,6 +134,13 @@ class ShopInfoFragment :
     private val userId: String
         get() = shopViewModel?.userId().orEmpty()
 
+    override fun getComponent() = activity?.run {
+        DaggerShopInfoComponent.builder()
+            .shopInfoModule(ShopInfoModule())
+            .shopComponent(ShopComponentHelper().getComponent(application, this))
+            .build()
+    }
+    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -140,6 +152,7 @@ class ShopInfoFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupHeader()
         shopInfo = arguments?.getParcelable(EXTRA_SHOP_INFO)
         shopPageTracking = ShopPageTrackingShopPageInfo(TrackingQueue(requireContext()))
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -148,6 +161,10 @@ class ShopInfoFragment :
         initView()
     }
 
+    private fun setupHeader() {
+        fragmentShopInfoBinding?.headerUnify?.setNavigationOnClickListener { activity?.finish() }
+    }
+    
     override fun onDestroyView() {
         super.onDestroyView()
         fragmentShopInfoBinding = null
@@ -195,10 +212,7 @@ class ShopInfoFragment :
     override fun getScreenName() = null
 
     override fun initInjector() {
-        DaggerShopInfoComponent.builder().shopInfoModule(ShopInfoModule())
-            .shopComponent(getComponent(ShopComponent::class.java))
-            .build()
-            .inject(this)
+        component?.inject(this)
     }
 
     private fun initViewModel() {

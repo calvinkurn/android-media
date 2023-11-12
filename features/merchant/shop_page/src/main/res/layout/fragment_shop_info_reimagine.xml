@@ -20,11 +20,20 @@
         android:visibility="gone"
         app:globalerrors_type="SERVER_ERROR" />
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/headerUnify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_title="@string/shop_info_shop_profile" />
+    
     <ScrollView
         android:id="@+id/mainContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+        android:layout_below="@id/headerUnify"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -32,17 +41,7 @@
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <com.tokopedia.header.HeaderUnify
-                android:id="@+id/headerUnify"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:unify_header_is_show_back_button="true"
-                app:unify_header_is_show_shadow="false"
-                app:unify_header_title="Profil Toko" />
+            
             
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imgShop"
@@ -51,7 +50,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/headerUnify"
+                app:layout_constraintTop_toTopOf="parent"
                 app:unify_image_type="circle" />
 
             <RelativeLayout
@@ -63,7 +62,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/headerUnify">
+                app:layout_constraintTop_toTopOf="parent">
 
             </RelativeLayout>
             
@@ -541,11 +540,10 @@
                 android:id="@+id/iconChevronReview"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="12dp"
                 app:layout_constraintTop_toTopOf="@id/tpgSectionTitleBuyerReview"
                 app:layout_constraintBottom_toBottomOf="@id/iconRating"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginStart="16dp"
                 app:icon_color_light_enable="@color/Unify_NN900"
                 app:icon_color_night_enable="@color/Unify_NN900"
                 app:icon_name="CHEVRON_RIGHT" />

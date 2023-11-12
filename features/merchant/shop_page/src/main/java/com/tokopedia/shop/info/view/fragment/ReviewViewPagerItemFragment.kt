@@ -16,6 +16,7 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
@@ -103,7 +104,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
     }
 
     private fun renderReviewText(review: ShopReview.Review) {
-        binding?.tpgReviewText?.text = review.reviewText
+        binding?.tpgReviewText?.text = MethodChecker.fromHtml(review.reviewText)
 
         binding?.tpgReviewText?.viewTreeObserver?.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
@@ -113,7 +114,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
                 try {
                     val lineCount = reviewTextView.lineCount
-                    if (lineCount >= REVIEW_TEXT_MAX_LINES) {
+                    if (lineCount > REVIEW_TEXT_MAX_LINES) {
                         handleMaxLines(reviewTextView, review.reviewText)
                     }
                 } catch (e: Exception) {
@@ -138,7 +139,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
         val endIndex = end - ellipsisTextLength - ctaTextLength
 
-        val reviewTextSubstring = reviewText.substring(start, endIndex)
+        val reviewTextSubstring = MethodChecker.fromHtml(reviewText).substring(start, endIndex)
         val reviewTextWithCta = "$reviewTextSubstring$ellipsisText$ctaText"
 
         val spannableString = SpannableString(reviewTextWithCta)
