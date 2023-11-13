@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -68,7 +67,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     companion object {
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val MARGIN_4_DP = 4
-        private const val APPLINK_QUERY_STRING_REVIEW_SOURCE = "header"
+        private const val APP_LINK_QUERY_STRING_REVIEW_SOURCE = "header"
         private const val REQUEST_CODE_REPORT_SHOP = 110
         private const val REQUEST_CODE_LOGIN = 100
 
@@ -127,13 +126,19 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
+        viewModel.processEvent(
+            ShopInfoUiEvent.Setup(
+                shopId,
+                localCacheModel?.district_id.orEmpty(),
+                localCacheModel?.city_id.orEmpty()
+            )
+        )
         setupView()
         observeUiState()
         observeUiEffect()
 
-        viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, localCacheModel ?: return))
+        viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
     }
-
 
     private fun setupView() {
         setupReportShopHyperlink()
@@ -160,11 +165,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                 viewModel.processEvent(ShopInfoUiEvent.TapIconViewAllShopReview)
             }
             globalError.setActionClickListener {
-                viewModel.processEvent(
-                    ShopInfoUiEvent.RetryGetShopInfo(
-                        localCacheModel ?: return@setActionClickListener
-                    )
-                )
+                viewModel.processEvent(ShopInfoUiEvent.RetryGetShopInfo)
             }
         }
     }
@@ -580,7 +581,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         if (!isAdded) return
         if (shopId.isEmpty()) return
 
-        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, shopId, APPLINK_QUERY_STRING_REVIEW_SOURCE)
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, shopId, APP_LINK_QUERY_STRING_REVIEW_SOURCE)
         RouteManager.route(context, appLink)
     }
 

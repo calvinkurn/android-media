@@ -55,5 +55,7 @@ data class ShopInfoUiState(
         expandPharmacyInfo = true
     ),
     val error: Throwable? = null,
-    val shopId: String = ""
+    val shopId: String = "",
+    val districtId: String = "",
+    val cityId: String = ""
 )

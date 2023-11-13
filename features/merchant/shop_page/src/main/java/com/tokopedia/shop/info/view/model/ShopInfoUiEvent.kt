@@ -1,9 +1,10 @@
 package com.tokopedia.shop.info.view.model
 
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-
 sealed interface ShopInfoUiEvent {
-    data class GetShopInfo(val shopId: String, val localCacheModel: LocalCacheModel) : ShopInfoUiEvent
+    data class Setup(val shopId: String, val districtId: String, val cityId: String) :
+        ShopInfoUiEvent
+
+    object GetShopInfo : ShopInfoUiEvent
     object TapIconViewAllShopReview : ShopInfoUiEvent
     data class TapReviewImage(val productId: String) : ShopInfoUiEvent
     data class TapReviewImageViewAll(val productId: String) : ShopInfoUiEvent
@@ -11,6 +12,6 @@ sealed interface ShopInfoUiEvent {
 
     object TapCtaViewPharmacyLocation : ShopInfoUiEvent
     data class TapShopNote(val noteId: String) : ShopInfoUiEvent
-    data class RetryGetShopInfo(val localCacheModel: LocalCacheModel) : ShopInfoUiEvent
+    object RetryGetShopInfo : ShopInfoUiEvent
     object ReportShop : ShopInfoUiEvent
 }

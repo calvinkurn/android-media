@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.domain.GetMessageIdChatUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
@@ -74,11 +73,12 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     fun processEvent(event: ShopInfoUiEvent) {
         when (event) {
-            is ShopInfoUiEvent.GetShopInfo -> handleGetShopInfo(event.shopId, event.localCacheModel)
+            is ShopInfoUiEvent.Setup -> handleSetup(event.shopId, event.districtId, event.cityId)
+            is ShopInfoUiEvent.GetShopInfo -> handleGetShopInfo()
             ShopInfoUiEvent.TapCtaExpandShopPharmacyInfo -> handleCtaExpandShopPharmacyInfo()
             ShopInfoUiEvent.TapCtaViewPharmacyLocation -> handleCtaViewPharmacyLocation()
             ShopInfoUiEvent.TapIconViewAllShopReview -> handleViewAllReviewClick()
-            is ShopInfoUiEvent.RetryGetShopInfo -> handleRetryGetShopInfo(event.localCacheModel)
+            is ShopInfoUiEvent.RetryGetShopInfo -> handleRetryGetShopInfo()
             is ShopInfoUiEvent.TapShopNote -> handleTapShopNote(event.noteId)
             ShopInfoUiEvent.ReportShop -> handleReportShop()
             is ShopInfoUiEvent.TapReviewImage -> handleTapReviewImage(event.productId)
@@ -86,13 +86,26 @@ class ShopInfoReimagineViewModel @Inject constructor(
         }
     }
 
-    private fun handleGetShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
+    private fun handleSetup(shopId: String, districtId: String, cityId: String) {
+        val isMyShop = shopId == userSessionInterface.shopId
+
+        _uiState.update {
+            it.copy(
+                shopId = shopId,
+                districtId = if (isMyShop) "" else districtId,
+                cityId = if (isMyShop) "" else cityId
+            )
+        }
+    }
+    private fun handleGetShopInfo() {
         launchCatchError(
             context = coroutineDispatcherProvider.io,
             block = {
-                _uiState.update { it.copy(isLoading = true, error = null, shopId = shopId) }
+                _uiState.update { it.copy(isLoading = true, error = null) }
 
-                val shopHeaderLayoutDeferred = async { getShopPageHeaderLayout(shopId, localCacheModel) }
+                val shopId = currentState.shopId
+
+                val shopHeaderLayoutDeferred = async { getShopPageHeaderLayout() }
                 val shopRatingParam = ProductRevGetShopRatingAndTopicsUseCase.Param(shopId)
                 val shopRatingDeferred = async { getShopRatingUseCase.execute(shopRatingParam) }
 
@@ -119,7 +132,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 val shopChatPerformance = shopChatPerformanceDeferred.await()
 
                 val pharmacyInfo = if (isEpharmacy(shopInfo)) {
-                    getPharmacyInfo(shopId.toLongOrZero(), localCacheModel.district_id.toLongOrZero())
+                    getPharmacyInfo(shopId.toLongOrZero(), currentState.districtId.toLongOrZero())
                 } else {
                     ShopPharmacyInfo(
                         showPharmacyInfoSection = false,
@@ -181,8 +194,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
         _uiEffect.tryEmit(effect)
     }
 
-    private fun handleRetryGetShopInfo(localCacheModel: LocalCacheModel) {
-        handleGetShopInfo(currentState.shopId, localCacheModel)
+    private fun handleRetryGetShopInfo() {
+        handleGetShopInfo()
     }
 
     private fun handleViewAllReviewClick() {
@@ -233,22 +246,12 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return getShopGqlGetShopOperationalHoursListUseCase.executeOnBackground()
     }
 
-    @SuppressLint("PII Data Exposure")
-    private suspend fun getShopPageHeaderLayout(
-        shopId: String,
-        widgetUserAddressLocalData: LocalCacheModel
-    ): ShopPageHeaderLayoutResponse {
-        val districtId: String
-        val cityId: String
-        if (!isMyShop(shopId)) {
-            districtId = widgetUserAddressLocalData.district_id
-            cityId = widgetUserAddressLocalData.city_id
-        } else {
-            districtId = ""
-            cityId = ""
-        }
-
-        getShopPageHeaderLayoutUseCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId, districtId, cityId)
+    private suspend fun getShopPageHeaderLayout(): ShopPageHeaderLayoutResponse {
+        getShopPageHeaderLayoutUseCase.params = GetShopPageHeaderLayoutUseCase.createParams(
+            currentState.shopId,
+            currentState.districtId,
+            currentState.cityId
+        )
         getShopPageHeaderLayoutUseCase.isFromCloud = true
         return getShopPageHeaderLayoutUseCase.executeOnBackground()
     }
@@ -315,10 +318,6 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 _uiState.update { it.copy(isLoadingShopReport = false) }
             }
         )
-    }
-
-    private fun isMyShop(shopId: String): Boolean {
-        return shopId == userSessionInterface.shopId
     }
 
     private fun List<ShopNoteModel>.toShopNotes(): List<ShopNote> {
