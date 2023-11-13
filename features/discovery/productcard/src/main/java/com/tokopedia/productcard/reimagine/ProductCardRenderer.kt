@@ -1,8 +1,10 @@
 package com.tokopedia.productcard.reimagine
 
+import android.graphics.PorterDuff
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
@@ -16,6 +18,7 @@ import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.productcard.R as productcardR
 
 internal class ProductCardRenderer(
     private val view: View,
@@ -33,6 +36,7 @@ internal class ProductCardRenderer(
     private val slashedPriceInlineText by view.lazyView<Typography?>(R.id.productCardSlashedPriceInline)
     private val discountInlineText by view.lazyView<Typography?>(R.id.productCardDiscountInline)
     private val benefitLabel by view.lazyView<Typography?>(R.id.productCardLabelBenefit)
+    private val bmsmLabel by view.lazyView<Typography?>(R.id.productCardLabelBMSM)
     private val credibilitySection by view.lazyView<LinearLayout?>(R.id.productCardCredibility)
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
     private val freeShippingImage by view.lazyView<ImageView?>(R.id.productCardFreeShipping)
@@ -46,6 +50,7 @@ internal class ProductCardRenderer(
         renderSlashedPrice(productCardModel)
         renderDiscountPercentage(productCardModel)
         renderLabelBenefit(productCardModel)
+        renderLabelProductOffer(productCardModel)
         renderCredibilitySection(productCardModel)
         renderShopSection(productCardModel)
         renderFreeShipping(productCardModel)
@@ -54,13 +59,23 @@ internal class ProductCardRenderer(
 
     private fun renderImage(productCardModel: ProductCardModel) {
         val cornerType= if (productCardModel.stockInfo() != null) TOP else ALL
-        imageView?.imageRounded(
-            productCardModel.imageUrl,
-            context.resources.getDimensionPixelSize(
-                R.dimen.product_card_reimagine_carousel_image_radius
-            ).toFloat(),
-            cornerType
-        )
+        imageView?.apply {
+            imageRounded(
+                productCardModel.imageUrl,
+                context.resources.getDimensionPixelSize(
+                    R.dimen.product_card_reimagine_carousel_image_radius
+                ).toFloat(),
+                cornerType
+            )
+
+            setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    productcardR.color.dms_product_card_reimagine_image_overlay,
+                ),
+                PorterDuff.Mode.SRC_OVER
+            )
+        }
     }
 
     private fun renderAds(productCardModel: ProductCardModel) {
@@ -150,6 +165,17 @@ internal class ProductCardRenderer(
         val labelBenefit = productCardModel.labelBenefit()
         benefitLabel?.shouldShowWithAction(labelBenefit != null) {
             it.initLabelGroupLabel(labelBenefit)
+        }
+    }
+
+    private fun renderLabelProductOffer(productCardModel: ProductCardModel) {
+        val labelProductOffer = productCardModel.labelProductOffer()
+        val hasLabelBenefit = productCardModel.labelBenefit() != null
+        val showLabelProductOffer =
+            labelProductOffer != null && (!hasLabelBenefit || type != GridCarousel)
+
+        bmsmLabel?.shouldShowWithAction(showLabelProductOffer) {
+            it.text = labelProductOffer?.title ?: ""
         }
     }
 

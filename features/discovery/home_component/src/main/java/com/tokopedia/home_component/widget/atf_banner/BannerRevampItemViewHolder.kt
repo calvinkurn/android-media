@@ -8,8 +8,10 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.util.loadImage
+import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.home_component.R as home_componentR
 
@@ -22,12 +24,13 @@ class BannerRevampItemViewHolder(itemView: View, val listener: BannerItemListene
     companion object {
         @LayoutRes
         val LAYOUT = home_componentR.layout.layout_banner_revamp_channel_item
+        private const val FPM_LABEL = "banner_revamp_image"
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(item: BannerRevampItemModel) {
         val imageBanner = itemView.findViewById<AppCompatImageView>(R.id.image_banner_revamp)
-        imageBanner.loadImage(item.url)
+        imageBanner.loadImage(item.url, FPM_LABEL) { centerCrop() }
         imageBanner.setOnTouchListener { _, motionEvent ->
             listener.onTouchEvent(motionEvent)
             when (motionEvent.action) {

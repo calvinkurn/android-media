@@ -36,7 +36,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
@@ -815,10 +814,7 @@ object DeeplinkMainApp {
                 ApplinkConstInternalCategory.getDiscoveryDeeplink(ApplinkConst.DISCOVERY_DEALS)
             },
             DLP.matchPattern("{slug}") { _, _, _, idList ->
-                UriUtil.buildUri(
-                    ApplinkConstInternalPromo.PROMO_DETAIL,
-                    idList?.getOrNull(0)
-                )
+                ApplinkConstInternalCategory.getDiscoveryDeeplink(ApplinkConst.DISCOVERY_DEALS)
             }
         ),
         "promoNative" to mutableListOf(

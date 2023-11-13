@@ -85,7 +85,6 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
 
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
-
         }
 
     private fun setItemClickListener(position: Int) {
@@ -141,18 +140,21 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     private fun setAutoScrollOn() {
         setAutoScrollOff()
         timer = Timer()
-        timer.scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                Handler(Looper.getMainLooper()).post {
-                    if (currentItem == recyclerView?.layoutManager?.itemCount.orZero() - 1) {
-                        currentItem = Int.ZERO
-                    } else {
-                        currentItem++
+        timer.scheduleAtFixedRate(
+            object : TimerTask() {
+                override fun run() {
+                    Handler(Looper.getMainLooper()).post {
+                        if (currentItem == recyclerView?.layoutManager?.itemCount.orZero() - 1) {
+                            currentItem = Int.ZERO
+                        } else {
+                            currentItem++
+                        }
+                        recyclerView?.smoothScrollToPosition(currentItem)
                     }
-                    recyclerView?.smoothScrollToPosition(currentItem)
                 }
-            }
-        }, AUTO_SCROLL_DURATION, AUTO_SCROLL_DURATION)
+            },
+            AUTO_SCROLL_DURATION, AUTO_SCROLL_DURATION
+        )
     }
 
     private fun setAutoScrollOff() {
@@ -177,7 +179,7 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
 
     private fun initRecyclerView(uiModel: ShopHomeDisplayWidgetUiModel) {
         val ratio = uiModel.header.ratio.takeIf { it.isNotEmpty() } ?: DEFAULT_RATIO
-        val layoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true, false)
+        val layoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, isCircularRvLayout(uiModel), false)
         layoutManager.setPostLayoutListener(CarouselZoomPostLayoutListener())
         layoutManager.maxVisibleItems = Int.ONE
         layoutManager.removeOnItemSelectionListener(itemSelectionListener)
@@ -210,20 +212,23 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
         updateRecyclerViewHeightBasedOnFirstChild()
     }
 
+    private fun isCircularRvLayout(uiModel: ShopHomeDisplayWidgetUiModel): Boolean {
+        return uiModel.data?.size.orZero() > 2
+    }
 
     private fun updateRecyclerViewHeightBasedOnFirstChild() {
         recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                val firstChildHeight = recyclerView.findViewHolderForAdapterPosition(
-                    Int.ZERO
-                )?.itemView?.height.orZero()
-                val lp = recyclerView.layoutParams as? ViewGroup.LayoutParams
-                lp?.height = firstChildHeight
-                recyclerView.layoutParams = lp
-                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val firstChildHeight = recyclerView.findViewHolderForAdapterPosition(
+                        Int.ZERO
+                    )?.itemView?.height.orZero()
+                    val lp = recyclerView.layoutParams as? ViewGroup.LayoutParams
+                    lp?.height = firstChildHeight
+                    recyclerView.layoutParams = lp
+                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
     }
 
     private fun setHeaderSection() {
