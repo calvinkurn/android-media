@@ -116,6 +116,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
@@ -976,6 +977,8 @@ open class DiscoveryFragment :
                     ?.let { discoveryBaseViewModel ->
                         if (discoveryBaseViewModel is ProductCardCarouselViewModel) {
                             discoveryBaseViewModel.handleAtcFailed(position)
+                        } else if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
+                            discoveryBaseViewModel.changeTier(false)
                         }
                     }
             } else if (position >= 0) {
@@ -985,6 +988,15 @@ open class DiscoveryFragment :
                     }
                 }
             }
+        }
+
+        discoveryViewModel.addToCartAction.observe(viewLifecycleOwner) {
+            discoveryAdapter.getViewModelAtPosition(it.parentPosition)
+                ?.let { discoveryBaseViewModel ->
+                    if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
+                        discoveryBaseViewModel.changeTier(true)
+                    }
+                }
         }
 
         discoveryViewModel.getDiscoveryNavToolbarConfigLiveData().observe(viewLifecycleOwner) { config ->
@@ -2277,6 +2289,7 @@ open class DiscoveryFragment :
         discoveryViewModel.addProductToCart(
             discoATCRequestParams
         )
+
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {

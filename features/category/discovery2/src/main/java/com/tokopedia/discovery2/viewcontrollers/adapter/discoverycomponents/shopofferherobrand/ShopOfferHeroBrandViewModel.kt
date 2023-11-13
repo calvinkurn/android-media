@@ -7,11 +7,11 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
@@ -25,6 +25,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
+
 class ShopOfferHeroBrandViewModel(
     val application: Application,
     val component: ComponentsItem,
@@ -38,18 +39,21 @@ class ShopOfferHeroBrandViewModel(
         const val PRODUCT_PER_PAGE = 10
     }
 
-    private val _header: MutableLiveData<ComponentsItem?> = MutableLiveData()
+    private val _header: MutableLiveData<Properties.Header?> = MutableLiveData()
     private val _productList: MutableLiveData<Result<ArrayList<ComponentsItem>>> = MutableLiveData()
     private val _productMaxHeight: MutableLiveData<Int> = MutableLiveData()
+    private val _tierChange: MutableLiveData<TierData> = MutableLiveData()
 
     private var isLoading = false
 
+    val header: LiveData<Properties.Header?>
+        get() = _header
     val productList: LiveData<Result<ArrayList<ComponentsItem>>>
         get() = _productList
     val productMaxHeight: LiveData<Int>
         get() = _productMaxHeight
-    val header: LiveData<ComponentsItem?>
-        get() = _header
+    val tierChange: LiveData<TierData>
+        get() = _tierChange
 
     @JvmField
     @Inject
@@ -61,57 +65,8 @@ class ShopOfferHeroBrandViewModel(
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         component.shouldRefreshComponent = null
-        handleLihatSemuaHeader()
-        handleErrorState()
-        fetchProductCarouselData()
-    }
-
-    private fun handleErrorState() {
-        if (component.verticalProductFailState) {
-            _productList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))
-        }
-    }
-
-    private fun handleLihatSemuaHeader() {
-        var lihatSemuaComponentData: ComponentsItem? = null
-        component.lihatSemua?.let {
-//            we don't add header component in case after when query is hit but no list of products were found.
-            if (!(component.noOfPagesLoaded == 1 && component.getComponentsItem().isNullOrEmpty())) {
-                it.run {
-                    val lihatSemuaDataItem = DataItem(
-                        title = header,
-                        subtitle = subheader,
-                        btnApplink = applink
-                    )
-                    lihatSemuaComponentData = ComponentsItem(
-                        name = ComponentsList.ShopOfferHeroBrand.componentName,
-                        data = listOf(lihatSemuaDataItem),
-                        creativeName = component.creativeName
-                    )
-                }
-            }
-        }
-        _header.value = lihatSemuaComponentData
-    }
-
-    fun fetchProductCarouselData() {
-        launchCatchError(
-            block = {
-                productCardsUseCase?.loadFirstPageComponents(component.id, component.pageEndPoint, PRODUCT_PER_PAGE)
-                component.shouldRefreshComponent = null
-                setProductsList()
-            }, onError = {
-                component.noOfPagesLoaded = 1
-                component.verticalProductFailState = true
-                component.shouldRefreshComponent = null
-                _productList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))
-            }
-        )
-    }
-
-    fun resetComponent() {
-        component.noOfPagesLoaded = 0
-        component.pageLoadedCounter = 1
+        handleHeader()
+        loadFirstPageProductCarousel()
     }
 
     private suspend fun setProductsList() {
@@ -125,6 +80,30 @@ class ShopOfferHeroBrandViewModel(
                 _productList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))
             }
         }
+    }
+
+    private fun handleHeader() {
+        _header.value = component.getPropertyHeader()
+    }
+
+    fun loadFirstPageProductCarousel() {
+        launchCatchError(
+            block = {
+                productCardsUseCase?.loadFirstPageComponents(component.id, component.pageEndPoint, PRODUCT_PER_PAGE)
+                component.shouldRefreshComponent = null
+                setProductsList()
+            }, onError = { throwable ->
+                component.noOfPagesLoaded = 1
+                component.verticalProductFailState = true
+                component.shouldRefreshComponent = null
+                _productList.value = Fail(throwable)
+            }
+        )
+    }
+
+    fun resetComponent() {
+        component.noOfPagesLoaded = 0
+        component.pageLoadedCounter = 1
     }
 
     private suspend fun getMaxHeightProductCard(productList: List<ComponentsItem>) {
@@ -260,5 +239,18 @@ class ShopOfferHeroBrandViewModel(
             parentComponentId = component.id
             id = ComponentNames.ProductListEmptyState.componentName
         }
+    }
+
+    fun changeTier(
+        isShimmerShown: Boolean,
+        tierWording: String = ""
+    ) {
+        if (component.getPropertyHeader() == null) return
+
+        _tierChange.value = TierData(
+            isProgressBarShown = isShimmerShown || tierWording.isNotBlank(),
+            isShimmerShown = isShimmerShown,
+            tierWording = tierWording
+        )
     }
 }

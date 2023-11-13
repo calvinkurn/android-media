@@ -31,6 +31,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         private const val RPC_PAGE_NUMBER = "rpc_page_number"
         private const val RPC_NEXT_PAGE = "rpc_next_page"
         private const val RPC_PAGE__SIZE = "rpc_page_size"
+        private const val RPC_WAREHOUSE_TCO = "rpc_warehouse_tco"
     }
 
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
@@ -54,7 +55,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             it.nextPageKey,
                             it.recomQueryProdId,
                             paramWithoutRpc,
-                            it.userAddressData),
+                            it.userAddressData,
+                            component.properties?.warehouseTco
+                        ),
                     pageEndPoint, it.name)
             it.showVerticalLoader = productListData.isNotEmpty()
             it.setComponentsItem(productListData, component.tabName)
@@ -92,7 +95,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             component1.nextPageKey,
                             component1.recomQueryProdId,
                             paramWithoutRpc,
-                            component.userAddressData),
+                            component.userAddressData,
+                            component.properties?.warehouseTco
+                    ),
                     pageEndPoint,
                     component1.name)
             component1.nextPageKey = additionalInfo?.nextPage
@@ -134,7 +139,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             it.nextPageKey,
                             it.recomQueryProdId,
                             paramWithoutRpc,
-                            it.userAddressData),
+                            it.userAddressData,
+                            component.properties?.warehouseTco
+                    ),
                     pageEndPoint,
                     it.name)
             component.nextPageKey = additionalInfo?.nextPage
@@ -160,7 +167,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                                      nextPageKey : String?,
                                      recomProdId: String?,
                                      queryParameterMapWithoutRpc: Map<String, String>?,
-                                     userAddressData: LocalCacheModel?): MutableMap<String, Any> {
+                                     userAddressData: LocalCacheModel?,
+                                     warehouseTco: String?): MutableMap<String, Any> {
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
@@ -212,6 +220,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             queryParameterMap[RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
         if (!recomProdId.isNullOrEmpty())
             queryParameterMap[RPC_PRODUCT_ID] = recomProdId
+        if (!warehouseTco.isNullOrEmpty())
+            queryParameterMap[RPC_WAREHOUSE_TCO] = warehouseTco
         queryParameterMapWithoutRpc?.let {
             queryParameterMap.putAll(it)
         }

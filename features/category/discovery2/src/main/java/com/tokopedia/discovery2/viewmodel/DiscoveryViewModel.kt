@@ -127,6 +127,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = _miniCartRemove
     private val _miniCartRemove = SingleLiveEvent<Result<DiscoveryRemoveFromCartDataModel>>()
 
+    val addToCartAction: LiveData<DiscoATCRequestParams>
+        get() = _addToCartAction
+    private val _addToCartAction = MutableLiveData<DiscoATCRequestParams>()
+
     val miniCartOperationFailed:LiveData<Pair<Int,Int>>
         get() = _miniCartOperationFailed
     private val _miniCartOperationFailed = SingleLiveEvent<Pair<Int,Int>>()
@@ -165,6 +169,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun addProductToCart(
         discoATCRequestParams: DiscoATCRequestParams
     ) {
+        _addToCartAction.value = discoATCRequestParams
         val miniCartItem = if (!discoATCRequestParams.isGeneralCartATC)
             getMiniCartItem(discoATCRequestParams.productId) else null
         when {

@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.data
 
-import android.content.pm.ComponentInfo
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.Constant.LABEL_FULFILLMENT
@@ -144,6 +143,8 @@ data class ComponentsItem(
     fun getComponentItem(position: Int): ComponentsItem? = getComponentsItem()?.getOrNull(position)
 
     fun getPropertyRows(): Int = properties?.rows.toIntSafely()
+
+    fun getPropertyHeader(): Properties.Header? = properties?.header
 
     fun getComponentsItemSize(): Int = getComponentsItem()?.size.orZero()
 
