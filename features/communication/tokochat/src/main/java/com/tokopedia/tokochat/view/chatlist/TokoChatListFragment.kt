@@ -116,9 +116,6 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun initObservers() {
-        // Setup flow observer
-        viewModel.setupViewModelObserver()
-
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 observeChatListUiState()
@@ -136,6 +133,9 @@ class TokoChatListFragment @Inject constructor(
                 observeErrorUiState()
             }
         }
+
+        // Setup flow observer
+        viewModel.setupViewModelObserver()
     }
 
     private suspend fun observeChatListUiState() {

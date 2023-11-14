@@ -20,8 +20,6 @@ import com.tokopedia.tokochat.stub.repository.TokoChatRepositoryStub
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
 
 @Module
@@ -90,16 +88,5 @@ object TokoChatModuleStub {
     @Provides
     fun provideTokoChatNetworkUtil(): TokoChatNetworkUtil {
         return TokoChatNetworkUtilStub()
-    }
-
-    @Provides
-    @TokoChatQualifier
-    fun provideCoroutineDispatchers(): TokoChatCoroutineDispatchers {
-        return object : TokoChatCoroutineDispatchers {
-            override val main: CoroutineDispatcher
-                get() = Dispatchers.Main
-            override val io: CoroutineDispatcher
-                get() = Dispatchers.IO
-        }
     }
 }
