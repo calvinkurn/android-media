@@ -5,6 +5,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -60,6 +61,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     companion object {
         private const val ID_FULFILLMENT_SERVICE_E_PHARMACY = 2
+        private const val FIVE_REVIEW = 5
     }
 
     private val _uiState = MutableStateFlow(ShopInfoUiState())
@@ -87,13 +89,11 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
 
     private fun handleSetup(shopId: String, districtId: String, cityId: String) {
-        val isMyShop = shopId == userSessionInterface.shopId
-
         _uiState.update {
             it.copy(
                 shopId = shopId,
-                districtId = if (isMyShop) "" else districtId,
-                cityId = if (isMyShop) "" else cityId
+                districtId = districtId,
+                cityId = cityId
             )
         }
     }
@@ -111,8 +111,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
                 val shopReviewParam = ProductRevGetShopReviewReadingListUseCase.Param(
                     shopID = shopId,
-                    limit = 5,
-                    page = 1,
+                    limit = FIVE_REVIEW,
+                    page = Int.ONE,
                     filterBy = "topic=pelayanan",
                     sortBy = "informative_score desc"
                 )
