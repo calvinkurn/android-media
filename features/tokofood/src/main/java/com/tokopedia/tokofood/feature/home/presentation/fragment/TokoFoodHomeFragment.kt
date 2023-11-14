@@ -106,7 +106,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class TokoFoodHomeFragment :
@@ -454,8 +453,14 @@ class TokoFoodHomeFragment :
         viewModel.setHomeLayout(localCacheModel, userSession.isLoggedIn)
     }
 
-    private fun getChooseAddress() {
-        viewModel.getChooseAddress(SOURCE)
+    private fun updateChosenAddressPinpoint(lat: String, long: String) {
+        if (lat.isNotEmpty() && long.isNotEmpty()) {
+            context?.let {
+                ChooseAddressUtils.updatePinpointLocalizingAddressData(it, lat, long)
+                checkIfChooseAddressWidgetDataUpdated()
+                loadLayout()
+            }
+        }
     }
 
     private fun setupUi() {
@@ -574,7 +579,7 @@ class TokoFoodHomeFragment :
             viewModel.flowUpdatePinPointState.collect {
                 when (it) {
                     is Success -> {
-                        getChooseAddress()
+                        updateChosenAddressPinpoint(it.data.first, it.data.second)
                     }
 
                     is Fail -> {

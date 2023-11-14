@@ -109,7 +109,7 @@ class TokoFoodHomeViewModel @Inject constructor(
             replay = Int.ONE
         )
 
-    val flowUpdatePinPointState: SharedFlow<Result<Boolean>> =
+    val flowUpdatePinPointState: SharedFlow<Result<Pair<String, String>>> =
         _inputPinPointState.flatMapConcat {
             flow {
                 emit(updatePinPoin(it.addressId, it.latitude, it.longitude))
@@ -304,11 +304,15 @@ class TokoFoodHomeViewModel @Inject constructor(
         )
     }
 
-    private suspend fun updatePinPoin(addressId: String, latitude: String, longitude: String): Result<Boolean> {
+    private suspend fun updatePinPoin(addressId: String, latitude: String, longitude: String): Result<Pair<String, String>> {
         val isSuccess = withContext(dispatchers.io) {
             keroEditAddressUseCase.execute(addressId, latitude, longitude)
         }
-        return Success(isSuccess)
+        return if (isSuccess) {
+            Success(Pair(latitude, longitude))
+        } else {
+            Success(Pair("", ""))
+        }
     }
 
     private suspend fun getHomeLayout(localCacheModel: LocalCacheModel): Result<TokoFoodListUiModel> {
