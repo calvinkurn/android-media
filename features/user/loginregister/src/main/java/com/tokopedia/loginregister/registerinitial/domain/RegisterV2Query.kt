@@ -2,16 +2,16 @@ package com.tokopedia.loginregister.registerinitial.domain
 
 object RegisterV2Query {
     val registerQuery: String = """
-        mutation register(${'$'}reg_type: String!, ${'$'}fullname: String!, ${'$'}email: String!, ${'$'}password: String!, ${'$'}os_type: String!, ${'$'}validate_token: String!, ${'$'}h: String!) {
+        mutation register(${'$'}reg_type: String!, ${'$'}fullname: String!, ${'$'}email: String!, ${'$'}password: String!, ${'$'}os_type: String!, ${'$'}validate_token: String!, ${'$'}h: String!, ${'$'}goto_verification_token: String!) {
             register_v2(input: {
                 reg_type: ${'$'}reg_type
                 fullname: ${'$'}fullname
                 email   : ${'$'}email
                 password: ${'$'}password
                 os_type : ${'$'}os_type
-                goto_verification_token : ${'$'}goto_verification_token
                 validate_token: ${'$'}validate_token
                 h:${'$'}h
+                goto_verification_token:${'$'}goto_verification_token
             }) {
                 user_id
                 sid

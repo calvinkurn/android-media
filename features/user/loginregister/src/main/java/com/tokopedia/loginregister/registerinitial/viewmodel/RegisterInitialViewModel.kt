@@ -224,9 +224,9 @@ class RegisterInitialViewModel @Inject constructor(
         isScpToken: Boolean
     ): MutableMap<String, String> {
         val keyToken = if (isScpToken) {
-            RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN
-        } else {
             RegisterInitialQueryConstant.PARAM_GOTO_VERIFICATION_TOKEN
+        } else {
+            RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN
         }
 
         return mutableMapOf(

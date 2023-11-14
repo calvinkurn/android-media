@@ -1,13 +1,16 @@
 package com.tokopedia.applink.user
 
+import android.net.Uri
 import android.util.Log
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
@@ -19,6 +22,7 @@ object DeeplinkMapperUser {
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
     const val ROLLENCE_GOTO_LOGIN = "scp_goto_login_and"
     const val ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE = "android_fundinvest"
+    private val WHITELISTED_SCP_OTP_TYPE = listOf<Int>(126, 116)
 
     fun getRegisteredNavigationUser(deeplink: String): String {
         Log.d("DeeplinkMapperUser", "deeplink mapper $deeplink")
@@ -41,7 +45,7 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.REGISTER -> getRegisterApplink()
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             deeplink.startsWith(ApplinkConst.GOTO_KYC_WEBVIEW) -> ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
-            deeplink == ApplinkConst.OTP || deeplink.startsWith(ApplinkConstInternalUserPlatform.COTP) -> getOtpApplink()
+            deeplink == ApplinkConst.OTP || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.COTP) -> getOtpApplink(deeplink)
             else -> deeplink
         }
     }
@@ -62,17 +66,27 @@ object DeeplinkMapperUser {
         }
     }
 
-    private fun getOtpApplink(): String {
-        return if (isGotoVerificationEnabled()) {
-            Log.d("ScpVerificationActivity", "deeplink mapper user")
+    private fun getOtpApplink(deeplink: String): String {
+        val uriMap = UriUtil.uriQueryParamsToMap(Uri.parse(deeplink))
+        val otpType = (uriMap[ApplinkConstInternalUserPlatform.PARAM_OTP_TYPE] ?: "-1").toIntSafely()
+        Log.d("DeeplinkMapperUser", "otp type $otpType")
+        return if (isGotoVerificationEnabled(otpType)) {
             ApplinkConstInternalUserPlatform.SCP_OTP
         } else {
             ApplinkConstInternalUserPlatform.COTP
         }
     }
 
-    private fun isGotoVerificationEnabled(): Boolean {
+    private fun isGotoVerificationEnabled(otpType: Int): Boolean {
+        return isRollenceGotoVerificationEnabled() && isOtpTypeWhitelisted(otpType)
+    }
+
+    private fun isRollenceGotoVerificationEnabled(): Boolean {
         return true
+    }
+
+    private fun isOtpTypeWhitelisted(otpType: Int): Boolean {
+        return WHITELISTED_SCP_OTP_TYPE.contains(otpType)
     }
 
     private fun getProfileApplink(): String {

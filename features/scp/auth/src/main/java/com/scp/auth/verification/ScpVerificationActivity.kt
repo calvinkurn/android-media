@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import com.scp.auth.common.utils.ScpConstants
 import com.scp.auth.di.DaggerScpAuthComponent
+import com.scp.verification.core.data.network.entities.CVError
 import com.scp.verification.core.domain.common.entities.VerificationCredential
 import com.scp.verification.core.domain.common.entities.VerificationData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -76,9 +78,11 @@ class ScpVerificationActivity : BaseActivity() {
                     setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
                     finish()
                 },
-                onFailed = {
-                    Toast.makeText(this, "Terjadi Kesalahan", Toast.LENGTH_LONG).show()
-                    finish()
+                onFailed = { error ->
+                    if ((error is CVError.UserCancelled).not()) {
+                        Toast.makeText(this, "Terjadi Kesalahan $error ${error.message}", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
                 }
             )
         }
@@ -96,7 +100,7 @@ class ScpVerificationActivity : BaseActivity() {
             VerificationCredential.Token(userSession.accessToken)
         } else if (credential.phone.isNotEmpty()) {
             VerificationCredential.PhoneNumber(
-                countryCode = "",
+                countryCode = "+62",
                 number = credential.phone
             )
         } else {
@@ -106,7 +110,11 @@ class ScpVerificationActivity : BaseActivity() {
 
     private fun flowFactory(otpType: Int): VerificationFlowType {
         return when (otpType) {
-            otpType -> VerificationFlowType.REGISTER_EMAIL
+            ScpConstants.OtpType.REGISTER_EMAIL -> VerificationFlowType.REGISTER_EMAIL
+            ScpConstants.OtpType.REGISTER_PHONE_NUMBER -> VerificationFlowType.REGISTER_PHONE
+            ScpConstants.OtpType.INACTIVE_PHONE_VERIFY_EMAIL,
+            ScpConstants.OtpType.INACTIVE_PHONE_VERIFY_PIN,
+            ScpConstants.OtpType.INACTIVE_PHONE_VERIFY_NEW_PHONE -> VerificationFlowType.SQCP
             else -> VerificationFlowType.REGISTER_EMAIL
         }
     }
