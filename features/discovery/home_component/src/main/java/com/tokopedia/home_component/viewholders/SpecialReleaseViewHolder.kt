@@ -39,6 +39,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import com.tokopedia.home_component.R as home_componentR
 
 class SpecialReleaseViewHolder(
     itemView: View,
@@ -96,7 +97,7 @@ class SpecialReleaseViewHolder(
                 itemView.context
             ) || isUsingPadding
         ) {
-            val specialReleaseRvPaddingStyleBottom = itemView.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.special_release_rv_padding_style_bottom)
+            val specialReleaseRvPaddingStyleBottom = itemView.resources.getDimensionPixelSize(home_componentR.dimen.special_release_rv_padding_style_bottom)
             binding?.homeComponentSpecialReleaseRv?.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.special_release_padding_card_compat_padding).toFloat()
             binding?.homeComponentSpecialReleaseRv?.setPadding(
                 Int.ZERO,
@@ -106,7 +107,7 @@ class SpecialReleaseViewHolder(
             )
             binding?.background?.gone()
         } else {
-            val specialReleaseRvPadding = itemView.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.special_release_rv_padding)
+            val specialReleaseRvPadding = itemView.resources.getDimensionPixelSize(home_componentR.dimen.special_release_rv_padding)
             binding?.homeComponentSpecialReleaseRv?.translationY = Float.ZERO
             binding?.homeComponentSpecialReleaseRv?.setPadding(
                 Int.ZERO,

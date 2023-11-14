@@ -25,6 +25,7 @@
         android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_goneMarginTop="@dimen/home_component_padding_top_default"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -43,13 +44,13 @@
             android:id="@+id/recycleList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:translationY="-5dp"
+            android:translationY="@dimen/home_component_card_compat_padding_translation_y"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/list_carousel_banner_header"
-            android:paddingBottom="11dp"/>
+            android:paddingBottom="@dimen/home_component_padding_bottom_with_compat_padding_translated"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/list_carousel_banner_header"
@@ -68,8 +69,8 @@
                 android:id="@+id/list_carousel_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/home_component_margin_default"
-                android:layout_marginLeft="@dimen/home_component_margin_default"
+                android:layout_marginStart="@dimen/home_component_padding_horizontal_default"
+                android:layout_marginLeft="@dimen/home_component_padding_horizontal_default"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 app:layout_constraintEnd_toStartOf="@+id/buy_again_close_image_view"
@@ -83,8 +84,8 @@
                 android:id="@+id/list_carousel_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/home_component_margin_default"
-                android:layout_marginLeft="@dimen/home_component_margin_default"
+                android:layout_marginStart="@dimen/home_component_padding_horizontal_default"
+                android:layout_marginLeft="@dimen/home_component_padding_horizontal_default"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:ellipsize="end"
@@ -101,8 +102,8 @@
                 android:id="@+id/buy_again_close_image_view"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginEnd="@dimen/home_component_margin_default"
-                android:layout_marginRight="@dimen/home_component_margin_default"
+                android:layout_marginEnd="@dimen/home_component_padding_horizontal_default"
+                android:layout_marginRight="@dimen/home_component_padding_horizontal_default"
                 app:srcCompat="@drawable/recommendation_list_carousel_ic_close_24"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>

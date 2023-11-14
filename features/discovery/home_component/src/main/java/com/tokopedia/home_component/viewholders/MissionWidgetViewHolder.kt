@@ -6,7 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.R
+import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.databinding.GlobalComponentMissionWidgetBinding
 import com.tokopedia.home_component.decoration.MissionWidgetCardItemDecoration
 import com.tokopedia.home_component.decoration.MissionWidgetClearItemDecoration
@@ -35,7 +35,7 @@ class MissionWidgetViewHolder(
 ) : AbstractViewHolder<MissionWidgetListDataModel>(itemView) {
 
     companion object {
-        val LAYOUT = R.layout.global_component_mission_widget
+        val LAYOUT = home_componentR.layout.global_component_mission_widget
         private const val PADDING_BOTTOM_CARD = 13
         private const val PADDING_BOTTOM_CLEAR = 4
     }
@@ -91,7 +91,10 @@ class MissionWidgetViewHolder(
             val itemDecoration = if(type == MissionWidgetListDataModel.Type.CLEAR)
                 MissionWidgetClearItemDecoration()
             else MissionWidgetCardItemDecoration()
+            val translationY = if(type == MissionWidgetListDataModel.Type.CLEAR) 0
+            else itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_component_card_compat_padding_translation_y)
             binding?.homeComponentMissionWidgetRcv?.addItemDecoration(itemDecoration)
+            binding?.homeComponentMissionWidgetRcv?.translationY = translationY.toFloat()
         }
     }
 
