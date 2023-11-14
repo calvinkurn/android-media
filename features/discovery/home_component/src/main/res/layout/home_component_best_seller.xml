@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:pagingPaddingHorizontal="8dp"
-        android:paddingBottom="20dp"
+        android:paddingBottom="@dimen/home_component_padding_bottom_default"
         app:layout_constraintTop_toBottomOf="@id/home_component_best_seller_chips_recycler_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
