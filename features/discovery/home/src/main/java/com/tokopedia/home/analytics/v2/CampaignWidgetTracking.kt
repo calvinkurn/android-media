@@ -115,4 +115,5 @@ object CampaignWidgetTracking : BaseTrackerConst() {
             .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
         return trackingBuilder.build()
     }
+
 }

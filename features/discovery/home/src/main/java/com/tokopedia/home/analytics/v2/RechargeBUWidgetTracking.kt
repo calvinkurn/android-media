@@ -51,18 +51,16 @@ object RechargeBUWidgetTracking : BaseTracking() {
             )
         }
 
-        trackingQueue.putEETracking(
-            getBasicPromotionView(
-                Event.PROMO_VIEW,
-                RECHARGE_BU_WIDGET_EVENT_CATEGORY,
-                Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"),
-                "${data.channel.id} - ${getHeaderName(data.channel)}",
-                promotions,
-                userId,
-                currentSite = RECHARGE_BU_WIDGET_CURRENT_SITE,
-                businessUnit = RECHARGE_BU_WIDGET_BUSINESS_UNIT
-            ) as? HashMap<String, Any>
-        )
+        trackingQueue.putEETracking(getBasicPromotionView(
+            Event.PROMO_VIEW,
+            RECHARGE_BU_WIDGET_EVENT_CATEGORY,
+            Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"),
+            "${data.channel.id} - ${getHeaderName(data.channel)}",
+            promotions,
+            userId,
+            currentSite = RECHARGE_BU_WIDGET_CURRENT_SITE,
+            businessUnit = RECHARGE_BU_WIDGET_BUSINESS_UNIT
+        ) as? HashMap<String, Any>)
     }
 
     fun homeRechargeBUWidgetProductCardClickTracker(

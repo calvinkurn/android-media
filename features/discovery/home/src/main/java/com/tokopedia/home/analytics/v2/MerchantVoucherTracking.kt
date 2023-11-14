@@ -115,7 +115,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
     fun getClickViewAllCard(headerName: String, userId: String, campaignCode: String): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
-        bundle.putString(Action.KEY, CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VIEW_ALL_CARD))
+        bundle.putString(Action.KEY, CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VIEW_ALL_CARD) )
         bundle.putString(Category.KEY, Category.HOMEPAGE)
         bundle.putString(Label.KEY, headerName)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
@@ -129,7 +129,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
     fun getClickViewAll(headerName: String, userId: String, campaignCode: String): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
-        bundle.putString(Action.KEY, CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VIEW_ALL))
+        bundle.putString(Action.KEY, CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VIEW_ALL) )
         bundle.putString(Category.KEY, Category.HOMEPAGE)
         bundle.putString(Label.KEY, headerName)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
@@ -140,7 +140,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         return Pair(Event.CLICK_HOMEPAGE, bundle)
     }
 
-    fun getMerchantVoucherView(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int): Map<String, Any> {
+    fun getMerchantVoucherView(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) : Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         val creativeName = CustomAction.CREATIVE_NAME_VIEW_COUPON_FORMAT.format(
             CustomAction.DEFAULT_VALUE,
@@ -169,8 +169,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.VIEW_COUPON),
             eventLabel = Label.NONE,
-            promotions = listPromotions
-        )
+            promotions = listPromotions)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendUserId(element.userId)

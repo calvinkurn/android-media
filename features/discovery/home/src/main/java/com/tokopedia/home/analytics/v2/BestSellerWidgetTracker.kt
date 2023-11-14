@@ -11,13 +11,13 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
-import com.tokopedia.track.constant.TrackerConstant.TRACKER_ID
 import com.tokopedia.home_component.visitable.BestSellerDataModel as BestSellerRevampDataModel
+import com.tokopedia.track.constant.TrackerConstant.TRACKER_ID
 
 /**
  * Created by Lukas on 09/11/20.
  */
-object BestSellerWidgetTracker : BaseTracking() {
+object BestSellerWidgetTracker : BaseTracking(){
     private const val IMPRESSION_ON_PRODUCT = "impression on product %s"
     private const val CLICK_ON_PRODUCT = "click on product %s"
     private const val BEST_SELLER = "dynamic channel best seller"
@@ -26,7 +26,7 @@ object BestSellerWidgetTracker : BaseTracking() {
 
     private const val CAROUSEL = "carousel"
 
-    // list:"/ - p{x} - dynamic channel best seller - product - {topads/non topads} - {carousel/non carousel} - {recommendation_type} - {recomm_page_name}|{chips_filter_group}|{recomm_model_source} - {header name}"
+    //list:"/ - p{x} - dynamic channel best seller - product - {topads/non topads} - {carousel/non carousel} - {recommendation_type} - {recomm_page_name}|{chips_filter_group}|{recomm_model_source} - {header name}"
     private const val LIST_BEST_SELLER = "/ - p%s - dynamic channel best seller - product - %s - %s - %s - %s|%s|%s - %s"
     private const val IMPRESSION_FILTER_BEST_SELLER = "impression chips filter on dynamic channel best seller"
     private const val CLICK_FILTER_BEST_SELLER = "click chips filter on dynamic channel best seller"
@@ -66,7 +66,7 @@ object BestSellerWidgetTracker : BaseTracking() {
             list = getCustomListBestSellerString(
                 bestSellerProductDataModel,
                 position,
-                bestSellerDataModel
+                bestSellerDataModel,
             ),
             buildCustomList = buildCustomListBestSeller(position, bestSellerDataModel),
             products = listOf(
@@ -74,7 +74,7 @@ object BestSellerWidgetTracker : BaseTracking() {
                     bestSellerProductDataModel,
                     bestSellerDataModel.id,
                     bestSellerDataModel.title,
-                    bestSellerDataModel.pageName
+                    bestSellerDataModel.pageName,
                 )
             )
         )
@@ -136,7 +136,7 @@ object BestSellerWidgetTracker : BaseTracking() {
     private fun getCustomListBestSellerString(
         bestSellerProductDataModel: BestSellerProductDataModel,
         position: Int,
-        bestSellerDataModel: BestSellerRevampDataModel
+        bestSellerDataModel: BestSellerRevampDataModel,
     ): String {
         return String.format(
             LIST_BEST_SELLER,
@@ -177,7 +177,7 @@ object BestSellerWidgetTracker : BaseTracking() {
         bestSellerProductDataModel: BestSellerProductDataModel,
         bestSellerDataModel: BestSellerRevampDataModel,
         userId: String,
-        position: Int
+        position: Int,
     ) {
         val bestSellerId = bestSellerDataModel.id
         val bestSellerTitle = bestSellerDataModel.title
@@ -234,7 +234,7 @@ object BestSellerWidgetTracker : BaseTracking() {
         position: Int,
         ncpRank: Int,
         totalFilterCount: Int,
-        chipsValue: String
+        chipsValue: String,
     ): Map<String, Any> {
         return DataLayer.mapOf(
             Event.KEY, Event.PROMO_VIEW,
@@ -245,39 +245,30 @@ object BestSellerWidgetTracker : BaseTracking() {
             CurrentSite.KEY, CurrentSite.DEFAULT,
             UserId.KEY, userId,
             TRACKER_ID, TRACKER_ID_CHIPS_FILTER_IMPRESSION,
-            ECOMMERCE,
-            DataLayer.mapOf(
-                PROMO_VIEW,
-                DataLayer.mapOf(
-                    PROMOTIONS,
-                    DataLayer.listOf(
-                        filterChipsAsObjectDataLayer(
-                            listOf(
-                                channelId,
-                                categoryId,
-                                headerName,
-                                position,
-                                ncpRank,
-                                totalFilterCount,
-                                chipsValue
-                            ).joinToString(" - ")
-                        )
+            ECOMMERCE, DataLayer.mapOf(
+                PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(
+                    filterChipsAsObjectDataLayer(
+                        listOf(
+                            channelId,
+                            categoryId,
+                            headerName,
+                            position,
+                            ncpRank,
+                            totalFilterCount,
+                            chipsValue
+                        ).joinToString(" - ")
                     )
-                )
+                ))
             )
         )
     }
 
     private fun filterChipsAsObjectDataLayer(creativeName: String): Any =
         DataLayer.mapOf(
-            "creative_name",
-            creativeName,
-            "id",
-            "null",
-            "name",
-            "null",
-            "creative_slot",
-            "null"
+            "creative_name", creativeName,
+            "id", "null",
+            "name", "null",
+            "creative_slot", "null"
         )
 
     fun sendFilterClickTracker(
@@ -286,7 +277,7 @@ object BestSellerWidgetTracker : BaseTracking() {
         headerName: String,
         position: Int,
         ncpRank: Int,
-        chipsValue: String
+        chipsValue: String,
     ) {
         val creativeName = listOf(
             channelId,
@@ -294,7 +285,7 @@ object BestSellerWidgetTracker : BaseTracking() {
             headerName,
             position,
             ncpRank,
-            chipsValue
+            chipsValue,
         ).joinToString(" - ")
 
         getTracker().sendEnhanceEcommerceEvent(
@@ -303,12 +294,9 @@ object BestSellerWidgetTracker : BaseTracking() {
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, CLICK_FILTER_BEST_SELLER,
                 Label.KEY, creativeName,
-                ECOMMERCE,
-                DataLayer.mapOf(
-                    PROMO_CLICK,
-                    DataLayer.mapOf(
-                        PROMOTIONS,
-                        DataLayer.listOf(filterChipsAsObjectDataLayer(creativeName))
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMO_CLICK, DataLayer.mapOf(
+                        PROMOTIONS, DataLayer.listOf(filterChipsAsObjectDataLayer(creativeName))
                     )
                 )
             )
@@ -343,7 +331,7 @@ object BestSellerWidgetTracker : BaseTracking() {
         getTracker().sendGeneralEvent(tracker)
     }
 
-    private fun mapToProductTracking(recommendationItem: RecommendationItem, channelId: String, headerName: String, pageName: String): BaseTrackerConst.Product {
+    private fun mapToProductTracking(recommendationItem: RecommendationItem, channelId: String, headerName: String, pageName: String): BaseTrackerConst.Product{
         return BaseTrackerConst.Product(
             id = recommendationItem.productId.toString(),
             name = recommendationItem.name,
@@ -364,6 +352,7 @@ object BestSellerWidgetTracker : BaseTracking() {
             warehouseId = recommendationItem.warehouseId.toString(),
             isFulfillment = recommendationItem.labelGroupList.hasLabelGroupFulfillment()
         )
+
     }
 
     private fun mapToProductTracking(
@@ -371,7 +360,7 @@ object BestSellerWidgetTracker : BaseTracking() {
         channelId: String,
         headerName: String,
         pageName: String
-    ): BaseTrackerConst.Product {
+    ): BaseTrackerConst.Product{
         return BaseTrackerConst.Product(
             id = bestSellerProductDataModel.productId,
             name = bestSellerProductDataModel.name,

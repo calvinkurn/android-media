@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -70,7 +71,13 @@ class HomeBannerFeedViewHolder(
     private fun setBannerImageUrl(
         imageUrl: String
     ) {
-        binding.bannerImageView.loadImage(imageUrl)
+        Glide.with(binding.root.context)
+            .asBitmap()
+            .load(imageUrl)
+            .dontAnimate()
+            .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+            .error(R.drawable.error_drawable)
+            .into(binding.bannerImageView)
     }
 
     companion object {

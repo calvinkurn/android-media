@@ -26,10 +26,10 @@ object FeaturedShopTracking : BaseTracking() {
             eventLabel = "",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
-                    id = channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId,
+                    id = channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
                     name = PROMOTION_NAME_SHOP.format(widgetPosition, DYNAMIC_CHANNEL_SHOP, channelModel.channelHeader.name),
                     creative = channelGrid.shop.id + "-" + getShopType(channelGrid.shop),
-                    position = (position + 1).toString()
+                    position = (position+1).toString()
                 )
             )
         ).appendCurrentSite(CurrentSite.DEFAULT)
@@ -47,10 +47,10 @@ object FeaturedShopTracking : BaseTracking() {
         eventLabel = Value.FORMAT_2_ITEMS_DASH.format(channelModel.id, channelModel.channelHeader.name),
         promotions = listOf(
             BaseTrackerConst.Promotion(
-                id = channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId,
+                id = channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
                 name = PROMOTION_NAME_SHOP.format(widgetPosition, DYNAMIC_CHANNEL_SHOP, channelModel.channelHeader.name),
                 creative = channelGrid.shop.id + "-" + getShopType(channelGrid.shop),
-                position = (position + 1).toString()
+                position = (position+1).toString()
             )
         )
     )
@@ -83,7 +83,8 @@ object FeaturedShopTracking : BaseTracking() {
         getTracker().sendGeneralEvent(getFeaturedBackgroundBannerClick(channelModel.channelHeader.name, channelId, userId))
     }
 
-    private fun getFeaturedViewAllClick(headerName: String, channelId: String, userId: String) = DataLayer.mapOf(
+
+    private fun getFeaturedViewAllClick(headerName: String, channelId: String, userId: String) =  DataLayer.mapOf(
         Event.KEY, Event.CLICK_HOMEPAGE,
         Category.KEY, Category.HOMEPAGE,
         Action.KEY, CLICK_VIEW_ALL_ON_FEATURED_SHOP,
@@ -95,7 +96,7 @@ object FeaturedShopTracking : BaseTracking() {
         BusinessUnit.KEY, BusinessUnit.DEFAULT
     ) as HashMap<String, Any>
 
-    private fun getFeaturedViewAllCardClick(headerName: String, channelId: String, userId: String) = DataLayer.mapOf(
+    private fun getFeaturedViewAllCardClick(headerName: String, channelId: String, userId: String) =  DataLayer.mapOf(
         Event.KEY, Event.CLICK_HOMEPAGE,
         Category.KEY, Category.HOMEPAGE,
         Action.KEY, CLICK_VIEW_ALL_CARD_ON_FEATURED_SHOP,
@@ -107,7 +108,7 @@ object FeaturedShopTracking : BaseTracking() {
         BusinessUnit.KEY, BusinessUnit.DEFAULT
     ) as HashMap<String, Any>
 
-    private fun getFeaturedBackgroundBannerClick(headerName: String, channelId: String, userId: String) = DataLayer.mapOf(
+    private fun getFeaturedBackgroundBannerClick(headerName: String, channelId: String, userId: String) =  DataLayer.mapOf(
         Event.KEY, Event.CLICK_HOMEPAGE,
         Category.KEY, Category.HOMEPAGE,
         Action.KEY, CLICK_BACKGROUND_ON_FEATURED_SHOP,
@@ -119,13 +120,9 @@ object FeaturedShopTracking : BaseTracking() {
         BusinessUnit.KEY, BusinessUnit.DEFAULT
     ) as HashMap<String, Any>
 
-    private fun getShopType(shop: ChannelShop): String {
-        return if (shop.isGoldMerchant) {
-            "gold"
-        } else if (shop.isOfficialStore) {
-            "os"
-        } else {
-            "pm"
-        }
+    private fun getShopType(shop: ChannelShop): String{
+        return if (shop.isGoldMerchant) "gold"
+        else if (shop.isOfficialStore) "os"
+        else "pm"
     }
 }

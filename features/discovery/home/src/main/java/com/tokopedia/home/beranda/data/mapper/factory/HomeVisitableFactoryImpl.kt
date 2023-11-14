@@ -331,7 +331,7 @@ class HomeVisitableFactoryImpl(
                                             TodoWidgetListDataModel(
                                                 status = TodoWidgetListDataModel.STATUS_LOADING,
                                                 showShimmering = data.isShimmer,
-                                                source = TodoWidgetListDataModel.SOURCE_ATF
+                                                source = TodoWidgetListDataModel.SOURCE_ATF,
                                             )
                                         )
                                     },
@@ -341,7 +341,7 @@ class HomeVisitableFactoryImpl(
                                             data.id,
                                             data.param,
                                             index,
-                                            data.isShimmer
+                                            data.isShimmer,
                                         )
                                     }
                                 )
@@ -364,7 +364,7 @@ class HomeVisitableFactoryImpl(
                                             data,
                                             data.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>(),
                                             index,
-                                            isCache
+                                            isCache,
                                         )
                                     }
                                 )
@@ -448,10 +448,10 @@ class HomeVisitableFactoryImpl(
         id: Int,
         param: String,
         index: Int,
-        isShimmer: Boolean
+        isShimmer: Boolean,
     ) {
         data?.let {
-            val todo = if (!isCache) {
+            val todo = if(!isCache) {
                 TodoWidgetListDataModel(
                     id = id.toString(),
                     todoWidgetList = LazyLoadDataMapper.mapTodoWidgetData(it.todos),
@@ -461,24 +461,25 @@ class HomeVisitableFactoryImpl(
                     verticalPosition = index,
                     status = TodoWidgetListDataModel.STATUS_SUCCESS,
                     showShimmering = isShimmer,
-                    source = TodoWidgetListDataModel.SOURCE_ATF
+                    source = TodoWidgetListDataModel.SOURCE_ATF,
                 )
             } else {
                 TodoWidgetListDataModel(
                     status = TodoWidgetListDataModel.STATUS_LOADING,
                     showShimmering = isShimmer,
-                    source = TodoWidgetListDataModel.SOURCE_ATF
+                    source = TodoWidgetListDataModel.SOURCE_ATF,
                 )
             }
             visitableList.add(todo)
         }
+
     }
 
     private fun addMissionWidgetData(
         atfData: AtfData,
         data: HomeMissionWidgetData.GetHomeMissionWidget?,
         index: Int,
-        isCache: Boolean
+        isCache: Boolean,
     ) {
         data?.let {
             val mission = MissionWidgetListDataModel(

@@ -7,7 +7,7 @@ import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
-object ShopFlashSaleTracking : BaseTrackerConst() {
+object ShopFlashSaleTracking: BaseTrackerConst() {
     private const val LIST_FORMAT = "/ - p%s - dynamic channel flash sale toko home - product - %s - carousel - %s - %s - %s - %s"
     private const val EVENT_ACTION_PRODUCT_IMPRESSION = "impression on product dynamic channel flash sale toko home"
     private const val EVENT_ACTION_PRODUCT_CLICK = "click on product dynamic channel flash sale toko home"
@@ -68,8 +68,7 @@ object ShopFlashSaleTracking : BaseTrackerConst() {
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendUserId(userId)
-            .appendCustomKeyValue(
-                TrackerId.KEY,
+            .appendCustomKeyValue(TrackerId.KEY,
                 TRACKER_ID_PRODUCT_IMPRESSION
             )
             .build() as HashMap<String, Any>
@@ -118,8 +117,7 @@ object ShopFlashSaleTracking : BaseTrackerConst() {
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendUserId(userId)
-            .appendCustomKeyValue(
-                TrackerId.KEY,
+            .appendCustomKeyValue(TrackerId.KEY,
                 TRACKER_ID_PRODUCT_CLICK
             )
             .build()
