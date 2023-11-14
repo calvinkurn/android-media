@@ -48,7 +48,7 @@ class PlayWidgetQueryParamBuilder {
                     appendLine("${'$'}$PARAM_IS_DYNAMIC_VIDEO: Boolean")
                 }
                 else -> {
-                    //do nothing with other widget type
+                    // do nothing with other widget type
                 }
             }
         }
@@ -59,27 +59,27 @@ class PlayWidgetQueryParamBuilder {
             appendLine("playGetWidgetV2(")
             appendLine("req: {")
 
-            appendLine("${PARAM_WIDGET_TYPE}:${'$'}${PARAM_WIDGET_TYPE},")
-            appendLine("${PARAM_AUTHOR_ID}: ${'$'}${PARAM_AUTHOR_ID},")
-            appendLine("${PARAM_AUTHOR_TYPE}: ${'$'}${PARAM_AUTHOR_TYPE},")
-            append("${PARAM_IS_WIFI}: ${'$'}${PARAM_IS_WIFI}")
+            appendLine("$PARAM_WIDGET_TYPE:${'$'}$PARAM_WIDGET_TYPE,")
+            appendLine("$PARAM_AUTHOR_ID: ${'$'}$PARAM_AUTHOR_ID,")
+            appendLine("$PARAM_AUTHOR_TYPE: ${'$'}$PARAM_AUTHOR_TYPE,")
+            append("$PARAM_IS_WIFI: ${'$'}$PARAM_IS_WIFI")
 
             when (widgetType) {
                 is PlayWidgetUseCase.WidgetType.PDPWidget -> {
                     appendLine(",")
-                    appendLine("${PARAM_PRODUCT_ID}: ${'$'}${PARAM_PRODUCT_ID},")
-                    appendLine("${PARAM_CATEGORY_ID}: ${'$'}${PARAM_CATEGORY_ID}")
+                    appendLine("$PARAM_PRODUCT_ID: ${'$'}$PARAM_PRODUCT_ID,")
+                    appendLine("$PARAM_CATEGORY_ID: ${'$'}$PARAM_CATEGORY_ID")
                 }
                 is PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch -> {
                     appendLine(",")
-                    appendLine("${PARAM_CAMPAIGN_ID}: ${'$'}${PARAM_CAMPAIGN_ID}")
+                    appendLine("$PARAM_CAMPAIGN_ID: ${'$'}$PARAM_CAMPAIGN_ID")
                 }
                 is PlayWidgetUseCase.WidgetType.DiscoveryPage, is PlayWidgetUseCase.WidgetType.DiscoveryPageV2 -> {
                     appendLine(",")
-                    appendLine("${PARAM_IS_DYNAMIC_VIDEO}: ${'$'}${PARAM_IS_DYNAMIC_VIDEO}")
+                    appendLine("$PARAM_IS_DYNAMIC_VIDEO: ${'$'}$PARAM_IS_DYNAMIC_VIDEO")
                 }
                 else -> {
-                    //do nothing with other widget type
+                    // do nothing with other widget type
                 }
             }
 
@@ -91,11 +91,11 @@ class PlayWidgetQueryParamBuilder {
         return buildString {
             append(queryName)
             append("(")
-                append(paramField)
+            append(paramField)
             append(")")
             append("{")
-                append(paramRequest)
-                append(body)
+            append(paramRequest)
+            append(body)
             append("}")
         }
     }
