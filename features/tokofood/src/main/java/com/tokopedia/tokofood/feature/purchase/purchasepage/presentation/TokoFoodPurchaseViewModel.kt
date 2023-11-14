@@ -213,20 +213,20 @@ open class TokoFoodPurchaseViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            if (_isAddressHasPinpoint.value.second) {
-                _uiEvent.value = PurchaseUiEvent(
-                    state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE,
-                    throwable = it
-                )
-                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
-                    isLastLoadStateSuccess = false,
-                    shopName = "",
-                    shopLocation = ""
-                )
-            } else {
-                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
-            }
-        })
+                if (_isAddressHasPinpoint.value.second) {
+                    _uiEvent.value = PurchaseUiEvent(
+                        state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE,
+                        throwable = it
+                    )
+                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
+                        isLastLoadStateSuccess = false,
+                        shopName = "",
+                        shopLocation = ""
+                    )
+                } else {
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
+                }
+            })
     }
 
     fun loadDataPartial() {
@@ -488,12 +488,12 @@ open class TokoFoodPurchaseViewModel @Inject constructor(
             } else {
                 launchCatchError(
                     block = {
-                        val isSuccess = withContext(dispatcher.io) {
+                        val result = withContext(dispatcher.io) {
                             keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
                         }
-                        if (isSuccess) {
+                        if (result.isSuccess == 1) {
                             _isAddressHasPinpoint.value = addressId to (latitude.isNotEmpty() && longitude.isNotEmpty())
-                            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT, data = Pair(latitude, longitude))
+                            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT, data = result)
                         } else {
                             _isAddressHasPinpoint.value = addressId to false
                             _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
@@ -566,13 +566,13 @@ open class TokoFoodPurchaseViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _uiEvent.value = PurchaseUiEvent(
-                state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET,
-                data = it.getGlobalErrorType(),
-                throwable = it
-            )
-            _isPaymentButtonLoading.emit(false)
-        })
+                _uiEvent.value = PurchaseUiEvent(
+                    state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET,
+                    data = it.getGlobalErrorType(),
+                    throwable = it
+                )
+                _isPaymentButtonLoading.emit(false)
+            })
     }
 
     fun setPaymentButtonLoading(isLoading: Boolean) {
