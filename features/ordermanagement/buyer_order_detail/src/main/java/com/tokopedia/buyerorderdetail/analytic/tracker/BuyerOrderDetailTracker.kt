@@ -480,4 +480,23 @@ object BuyerOrderDetailTracker {
             .appendUserId(userId)
             .sendGeneralEvent()
     }
+
+    fun sendClickChatButton(
+        orderStatus: String,
+        tokopediaOrderId: String,
+        gojekOrderId: String,
+        source: String,
+        counter: String
+    ) {
+        val eventLabel = "$orderStatus - $tokopediaOrderId - $gojekOrderId - $source - ${BuyerOrderDetailTrackerConstant.ROLE_BUYER} - $counter"
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_COMMUNICATION,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_PG_ORDER_DETAIL,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_CHAT,
+            eventLabel = eventLabel
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_COMMMUNICATION)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_48479)
+            .sendGeneralEvent()
+    }
 }

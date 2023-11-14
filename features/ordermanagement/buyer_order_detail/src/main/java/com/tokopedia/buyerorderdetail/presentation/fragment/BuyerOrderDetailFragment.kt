@@ -43,7 +43,7 @@ import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
-import com.tokopedia.buyerorderdetail.presentation.adapter.listener.ChatCounterListener
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.CourierButtonListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
@@ -126,7 +126,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
 
@@ -145,7 +144,7 @@ open class BuyerOrderDetailFragment :
     ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     OwocInfoViewHolder.Listener,
     BmgmSectionViewHolder.Listener,
-    ChatCounterListener {
+    CourierButtonListener {
 
     companion object {
         @JvmStatic
@@ -1106,10 +1105,26 @@ open class BuyerOrderDetailFragment :
         }
     }
 
-    override fun initGroupBooking(orderIdGojek: String, source: String) {
-        viewModel.initGroupBooking(orderIdGojek, source)
+    override fun initGroupBooking(gojekOrderId: String, source: String) {
+        viewModel.initGroupBooking(gojekOrderId, source)
     }
-    fun observeGroupBooking() {
+
+    override fun onChatButtonClicked(gojekOrderId: String, source: String, counter: String) {
+        val value = viewModel.buyerOrderDetailUiState.value
+        if (value is BuyerOrderDetailUiState.HasData) {
+            val orderStatus = value.orderStatusUiState.data.orderStatusHeaderUiModel.orderStatus
+            val tokopediaOrderId = viewModel.getOrderId()
+            BuyerOrderDetailTracker.sendClickChatButton(
+                orderStatus,
+                tokopediaOrderId,
+                gojekOrderId,
+                source,
+                counter
+            )
+        }
+    }
+
+    private fun observeGroupBooking() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getGroupBookingFlow().collectLatest {
@@ -1127,7 +1142,7 @@ open class BuyerOrderDetailFragment :
         }
     }
 
-    fun observeChatUnreadCounter() {
+    private fun observeChatUnreadCounter() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getUnreadCounterFlow().collectLatest {

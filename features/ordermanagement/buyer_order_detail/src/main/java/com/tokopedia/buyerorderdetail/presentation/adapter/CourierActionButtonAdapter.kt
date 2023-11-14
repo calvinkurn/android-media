@@ -9,7 +9,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailCourierDriverIconBinding
-import com.tokopedia.buyerorderdetail.presentation.adapter.listener.ChatCounterListener
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.CourierButtonListener
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,7 +19,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class CourierActionButtonAdapter(
     private val navigator: BuyerOrderDetailNavigator,
-    private val chatCounterListener: ChatCounterListener
+    private val courierButtonListener: CourierButtonListener
 ) : RecyclerView.Adapter<CourierActionButtonAdapter.ViewHolder>() {
 
     var driverActionButtonList: List<ShipmentInfoUiModel.CourierDriverInfoUiModel.Button> =
@@ -31,7 +31,7 @@ class CourierActionButtonAdapter(
     ): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_buyer_order_detail_courier_driver_icon, parent, false)
-        return ViewHolder(view, navigator, chatCounterListener)
+        return ViewHolder(view, navigator, courierButtonListener)
     }
 
     override fun getItemCount(): Int {
@@ -45,7 +45,7 @@ class CourierActionButtonAdapter(
     class ViewHolder(
         itemView: View,
         private val navigator: BuyerOrderDetailNavigator,
-        private val chatCounterListener: ChatCounterListener
+        private val courierButtonListener: CourierButtonListener
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val binding: ItemBuyerOrderDetailCourierDriverIconBinding? by viewBinding()
@@ -66,6 +66,9 @@ class CourierActionButtonAdapter(
                     when (it.actionValue) {
                         Action.URL.value -> {
                             navigator.openAppLink(it.value, shouldRefreshWhenBack = true)
+                            if (it.key == CHAT_DRIVER) {
+                                trackClickChatButton(button.value, button.counter)
+                            }
                         }
                         Action.ACTION.value -> {
                             if (it.key == CALL_DRIVER) {
@@ -85,8 +88,7 @@ class CourierActionButtonAdapter(
                     ApplinkConst.TokoChat.PARAM_SOURCE
                 )
                 if (queryParams.size >= 2) {
-                    // Should only result 1 value
-                    chatCounterListener.initGroupBooking(
+                    courierButtonListener.initGroupBooking(
                         queryParams[0],
                         queryParams[1]
                     )
@@ -132,7 +134,7 @@ class CourierActionButtonAdapter(
             }
         }
 
-        fun getStringCounter(counter: Int): String {
+        private fun getStringCounter(counter: Int): String {
             return when {
                 (counter < 1) -> ""
                 (counter > 99) -> "99+"
@@ -146,6 +148,21 @@ class CourierActionButtonAdapter(
                 gone()
             } else {
                 show()
+            }
+        }
+
+        private fun trackClickChatButton(applink: String, counter: Int) {
+            val queryParams = getQueryParamFromApplink(
+                applink,
+                ApplinkConst.TokoChat.ORDER_ID_GOJEK,
+                ApplinkConst.TokoChat.PARAM_SOURCE
+            )
+            if (queryParams.size >= 2) {
+                courierButtonListener.onChatButtonClicked(
+                    queryParams[0],
+                    queryParams[1],
+                    getStringCounter(counter)
+                )
             }
         }
 
