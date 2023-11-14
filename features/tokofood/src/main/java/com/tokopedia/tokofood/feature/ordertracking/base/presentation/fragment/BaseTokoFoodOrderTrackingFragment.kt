@@ -139,7 +139,6 @@ open class BaseTokoFoodOrderTrackingFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeViewModelLifecycle()
         setupToolbar()
         setupRvOrderTracking()
         fetchOrderDetail()
@@ -150,10 +149,6 @@ open class BaseTokoFoodOrderTrackingFragment :
         observeGroupBooking()
         observeUnreadChatCount()
         setDataArguments()
-    }
-
-    private fun observeViewModelLifecycle() {
-        lifecycle.addObserver(viewModel)
     }
 
     override fun onDestroy() {
@@ -168,7 +163,6 @@ open class BaseTokoFoodOrderTrackingFragment :
         delayAutoRefreshFinishOrderTempJob = null
         orderLiveTrackingFragment = null
         toolbarHandler = null
-        lifecycle.removeObserver(viewModel)
         super.onDestroy()
     }
 
