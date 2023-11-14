@@ -114,7 +114,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                     limit = 5,
                     page = 1,
                     filterBy = "topic=pelayanan",
-                    sortBy = "create_time desc"
+                    sortBy = "informative_score desc"
                 )
                 val shopReviewDeferred = async { getShopReviewUseCase.execute(shopReviewParam) }
 
