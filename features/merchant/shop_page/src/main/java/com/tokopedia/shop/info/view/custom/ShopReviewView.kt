@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.view.fragment.ReviewViewPagerItemFragment
-import com.tokopedia.shop_widget.customview.ProgressibleTabLayoutView
+import com.tokopedia.shop_widget.customview.ProgressibleTabIndicatorView
 import com.tokopedia.unifycomponents.toPx
 
 class ShopReviewView @JvmOverloads constructor(
@@ -55,7 +55,7 @@ class ShopReviewView @JvmOverloads constructor(
         review: ShopReview,
         fragment: Fragment,
         lifecycle: Lifecycle,
-        tabIndicator: ProgressibleTabLayoutView?
+        tabIndicator: ProgressibleTabIndicatorView?
     ) {
         val fragments = createFragments(review.reviews)
 
@@ -69,7 +69,7 @@ class ShopReviewView @JvmOverloads constructor(
         viewPager: ViewPager2,
         reviewCount: Int,
         lifecycle: Lifecycle,
-        tabIndicator: ProgressibleTabLayoutView?
+        tabIndicator: ProgressibleTabIndicatorView?
     ) {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -101,8 +101,8 @@ class ShopReviewView @JvmOverloads constructor(
         }
     }
 
-    private fun createTabIndicator(): ProgressibleTabLayoutView {
-        val tabIndicator = ProgressibleTabLayoutView(context).apply {
+    private fun createTabIndicator(): ProgressibleTabIndicatorView {
+        val tabIndicator = ProgressibleTabIndicatorView(context).apply {
             val params = LayoutParams(
                 LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT

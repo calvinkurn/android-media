@@ -18,7 +18,7 @@ import com.tokopedia.shop_widget.R
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.UnifyMotion
 
-class ProgressibleTabLayoutView @JvmOverloads constructor(
+class ProgressibleTabIndicatorView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
