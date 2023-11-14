@@ -159,7 +159,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 return
             }
 
-            checkShouldOverrideBackPress(currentUrl)
+            if (checkShouldOverrideBackPress(currentUrl)) return
         }
         if (f is BaseSessionWebViewFragment && f.webView.canGoBack()) {
             if (checkForSameUrlInPreviousIndex(f.webView)) {
@@ -189,7 +189,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         }
     }
 
-    private fun checkShouldOverrideBackPress(url: String?) {
+    private fun checkShouldOverrideBackPress(url: String?): Boolean {
         val shouldOverrideRc = FirebaseRemoteConfigImpl(this)
             .getBoolean(ENABLE_WEBVIEW_BACK_PRESSED, false)
 
@@ -198,9 +198,11 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
             if (query[OVERRIDE_NATIVE_BACK_PRESSED] == "true") {
                 (fragment as BaseSessionWebViewFragment).webView.loadUrl(JAVASCRIPT_HANDLE_POP)
-                return
+                return true
             }
         }
+
+        return false
     }
 
     private fun getBackUrlFromQueryParameters(): String? {
