@@ -25,13 +25,10 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr), DefaultLifecycleObserver {
 
-    private var onProgressFinish: (Int) -> Unit = {}
-
     private var expandProgressBarWidthAnimatorSet: AnimatorSet? = null
     private var progressAnimatorSet: AnimatorSet? = null
-
     private var config: Config? = null
-    private var selectedPosition = 0
+    private var onProgressFinish: () -> Unit = {}
 
     init {
         orientation = HORIZONTAL
@@ -61,16 +58,18 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
 
     fun initializeWithLifecycle(
         config: Config,
+        selectedPosition: Int,
         lifecycle: Lifecycle,
-        onProgressFinish: (Int) -> Unit
+        onProgressFinish: () -> Unit
     ) {
         lifecycle.addObserver(this)
-        initialize(config, onProgressFinish)
+        initialize(config, selectedPosition, onProgressFinish)
     }
 
     fun initialize(
         config: Config,
-        onProgressFinish: (Int) -> Unit
+        selectedPosition: Int,
+        onProgressFinish: () -> Unit
     ) {
         // Remove existing views before recreate new tab indicators
         removeAllViews()
@@ -82,24 +81,6 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
 
         for (currentIndex in 0 until config.tabIndicatorCount.orZero()) {
             val item = if (currentIndex == selectedPosition) {
-                createSelectedDot()
-            } else {
-                createUnselectedDot()
-            }
-            addView(item)
-        }
-
-        animateSelectedTabIndicator()
-    }
-
-    fun select(newPosition: Int) {
-        removeAllViews()
-
-        this.selectedPosition = newPosition
-        cancelAnimation()
-
-        for (currentIndex in Int.ZERO until config?.tabIndicatorCount.orZero()) {
-            val item = if (currentIndex == newPosition) {
                 createSelectedDot()
             } else {
                 createUnselectedDot()
@@ -147,7 +128,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
             val value = animation.animatedValue as Int
             progressBar.progress = value
             if (value == SELECTED_TAB_INDICATOR_MAX_PROGRESS) {
-                onProgressFinish(selectedPosition)
+                onProgressFinish()
             }
         }
 

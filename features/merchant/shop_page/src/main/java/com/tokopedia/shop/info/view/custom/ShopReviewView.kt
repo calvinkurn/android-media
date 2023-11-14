@@ -26,8 +26,6 @@ class ShopReviewView @JvmOverloads constructor(
     }
 
     companion object {
-        private const val COUNTDOWN_TIMER_TOTAL_TIME: Long = 5000
-        private const val COUNTDOWN_TIMER_INTERVAL: Long = 200
         private const val DOT_INDICATOR_MARGIN_TOP = 16
     }
 
@@ -73,37 +71,31 @@ class ShopReviewView @JvmOverloads constructor(
         lifecycle: Lifecycle,
         tabIndicator: ProgressibleTabLayoutView?
     ) {
-        val config = ProgressibleTabLayoutView.Config(
-            tabIndicatorCount = reviewCount,
-            tabIndicatorProgressDuration = 6000
-        )
-
-        val onProgressFinish = { currentItemPosition: Int ->
-            val isLastItem = currentItemPosition == reviewCount - Int.ONE
-            val nextItem = currentItemPosition + Int.ONE
-
-            if (isLastItem) {
-                viewPager.currentItem = Int.ZERO
-            } else {
-                viewPager.setCurrentItem(nextItem, true)
-            }
-        }
-
-        tabIndicator?.initializeWithLifecycle(
-            config = config,
-            lifecycle = lifecycle,
-            onProgressFinish = onProgressFinish
-        )
-
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                if (isSwipeFromUserInteraction) {
-                    tabIndicator?.select(newPosition = position)
-                }
+                val config = ProgressibleTabLayoutView.Config(
+                    tabIndicatorCount = reviewCount,
+                    tabIndicatorProgressDuration = 6000
+                )
 
-                isSwipeFromUserInteraction = true
+                tabIndicator?.initializeWithLifecycle(
+                    config = config,
+                    lifecycle = lifecycle,
+                    selectedPosition = position,
+                    onProgressFinish = {
+                        val currentItemPosition = viewPager.currentItem
+                        val isLastItem = currentItemPosition == reviewCount - Int.ONE
+                        val nextItem = currentItemPosition + Int.ONE
+
+                        if (isLastItem) {
+                            viewPager.currentItem = Int.ZERO
+                        } else {
+                            viewPager.setCurrentItem(nextItem, true)
+                        }
+                    }
+                )
             }
         })
     }
