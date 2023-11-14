@@ -84,6 +84,8 @@ class PlayWinnerBadgeInteractiveTest {
         coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data =
             listOf(modelBuilder.buildHeader(title = "Kucing apa hayo?", leaderBoardType = LeadeboardType.Giveaway)))
 
+        coEvery { interactiveRepo.getChannelStatus(any()) } returns modelBuilder.buildChannelStatus()
+
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
                 repo = interactiveRepo,

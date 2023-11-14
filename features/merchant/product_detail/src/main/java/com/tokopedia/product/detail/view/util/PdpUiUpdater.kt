@@ -17,11 +17,13 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirIma
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.bmgm.BMGMData
@@ -154,6 +156,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val shipmentV2Data: ProductShipmentDataModel?
         get() = mapOfData[ProductDetailConstant.SHIPMENT_V2] as? ProductShipmentDataModel
+
+    val shipmentV3: ShipmentUiModel?
+        get() = mapOfData[ProductDetailConstant.SHIPMENT_V3] as? ShipmentUiModel
 
     val mvcSummaryData: ProductMerchantVoucherSummaryDataModel?
         get() = mapOfData[ProductDetailConstant.MVC] as? ProductMerchantVoucherSummaryDataModel
@@ -1116,13 +1121,15 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateShipmentData(
-        data: P2RatesEstimateData?,
+        rates: P2RatesEstimate?,
         isFullfillment: Boolean,
         isCod: Boolean,
         freeOngkirData: BebasOngkirImage,
         userLocationLocalData: LocalCacheModel,
         shipmentPlus: ShipmentPlus?
     ) {
+        val data = rates?.p2RatesData
+
         // pair.first boType, pair.second boImage
         updateData(ProductDetailConstant.SHIPMENT) {
             shipmentData?.rates = data ?: P2RatesEstimateData()
@@ -1152,6 +1159,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     freeOngkirData.boType
                 )
             }
+        }
+
+        updateData(ProductDetailConstant.SHIPMENT_V3) {
+            shipmentV3?.setData(
+                rates = rates,
+                isCod = isCod,
+                boType = freeOngkirData.boType
+            )
         }
     }
 

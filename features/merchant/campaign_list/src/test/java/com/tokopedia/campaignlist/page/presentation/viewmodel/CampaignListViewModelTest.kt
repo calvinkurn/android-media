@@ -1035,8 +1035,8 @@ class CampaignListViewModelTest {
     @Test
     fun `When unlisted event is triggered, should not emit any effect`() {
         runBlockingTest {
-            // When
-            viewModel.onEvent(mockk())
+            //When
+            viewModel.onEvent(mockk(relaxed = true))
 
             val emittedEffects = arrayListOf<CampaignListViewModel.UiEffect>()
 

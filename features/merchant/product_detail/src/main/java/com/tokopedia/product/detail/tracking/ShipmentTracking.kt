@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.tracking
 
+import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.track.TrackApp
@@ -69,6 +70,30 @@ object ShipmentTracking {
 
     fun sendClickShipmentPlusBanner(
         trackerData: ShipmentPlusData.TrackerData,
+        common: CommonTracker?,
+        component: ComponentTrackDataModel?
+    ) {
+        if (component == null || common == null) return
+        val eventAction = "click - cross sell widget on pdp"
+        val mapEvent = hashMapOf<String, Any>(
+            "event" to "clickPG",
+            "eventAction" to eventAction,
+            "eventCategory" to "product detail page",
+            "eventLabel" to "plus_eligible:${trackerData.isPlus};",
+            "trackerId" to "43263",
+            "businessUnit" to "product detail page",
+            "component" to "comp:${component.componentName};temp:${component.componentType};elem:$eventAction;cpos:${component.adapterPosition};",
+            "currentSite" to "tokopediamarketplace",
+            "layout" to "layout:${common.layoutName};catName:${common.categoryName};catId:${common.categoryId};",
+            "productId" to common.productId,
+            "shopId" to common.shopId,
+            "userId" to common.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    fun sendClickShipmentPlusBanner(
+        trackerData: ShipmentUiModel.ShipmentPlusData.TrackerData,
         common: CommonTracker?,
         component: ComponentTrackDataModel?
     ) {

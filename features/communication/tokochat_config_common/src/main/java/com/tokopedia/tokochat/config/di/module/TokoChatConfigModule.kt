@@ -6,13 +6,10 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
-import com.tokopedia.tokochat.config.util.TokoChatCoroutineDispatchers
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
 
 @Module
@@ -41,16 +38,5 @@ object TokoChatConfigModule {
         @TokoChatQualifier remoteConfig: RemoteConfig
     ): TokoChatRepository {
         return TokoChatRepository(retrofit, context, babbleCourierClient, remoteConfig)
-    }
-
-    @Provides
-    @TokoChatQualifier
-    fun provideCoroutineDispatchers(): TokoChatCoroutineDispatchers {
-        return object : TokoChatCoroutineDispatchers {
-            override val main: CoroutineDispatcher
-                get() = Dispatchers.Main
-            override val io: CoroutineDispatcher
-                get() = Dispatchers.IO
-        }
     }
 }
