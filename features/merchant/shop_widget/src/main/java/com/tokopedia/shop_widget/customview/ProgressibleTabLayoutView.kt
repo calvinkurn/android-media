@@ -14,7 +14,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop_widget.R
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.UnifyMotion
@@ -25,19 +24,12 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr), DefaultLifecycleObserver {
 
-    private var expandProgressBarWidthAnimatorSet: AnimatorSet? = null
-    private var progressAnimatorSet: AnimatorSet? = null
-    private var config: Config? = null
-    private var onProgressFinish: () -> Unit = {}
-
     init {
         orientation = HORIZONTAL
     }
 
-    data class Config(
-        val tabIndicatorCount: Int,
-        val tabIndicatorProgressDuration: Long
-    )
+    private var expandProgressBarWidthAnimatorSet: AnimatorSet? = null
+    private var progressAnimatorSet: AnimatorSet? = null
 
     companion object {
         private const val UNSELECTED_TAB_INDICATOR_HEIGHT = 5
@@ -56,42 +48,38 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         private const val SELECTED_TAB_INDICATOR_MAX_PROGRESS = 100
     }
 
-    fun initializeWithLifecycle(
-        config: Config,
+    fun showTabIndicatorWithLifecycle(
+        tabIndicatorCount: Int,
         selectedPosition: Int,
         lifecycle: Lifecycle,
         onProgressFinish: () -> Unit
     ) {
         lifecycle.addObserver(this)
-        initialize(config, selectedPosition, onProgressFinish)
+        showTabIndicator(tabIndicatorCount, selectedPosition, onProgressFinish)
     }
 
-    fun initialize(
-        config: Config,
+    fun showTabIndicator(
+        tabIndicatorCount: Int,
         selectedPosition: Int,
         onProgressFinish: () -> Unit
     ) {
         // Remove existing views before recreate new tab indicators
         removeAllViews()
 
-        this.onProgressFinish = onProgressFinish
-        this.config = config
-
         cancelAnimation()
 
-        for (currentIndex in 0 until config.tabIndicatorCount.orZero()) {
-            val item = if (currentIndex == selectedPosition) {
-                createSelectedDot()
+        for (currentIndex in 0 until tabIndicatorCount) {
+            if (currentIndex == selectedPosition) {
+                addView(createProgressBar())
             } else {
-                createUnselectedDot()
+                addView(createUnselectedDot())
             }
-            addView(item)
         }
 
-        animateSelectedTabIndicator()
+        expandSelectedTabIndicatorWidth(onProgressFinish = onProgressFinish)
     }
 
-    private fun animateSelectedTabIndicator() {
+    private fun expandSelectedTabIndicatorWidth(onProgressFinish: () -> Unit) {
         val progressBar = getSelectedTabIndicator()
         if (progressBar == null) return
 
@@ -108,7 +96,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
             progressBar.requestLayout()
 
             if (value == SELECTED_TAB_INDICATOR_MAX_WIDTH) {
-                animateProgress(progressBar)
+                animateSelectedTabIndicatorProgress(progressBar, onProgressFinish)
             }
         }
 
@@ -117,7 +105,10 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         expandProgressBarWidthAnimatorSet?.start()
     }
 
-    private fun animateProgress(progressBar: ProgressBar) {
+    private fun animateSelectedTabIndicatorProgress(
+        progressBar: ProgressBar,
+        onProgressFinish: () -> Unit
+    ) {
         val progressAnimator = ValueAnimator
             .ofInt(SELECTED_TAB_INDICATOR_MIN_PROGRESS, SELECTED_TAB_INDICATOR_MAX_PROGRESS)
             .setDuration(SELECTED_TAB_INDICATOR_PROGRESS_ANIMATION_DURATION_MILLIS)
@@ -138,7 +129,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     }
 
     @SuppressLint("UnifyComponentUsage")
-    private fun createSelectedDot(): ProgressBar {
+    private fun createProgressBar(): ProgressBar {
         val progressBar = ProgressBar(
             context,
             null,
@@ -168,6 +159,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
 
         return progressBar
     }
+
     private fun createUnselectedDot(): ImageView {
         val imageView = ImageView(context)
         val params = LayoutParams(

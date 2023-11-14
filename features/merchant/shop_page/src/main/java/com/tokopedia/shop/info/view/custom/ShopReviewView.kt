@@ -75,13 +75,8 @@ class ShopReviewView @JvmOverloads constructor(
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                val config = ProgressibleTabLayoutView.Config(
+                tabIndicator?.showTabIndicatorWithLifecycle(
                     tabIndicatorCount = reviewCount,
-                    tabIndicatorProgressDuration = 6000
-                )
-
-                tabIndicator?.initializeWithLifecycle(
-                    config = config,
                     lifecycle = lifecycle,
                     selectedPosition = position,
                     onProgressFinish = {
