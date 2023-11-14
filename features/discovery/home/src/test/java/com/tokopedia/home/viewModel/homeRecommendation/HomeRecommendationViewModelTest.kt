@@ -8,10 +8,10 @@ import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendationCardUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
 import com.tokopedia.home.ext.observeOnce
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -30,8 +30,10 @@ import io.mockk.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.TimeoutException
@@ -66,6 +68,16 @@ class HomeRecommendationViewModelTest {
         { CoroutineTestDispatchersProvider }
     )
 
+    @Before
+    fun setup() {
+        mockkObject(HomeRecommendationController)
+    }
+
+    @After
+    fun finish() {
+        unmockkObject(HomeRecommendationController)
+    }
+
     @Test
     fun `Get Success Data Home Recommendation Initial Page`() {
         val observerHomeRecommendation: Observer<HomeRecommendationDataModel> =
@@ -83,11 +95,13 @@ class HomeRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -121,10 +135,12 @@ class HomeRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -149,10 +165,12 @@ class HomeRecommendationViewModelTest {
             mockk(relaxed = true)
         getHomeRecommendationUseCase.givenThrowReturn()
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -211,13 +229,15 @@ class HomeRecommendationViewModelTest {
             homeRecommendationDataModel2
         )
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.loadNextData("", 1, 0, 2, sourceType = "")
+        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -276,13 +296,15 @@ class HomeRecommendationViewModelTest {
             TimeoutException()
         )
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.loadNextData("", 1, 0, 2, sourceType = "")
+        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -336,11 +358,13 @@ class HomeRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         homeRecommendationViewModel.updateWishlist("12", 0, true)
 
@@ -388,11 +412,13 @@ class HomeRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         homeRecommendationViewModel.updateWishlist("12", 100, true)
 
@@ -439,11 +465,13 @@ class HomeRecommendationViewModelTest {
         )
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         homeRecommendationViewModel.updateWishlist("1332", 0, true)
 
@@ -511,11 +539,13 @@ class HomeRecommendationViewModelTest {
             imageUrl = slotImageUrl.captured
         }
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         homeRecommendationViewModel.updateWishlist("1332", 0, true)
 
@@ -614,13 +644,15 @@ class HomeRecommendationViewModelTest {
             imageUrl = slotImageUrl.captured
         }
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         // home view model
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
         // viewModel load first page data
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         // Try click update wishlist
         homeRecommendationViewModel.updateWishlist("1332", 0, true)
@@ -700,11 +732,13 @@ class HomeRecommendationViewModelTest {
 
         getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -749,11 +783,13 @@ class HomeRecommendationViewModelTest {
 
         topAdsImageViewUseCase.givenDataReturn(arrayListOf())
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -798,11 +834,13 @@ class HomeRecommendationViewModelTest {
 
         topAdsImageViewUseCase.givenThrows()
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -868,13 +906,15 @@ class HomeRecommendationViewModelTest {
 
         getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.loadNextData("", 1, 0, 2, sourceType = "")
+        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -967,6 +1007,8 @@ class HomeRecommendationViewModelTest {
             isHasNextPage = true
         )
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         getHomeRecommendationUseCase.givenDataReturn(
             homeRecommendationDataModel,
             homeRecommendationDataModel2
@@ -980,9 +1022,9 @@ class HomeRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.loadNextData("", 1, 0, 2, sourceType = "")
+        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -1010,7 +1052,7 @@ class HomeRecommendationViewModelTest {
             observerHomeRecommendation.onChanged(
                 match {
                     it.homeRecommendations.isNotEmpty() &&
-                        it.homeRecommendations[it.homeRecommendations.size - 1] !is HomeRecommendationBannerTopAdsOldDataModel
+                        it.homeRecommendations[it.homeRecommendations.size - 1] is HomeRecommendationBannerTopAdsOldDataModel
                 }
             )
         }
@@ -1083,13 +1125,15 @@ class HomeRecommendationViewModelTest {
 
         topAdsImageViewUseCase.givenDataReturnAndThenThrows(arrayListOf(TopAdsImageViewModel()))
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.loadNextData("", 1, 0, 2, sourceType = "")
+        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -1117,7 +1161,7 @@ class HomeRecommendationViewModelTest {
             observerHomeRecommendation.onChanged(
                 match {
                     it.homeRecommendations.isNotEmpty() &&
-                        it.homeRecommendations[it.homeRecommendations.size - 1] !is HomeRecommendationBannerTopAdsOldDataModel
+                        it.homeRecommendations[it.homeRecommendations.size - 1] is HomeRecommendationBannerTopAdsOldDataModel
                 }
             )
         }
@@ -1156,11 +1200,13 @@ class HomeRecommendationViewModelTest {
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -1207,11 +1253,13 @@ class HomeRecommendationViewModelTest {
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -1265,11 +1313,13 @@ class HomeRecommendationViewModelTest {
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -1323,11 +1373,13 @@ class HomeRecommendationViewModelTest {
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -1380,6 +1432,8 @@ class HomeRecommendationViewModelTest {
             isHasNextPage = false
         )
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
         topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
@@ -1398,7 +1452,7 @@ class HomeRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -1412,7 +1466,7 @@ class HomeRecommendationViewModelTest {
             observerHomeRecommendation.onChanged(
                 match {
                     it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel && it.homeRecommendations[1] is HomeRecommendationBannerTopAdsOldDataModel &&
-                        it.homeRecommendations[3] is HomeRecommendationHeadlineTopAdsDataModel
+                        it.homeRecommendations[2] is HomeRecommendationHeadlineTopAdsDataModel
                 }
             )
         }
@@ -1454,11 +1508,13 @@ class HomeRecommendationViewModelTest {
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -1523,11 +1579,13 @@ class HomeRecommendationViewModelTest {
 
         topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, tabIndex = 1, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, tabIndex = 1, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -1593,11 +1651,13 @@ class HomeRecommendationViewModelTest {
 
         topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns false
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.loadInitialPage("", 1, 0, tabIndex = 1, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, tabIndex = 1, sourceType = "")
 
         verifyOrder {
             // check on loading
@@ -1643,12 +1703,14 @@ class HomeRecommendationViewModelTest {
 
         getHomeRecommendationCardUseCase.givenDataReturn(homeRecommendationDataModel, productPage)
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns true
+
         // assert HomeRecommendationCardState is equal LoadingState
         assertCollectingRecommendationCardState {
             assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendationCard("", "", sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
 
         assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.Success)
@@ -1669,6 +1731,8 @@ class HomeRecommendationViewModelTest {
             isHasNextPage = false
         )
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns true
+
         getHomeRecommendationCardUseCase.givenDataReturn(homeRecommendationDataModel, productPage)
 
         // assert HomeRecommendationCardState is equal LoadingState
@@ -1676,7 +1740,7 @@ class HomeRecommendationViewModelTest {
             assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendationCard("", "", sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "",  1, "")
 
         assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.EmptyData)
@@ -1696,12 +1760,14 @@ class HomeRecommendationViewModelTest {
 
         getHomeRecommendationCardUseCase.givenThrows(exception, productPage)
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns true
+
         // assert HomeRecommendationCardState is equal LoadingState
         assertCollectingRecommendationCardState {
             assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendationCard("", "", sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
 
         assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.Fail)
@@ -1729,6 +1795,8 @@ class HomeRecommendationViewModelTest {
             isHasNextPage = true
         )
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns true
+
         getHomeRecommendationCardUseCase.givenDataReturnMatch(homeRecommendationDataModel, productPage)
 
         // assert HomeRecommendationCardState is equal LoadingState
@@ -1736,7 +1804,7 @@ class HomeRecommendationViewModelTest {
             assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendationCard("", "", sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
 
         assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.Success)
@@ -1764,12 +1832,7 @@ class HomeRecommendationViewModelTest {
 
             getHomeRecommendationCardUseCase.givenDataReturnMatch(homeRecommendationNextDataModel, productPage)
 
-            homeRecommendationViewModel.fetchNextHomeRecommendationCard(
-                "",
-                productPage,
-                sourceType = "",
-                locationParam = ""
-            )
+            homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, productPage, locationParam = "", sourceType = "")
 
             assertTrue(it[1] is HomeRecommendationCardState.LoadingMore)
 
@@ -1809,12 +1872,14 @@ class HomeRecommendationViewModelTest {
 
         getHomeRecommendationCardUseCase.givenDataReturnMatch(homeRecommendationDataModel, productPage)
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns true
+
         // assert HomeRecommendationCardState is equal LoadingState
         assertCollectingRecommendationCardState {
             assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendationCard("", "", sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
 
         assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.Success)
@@ -1831,12 +1896,7 @@ class HomeRecommendationViewModelTest {
 
             getHomeRecommendationCardUseCase.givenThrows(exception, productPage)
 
-            homeRecommendationViewModel.fetchNextHomeRecommendationCard(
-                "",
-                productPage,
-                sourceType = "",
-                locationParam = ""
-            )
+            homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, productPage, locationParam = "", sourceType = "")
 
             assertTrue(it[1] is HomeRecommendationCardState.LoadingMore)
 
@@ -1855,6 +1915,8 @@ class HomeRecommendationViewModelTest {
         val productPage = 1
         val exception = MessageErrorException("something went wrong")
 
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns true
+
         getHomeRecommendationCardUseCase.givenThrows(exception, productPage)
 
         // assert HomeRecommendationCardState is equal LoadingState
@@ -1862,12 +1924,12 @@ class HomeRecommendationViewModelTest {
             assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendationCard("", "", sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
 
         assertCollectingRecommendationCardState {
             assertTrue(it.first() is HomeRecommendationCardState.Fail)
 
-            homeRecommendationViewModel.fetchNextHomeRecommendationCard("", productPage + Int.ONE, "", "")
+            homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, productPage, locationParam = "", sourceType = "")
             assertTrue(it.first() is HomeRecommendationCardState.Fail)
         }
     }

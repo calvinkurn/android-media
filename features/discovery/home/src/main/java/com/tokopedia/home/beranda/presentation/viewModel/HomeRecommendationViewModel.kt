@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendatio
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -70,7 +71,37 @@ class HomeRecommendationViewModel @Inject constructor(
 
     var topAdsBannerNextPage = TOPADS_PAGE_DEFAULT
 
-    fun fetchHomeRecommendationCard(
+    fun fetchHomeRecommendation(
+        tabName: String,
+        recommendationId: Int,
+        count: Int,
+        locationParam: String = "",
+        tabIndex: Int = 0,
+        sourceType: String
+    ) {
+        if (HomeRecommendationController.isUsingRecommendationCard()) {
+            fetchHomeRecommendationCard(tabName, locationParam, sourceType)
+        } else {
+            loadInitialPage(tabName, recommendationId, count, locationParam, tabIndex, sourceType)
+        }
+    }
+
+    fun fetchNextHomeRecommendation(
+        tabName: String,
+        recommendationId: Int,
+        count: Int,
+        page: Int,
+        locationParam: String = "",
+        sourceType: String
+    ) {
+        if (HomeRecommendationController.isUsingRecommendationCard()) {
+            fetchNextHomeRecommendationCard(tabName, page, locationParam, sourceType)
+        } else {
+            loadNextData(tabName, recommendationId, count, page, locationParam, sourceType)
+        }
+    }
+
+    private fun fetchHomeRecommendationCard(
         tabName: String,
         locationParam: String,
         sourceType: String
@@ -103,7 +134,7 @@ class HomeRecommendationViewModel @Inject constructor(
             })
     }
 
-    fun fetchNextHomeRecommendationCard(
+    private fun fetchNextHomeRecommendationCard(
         tabName: String,
         page: Int,
         locationParam: String,
@@ -157,7 +188,7 @@ class HomeRecommendationViewModel @Inject constructor(
         }
     }
 
-    fun loadInitialPage(
+    private fun loadInitialPage(
         tabName: String,
         recommendationId: Int,
         count: Int,
@@ -173,8 +204,7 @@ class HomeRecommendationViewModel @Inject constructor(
             )
         )
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.get()
-                .setParams(tabName, recommendationId, count, 1, locationParam, sourceType)
+            getHomeRecommendationUseCase.get().setParams(tabName, recommendationId, count, 1, locationParam, sourceType)
             val data = getHomeRecommendationUseCase.get().executeOnBackground()
             if (data.homeRecommendations.isEmpty()) {
                 _homeRecommendationLiveData.postValue(
@@ -343,7 +373,7 @@ class HomeRecommendationViewModel @Inject constructor(
         }
     }
 
-    fun loadNextData(
+    private fun loadNextData(
         tabName: String,
         recomId: Int,
         count: Int,
@@ -360,7 +390,6 @@ class HomeRecommendationViewModel @Inject constructor(
             )
         )
         launchCatchError(coroutineContext, block = {
-            // todo will remove
             getHomeRecommendationUseCase.get()
                 .setParams(tabName, recomId, count, page, locationParam, sourceType)
             val data = getHomeRecommendationUseCase.get().executeOnBackground()
@@ -474,7 +503,6 @@ class HomeRecommendationViewModel @Inject constructor(
         }
     }
 
-    // todo will be removed
     private fun incrementTopadsPage() {
         topAdsBannerNextPage = try {
             val currentPage = topAdsBannerNextPage.toIntOrZero()

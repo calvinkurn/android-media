@@ -53,6 +53,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder.Companion.LAYOUT
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationVideoWidgetManager
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
@@ -175,6 +176,7 @@ class HomeRecommendationFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupArgs()
+        fetchHomeRecommendationRollence()
         setupRecyclerView()
         loadFirstPageData()
         initListeners()
@@ -190,6 +192,10 @@ class HomeRecommendationFragment :
         )
         trackingQueue.sendAll()
         super.onPause()
+    }
+
+    private fun fetchHomeRecommendationRollence() {
+        HomeRecommendationController.fetchRecommendationCardRollence()
     }
 
     private fun setupArgs() {
@@ -354,23 +360,14 @@ class HomeRecommendationFragment :
         endlessRecyclerViewScrollListener =
             object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    if (isNewForYouQueryEnabled()) {
-                        viewModel.fetchNextHomeRecommendationCard(
-                            tabName,
-                            page,
-                            getLocationParamString(),
-                            sourceType
-                        )
-                    } else {
-                        viewModel.loadNextData(
-                            tabName,
-                            recomId,
-                            DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
-                            page,
-                            getLocationParamString(),
-                            sourceType
-                        )
-                    }
+                    viewModel.fetchNextHomeRecommendation(
+                        tabName,
+                        recomId,
+                        DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
+                        page,
+                        getLocationParamString(),
+                        sourceType
+                    )
                 }
             }
     }
@@ -569,27 +566,31 @@ class HomeRecommendationFragment :
         position: Int
     ) {
         trackingQueue.putEETracking(
-            HomeRecommendationTracking.getImpressEntityCardTracking(item, position, userSessionInterface.userId) as HashMap<String, Any>
+            HomeRecommendationTracking.getImpressEntityCardTracking(
+                item,
+                position,
+                userSessionInterface.userId
+            ) as HashMap<String, Any>
         )
     }
 
     override fun onEntityCardClickListener(item: RecomEntityCardUiModel, position: Int) {
-        HomeRecommendationTracking.sendClickEntityCardTracking(item, position, userSessionInterface.userId)
+        HomeRecommendationTracking.sendClickEntityCardTracking(
+            item,
+            position,
+            userSessionInterface.userId
+        )
         goToProductDetail(item.id, position)
     }
 
     override fun onRetryGetProductRecommendationData() {
-        if (isNewForYouQueryEnabled()) {
-            viewModel.fetchHomeRecommendationCard(tabName, getLocationParamString(), sourceType)
-        } else {
-            viewModel.loadInitialPage(
-                tabName,
-                recomId,
-                DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
-                getLocationParamString(),
-                sourceType = sourceType
-            )
-        }
+        viewModel.fetchHomeRecommendation(
+            tabName,
+            recomId,
+            DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
+            getLocationParamString(),
+            sourceType = sourceType
+        )
     }
 
     private fun initListeners() {
@@ -650,18 +651,13 @@ class HomeRecommendationFragment :
         if (userVisibleHint && isAdded && activity != null && !hasLoadData) {
             hasLoadData = true
 
-            if (isNewForYouQueryEnabled()) {
-                viewModel.fetchHomeRecommendationCard(tabName, getLocationParamString(), sourceType)
-            } else {
-                viewModel.loadInitialPage(
-                    tabName,
-                    recomId,
-                    DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
-                    getLocationParamString(),
-                    tabIndex,
-                    sourceType = sourceType
-                )
-            }
+            viewModel.fetchHomeRecommendation(
+                tabName,
+                recomId,
+                DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
+                getLocationParamString(),
+                sourceType = sourceType
+            )
         }
     }
 
