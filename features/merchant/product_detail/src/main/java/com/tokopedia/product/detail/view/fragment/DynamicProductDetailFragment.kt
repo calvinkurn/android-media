@@ -2273,7 +2273,8 @@ open class DynamicProductDetailFragment :
     }
 
     override fun shouldShowWishlist(): Boolean {
-        return !viewModel.isShopOwner()
+        val isPrefetch = viewModel.getDynamicProductInfoP1?.cacheState?.isPrefetch == true
+        return !viewModel.isShopOwner() && !isPrefetch
     }
 
     override fun onMainImageClicked(
@@ -2692,7 +2693,8 @@ open class DynamicProductDetailFragment :
                     RecommendationCarouselTracking.sendEventAtcClick(
                         it.data,
                         viewModel.userId,
-                        it.data.minOrder.coerceAtLeast(DEFAULT_QTY_1)
+                        it.data.minOrder.coerceAtLeast(DEFAULT_QTY_1),
+                        anchorProductId = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
                     )
                 }
             }, {})
