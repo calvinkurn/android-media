@@ -1,0 +1,16 @@
+query topAdsAutoTopupWithdrawalRecom($shop_id:String!) {
+    topAdsAutoTopupWithdrawalRecom(shop_id: $shop_id) {
+      data {
+        auto_topup_status
+        recommendation_value
+      }
+      errors {
+        code
+        title
+        detail
+        object {
+          type
+        }
+      }
+    }
+}

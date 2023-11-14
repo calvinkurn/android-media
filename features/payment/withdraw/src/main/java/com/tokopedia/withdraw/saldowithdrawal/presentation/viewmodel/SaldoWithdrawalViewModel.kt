@@ -10,19 +10,21 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BannerData
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.GqlBankListResponse
-import com.tokopedia.withdraw.saldowithdrawal.domain.model.GqlGetBankDataResponse
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.ValidatePopUpWithdrawal
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GQLValidateWithdrawalUseCase
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GetBankListUseCase
+import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GetTopadsAutoTopupWithdrawRecomUseCase
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GetWDBannerUseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
 class SaldoWithdrawalViewModel @Inject constructor(
-        private val bankListUseCase: GetBankListUseCase,
-        private val bannerDataUseCase: GetWDBannerUseCase,
-        private val validatePopUpUseCase: GQLValidateWithdrawalUseCase,
-        dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+    private val bankListUseCase: GetBankListUseCase,
+    private val bannerDataUseCase: GetWDBannerUseCase,
+    private val validatePopUpUseCase: GQLValidateWithdrawalUseCase,
+    private val topadsAutoTopupWithdrawRecomUseCase: GetTopadsAutoTopupWithdrawRecomUseCase,
+    dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val bannerListLiveData = MutableLiveData<Result<ArrayList<BannerData>>>()
 
@@ -30,17 +32,24 @@ class SaldoWithdrawalViewModel @Inject constructor(
 
     val validatePopUpWithdrawalMutableData = SingleLiveEvent<Result<ValidatePopUpWithdrawal>>()
 
-    fun getValidatePopUpData(bankAccount: BankAccount) {
+    fun getValidatePopUpData(bankAccount: BankAccount, shopID: String) {
         launchCatchError(block = {
-            when (val result = validatePopUpUseCase.getValidatePopUpData(bankAccount)) {
+            val popUp = async { validatePopUpUseCase.getValidatePopUpData(bankAccount) }
+            val topadsAutoTopupRecom = async { topadsAutoTopupWithdrawRecomUseCase("") }
+
+            when (val popUpData = popUp.await()) {
                 is Success -> {
                     validatePopUpWithdrawalMutableData
-                            .postValue(Success(result.data.validatePopUpWithdrawal))
+                        .postValue(Success(popUpData.data.validatePopUpWithdrawal))
                 }
                 is Fail -> {
-                    validatePopUpWithdrawalMutableData.postValue(result)
+                    validatePopUpWithdrawalMutableData.postValue(popUpData)
                 }
             }
+
+            val topadsAutoTopupRecomData = topadsAutoTopupRecom.await()
+
+
         }, onError = {
             validatePopUpWithdrawalMutableData.postValue(Fail(it))
         })

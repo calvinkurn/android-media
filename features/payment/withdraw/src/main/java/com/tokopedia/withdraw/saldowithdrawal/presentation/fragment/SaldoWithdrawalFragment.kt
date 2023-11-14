@@ -407,7 +407,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                 userId = userSession.get().userId, email = userSession.get().email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
                 isSellerWithdrawal = false, programName = getProgramName(), isJoinRekeningPremium = false)
-        saldoWithdrawalViewModel.getValidatePopUpData(selectedBankAccount)
+        saldoWithdrawalViewModel.getValidatePopUpData(selectedBankAccount, userSession.get().shopId)
     }
 
     fun initiateSellerWithdrawal(selectedBankAccount: BankAccount, withdrawalAmount: Long) {
@@ -416,7 +416,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                 userId = userSession.get().userId, email = userSession.get().email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
                 isSellerWithdrawal = true, programName = getProgramName(), isJoinRekeningPremium = false)
-        saldoWithdrawalViewModel.getValidatePopUpData(selectedBankAccount)
+        saldoWithdrawalViewModel.getValidatePopUpData(selectedBankAccount, userSession.get().shopId)
     }
 
     private fun checkAndCreateValidatePopup(validatePopUpWithdrawal: ValidatePopUpWithdrawal) {
