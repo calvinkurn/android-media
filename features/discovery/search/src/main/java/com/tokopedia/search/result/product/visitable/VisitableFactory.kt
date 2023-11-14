@@ -5,10 +5,8 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
-import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
 import com.tokopedia.search.result.product.cpm.CpmDataView
@@ -26,6 +24,7 @@ import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_P
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_TDN
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
+import com.tokopedia.search.result.product.productitem.ProductItemVisitable
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
@@ -51,11 +50,13 @@ class VisitableFactory @Inject constructor(
 
     private var isGlobalNavWidgetAvailable = false
     private var isShowHeadlineAdsBasedOnGlobalNav = false
+    private val visitableList = mutableListOf<Visitable<*>>()
     private val performanceMonitoring: PageLoadTimePerformanceInterface? =
         performanceMonitoringProvider.get()
 
     fun createFirstPageVisitableList(data: VisitableFactoryFirstPageData): List<Visitable<*>> {
-        val visitableList = mutableListOf<Visitable<*>>()
+        visitableList.clear()
+
         val productDataView = data.productDataView
 
         addPageTitle(visitableList, data.pageTitle)
@@ -69,40 +70,37 @@ class VisitableFactory @Inject constructor(
         addTicker(visitableList, productDataView.tickerModel, data.isTickerHasDismissed)
         addSuggestion(visitableList, data.responseCode)
         addProductList(visitableList, data.productList)
+        addInspirationCarouselSeamless(visitableList, productDataView.seamlessCarouselDataViewList)
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
             processHeadlineAdsFirstPage(
                 data.searchProductModel,
                 visitableList,
                 data.isLocalSearch,
-                data.productList,
             )
         }
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
             addInspirationCarousel(
                 productDataView.inspirationCarouselDataView,
                 visitableList,
-                data.productList,
                 data.externalReference,
-                data.searchTerm,
             )
         }
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET) {
             addInspirationWidget(
                 productDataView.inspirationWidgetDataView,
                 visitableList,
-                data.productList,
             )
         }
-        processBannerAndBroadMatchInSamePosition(visitableList, data.productList, data.responseCode)
-        addBanner(visitableList, data.productList)
+        processBannerAndBroadMatchInSamePosition(visitableList, data.responseCode)
+        addBanner(visitableList)
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH) {
-            addBroadMatch(visitableList, data.productList, data.responseCode)
+            addBroadMatch(data.responseCode, visitableList)
         }
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_TDN) {
             topAdsImageViewPresenterDelegate.setTopAdsImageViewModelList(
                 data.searchProductModel.getTopAdsImageViewModelList()
             )
-            processTopAdsImageViewModel(visitableList, data.productList)
+            processTopAdsImageViewModel(visitableList)
         }
         addSearchInTokopedia(visitableList, data.isLocalSearch, data.globalSearchApplink)
 
@@ -155,9 +153,7 @@ class VisitableFactory @Inject constructor(
     }
 
     private fun addSuggestion(visitableList: MutableList<Visitable<*>>, responseCode: String) {
-        suggestionPresenter.processSuggestion(responseCode) {
-            visitableList.add(it)
-        }
+        suggestionPresenter.processSuggestion(responseCode, visitableList::add)
     }
 
     private fun addProductList(
@@ -167,61 +163,74 @@ class VisitableFactory @Inject constructor(
         visitableList.addAll(productList)
     }
 
+    private fun addInspirationCarouselSeamless(
+        visitableList: MutableList<Visitable<*>>,
+        seamlessCarouselDataViewList: Map<Int, List<Visitable<*>>>
+    ) {
+        inspirationCarouselPresenter
+            .setInspirationCarouselSeamlessDataViewList(seamlessCarouselDataViewList)
+
+        processInspirationCarouselSeamlessPosition(visitableList)
+    }
+
+    private fun processInspirationCarouselSeamlessPosition(visitableList: MutableList<Visitable<*>>) {
+        inspirationCarouselPresenter.processInspirationCarouselSeamlessPosition(
+            visitableList.getTotalProductItem(),
+        ) { position, inspirationSeamlessVisitable ->
+            visitableList.addAll(
+                visitableList.getIndexForWidgetPosition(position),
+                inspirationSeamlessVisitable,
+            )
+        }
+    }
+
     private fun processHeadlineAdsFirstPage(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
         isLocalSearch: Boolean,
-        productList: List<Visitable<*>>,
     ) {
         if (!isHeadlineAdsAllowed(isLocalSearch)) return
-        topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel, 1) { index, cpmDataList,  isUseSeparator ->
-            val verticalSeparator = if(isUseSeparator && index != 0)
-                VerticalSeparator.Both
-            else VerticalSeparator.None
+
+        topAdsHeadlineHelper.processHeadlineAds(
+            cpmModel = searchProductModel.cpmModel,
+            pageNumber = 1,
+        ) { index, cpmDataList, isUseSeparator ->
+            val verticalSeparator = headlineAdsVerticalSeparator(isUseSeparator, index)
             val cpmDataView = createCpmDataView(
                 searchProductModel.cpmModel,
                 cpmDataList,
                 verticalSeparator
             )
 
-            if (index == 0)
-                processHeadlineAdsAtTop(list, cpmDataView, productList)
-            else
-                processHeadlineAdsAtPosition(list, productList.size, cpmDataView, productList)
+            if (index == 0) processHeadlineAdsAtTop(list, cpmDataView)
+            else processHeadlineAdsAtBottom(list, cpmDataView)
         }
     }
+
+    private fun headlineAdsVerticalSeparator(isUseSeparator: Boolean, index: Int) =
+        if (isUseSeparator && index != 0) VerticalSeparator.Both
+        else VerticalSeparator.None
 
     private fun processHeadlineAdsAtTop(
         visitableList: MutableList<Visitable<*>>,
         cpmDataView: CpmDataView,
-        productList: List<Visitable<*>>,
     ) {
-        if (productList.isEmpty()) return
-
-        val firstProductIndex = visitableList.indexOf(productList[0])
+        val firstProductIndex = visitableList.indexOfFirstProductItem()
         if (firstProductIndex !in visitableList.indices) return
 
         visitableList.add(firstProductIndex, cpmDataView)
     }
-
 
     private fun isHeadlineAdsAllowed(isLocalSearch: Boolean): Boolean {
         return !isLocalSearch
             && (!isGlobalNavWidgetAvailable || isShowHeadlineAdsBasedOnGlobalNav)
     }
 
-    private fun processHeadlineAdsAtPosition(
+    private fun processHeadlineAdsAtBottom(
         visitableList: MutableList<Visitable<*>>,
-        position: Int,
         cpmDataView: CpmDataView,
-        productList: List<Visitable<*>>,
     ) {
-        val headlineAdsVisitableList = arrayListOf<Visitable<ProductListTypeFactory>>()
-        headlineAdsVisitableList.add(cpmDataView)
-
-        val product = productList[position - 1]
-        val headlineAdsIndex = visitableList.indexOf(product) + 1
-        visitableList.addAll(headlineAdsIndex, headlineAdsVisitableList)
+        visitableList.add(cpmDataView)
     }
 
     private fun createCpmDataView(
@@ -245,76 +254,54 @@ class VisitableFactory @Inject constructor(
     private fun addInspirationCarousel(
         inspirationCarouselDataView: List<InspirationCarouselDataView>,
         list: MutableList<Visitable<*>>,
-        productList: List<Visitable<*>>,
         externalReference: String,
-        searchTerm: String,
     ) {
         inspirationCarouselPresenter.setInspirationCarouselDataViewList(
             inspirationCarouselDataView
         )
-        processInspirationCarouselPosition(list, productList, externalReference, searchTerm)
-    }
-
-    private fun addInspirationWidget(
-        inspirationWidgetDataView: List<InspirationWidgetVisitable>,
-        list: MutableList<Visitable<*>>,
-        productList: List<Visitable<*>>,
-    ) {
-        inspirationWidgetPresenter.setInspirationWidgetDataViewList(
-            inspirationWidgetDataView
-        )
-        processInspirationWidgetPosition(list, productList)
-    }
-
-    private fun processInspirationWidgetPosition(
-        list: MutableList<Visitable<*>>,
-        productList: List<Visitable<*>>,
-    ) {
-        inspirationWidgetPresenter.processInspirationWidgetPosition(productList) { position, data ->
-            val visitableIndex = getVisitableIndex(productList, list, position)
-            list.add(visitableIndex, data)
-        }
+        processInspirationCarouselPosition(list, externalReference)
     }
 
     private fun processInspirationCarouselPosition(
         list: MutableList<Visitable<*>>,
-        productList: List<Visitable<*>>,
         externalReference: String,
-        searchTerm: String,
     ) {
         inspirationCarouselPresenter.processInspirationCarouselPosition(
-            productList,
+            visitableList.getTotalProductItem(),
             externalReference,
-            searchTerm,
         ) { position, inspirationCarouselVisitableList ->
-            val visitableIndex = getVisitableIndex(productList, list, position)
+            val visitableIndex = visitableList.getIndexForWidgetPosition(position)
             list.addAll(visitableIndex, inspirationCarouselVisitableList)
         }
     }
 
-    private fun getVisitableIndex(
-        productList: List<Visitable<*>>,
-        list: List<Visitable<*>>,
-        widgetPosition: Int,
-    ): Int {
-        val productListPosition = maxOf(widgetPosition, 1)
-        val product = productList[productListPosition - 1]
-        val addIndex = minOf(widgetPosition, 1)
+    private fun addInspirationWidget(
+        inspirationWidgetDataView: List<InspirationWidgetVisitable>,
+        visitableList: MutableList<Visitable<*>>,
+    ) {
+        inspirationWidgetPresenter.setInspirationWidgetDataViewList(inspirationWidgetDataView)
+        processInspirationWidgetPosition(visitableList)
+    }
 
-        return list.indexOf(product) + addIndex
+    private fun processInspirationWidgetPosition(visitableList: MutableList<Visitable<*>>) {
+        inspirationWidgetPresenter.processInspirationWidgetPosition(
+            visitableList.getTotalProductItem(),
+        ) { position, data ->
+            val visitableIndex = visitableList.getIndexForWidgetPosition(position)
+            visitableList.add(visitableIndex, data)
+        }
     }
 
     private fun processBannerAndBroadMatchInSamePosition(
-        list: MutableList<Visitable<*>>,
-        productList: List<Visitable<*>>,
+        visitableList: MutableList<Visitable<*>>,
         responseCode: String,
     ) {
         if (!willShowBroadMatchAndBanner(responseCode)) return
 
         if (isShowBroadMatchAndBannerAtBottom())
-            processBroadMatchAndBannerAtBottom(list)
+            processBroadMatchAndBannerAtBottom(visitableList)
         else if (isShowBannerAndBroadMatchAtTop())
-            processBroadMatchAndBannerAtTop(list, productList)
+            processBroadMatchAndBannerAtTop(visitableList)
     }
 
     private fun willShowBroadMatchAndBanner(responseCode: String) =
@@ -324,11 +311,11 @@ class VisitableFactory @Inject constructor(
         bannerDelegate.isLastPositionBanner && broadMatchDelegate.isLastPositionBroadMatch
 
     private fun processBroadMatchAndBannerAtBottom(list: MutableList<Visitable<*>>) {
-        broadMatchDelegate.processBroadMatchAtBottom(list) { _, broadMatch ->
+        broadMatchDelegate.processBroadMatchAtBottom { _, broadMatch ->
             list.addAll(broadMatch)
         }
 
-        bannerDelegate.processBannerAtBottom(list) { _, banner ->
+        bannerDelegate.processBannerAtBottom { _, banner ->
             list.add(banner)
         }
     }
@@ -337,51 +324,66 @@ class VisitableFactory @Inject constructor(
         broadMatchDelegate.isFirstPositionBroadMatch && bannerDelegate.isFirstPositionBanner
 
     private fun processBroadMatchAndBannerAtTop(
-        list: MutableList<Visitable<*>>,
-        productList: List<Visitable<*>>,
+        visitableList: MutableList<Visitable<*>>,
     ) {
-        broadMatchDelegate.processBroadMatchAtTop(productList, list) { index, broadMatch ->
-            list.addAll(index, broadMatch)
+        broadMatchDelegate.processBroadMatchAtTop { _, broadMatch ->
+            visitableList.addAll(visitableList.indexOfFirstProductItem(), broadMatch)
         }
 
-        bannerDelegate.processBannerAtTop(list, productList) { index, banner ->
-            list.add(index, banner)
+        bannerDelegate.processBannerAtTop { _, banner ->
+            visitableList.add(visitableList.indexOfFirstProductItem(), banner)
         }
     }
 
-    private fun addBanner(visitableList: MutableList<Visitable<*>>, productList: List<Visitable<*>>) {
-        bannerDelegate.processBanner(visitableList, productList) { index, banner ->
-            visitableList.add(index, banner)
+    private fun addBanner(visitableList: MutableList<Visitable<*>>) {
+        bannerDelegate.processBanner(visitableList.getTotalProductItem()) { position, banner ->
+            val visitableIndex =
+                if (bannerDelegate.isFirstPositionBanner) visitableList.indexOfFirstProductItem()
+                else if (bannerDelegate.isLastPositionBanner) visitableList.size
+                else visitableList.getIndexForWidgetPosition(position)
+
+            visitableList.add(visitableIndex, banner)
         }
     }
 
     private fun addBroadMatch(
-        visitableList: MutableList<Visitable<*>>,
-        productList: List<Visitable<*>>,
         responseCode: String,
+        visitableList: MutableList<Visitable<*>>,
     ) {
         broadMatchDelegate.processBroadMatch(
+            visitableList.getTotalProductItem(),
             responseCode,
-            productList,
-            visitableList,
-        ) { index, broadMatch ->
-            visitableList.addAll(index, broadMatch)
+        ) { position, broadMatch ->
+            val visitableIndex =
+                if (broadMatchDelegate.isFirstPositionBroadMatch) visitableList.indexOfFirstProductItem()
+                else if (broadMatchDelegate.isLastPositionBroadMatch) visitableList.size
+                else visitableList.getIndexForWidgetPosition(position)
+
+            visitableList.addAll(visitableIndex, broadMatch)
         }
     }
 
-    private fun processTopAdsImageViewModel(
-        list: MutableList<Visitable<*>>,
-        productList: List<Visitable<*>>,
-    ) {
+    private fun processTopAdsImageViewModel(visitableList: MutableList<Visitable<*>>) {
         topAdsImageViewPresenterDelegate.processTopAdsImageViewModel(
-            list,
-            productList,
-            action = { index, topAdsImageView -> list.add(index, topAdsImageView) },
-            { exception ->
-                Timber.w(exception)
+            totalProductItem = visitableList.getTotalProductItem(),
+            action = { position, topAdsImageView ->
+                visitableList.add(
+                    getVisitableIndexForTDN(position),
+                    topAdsImageView,
+                )
             },
+            logAction = Timber::w,
         )
     }
+
+    private fun getVisitableIndexForTDN(position: Int): Int =
+        if (position == TopAdsImageViewPresenterDelegate.TOP_POSITION) {
+            visitableList.indexOfFirst {
+                it is CpmDataView || it is ProductItemVisitable
+            }
+        } else {
+            visitableList.getIndexForWidgetPosition(position)
+        }
 
     private fun addSearchInTokopedia(
         list: MutableList<Visitable<*>>,
@@ -398,75 +400,59 @@ class VisitableFactory @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
         isLocalSearch: Boolean,
-        productList: List<Visitable<*>>,
     ) {
         if (!isHeadlineAdsAllowed(isLocalSearch)) return
 
         topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel) { _, cpmDataList, isUseSeparator ->
-            val verticalSeparator = if (isUseSeparator)
-                VerticalSeparator.Both
-            else VerticalSeparator.None
+            val verticalSeparator = headlineAdsVerticalSeparator(isUseSeparator, 1)
             val cpmDataView = createCpmDataView(
                 searchProductModel.cpmModel,
                 cpmDataList,
                 verticalSeparator
             )
-            processHeadlineAdsAtPosition(
-                list,
-                productList.size,
-                cpmDataView,
-                productList
-            )
+
+            processHeadlineAdsAtBottom(list, cpmDataView)
         }
     }
 
     fun createLoadMoreVisitableList(data: VisitableFactorySecondPageData): List<Visitable<*>> {
-        val visitableList = mutableListOf<Visitable<*>>()
+        val previousVisitableList = visitableList.toList()
 
         addProductList(visitableList, data.loadMoreProductList)
+        processInspirationCarouselSeamlessPosition(visitableList)
         processHeadlineAdsLoadMore(
             data.searchProductModel,
             visitableList,
             data.isLocalSearch,
-            data.allProductList,
         )
-        processTopAdsImageViewModel(visitableList, data.allProductList)
-        processInspirationWidgetPosition(visitableList, data.allProductList)
+        processTopAdsImageViewModel(visitableList)
+        processInspirationWidgetPosition(visitableList)
         processInspirationCarouselPosition(
             visitableList,
-            data.allProductList,
             data.externalReference,
-            data.searchTerm,
         )
-        processBannerAndBroadMatchInSamePosition(
-            visitableList,
-            data.allProductList,
-            data.responseCode,
-        )
-        addBanner(visitableList, data.allProductList)
-        broadMatchDelegate.processBroadMatch(
-            data.responseCode,
-            data.allProductList,
-            visitableList,
-        ) { index, broadMatch ->
-            visitableList.addAll(index, broadMatch)
-        }
+        processBannerAndBroadMatchInSamePosition(visitableList, data.responseCode)
+        addBanner(visitableList)
+        addBroadMatch(data.responseCode, visitableList)
         addSearchInTokopedia(visitableList, data.isLocalSearch, data.globalSearchApplink)
 
-        return visitableList
+        return visitableList - previousVisitableList.toSet()
     }
 
     fun createEmptyResultDuringLoadMoreVisitableList(
         responseCode: String,
-        productList: List<Visitable<*>>,
         isLocalSearch: Boolean,
         globalSearchApplink: String,
     ): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        broadMatchDelegate.processBroadMatch(responseCode, productList, visitableList) { index, broadMatch ->
+        broadMatchDelegate.processBroadMatch(
+            visitableList.getTotalProductItem(),
+            responseCode,
+        ) { index, broadMatch ->
             visitableList.addAll(index, broadMatch)
         }
+
         addSearchInTokopedia(visitableList, isLocalSearch, globalSearchApplink)
 
         return visitableList

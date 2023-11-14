@@ -15,16 +15,13 @@ data class VisitableFactoryFirstPageData(
     val searchProductModel: SearchProductModel,
     val externalReference: String,
     val globalSearchApplink: String,
-    val searchTerm: String,
 )
 
 data class VisitableFactorySecondPageData(
     val isLocalSearch: Boolean,
     val responseCode: String,
-    val allProductList: List<Visitable<*>>,
     val searchProductModel: SearchProductModel,
     val externalReference: String,
     val globalSearchApplink: String,
     val loadMoreProductList: List<Visitable<*>>,
-    val searchTerm: String,
 )
