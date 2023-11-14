@@ -60,7 +60,7 @@ class CatalogDetailUiMapper @Inject constructor(
         private const val LAYOUT_VERSION_4_VALUE = 4
         private const val COMPARISON_COUNT = 2
         private const val TOP_COMPARISON_SPEC_COUNT = 5
-        private const val COLUMN_INFO_SPEC_COUNT = 6
+        private const val COLUMN_INFO_SPEC_COUNT = 5
         private const val INVALID_CATALOG_ID = "0"
     }
 
@@ -472,7 +472,7 @@ class CatalogDetailUiMapper @Inject constructor(
                     author = it.author,
                     videoLink = it.url,
                     textTitleColor = getTextColor(darkMode),
-                    textSubTitleColor = getTextColor(darkMode),
+                    textSubTitleColor = getTextColor(darkMode)
                 )
             }
         )
@@ -495,9 +495,13 @@ class CatalogDetailUiMapper @Inject constructor(
                     },
                 rowColor = Pair(
                     MethodChecker.getColor(context, catalogR.color.catalog_dms_column_info_title_color),
-                    MethodChecker.getColor(context,
-                        if (darkMode) catalogR.color.catalog_dms_column_info_value_color_dark
-                        else catalogR.color.catalog_dms_column_info_value_color_light
+                    MethodChecker.getColor(
+                        context,
+                        if (darkMode) {
+                            catalogR.color.catalog_dms_column_info_value_color_dark
+                        } else {
+                            catalogR.color.catalog_dms_column_info_value_color_light
+                        }
                     )
                 )
             ),
