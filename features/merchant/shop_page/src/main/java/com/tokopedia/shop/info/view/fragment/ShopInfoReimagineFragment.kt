@@ -276,29 +276,23 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun renderOperationalHours(operationalHours: Map<String, List<String>>) {
-        val linearLayout = binding?.layoutOperationalHoursContainer
-        linearLayout?.removeAllViews()
+        binding?.layoutOperationalHoursContainer?.removeAllViews()
 
-        operationalHours.forEach {
-            val hour = it.key
-            val days = it.value
-            val groupedDays = days.joinToString(separator = ", ", postfix = ": ") { day -> day }
+        if (operationalHours.isEmpty()) {
+            val operationalHourTypography = createOperationalHoursTypography("-")
+            binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
+        } else {
+            operationalHours.forEach { operationalHour ->
+                val hour = operationalHour.key
+                val days = operationalHour.value
+                val groupedDays = days.joinToString(separator = ", ", postfix = ": ") { day -> day }
 
-            val textViewOperationalHour = Typography(context ?: return).apply {
-                setType(Typography.DISPLAY_2)
-                setTextColor(ContextCompat.getColor(this.context, unifyprinciplesR.color.Unify_NN950))
+                val operationalHourFormat = "%s %s"
+                val text = String.format(operationalHourFormat, groupedDays, hour)
 
-                val params = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                params.topMargin = MARGIN_4_DP.toPx()
-                layoutParams = params
+                val operationalHourTypography = createOperationalHoursTypography(text)
+                binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
             }
-
-            val operationalHourFormat = "%s %s"
-            textViewOperationalHour.text = String.format(operationalHourFormat, groupedDays, hour)
-            linearLayout?.addView(textViewOperationalHour)
         }
     }
 
