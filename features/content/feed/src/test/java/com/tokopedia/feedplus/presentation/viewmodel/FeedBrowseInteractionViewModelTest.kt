@@ -6,9 +6,9 @@ import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
 import com.tokopedia.feedplus.data.FeedBrowseModelBuilder
+import com.tokopedia.feedplus.helper.assertEqualTo
 import com.tokopedia.feedplus.presentation.robot.FeedBrowseViewModelRobot
 import com.tokopedia.feedplus.presentation.robot.createFeedBrowseViewModelRobot
-import com.tokopedia.tokopedia.feedplus.helper.assertEqualTo
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.mockk

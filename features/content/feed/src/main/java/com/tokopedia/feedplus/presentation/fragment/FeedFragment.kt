@@ -931,18 +931,20 @@ class FeedFragment :
         currentTrackerData = trackerModel
 
         val action: () -> Unit = {
-            trackerModel?.let {
-                feedAnalytics?.eventClickProductLabel(it, products)
-                feedAnalytics?.eventClickContentProductLabel(it)
-            }
             if (products.size == FeedProductTagView.PRODUCT_COUNT_ONE) {
                 val appLink = products.firstOrNull()?.applink
                 if (appLink?.isNotEmpty() == true) {
+                    trackerModel?.let {
+                        feedAnalytics?.eventClickProductLabel(it, products)
+                    }
                     activity?.let {
                         RouteManager.route(it, appLink)
                     }
                 }
             } else {
+                trackerModel?.let {
+                    feedAnalytics?.eventClickContentProductLabel(it)
+                }
                 openProductTagBottomSheet(
                     activityId = postId,
                     author = author,

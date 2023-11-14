@@ -8,14 +8,17 @@ android {
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     testOptions {
         animationsDisabled true
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 
     buildFeatures {

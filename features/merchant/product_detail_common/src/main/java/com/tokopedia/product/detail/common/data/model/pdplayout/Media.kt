@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Media(
@@ -24,4 +23,5 @@ data class Media(
         val urlHD: String = ""
 ) {
     var id: String = ""
+    var prefetch: Boolean = false
 }

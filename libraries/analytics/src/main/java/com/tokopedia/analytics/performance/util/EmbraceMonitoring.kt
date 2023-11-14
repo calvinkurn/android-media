@@ -6,7 +6,8 @@ import io.embrace.android.embracesdk.Embrace
 
 object EmbraceMonitoring {
     var ALLOW_EMBRACE_MOMENTS: MutableSet<String> = mutableSetOf(
-        EmbraceKey.KEY_MP_HOME,
+        EmbraceKey.KEY_TTFL_HOME,
+        EmbraceKey.KEY_TTIL_HOME,
         EmbraceKey.KEY_PDP_RESULT_TRACE,
         EmbraceKey.KEY_PDP_RESULT_TRACE_P2_DATA,
         EmbraceKey.KEY_MP_SHOP_HOME_V2,
