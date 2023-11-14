@@ -44,6 +44,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
@@ -2413,12 +2414,29 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun setAddon(
-        checked: Boolean,
-        addOnProductDataItemModel: AddOnProductDataItemModel,
-        position: Int
+            checked: Boolean,
+            addOnProductDataItemModel: AddOnProductDataItemModel,
+            position: Int
     ) {
         val checkoutItems = listData.value.toMutableList()
         val checkoutProductModel = checkoutItems[position] as CheckoutProductModel
+
+        val indexOrder = listData.value.indexOfFirst { it is CheckoutOrderModel
+                && it.cartStringGroup == checkoutProductModel.cartStringGroup }
+
+        if (indexOrder > 0) {
+            val order = checkoutItems[indexOrder] as CheckoutOrderModel
+            val newStateDropship = if (checked && order.shipment.courierItemData?.isSelected == true) {
+                CheckoutDropshipWidget.State.DISABLED
+            } else {
+                CheckoutDropshipWidget.State.ENABLED
+            }
+            val newOrder = order.copy(
+                    stateDropship = newStateDropship,
+            )
+            checkoutItems[indexOrder] = newOrder
+        }
+
         val oldList = checkoutProductModel.addOnProduct.listAddOnProductData
         val newProduct = checkoutProductModel.copy(
             addOnProduct = checkoutProductModel.addOnProduct.copy(
@@ -2556,6 +2574,10 @@ class CheckoutViewModel @Inject constructor(
 
     fun useNewPromoPage(): Boolean {
         return isPromoRevamp == true
+    }
+
+    fun isAnyProtectionAddonOptIn(cartStringGroup: String): Boolean {
+        return checkoutProcessor.checkProtectionAddOnOptIn(getOrderProducts(cartStringGroup))
     }
 
     companion object {

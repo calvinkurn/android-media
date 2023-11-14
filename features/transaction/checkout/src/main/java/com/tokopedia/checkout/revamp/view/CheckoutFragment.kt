@@ -37,6 +37,7 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.CornerAnalytics
+import com.tokopedia.checkout.databinding.BottomSheetDropshipBinding
 import com.tokopedia.checkout.databinding.BottomSheetPlatformFeeInfoBinding
 import com.tokopedia.checkout.databinding.FragmentCheckoutBinding
 import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
@@ -2599,5 +2600,25 @@ class CheckoutFragment :
 
     override fun onClearPromoFailed(throwable: Throwable) {
         showToast(throwable.message)
+    }
+
+    override fun showDropshipInfoBottomSheet() {
+        val bottomSheetDropshipBinding =
+                BottomSheetDropshipBinding.inflate(LayoutInflater.from(context))
+        val bottomSheetUnify = BottomSheetUnify()
+        bottomSheetUnify.setTitle(getString(R.string.dropship_bottomsheet_title, )
+        )
+        bottomSheetUnify.showCloseIcon = false
+        bottomSheetUnify.showKnob = true
+        bottomSheetUnify.setChild(bottomSheetDropshipBinding.root)
+        bottomSheetUnify.show(childFragmentManager, null)
+    }
+
+    override fun showDropshipToasterErrorProtectionUsage() {
+        Toaster.build(binding.root, getString(R.string.dropship_error_protection_usage), type = Toaster.TYPE_ERROR).show()
+    }
+
+    override fun checkLatestProtectionOptIn(cartStringGroup: String): Boolean {
+        return viewModel.isAnyProtectionAddonOptIn(cartStringGroup)
     }
 }

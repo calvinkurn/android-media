@@ -143,4 +143,10 @@ interface CheckoutAdapterListener {
         offerId: String,
         shopId: String
     )
+
+    fun showDropshipInfoBottomSheet()
+
+    fun showDropshipToasterErrorProtectionUsage()
+
+    fun checkLatestProtectionOptIn(cartStringGroup: String): Boolean
 }

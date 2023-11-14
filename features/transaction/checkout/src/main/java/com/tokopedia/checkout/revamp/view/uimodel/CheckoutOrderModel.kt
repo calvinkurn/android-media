@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
 import android.os.Parcelable
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -52,6 +53,8 @@ data class CheckoutOrderModel(
     var spId: Int = 0,
     var boCode: String = "",
     var boUniqueId: String = "",
+    var isDropshipperDisabled: Boolean = false,
+    var stateDropship: CheckoutDropshipWidget.State = CheckoutDropshipWidget.State.GONE,
     var dropshiperName: String = "",
     var dropshiperPhone: String = "",
     val isInsurance: Boolean = false,

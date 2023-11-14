@@ -235,6 +235,7 @@ class CheckoutDataConverter @Inject constructor() {
                 spId = groupShop.spId,
                 boCode = groupShop.boCode,
                 boUniqueId = groupShop.boUniqueId,
+                isDropshipperDisabled = cartShipmentAddressFormData.isDropshipperDisable,
                 dropshiperName = groupShop.dropshipperName,
                 dropshiperPhone = groupShop.dropshipperPhone,
                 isInsurance = groupShop.isUseInsurance,

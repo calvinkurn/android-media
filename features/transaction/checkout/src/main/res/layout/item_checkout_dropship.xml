@@ -42,7 +42,7 @@
         android:layout_marginEnd="12dp"
         app:layout_constraintBottom_toBottomOf="@id/icon_dropship"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/icon_dropship" />
+        app:layout_constraintTop_toTopOf="@id/icon_dropship"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/tf_dropship_name"

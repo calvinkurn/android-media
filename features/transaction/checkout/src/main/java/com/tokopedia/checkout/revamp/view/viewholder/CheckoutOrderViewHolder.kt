@@ -8,10 +8,9 @@ import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
 import com.tokopedia.logisticcart.shipping.model.InsuranceWidgetUiModel
@@ -25,7 +24,8 @@ class CheckoutOrderViewHolder(
     private val binding: ItemCheckoutOrderBinding,
     private val listener: CheckoutAdapterListener
 ) : RecyclerView.ViewHolder(binding.root),
-    ShippingCheckoutRevampWidget.ShippingWidgetListener {
+    ShippingCheckoutRevampWidget.ShippingWidgetListener,
+    CheckoutDropshipWidget.DropshipWidgetListener{
 
     private var order: CheckoutOrderModel? = null
 
@@ -329,13 +329,14 @@ class CheckoutOrderViewHolder(
     }
 
     private fun renderDropshipWidget(order: CheckoutOrderModel) {
-        if (order.shipment.courierItemData?.isSelected == true && order.shipment.courierItemData.isAllowDropshiper) {
-            binding.dropshipWidget.visible()
+        binding.dropshipWidget.setupListener(this)
+        if (order.isDropshipperDisabled) {
+            binding.dropshipWidget.state = CheckoutDropshipWidget.State.GONE
         } else {
-            binding.dropshipWidget.apply {
-                gone()
-                dropshipName?.editText?.setText("")
-                dropshipPhone?.editText?.setText("")
+            if (order.shipment.courierItemData?.isAllowDropshiper == true) {
+                binding.dropshipWidget.state = CheckoutDropshipWidget.State.ENABLED
+            } else {
+                binding.dropshipWidget.state = CheckoutDropshipWidget.State.GONE
             }
         }
     }
@@ -409,5 +410,17 @@ class CheckoutOrderViewHolder(
                 listener.getHostFragmentManager()
             )
         }
+    }
+
+    override fun onClickDropshipLabel() {
+        listener.showDropshipInfoBottomSheet()
+    }
+
+    override fun isAddOnProtectionOptIn(): Boolean {
+        return listener.checkLatestProtectionOptIn(order?.cartStringGroup?: "")
+    }
+
+    override fun showToasterErrorProtectionUsage() {
+        listener.showDropshipToasterErrorProtectionUsage()
     }
 }
