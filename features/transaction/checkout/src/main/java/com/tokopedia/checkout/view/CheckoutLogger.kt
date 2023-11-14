@@ -78,7 +78,7 @@ object CheckoutLogger {
         promoCode: String
     ) {
         if (shouldTriggerLog(throwable)) {
-            val productIds = shipmentCartItemModel.productIds
+            val productIds = shipmentCartItemModel.orderProductIds
 
             val errorMessage = throwable.message ?: "unknown exception"
             val mapData = mapOf(
@@ -141,7 +141,7 @@ object CheckoutLogger {
         promoCode: String
     ) {
         if (shouldTriggerLog(throwable)) {
-            val productIds = orderModel.productIds
+            val productIds = orderModel.orderProductIds
 
             val errorMessage = throwable.message ?: "unknown exception"
             val mapData = mapOf(

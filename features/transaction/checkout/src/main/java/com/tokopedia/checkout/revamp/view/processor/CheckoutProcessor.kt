@@ -379,7 +379,7 @@ class CheckoutProcessor @Inject constructor(
                     orderProducts = arrayListOf()
                     continue
                 }
-                newShipmentCartItemModelList.add(shipmentCartItemModel.copy(checkoutProducts = orderProducts))
+                newShipmentCartItemModelList.add(shipmentCartItemModel.copy(finalCheckoutProducts = orderProducts))
                 orderProducts = arrayListOf()
             }
         }

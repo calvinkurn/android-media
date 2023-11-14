@@ -250,14 +250,16 @@ class CheckoutCartProcessor @Inject constructor(
 
     suspend fun processSaveShipmentState(
         shipmentCartItemModel: CheckoutOrderModel,
-        recipientAddressModel: RecipientAddressModel
+        recipientAddressModel: RecipientAddressModel,
+        listData: List<CheckoutItem>
     ) {
         withContext(dispatchers.io) {
             try {
                 val params =
                     generateSaveShipmentStateRequestSingleAddress(
                         listOf(shipmentCartItemModel),
-                        recipientAddressModel
+                        recipientAddressModel,
+                        listData
                     )
                 if (params.requestDataList.first().shopProductDataList.isNotEmpty()) {
                     saveShipmentStateGqlUseCase(params)
@@ -276,7 +278,8 @@ class CheckoutCartProcessor @Inject constructor(
             try {
                 val params = generateSaveShipmentStateRequestSingleAddress(
                     listData.filterIsInstance(CheckoutOrderModel::class.java),
-                    recipientAddressModel
+                    recipientAddressModel,
+                    listData
                 )
                 if (params.requestDataList.first().shopProductDataList.isNotEmpty()) {
                     saveShipmentStateGqlUseCase(params)
@@ -289,14 +292,15 @@ class CheckoutCartProcessor @Inject constructor(
 
     private fun generateSaveShipmentStateRequestSingleAddress(
         shipmentCartItemModels: List<CheckoutOrderModel>,
-        recipientAddressModel: RecipientAddressModel
+        recipientAddressModel: RecipientAddressModel,
+        listData: List<CheckoutItem>
     ): SaveShipmentStateRequest {
         val shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData> =
             ArrayList()
         val shipmentStateRequestDataList: MutableList<ShipmentStateRequestData> =
             ArrayList()
         for (shipmentCartItemModel in shipmentCartItemModels) {
-            setSaveShipmentStateData(shipmentCartItemModel, shipmentStateShopProductDataList)
+            setSaveShipmentStateData(shipmentCartItemModel, listData, shipmentStateShopProductDataList)
         }
         val shipmentStateRequestData = ShipmentStateRequestData()
         shipmentStateRequestData.addressId = recipientAddressModel.id
@@ -307,6 +311,7 @@ class CheckoutCartProcessor @Inject constructor(
 
     private fun setSaveShipmentStateData(
         shipmentCartItemModel: CheckoutOrderModel,
+        listData: List<CheckoutItem>,
         shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData>
     ) {
         var courierData: CourierItemData? = shipmentCartItemModel.shipment.courierItemData
@@ -322,7 +327,8 @@ class CheckoutCartProcessor @Inject constructor(
         if (courierData != null) {
             val shipmentStateProductDataList: MutableList<ShipmentStateProductData> =
                 ArrayList()
-            for (cartItemModel in shipmentCartItemModel.checkoutProducts) {
+            val products = helper.getOrderProducts(listData, shipmentCartItemModel.cartStringGroup)
+            for (cartItemModel in products) {
                 val shipmentStateProductData = ShipmentStateProductData()
                 shipmentStateProductData.shopId = cartItemModel.shopId.toLongOrZero()
                 shipmentStateProductData.productId = cartItemModel.productId
