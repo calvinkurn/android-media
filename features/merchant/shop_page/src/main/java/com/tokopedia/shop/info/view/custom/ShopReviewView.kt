@@ -31,7 +31,6 @@ class ShopReviewView @JvmOverloads constructor(
 
     private var onReviewImageClick: (ShopReview.Review) -> Unit = {}
     private var onReviewImageViewAllClick: (ShopReview.Review) -> Unit = {}
-    private var isSwipeFromUserInteraction = false
 
     fun renderReview(lifecycle: Lifecycle, fragment: Fragment, review: ShopReview) {
         removeAllViews()
