@@ -40,7 +40,7 @@ The first journey of uploading a feed post is selecting media. Users are allowed
 
 Image Picker Insta has 2 pages:
 
-![](res/Screen%20Shot%202023-01-17%20at%2016.29.44-20230117-092949.png)
+<img src="https://docs-android.tokopedia.net/images/docs/res/Screen%20Shot%202023-01-17%20at%2016.29.44-20230117-092949.png" alt="" />
 
 In `Media Picker Page`, user is able to:
 
@@ -49,7 +49,7 @@ In `Media Picker Page`, user is able to:
 3. Cropping & positioning selected images.
 4. Change account if user has multiple account.
 
-![](res/Screen%20Shot%202023-01-17%20at%2016.29.57-20230117-093003.png)
+<img src="https://docs-android.tokopedia.net/images/docs/res/Screen%20Shot%202023-01-17%20at%2016.29.57-20230117-093003.png" alt="" />
 
 In `Camera Page`, user is able to:
 
@@ -66,7 +66,7 @@ In `Camera Page`, user is able to:
 
 ## Flow Diagram
 
-![](res/Image%20Picker%20Insta.drawio-20230127-062243.png)
+<img src="https://docs-android.tokopedia.net/images/docs/res/Image%20Picker%20Insta.drawio-20230127-062243.png" alt="" />
 
 ## Navigation
 
@@ -142,6 +142,6 @@ Here is the list of parameters that you can setup:
 <!--start expand:What is the difference from this media picker with the one that owned by Media Team?-->
 This media picker is only used for Feed Post Creation. If your feature needs a media picker, please consider to use [media picker](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1944682656/MediaPicker+Universal+Image+and+Video+Picker) from Media Team.
 
-![](res/image-20220419-021000.png)
+<img src="https://docs-android.tokopedia.net/images/docs/res/image-20220419-021000.png" alt="" />
 <!--end expand-->
 
