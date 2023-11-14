@@ -29,9 +29,14 @@ class ComparisonViewHolder(
 ) : AbstractViewHolder<ComparisonUiModel>(itemView) {
 
     interface ComparisonItemListener {
-        fun onComparisonSwitchButtonClicked(position: Int)
+        fun onComparisonSwitchButtonClicked(
+            position: Int,
+            item: ComparisonUiModel.ComparisonContent
+        )
         fun onComparisonSeeMoreButtonClicked()
         fun onComparisonProductClick(id: String)
+
+        fun onComparisonImpression(id: String)
     }
 
     companion object {
@@ -97,22 +102,24 @@ class ComparisonViewHolder(
 
         // update list
         comparisonItems.forEach {
-            val tempTitleHeight = ceil((it.productTitle.length * DEFAULT_TITLE_CHAR_WIDTH)/ textAreaWidth).toInt()
+            val tempTitleHeight = ceil((it.productTitle.length * DEFAULT_TITLE_CHAR_WIDTH) / textAreaWidth).toInt()
             if (tempTitleHeight > titleHeight) titleHeight = tempTitleHeight
-            if (isDisplayingTopSpec)
+            if (isDisplayingTopSpec) {
                 it.topComparisonSpecs.updateRowsHeight(rowsHeight, textAreaWidth)
-            else
+            } else {
                 it.comparisonSpecs.updateRowsHeight(rowsHeight, textAreaWidth)
+            }
         }
         specs?.updateRowsHeight(rowsHeight, textAreaWidth)
 
         // apply list to object
         comparisonItems.forEach {
             it.titleHeight = titleHeight
-            if (isDisplayingTopSpec)
+            if (isDisplayingTopSpec) {
                 it.topComparisonSpecs.applyRowsHeight(rowsHeight)
-            else
+            } else {
                 it.comparisonSpecs.applyRowsHeight(rowsHeight)
+            }
         }
         specs?.applyRowsHeight(rowsHeight)
 
@@ -131,8 +138,9 @@ class ComparisonViewHolder(
             val lines = comparisonSpec.specValue.split("\n").sumOf { line ->
                 ceil((line.length * DEFAULT_CHAR_WIDTH) / textAreaWidth).toInt()
             }
-            if (rowsHeight.getOrNull(index) != null)
+            if (rowsHeight.getOrNull(index) != null) {
                 if (lines > rowsHeight[index]) rowsHeight[index] = lines
+            }
         }
     }
 
@@ -168,6 +176,7 @@ class ComparisonViewHolder(
     }
 
     override fun bind(element: ComparisonUiModel) {
+        comparisonItemListener?.onComparisonImpression(element.content.getOrNull(Int.ONE)?.id.orEmpty())
         if (element.content.isEmpty()) return
         val comparisonItems = element.content.subList(Int.ONE, element.content.size)
         val comparedItem = element.content.firstOrNull()

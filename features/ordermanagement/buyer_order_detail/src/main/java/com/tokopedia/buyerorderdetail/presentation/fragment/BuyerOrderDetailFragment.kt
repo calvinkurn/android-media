@@ -345,6 +345,10 @@ open class BuyerOrderDetailFragment :
         trackBuyAgainProduct()
     }
 
+    override fun onProductImpressed(product: ProductListUiModel.ProductUiModel) {
+        viewModel.impressProduct(product)
+    }
+
     override fun onPurchaseAgainButtonClicked(uiModel: ProductListUiModel.ProductUiModel) {
         onBuyAgainButtonClicked(uiModel)
     }
@@ -1083,6 +1087,10 @@ open class BuyerOrderDetailFragment :
     override fun onBmgmItemWarrantyClaim(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
         navigator.openAppLink(uiModel.button?.url.orEmpty(), true)
         BuyerOrderDetailTracker.eventClickWarrantyClaim(uiModel.orderId)
+    }
+
+    override fun onBmgmItemImpressed(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        viewModel.impressBmgmProduct(uiModel)
     }
 
     override fun onCopyAddOnDescription(label: String, description: CharSequence) {

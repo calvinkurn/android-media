@@ -1,6 +1,5 @@
 package com.tokopedia.stories.creation.view.model.mapper
 
-import com.tokopedia.content.product.picker.seller.mapper.ContentProductPickerSellerMapper
 import com.tokopedia.content.product.picker.seller.model.DiscountedPrice
 import com.tokopedia.content.product.picker.seller.model.OriginalPrice
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
@@ -8,6 +7,7 @@ import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSect
 import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.util.PriceFormatUtil
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.stories.creation.model.GetStoryProductDetailsResponse
 import com.tokopedia.stories.creation.model.GetStoryProductEtalaseResponse
@@ -18,8 +18,8 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on October 13, 2023
  */
 class StoriesCreationProductMapper @Inject constructor(
-
-) : ContentProductPickerSellerMapper() {
+    private val priceFormatUtil: PriceFormatUtil,
+) {
 
     fun mapProductEtalase(
         response: GetStoryProductEtalaseResponse
@@ -32,7 +32,7 @@ class StoriesCreationProductMapper @Inject constructor(
                     imageUrl = data.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
                     stock = data.stock.toLong(),
                     price = OriginalPrice(
-                        priceFormat.format(BigDecimal(data.price.min.orZero())),
+                        priceFormatUtil.format(BigDecimal(data.price.min.orZero())),
                         data.price.min.orZero()
                     ),
                     hasCommission = false,

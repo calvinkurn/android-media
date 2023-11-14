@@ -650,4 +650,8 @@
         <key>android_enable_compose_centralized_promo</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>android_pdp_enable_prefetch</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

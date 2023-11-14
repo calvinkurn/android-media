@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderStatusCode
 import com.tokopedia.buyerorderdetail.common.extension.combine
@@ -45,25 +47,25 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -87,6 +89,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
         private const val PRODUCT_LIST_COLLAPSE_DEBOUNCE_TIME = 300L
     }
 
+    private var getBuyerOrderDetailDataJob: Job? = null
+    private var warrantyClaimButtonImpressed = false
+
     private val _finishOrderResult = MutableLiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>()
     val finishOrderResult: LiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>
         get() = _finishOrderResult
@@ -102,12 +107,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val scpRewardsMedalTouchPointWidgetUiState = MutableStateFlow<ScpRewardsMedalTouchPointWidgetUiState>(
         value = ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden
     )
-    private val buyerOrderDetailDataRequestParams = MutableSharedFlow<GetBuyerOrderDetailDataParams>(
-        replay = Int.ONE
+    private val buyerOrderDetailDataRequestState = MutableStateFlow<GetBuyerOrderDetailDataRequestState>(
+        GetBuyerOrderDetailDataRequestState.Requesting()
     )
-    private val buyerOrderDetailDataRequestState = buyerOrderDetailDataRequestParams.flatMapLatest(
-        ::doGetBuyerOrderDetailData
-    ).toStateFlow(GetBuyerOrderDetailDataRequestState.Requesting())
     private val singleAtcRequestStates = MutableStateFlow<Map<String, AddToCartSingleRequestState>>(mapOf())
     private val productListCollapsed = MutableStateFlow(true)
     private val actionButtonsUiState = buyerOrderDetailDataRequestState.mapLatest(
@@ -165,13 +167,16 @@ class BuyerOrderDetailViewModel @Inject constructor(
         cart: String,
         shouldCheckCache: Boolean
     ) {
-        viewModelScope.launch {
-            buyerOrderDetailDataRequestParams.emit(
-                GetBuyerOrderDetailDataParams(
-                    cart = cart,
-                    orderId = orderId,
-                    paymentId = paymentId,
-                    shouldCheckCache = shouldCheckCache
+        getBuyerOrderDetailDataJob?.cancel()
+        getBuyerOrderDetailDataJob = viewModelScope.launch {
+            buyerOrderDetailDataRequestState.emitAll(
+                getBuyerOrderDetailDataUseCase.get().invoke(
+                    GetBuyerOrderDetailDataParams(
+                        cart = cart,
+                        orderId = orderId,
+                        paymentId = paymentId,
+                        shouldCheckCache = shouldCheckCache
+                    )
                 )
             )
         }
@@ -360,15 +365,31 @@ class BuyerOrderDetailViewModel @Inject constructor(
         scpRewardsMedalTouchPointWidgetUiState.value = ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden
     }
 
+    fun impressProduct(product: ProductListUiModel.ProductUiModel) {
+        if (
+            product.button.key == BuyerOrderDetailActionButtonKey.WARRANTY_CLAIM &&
+            !warrantyClaimButtonImpressed
+        ) {
+            warrantyClaimButtonImpressed = true
+            BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton(product.orderId)
+        }
+    }
+
+    fun impressBmgmProduct(product: ProductBmgmSectionUiModel.ProductUiModel) {
+        if (
+            product.button?.key == BuyerOrderDetailActionButtonKey.WARRANTY_CLAIM &&
+            !warrantyClaimButtonImpressed
+        ) {
+            warrantyClaimButtonImpressed = true
+            BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton(product.orderId)
+        }
+    }
+
     private fun <T> Flow<T>.toStateFlow(initialValue: T) = stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
         initialValue = initialValue
     )
-
-    private suspend fun doGetBuyerOrderDetailData(params: GetBuyerOrderDetailDataParams): Flow<GetBuyerOrderDetailDataRequestState> {
-        return getBuyerOrderDetailDataUseCase.get().invoke(params)
-    }
 
     private fun mapActionButtonsUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
@@ -416,7 +437,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             getBuyerOrderDetailDataRequestState,
             productListUiState.value,
             singleAtcRequestStates,
-            collapseProductList
+            collapseProductList,
+            warrantyClaimButtonImpressed
         )
     }
 

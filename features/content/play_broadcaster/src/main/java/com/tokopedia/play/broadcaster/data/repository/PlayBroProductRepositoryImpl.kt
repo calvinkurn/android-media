@@ -1,19 +1,15 @@
 package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.product.picker.seller.domain.repository.AbstractProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository.Companion.AUTHOR_TYPE_SELLER
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository.Companion.PRODUCTS_IN_ETALASE_PER_PAGE
 import com.tokopedia.play.broadcaster.domain.model.addproduct.AddProductTagChannelRequest
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
-import com.tokopedia.content.product.picker.seller.domain.usecase.etalase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.SetPinnedProductUseCase
-import com.tokopedia.content.product.picker.seller.domain.usecase.campaign.GetCampaignListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductTagSummarySectionUseCase
-import com.tokopedia.content.product.picker.seller.domain.usecase.campaign.GetProductsInCampaignUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
-import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
-import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
 import com.tokopedia.content.product.picker.seller.model.exception.PinnedProductException
 import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
@@ -27,23 +23,13 @@ import javax.inject.Inject
  */
 class PlayBroProductRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    getCampaignListUseCase: GetCampaignListUseCase,
-    getProductsInCampaignUseCase: GetProductsInCampaignUseCase,
-    getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
     private val getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
     private val addProductTagUseCase: AddProductTagUseCase,
     private val getProductTagSummarySectionUseCase: GetProductTagSummarySectionUseCase,
     private val setPinnedProductUseCase: SetPinnedProductUseCase,
     private val productMapper: PlayBroProductUiMapper,
     private val userSession: UserSessionInterface,
-) : AbstractProductPickerSellerRepository(
-    dispatchers,
-    getCampaignListUseCase,
-    getProductsInCampaignUseCase,
-    getSelfEtalaseListUseCase,
-    productMapper,
-    userSession
-) {
+) : ContentProductPickerSellerRepository {
 
     override suspend fun getProductsInEtalase(
         etalaseId: String,

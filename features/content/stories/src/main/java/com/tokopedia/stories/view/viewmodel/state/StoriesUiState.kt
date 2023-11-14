@@ -82,7 +82,7 @@ data class TimerStatusInfo(
 
         val Empty
             get() = TimerStatusInfo(
-                StoriesDetailItem.StoriesDetailItemUiEvent.RESUME,
+                StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE,
                 StoryTimer.Empty
             )
     }

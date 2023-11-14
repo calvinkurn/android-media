@@ -211,7 +211,7 @@ sealed class EntryPointInfoEvent {
     data class InactiveNew(
         val lastApply: LastApplyUiModel,
         val isNoItemSelected: Boolean = false,
-        val entryPointInfo: PromoEntryPointInfo? = null,
+        val entryPointInfo: PromoEntryPointInfo = PromoEntryPointInfo(),
         val recommendedPromoCodes: List<String>
     ) : EntryPointInfoEvent()
 
