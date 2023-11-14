@@ -44,6 +44,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         private const val MARGIN_PARENT_START = 32
         private const val MARGIN_PARENT_END = 32
         private const val REVIEW_TEXT_MAX_LINES = 3
+        private const val THIRD_LINE = 2
 
         fun newInstance(review: ShopReview.Review): ReviewViewPagerItemFragment {
             return ReviewViewPagerItemFragment().apply {
@@ -97,7 +98,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
                 renderReviewText(review)
             }
 
-            renderCompletedReview(review.likeDislike.likeStatus)
+            renderCompletedReview(Int.ZERO)
             renderLikeCount(review.likeDislike.likeStatus, review.likeDislike.totalLike)
             renderReviewImages(review.attachments)
         }
@@ -134,8 +135,8 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         val ellipsisTextLength = ellipsisText.length
 
         val layout = reviewTextView.layout
-        val start = layout.getLineStart(0)
-        val end = layout.getLineEnd(2)
+        val start = layout.getLineStart(Int.ZERO)
+        val end = layout.getLineEnd(THIRD_LINE)
 
         val endIndex = end - ellipsisTextLength - ctaTextLength
 
@@ -201,7 +202,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
     private fun renderReviewImages(reviewImages: List<ShopReview.Review.Attachment>) {
         val marginStartFromParentStart = MARGIN_PARENT_START.toPx()
         val marginEndFromParentEnd = MARGIN_PARENT_END.toPx()
-        val totalItemSpacingMarginStart = (MAX_ATTACHMENT - 1) * MARGIN_START_REVIEW_IMAGE.toPx()
+        val totalItemSpacingMarginStart = (MAX_ATTACHMENT - Int.ZERO) * MARGIN_START_REVIEW_IMAGE.toPx()
         val usableScreenWidth = getScreenWidth() - marginStartFromParentStart - totalItemSpacingMarginStart - marginEndFromParentEnd
         val reviewImageMaxHeight = usableScreenWidth / MAX_ATTACHMENT
         val reviewImageMaxWidth = usableScreenWidth / MAX_ATTACHMENT
