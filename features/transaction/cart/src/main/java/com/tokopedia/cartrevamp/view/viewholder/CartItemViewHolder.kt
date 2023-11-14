@@ -188,7 +188,8 @@ class CartItemViewHolder constructor(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.END,
                         R.id.checkbox_anchor,
-                        ConstraintSet.END
+                        ConstraintSet.END,
+                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.context.resources.displayMetrics)
                     )
                 }
                 constraintSet.connect(

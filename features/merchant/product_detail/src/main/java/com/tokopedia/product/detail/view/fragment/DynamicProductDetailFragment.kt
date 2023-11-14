@@ -2273,7 +2273,8 @@ open class DynamicProductDetailFragment :
     }
 
     override fun shouldShowWishlist(): Boolean {
-        return !viewModel.isShopOwner()
+        val isPrefetch = viewModel.getDynamicProductInfoP1?.cacheState?.isPrefetch == true
+        return !viewModel.isShopOwner() && !isPrefetch
     }
 
     override fun onMainImageClicked(
