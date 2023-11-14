@@ -20,6 +20,7 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.CashOnDelivery
@@ -185,9 +186,10 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private fun setUpAutoRedirect() {
         if (thanksPageData.configFlagData?.autoRedirect != true) return
+        tv_payment_success_info.show()
 
         countDownTimer = object : CountDownTimer(
-            thanksPageData.customDataOther?.delayDuration?.toLong() ?: 0L,
+            thanksPageData.customDataOther?.delayDuration?.toLong()?.times(1000L) ?: 0L,
             1000
         ) {
             override fun onTick(millisUntilFinished: Long) {
