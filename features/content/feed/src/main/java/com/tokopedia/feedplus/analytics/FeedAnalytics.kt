@@ -90,6 +90,9 @@ class FeedAnalytics @AssistedInject constructor(
         const val KEY_ITEMS = "items"
         const val KEY_PROMOTIONS = "promotions"
         const val KEY_DIMENSION40 = "dimension40"
+        const val KEY_DIMENSION39 = "dimension39"
+        const val KEY_DIMENSION80 = "dimension80"
+        const val KEY_DIMENSION42 = "dimension42"
         const val KEY_INDEX = "index"
         const val KEY_ITEM_BRAND = "item_brand"
         const val KEY_CATEGORY_ID = "category_id"
@@ -435,6 +438,8 @@ class FeedAnalytics @AssistedInject constructor(
                             putString(EnhanceEcommerce.KEY_ITEM_NAME, feedCardProductModel.name)
                             putString(EnhanceEcommerce.KEY_ITEM_VARIANT, "")
                             putDouble(EnhanceEcommerce.KEY_PRICE, feedCardProductModel.price)
+                            putString(EnhanceEcommerce.KEY_DIMENSION39, EnhanceEcommerce.ITEM_LIST_PRODUCT_LABEL)
+                            putString(EnhanceEcommerce.KEY_DIMENSION80, pageSource)
                         }
                     })
                 )
@@ -476,6 +481,8 @@ class FeedAnalytics @AssistedInject constructor(
                                 putString(EnhanceEcommerce.KEY_ITEM_NAME, feedCardProductModel.name)
                                 putString(EnhanceEcommerce.KEY_ITEM_VARIANT, "")
                                 putDouble(EnhanceEcommerce.KEY_PRICE, feedCardProductModel.price)
+                                putString(EnhanceEcommerce.KEY_DIMENSION39, EnhanceEcommerce.ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET)
+                                putString(EnhanceEcommerce.KEY_DIMENSION80, pageSource)
                             }
                         }
                     )
@@ -547,6 +554,8 @@ class FeedAnalytics @AssistedInject constructor(
                             putString(EnhanceEcommerce.KEY_ITEM_NAME, productName)
                             putString(EnhanceEcommerce.KEY_ITEM_VARIANT, "")
                             putDouble(EnhanceEcommerce.KEY_PRICE, productPrice)
+                            putString(EnhanceEcommerce.KEY_DIMENSION39, EnhanceEcommerce.ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET)
+                            putString(EnhanceEcommerce.KEY_DIMENSION80, pageSource)
                         }
                     )
                 )
