@@ -1,7 +1,6 @@
 package com.tokopedia.tokofood.merchant
 
 import com.tokopedia.tokofood.data.generateTestDeliveryCoverageResult
-import com.tokopedia.tokofood.data.generateTestGetStateChosenAddressQglResponse
 import com.tokopedia.tokofood.data.generateTestKeroEditAddressResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -26,7 +25,7 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
     fun `when updatePinPoint is success expect the boolean result to be true`() {
         coEvery {
             keroEditAddressUseCase.execute("", "", "")
-        } returns generateTestKeroEditAddressResponse().keroEditAddress.data.isEditSuccess()
+        } returns generateTestKeroEditAddressResponse().keroEditAddress
         viewModel.updatePinPoint("", "", "")
         val expectedResult = generateTestKeroEditAddressResponse()
         viewModel.updatePinPoint("", "", "")
@@ -54,27 +53,6 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
         viewModel.updatePinPoint("", "", "")
         val actualResponse = viewModel.errorMessage.value
         assertEquals(actualResponse, "error_message")
-    }
-
-    @Test
-    fun `when getChooseAddress is success expect chosen address data`() {
-        coEvery {
-            getChooseAddressWarehouseLocUseCase(any())
-        } returns generateTestGetStateChosenAddressQglResponse().response
-        val expectedResult = generateTestGetStateChosenAddressQglResponse()
-        viewModel.getChooseAddress("tokofood")
-        val actualResult = viewModel.chooseAddress.value
-        Assert.assertEquals(expectedResult.response, (actualResult as Success).data)
-    }
-
-    @Test
-    fun `when getChooseAddress is success expect fail response`() {
-        val param = "tokofood"
-        val error = Exception("test exception")
-        coEvery { getChooseAddressWarehouseLocUseCase.invoke(param) } throws error
-        viewModel.getChooseAddress(param)
-        val actualResult = viewModel.chooseAddress.value
-        Assert.assertTrue(actualResult is Fail)
     }
 
     @Test

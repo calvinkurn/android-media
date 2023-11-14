@@ -38,6 +38,7 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData.FOOD_TYPE
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
@@ -47,6 +48,7 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -203,7 +205,8 @@ class TokoFoodHomeFragment :
     private var isShowMiniCart = false
     private var isBackFromOtherPage = false
     private var totalScrolled = 0
-    private var onScrollChangedListenerList = mutableListOf<ViewTreeObserver.OnScrollChangedListener>()
+    private var onScrollChangedListenerList =
+        mutableListOf<ViewTreeObserver.OnScrollChangedListener>()
     private val spaceZero: Int
         get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
             ?.toInt() ?: 0
@@ -453,13 +456,36 @@ class TokoFoodHomeFragment :
         viewModel.setHomeLayout(localCacheModel, userSession.isLoggedIn)
     }
 
-    private fun updateChosenAddressPinpoint(lat: String, long: String) {
-        if (lat.isNotEmpty() && long.isNotEmpty()) {
-            context?.let {
-                ChooseAddressUtils.updatePinpointLocalizingAddressData(it, lat, long)
-                checkIfChooseAddressWidgetDataUpdated()
-                loadLayout()
+    private fun updateChosenAddressPinpoint(address: KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse) {
+        context?.let {
+            if (address.isSuccess == 1) {
+                ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    context = it,
+                    addressId = address.chosenAddressData.addressId.toString(),
+                    cityId = address.chosenAddressData.cityId.toString(),
+                    districtId = address.chosenAddressData.districtId.toString(),
+                    lat = address.chosenAddressData.latitude,
+                    long = address.chosenAddressData.longitude,
+                    label = String.format(
+                        "%s %s",
+                        address.chosenAddressData.addressName,
+                        address.chosenAddressData.receiverName
+                    ),
+                    postalCode = address.chosenAddressData.postalCode,
+                    warehouseId = address.tokonow.warehouseId.toString(),
+                    shopId = address.tokonow.shopId.toString(),
+                    warehouses = address.tokonow.warehouses.map {
+                        LocalWarehouseModel(
+                            it.warehouseId,
+                            it.serviceType
+                        )
+                    },
+                    serviceType = address.tokonow.serviceType,
+                    lastUpdate = address.tokonow.tokonowLastUpdate
+                )
             }
+            checkIfChooseAddressWidgetDataUpdated()
+            loadLayout()
         }
     }
 
@@ -495,7 +521,11 @@ class TokoFoodHomeFragment :
             viewLifecycleOwner.lifecycle.addObserver(toolbar)
             activity?.let {
                 toolbar.showShadow(true)
-                toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
+                toolbar.setupToolbarWithStatusBar(
+                    it,
+                    applyPadding = false,
+                    applyPaddingNegative = true
+                )
                 toolbar.setToolbarTitle(getString(R.string.tokofood_title))
                 toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
                 setToolbarSearch()
@@ -558,6 +588,7 @@ class TokoFoodHomeFragment :
                     is Success -> {
                         onSuccessGetHomeLayout(it.data)
                     }
+
                     is Fail -> {
                         logExceptionTokoFoodHome(
                             it.throwable,
@@ -579,7 +610,7 @@ class TokoFoodHomeFragment :
             viewModel.flowUpdatePinPointState.collect {
                 when (it) {
                     is Success -> {
-                        updateChosenAddressPinpoint(it.data.first, it.data.second)
+                        updateChosenAddressPinpoint(it.data)
                     }
 
                     is Fail -> {
@@ -632,6 +663,7 @@ class TokoFoodHomeFragment :
                             goToPurchasePage()
                         }
                     }
+
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
                         if (!isBackFromOtherPage) {
                             if (viewModel.isShownEmptyState()) {
@@ -645,6 +677,7 @@ class TokoFoodHomeFragment :
                             isBackFromOtherPage = false
                         }
                     }
+
                     UiEvent.EVENT_FAILED_LOAD_CART -> {
                         hideMiniCartHome()
                         isShowMiniCart = false
@@ -814,7 +847,10 @@ class TokoFoodHomeFragment :
 
     private fun showUSPBottomSheet(uspResponse: USPResponse) {
         val tokoFoodUSPBottomSheet = TokoFoodUSPBottomSheet.getInstance()
-        tokoFoodUSPBottomSheet.setUSP(uspResponse, getString(com.tokopedia.tokofood.R.string.home_usp_bottom_sheet_title))
+        tokoFoodUSPBottomSheet.setUSP(
+            uspResponse,
+            getString(com.tokopedia.tokofood.R.string.home_usp_bottom_sheet_title)
+        )
         tokoFoodUSPBottomSheet.show(parentFragmentManager, "")
     }
 
@@ -853,6 +889,7 @@ class TokoFoodHomeFragment :
             localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
         }
     }
+
     private fun navigateToSetPinpoint() {
         activity?.let {
             val bundle = Bundle().apply {
@@ -873,7 +910,8 @@ class TokoFoodHomeFragment :
                 val locationPass =
                     it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
                 if (locationPass == null) {
-                    val addressData = it.getParcelableExtra(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL) as? SaveAddressDataModel
+                    val addressData =
+                        it.getParcelableExtra(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL) as? SaveAddressDataModel
                     addressData?.let { address ->
                         localCacheModel?.address_id?.let { addressId ->
                             viewModel.setUpdatePinPoint(
@@ -899,7 +937,8 @@ class TokoFoodHomeFragment :
     private fun onResultFromAddAddress(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             data?.let {
-                val addressDataModel = data.getParcelableExtra(NEW_ADDRESS_PARCELABLE) as? SaveAddressDataModel
+                val addressDataModel =
+                    data.getParcelableExtra(NEW_ADDRESS_PARCELABLE) as? SaveAddressDataModel
                 addressDataModel?.let {
                     setupChooseAddress(it)
                 }
@@ -991,7 +1030,8 @@ class TokoFoodHomeFragment :
             thumbNailTitle = context?.resources?.getString(R.string.home_share_tn_title).orEmpty(),
             ogImageUrl = OG_IMAGE_SHARE_URL,
             specificPageName = context?.resources?.getString(R.string.home_share_title).orEmpty(),
-            specificPageDescription = context?.resources?.getString(R.string.home_share_desc).orEmpty(),
+            specificPageDescription = context?.resources?.getString(R.string.home_share_desc)
+                .orEmpty(),
             linkerType = FOOD_TYPE
         )
     }
@@ -1007,7 +1047,8 @@ class TokoFoodHomeFragment :
                 }
             }
         } else {
-            LinkerManager.getInstance().executeShareRequest(shareRequest(context, shareHomeTokoFood))
+            LinkerManager.getInstance()
+                .executeShareRequest(shareRequest(context, shareHomeTokoFood))
         }
     }
 
@@ -1149,7 +1190,8 @@ class TokoFoodHomeFragment :
                     Int.ZERO,
                     Int.ZERO,
                     Int.ZERO,
-                    context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7) ?: Int.ZERO
+                    context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
+                        ?: Int.ZERO
                 )
             } else {
                 it.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)

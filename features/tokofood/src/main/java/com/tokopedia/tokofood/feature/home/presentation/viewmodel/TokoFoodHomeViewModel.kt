@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.MERCHANT_TITLE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
@@ -109,7 +110,7 @@ class TokoFoodHomeViewModel @Inject constructor(
             replay = Int.ONE
         )
 
-    val flowUpdatePinPointState: SharedFlow<Result<Pair<String, String>>> =
+    val flowUpdatePinPointState: SharedFlow<Result<KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse>> =
         _inputPinPointState.flatMapConcat {
             flow {
                 emit(updatePinPoin(it.addressId, it.latitude, it.longitude))
@@ -304,15 +305,11 @@ class TokoFoodHomeViewModel @Inject constructor(
         )
     }
 
-    private suspend fun updatePinPoin(addressId: String, latitude: String, longitude: String): Result<Pair<String, String>> {
-        val isSuccess = withContext(dispatchers.io) {
+    private suspend fun updatePinPoin(addressId: String, latitude: String, longitude: String): Result<KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse> {
+        val result = withContext(dispatchers.io) {
             keroEditAddressUseCase.execute(addressId, latitude, longitude)
         }
-        return if (isSuccess) {
-            Success(Pair(latitude, longitude))
-        } else {
-            Success(Pair("", ""))
-        }
+        return Success(result)
     }
 
     private suspend fun getHomeLayout(localCacheModel: LocalCacheModel): Result<TokoFoodListUiModel> {

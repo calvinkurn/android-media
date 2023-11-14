@@ -32,7 +32,6 @@ abstract class ManageLocationViewModelTestFixture {
         MockKAnnotations.init(this)
         viewModel = ManageLocationViewModel(
             keroEditAddressUseCase,
-            getChooseAddressWarehouseLocUseCase,
             checkDeliveryCoverageUseCase,
             CoroutineTestDispatchersProvider
         )

@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -36,6 +37,7 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
@@ -183,24 +185,9 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
             showToaster(message)
         }
 
-        observe(viewModel.updatePinPointState) { isSuccess ->
-            if (isSuccess) {
-                getChooseAddress()
-            }
-        }
-        observe(viewModel.chooseAddress) {
-            when (it) {
-                is Success -> {
-                    setupChooseAddress(it.data)
-                }
-                is Fail -> {
-                    showToaster(it.throwable.message)
-                    logExceptionToServerLogger(
-                        it.throwable,
-                        TokofoodErrorLogger.ErrorType.ERROR_CHOOSE_ADDRESS,
-                        TokofoodErrorLogger.ErrorDescription.ERROR_CHOOSE_ADDRESS_MANAGE_LOCATION
-                    )
-                }
+        observe(viewModel.updatePinPointState) { data ->
+            if (data.isSuccess == 1) {
+                setupChooseAddress(data)
             }
         }
         observe(viewModel.checkDeliveryCoverageResult) {
@@ -222,6 +209,37 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
                     )
                 }
             }
+        }
+    }
+
+    private fun setupChooseAddress(address: KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse) {
+        context?.let {
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                context = it,
+                addressId = address.chosenAddressData.addressId.toString(),
+                cityId = address.chosenAddressData.cityId.toString(),
+                districtId = address.chosenAddressData.districtId.toString(),
+                lat = address.chosenAddressData.latitude,
+                long = address.chosenAddressData.longitude,
+                label = String.format(
+                    "%s %s",
+                    address.chosenAddressData.addressName,
+                    address.chosenAddressData.receiverName
+                ),
+                postalCode = address.chosenAddressData.postalCode,
+                warehouseId = address.tokonow.warehouseId.toString(),
+                shopId = address.tokonow.shopId.toString(),
+                warehouses = address.tokonow.warehouses.map { warehouse ->
+                    LocalWarehouseModel(
+                        warehouse.warehouseId,
+                        warehouse.serviceType
+                    )
+                },
+                serviceType = address.tokonow.serviceType,
+                lastUpdate = address.tokonow.tokonowLastUpdate
+            )
+            checkIfChooseAddressWidgetDataUpdated()
+            navigateToMerchantPage(viewModel.merchantId)
         }
     }
 
@@ -410,10 +428,6 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
 
     private fun updateCurrentPageLocalCacheModelData() {
         context?.let { localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it) }
-    }
-
-    private fun getChooseAddress() {
-        viewModel.getChooseAddress(SOURCE)
     }
 
     private fun showChooseAddressBottomSheet() {
