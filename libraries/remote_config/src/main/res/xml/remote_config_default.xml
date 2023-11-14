@@ -651,6 +651,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_pdp_enable_prefetch</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_force_light_mode_seller_app</key>
         <value>false</value>
     </entry>

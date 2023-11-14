@@ -73,8 +73,8 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.setAnchorViewToShopHeaderBottomViewContainer
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.databinding.FragmentShopPageCampaignBinding
-import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.WidgetType
+import com.tokopedia.shop.home.WidgetNameEnum
+import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
@@ -631,7 +631,7 @@ class ShopPageCampaignFragment :
     }
 
     private fun isWidgetVoucherSlider(uiModel: ShopPageWidgetUiModel): Boolean {
-        return uiModel.widgetType == WidgetType.VOUCHER_SLIDER && uiModel.widgetName == WidgetName.VOUCHER
+        return uiModel.widgetType == WidgetTypeEnum.VOUCHER_SLIDER.value && uiModel.widgetName == WidgetNameEnum.VOUCHER.value
     }
 
     private fun getWidgetContentData(listWidgetLayoutToLoad: MutableList<ShopPageWidgetUiModel>) {

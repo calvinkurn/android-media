@@ -158,8 +158,8 @@ open class BaseTokoNowViewModelTestFixture {
         coEvery { affiliateHelper.initCookie(any(), any(), any()) } throws error
     }
 
-    protected fun onGetTickerDataAsync_thenReturn(error: Throwable) {
-        coEvery { getTargetedTickerUseCase.execute(anyString(), anyString()) } throws error
+    protected fun onGetTickerDataAsync_thenReturn(error: Throwable, warehouseId: String = "", page: String = "") {
+        coEvery { getTargetedTickerUseCase.execute(warehouseId, page) } throws error
     }
 
     protected fun verifyGetMiniCartUseCaseCalled() {

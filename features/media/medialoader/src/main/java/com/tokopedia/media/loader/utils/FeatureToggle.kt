@@ -15,7 +15,6 @@ class FeatureToggleManager : FeatureToggle {
 
     private var glideM3U8ThumbnailLoaderEnabled: Boolean? = null
     private var isExposeResponseHeaderEnabled: Boolean? = null
-    private var isWebpFormatDelivered: Boolean? = null
 
     override fun glideM3U8ThumbnailLoaderEnabled(context: Context): Boolean {
         return glideM3U8ThumbnailLoaderEnabled ?: getRemoteConfigBoolean(
@@ -32,21 +31,16 @@ class FeatureToggleManager : FeatureToggle {
     }
 
     override fun isWebpFormatEnabled(): Boolean {
-        return isWebpFormatDelivered ?: getAbTestBoolean(WEBP_SUPPORT)
-            .also { isWebpFormatDelivered = it }
+        return RemoteConfigInstance
+            .getInstance()
+            .abTestPlatform
+            .getString(WEBP_SUPPORT)
+            .isNotEmpty()
     }
 
     private fun getRemoteConfigBoolean(context: Context, key: String): Boolean {
         return FirebaseRemoteConfigImpl(context.applicationContext)
             .getBoolean(key, false)
-    }
-
-    private fun getAbTestBoolean(key: String): Boolean {
-        return RemoteConfigInstance
-            .getInstance()
-            .abTestPlatform
-            .getString(key)
-            .isNotEmpty()
     }
 
     companion object {
