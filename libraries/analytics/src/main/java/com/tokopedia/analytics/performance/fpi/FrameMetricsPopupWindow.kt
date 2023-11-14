@@ -27,7 +27,6 @@ import java.util.*
  * Project name: android-tokopedia-core
  **/
 
-
 class FrameMetricsPopupWindow(
     private val applicationContext: Context
 ) : PopupWindow() {
@@ -58,7 +57,6 @@ class FrameMetricsPopupWindow(
     private var ttflText: Typography? = null
     private var ttilText: Typography? = null
 
-
     private var reloadOnClick: (() -> Unit)? = null
     private val sizeParam = ViewGroup.LayoutParams.WRAP_CONTENT
     private var positionX = 0
@@ -88,13 +86,15 @@ class FrameMetricsPopupWindow(
 
         activity.findViewById<View>(android.R.id.content).let {
             it.addOneTimeGlobalLayoutListener {
-                positionX = if (positionX == 0) getScreenWidth()
-                else positionX
+                positionX = if (positionX == 0) {
+                    getScreenWidth()
+                } else {
+                    positionX
+                }
                 fpiPopUp?.showAtLocation(it, Gravity.NO_GRAVITY, positionX, positionY)
             }
         }
     }
-
 
     private fun setOnEvent() {
         setOnDraggable()
@@ -139,12 +139,12 @@ class FrameMetricsPopupWindow(
         updatePercentage(fpiData = fpiData)
         updateFps(fpiData = fpiData)
         updateRenderingTime(fpiData = fpiData)
-        
-        //performance data from AppPerformanceTrace
+
+        // performance data from AppPerformanceTrace
         updatePerformanceData(
             AppPerformanceTrace.currentAppPerformanceTraceData,
             AppPerformanceTrace.currentAppPerformanceDevState
-            )
+        )
     }
 
     // region percentage information
@@ -201,17 +201,25 @@ class FrameMetricsPopupWindow(
                     }
                 } else {
                     activityNameText?.text = "Measuring..."
+                    ttflText?.text = "-"
+                    ttilText?.text = "-"
                 }
             }
             State.PERF_RESUMED -> {
-                activityNameText?.text = String.format(Locale.getDefault(), "%s",
-                    "Activity resumed")
+                activityNameText?.text = String.format(
+                    Locale.getDefault(),
+                    "%s",
+                    "Activity resumed"
+                )
                 ttflText?.text = "-"
                 ttilText?.text = "-"
             }
             State.PERF_DISABLED -> {
-                activityNameText?.text = String.format(Locale.getDefault(), "%s",
-                    "Perf disabled")
+                activityNameText?.text = String.format(
+                    Locale.getDefault(),
+                    "%s",
+                    "Perf disabled"
+                )
                 ttflText?.text = "-"
                 ttilText?.text = "-"
             }
