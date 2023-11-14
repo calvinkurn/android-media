@@ -117,23 +117,27 @@ class CartItemViewHolder constructor(
     }
 
     private fun initSwipeLayout(data: CartItemHolderData) {
-        if (shouldInitSwipeLayout()) {
-            binderHelper.bind(binding.swipeLayout, data.getSwipeLayoutId())
-            if (data.isError) {
+        binderHelper.bind(binding.swipeLayout, data.getSwipeLayoutId())
+        if (data.isError) {
+            binderHelper.lockSwipe(data.getSwipeLayoutId())
+        }
+        if (data.isBundlingItem) {
+            binderHelper.bind(binding.swipeLayoutBundling, data.getSwipeLayoutBundlingId())
+            if (data.isMultipleBundleProduct) {
                 binderHelper.lockSwipe(data.getSwipeLayoutId())
             }
-            if (data.isBundlingItem) {
-                binderHelper.bind(binding.swipeLayoutBundling, data.getSwipeLayoutBundlingId())
-                if (data.isMultipleBundleProduct) {
-                    binderHelper.lockSwipe(data.getSwipeLayoutId())
-                }
-                if (data.isError || !data.isMultipleBundleProduct) {
-                    binderHelper.lockSwipe(data.getSwipeLayoutBundlingId())
-                }
+            if (data.isError || !data.isMultipleBundleProduct) {
+                binderHelper.lockSwipe(data.getSwipeLayoutBundlingId())
             }
-            setSwipeLayoutColor()
-            setSwipeLayoutClickListener(data)
         }
+        if (shouldLockSwipeLayout()) {
+            binderHelper.lockSwipe(data.getSwipeLayoutId())
+        }
+        if (shouldLockBundlingSwipeLayout() && data.isBundlingItem) {
+            binderHelper.lockSwipe(data.getSwipeLayoutBundlingId())
+        }
+        setSwipeLayoutColor()
+        setSwipeLayoutClickListener(data)
     }
 
     private fun setSwipeLayoutColor() {
@@ -203,8 +207,12 @@ class CartItemViewHolder constructor(
         }
     }
 
-    private fun shouldInitSwipeLayout(): Boolean {
-        return true
+    private fun shouldLockSwipeLayout(): Boolean {
+        return false
+    }
+
+    private fun shouldLockBundlingSwipeLayout(): Boolean {
+        return false
     }
 
     private fun initCoachMark() {
