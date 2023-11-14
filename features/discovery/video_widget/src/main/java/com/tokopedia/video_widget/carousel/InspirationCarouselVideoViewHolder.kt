@@ -29,7 +29,7 @@ class InspirationCarouselVideoViewHolder(
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
     private val networkMonitor: NetworkMonitor,
     private val isReimagine: Boolean = false,
-    isSneakPeekEnabled: Boolean = false,
+    private val isSneakPeekEnabled: Boolean = false,
     ) : AbstractViewHolder<Visitable<*>>(itemView),
     VideoPlayerProvider,
     VideoCarouselItemListener,
@@ -61,11 +61,20 @@ class InspirationCarouselVideoViewHolder(
         binding.videoCarousel.onWifiConnectionChange(isWifiConnected)
     }
 
+    private fun setSneakPeekLayout(isSneakPeekEnabled: Boolean){
+        val binding = binding ?: return
+        if(isSneakPeekEnabled){
+            monitorWifiConnectionChange()
+        } else {
+            binding.videoCarousel.setSneakPeekLayout(isSneakPeekEnabled)
+        }
+    }
+
     override fun bind(element: Visitable<*>) {
         if(element !is VideoCarouselDataWrapper) return
         val data = element.getVideoCarouselData() ?: return
         val videoCarousel = binding?.videoCarousel ?: return
-        monitorWifiConnectionChange()
+        setSneakPeekLayout(isSneakPeekEnabled)
         setSeparator()
         setMarginContainerView()
         videoCarouselWidgetCoordinator.controlWidget(videoCarousel, this)

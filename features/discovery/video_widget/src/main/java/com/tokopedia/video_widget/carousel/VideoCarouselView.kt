@@ -144,6 +144,10 @@ class VideoCarouselView : BaseCustomView, VideoPlayer {
         adapter.onWifiConnectionChange(isConnectedToWifi)
     }
 
+    fun setSneakPeekLayout(isSneakPeekEnabled : Boolean) {
+        adapter.setSneakPeakLayout(isSneakPeekEnabled)
+    }
+
     internal fun setWidgetInternalListener(internalListener: VideoCarouselInternalListener?) {
         this.internalListener = internalListener
     }
