@@ -125,6 +125,7 @@ import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -912,12 +913,18 @@ open class DiscoveryFragment :
                         it.data.requestParams.requestingComponent,
                         it.data.addToCartDataModel.data.cartId
                     )
+                    val requestParams = it.data.requestParams
+                    getMiniCart(
+                        warehouseTco = requestParams.requestingComponent.properties?.warehouseTco.orEmpty(),
+                        offerId = requestParams.requestingComponent.properties?.header?.offerId.orEmpty(),
+                        parentPosition = requestParams.parentPosition
+                    )
                 } else {
                     analytics.trackEventProductATCTokonow(
                         it.data.requestParams.requestingComponent,
                         it.data.addToCartDataModel.data.cartId
                     )
-                    getMiniCart(it.data.requestParams.parentPosition)
+                    getMiniCart()
                     showToaster(
                         message = it.data.addToCartDataModel.errorMessage.joinToString(separator = ", "),
                         type = Toaster.TYPE_NORMAL
@@ -939,7 +946,12 @@ open class DiscoveryFragment :
                     it.data.requestParams.requestingComponent,
                     it.data.cartId
                 )
-                getMiniCart(it.data.requestParams.parentPosition)
+                val requestParams = it.data.requestParams
+                getMiniCart(
+                    warehouseTco = requestParams.requestingComponent.properties?.warehouseTco.orEmpty(),
+                    offerId = requestParams.requestingComponent.properties?.header?.offerId.orEmpty(),
+                    parentPosition = requestParams.parentPosition
+                )
             } else if (it is Fail) {
                 if (it.throwable is ResponseErrorException) {
                     showToaster(
@@ -956,7 +968,12 @@ open class DiscoveryFragment :
                     it.data.requestParams.requestingComponent,
                     it.data.cartId
                 )
-                getMiniCart(it.data.requestParams.parentPosition)
+                val requestParams = it.data.requestParams
+                getMiniCart(
+                    warehouseTco = requestParams.requestingComponent.properties?.warehouseTco.orEmpty(),
+                    offerId = requestParams.requestingComponent.properties?.header?.offerId.orEmpty(),
+                    parentPosition = requestParams.parentPosition
+                )
                 showToaster(
                     message = it.data.message,
                     type = Toaster.TYPE_NORMAL
@@ -2285,10 +2302,20 @@ open class DiscoveryFragment :
         }
     }
 
-    private fun getMiniCart(parentPosition: Int = -1) {
+    private fun getMiniCart(
+        warehouseTco: String = String.EMPTY,
+        offerId: String = String.EMPTY,
+        parentPosition: Int = RecyclerView.NO_POSITION
+    ) {
         val shopId = listOf(userAddressData?.shop_id.orEmpty())
         val warehouseId = userAddressData?.warehouse_id
-        discoveryViewModel.getMiniCart(shopId, warehouseId, parentPosition)
+        discoveryViewModel.getMiniCart(
+            shopId = shopId,
+            warehouseId = warehouseId,
+            warehouseTco = warehouseTco,
+            offerId = offerId,
+            parentPosition = parentPosition
+        )
     }
 
     fun addOrUpdateItemCart(discoATCRequestParams: DiscoATCRequestParams) {

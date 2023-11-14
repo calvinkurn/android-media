@@ -245,7 +245,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                 cartDetailInfo.cartDetailType.equals(CART_DETAIL_TYPE, true) && cartDetailInfo.bmgmData.offerId != Long.ZERO
             }
             BmGmData(
-                tierDiscountText = detail?.cartDetailInfo?.bmgmData?.tierProductList?.map { it.tierMessage }.orEmpty()
+                offerMessage = detail?.cartDetailInfo?.bmgmData?.offerMessage
             )
         }
     }

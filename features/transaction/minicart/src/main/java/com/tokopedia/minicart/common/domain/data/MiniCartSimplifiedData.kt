@@ -110,5 +110,5 @@ data class ShoppingSummaryBottomSheetData(
 )
 
 data class BmGmData(
-    val tierDiscountText: List<String>? = emptyList()
+    val offerMessage: List<String>? = emptyList()
 )

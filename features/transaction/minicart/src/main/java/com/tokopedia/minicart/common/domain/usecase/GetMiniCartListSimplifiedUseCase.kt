@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
@@ -31,6 +32,20 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                 ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
                 GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value,
                 GetMiniCartListUseCase.PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
+            )
+        )
+        this.shopIds = shopIds
+        this.delay = delay
+    }
+
+    fun setParams(shopIds: List<String>, source: MiniCartSource, bmGmParam: BmgmParamModel) {
+        params = mapOf(
+            GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
+            GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to mapOf(
+                GetMiniCartListUseCase.PARAM_KEY_SHOP_IDS to shopIds,
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value,
+                GetMiniCartListUseCase.PARAM_KEY_BMGM to bmGmParam
             )
         )
         this.shopIds = shopIds

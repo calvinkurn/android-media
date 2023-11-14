@@ -275,7 +275,7 @@ class ShopOfferHeroBrandViewHolder(
                 if (!productList.isNullOrEmpty()) {
                     showLocalLoad()
                 } else if (productList.isNullOrEmpty() && areFiltersApplied()) {
-                    if (errorHolder.childCount > 0) {
+                    if (errorHolder.childCount.isMoreThanZero()) {
                         errorHolder.removeAllViews()
                     }
                     errorHolder.addView(

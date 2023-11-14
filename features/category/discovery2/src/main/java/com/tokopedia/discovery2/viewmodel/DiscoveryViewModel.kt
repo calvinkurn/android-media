@@ -71,12 +71,14 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.common.domain.data.BmGmData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -295,21 +297,40 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getMiniCart(
         shopId: List<String>,
         warehouseId: String?,
+        warehouseTco: String,
+        offerId: String,
         parentPosition: Int
     ) {
-        if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
+        if(shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
-                getMiniCartUseCase.setParams(shopId, MiniCartSource.TokonowDiscoveryPage)
-                getMiniCartUseCase.execute({
-                    miniCartSimplifiedData = it
-                    _miniCart.postValue(Success(it))
-
-                    if (parentPosition != -1) {
-                        _bmGmDataList.value = Pair(parentPosition, it.bmGmDataList)
-                    }
-                }, {
-                    _miniCart.postValue(Fail(it))
-                })
+                if (warehouseTco.isNotBlankOrZero() || offerId.isNotBlankOrZero()) {
+                    getMiniCartUseCase.setParams(
+                        shopIds = shopId,
+                        source = MiniCartSource.TokonowDiscoveryPage,
+                        bmGmParam = BmgmParamModel(
+                            offerIds = listOf(offerId.toLongOrZero()),
+                            warehouseIds = listOf(warehouseTco.toLongOrZero())
+                        )
+                    )
+                    getMiniCartUseCase.execute({
+                        miniCartSimplifiedData = it
+                        _miniCart.postValue(Success(it))
+                        _bmGmDataList.postValue(Pair(parentPosition, it.bmGmDataList))
+                    }, {
+                        _miniCart.postValue(Fail(it))
+                    })
+                } else {
+                    getMiniCartUseCase.setParams(
+                        shopIds = shopId,
+                        source = MiniCartSource.TokonowDiscoveryPage
+                    )
+                    getMiniCartUseCase.execute({
+                        miniCartSimplifiedData = it
+                        _miniCart.postValue(Success(it))
+                    }, {
+                        _miniCart.postValue(Fail(it))
+                    })
+                }
             }) {
                 _miniCart.postValue(Fail(it))
             }
