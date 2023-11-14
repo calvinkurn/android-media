@@ -25,14 +25,21 @@ const val FPM_SEE_ALL_CARD_BACKGROUND = "home_see_all_card_background_image"
 const val FPM_RECOMMENDATION_LIST_CAROUSEL = "home_recommendation_list_carousel"
 const val TRUNCATED_URL_PREFIX = "https://images.tokopedia.net/img/cache/"
 
-fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: ImageHandler.ImageLoaderStateListener? = null){
+fun ImageView.loadImage(
+    url: String,
+    fpmItemLabel: String = "",
+    listener: ImageHandler.ImageLoaderStateListener? = null,
+    properties: Properties.() -> Unit = {}
+){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     if(url.isGif()) {
         this.loadAsGif(url) {
+            this.properties()
             homeLoadImageListener(url, fpmItemLabel, listener, performanceMonitoring, this@loadImage)
         }
     } else {
         this.loadImage(url) {
+            this.properties()
             homeLoadImageListener(url, fpmItemLabel, listener, performanceMonitoring, this@loadImage)
         }
     }
@@ -109,7 +116,7 @@ fun ImageView.loadImageCenterCrop(url: String){
 
 fun ImageView.loadImageWithoutPlaceholder(url: String){
     if(url.isGif()) {
-        this.loadImageWithoutPlaceholder(url) {
+        this.loadAsGif(url) {
             setPlaceHolder(-1)
         }
     } else {

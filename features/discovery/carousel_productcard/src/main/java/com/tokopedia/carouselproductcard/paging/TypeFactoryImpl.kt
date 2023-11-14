@@ -2,13 +2,14 @@ package com.tokopedia.carouselproductcard.paging
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.carouselproductcard.helper.CarouselPagingUtil
 import com.tokopedia.carouselproductcard.paging.list.ProductCardListDataView
 import com.tokopedia.carouselproductcard.paging.list.ProductCardListViewHolder
 import com.tokopedia.carouselproductcard.paging.loading.ShimmeringDataView
 import com.tokopedia.carouselproductcard.paging.loading.ShimmeringViewHolder
 
 internal class TypeFactoryImpl(
-    private val paddingStart: Int,
+    private val util: CarouselPagingUtil,
 ): TypeFactory {
     override fun type(productCardListDataView: ProductCardListDataView): Int {
         return ProductCardListViewHolder.LAYOUT
@@ -20,7 +21,7 @@ internal class TypeFactoryImpl(
 
     override fun onCreateViewHolder(view: View, viewType: Int): AbstractViewHolder<*> =
         when(viewType) {
-            ProductCardListViewHolder.LAYOUT -> ProductCardListViewHolder(view, paddingStart)
+            ProductCardListViewHolder.LAYOUT -> ProductCardListViewHolder(view, util)
             ShimmeringViewHolder.LAYOUT -> ShimmeringViewHolder(view)
             else -> throw Exception("Unknown View Type")
         }

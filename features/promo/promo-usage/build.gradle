@@ -15,6 +15,9 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.promousage'
+    testNamespace 'com.tokopedia.promousage.test'
+
     buildFeatures {
         viewBinding true
     }

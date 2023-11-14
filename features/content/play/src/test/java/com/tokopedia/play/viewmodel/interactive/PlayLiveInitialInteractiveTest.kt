@@ -64,6 +64,9 @@ class PlayLiveInitialInteractiveTest {
 
     private val modelBuilder = UiModelBuilder.get()
 
+    private val mockChannelStatus = modelBuilder.buildChannelStatus(waitingDuration = 5000)
+
+
     init {
         every { mockRemoteConfig.getBoolean(any(), any()) } returns true
     }
@@ -270,6 +273,7 @@ class PlayLiveInitialInteractiveTest {
         )
         every { socket.listenAsFlow() } returns socketFlow
 
+
         val repo: PlayViewerRepository = mockk(relaxed = true)
         val title = "Quiz Sepeda Ikan Koi"
         val model = GameUiModel.Quiz(
@@ -284,6 +288,7 @@ class PlayLiveInitialInteractiveTest {
         coEvery { repo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data = listOf(
             modelBuilder.buildWinner(name = "Koi Rainbow", imageUrl = "", topChatMessage = "", rank = 1, allowChat = { false }, id = "22")
         ))
+        coEvery { repo.getChannelStatus(any()) } returns mockChannelStatus
 
         createPlayViewModelRobot (
             playChannelWebSocket = socket,
@@ -536,6 +541,7 @@ class PlayLiveInitialInteractiveTest {
         coEvery { repo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data = listOf(
             modelBuilder.buildWinner(name = "Koi Rainbow", imageUrl = "", topChatMessage = "", rank = 1, allowChat = { false }, id = "22")
         ))
+        coEvery { repo.getChannelStatus(any()) } returns mockChannelStatus
 
         createPlayViewModelRobot(
             playChannelWebSocket = socket,

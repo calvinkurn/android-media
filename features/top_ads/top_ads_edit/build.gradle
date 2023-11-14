@@ -16,6 +16,9 @@ buildscript {
 android {
     namespace 'com.tokopedia.topads.edit'
     testNamespace 'com.tokopedia.topads.edit.test'
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -40,6 +43,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.unifyDependencies.dialog
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.swipeRefresh
+    implementation project(path: ':libraries:base_list')
+    testImplementation project(path: ':libraries:unit_test')
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -61,3 +68,4 @@ project.ext {
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
 apply from: '../../../publish_local.gradle'
+apply plugin: 'org.jetbrains.kotlin.android'

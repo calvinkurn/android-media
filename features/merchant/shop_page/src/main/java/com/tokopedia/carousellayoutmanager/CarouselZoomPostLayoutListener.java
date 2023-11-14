@@ -13,7 +13,7 @@ public class CarouselZoomPostLayoutListener extends CarouselLayoutManager.PostLa
     private final float mScaleMultiplier;
 
     public CarouselZoomPostLayoutListener() {
-        this(0.17f);
+        this(0.1f);
     }
 
     public CarouselZoomPostLayoutListener(final float scaleMultiplier) {

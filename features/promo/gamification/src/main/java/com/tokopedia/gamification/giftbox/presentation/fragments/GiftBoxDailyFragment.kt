@@ -30,6 +30,9 @@ import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
 import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.Constants
+import com.tokopedia.gamification.giftbox.Constants.REDIRECT
+import com.tokopedia.gamification.giftbox.Constants.SERU_BUTTON
+import com.tokopedia.gamification.giftbox.Constants.SHOP_BUTTON
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.GAMI_GIFT_DAILY_TRACE_PAGE
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
@@ -53,6 +56,7 @@ import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist
 import com.tokopedia.gamification.taptap.data.entiity.BackButton
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -392,18 +396,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
                                 }
 
                                 val actionButtonList = giftBoxRewardEntity?.gamiCrack?.actionButton
-                                if (actionButtonList != null &&
-                                    actionButtonList.isNotEmpty() &&
-                                    !actionButtonList[0].type.isNullOrEmpty() &&
-                                    actionButtonList[0].type == "redirect"
-                                ) {
-                                    tokoButtonContainer.setSecondButtonText(actionButtonList[0].text)
-                                    tokoButtonContainer.btnSecond.setOnClickListener {
-                                        checkInternetOnButtonActionAndRedirect()
-                                    }
-                                } else {
-                                    tokoButtonContainer.btnSecond.visibility = View.GONE
-                                }
+                                setActionButtonContent(actionButtonList)
 
                                 shopId = it.data.gamiCrack.recommendation.shopId
                                 handleRecomPage(it.data?.gamiCrack?.recommendation)
@@ -501,6 +494,37 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
                 }
             }
         })
+    }
+
+    private fun setActionButtonContent(actionButtonList: List<ActionButton>?) {
+        val shopActionButtonModel = actionButtonList?.find { it.identifier == SHOP_BUTTON }
+        setActionShopButtonContent(shopActionButtonModel)
+        val shopActionGamificationModel = actionButtonList?.find { it.identifier == SERU_BUTTON }
+        setActionGamificationButtonContent(shopActionGamificationModel)
+    }
+
+    private fun setActionShopButtonContent(actionButton: ActionButton?) {
+        if (actionButton?.type == REDIRECT) {
+            tokoButtonContainer.setSecondButtonText(actionButton.text)
+            tokoButtonContainer.btnSecond.setOnClickListener {
+                checkInternetOnButtonActionAndRedirect()
+            }
+        } else {
+            tokoButtonContainer.btnSecond.visibility = View.GONE
+        }
+    }
+
+    private fun setActionGamificationButtonContent(actionButton: ActionButton?) {
+        actionButton?.let {
+            tokoButtonContainer.btnThird.show()
+            tokoButtonContainer.setSeruButton(actionButton.url)
+        }
+        if (actionButton?.type == REDIRECT) {
+            tokoButtonContainer.btnThird.setOnClickListener {
+                GtmEvents.clickSeruButton(viewModel.campaignSlug.orEmpty())
+                RouteManager.route(context, actionButton.applink)
+            }
+        }
     }
 
     fun handleRecomPage(recommendation: Recommendation?) {
@@ -730,7 +754,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(alphaAnim, alphaAnimReminder)
         animatorSet.duration = 200L
-        setClickEventOnSeru()
         return animatorSet
     }
 
@@ -838,7 +861,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
                     val rewardAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardMessage, alphaProp)
                     val reminderAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(tokoButtonContainer.btnReminder, alphaProp)
                     animatorSet.playTogether(tapHintAnim, giftBoxAnim, rewardAlphaAnim, reminderAlphaAnim)
-                    setClickEventOnSeru()
                 } else {
                     val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(directGiftView, alphaProp)
                     animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim)

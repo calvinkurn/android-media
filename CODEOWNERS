@@ -368,7 +368,7 @@
 /libraries/liveness_lib/								@tokopedia/android-core-dev
 /libraries/locationmanager/								@tokopedia/android-core-dev
 /libraries/logger/										@tokopedia/android-core-dev
-/libraries/login_helper/                                @tokopedia/android-minionmark-dev
+/libraries/login_helper/                                @tokopedia/android-minionkevin-dev
 /libraries/keys/										@tokopedia/android-core-dev
 /libraries/mapviewer/								    @tokopedia/android-core-dev
 /libraries/network/                                     @tokopedia/android-core-dev
@@ -441,13 +441,15 @@
 /sellerapp/                                         	@tokopedia/android-minionstuart-dev
 /testapp/                                               @tokopedia/android-core-dev
 /build.gradle                                           @tokopedia/android-core-dev
+/gradlew                                                @tokopedia/android-core-dev
+/gradlew.bat                                            @tokopedia/android-core-dev
 /settings.gradle                                           @tokopedia/android-core-dev
 /buildproj.gradle                                       @tokopedia/android-core-dev
 /hansel.xml                                             @tokopedia/android-core-dev
 /gradle/                                                @tokopedia/android-core-dev
 /gradle.properties                                      @tokopedia/android-core-dev
 /wearosapp/                                        @tokopedia/android-core-dev
-
+/jacoco_task.gradle                                     @tokopedia/android-core-dev
 testing/joint/inactivephone_otp/                        @tokopedia/android-minionbob-dev
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
 /testing/joint/dg_transaction/                          @tokopedia/android-minionmark-dev

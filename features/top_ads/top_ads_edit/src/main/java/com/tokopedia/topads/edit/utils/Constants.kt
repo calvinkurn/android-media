@@ -43,7 +43,9 @@ object Constants {
     const val KEYWORD_TYPE_NEGATIVE_EXACT = 22
     const val REQUEST_OK = 1
     const val ADDED_PRODUCTS = "addedProducts"
+    const val ADDED_PRODUCTS_NEW = "addedProductsNew"
     const val DELETED_PRODUCTS = "deletedProducts"
+    const val DELETED_PRODUCTS_NEW = "deletedProductsNew"
 
     const val PUBLISHED = "published"
 
@@ -71,5 +73,18 @@ object Constants {
     const val ATUR_NAME = " Atur"
     const val LAINNYA_NAME = " Lainnya"
     const val SOURCE_ANDROID_EDIT_GROUP = "android.topads_edit_group"
+
+
+    const val PRODUCT_ID_LIST = "productIdList"
+    const val DAILY_BUDGET_INPUT = "dailyBudgetInput"
+    const val POTENTIAL_PERFORMANCE_LIST = "potentialPerformanceList"
+    const val MIN_MAX_BIDS = "minMaxBids"
+    const val BID_LIST = "bidList"
+    const val IS_AUTO_BID = "isAutoBid"
+    const val EDIT_SOURCE = "android.topads_edit"
+    const val MAX_BUDGET_AUTOMATIC = 16000
+    const val MAX_BUDGET_MANUAL = 10000000
+
+    const val SOURCE_EDIT_GROUP = "android.product_group_edit_flow"
 
 }

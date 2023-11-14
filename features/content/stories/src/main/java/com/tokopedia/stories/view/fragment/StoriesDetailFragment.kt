@@ -25,6 +25,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.report_content.bottomsheet.ContentReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentSubmitReportBottomSheet
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.util.ContentDateConverter
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
@@ -303,7 +304,7 @@ class StoriesDetailFragment @Inject constructor(
                 if (!isEligiblePage) return@collect
                 when (event) {
                     is StoriesUiEvent.EmptyDetailPage -> {
-                        setErrorType(StoriesErrorView.Type.EmptyCategory, isTimerAvailable = false)
+                        setErrorType(StoriesErrorView.Type.EmptyCategory)
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
@@ -496,13 +497,30 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun buildEventLabel(): String =
-        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - ${if (viewModel.mDetail.category == StoriesDetailItem.StoryCategory.Manual) "organic" else "asgc"} - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
             tvPartnerName.text = state.author.name
             ivIcon.setImageUrl(state.author.thumbnailUrl)
             btnFollow.gone()
+
+            when (state.category) {
+                StoriesDetailItem.StoryCategory.Manual -> {
+                    val creationTimestamp = ContentDateConverter.convertTime(state.publishedAt)
+
+                    tvStoriesTimestamp.text = getString(
+                        storiesR.string.story_creation_timestamp,
+                        creationTimestamp
+                    )
+                    tvStoriesTimestamp.show()
+                }
+
+                StoriesDetailItem.StoryCategory.ASGC -> {
+                    tvStoriesTimestamp.hide()
+                }
+            }
+
             if (state.author is StoryAuthor.Shop) {
                 ivBadge.setImageUrl(state.author.badgeUrl)
             }
@@ -728,20 +746,12 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setErrorType(
-        errorType: StoriesErrorView.Type,
-        isTimerAvailable: Boolean = true,
-        onClick: () -> Unit = {}
-    ) = with(binding.vStoriesError) {
+    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
         show()
         type = errorType
         setAction { onClick() }
         setCloseAction { activity?.finish() }
-        translationZ =
-            if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
-
-        if (errorType != StoriesErrorView.Type.EmptyCategory && isTimerAvailable) return@with
-        renderTimer(null, TimerStatusInfo.Empty)
+        translationZ = if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
     }
 
     private fun hideError() = binding.vStoriesError.gone()

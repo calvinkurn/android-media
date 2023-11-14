@@ -61,7 +61,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                             dataDetail = dataDetail
                         )
                     } else {
-                        StoriesDetail()
+                        StoriesDetail.EmptyDetail
                     }
                 )
             }
@@ -73,7 +73,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
         dataDetail: StoriesDetailsResponseModel
     ): StoriesDetail {
         val detailData = dataDetail.data
-        if (detailData == ContentStoriesDetails()) return StoriesDetail()
+        if (detailData == ContentStoriesDetails()) return StoriesDetail.EmptyDetail
 
         val storiesSelectedPos = detailData.meta.selectedStoriesIndex
         val storiesItem = detailData.stories
@@ -101,6 +101,8 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     resetValue = -1,
                     isContentLoaded = false,
                     author = buildAuthor(stories.author),
+                    category = StoriesDetailItem.StoryCategory.getByValue(stories.category),
+                    publishedAt = stories.publishedAt,
                     menus = buildMenu(stories.interaction, stories.author),
                     share = StoriesDetailItem.Sharing(
                         isShareable = stories.interaction.shareable,
