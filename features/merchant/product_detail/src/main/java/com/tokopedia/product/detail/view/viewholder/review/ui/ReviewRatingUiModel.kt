@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewholder.review
+package com.tokopedia.product.detail.view.viewholder.review.ui
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
 
@@ -17,9 +17,6 @@ data class ReviewRatingUiModel(
 
     data class Keyword(
         val text: String,
-        val count: String
-    ) {
-        val label
-            get() = "$text ($count)"
-    }
+        val filter: String
+    )
 }

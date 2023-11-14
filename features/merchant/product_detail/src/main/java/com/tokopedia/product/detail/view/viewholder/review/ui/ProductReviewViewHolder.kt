@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewholder.review
+package com.tokopedia.product.detail.view.viewholder.review.ui
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +20,7 @@ import com.tokopedia.product.detail.databinding.ItemDynamicReviewBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
-import com.tokopedia.product.detail.view.viewholder.review.keyword.RatingKeywordAdapter
+import com.tokopedia.product.detail.view.viewholder.review.delegate.ReviewCallback
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
@@ -33,8 +33,11 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.reviewcommon.R as reviewcommonR
 
-class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
-    ProductDetailPageViewHolder<ProductMostHelpfulReviewUiModel>(view) {
+class ProductReviewViewHolder(
+    val view: View,
+    val listener: DynamicProductDetailListener,
+    val callback: ReviewCallback
+) : ProductDetailPageViewHolder<ProductMostHelpfulReviewUiModel>(view) {
 
     companion object {
         private const val MAX_LINES_REVIEW_DESCRIPTION = 3
@@ -47,7 +50,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     private var element: ProductMostHelpfulReviewUiModel? = null
 
     private val keywordAdapter by lazyThreadSafetyNone {
-        RatingKeywordAdapter().also(::setupRvKeyword)
+        RatingKeywordAdapter(callback = callback).also(::setupRvKeyword)
     }
 
     private fun setupRvKeyword(ratingKeywordAdapter: RatingKeywordAdapter) {

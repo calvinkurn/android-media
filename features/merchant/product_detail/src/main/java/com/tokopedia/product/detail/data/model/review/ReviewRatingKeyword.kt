@@ -13,7 +13,7 @@ data class ReviewRatingKeyword(
     @SerializedName("text")
     @Expose
     val text: String = String.EMPTY,
-    @SerializedName("count")
+    @SerializedName("filter")
     @Expose
-    val count: String = String.EMPTY
+    val filter: String = String.EMPTY
 )

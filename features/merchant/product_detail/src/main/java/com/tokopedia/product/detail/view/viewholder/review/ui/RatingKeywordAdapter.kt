@@ -1,10 +1,12 @@
-package com.tokopedia.product.detail.view.viewholder.review.keyword
+package com.tokopedia.product.detail.view.viewholder.review.ui
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.product.detail.view.viewholder.review.ReviewRatingUiModel
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.review.delegate.ReviewCallback
+import com.tokopedia.product.detail.view.viewholder.review.event.OnTopicClicked
 import com.tokopedia.unifycomponents.ChipsUnify
 
 /**
@@ -13,8 +15,9 @@ import com.tokopedia.unifycomponents.ChipsUnify
  **/
 
 
-class RatingKeywordAdapter :
-    ListAdapter<ReviewRatingUiModel.Keyword, RatingKeywordAdapter.ViewHolder>(DIFF_UTIL) {
+class RatingKeywordAdapter(
+    private val callback: ReviewCallback
+) : ListAdapter<ReviewRatingUiModel.Keyword, RatingKeywordAdapter.ViewHolder>(DIFF_UTIL) {
 
     companion object {
         private val DIFF_UTIL = object : DiffUtil.ItemCallback<ReviewRatingUiModel.Keyword>() {
@@ -31,7 +34,7 @@ class RatingKeywordAdapter :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ChipsUnify(parent.context))
+        return ViewHolder(chip = ChipsUnify(parent.context), callback = callback)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -40,11 +43,23 @@ class RatingKeywordAdapter :
     }
 
     class ViewHolder(
-        private val chip: ChipsUnify
+        private val chip: ChipsUnify,
+        private val callback: ReviewCallback
     ) : RecyclerView.ViewHolder(chip) {
 
         fun bind(keyword: ReviewRatingUiModel.Keyword) {
-            chip.chipText = keyword.label
+            setText(keyword = keyword)
+            setListener(keyword = keyword)
+        }
+
+        private fun setText(keyword: ReviewRatingUiModel.Keyword) {
+            chip.chipText = keyword.text
+        }
+
+        private fun setListener(keyword: ReviewRatingUiModel.Keyword) {
+            chip.setOnClickListener {
+                callback.onEvent(event = OnTopicClicked(topic = keyword.filter))
+            }
         }
     }
 }

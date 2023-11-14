@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.product.detail.view.viewholder.review.ReviewRatingUiModel
+import com.tokopedia.product.detail.view.viewholder.review.ui.ReviewRatingUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 
 data class ProductMostHelpfulReviewUiModel(

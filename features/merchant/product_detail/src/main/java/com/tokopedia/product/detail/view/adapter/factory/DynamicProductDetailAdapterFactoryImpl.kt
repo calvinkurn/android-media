@@ -49,6 +49,7 @@ import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
+import com.tokopedia.product.detail.view.fragment.PdpCallbackDelegate
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.DynamicOneLinerViewHolder
@@ -93,7 +94,7 @@ import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
-import com.tokopedia.product.detail.view.viewholder.review.ProductReviewViewHolder
+import com.tokopedia.product.detail.view.viewholder.review.ui.ProductReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.show_review.ProductShopReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.ProductMiniSocialProofViewHolder
 
@@ -102,7 +103,8 @@ class DynamicProductDetailAdapterFactoryImpl(
     private val variantListener: AtcVariantListener,
     private val userId: String,
     private val playWidgetCoordinator: PlayWidgetCoordinator,
-    private val affiliateCookieHelper: AffiliateCookieHelper
+    private val affiliateCookieHelper: AffiliateCookieHelper,
+    private val pdpCallback: PdpCallbackDelegate
 ) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
     override fun type(data: ProductRecommendationDataModel): Int {
         return ProductRecommendationViewHolder.LAYOUT
@@ -294,7 +296,7 @@ class DynamicProductDetailAdapterFactoryImpl(
                 listener
             )
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view, listener)
-            ProductReviewViewHolder.LAYOUT -> ProductReviewViewHolder(view, listener)
+            ProductReviewViewHolder.LAYOUT -> ProductReviewViewHolder(view, listener, pdpCallback.review)
             ProductShimmeringViewHolder.LAYOUT -> ProductShimmeringViewHolder(view)
             PageErrorViewHolder.LAYOUT -> PageErrorViewHolder(view, listener)
             ProductNotifyMeViewHolder.LAYOUT -> ProductNotifyMeViewHolder(view, listener)
