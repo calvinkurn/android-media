@@ -34,8 +34,10 @@ class UniversalInboxGetAllCounterUseCase @Inject constructor(
               unreadsSeller
               unreadsUser
             }
-            notifcenter_unread {
-              notif_unread
+            inbox_counter {
+              all {
+                notifcenter_int
+              }
             }
           }
         }

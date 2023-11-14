@@ -60,4 +60,6 @@
     <string name="login_widget_subtitle_saved">Cek update di akunmu, yuk~</string>
     <string name="login_widget_subtitle_non_saved">Akses semua fitur, yuk~</string>
     <string name="login_widget_button">Masuk</string>
+
+    <string name="title_activity_promo">Promo</string>
 </resources>
