@@ -2,10 +2,11 @@ package com.tokopedia.minicart
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartNewWidget
-import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.minicart.common.widget.MiniCartNewWidgetListener
 
 class TestMiniCartActivity: AppCompatActivity() {
 
@@ -15,10 +16,15 @@ class TestMiniCartActivity: AppCompatActivity() {
 
         findViewById<MiniCartNewWidget>(R.id.test_mini_cart).apply {
             initialize(MiniCartNewWidget.MiniCartNewWidgetConfig(
-                showTopShadow = true
-            ), this@TestMiniCartActivity, this@TestMiniCartActivity, object : MiniCartWidgetListener {
+                showTopShadow = false,
+                showChevron = true
+            ), this@TestMiniCartActivity, this@TestMiniCartActivity, object : MiniCartNewWidgetListener {
                 override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
                     Log.i("qwertyuiop", miniCartSimplifiedData.toString())
+                }
+
+                override fun onChevronClickListener() {
+                    Toast.makeText(this@TestMiniCartActivity, "testing", Toast.LENGTH_SHORT).show()
                 }
             })
             updateData(listOf("123"))
