@@ -1,28 +1,30 @@
-package com.tokopedia.content.product.picker.seller.domain.repository
+package com.tokopedia.content.product.picker.seller.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.content.product.picker.seller.domain.usecase.campaign.GetCampaignListUseCase
 import com.tokopedia.content.product.picker.seller.domain.usecase.campaign.GetProductsInCampaignUseCase
 import com.tokopedia.content.product.picker.seller.domain.usecase.etalase.GetSelfEtalaseListUseCase
-import com.tokopedia.content.product.picker.seller.mapper.ContentProductPickerSellerMapper
+import com.tokopedia.content.product.picker.seller.mapper.ProductPickerSellerCommonMapper
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
 import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
 import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
- * Created By : Jonathan Darwin on October 16, 2023
+ * Created By : Jonathan Darwin on November 14, 2023
  */
-abstract class AbstractProductPickerSellerRepository(
+class ProductPickerSellerCommonRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getCampaignListUseCase: GetCampaignListUseCase,
     private val getProductsInCampaignUseCase: GetProductsInCampaignUseCase,
     private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
-    private val productMapper: ContentProductPickerSellerMapper,
+    private val commonMapper: ProductPickerSellerCommonMapper,
     private val userSession: UserSessionInterface,
-) : ContentProductPickerSellerRepository {
+) : ProductPickerSellerCommonRepository {
 
     override suspend fun getCampaignList(): List<CampaignUiModel> = withContext(dispatchers.io) {
         if (userSession.shopId.isBlank()) error("User does not has shop")
@@ -31,13 +33,13 @@ abstract class AbstractProductPickerSellerRepository(
             setRequestParams(GetCampaignListUseCase.createParams(shopId = userSession.shopId))
         }.executeOnBackground()
 
-        return@withContext productMapper.mapCampaignList(response)
+        return@withContext commonMapper.mapCampaignList(response)
     }
 
     override suspend fun getEtalaseList(): List<EtalaseUiModel> = withContext(dispatchers.io) {
         val response = getSelfEtalaseListUseCase.executeOnBackground()
 
-        return@withContext productMapper.mapEtalaseList(response)
+        return@withContext commonMapper.mapEtalaseList(response)
     }
 
     override suspend fun getProductsInCampaign(
@@ -57,13 +59,10 @@ abstract class AbstractProductPickerSellerRepository(
             )
         }.executeOnBackground()
 
-        return@withContext productMapper.mapProductsInCampaign(response)
+        return@withContext commonMapper.mapProductsInCampaign(response)
     }
 
     companion object {
         private const val PRODUCTS_IN_CAMPAIGN_PER_PAGE = 25
-
-        const val PRODUCTS_IN_ETALASE_PER_PAGE = 25
-        const val AUTHOR_TYPE_SELLER = 2
     }
 }

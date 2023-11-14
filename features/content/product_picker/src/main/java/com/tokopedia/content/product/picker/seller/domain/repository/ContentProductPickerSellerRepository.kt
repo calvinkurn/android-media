@@ -1,8 +1,6 @@
 package com.tokopedia.content.product.picker.seller.domain.repository
 
-import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
 import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.model.sort.SortUiModel
@@ -12,20 +10,11 @@ import com.tokopedia.content.product.picker.seller.model.sort.SortUiModel
  */
 interface ContentProductPickerSellerRepository {
 
-    suspend fun getCampaignList(): List<CampaignUiModel>
-
-    suspend fun getEtalaseList(): List<EtalaseUiModel>
-
     suspend fun getProductsInEtalase(
         etalaseId: String,
         cursor: String,
         keyword: String,
         sort: SortUiModel,
-    ): PagedDataUiModel<ProductUiModel>
-
-    suspend fun getProductsInCampaign(
-        campaignId: String,
-        page: Int,
     ): PagedDataUiModel<ProductUiModel>
 
     suspend fun setProductTags(creationId: String, productIds: List<String>)
@@ -37,4 +26,8 @@ interface ContentProductPickerSellerRepository {
 
     suspend fun setPinProduct(creationId: String, product: ProductUiModel): Boolean
 
+    companion object {
+        const val PRODUCTS_IN_ETALASE_PER_PAGE = 25
+        const val AUTHOR_TYPE_SELLER = 2
+    }
 }

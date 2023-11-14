@@ -16,16 +16,12 @@ import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on October 13, 2023
  */
-abstract class ContentProductPickerSellerMapper {
-
-    private val priceFormatSymbol = DecimalFormatSymbols().apply {
-        groupingSeparator = '.'
-    }
-    protected  val priceFormat = DecimalFormat("Rp ###,###", priceFormatSymbol)
+class ProductPickerSellerCommonMapper @Inject constructor() {
 
     /** Campaign */
     fun mapCampaignList(response: GetCampaignListResponse): List<CampaignUiModel> {
@@ -94,21 +90,4 @@ abstract class ContentProductPickerSellerMapper {
             )
         }
     }
-
-    /** Util */
-    protected fun mapCampaignStatusFromType(type: String): CampaignStatus {
-        return when(type.lowercase()) {
-            "mendatang", "upcoming" -> CampaignStatus.Ready
-            "berlangsung", "active" -> CampaignStatus.Ongoing
-            else -> CampaignStatus.Unknown
-        }
-    }
-
-    /**
-     * Pinned Product
-     * isPinnable -> not eligible to pin product-> hide pin container [case: out of stock]
-     * isPinned -> show [status: Lepas / Pin]
-     */
-    protected fun getPinStatus(isPinned: Boolean, canPin: Boolean): PinProductUiModel =
-        PinProductUiModel(isPinned = isPinned, canPin = if (isPinned) true else canPin)
 }
