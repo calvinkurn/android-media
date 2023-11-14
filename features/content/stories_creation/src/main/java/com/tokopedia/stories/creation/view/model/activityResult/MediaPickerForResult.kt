@@ -10,10 +10,10 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
-import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.util.DeviceUtil
 import com.tokopedia.stories.creation.util.firstNotEmptyOrNull
 import com.tokopedia.stories.creation.view.model.StoriesMedia
+import com.tokopedia.stories.creation.R as storiescreationR
 
 /**
  * Created By : Jonathan Darwin on October 31, 2023
@@ -28,6 +28,9 @@ class MediaPickerForResult : ActivityResultContract<MediaPickerIntentData, Stori
             pageType(PageType.COMMON)
             modeType(ModeType.COMMON)
             singleSelectionMode()
+            withEditor {
+                setCustomCtaText(context.getString(storiescreationR.string.stories_creation_next))
+            }
             withImmersiveEditor()
             previewActionText(input.previewActionText)
         }
