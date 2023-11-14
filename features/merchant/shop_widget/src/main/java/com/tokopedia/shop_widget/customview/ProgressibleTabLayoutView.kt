@@ -27,11 +27,9 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
 
     private var onProgressFinish: (Int) -> Unit = {}
 
-    private var expandProgressBarWidthAnimator: ValueAnimator? = null
     private var expandProgressBarWidthAnimatorSet: AnimatorSet? = null
-
     private var progressAnimatorSet: AnimatorSet? = null
-    private var progressAnimator: ValueAnimator? = null
+
     private var config: Config? = null
     private var selectedPosition = 0
 
@@ -116,12 +114,9 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         val progressBar = getSelectedTabIndicator()
         if (progressBar == null) return
 
-        expandProgressBarWidthAnimatorSet?.cancel()
-        expandProgressBarWidthAnimator?.cancel()
-
         expandProgressBarWidthAnimatorSet = AnimatorSet()
 
-        expandProgressBarWidthAnimator =
+        val expandProgressBarWidthAnimator =
             ValueAnimator.ofInt(SELECTED_TAB_INDICATOR_MIN_WIDTH, SELECTED_TAB_INDICATOR_MAX_WIDTH)
                 .setDuration(SELECTED_TAB_INDICATOR_EXPAND_ANIMATION_DURATION_MILLIS)
 
@@ -142,10 +137,7 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     }
 
     private fun animateProgress(progressBar: ProgressBar) {
-        progressAnimator?.cancel()
-        progressAnimatorSet?.cancel()
-
-        progressAnimator = ValueAnimator
+        val progressAnimator = ValueAnimator
             .ofInt(SELECTED_TAB_INDICATOR_MIN_PROGRESS, SELECTED_TAB_INDICATOR_MAX_PROGRESS)
             .setDuration(SELECTED_TAB_INDICATOR_PROGRESS_ANIMATION_DURATION_MILLIS)
 
@@ -232,25 +224,19 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     private fun resumeAnimation() {
         expandProgressBarWidthAnimatorSet?.resume()
         progressAnimatorSet?.resume()
-        progressAnimator?.resume()
     }
 
     private fun pauseAnimation() {
         expandProgressBarWidthAnimatorSet?.pause()
         progressAnimatorSet?.pause()
-        progressAnimator?.pause()
     }
 
     private fun cancelAnimation() {
         expandProgressBarWidthAnimatorSet?.cancel()
         progressAnimatorSet?.cancel()
-        progressAnimator?.cancel()
 
-        expandProgressBarWidthAnimator = null
         expandProgressBarWidthAnimatorSet = null
-
         progressAnimatorSet = null
-        progressAnimator = null
     }
 
     private fun getSelectedTabIndicator(): ProgressBar? {
