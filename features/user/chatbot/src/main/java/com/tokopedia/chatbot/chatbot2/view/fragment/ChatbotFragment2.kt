@@ -1030,18 +1030,6 @@ class ChatbotFragment2 :
                 RouteManager.route(context, applink)
             }
         }
-
-        observeDynamicAttachmentNewChatbotSession()
-
-    }
-
-    private fun observeDynamicAttachmentNewChatbotSession() {
-        viewModel.dynamicAttachmentNewChatbotSession.observe(viewLifecycleOwner) {
-            if (it) {
-                getBindingView().listQuickReply.hide()
-                enableTyping()
-            }
-        }
     }
 
     private fun handleAddAttachmentButtonViewState(toShow: Boolean) {
