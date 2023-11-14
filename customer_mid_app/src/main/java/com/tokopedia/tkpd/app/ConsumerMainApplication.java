@@ -120,6 +120,7 @@ import kotlin.jvm.functions.Function2;
 import timber.log.Timber;
 
 import com.tokopedia.developer_options.notification.DevOptNotificationManager;
+import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -190,6 +191,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         TrackApp.getInstance().initializeAllApis();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         createAndCallPreSeq();
+        AppPerformanceTrace.Companion.init(this);
         super.onCreate();
         createAndCallPostSeq();
         initializeAbTestVariant();
