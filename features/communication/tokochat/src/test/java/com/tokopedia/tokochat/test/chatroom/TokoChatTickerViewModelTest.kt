@@ -1,9 +1,9 @@
 package com.tokopedia.tokochat.test.chatroom
 
 import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
 import com.tokopedia.tokochat.utils.observeAwaitValue
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -27,7 +27,7 @@ class TokoChatTickerViewModelTest : TokoChatViewModelTestFixture() {
 
             // given
             coEvery {
-                getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
+                getTokoChatRoomTickerUseCase(TokoChatCommonValueUtil.TOKOFOOD)
             } returns expectedTicker
 
             // when
@@ -35,7 +35,7 @@ class TokoChatTickerViewModelTest : TokoChatViewModelTestFixture() {
 
             // then
             coVerify {
-                getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
+                getTokoChatRoomTickerUseCase(TokoChatCommonValueUtil.TOKOFOOD)
             }
 
             val actualResult = (viewModel.chatRoomTicker.observeAwaitValue() as Success).data
@@ -51,7 +51,7 @@ class TokoChatTickerViewModelTest : TokoChatViewModelTestFixture() {
 
             // given
             coEvery {
-                getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
+                getTokoChatRoomTickerUseCase(TokoChatCommonValueUtil.TOKOFOOD)
             } throws errorException
 
             // when
@@ -59,7 +59,7 @@ class TokoChatTickerViewModelTest : TokoChatViewModelTestFixture() {
 
             // then
             coVerify {
-                getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
+                getTokoChatRoomTickerUseCase(TokoChatCommonValueUtil.TOKOFOOD)
             }
 
             val actualResult = (viewModel.chatRoomTicker.observeAwaitValue() as Fail).throwable::class.java

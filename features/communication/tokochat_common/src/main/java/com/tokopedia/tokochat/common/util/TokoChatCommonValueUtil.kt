@@ -6,7 +6,7 @@ import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 
-object TokoChatValueUtil {
+object TokoChatCommonValueUtil {
     /**
      * Role Value
      */

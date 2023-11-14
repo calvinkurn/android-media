@@ -20,9 +20,9 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokochat.common.util.TokoChatCacheManager
 import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSourceCategory
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.IMAGE_ATTACHMENT_MSG
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.getSourceCategory
 import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.domain.cache.TokoChatBubblesCache
@@ -615,7 +615,7 @@ class TokoChatViewModel @Inject constructor(
     fun getUserConsent() {
         viewModelScope.launch {
             try {
-                val result = getNeedConsentUseCase(TokoChatValueUtil.consentParam)
+                val result = getNeedConsentUseCase(TokoChatCommonValueUtil.consentParam)
                 _isNeedConsent.value = result
             } catch (throwable: Throwable) {
                 _error.value = Pair(throwable, ::getUserConsent.name)

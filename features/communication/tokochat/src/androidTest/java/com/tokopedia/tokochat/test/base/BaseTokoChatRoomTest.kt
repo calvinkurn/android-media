@@ -4,7 +4,7 @@ import android.content.Intent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
 import com.tokopedia.tokochat.common.view.chatroom.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat.di.TokoChatActivityComponentFactory
 import com.tokopedia.tokochat.stub.common.ActivityScenarioTestRule
@@ -74,7 +74,7 @@ abstract class BaseTokoChatRoomTest : BaseTokoChatTest() {
     protected fun launchChatRoomActivity(
         gojekOrderId: String = GOJEK_ORDER_ID_DUMMY,
         tkpdOrderId: String = TKPD_ORDER_ID_DUMMY,
-        source: String = TokoChatValueUtil.TOKOFOOD,
+        source: String = TokoChatCommonValueUtil.TOKOFOOD,
         pushNotifTemplateKey: String? = null,
         isSellerApp: Boolean = false,
         isFromTokoFoodPostPurchase: Boolean = false,

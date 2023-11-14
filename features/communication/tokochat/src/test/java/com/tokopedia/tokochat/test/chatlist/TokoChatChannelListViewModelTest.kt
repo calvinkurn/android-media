@@ -6,7 +6,7 @@ import com.gojek.conversations.babble.network.data.OrderInfo
 import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.tokochat.base.TokoChatListViewModelTestFixture
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.TOKOFOOD
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

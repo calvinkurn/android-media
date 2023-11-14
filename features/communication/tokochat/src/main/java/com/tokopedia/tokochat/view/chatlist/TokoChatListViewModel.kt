@@ -6,7 +6,7 @@ import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.BATCH_LIMIT
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.BATCH_LIMIT
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.domain.usecase.TokoChatListUseCase

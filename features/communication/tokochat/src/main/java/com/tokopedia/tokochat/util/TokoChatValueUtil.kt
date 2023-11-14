@@ -39,6 +39,11 @@ object TokoChatValueUtil {
     const val BUBBLES_NOTIF = "bubbles_notif"
     const val BUBBLES_PREF = "tokochat_bubbles_awareness"
 
+    /**
+     * Rollence
+     */
+    const val ROLLENCE_LOGISTIC_CHAT = "gosend_chat_an"
+
     private var remoteConfig: RemoteConfig? = null
 
     fun shouldShowBubblesAwareness(context: Context?): Boolean {
@@ -70,5 +75,4 @@ object TokoChatValueUtil {
             rc
         }
     }
-
 }

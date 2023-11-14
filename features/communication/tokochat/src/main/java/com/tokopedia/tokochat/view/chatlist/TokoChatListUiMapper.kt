@@ -3,15 +3,31 @@ package com.tokopedia.tokochat.view.chatlist
 import android.util.ArrayMap
 import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSource
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.GOSEND_INSTANT_SERVICE_TYPE
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.GOSEND_SAMEDAY_SERVICE_TYPE
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.getSource
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
+import com.tokopedia.tokochat.util.TokoChatValueUtil.ROLLENCE_LOGISTIC_CHAT
+import com.tokopedia.tokochat.util.toggle.TokoChatAbPlatform
 import javax.inject.Inject
 
-class TokoChatListUiMapper@Inject constructor() {
+class TokoChatListUiMapper@Inject constructor(
+    private val abTestPlatform: TokoChatAbPlatform
+) {
 
     fun mapToListChat(listChannel: List<ConversationsChannel>): List<TokoChatListItemUiModel> {
-        val rawResult = listChannel.map {
-            mapToChatListItem(it)
+        val rawResult = listChannel.mapNotNull {
+            val serviceType = it.metadata?.orderInfo?.serviceType ?: 0
+            if ((
+                serviceType != GOSEND_INSTANT_SERVICE_TYPE &&
+                    serviceType != GOSEND_SAMEDAY_SERVICE_TYPE
+                ) || isTokoChatLogisticEnabled()
+            ) {
+                mapToChatListItem(it)
+            } else {
+                // Skip chat list item when service type is logistic & rollence is off
+                null
+            }
         }
         return rawResult.sortedByDescending {
             it.createAt
@@ -44,5 +60,12 @@ class TokoChatListUiMapper@Inject constructor() {
             result[serviceTypeName] = lastCounter + it.unreadCount
         }
         return result
+    }
+
+    private fun isTokoChatLogisticEnabled(): Boolean {
+        return abTestPlatform.getString(
+            ROLLENCE_LOGISTIC_CHAT,
+            ""
+        ) == ROLLENCE_LOGISTIC_CHAT
     }
 }

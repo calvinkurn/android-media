@@ -2,11 +2,11 @@ package com.tokopedia.tokochat.common.view.chatlist.uimodel
 
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.GOFOOD
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.GOSEND_INSTANT_SERVICE_TYPE
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.GOSEND_SAMEDAY_SERVICE_TYPE
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.SHOPPING_LOGISTIC
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.GOFOOD
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.GOSEND_INSTANT_SERVICE_TYPE
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.GOSEND_SAMEDAY_SERVICE_TYPE
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.SHOPPING_LOGISTIC
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.TOKOFOOD_SERVICE_TYPE
 
 data class TokoChatListItemUiModel(
     val orderId: String,

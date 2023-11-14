@@ -1,7 +1,7 @@
 package com.tokopedia.tokochat.common.view.chatroom.uimodel
 
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.SOURCE_LOGISTIC
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.SOURCE_TOKOFOOD
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.SOURCE_LOGISTIC
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.SOURCE_TOKOFOOD
 
 data class TokoChatOrderProgressUiModel(
     val orderProgressType: Type,
@@ -29,7 +29,7 @@ data class TokoChatOrderProgressUiModel(
             fun sourceToType(value: String): Type {
                 return Type.values().firstOrNull {
                     it.value.equals(value, ignoreCase = true)
-                }?: TOKOFOOD // Default to tokofood
+                } ?: TOKOFOOD // Default to tokofood
             }
         }
     }

@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
 import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
 import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokochat.config.util.TokoChatResult
@@ -136,7 +136,7 @@ open class TokoFoodOrderTrackingViewModel @Inject constructor(
         savedStateHandle[ORDER_ID] = orderId
         savedStateHandle[GOFOOD_ORDER_NUMBER] = goFoodOrderNumber
         savedStateHandle[CHANNEL_ID] = channelId
-        savedStateHandle[TokoChatValueUtil.IS_FROM_BUBBLE_KEY] = isFromBubble
+        savedStateHandle[TokoChatCommonValueUtil.IS_FROM_BUBBLE_KEY] = isFromBubble
     }
 
     fun onRestoreSavedInstanceState() {
@@ -145,7 +145,7 @@ open class TokoFoodOrderTrackingViewModel @Inject constructor(
         )
         goFoodOrderNumber = savedStateHandle.get<String>(GOFOOD_ORDER_NUMBER).orEmpty()
         channelId = savedStateHandle.get<String>(CHANNEL_ID).orEmpty()
-        isFromBubble = savedStateHandle.get<Boolean>(TokoChatValueUtil.IS_FROM_BUBBLE_KEY).orFalse()
+        isFromBubble = savedStateHandle.get<Boolean>(TokoChatCommonValueUtil.IS_FROM_BUBBLE_KEY).orFalse()
     }
 
     fun fetchOrderDetail(orderId: String) {
