@@ -28,7 +28,7 @@ class HomeRecommendationPlayWidgetViewHolder(
     init {
         binding.homeRecomPlayWidgetVideo.setListener(object : PlayVideoWidgetView.Listener {
             override fun onVideoFinishedPlaying(view: PlayVideoWidgetView) {
-//                homeRecommendationPlayWidgetManager.bind()
+                // no op
             }
 
             override fun onVideoError(view: PlayVideoWidgetView, error: ExoPlaybackException) {
