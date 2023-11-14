@@ -11,6 +11,7 @@ import android.nfc.tech.IsoDep
 import android.os.Build
 import android.os.Bundle
 import android.os.DeadObjectException
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -520,7 +521,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         if (tag != null) {
             bcaLibrary.myTag = tag
             val isoDep = IsoDep.get(tag)
-            if (!isoDep.isConnected) {
+            if (!isoDep.isConnected && isoDep != null) {
                 isoDep.connect()
             }
         }
