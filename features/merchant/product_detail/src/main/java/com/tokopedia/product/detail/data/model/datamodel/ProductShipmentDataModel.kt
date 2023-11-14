@@ -11,6 +11,7 @@ import com.tokopedia.utils.resources.isDarkMode
 /**
  * Created by Yehezkiel on 10/02/21
  */
+@Deprecated("Replaced with Shipment V3")
 data class ProductShipmentDataModel(
         val type: String = "",
         val name: String = "",
