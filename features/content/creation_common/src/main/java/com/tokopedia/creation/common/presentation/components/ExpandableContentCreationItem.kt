@@ -60,6 +60,7 @@ private fun buildDescriptionAnnotatedString(
 ): AnnotatedString =
     buildAnnotatedString {
         append(stringResource(descriptionTextId))
+        append(" ")
         withStyle(
             SpanStyle(
                 color = NestTheme.colors.GN._500,
