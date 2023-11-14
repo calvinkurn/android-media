@@ -3,12 +3,11 @@ package com.tokopedia.minicart.common.widget
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
@@ -26,7 +25,6 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MiniCartNewWidget @JvmOverloads constructor(
     context: Context,
@@ -80,9 +78,7 @@ class MiniCartNewWidget @JvmOverloads constructor(
 
     private fun initializeView(config: MiniCartNewWidgetConfig) {
         binding?.miniCartTotalAmount?.apply {
-            if (!config.showTopShadow) {
-                bottomContentView.background = ColorDrawable(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0))
-            }
+            topContentView.visibility = if (config.showTopShadow) View.VISIBLE else View.GONE
         }
     }
 
@@ -196,6 +192,15 @@ class MiniCartNewWidget @JvmOverloads constructor(
                 }
             }
         }
+    }
+
+    /*
+    * Function to trigger update mini cart data
+    * This will trigger view model to fetch latest data from backend and update the UI
+    * */
+    fun updateData(shopIds: List<String>) {
+        setTotalAmountLoading(true)
+        viewModel?.getLatestWidgetState(shopIds)
     }
 
     companion object {
