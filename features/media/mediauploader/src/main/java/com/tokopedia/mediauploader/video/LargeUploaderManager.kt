@@ -8,6 +8,7 @@ import com.tokopedia.mediauploader.common.cache.LargeUploadStateCacheManager
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.data.consts.POLICY_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
+import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
 import com.tokopedia.mediauploader.common.data.consts.UPLOAD_ABORT
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
@@ -55,6 +56,7 @@ class LargeUploaderManager @Inject constructor(
     private var mUploadId = ""
 
     private var progressUploader: ProgressUploader? = null
+    private var requestId = ""
 
     suspend operator fun invoke(param: VideoParam): UploadResult {
         val base = param.base as BaseParam
@@ -130,39 +132,44 @@ class LargeUploaderManager @Inject constructor(
         return null
     }
 
-    private suspend fun uploadPart(file: File, sizePerChunk: Int, sourceId: String, policy: SourcePolicy) =
-        withContext(dispatchers.io) {
-            val jobList = mutableListOf<Job>()
+    private suspend fun uploadPart(
+        file: File,
+        sizePerChunk: Int,
+        sourceId: String,
+        policy: SourcePolicy
+    ) = withContext(dispatchers.io) {
+        val jobList = mutableListOf<Job>()
 
-            for (part in UPLOAD_PART_START..chunkTotal) {
-                if (partUploaded[part] == true) continue
+        for (part in UPLOAD_PART_START..chunkTotal) {
+            if (partUploaded[part] == true) continue
+            if (requestId.isNotEmpty()) error(UNKNOWN_ERROR)
 
-                file.slice(part, sizePerChunk)?.let {
-                    val byteArrayToSend = it
+            file.slice(part, sizePerChunk)?.let {
+                val byteArrayToSend = it
 
-                    // trim zero byte from last for the last of part
-                    if (part == chunkTotal) byteArrayToSend.trimLastZero()
+                // trim zero byte from last for the last of part
+                if (part == chunkTotal) byteArrayToSend.trimLastZero()
 
-                    jobList.add(
-                        launch {
-                            chunkUpload(
-                                sourceId,
-                                file,
-                                byteArrayToSend,
-                                policy.timeOut,
-                                part
-                            )
+                jobList.add(
+                    launch {
+                        chunkUpload(
+                            sourceId,
+                            file,
+                            byteArrayToSend,
+                            policy.timeOut,
+                            part
+                        )
 
-                            updateProgressValue()
-                        }
-                    )
-                }
-            }
-
-            jobList.forEach { job ->
-                job.join()
+                        updateProgressValue()
+                    }
+                )
             }
         }
+
+        jobList.forEach { job ->
+            job.join()
+        }
+    }
 
     suspend fun abortUpload(sourceId: String, file: File, abort: suspend () -> Unit) {
         val data = uploadStateManager.get(sourceId, file.name) ?: return
@@ -269,6 +276,10 @@ class LargeUploaderManager @Inject constructor(
         return if (uploader.isSuccess()) {
             isChunkCorrect(sourceId, file, partNumber)
         } else {
+            if (requestId.isEmpty()) {
+                requestId = uploader.requestId.toString()
+            }
+
             UploaderLogger.commonError(
                 param = BaseParam.create(file, sourceId),
                 message = "Fail to upload (uploadId=$mUploadId; file=${file.name}; part=$partNumber)",

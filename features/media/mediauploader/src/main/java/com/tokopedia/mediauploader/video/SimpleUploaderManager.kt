@@ -38,7 +38,7 @@ class SimpleUploaderManager @Inject constructor(
         )
 
         val requestId = uploader.requestId ?: ""
-        val error = uploader.errorMessage ?: UNKNOWN_ERROR
+        val error = uploader.errorMessage()
 
         if (param.withTranscode) {
             while (true) {
@@ -58,16 +58,18 @@ class SimpleUploaderManager @Inject constructor(
             }
         }
 
-        return uploader.videoUrl?.let {
+        return if (uploader.videoUrl.isNullOrEmpty().not()) {
             UploadResult.Success(
-                videoUrl = it,
+                videoUrl = uploader.videoUrl ?: "",
                 uploadId = uploader.uploadId.toString()
             )
-        } ?: UploadResult.Error(
-            message = error,
-            requestId = requestId
-        ).also {
-            UploaderLogger.commonError(base, it)
+        } else {
+            UploadResult.Error(
+                message = error,
+                requestId = requestId
+            ).also {
+                UploaderLogger.commonError(base, it)
+            }
         }
     }
 

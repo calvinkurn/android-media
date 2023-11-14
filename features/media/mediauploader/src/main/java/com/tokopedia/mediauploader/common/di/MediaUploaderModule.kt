@@ -14,7 +14,7 @@ import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
-import com.tokopedia.mediauploader.video.data.repository.LargeUploadRepository
+import com.tokopedia.mediauploader.video.data.repository.VideoUploadRepository
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepository
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepositoryImpl
 import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase
@@ -86,7 +86,7 @@ abstract class MediaUploaderModule {
 
     @Binds
     @UploaderQualifier
-    abstract fun provideLargeUploadRepository(impl: LargeUploadRepository): LargeUploadRepository
+    abstract fun provideLargeUploadRepository(impl: VideoUploadRepository): VideoUploadRepository
 
     // -- simple video --
 
