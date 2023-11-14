@@ -9,7 +9,6 @@
     <string name="pdp_product_info_description_title">Deskripsi produk</string>
     <string name="merchant_product_detail_label_selengkapnya">Selengkapnya</string>
     <string name="title_activity_product_detail">Rincian Produk</string>
-    <string name="template_price">%1$s%2$s</string>
     <string name="ticker_atc_done_some_store">Barang dikirim dari toko yang sama</string>
     <string name="ticker_atc_done_different_store">Barang dikirim dari toko yang berbeda</string>
     <string name="buy">Beli</string>
@@ -195,4 +194,7 @@
     <string name="pdp_selly_time_format">&#160;• %s</string>
     <string name="pdp_selly_button_expand">Jadwal Lainnya</string>
     <string name="pdp_selly_button_collapse">Tampilkan lebih sedikit</string>
+
+    <string name="pdp_shipment_failed_title">Konten gagal ditampilkan</string>
+    <string name="pdp_shipment_failed_message">Klik ikon di samping buat coba lagi.</string>
 </resources>

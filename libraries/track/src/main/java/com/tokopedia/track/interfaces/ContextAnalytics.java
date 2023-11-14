@@ -100,9 +100,6 @@ public abstract class ContextAnalytics implements Analytics {
 
     public void pushEvent(String eventName, Map<String, Object> values){}
 
-    public void sendGTMGeneralEvent(String event, String category, String action, String label,
-                                    String shopId, String shopType, String userId,
-                                    @Nullable Map<String, Object> customDimension) { }
     public String getDefferedDeeplinkPathIfExists(){return null;}
 
 

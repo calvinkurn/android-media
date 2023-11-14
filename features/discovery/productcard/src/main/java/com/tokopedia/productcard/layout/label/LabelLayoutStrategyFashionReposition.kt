@@ -94,10 +94,7 @@ internal class LabelLayoutStrategyFashionReposition: LabelLayoutStrategy {
     override fun renderLabelPrice(view: View, productCardModel: ProductCardModel) {
         val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
 
-        if (productCardModel.isShowLabelPrice())
-            labelPriceReposition?.initLabelGroup(productCardModel.getLabelPrice())
-        else
-            labelPriceReposition?.initLabelGroup(null)
+        labelPriceReposition?.initLabelGroup(productCardModel.getLabelPrice())
 
         val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
         labelPrice?.initLabelGroup(null)
@@ -145,14 +142,14 @@ internal class LabelLayoutStrategyFashionReposition: LabelLayoutStrategy {
             it.connect(
                 R.id.linearLayoutImageRating,
                 ConstraintSet.TOP,
-                R.id.labelPriceBarrier,
+                R.id.labelPrice,
                 ConstraintSet.BOTTOM,
                 linearLayoutImageRatingMarginTop,
             )
             it.connect(
                 R.id.textViewReviewCount,
                 ConstraintSet.TOP,
-                R.id.labelPriceBarrier,
+                R.id.labelPrice,
                 ConstraintSet.BOTTOM,
                 textViewReviewCountMarginTop,
             )

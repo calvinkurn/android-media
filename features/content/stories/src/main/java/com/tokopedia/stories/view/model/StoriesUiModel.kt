@@ -32,18 +32,12 @@ data class StoriesDetail(
     val detailItems: List<StoriesDetailItem> = emptyList()
 ) {
     companion object {
-        val Empty
-            get() = StoriesDetail(
-                selectedGroupId = "",
-                selectedDetailPosition = 0,
-                selectedDetailPositionCached = 0,
-                detailItems = listOf(
-                    StoriesDetailItem(
-                        event = StoriesDetailItem.StoriesDetailItemUiEvent.RESUME,
-                        content = StoriesDetailItem.StoriesItemContent(duration = 3000)
-                    )
-                )
-            )
+        val EmptyDetail get() = StoriesDetail(
+            selectedGroupId = "",
+            selectedDetailPosition = 0,
+            selectedDetailPositionCached = 0,
+            detailItems = listOf(StoriesDetailItem.Empty)
+        )
     }
 }
 
@@ -56,10 +50,15 @@ data class StoriesDetailItem(
     val meta: Meta = Meta(),
     val productCount: String = "",
     val author: StoryAuthor = StoryAuthor.Unknown,
+    val category: StoryCategory = StoryCategory.ASGC,
+    val publishedAt: String = "",
     val menus: List<ContentMenuItem> = emptyList(),
     val share: Sharing = Sharing.Empty,
     val status: StoryStatus = StoryStatus.Unknown,
 ) {
+    companion object {
+        val Empty get() = StoriesDetailItem(event = StoriesDetailItemUiEvent.RESUME, content = StoriesItemContent(duration = 3000), resetValue = 0)
+    }
 
     data class Meta(
         val activityTracker: String = "",
@@ -106,6 +105,19 @@ data class StoriesDetailItem(
                     if (it.value.equals(value, true)) return it
                 }
                 return Unknown
+            }
+        }
+    }
+
+    enum class StoryCategory(val value: String) {
+        Manual("update"), ASGC("default");
+
+        companion object {
+            fun getByValue(value: String): StoryCategory {
+                values().forEach {
+                    if (it.value.equals(value, true)) return it
+                }
+                return ASGC
             }
         }
     }

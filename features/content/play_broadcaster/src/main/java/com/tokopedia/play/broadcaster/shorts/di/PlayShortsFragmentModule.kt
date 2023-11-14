@@ -4,12 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
-import com.tokopedia.content.product.picker.ProductSetupFragment
+import com.tokopedia.content.product.picker.seller.di.ProductPickerBindModule
 import com.tokopedia.content.product.picker.seller.di.ProductPickerFragmentModule
-import com.tokopedia.content.product.picker.seller.view.bottomsheet.EtalaseListBottomSheet
-import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
-import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSortBottomSheet
-import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsSummaryFragment
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
@@ -27,7 +23,10 @@ import dagger.multibindings.IntoMap
  * Created By : Jonathan Darwin on November 08, 2022
  */
 @Module(
-    includes = [ProductPickerFragmentModule::class]
+    includes = [
+        ProductPickerFragmentModule::class,
+        ProductPickerBindModule::class,
+    ]
 )
 abstract class PlayShortsFragmentModule {
 

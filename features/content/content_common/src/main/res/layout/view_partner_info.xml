@@ -37,8 +37,7 @@
         android:maxLines="1"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btn_follow"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@id/tv_stories_timestamp"
         app:layout_constraintStart_toEndOf="@id/iv_badge"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginStart="@dimen/spacing_lvl3"
@@ -46,6 +45,23 @@
         app:typographyWeight="bold"
         app:layout_constrainedWidth="true"
         tools:text="Rockbros Indonesia Rockbros Indonesia Rockbros Indonesia Rockbros Indonesia" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_stories_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl1"
+        android:lines="1"
+        android:maxLines="1"
+        android:visibility="gone"
+        android:textColor="@color/Unify_NN0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_follow"
+        app:layout_constraintStart_toEndOf="@id/tv_partner_name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginStart="@dimen/spacing_lvl3"
+        app:typographyType="display_3"
+        tools:text="• 13 mnt" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_follow"
@@ -56,8 +72,7 @@
         android:layout_marginStart="@dimen/content_common_space_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/tv_partner_name"
+        app:layout_constraintStart_toEndOf="@id/tv_stories_timestamp"
         app:layout_constraintTop_toTopOf="parent"
         app:unifyButtonInvers="true"
         app:unifyButtonSize="micro"

@@ -15,16 +15,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
+import com.tokopedia.stories.view.utils.isDeviceAnimationsEnabled
 import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import kotlinx.coroutines.delay
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -34,14 +37,28 @@ fun StoriesDetailTimer(
     timerInfo: TimerStatusInfo,
     timerFinished: () -> Unit,
 ) {
-    val anim =
-        remember(timerInfo.story.id, timerInfo.story.resetValue) { Animatable(INITIAL_ANIMATION) }
+    if (LocalContext.current.isDeviceAnimationsEnabled()) {
+        StoriesTimerAnimationEnabled(timerInfo = timerInfo, timerFinished = timerFinished)
+    }
+    else {
+        StoriesTimerAnimationDisabled(timerInfo = timerInfo, timerFinished = timerFinished)
+    }
+}
+
+@Composable
+private fun StoriesTimerAnimationEnabled(
+    timerInfo: TimerStatusInfo,
+    timerFinished: () -> Unit,
+) {
+    val anim = remember(timerInfo.story.id, timerInfo.story.resetValue) {
+        Animatable(INITIAL_ANIMATION)
+    }
 
     LaunchedEffect(timerInfo) {
         when (timerInfo.event) {
             StoriesDetailItemUiEvent.PAUSE, StoriesDetailItemUiEvent.BUFFERING -> anim.stop()
             StoriesDetailItemUiEvent.RESUME -> {
-                delay(100)
+                delay(DELAY_MILLIS)
                 anim.animateTo(
                     targetValue = TARGET_ANIMATION,
                     animationSpec = tween(
@@ -51,14 +68,50 @@ fun StoriesDetailTimer(
                 )
             }
         }
-
-        if ((anim.value == anim.targetValue) && (anim.targetValue != 0F)) timerFinished.invoke()
+        if ((anim.value == anim.targetValue) && (anim.targetValue != INITIAL_ANIMATION)) timerFinished.invoke()
     }
 
     StoriesDetailTimerContent(
         count = timerInfo.story.itemCount,
         currentPosition = timerInfo.story.position,
         progress = anim.value,
+    )
+}
+
+@Composable
+private fun StoriesTimerAnimationDisabled(
+    timerInfo: TimerStatusInfo,
+    timerFinished: () -> Unit,
+) {
+    val timer = remember(timerInfo.story.id, timerInfo.story.resetValue) {
+        mutableStateOf(INITIAL_ANIMATION)
+    }
+    val currentTime = remember(timerInfo.story.id, timerInfo.story.resetValue) {
+        mutableStateOf(0L)
+    }
+    val isTimerRunning = remember(timerInfo.story.id, timerInfo.story.resetValue) {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(timerInfo, currentTime.value, isTimerRunning.value) {
+        when (timerInfo.event) {
+            StoriesDetailItemUiEvent.PAUSE -> isTimerRunning.value = false
+            StoriesDetailItemUiEvent.RESUME -> {
+                isTimerRunning.value = true
+                if (currentTime.value < timerInfo.story.duration && isTimerRunning.value) {
+                    delay(DELAY_MILLIS)
+                    currentTime.value += DELAY_MILLIS
+                    timer.value = currentTime.value / timerInfo.story.duration.toFloat()
+                }
+            }
+        }
+        if (timer.value == TARGET_ANIMATION) timerFinished.invoke()
+    }
+
+    StoriesDetailTimerContent(
+        count = timerInfo.story.itemCount,
+        currentPosition = timerInfo.story.position,
+        progress = timer.value,
     )
 }
 
@@ -83,9 +136,8 @@ private fun StoriesDetailTimerContent(
                         .clip(RoundedCornerShape(60))
                         .weight(1f)
                         .background(
-                            colorResource(id = unifyprinciplesR.color.Unify_Static_White).copy(
-                                alpha = 0.4f
-                            )
+                            colorResource(id = unifyprinciplesR.color.Unify_Static_White)
+                                .copy(alpha = 0.4f)
                         )
                 ) {
                     Box(
@@ -114,5 +166,6 @@ internal fun StoriesDetailTimerPreview() {
     ) { }
 }
 
+private const val DELAY_MILLIS = 100L
 private const val TARGET_ANIMATION = 1F
 private const val INITIAL_ANIMATION = 0F

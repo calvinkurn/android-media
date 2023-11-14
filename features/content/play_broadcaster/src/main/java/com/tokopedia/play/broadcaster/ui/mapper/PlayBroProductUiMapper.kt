@@ -2,27 +2,25 @@ package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
-import com.tokopedia.content.product.picker.seller.mapper.ContentProductPickerSellerMapper
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetProductTagSummarySectionResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.content.product.picker.seller.model.DiscountedPrice
 import com.tokopedia.content.product.picker.seller.model.OriginalPrice
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.util.PriceFormatUtil
 import java.math.BigDecimal
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import javax.inject.Inject
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
 class PlayBroProductUiMapper @Inject constructor(
-
-) : ContentProductPickerSellerMapper() {
-
+    private val priceFormatUtil: PriceFormatUtil,
+) {
     fun mapProductsInEtalase(
         response: GetProductsByEtalaseResponse,
     ): PagedDataUiModel<ProductUiModel> {
@@ -34,7 +32,7 @@ class PlayBroProductUiMapper @Inject constructor(
                     imageUrl = data.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
                     stock = data.stock.toLong(),
                     price = OriginalPrice(
-                        priceFormat.format(BigDecimal(data.price.min.orZero())),
+                        priceFormatUtil.format(BigDecimal(data.price.min.orZero())),
                         data.price.min.orZero()
                     ),
                     hasCommission = false,
@@ -120,4 +118,21 @@ class PlayBroProductUiMapper @Inject constructor(
             )
         }
     }
+
+    /** Util */
+    private fun mapCampaignStatusFromType(type: String): CampaignStatus {
+        return when(type.lowercase()) {
+            "mendatang", "upcoming" -> CampaignStatus.Ready
+            "berlangsung", "active" -> CampaignStatus.Ongoing
+            else -> CampaignStatus.Unknown
+        }
+    }
+
+    /**
+     * Pinned Product
+     * isPinnable -> not eligible to pin product-> hide pin container [case: out of stock]
+     * isPinned -> show [status: Lepas / Pin]
+     */
+    private fun getPinStatus(isPinned: Boolean, canPin: Boolean): PinProductUiModel =
+        PinProductUiModel(isPinned = isPinned, canPin = if (isPinned) true else canPin)
 }

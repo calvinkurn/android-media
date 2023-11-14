@@ -18,4 +18,5 @@
     <string name="dialog_report_story_title">Lanjutkan laporkan story</string>
     <string name="dialog_report_story_cancel">Batal</string>
     <string name="story_reported_successfully_message">Story berhasil dilaporkan</string>
+    <string name="story_creation_timestamp">• %s</string>
 </resources>

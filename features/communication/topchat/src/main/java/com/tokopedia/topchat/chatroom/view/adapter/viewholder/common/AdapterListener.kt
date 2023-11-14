@@ -2,7 +2,10 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.common
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
+
+const val OPPOSITE_MARGIN = 4
 
 interface AdapterListener {
     fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean
@@ -10,7 +13,6 @@ interface AdapterListener {
     fun changeToFallbackUiModel(element: ReviewUiModel, lastKnownPosition: Int)
 }
 
-fun getOppositeMargin(context: Context?): Float {
-    return context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-            ?: 0f
+fun getOppositeMargin(context: Context): Int {
+    return OPPOSITE_MARGIN.dpToPx(context.resources.displayMetrics)
 }
