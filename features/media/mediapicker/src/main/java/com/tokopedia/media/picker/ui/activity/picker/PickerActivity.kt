@@ -415,16 +415,16 @@ open class PickerActivity :
     }
 
     private fun onEditorIntent(data: PickerResult) {
-        if (param.get().isImmersiveEditorEnabled() && featureToggleManager.isImmersiveEditorEnable()) {
-            // immersive editor
-            val intent = UniversalEditor
-                .intent(this) {
-                    param.get().let { pickerParam ->
-                        trackerExtra = pickerParam.immersiveTrackerData()
-                        setPageSource(param.get().pageSource())
-                    }
-                    filePaths(data.originalPaths)
+        val param = param.get()
+
+        if (param.isImmersiveEditorEnabled() && featureToggleManager.isImmersiveEditorEnable()) {
+            val intent = UniversalEditor.intent(this) {
+                setPageSource(param.pageSource())
+                filePaths(data.originalPaths)
+                param.immersiveEditorParam()?.let {
+                    setCustomParam(it)
                 }
+            }
 
             immersiveEditorIntent.launch(intent)
         } else {

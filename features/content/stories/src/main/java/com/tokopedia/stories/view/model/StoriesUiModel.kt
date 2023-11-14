@@ -107,5 +107,5 @@ data class StoriesDetailItem(
         }
     }
 
-    val isProductAvailable: Boolean = productCount.isNotEmpty() && productCount != "0"
+    val isProductAvailable: Boolean = productCount.isNotEmpty() && productCount != "0" && status == StoryStatus.Active
 }

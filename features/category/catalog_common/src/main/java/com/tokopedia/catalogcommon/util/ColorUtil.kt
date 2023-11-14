@@ -2,6 +2,7 @@ package com.tokopedia.catalogcommon.util
 
 import android.content.Context
 import android.graphics.Color
+import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -36,13 +37,14 @@ fun Int.colorResToInt(context: Context, alphaPercentage:Int = 100): Int {
     val alphaValue: Int = (alphaPercentage * 255) / 100
     return Color.argb(alphaValue, Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue))
 }
- fun colorMapping(
+
+fun colorMapping(
     darkMode: Boolean,
     forDarkModeColor: String,
     forLightModeColor: String,
     alphaPercentageDarkModeColor: Int = 100,
     alphaPercentageLightModeColor: Int = 100,
- ): Int {
+): Int {
     return if (darkMode) {
         forDarkModeColor.stringHexColorParseToInt(alphaPercentageDarkModeColor)
     } else {
@@ -59,5 +61,22 @@ fun colorMapping(
         forDarkModeColor
     } else {
         forLightModeColor
+    }
+}
+
+fun getColorDarkMode(
+    context: Context,
+    darkMode: Boolean,
+    @ColorRes darkModeResColor: Int,
+    @ColorRes lightModeResColor: Int,
+    darkModeAlpha: Int = 100,
+    lightModeAlpha: Int = 100,
+): Int {
+    val darkModeColor = darkModeResColor.colorResToInt(context, darkModeAlpha)
+    val lightModeColor = lightModeResColor.colorResToInt(context, lightModeAlpha)
+    return if (darkMode) {
+        darkModeColor
+    } else {
+        lightModeColor
     }
 }

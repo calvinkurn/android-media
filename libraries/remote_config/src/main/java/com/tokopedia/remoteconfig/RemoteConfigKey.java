@@ -291,4 +291,10 @@ public class RemoteConfigKey {
     public static final String ENABLE_PDP_P1_CACHE_AGE = "android_pdp_p1_cache_age";
 
     public static final String SELLER_SEARCH_COMPOSE = "android_seller_search_compose";
+
+    public static final String ANDROID_PM_OPT_OUT_DATE = "android_pm_opt_out_date";
+
+    public static final String ENABLE_PDP_PREFETCH = "android_pdp_enable_prefetch";
+
+    public static final String LOAD_PRODUCT_IMAGE_ARCHIVAL_KEY = "android_load_product_image_archival_enabled";
 }
