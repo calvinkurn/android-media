@@ -435,7 +435,10 @@ open class ShopHomeAdapterTypeFactory(
             ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
                 ShopLayoutLoadingShimmerViewHolder(parent)
             }
-            ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(parent, shopProductEtalaseListViewHolderListener)
+            ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(
+                parent,
+                shopProductEtalaseListViewHolderListener
+            )
             ShopHomeNplCampaignViewHolder.LAYOUT -> {
                 ShopHomeNplCampaignViewHolder(parent, shopHomeCampaignNplWidgetListener)
             }
