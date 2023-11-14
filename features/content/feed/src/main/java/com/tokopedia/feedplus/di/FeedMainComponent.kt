@@ -33,6 +33,7 @@ interface FeedMainComponent {
     interface Factory {
         fun build(
             appComponent: BaseAppComponent,
+            creationUploaderComponent: CreationUploaderComponent,
             @BindsInstance activityContext : Context
         ) : FeedMainComponent
     }

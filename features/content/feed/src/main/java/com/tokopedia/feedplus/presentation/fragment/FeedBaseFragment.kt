@@ -33,6 +33,7 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPoin
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.model.CreationUploadType
@@ -256,7 +257,8 @@ class FeedBaseFragment :
         DaggerFeedMainComponent.factory()
             .build(
                 activityContext = requireContext(),
-                appComponent = (requireActivity().application as BaseMainApplication).baseAppComponent
+                appComponent = (requireActivity().application as BaseMainApplication).baseAppComponent,
+                creationUploaderComponent = CreationUploaderComponentProvider.get(requireContext())
             ).inject(this)
     }
 
