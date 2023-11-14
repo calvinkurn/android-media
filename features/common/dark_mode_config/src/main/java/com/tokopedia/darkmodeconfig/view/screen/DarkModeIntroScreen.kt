@@ -1,4 +1,4 @@
-package com.ilhamsuaib.darkmodeconfig.view.screen
+package com.tokopedia.darkmodeconfig.view.screen
 
 import android.widget.ImageView
 import androidx.compose.foundation.background

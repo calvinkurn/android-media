@@ -1,11 +1,11 @@
-package com.ilhamsuaib.darkmodeconfig.view.activity
+package com.tokopedia.darkmodeconfig.view.activity
 
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
-import com.ilhamsuaib.darkmodeconfig.common.DarkModeAnalytics
-import com.ilhamsuaib.darkmodeconfig.model.UiMode
+import com.tokopedia.darkmodeconfig.common.DarkModeAnalytics
+import com.tokopedia.darkmodeconfig.model.UiMode
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode

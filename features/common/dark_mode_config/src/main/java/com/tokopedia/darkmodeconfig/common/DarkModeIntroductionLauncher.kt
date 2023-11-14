@@ -1,4 +1,4 @@
-package com.ilhamsuaib.darkmodeconfig.common
+package com.tokopedia.darkmodeconfig.common
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -6,7 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
-import com.ilhamsuaib.darkmodeconfig.view.bottomsheet.DarkModeIntroBottomSheet
+import com.tokopedia.darkmodeconfig.view.bottomsheet.DarkModeIntroBottomSheet
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.resources.isDarkMode

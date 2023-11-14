@@ -1,6 +1,6 @@
-package com.ilhamsuaib.darkmodeconfig.common
+package com.tokopedia.darkmodeconfig.common
 
-import com.ilhamsuaib.darkmodeconfig.model.UiMode
+import com.tokopedia.darkmodeconfig.model.UiMode
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics

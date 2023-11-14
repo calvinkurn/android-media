@@ -1,4 +1,4 @@
-package com.ilhamsuaib.darkmodeconfig.view.activity
+package com.tokopedia.darkmodeconfig.view.activity
 
 //noinspection MissingResourceImportAlias
 import android.os.Bundle
@@ -11,9 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import com.ilhamsuaib.darkmodeconfig.R
-import com.ilhamsuaib.darkmodeconfig.common.PrefKey
-import com.ilhamsuaib.darkmodeconfig.model.UiMode
-import com.ilhamsuaib.darkmodeconfig.view.screen.DarkModeConfigScreen
+import com.tokopedia.darkmodeconfig.common.PrefKey
+import com.tokopedia.darkmodeconfig.model.UiMode
+import com.tokopedia.darkmodeconfig.view.screen.DarkModeConfigScreen
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType

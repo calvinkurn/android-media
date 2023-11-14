@@ -1,4 +1,4 @@
-package com.ilhamsuaib.darkmodeconfig.common
+package com.tokopedia.darkmodeconfig.common
 
 /**
  * Created by @ilhamsuaib on 08/11/23.

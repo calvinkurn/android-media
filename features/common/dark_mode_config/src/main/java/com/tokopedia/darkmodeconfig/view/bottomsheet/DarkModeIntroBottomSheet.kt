@@ -1,4 +1,4 @@
-package com.ilhamsuaib.darkmodeconfig.view.bottomsheet
+package com.tokopedia.darkmodeconfig.view.bottomsheet
 
 import android.content.Context
 import android.os.Bundle
@@ -12,9 +12,9 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
-import com.ilhamsuaib.darkmodeconfig.common.DarkModeAnalytics
-import com.ilhamsuaib.darkmodeconfig.model.UiMode
-import com.ilhamsuaib.darkmodeconfig.view.screen.DarkModeIntroScreen
+import com.tokopedia.darkmodeconfig.common.DarkModeAnalytics
+import com.tokopedia.darkmodeconfig.model.UiMode
+import com.tokopedia.darkmodeconfig.view.screen.DarkModeIntroScreen
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.nest.principles.ui.NestTheme

@@ -1,4 +1,4 @@
-package com.ilhamsuaib.darkmodeconfig.view.screen
+package com.tokopedia.darkmodeconfig.view.screen
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.ilhamsuaib.darkmodeconfig.model.UiMode
+import com.tokopedia.darkmodeconfig.model.UiMode
 import com.tokopedia.nest.components.NestDivider
 import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.principles.NestTypography

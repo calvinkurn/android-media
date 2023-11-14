@@ -1,4 +1,4 @@
-package com.ilhamsuaib.darkmodeconfig.model
+package com.tokopedia.darkmodeconfig.model
 
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
