@@ -1,0 +1,10 @@
+package com.tokopedia.shop.info.view.model
+
+sealed interface ShopInfoUiEffect {
+    data class RedirectToGmaps(val gmapsUrl: String) : ShopInfoUiEffect
+    data class RedirectToShopReviewPage(val shopId: String) : ShopInfoUiEffect
+    data class RedirectToProductReviewPage(val productId: String) : ShopInfoUiEffect
+    data class RedirectToShopNoteDetailPage(val shopId: String, val noteId: String) : ShopInfoUiEffect
+    object RedirectToLoginPage : ShopInfoUiEffect
+    data class RedirectToChatWebView(val messageId: String) : ShopInfoUiEffect
+}

@@ -24,7 +24,6 @@ class ProductRevGetShopReviewReadingListUseCase @Inject constructor(
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-
     private val query = object : GqlQueryInterface {
         private val OPERATION_NAME = "productrevGetShopReviewReadingList"
         private val QUERY =
@@ -33,6 +32,16 @@ class ProductRevGetShopReviewReadingListUseCase @Inject constructor(
     list {
       reviewID
       rating
+      product {
+        productID
+        productName
+        productImageURL
+        isDeletedProduct
+        productVariant {
+          variantID
+          variantName
+        }
+      }
       attachments {
         attachmentID
         thumbnailURL
@@ -58,7 +67,6 @@ class ProductRevGetShopReviewReadingListUseCase @Inject constructor(
         override fun getQuery(): String = QUERY
         override fun getTopOperationName(): String = OPERATION_NAME
     }
-
 
     suspend fun execute(param: Param): ShopReview {
         val request = buildRequest(param)
@@ -89,5 +97,4 @@ class ProductRevGetShopReviewReadingListUseCase @Inject constructor(
         val filterBy: String = "",
         val sortBy: String = ""
     )
-
 }

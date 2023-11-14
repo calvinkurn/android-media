@@ -11,6 +11,7 @@ data class VerticalBannerItemType(
     val componentName: BannerProductGroupUiModel.Tab.ComponentList.ComponentName?,
     val imageUrl: String,
     val appLink: String,
+    val verticalBannerHeight: Int,
     override val id : String = imageUrl,
     override val overrideTheme: Boolean = false,
     override val colorSchema: ShopPageColorSchema = ShopPageColorSchema()

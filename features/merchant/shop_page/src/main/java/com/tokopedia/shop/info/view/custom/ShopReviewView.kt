@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.view.fragment.ReviewViewPagerItemFragment
+import com.tokopedia.shop_widget.customview.ProgressibleTabIndicatorView
 import com.tokopedia.unifycomponents.toPx
 
 class ShopReviewView @JvmOverloads constructor(
@@ -25,17 +26,26 @@ class ShopReviewView @JvmOverloads constructor(
     }
 
     companion object {
-        private const val COUNTDOWN_TIMER_TOTAL_TIME: Long = 5000
-        private const val COUNTDOWN_TIMER_INTERVAL: Long = 200
         private const val DOT_INDICATOR_MARGIN_TOP = 16
     }
 
-    fun render(lifecycle: Lifecycle, fragment: Fragment, review: ShopReview) {
-        val viewpager = createViewpager()
-        val tabIndicator = createTabIndicator()
+    private var onReviewImageClick: (ShopReview.Review) -> Unit = {}
+    private var onReviewImageViewAllClick: (ShopReview.Review) -> Unit = {}
+    private var isSwipeFromUserInteraction = false
 
+    fun renderReview(lifecycle: Lifecycle, fragment: Fragment, review: ShopReview) {
+        removeAllViews()
+
+        val viewpager = createViewpager()
         addView(viewpager)
-        addView(tabIndicator)
+
+        val tabIndicator = if (review.reviews.size == Int.ONE) {
+            null
+        } else {
+            val tabIndicator = createTabIndicator()
+            addView(tabIndicator)
+            tabIndicator
+        }
 
         setupViewPager(viewpager, review, fragment, lifecycle, tabIndicator)
     }
@@ -45,7 +55,7 @@ class ShopReviewView @JvmOverloads constructor(
         review: ShopReview,
         fragment: Fragment,
         lifecycle: Lifecycle,
-        tabIndicator: ProgressibleTabLayoutView
+        tabIndicator: ProgressibleTabIndicatorView?
     ) {
         val fragments = createFragments(review.reviews)
 
@@ -59,26 +69,20 @@ class ShopReviewView @JvmOverloads constructor(
         viewPager: ViewPager2,
         reviewCount: Int,
         lifecycle: Lifecycle,
-        tabIndicator: ProgressibleTabLayoutView
+        tabIndicator: ProgressibleTabIndicatorView?
     ) {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                val config = ProgressibleTabLayoutView.Config(
-                    itemCount = reviewCount,
-                    totalDuration = COUNTDOWN_TIMER_TOTAL_TIME,
-                    intervalDuration = COUNTDOWN_TIMER_INTERVAL
-                )
-
-                tabIndicator.renderTabIndicator(
-                    config = config,
+                tabIndicator?.showTabIndicatorWithLifecycle(
+                    tabIndicatorCount = reviewCount,
                     lifecycle = lifecycle,
-                    selectedTabIndicatorIndex = position,
-                    onTimerFinish = {
-                        val currentItem = viewPager.currentItem
-                        val isLastItem = currentItem == reviewCount - Int.ONE
-                        val nextItem = currentItem + Int.ONE
+                    selectedPosition = position,
+                    onProgressFinish = {
+                        val currentItemPosition = viewPager.currentItem
+                        val isLastItem = currentItemPosition == reviewCount - Int.ONE
+                        val nextItem = currentItemPosition + Int.ONE
 
                         if (isLastItem) {
                             viewPager.currentItem = Int.ZERO
@@ -97,8 +101,8 @@ class ShopReviewView @JvmOverloads constructor(
         }
     }
 
-    private fun createTabIndicator(): ProgressibleTabLayoutView {
-        val tabIndicator = ProgressibleTabLayoutView(context).apply {
+    private fun createTabIndicator(): ProgressibleTabIndicatorView {
+        val tabIndicator = ProgressibleTabIndicatorView(context).apply {
             val params = LayoutParams(
                 LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT
@@ -114,7 +118,20 @@ class ShopReviewView @JvmOverloads constructor(
     }
 
     private fun createFragments(reviews: List<ShopReview.Review>): List<Fragment> {
-        return reviews.map { review -> ReviewViewPagerItemFragment.newInstance(review) }
+        return reviews.map { review ->
+            val fragment = ReviewViewPagerItemFragment.newInstance(review)
+            fragment.setOnReviewImageClick { onReviewImageClick(it) }
+            fragment.setOnReviewImageViewAllClick { onReviewImageViewAllClick(it) }
+            fragment
+        }
+    }
+
+    fun setOnReviewImageClick(onReviewImageClick: (ShopReview.Review) -> Unit) {
+        this.onReviewImageClick = onReviewImageClick
+    }
+
+    fun setOnReviewImageViewAllClick(onReviewImageViewAllClick: (ShopReview.Review) -> Unit) {
+        this.onReviewImageViewAllClick = onReviewImageViewAllClick
     }
 
     private class ReviewViewPagerAdapter(

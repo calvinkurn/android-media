@@ -1,6 +1,5 @@
 package com.tokopedia.shop.info.data.response
 
-
 import com.google.gson.annotations.SerializedName
 
 data class ProductRevGetShopReviewReadingListResponse(
@@ -16,6 +15,8 @@ data class ProductRevGetShopReviewReadingListResponse(
         data class ShopReviewList(
             @SerializedName("likeDislike")
             val likeDislike: LikeDislike,
+            @SerializedName("product")
+            val product: Product,
             @SerializedName("attachments")
             val attachments: List<Attachment>,
             @SerializedName("rating")
@@ -48,6 +49,13 @@ data class ProductRevGetShopReviewReadingListResponse(
                 val thumbnailURL: String,
                 @SerializedName("fullsizeURL")
                 val fullSizeURL: String
+            )
+
+            data class Product(
+                @SerializedName("productID")
+                val productID: String,
+                @SerializedName("productName")
+                val productName: String
             )
         }
     }

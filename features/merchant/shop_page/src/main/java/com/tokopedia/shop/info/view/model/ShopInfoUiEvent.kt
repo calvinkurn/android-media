@@ -1,0 +1,17 @@
+package com.tokopedia.shop.info.view.model
+
+sealed interface ShopInfoUiEvent {
+    data class Setup(val shopId: String, val districtId: String, val cityId: String) :
+        ShopInfoUiEvent
+
+    object GetShopInfo : ShopInfoUiEvent
+    object TapIconViewAllShopReview : ShopInfoUiEvent
+    data class TapReviewImage(val productId: String) : ShopInfoUiEvent
+    data class TapReviewImageViewAll(val productId: String) : ShopInfoUiEvent
+    object TapCtaExpandShopPharmacyInfo : ShopInfoUiEvent
+
+    object TapCtaViewPharmacyLocation : ShopInfoUiEvent
+    data class TapShopNote(val noteId: String) : ShopInfoUiEvent
+    object RetryGetShopInfo : ShopInfoUiEvent
+    object ReportShop : ShopInfoUiEvent
+}

@@ -2,7 +2,6 @@ package com.tokopedia.layanan_finansial.view.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -16,9 +15,9 @@ import com.tokopedia.layanan_finansial.view.viewModel.LayananFinansialViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class LayananFragment : BaseListFragment<Visitable<*>, LayananViewHolderFactory>() {
-
 
     @Inject
     lateinit var factory: ViewModelFactory
@@ -36,7 +35,6 @@ class LayananFragment : BaseListFragment<Visitable<*>, LayananViewHolderFactory>
         )
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addObserver()
@@ -46,9 +44,17 @@ class LayananFragment : BaseListFragment<Visitable<*>, LayananViewHolderFactory>
         performanceInterface.startMonitoring(LAYANAN_PLT)
         performanceInterface.startPreparePagePerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(
+                androidx.core.content.ContextCompat.getColor(
+                    it,
+                    unifyprinciplesR.color.Unify_Background
+                )
+            )
+        }
     }
 
-    private fun addObserver() = viewModel.liveData.observe(this, Observer {
+    private fun addObserver() = viewModel.liveData.observe(viewLifecycleOwner) {
         it?.let {
             when (it) {
                 is Success -> {
@@ -66,7 +72,7 @@ class LayananFragment : BaseListFragment<Visitable<*>, LayananViewHolderFactory>
             }
             performanceInterface.stopMonitoring()
         }
-    })
+    }
 
     /**
      * Added a empty list of DataType TopAdsImageModel to notify recycler view of the BaseListFragment about addition of a new view type for ads
@@ -83,7 +89,6 @@ class LayananFragment : BaseListFragment<Visitable<*>, LayananViewHolderFactory>
     override fun initInjector() {
         getComponent(LayananComponent::class.java).inject(this)
     }
-
 
     override fun loadData(page: Int) {
         performanceInterface.stopPreparePagePerformanceMonitoring()
@@ -104,7 +109,6 @@ class LayananFragment : BaseListFragment<Visitable<*>, LayananViewHolderFactory>
         private const val LAYANAN_PLT_PREPARE_METRICS = "layanan_plt_prepare_metrics"
         private const val LAYANAN_PLT_NETWORK_METRICS = "layanan_plt_network_metrics"
         private const val LAYANAN_PLT_RENDER_METRICS = "layanan_plt_render_metrics"
-
     }
 
     override fun onItemClicked(t: Visitable<*>?) {

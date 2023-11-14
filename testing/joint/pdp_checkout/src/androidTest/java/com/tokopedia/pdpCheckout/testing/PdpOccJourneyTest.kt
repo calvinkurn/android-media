@@ -73,11 +73,12 @@ class PdpOccJourneyTest {
         activityRule.launchActivity(ProductDetailActivity.createIntent(context, 123))
 
         ProductDetailRobot().apply {
+            Thread.sleep(3_000)
             clickBeliLangsungOcc()
         }
 
         orderSummaryPage {
-            Thread.sleep(5_000)
+            Thread.sleep(3_000)
             Intents.intending(IntentMatchers.anyIntent())
                 .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
             pay()

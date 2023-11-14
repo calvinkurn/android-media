@@ -13,6 +13,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -39,14 +40,14 @@ class BmgmMiniCartViewModel @Inject constructor(
         miniCartJob = viewModelScope.launch {
             runCatching {
                 if (showLoadingState) {
-                    _cartData.emit(BmgmState.Loading)
+                    _cartData.update { BmgmState.Loading }
                 }
                 val data = withContext(dispatchers.get().io) {
                     getMiniCartDataUseCase.get().invoke(shopIds, param)
                 }
-                _cartData.emit(BmgmState.Success(data))
-            }.onFailure {
-                _cartData.emit(BmgmState.Error(it))
+                _cartData.update { BmgmState.Success(data) }
+            }.onFailure { t ->
+                _cartData.update { BmgmState.Error(t) }
             }
         }
         miniCartJob?.start()

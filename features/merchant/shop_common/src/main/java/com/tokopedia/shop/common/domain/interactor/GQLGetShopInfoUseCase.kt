@@ -62,6 +62,7 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
         const val FIELD_OS = "os"
         const val FIELD_GOLD = "gold"
         const val FIELD_ACTIVE_PRODUCT = "active_product"
+        const val FIELD_SHOP_STATS = "shopstats"
         const val FIELD_TOP_CONTENT = "topContent"
         const val FIELD_HOME_TYPE = "shopHomeType"
         const val FIELD_BRANCH_LINK = "branch-link"

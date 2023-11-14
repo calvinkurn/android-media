@@ -8,7 +8,7 @@ import android.widget.AutoCompleteTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormViewModel
+import com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.AddressFormViewModel
 
 object TextInputUtil {
 

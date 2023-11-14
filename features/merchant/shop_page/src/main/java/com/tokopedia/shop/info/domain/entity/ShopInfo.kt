@@ -6,7 +6,6 @@ data class ShopInfo(
     val shopName: String,
     val shopDescription: String,
     val mainLocation: String,
-    val otherLocations: List<String>,
     val operationalHours: Map<String, List<String>>,
     val shopJoinDate: String,
     val totalProduct: Int,

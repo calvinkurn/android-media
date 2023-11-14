@@ -38,19 +38,25 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_TRUSTMAKER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_SEE_OPTIONS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_CHANGE_COMPARISON
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_SEE_MORE_COMPARISON
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_REVIEW_BANNER_IMPRESSION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_TOP_FEATURE_IMPRESSION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_TRUSTMAKER_IMPRESSION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_CLICK_PG
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_ITEM
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_PG_IRIS
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CHANGE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_BUTTON_CHOOSE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_FAQ
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_SEE_MORE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_VIDEO_EXPERT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_ONE_BY_ONE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_THREE_BY_FOUR
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_DOUBLE_BANNER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_EXPERT_REVIEW
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_FAQ
@@ -70,6 +76,7 @@ import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Compani
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
+import com.tokopedia.catalog.util.CatalogShareUtil
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.customview.CatalogToolbar
@@ -83,6 +90,7 @@ import com.tokopedia.catalogcommon.listener.TrustMakerListener
 import com.tokopedia.catalogcommon.listener.VideoExpertListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
@@ -113,11 +121,19 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-
-class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
-    StickyNavigationListener, AccordionListener, BannerListener, TrustMakerListener,
-    TextDescriptionListener, VideoExpertListener, TopFeatureListener, DoubleBannerListener,
-    ComparisonViewHolder.ComparisonItemListener, CatalogDetailListener {
+class CatalogDetailPageFragment :
+    BaseDaggerFragment(),
+    HeroBannerListener,
+    StickyNavigationListener,
+    AccordionListener,
+    BannerListener,
+    TrustMakerListener,
+    TextDescriptionListener,
+    VideoExpertListener,
+    TopFeatureListener,
+    DoubleBannerListener,
+    ComparisonViewHolder.ComparisonItemListener,
+    CatalogDetailListener {
 
     companion object {
         private const val QUERY_CATALOG_ID = "catalog_id"
@@ -125,8 +141,10 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         private const val COLOR_VALUE_MAX = 255
         private const val LOGIN_REQUEST_CODE = 1001
+        private const val CATALOG_COMPARE_REQUEST_CODE = 1002
         private const val POSITION_THREE_IN_WIDGET_LIST = 3
         private const val POSITION_TWO_IN_WIDGET_LIST = 2
+        private const val NAVIGATION_SCROLL_DURATION = 800L
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
@@ -242,6 +260,10 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.refreshNotification()
         }
+        if (requestCode == CATALOG_COMPARE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val comparedCatalogId = data?.getStringExtra(ARG_PARAM_COMPARE_CATALOG_ID)
+            if (!comparedCatalogId.isNullOrEmpty()) changeComparison(comparedCatalogId)
+        }
     }
 
     override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?) {
@@ -255,29 +277,32 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
         widgetAdapter.changeNavigationTabActive(tabPosition)
         if (anchorToPosition >= Int.ZERO) {
-            if (tabPosition == Int.ZERO) {
-                smoothScroller.targetPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
-                layoutManager?.startSmoothScroll(smoothScroller)
-            } else if (tabPosition == (widgetAdapter.findNavigationCount() - 1)) {
-                smoothScroller.targetPosition = anchorToPosition
-                layoutManager?.startSmoothScroll(smoothScroller)
-            } else {
-                smoothScroller.targetPosition = anchorToPosition - POSITION_TWO_IN_WIDGET_LIST
-                layoutManager?.startSmoothScroll(smoothScroller)
+            when (tabPosition) {
+                Int.ZERO -> {
+                    smoothScroller.targetPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
+                    layoutManager?.startSmoothScroll(smoothScroller)
+                }
+                (widgetAdapter.findNavigationCount().dec()) -> {
+                    smoothScroller.targetPosition = anchorToPosition
+                    layoutManager?.startSmoothScroll(smoothScroller)
+                }
+                else -> {
+                    smoothScroller.targetPosition = anchorToPosition - POSITION_TWO_IN_WIDGET_LIST
+                    layoutManager?.startSmoothScroll(smoothScroller)
+                }
             }
             Handler(Looper.getMainLooper()).postDelayed({
                 selectNavigationFromScroll = true
-            }, 500)
+            }, NAVIGATION_SCROLL_DURATION)
         }
 
         CatalogReimagineDetailAnalytics.sendEvent(
-            event = EVENT_VIEW_PG_IRIS,
+            event = EVENT_VIEW_CLICK_PG,
             action = EVENT_ACTION_CLICK_NAVIGATION,
             category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
-            labels = "$catalogId - item: {${tabTitle}}",
+            labels = "$catalogId - item: {$tabTitle}",
             trackerId = TRACKER_ID_CLICK_NAVIGATION
         )
-
     }
 
     private fun setupObservers(view: View) {
@@ -286,13 +311,21 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 productSortingStatus = it.data.productSortingStatus
                 catalogUrl = it.data.catalogUrl
                 categoryId = it.data.priceCtaProperties.departmentId
-                widgetAdapter.addWidget(it.data.widgets)
                 title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
                 binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
+                widgetAdapter.addWidget(it.data.widgets)
                 binding?.stickySingleHeaderView?.stickyPosition =
                     widgetAdapter.findPositionNavigation()
+                binding?.toolbar?.shareButton?.setOnClickListener { view ->
+                    CatalogShareUtil(
+                        this@CatalogDetailPageFragment,
+                        it.data.shareProperties
+                    ).showUniversalShareBottomSheet(
+                        viewModel.getUserId()
+                    )
+                }
             } else if (it is Fail) {
                 binding?.showPageError(it.throwable)
             }
@@ -303,17 +336,23 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         viewModel.errorsToaster.observe(viewLifecycleOwner) {
             val errorMessage = ErrorHandler.getErrorMessage(view.context, it)
             Toaster.build(
-                view, errorMessage, duration = Toaster.LENGTH_LONG,
+                view,
+                errorMessage,
+                duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR
             ).show()
         }
         viewModel.errorsToasterGetComparison.observe(viewLifecycleOwner) {
             val errorMessage = if (it is UnknownHostException) {
                 getString(R.string.catalog_error_message_no_connection)
-            } else ErrorHandler.getErrorMessage(requireView().context, it)
+            } else {
+                ErrorHandler.getErrorMessage(requireView().context, it)
+            }
 
             Toaster.build(
-                view, errorMessage, duration = Toaster.LENGTH_LONG,
+                view,
+                errorMessage,
+                duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR,
                 actionText = getString(R.string.catalog_retry_action)
             ) {
@@ -322,13 +361,14 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         }
         viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
             // COMPARISON_CHANGED_POSITION is hardcoded position, will changed at next phase
-            if (it == null)
+            if (it == null) {
                 Toaster.build(
                     view,
                     getString(R.string.catalog_error_message_inactive)
                 ).show()
-            else
+            } else {
                 widgetAdapter.changeComparison(it)
+            }
         }
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -355,7 +395,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 val bannerRect = Rect()
                 layoutManager.findViewByPosition(Int.ZERO)?.getGlobalVisibleRect(bannerRect)
                 val scrollProgress = Int.ONE - if (bannerRect.height()
-                        .isMoreThanZero() && bannerHeight.isMoreThanZero()
+                    .isMoreThanZero() && bannerHeight.isMoreThanZero()
                 ) {
                     bannerRect.height() / bannerHeight.toFloat()
                 } else {
@@ -391,7 +431,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         toolbar.setNavigationOnClickListener {
             activity?.finish()
         }
-        toolbar.shareButton?.gone()
+        toolbar.shareButton?.show()
         toolbar.cartButton?.setOnClickListener {
             if (viewModel.isUserLoggedIn()) {
                 RouteManager.route(context, ApplinkConst.CART)
@@ -513,7 +553,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
 
     override fun onStickyNavigationImpression() {
         CatalogReimagineDetailAnalytics.sendEvent(
-            event = EVENT_VIEW_CLICK_PG,
+            event = EVENT_VIEW_PG_IRIS,
             action = EVENT_ACTION_IMPRESSION_NAVIGATION,
             category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
             labels = catalogId,
@@ -676,7 +716,19 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         )
     }
 
-    override fun onComparisonSwitchButtonClicked(position: Int) {
+    override fun onComparisonSwitchButtonClicked(
+        position: Int,
+        item: ComparisonUiModel.ComparisonContent
+    ) {
+        compareCatalogId = item.id
+        val label = "$catalogId | compared catalog id: $compareCatalogId"
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = EVENT_CLICK_CHANGE_COMPARISON,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = label,
+            trackerId = TRACKER_ID_CHANGE_COMPARISON
+        )
         CatalogComponentBottomSheet.newInstance(
             "",
             catalogId,
@@ -689,11 +741,20 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     }
 
     override fun onComparisonSeeMoreButtonClicked() {
+        val label = "$catalogId | compared catalog id: $compareCatalogId"
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = EVENT_CLICK_SEE_MORE_COMPARISON,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = label,
+            trackerId = TRACKER_ID_CLICK_SEE_MORE_COMPARISON
+        )
+
         Intent(activity ?: return, CatalogComparisonDetailActivity::class.java).apply {
             putExtra(ARG_PARAM_CATALOG_ID, catalogId)
             putExtra(ARG_PARAM_CATEGORY_ID, categoryId)
             putExtra(ARG_PARAM_COMPARE_CATALOG_ID, compareCatalogId)
-            startActivity(this)
+            startActivityForResult(this, CATALOG_COMPARE_REQUEST_CODE)
         }
     }
 
@@ -705,6 +766,19 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         RouteManager.getIntent(context, catalogProductList).apply {
             startActivity(this)
         }
+    }
+
+    override fun onComparisonImpression(id: String) {
+        compareCatalogId = id
+        val label = "$catalogId | compared catalog id: $id"
+
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_PG_IRIS,
+            action = EVENT_IMPRESSION_COMPARISON,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = label,
+            trackerId = TRACKER_ID_IMPRESSION_COMPARISON
+        )
     }
 
     override fun changeComparison(selectedComparedCatalogId: String) {

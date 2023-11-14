@@ -1,49 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true">
 
     <include
         android:id="@+id/affiliate_background_layout"
+        layout="@layout/affiliate_background_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        layout="@layout/affiliate_background_layout"/>
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/parent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navbar"/>
+        app:layout_constraintBottom_toTopOf="@id/bottom_navbar"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/webview_shimmer"
+        layout="@layout/affiliate_webview_shimmer"
+        android:visibility="gone" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_space_8"
+        android:layout_height="8dp"
         android:background="@drawable/affiliate_nav_shadow"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navbar"
-        />
+        app:layout_constraintBottom_toTopOf="@id/bottom_navbar" />
 
-    <com.tokopedia.affiliate.ui.custom.LottieBottomNavbar
+    <com.tokopedia.affiliate.ui.custom.LottieBottomNavbar xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/bottom_navbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_space_48"
-        tools:layout_height="100dp"
+        android:layout_height="48dp"
+        android:visibility="gone"
         app:buttonColor="@color/Unify_NN600"
         app:buttonContainerBackgroundColor="@color/Unify_Background"
-        app:buttonsHeight="@dimen/unify_space_48"
+        app:buttonsHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:setViewPagerSwipeable="false"
         app:viewPagerBackground="@color/Unify_NN0"
-        android:visibility="gone"
-        xmlns:tools="http://schemas.android.com/tools" />
+        tools:layout_height="100dp" />
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/affiliate_home_progress_bar"
-        android:layout_width="@dimen/unify_space_32"
-        android:layout_height="@dimen/unify_space_32"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

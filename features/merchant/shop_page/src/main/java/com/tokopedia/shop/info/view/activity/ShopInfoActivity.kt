@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
@@ -47,8 +49,9 @@ class ShopInfoActivity : BaseActivity() {
     }
     
     private fun loadFragment() {
+        //val useReimagineVersion = useReimagineVersion(context = this)
         val useReimagineVersion = true
-
+        
         if (useReimagineVersion) {
             showFragment(ShopInfoReimagineFragment.newInstance(shopId))
         } else {
@@ -61,8 +64,14 @@ class ShopInfoActivity : BaseActivity() {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.frameLayout, fragment)
-            .addToBackStack(null)
             .commit()
+    }
+
+    private fun useReimagineVersion(context: Context?): Boolean {
+        return FirebaseRemoteConfigImpl(context).getBoolean(
+            RemoteConfigKey.ENABLE_SHOP_INFO_PAGE_REIMAGINED,
+            true
+        )
     }
 
 }
