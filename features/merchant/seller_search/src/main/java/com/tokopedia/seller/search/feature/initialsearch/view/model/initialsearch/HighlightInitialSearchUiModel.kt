@@ -4,8 +4,13 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseInitialS
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.TypeFactoryInitialSearchAdapter
 
 data class HighlightInitialSearchUiModel(
-        var highlightInitialList: List<ItemHighlightInitialSearchUiModel> = listOf()
-): BaseInitialSearchSeller {
+    var highlightInitialList: List<ItemHighlightInitialSearchUiModel> = listOf(),
+    val position: Int
+) : BaseInitialSearchSeller {
+    override fun getUniquePosition(): Int {
+        return position
+    }
+
     override fun type(typeFactory: TypeFactoryInitialSearchAdapter): Int {
         return typeFactory.type(this)
     }

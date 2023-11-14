@@ -12,8 +12,12 @@ data class ArticleSellerSearchUiModel(
     override val url: String? = "",
     override val keyword: String? = "",
     override val section: String? = ""
-): ItemSellerSearchUiModel(), BaseSuggestionSearchSeller {
+) : ItemSellerSearchUiModel(), BaseSuggestionSearchSeller {
     override fun type(typeFactory: TypeFactorySuggestionSearchAdapter): Int {
         return typeFactory.type(this)
+    }
+
+    override fun getUniquePosition(): Int {
+        return id.orEmpty().hashCode() + title.orEmpty().hashCode()
     }
 }

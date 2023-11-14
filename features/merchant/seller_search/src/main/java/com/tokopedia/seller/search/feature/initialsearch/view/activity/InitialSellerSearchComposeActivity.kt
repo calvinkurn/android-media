@@ -226,14 +226,20 @@ class InitialSellerSearchComposeActivity :
     ) {
         fragmentManager?.commit {
             if (showSearchSuggestions) {
-                initialSearchFragment?.let { hide(it) }
+                if (initialSearchFragment?.isVisible == true) {
+                    hide(initialSearchFragment)
+                }
                 if (suggestionSearchFragment == null) {
                     add(suggestionSearchContainerId, SuggestionSearchComposeFragment())
                 } else {
-                    show(suggestionSearchFragment)
+                    if (!suggestionSearchFragment.isVisible) {
+                        show(suggestionSearchFragment)
+                    }
                 }
             } else {
-                suggestionSearchFragment?.let { hide(it) }
+                if (suggestionSearchFragment?.isVisible == true) {
+                    hide(suggestionSearchFragment)
+                }
                 if (initialSearchFragment == null) {
                     add(
                         initialStateContainerId,
@@ -242,7 +248,9 @@ class InitialSellerSearchComposeActivity :
                         }
                     )
                 } else {
-                    show(initialSearchFragment)
+                    if (!initialSearchFragment.isVisible) {
+                        show(initialSearchFragment)
+                    }
                 }
             }
         }

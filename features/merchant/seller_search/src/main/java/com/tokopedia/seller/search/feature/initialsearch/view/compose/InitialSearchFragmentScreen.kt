@@ -106,7 +106,7 @@ fun InitialSearchFragmentScreen(
         state = lazyListState
     ) {
         itemsIndexed(initialUiState?.initialStateList.orEmpty(), key = { _, item ->
-            item.hashCode()
+            item.getUniquePosition()
         }) { index, item ->
             when (item) {
                 is SellerSearchNoHistoryUiModel -> {
@@ -359,7 +359,8 @@ fun TitleHistorySearchSectionPreview() {
                 ItemHighlightInitialSearchUiModel(title = "Cara Pakai Bebas Ongkir"),
                 ItemHighlightInitialSearchUiModel(title = "Cara Menjadi Power Merchant"),
                 ItemHighlightInitialSearchUiModel(title = "Cara Pakai Bebas Ongkir")
-            )
+            ),
+            position = 5
         )
     ) {}
 }

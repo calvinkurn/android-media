@@ -7,4 +7,12 @@ class DividerSellerSearchUiModel : BaseSuggestionSearchSeller {
     override fun type(typeFactory: TypeFactorySuggestionSearchAdapter): Int {
         return typeFactory.type(this)
     }
+
+    override fun getUniquePosition(): Int {
+        return DIVIDER_SELLER_SEARCH_UI_MODEL.hashCode()
+    }
+
+    companion object {
+        const val DIVIDER_SELLER_SEARCH_UI_MODEL = "DividerSellerSearchUiModel"
+    }
 }

@@ -3,10 +3,13 @@ package com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.h
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.TypeFactorySuggestionSearchAdapter
 import com.tokopedia.seller.search.feature.suggestion.view.model.BaseSuggestionSearchSeller
 
-
 data class ItemTitleHighlightSuggestionSearchUiModel(
-        val title: String = ""
-): BaseSuggestionSearchSeller {
+    val title: String = ""
+) : BaseSuggestionSearchSeller {
+    override fun getUniquePosition(): Int {
+        return title.hashCode()
+    }
+
     override fun type(typeFactory: TypeFactorySuggestionSearchAdapter): Int {
         return typeFactory.type(this)
     }

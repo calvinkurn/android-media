@@ -342,19 +342,20 @@ object GlobalSearchSellerMapper {
     fun mapToInitialSearchVisitable(sellerSearch: SellerSearchResponse.SellerSearch): Pair<List<BaseInitialSearchSeller>, List<String>> {
         val initialSearchSellerList = mutableListOf<BaseInitialSearchSeller>()
         initialSearchSellerList.apply {
-            sellerSearch.data.sections.forEach {
-                when (it.id) {
+            sellerSearch.data.sections.forEachIndexed { index, section ->
+                when (section.id) {
                     HISTORY -> {
-                        add(ItemTitleInitialSearchUiModel())
+                        add(ItemTitleInitialSearchUiModel(index))
                         addAll(mapToItemInitialSearchUiModel(sellerSearch))
                     }
                     HIGHLIGHTS -> {
-                        add(ItemTitleHighlightInitialSearchUiModel(it.title.orEmpty()))
+                        add(ItemTitleHighlightInitialSearchUiModel(section.title.orEmpty()))
                         add(
                             HighlightInitialSearchUiModel(
                                 highlightInitialList = mapToItemHighlightInitialSearchUiModel(
                                     sellerSearch
-                                )
+                                ),
+                                position = index
                             )
                         )
                     }
@@ -370,10 +371,10 @@ object GlobalSearchSellerMapper {
         initialSearchSellerList.run {
             val historyList = sellerSearch.data.sections.filter { it.id == HISTORY }
 
-            sellerSearch.data.sections.forEach {
-                when (it.id) {
+            sellerSearch.data.sections.forEachIndexed { index, section ->
+                when (section.id) {
                     HISTORY -> {
-                        add(ItemTitleInitialSearchUiModel())
+                        add(ItemTitleInitialSearchUiModel(index))
                         addAll(mapToItemInitialSearchUiModel(sellerSearch))
                     }
 
@@ -381,12 +382,13 @@ object GlobalSearchSellerMapper {
                         if (historyList.isEmpty()) {
                             add(SellerSearchNoHistoryUiModel())
                         }
-                        add(ItemTitleHighlightInitialSearchUiModel(it.title.orEmpty()))
+                        add(ItemTitleHighlightInitialSearchUiModel(section.title.orEmpty()))
                         add(
                             HighlightInitialSearchUiModel(
                                 highlightInitialList = mapToItemHighlightInitialSearchUiModel(
                                     sellerSearch
-                                )
+                                ),
+                                position = index
                             )
                         )
                     }
