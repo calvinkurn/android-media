@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant
+import com.tokopedia.digital.home.domain.DigitalHomepageSearchByDynamicIconUseCase
+import com.tokopedia.digital.home.domain.DigitalPersoCloseWidgetUseCase
 import com.tokopedia.digital.home.model.RechargeHomepageSectionAction
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
@@ -24,7 +26,8 @@ import kotlin.collections.ArrayList
 
 class RechargeHomepageViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
-    private val dispatcher: CoroutineDispatchers
+    private val dispatcher: CoroutineDispatchers,
+    private val digitalPersoCloseWidgetUseCase: DigitalPersoCloseWidgetUseCase
 ) :
     BaseViewModel(dispatcher.io) {
 
@@ -224,6 +227,17 @@ class RechargeHomepageViewModel @Inject constructor(
 
     fun getSearchBarRedirection(): String = rechargeHomepageSectionSkeleton.value.let {
         if (it is Success) it.data.searchBarRedirection else ""
+    }
+
+    fun closeWidgetDigiPerso(favId: String, type: String) {
+        launchCatchError(block = {
+            val data = withContext(dispatcher.io) {
+                digitalPersoCloseWidgetUseCase.digitalPersoCloseWidget(
+                   favId, type
+                )
+            }
+        }) {
+        }
     }
 
     companion object {

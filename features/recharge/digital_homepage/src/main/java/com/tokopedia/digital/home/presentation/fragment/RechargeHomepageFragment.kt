@@ -7,6 +7,7 @@ import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -540,6 +541,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onClickBottomSheetTodoWidget(applink: String) {
         RouteManager.route(context, applink)
+    }
+
+    override fun onCloseItem(widget: RechargeHomepageSections.Widgets) {
+        viewModel.closeWidgetDigiPerso(widget.favId, widget.type)
     }
 
     private fun redirectToSearchByDynamicIconsFragment() {

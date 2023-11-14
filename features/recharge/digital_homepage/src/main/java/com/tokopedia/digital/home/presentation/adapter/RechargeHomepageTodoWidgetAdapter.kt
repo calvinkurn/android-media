@@ -10,7 +10,6 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeTodoWidgetSpaceDecorator
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetViewHolder
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidgetCloseProcessListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidgetListener
 import com.tokopedia.digital.home.presentation.listener.TodoWidgetItemListener
@@ -58,6 +57,9 @@ class RechargeHomepageTodoWidgetAdapter(
             object : RechargeHomepageTodoWidgetCloseProcessListener {
                 override fun onCloseWidget(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
                     removeItem(element)
+                    todoWidgetListener.onCloseItem(
+                        (element as RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel).widget
+                    )
                 }
             },
             object : TodoWidgetItemListener {
