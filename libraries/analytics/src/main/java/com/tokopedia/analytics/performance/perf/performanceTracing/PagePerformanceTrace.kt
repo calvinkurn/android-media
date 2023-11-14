@@ -2,9 +2,11 @@ package com.tokopedia.analytics.performance.perf.performanceTracing
 
 import android.app.Activity
 import android.view.View
-import com.tokopedia.analytics.performance.perf.LoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.XmlPerformanceGlobalLayoutParser
 import com.tokopedia.analytics.performance.perf.performanceTracing.repository.PerformanceRepository
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,35 +26,50 @@ class PagePerformanceTrace(
         CoroutineScope(Dispatchers.Main + Job())
 
     private var startCurrentTimeMillis = System.currentTimeMillis()
-    private var performanceTraceData: AtomicReference<PerformanceTraceData> =
-        AtomicReference(PerformanceTraceData())
+    
     private var performanceBlocks = AtomicReference(mutableMapOf<String, BlocksModel>())
 
     private var trace_id: String = ""
+    private var performanceTraceData: AtomicReference<PerformanceTraceData> =
+        AtomicReference(PerformanceTraceData(
+            activityName = activity.javaClass.simpleName,
+            traceName = performanceRepository.getTraceName()
+        ))
+    private var isPerformanceTraceEnabled = true
     init {
-        scope.launch {
-            loadableComponentFlow.collect { loadableComponent ->
-                val currentPerformanceBlocks = performanceBlocks.get()
+        activity?.applicationContext?.let {
+            val remoteConfig = FirebaseRemoteConfigImpl(it)
+            this.isPerformanceTraceEnabled = remoteConfig.getBoolean(
+                RemoteConfigKey.ENABLE_PERFORMANCE_TRACE_V2,
+                true
+            )
+        }
+        if (isPerformanceTraceEnabled) {
+            scope.launch {
+                loadableComponentFlow.collect { loadableComponent ->
+                    val currentPerformanceBlocks = performanceBlocks.get()
 
-                if (currentPerformanceBlocks.containsKey(loadableComponent.name())) {
-                    val blockModel = currentPerformanceBlocks.get(loadableComponent.name())
-                    blockModel?.let { block ->
+                    if (currentPerformanceBlocks.containsKey(loadableComponent.name())) {
+                        val blockModel = currentPerformanceBlocks.get(loadableComponent.name())
+                        blockModel?.let { block ->
+                            currentPerformanceBlocks.put(
+                                loadableComponent.name(),
+                                block.copy(
+                                    endTime = System.currentTimeMillis()
+                                )
+                            )
+                        }
+                    } else {
+                        val startTime = System.currentTimeMillis()
                         currentPerformanceBlocks.put(
                             loadableComponent.name(),
-                            block.copy(
-                                endTime = System.currentTimeMillis()
+                            BlocksModel(
+                                name = loadableComponent.name(),
+                                startTraceTime = startCurrentTimeMillis,
+                                startTime = startTime
                             )
                         )
                     }
-                } else {
-                    val startTime = System.currentTimeMillis()
-                    currentPerformanceBlocks.put(
-                        loadableComponent.name(),
-                        BlocksModel(
-                            name = loadableComponent.name(),
-                            startTime = startTime
-                        )
-                    )
                 }
             }
         }
@@ -69,15 +86,16 @@ class PagePerformanceTrace(
         performanceRepository.startRecord()
         val rootView = activity.window.decorView.findViewById<View>(android.R.id.content)
         val globalLayoutListener = XmlPerformanceGlobalLayoutParser(
-            rootView = rootView
+            rootView = rootView,
+            onLayoutRendered = {
+                if (!performanceTraceData.get().ttflMeasured()) {
+                    recordTTFL()
+                }
+            }
         ) {
             if (!performanceTraceData.get().ttilMeasured()) {
                 recordTTIL()
                 stopMonitoring(Success(performanceTraceData.get()))
-            }
-
-            if (!performanceTraceData.get().ttflMeasured()) {
-                recordTTFL()
             }
         }
         rootView.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)

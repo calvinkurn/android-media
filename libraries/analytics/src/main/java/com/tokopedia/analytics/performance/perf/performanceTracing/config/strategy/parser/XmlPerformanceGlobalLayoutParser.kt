@@ -18,6 +18,7 @@ class XmlPerformanceGlobalLayoutParser(
     val viewInfoParser: ViewInfoParser<View> = XmlViewInfoParser(),
     val startParserStrategyConfig: StartParserStrategyConfig<View> = DefaultStartParserStrategy(),
     val finishParserStartegyConfig: FinishParserStrategyConfig<View> = DefaultFinishParserStrategy(),
+    val onLayoutRendered: () -> Unit, 
     val onLayoutFinished: () -> Unit
 ) : ViewTreeObserver.OnGlobalLayoutListener {
     protected val scope =
@@ -43,6 +44,7 @@ class XmlPerformanceGlobalLayoutParser(
         }
 
         perfParsingJob = scope.launch(Dispatchers.IO) {
+            onLayoutRendered.invoke()
             /**
              * Parse root view into list of ViewInfo model
              */

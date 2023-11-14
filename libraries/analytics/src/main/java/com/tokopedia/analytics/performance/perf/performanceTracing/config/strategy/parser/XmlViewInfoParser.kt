@@ -8,9 +8,9 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.config.ViewIn
 class XmlViewInfoParser() : ViewInfoParser<View> {
     override fun parse(view: View): List<ViewInfo> {
         val viewInfoList = mutableListOf<ViewInfo>()
-        val viewIdString = "unknown"
+        var viewIdString = "unknown"
         try {
-            view.resources.getResourceName(view.id)
+            viewIdString = view.resources.getResourceName(view.id)
         } catch (e: Exception) {
             e.printStackTrace()
         }

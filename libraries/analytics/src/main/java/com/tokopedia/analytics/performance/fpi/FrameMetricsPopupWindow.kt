@@ -11,6 +11,10 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
 import com.tokopedia.analytics.R
+import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace
+import com.tokopedia.analytics.performance.perf.performanceTracing.DevState
+import com.tokopedia.analytics.performance.perf.performanceTracing.PerformanceTraceData
+import com.tokopedia.analytics.performance.perf.performanceTracing.State
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
@@ -50,6 +54,11 @@ class FrameMetricsPopupWindow(
     private var renderTimeText: Typography? = null
     private var reloadIcon: IconUnify? = null
 
+    private var activityNameText: Typography? = null
+    private var ttflText: Typography? = null
+    private var ttilText: Typography? = null
+
+
     private var reloadOnClick: (() -> Unit)? = null
     private val sizeParam = ViewGroup.LayoutParams.WRAP_CONTENT
     private var positionX = 0
@@ -64,6 +73,11 @@ class FrameMetricsPopupWindow(
         renderTimeText = fpiLayout?.findViewById(R.id.fpiRenderTime)
         reloadIcon = fpiLayout?.findViewById(R.id.reload)
         fpiPopUp = PopupWindow(fpiLayout, sizeParam, sizeParam)
+
+        activityNameText = fpiLayout?.findViewById(R.id.activityName)
+        ttflText = fpiLayout?.findViewById(R.id.launchTimeTTFL)
+        ttilText = fpiLayout?.findViewById(R.id.launchTimeTTIL)
+
         setOnEvent()
     }
 
@@ -125,6 +139,12 @@ class FrameMetricsPopupWindow(
         updatePercentage(fpiData = fpiData)
         updateFps(fpiData = fpiData)
         updateRenderingTime(fpiData = fpiData)
+        
+        //performance data from AppPerformanceTrace
+        updatePerformanceData(
+            AppPerformanceTrace.currentAppPerformanceTraceData,
+            AppPerformanceTrace.currentAppPerformanceDevState
+            )
     }
 
     // region percentage information
@@ -165,6 +185,37 @@ class FrameMetricsPopupWindow(
     private fun updateFpsInfo(fps: Double) {
         val sFps = String.format(Locale.getDefault(), "%.0f%s", fps, "fps")
         fpsInfoText?.text = sFps
+    }
+
+    private fun updatePerformanceData(
+        data: PerformanceTraceData?,
+        state: DevState
+    ) {
+        when (state.state) {
+            State.PERF_ENABLED -> {
+                if (data != null) {
+                    data?.let {
+                        activityNameText?.text = String.format(Locale.getDefault(), "%s (%s)", data.activityName, data.traceName)
+                        ttflText?.text = String.format(Locale.getDefault(), "TTFL: %d%s", data.timeToFirstLayout, "ms")
+                        ttilText?.text = String.format(Locale.getDefault(), "TTIL: %d%s", data.timeToInitialLoad, "ms")
+                    }
+                } else {
+                    activityNameText?.text = "Measuring..."
+                }
+            }
+            State.PERF_RESUMED -> {
+                activityNameText?.text = String.format(Locale.getDefault(), "%s",
+                    "Activity resumed")
+                ttflText?.text = "-"
+                ttilText?.text = "-"
+            }
+            State.PERF_DISABLED -> {
+                activityNameText?.text = String.format(Locale.getDefault(), "%s",
+                    "Perf disabled")
+                ttflText?.text = "-"
+                ttilText?.text = "-"
+            }
+        }
     }
 
     private fun updateFpsColor(fps: Double) {

@@ -13,6 +13,7 @@ import android.view.View
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.IrisPerformanceData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl

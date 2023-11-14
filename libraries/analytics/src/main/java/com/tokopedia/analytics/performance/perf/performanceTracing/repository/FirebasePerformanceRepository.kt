@@ -7,7 +7,7 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.BlocksModel
 import com.tokopedia.analytics.performance.perf.performanceTracing.PerformanceTraceData
 
 class AppPerformanceRepository(
-    val traceName: String
+    val name: String
 ) : PerformanceRepository {
     var firebasePerformance: FirebasePerformance? = null
     var trace: Trace? = null
@@ -18,12 +18,15 @@ class AppPerformanceRepository(
     }
 
     override fun stopRecord(blocks: Map<String, BlocksModel>) {
-        Log.d("AppPerformanceTrace", blocks.toString())
         stopRecordFirebase()
     }
 
     override fun recordPerfData(performanceTraceData: PerformanceTraceData, blocks: Map<String, BlocksModel>) {
         // no op
+    }
+
+    override fun getTraceName(): String {
+        return name
     }
 
     private fun stopRecordFirebase() {
@@ -38,7 +41,7 @@ class AppPerformanceRepository(
         try {
             firebasePerformance = FirebasePerformance.getInstance()
             firebasePerformance?.let {
-                trace = firebasePerformance?.newTrace(traceName)
+                trace = firebasePerformance?.newTrace(name)
                 trace?.let {
                     it.start()
                 }
