@@ -1081,7 +1081,7 @@ open class HomeRevampFragment :
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         createAndCallSendScreen()
-        adapter?.onResumeBanner()
+        adapter?.onResume()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
@@ -1089,8 +1089,6 @@ open class HomeRevampFragment :
         if (getHomeViewModel().isFirstLoad) {
             getHomeViewModel().isFirstLoad = false
         }
-
-        adapter?.onResumeSpecialRelease()
 
         // refresh home-to-do-widget data if needed
         getHomeViewModel().getCMHomeWidgetData(false)
@@ -1140,7 +1138,7 @@ open class HomeRevampFragment :
     override fun onPause() {
         playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
-        adapter?.onPauseBanner()
+        adapter?.onPause()
         getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
@@ -2297,11 +2295,13 @@ open class HomeRevampFragment :
             trackScreen(isVisibleToUser)
             if (isVisibleToUser) {
                 conditionalViewModelRefresh()
+                adapter?.onResume()
+            } else {
+                adapter?.onPause()
             }
             playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
             )
-            adapter?.onResumeSpecialRelease()
             manageCoachmarkOnFragmentVisible(isVisibleToUser)
         }
     }

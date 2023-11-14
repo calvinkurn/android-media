@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderStatusCode
 import com.tokopedia.buyerorderdetail.common.extension.combine
@@ -34,6 +36,8 @@ import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailChatCounterUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailGroupBookingUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.EpharmacyInfoUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
@@ -47,6 +51,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder
 import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
 import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
@@ -59,11 +64,14 @@ import dagger.Lazy
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.emitAll
@@ -94,6 +102,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     private var getBuyerOrderDetailDataJob: Job? = null
+    private var warrantyClaimButtonImpressed = false
 
     private val _finishOrderResult = MutableLiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>()
     val finishOrderResult: LiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>
@@ -164,7 +173,13 @@ class BuyerOrderDetailViewModel @Inject constructor(
         ::mapBuyerOrderDetailUiState
     ).toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
 
-    private val chatChannelId: String = ""
+    private val _chatCounterUiState = MutableStateFlow(BuyerOrderDetailChatCounterUiState())
+    val chatCounterUiState = _chatCounterUiState.asStateFlow()
+
+    private val _groupBookingUiState = MutableSharedFlow<BuyerOrderDetailGroupBookingUiState>()
+    val groupBookingUiState = _groupBookingUiState.asSharedFlow()
+
+    private var chatChannelId: String = ""
 
     fun getBuyerOrderDetailData(
         orderId: String,
@@ -370,6 +385,26 @@ class BuyerOrderDetailViewModel @Inject constructor(
         scpRewardsMedalTouchPointWidgetUiState.value = ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden
     }
 
+    fun impressProduct(product: ProductListUiModel.ProductUiModel) {
+        if (
+            product.button.key == BuyerOrderDetailActionButtonKey.WARRANTY_CLAIM &&
+            !warrantyClaimButtonImpressed
+        ) {
+            warrantyClaimButtonImpressed = true
+            BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton(product.orderId)
+        }
+    }
+
+    fun impressBmgmProduct(product: ProductBmgmSectionUiModel.ProductUiModel) {
+        if (
+            product.button?.key == BuyerOrderDetailActionButtonKey.WARRANTY_CLAIM &&
+            !warrantyClaimButtonImpressed
+        ) {
+            warrantyClaimButtonImpressed = true
+            BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton(product.orderId)
+        }
+    }
+
     private fun <T> Flow<T>.toStateFlow(initialValue: T) = stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
@@ -422,7 +457,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             getBuyerOrderDetailDataRequestState,
             productListUiState.value,
             singleAtcRequestStates,
-            collapseProductList
+            collapseProductList,
+            warrantyClaimButtonImpressed
         )
     }
 
@@ -510,29 +546,72 @@ class BuyerOrderDetailViewModel @Inject constructor(
         orderIdGojek: String,
         source: String
     ) {
-        if (chatChannelId.isBlank()) {
-            tokoChatGroupBookingUseCase.get().initGroupBookingChat(
-                orderId = orderIdGojek,
-                serviceType = tokoChatGroupBookingUseCase.get().getServiceType(source)
-            )
+        viewModelScope.launch {
+            try {
+                if (chatChannelId.isBlank()) {
+                    tokoChatGroupBookingUseCase.get().initGroupBookingChat(
+                        orderId = orderIdGojek,
+                        serviceType = tokoChatGroupBookingUseCase.get().getServiceType(source)
+                    ).collectLatest { result ->
+                        when (result) {
+                            is TokoChatResult.Success -> {
+                                onSuccessGroupBooking(result.data)
+                            }
+                            is TokoChatResult.Error -> {
+                                onErrorGroupBooking(result.throwable)
+                            }
+                            TokoChatResult.Loading -> Unit // no-op
+                        }
+                    }
+                }
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
         }
     }
 
-    fun getGroupBookingFlow(): SharedFlow<TokoChatResult<String>> {
-        return tokoChatGroupBookingUseCase.get().groupBookingResultFlow
+    private suspend fun onSuccessGroupBooking(channelUrl: String) {
+        chatChannelId = channelUrl
+        _groupBookingUiState.emit(BuyerOrderDetailGroupBookingUiState(channelUrl = channelUrl))
     }
 
-    fun fetchUnreadCounter(channelId: String) {
+    private suspend fun onErrorGroupBooking(throwable: Throwable) {
+        chatChannelId = "" // reset
+        _groupBookingUiState.emit(BuyerOrderDetailGroupBookingUiState(error = throwable))
+    }
+
+    fun fetchUnReadChatCount() {
         viewModelScope.launch {
             try {
-                tokoChatCounterUseCase.get().fetchUnreadCount(channelId)
+                tokoChatCounterUseCase
+                    .get()
+                    .fetchUnreadCount(chatChannelId)
+                    .collectLatest { result ->
+                        when (result) {
+                            is TokoChatResult.Success -> {
+                                onSuccessGetCounter(result.data)
+                            }
+                            is TokoChatResult.Error -> {
+                                onErrorGetCounter(result.throwable)
+                            }
+                            is TokoChatResult.Loading -> Unit // no-op
+                        }
+                    }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
             }
         }
     }
 
-    fun getUnreadCounterFlow(): StateFlow<TokoChatResult<Int>> {
-        return tokoChatCounterUseCase.get().unreadCounterFlow
+    private fun onSuccessGetCounter(counter: Int) {
+        _chatCounterUiState.update {
+            it.copy(counter = counter, error = null)
+        }
+    }
+
+    private fun onErrorGetCounter(throwable: Throwable) {
+        _chatCounterUiState.update {
+            it.copy(counter = 0, error = throwable)
+        }
     }
 }
