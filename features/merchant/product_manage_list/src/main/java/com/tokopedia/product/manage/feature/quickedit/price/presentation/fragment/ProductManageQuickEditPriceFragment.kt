@@ -28,11 +28,11 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
 
-class ProductManageQuickEditPriceFragment(
-    private var onFinishedListener: OnFinishedListener? = null,
-    private var product: ProductUiModel? = null
-) : BottomSheetUnify() {
+class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
 
+    private var product: ProductUiModel? = null
+
+    private var onFinishedListener: OnFinishedListener? = null
     companion object {
         private const val KEY_CACHE_MANAGER_ID = "cache_manager_id"
         private const val KEY_PRODUCT = "product"
@@ -44,7 +44,9 @@ class ProductManageQuickEditPriceFragment(
             isMultiLocation: Boolean = false,
             onFinishedListener: OnFinishedListener
         ): ProductManageQuickEditPriceFragment {
-            return ProductManageQuickEditPriceFragment(onFinishedListener, product).apply {
+            return ProductManageQuickEditPriceFragment().apply {
+                this.product = product
+                this.onFinishedListener = onFinishedListener
                 SaveInstanceCacheManager(context, KEY_CACHE_MANAGER_ID).apply {
                     put(KEY_IS_MULTILOCATION, isMultiLocation)
                 }
