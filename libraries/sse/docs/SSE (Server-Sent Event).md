@@ -79,7 +79,7 @@ If your feature only needs 1-directional real time communication from server to 
 
 ## Flow Diagram
 
-![](res/SSE.drawio-20230104-055935.png)
+<img src="https://docs-android.tokopedia.net/images/docs/res/SSE.drawio-20230104-055935.png" alt="" />
 
 ## How-to
 

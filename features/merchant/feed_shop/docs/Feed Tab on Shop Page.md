@@ -74,7 +74,7 @@ Who is it for?
 
 The future project is we need to revamp content distribution on the Shop Page:
 
-![](res/Screen%20Shot%202023-03-20%20at%2016.30.01-20230320-093007.png)
+<img src="https://docs-android.tokopedia.net/images/docs/res/Screen%20Shot%202023-03-20%20at%2016.30.01-20230320-093007.png" alt="" />
 
 Source: <https://docs.google.com/document/d/1IhOZk2jhyVe5h14cL8moXe_9RuElM2HPNuWQXNDXVfI/edit#> 
 
@@ -96,7 +96,7 @@ Source: <https://docs.google.com/document/d/1IhOZk2jhyVe5h14cL8moXe_9RuElM2HPNuW
  module.
 - 4 of the 8 use cases used are deprecated, see the screenshot below:
 
-![](res/Screen%20Shot%202023-03-20%20at%2017.49.47-20230320-104952.png)
+<img src="https://docs-android.tokopedia.net/images/docs/res/Screen%20Shot%202023-03-20%20at%2017.49.47-20230320-104952.png" alt="" />
 
 ## Navigation
 
@@ -149,4 +149,4 @@ To help you further, use the [Find Usage](https://www.jetbrains.com/idea/guide/t
 
 - <https://docs.google.com/document/d/1IhOZk2jhyVe5h14cL8moXe_9RuElM2HPNuWQXNDXVfI/edit#>
 
-[data-colorid="419186i3zn"]{color:#36b37e} html[data-color-mode=dark] [data-colorid="419186i3zn"]{color:#4cc994}[data-colorid="ug5lcswxwo"]{color:#bf2600} html[data-color-mode=dark] [data-colorid="ug5lcswxwo"]{color:#ff6640}[data-colorid="7v28m3dcgo"]{color:#ff5630} html[data-color-mode=dark] [data-colorid="7v28m3dcgo"]{color:#cf2600}[data-colorid="nyiw57ma9i"]{color:#36b37e} html[data-color-mode=dark] [data-colorid="nyiw57ma9i"]{color:#4cc994}[data-colorid="yzkebrt3mf"]{color:#36b37e} html[data-color-mode=dark] [data-colorid="yzkebrt3mf"]{color:#4cc994}
+[data-colorid=dvrgtihw3f]{color:#36b37e} html[data-color-mode=dark] [data-colorid=dvrgtihw3f]{color:#4cc994}[data-colorid=teewos01zn]{color:#36b37e} html[data-color-mode=dark] [data-colorid=teewos01zn]{color:#4cc994}[data-colorid=qnidmqz2im]{color:#bf2600} html[data-color-mode=dark] [data-colorid=qnidmqz2im]{color:#ff6640}[data-colorid=uzvhc090lg]{color:#36b37e} html[data-color-mode=dark] [data-colorid=uzvhc090lg]{color:#4cc994}[data-colorid=rnknbc1tkx]{color:#ff5630} html[data-color-mode=dark] [data-colorid=rnknbc1tkx]{color:#cf2600}

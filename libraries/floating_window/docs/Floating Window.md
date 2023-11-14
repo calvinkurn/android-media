@@ -46,7 +46,7 @@ Floating window is a library that allows developers to implement floating window
 
 This library has also provided some helpers so that the developer can easily request the `Draw over other Apps` permission to the user and the developer can also easily move the views just by implementing one function.
 
-![](res/Screenshot_1675236116.png)
+<img src="https://docs-android.tokopedia.net/images/docs/res/Screenshot_1675236116.png" alt="" />
 
 ## Tech Stack
 
@@ -54,7 +54,7 @@ This library has also provided some helpers so that the developer can easily req
 
 ## Flow Diagram
 
-![](res/Floating%20Window%20Flow.drawio%20%281%29.png)
+<img src="https://docs-android.tokopedia.net/images/docs/res/Floating%20Window%20Flow.drawio%20%281%29.png" alt="" />
 
 ## How-to
 

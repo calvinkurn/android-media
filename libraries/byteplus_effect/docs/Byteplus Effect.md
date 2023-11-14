@@ -51,7 +51,7 @@ It is a pre-built effect that is ready to be used. You can only implement 1 pres
 
 Both face filter & preset has a capability to adjust the strength of the effect, ranging from 0.0 - 1.0.
 
-![](res/Screenshot_20230714-154425_testapp.jpg)
+<img src="https://docs-android.tokopedia.net/images/docs/res/Screenshot_20230714-154425_testapp.jpg" alt="" />
 
 ## Tech Stack
 
@@ -61,9 +61,9 @@ Both face filter & preset has a capability to adjust the strength of the effect,
 
 ## Flow Diagram
 
-![](res/image-20230714-052729.png)
+<img src="https://docs-android.tokopedia.net/images/docs/res/image-20230714-052729.png" alt="" />
 
-![](res/proposed-solution-2-edited-20230207-133219.png)
+<img src="https://docs-android.tokopedia.net/images/docs/res/proposed-solution-2-edited-20230207-133219.png" alt="" />
 
 ## How-to
 
@@ -100,7 +100,7 @@ These assets can be put directly inside our main repo / put it in cloud & downlo
 
 When saving the assets, you need to follow this structure:
 
-![](res/a0d0e52e-f03c-4f89-91da-2ebb3e8b87b9.png)
+<img src="https://docs-android.tokopedia.net/images/docs/res/a0d0e52e-f03c-4f89-91da-2ebb3e8b87b9.png" alt="" />
 
 Use `EffectManager` and call these functions:
 
