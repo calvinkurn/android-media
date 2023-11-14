@@ -601,6 +601,9 @@ open class TokoChatFragment @Inject constructor(
                             Pair(viewModel.tkpdOrderId, getSourceCategory(viewModel.source))
                         )
                     }
+                    tokoChatAnalytics?.sendPendingImpressionOnImageAttachment(
+                        it.data.tokochatOrderProgress.state
+                    )
                 }
                 is Fail -> {
                     logExceptionTokoChat(
