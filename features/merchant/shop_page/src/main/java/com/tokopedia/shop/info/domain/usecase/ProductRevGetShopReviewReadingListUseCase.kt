@@ -1,12 +1,13 @@
 package com.tokopedia.shop.info.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.info.data.mapper.ProductRevGetShopReviewReadingListMapper
 import com.tokopedia.shop.info.data.response.ProductRevGetShopReviewReadingListResponse
 import com.tokopedia.shop.info.domain.entity.ShopReview
@@ -71,7 +72,14 @@ class ProductRevGetShopReviewReadingListUseCase @Inject constructor(
     suspend fun execute(param: Param): ShopReview {
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
-        return mapper.map(response.getSuccessData())
+        val error = response.getError(GraphqlError::class.java)
+
+        return if (error == null || error.isEmpty()) {
+            val data = response.getData<ProductRevGetShopReviewReadingListResponse>(ProductRevGetShopReviewReadingListResponse::class.java)
+            mapper.map(data)
+        } else {
+            throw MessageErrorException(error.joinToString(", ") { it.message })
+        }
     }
 
     private fun buildRequest(param: Param): GraphqlRequest {
