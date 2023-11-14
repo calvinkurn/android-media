@@ -71,6 +71,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.common.domain.data.BmGmData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
@@ -127,13 +128,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = _miniCartRemove
     private val _miniCartRemove = SingleLiveEvent<Result<DiscoveryRemoveFromCartDataModel>>()
 
+    val miniCartOperationFailed:LiveData<Pair<Int,Int>>
+        get() = _miniCartOperationFailed
+    private val _miniCartOperationFailed = SingleLiveEvent<Pair<Int,Int>>()
+
     val addToCartAction: LiveData<DiscoATCRequestParams>
         get() = _addToCartAction
     private val _addToCartAction = MutableLiveData<DiscoATCRequestParams>()
 
-    val miniCartOperationFailed:LiveData<Pair<Int,Int>>
-        get() = _miniCartOperationFailed
-    private val _miniCartOperationFailed = SingleLiveEvent<Pair<Int,Int>>()
+    val bmGmDataList: LiveData<Pair<Int,List<BmGmData>>>
+        get() = _bmGmDataList
+    private val _bmGmDataList = MutableLiveData<Pair<Int,List<BmGmData>>>()
 
     private val _scrollState  = MutableLiveData<ScrollData>()
     val scrollState: LiveData<ScrollData> = _scrollState
@@ -287,13 +292,21 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         })
     }
 
-    fun getMiniCart(shopId: List<String>, warehouseId: String?) {
+    fun getMiniCart(
+        shopId: List<String>,
+        warehouseId: String?,
+        parentPosition: Int
+    ) {
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId, MiniCartSource.TokonowDiscoveryPage)
                 getMiniCartUseCase.execute({
                     miniCartSimplifiedData = it
                     _miniCart.postValue(Success(it))
+
+                    if (parentPosition != -1) {
+                        _bmGmDataList.value = Pair(parentPosition, it.bmGmDataList)
+                    }
                 }, {
                     _miniCart.postValue(Fail(it))
                 })

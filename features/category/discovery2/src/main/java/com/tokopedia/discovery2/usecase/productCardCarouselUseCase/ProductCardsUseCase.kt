@@ -25,7 +25,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
     companion object {
         const val NO_PRODUCT_PER_PAGE = -1
 
-        private const val PRODUCT_PER_PAGE = 20
+        const val PRODUCT_PER_PAGE = 20
         private const val RPC_FILTER_KEU = "rpc_"
         private const val PAGE_START = 1
         private const val RPC_PAGE_NUMBER = "rpc_page_number"

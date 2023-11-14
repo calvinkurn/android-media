@@ -3,15 +3,15 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sho
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
-import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase.Companion.PRODUCT_PER_PAGE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandComponentExtension.addLoadMore
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandComponentExtension.addReload
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
@@ -33,10 +33,8 @@ class ShopOfferHeroBrandViewModel(
 ) : DiscoveryBaseViewModel(), CoroutineScope {
     companion object {
         private const val PRODUCT_IMAGE_WIDTH = 165
-        private const val RESET_HEIGHT = 0
 
         const val ERROR_MESSAGE_EMPTY_DATA = "empty data"
-        const val PRODUCT_PER_PAGE = 10
     }
 
     private val _header: MutableLiveData<Properties.Header?> = MutableLiveData()
@@ -44,7 +42,8 @@ class ShopOfferHeroBrandViewModel(
     private val _productMaxHeight: MutableLiveData<Int> = MutableLiveData()
     private val _tierChange: MutableLiveData<TierData> = MutableLiveData()
 
-    private var isLoading = false
+    var isLoading = false
+        private set
 
     val header: LiveData<Properties.Header?>
         get() = _header
@@ -65,48 +64,32 @@ class ShopOfferHeroBrandViewModel(
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         component.shouldRefreshComponent = null
-        handleHeader()
+        setHeader()
         loadFirstPageProductCarousel()
     }
 
-    private suspend fun setProductsList() {
+    override fun refreshProductCarouselError() {
         getProductList()?.let {
-            if (it.isNotEmpty()) {
-                getMaxHeightProductCard(it)
-                _productList.value = Success(addLoadMore(it))
-                syncData.value = true
-            } else {
-                _productMaxHeight.value = RESET_HEIGHT
-                _productList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))
-            }
+            isLoading = false
+            syncData.value = true
         }
     }
 
-    private fun handleHeader() {
-        _header.value = component.getPropertyHeader()
+    private suspend fun setProductsList(
+        onEmptyListener: () -> Unit
+    ) {
+        isLoading = false
+        val productList = getProductList()
+
+        if (!productList.isNullOrEmpty()) {
+            setMaxHeightProductCard(productList)
+            _productList.value = Success(ArrayList(addLoadMore(productList)))
+        } else {
+            onEmptyListener.invoke()
+        }
     }
 
-    fun loadFirstPageProductCarousel() {
-        launchCatchError(
-            block = {
-                productCardsUseCase?.loadFirstPageComponents(component.id, component.pageEndPoint, PRODUCT_PER_PAGE)
-                component.shouldRefreshComponent = null
-                setProductsList()
-            }, onError = { throwable ->
-                component.noOfPagesLoaded = 1
-                component.verticalProductFailState = true
-                component.shouldRefreshComponent = null
-                _productList.value = Fail(throwable)
-            }
-        )
-    }
-
-    fun resetComponent() {
-        component.noOfPagesLoaded = 0
-        component.pageLoadedCounter = 1
-    }
-
-    private suspend fun getMaxHeightProductCard(productList: List<ComponentsItem>) {
+    private suspend fun setMaxHeightProductCard(productList: List<ComponentsItem>) {
         val productCardModels = ArrayList<ProductCardModel>()
         productList.forEach { item ->
             item.data?.firstOrNull()?.let { dataItem ->
@@ -121,136 +104,108 @@ class ShopOfferHeroBrandViewModel(
         )
     }
 
-    fun fetchCarouselPaginatedProducts() {
+    private suspend fun handleErrorPagination() {
+        isLoading = false
+        component.horizontalProductFailState = true
+
+        val productList = getProductList()
+        if (!productList.isNullOrEmpty()) {
+            setMaxHeightProductCard(productList)
+            _productList.value = Success(ArrayList(addReload(productList)))
+        }
+    }
+
+    private fun setHeader() {
+        _header.value = component.getPropertyHeader()
+    }
+
+    fun loadFirstPageProductCarousel() {
+        isLoading = true
+        launchCatchError(
+            block = {
+                productCardsUseCase?.loadFirstPageComponents(component.id, component.pageEndPoint, PRODUCT_PER_PAGE)
+                component.shouldRefreshComponent = null
+                setProductsList(
+                    onEmptyListener = {
+                        _productList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))
+                    }
+                )
+            }, onError = { throwable ->
+                component.noOfPagesLoaded = 1
+                component.verticalProductFailState = true
+                component.shouldRefreshComponent = null
+                _productList.value = Fail(throwable)
+                isLoading = false
+            }
+        )
+    }
+
+    fun loadMore() {
         isLoading = true
         launchCatchError(block = {
             if (productCardsUseCase?.getCarouselPaginatedData(component.id, component.pageEndPoint, PRODUCT_PER_PAGE) == true) {
-                getProductList()?.let {
-                    isLoading = false
-                    getMaxHeightProductCard(it)
-                    _productList.value = Success(addLoadMore(it))
-                    syncData.value = true
-                }
+                setProductsList(
+                    onEmptyListener = { /* nothing to do */ }
+                )
             } else {
-                paginatedErrorData()
+                handleErrorPagination()
             }
         }, onError = {
-            paginatedErrorData()
+            handleErrorPagination()
         })
     }
 
-    private suspend fun paginatedErrorData() {
-        component.horizontalProductFailState = true
-        isLoading = false
-        getProductList()?.let {
-            getMaxHeightProductCard(it)
-            _productList.value = Success(addErrorReLoadView(it))
-            syncData.value = true
-        }
+    fun resetComponent() {
+        component.noOfPagesLoaded = 0
+        component.pageLoadedCounter = 1
     }
 
     private fun addLoadMore(productDataList: List<ComponentsItem>): ArrayList<ComponentsItem> {
-        val productLoadState: ArrayList<ComponentsItem> = ArrayList()
-        productLoadState.addAll(productDataList)
+        val productList: ArrayList<ComponentsItem> = ArrayList()
+        productList.addAll(productDataList)
 
-        val nextPageComponent = if (Utils.nextPageAvailable(component, PRODUCT_PER_PAGE)) {
-            constructLoadMoreComponent()
-        } else if (shouldShowViewAllCard()) {
-            constructViewAllCard()
-        } else {
-            return productLoadState
+        return if (hasNextPage()) {
+            productList.addLoadMore(component)
+            productList
+        }  else {
+            productList
         }
-
-        productLoadState.add(nextPageComponent)
-
-        return productLoadState
     }
 
-    private fun constructLoadMoreComponent() =
-        ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
-            pageEndPoint = component.pageEndPoint
-            parentComponentId = component.id
-            id = ComponentNames.LoadMore.componentName
-            loadForHorizontal = true
-            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-        }
-
-    private fun constructViewAllCard() =
-        ComponentsItem(name = ComponentNames.ViewAllCardCarousel.componentName).apply {
-            id = ComponentNames.ViewAllCardCarousel.componentName
-            val element = with(component.compAdditionalInfo?.redirection!!) {
-                DataItem(
-                    title = this.bodyText,
-                    action = this.ctaText,
-                    applinks = this.applink
-                )
-            }
-
-            data = listOf(element)
-        }
-
-    private fun addErrorReLoadView(productDataList: List<ComponentsItem>): ArrayList<ComponentsItem> {
+    private fun addReload(productDataList: List<ComponentsItem>): ArrayList<ComponentsItem> {
         val productLoadState: ArrayList<ComponentsItem> = ArrayList()
         productLoadState.addAll(productDataList)
-        productLoadState.add(
-            ComponentsItem(name = ComponentNames.CarouselErrorLoad.componentName).apply {
-                pageEndPoint = component.pageEndPoint
-                parentComponentId = component.id
-                id = ComponentNames.CarouselErrorLoad.componentName
-                parentComponentPosition = component.position
-                discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-            }
-        )
+        productLoadState.addReload(component)
         return productLoadState
     }
 
     fun hasNextPage(): Boolean = Utils.nextPageAvailable(component, PRODUCT_PER_PAGE)
 
-    fun shouldShowViewAllCard(): Boolean {
-        return !component.compAdditionalInfo?.redirection?.applink.isNullOrEmpty()
-    }
-
-    fun isLoadingData() = isLoading
+    fun hasHeader(): Boolean = component.getPropertyHeader() != null
 
     fun getProductList(): List<ComponentsItem>? = component.getComponentsItem()
 
-    fun getPageSize() = PRODUCT_PER_PAGE
-
-    override fun refreshProductCarouselError() {
-        getProductList()?.let {
-            isLoading = false
-            syncData.value = true
-        }
-    }
-
-    fun areFiltersApplied(): Boolean {
-        return (
-            (component.selectedSort != null && component.selectedFilters != null) &&
-                (
-                    component.selectedSort?.isNotEmpty() == true ||
-                        component.selectedFilters?.isNotEmpty() == true
-                    )
-            )
-    }
-
-    fun getErrorStateComponent(): ComponentsItem {
-        return ComponentsItem(name = ComponentNames.ProductListEmptyState.componentName).apply {
-            pageEndPoint = component.pageEndPoint
-            parentComponentId = component.id
-            id = ComponentNames.ProductListEmptyState.componentName
-        }
-    }
+    fun areFiltersApplied(): Boolean = ((component.selectedSort != null && component.selectedFilters != null) && (component.selectedSort?.isNotEmpty() == true || component.selectedFilters?.isNotEmpty() == true))
 
     fun changeTier(
         isShimmerShown: Boolean,
         tierWording: String = ""
     ) {
-        if (component.getPropertyHeader() == null) return
+        if (!hasHeader()) return
 
         _tierChange.value = TierData(
             isProgressBarShown = isShimmerShown || tierWording.isNotBlank(),
             isShimmerShown = isShimmerShown,
             tierWording = tierWording
         )
+    }
+
+    fun syncData() {
+        val productList = getProductList()
+        if (productList != null) {
+            _productList.value = Success(ArrayList(addLoadMore(productList)))
+        } else {
+            _productList.value = Success(ArrayList())
+        }
     }
 }

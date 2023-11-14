@@ -17,6 +17,8 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.CarouselProductCardItemDecorator
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.PRODUCT_PER_PAGE
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandComponentExtension.getErrorStateComponent
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
@@ -28,13 +30,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showIfWithBlock
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
-import okhttp3.Route
 import kotlin.collections.ArrayList
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopOfferHeroBrandViewHolder(
     itemView: View,
@@ -77,20 +77,20 @@ class ShopOfferHeroBrandViewHolder(
         if (lifecycleOwner == null) return
 
         viewModel?.apply {
+            syncData.observe(lifecycleOwner) { sync ->
+                if (sync) {
+                    syncData()
+                }
+            }
+
             header.observe(lifecycleOwner) { header ->
                 binding?.showHeader(header)
             }
 
             productList.observe(lifecycleOwner) { item ->
                 when (item) {
-                    is Success -> mAdapter.setDataList(item.data)
-                    is Fail -> handleErrorState()
-                }
-            }
-
-            syncData.observe(lifecycleOwner) { sync ->
-                if (sync) {
-                    mAdapter.notifyDataSetChanged()
+                    is Success -> handleSuccessState(item.data)
+                    is Fail -> handleFailState()
                 }
             }
 
@@ -125,7 +125,7 @@ class ShopOfferHeroBrandViewHolder(
     }
 
     private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.addScrollListener() {
-        if (viewModel?.shouldShowViewAllCard() == true) return
+        if (viewModel?.hasHeader() == false) return
 
         rvProductCarousel.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -134,9 +134,9 @@ class ShopOfferHeroBrandViewHolder(
                     val totalItemCount: Int = mLayoutManager.itemCount
                     val firstVisibleItemPosition: Int = mLayoutManager.findFirstVisibleItemPosition()
                     viewModel?.let { mProductCarouselComponentViewModel ->
-                        if (!mProductCarouselComponentViewModel.isLoadingData() && mProductCarouselComponentViewModel.hasNextPage()) {
-                            if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0 && totalItemCount >= mProductCarouselComponentViewModel.getPageSize()) {
-                                mProductCarouselComponentViewModel.fetchCarouselPaginatedProducts()
+                        if (!mProductCarouselComponentViewModel.isLoading && mProductCarouselComponentViewModel.hasNextPage()) {
+                            if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0 && totalItemCount >= PRODUCT_PER_PAGE) {
+                                mProductCarouselComponentViewModel.loadMore()
                             }
                         }
                     }
@@ -192,7 +192,7 @@ class ShopOfferHeroBrandViewHolder(
                 tpProgressBarTierWording.hide()
 
                 progressBarShimmer.show()
-                progressBarLayout.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+                progressBarLayout.setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN0))
             } else {
                 iuProgressBarIcon.show()
                 iuProgressBarIcon.loadImage(IMG_DISCO_SHOP_OFFER_BRAND_SEE_MORE_BUY_MORE)
@@ -202,7 +202,7 @@ class ShopOfferHeroBrandViewHolder(
 
                 progressBarSpace.show()
                 progressBarShimmer.hide()
-                progressBarLayout.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_TN100))
+                progressBarLayout.setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_TN100))
             }
         } else {
             progressBar.hide()
@@ -241,49 +241,58 @@ class ShopOfferHeroBrandViewHolder(
         mAdapter.setDataList(list)
     }
 
-    private fun handleErrorState() {
-        binding?.apply {
-            addShimmer()
-            mAdapter.notifyDataSetChanged()
+    private fun handleSuccessState(components: ArrayList<ComponentsItem>) {
+        if (components.isNotEmpty()) mAdapter.setDataList(components) else binding?.root?.hide()
+    }
 
-            if (viewModel?.getProductList() == null) {
-                localLoad.run {
-                    title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
-                    description?.text = context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
-                    refreshBtn?.setOnClickListener {
-                        reloadComponent()
-                    }
-                    localLoad?.visible()
-                    rvProductCarousel.gone()
-                    errorHolder.gone()
-                }
-            } else if (viewModel?.getProductList()?.isEmpty() == true &&
-                viewModel?.areFiltersApplied() == true
-            ) {
-                if (errorHolder.childCount > 0) {
-                    errorHolder.removeAllViews()
-                }
-                errorHolder.addView(
-                    viewModel?.getErrorStateComponent()?.let {
-                        CustomViewCreator.getCustomViewObject(
-                            itemView.context,
-                            ComponentsList.ProductListEmptyState,
-                            it,
-                            fragment
-                        )
-                    }
-                )
-                errorHolder.show()
-                localLoad.gone()
-                rvProductCarousel.gone()
+    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.showLocalLoad() {
+        localLoad.run {
+            title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
+            description?.text = context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
+            refreshBtn?.setOnClickListener {
+                progressState = !progressState
+                reloadComponent()
             }
+            show()
+        }
+        rvProductCarousel.gone()
+        errorHolder.gone()
+    }
+
+    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.reloadComponent() {
+        rvProductCarousel.show()
+        localLoad.hide()
+        viewModel?.apply {
+            resetComponent()
+            loadFirstPageProductCarousel()
         }
     }
 
-    private fun reloadComponent() {
-        binding?.rvProductCarousel?.visible()
-        binding?.localLoad?.gone()
-        viewModel?.resetComponent()
-        viewModel?.loadFirstPageProductCarousel()
+    private fun handleFailState() {
+        binding?.apply {
+            viewModel?.apply {
+                val productList = getProductList()
+                if (!productList.isNullOrEmpty()) {
+                    showLocalLoad()
+                } else if (productList.isNullOrEmpty() && areFiltersApplied()) {
+                    if (errorHolder.childCount > 0) {
+                        errorHolder.removeAllViews()
+                    }
+                    errorHolder.addView(
+                        getErrorStateComponent(component).let {
+                            CustomViewCreator.getCustomViewObject(
+                                itemView.context,
+                                ComponentsList.ProductListEmptyState,
+                                it,
+                                fragment
+                            )
+                        }
+                    )
+                    errorHolder.show()
+                    localLoad.gone()
+                    rvProductCarousel.gone()
+                }
+            }
+        }
     }
 }

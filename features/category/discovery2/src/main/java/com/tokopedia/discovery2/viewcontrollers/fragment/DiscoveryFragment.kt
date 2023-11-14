@@ -917,7 +917,7 @@ open class DiscoveryFragment :
                         it.data.requestParams.requestingComponent,
                         it.data.addToCartDataModel.data.cartId
                     )
-                    getMiniCart()
+                    getMiniCart(it.data.requestParams.parentPosition)
                     showToaster(
                         message = it.data.addToCartDataModel.errorMessage.joinToString(separator = ", "),
                         type = Toaster.TYPE_NORMAL
@@ -939,7 +939,7 @@ open class DiscoveryFragment :
                     it.data.requestParams.requestingComponent,
                     it.data.cartId
                 )
-                getMiniCart()
+                getMiniCart(it.data.requestParams.parentPosition)
             } else if (it is Fail) {
                 if (it.throwable is ResponseErrorException) {
                     showToaster(
@@ -956,7 +956,7 @@ open class DiscoveryFragment :
                     it.data.requestParams.requestingComponent,
                     it.data.cartId
                 )
-                getMiniCart()
+                getMiniCart(it.data.requestParams.parentPosition)
                 showToaster(
                     message = it.data.message,
                     type = Toaster.TYPE_NORMAL
@@ -992,6 +992,15 @@ open class DiscoveryFragment :
 
         discoveryViewModel.addToCartAction.observe(viewLifecycleOwner) {
             discoveryAdapter.getViewModelAtPosition(it.parentPosition)
+                ?.let { discoveryBaseViewModel ->
+                    if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
+                        discoveryBaseViewModel.changeTier(true)
+                    }
+                }
+        }
+
+        discoveryViewModel.bmGmDataList.observe(viewLifecycleOwner) { (parentPosition, bmGmDataList) ->
+            discoveryAdapter.getViewModelAtPosition(parentPosition)
                 ?.let { discoveryBaseViewModel ->
                     if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
                         discoveryBaseViewModel.changeTier(true)
@@ -2276,10 +2285,10 @@ open class DiscoveryFragment :
         }
     }
 
-    private fun getMiniCart() {
+    private fun getMiniCart(parentPosition: Int = -1) {
         val shopId = listOf(userAddressData?.shop_id.orEmpty())
         val warehouseId = userAddressData?.warehouse_id
-        discoveryViewModel.getMiniCart(shopId, warehouseId)
+        discoveryViewModel.getMiniCart(shopId, warehouseId, parentPosition)
     }
 
     fun addOrUpdateItemCart(discoATCRequestParams: DiscoATCRequestParams) {
