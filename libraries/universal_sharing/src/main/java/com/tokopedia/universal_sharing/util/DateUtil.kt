@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 
 object DateUtil {
 
-    private const val ONE_THOUSAND = 1000
+    const val ONE_THOUSAND = 1000
     private const val HOUR_FORMAT = "HH:mm"
     private const val DATE_FORMAT = "dd MMMM"
     private const val DATE_CAMPAIGN_INFO_FORMAT = "dd MMM"
@@ -59,6 +59,20 @@ object DateUtil {
             } else {
                 TimeUnit.MILLISECONDS.toDays(endDate.time - now) <= threshold
             }
+        } catch (e: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            false
+        }
+    }
+
+    fun timeIsOutDated(date: Long): Boolean {
+        return try {
+            val endDateMillis = date * ONE_THOUSAND
+            val dateTime = Date(endDateMillis)
+            val now = System.currentTimeMillis()
+            val dateMillis = dateTime.time
+            val diff = (dateMillis - now).toFloat()
+            return diff < 0
         } catch (e: Throwable) {
             FirebaseCrashlytics.getInstance().recordException(e)
             false

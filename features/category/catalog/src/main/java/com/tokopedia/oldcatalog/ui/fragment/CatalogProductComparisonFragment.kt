@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -19,21 +20,25 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.catalog.R
+import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant
+import com.tokopedia.catalog.di.CatalogComponent
+import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imageassets.TokopediaImageUrl.CATALOG_IMAGE_ASSETS
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.oldcatalog.adapter.CatalogDetailDiffUtil
 import com.tokopedia.oldcatalog.adapter.factory.CatalogDetailAdapterFactoryImpl
 import com.tokopedia.oldcatalog.analytics.CatalogDetailAnalytics
-import com.tokopedia.catalog.di.CatalogComponent
-import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.oldcatalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.oldcatalog.model.util.CatalogConstant
 import com.tokopedia.oldcatalog.model.util.CatalogUtil
 import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogComponentBottomSheet
 import com.tokopedia.oldcatalog.viewmodel.CatalogProductComparisonViewModel
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
@@ -255,13 +260,14 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     }
 
     private fun showErrorGroup() {
-        view?.findViewById<DeferredImageView>(R.id.catalog_no_product_view)?.show()
+        view?.findViewById<ImageView>(R.id.catalog_no_product_view)?.show()
+        view?.findViewById<ImageView>(R.id.catalog_no_product_view)?.loadImage(CATALOG_IMAGE_ASSETS)
         view?.findViewById<GlobalError>(R.id.global_error)?.show()
     }
 
     private fun showError(e: Throwable) {
         recyclerView?.hide()
-        view?.findViewById<DeferredImageView>(R.id.catalog_no_product_view)?.hide()
+        view?.findViewById<ImageView>(R.id.catalog_no_product_view)?.hide()
         view?.findViewById<GlobalError>(R.id.global_error)?.apply {
             show()
             if (e is UnknownHostException ||
@@ -279,7 +285,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     }
 
     private fun hideErrorGroup() {
-        view?.findViewById<DeferredImageView>(R.id.catalog_no_product_view)?.hide()
+        view?.findViewById<ImageView>(R.id.catalog_no_product_view)?.hide()
         view?.findViewById<GlobalError>(R.id.global_error)?.hide()
     }
 
@@ -292,6 +298,14 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
             userSession?.userId ?: "",
             catalogId,
             CatalogDetailAnalytics.TrackerId.CLICK_SEARCH_BAR
+        )
+
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
+            action = CatalogTrackerConstant.EVENT_CLICK_SEARCH_COMPARISON,
+            category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = CatalogTrackerConstant.TRACKER_ID_SEARCH_COMPARISON
         )
     }
 
@@ -360,6 +374,15 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
             CatalogDetailAnalytics.TrackerId.CLICK_BANDINGAN
         )
 
+        val label = "$catalogId | chosen catalog id: $comparedCatalogId | keyword: $searchKeyword"
+
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
+            action = CatalogTrackerConstant.EVENT_CLICK_COMPARE_ON_COMPARISON,
+            category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = label,
+            trackerId = CatalogTrackerConstant.TRACKER_ID_CLICK_COMPARE_COMPARISON
+        )
         dismissBottomSheet()
         (parentFragment as? CatalogComponentBottomSheet)?.changeComparison(comparedCatalogId)
     }

@@ -17,6 +17,10 @@ object TestUtils {
             .set(this, value)
     }
 
+    fun Any?.verifyEquals(expected: Any?) {
+        Assert.assertEquals(expected, this)
+    }
+
     fun<T: Any> LiveData<T>.verify(expected: Any) {
         Assert.assertEquals(expected, value)
     }

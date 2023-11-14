@@ -9,13 +9,13 @@ data class PdpParamModel(
     val isBebasOngkir: Boolean = false,
     val bebasOngkirType: String = "",
     var productImageUrl: String = "",
-    val productPrice: Long = 0,
+    val productPrice: String = "",
     val productRating: Float = 0f,
     val productTitle: String = "",
     val hasCampaign: String = "0",
     val campaignName: String = "",
     val campaignDiscount: Int = 0,
-    val newProductPrice: Long = 0,
+    val newProductPrice: String = "",
     val campaignInfo: String = "",
     val hasRibbon: Boolean = false
 ) : ImageGeneratorParamModel()

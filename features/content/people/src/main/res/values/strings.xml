@@ -33,7 +33,7 @@
     <string name="up_user_profile_reminder_sub_title">Bikin username, foto profil &amp; bio yang kamu banget!</string>
     <string name="up_user_profile_reminder_cta">Lengkapi Profil</string>
 
-    <string name="up_title_followers">%s Follower</string>
+    <string name="up_title_followers">%s Followers</string>
     <string name="up_title_following">%s Following</string>
 
     <string name="up_share_text_with_username_template">Lihat konten menarik dari %1s (%2s), yuk!😍\n%3s</string>

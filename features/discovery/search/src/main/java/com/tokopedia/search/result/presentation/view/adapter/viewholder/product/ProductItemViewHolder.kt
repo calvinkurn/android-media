@@ -11,7 +11,6 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.video_widget.VideoPlayer
 import com.tokopedia.video_widget.VideoPlayerProvider
 
@@ -49,7 +48,6 @@ abstract class ProductItemViewHolder(
             productListType = productListType,
             hasAddToCartButton = showButtonAtc,
             isPortrait = isPortrait,
-            pageSource = ProductCardModel.PageSource.SEARCH,
         )
     }
 

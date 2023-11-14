@@ -1548,6 +1548,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     IllegalStateException("Not allowed to create session")
                 )
             )
+            return // dont  create giveaway
         }
 
         viewModelScope.launchCatchError(dispatcher.io, block = {

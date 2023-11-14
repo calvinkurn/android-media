@@ -1,14 +1,10 @@
 package com.tokopedia.stories.creation.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.product.picker.seller.domain.repository.AbstractProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
-import com.tokopedia.content.product.picker.seller.domain.usecase.campaign.GetCampaignListUseCase
-import com.tokopedia.content.product.picker.seller.domain.usecase.campaign.GetProductsInCampaignUseCase
-import com.tokopedia.content.product.picker.seller.domain.usecase.etalase.GetSelfEtalaseListUseCase
-import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository.Companion.AUTHOR_TYPE_SELLER
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository.Companion.PRODUCTS_IN_ETALASE_PER_PAGE
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
 import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.model.sort.SortUiModel
@@ -28,22 +24,12 @@ import javax.inject.Inject
  */
 class StoriesCreationProductRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    getCampaignListUseCase: GetCampaignListUseCase,
-    getProductsInCampaignUseCase: GetProductsInCampaignUseCase,
-    getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
     private val getStoryProductEtalaseUseCase: GetStoryProductEtalaseUseCase,
     private val setActiveProductTagUseCase: SetActiveProductTagUseCase,
     private val getStoryProductDetailsUseCase: GetStoryProductDetailsUseCase,
     private val productMapper: StoriesCreationProductMapper,
     private val userSession: UserSessionInterface,
-) : AbstractProductPickerSellerRepository(
-    dispatchers,
-    getCampaignListUseCase,
-    getProductsInCampaignUseCase,
-    getSelfEtalaseListUseCase,
-    productMapper,
-    userSession
-) {
+) : ContentProductPickerSellerRepository {
 
     override suspend fun getProductsInEtalase(
         etalaseId: String,

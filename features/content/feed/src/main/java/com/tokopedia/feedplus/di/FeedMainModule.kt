@@ -16,12 +16,9 @@ import dagger.Provides
  * Created By : Muhammad Furqan on 09/02/23
  */
 @Module
-class FeedMainModule(private val activityContext: Context) {
+class FeedMainModule {
 
-    @Provides
     @FeedMainScope
-    fun provideActivityContext(): Context = activityContext
-
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository

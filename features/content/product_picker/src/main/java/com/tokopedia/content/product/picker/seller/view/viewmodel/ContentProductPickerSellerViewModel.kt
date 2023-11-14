@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.content.product.picker.seller.model.uimodel.CampaignAndEtalaseUiModel
@@ -60,6 +61,7 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
     @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
     @Assisted("fetchCommissionProduct") private val fetchCommissionProduct: Boolean,
     private val repo: ContentProductPickerSellerRepository,
+    private val commonRepo: ProductPickerSellerCommonRepository,
     userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
@@ -206,10 +208,10 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
         }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val campaignListDeferred = asyncCatchError(block = {
-                repo.getCampaignList()
+                commonRepo.getCampaignList()
             }) { emptyList() }
             val etalaseListDeferred = asyncCatchError(block = {
-                repo.getEtalaseList()
+                commonRepo.getEtalaseList()
             }) { emptyList() }
 
             _campaignAndEtalase.update {
@@ -302,7 +304,7 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
                         else -> 1
                     }
 
-                    val pagedProductList = repo.getProductsInCampaign(
+                    val pagedProductList = commonRepo.getProductsInCampaign(
                         campaignId = selectedEtalase.campaign.id,
                         page = page
                     )

@@ -44,7 +44,6 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_USER_LIVENESS
 import com.tokopedia.applink.DeeplinkDFMapper.DF_USER_SETTINGS
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.constant.DeeplinkConstant.SCHEME_SELLERAPP
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.HOST_RECHARGE
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.HOST_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.HOST_MONEYIN
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication.HOST_COMMUNICATION
@@ -504,7 +503,8 @@ object DeeplinkDFApp {
         // people
         DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/settings/.*"),
         DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/people/followers/")
+        DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*/followers"),
+        DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*/following"),
     )
 
     private fun getDfPromoGamification() = mutableListOf(

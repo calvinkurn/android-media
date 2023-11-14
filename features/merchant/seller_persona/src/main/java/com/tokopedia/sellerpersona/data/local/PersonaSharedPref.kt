@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class PersonaSharedPref @Inject constructor(
     @ApplicationContext private val context: Context
-) {
+) : PersonaSharedPrefInterface {
 
     companion object {
         private const val PERSONA_SP = "persona_shared_pref"
@@ -22,10 +22,9 @@ class PersonaSharedPref @Inject constructor(
         context.getSharedPreferences(PERSONA_SP, Context.MODE_PRIVATE)
     }
 
-    val isFirstVisit: Boolean
-        get() = sp.getBoolean(KEY_IS_FIRST_VISIT, false)
+    override fun isFirstVisit(): Boolean = sp.getBoolean(KEY_IS_FIRST_VISIT, false)
 
-    fun setIsFirstVisit(isFirstVisit: Boolean) {
+    override fun setIsFirstVisit(isFirstVisit: Boolean) {
         sp.edit().putBoolean(KEY_IS_FIRST_VISIT, isFirstVisit).apply()
     }
 }
