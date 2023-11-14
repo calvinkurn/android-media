@@ -17,6 +17,7 @@ data class PofProductEditableUiModel(
         val orderDetailId: Long,
         val productId: Long,
         val quantity: Int,
+        val minQuantity: Int,
         val maxQuantity: Int,
         val updateTimestamp: Long,
         val enabled: Boolean

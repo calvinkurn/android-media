@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.mapper
 
 import androidx.annotation.DimenRes
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -53,11 +54,17 @@ class PofUiStateMapper @Inject constructor() {
         } else {
             pofInfoData.infoRequestPartialOrderFulfillment?.detailsFulfilled
         }
+        val minQuantity = if (details?.filterNotNull()?.size.orZero() > 1) {
+            Int.ZERO
+        } else {
+            Int.ONE
+        }
         return details?.map { detail ->
             PofProductEditableUiModel.QuantityEditorData(
                 orderDetailId = detail?.orderDetailId.orZero(),
                 productId = detail?.productId.orZero(),
                 quantity = detail?.quantityRequest.orZero(),
+                minQuantity = minQuantity,
                 maxQuantity = detail?.quantityCheckout.orZero(),
                 updateTimestamp = Long.ZERO,
                 enabled = true
@@ -457,6 +464,7 @@ class PofUiStateMapper @Inject constructor() {
             val checkoutQuantity = detail.quantityCheckout.orZero()
             val quantityEditorData = quantityEditorDataList.find { it.orderDetailId == detail.orderDetailId }
             val availableQuantity = quantityEditorData?.quantity ?: detail.productQuantity.orZero()
+            val minQuantity = quantityEditorData?.minQuantity ?: if (details.count() == 1) Int.ONE else Int.ZERO
             val updateTimestamp = quantityEditorData?.updateTimestamp ?: System.currentTimeMillis()
             add(
                 PofProductEditableUiModel(
@@ -468,6 +476,7 @@ class PofUiStateMapper @Inject constructor() {
                         orderDetailId = detail.orderDetailId.orZero(),
                         productId = detail.productId.orZero(),
                         quantity = availableQuantity,
+                        minQuantity = minQuantity,
                         maxQuantity = checkoutQuantity,
                         updateTimestamp = updateTimestamp,
                         enabled = sendPofRequestState !is RequestState.Requesting

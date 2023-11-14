@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofEstimateRequestParams
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofInfoRequestParams
@@ -101,6 +101,8 @@ class PofViewModel @Inject constructor(
                     is UiEvent.OnClickResetPofForm -> onClickResetPofForm()
                     is UiEvent.OnClickRetryFetchPofEstimate -> onClickRetryFetchPofEstimate()
                     is UiEvent.OnClickSendPof -> onClickSendPof(event)
+                    is UiEvent.OnTryChangeProductQuantityAboveMaxQuantity -> onTryChangeProductQuantityAboveMaxQuantity()
+                    is UiEvent.OnTryChangeProductQuantityBelowMinQuantity -> onTryChangeProductQuantityBelowMinQuantity()
                     is UiEvent.OpenScreen -> onOpenScreen(event)
                     is UiEvent.ProductAvailableQuantityChanged -> onProductAvailableQuantityChanged(event)
                     is UiEvent.RestoreState -> onRestoreState(event)
@@ -148,6 +150,14 @@ class PofViewModel @Inject constructor(
         sendPof(event.pofDetailList)
     }
 
+    private fun onTryChangeProductQuantityAboveMaxQuantity() {
+        showToasterCannotExceedCheckoutQuantity()
+    }
+
+    private fun onTryChangeProductQuantityBelowMinQuantity() {
+        showToasterCannotEmptyAllProduct()
+    }
+
     private fun onOpenScreen(event: UiEvent.OpenScreen) {
         orderId = event.orderId
         initialPofStatus = event.initialPofStatus
@@ -155,9 +165,9 @@ class PofViewModel @Inject constructor(
     }
 
     private fun onProductAvailableQuantityChanged(event: UiEvent.ProductAvailableQuantityChanged) {
-        val shouldRequestPofEstimate = updateQuantityEditorDataList(event.orderDetailId, event.availableQuantity, event.exceedCheckoutQuantity)
+        updateQuantityEditorDataList(event.orderDetailId, event.availableQuantity)
         updateDetailInfo()
-        if (shouldRequestPofEstimate) getPofEstimate(DELAY_FETCH_POF_ESTIMATE_ON_PRODUCT_QUANTITY_CHANGED)
+        getPofEstimate(DELAY_FETCH_POF_ESTIMATE_ON_PRODUCT_QUANTITY_CHANGED)
         updateUiState()
     }
 
@@ -342,45 +352,35 @@ class PofViewModel @Inject constructor(
         quantityEditorDataList = pofUiStateMapper.mapInitialQuantityEditorData(data)
     }
 
-    private fun updateQuantityEditorDataList(
-        orderDetailId: Long,
-        quantity: Int,
-        exceedCheckoutQuantity: Boolean
-    ): Boolean {
-        var changed = false
-        var allQuantityEmpty = false
+    private fun updateQuantityEditorDataList(orderDetailId: Long, quantity: Int) {
+        val minQuantity = if (quantity == Int.ZERO) {
+            if (quantityEditorDataList.count { it.orderDetailId != orderDetailId && it.quantity > Int.ZERO } > Int.ONE) {
+                Int.ZERO
+            } else {
+                Int.ONE
+            }
+        } else {
+            if (quantityEditorDataList.count { it.orderDetailId != orderDetailId && it.quantity > Int.ZERO } > Int.ZERO) {
+                Int.ZERO
+            } else {
+                Int.ONE
+            }
+        }
         quantityEditorDataList = quantityEditorDataList.map { quantityEditorData ->
             if (quantityEditorData.orderDetailId == orderDetailId) {
-                if (exceedCheckoutQuantity) {
-                    if (quantityEditorData.quantity != quantity) {
-                        changed = true
-                        quantityEditorData.copy(
-                            quantity = quantity,
-                            updateTimestamp = System.currentTimeMillis()
-                        )
-                    } else {
-                        quantityEditorData.copy(updateTimestamp = System.currentTimeMillis())
-                    }
+                quantityEditorData.copy(
+                    quantity = quantity,
+                    minQuantity = minQuantity.coerceAtMost(quantity),
+                    updateTimestamp = System.currentTimeMillis()
+                )
+            } else {
+                if (quantityEditorData.quantity != Int.ZERO) {
+                    quantityEditorData.copy(minQuantity = minQuantity)
                 } else {
-                    val othersQuantityIsEmpty = quantityEditorDataList.none {
-                        it.orderDetailId != orderDetailId && it.quantity.isMoreThanZero()
-                    }
-                    if (!(othersQuantityIsEmpty && quantity.isZero())) {
-                        changed = true
-                        quantityEditorData.copy(
-                            quantity = quantity,
-                            updateTimestamp = System.currentTimeMillis()
-                        )
-                    } else {
-                        allQuantityEmpty = true
-                        quantityEditorData.copy(updateTimestamp = System.currentTimeMillis())
-                    }
+                    quantityEditorData
                 }
-            } else quantityEditorData
+            }
         }
-        if (exceedCheckoutQuantity) showToasterCannotExceedCheckoutQuantity()
-        if (allQuantityEmpty) showToasterCannotEmptyAllProduct()
-        return changed
     }
 
     private fun updateDetailInfo() {

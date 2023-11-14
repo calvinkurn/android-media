@@ -22,8 +22,7 @@ sealed interface UiEvent {
 
     data class ProductAvailableQuantityChanged(
         val orderDetailId: Long,
-        val availableQuantity: Int,
-        val exceedCheckoutQuantity: Boolean
+        val availableQuantity: Int
     ) : UiEvent
 
     data class OnClickSendPof(
@@ -36,4 +35,6 @@ sealed interface UiEvent {
     object OnClickOpenPofInfoSummary : UiEvent
     object OnClickDismissSummaryBottomSheet : UiEvent
     object OnClickDismissPofBottomSheet : UiEvent
+    object OnTryChangeProductQuantityBelowMinQuantity : UiEvent
+    object OnTryChangeProductQuantityAboveMaxQuantity : UiEvent
 }

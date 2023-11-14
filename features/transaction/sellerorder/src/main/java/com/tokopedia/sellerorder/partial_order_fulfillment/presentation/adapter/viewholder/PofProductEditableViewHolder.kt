@@ -42,6 +42,12 @@ class PofProductEditableViewHolder(
         binding.qePofProductQuantity.maxValue = quantityEditorData.maxQuantity
         binding.qePofProductQuantity.setValue(quantityEditorData.quantity)
         binding.qePofProductQuantity.isEnabled = quantityEditorData.enabled
+        binding.qePofProductQuantity.subtractButton.setOnClickListener {
+            onSubtractButtonClicked(binding.qePofProductQuantity.getValue(), quantityEditorData.minQuantity)
+        }
+        binding.qePofProductQuantity.subtractButtonAnimationView?.setOnClickListener {
+            onSubtractButtonClicked(binding.qePofProductQuantity.getValue(), quantityEditorData.minQuantity)
+        }
         binding.qePofProductQuantity.editText.addTextChangedListener(initTextWatcher(quantityEditorData))
     }
 
@@ -55,6 +61,14 @@ class PofProductEditableViewHolder(
 
     private fun setupProductPriceQuantity(productPriceQuantity: String) {
         binding.tvPofProductPriceQuantity.text = productPriceQuantity
+    }
+
+    private fun onSubtractButtonClicked(quantity: Int, minQuantity: Int) {
+        if (quantity == minQuantity) {
+            listener.onEvent(UiEvent.OnTryChangeProductQuantityBelowMinQuantity)
+        } else {
+            binding.qePofProductQuantity.setValue(quantity.dec())
+        }
     }
 
     private fun initTextWatcher(
@@ -73,13 +87,24 @@ class PofProductEditableViewHolder(
                 val quantityText = text?.toString().orEmpty().filter { it.isDigit() }
                 val quantityNumber = quantityText.toIntOrZero()
                 if (quantityText.isNotBlank()) {
-                    listener.onEvent(
-                        UiEvent.ProductAvailableQuantityChanged(
-                            orderDetailId = quantityEditorData.orderDetailId,
-                            availableQuantity = quantityNumber.coerceAtMost(quantityEditorData.maxQuantity),
-                            exceedCheckoutQuantity = quantityNumber > quantityEditorData.maxQuantity
+                    if (quantityNumber < quantityEditorData.minQuantity) {
+                        binding.qePofProductQuantity.editText.removeTextChangedListener(this)
+                        binding.qePofProductQuantity.setValue(quantityEditorData.quantity)
+                        binding.qePofProductQuantity.editText.addTextChangedListener(this)
+                        listener.onEvent(UiEvent.OnTryChangeProductQuantityBelowMinQuantity)
+                    } else if (quantityNumber > quantityEditorData.maxQuantity) {
+                        binding.qePofProductQuantity.editText.removeTextChangedListener(this)
+                        binding.qePofProductQuantity.setValue(quantityEditorData.quantity)
+                        binding.qePofProductQuantity.editText.addTextChangedListener(this)
+                        listener.onEvent(UiEvent.OnTryChangeProductQuantityAboveMaxQuantity)
+                    } else {
+                        listener.onEvent(
+                            UiEvent.ProductAvailableQuantityChanged(
+                                orderDetailId = quantityEditorData.orderDetailId,
+                                availableQuantity = quantityNumber
+                            )
                         )
-                    )
+                    }
                 }
             }
         }.apply {
