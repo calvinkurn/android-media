@@ -419,10 +419,18 @@ object ConstantTransactionAnalytics {
         const val CLICK_BUTTON_MIN_TO_DELETE_CART = "click button - to delete cart"
         const val IMPRESSION_CART = "impression cart"
 
+        // Checkout Revamp
+        const val CLICK_SNK_ASURANSI_DAN_PROTEKSI = "click snk asuransi dan proteksi"
+        const val CLICKS_INFO_BUTTON_OF_ADDONS = "clicks info button of addons"
+
         // BMGM
         const val CLICK_SNK_BMGM = "click snk bmgm"
         const val CLICK_BMGM_RECOMMENDATION = "click bmgm recommendation"
         const val IMPRESSION_BMGM_RECOMMENDATION = "impression bmgm recommendation"
+
+        // OFOC
+        const val VIEW_SPLIT_OFOC_POP_UP_BOX = "view split ofoc pop up box"
+        const val CLICK_OK_TO_SPLIT_ORDER_OFOC = "click ok to split order ofoc"
     }
 
     object EventLabel {
@@ -578,9 +586,17 @@ object ConstantTransactionAnalytics {
         const val IMPRESSION_CART = "46932"
         const val CLICK_BUTTON_MIN_TO_DELETE_CART = "46933"
 
+        // Checkout Revamp
+        const val CLICK_SNK_ASURANSI_DAN_PROTEKSI = "46930"
+        const val CLICKS_INFO_BUTTON_OF_ADDONS = "46931"
+
         // BMGM
         const val CLICK_SNK_BMGM = "46781"
         const val CLICK_BMGM_RECOMMENDATION = "47209"
         const val VIEW_BMGM_RECOMMENDATION = "47208"
+
+        // OFOC
+        const val VIEW_SPLIT_OFOC_POP_UP_BOX = "48544"
+        const val CLICK_OK_TO_SPLIT_ORDER_OFOC = "48547"
     }
 }

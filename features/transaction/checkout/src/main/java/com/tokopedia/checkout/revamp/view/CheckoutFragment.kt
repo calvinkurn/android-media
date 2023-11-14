@@ -651,6 +651,7 @@ class CheckoutFragment :
             dialogUnify.setPrimaryCTAClickListener {
                 dialogUnify.dismiss()
                 viewModel.doShipmentAction(shipmentAction)
+                checkoutAnalyticsCourierSelection.eventClickOkToSplitOrderOfoc()
             }
             dialogUnify.setSecondaryCTAText(shipmentAction.popup.secondaryButton)
             dialogUnify.setSecondaryCTAClickListener {
@@ -663,6 +664,7 @@ class CheckoutFragment :
             dialogUnify.setCanceledOnTouchOutside(false)
             dialogUnify.setCancelable(false)
             dialogUnify.show()
+            checkoutAnalyticsCourierSelection.eventViewSplitOfocPopUpBox()
         }
     }
 
