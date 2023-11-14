@@ -1403,16 +1403,25 @@ class FeedFragment :
             val productBottomSheet =
                 (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)
             when (it) {
-                is Success -> productBottomSheet?.doShowToaster(
-                    message = getString(feedplusR.string.feeds_add_to_cart_success_text),
-                    actionText = getString(feedplusR.string.feeds_add_to_cart_toaster_action_text),
-                    actionClickListener = {
-                        currentTrackerData?.let { trackerData ->
-                            feedAnalytics?.eventClickViewCart(trackerData)
-                        }
-                        goToCartPage()
+                is Success -> {
+                    currentTrackerData?.let { data ->
+                        feedAnalytics?.eventClickBuyButton(
+                            trackerData = data,
+                            productInfo = it.data,
+                        )
                     }
-                )
+
+                    productBottomSheet?.doShowToaster(
+                        message = getString(feedplusR.string.feeds_add_to_cart_success_text),
+                        actionText = getString(feedplusR.string.feeds_add_to_cart_toaster_action_text),
+                        actionClickListener = {
+                            currentTrackerData?.let { trackerData ->
+                                feedAnalytics?.eventClickViewCart(trackerData)
+                            }
+                            goToCartPage()
+                        }
+                    )
+                }
 
                 is Fail -> productBottomSheet?.doShowToaster(
                     message = it.throwable.localizedMessage.orEmpty(),
@@ -1427,7 +1436,15 @@ class FeedFragment :
             val productBottomSheet =
                 (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)
             when (it) {
-                is Success -> goToCartPage()
+                is Success -> {
+                    currentTrackerData?.let { data ->
+                        feedAnalytics?.eventClickCartButton(
+                            trackerData = data,
+                            productInfo = it.data
+                        )
+                    }
+                    goToCartPage()
+                }
                 is Fail -> productBottomSheet?.doShowToaster(
                     message = it.throwable.localizedMessage.orEmpty(),
                     type = Toaster.TYPE_ERROR
@@ -1733,18 +1750,6 @@ class FeedFragment :
                 product.campaign.isExclusiveForMember
             ) {}
         ) {
-            currentTrackerData?.let { data ->
-                feedAnalytics?.eventClickCartButton(
-                    trackerData = data,
-                    productName = product.title,
-                    productId = product.id,
-                    productPrice = product.finalPrice,
-                    shopId = product.shop.id,
-                    shopName = product.shop.name,
-                    index = itemPosition
-                )
-            }
-
             checkAddToCartAction(product)
         }
     }
@@ -1890,18 +1895,6 @@ class FeedFragment :
                 product.campaign.isExclusiveForMember
             ) {}
         ) {
-            currentTrackerData?.let { data ->
-                feedAnalytics?.eventClickBuyButton(
-                    trackerData = data,
-                    productName = product.title,
-                    productId = product.id,
-                    productPrice = product.finalPrice,
-                    shopId = product.shop.id,
-                    shopName = product.shop.name,
-                    index = itemPosition
-                )
-            }
-
             if (userSession.isLoggedIn) {
                 feedPostViewModel.buyProduct(product)
             } else {

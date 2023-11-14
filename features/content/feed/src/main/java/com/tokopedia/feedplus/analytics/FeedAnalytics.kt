@@ -7,6 +7,7 @@ import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedProductActionModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.track.TrackApp
@@ -565,12 +566,7 @@ class FeedAnalytics @AssistedInject constructor(
 
     fun eventClickBuyButton(
         trackerData: FeedTrackerDataModel,
-        productName: String,
-        productId: String,
-        productPrice: Double,
-        shopId: String,
-        shopName: String,
-        index: Int
+        productInfo: FeedProductActionModel,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Event.ADD_TO_CART,
@@ -578,7 +574,7 @@ class FeedAnalytics @AssistedInject constructor(
                 Event.ADD_TO_CART,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_BUY_BUTTON,
-                "${getEventLabel(trackerData)} - $productId",
+                "${getEventLabel(trackerData)} - ${productInfo.product.id}",
                 "41609",
                 pageSource = pageSource
             ).also {
@@ -586,12 +582,12 @@ class FeedAnalytics @AssistedInject constructor(
                     EnhanceEcommerce.KEY_ITEMS,
                     arrayListOf(
                         getProductTrackerBundle(
-                            index,
-                            shopName,
-                            productId,
-                            productName,
-                            productPrice,
-                            shopId
+                            productInfo.product.shop.name,
+                            productInfo.product.id,
+                            productInfo.product.title,
+                            productInfo.product.finalPrice,
+                            productInfo.product.shop.id,
+                            productInfo.cartId
                         )
                     )
                 )
@@ -601,20 +597,15 @@ class FeedAnalytics @AssistedInject constructor(
 
     fun eventClickCartButton(
         trackerData: FeedTrackerDataModel,
-        productName: String,
-        productId: String,
-        productPrice: Double,
-        shopId: String,
-        shopName: String,
-        index: Int
-    ) {
+        productInfo: FeedProductActionModel,
+        ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Event.ADD_TO_CART,
             generateGeneralTrackerBundleData(
                 Event.ADD_TO_CART,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_CART_BUTTON,
-                "${getEventLabel(trackerData)} - $productId",
+                "${getEventLabel(trackerData)} - ${productInfo.product.id}",
                 "41610",
                 pageSource = pageSource
             ).also {
@@ -622,12 +613,12 @@ class FeedAnalytics @AssistedInject constructor(
                     EnhanceEcommerce.KEY_ITEMS,
                     arrayListOf(
                         getProductTrackerBundle(
-                            index,
-                            shopName,
-                            productId,
-                            productName,
-                            productPrice,
-                            shopId
+                            productInfo.product.shop.name,
+                            productInfo.product.id,
+                            productInfo.product.title,
+                            productInfo.product.finalPrice,
+                            productInfo.product.shop.id,
+                            productInfo.cartId
                         )
                     )
                 )
@@ -802,16 +793,15 @@ class FeedAnalytics @AssistedInject constructor(
         } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${entrySource.entryPoint}"
 
     private fun getProductTrackerBundle(
-        index: Int,
         shopName: String,
         productId: String,
         productName: String,
         productPrice: Double,
-        shopId: String
+        shopId: String,
+        cartId: String
     ) = Bundle().apply {
         putString(EnhanceEcommerce.KEY_CATEGORY_ID, "")
         putString(EnhanceEcommerce.KEY_DIMENSION40, "")
-        putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
         putString(
             EnhanceEcommerce.KEY_ITEM_BRAND,
             shopName
@@ -825,6 +815,8 @@ class FeedAnalytics @AssistedInject constructor(
         putString(EnhanceEcommerce.KEY_SHOP_ID, shopId)
         putString(EnhanceEcommerce.KEY_SHOP_NAME, shopName)
         putString(EnhanceEcommerce.KEY_SHOP_TYPE, "")
+        putString(EnhanceEcommerce.KEY_DIMENSION42, cartId)
+        putString(EnhanceEcommerce.KEY_DIMENSION80, pageSource)
     }
 
     private fun sendEventTracker(params: Map<String, Any>) {

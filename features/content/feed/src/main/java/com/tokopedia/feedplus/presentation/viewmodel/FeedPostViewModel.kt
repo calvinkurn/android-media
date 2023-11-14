@@ -50,6 +50,7 @@ import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
+import com.tokopedia.feedplus.presentation.model.FeedProductActionModel
 import com.tokopedia.feedplus.presentation.model.FeedReminderResultModel
 import com.tokopedia.feedplus.presentation.model.FollowShopModel
 import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
@@ -944,13 +945,13 @@ class FeedPostViewModel @Inject constructor(
     /**
      * Add to Cart & Buy
      */
-    val observeAddProductToCart: LiveData<Result<AddToCartDataModel>>
+    val observeAddProductToCart: LiveData<Result<FeedProductActionModel>>
         get() = _observeAddProductToCart
-    private val _observeAddProductToCart = MutableLiveData<Result<AddToCartDataModel>>()
+    private val _observeAddProductToCart = MutableLiveData<Result<FeedProductActionModel>>()
 
-    val observeBuyProduct: LiveData<Result<AddToCartDataModel>>
+    val observeBuyProduct: LiveData<Result<FeedProductActionModel>>
         get() = _observeBuyProduct
-    private val _observeBuyProduct = MutableLiveData<Result<AddToCartDataModel>>()
+    private val _observeBuyProduct = MutableLiveData<Result<FeedProductActionModel>>()
 
     private val _suspendedAddProductToCartData = MutableLiveData<ContentTaggedProductUiModel>()
     private val _suspendedBuyProductData = MutableLiveData<ContentTaggedProductUiModel>()
@@ -982,7 +983,7 @@ class FeedPostViewModel @Inject constructor(
                 _observeAddProductToCart.value =
                     Fail(ResponseErrorException(response.getAtcErrorMessage()))
             } else {
-                _observeAddProductToCart.value = Success(response)
+                _observeAddProductToCart.value = Success(FeedProductActionModel(cartId = response.data.cartId, product = product))
             }
         }) {
             _observeAddProductToCart.value = Fail(it)
@@ -996,7 +997,7 @@ class FeedPostViewModel @Inject constructor(
                 _observeBuyProduct.value =
                     Fail(ResponseErrorException(response.getAtcErrorMessage()))
             } else {
-                _observeBuyProduct.value = Success(response)
+                _observeBuyProduct.value = Success(FeedProductActionModel(cartId = response.data.cartId, product = product))
             }
         }) {
             _observeBuyProduct.value = Fail(it)

@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.model
 
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 
@@ -29,4 +30,9 @@ data class FeedTopAdsTrackerDataModel(
     val uri: String,
     val fullEcs: String?,
     val position: Int
+)
+
+data class FeedProductActionModel(
+    val cartId: String,
+    val product: ContentTaggedProductUiModel,
 )
