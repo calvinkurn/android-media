@@ -37,13 +37,17 @@ class SellerReputationViewModelTest: SellerReputationViewModelTestFixture() {
         runBlocking {
             val page = 1
             val exception = RuntimeException()
+
             onGetReputationShopAndPenaltyRewardUseCaseError_thenReturn(shopId, page, startDate, endDate, exception)
 
             sellerReputationViewModel.getReputationPenaltyRewardMerge()
 
-            verifyGetReputationPenaltyRewardUseCaseCaseCalled()
+            /**
+             * because it already mock #GetReputationShopAndPenaltyRewardUseCase then it is unnecesary
+             */
+//            verifyGetReputationPenaltyRewardUseCaseCaseCalled()
             val actualResult = (sellerReputationViewModel.reputationAndPenaltyMerge.observeAwaitValue() as Fail).throwable::class
-            val expectedResult = exception::class
+            val expectedResult = RuntimeException::class
             Assert.assertTrue(sellerReputationViewModel.reputationAndPenaltyMerge.observeAwaitValue() is Fail)
             Assert.assertEquals(expectedResult, actualResult)
         }

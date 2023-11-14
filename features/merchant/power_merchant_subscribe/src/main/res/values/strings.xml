@@ -40,6 +40,7 @@
 
     <string name="pm_label_rating_power_merchant_experience">Bagaimana Anda menilai pengalaman menggunakan Power Merchant</string>
     <string name="pm_label_deactivation_questionnaire_intro_desc"><![CDATA[Pengajuan untuk berhenti jadi PM akan terkirim setelah kamu memberi masukan, ya. Fitur PM di tokomu akan dinonaktifkan pada <b>%s WIB</b>]]></string>
+    <string name="pm_label_deactivation_questionnaire_intro_desc_new"><![CDATA[Pengajuan untuk berhenti jadi PM akan terkirim setelah kamu memberi masukan, ya. Fitur PM di tokomu akan dinonaktifkan pada <b>%s</b>]]></string>
 
     <string name="pm_potential_benefit_01"><![CDATA[Dikunjungi <br>pembeli hingga <br><b>2,5 kali lipat</b>]]></string>
     <string name="pm_potential_benefit_02"><![CDATA[Menerima <br>pesanan hingga <br><b>2,3 kali lipat</b>]]></string>
@@ -87,6 +88,7 @@
     <string name="pm_shop_grade_shop_score_threshold_description_pm_idle"><![CDATA[Yuk, tingkatkan skor jadi <font color="%1$s"><b>min. %2$d</b></font> poin agar tokomu jadi %3$s lagi minggu depan!]]></string>
     <string name="pm_deactivate_power_merchant_bottom_cta">Atur status keanggotaanmu <font color="#03AC0E"><b>di sini</b></font></string>
     <string name="pm_deactivate_power_merchant_pro_message_info"><![CDATA[Pengajuan penurunan menjadi %1$s berhasil. Perubahan akan efektif berlaku pada <b>%2$s WIB.</b>]]></string>
+    <string name="pm_deactivate_power_merchant_pro_message_new_info"><![CDATA[Pengajuan penurunan menjadi %1$s berhasil. Perubahan akan efektif berlaku pada <b>%2$s.</b>]]></string>
 
     <string name="pm_expired_time_format">%1$s, pukul %2$s</string>
     <string name="pm_system_error_message">Terjadi kesalahan pada sistem</string>

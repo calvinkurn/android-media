@@ -340,6 +340,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 homeChooseAddressRepository.getRemoteData()
                                     ?.convertToLocationParams()
                             )
+                            putString(
+                                GetMissionWidget.PARAM,
+                                it.widgetParam
+                            )
                         }
                     },
                     handleOnFailed = { visitableFound ->
@@ -1077,7 +1081,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 }
                                 jobList.add(job)
                             }
-                            AtfKey.TYPE_BANNER -> {
+                            AtfKey.TYPE_BANNER, AtfKey.TYPE_BANNER_V2 -> {
                                 val job = async {
                                     try {
                                         val bannerParam = Bundle().apply {
@@ -1161,7 +1165,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 }
                                 jobList.add(job)
                             }
-                            AtfKey.TYPE_ICON -> {
+                            AtfKey.TYPE_ICON, AtfKey.TYPE_ICON_V2 -> {
                                 val job = async {
                                     try {
                                         val dynamicIcon = homeIconRepository.getRemoteData(
@@ -1246,7 +1250,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 }
                                 jobList.add(job)
                             }
-                            AtfKey.TYPE_MISSION -> {
+                            AtfKey.TYPE_MISSION, AtfKey.TYPE_MISSION_V2 -> {
                                 jobList.add(
                                     async {
                                         atfData.apply {

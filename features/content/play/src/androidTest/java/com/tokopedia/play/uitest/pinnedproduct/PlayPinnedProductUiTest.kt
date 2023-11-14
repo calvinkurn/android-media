@@ -48,7 +48,11 @@ class PlayPinnedProductUiTest {
 
     private val socket: PlayWebSocket = mockk(relaxed = true)
 
+    private val mockChannelStatus = uiModelBuilder.buildChannelStatus(waitingDuration = 5000)
+
     init {
+        coEvery { repo.getChannelStatus(channelId) } returns mockChannelStatus
+
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
             channelList = listOf(
                 uiModelBuilder.buildChannelData(

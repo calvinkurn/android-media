@@ -79,4 +79,6 @@ interface ActionListener {
     fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData)
 
     fun onAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>)
+
+    fun onChangeAddressClicked()
 }

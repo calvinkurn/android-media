@@ -736,6 +736,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    binding?.run {
+                        globalErrorUoh.gone()
+                        rvOrderList.visible()
+                    }
                     if (currPage == 1) impressedUUIDs.clear()
                     refreshHandler?.finishRefresh()
                     orderList = it.data
@@ -2495,6 +2499,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, status)
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, order.metadata.status.label)
         intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, order.metadata.totalPrice.value)
+        intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.Source.SOURCE_ASK_SELLER)
         startActivity(intent)
     }
 
