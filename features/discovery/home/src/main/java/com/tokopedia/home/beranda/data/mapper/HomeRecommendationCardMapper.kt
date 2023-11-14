@@ -53,7 +53,7 @@ class HomeRecommendationCardMapper @Inject constructor(
                 }
 
                 TYPE_RECOM_CARD -> {
-                    (mapToEntryPointRecommendationCard(card) as? Visitable<HomeRecommendationTypeFactoryImpl>)?.let {
+                    (mapToEntityCardRecommendationCard(card) as? Visitable<HomeRecommendationTypeFactoryImpl>)?.let {
                         homeRecommendationTypeFactoryImplList.add(
                             it
                         )
@@ -130,7 +130,7 @@ class HomeRecommendationCardMapper @Inject constructor(
         )
     }
 
-    private fun mapToEntryPointRecommendationCard(
+    private fun mapToEntityCardRecommendationCard(
         recommendationCard: RecommendationCard
     ): RecomEntityCardUiModel {
         return RecomEntityCardUiModel(
