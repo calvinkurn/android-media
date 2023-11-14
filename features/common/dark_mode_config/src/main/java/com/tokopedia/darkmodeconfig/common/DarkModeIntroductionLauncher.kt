@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
-import com.ilhamsuaib.darkmodeconfig.R as darkmodeconfigR
+import com.tokopedia.darkmodeconfig.R as darkmodeconfigR
 
 /**
  * Created by @ilhamsuaib on 07/11/23.

@@ -10,7 +10,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
-import com.ilhamsuaib.darkmodeconfig.R
+import com.tokopedia.darkmodeconfig.R
 import com.tokopedia.darkmodeconfig.common.PrefKey
 import com.tokopedia.darkmodeconfig.model.UiMode
 import com.tokopedia.darkmodeconfig.view.screen.DarkModeConfigScreen

@@ -3,7 +3,7 @@ package com.tokopedia.darkmodeconfig.model
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 //noinspection MissingResourceImportAlias
-import com.ilhamsuaib.darkmodeconfig.R
+import com.tokopedia.darkmodeconfig.R
 
 /**
  * Created by @ilhamsuaib on 05/11/23.

@@ -27,7 +27,7 @@ import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.ImageUnify
-import com.ilhamsuaib.darkmodeconfig.R as darkmodeconfigR
+import com.tokopedia.darkmodeconfig.R as darkmodeconfigR
 
 /**
  * Created by @ilhamsuaib on 07/11/23.
