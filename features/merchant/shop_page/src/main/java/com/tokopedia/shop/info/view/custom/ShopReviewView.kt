@@ -73,10 +73,14 @@ class ShopReviewView @JvmOverloads constructor(
         lifecycle: Lifecycle,
         tabIndicator: ProgressibleTabLayoutView?
     ) {
-        val onProgressFinish = {
-            val currentItem = viewPager.currentItem
-            val isLastItem = currentItem == reviewCount - Int.ONE
-            val nextItem = currentItem + Int.ONE
+        val config = ProgressibleTabLayoutView.Config(
+            tabIndicatorCount = reviewCount,
+            tabIndicatorProgressDuration = 6000
+        )
+
+        val onProgressFinish = { currentItemPosition: Int ->
+            val isLastItem = currentItemPosition == reviewCount - Int.ONE
+            val nextItem = currentItemPosition + Int.ONE
 
             if (isLastItem) {
                 viewPager.currentItem = Int.ZERO
@@ -84,33 +88,16 @@ class ShopReviewView @JvmOverloads constructor(
                 viewPager.setCurrentItem(nextItem, true)
             }
         }
-        val config = ProgressibleTabLayoutView.Config(
-            itemCount = reviewCount,
-            totalDuration = COUNTDOWN_TIMER_TOTAL_TIME,
-            intervalDuration = COUNTDOWN_TIMER_INTERVAL
-        )
 
         tabIndicator?.initializeWithLifecycle(
             config = config,
             lifecycle = lifecycle,
-            onProgressFinish = { currentItemPosition ->
-
-                val isLastItem = currentItemPosition == reviewCount - Int.ONE
-                val nextItem = currentItemPosition + Int.ONE
-
-                if (isLastItem) {
-                    viewPager.currentItem = Int.ZERO
-                } else {
-                    viewPager.setCurrentItem(nextItem, true)
-                }
-            }
+            onProgressFinish = onProgressFinish
         )
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-
-                tabIndicator?.reset()
 
                 if (isSwipeFromUserInteraction) {
                     tabIndicator?.select(newPosition = position)
