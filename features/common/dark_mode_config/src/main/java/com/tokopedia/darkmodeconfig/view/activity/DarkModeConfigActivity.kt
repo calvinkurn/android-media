@@ -1,6 +1,7 @@
 package com.tokopedia.darkmodeconfig.view.activity
 
 //noinspection MissingResourceImportAlias
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
@@ -10,11 +11,14 @@ import androidx.compose.material.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.darkmodeconfig.R
 import com.tokopedia.darkmodeconfig.common.PrefKey
 import com.tokopedia.darkmodeconfig.model.UiMode
 import com.tokopedia.darkmodeconfig.view.screen.DarkModeConfigScreen
 import com.tokopedia.abstraction.constant.TkpdCache
+import com.tokopedia.darkmodeconfig.common.DarkModeAnalytics
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -29,9 +33,12 @@ import kotlinx.coroutines.launch
  * Created by @ilhamsuaib on 03/11/23.
  */
 
-class DarkModeConfigActivity : DarkModeActivity() {
+class DarkModeConfigActivity : BaseActivity() {
 
     private val uiModeOptions by getUiModeOptions()
+    private val sharedPref: SharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(applicationContext)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +91,7 @@ class DarkModeConfigActivity : DarkModeActivity() {
             }
         }
 
-        super.applyAppTheme(mode)
+        applyAppTheme(mode)
     }
 
     private fun getUiModeOptions(): Lazy<MutableStateFlow<List<UiMode>>> {
@@ -98,6 +105,26 @@ class DarkModeConfigActivity : DarkModeActivity() {
                 TkpdCache.Key.KEY_DARK_MODE_CONFIG_SCREEN_MODE, defaultScreenMode
             )
             return@lazy MutableStateFlow(UiMode.getOptionList(screenMode))
+        }
+    }
+
+    private fun applyAppTheme(mode: UiMode) {
+        sendAnalytics(mode)
+        saveDarkModeState(mode)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        AppCompatDelegate.setDefaultNightMode(mode.screenMode)
+    }
+
+    private fun sendAnalytics(mode: UiMode) {
+        val isDarkModeOS = applicationContext.isDarkMode()
+        DarkModeAnalytics.eventClickThemeSetting(mode, isDarkModeOS)
+    }
+
+    private fun saveDarkModeState(option: UiMode) {
+        lifecycleScope.launch(Dispatchers.Default) {
+            val editor = sharedPref.edit()
+            editor.putInt(TkpdCache.Key.KEY_DARK_MODE_CONFIG_SCREEN_MODE, option.screenMode)
+            editor.apply()
         }
     }
 
