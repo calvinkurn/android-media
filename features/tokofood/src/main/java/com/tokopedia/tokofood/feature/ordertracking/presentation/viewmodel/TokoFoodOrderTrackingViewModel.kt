@@ -1,6 +1,5 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel
 
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -63,7 +62,7 @@ open class TokoFoodOrderTrackingViewModel @Inject constructor(
     private val getDriverPhoneNumberUseCase: Lazy<GetDriverPhoneNumberUseCase>,
     private val getTokoChatGroupBookingUseCase: Lazy<TokoChatGroupBookingUseCase>,
     private val getTokoChatCounterUseCase: Lazy<TokoChatCounterUseCase>
-) : BaseViewModel(coroutineDispatchers.main), DefaultLifecycleObserver {
+) : BaseViewModel(coroutineDispatchers.main) {
 
     private val _orderDetailResult = MutableLiveData<Result<OrderDetailResultUiModel>>()
     val orderDetailResult: LiveData<Result<OrderDetailResultUiModel>>
