@@ -80,7 +80,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tg_favorite_number_todo_widget"
             app:typographyType="display_3"
-            android:maxLines="1"
             android:ellipsize="end"
             app:typographyWeight="bold"
             tools:text="Rp9.999.999" />
