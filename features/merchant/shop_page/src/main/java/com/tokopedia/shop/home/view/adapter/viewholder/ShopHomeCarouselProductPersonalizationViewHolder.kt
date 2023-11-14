@@ -17,11 +17,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeProductRecommendationCarouselBinding
-import com.tokopedia.shop.home.WidgetName.ADD_ONS
-import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
-import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
-import com.tokopedia.shop.home.WidgetName.REMINDER
-import com.tokopedia.shop.home.WidgetName.TRENDING
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapterTypeFactory
@@ -32,6 +28,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Compan
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.carouselproductcard.R as carouselproductcardR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * author by Rafli Syam on 17/02/2021
@@ -75,7 +72,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
             ShopPageHomeMapper.mapToProductCardPersonalizationModel(
                 shopHomeProductViewModel = it,
                 isHasATC = isHasATC(element),
-                isHasOCCButton = (element.name == BUY_AGAIN) || (element.name == REMINDER),
+                isHasOCCButton = (element.name == WidgetNameEnum.BUY_AGAIN.value) || (element.name == WidgetNameEnum.REMINDER.value),
                 occButtonText = if (isAtcOcc(element.name)) {
                     itemView.context.getString(R.string.occ_text)
                 } else "",
@@ -89,7 +86,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
             override fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                 val productItem = element.productList.getOrNull(carouselProductCardPosition)
                     ?: return
-                if (element.name == REMINDER) {
+                if (element.name == WidgetNameEnum.REMINDER.value) {
                     shopHomeCarouselProductListener.onCarouselPersonalizationReminderProductItemClickAddToCart(
                         bindingAdapterPosition,
                         carouselProductCardPosition,
@@ -124,7 +121,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             element.name
                         )
                     } else {
-                        if (element.name == REMINDER) {
+                        if (element.name == WidgetNameEnum.REMINDER.value) {
                             shopHomeCarouselProductListener.onCarouselPersonalizationReminderProductItemClickAddToCart(
                                 bindingAdapterPosition,
                                 carouselProductCardPosition,
@@ -180,7 +177,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 val productItem = element.productList.getOrNull(carouselProductCardPosition)
                     ?: return
                 when (element.name) {
-                    REMINDER -> {
+                    WidgetNameEnum.REMINDER.value -> {
                         shopHomeCarouselProductListener.onPersonalizationReminderCarouselProductItemClicked(
                             bindingAdapterPosition,
                             carouselProductCardPosition,
@@ -188,7 +185,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             productItem
                         )
                     }
-                    TRENDING -> {
+                    WidgetNameEnum.TRENDING.value -> {
                         shopHomeCarouselProductListener.onPersonalizationTrendingCarouselProductItemClicked(
                             bindingAdapterPosition,
                             carouselProductCardPosition,
@@ -213,7 +210,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 val productItem = element.productList.getOrNull(carouselProductCardPosition)
                     ?: return
                 when (element.name) {
-                    REMINDER -> {
+                    WidgetNameEnum.REMINDER.value -> {
                         shopHomeCarouselProductListener.onCarouselProductPersonalizationReminderItemImpression(
                             bindingAdapterPosition,
                             carouselProductCardPosition,
@@ -221,7 +218,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             productItem
                         )
                     }
-                    TRENDING -> {
+                    WidgetNameEnum.TRENDING.value -> {
                         shopHomeCarouselProductListener.onCarouselProductPersonalizationTrendingItemImpression(
                             bindingAdapterPosition,
                             productItem
@@ -236,7 +233,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                         )
                     }
                 }
-                if (element.name == RECENT_ACTIVITY || element.name == REMINDER) {
+                if (element.name == WidgetNameEnum.RECENT_ACTIVITY.value || element.name == WidgetNameEnum.REMINDER.value) {
                     if (productCardModel.isButtonAtcShown()) {
                         shopHomeCarouselProductListener.onImpressionProductAtc(
                             productItem,
@@ -253,7 +250,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         }
         recyclerView?.isNestedScrollingEnabled = false
         when (element.name) {
-            ADD_ONS -> {
+            WidgetNameEnum.ADD_ONS.value -> {
                 when (carouselProductList.size) {
                     Int.ONE, TOTAL_PRODUCT_FOR_DOUBLE_PRODUCT_CARD -> {
                         bindSingleOrDoubleProductCard(
@@ -279,7 +276,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 }
             }
 
-            RECENT_ACTIVITY, TRENDING -> {
+            WidgetNameEnum.RECENT_ACTIVITY.value, WidgetNameEnum.TRENDING.value -> {
                 when (carouselProductList.size) {
                     Int.ONE, TOTAL_PRODUCT_FOR_DOUBLE_PRODUCT_CARD -> {
                         bindSingleOrDoubleProductCard(
@@ -309,7 +306,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 }
             }
 
-            BUY_AGAIN -> {
+            WidgetNameEnum.BUY_AGAIN.value -> {
                 if (carouselProductList.size == Int.ONE) {
                     bindSingleOrDoubleProductCard(
                         element = element,
@@ -331,7 +328,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 }
             }
 
-            REMINDER -> {
+            WidgetNameEnum.REMINDER.value -> {
                 if (carouselProductList.size == Int.ONE) {
                     bindSingleOrDoubleProductCard(
                         element = element,
@@ -413,7 +410,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
     private fun configFestivity() {
         val festivityTextColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            unifyprinciplesR.color.Unify_Static_White
         )
         tvCarouselTitle?.setTextColor(festivityTextColor)
         tvCarouselSubTitle?.setTextColor(festivityTextColor)
@@ -422,7 +419,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
     private fun configDefaultColor() {
         val defaultTitleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            unifyprinciplesR.color.Unify_NN950
         )
         tvCarouselTitle?.setTextColor(defaultTitleColor)
         tvCarouselSubTitle?.setTextColor(defaultTitleColor)
@@ -437,7 +434,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
 
     private fun setWidgetImpressionListener(model: ShopHomeCarousellProductUiModel) {
         itemView.addOnImpressionListener(model.impressHolder) {
-            if (model.name == TRENDING) {
+            if (model.name == WidgetNameEnum.TRENDING.value) {
                 shopHomeCarouselProductListener.onCarouselProductPersonalizationTrendingWidgetImpression()
             } else {
                 shopHomeCarouselProductListener.onCarouselProductWidgetImpression(
@@ -457,7 +454,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
 
     private fun isAtcOcc(
         widgetName: String
-    ): Boolean = widgetName == BUY_AGAIN
+    ): Boolean = widgetName == WidgetNameEnum.BUY_AGAIN.value
 
     private fun isHasATC(
         element: ShopHomeCarousellProductUiModel?

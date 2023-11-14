@@ -78,7 +78,6 @@ import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatMessageBubble
 import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatOrderProgressUiModel
 import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatReminderTickerUiModel
 import com.tokopedia.tokochat.config.util.TokoChatErrorLogger
-import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.util.TokoChatMediaCleanupStorageWorker
@@ -983,25 +982,21 @@ open class TokoChatFragment @Inject constructor(
     private fun observeGroupBooking() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getGroupBookingFlow().collectLatest {
-                    when (it) {
-                        is TokoChatResult.Success -> {
-                            resetRecyclerViewScrollState()
-                            this@TokoChatFragment.viewModel.channelId = it.data
-                            viewModel.registerActiveChannel(it.data)
-                            viewModel.getGroupBookingChannel(viewModel.channelId)
-                            removeShimmering()
-                            observeChatHistory()
-                            observeLiveChannel()
-                            viewModel.doCheckChatConnection()
-                            trackFromPushNotif()
-                        }
-                        is TokoChatResult.Error -> {
-                            hideShimmeringHeader()
-                            removeShimmering()
-                            handleOnErrorCreateGroupBooking(it.throwable)
-                        }
-                        TokoChatResult.Loading -> Unit // no-op
+                viewModel.groupBookingUiState.collectLatest {
+                    if (it.error == null) {
+                        resetRecyclerViewScrollState()
+                        this@TokoChatFragment.viewModel.channelId = it.channelUrl
+                        viewModel.registerActiveChannel(it.channelUrl)
+                        viewModel.getGroupBookingChannel(viewModel.channelId)
+                        removeShimmering()
+                        observeChatHistory()
+                        observeLiveChannel()
+                        viewModel.doCheckChatConnection()
+                        trackFromPushNotif()
+                    } else {
+                        hideShimmeringHeader()
+                        removeShimmering()
+                        handleOnErrorCreateGroupBooking(it.error)
                     }
                 }
             }
