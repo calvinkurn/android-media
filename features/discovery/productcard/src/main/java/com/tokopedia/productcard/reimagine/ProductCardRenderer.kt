@@ -1,8 +1,10 @@
 package com.tokopedia.productcard.reimagine
 
+import android.graphics.PorterDuff
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
@@ -16,6 +18,7 @@ import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.productcard.R as productcardR
 
 internal class ProductCardRenderer(
     private val view: View,
@@ -54,13 +57,23 @@ internal class ProductCardRenderer(
 
     private fun renderImage(productCardModel: ProductCardModel) {
         val cornerType= if (productCardModel.stockInfo() != null) TOP else ALL
-        imageView?.imageRounded(
-            productCardModel.imageUrl,
-            context.resources.getDimensionPixelSize(
-                R.dimen.product_card_reimagine_carousel_image_radius
-            ).toFloat(),
-            cornerType
-        )
+        imageView?.apply {
+            imageRounded(
+                productCardModel.imageUrl,
+                context.resources.getDimensionPixelSize(
+                    R.dimen.product_card_reimagine_carousel_image_radius
+                ).toFloat(),
+                cornerType
+            )
+
+            setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    productcardR.color.dms_product_card_reimagine_image_overlay,
+                ),
+                PorterDuff.Mode.SRC_OVER
+            )
+        }
     }
 
     private fun renderAds(productCardModel: ProductCardModel) {

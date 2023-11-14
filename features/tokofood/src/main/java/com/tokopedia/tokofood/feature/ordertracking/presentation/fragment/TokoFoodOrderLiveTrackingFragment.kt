@@ -80,14 +80,9 @@ class TokoFoodOrderLiveTrackingFragment(
         val driverSectionIndex =
             orderTrackingAdapter.list.indexOfFirst { it is DriverSectionUiModel }
         val newList = orderTrackingAdapter.list.toMutableList()
-        if (viewModel.getUnReadChatCountFlow().value is TokoChatResult.Success) {
-            driverUiModel = driverSectionUiModel?.copy(
-                badgeCounter = (
-                    viewModel.getUnReadChatCountFlow().value as
-                        TokoChatResult.Success
-                    ).data
-            )
-        }
+        driverUiModel = driverSectionUiModel?.copy(
+            badgeCounter = viewModel.chatCounterUiState.value.counter
+        )
         driverUiModel?.let { driverSectionModel ->
             if (etaLiveTrackingIndex != RecyclerView.NO_POSITION) {
                 if (driverSectionIndex == RecyclerView.NO_POSITION) {

@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.Constant.ProductCardModel.PDP_VIEW_THRESHOLD
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_LOWER_LIMIT
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_UPPER_LIMIT
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.data.ComponentAdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
@@ -131,7 +132,13 @@ class DiscoveryDataMapper {
         return list
     }
 
-    fun mapDataItemToMerchantVoucherComponent(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?, creativeName: String? = ""): ArrayList<ComponentsItem>{
+    fun mapDataItemToMerchantVoucherComponent(
+        itemList: List<DataItem>?,
+        subComponentName: String = "",
+        properties: Properties?,
+        creativeName: String? = "",
+        compAdditionalInfo: ComponentAdditionalInfo?
+    ): ArrayList<ComponentsItem>{
         val list = ArrayList<ComponentsItem>()
         itemList?.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
@@ -139,6 +146,7 @@ class DiscoveryDataMapper {
             componentsItem.name = subComponentName
             componentsItem.properties = properties
             componentsItem.creativeName = creativeName
+            componentsItem.compAdditionalInfo = compAdditionalInfo
             val dataItem = mutableListOf<DataItem>()
             dataItem.add(it)
             componentsItem.data = dataItem

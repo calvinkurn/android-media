@@ -10,7 +10,6 @@ import com.tokopedia.tokochat.config.di.module.TokoChatConfigModule
 import com.tokopedia.tokochat.config.di.module.TokoChatConfigNetworkModule
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
-import com.tokopedia.tokochat.config.util.TokoChatCoroutineDispatchers
 import dagger.Component
 import retrofit2.Retrofit
 
@@ -41,7 +40,4 @@ interface TokoChatConfigComponent {
 
     @TokoChatQualifier
     fun getRemoteConfig(): RemoteConfig
-
-    @TokoChatQualifier
-    fun getTokoChatCoroutineDispatcher(): TokoChatCoroutineDispatchers
 }

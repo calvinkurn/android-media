@@ -4,66 +4,100 @@ import androidx.lifecycle.asFlow
 import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.channel.GetChannelRequest
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.tokochat.config.util.TokoChatResult
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TokoChatListUseCase @Inject constructor(
-    private val repository: TokoChatRepository,
-    dispatchers: CoroutineDispatchers
+    private val repository: TokoChatRepository
 ) {
-
-    private val _conversationChannelFlow = MutableStateFlow<TokoChatResult<List<ConversationsChannel>>>(
-        TokoChatResult.Loading
-    )
-    val conversationChannelFlow = _conversationChannelFlow.asStateFlow()
-
-    private val supervisorJob = SupervisorJob()
-    private val scope = CoroutineScope(dispatchers.io + supervisorJob)
-
     private var lastTimeStamp: Long = 0
 
-    fun fetchAllChannel(
+    fun fetchAllCachedChannels(
+        channelTypes: List<ChannelType>,
+        defaultBatchSize: Int
+    ): Flow<TokoChatResult<List<ConversationsChannel>>> {
+        return flow {
+            lastTimeStamp = 0 // reset
+            val conversationRepository = repository.getConversationRepository()
+            if (conversationRepository != null) {
+                emit(TokoChatResult.Loading)
+                try {
+                    // Get Local Data
+                    val channels = conversationRepository.getAllCachedChannels(channelTypes)
+                    var batchSize = defaultBatchSize
+                    channels.asFlow().map {
+                        TokoChatResult.Success(it)
+                    }.collect {
+                        if (it.data.size > batchSize) {
+                            batchSize = it.data.size
+                        }
+                        this.emit(it) // Emit data from remote
+                    }
+
+                    // Get Remote Data
+                    emitAll(fetchAllRemoteChannels(channelTypes, batchSize))
+                } catch (throwable: Throwable) {
+                    emit(TokoChatResult.Error(throwable))
+                }
+            } else {
+                emit((TokoChatResult.Error(Throwable(ERROR_CONVERSATION_NULL))))
+            }
+        }
+    }
+
+    fun fetchAllRemoteChannels(
         channelTypes: List<ChannelType>,
         batchSize: Int
-    ) {
-        if (lastTimeStamp < 0L) return
-        repository.getConversationRepository()?.getAllChannels(
-            getChannelRequest = GetChannelRequest(
-                types = channelTypes,
-                timestamp = getLastTimeStamp(),
-                batchSize = batchSize
-            ),
-            onSuccess = {
-                scope.launch {
-                    // Set to -1 to mark as no more data
-                    lastTimeStamp = it.lastOrNull()?.createdAt ?: -1
-                    _conversationChannelFlow.emit(TokoChatResult.Success(it))
-                }
-            },
-            onError = {
-                scope.launch {
-                    _conversationChannelFlow.emit(
-                        TokoChatResult.Error(
-                            it ?: MessageErrorException(
-                                ERROR_FETCH_CHANNELS
-                            )
-                        )
+    ): Flow<TokoChatResult<List<ConversationsChannel>>> {
+        if (lastTimeStamp < 0L) {
+            return flowOf(
+                TokoChatResult.Error(Throwable(ERROR_NEGATIVE_TIMESTAMP))
+            )
+        }
+        return callbackFlow {
+            repository.getConversationRepository()?.getAllChannels(
+                getChannelRequest = GetChannelRequest(
+                    types = channelTypes,
+                    timestamp = getLastTimeStamp(),
+                    batchSize = batchSize
+                ),
+                onSuccess = onSuccessFetchAllChannel(),
+                onError = onErrorFetchAllChannel(this)
+            )
+            awaitClose { channel.close() }
+        }
+    }
+
+    private fun onSuccessFetchAllChannel(): (List<ConversationsChannel>) -> Unit {
+        return { list ->
+            // Set to -1 to mark as no more data
+            lastTimeStamp = list.lastOrNull()?.createdAt ?: -1
+        }
+    }
+
+    private fun onErrorFetchAllChannel(
+        scope: ProducerScope<TokoChatResult<List<ConversationsChannel>>>
+    ): (ConversationsNetworkError?) -> Unit {
+        return {
+            scope.trySend(
+                TokoChatResult.Error(
+                    it ?: MessageErrorException(
+                        ERROR_FETCH_CHANNELS
                     )
-                }
-            }
-        )
+                )
+            )
+        }
     }
 
     private fun getLastTimeStamp(): Long {
@@ -74,25 +108,9 @@ class TokoChatListUseCase @Inject constructor(
         }
     }
 
-    suspend fun fetchAllCachedChannels(
-        channelTypes: List<ChannelType>
-    ) {
-        lastTimeStamp = 0 // reset
-        repository.getConversationRepository()
-            ?.getAllCachedChannels(channelTypes)
-            ?.asFlow()
-            ?.map { TokoChatResult.Success(it) }
-            ?.catch { TokoChatResult.Error(it) }
-            ?.collectLatest {
-                _conversationChannelFlow.emit(it)
-            }
-    }
-
-    fun cancel() {
-        scope.cancel()
-    }
-
     companion object {
         private const val ERROR_FETCH_CHANNELS = "Error fetch all channels"
+        private const val ERROR_NEGATIVE_TIMESTAMP = "Last time stamp should not negative"
+        private const val ERROR_CONVERSATION_NULL = "ConversationRepository is null"
     }
 }
