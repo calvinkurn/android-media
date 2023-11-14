@@ -333,6 +333,26 @@ class RechargeHomepageAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_DIGITAL_IRIS, eventDataLayer)
     }
 
+    fun clickCloseTodoWidget(position: Int, sectionId: String, loyaltyStatus: String, categoryName: String,
+                             operatorId: String, price: String, itemId: String, userId: String
+    ) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, "select_content")
+            putString(TrackAppUtils.EVENT_ACTION, "click close autopay subwidget")
+            putString(TrackAppUtils.EVENT_CATEGORY, "digital - subhomepage")
+            putString(TrackAppUtils.EVENT_LABEL, String.format(
+                "%s - %s - %s - %s - %s - %s - %s",
+                TODO_WIDGET_NAME, position.toString(), sectionId, loyaltyStatus, categoryName, operatorId, price
+            ))
+            putString(TRACKER_ID, TODO_WIDGET_ID)
+            putString(CURRENT_SITE, CURRENT_SITE_RECHARGE)
+            putString(BUSINESS_UNIT, BUSINESS_UNIT_RECHARGE)
+            putString(USER_ID, userId)
+            putParcelableArrayList(PROMOTIONS, promotionTodo(position.toString(), itemId))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent("select_content", eventDataLayer)
+    }
+
     private fun Bundle.addGeneralViewDigitalIris(userId: String): Bundle {
         this.addGeneralTracking(userId)
         this.putString(TrackAppUtils.EVENT, VIEW_DIGITAL_IRIS)
@@ -353,9 +373,26 @@ class RechargeHomepageAnalytics {
         return this
     }
 
+    private fun promotionTodo(position: String, itemId: String): ArrayList<Bundle> {
+        val listItems = ArrayList<Bundle>()
+        listItems.add(
+            Bundle().apply {
+                putString(CREATIVE_NAME, "-")
+                putString(CREATIVE_SLOT, position)
+                putString(ITEM_ID, itemId)
+                putString(ITEM_NAME, TODO_WIDGET_NAME)
+            }
+        )
+        return listItems
+    }
+
     companion object {
         const val ACTION_IMPRESSION = "impression"
         const val ACTION_CLICK = "click"
+        const val TODO_WIDGET_NAME = "todo widget"
+        const val TRACKER_ID = "trackerId"
+        const val TODO_WIDGET_ID = "48048"
+
     }
 
 }
