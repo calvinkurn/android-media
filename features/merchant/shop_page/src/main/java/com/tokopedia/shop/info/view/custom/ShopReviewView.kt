@@ -33,6 +33,7 @@ class ShopReviewView @JvmOverloads constructor(
 
     private var onReviewImageClick: (ShopReview.Review) -> Unit = {}
     private var onReviewImageViewAllClick: (ShopReview.Review) -> Unit = {}
+    private var isSwipeFromUserInteraction = false
 
     fun renderReview(lifecycle: Lifecycle, fragment: Fragment, review: ShopReview) {
         removeAllViews()
@@ -72,32 +73,50 @@ class ShopReviewView @JvmOverloads constructor(
         lifecycle: Lifecycle,
         tabIndicator: ProgressibleTabLayoutView?
     ) {
+        val onProgressFinish = {
+            val currentItem = viewPager.currentItem
+            val isLastItem = currentItem == reviewCount - Int.ONE
+            val nextItem = currentItem + Int.ONE
+
+            if (isLastItem) {
+                viewPager.currentItem = Int.ZERO
+            } else {
+                viewPager.setCurrentItem(nextItem, true)
+            }
+        }
+        val config = ProgressibleTabLayoutView.Config(
+            itemCount = reviewCount,
+            totalDuration = COUNTDOWN_TIMER_TOTAL_TIME,
+            intervalDuration = COUNTDOWN_TIMER_INTERVAL
+        )
+
+        tabIndicator?.initializeWithLifecycle(
+            config = config,
+            lifecycle = lifecycle,
+            onProgressFinish = { currentItemPosition ->
+
+                val isLastItem = currentItemPosition == reviewCount - Int.ONE
+                val nextItem = currentItemPosition + Int.ONE
+
+                if (isLastItem) {
+                    viewPager.currentItem = Int.ZERO
+                } else {
+                    viewPager.setCurrentItem(nextItem, true)
+                }
+            }
+        )
+
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                val config = ProgressibleTabLayoutView.Config(
-                    itemCount = reviewCount,
-                    totalDuration = COUNTDOWN_TIMER_TOTAL_TIME,
-                    intervalDuration = COUNTDOWN_TIMER_INTERVAL
-                )
+                tabIndicator?.reset()
 
-                tabIndicator?.renderTabIndicatorWithLifecycle(
-                    config = config,
-                    lifecycle = lifecycle,
-                    selectedTabIndicatorIndex = position,
-                    onTimerFinish = {
-                        val currentItem = viewPager.currentItem
-                        val isLastItem = currentItem == reviewCount - Int.ONE
-                        val nextItem = currentItem + Int.ONE
+                if (isSwipeFromUserInteraction) {
+                    tabIndicator?.select(newPosition = position)
+                }
 
-                        if (isLastItem) {
-                            viewPager.currentItem = Int.ZERO
-                        } else {
-                            viewPager.setCurrentItem(nextItem, true)
-                        }
-                    }
-                )
+                isSwipeFromUserInteraction = true
             }
         })
     }
