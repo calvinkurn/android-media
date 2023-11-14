@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginStart="16dp"
     android:layout_marginBottom="8dp"
     android:background="@drawable/bg_recharge_homepage_todo_widget"
@@ -27,8 +28,9 @@
         app:layout_constraintBottom_toBottomOf="@id/img_todo_widget_background"
         app:layout_constraintStart_toStartOf="@id/img_todo_widget_background"
         app:layout_constraintEnd_toEndOf="@id/img_todo_widget_background"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        tools:text="Halo Bayar sekaligus"
         />
 
     <com.tokopedia.unifyprinciples.Typography
