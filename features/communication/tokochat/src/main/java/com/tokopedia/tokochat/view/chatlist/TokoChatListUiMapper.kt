@@ -53,11 +53,18 @@ class TokoChatListUiMapper@Inject constructor(
     fun mapToTypeCounter(channelList: List<ConversationsChannel>): Map<String, Int> {
         val result = ArrayMap<String, Int>()
         channelList.forEach {
-            val serviceTypeName = getSource(
-                it.metadata?.orderInfo?.serviceType ?: Int.ZERO
-            )
-            val lastCounter: Int = result.getOrDefault(serviceTypeName, Int.ZERO)
-            result[serviceTypeName] = lastCounter + it.unreadCount
+            val serviceType = it.metadata?.orderInfo?.serviceType ?: 0
+            if ((
+                serviceType != GOSEND_INSTANT_SERVICE_TYPE &&
+                    serviceType != GOSEND_SAMEDAY_SERVICE_TYPE
+                ) || isTokoChatLogisticEnabled()
+            ) {
+                val serviceTypeName = getSource(
+                    it.metadata?.orderInfo?.serviceType ?: Int.ZERO
+                )
+                val lastCounter: Int = result.getOrDefault(serviceTypeName, Int.ZERO)
+                result[serviceTypeName] = lastCounter + it.unreadCount
+            }
         }
         return result
     }
