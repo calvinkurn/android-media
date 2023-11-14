@@ -5,7 +5,7 @@ package com.tokopedia.product.detail.view.componentization
  * Project name: android-tokopedia-core
  **/
 
-interface ComponentCallbackDelegate<E : ComponentEvent> {
+interface ComponentCallback<E : ComponentEvent> {
 
-    fun onEvent(event: E)
+    fun event(event: E)
 }

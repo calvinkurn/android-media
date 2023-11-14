@@ -251,6 +251,8 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 import com.tokopedia.product.detail.view.bottomsheet.ProductMediaRecomBottomSheetManager
 import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
+import com.tokopedia.product.detail.view.fragment.delegate.PdpCallbackDelegate
+import com.tokopedia.product.detail.view.fragment.delegate.PdpCallbackDelegateImpl
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.fragment.partialview.TokoNowButtonData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -645,6 +647,9 @@ open class DynamicProductDetailFragment :
 
     override val uiUpdater: PdpUiUpdater?
         get() = pdpUiUpdater
+
+    override val queueTracker: TrackingQueue
+        get() = trackingQueue
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

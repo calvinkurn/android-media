@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder.review.event
 
-import com.tokopedia.product.detail.view.componentization.ComponentEvent
+import com.tokopedia.product.detail.view.fragment.delegate.BaseComponentEvent
 
-sealed interface ReviewComponentEvent : ComponentEvent
+sealed interface ReviewComponentEvent : BaseComponentEvent
 
-data class OnTopicClicked(val topic: String) : ReviewComponentEvent
+data class OnKeywordClicked(val keyword: String) : ReviewComponentEvent

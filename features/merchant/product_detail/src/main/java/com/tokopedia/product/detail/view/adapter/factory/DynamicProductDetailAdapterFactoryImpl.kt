@@ -49,7 +49,7 @@ import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
-import com.tokopedia.product.detail.view.fragment.PdpCallbackDelegate
+import com.tokopedia.product.detail.view.fragment.delegate.PdpCallbackDelegate
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.DynamicOneLinerViewHolder

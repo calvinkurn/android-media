@@ -4,16 +4,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.review.delegate.ReviewCallback
-import com.tokopedia.product.detail.view.viewholder.review.event.OnTopicClicked
+import com.tokopedia.product.detail.view.viewholder.review.event.OnKeywordClicked
 import com.tokopedia.unifycomponents.ChipsUnify
 
 /**
  * Created by yovi.putra on 09/11/23"
  * Project name: android-tokopedia-core
  **/
-
 
 class RatingKeywordAdapter(
     private val callback: ReviewCallback
@@ -58,7 +56,7 @@ class RatingKeywordAdapter(
 
         private fun setListener(keyword: ReviewRatingUiModel.Keyword) {
             chip.setOnClickListener {
-                callback.onEvent(event = OnTopicClicked(topic = keyword.filter))
+                callback.event(event = OnKeywordClicked(keyword = keyword.filter))
             }
         }
     }
