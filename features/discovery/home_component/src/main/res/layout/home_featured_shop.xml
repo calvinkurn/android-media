@@ -58,6 +58,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:clipToPadding="false"
+                app:layout_goneMarginTop="@dimen/home_component_padding_top_default"
                 android:translationY="@dimen/home_component_card_compat_padding_translation_y"
                 tools:listitem="@layout/content_featured_shop_big_content"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

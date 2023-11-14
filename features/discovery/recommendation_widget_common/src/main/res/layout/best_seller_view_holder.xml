@@ -33,6 +33,7 @@
         android:orientation="horizontal"
         android:visibility="gone"
         tools:visibility="visible"
+        app:layout_goneMarginTop="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

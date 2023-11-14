@@ -25,6 +25,7 @@
         android:id="@+id/recycleList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_goneMarginTop="@dimen/home_component_padding_top_default"
         android:paddingHorizontal="@dimen/home_component_padding_horizontal_with_compat_padding"
         android:clipToPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
