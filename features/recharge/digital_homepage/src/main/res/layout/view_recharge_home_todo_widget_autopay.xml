@@ -24,9 +24,10 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_close_todo_widget"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             app:icon_name="CLOSE"
+            app:layout_constraintStart_toEndOf="@+id/tg_category_name_todo_widget"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
