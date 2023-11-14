@@ -3,7 +3,7 @@ package com.tokopedia.analytics.performance.perf.performanceTracing.config.strat
 import android.view.View
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.ViewInfo
 
-class DefaultFinishParserStrategy : FinishParserStrategyConfig<View> {
+class FullRecyclerViewPageFinishParserStrategy : FinishParserStrategyConfig<View> {
     override fun isLayoutFinished(rootView: View, views: List<ViewInfo>): Boolean {
         val visibleLoadableView = views.filter { it.name.contains("Loader") && it.isVisible }
 

@@ -10,6 +10,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
@@ -115,6 +116,7 @@ class PagePerformanceTrace(
             is Success -> onPerformanceTraceFinished.invoke(result)
             is Error -> onPerformanceTraceError.invoke(result)
         }
+        scope.cancel()
     }
 
     override fun recordPerformanceData(performanceTraceData: PerformanceTraceData) {

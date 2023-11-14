@@ -3,7 +3,7 @@ package com.tokopedia.analytics.performance.perf.performanceTracing.config.strat
 import android.view.View
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.ViewInfo
 
-class DefaultStartParserStrategy : StartParserStrategyConfig<View> {
+class FullRecyclerViewPageStartParser : StartParserStrategyConfig<View> {
     override fun isLayoutReady(rootView: View, views: List<ViewInfo>): Boolean {
         val recyclerViews = views.filter { it.name.contains("RecyclerView") }
         val fullRecyclerView = recyclerViews.find {

@@ -2,9 +2,9 @@ package com.tokopedia.analytics.performance.perf.performanceTracing.config.strat
 
 import android.view.View
 import android.view.ViewTreeObserver
-import com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.finish.DefaultFinishParserStrategy
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.finish.FinishParserStrategyConfig
-import com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.start.DefaultStartParserStrategy
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.finish.FullRecyclerViewPageFinishParserStrategy
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.start.FullRecyclerViewPageStartParser
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.start.StartParserStrategyConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,8 +16,8 @@ import kotlinx.coroutines.yield
 class XmlPerformanceGlobalLayoutParser(
     val rootView: View,
     val viewInfoParser: ViewInfoParser<View> = XmlViewInfoParser(),
-    val startParserStrategyConfig: StartParserStrategyConfig<View> = DefaultStartParserStrategy(),
-    val finishParserStartegyConfig: FinishParserStrategyConfig<View> = DefaultFinishParserStrategy(),
+    val startParserStrategyConfig: StartParserStrategyConfig<View> = FullRecyclerViewPageStartParser(),
+    val finishParserStartegyConfig: FinishParserStrategyConfig<View> = FullRecyclerViewPageFinishParserStrategy(),
     val onLayoutRendered: () -> Unit,
     val onLayoutFinished: () -> Unit
 ) : ViewTreeObserver.OnGlobalLayoutListener {
@@ -26,14 +26,6 @@ class XmlPerformanceGlobalLayoutParser(
 
     var perfParsingJob: Job? = null
     var isPerformanceTraceFinished = false
-
-    var finishDrawListener = object : ViewTreeObserver.OnDrawListener {
-        override fun onDraw() {
-            onLayoutFinished.invoke()
-            scope.cancel()
-            isPerformanceTraceFinished = true
-        }
-    }
     override fun onGlobalLayout() {
         if (isPerformanceTraceFinished) {
             tearDownListener()
@@ -63,7 +55,9 @@ class XmlPerformanceGlobalLayoutParser(
                  */
                 if (isLayoutFinished) {
                     scope.launch(Dispatchers.Main) {
-                        rootView.viewTreeObserver.addOnDrawListener(finishDrawListener)
+                        onLayoutFinished.invoke()
+                        scope.cancel()
+                        isPerformanceTraceFinished = true
                     }
                 }
             }
@@ -72,6 +66,5 @@ class XmlPerformanceGlobalLayoutParser(
 
     private fun tearDownListener() {
         rootView.viewTreeObserver.removeOnGlobalLayoutListener(this@XmlPerformanceGlobalLayoutParser)
-        rootView.viewTreeObserver.removeOnDrawListener(finishDrawListener)
     }
 }
