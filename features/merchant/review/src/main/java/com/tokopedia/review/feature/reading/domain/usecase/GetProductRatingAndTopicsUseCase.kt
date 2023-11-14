@@ -8,7 +8,7 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 @GqlQuery(GetProductRatingAndTopicsUseCase.GET_PRODUCT_RATING_USE_CASE_CLASS_NAME, GetProductRatingAndTopicsUseCase.GET_PRODUCT_RATING_QUERY)
-class GetProductRatingAndTopicsUseCase @Inject constructor(graphqlRepository: GraphqlRepository): GraphqlUseCase<ProductRatingAndTopic>(graphqlRepository) {
+class GetProductRatingAndTopicsUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<ProductRatingAndTopic>(graphqlRepository) {
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
@@ -45,6 +45,10 @@ class GetProductRatingAndTopicsUseCase @Inject constructor(graphqlRepository: Gr
                   topics
                   helpfulness
                   variant
+                }
+                keywords {
+                  text
+                  count
                 }
               }
             }
