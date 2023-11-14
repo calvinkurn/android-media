@@ -26,15 +26,15 @@ class PagePerformanceTrace(
         CoroutineScope(Dispatchers.Main + Job())
 
     private var startCurrentTimeMillis = System.currentTimeMillis()
-    
-    private var performanceBlocks = AtomicReference(mutableMapOf<String, BlocksModel>())
 
     private var trace_id: String = ""
     private var performanceTraceData: AtomicReference<PerformanceTraceData> =
-        AtomicReference(PerformanceTraceData(
-            activityName = activity.javaClass.simpleName,
-            traceName = performanceRepository.getTraceName()
-        ))
+        AtomicReference(
+            PerformanceTraceData(
+                activityName = activity.javaClass.simpleName,
+                traceName = performanceRepository.getTraceName()
+            )
+        )
     private var isPerformanceTraceEnabled = true
     init {
         activity?.applicationContext?.let {
@@ -47,7 +47,8 @@ class PagePerformanceTrace(
         if (isPerformanceTraceEnabled) {
             scope.launch {
                 loadableComponentFlow.collect { loadableComponent ->
-                    val currentPerformanceBlocks = performanceBlocks.get()
+                    val currentPerformanceData = performanceTraceData.get()
+                    val currentPerformanceBlocks = currentPerformanceData.blocksModel.toMutableMap()
 
                     if (currentPerformanceBlocks.containsKey(loadableComponent.name())) {
                         val blockModel = currentPerformanceBlocks.get(loadableComponent.name())
@@ -70,6 +71,11 @@ class PagePerformanceTrace(
                             )
                         )
                     }
+                    performanceTraceData.set(
+                        currentPerformanceData.copy(
+                            blocksModel = currentPerformanceBlocks
+                        )
+                    )
                 }
             }
         }
@@ -102,7 +108,9 @@ class PagePerformanceTrace(
     }
 
     override fun stopMonitoring(result: Result<PerformanceTraceData>) {
-        performanceRepository.stopRecord(performanceBlocks.get())
+        performanceRepository.stopRecord(
+            performanceTraceData.get().blocksModel
+        )
         when (result) {
             is Success -> onPerformanceTraceFinished.invoke(result)
             is Error -> onPerformanceTraceError.invoke(result)
