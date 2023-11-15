@@ -42,7 +42,7 @@ open class BaseDiscoveryAnalytics(
     open fun trackPlayWidgetLihatSemuaClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int) {}
     open fun trackPlayWidgetOverLayClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
     open fun trackPlayWidgetOverLayImpression(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
-    open fun trackPlayWidgetReminderClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, channelId: String, isRemindMe: Boolean) {}
+    open fun trackPlayWidgetReminderClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, isRemindMe: Boolean, item: PlayWidgetChannelUiModel, isAutoPlay: Boolean) {}
     open fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String, itemPosition: Int) {}
     open fun trackClickVideo(videoUrl: String, videoName: String, videoPlayedTime: String) {}
     open fun trackBackClick() {}

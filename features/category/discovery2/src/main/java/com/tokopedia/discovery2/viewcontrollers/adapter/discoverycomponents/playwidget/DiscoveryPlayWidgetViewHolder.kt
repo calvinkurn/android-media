@@ -296,8 +296,9 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
                 UserSession(fragment.context).userId,
                 verticalWidgetPosition,
                 channelPositionInList,
-                item.channelId,
-                isRemindMe
+                isRemindMe,
+                item,
+                config.autoPlay
             )
         }
     }

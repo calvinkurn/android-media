@@ -287,11 +287,24 @@ open class DiscoveryAnalytics(
         getTracker().sendGeneralEvent(map as HashMap<String, Any>)
     }
 
-    override fun trackPlayWidgetReminderClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, channelId: String, isRemindMe: Boolean) {
+    override fun trackPlayWidgetReminderClick(
+        componentsItem: ComponentsItem,
+        userID: String?,
+        widgetPosition: Int,
+        channelPositionInList: Int,
+        isRemindMe: Boolean,
+        item: PlayWidgetChannelUiModel,
+        isAutoPlay: Boolean
+    ) {
         val map = createGeneralEvent(
             eventName = EVENT_CLICK_DISCOVERY,
             eventAction = if (isRemindMe) CLICK_REMIND_ME else CLICK_CANCEL_REMIND_ME,
-            "${componentsItem.name ?: EMPTY_STRING} - $channelId - $channelPositionInList - "
+            eventLabel = constructPlayEventLabel(
+                item,
+                channelPositionInList,
+                widgetPosition,
+                isAutoPlay
+            )
         )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
