@@ -27,6 +27,10 @@ class GetARDataQuery : GqlQueryInterface {
                       type
                       providerData
                       price
+                      priceFmt
+                      slashPriceFmt
+                      discPercentage
+                      isPriceMasked
                       minOrder
                       campaignInfo {
                         isActive

@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -237,12 +236,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         productName = it.data.name,
                         isProductActive = it.basic.isActive()
                     ).apply {
-                        campaign.slashPriceFmt = price.slashPriceFmt.ifNullOrBlank {
-                            campaign.discountedPrice.getCurrencyFormatted()
-                        }
-                        campaign.priceFmt = price.priceFmt.ifNullOrBlank {
-                            campaign.originalPrice.getCurrencyFormatted()
-                        }
+                        campaign.processMaskingPrice(price)
                     }
                 }
             }
