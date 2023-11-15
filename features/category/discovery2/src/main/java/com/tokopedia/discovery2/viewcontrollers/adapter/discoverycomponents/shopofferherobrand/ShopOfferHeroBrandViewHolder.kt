@@ -37,6 +37,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopOfferHeroBrandViewHolder(
@@ -47,6 +52,8 @@ class ShopOfferHeroBrandViewHolder(
         private const val PREFETCH_ITEM_COUNT = 4
         private const val SHOP_TIER_WORDING_DURATION_ANIMATION = 2000L
         private const val SHOP_TIER_WORDING_SEPARATOR = "<br/>"
+        private const val PROGRESS_BAR_TIER_DELAY = 2500L
+        private const val PROGRESS_BAR_SHIMMERING_DELAY = 500L
     }
 
     internal val mLayoutManager: LinearLayoutManager
@@ -55,10 +62,14 @@ class ShopOfferHeroBrandViewHolder(
     private val mAdapter: DiscoveryRecycleAdapter
         by lazy { DiscoveryRecycleAdapter(fragment) }
 
+    private val coroutineScope
+        by lazy { CoroutineScope(Dispatchers.Main) }
+
     private val binding: ItemDiscoveryShopOfferHeroBrandLayoutBinding?
         by viewBinding()
 
     private var viewModel: ShopOfferHeroBrandViewModel? = null
+    private var progressBarJob: Job? = null
 
     init {
         binding?.apply {
@@ -222,29 +233,74 @@ class ShopOfferHeroBrandViewHolder(
     private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.showProgressBar(
         tierData: TierData
     ) {
+        progressBarJob?.cancel()
         if (tierData.isProgressBarShown) {
-            progressBar.show()
-            progressBarSpace.show()
             if (tierData.isShimmerShown) {
-                iuProgressBarIcon.hide()
-                tpProgressBarTierWording.hide()
-
-                progressBarShimmer.show()
-                progressBarLayout.setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN0))
+                showProgressBarShimmering()
+            } else if (tierData.offerMessages.isNullOrEmpty()) {
+                hideProgressBar()
             } else {
-                iuProgressBarIcon.show()
-                iuProgressBarIcon.loadImage(IMG_DISCO_SHOP_OFFER_BRAND_SEE_MORE_BUY_MORE)
+                showProgressBarInfo()
 
-                tpProgressBarTierWording.show()
-                tpProgressBarTierWording.text = tierData.tierWording
-
-                progressBarSpace.show()
-                progressBarShimmer.hide()
-                progressBarLayout.setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_TN100))
+                if (tierData.offerMessages.size.isMoreThanZero()) {
+                    tpProgressBarTierWording.text = tierData.offerMessages.firstOrNull()
+                    changeProgressBarInfoWithDelay(tierData.offerMessages)
+                } else {
+                    tpProgressBarTierWording.text = tierData.offerMessages.firstOrNull()
+                }
             }
         } else {
-            progressBar.hide()
-            progressBarSpace.hide()
+            hideProgressBar()
+        }
+    }
+
+    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.showProgressBarShimmering() {
+        progressBar.show()
+        progressBarSpace.show()
+
+        iuProgressBarIcon.hide()
+        tpProgressBarTierWording.hide()
+
+        progressBarShimmer.show()
+        progressBarLayout.setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN0))
+    }
+
+    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.showProgressBarInfo() {
+        progressBar.show()
+        progressBarSpace.show()
+
+        iuProgressBarIcon.show()
+        iuProgressBarIcon.loadImage(IMG_DISCO_SHOP_OFFER_BRAND_SEE_MORE_BUY_MORE)
+
+        progressBarSpace.show()
+        progressBarShimmer.hide()
+        progressBarLayout.setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_TN100))
+
+        tpProgressBarTierWording.show()
+    }
+
+    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.hideProgressBar() {
+        progressBar.hide()
+        progressBarSpace.hide()
+    }
+
+    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.changeProgressBarInfoWithDelay(
+        list: List<String>?
+    ) {
+        progressBarJob = coroutineScope.launch {
+            list?.forEachIndexed { index, offerMessage ->
+                if (index.isMoreThanZero()) {
+                    delay(PROGRESS_BAR_TIER_DELAY)
+
+                    showProgressBarShimmering()
+
+                    delay(PROGRESS_BAR_SHIMMERING_DELAY)
+
+                    showProgressBarInfo()
+
+                    tpProgressBarTierWording.text = offerMessage
+                }
+            }
         }
     }
 

@@ -3,6 +3,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sho
 data class TierData(
     val isProgressBarShown: Boolean,
     val isShimmerShown: Boolean,
-    val tierWording: String
+    val offerMessages: List<String>?
 )
 

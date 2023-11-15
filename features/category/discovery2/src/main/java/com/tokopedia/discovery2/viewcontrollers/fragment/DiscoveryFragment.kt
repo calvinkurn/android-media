@@ -994,8 +994,6 @@ open class DiscoveryFragment :
                     ?.let { discoveryBaseViewModel ->
                         if (discoveryBaseViewModel is ProductCardCarouselViewModel) {
                             discoveryBaseViewModel.handleAtcFailed(position)
-                        } else if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
-                            discoveryBaseViewModel.changeTier(false)
                         }
                     }
             } else if (position >= 0) {
@@ -1020,7 +1018,7 @@ open class DiscoveryFragment :
             discoveryAdapter.getViewModelAtPosition(parentPosition)
                 ?.let { discoveryBaseViewModel ->
                     if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
-                        discoveryBaseViewModel.changeTier(true)
+                        discoveryBaseViewModel.changeTier(false, bmGmDataList)
                     }
                 }
         }

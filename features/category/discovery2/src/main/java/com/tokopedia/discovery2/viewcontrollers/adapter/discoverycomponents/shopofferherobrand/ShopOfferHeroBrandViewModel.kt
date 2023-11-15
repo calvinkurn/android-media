@@ -14,6 +14,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shop
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandComponentExtension.addReload
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.TierData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.minicart.common.domain.data.BmGmData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.unifycomponents.toPx
@@ -190,14 +191,15 @@ class ShopOfferHeroBrandViewModel(
 
     fun changeTier(
         isShimmerShown: Boolean,
-        tierWording: String = ""
+        bmGmDataList: List<BmGmData> = emptyList()
     ) {
         if (!hasHeader()) return
 
+        val offerMessages = bmGmDataList.filter { !it.offerMessage.isNullOrEmpty() }.map { it.offerMessage }.firstOrNull()
         _tierChange.value = TierData(
-            isProgressBarShown = isShimmerShown || tierWording.isNotBlank(),
+            isProgressBarShown = isShimmerShown || !offerMessages.isNullOrEmpty(),
             isShimmerShown = isShimmerShown,
-            tierWording = tierWording
+            offerMessages = offerMessages
         )
     }
 
