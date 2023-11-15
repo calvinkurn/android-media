@@ -152,8 +152,7 @@ class RechargeHomepageTodoWidgetAdapter(
                     removeAllItemDecoration()
                     addItemDecoration(
                         RechargeTodoWidgetSpaceDecorator(
-                            SPACE_DP.dpToPx(displayMetrics),
-                            (stickyLayout != null)
+                            SPACE_DP.dpToPx(displayMetrics)
                         )
                     )
                 }
@@ -178,19 +177,9 @@ class RechargeHomepageTodoWidgetAdapter(
         widgets.filter {
             it.type != RechargeHomepageConst.BAYAR_SEKALIGUS_TYPE
         }.forEach {
-            val item = when {
-                it.type.startsWith(RechargeHomepageConst.AUTOPAY_TYPE) || it.type.startsWith(
-                    RechargeHomepageConst.POSTPAIDREMINDER_TYPE
-                ) -> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel(
-                    it
-                )
-
-                else -> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel(
-                    it
-                )
-            }
-
-            itemList.add(item)
+            itemList.add(RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel(
+                it
+            ))
         }
         return itemList
     }
