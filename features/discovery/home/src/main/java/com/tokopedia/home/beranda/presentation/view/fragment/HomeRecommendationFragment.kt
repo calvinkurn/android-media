@@ -62,8 +62,6 @@ import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
@@ -220,7 +218,7 @@ class HomeRecommendationFragment :
     }
 
     private fun observeLiveData() {
-        if (!isNewForYouQueryEnabled()) {
+        if (!HomeRecommendationController.isUsingRecommendationCard()) {
             viewModel.homeRecommendationLiveData.observe(
                 viewLifecycleOwner
             ) { data ->
@@ -253,7 +251,7 @@ class HomeRecommendationFragment :
     }
 
     private fun observeStateFlow() {
-        if (isNewForYouQueryEnabled()) {
+        if (HomeRecommendationController.isUsingRecommendationCard()) {
             viewLifecycleOwner.lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.homeRecommendationCardState.collect {
@@ -294,13 +292,6 @@ class HomeRecommendationFragment :
                 }
             }
         }
-    }
-
-    private fun isNewForYouQueryEnabled(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.FOR_YOU_FEATURE_FLAG,
-            ""
-        ) == RollenceKey.FOR_YOU_FEATURE_FLAG
     }
 
     private fun showToasterError() {
