@@ -7,14 +7,17 @@ import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursLis
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatMessageId
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.info.data.response.GetEpharmacyShopInfoResponse
 import com.tokopedia.shop.info.data.response.GetNearestEpharmacyWarehouseLocationResponse
+import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopStatsRawData
+import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop.info.domain.usecase.GetEpharmacyShopInfoUseCase
 import com.tokopedia.shop.info.domain.usecase.GetNearestEpharmacyWarehouseLocationUseCase
 import com.tokopedia.shop.info.domain.usecase.GetShopStatsRawDataUseCase
@@ -120,6 +123,7 @@ class ShopInfoReimagineViewModelTest {
         }
     }
 
+    //region Shop info GQL
     @Test
     fun `when GetShopInfo event triggered and all GQL calls success, isLoading should be false and error should be null`() {
         runBlockingTest {
@@ -149,6 +153,62 @@ class ShopInfoReimagineViewModelTest {
 
             assertEquals(false, actual.isLoading)
             assertEquals(null, actual.error)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when get shop info success, should return active shop supported shipment only`() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall(
+                response = ShopInfo(
+                    shipments = listOf(
+                        ShopShipment(
+                            name = "Gosend",
+                            image = "https://images.tokopedia.net/gosend.jpg",
+                            product = listOf(
+                                ShopShipment.ShipmentProduct(name = "Same Day", uiHidden = false),
+                                ShopShipment.ShipmentProduct(name = "Instant", uiHidden = false),
+                                ShopShipment.ShipmentProduct(name = "Saver", uiHidden = true)
+                            )
+                        )
+                    )
+                )
+            )
+            mockGetShopNoteGqlCall(response = listOf(ShopNoteModel(id = "1", title = "Syarat dan ketentuan pengiriman")))
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    ShopSupportedShipment(
+                        title = "Gosend",
+                        imageUrl = "https://images.tokopedia.net/gosend.jpg",
+                        serviceNames = listOf("Same Day", "Instant")
+                    )
+                ),
+                actual.shipments
+            )
 
             job.cancel()
         }
@@ -196,6 +256,97 @@ class ShopInfoReimagineViewModelTest {
             job.cancel()
         }
     }
+    //endregion
+
+    //region Shop notes
+    @Test
+    fun `when get shop notes success, should return shop notes`() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall(
+                response = listOf(
+                    ShopNoteModel(id = "1", title = "Syarat dan ketentuan pengiriman"),
+                    ShopNoteModel(id = "2", title = "Kebijakan pengembalian")
+                )
+            )
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    ShopNote(id = "1", title = "Syarat dan ketentuan pengiriman"),
+                    ShopNote(id = "2", title = "Kebijakan pengembalian")
+                ),
+                actual.shopNotes
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when get shop notes success but id and title is null then should convert id and title to empty string`() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall(
+                response = listOf(
+                    ShopNoteModel(id = "1", title = "Syarat dan ketentuan pengiriman"),
+                    ShopNoteModel(id = null, title = null)
+                )
+            )
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    ShopNote(id = "1", title = "Syarat dan ketentuan pengiriman"),
+                    ShopNote(id = "", title = "")
+                ),
+                actual.shopNotes
+            )
+
+            job.cancel()
+        }
+    }
+    //endregion
 
     //region Shop pharmacy
     @Test
@@ -254,6 +405,54 @@ class ShopInfoReimagineViewModelTest {
     }
 
     //endregion
+
+    //region Shop performance
+    @Test
+    fun `when get shop chat performance and `() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall(
+                response = listOf(
+                    ShopNoteModel(id = "1", title = "Syarat dan ketentuan pengiriman"),
+                    ShopNoteModel(id = "2", title = "Kebijakan pengembalian")
+                )
+            )
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    ShopNote(id = "1", title = "Syarat dan ketentuan pengiriman"),
+                    ShopNote(id = "2", title = "Kebijakan pengembalian")
+                ),
+                actual.shopNotes
+            )
+
+            job.cancel()
+        }
+    }
+
+    //endregion
+
     //region Format Shop USP
     @Test
     fun `When get shop info success and there are shop_basic info and shop_attribute_list then should return dynamic usp value correctly`() {
@@ -804,9 +1003,7 @@ class ShopInfoReimagineViewModelTest {
         coEvery { getShopInfoUseCase.executeOnBackground() } returns response
     }
 
-    private fun mockGetShopNoteGqlCall() {
-        val response = listOf(ShopNoteModel())
-
+    private fun mockGetShopNoteGqlCall(response: List<ShopNoteModel> = listOf()) {
         coEvery { getShopNoteUseCase.executeOnBackground() } returns response
     }
 
