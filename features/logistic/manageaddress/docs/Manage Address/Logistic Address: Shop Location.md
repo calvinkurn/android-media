@@ -46,23 +46,23 @@ This project create new page list of seller shop locations. Seller can deactivat
 
 Entry point from store location settings on Seller App and Main App 
 
-![](../res/shoplocation/navigation_one.png)  
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/shoplocation/navigation_one.png)  
 Main location can’t be deactivated
 
-![](../res/shoplocation/navigation_two.png)
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/shoplocation/navigation_two.png)
 Flow Deactivate branch
 
-![](../res/shoplocation/navigation_three.png)
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/shoplocation/navigation_three.png)
 Flow Reactivate branch
 
-![](../res/shoplocation/navigation_four.png)
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/shoplocation/navigation_four.png)
 Flow Edit Location
 
-![](../res/shoplocation/navigation_five.png)
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/shoplocation/navigation_five.png)
 
 ## Flow Diagram
 
-![](../res/shoplocation/shoplocation_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/shoplocation/shoplocation_drawio.png)
 
 ## How-to
 

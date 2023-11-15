@@ -27,11 +27,11 @@ This page contains a list of addresses that function to select address in the tr
 
 This page can be accessed from the trade in feature
 
-![](../res/addresschoice/navigation.png)
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/addresschoice/navigation.png)
 
 ## Flow Diagram
 
-![](../res/addresschoice/flow_diagram.png)
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/addresschoice/flow_diagram.png)
 
 ## How-to
 
