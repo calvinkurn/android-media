@@ -61,7 +61,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                             dataDetail = dataDetail
                         )
                     } else {
-                        StoriesDetail.EmptyDetail
+                        StoriesDetail()
                     }
                 )
             }

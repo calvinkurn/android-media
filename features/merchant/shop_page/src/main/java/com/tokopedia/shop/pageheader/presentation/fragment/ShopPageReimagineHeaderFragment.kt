@@ -1432,7 +1432,7 @@ class ShopPageReimagineHeaderFragment :
                 ),
                 ShopPageColorSchema.ColorSchemaName.DIVIDER to ShopUtil.getColorHexString(
                     it,
-                    unifyprinciplesR.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN400_32
                 ),
                 ShopPageColorSchema.ColorSchemaName.NAV_TEXT_ACTIVE to ShopUtil.getColorHexString(
                     it,

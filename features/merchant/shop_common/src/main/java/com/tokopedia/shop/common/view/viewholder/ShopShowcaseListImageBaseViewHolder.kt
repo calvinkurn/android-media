@@ -172,7 +172,10 @@ abstract class ShopShowcaseListImageBaseViewHolder(
                 ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS
         )
         itemSeparatorColor = shopPageColorSchema.getColorIntValue(
-            ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS
+            ShopPageColorSchema.ColorSchemaName.DIVIDER
+        ).takeIf { it!=0 } ?: MethodChecker.getColor(
+            itemViewBinding.root.context,
+            unifyprinciplesR.color.Unify_NN400_32
         )
     }
 
@@ -187,7 +190,7 @@ abstract class ShopShowcaseListImageBaseViewHolder(
         )
         itemSeparatorColor = MethodChecker.getColor(
             itemViewBinding.root.context,
-            unifyprinciplesR.color.Unify_NN200
+            unifyprinciplesR.color.Unify_NN400_32
         )
     }
 

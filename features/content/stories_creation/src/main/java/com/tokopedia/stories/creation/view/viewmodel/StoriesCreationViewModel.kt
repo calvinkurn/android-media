@@ -133,9 +133,8 @@ class StoriesCreationViewModel @Inject constructor(
                 imageSourceId = state.config.imageSourceId,
                 videoSourceId = state.config.videoSourceId,
                 applink = StoriesAppLinkBuilder.buildForShareLink(
+                    state.config.storiesApplinkTemplate,
                     state.config.storiesId,
-                    state.selectedAccount.id,
-                    state.selectedAccount.type,
                 )
             )
 
