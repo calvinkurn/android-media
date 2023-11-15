@@ -7,14 +7,10 @@ data class HighlightInitialSearchUiModel(
     var highlightInitialList: List<ItemHighlightInitialSearchUiModel> = listOf()
 ) : BaseInitialSearchSeller {
     override fun getUniquePosition(): Int {
-        return HIGHLIGHT_INITIAL_SEARCH_UI_MODEL.hashCode()
+        return highlightInitialList.hashCode()
     }
 
     override fun type(typeFactory: TypeFactoryInitialSearchAdapter): Int {
         return typeFactory.type(this)
-    }
-
-    companion object {
-        const val HIGHLIGHT_INITIAL_SEARCH_UI_MODEL = "HighlightInitialSearchUiModel"
     }
 }
