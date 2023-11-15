@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.LinkerData;
@@ -274,7 +275,9 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.KEY_PRODUCTTYPE, branchIOPayment.getProductType())
                 .addCustomDataProperty(LinkerConstants.KEY_USERID, userId)
                 .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
-                .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
+                .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
+                .addCustomDataProperty(LinkerConstants.KEY_GA_ID, DeviceInfo.getAdsId(context));
+
         branchEvent.logEvent(context);
         saveBranchEvent(branchEvent);
     }
@@ -302,7 +305,8 @@ public class BranchHelper {
                     .addCustomDataProperty(LinkerConstants.KEY_CLIENT_TIME_STAMP, currentDateTime)
                     .addCustomDataProperty(LinkerConstants.KEY_AMOUNT, branchIOPayment.revenue)
                     .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
-                    .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
+                    .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
+                    .addCustomDataProperty(LinkerConstants.KEY_GA_ID, DeviceInfo.getAdsId(context));
             branchEvent.logEvent(context);
             saveBranchEvent(branchEvent);
         }
