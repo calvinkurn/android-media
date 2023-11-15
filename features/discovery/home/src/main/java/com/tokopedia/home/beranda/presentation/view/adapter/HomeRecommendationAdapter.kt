@@ -43,10 +43,6 @@ class HomeRecommendationAdapter(
                 layout.isFullSpan =
                     item.bannerType != TYPE_VERTICAL_BANNER_ADS
 
-            is HomeRecommendationBannerTopAdsUiModel ->
-                layout.isFullSpan =
-                    item.bannerType != TYPE_VERTICAL_BANNER_ADS
-
             is HomeRecommendationHeadlineTopAdsDataModel -> layout.isFullSpan = true
             is HomeRecommendationItemDataModel -> layout.isFullSpan = item.isFullSpan()
         }

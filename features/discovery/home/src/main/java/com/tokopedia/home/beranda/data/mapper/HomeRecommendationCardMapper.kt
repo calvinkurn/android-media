@@ -74,8 +74,7 @@ class HomeRecommendationCardMapper @Inject constructor(
                                     position = index,
                                     topAdsImageViewModel = mapToTopAdsImageViewModel(
                                         bannerItemResponse
-                                    ),
-                                    bannerType = TYPE_VERTICAL_BANNER_ADS
+                                    )
                                 )
                             )
                         }
