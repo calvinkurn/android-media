@@ -1,10 +1,10 @@
 package com.tokopedia.shop.info.view.viewmodel
 
 import android.annotation.SuppressLint
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -20,6 +20,7 @@ import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOpera
 import com.tokopedia.shop.common.util.DateTimeConstant
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
+import com.tokopedia.shop.info.domain.entity.ShopPerformanceDuration
 import com.tokopedia.shop.info.domain.entity.ShopPharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopStatsRawData
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
@@ -138,7 +139,10 @@ class ShopInfoReimagineViewModel @Inject constructor(
                     val shopChatPerformance = shopChatPerformanceDeferred.await()
 
                     val pharmacyInfo = if (isEpharmacy(shopInfo)) {
-                        getPharmacyInfo(shopId.toLongOrZero(), currentState.districtId.toLongOrZero())
+                        getPharmacyInfo(
+                            shopId = shopId.toLongOrZero(),
+                            districtId = currentState.districtId.toLongOrZero()
+                        )
                     } else {
                         ShopPharmacyInfo(
                             showPharmacyInfoSection = false,
@@ -264,37 +268,23 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     @SuppressLint("PII Data Exposure")
     private suspend fun getPharmacyInfo(shopId: Long, districtId: Long): ShopPharmacyInfo {
-        return try {
-            getNearestEpharmacyWarehouseLocationUseCase.params = GetNearestEpharmacyWarehouseLocationUseCase.createParams(shopId = shopId, districtId = districtId)
-            val nearestWarehouseLocation = getNearestEpharmacyWarehouseLocationUseCase.executeOnBackground()
-            val nearestWarehouseId = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.warehouseID
+        getNearestEpharmacyWarehouseLocationUseCase.params = GetNearestEpharmacyWarehouseLocationUseCase.createParams(shopId = shopId, districtId = districtId)
+        val nearestWarehouseLocation = getNearestEpharmacyWarehouseLocationUseCase.executeOnBackground()
+        val nearestWarehouseId = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.warehouseID
 
-            getEpharmacyShopInfoUseCase.params = GetEpharmacyShopInfoUseCase.createParams(shopId, nearestWarehouseId)
-            val ePharmacyInfo = getEpharmacyShopInfoUseCase.executeOnBackground()
+        getEpharmacyShopInfoUseCase.params = GetEpharmacyShopInfoUseCase.createParams(shopId, nearestWarehouseId)
+        val ePharmacyInfo = getEpharmacyShopInfoUseCase.executeOnBackground()
 
-            ShopPharmacyInfo(
-                showPharmacyInfoSection = true,
-                nearestPickupAddress = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.address,
-                nearPickupAddressGmapsUrl = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.gMapsURL,
-                pharmacistOperationalHour = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.epharmacyWorkingHoursFmt,
-                pharmacistName = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.apj,
-                siaNumber = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.siaNumber,
-                sipaNumber = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.sipaNumber,
-                expandPharmacyInfo = false
-            )
-        } catch (e: Exception) {
-            FirebaseCrashlytics.getInstance().recordException(e)
-            ShopPharmacyInfo(
-                showPharmacyInfoSection = false,
-                nearPickupAddressGmapsUrl = "",
-                nearestPickupAddress = "",
-                pharmacistName = "",
-                pharmacistOperationalHour = emptyList(),
-                siaNumber = "",
-                sipaNumber = "",
-                expandPharmacyInfo = false
-            )
-        }
+        return ShopPharmacyInfo(
+            showPharmacyInfoSection = true,
+            nearestPickupAddress = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.address,
+            nearPickupAddressGmapsUrl = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.gMapsURL,
+            pharmacistOperationalHour = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.epharmacyWorkingHoursFmt,
+            pharmacistName = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.apj,
+            siaNumber = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.siaNumber,
+            sipaNumber = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.sipaNumber,
+            expandPharmacyInfo = false
+        )
     }
 
     private suspend fun getShopChatPerformance(shopId: String): ShopStatsRawData {
@@ -429,19 +419,19 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return toDate(DateTimeConstant.DATE_TIME_DAY_PRECISION).formatTo(DateTimeConstant.DATE_TIME_YEAR_PRECISION)
     }
 
-    private fun ShopStatsRawData.toChatPerformance(): String {
+    private fun ShopStatsRawData.toChatPerformance(): ShopPerformanceDuration {
         val chatAndDiscussionReplySpeedMinute = chatAndDiscussionReplySpeed.toInt()
         val chatAndDiscussionReplySpeedHour = chatAndDiscussionReplySpeedMinute / 60
         val chatAndDiscussionReplySpeedDay = chatAndDiscussionReplySpeedHour / 24
 
         return when {
-            chatAndDiscussionReplySpeedMinute in 0..1 -> "±1 menit"
-            chatAndDiscussionReplySpeedMinute in 1..59 -> "±$chatAndDiscussionReplySpeedMinute menit"
-            chatAndDiscussionReplySpeedMinute == 60 -> "1 jam"
-            chatAndDiscussionReplySpeedHour in 1..23 -> "±$chatAndDiscussionReplySpeedHour jam"
-            chatAndDiscussionReplySpeedHour == 24 -> "1 hari"
-            chatAndDiscussionReplySpeedDay > 24 -> "$chatAndDiscussionReplySpeedDay hari"
-            else -> ""
+            chatAndDiscussionReplySpeedMinute < 1 -> ShopPerformanceDuration.Minute(value = Int.ONE)
+            chatAndDiscussionReplySpeedMinute in 1..59 -> ShopPerformanceDuration.Minute(chatAndDiscussionReplySpeedMinute)
+            chatAndDiscussionReplySpeedMinute == 60 -> ShopPerformanceDuration.Hour(value = Int.ONE)
+            chatAndDiscussionReplySpeedHour in 1..23 -> ShopPerformanceDuration.Hour(chatAndDiscussionReplySpeedHour)
+            chatAndDiscussionReplySpeedHour == 24 -> ShopPerformanceDuration.Day(value = Int.ONE)
+            chatAndDiscussionReplySpeedDay > 1 -> ShopPerformanceDuration.Day(chatAndDiscussionReplySpeedDay)
+            else -> ShopPerformanceDuration.Minute(chatAndDiscussionReplySpeedDay)
         }
     }
 }

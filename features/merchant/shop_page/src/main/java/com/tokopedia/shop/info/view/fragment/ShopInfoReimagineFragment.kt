@@ -43,6 +43,7 @@ import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.component.ShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.domain.entity.ShopNote
+import com.tokopedia.shop.info.domain.entity.ShopPerformanceDuration
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
@@ -454,7 +455,12 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun renderShopPerformance(uiState: ShopInfoUiState) {
         binding?.run {
             labelProductSoldCount.text = uiState.shopPerformance.totalProductSoldCount.toIntOrZero().thousandFormatted(1).ifEmpty { "-" }
-            labelChatPerformance.text = uiState.shopPerformance.chatPerformance.ifEmpty { "-" }
+            labelChatPerformance.text = when (uiState.shopPerformance.chatPerformance) {
+                is ShopPerformanceDuration.Day -> getString(R.string.shop_info_placeholder_operational_hour_around_day, uiState.shopPerformance.chatPerformance.value)
+                is ShopPerformanceDuration.Hour -> getString(R.string.shop_info_placeholder_operational_hour_around_hour, uiState.shopPerformance.chatPerformance.value)
+                is ShopPerformanceDuration.Minute -> getString(R.string.shop_info_placeholder_operational_hour_around_minute, uiState.shopPerformance.chatPerformance.value)
+                is ShopPerformanceDuration.Undefined -> getString(R.string.shop_info_placeholder_operational_hour_around_minute, uiState.shopPerformance.chatPerformance.value)
+            }
             labelOrderProcessTime.text = uiState.shopPerformance.orderProcessTime.ifEmpty { "-" }
         }
     }

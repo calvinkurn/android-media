@@ -269,6 +269,10 @@
     <string name="shop_info_join_date">Tanggal Bergabung</string>
     <string name="shop_info_licensed_pharmacy">Apotek Berlisensi</string>
     <string name="shop_info_total_product">Total produk</string>
+    <string name="shop_info_placeholder_operational_hour_around_minute">±%d menit</string>
+    <string name="shop_info_placeholder_operational_hour_around_hour">±%d jam</string>
+    <string name="shop_info_placeholder_operational_hour_around_day">±%d hari</string>
+    <string name="shop_info_placeholder_operational_hour_more_than_day">>%d hari</string>
 
     <!--Informasi Apotek-->
     <string name="shop_info_pharmacy_information">Informasi apotek</string>
