@@ -47,6 +47,7 @@ data class StoriesCreationConfiguration(
                 imageSourceId = "",
                 videoSourceId = "",
                 maxStoriesConfig = MaxStoriesConfig.Empty,
+                storiesApplinkTemplate = "",
             )
     }
 }
