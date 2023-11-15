@@ -19,7 +19,7 @@ import com.scp.auth.common.analytics.GotoPinAnalyticsMapper
 import com.scp.auth.common.utils.ScpUtils
 import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.auth.di.ScpAuthComponent
-import com.scp.auth.verification.VerificationSdk.getCvSdkProvider
+import com.scp.auth.verification.VerificationSdk
 import com.scp.login.core.domain.common.infrastructure.LSdkEventName
 import com.scp.login.core.domain.contracts.services.LSdkServices
 import com.scp.login.init.GotoLogin
@@ -74,7 +74,7 @@ object GotoSdk {
             .baseAppComponent(appComponent)
             .build()
         LSDKINSTANCE = GotoLogin.getInstance(
-            cvSdkProvider = getCvSdkProvider(application),
+            cvSdkProvider = VerificationSdk.getInstance(application),
             gotoPinManager = getGotoPinSdkProvider(application),
             configurations = LoginSdkConfigs(application),
             application = application,

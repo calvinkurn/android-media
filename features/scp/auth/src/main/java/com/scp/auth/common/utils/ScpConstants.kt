@@ -20,6 +20,7 @@ object ScpConstants {
         const val PHONE_NUMBER_VERIFICATION = 11
         const val REGISTER_PHONE_NUMBER = 116
         const val REGISTER_EMAIL = 126
+        const val RESET_PASSWORD = 132
         const val VERIFY_USER_CHANGE_PHONE_NUMBER = 200
 
         /* for 2FA flows */
@@ -32,6 +33,7 @@ object ScpConstants {
         const val INACTIVE_PHONE_VERIFY_EMAIL = 160
         const val INACTIVE_PHONE_VERIFY_PIN = 161
         const val INACTIVE_PHONE_VERIFY_NEW_PHONE = 162
+        const val SQCP = 132
 
         /* OTP Type: 168
         * This is actually OTP with phone number
@@ -42,5 +44,4 @@ object ScpConstants {
 
         const val ADD_BANK_ACCOUNT = 12
     }
-
 }

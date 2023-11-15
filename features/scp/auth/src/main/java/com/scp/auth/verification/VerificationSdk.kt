@@ -9,21 +9,27 @@ import com.scp.verification.core.data.common.services.contract.ScpAnalyticsServi
 import javax.inject.Inject
 
 object VerificationSdk : IVerificationSdk() {
-    private var _CVSDKINSTANCE: CvSdkProvider? = null
+    private var CVSDKINSTANCE: CvSdkProvider? = null
 
-    fun getInstance(): CvSdkProvider? = _CVSDKINSTANCE
+    fun getInstance(applicationContext: Application): CvSdkProvider {
+        return if (CVSDKINSTANCE == null) {
+            getCvSdkProvider(applicationContext)
+        } else {
+            CVSDKINSTANCE!!
+        }
+    }
 
     internal fun getCvSdkProvider(application: Application): CvSdkProvider {
         if (isAnalyticsServiceInitialized().not()) {
             GotoSdk.getVerifComponent()?.inject(this)
         }
-        _CVSDKINSTANCE = GotoVerification.getInstance(
+        CVSDKINSTANCE = GotoVerification.getInstance(
             context = application,
             configurations = VerificationSdkConfig(application),
             services = VerificationService.getVerificationService(analyticsService),
             identifier = CvsdkFlowType.Main
         )
-        return _CVSDKINSTANCE!!
+        return CVSDKINSTANCE!!
     }
 }
 

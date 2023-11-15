@@ -63,7 +63,6 @@ class ScpVerificationActivity : BaseActivity() {
                 flow.value,
                 createVerificationData(flow, it),
                 onSuccess = {
-                    Toast.makeText(this, "Sukses Verifikasi", Toast.LENGTH_LONG).show()
                     val bundle = Bundle().apply {
                         putString(ApplinkConstInternalGlobal.PARAM_UUID, it)
                         putString(ApplinkConstInternalGlobal.PARAM_TOKEN, it)
@@ -100,7 +99,7 @@ class ScpVerificationActivity : BaseActivity() {
             VerificationCredential.Token(userSession.accessToken)
         } else if (credential.phone.isNotEmpty()) {
             VerificationCredential.PhoneNumber(
-                countryCode = "+62",
+                countryCode = "",
                 number = credential.phone
             )
         } else {

@@ -247,7 +247,7 @@ class RegisterInitialViewModel @Inject constructor(
         isScpToken: Boolean = false
     ) {
         launchCatchError(coroutineContext, {
-            rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST]?.let { query ->
+            rawQueries[RegisterInitialQueryConstant.getRegisterRequest(isScpToken)]?.let { query ->
                 val params = createRegisterBasicParams(
                     email = email,
                     password = password,
@@ -291,7 +291,7 @@ class RegisterInitialViewModel @Inject constructor(
                 userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
                 registerRequestUseCaseV2.setTypeClass(RegisterRequestV2::class.java)
                 registerRequestUseCaseV2.setRequestParams(params)
-                registerRequestUseCaseV2.setGraphqlQuery(RegisterV2Query.registerQuery)
+                registerRequestUseCaseV2.setGraphqlQuery(RegisterV2Query.getQuery(isScpToken))
                 val result = registerRequestUseCaseV2.executeOnBackground()
                 onSuccessRegisterRequest(result.data)
             }

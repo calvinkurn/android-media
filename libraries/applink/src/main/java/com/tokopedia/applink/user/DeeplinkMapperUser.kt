@@ -69,7 +69,6 @@ object DeeplinkMapperUser {
     private fun getOtpApplink(deeplink: String): String {
         val uriMap = UriUtil.uriQueryParamsToMap(Uri.parse(deeplink))
         val otpType = (uriMap[ApplinkConstInternalUserPlatform.PARAM_OTP_TYPE] ?: "-1").toIntSafely()
-        Log.d("DeeplinkMapperUser", "otp type $otpType")
         return if (isGotoVerificationEnabled(otpType)) {
             ApplinkConstInternalUserPlatform.SCP_OTP
         } else {

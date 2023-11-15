@@ -28,7 +28,6 @@ import com.scp.verification.features.gotopin.CVPinManager
 
 object ScpVerificationManager {
 
-    private val cvSdkInstance = VerificationSdk.getInstance()
     private val pinManager = GotoSdk.getGotopinInstance()
 
     fun startVerification(
@@ -38,6 +37,7 @@ object ScpVerificationManager {
         onSuccess: (token: String) -> Unit,
         onFailed: (CVError) -> Unit
     ) {
+        val cvSdkInstance = VerificationSdk.getInstance(activity.application)
         cvSdkInstance?.initiateVerification(
             activity = activity,
             verificationData = verificationData,

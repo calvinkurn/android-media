@@ -50,6 +50,7 @@ import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
@@ -945,7 +946,8 @@ class RegisterInitialFragment :
                 validateToken =
                     data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
                 val uuid = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID).orEmpty()
-                goToAddName(uuid)
+                val isFromScp = data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, false).orFalse()
+                goToAddName(uuid, isFromScp)
             }
 
             Activity.RESULT_CANCELED -> {
@@ -1143,9 +1145,9 @@ class RegisterInitialFragment :
         registerInitialRouter.goToAddPin2FA(this, enableSkip2FA, validateToken)
     }
 
-    private fun goToAddName(uuid: String) {
+    private fun goToAddName(uuid: String, isFromScp: Boolean) {
         phoneNumber?.run {
-            registerInitialRouter.goToAddName(this@RegisterInitialFragment, uuid, this)
+            registerInitialRouter.goToAddName(this@RegisterInitialFragment, uuid, this, isFromScp)
         }
     }
 

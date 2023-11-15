@@ -98,11 +98,12 @@ class RegisterInitialRouterHelper @Inject constructor() {
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_ADD_PIN)
     }
 
-    fun goToAddName(fragment: Fragment, uuid: String, phoneNumber: String) {
+    fun goToAddName(fragment: Fragment, uuid: String, phoneNumber: String, isFromScp: Boolean = false) {
         val applink = ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER
         val intent = RouteManager.getIntent(fragment.context, applink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, isFromScp)
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_ADD_NAME_REGISTER_PHONE)
     }
 }
