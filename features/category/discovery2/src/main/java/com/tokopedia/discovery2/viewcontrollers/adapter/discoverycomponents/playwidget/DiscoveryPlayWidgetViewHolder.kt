@@ -136,12 +136,10 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetClick(
                 it,
                 UserSession(fragment.context).userId,
-                item.channelId,
-                item.appLink,
-                "",
                 verticalWidgetPosition,
                 channelPositionInList,
-                config.autoPlay
+                config.autoPlay,
+                item
             )
         }
     }
@@ -157,12 +155,10 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetClick(
                 it,
                 UserSession(fragment.context).userId,
-                item.channelId,
-                item.appLink,
-                item.partner.id,
                 verticalWidgetPosition,
                 channelPositionInList,
-                config.autoPlay
+                config.autoPlay,
+                item
             )
         }
     }
@@ -178,11 +174,10 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(
                 it,
                 UserSession(fragment.context).userId,
-                item.channelId,
-                "",
                 verticalWidgetPosition,
                 channelPositionInList,
-                config.autoPlay
+                config.autoPlay,
+                item
             )
         }
     }
@@ -195,14 +190,14 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
         verticalWidgetPosition: Int
     ) {
         discoveryPlayWidgetViewModel?.components?.let {
+            item.video.isLive
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(
                 it,
                 UserSession(fragment.context).userId,
-                item.channelId,
-                item.partner.id,
                 verticalWidgetPosition,
                 channelPositionInList,
-                config.autoPlay
+                config.autoPlay,
+                item
             )
         }
     }

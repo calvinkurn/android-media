@@ -12,6 +12,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_CURRENT_SITE
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_ECOMMERCE
@@ -222,16 +223,24 @@ open class DiscoveryAnalytics(
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
     }
+    //endregion
 
-    override fun trackPlayWidgetClick(componentsItem: ComponentsItem, userID: String?, channelId: String, destinationURL: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {
+    override fun trackPlayWidgetClick(
+        componentsItem: ComponentsItem,
+        userID: String?,
+        widgetPosition: Int,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean,
+        item: PlayWidgetChannelUiModel
+    ) {
         val list = ArrayList<Map<String, Any>>()
         val creativeName = componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING
         list.add(
             mapOf(
-                KEY_ID to "0_${if (shopId.isEmpty()) 0 else shopId}_$channelId",
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$CHANNEL",
-                KEY_CREATIVE to " - $creativeName - $isAutoPlay",
-                KEY_POSITION to "$channelPositionInList - "
+                KEY_ID to "0",
+                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}",
+                KEY_CREATIVE to creativeName,
+                KEY_POSITION to channelPositionInList
             )
         )
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -242,7 +251,12 @@ open class DiscoveryAnalytics(
         val map = createGeneralEvent(
             eventName = EVENT_PROMO_CLICK,
             eventAction = CLICK_DYNAMIC_BANNER,
-            "${componentsItem.name ?: EMPTY_STRING} - $creativeName - $destinationURL"
+            eventLabel = constructPlayEventLabel(
+                item,
+                channelPositionInList,
+                widgetPosition,
+                isAutoPlay
+            )
         )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
@@ -374,20 +388,19 @@ open class DiscoveryAnalytics(
     override fun trackPlayWidgetImpression(
         componentsItem: ComponentsItem,
         userID: String?,
-        channelId: String,
-        shopId: String,
         widgetPosition: Int,
         channelPositionInList: Int,
-        isAutoPlay: Boolean
+        isAutoPlay: Boolean,
+        item: PlayWidgetChannelUiModel
     ) {
         val list = ArrayList<Map<String, Any>>()
         val creativeName = componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING
         list.add(
             mapOf(
-                KEY_ID to "0_${if (shopId.isEmpty()) 0 else shopId}_$channelId",
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$CHANNEL",
-                KEY_CREATIVE to " - $creativeName - $isAutoPlay",
-                KEY_POSITION to "$channelPositionInList - "
+                KEY_ID to "0",
+                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}",
+                KEY_CREATIVE to creativeName,
+                KEY_POSITION to channelPositionInList
             )
         )
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -395,11 +408,16 @@ open class DiscoveryAnalytics(
                 KEY_PROMOTIONS to list
             )
         )
+
         val map = createGeneralEvent(
             eventName = EVENT_PROMO_VIEW,
             eventAction = IMPRESSION_DYNAMIC_BANNER,
-            componentsItem.name
-                ?: EMPTY_STRING
+            eventLabel = constructPlayEventLabel(
+                item,
+                channelPositionInList,
+                widgetPosition,
+                isAutoPlay
+            )
         )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
@@ -411,6 +429,19 @@ open class DiscoveryAnalytics(
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
+    private fun constructPlayEventLabel(
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        widgetPosition: Int,
+        isAutoPlay: Boolean
+    ): String {
+        val videoType = if (item.video.isLive) "live" else "vod"
+
+        return "$VALUE_DISCOVERY_PAGE - $videoType - ${item.partner.id} - ${item.channelId} - " +
+            "$channelPositionInList - $widgetPosition - $isAutoPlay - ${item.recommendationType}"
+    }
+
+    //region DO NOT CHANGE!!
 //    https://mynakama.tokopedia.com/datatracker/requestdetail/view/1559
     override fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String, itemPosition: Int) {
         val list = ArrayList<Map<String, Any>>()
@@ -2869,6 +2900,7 @@ open class DiscoveryAnalytics(
     }
     //endregion
 
+    //region do not change!!
     override fun trackCouponImpression(properties: List<CouponTrackingProperties>) {
         val generalProps = createGeneralCouponEvent(
             EVENT_PROMO_VIEW,
@@ -3002,6 +3034,8 @@ open class DiscoveryAnalytics(
 
         return replacedName
     }
+
+    //endregion
 
     //endregion
 }

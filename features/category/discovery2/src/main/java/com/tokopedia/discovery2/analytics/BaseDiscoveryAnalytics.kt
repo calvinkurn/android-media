@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.ParamsForOpenScreen
 import com.tokopedia.discovery2.data.producthighlight.DiscoveryOCSDataModel
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
@@ -35,8 +36,8 @@ open class BaseDiscoveryAnalytics(
     open fun trackBrandRecommendationClick(banner: DataItem, bannerPosition: Int, compID: String) {}
     open fun trackBannerClick(banner: DataItem, bannerPosition: Int, userID: String?) {}
     open fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String, itemPosition: Int) {}
-    open fun trackPlayWidgetImpression(componentsItem: ComponentsItem, userID: String?, channelId: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
-    open fun trackPlayWidgetClick(componentsItem: ComponentsItem, userID: String?, channelId: String, destinationURL: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
+    open fun trackPlayWidgetImpression(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean, item: PlayWidgetChannelUiModel) {}
+    open fun trackPlayWidgetClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean, item: PlayWidgetChannelUiModel) {}
     open fun trackPlayWidgetBannerClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int) {}
     open fun trackPlayWidgetLihatSemuaClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int) {}
     open fun trackPlayWidgetOverLayClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
