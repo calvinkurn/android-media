@@ -12,6 +12,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
@@ -297,12 +300,20 @@ class MenuSettingAdapter(
                 MenuItemUiModel(
                     title = context?.getString(R.string.setting_menu_give_feedback).orEmpty(),
                     settingTypeInfix = SettingTrackingConstant.APP_SETTING
-                ) { listener.onGiveFeedback() },
+                ) { listener.onGiveFeedback() }
+            )
+        )
+        if (shouldShowDarkModeEntryPoint()) {
+            menuList.add(
                 MenuItemUiModel(
                     title = context?.getString(R.string.setting_set_theme).orEmpty(),
                     tag = context?.getString(R.string.setting_beta_tag).orEmpty(),
                     clickApplink = ApplinkConstInternalGlobal.DARK_MODE_CONFIG
-                ),
+                )
+            )
+        }
+        menuList.addAll(
+            listOf(
                 DividerUiModel(DividerType.THIN_INDENTED),
                 MenuItemUiModel(
                     title = context?.getString(R.string.sah_social_menu_title).orEmpty(),
@@ -319,6 +330,14 @@ class MenuSettingAdapter(
             )
         )
         return menuList
+    }
+
+    private fun shouldShowDarkModeEntryPoint(): Boolean {
+        if (context != null) {
+            val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
+            return !remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE_SELLER_APP, true)
+        }
+        return false
     }
 
     interface Listener {
