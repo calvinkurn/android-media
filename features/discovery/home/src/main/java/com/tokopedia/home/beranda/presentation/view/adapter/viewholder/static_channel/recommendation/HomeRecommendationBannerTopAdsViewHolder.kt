@@ -57,12 +57,14 @@ class HomeRecommendationBannerTopAdsViewHolder(
                 homeRecommendationListener
             )
 
-            binding?.homeRecomTopadsLoaderImage?.show()
-            binding?.homeRecomTopadsImageView?.let {
-                it.imageWidth = topAdsImageViewModel.imageWidth
-                it.imageHeight = topAdsImageViewModel.imageHeight
-                it.bannerType = BANNER_TYPE_VERTICAL
-                loadVerticalBanner(recommendationBannerTopAdsDataModel, it)
+            if (topAdsImageViewModel.imageUrl?.isNotBlank() == true) {
+                binding?.homeRecomTopadsLoaderImage?.show()
+                binding?.homeRecomTopadsImageView?.let {
+                    it.imageWidth = topAdsImageViewModel.imageWidth
+                    it.imageHeight = topAdsImageViewModel.imageHeight
+                    it.bannerType = BANNER_TYPE_VERTICAL
+                    loadVerticalBanner(recommendationBannerTopAdsDataModel, it)
+                }
             }
         }
     }
@@ -119,9 +121,9 @@ class HomeRecommendationBannerTopAdsViewHolder(
                     appCompatImageView.show()
                     binding?.homeRecomTopadsLoaderImage?.hide()
                 }, onError = {
-                        appCompatImageView.hide()
-                        binding?.homeRecomTopadsLoaderImage?.hide()
-                    })
+                    appCompatImageView.hide()
+                    binding?.homeRecomTopadsLoaderImage?.hide()
+                })
             }
         }
     }
