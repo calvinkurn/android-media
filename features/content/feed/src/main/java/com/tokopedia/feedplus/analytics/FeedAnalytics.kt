@@ -91,9 +91,8 @@ class FeedAnalytics @AssistedInject constructor(
         const val KEY_ITEMS = "items"
         const val KEY_PROMOTIONS = "promotions"
         const val KEY_DIMENSION40 = "dimension40"
-        const val KEY_DIMENSION39 = "dimension39"
-        const val KEY_DIMENSION80 = "dimension80"
-        const val KEY_DIMENSION42 = "dimension42"
+        const val KEY_DIMENSION90 = "dimension90"
+        const val KEY_DIMENSION45 = "dimension45"
         const val KEY_INDEX = "index"
         const val KEY_ITEM_BRAND = "item_brand"
         const val KEY_CATEGORY_ID = "category_id"
@@ -428,7 +427,7 @@ class FeedAnalytics @AssistedInject constructor(
                     EnhanceEcommerce.KEY_ITEMS,
                     ArrayList(productList.mapIndexed { index, feedCardProductModel ->
                         Bundle().apply {
-                            putString(EnhanceEcommerce.KEY_DIMENSION40, "")
+                            putString(EnhanceEcommerce.KEY_DIMENSION40, EnhanceEcommerce.ITEM_LIST_PRODUCT_LABEL)
                             putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
                             putString(
                                 EnhanceEcommerce.KEY_ITEM_BRAND,
@@ -439,8 +438,7 @@ class FeedAnalytics @AssistedInject constructor(
                             putString(EnhanceEcommerce.KEY_ITEM_NAME, feedCardProductModel.name)
                             putString(EnhanceEcommerce.KEY_ITEM_VARIANT, "")
                             putDouble(EnhanceEcommerce.KEY_PRICE, feedCardProductModel.price)
-                            putString(EnhanceEcommerce.KEY_DIMENSION39, EnhanceEcommerce.ITEM_LIST_PRODUCT_LABEL)
-                            putString(EnhanceEcommerce.KEY_DIMENSION80, pageSource)
+                            putString(EnhanceEcommerce.KEY_DIMENSION90, pageSource)
                         }
                     })
                 )
@@ -471,7 +469,7 @@ class FeedAnalytics @AssistedInject constructor(
                     ArrayList(
                         productList.mapIndexed { index, feedCardProductModel ->
                             Bundle().apply {
-                                putString(EnhanceEcommerce.KEY_DIMENSION40, "")
+                                putString(EnhanceEcommerce.KEY_DIMENSION40, EnhanceEcommerce.ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET)
                                 putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
                                 putString(
                                     EnhanceEcommerce.KEY_ITEM_BRAND,
@@ -482,8 +480,7 @@ class FeedAnalytics @AssistedInject constructor(
                                 putString(EnhanceEcommerce.KEY_ITEM_NAME, feedCardProductModel.name)
                                 putString(EnhanceEcommerce.KEY_ITEM_VARIANT, "")
                                 putDouble(EnhanceEcommerce.KEY_PRICE, feedCardProductModel.price)
-                                putString(EnhanceEcommerce.KEY_DIMENSION39, EnhanceEcommerce.ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET)
-                                putString(EnhanceEcommerce.KEY_DIMENSION80, pageSource)
+                                putString(EnhanceEcommerce.KEY_DIMENSION90, pageSource)
                             }
                         }
                     )
@@ -544,7 +541,7 @@ class FeedAnalytics @AssistedInject constructor(
                     EnhanceEcommerce.KEY_ITEMS,
                     arrayListOf(
                         Bundle().apply {
-                            putString(EnhanceEcommerce.KEY_DIMENSION40, "")
+                            putString(EnhanceEcommerce.KEY_DIMENSION40, EnhanceEcommerce.ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET)
                             putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
                             putString(
                                 EnhanceEcommerce.KEY_ITEM_BRAND,
@@ -555,8 +552,7 @@ class FeedAnalytics @AssistedInject constructor(
                             putString(EnhanceEcommerce.KEY_ITEM_NAME, productName)
                             putString(EnhanceEcommerce.KEY_ITEM_VARIANT, "")
                             putDouble(EnhanceEcommerce.KEY_PRICE, productPrice)
-                            putString(EnhanceEcommerce.KEY_DIMENSION39, EnhanceEcommerce.ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET)
-                            putString(EnhanceEcommerce.KEY_DIMENSION80, pageSource)
+                            putString(EnhanceEcommerce.KEY_DIMENSION90, pageSource)
                         }
                     )
                 )
@@ -815,8 +811,8 @@ class FeedAnalytics @AssistedInject constructor(
         putString(EnhanceEcommerce.KEY_SHOP_ID, shopId)
         putString(EnhanceEcommerce.KEY_SHOP_NAME, shopName)
         putString(EnhanceEcommerce.KEY_SHOP_TYPE, "")
-        putString(EnhanceEcommerce.KEY_DIMENSION42, cartId)
-        putString(EnhanceEcommerce.KEY_DIMENSION80, pageSource)
+        putString(EnhanceEcommerce.KEY_DIMENSION45, cartId)
+        putString(EnhanceEcommerce.KEY_DIMENSION90, pageSource)
     }
 
     private fun sendEventTracker(params: Map<String, Any>) {
