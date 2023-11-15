@@ -29,13 +29,7 @@ data class ProductRatingCount(
             totalRating = totalRating,
             totalReviewAndImage = totalReviewTextAndImage,
             show = showRatingReview,
-            keywords = listOf(
-                ReviewRatingUiModel.Keyword("Cobain nih A", "filte A"),
-                ReviewRatingUiModel.Keyword("Cobain nih B", "filte B"),
-                ReviewRatingUiModel.Keyword("Cobain nih C", "filte C"),
-                ReviewRatingUiModel.Keyword("Cobain nih D", "filte D"),
-                ReviewRatingUiModel.Keyword("Cobain nih E", "filte E")
-            )
+            keywords = keywords.asUiModel()
         )
 
         fun ReviewRatingKeyword.asUiModel() = ReviewRatingUiModel.Keyword(
