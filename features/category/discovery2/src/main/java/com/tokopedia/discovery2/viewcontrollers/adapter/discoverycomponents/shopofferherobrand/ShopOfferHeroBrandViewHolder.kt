@@ -1,6 +1,8 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand
 
+import android.animation.AnimatorSet
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,6 +12,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
+import com.tokopedia.discovery2.Utils.Companion.verticalScrollAnimation
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.databinding.ItemDiscoveryShopOfferHeroBrandLayoutBinding
@@ -19,6 +22,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.CarouselProductCardItemDecorator
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.PRODUCT_PER_PAGE
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandComponentExtension.getErrorStateComponent
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.TierData
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
@@ -30,10 +34,10 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlin.collections.ArrayList
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopOfferHeroBrandViewHolder(
@@ -41,7 +45,8 @@ class ShopOfferHeroBrandViewHolder(
     val fragment: Fragment
 ) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     companion object {
-        const val PREFETCH_ITEM_COUNT = 4
+        private const val PREFETCH_ITEM_COUNT = 4
+        private const val SHOP_TIER_DURATION_ANIMATION = 2000L
     }
 
     internal val mLayoutManager: LinearLayoutManager
@@ -56,7 +61,10 @@ class ShopOfferHeroBrandViewHolder(
     private var viewModel: ShopOfferHeroBrandViewModel? = null
 
     init {
-        binding?.setupRecyclerView()
+        binding?.apply {
+            setupRecyclerView()
+            setupShopTierWordingAnimation()
+        }
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -124,6 +132,34 @@ class ShopOfferHeroBrandViewHolder(
         addScrollListener()
     }
 
+    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.setupShopTierWordingAnimation() {
+        tpShopTierWording.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    if (tpShopTierWording.lineCount.isMoreThanZero()) {
+                        val animatorSet = AnimatorSet()
+
+                        val firstAnimation = tpShopTierWording.verticalScrollAnimation(
+                            duration = SHOP_TIER_DURATION_ANIMATION,
+                            isReverse = false
+                        )
+                        val secondAnimation = tpShopTierWording.verticalScrollAnimation(
+                            duration = SHOP_TIER_DURATION_ANIMATION,
+                            isReverse = true
+                        )
+
+                        animatorSet.playSequentially(
+                            firstAnimation,
+                            secondAnimation
+                        )
+
+                        animatorSet.start()
+                    }
+                    tpShopTierWording.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            }
+        )
+    }
+
     private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.addScrollListener() {
         if (viewModel?.hasHeader() == false) return
 
@@ -170,7 +206,7 @@ class ShopOfferHeroBrandViewHolder(
 
             sivShopIcon.loadImage(header.shopIcon.orEmpty())
             tpShopName.text = header.shopName.orEmpty().toDecodedString()
-            tpShopTierWording.text = header.offerTiers?.firstOrNull()?.tierWording.orEmpty().toDecodedString()
+            tpShopTierWording.text = header.offerTiers?.joinToString("\n") { MethodChecker.fromHtml(it.tierWording) }
 
             if (header.applink.isNullOrBlank()) return
 
@@ -216,6 +252,29 @@ class ShopOfferHeroBrandViewHolder(
         errorHolder.gone()
     }
 
+    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.showLocalLoad() {
+        localLoad.run {
+            title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
+            description?.text = context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
+            refreshBtn?.setOnClickListener {
+                progressState = !progressState
+                reloadComponent()
+            }
+            show()
+        }
+        rvProductCarousel.gone()
+        errorHolder.gone()
+    }
+
+    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.reloadComponent() {
+        rvProductCarousel.show()
+        localLoad.hide()
+        viewModel?.apply {
+            resetComponent()
+            loadFirstPageProductCarousel()
+        }
+    }
+
     private fun View.route(
         appLink: String?
     ) {
@@ -243,29 +302,6 @@ class ShopOfferHeroBrandViewHolder(
 
     private fun handleSuccessState(components: ArrayList<ComponentsItem>) {
         if (components.isNotEmpty()) mAdapter.setDataList(components) else binding?.root?.hide()
-    }
-
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.showLocalLoad() {
-        localLoad.run {
-            title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
-            description?.text = context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
-            refreshBtn?.setOnClickListener {
-                progressState = !progressState
-                reloadComponent()
-            }
-            show()
-        }
-        rvProductCarousel.gone()
-        errorHolder.gone()
-    }
-
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.reloadComponent() {
-        rvProductCarousel.show()
-        localLoad.hide()
-        viewModel?.apply {
-            resetComponent()
-            loadFirstPageProductCarousel()
-        }
     }
 
     private fun handleFailState() {

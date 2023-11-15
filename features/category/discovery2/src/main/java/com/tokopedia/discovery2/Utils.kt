@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -35,6 +36,7 @@ import com.tokopedia.minicart.common.domain.data.*
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -761,6 +763,24 @@ class Utils {
                 disableDefaultGtmTracker = true
             )
             return navIconMap
+        }
+
+        internal fun Typography.verticalScrollAnimation(
+            duration: Long,
+            isReverse: Boolean
+        ): ValueAnimator {
+            val totalHeight = lineCount * lineHeight
+            val animator = if (isReverse) {
+                ValueAnimator.ofInt(totalHeight - lineHeight, 0)
+            } else {
+                ValueAnimator.ofInt(0, totalHeight - lineHeight)
+            }
+            animator.duration = duration
+            animator.addUpdateListener { animation ->
+                val animatedValue = animation.animatedValue as Int
+                scrollTo(0, animatedValue)
+            }
+            return animator
         }
     }
 }

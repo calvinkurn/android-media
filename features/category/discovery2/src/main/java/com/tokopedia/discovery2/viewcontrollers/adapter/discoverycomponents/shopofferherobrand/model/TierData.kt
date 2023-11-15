@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand
+package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model
 
 data class TierData(
     val isProgressBarShown: Boolean,
