@@ -36,7 +36,7 @@ To increase shipping transparency to Buyer, Seller and Tokopedia Nakama OPS team
 
 ### UI Page
 
-![](../res/pod/view%20POD.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticorder/pod/view%20POD.png)
 
 ## Navigation
 
