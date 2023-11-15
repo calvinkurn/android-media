@@ -112,11 +112,6 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     private fun setUpToolbar() {
         saldoToolbar = findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_toolbar)
         saldoToolbar.apply {
-            rightContentView.removeAllViews()
-            addRightIcon(com.tokopedia.saldodetails.R.drawable.saldo_ic_info)
-            rightIcons?.let {
-                it.getOrNull(0)?.setOnClickListener { RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_INTRO) }
-            }
             headerView?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
             navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
         }
@@ -136,22 +131,6 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
 
     private fun initializeView() {
         isSeller = userSession.hasShop() || userSession.isAffiliate
-        addAutoWithdrawalSettingIcon(isSeller)
-    }
-
-    private fun addAutoWithdrawalSettingIcon(isSeller : Boolean){
-        if (isSeller) {
-            val isAutoWithdrawalPageEnable = FirebaseRemoteConfigImpl(this)
-                    .getBoolean(FLAG_APP_SALDO_AUTO_WITHDRAWAL, false)
-            if (isAutoWithdrawalPageEnable ) {
-                saldoToolbar.apply {
-                    addRightIcon(com.tokopedia.saldodetails.R.drawable.saldo_ic_setting)
-                    rightIcons?.let {
-                        it.getOrNull(1)?.setOnClickListener { RouteManager.route(context, ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING) }
-                    }
-                }
-            }
-        }
     }
 
     override fun getTagFragment() = TAG

@@ -324,7 +324,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         binding?.depositHeaderLayout?.apply {
             saldoTickerGroup.shouldShowWithAction(
                 autoWDInitData.isSuccess() &&
-                autoWDInitData.data.scheduleWording.isNotEmpty()
+                autoWDInitData.data.scheduleWording.isNotEmpty() &&
+                autoWDInitData.data.redirectLink.isNotEmpty()
             ) {
                 saldoTicker.text = autoWDInitData.data.scheduleWording
                 saldoTickerGroup.setAllOnClickListener {
