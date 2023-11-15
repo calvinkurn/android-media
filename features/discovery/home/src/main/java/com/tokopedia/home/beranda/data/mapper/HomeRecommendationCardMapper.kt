@@ -83,9 +83,10 @@ class HomeRecommendationCardMapper @Inject constructor(
                 }
 
                 TYPE_VIDEO -> {
-                    val recommendationPlayWidgetResponse = convertDataJsonToRecommendationPlayWidget(
-                        card.dataStringJson
-                    )
+                    val recommendationPlayWidgetResponse =
+                        convertDataJsonToRecommendationPlayWidget(
+                            card.dataStringJson
+                        )
                     recommendationPlayWidgetResponse?.let {
                         homeRecommendationTypeFactoryImplList.add(
                             mapToHomeRecommendationPlayWidget(
@@ -116,6 +117,7 @@ class HomeRecommendationCardMapper @Inject constructor(
             layoutCard = layoutCard,
             layoutItem = layoutTracker,
             categoryId = categoryId,
+            appLink = playVideoWidgetResponse.link.applink,
             playVideoWidgetUiModel = PlayVideoWidgetUiModel(
                 id = playVideoWidgetResponse.id,
                 totalView = playVideoWidgetResponse.stats.viewFmt,
@@ -127,8 +129,7 @@ class HomeRecommendationCardMapper @Inject constructor(
                 badgeUrl = playVideoWidgetResponse.author.badge,
                 isLive = playVideoWidgetResponse.basic.isLive,
                 isAutoPlay = playVideoWidgetResponse.basic.autoPlay
-            ),
-            appLink = playVideoWidgetResponse.link.applink
+            )
         )
     }
 

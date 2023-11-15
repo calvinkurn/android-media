@@ -8,6 +8,7 @@ import android.widget.Space
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -18,6 +19,9 @@ import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntityCardBinding
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
 import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
+import com.tokopedia.unifyprinciples.ColorMode
+import com.tokopedia.unifyprinciples.modeAware
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class RecomEntityCardViewHolder(
     view: View,
@@ -108,14 +112,21 @@ class RecomEntityCardViewHolder(
 
     private fun setProductName(title: String) {
         binding.tvProductName.shouldShowWithAction(title.isNotBlank()) {
+            binding.tvProductName.setTextColor(getTextColorLightModeAware())
             binding.tvProductName.text = title
         }
     }
 
     private fun setProductSubtitle(subTitle: String) {
         binding.tvProductSubtitle.shouldShowWithAction(subTitle.isNotBlank()) {
+            binding.tvProductSubtitle.setTextColor(getTextColorLightModeAware())
             binding.tvProductSubtitle.text = subTitle
         }
+    }
+
+    private fun getTextColorLightModeAware(): Int {
+        val ctx = itemView.context.modeAware(ColorMode.LIGHT_MODE) ?: itemView.context
+        return ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN950)
     }
 
     private fun setProductImageUrl(productImageUrl: String) {

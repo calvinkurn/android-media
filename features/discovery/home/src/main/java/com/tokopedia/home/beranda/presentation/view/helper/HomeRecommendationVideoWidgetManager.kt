@@ -5,11 +5,9 @@ import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.device.info.DeviceConnectionInfo
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
@@ -19,8 +17,7 @@ import com.tokopedia.play_common.util.extension.globalVisibleRect
 class HomeRecommendationVideoWidgetManager(
     private val recyclerView: RecyclerView?,
     private val lifecycleOwner: LifecycleOwner,
-    private val config: ConfigVideoWidget = ConfigVideoWidget(),
-    private val playWidgetPreference: PlayWidgetPreference
+    private val config: ConfigVideoWidget = ConfigVideoWidget()
 ) {
 
     private val sharedPref by lazy(LazyThreadSafetyMode.NONE) {
@@ -128,7 +125,7 @@ class HomeRecommendationVideoWidgetManager(
 
     private fun isEnableAutoPlay(isAutoPlayFromBE: Boolean): Boolean {
         val isAutoPlayFromSettings = sharedPref.getBoolean(PlayWidgetPreference.KEY_PLAY_WIDGET_AUTOPLAY, true)
-        return if(isAutoPlayFromSettings) isAutoPlayFromBE else false
+        return if (isAutoPlayFromSettings) isAutoPlayFromBE else false
     }
 
     private fun isVideoWidgetConsideredVisible(
