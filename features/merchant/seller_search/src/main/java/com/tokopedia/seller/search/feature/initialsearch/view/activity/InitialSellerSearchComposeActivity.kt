@@ -71,8 +71,11 @@ class InitialSellerSearchComposeActivity :
 
         setContent {
             NestTheme {
-                val initialStateContainerId = rememberSaveable { IdViewGenerator.generateUniqueId(InitialSearchComposeFragment::class.java.simpleName) }
-                val suggestionSearchContainerId = rememberSaveable { IdViewGenerator.generateUniqueId(SuggestionSearchComposeFragment::class.java.name) }
+                val initialStateContainerId =
+                    rememberSaveable { IdViewGenerator.generateUniqueId(InitialSearchComposeFragment::class.java.simpleName) }
+                val suggestionSearchContainerId = rememberSaveable {
+                    IdViewGenerator.generateUniqueId(SuggestionSearchComposeFragment::class.java.name)
+                }
 
                 val fragmentManager = rememberSaveable { supportFragmentManager }
 
@@ -226,11 +229,19 @@ class InitialSellerSearchComposeActivity :
         suggestionSearchContainerId: Int,
         showSearchSuggestions: Boolean
     ) {
-        fragmentManager?.commit {
+        fragmentManager?.commit(allowStateLoss = true) {
             if (showSearchSuggestions) {
-                showSuggestionSearchFragment(initialSearchFragment, suggestionSearchFragment, suggestionSearchContainerId)
+                showSuggestionSearchFragment(
+                    initialSearchFragment,
+                    suggestionSearchFragment,
+                    suggestionSearchContainerId
+                )
             } else {
-                showInitialSearchFragment(initialSearchFragment, suggestionSearchFragment, initialStateContainerId)
+                showInitialSearchFragment(
+                    initialSearchFragment,
+                    suggestionSearchFragment,
+                    initialStateContainerId
+                )
             }
         }
     }
@@ -243,12 +254,12 @@ class InitialSellerSearchComposeActivity :
         if (initialSearchFragment?.isVisible == true) {
             hide(initialSearchFragment)
         }
-        if (suggestionSearchFragment == null) {
-            add(suggestionSearchContainerId, SuggestionSearchComposeFragment())
-        } else {
+        if (suggestionSearchFragment?.isAdded == true) {
             if (!suggestionSearchFragment.isVisible) {
                 show(suggestionSearchFragment)
             }
+        } else {
+            add(suggestionSearchContainerId, SuggestionSearchComposeFragment())
         }
     }
 
@@ -260,17 +271,17 @@ class InitialSellerSearchComposeActivity :
         if (suggestionSearchFragment?.isVisible == true) {
             hide(suggestionSearchFragment)
         }
-        if (initialSearchFragment == null) {
+        if (initialSearchFragment?.isAdded == true) {
+            if (!initialSearchFragment.isVisible) {
+                show(initialSearchFragment)
+            }
+        } else {
             add(
                 initialStateContainerId,
                 InitialSearchComposeFragment().apply {
                     setHistoryViewUpdateListener(this@InitialSellerSearchComposeActivity)
                 }
             )
-        } else {
-            if (!initialSearchFragment.isVisible) {
-                show(initialSearchFragment)
-            }
         }
     }
 
