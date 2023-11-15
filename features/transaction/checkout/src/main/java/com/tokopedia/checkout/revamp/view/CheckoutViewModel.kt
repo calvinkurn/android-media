@@ -2414,25 +2414,36 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun setAddon(
-            checked: Boolean,
-            addOnProductDataItemModel: AddOnProductDataItemModel,
-            position: Int
+        checked: Boolean,
+        addOnProductDataItemModel: AddOnProductDataItemModel,
+        position: Int
     ) {
         val checkoutItems = listData.value.toMutableList()
         val checkoutProductModel = checkoutItems[position] as CheckoutProductModel
 
-        val indexOrder = listData.value.indexOfFirst { it is CheckoutOrderModel
-                && it.cartStringGroup == checkoutProductModel.cartStringGroup }
+        val indexOrder = listData.value.indexOfFirst {
+            it is CheckoutOrderModel &&
+                it.cartStringGroup == checkoutProductModel.cartStringGroup
+        }
 
         if (indexOrder > 0) {
             val order = checkoutItems[indexOrder] as CheckoutOrderModel
-            val newStateDropship = if (checked && order.shipment.courierItemData?.isSelected == true) {
-                CheckoutDropshipWidget.State.DISABLED
+            var newStateDropship = CheckoutDropshipWidget.State.GONE
+            if (checked && order.shipment.courierItemData?.isSelected == true) {
+                newStateDropship = CheckoutDropshipWidget.State.DISABLED
+                viewModelScope.launch(dispatchers.immediate) {
+                    commonToaster.emit(
+                        CheckoutPageToaster(
+                            Toaster.TYPE_ERROR,
+                            "Fitur dropshipper tidak dapat digunakan ketika menggunakan layanan tambahan"
+                        )
+                    )
+                }
             } else {
-                CheckoutDropshipWidget.State.ENABLED
+                newStateDropship = CheckoutDropshipWidget.State.ENABLED
             }
             val newOrder = order.copy(
-                    stateDropship = newStateDropship,
+                stateDropship = newStateDropship
             )
             checkoutItems[indexOrder] = newOrder
         }

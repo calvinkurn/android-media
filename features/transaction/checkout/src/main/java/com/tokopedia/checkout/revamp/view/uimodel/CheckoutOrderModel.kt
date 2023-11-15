@@ -165,6 +165,9 @@ data class CheckoutOrderModel(
     val cartItemModelsGroupByOrder: Map<String, List<CheckoutProductModel>>
         get() = products.filter { !it.isError }
             .groupBy { it.cartStringOrder }
+
+    val isEnableDropship: Boolean
+        get() = !isDropshipperDisabled && shipment.courierItemData?.isAllowDropshiper == true
 }
 
 @Parcelize

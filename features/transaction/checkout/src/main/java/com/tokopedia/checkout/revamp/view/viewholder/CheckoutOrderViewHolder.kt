@@ -25,7 +25,7 @@ class CheckoutOrderViewHolder(
     private val listener: CheckoutAdapterListener
 ) : RecyclerView.ViewHolder(binding.root),
     ShippingCheckoutRevampWidget.ShippingWidgetListener,
-    CheckoutDropshipWidget.DropshipWidgetListener{
+    CheckoutDropshipWidget.DropshipWidgetListener {
 
     private var order: CheckoutOrderModel? = null
 
@@ -330,14 +330,10 @@ class CheckoutOrderViewHolder(
 
     private fun renderDropshipWidget(order: CheckoutOrderModel) {
         binding.dropshipWidget.setupListener(this)
-        if (order.isDropshipperDisabled) {
-            binding.dropshipWidget.state = CheckoutDropshipWidget.State.GONE
+        binding.dropshipWidget.state = if (order.isEnableDropship) {
+            CheckoutDropshipWidget.State.ENABLED
         } else {
-            if (order.shipment.courierItemData?.isAllowDropshiper == true) {
-                binding.dropshipWidget.state = CheckoutDropshipWidget.State.ENABLED
-            } else {
-                binding.dropshipWidget.state = CheckoutDropshipWidget.State.GONE
-            }
+            CheckoutDropshipWidget.State.GONE
         }
     }
 
@@ -417,7 +413,7 @@ class CheckoutOrderViewHolder(
     }
 
     override fun isAddOnProtectionOptIn(): Boolean {
-        return listener.checkLatestProtectionOptIn(order?.cartStringGroup?: "")
+        return listener.checkLatestProtectionOptIn(order?.cartStringGroup ?: "")
     }
 
     override fun showToasterErrorProtectionUsage() {
