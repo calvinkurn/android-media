@@ -138,6 +138,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val DIMENSION_53 = "dimension53" // Discounted price
         const val DIMENSION_56 = "dimension56" // Warehouse id
         const val DIMENSION_59 = "dimension59" // Promo details
+        const val DIMENSION_73 = "dimension73" // Shop id
         const val DIMENSION_79 = "dimension79" // Shop id
         const val DIMENSION_80 = "dimension80" // Shop name
         const val DIMENSION_81 = "dimension81" // Shop type
@@ -221,6 +222,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(DIMENSION_53, product.productSlashPriceLabel.isNotEmpty().toString().toEnhancedEcommerceDefaultValueIfEmpty())
             putString(DIMENSION_56, product.warehouseId.toEnhancedEcommerceDefaultValueIfEmpty())
             putString(DIMENSION_59, "".toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_73, product.productTagInfo.firstOrNull()?.message ?: "".toEnhancedEcommerceDefaultValueIfEmpty())
             putString(DIMENSION_79, product.shopId.toEnhancedEcommerceDefaultValueIfEmpty())
             putString(DIMENSION_80, product.shopName.toEnhancedEcommerceDefaultValueIfEmpty())
             putString(DIMENSION_81, product.shopType.toEnhancedEcommerceDefaultValueIfEmpty())
