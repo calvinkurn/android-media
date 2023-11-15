@@ -1,12 +1,10 @@
 package com.tokopedia.shop.info.view.viewmodel
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -59,11 +57,15 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val getNearestEpharmacyWarehouseLocationUseCase: GetNearestEpharmacyWarehouseLocationUseCase,
     private val getMessageIdChatUseCase: GetMessageIdChatUseCase,
     private val getShopStatsRawDataUseCase: GetShopStatsRawDataUseCase
-) : ViewModel() {
+) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     companion object {
         private const val ID_FULFILLMENT_SERVICE_E_PHARMACY = 2
-        private const val FIVE_REVIEW = 5
+        const val FIVE_REVIEW = 5
+        const val FIRST_PAGE = 1
+        const val SHOP_TOP_REVIEW_SORT_BY_HELPFULNESS = "informative_score desc"
+        const val SHOP_TOP_REVIEW_FILTER_BY_SELLER_SERVICE = "topic=pelayanan"
+        const val PAGE_SOURCE = "shop_info_page"
     }
 
     private val _uiState = MutableStateFlow(ShopInfoUiState())
@@ -100,7 +102,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
         }
     }
     private fun handleGetShopInfo() {
-        viewModelScope.launchCatchError(
+        launchCatchError(
             context = coroutineDispatcherProvider.io,
             block = {
                 supervisorScope {
@@ -115,9 +117,9 @@ class ShopInfoReimagineViewModel @Inject constructor(
                     val shopReviewParam = ProductRevGetShopReviewReadingListUseCase.Param(
                         shopID = shopId,
                         limit = FIVE_REVIEW,
-                        page = Int.ONE,
-                        filterBy = "topic=pelayanan",
-                        sortBy = "informative_score desc"
+                        page = FIRST_PAGE,
+                        filterBy = SHOP_TOP_REVIEW_FILTER_BY_SELLER_SERVICE,
+                        sortBy = SHOP_TOP_REVIEW_SORT_BY_HELPFULNESS
                     )
 
                     val shopReviewDeferred = async { getShopReviewUseCase.execute(shopReviewParam) }
@@ -296,7 +298,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
 
     private suspend fun getShopChatPerformance(shopId: String): ShopStatsRawData {
-        val param = GetShopStatsRawDataUseCase.Param(shopId = shopId, source = "shop_info_page")
+        val param = GetShopStatsRawDataUseCase.Param(shopId = shopId, source = PAGE_SOURCE)
         return getShopStatsRawDataUseCase.execute(param)
     }
 
@@ -306,7 +308,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
             return
         }
 
-        viewModelScope.launchCatchError(
+        launchCatchError(
             coroutineDispatcherProvider.io,
             block = {
                 _uiState.update { it.copy(isLoadingShopReport = true) }
