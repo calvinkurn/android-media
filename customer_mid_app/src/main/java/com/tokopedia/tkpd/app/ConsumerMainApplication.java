@@ -39,6 +39,7 @@ import com.tokopedia.abstraction.base.view.model.InAppCallback;
 import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
+import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
@@ -215,7 +216,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         TrackApp.getInstance().initializeAllApis();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         createAndCallPreSeq();
-        AppPerformanceTrace.Companion.init(this);
         super.onCreate();
         createAndCallPostSeq();
         initializeAbTestVariant();
