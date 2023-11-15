@@ -47,7 +47,8 @@ object PDPPrefetch {
         val listOfLayout = mutableListOf<DynamicPdpDataModel>(
             ProductMediaDataModel(
                 type = ProductDetailConstant.MEDIA,
-                name = ProductDetailConstant.MEDIA
+                name = ProductDetailConstant.MEDIA,
+                isPrefetch = true
             ),
             ProductContentDataModel(
                 type = ProductDetailConstant.PRODUCT_CONTENT,
@@ -81,8 +82,7 @@ object PDPPrefetch {
                     name = data.name,
                     price = Price(
                         value = data.price
-                    ),
-                    containerType = data.containerType
+                    )
                 ),
                 cacheState = CacheState(
                     isPrefetch = true
