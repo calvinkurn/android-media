@@ -26,6 +26,7 @@ class CheckoutPromoViewHolder(
     private var isApplied = false
 
     fun bind(promoModel: CheckoutPromoModel) {
+        initPromoButton(promoModel.enableNewInterface)
         if (!promoModel.isEnable) {
             binding.root.gone()
             binding.root.layoutParams = RecyclerView.LayoutParams(0, 0)
@@ -43,6 +44,13 @@ class CheckoutPromoViewHolder(
             processNewEntryPointInfo(promoModel)
         } else {
             processOldEntryPointInfo(promo)
+        }
+    }
+
+    private fun initPromoButton(enableNewInterface: Boolean) {
+        if (binding.btnCheckoutPromo.enableNewInterface != enableNewInterface) {
+            binding.btnCheckoutPromo.enableNewInterface = enableNewInterface
+            binding.btnCheckoutPromo.init()
         }
     }
 

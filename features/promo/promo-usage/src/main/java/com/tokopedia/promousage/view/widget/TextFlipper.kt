@@ -7,6 +7,7 @@ import android.view.animation.AnimationUtils
 import android.widget.TextSwitcher
 import com.tokopedia.promousage.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Hansen Putra on 07/08/23
@@ -88,5 +89,11 @@ class TextFlipper(context: Context?, attrs: AttributeSet?) : TextSwitcher(contex
     override fun setCurrentText(text: CharSequence?) {
         stopFlipping()
         super.setCurrentText(text)
+    }
+
+    fun setWeight(weightType: Int) {
+        for (i in 0 until childCount) {
+            (getChildAt(i) as? Typography)?.setWeight(weightType)
+        }
     }
 }

@@ -43,6 +43,13 @@ class OrderPromoCard(
         }
     }
 
+    private fun initPromoButton(enableNewInterface: Boolean) {
+        if (binding.btnPromoEntryPoint.enableNewInterface != enableNewInterface) {
+            binding.btnPromoEntryPoint.enableNewInterface = enableNewInterface
+            binding.btnPromoEntryPoint.init()
+        }
+    }
+
     private fun renderOldButtonPromo(orderPromo: OrderPromo) {
         binding.btnPromoEntryPoint.gone()
         binding.dividerPromoEntryPointBottom.gone()
@@ -159,6 +166,7 @@ class OrderPromoCard(
     }
 
     private fun renderNewButtonPromoWithNewBehavior(orderPromo: OrderPromo) {
+        initPromoButton(orderPromo.enableNewInterface)
         binding.btnPromoCheckout.gone()
         binding.btnPromoEntryPoint.visible()
         binding.dividerPromoEntryPointBottom.visible()

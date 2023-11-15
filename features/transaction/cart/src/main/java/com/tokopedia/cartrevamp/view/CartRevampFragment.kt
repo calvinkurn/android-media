@@ -188,10 +188,12 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
+import com.tokopedia.purchase_platform.common.revamp.PromoEntryPointImprovementRollenceManager
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -2813,6 +2815,10 @@ class CartRevampFragment :
     }
 
     private fun observeEntryPointInfo() {
+        val enableNewInterface = PromoEntryPointImprovementRollenceManager(
+                RemoteConfigInstance.getInstance().abTestPlatform
+            ).enableNewInterface()
+        initPromoButton(enableNewInterface)
         viewModel.entryPointInfoEvent.observe(viewLifecycleOwner) { data ->
             when (data) {
                 is EntryPointInfoEvent.Loading -> {
@@ -2820,43 +2826,14 @@ class CartRevampFragment :
                 }
 
                 is EntryPointInfoEvent.InactiveNew -> {
-                    val message = if (data.isNoItemSelected) {
-                        getString(R.string.promo_desc_no_selected_item)
-                    } else {
-                        data.entryPointInfo.messages.firstOrNull()
-                            .ifNull { getString(purchase_platformcommonR.string.promo_funnel_label) }
-                    }
-                    if (message.isNotBlank()) {
-                        val iconUrl = when {
-                            data.entryPointInfo.iconUrl.isNotBlank() -> {
-                                data.entryPointInfo.iconUrl
-                            }
-
-                            data.isNoItemSelected -> {
-                                PromoEntryPointInfo.ICON_URL_ENTRY_POINT_NO_ITEM_SELECTED
-                            }
-
-                            else -> {
-                                ""
-                            }
-                        }
-                        binding?.promoCheckoutBtnCart?.showInactiveNew(
+                    if (data.isNoItemSelected && enableNewInterface) {
+                        val message = getString(R.string.promo_desc_no_selected_item)
+                        val iconUrl = PromoEntryPointInfo.ICON_URL_ENTRY_POINT_NO_ITEM_SELECTED_NEW
+                        binding?.promoCheckoutBtnCart?.showActiveNew(
                             leftImageUrl = iconUrl,
                             wording = message,
                             onClickListener = {
-                                if (data.isNoItemSelected) {
-                                    showToastMessageGreen(getString(R.string.promo_choose_item_cart))
-                                } else if (data.entryPointInfo.isClickable) {
-                                    checkGoToPromo()
-                                    promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
-                                        userId = userSession.userId,
-                                        entryPoint = PromoPageEntryPoint.CART_PAGE,
-                                        entryPointMessages = listOf(message),
-                                        entryPointInfo = data.entryPointInfo,
-                                        lastApply = data.lastApply,
-                                        recommendedPromoCodes = data.recommendedPromoCodes
-                                    )
-                                }
+                                showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                             }
                         )
                         promoEntryPointAnalytics
@@ -2868,6 +2845,56 @@ class CartRevampFragment :
                                 lastApply = data.lastApply,
                                 recommendedPromoCodes = data.recommendedPromoCodes
                             )
+                    } else {
+                        val message = if (data.isNoItemSelected) {
+                            getString(R.string.promo_desc_no_selected_item)
+                        } else {
+                            data.entryPointInfo.messages.firstOrNull()
+                                .ifNull { getString(purchase_platformcommonR.string.promo_funnel_label) }
+                        }
+                        if (message.isNotBlank()) {
+                            val iconUrl = when {
+                                data.entryPointInfo.iconUrl.isNotBlank() -> {
+                                    data.entryPointInfo.iconUrl
+                                }
+
+                                data.isNoItemSelected -> {
+                                    PromoEntryPointInfo.ICON_URL_ENTRY_POINT_NO_ITEM_SELECTED
+                                }
+
+                                else -> {
+                                    ""
+                                }
+                            }
+                            binding?.promoCheckoutBtnCart?.showInactiveNew(
+                                leftImageUrl = iconUrl,
+                                wording = message,
+                                onClickListener = {
+                                    if (data.isNoItemSelected) {
+                                        showToastMessageGreen(getString(R.string.promo_choose_item_cart))
+                                    } else if (data.entryPointInfo.isClickable) {
+                                        checkGoToPromo()
+                                        promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
+                                            userId = userSession.userId,
+                                            entryPoint = PromoPageEntryPoint.CART_PAGE,
+                                            entryPointMessages = listOf(message),
+                                            entryPointInfo = data.entryPointInfo,
+                                            lastApply = data.lastApply,
+                                            recommendedPromoCodes = data.recommendedPromoCodes
+                                        )
+                                    }
+                                }
+                            )
+                            promoEntryPointAnalytics
+                                .sendImpressionPromoEntryPointEvent(
+                                    userId = userSession.userId,
+                                    entryPoint = PromoPageEntryPoint.CART_PAGE,
+                                    entryPointMessages = listOf(message),
+                                    entryPointInfo = data.entryPointInfo,
+                                    lastApply = data.lastApply,
+                                    recommendedPromoCodes = data.recommendedPromoCodes
+                                )
+                        }
                     }
                 }
 
@@ -3043,6 +3070,13 @@ class CartRevampFragment :
                     }
                 }
             }
+        }
+    }
+
+    private fun initPromoButton(enableNewInterface: Boolean) {
+        if (binding?.promoCheckoutBtnCart?.enableNewInterface != enableNewInterface) {
+            binding?.promoCheckoutBtnCart?.enableNewInterface = enableNewInterface
+            binding?.promoCheckoutBtnCart?.init()
         }
     }
 

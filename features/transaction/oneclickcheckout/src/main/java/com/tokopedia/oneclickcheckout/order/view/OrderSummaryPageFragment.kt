@@ -169,6 +169,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotE
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
+import com.tokopedia.purchase_platform.common.revamp.PromoEntryPointImprovementRollenceManager
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -510,6 +511,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         viewModel.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
             RemoteConfigInstance.getInstance().abTestPlatform
         ).isRevamp()
+        viewModel.usePromoEntryPointNewInterface = PromoEntryPointImprovementRollenceManager(
+            RemoteConfigInstance.getInstance().abTestPlatform
+        ).enableNewInterface()
 
         observeAddressState()
 
