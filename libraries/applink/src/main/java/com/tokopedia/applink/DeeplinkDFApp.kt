@@ -506,7 +506,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/settings/.*"),
         DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*"),
         DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*/followers"),
-        DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*/following"),
+        DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*/following")
     )
 
     private fun getDfPromoGamification() = mutableListOf(
@@ -704,10 +704,7 @@ object DeeplinkDFApp {
 
     private fun getDfSellerPdp() = mutableListOf(
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-detail/.*/"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-detail/.*/.*/"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/setting-referral-phone-verification"),
-        DFP(TOKOPEDIA, "referral", PathType.NO_PATH, ""),
-        DFP(TOKOPEDIA, "referral", PathType.PATTERN, "/.*\\")
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-detail/.*/.*/")
     )
 
     fun Map<String, List<DFP>>.mapDF(): MutableList<DFPSchemeToDF> {

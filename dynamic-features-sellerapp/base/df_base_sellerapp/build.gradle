@@ -76,6 +76,8 @@ dependencies {
 //    implementation projectOrAar(rootProject.ext.features.instantLoan)
 //    implementation projectOrAar(rootProject.ext.features.saldodetails)
 
+    implementation projectOrAar(rootProject.ext.features.referral)
+
     //Merchant
 //    implementation projectOrAar(rootProject.ext.features.report)
 //    implementation projectOrAar(rootProject.ext.features.shopOpen)
