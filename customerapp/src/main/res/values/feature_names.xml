@@ -333,6 +333,9 @@
     <string name="title_play_df">Play</string>
     <string name="title_play_broadcaster_df">Play Broadcaster</string>
 
+    <!-- Stories Creation -->
+    <string name="title_stories_creation_df">Stories Creation</string>
+
     <!--Interest Pick-->
     <string name="ip_title">Pilih Inspirasi Kamu</string>
 

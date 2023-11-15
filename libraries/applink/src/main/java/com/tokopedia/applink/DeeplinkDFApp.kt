@@ -36,6 +36,7 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FEEDBACK
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FRONT_FUNNEL
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_TALK
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SHOP_SETTINGS_SELLER_APP
+import com.tokopedia.applink.DeeplinkDFMapper.DF_STORIES_CREATION
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOCHAT
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOFOOD
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOPEDIA_NOW
@@ -51,6 +52,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.HOST_AFFILIATE
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.HOST_CONTENT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.HOST_PLAY_BROADCASTER
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.HOST_PLAY_SHORTS
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.HOST_STORIES
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.PATH_STORIES_CREATION
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.HOST_DEALS
 import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia.HOST_DILAYANI_TOKOPEDIA
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.HOST_EVENT
@@ -172,7 +175,8 @@ object DeeplinkDFApp {
         DF_TOKOPEDIA_NOW to getDfTokopediaNow(),
         DF_TRAVEL to getDfTravel(),
         DF_USER_LIVENESS to getDfUserLiveness(),
-        DF_USER_SETTINGS to getDfUserSettings()
+        DF_USER_SETTINGS to getDfUserSettings(),
+        DF_STORIES_CREATION to getDfStoriesCreation(),
     )
 
     fun getDfSellerappMap() = mapOf(
@@ -698,6 +702,15 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-settings-etalase/add"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-page-setting"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/settings")
+    )
+
+    private fun getDfStoriesCreation() = mutableListOf(
+        // play_broadcaster
+        DFP(INTERNAL, HOST_STORIES, PathType.PATH, PATH_STORIES_CREATION),
+        // mediapicker
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-album"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
     )
 
     fun Map<String, List<DFP>>.mapDF(): MutableList<DFPSchemeToDF> {

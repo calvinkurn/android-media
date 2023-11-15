@@ -39,6 +39,7 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_GAMIFICATION
 import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_TOKOPOINTS
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FRONT_FUNNEL
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_TALK
+import com.tokopedia.applink.DeeplinkDFMapper.DF_STORIES_CREATION
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOCHAT
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOFOOD
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOPEDIA_NOW
@@ -280,6 +281,11 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_HOME, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_SEARCH, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_AUTO_COMPLETE, DF_TOKOPEDIA_NOW)
+    }
+
+    @Test
+    fun `MA df_stories_creation`() {
+        assertEqualDeepLinkMA(ApplinkConst.Stories.STORIES_CREATION, DF_STORIES_CREATION)
     }
 
     @Test

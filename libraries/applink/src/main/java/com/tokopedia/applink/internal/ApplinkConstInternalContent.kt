@@ -14,7 +14,7 @@ object ApplinkConstInternalContent {
     const val HOST_PLAY_SHORTS = "play-shorts"
     const val HOST_STORIES = "stories"
 
-    private const val PATH_STORIES_CREATION = "creation"
+    const val PATH_STORIES_CREATION = "creation"
 
     const val INTERNAL_CONTENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CONTENT"
     const val INTERNAL_PLAY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY"
