@@ -36,6 +36,7 @@ sealed interface StoriesUiAction {
     object SetInitialData : StoriesUiAction
     object OpenReport: StoriesUiAction
     object ResetReportState: StoriesUiAction
+    object HasSeenDurationCoachMark: StoriesUiAction
 }
 
 enum class StoriesProductAction {
