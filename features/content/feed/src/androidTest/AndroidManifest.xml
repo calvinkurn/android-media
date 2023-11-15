@@ -6,11 +6,6 @@
         android:label="Feed Plus Test"
         tools:ignore="HardcodedDebugMode"
         tools:replace="android:label">
-        <activity
-            android:name="com.tokopedia.tkpd.feed_component.InstrumentationFeedPlusTestActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-        <activity android:name="com.tokopedia.tkpd.feed_component.container.FeedContainerTestActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 </manifest>

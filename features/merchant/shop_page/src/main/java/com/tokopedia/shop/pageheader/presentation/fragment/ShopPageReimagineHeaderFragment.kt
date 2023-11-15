@@ -120,6 +120,7 @@ import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
+import com.tokopedia.shop.common.util.ShopUtilExt.clearHtmlTag
 import com.tokopedia.shop.common.util.ShopUtilExt.setAnchorViewToShopHeaderBottomViewContainer
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
@@ -1416,7 +1417,7 @@ class ShopPageReimagineHeaderFragment :
                 ),
                 ShopPageColorSchema.ColorSchemaName.DIVIDER to ShopUtil.getColorHexString(
                     it,
-                    unifyprinciplesR.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN400_32
                 ),
                 ShopPageColorSchema.ColorSchemaName.NAV_TEXT_ACTIVE to ShopUtil.getColorHexString(
                     it,
@@ -2930,8 +2931,8 @@ class ShopPageReimagineHeaderFragment :
                             } else {
                                 ShopPageParamModel.ShopInfoName.FREE_TEXT.infoNameValue
                             }
-                        shopInfoValue = textValueComponentUiModel.text[Int.ZERO].textHtml
-                        shopInfoLabel = textValueComponentUiModel.text[Int.ONE].textHtml
+                        shopInfoValue = textValueComponentUiModel.text.getOrNull(Int.ZERO)?.textHtml.orEmpty().clearHtmlTag()
+                        shopInfoLabel = textValueComponentUiModel.text.getOrNull(Int.ONE)?.textHtml.orEmpty().clearHtmlTag()
                     }
 
                     ShopPageParamModel.ShopInfoType.IMAGE_ONLY.typeName -> {

@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.shop.campaign.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageHeaderDataUiModel
@@ -16,44 +17,9 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
-import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.WidgetName.ADD_ONS
-import com.tokopedia.shop.home.WidgetName.ADVANCED_SLIDER_BANNER
-import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
-import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
-import com.tokopedia.shop.home.WidgetName.BMGM_BANNER
-import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
-import com.tokopedia.shop.home.WidgetName.DIRECT_PURCHASED_BY_ETALASE
-import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.ETALASE_THEMATIC
-import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
-import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
-import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
-import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
-import com.tokopedia.shop.home.WidgetName.PRODUCT
-import com.tokopedia.shop.home.WidgetName.PRODUCT_VERTICAL
-import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
-import com.tokopedia.shop.home.WidgetName.REIMAGINE_BANNER_PRODUCT_HOTSPOT
-import com.tokopedia.shop.home.WidgetName.REMINDER
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_NAVIGATION_BANNER
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
-import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
-import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
-import com.tokopedia.shop.home.WidgetName.TRENDING
-import com.tokopedia.shop.home.WidgetName.VIDEO
-import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
+import com.tokopedia.shop.home.HomeConstant.IS_SHOW_ETALASE_NAME
 import com.tokopedia.shop.home.WidgetNameEnum
-import com.tokopedia.shop.home.WidgetType.BUNDLE
-import com.tokopedia.shop.home.WidgetType.CAMPAIGN
-import com.tokopedia.shop.home.WidgetType.CARD
-import com.tokopedia.shop.home.WidgetType.DISPLAY
-import com.tokopedia.shop.home.WidgetType.DYNAMIC
-import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
-import com.tokopedia.shop.home.WidgetType.REIMAGINE_COMPONENT
-import com.tokopedia.shop.home.WidgetType.REIMAGINE_DIRECT_PURCHASE
-import com.tokopedia.shop.home.WidgetType.SHOWCASE
+import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
@@ -163,10 +129,10 @@ object ShopPageHomeMapper {
         val baseProductCardModel = if (isHasOCCButton) {
             ProductCardModel(
                 productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
-                productName = shopHomeProductViewModel.name ?: "",
+                productName = shopHomeProductViewModel.name,
                 discountPercentage = discountPercentage,
                 slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
-                formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
+                formattedPrice = shopHomeProductViewModel.displayedPrice,
                 hasAddToCartButton = isHasATC,
                 addToCartButtonType = UnifyButton.Type.MAIN,
                 addToCardText = occButtonText,
@@ -180,10 +146,10 @@ object ShopPageHomeMapper {
         } else {
             ProductCardModel(
                 productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
-                productName = shopHomeProductViewModel.name ?: "",
+                productName = shopHomeProductViewModel.name,
                 discountPercentage = discountPercentage,
                 slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
-                formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
+                formattedPrice = shopHomeProductViewModel.displayedPrice,
                 countSoldRating = if (shopHomeProductViewModel.rating != 0.0) shopHomeProductViewModel.rating.toString() else "",
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
@@ -223,7 +189,7 @@ object ShopPageHomeMapper {
         enableDirectPurchase: Boolean,
         widgetName: String
     ): Boolean {
-        return enableDirectPurchase && (widgetName == RECENT_ACTIVITY || widgetName == REMINDER)
+        return enableDirectPurchase && (widgetName == WidgetNameEnum.RECENT_ACTIVITY.value || widgetName == WidgetNameEnum.REMINDER.value)
     }
 
     fun mapToProductCardModel(
@@ -250,10 +216,10 @@ object ShopPageHomeMapper {
         )
         val baseProductCardModel = ProductCardModel(
             productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
-            productName = shopHomeProductViewModel.name ?: "",
+            productName = shopHomeProductViewModel.name,
             discountPercentage = discountPercentage,
             slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
-            formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
+            formattedPrice = shopHomeProductViewModel.displayedPrice,
             countSoldRating = productRating,
             freeOngkir = freeOngkirObject,
             labelGroupList = shopHomeProductViewModel.labelGroupList.map {
@@ -351,12 +317,12 @@ object ShopPageHomeMapper {
         )
         val baseProductCardModel = ProductCardModel(
             productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
-            productName = shopHomeProductViewModel.name ?: "",
+            productName = shopHomeProductViewModel.name,
             discountPercentage = discountPercentage.takeIf { !shopHomeProductViewModel.hideGimmick }
                 ?: "",
             slashedPrice = shopHomeProductViewModel.originalPrice.orEmpty()
                 .takeIf { !shopHomeProductViewModel.hideGimmick } ?: "",
-            formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
+            formattedPrice = shopHomeProductViewModel.displayedPrice,
             countSoldRating = if (shopHomeProductViewModel.rating != 0.0) shopHomeProductViewModel.rating.toString() else "",
             freeOngkir = freeOngkirObject,
             labelGroupList = shopHomeProductViewModel.labelGroupList.map {
@@ -400,7 +366,7 @@ object ShopPageHomeMapper {
         enableDirectPurchase: Boolean,
         widgetName: String
     ): Boolean {
-        return enableDirectPurchase && widgetName == FLASH_SALE_TOKO
+        return enableDirectPurchase && widgetName == WidgetNameEnum.FLASH_SALE_TOKO.value
     }
 
     fun mapToShopHomeCampaignNplTncUiModel(model: ShopHomeCampaignNplTncModel): ShopHomeCampaignNplTncUiModel {
@@ -437,32 +403,39 @@ object ShopPageHomeMapper {
         isOverrideTheme: Boolean,
         colorSchema: ShopPageColorSchema
     ): Visitable<*>? {
-        if (widgetResponse.name == VOUCHER_STATIC) {
+        if (widgetResponse.name == WidgetNameEnum.VOUCHER_STATIC.value) {
             return mapToVoucherUiModel(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
         }
-        return when (widgetResponse.type.toLowerCase()) {
-            DISPLAY.toLowerCase() -> {
+        return when (widgetResponse.type.lowercase()) {
+            WidgetTypeEnum.DISPLAY.value.lowercase() -> {
                 when (widgetResponse.name) {
-                    DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN, SLIDER_BANNER, SLIDER_SQUARE_BANNER, VIDEO, ADVANCED_SLIDER_BANNER, BMGM_BANNER -> {
+                    WidgetNameEnum.DISPLAY_SINGLE_COLUMN.value,
+                    WidgetNameEnum.DISPLAY_DOUBLE_COLUMN.value,
+                    WidgetNameEnum.DISPLAY_TRIPLE_COLUMN.value,
+                    WidgetNameEnum.SLIDER_BANNER.value,
+                    WidgetNameEnum.SLIDER_SQUARE_BANNER.value,
+                    WidgetNameEnum.VIDEO.value,
+                    WidgetNameEnum.ADVANCED_SLIDER_BANNER.value,
+                    WidgetNameEnum.BMGM_BANNER.value -> {
                         mapToDisplayImageWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
                     }
-                    BANNER_TIMER -> {
+                    WidgetNameEnum.BANNER_TIMER.value -> {
                         ShopPageWidgetMapper.mapToBannerTimerWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
                     }
-                    SHOWCASE_NAVIGATION_BANNER -> {
+                    WidgetNameEnum.SHOWCASE_NAVIGATION_BANNER.value -> {
                         ShopPageWidgetMapper.mapToHomeShowcaseNavigationWidget(widgetResponse, isOverrideTheme, widgetLayout, colorSchema)
                     }
 
-                    REIMAGINE_BANNER_PRODUCT_HOTSPOT -> {
+                    WidgetNameEnum.REIMAGINE_BANNER_PRODUCT_HOTSPOT.value -> {
                         ShopPageWidgetMapper.mapToBannerProductHotspotWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
                     }
                     else -> null
                 }
             }
             // Includes V4 Widgets: Terlaris widget
-            PRODUCT.toLowerCase() -> {
+            WidgetTypeEnum.PRODUCT.value.lowercase() -> {
                 when (widgetResponse.name) {
-                    PRODUCT -> {
+                    WidgetNameEnum.PRODUCT.value -> {
                         mapToProductWidgetUiModel(
                             widgetModel = widgetResponse,
                             isMyOwnProduct = isMyOwnProduct,
@@ -472,7 +445,7 @@ object ShopPageHomeMapper {
                             colorSchema = colorSchema
                         )
                     }
-                    PRODUCT_VERTICAL -> {
+                    WidgetNameEnum.PRODUCT_VERTICAL.value -> {
                         mapToProductTerlarisWidgetUiModel(
                             widgetModel = widgetResponse,
                             isMyOwnProduct = isMyOwnProduct,
@@ -485,13 +458,13 @@ object ShopPageHomeMapper {
                     else -> null
                 }
             }
-            CAMPAIGN.toLowerCase() -> {
+            WidgetTypeEnum.CAMPAIGN.value.lowercase() -> {
                 if (isThematicWidgetShown) {
                     when (widgetResponse.name) {
-                        ETALASE_THEMATIC -> mapToThematicWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
-                        BIG_CAMPAIGN_THEMATIC -> mapToThematicWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+                        WidgetNameEnum.ETALASE_THEMATIC.value -> mapToThematicWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+                        WidgetNameEnum.BIG_CAMPAIGN_THEMATIC.value -> mapToThematicWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
                         FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse, isEnableDirectPurchase, widgetLayout, isOverrideTheme, colorSchema)
-                        NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(
+                        WidgetNameEnum.NEW_PRODUCT_LAUNCH_CAMPAIGN.value -> mapToNewProductLaunchCampaignUiModel(
                             widgetResponse,
                             isLoggedIn,
                             widgetLayout,
@@ -509,7 +482,7 @@ object ShopPageHomeMapper {
                             isOverrideTheme,
                             colorSchema
                         )
-                        NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(
+                        WidgetNameEnum.NEW_PRODUCT_LAUNCH_CAMPAIGN.value -> mapToNewProductLaunchCampaignUiModel(
                             widgetResponse,
                             isLoggedIn,
                             widgetLayout,
@@ -520,16 +493,20 @@ object ShopPageHomeMapper {
                     }
                 }
             }
-            DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
-            REIMAGINE_COMPONENT.toLowerCase(Locale.getDefault()) -> {
+            WidgetTypeEnum.DYNAMIC.value.lowercase() -> mapCarouselPlayWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+            WidgetTypeEnum.REIMAGINE_COMPONENT.value.lowercase() -> {
                 when (widgetResponse.name) {
-                    WidgetName.BANNER_PRODUCT_GROUP -> ShopPageWidgetMapper.mapToHomeBannerProductGroupWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+                    WidgetNameEnum.BANNER_PRODUCT_GROUP.value -> ShopPageWidgetMapper.mapToHomeBannerProductGroupWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
                     else -> null
                 }
             }
-            PERSONALIZATION.toLowerCase(Locale.getDefault()) -> {
+            WidgetTypeEnum.PERSONALIZATION.value.lowercase() -> {
                 when (widgetResponse.name) {
-                    BUY_AGAIN, RECENT_ACTIVITY, REMINDER, ADD_ONS, TRENDING -> {
+                    WidgetNameEnum.BUY_AGAIN.value,
+                    WidgetNameEnum.RECENT_ACTIVITY.value,
+                    WidgetNameEnum.REMINDER.value,
+                    WidgetNameEnum.ADD_ONS.value,
+                    WidgetNameEnum.TRENDING.value -> {
                         mapToProductPersonalizationUiModel(
                             widgetResponse,
                             isMyOwnProduct,
@@ -539,7 +516,7 @@ object ShopPageHomeMapper {
                             colorSchema
                         )
                     }
-                    PERSO_PRODUCT_COMPARISON -> {
+                    WidgetNameEnum.PERSO_PRODUCT_COMPARISON.value -> {
                         mapToPersoProductComparisonUiModel(
                             widgetResponse,
                             widgetLayout,
@@ -552,10 +529,10 @@ object ShopPageHomeMapper {
                     }
                 }
             }
-            SHOWCASE.toLowerCase(Locale.getDefault()) -> mapToShowcaseListUiModel(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
-            CARD.lowercase() -> mapToCardDonationUiModel(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
-            BUNDLE.toLowerCase(Locale.getDefault()) -> mapToProductBundleListUiModel(widgetResponse, shopId, widgetLayout, isOverrideTheme, colorSchema)
-            REIMAGINE_DIRECT_PURCHASE.lowercase() -> mapToDirectPurchaseTypeWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+            WidgetTypeEnum.SHOWCASE.value.lowercase() -> mapToShowcaseListUiModel(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+            WidgetTypeEnum.CARD.value.lowercase() -> mapToCardDonationUiModel(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+            WidgetTypeEnum.BUNDLE.value.lowercase() -> mapToProductBundleListUiModel(widgetResponse, shopId, widgetLayout, isOverrideTheme, colorSchema)
+            WidgetTypeEnum.REIMAGINE_DIRECT_PURCHASE.value.lowercase() -> mapToDirectPurchaseTypeWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
             else -> {
                 null
             }
@@ -569,7 +546,7 @@ object ShopPageHomeMapper {
         colorSchema: ShopPageColorSchema
     ): Visitable<*>? {
         return when (widgetResponse.name) {
-            DIRECT_PURCHASED_BY_ETALASE -> {
+            WidgetNameEnum.DIRECT_PURCHASED_BY_ETALASE.value -> {
                 ShopPageWidgetMapper.mapToDirectPurchaseByEtalase(
                     widgetResponse,
                     widgetLayout,
@@ -749,7 +726,7 @@ object ShopPageHomeMapper {
     ): List<ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem> {
         return data.map {
             val isRemindMe =
-                if (!isLoggedIn && it.statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase()) {
+                if (!isLoggedIn && it.statusCampaign.lowercase() == StatusCampaign.UPCOMING.statusCampaign.lowercase()) {
                     false
                 } else {
                     null
@@ -814,7 +791,7 @@ object ShopPageHomeMapper {
                 imageUrl = it.imageUrl
                 imageUrl300 = ""
                 productUrl = it.urlApps
-                if (statusCampaign.toLowerCase() == StatusCampaign.ONGOING.statusCampaign.toLowerCase()) {
+                if (statusCampaign.lowercase() == StatusCampaign.ONGOING.statusCampaign.lowercase()) {
                     val stockSoldPercentage = it.stockSoldPercentage.toInt()
                     val showStockBar = it.showStockBar
                     stockLabel = it.stockWording.title.takeIf { showStockBar }.orEmpty()
@@ -991,7 +968,7 @@ object ShopPageHomeMapper {
 
     private fun mapToListDisplayWidgetItem(
         data: List<ShopLayoutWidget.Widget.Data>
-    ): List<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem>? {
+    ): List<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem> {
         return mutableListOf<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem>().apply {
             data.onEach {
                 add(mapToDisplayWidgetItem(it))
@@ -1136,7 +1113,7 @@ object ShopPageHomeMapper {
                 isShowEtalaseName = widgetHeader.isShowEtalaseName == IS_SHOW_ETALASE_NAME
             }
         }
-        return if (widgetName == SHOWCASE_SLIDER_TWO_ROWS) {
+        return if (widgetName == WidgetNameEnum.SHOWCASE_SLIDER_TWO_ROWS.value) {
             ShopHomeShowcaseListBaseWidgetViewHolder.getReorderShowcasePositionForTwoRowsSlider(
                 uiModelData
             )
@@ -1163,7 +1140,7 @@ object ShopPageHomeMapper {
         isEnableDirectPurchase: Boolean
     ): ShopHomeProductUiModel =
         ShopHomeProductUiModel().apply {
-            id = response.productID.toString()
+            id = response.productID
             name = response.name
             displayedPrice = response.displayPrice
             originalPrice = response.originalPrice
@@ -1229,7 +1206,7 @@ object ShopPageHomeMapper {
         colorSchema: ShopPageColorSchema
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
-            responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(DYNAMIC, ignoreCase = true) || it.name == VOUCHER_STATIC || it.type.equals(CARD, ignoreCase = true) }.onEach {
+            responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(WidgetTypeEnum.DYNAMIC.value, ignoreCase = true) || it.name == WidgetNameEnum.VOUCHER_STATIC.value || it.type.equals(WidgetTypeEnum.CARD.value, ignoreCase = true) }.onEach {
                 when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase, shopId, listWidgetLayout.firstOrNull { widgetLayout -> it.widgetID == widgetLayout.widgetId }, isOverrideTheme, colorSchema)) {
                     is BaseShopHomeWidgetUiModel -> {
                         widgetUiModel.let { model ->
