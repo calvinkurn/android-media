@@ -62,6 +62,7 @@ class CatalogDetailUiMapper @Inject constructor(
         private const val TOP_COMPARISON_SPEC_COUNT = 5
         private const val COLUMN_INFO_SPEC_COUNT = 5
         private const val INVALID_CATALOG_ID = "0"
+        private const val FALLBACK_COLUMN_TYPE = "title_value_on_2"
     }
 
     fun mapToWidgetVisitables(
@@ -480,43 +481,49 @@ class CatalogDetailUiMapper @Inject constructor(
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToColumnInfo(
         darkMode: Boolean
-    ): ColumnedInfoUiModel {
+    ): BaseCatalogUiModel {
+        val columnType = data?.style?.columnType.orEmpty()
+        val infoColumn = data?.infoColumn.orEmpty()
         val flattenDataRows = data?.infoColumn
             .orEmpty()
             .flatMap { it.row }
-        return ColumnedInfoUiModel(
-            sectionTitle = data?.section?.title.orEmpty(),
-            hasMoreData = flattenDataRows.size > COLUMN_INFO_SPEC_COUNT,
-            widgetContent = ColumnedInfoUiModel.ColumnData(
-                rowData = flattenDataRows
-                    .take(COLUMN_INFO_SPEC_COUNT)
-                    .map {
-                        Pair(it.key, it.value)
-                    },
-                rowColor = Pair(
-                    MethodChecker.getColor(context, catalogR.color.catalog_dms_column_info_title_color),
-                    MethodChecker.getColor(
-                        context,
-                        if (darkMode) {
-                            catalogR.color.catalog_dms_column_info_value_color_dark
-                        } else {
-                            catalogR.color.catalog_dms_column_info_value_color_light
-                        }
-                    )
-                )
-            ),
-            fullContent = data?.infoColumn
-                .orEmpty()
-                .map {
-                    ColumnedInfoUiModel.ColumnData(
-                        title = it.name,
-                        rowData = it.row.map { row ->
-                            Pair(row.key, row.value)
+        return if (columnType != FALLBACK_COLUMN_TYPE || infoColumn.isEmpty()) {
+            BlankUiModel()
+        } else {
+            ColumnedInfoUiModel(
+                sectionTitle = data?.section?.title.orEmpty(),
+                hasMoreData = flattenDataRows.size > COLUMN_INFO_SPEC_COUNT,
+                widgetContent = ColumnedInfoUiModel.ColumnData(
+                    rowData = flattenDataRows
+                        .take(COLUMN_INFO_SPEC_COUNT)
+                        .map {
+                            Pair(it.key, it.value)
                         },
-                        rowIsBold = Pair(true, false)
+                    rowColor = Pair(
+                        MethodChecker.getColor(context, catalogR.color.catalog_dms_column_info_title_color),
+                        MethodChecker.getColor(
+                            context,
+                            if (darkMode) {
+                                catalogR.color.catalog_dms_column_info_value_color_dark
+                            } else {
+                                catalogR.color.catalog_dms_column_info_value_color_light
+                            }
+                        )
                     )
-                }
-        )
+                ),
+                fullContent = data?.infoColumn
+                    .orEmpty()
+                    .map {
+                        ColumnedInfoUiModel.ColumnData(
+                            title = it.name,
+                            rowData = it.row.map { row ->
+                                Pair(row.key, row.value)
+                            },
+                            rowIsBold = Pair(true, false)
+                        )
+                    }
+            )
+        }
     }
 
     private fun getTextColor(darkMode: Boolean): Int {
