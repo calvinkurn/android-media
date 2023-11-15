@@ -517,6 +517,26 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
     }
 
     @Test
+    fun `when getUnreadChatCount, throw error`() {
+        runTest {
+            // Given
+            val expectedThrowable = Throwable("Oops!")
+            every {
+                tokoChatCounterUseCase.get().fetchUnreadCount(CHANNEL_ID)
+            } throws expectedThrowable
+
+            // When
+            viewModel.channelId = CHANNEL_ID
+            viewModel.fetchUnReadChatCount()
+
+            // Then
+            verify {
+                tokoChatCounterUseCase.get().fetchUnreadCount(CHANNEL_ID)
+            }
+        }
+    }
+
+    @Test
     fun `when initGroupBooking, get success channel id`() {
         runTest {
             // Given
@@ -569,6 +589,57 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
 
                 cancelAndConsumeRemainingEvents()
             }
+        }
+    }
+
+    @Test
+    fun `when init group booking, get loading`() {
+        runTest {
+            // Given
+            every {
+                tokoChatGroupBookingUseCase.get().initGroupBookingChat(
+                    orderId = ORDER_ID_DUMMY,
+                    serviceType = TokoChatServiceType.TOKOFOOD
+                )
+            } returns flow {
+                emit(TokoChatResult.Loading)
+            }
+
+            viewModel.groupBookingUiState.test {
+                // When
+                viewModel.initGroupBooking(ORDER_ID_DUMMY)
+
+                // Then
+                verify {
+                    tokoChatGroupBookingUseCase.get().initGroupBookingChat(
+                        orderId = ORDER_ID_DUMMY,
+                        serviceType = TokoChatServiceType.TOKOFOOD
+                    )
+                }
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `when init group booking, throw error`() {
+        runTest {
+            // Given
+            val expectedThrowable = Throwable("Oops!")
+            every {
+                tokoChatGroupBookingUseCase.get().initGroupBookingChat(
+                    orderId = ORDER_ID_DUMMY,
+                    serviceType = TokoChatServiceType.TOKOFOOD
+                )
+            } throws expectedThrowable
+
+            // When
+            viewModel.initGroupBooking(ORDER_ID_DUMMY)
+
+            // Then
+            val result = viewModel.mutationProfile.value as Fail
+            assertEquals(result.throwable.message, expectedThrowable.message)
         }
     }
 }
