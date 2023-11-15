@@ -27,7 +27,7 @@ class ProductPickerSellerCommonRepositoryImpl @Inject constructor(
 ) : ProductPickerSellerCommonRepository {
 
     override suspend fun getCampaignList(): List<CampaignUiModel> = withContext(dispatchers.io) {
-        if (userSession.shopId.isBlank()) error("User does not has shop")
+        if (userSession.shopId.isBlank()) error("User does not have shop")
 
         val response = getCampaignListUseCase.apply {
             setRequestParams(GetCampaignListUseCase.createParams(shopId = userSession.shopId))

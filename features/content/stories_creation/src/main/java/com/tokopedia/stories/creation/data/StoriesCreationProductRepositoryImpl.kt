@@ -37,7 +37,7 @@ class StoriesCreationProductRepositoryImpl @Inject constructor(
         keyword: String,
         sort: SortUiModel
     ): PagedDataUiModel<ProductUiModel> = withContext(dispatchers.io) {
-        if (userSession.shopId.isBlank()) error("User does not has shop")
+        if (userSession.shopId.isBlank()) error("User does not have shop")
 
         val response = getStoryProductEtalaseUseCase(
             GetStoryProductEtalaseRequest.create(
