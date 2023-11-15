@@ -354,8 +354,7 @@ object GlobalSearchSellerMapper {
                             HighlightInitialSearchUiModel(
                                 highlightInitialList = mapToItemHighlightInitialSearchUiModel(
                                     sellerSearch
-                                ),
-                                position = index
+                                )
                             )
                         )
                     }
@@ -387,8 +386,7 @@ object GlobalSearchSellerMapper {
                             HighlightInitialSearchUiModel(
                                 highlightInitialList = mapToItemHighlightInitialSearchUiModel(
                                     sellerSearch
-                                ),
-                                position = index
+                                )
                             )
                         )
                     }

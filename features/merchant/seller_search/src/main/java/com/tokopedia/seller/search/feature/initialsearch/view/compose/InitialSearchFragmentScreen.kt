@@ -359,8 +359,7 @@ fun TitleHistorySearchSectionPreview() {
                 ItemHighlightInitialSearchUiModel(title = "Cara Pakai Bebas Ongkir"),
                 ItemHighlightInitialSearchUiModel(title = "Cara Menjadi Power Merchant"),
                 ItemHighlightInitialSearchUiModel(title = "Cara Pakai Bebas Ongkir")
-            ),
-            position = 5
+            )
         )
     ) {}
 }
