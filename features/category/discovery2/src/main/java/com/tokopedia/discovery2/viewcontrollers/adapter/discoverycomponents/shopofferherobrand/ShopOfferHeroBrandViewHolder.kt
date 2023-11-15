@@ -34,7 +34,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
@@ -46,7 +45,8 @@ class ShopOfferHeroBrandViewHolder(
 ) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     companion object {
         private const val PREFETCH_ITEM_COUNT = 4
-        private const val SHOP_TIER_DURATION_ANIMATION = 2000L
+        private const val SHOP_TIER_WORDING_DURATION_ANIMATION = 2000L
+        private const val SHOP_TIER_WORDING_SEPARATOR = "<br/>"
     }
 
     internal val mLayoutManager: LinearLayoutManager
@@ -139,12 +139,14 @@ class ShopOfferHeroBrandViewHolder(
                         val animatorSet = AnimatorSet()
 
                         val firstAnimation = tpShopTierWording.verticalScrollAnimation(
-                            duration = SHOP_TIER_DURATION_ANIMATION,
-                            isReverse = false
+                            duration = SHOP_TIER_WORDING_DURATION_ANIMATION,
+                            isReverse = false,
+                            isFromHtml = true
                         )
                         val secondAnimation = tpShopTierWording.verticalScrollAnimation(
-                            duration = SHOP_TIER_DURATION_ANIMATION,
-                            isReverse = true
+                            duration = SHOP_TIER_WORDING_DURATION_ANIMATION,
+                            isReverse = true,
+                            isFromHtml = true
                         )
 
                         animatorSet.playSequentially(
@@ -206,7 +208,7 @@ class ShopOfferHeroBrandViewHolder(
 
             sivShopIcon.loadImage(header.shopIcon.orEmpty())
             tpShopName.text = header.shopName.orEmpty().toDecodedString()
-            tpShopTierWording.text = header.offerTiers?.joinToString("\n") { MethodChecker.fromHtml(it.tierWording) }
+            tpShopTierWording.text = MethodChecker.fromHtml(header.offerTiers?.map { it.tierWording }?.joinToString(SHOP_TIER_WORDING_SEPARATOR))
 
             if (header.applink.isNullOrBlank()) return
 

@@ -767,9 +767,14 @@ class Utils {
 
         internal fun Typography.verticalScrollAnimation(
             duration: Long,
-            isReverse: Boolean
+            isReverse: Boolean,
+            isFromHtml: Boolean
         ): ValueAnimator {
-            val totalHeight = lineCount * lineHeight
+            val totalHeight = if(isFromHtml) {
+                lineCount * lineHeight + (lineCount * lineHeight * 0.058).toInt()
+            } else {
+                lineCount * lineHeight
+            }
             val animator = if (isReverse) {
                 ValueAnimator.ofInt(totalHeight - lineHeight, 0)
             } else {
