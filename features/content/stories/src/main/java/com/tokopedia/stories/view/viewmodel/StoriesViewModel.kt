@@ -243,16 +243,20 @@ class StoriesViewModel @AssistedInject constructor(
                 storyDetail = mDetail,
                 reasonId = _reportState.value.report.selectedReason?.reasoningId.orZero(),
                 timestamp = timestamp,
-                reportDesc = description,
+                reportDesc = description
             )
 
             _reportState.update { statusInfo ->
                 statusInfo.copy(
                     state = StoryReportStatusInfo.ReportState.Submitted,
                     report = statusInfo.report.copy(
-                        submitStatus = if (submitReportResult) Success(Unit) else Fail(
-                            MessageErrorException()
-                        )
+                        submitStatus = if (submitReportResult) {
+                            Success(Unit)
+                        } else {
+                            Fail(
+                                MessageErrorException()
+                            )
+                        }
                     )
                 )
             }
@@ -411,11 +415,11 @@ class StoriesViewModel @AssistedInject constructor(
             _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
         } else if (
             currentDetail.detailItems[position].category == StoriesDetailItem.StoryCategory.Manual &&
-            !repository.hasSeenManualStoriesDurationCoachmark()
+            !repository.hasSeenManualStoriesDurationCoachmark() &&
+            currentDetail.detailItems[position].author.id == userSession.userId
         ) {
             _storiesEvent.emit(StoriesUiEvent.ShowStoriesTimeCoachmark)
         }
-
     }
 
     private fun setCachingData() {
@@ -494,8 +498,11 @@ class StoriesViewModel @AssistedInject constructor(
     private fun handleDismissSheet(bottomSheetType: BottomSheetType) {
         _bottomSheetStatusState.update { bottomSheet ->
             bottomSheet.mapValues {
-                if (it.key == bottomSheetType) false
-                else it.value
+                if (it.key == bottomSheetType) {
+                    false
+                } else {
+                    it.value
+                }
             }
         }
     }
@@ -580,10 +587,14 @@ class StoriesViewModel @AssistedInject constructor(
                 if (!response) throw MessageErrorException()
 
                 _storiesEvent.emit(
-                    if (action == StoriesProductAction.Atc) StoriesUiEvent.ProductSuccessEvent(
-                        action,
-                        R.string.stories_product_atc_success,
-                    ) else StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART)
+                    if (action == StoriesProductAction.Atc) {
+                        StoriesUiEvent.ProductSuccessEvent(
+                            action,
+                            R.string.stories_product_atc_success
+                        )
+                    } else {
+                        StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART)
+                    }
                 )
             }) { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) }
         }
@@ -763,5 +774,4 @@ class StoriesViewModel @AssistedInject constructor(
             repository.setHasSeenManualStoriesDurationCoachmark()
         }
     }
-
 }
