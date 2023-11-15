@@ -16,6 +16,7 @@ import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.domain.model.StoriesTrackActivityActionType
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
+import com.tokopedia.stories.uimodel.AuthorType
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
@@ -222,6 +223,7 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.VideoBuffering -> handleVideoBuffering()
             StoriesUiAction.OpenReport -> handleOpenReport()
             StoriesUiAction.ResetReportState -> handleReportState(StoryReportStatusInfo.ReportState.None) {}
+            StoriesUiAction.HasSeenDurationCoachMark -> handleHasSeenDurationCoachMark()
         }
     }
 
@@ -242,16 +244,20 @@ class StoriesViewModel @AssistedInject constructor(
                 storyDetail = mDetail,
                 reasonId = _reportState.value.report.selectedReason?.reasoningId.orZero(),
                 timestamp = timestamp,
-                reportDesc = description,
+                reportDesc = description
             )
 
             _reportState.update { statusInfo ->
                 statusInfo.copy(
                     state = StoryReportStatusInfo.ReportState.Submitted,
                     report = statusInfo.report.copy(
-                        submitStatus = if (submitReportResult) Success(Unit) else Fail(
-                            MessageErrorException()
-                        )
+                        submitStatus = if (submitReportResult) {
+                            Success(Unit)
+                        } else {
+                            Fail(
+                                MessageErrorException()
+                            )
+                        }
                     )
                 )
             }
@@ -405,7 +411,22 @@ class StoriesViewModel @AssistedInject constructor(
         val maxPos = mDetailSize.minus(1)
         val position = if (cachedPos > maxPos) maxPos else cachedPos
         updateDetailData(position = position, isReset = true)
-        if (currentDetail == StoriesDetail()) _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
+
+        val currentDetailItems = currentDetail.detailItems[position]
+        val authorIdToCheck = when (currentDetailItems.author.type) {
+            AuthorType.Seller -> userSession.shopId
+            else -> userSession.userId
+        }
+
+        if (currentDetail == StoriesDetail()) {
+            _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
+        } else if (
+            currentDetailItems.category == StoriesDetailItem.StoryCategory.Manual &&
+            !repository.hasSeenManualStoriesDurationCoachmark() &&
+            currentDetailItems.author.id == authorIdToCheck
+        ) {
+            _storiesEvent.emit(StoriesUiEvent.ShowStoriesTimeCoachmark)
+        }
     }
 
     private fun setCachingData() {
@@ -484,8 +505,11 @@ class StoriesViewModel @AssistedInject constructor(
     private fun handleDismissSheet(bottomSheetType: BottomSheetType) {
         _bottomSheetStatusState.update { bottomSheet ->
             bottomSheet.mapValues {
-                if (it.key == bottomSheetType) false
-                else it.value
+                if (it.key == bottomSheetType) {
+                    false
+                } else {
+                    it.value
+                }
             }
         }
     }
@@ -570,10 +594,14 @@ class StoriesViewModel @AssistedInject constructor(
                 if (!response) throw MessageErrorException()
 
                 _storiesEvent.emit(
-                    if (action == StoriesProductAction.Atc) StoriesUiEvent.ProductSuccessEvent(
-                        action,
-                        R.string.stories_product_atc_success,
-                    ) else StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART)
+                    if (action == StoriesProductAction.Atc) {
+                        StoriesUiEvent.ProductSuccessEvent(
+                            action,
+                            R.string.stories_product_atc_success
+                        )
+                    } else {
+                        StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART)
+                    }
                 )
             }) { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) }
         }
@@ -748,4 +776,9 @@ class StoriesViewModel @AssistedInject constructor(
         return repository.setStoriesTrackActivity(request)
     }
 
+    private fun handleHasSeenDurationCoachMark() {
+        viewModelScope.launch {
+            repository.setHasSeenManualStoriesDurationCoachmark()
+        }
+    }
 }
