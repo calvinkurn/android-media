@@ -655,6 +655,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_load_product_image_archival_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_force_light_mode_seller_app</key>
         <value>false</value>
     </entry>
