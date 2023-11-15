@@ -8,6 +8,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.tokopedia.darkmodeconfig.view.bottomsheet.DarkModeIntroBottomSheet
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.CoroutineScope
@@ -47,8 +50,9 @@ object DarkModeIntroductionLauncher : CoroutineScope {
             val isEligibleTimeRange = has3DaysOpenedApp(sharedPref)
             val neverOpenedPopup = !hasOpenedPopup(sharedPref)
             val neverOpenedConfigPage = hasOpenedConfigPage(sharedPref)
-            val shouldShowPopup = isEligibleTimeRange && isLightModeApp &&
-                    isDarkModeOS && isLoggedIn && neverOpenedPopup && neverOpenedConfigPage
+            val isEnabled = getDarkModeIntroRemoteConfig(context)
+            val shouldShowPopup = isEligibleTimeRange && isLightModeApp && isDarkModeOS
+                    && isLoggedIn && neverOpenedPopup && neverOpenedConfigPage && isEnabled
             if (shouldShowPopup) {
                 markAsOpenedPopup(sharedPref)
                 withContext(Dispatchers.Main) {
@@ -56,6 +60,11 @@ object DarkModeIntroductionLauncher : CoroutineScope {
                 }
             }
         }
+    }
+
+    private fun getDarkModeIntroRemoteConfig(context: Context): Boolean {
+        val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_DARK_MODE_INTRO, false)
     }
 
     private fun hasOpenedConfigPage(sharedPref: SharedPreferences): Boolean {

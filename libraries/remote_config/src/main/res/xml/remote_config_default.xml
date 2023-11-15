@@ -662,4 +662,8 @@
         <key>android_force_light_mode_seller_app</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>android_enable_dark_mode_intro</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
