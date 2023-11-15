@@ -226,11 +226,13 @@ data class EPharmacyPrepareProductsGroupResponse(
                             var initialQty: Int?,
                             @SerializedName("recommend_qty")
                             val recommendedQty: Int?,
-                            @SerializedName("current_qty")
-                            var currentQty: Int = 0,
+
                             @SerializedName("price")
                             var productPrice: Double?
                         ) : Parcelable {
+
+                            @IgnoredOnParcel
+                            var currentQty: Int? = initialQty
 
                             @IgnoredOnParcel
                             var subTotal: Double? = (initialQty?.toDouble().orZero() * productPrice.orZero())

@@ -93,6 +93,7 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                       partner_logo_url
                       products {
                         product_id
+                        cart_id
                         product_id_str
                         name
                         quantity
