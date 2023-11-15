@@ -53,6 +53,7 @@ class EPharmacyConsultationOrderDetailUseCase @Inject constructor(graphqlReposit
                 orderData?.invoiceUrl,
                 orderData?.paymentDate,
                 orderData?.orderExpiredDate,
+                orderData?.consultationData?.startTime,
                 orderData?.orderIndicatorColor
             )
         )
@@ -73,7 +74,8 @@ class EPharmacyConsultationOrderDetailUseCase @Inject constructor(graphqlReposit
                 ORDER_PAYMENT_COMPONENT,
                 orderData?.paymentMethod,
                 orderData?.itemPriceStr,
-                orderData?.paymentAmountStr
+                orderData?.paymentAmountStr,
+                orderData?.helpButton
             )
         )
         return EPharmacyDataModel(listOfComponents)

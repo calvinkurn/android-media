@@ -36,8 +36,8 @@ class EPharmacyOrderDetailInfoViewHolder(
 
     private fun setUpValidity(validity: String) {
         validityTimeValue.displayTextOrHide(validity)
-        if(validity.isEmpty()){
-            validityTime.hide()
+        if(validity.isNotBlank()){
+            validityTime.show()
         }
     }
 }

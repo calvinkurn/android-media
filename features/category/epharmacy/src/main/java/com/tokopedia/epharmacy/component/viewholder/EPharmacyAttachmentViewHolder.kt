@@ -136,12 +136,12 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
             quantityChangedEditor.maxValue = dataModel?.quantityChangedModel?.recommendedQty.orZero()
             quantityChangedEditor.minValue = MIN_VALUE_OF_PRODUCT_EDITOR
             quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
-                if (newValue == MIN_VALUE_OF_PRODUCT_EDITOR) {
+                if (newValue == MIN_VALUE_OF_PRODUCT_EDITOR || newValue == dataModel?.quantityChangedModel?.recommendedQty) {
                     ePharmacyListener?.onToast(
                         Toaster.TYPE_ERROR,
-                        itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached).orEmpty()
+                        itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached)
+                            .orEmpty()
                     )
-                    quantityChangedEditor.subtractButton.isEnabled = false
                 }
                 dataModel?.quantityChangedModel?.currentQty = newValue
                 reCalculateSubTotal()

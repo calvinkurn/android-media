@@ -188,10 +188,15 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
         } ?: ePharmacyPrimaryButton?.hide()
 
         buttonData?.triDots?.let { secondaryButtonData ->
-            ePharmacySecondaryButton?.setOnClickListener {
-                onSecondaryButtonClick(secondaryButtonData)
+            if(secondaryButtonData.isEmpty()){
+                ePharmacySecondaryButton?.hide()
+            }else {
+                ePharmacySecondaryButton?.show()
+                ePharmacySecondaryButton?.setOnClickListener {
+                    onSecondaryButtonClick(secondaryButtonData)
+                }
             }
-            ePharmacySecondaryButton?.show()
+
         } ?: ePharmacySecondaryButton?.hide()
     }
 

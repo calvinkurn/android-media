@@ -101,6 +101,10 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                         product_image
                         item_weight
                         product_total_weight_fmt
+                        qty_comparison {
+                          initial_qty
+                          recommend_qty
+                        }
                       }
                     }
                     prescription_cta {

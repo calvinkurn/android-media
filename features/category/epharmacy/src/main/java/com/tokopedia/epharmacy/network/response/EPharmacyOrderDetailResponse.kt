@@ -58,6 +58,9 @@ data class EPharmacyOrderDetailResponse(
             @SerializedName("label")
             @Expose
             val label: String?,
+            @SerializedName("caption")
+            @Expose
+            val caption: String?,
             @SerializedName("type")
             @Expose
             val type: String?,
@@ -120,7 +123,11 @@ data class EPharmacyOrderDetailResponse(
             val cta: List<EPharmacyOrderButtonModel?>?,
             @SerializedName("tri_dots")
             @Expose
-            val triDots: List<EPharmacyOrderButtonModel?>?
+            val triDots: List<EPharmacyOrderButtonModel?>?,
+            @SerializedName("help_button")
+            @Expose
+            val helpButton: EPharmacyOrderButtonModel?
+
         ) {
 
             val orderButtonData: OrderButtonData
