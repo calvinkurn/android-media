@@ -61,6 +61,7 @@ import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -92,6 +93,9 @@ class HomeRecommendationFragment :
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
+    @Inject
+    lateinit var playWidgetPreference: PlayWidgetPreference
+
     private val viewModel: HomeRecommendationViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[HomeRecommendationViewModel::class.java]
     }
@@ -102,7 +106,7 @@ class HomeRecommendationFragment :
         HomeRecommendationTypeFactoryImpl(
             this,
             this,
-            HomeRecommendationVideoWidgetManager(recyclerView, viewLifecycleOwner)
+            HomeRecommendationVideoWidgetManager(recyclerView, viewLifecycleOwner, playWidgetPreference = playWidgetPreference)
         )
     }
 

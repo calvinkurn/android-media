@@ -9,6 +9,7 @@ data class HomeRecommendationPlayWidgetUiModel(
     val layoutCard: String,
     val layoutItem: String,
     val categoryId: String,
+    val appLink: String,
     val playVideoWidgetUiModel: PlayVideoWidgetUiModel
 ) : Visitable<HomeRecommendationTypeFactoryImpl>, ImpressHolder() {
     override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {

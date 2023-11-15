@@ -503,6 +503,8 @@ class HomeRecommendationViewModel @Inject constructor(
         }
     }
 
+
+
     private fun incrementTopadsPage() {
         topAdsBannerNextPage = try {
             val currentPage = topAdsBannerNextPage.toIntOrZero()

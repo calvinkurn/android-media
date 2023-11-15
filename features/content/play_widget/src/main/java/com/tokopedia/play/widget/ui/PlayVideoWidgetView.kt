@@ -150,6 +150,10 @@ class PlayVideoWidgetView : CardUnify2 {
         bindPlayer(model)
     }
 
+    fun getPlayWidgetUiModel(): PlayVideoWidgetUiModel {
+        return mModel
+    }
+
     fun setListener(listener: Listener?) {
         mListener = listener
     }

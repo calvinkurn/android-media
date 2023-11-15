@@ -125,8 +125,10 @@ class HomeRecommendationCardMapper @Inject constructor(
                 coverUrl = playVideoWidgetResponse.basic.coverURL,
                 videoUrl = playVideoWidgetResponse.medias.firstOrNull()?.mediaURL.orEmpty(),
                 badgeUrl = playVideoWidgetResponse.author.badge,
-                isLive = playVideoWidgetResponse.basic.isLive
-            )
+                isLive = playVideoWidgetResponse.basic.isLive,
+                isAutoPlay = playVideoWidgetResponse.basic.autoPlay
+            ),
+            appLink = playVideoWidgetResponse.link.applink
         )
     }
 
@@ -160,8 +162,7 @@ class HomeRecommendationCardMapper @Inject constructor(
 
     private inline fun <reified T> convertDataJsonToModel(dataStringJson: String): T? {
         return try {
-            val unescapedJsonString = dataStringJson.replace("\\\"", "\"")
-            gson.get().fromJson(unescapedJsonString, T::class.java)
+            gson.get().fromJson(dataStringJson, T::class.java)
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(e)
             null

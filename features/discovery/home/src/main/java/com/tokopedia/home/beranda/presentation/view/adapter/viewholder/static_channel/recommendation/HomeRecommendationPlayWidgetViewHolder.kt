@@ -26,6 +26,8 @@ class HomeRecommendationPlayWidgetViewHolder(
     private val binding = ItemHomeRecommendationPlayWidgetBinding.bind(itemView)
 
     init {
+        homeRecommendationPlayWidgetManager.bind(binding.homeRecomPlayWidgetVideo)
+
         binding.homeRecomPlayWidgetVideo.setListener(object : PlayVideoWidgetView.Listener {
             override fun onVideoFinishedPlaying(view: PlayVideoWidgetView) {
                 // no op
@@ -35,7 +37,6 @@ class HomeRecommendationPlayWidgetViewHolder(
                 // no op
             }
         })
-        homeRecommendationPlayWidgetManager.bind(binding.homeRecomPlayWidgetVideo)
     }
 
     override fun bind(element: HomeRecommendationPlayWidgetUiModel) {
@@ -50,5 +51,16 @@ class HomeRecommendationPlayWidgetViewHolder(
 
     private fun bindHomeRecomPlayWidgetVideo(element: HomeRecommendationPlayWidgetUiModel) {
         binding.homeRecomPlayWidgetVideo.bind(element.playVideoWidgetUiModel)
+    }
+
+    private fun setHomePlayWidgetVideoClick() {
+        binding.homeRecomPlayWidgetVideo.setOnClickListener {
+
+        }
+    }
+
+    interface Listener {
+        fun onPlayVideoWidgetClick(element: HomeRecommendationPlayWidgetUiModel)
+        fun onPlayVideoWidgetImpress(element: HomeRecommendationPlayWidgetUiModel)
     }
 }
