@@ -459,7 +459,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                 is ShopPerformanceDuration.Day -> getString(R.string.shop_info_placeholder_operational_hour_around_day, uiState.shopPerformance.chatPerformance.value)
                 is ShopPerformanceDuration.Hour -> getString(R.string.shop_info_placeholder_operational_hour_around_hour, uiState.shopPerformance.chatPerformance.value)
                 is ShopPerformanceDuration.Minute -> getString(R.string.shop_info_placeholder_operational_hour_around_minute, uiState.shopPerformance.chatPerformance.value)
-                is ShopPerformanceDuration.Undefined -> getString(R.string.shop_info_placeholder_operational_hour_around_minute, uiState.shopPerformance.chatPerformance.value)
             }
             labelOrderProcessTime.text = uiState.shopPerformance.orderProcessTime.ifEmpty { "-" }
         }

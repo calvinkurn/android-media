@@ -14,6 +14,7 @@ import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOpera
 import com.tokopedia.shop.info.data.response.GetEpharmacyShopInfoResponse
 import com.tokopedia.shop.info.data.response.GetNearestEpharmacyWarehouseLocationResponse
 import com.tokopedia.shop.info.domain.entity.ShopNote
+import com.tokopedia.shop.info.domain.entity.ShopPerformanceDuration
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopStatsRawData
@@ -406,9 +407,9 @@ class ShopInfoReimagineViewModelTest {
 
     //endregion
 
-    //region Shop performance
+    //region Shop chat performance
     @Test
-    fun `when get shop chat performance and `() {
+    fun `when get shop chat performance to gql and it return 0 minute, then return one minute chat performance duration as the result`() {
         runBlockingTest {
             // Given
             val emittedValues = arrayListOf<ShopInfoUiState>()
@@ -420,14 +421,9 @@ class ShopInfoReimagineViewModelTest {
             mockGetShopRatingGqlCall()
             mockGetShopReviewGqlCall()
             mockGetShopInfoGqlCall()
-            mockGetShopNoteGqlCall(
-                response = listOf(
-                    ShopNoteModel(id = "1", title = "Syarat dan ketentuan pengiriman"),
-                    ShopNoteModel(id = "2", title = "Kebijakan pengembalian")
-                )
-            )
+            mockGetShopNoteGqlCall()
             mockGetShopOperationListGqlCall()
-            mockGetShopStatsRawDataGqlCall()
+            mockGetShopStatsRawDataGqlCall(chatAndDiscussionReplySpeed = 0f)
             mockGetNearestPharmacyGqlCall()
             mockGetPharmacyShopInfoGqlCall()
             mockReportShopGqlCall()
@@ -440,17 +436,265 @@ class ShopInfoReimagineViewModelTest {
             val actual = emittedValues.last()
 
             assertEquals(
-                listOf(
-                    ShopNote(id = "1", title = "Syarat dan ketentuan pengiriman"),
-                    ShopNote(id = "2", title = "Kebijakan pengembalian")
-                ),
-                actual.shopNotes
+                ShopPerformanceDuration.Minute(1),
+                actual.shopPerformance.chatPerformance
             )
 
             job.cancel()
         }
     }
 
+    @Test
+    fun `when get shop chat performance to gql and it return 2 minute, then return two minute chat performance duration as the result`() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall(chatAndDiscussionReplySpeed = 2f)
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                ShopPerformanceDuration.Minute(2),
+                actual.shopPerformance.chatPerformance
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when get shop chat performance to gql and it return 60 minute, then return one hour chat performance duration as the result`() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall(chatAndDiscussionReplySpeed = 60f)
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                ShopPerformanceDuration.Hour(1),
+                actual.shopPerformance.chatPerformance
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when get shop chat performance to gql and it return 300 minute, then return five hour chat performance duration as the result`() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall(chatAndDiscussionReplySpeed = 300f)
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                ShopPerformanceDuration.Hour(5),
+                actual.shopPerformance.chatPerformance
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when get shop chat performance to gql and it return 1440 minute, then return one day chat performance duration as the result`() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall(chatAndDiscussionReplySpeed = 1440f) // 1440 minute = 24 hour
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                ShopPerformanceDuration.Day(1),
+                actual.shopPerformance.chatPerformance
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when get shop chat performance to gql and it return 1500f minute, then return one day chat performance duration as the result`() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall(chatAndDiscussionReplySpeed = 1500f) // 1500f minute = 25 hour
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                ShopPerformanceDuration.Day(1),
+                actual.shopPerformance.chatPerformance
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when get shop chat performance to gql and it return 2940 minute, then return two day chat performance duration as the result`() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall(chatAndDiscussionReplySpeed = 2940f) // 2940f minute = 25 hour = 2 day
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                ShopPerformanceDuration.Day(2),
+                actual.shopPerformance.chatPerformance
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when get shop chat performance to gql and it return 10080 minute, then return seven day chat performance duration as the result`() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall(chatAndDiscussionReplySpeed = 10080f) // 10080 minute = 1 week
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                ShopPerformanceDuration.Day(7),
+                actual.shopPerformance.chatPerformance
+            )
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region Format Shop USP
@@ -619,9 +863,6 @@ class ShopInfoReimagineViewModelTest {
             job.cancel()
         }
     }
-    //endregion
-
-    //region Format order process time
     //endregion
 
     //region Click event
@@ -1015,10 +1256,15 @@ class ShopInfoReimagineViewModelTest {
         } returns response
     }
 
-    private fun mockGetShopStatsRawDataGqlCall() {
-        val response = ShopStatsRawData(chatAndDiscussionReplySpeed = 60f)
+    private fun mockGetShopStatsRawDataGqlCall(chatAndDiscussionReplySpeed: Float = 60f) {
+        val response = ShopStatsRawData(chatAndDiscussionReplySpeed = chatAndDiscussionReplySpeed)
         coEvery {
-            getShopStatsRawDataUseCase.execute(GetShopStatsRawDataUseCase.Param(shopId, ShopInfoReimagineViewModel.PAGE_SOURCE))
+            getShopStatsRawDataUseCase.execute(
+                GetShopStatsRawDataUseCase.Param(
+                    shopId,
+                    ShopInfoReimagineViewModel.PAGE_SOURCE
+                )
+            )
         } returns response
     }
 

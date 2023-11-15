@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -62,6 +63,14 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     companion object {
         private const val ID_FULFILLMENT_SERVICE_E_PHARMACY = 2
+        private const val ONE_HOUR = 1
+        private const val TWENTY_THREE_HOUR = 23
+        private const val TWENTY_FOUR_HOUR = 24
+        private const val ONE_MINUTE = 1
+        private const val FIFTY_NINE_MINUTE = 59
+        private const val SIXTY_MINUTE = 60
+        private const val ONE_DAY = 1
+
         const val FIVE_REVIEW = 5
         const val FIRST_PAGE = 1
         const val SHOP_TOP_REVIEW_SORT_BY_HELPFULNESS = "informative_score desc"
@@ -421,17 +430,20 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private fun ShopStatsRawData.toChatPerformance(): ShopPerformanceDuration {
         val chatAndDiscussionReplySpeedMinute = chatAndDiscussionReplySpeed.toInt()
-        val chatAndDiscussionReplySpeedHour = chatAndDiscussionReplySpeedMinute / 60
-        val chatAndDiscussionReplySpeedDay = chatAndDiscussionReplySpeedHour / 24
+        val chatAndDiscussionReplySpeedHour = chatAndDiscussionReplySpeedMinute / SIXTY_MINUTE
+        val chatAndDiscussionReplySpeedDay = chatAndDiscussionReplySpeedHour / TWENTY_FOUR_HOUR
 
         return when {
-            chatAndDiscussionReplySpeedMinute < 1 -> ShopPerformanceDuration.Minute(value = Int.ONE)
-            chatAndDiscussionReplySpeedMinute in 1..59 -> ShopPerformanceDuration.Minute(chatAndDiscussionReplySpeedMinute)
-            chatAndDiscussionReplySpeedMinute == 60 -> ShopPerformanceDuration.Hour(value = Int.ONE)
-            chatAndDiscussionReplySpeedHour in 1..23 -> ShopPerformanceDuration.Hour(chatAndDiscussionReplySpeedHour)
-            chatAndDiscussionReplySpeedHour == 24 -> ShopPerformanceDuration.Day(value = Int.ONE)
-            chatAndDiscussionReplySpeedDay > 1 -> ShopPerformanceDuration.Day(chatAndDiscussionReplySpeedDay)
-            else -> ShopPerformanceDuration.Minute(chatAndDiscussionReplySpeedDay)
+            chatAndDiscussionReplySpeedMinute == Int.ZERO -> ShopPerformanceDuration.Minute(value = Int.ONE)
+            chatAndDiscussionReplySpeedMinute < FIFTY_NINE_MINUTE -> ShopPerformanceDuration.Minute(chatAndDiscussionReplySpeedMinute)
+            chatAndDiscussionReplySpeedMinute == SIXTY_MINUTE -> ShopPerformanceDuration.Hour(value = Int.ONE)
+
+            chatAndDiscussionReplySpeedHour < TWENTY_FOUR_HOUR -> ShopPerformanceDuration.Hour(chatAndDiscussionReplySpeedHour)
+            chatAndDiscussionReplySpeedHour == TWENTY_FOUR_HOUR -> ShopPerformanceDuration.Day(value = Int.ONE)
+
+            chatAndDiscussionReplySpeedDay == ONE_DAY -> ShopPerformanceDuration.Day(value = Int.ONE)
+
+            else -> ShopPerformanceDuration.Day(value = chatAndDiscussionReplySpeedDay)
         }
     }
 }
