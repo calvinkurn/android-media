@@ -438,7 +438,7 @@ open class DiscoveryAnalytics(
     ): String {
         val videoType = if (item.video.isLive) "live" else "vod"
 
-        return "$VALUE_DISCOVERY_PAGE - $videoType - ${item.partner.id} - ${item.channelId} - " +
+        return "$sourceIdentifier - $videoType - ${item.partner.id} - ${item.channelId} - " +
             "$channelPositionInList - $widgetPosition - $isAutoPlay - ${item.recommendationType}"
     }
 
