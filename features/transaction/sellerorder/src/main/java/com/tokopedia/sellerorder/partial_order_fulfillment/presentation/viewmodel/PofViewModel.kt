@@ -27,6 +27,7 @@ import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.To
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.UiEffect
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.UiEvent
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.UiState
+import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.tracker.PofTracker
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +43,8 @@ class PofViewModel @Inject constructor(
     private val getPofEstimateUseCase: GetPofEstimateUseCase,
     private val sendPofUseCase: SendPofUseCase,
     private val pofUiStateMapper: PofUiStateMapper,
-    private val pofToasterMapper: PofToasterMapper
+    private val pofToasterMapper: PofToasterMapper,
+    private val tracker: PofTracker
 ) : ViewModel() {
 
     companion object {
@@ -95,6 +97,7 @@ class PofViewModel @Inject constructor(
             _uiEvent.collect { event ->
                 when (event) {
                     is UiEvent.ClickRetryOnErrorState -> onClickRetryOnErrorState()
+                    is UiEvent.OnClickDescriptionLearnMore -> onClickDescriptionLearnMore()
                     is UiEvent.OnClickDismissPofBottomSheet -> onClickDismissPofBottomSheet()
                     is UiEvent.OnClickDismissSummaryBottomSheet -> onClickDismissSummaryBottomSheet()
                     is UiEvent.OnClickOpenPofInfoSummary -> onClickOpenPofInfoSummary()
@@ -104,7 +107,7 @@ class PofViewModel @Inject constructor(
                     is UiEvent.OnTryChangeProductQuantityAboveMaxQuantity -> onTryChangeProductQuantityAboveMaxQuantity()
                     is UiEvent.OnTryChangeProductQuantityBelowMinQuantity -> onTryChangeProductQuantityBelowMinQuantity()
                     is UiEvent.OpenScreen -> onOpenScreen(event)
-                    is UiEvent.ProductAvailableQuantityChanged -> onProductAvailableQuantityChanged(event)
+                    is UiEvent.ProductQuantityChanged -> onProductQuantityChanged(event)
                     is UiEvent.RestoreState -> onRestoreState(event)
                     is UiEvent.SaveState -> onSaveState(event)
                     is UiEvent.None -> { /* noop */ }
@@ -117,6 +120,10 @@ class PofViewModel @Inject constructor(
         getPofInfo(DELAY_FETCH_POF_INFO_ON_ERROR)
     }
 
+    private fun onClickDescriptionLearnMore() {
+        tracker.trackClickDescriptionLearnMore()
+    }
+
     private fun onClickDismissPofBottomSheet() {
         viewModelScope.launch { _uiEffect.emit(UiEffect.FinishActivity(Activity.RESULT_CANCELED)) }
     }
@@ -127,6 +134,7 @@ class PofViewModel @Inject constructor(
     }
 
     private fun onClickOpenPofInfoSummary() {
+        tracker.trackClickOpenPofSummaryBottomSheet()
         showBottomSheetSummary = true
         updateUiState()
     }
@@ -134,6 +142,7 @@ class PofViewModel @Inject constructor(
     private fun onClickResetPofForm() {
         getPofInfoRequestState.let { requestState ->
             if (requestState is RequestState.Success) {
+                tracker.trackClickReset()
                 updateQuantityEditorDataList(requestState.data)
                 updateDetailInfo()
                 updateUiState()
@@ -147,6 +156,7 @@ class PofViewModel @Inject constructor(
     }
 
     private fun onClickSendPof(event: UiEvent.OnClickSendPof) {
+        tracker.trackClickSend()
         sendPof(event.pofDetailList)
     }
 
@@ -164,8 +174,9 @@ class PofViewModel @Inject constructor(
         getPofInfo(DELAY_FETCH_INITIAL_POF_INFO)
     }
 
-    private fun onProductAvailableQuantityChanged(event: UiEvent.ProductAvailableQuantityChanged) {
-        updateQuantityEditorDataList(event.orderDetailId, event.availableQuantity)
+    private fun onProductQuantityChanged(event: UiEvent.ProductQuantityChanged) {
+        trackProductQuantityChange(event)
+        updateQuantityEditorDataList(event.orderDetailId, event.newQuantity)
         updateDetailInfo()
         getPofEstimate(DELAY_FETCH_POF_ESTIMATE_ON_PRODUCT_QUANTITY_CHANGED)
         updateUiState()
@@ -395,5 +406,13 @@ class PofViewModel @Inject constructor(
 
     private fun logError(throwable: Throwable) {
         ErrorHandler.getErrorMessagePair(null, throwable, ErrorHandler.Builder().build())
+    }
+
+    private fun trackProductQuantityChange(event: UiEvent.ProductQuantityChanged) {
+        if (event.newQuantity < event.oldQuantity) {
+            tracker.trackClickReduceQuantity()
+        } else {
+            tracker.trackClickIncreaseQuantity()
+        }
     }
 }

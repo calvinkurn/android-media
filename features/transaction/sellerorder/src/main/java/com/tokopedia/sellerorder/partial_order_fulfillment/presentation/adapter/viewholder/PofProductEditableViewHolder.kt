@@ -99,9 +99,10 @@ class PofProductEditableViewHolder(
                         listener.onEvent(UiEvent.OnTryChangeProductQuantityAboveMaxQuantity)
                     } else {
                         listener.onEvent(
-                            UiEvent.ProductAvailableQuantityChanged(
+                            UiEvent.ProductQuantityChanged(
                                 orderDetailId = quantityEditorData.orderDetailId,
-                                availableQuantity = quantityNumber
+                                newQuantity = quantityNumber,
+                                oldQuantity = quantityEditorData.quantity
                             )
                         )
                     }

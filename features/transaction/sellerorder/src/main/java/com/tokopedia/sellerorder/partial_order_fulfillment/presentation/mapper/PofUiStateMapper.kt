@@ -412,10 +412,11 @@ class PofUiStateMapper @Inject constructor() {
     ) {
         add(
             PofDescriptionUiModel(
-                when (pofStatus) {
+                text = when (pofStatus) {
                     STATUS_INITIAL -> StringRes(R.string.som_pof_description_initial)
                     else -> StringRes(R.string.som_pof_description_waiting_response)
-                }
+                },
+                onClickEventData = UiEvent.OnClickDescriptionLearnMore
             )
         )
     }

@@ -413,7 +413,7 @@ abstract class PofViewModelTestFixture {
         quantity: Int,
         exceedCheckoutQuantity: Boolean
     ) {
-        viewModel.onEvent(UiEvent.ProductAvailableQuantityChanged(orderDetailId, quantity, exceedCheckoutQuantity))
+        viewModel.onEvent(UiEvent.ProductQuantityChanged(orderDetailId, quantity, exceedCheckoutQuantity))
     }
 
     protected fun sendOnClickSendPofEvent() {

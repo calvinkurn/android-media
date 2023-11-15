@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo.Companion.CTA_ACTION_VALUE_POF
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -219,7 +220,11 @@ class SomDetailHeaderViewHolder(
 
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    RouteManager.route(context, tickerUrl)
+                    val intent = RouteManager.getIntentNoFallback(context, tickerUrl)
+                    if (intent != null) {
+                        SomAnalytics.trackClickPofTicker(pofStatus)
+                        context.startActivity(intent)
+                    }
                 }
 
                 override fun onDismiss() {}

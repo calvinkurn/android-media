@@ -93,7 +93,7 @@ class PofAdapterTypeFactoryImpl(
             PofThinDividerViewHolder.LAYOUT -> PofThinDividerViewHolder(parent)
             PofThickDividerViewHolder.LAYOUT -> PofThickDividerViewHolder(parent)
             PofTickerViewHolder.LAYOUT -> PofTickerViewHolder(parent)
-            PofDescriptionViewHolder.LAYOUT -> PofDescriptionViewHolder(parent)
+            PofDescriptionViewHolder.LAYOUT -> PofDescriptionViewHolder(parent, listener)
             PofProductListHeaderViewHolder.LAYOUT -> PofProductListHeaderViewHolder(parent)
             PofErrorStateViewHolder.LAYOUT -> PofErrorStateViewHolder(parent, listener)
             PofPriceBreakdownViewHolder.LAYOUT -> PofPriceBreakdownViewHolder(parent)
