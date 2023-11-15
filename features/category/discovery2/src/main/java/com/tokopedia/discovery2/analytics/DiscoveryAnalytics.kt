@@ -269,14 +269,10 @@ open class DiscoveryAnalytics(
     }
 
     override fun trackPlayWidgetBannerClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int) {
-        val creativeName = componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING
         val map = createGeneralEvent(
             eventName = EVENT_CLICK_DISCOVERY,
             eventAction = CLICK_OTHER_CONTENT,
-            "${
-            componentsItem.name
-                ?: EMPTY_STRING
-            } - $creativeName - ${widgetPosition + 1}"
+            eventLabel = constructSeeOthersPlayEventLabel(componentsItem, widgetPosition)
         )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
@@ -306,10 +302,7 @@ open class DiscoveryAnalytics(
         val map = createGeneralEvent(
             eventName = EVENT_CLICK_DISCOVERY,
             eventAction = CLICK_VIEW_ALL,
-            "${
-            componentsItem.name
-                ?: EMPTY_STRING
-            } - ${widgetPosition + 1}"
+            eventLabel = constructSeeOthersPlayEventLabel(componentsItem, widgetPosition)
         )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
@@ -318,6 +311,14 @@ open class DiscoveryAnalytics(
         map[PAGE_PATH] = removedDashPageIdentifier
         map[USER_ID] = userID ?: EMPTY_STRING
         getTracker().sendGeneralEvent(map as HashMap<String, Any>)
+    }
+
+    private fun constructSeeOthersPlayEventLabel(
+        componentsItem: ComponentsItem,
+        widgetPosition: Int
+    ): String {
+        return "${componentsItem.name ?: EMPTY_STRING} - ${widgetPosition + 1} - " +
+            (componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
     }
 
     override fun trackPlayWidgetOverLayClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {
