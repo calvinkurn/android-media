@@ -121,7 +121,8 @@ import timber.log.Timber;
 
 import com.tokopedia.developer_options.notification.DevOptNotificationManager;
 import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace;
-
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.DebugAppPerformanceConfig;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.DefaultAppPerformanceConfig;
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -183,6 +184,29 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                     })
                     .setLocalRootPath("tracker")
                     .initialize();
+
+            AppPerformanceTrace.Companion.init(
+                    this,
+                    new DebugAppPerformanceConfig(),
+                    new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
+                            return null;
+                        }
+                    }
+            );
+        } else {
+            AppPerformanceTrace.Companion.init(
+                    this,
+                    new DefaultAppPerformanceConfig(),
+                    new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            return null;
+                        }
+                    }
+            );
         }
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);

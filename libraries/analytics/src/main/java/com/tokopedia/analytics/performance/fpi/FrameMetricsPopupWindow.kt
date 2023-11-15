@@ -135,6 +135,14 @@ class FrameMetricsPopupWindow(
         fpiPopUp?.update(positionX, positionY, -1, -1, true)
     }
 
+    fun updatePerformanceInfo() {
+        // performance data from AppPerformanceTrace
+        updatePerformanceData(
+            AppPerformanceTrace.currentAppPerformanceTraceData,
+            AppPerformanceTrace.currentAppPerformanceDevState
+        )
+    }
+
     fun updateInfo(fpiData: FpiPerformanceData) {
         updatePercentage(fpiData = fpiData)
         updateFps(fpiData = fpiData)

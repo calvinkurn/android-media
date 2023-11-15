@@ -21,6 +21,8 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
 import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.DebugAppPerformanceConfig;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.DefaultAppPerformanceConfig;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -61,6 +63,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import okhttp3.Response;
 import timber.log.Timber;
 
@@ -126,6 +130,28 @@ public class MyApplication extends BaseMainApplication
                     })
                     .setLocalRootPath("tracker")
                     .initialize();
+            AppPerformanceTrace.Companion.init(
+                    this,
+                    new DebugAppPerformanceConfig(),
+                    new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
+                            return null;
+                        }
+                    }
+            );
+        } else {
+            AppPerformanceTrace.Companion.init(
+                    this,
+                    new DefaultAppPerformanceConfig(),
+                    new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            return null;
+                        }
+                    }
+            );
         }
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);

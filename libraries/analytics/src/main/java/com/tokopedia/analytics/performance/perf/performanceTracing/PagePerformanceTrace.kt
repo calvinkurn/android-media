@@ -3,7 +3,7 @@ package com.tokopedia.analytics.performance.perf.performanceTracing
 import android.app.Activity
 import android.view.View
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
-import com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.XmlPerformanceGlobalLayoutParser
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.XmlPerformanceFrameParser
 import com.tokopedia.analytics.performance.perf.performanceTracing.repository.PerformanceRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -37,6 +37,8 @@ class PagePerformanceTrace(
             )
         )
     private var isPerformanceTraceEnabled = true
+    private var frameParser: XmlPerformanceFrameParser? = null
+
     init {
         activity?.applicationContext?.let {
             val remoteConfig = FirebaseRemoteConfigImpl(it)
@@ -92,7 +94,7 @@ class PagePerformanceTrace(
     override fun startMonitoring() {
         performanceRepository.startRecord()
         val rootView = activity.window.decorView.findViewById<View>(android.R.id.content)
-        val globalLayoutListener = XmlPerformanceGlobalLayoutParser(
+        frameParser = XmlPerformanceFrameParser(
             rootView = rootView,
             onLayoutRendered = {
                 if (!performanceTraceData.get().ttflMeasured()) {
@@ -105,7 +107,7 @@ class PagePerformanceTrace(
                 stopMonitoring(Success(performanceTraceData.get()))
             }
         }
-        rootView.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
+//        rootView.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
     }
 
     override fun stopMonitoring(result: Result<PerformanceTraceData>) {
@@ -117,6 +119,7 @@ class PagePerformanceTrace(
             is Error -> onPerformanceTraceError.invoke(result)
         }
         scope.cancel()
+        frameParser?.finishParsing()
     }
 
     override fun recordPerformanceData(performanceTraceData: PerformanceTraceData) {

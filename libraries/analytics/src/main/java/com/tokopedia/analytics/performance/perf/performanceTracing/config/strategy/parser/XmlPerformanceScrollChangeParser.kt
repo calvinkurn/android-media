@@ -13,21 +13,21 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
-class XmlPerformanceGlobalLayoutParser(
+class XmlPerformanceScrollChangeParser(
     val rootView: View,
     val viewInfoParser: ViewInfoParser<View> = XmlViewInfoParser(),
     val startParserStrategyConfig: StartParserStrategyConfig<View> = FullRecyclerViewPageStartParser(),
     val finishParserStartegyConfig: FinishParserStrategyConfig<View> = FullRecyclerViewPageFinishParserStrategy(),
     val onLayoutRendered: () -> Unit,
     val onLayoutFinished: () -> Unit
-) : ViewTreeObserver.OnGlobalLayoutListener {
+) : ViewTreeObserver.OnScrollChangedListener {
     protected val scope =
         CoroutineScope(Dispatchers.Main + Job())
 
     var perfParsingJob: Job? = null
     var isPerformanceTraceFinished = false
 
-    override fun onGlobalLayout() {
+    override fun onScrollChanged() {
         if (isPerformanceTraceFinished) {
             tearDownListener()
         }
@@ -52,20 +52,18 @@ class XmlPerformanceGlobalLayoutParser(
 
                 if (isLayoutFinished) {
                     scope.launch(Dispatchers.Main) {
-                        finishParsing()
+                        rootView.post {
+                            onLayoutFinished.invoke()
+                            scope.cancel()
+                            isPerformanceTraceFinished = true
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun finishParsing() {
-        onLayoutFinished.invoke()
-        scope.cancel()
-        isPerformanceTraceFinished = true
-    }
-
     private fun tearDownListener() {
-        rootView.viewTreeObserver.removeOnGlobalLayoutListener(this@XmlPerformanceGlobalLayoutParser)
+        rootView.viewTreeObserver.removeOnScrollChangedListener(this)
     }
 }
