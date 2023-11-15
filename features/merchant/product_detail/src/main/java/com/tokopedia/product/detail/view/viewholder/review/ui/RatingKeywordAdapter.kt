@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.view.viewholder.review.delegate.ReviewCallback
 import com.tokopedia.product.detail.view.viewholder.review.event.OnKeywordClicked
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -36,8 +37,9 @@ class RatingKeywordAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val count = currentList.size
         val item = currentList.getOrNull(position) ?: return
-        holder.bind(item)
+        holder.bind(keyword = item, count = count)
     }
 
     class ViewHolder(
@@ -45,19 +47,32 @@ class RatingKeywordAdapter(
         private val callback: ReviewCallback
     ) : RecyclerView.ViewHolder(chip) {
 
-        fun bind(keyword: ReviewRatingUiModel.Keyword) {
+        fun bind(keyword: ReviewRatingUiModel.Keyword, count: Int) {
             setText(keyword = keyword)
-            setListener(keyword = keyword)
+            setListener(keyword = keyword, count = count)
         }
 
         private fun setText(keyword: ReviewRatingUiModel.Keyword) {
             chip.chipText = keyword.text
         }
 
-        private fun setListener(keyword: ReviewRatingUiModel.Keyword) {
+        private fun setListener(keyword: ReviewRatingUiModel.Keyword, count: Int) {
             chip.setOnClickListener {
-                callback.event(event = OnKeywordClicked(keyword = keyword.filter))
+                callback.event(event = eventKeywordClicked(keyword = keyword, count = count))
             }
         }
+
+        private fun eventKeywordClicked(
+            keyword: ReviewRatingUiModel.Keyword,
+            count: Int
+        ) = OnKeywordClicked(
+            keyword = keyword.filter,
+            trackerData = ComponentTrackDataModel(
+                componentType = keyword.filter,
+                componentName = keyword.text,
+                adapterPosition = bindingAdapterPosition
+            ),
+            keywordAmount = count
+        )
     }
 }

@@ -4,6 +4,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.view.componentization.ComponentCallback
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 
@@ -22,7 +23,7 @@ abstract class BaseComponentCallback<Event : BaseComponentEvent>(
     protected val viewModel
         get() = mediator.pdpViewModel
 
-    protected val trackerQueue
+    protected val queueTracker
         get() = mediator.queueTracker
 
     @Suppress("UNCHECKED_CAST")
@@ -61,7 +62,7 @@ abstract class BaseComponentCallback<Event : BaseComponentEvent>(
 
         DynamicProductDetailTracking.Impression
             .eventImpressionComponent(
-                trackingQueue = trackerQueue,
+                trackingQueue = queueTracker,
                 componentTrackDataModel = trackData,
                 productInfo = viewModel.getDynamicProductInfoP1,
                 componentName = "",
@@ -82,5 +83,14 @@ abstract class BaseComponentCallback<Event : BaseComponentEvent>(
 
     private fun getShipmentPlusText(): String {
         return viewModel.getP2ShipmentPlusByProductId()?.text.orEmpty()
+    }
+
+    protected fun createCommonTracker(componentTracker: ComponentTrackDataModel): CommonTracker? {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return null
+        return CommonTracker(
+            productInfo = productInfo,
+            userId = viewModel.userId,
+            componentTracker = componentTracker
+        )
     }
 }
