@@ -18,6 +18,7 @@ import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.SPACE_
 import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.removeAllItemDecoration
 import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
@@ -75,10 +76,19 @@ class RechargeHomepageTodoWidgetAdapter(
 
         fun removeItem(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
             baseAdapter.removeElement(element)
+            if (baseAdapter.itemCount < Int.ONE) {
+                hideTitle()
+            }
         }
 
         fun getListCount(): Int {
             return baseAdapter.list.size
+        }
+
+        private fun hideTitle() {
+            with(binding) {
+                titleTodoWidget.hide()
+            }
         }
 
         fun bind(item: RechargeHomepageSections.Item) {
