@@ -11,7 +11,7 @@ data class ItemInitialSearchUiModel(
     val appUrl: String? = ""
 ) : BaseInitialSearchSeller {
     override fun getUniquePosition(): Int {
-        return id.orEmpty().hashCode()
+        return id.orEmpty().hashCode() + title.orEmpty().hashCode()
     }
 
     override fun type(typeFactory: TypeFactoryInitialSearchAdapter): Int {
