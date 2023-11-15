@@ -10,6 +10,10 @@ object RollenceKey {
     const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "shareIconShopAff"
     const val AB_TEST_SHOP_RE_IMAGINED = "shop_page_reimagined"
 
+    const val AB_TEST_SHOP_INFO_REIMAGINED = "an_shop_info_revamp"
+    const val AB_TEST_SHOP_INFO_REIMAGINED_ENABLED = "an_shop_info_revamp_enable"
+    const val AB_TEST_SHOP_INFO_REIMAGINED_DISABLED = "an_shop_info_revamp_disable"
+
     // home rollence section
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"

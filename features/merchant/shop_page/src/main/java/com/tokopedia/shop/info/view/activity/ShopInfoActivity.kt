@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
@@ -17,7 +17,7 @@ import com.tokopedia.shop.info.view.fragment.ShopInfoReimagineFragment
  * use [com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_INFO]
  */
 class ShopInfoActivity : BaseActivity() {
-    
+
     private val shopId by lazy {
         intent.getStringExtra(SHOP_ID) ?: intent.data?.lastPathSegment.orEmpty()
     }
@@ -40,26 +40,22 @@ class ShopInfoActivity : BaseActivity() {
         const val SHOP_ID = "EXTRA_SHOP_ID"
     }
 
-    override fun getScreenName() : String = ShopInfoActivity::class.java.simpleName
-    
+    override fun getScreenName(): String = ShopInfoActivity::class.java.simpleName
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_info)
         loadFragment()
     }
-    
+
     private fun loadFragment() {
-        //val useReimagineVersion = useReimagineVersion(context = this)
-        val useReimagineVersion = true
-        
-        if (useReimagineVersion) {
+        if (useReimagineVersion()) {
             showFragment(ShopInfoReimagineFragment.newInstance(shopId))
         } else {
             showFragment(ShopInfoFragment.createInstance(shopId, shopData))
         }
-
     }
-    
+
     private fun showFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
@@ -67,11 +63,18 @@ class ShopInfoActivity : BaseActivity() {
             .commit()
     }
 
-    private fun useReimagineVersion(context: Context?): Boolean {
-        return FirebaseRemoteConfigImpl(context).getBoolean(
-            RemoteConfigKey.ENABLE_SHOP_INFO_PAGE_REIMAGINED,
-            true
-        )
-    }
+    private fun useReimagineVersion(): Boolean {
+        return try {
+            val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+            val abTestValue = abTestPlatform.getString(
+                key = RollenceKey.AB_TEST_SHOP_INFO_REIMAGINED,
+                defaultValue = RollenceKey.AB_TEST_SHOP_INFO_REIMAGINED_ENABLED
+            )
 
+            // abTestValue == RollenceKey.AB_TEST_SHOP_INFO_REIMAGINED_ENABLED
+            true
+        } catch (throwable: Throwable) {
+            false
+        }
+    }
 }
