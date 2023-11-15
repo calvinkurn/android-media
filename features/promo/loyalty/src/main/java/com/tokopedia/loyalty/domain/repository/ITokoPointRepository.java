@@ -5,6 +5,7 @@ import com.tokopedia.loyalty.common.TokoPointDrawerData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
+
 import java.util.Map;
 
 import rx.Observable;

@@ -254,3 +254,6 @@ const val PROMO_WEBVIEW_URL_STAGING =
     "https://affiliate-staging.tokopedia.com/browse"
 const val PROMO_WEBVIEW_URL_PROD =
     "https://affiliate.tokopedia.com/browse?titlebar=false"
+const val WARNING = "warning"
+const val ERROR = "error"
+const val ANNOUNCEMENT = "announcement"

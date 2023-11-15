@@ -198,7 +198,7 @@ class StoriesDetailFragment @Inject constructor(
                 if (!isEligiblePage) return@collect
                 when (event) {
                     is StoriesUiEvent.EmptyDetailPage -> {
-                        setErrorType(StoriesErrorView.Type.EmptyCategory, isTimerAvailable = false)
+                        setErrorType(StoriesErrorView.Type.EmptyCategory)
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
@@ -295,6 +295,7 @@ class StoriesDetailFragment @Inject constructor(
 
         showPageLoading(false)
         binding.vStoriesKebabIcon.showWithCondition(currentItem.menus.isNotEmpty())
+        binding.vStoriesShareIcon.showWithCondition(currentItem.share.isShareable)
     }
 
     private fun renderMedia(content: StoriesItemContent, status: StoryStatus) {
@@ -445,6 +446,7 @@ class StoriesDetailFragment @Inject constructor(
     private fun renderNudge(prevState: StoriesDetailItem?, state: StoriesDetailItem) {
         binding.vStoriesProductIcon.root.showWithCondition(state.isProductAvailable)
         binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
+
         with(binding.nudgeStoriesProduct) {
             setContent {
                 StoriesProductNudge(state.productCount) {
@@ -457,16 +459,16 @@ class StoriesDetailFragment @Inject constructor(
         showSwipeProductJob?.cancel()
         showSwipeProductJob = viewLifecycleOwner.lifecycleScope.launch {
             if (state.isProductAvailable) {
-                binding.flStoriesProduct.hide()
+                binding.nudgeStoriesProduct.hide()
                 delay(DELAY_SWIPE_PRODUCT_BADGE_SHOW)
                 TransitionManager.beginDelayedTransition(
                     binding.root,
                     Fade(Fade.IN)
-                        .addTarget(binding.flStoriesProduct)
+                        .addTarget(binding.nudgeStoriesProduct)
                 )
-                binding.flStoriesProduct.show()
+                binding.nudgeStoriesProduct.show()
             } else {
-                binding.flStoriesProduct.hide()
+                binding.nudgeStoriesProduct.hide()
             }
         }
     }
@@ -578,15 +580,12 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setErrorType(errorType: StoriesErrorView.Type, isTimerAvailable: Boolean = true, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
+    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
         show()
         type = errorType
         setAction { onClick() }
         setCloseAction { activity?.finish() }
         translationZ = if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
-
-        if(errorType != StoriesErrorView.Type.EmptyCategory && isTimerAvailable) return@with
-        renderTimer(null, TimerStatusInfo.Empty)
     }
 
     private fun hideError() = binding.vStoriesError.gone()

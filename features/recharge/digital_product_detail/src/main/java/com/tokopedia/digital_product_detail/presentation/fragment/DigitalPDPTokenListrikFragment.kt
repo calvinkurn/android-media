@@ -234,7 +234,7 @@ class DigitalPDPTokenListrikFragment :
                     binding?.rechargePdpTokenListrikClientNumberWidget?.setFilterChipShimmer(true)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         })
@@ -243,7 +243,7 @@ class DigitalPDPTokenListrikFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         })
@@ -252,7 +252,7 @@ class DigitalPDPTokenListrikFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         })
@@ -262,7 +262,7 @@ class DigitalPDPTokenListrikFragment :
                 is RechargeNetworkResult.Success -> onSuccessGetOperatorSelectGroup()
                 is RechargeNetworkResult.Fail -> onFailedGetOperatorSelectGroup(it.error)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         })
@@ -616,6 +616,7 @@ class DigitalPDPTokenListrikFragment :
                     setInputNumber(prefill.clientNumber)
                 }
             }
+            clearFocusAutoComplete()
         }
     }
 
@@ -1086,7 +1087,7 @@ class DigitalPDPTokenListrikFragment :
     }
 
     override fun onClickedButtonMultiCheckout(denom: DenomData) {
-        //no process
+        // no process
     }
 
     override fun onClickedChevron(denom: DenomData) {

@@ -13,7 +13,9 @@ import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLEDOUBLEEMPTY
 import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLESINGLEEMPTY
 import com.tokopedia.discovery2.Constant.ProductHighlight.V2_STYLE
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.producthighlight.DiscoveryOCSDataModel
 import com.tokopedia.discovery2.databinding.MultiBannerLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -63,11 +65,9 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
                 }
             }
 
-            mProductHighlightViewModel?.redirectToOCS?.observe(it) {
-                val intent = RouteManager.getIntent(itemView.context, ApplinkConstInternalMarketplace.CHECKOUT)
-                intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
-
-                itemView.context.startActivity(intent)
+            mProductHighlightViewModel?.redirectToOCS?.observe(it) { result ->
+                trackSuccessOCS(result)
+                redirectToCheckoutPage()
             }
 
             mProductHighlightViewModel?.ocsErrorMessage?.observe(it) { message ->
@@ -175,14 +175,30 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
         if (phItem !is ProductHighlightRevampItem) return
 
         phItem.onOCSButtonClicked {
-            mProductHighlightViewModel?.onOCSClicked(itemData, itemView.context)
+            mProductHighlightViewModel?.onOCSClicked(itemView.context, itemData)
+        }
+    }
 
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                ?.trackProductHighlightOCSClick(
-                    itemData,
-                    index,
-                    mProductHighlightViewModel?.components
-                )
+    private fun redirectToCheckoutPage() {
+        val intent = RouteManager.getIntent(
+            itemView.context,
+            ApplinkConstInternalMarketplace.CHECKOUT
+        )
+
+        intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
+
+        itemView.context.startActivity(intent)
+    }
+
+    private fun trackSuccessOCS(result: DiscoveryOCSDataModel) {
+        val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+
+        mProductHighlightViewModel?.components?.run {
+            analytics?.trackProductHighlightOCSClick(
+                result,
+                Utils.getParentPosition(this),
+                parentComponentId
+            )
         }
     }
 

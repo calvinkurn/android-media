@@ -17,7 +17,8 @@ data class GoCicilInstallmentRequest(
     val address: OrderProfileAddress = OrderProfileAddress(),
     val shop: OrderShop = OrderShop(),
     val products: MutableList<OrderProduct> = ArrayList(),
-    val promoCodes: List<String> = emptyList()
+    val promoCodes: List<String> = emptyList(),
+    val additionalData: String = ""
 ) {
     val userDefinedValue
         get() = JsonObject().apply {

@@ -47,8 +47,7 @@ class OrderListMapper @Inject constructor() {
                 statusColor = it.statusColor,
                 statusIndicatorColor = it.statusIndicatorColor,
                 destinationProvince = it.destinationProvince,
-                courierName = it.courierName.replace("Kurir", "", false)
-                    .replace(Regex("\\s{2,}"), " "),
+                courierName = it.courierName,
                 courierProductName = it.courierProductName,
                 preOrderType = it.preOrderType,
                 buyerName = it.buyerName.replaceFirstChar { buyerName ->

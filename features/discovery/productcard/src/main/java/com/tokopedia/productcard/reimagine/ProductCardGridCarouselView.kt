@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginStart
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.R
@@ -20,6 +21,9 @@ class ProductCardGridCarouselView: ConstraintLayout {
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by lazyView<ImageUnify?>(R.id.productCardImage)
+
+    val additionalMarginStart: Int
+        get() = cardContainer?.marginStart ?: 0
 
     constructor(context: Context) : super(context) {
         init()
@@ -39,13 +43,6 @@ class ProductCardGridCarouselView: ConstraintLayout {
 
     private fun init(attrs: AttributeSet? = null) {
         View.inflate(context, R.layout.product_card_reimagine_grid_carousel_layout, this)
-
-        layoutParams = LayoutParams(
-            context.resources.getDimensionPixelSize(
-                R.dimen.product_card_reimagine_carousel_width
-            ),
-            MATCH_PARENT,
-        )
 
         cardContainer?.run {
             layoutParams = layoutParams?.apply { height = MATCH_PARENT }

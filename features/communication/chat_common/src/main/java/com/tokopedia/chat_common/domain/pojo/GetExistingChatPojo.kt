@@ -2,6 +2,7 @@ package com.tokopedia.chat_common.domain.pojo
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.chat_common.data.AttachmentType
+import com.tokopedia.chat_common.data.BaseChatUiModel.Companion.SOURCE_AUTO_REPLY
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 
 /**
@@ -192,6 +193,10 @@ data class Reply(
 
     fun isBroadCast(): Boolean {
         return blastId != "0"
+    }
+
+    fun isAutoReply(): Boolean {
+        return source == SOURCE_AUTO_REPLY
     }
 
 }

@@ -12,6 +12,9 @@ internal class AttributesConfig {
     var pagingPaddingHorizontal: Int = 0
         private set
 
+    var itemWidthPercentage: Float = DEFAULT_ITEM_WIDTH_PERCENTAGE
+        private set
+
     fun load(context: Context, attrs: AttributeSet?) {
         val typedArray = context.obtainStyledAttributes(
             attrs,
@@ -37,10 +40,16 @@ internal class AttributesConfig {
             R.styleable.CarouselPagingProductCardView_pagingPaddingHorizontal,
             DEFAULT_PAGING_PADDING_HORIZONTAL_PX
         )
+
+        itemWidthPercentage = typedArray.getFloat(
+            R.styleable.CarouselPagingProductCardView_itemWidthPercentage,
+            DEFAULT_ITEM_WIDTH_PERCENTAGE
+        )
     }
 
     companion object {
         private const val DEFAULT_SHOW_PAGING_INDICATOR = true
         private const val DEFAULT_PAGING_PADDING_HORIZONTAL_PX = 0
+        private const val DEFAULT_ITEM_WIDTH_PERCENTAGE = 0.75f
     }
 }

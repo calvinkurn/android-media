@@ -89,6 +89,13 @@ class PlayQuickReplyTest {
         val mockSocket: PlayWebSocket = mockk(relaxed = true)
         val socketFlow = MutableSharedFlow<WebSocketAction>()
 
+        val mockQuickReplyInfo = modelBuilder.buildChannelData(
+            quickReplyInfo = modelBuilder.buildQuickReply(
+                quickReplyList = emptyList()
+            )
+        )
+        every { repo.getChannelData(any()) } returns mockQuickReplyInfo
+
         every { mockSocket.listenAsFlow() } returns socketFlow
 
         val robot = createPlayViewModelRobot(
@@ -99,7 +106,8 @@ class PlayQuickReplyTest {
 
         robot.use {
             val state = it.recordState {
-                focusPage(mockk(relaxed = true))
+                focusPage(mockQuickReplyInfo)
+                createPage(mockQuickReplyInfo)
                 socketFlow.emit(
                     WebSocketAction.NewMessage(mockQuickRepliesSocketResponse)
                 )
