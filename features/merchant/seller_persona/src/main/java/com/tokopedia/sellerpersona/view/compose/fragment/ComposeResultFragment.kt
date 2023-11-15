@@ -207,7 +207,7 @@ class ComposeResultFragment : BaseComposeFragment() {
         )
         val appLink =
             UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME, param)
-        RouteManager.route(activity.applicationContext, appLink)
+        RouteManager.route(activity, appLink)
         activity.finish()
     }
 

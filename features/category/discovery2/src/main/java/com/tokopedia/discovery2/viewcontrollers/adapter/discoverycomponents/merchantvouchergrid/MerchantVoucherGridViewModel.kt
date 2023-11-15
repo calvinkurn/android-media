@@ -3,11 +3,19 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mer
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.data.ComponentAdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.Redirection
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
+import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase.Companion.VOUCHER_PER_PAGE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.notifications.common.launchCatchError
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridComponentExtension.addShimmer
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridComponentExtension.addVoucherList
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,61 +28,107 @@ class MerchantVoucherGridViewModel(
     val component: ComponentsItem,
     val position: Int
 ) : DiscoveryBaseViewModel(), CoroutineScope {
+    companion object {
+        const val ERROR_MESSAGE_EMPTY_DATA = "empty data"
+        const val SHIMMER_COMPONENT_HEIGHT = 300
+    }
+
+    private val _couponList: MutableLiveData<Result<ArrayList<ComponentsItem>>> = MutableLiveData()
+    private val _seeMore: MutableLiveData<Redirection> = MutableLiveData()
+    private val _noMorePages: MutableLiveData<Unit> = MutableLiveData()
+
+    private val layout: ArrayList<ComponentsItem> = arrayListOf()
+    private var isLoading = true
+
+    val couponList: LiveData<Result<ArrayList<ComponentsItem>>>
+        get() = _couponList
+    val seeMore: LiveData<Redirection>
+        get() = _seeMore
+    val noMorePages: LiveData<Unit>
+        get() = _noMorePages
 
     @JvmField
     @Inject
     var useCase: MerchantVoucherUseCase? = null
 
-    private val _couponList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
-    val couponList: LiveData<ArrayList<ComponentsItem>> = _couponList
-
-    private val _seeMore: MutableLiveData<Redirection> = MutableLiveData()
-    val seeMore: LiveData<Redirection> = _seeMore
-
-    private val _loadError: MutableLiveData<Boolean> = MutableLiveData()
-    val loadError: LiveData<Boolean> = _loadError
-
-    fun fetchCoupons() {
-        launchCatchError(block = {
-            useCase?.loadFirstPageComponents(component.id, component.pageEndPoint).run {
-                setVoucherList()
-
-                this@MerchantVoucherGridViewModel.syncData.value = this
-            }
-        }, onError = {
-                Timber.e(it)
-                _loadError.value = true
-            })
-    }
-
-    private fun setVoucherList() {
-        getVoucherList()?.let {
-            if (it.isNotEmpty()) {
-                _loadError.value = false
-                _couponList.value = it
-            } else {
-                _loadError.value = true
-            }
-        }
-    }
-
-    // This capability will be enabled once we support pagination for landing page
-    @Suppress("unused")
-    private fun setSeeMoreInfo(component: ComponentsItem) {
-        val redirection = component.compAdditionalInfo?.redirection ?: return
-
-        if (!redirection.ctaText.isNullOrBlank()) {
-            _seeMore.value = redirection
-        }
-    }
-
-    private fun getVoucherList(): ArrayList<ComponentsItem>? {
-        component.getComponentsItem()?.let { productList ->
-            return productList as ArrayList<ComponentsItem>
-        }
-        return null
+    init {
+        layout.addShimmer()
     }
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
+        get() = Dispatchers.Main.immediate + SupervisorJob()
+
+    private fun hasNextPage(): Boolean = Utils.nextPageAvailable(component, VOUCHER_PER_PAGE)
+
+    private fun setVoucherList(
+        redirection: Redirection?,
+        onEventAfterVoucherListSet: () -> Unit,
+    ) {
+        val components = component.getComponentsItem()
+        if (!components.isNullOrEmpty()) {
+            if (hasNextPage() && redirection?.ctaText.isNullOrBlank()) {
+                layout.addVoucherList(components)
+                layout.addShimmer()
+            } else {
+                onEventAfterVoucherListSet.invoke()
+                layout.addVoucherList(components)
+            }
+            _couponList.value = Success(ArrayList(layout))
+        } else {
+            _couponList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))
+        }
+    }
+
+    private fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = component.getComponentAdditionalInfo()
+
+    fun loadFirstPageCoupon() {
+        _couponList.value = Success(ArrayList(layout))
+
+        launchCatchError(
+            block = {
+                if (useCase?.loadFirstPageComponents(componentId = component.id, pageEndPoint = component.pageEndPoint) == true) {
+                    val redirection = getComponentAdditionalInfo()?.redirection
+                    setVoucherList(
+                        redirection = redirection,
+                        onEventAfterVoucherListSet = {
+                            this@MerchantVoucherGridViewModel._seeMore.value = redirection
+                            _noMorePages.value = Unit
+                        }
+                    )
+                }
+                isLoading = false
+            },
+            onError = {
+                Timber.e(it)
+                _couponList.value = Fail(it)
+                isLoading = false
+            }
+        )
+    }
+
+    fun loadMore(
+        isAtTheBottomOfThePage: Boolean
+    ) {
+        if (isLoading || !isAtTheBottomOfThePage) return
+
+        isLoading = true
+
+        launchCatchError(
+            block = {
+                if (useCase?.getCarouselPaginatedData(componentId = component.id, pageEndPoint = component.pageEndPoint) == true) {
+                    setVoucherList(
+                        redirection = getComponentAdditionalInfo()?.redirection,
+                        onEventAfterVoucherListSet = {
+                            _noMorePages.value = Unit
+                        }
+                    )
+                }
+                isLoading = false
+            },
+            onError = {
+                _couponList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))
+                isLoading = false
+            }
+        )
+    }
 }
