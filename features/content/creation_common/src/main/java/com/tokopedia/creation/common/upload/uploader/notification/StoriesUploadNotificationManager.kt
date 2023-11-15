@@ -7,13 +7,10 @@ import android.os.Build
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.UriUtil
-import com.tokopedia.createpost.common.TYPE_CONTENT_SHOP
 import com.tokopedia.creation.common.R
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.activity.PlayShortsPostUploadActivity
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
-import com.tokopedia.creation.common.util.StoriesAppLinkBuilder
 import javax.inject.Inject
 
 /**
@@ -36,17 +33,15 @@ class StoriesUploadNotificationManager @Inject constructor(
     )
 
     override fun generateSuccessPendingIntent(): PendingIntent? {
+        val storiesUploadData = uploadData
+        if (storiesUploadData !is CreationUploadData.Stories) return null
 
         val intent = PlayShortsPostUploadActivity.getIntent(
             context,
-            channelId = uploadData?.creationId.orEmpty(),
-            authorId = uploadData?.authorId.orEmpty(),
-            authorType = uploadData?.authorType.orEmpty(),
-            appLink = StoriesAppLinkBuilder.buildForShareLink(
-                uploadData?.creationId.orEmpty(),
-                uploadData?.authorId.orEmpty(),
-                uploadData?.authorType.orEmpty(),
-            ),
+            channelId = storiesUploadData.creationId,
+            authorId = storiesUploadData.authorId,
+            authorType = storiesUploadData.authorType,
+            appLink = storiesUploadData.applink,
         ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
