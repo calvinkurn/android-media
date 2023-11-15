@@ -50,7 +50,6 @@ data class RecommendationItem(
     val addToCartType: AddToCartType = AddToCartType.None,
     // for tracker field
     val dimension61: String = "",
-    val anchorProductId: String = "",
     // for tokonow
     val parentID: Long = 0L,
     var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity

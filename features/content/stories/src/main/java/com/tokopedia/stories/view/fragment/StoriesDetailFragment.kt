@@ -442,6 +442,7 @@ class StoriesDetailFragment @Inject constructor(
 
         showPageLoading(false)
         binding.vStoriesKebabIcon.showWithCondition(currentItem.menus.isNotEmpty())
+        binding.vStoriesShareIcon.showWithCondition(currentItem.share.isShareable)
     }
 
     private fun renderMedia(
@@ -620,6 +621,7 @@ class StoriesDetailFragment @Inject constructor(
     private fun renderNudge(prevState: StoriesDetailItem?, state: StoriesDetailItem) {
         binding.vStoriesProductIcon.root.showWithCondition(state.isProductAvailable)
         binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
+
         with(binding.nudgeStoriesProduct) {
             setContent {
                 StoriesProductNudge(state.productCount) {
@@ -632,16 +634,16 @@ class StoriesDetailFragment @Inject constructor(
         showSwipeProductJob?.cancel()
         showSwipeProductJob = viewLifecycleOwner.lifecycleScope.launch {
             if (state.isProductAvailable) {
-                binding.flStoriesProduct.hide()
+                binding.nudgeStoriesProduct.hide()
                 delay(DELAY_SWIPE_PRODUCT_BADGE_SHOW)
                 TransitionManager.beginDelayedTransition(
                     binding.root,
                     Fade(Fade.IN)
-                        .addTarget(binding.flStoriesProduct)
+                        .addTarget(binding.nudgeStoriesProduct)
                 )
-                binding.flStoriesProduct.show()
+                binding.nudgeStoriesProduct.show()
             } else {
-                binding.flStoriesProduct.hide()
+                binding.nudgeStoriesProduct.hide()
             }
         }
     }

@@ -297,4 +297,6 @@ public class RemoteConfigKey {
     public static final String ANDROID_PM_OPT_OUT_DATE = "android_pm_opt_out_date";
 
     public static final String ENABLE_PDP_PREFETCH = "android_pdp_enable_prefetch";
+
+    public static final String LOAD_PRODUCT_IMAGE_ARCHIVAL_KEY = "android_load_product_image_archival_enabled";
 }
