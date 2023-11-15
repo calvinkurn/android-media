@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.analytic.tracker
 
 import android.os.Bundle
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -16,6 +17,46 @@ import com.tokopedia.track.builder.Tracker
  */
 
 object BuyerOrderDetailTracker {
+
+    object SavingsWidget {
+        fun clickSavingsWidget(
+            orderId: String,
+            isPlus: Boolean
+        ) {
+            val plus = if (isPlus) "plus" else "non plus"
+            val trackerId = if (isPlus) "48649" else "48651"
+
+            mutableMapOf<String, Any>().appendGeneralEventData(
+                eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG,
+                eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+                eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SAVING_WIDGET +
+                        plus,
+                eventLabel = orderId
+            ).appendBusinessUnit(BUSINESS_UNIT_PHYSICAL_GOODS)
+                .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+                .appendTrackerId(trackerId)
+                .sendGeneralEvent()
+        }
+
+        fun impressSavingsWidget(
+            orderId: String,
+            isPlus: Boolean
+        ) {
+            val plus = if (isPlus) "plus" else "non plus"
+            val trackerId = if (isPlus) "48650" else "48652"
+            mutableMapOf<String, Any>().appendGeneralEventData(
+                eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_VIEW_PG_IRIS,
+                eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+                eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_IMPRESSION_SAVING_WIDGET +
+                        plus,
+                eventLabel = orderId
+            ).appendBusinessUnit(BUSINESS_UNIT_PHYSICAL_GOODS)
+                .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+                .appendTrackerId(trackerId)
+                .sendGeneralEvent()
+        }
+    }
+
     private fun MutableMap<String, Any>.appendGeneralEventData(
         eventName: String,
         eventCategory: String,

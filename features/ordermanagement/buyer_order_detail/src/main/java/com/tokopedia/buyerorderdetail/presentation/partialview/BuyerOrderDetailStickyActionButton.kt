@@ -184,7 +184,10 @@ class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
         }
 
         savingWidgetButton?.setOnClickListener {
-            bottomSheetManager?.showSavingsWidgetBottomSheet(savingsWidgetUiModel.plusComponents)
+            stickyActionButtonHandler?.onSavingsWidgetClicked(
+                plusComponent = savingsWidgetUiModel.plusComponents,
+                isPlus = savingsWidgetUiModel.isPlus
+            )
         }
     }
 

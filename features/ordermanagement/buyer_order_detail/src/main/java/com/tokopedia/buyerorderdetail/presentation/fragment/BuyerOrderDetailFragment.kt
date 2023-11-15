@@ -62,6 +62,7 @@ import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailSticky
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.EstimateInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
+import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEvent
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundSummaryUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
@@ -306,6 +307,7 @@ open class BuyerOrderDetailFragment :
         observeAddSingleToCart()
         observeAddMultipleToCart()
         observeMedalTouchPoint()
+        observeOneTimeEvent()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -496,6 +498,23 @@ open class BuyerOrderDetailFragment :
         }
     }
 
+    private fun observeOneTimeEvent() {
+        collectLatestWhenResumed(viewModel.oneTimeMethodState) {
+            when (it.event) {
+                is OrderOneTimeEvent.ImpressSavingsWidget -> {
+                    BuyerOrderDetailTracker.SavingsWidget.impressSavingsWidget(
+                        orderId = it.event.orderId,
+                        isPlus = it.event.isPlus
+                    )
+                }
+
+                else -> {
+                    //no op
+                }
+            }
+        }
+    }
+
     private fun observeMedalTouchPoint() {
         scpMedalTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
             when (val result = it.result) {
@@ -611,11 +630,8 @@ open class BuyerOrderDetailFragment :
     private fun updateSavingsWidget(uiState: BuyerOrderDetailUiState.HasData) {
         when (uiState.savingsWidgetUiState) {
             is SavingsWidgetUiState.Success -> {
-                stickyActionButton?.setupSavingWidget(
-                    (uiState.savingsWidgetUiState as SavingsWidgetUiState.Success).data
-                )
+                onSuccessGetSavingWidget(uiState)
             }
-
             is SavingsWidgetUiState.Error -> {
                 stickyActionButton?.hideSavingWidget()
             }
@@ -626,6 +642,27 @@ open class BuyerOrderDetailFragment :
                 //noop
             }
         }
+    }
+
+    private fun onSuccessGetSavingWidget(uiState: BuyerOrderDetailUiState.HasData) {
+        val savingWidgetData = (uiState.savingsWidgetUiState as?
+                SavingsWidgetUiState.Success)?.data
+
+        if (savingWidgetData == null) {
+            stickyActionButton?.hideSavingWidget()
+            return
+        }
+
+        viewModel.changeOneTimeMethod(
+            OrderOneTimeEvent.ImpressSavingsWidget(
+                orderId = viewModel.getOrderId(),
+                isPlus = savingWidgetData.isPlus
+            )
+        )
+
+        stickyActionButton?.setupSavingWidget(
+            savingWidgetData
+        )
     }
 
     private fun setupToolbarMenu(showChatIcon: Boolean) {

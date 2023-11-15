@@ -7,6 +7,8 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMa
 import com.tokopedia.buyerorderdetail.presentation.mapper.SavingsWidgetUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ScpRewardsMedalTouchPointWidgetMapper
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
+import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEvent
+import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEventUiState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.SavingsWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
@@ -25,8 +27,11 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -483,6 +488,33 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                     .isEmptyData()
             )
         }
+
+    @Test
+    fun `change one time method assign all value`() = runBlockingTest {
+        val testResults = mutableListOf<OrderOneTimeEventUiState>()
+
+        val job = launch {
+            viewModel.oneTimeMethodState.toList(testResults)
+        }
+
+        //second assignment, because the first one is default value which OneTimeMethodEvent.Empty
+        viewModel.changeOneTimeMethod(event = OrderOneTimeEvent.ImpressSavingsWidget(
+            orderId = "asd",
+            isPlus = true
+        ))
+
+        assertTrue(testResults[1].event is OrderOneTimeEvent.ImpressSavingsWidget)
+        assertEquals(testResults[1].impressSavingsWidget, true)
+
+        //re-assign and make sure we dont want to update the data, since we need to run every event exactly once
+        viewModel.changeOneTimeMethod(event = OrderOneTimeEvent.ImpressSavingsWidget(
+            orderId = "asd",
+            isPlus = true
+        ))
+
+        assertTrue(testResults.size == 2)
+        job.cancel()
+    }
 
     @Test
     fun `SavingsWidgetUiState should success when SavingsWidgetUiStateMapper success`() =

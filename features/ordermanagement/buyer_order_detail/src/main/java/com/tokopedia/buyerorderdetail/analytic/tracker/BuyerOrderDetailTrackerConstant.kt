@@ -66,6 +66,9 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
     const val EVENT_ACTION_CLICK_SHARING_CHANNEL = "click - sharing channel"
     const val EVENT_ACTION_IMPRESSION_SHARE_BOTTOM_SHEET = "view on sharing channel"
+    const val EVENT_ACTION_CLICK_SAVING_WIDGET = "click savings widget - "
+    const val EVENT_ACTION_IMPRESSION_SAVING_WIDGET = "impression savings widget - "
+
 
     // pof
     const val EVENT_ACTION_CLICK_TOTAL_AVAILABLE_ITEM_POF = "click jumlah barang tersedia - popup pof"

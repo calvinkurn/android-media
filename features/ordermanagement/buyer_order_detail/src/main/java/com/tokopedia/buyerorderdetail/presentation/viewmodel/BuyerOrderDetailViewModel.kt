@@ -32,6 +32,8 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.ScpRewardsMedalTouchPo
 import com.tokopedia.buyerorderdetail.presentation.mapper.ShipmentInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
+import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEvent
+import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEventUiState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
@@ -142,6 +144,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val savingsWidgetUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapSavingsWidgetUiState
     ).toStateFlow(SavingsWidgetUiState.Hide)
+
+    private val _oneTimeMethod = MutableStateFlow(OrderOneTimeEventUiState())
+    val oneTimeMethodState: StateFlow<OrderOneTimeEventUiState> = _oneTimeMethod
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState,
@@ -360,6 +365,25 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     fun hideScpRewardsMedalTouchPointWidget() {
         scpRewardsMedalTouchPointWidgetUiState.value = ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden
+    }
+
+    // https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2158935800/How+to+create+one+time+event+in+PDP
+    fun changeOneTimeMethod(event: OrderOneTimeEvent) {
+        when (event) {
+            is OrderOneTimeEvent.ImpressSavingsWidget -> {
+                if (_oneTimeMethod.value.impressSavingsWidget) return
+                _oneTimeMethod.update {
+                    it.copy(
+                        event = event,
+                        impressSavingsWidget = true
+                    )
+                }
+            }
+
+            OrderOneTimeEvent.Empty -> {
+                //noop
+            }
+        }
     }
 
     private fun <T> Flow<T>.toStateFlow(initialValue: T) = stateIn(

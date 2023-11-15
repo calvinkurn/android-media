@@ -91,7 +91,10 @@ data class GetBuyerOrderDetailResponse(
             val additionalData: BomAdditionalData = BomAdditionalData(),
             @SerializedName("is_pof")
             @Expose
-            val isPof: Boolean? = false
+            val isPof: Boolean? = false,
+            @SerializedName("is_plus")
+            @Expose
+            val isPlus: Boolean? = false
         ) {
             fun getDriverTippingInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.DRIVER_TIPPING_INFO }

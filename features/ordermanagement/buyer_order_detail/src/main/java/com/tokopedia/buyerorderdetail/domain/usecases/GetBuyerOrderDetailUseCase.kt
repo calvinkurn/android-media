@@ -537,6 +537,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     consultation_patient_name
                   }
                 }
+                is_plus
                 is_pof
                 has_ppp
               }

@@ -18,23 +18,29 @@ object SavingsWidgetUiStateMapper {
 
             is GetBuyerOrderDetailRequestState.Complete.Success -> {
                 val savingsData = getBuyerOrderDetailRequestState.result.additionalData.plusSavings
+                val isPlus = getBuyerOrderDetailRequestState.result.isPlus
                 if (savingsData.shouldHide()) {
                     SavingsWidgetUiState.Hide
                 } else {
-                    mapIntoUiModel(savingsData)
+                    mapIntoUiModel(savingsData, isPlus ?: false)
                 }
             }
+
             else -> {
                 SavingsWidgetUiState.Nothing
             }
         }
     }
 
-    private fun mapIntoUiModel(plusSavings: PlusSavings): SavingsWidgetUiState.Success {
+    private fun mapIntoUiModel(
+        plusSavings: PlusSavings,
+        isPlus: Boolean
+    ): SavingsWidgetUiState.Success {
         return SavingsWidgetUiState.Success(
             SavingsWidgetUiModel(
                 plusTicker = plusSavings.plusTicker,
-                plusComponents = plusSavings.plusComponents
+                plusComponents = plusSavings.plusComponents,
+                isPlus = isPlus
             )
         )
     }
