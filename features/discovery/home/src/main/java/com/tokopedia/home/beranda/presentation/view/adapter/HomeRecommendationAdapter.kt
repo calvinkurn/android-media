@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.isFullSpan
 import com.tokopedia.home.beranda.presentation.view.adapter.diffutil.HomeRecommendationDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationPlayWidgetViewHolder
 import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.RecomEntityCardViewHolder
 
 class HomeRecommendationAdapter(
@@ -66,7 +67,7 @@ class HomeRecommendationAdapter(
     }
 }
 
-interface HomeRecommendationListener : RecomEntityCardViewHolder.Listener {
+interface HomeRecommendationListener : RecomEntityCardViewHolder.Listener, HomeRecommendationPlayWidgetViewHolder.Listener {
     fun onProductImpression(
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
         position: Int

@@ -11,6 +11,7 @@ data class RecomEntityCardUiModel(
     val categoryId: String,
     val title: String,
     val subTitle: String,
+    val appLink: String,
     val imageUrl: String,
     val backgroundColor: List<String>,
     val labelState: LabelState

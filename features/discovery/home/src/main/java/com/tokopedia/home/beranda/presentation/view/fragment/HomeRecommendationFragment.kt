@@ -50,6 +50,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder.Companion.LAYOUT
@@ -571,7 +572,30 @@ class HomeRecommendationFragment :
             position,
             userSessionInterface.userId
         )
-        goToProductDetail(item.id, position)
+        context?.let {
+            RouteManager.route(it, item.appLink)
+        }
+    }
+
+    override fun onPlayVideoWidgetClick(element: HomeRecommendationPlayWidgetUiModel, position: Int) {
+        HomeRecommendationTracking.sendClickVideoRecommendationCardTracking(
+            element,
+            position,
+            userSessionInterface.userId
+        )
+        context?.let {
+            RouteManager.route(it, element.appLink)
+        }
+    }
+
+    override fun onPlayVideoWidgetImpress(element: HomeRecommendationPlayWidgetUiModel, position: Int) {
+        trackingQueue.putEETracking(
+            HomeRecommendationTracking.getImpressPlayVideoWidgetTracking(
+                element,
+                position,
+                userSessionInterface.userId
+            ) as HashMap<String, Any>
+        )
     }
 
     override fun onRetryGetProductRecommendationData() {

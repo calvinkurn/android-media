@@ -5,14 +5,22 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.BANNER_ADS_INSIDE_RECOMMENDATION
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.BANNER_INSIDE_RECOMMENDATION
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.CLICK_ON_BANNER_FOR_YOU_WIDGET
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.CLICK_ON_VIDEO_RECOMMENDATION_CARD_FOR_YOU_VIDEO
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.FOR_YOU
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.IMPRESSION_ON_BANNER_RECOMMENDATION_CARD_FOR_YOU
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.IMPRESSION_VIDEO_RECOMMENDATION_CARD_FOR_YOU_VIDEO
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.ITEM_NAME_FOR_YOU_VIDEO_FORMAT
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.ITEM_NAME_NEW_FOR_YOU_FORMAT
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.PLAY
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.RECOMMENDATION_CARD_FOR_YOU
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_47626
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_47716
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_48661
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_48662
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
 import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
@@ -44,6 +52,14 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         const val RECOMMENDATION_CARD_FOR_YOU = "recommendation card for you"
         const val TRACKER_ID_47716 = "47716"
         const val TRACKER_ID_47626 = "47626"
+
+        const val CLICK_ON_VIDEO_RECOMMENDATION_CARD_FOR_YOU_VIDEO = "click on video recommendation card for you video"
+        const val IMPRESSION_VIDEO_RECOMMENDATION_CARD_FOR_YOU_VIDEO = "impression on video recommendation card for you video"
+        const val PLAY = "play"
+        const val FOR_YOU = "ForYou"
+        const val ITEM_NAME_FOR_YOU_VIDEO_FORMAT = "/ - p%s - recommendation card for you video - banner - %s - %s - %s - %s"
+        const val TRACKER_ID_48661 = "48661"
+        const val TRACKER_ID_48662 = "48662"
 
         const val ITEM_NAME_NEW_FOR_YOU_FORMAT = "/ - p%s - %s - banner - %s - %s - %s - %s"
     }
@@ -257,6 +273,118 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.PROMO_CLICK, bundle)
+    }
+
+    fun sendClickVideoRecommendationCardTracking(
+        homeRecomPlayWidgetUiModel: HomeRecommendationPlayWidgetUiModel,
+        position: Int,
+        userId: String
+    ) {
+        val playWidgetTrackerModel = homeRecomPlayWidgetUiModel.playVideoTrackerUiModel
+        val playVideoWidgetUiModel = homeRecomPlayWidgetUiModel.playVideoWidgetUiModel
+        val widgetPosition = "0"
+        val homeChannelId = "0"
+
+        val itemPosition = (position + Int.ONE).toString()
+
+        val bundle = Bundle().apply {
+            putString(Event.KEY, Event.SELECT_CONTENT)
+            putString(Action.KEY, CLICK_ON_VIDEO_RECOMMENDATION_CARD_FOR_YOU_VIDEO)
+            putString(Category.KEY, Category.HOMEPAGE)
+            putString(
+                Label.KEY,
+                "$FOR_YOU - ${playWidgetTrackerModel.videoType} - ${playWidgetTrackerModel.partnerId} - ${playWidgetTrackerModel.playChannelId} - $itemPosition - $widgetPosition - ${playVideoWidgetUiModel.isAutoPlay} - ${playWidgetTrackerModel.recommendationType} - $homeChannelId"
+            )
+            putString(
+                TrackerId.KEY,
+                TRACKER_ID_48662
+            )
+            putString(
+                BusinessUnit.KEY,
+                PLAY
+            )
+            putString(
+                CampaignCode.KEY,
+                // todo will updated
+                ""
+            )
+            putString(
+                ChannelId.KEY,
+                homeChannelId
+            )
+            putString(
+                CurrentSite.KEY,
+                CurrentSite.DEFAULT
+            )
+            putBundle(
+                Promotion.KEY,
+                Bundle().also {
+                    it.putString(Promotion.CREATIVE_NAME, "")
+                    it.putString(Promotion.CREATIVE_SLOT, itemPosition)
+                    it.putString(Promotion.ITEM_ID, "")
+                    it.putString(
+                        Promotion.ITEM_NAME,
+                        ITEM_NAME_FOR_YOU_VIDEO_FORMAT.format(
+                            itemPosition,
+                            RECOMMENDATION_CARD_FOR_YOU,
+                            playWidgetTrackerModel.categoryId,
+                            playWidgetTrackerModel.layoutCard,
+                            playWidgetTrackerModel.layoutItem,
+                            playVideoWidgetUiModel.title
+                        )
+                    )
+                }
+            )
+            putString(UserId.KEY, userId)
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.PROMO_CLICK, bundle)
+    }
+
+    fun getImpressPlayVideoWidgetTracking(
+        homeRecomPlayWidgetUiModel: HomeRecommendationPlayWidgetUiModel,
+        position: Int,
+        userId: String
+    ): Map<String, Any> {
+        val playWidgetTrackerModel = homeRecomPlayWidgetUiModel.playVideoTrackerUiModel
+        val playVideoWidgetUiModel = homeRecomPlayWidgetUiModel.playVideoWidgetUiModel
+        val widgetPosition = "0"
+        val homeChannelId = "0"
+
+        val itemPosition = (position + Int.ONE).toString()
+
+        val trackingBuilder = BaseTrackerBuilder()
+        val itemName = ITEM_NAME_FOR_YOU_VIDEO_FORMAT.format(
+            itemPosition,
+            RECOMMENDATION_CARD_FOR_YOU,
+            playWidgetTrackerModel.categoryId,
+            playWidgetTrackerModel.layoutCard,
+            playWidgetTrackerModel.layoutItem,
+            playVideoWidgetUiModel.title
+        )
+
+        val listPromotions = arrayListOf(
+            Promotion(
+                creative = "",
+                position = itemPosition,
+                id = "",
+                name = itemName
+            )
+        )
+
+        return trackingBuilder.constructBasicPromotionView(
+            event = Event.VIEW_ITEM,
+            eventCategory = Category.HOMEPAGE,
+            eventAction = IMPRESSION_VIDEO_RECOMMENDATION_CARD_FOR_YOU_VIDEO,
+            eventLabel = "$FOR_YOU - ${playWidgetTrackerModel.videoType} - ${playWidgetTrackerModel.partnerId} - ${playWidgetTrackerModel.playChannelId} - $itemPosition - $widgetPosition - ${playVideoWidgetUiModel.isAutoPlay} - ${playWidgetTrackerModel.recommendationType} - $homeChannelId",
+            promotions = listPromotions
+        ).appendBusinessUnit(PLAY)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendUserId(userId)
+            .appendCustomKeyValue(
+                TrackerId.KEY,
+                TRACKER_ID_48661
+            ).build()
     }
 
     fun getImpressEntityCardTracking(

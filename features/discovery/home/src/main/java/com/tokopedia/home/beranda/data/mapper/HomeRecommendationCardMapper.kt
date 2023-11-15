@@ -91,8 +91,8 @@ class HomeRecommendationCardMapper @Inject constructor(
                             mapToHomeRecommendationPlayWidget(
                                 layoutCard = card.layout,
                                 layoutTracker = card.layoutTracker,
-                                categoryId = card.categoryID,
-                                playVideoWidgetResponse = it
+                                playVideoWidgetResponse = it,
+                                recommendationType = card.recommendationType
                             )
                         )
                     }
@@ -109,13 +109,10 @@ class HomeRecommendationCardMapper @Inject constructor(
     private fun mapToHomeRecommendationPlayWidget(
         layoutCard: String,
         layoutTracker: String,
-        categoryId: String,
+        recommendationType: String,
         playVideoWidgetResponse: PlayVideoWidgetResponse
     ): HomeRecommendationPlayWidgetUiModel {
         return HomeRecommendationPlayWidgetUiModel(
-            layoutCard = layoutCard,
-            layoutItem = layoutTracker,
-            categoryId = categoryId,
             appLink = playVideoWidgetResponse.link.applink,
             playVideoWidgetUiModel = PlayVideoWidgetUiModel(
                 id = playVideoWidgetResponse.id,
@@ -128,6 +125,15 @@ class HomeRecommendationCardMapper @Inject constructor(
                 badgeUrl = playVideoWidgetResponse.author.badge,
                 isLive = playVideoWidgetResponse.basic.isLive,
                 isAutoPlay = playVideoWidgetResponse.basic.autoPlay
+            ),
+            playVideoTrackerUiModel = HomeRecommendationPlayWidgetUiModel.HomeRecommendationPlayVideoTrackerUiModel(
+                videoType = playVideoWidgetResponse.basic.type.text,
+                partnerId = playVideoWidgetResponse.author.id,
+                playChannelId = playVideoWidgetResponse.contentOriginID,
+                recommendationType = recommendationType,
+                layoutCard = layoutCard,
+                layoutItem = layoutTracker,
+                categoryId = (playVideoWidgetResponse.category.dominantL3.firstOrNull() ?: "").toString()
             )
         )
     }
@@ -141,6 +147,7 @@ class HomeRecommendationCardMapper @Inject constructor(
             layoutItem = recommendationCard.layoutTracker,
             categoryId = recommendationCard.categoryID,
             title = recommendationCard.name,
+            appLink = recommendationCard.applink,
             subTitle = recommendationCard.subtitle,
             imageUrl = recommendationCard.imageUrl,
             backgroundColor = recommendationCard.gradientColor,

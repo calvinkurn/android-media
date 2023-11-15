@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.domain.gql.recommendationcard
 
-
 import com.google.gson.annotations.SerializedName
 
 data class PlayVideoWidgetResponse(
@@ -52,9 +51,7 @@ data class PlayVideoWidgetResponse(
         val type: Type = Type(),
         @SerializedName("webLink")
         val webLink: String = ""
-    ) {
-
-    }
+    )
 
     data class Basic(
         @SerializedName("activeMediaID")

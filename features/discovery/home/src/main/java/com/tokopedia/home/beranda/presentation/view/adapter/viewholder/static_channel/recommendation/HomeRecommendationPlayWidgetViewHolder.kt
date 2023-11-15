@@ -7,12 +7,15 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationVideoWidgetManager
 import com.tokopedia.home.databinding.ItemHomeRecommendationPlayWidgetBinding
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
 import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.BaseRecommendationForYouViewHolder
 
 class HomeRecommendationPlayWidgetViewHolder(
     view: View,
-    homeRecommendationPlayWidgetManager: HomeRecommendationVideoWidgetManager
+    homeRecommendationPlayWidgetManager: HomeRecommendationVideoWidgetManager,
+    private val listener: Listener
 ) : BaseRecommendationForYouViewHolder<HomeRecommendationPlayWidgetUiModel>(
     view,
     HomeRecommendationPlayWidgetUiModel::class.java
@@ -41,11 +44,15 @@ class HomeRecommendationPlayWidgetViewHolder(
 
     override fun bind(element: HomeRecommendationPlayWidgetUiModel) {
         bindHomeRecomPlayWidgetVideo(element)
+        setOnPlayVideoImpressionListener(element)
+        setHomePlayWidgetVideoClick(element)
     }
 
     override fun bindPayload(newItem: HomeRecommendationPlayWidgetUiModel?) {
         newItem?.let {
             bindHomeRecomPlayWidgetVideo(it)
+            setOnPlayVideoImpressionListener(it)
+            setHomePlayWidgetVideoClick(it)
         }
     }
 
@@ -53,14 +60,25 @@ class HomeRecommendationPlayWidgetViewHolder(
         binding.homeRecomPlayWidgetVideo.bind(element.playVideoWidgetUiModel)
     }
 
-    private fun setHomePlayWidgetVideoClick() {
+    private fun setHomePlayWidgetVideoClick(element: HomeRecommendationPlayWidgetUiModel) {
         binding.homeRecomPlayWidgetVideo.setOnClickListener {
-
+            listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
         }
     }
 
+    private fun setOnPlayVideoImpressionListener(element: HomeRecommendationPlayWidgetUiModel) {
+        binding.homeRecomPlayWidgetVideo.addOnImpressionListener(
+            element,
+            object : ViewHintListener {
+                override fun onViewHint() {
+                    listener.onPlayVideoWidgetImpress(element, bindingAdapterPosition)
+                }
+            }
+        )
+    }
+
     interface Listener {
-        fun onPlayVideoWidgetClick(element: HomeRecommendationPlayWidgetUiModel)
-        fun onPlayVideoWidgetImpress(element: HomeRecommendationPlayWidgetUiModel)
+        fun onPlayVideoWidgetClick(element: HomeRecommendationPlayWidgetUiModel, position: Int)
+        fun onPlayVideoWidgetImpress(element: HomeRecommendationPlayWidgetUiModel, position: Int)
     }
 }
