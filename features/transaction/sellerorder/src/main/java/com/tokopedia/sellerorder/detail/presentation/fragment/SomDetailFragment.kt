@@ -1174,6 +1174,10 @@ open class SomDetailFragment :
         // no op
     }
 
+    override fun onBmgmItemImpressed(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        // no op
+    }
+
     override fun onDetailIncomeClicked() {
         val somDetailTransparencyFeeBottomSheet =
             SomDetailTransparencyFeeBottomSheet.newInstance(orderId)

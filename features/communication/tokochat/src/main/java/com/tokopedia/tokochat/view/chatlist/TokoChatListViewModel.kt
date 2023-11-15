@@ -20,12 +20,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TokoChatListViewModel @Inject constructor(
@@ -55,6 +53,7 @@ class TokoChatListViewModel @Inject constructor(
 
     fun setupViewModelObserver() {
         _actionFlow.process()
+        observeChatListItemFlow()
     }
 
     fun processAction(action: TokoChatListAction) {
@@ -75,14 +74,12 @@ class TokoChatListViewModel @Inject constructor(
                 TokoChatListAction.RefreshPage -> {
                     resetChatListData()
                     observeChatListItemFlow()
-                    fetchLocalChatList()
                 }
                 TokoChatListAction.LoadNextPage -> {
                     loadNextPageChatList(BATCH_LIMIT)
                 }
             }
         }
-            .flowOn(dispatcher.immediate)
             .launchIn(viewModelScope)
     }
 
@@ -91,27 +88,29 @@ class TokoChatListViewModel @Inject constructor(
         val previousJob = chatListJob
         previousJob?.cancel()
 
-        chatListJob = viewModelScope.launch {
+        chatListJob = viewModelScope.launch(dispatcher.io) {
             try {
                 previousJob?.join() // Wait until previous job finished
-                chatListUseCase.conversationChannelFlow
-                    .collectLatest { result ->
-                        when (result) {
-                            is TokoChatResult.Success -> {
-                                onSuccessGetChatItemList(result.data)
+                chatListUseCase.fetchAllCachedChannels(
+                    listOf(ChannelType.GroupBooking),
+                    BATCH_LIMIT
+                ).collectLatest { result ->
+                    when (result) {
+                        is TokoChatResult.Success -> {
+                            onSuccessGetChatItemList(result.data)
+                        }
+                        is TokoChatResult.Error -> {
+                            _chatListUiState.update {
+                                it.copy(errorMessage = result.throwable.message.toString())
                             }
-                            is TokoChatResult.Error -> {
-                                _chatListUiState.update {
-                                    it.copy(errorMessage = result.throwable.message.toString())
-                                }
-                            }
-                            TokoChatResult.Loading -> {
-                                _chatListUiState.update {
-                                    it.copy(isLoading = true)
-                                }
+                        }
+                        TokoChatResult.Loading -> {
+                            _chatListUiState.update {
+                                it.copy(isLoading = true)
                             }
                         }
                     }
+                }
             } catch (throwable: Throwable) {
                 val errorPair = Pair(throwable, ::observeChatListItemFlow.name)
                 _errorUiState.emit(TokoChatListErrorUiState(errorPair))
@@ -144,28 +143,21 @@ class TokoChatListViewModel @Inject constructor(
         }
     }
 
-    private fun fetchLocalChatList() {
-        viewModelScope.launch {
-            try {
-                chatListUseCase.fetchAllCachedChannels(listOf(ChannelType.GroupBooking))
-            } catch (throwable: Throwable) {
-                val errorPair = Pair(throwable, ::fetchLocalChatList.name)
-                _errorUiState.emit(TokoChatListErrorUiState(errorPair))
-            }
-        }
-    }
-
     private fun loadNextPageChatList(batchSize: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher.io) {
             try {
                 _chatListUiState.update {
                     it.copy(page = it.page + 1)
                 }
-                withContext(dispatcher.io) {
-                    chatListUseCase.fetchAllChannel(
-                        channelTypes = listOf(ChannelType.GroupBooking),
-                        batchSize = getBatchSize(batchSize)
-                    )
+                chatListUseCase.fetchAllRemoteChannels(
+                    channelTypes = listOf(ChannelType.GroupBooking),
+                    batchSize = getBatchSize(batchSize)
+                ).collectLatest { result ->
+                    if (result is TokoChatResult.Error) {
+                        _chatListUiState.update {
+                            it.copy(errorMessage = result.throwable.message)
+                        }
+                    }
                 }
             } catch (throwable: Throwable) {
                 val errorPair = Pair(throwable, ::loadNextPageChatList.name)
@@ -225,11 +217,5 @@ class TokoChatListViewModel @Inject constructor(
                 )
             )
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        chatListJob?.cancel()
-        chatListUseCase.cancel()
     }
 }

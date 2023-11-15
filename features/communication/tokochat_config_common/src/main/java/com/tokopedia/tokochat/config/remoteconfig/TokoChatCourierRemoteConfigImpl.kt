@@ -43,16 +43,10 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
     }
 
     private fun getCourierConfigData(courierConfigList: List<CourierConfigWrapper>): CourierConfigData {
-        var result = CourierConfigData()
-        run loop@{
-            courierConfigList.reversed().forEach {
-                if (it.configVersion == COURIER_CONFIG_VERSION) {
-                    result = it.data
-                    return@loop
-                }
-            }
+        val matchingConfig = courierConfigList.findLast {
+            it.configVersion == COURIER_CONFIG_VERSION
         }
-        return result
+        return matchingConfig?.data ?: CourierConfigData()
     }
 
     private fun createErrorMessage(

@@ -104,7 +104,6 @@ import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsCel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.AnalyticsData
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
-import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -127,7 +126,6 @@ import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 open class BuyerOrderDetailFragment :
     BaseDaggerFragment(),
@@ -353,6 +351,10 @@ open class BuyerOrderDetailFragment :
         val productCopy = product.copy(isProcessing = true)
         viewModel.addSingleToCart(productCopy)
         trackBuyAgainProduct()
+    }
+
+    override fun onProductImpressed(product: ProductListUiModel.ProductUiModel) {
+        viewModel.impressProduct(product)
     }
 
     override fun onPurchaseAgainButtonClicked(uiModel: ProductListUiModel.ProductUiModel) {
@@ -1095,6 +1097,10 @@ open class BuyerOrderDetailFragment :
         BuyerOrderDetailTracker.eventClickWarrantyClaim(uiModel.orderId)
     }
 
+    override fun onBmgmItemImpressed(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        viewModel.impressBmgmProduct(uiModel)
+    }
+
     override fun onCopyAddOnDescription(label: String, description: CharSequence) {
         // no op for bmgm add on because there is no function copy
     }
@@ -1127,15 +1133,11 @@ open class BuyerOrderDetailFragment :
     private fun observeGroupBooking() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getGroupBookingFlow().collectLatest {
-                    when (it) {
-                        is TokoChatResult.Success -> {
-                            viewModel.fetchUnreadCounter(it.data)
-                        }
-                        is TokoChatResult.Error -> {
-                            adapter.updateCourierCounter(0)
-                        }
-                        TokoChatResult.Loading -> Unit // No-op
+                viewModel.groupBookingUiState.collectLatest {
+                    if (it.error == null) {
+                        viewModel.fetchUnReadChatCount()
+                    } else {
+                        adapter.updateCourierCounter(0)
                     }
                 }
             }
@@ -1145,15 +1147,11 @@ open class BuyerOrderDetailFragment :
     private fun observeChatUnreadCounter() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getUnreadCounterFlow().collectLatest {
-                    when (it) {
-                        is TokoChatResult.Success -> {
-                            adapter.updateCourierCounter(it.data)
-                        }
-                        is TokoChatResult.Error -> {
-                            adapter.updateCourierCounter(0)
-                        }
-                        TokoChatResult.Loading -> Unit // No-op
+                viewModel.chatCounterUiState.collectLatest {
+                    if (it.error == null) {
+                        adapter.updateCourierCounter(it.counter)
+                    } else {
+                        adapter.updateCourierCounter(0)
                     }
                 }
             }

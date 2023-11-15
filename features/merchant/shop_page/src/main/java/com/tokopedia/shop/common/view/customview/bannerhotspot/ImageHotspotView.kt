@@ -12,7 +12,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.view.model.ImageHotspotData
 import com.tokopedia.shop.databinding.ImageHotspotViewBinding
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.dpToPx
 
 class ImageHotspotView @JvmOverloads constructor(
     context: Context,
@@ -22,7 +21,7 @@ class ImageHotspotView @JvmOverloads constructor(
     HotspotTagView.Listener {
 
     companion object {
-        private val DEFAULT_CORNER_RADIUS = 4f.dpToPx().toInt()
+        private const val DEFAULT_CORNER_RADIUS = 12
         private const val DEFAULT_RATIO = "1:1"
     }
 
