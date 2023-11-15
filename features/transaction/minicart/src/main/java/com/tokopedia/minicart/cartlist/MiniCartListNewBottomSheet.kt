@@ -8,6 +8,7 @@ import android.content.res.Resources
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -17,6 +18,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -24,6 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.show
@@ -32,19 +35,25 @@ import com.tokopedia.minicart.MiniCartBottomSheetUnifyListener
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
+import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheet
+import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.SummaryTransactionBottomSheet
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.chatlist.MiniCartChatListBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.tracker.ProductBundleRecomTracker
+import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
+import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartListBinding
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
@@ -60,7 +69,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.globalerror.R as globalerrorR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomSheetUnifyListener {
@@ -86,8 +99,10 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
     private var viewModel: MiniCartViewModel? = null
     private var bottomSheet: BottomSheetUnify? = null
     private var adapter: MiniCartListAdapter? = null
-    private var bottomSheetListener: MiniCartListBottomSheetListener? = null
+    private var bottomSheetListener: MiniCartListNewBottomSheetListener? = null
     private var miniCartChevronClickListener: View.OnClickListener? = null
+
+    private var progressDialog: AlertDialog? = null
 
     private var measureRecyclerViewPaddingDebounceJob: Job? = null
     private var updateCartDebounceJob: Job? = null
@@ -118,6 +133,9 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var globalErrorBottomSheet: GlobalErrorBottomSheet
+
     private fun initializeInjector(baseAppComponent: Application?) {
         if (baseAppComponent is BaseMainApplication) {
             DaggerMiniCartWidgetComponent.builder()
@@ -133,7 +151,7 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
         lifecycleOwner: LifecycleOwner,
         viewModelStoreOwner: ViewModelStoreOwner,
         viewModel: MiniCartViewModel?,
-        bottomSheetListener: MiniCartListBottomSheetListener
+        bottomSheetListener: MiniCartListNewBottomSheetListener
     ) {
         context?.let {
             if (!isShow) {
@@ -209,6 +227,13 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
                 knobView.setOnClickListener {
                     analytics.eventClickKnobToExpandMiniCartBottomSheet()
                 }
+                viewBinding.bottomsheetContainer.let { container ->
+                    showToaster(
+                        view = container,
+                        message = container.context.getString(R.string.mini_cart_product_bundle_recommendation_success_toaster_description),
+                        type = Toaster.TYPE_NORMAL
+                    )
+                }
             }
             setOnDismissListener {
                 isShow = false
@@ -221,6 +246,25 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
             }
             setChild(viewBinding.root)
             show(fragmentManager, this.javaClass.simpleName)
+        }
+    }
+
+    fun showToaster(view: View? = null, message: String, type: Int, ctaText: String = "Oke", isShowCta: Boolean = true, onClickListener: View.OnClickListener? = null) {
+        if (message.isBlank()) return
+        val toasterViewRoot: View = view ?: return
+        toasterViewRoot.let {
+            Toaster.toasterCustomBottomHeight = it.resources?.getDimensionPixelSize(
+                abstractionR.dimen.dp_72
+            ) ?: 0
+            if (isShowCta && ctaText.isNotBlank()) {
+                var tmpCtaClickListener = View.OnClickListener { }
+                if (onClickListener != null) {
+                    tmpCtaClickListener = onClickListener
+                }
+                Toaster.build(it, message, Toaster.LENGTH_LONG, type, ctaText, tmpCtaClickListener).show()
+            } else {
+                Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
+            }
         }
     }
 
@@ -243,6 +287,16 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
         initializeBottomSheet(viewBinding, fragmentManager)
         initializeTotalAmount(viewBinding, fragmentManager, context)
         initializeRecyclerView(viewBinding)
+        initializeProgressDialog(context)
+    }
+
+    private fun initializeProgressDialog(context: Context?) {
+        context?.let {
+            progressDialog = AlertDialog.Builder(it)
+                .setView(R.layout.mini_cart_progress_dialog_view)
+                .setCancelable(true)
+                .create()
+        }
     }
 
     private fun initializeViewModel(
@@ -522,6 +576,10 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
     ) {
         globalEventObserver = Observer<GlobalEvent> {
             when (it.state) {
+                GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET -> {
+                    onFailedToLoadMiniCartBottomSheet(it, fragmentManager)
+                }
+
                 GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
                     onSuccessDeleteCartItem(viewBinding, it, viewModel)
                 }
@@ -600,7 +658,7 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
         hideProgressLoading()
 
         viewBinding.bottomsheetContainer.let { container ->
-            bottomSheetListener?.showToaster(
+            showToaster(
                 view = container,
                 message = container.context.getString(R.string.mini_cart_product_bundle_recommendation_success_toaster_description),
                 type = Toaster.TYPE_NORMAL
@@ -617,7 +675,7 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
         val messageError = globalEvent.data as? String
 
         viewBinding.bottomsheetContainer.let { container ->
-            bottomSheetListener?.showToaster(
+            showToaster(
                 view = container,
                 message = if (messageError.isNullOrEmpty()) {
                     ErrorHandler.getErrorMessage(
@@ -644,7 +702,7 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
                     message = throwable.message.toString()
                 }
                 viewBinding.bottomsheetContainer.let { view ->
-                    bottomSheetListener?.showToaster(view, message, Toaster.TYPE_ERROR)
+                    showToaster(view, message, Toaster.TYPE_ERROR)
                 }
             }
         }
@@ -663,7 +721,7 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
             val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_cta_ok)
                 ?: ""
             viewBinding.bottomsheetContainer.let { view ->
-                bottomSheetListener?.showToaster(view, message, Toaster.TYPE_NORMAL, ctaText)
+                showToaster(view, message, Toaster.TYPE_NORMAL, ctaText)
             }
         }
     }
@@ -753,23 +811,138 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
         if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
             hideProgressLoading()
             viewBinding.bottomsheetContainer.let { view ->
-                bottomSheetListener?.onBottomSheetFailedGoToCheckout(
-                    view,
-                    fragmentManager,
-                    globalEvent
-                )
+                handleFailedGoToCheckout(view, view.context, fragmentManager, globalEvent)
             }
         }
     }
 
     private fun onSuccessGoToCheckout(globalEvent: GlobalEvent) {
         if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
-            bottomSheet?.context.let {
+            bottomSheet?.context?.let {
                 hideProgressLoading()
-                bottomSheetListener?.onBottomSheetSuccessGoToCheckout()
+                onSuccessGoToCheckout(it)
                 dismiss()
             }
         }
+    }
+
+    private fun handleFailedGoToCheckout(view: View?, context: Context, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
+        val data = globalEvent.data
+        if (data != null && data is MiniCartCheckoutData) {
+            // Goes here if failed and get response from BE
+            handleFailedGoToCheckoutWithData(view, data, fragmentManager, context, globalEvent)
+        } else {
+            // Goes here if failed and get no response from BE
+            handleFailedGoToCheckoutWithThrowable(view, globalEvent, fragmentManager, context)
+        }
+    }
+
+    private fun handleFailedGoToCheckoutWithData(view: View?, miniCartCheckoutData: MiniCartCheckoutData, fragmentManager: FragmentManager, context: Context, globalEvent: GlobalEvent) {
+        if (miniCartCheckoutData.outOfService.id.isNotBlank() && miniCartCheckoutData.outOfService.id != "0") {
+            // Prioritize to show out of service data
+            globalErrorBottomSheet.show(
+                fragmentManager,
+                context,
+                GlobalError.SERVER_ERROR,
+                miniCartCheckoutData.outOfService,
+                object : GlobalErrorBottomSheetActionListener {
+                    override fun onGoToHome() {
+                        RouteManager.route(context, ApplinkConst.HOME)
+                    }
+
+                    override fun onRefreshErrorPage() {
+                        showProgressLoading()
+                        viewModel?.goToCheckout(globalEvent.observer)
+                    }
+                }
+            )
+            val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
+            analytics.eventClickBuyThenGetBottomSheetError(miniCartCheckoutData.outOfService.description, isOCCFlow)
+        } else {
+            // Reload data
+            viewModel?.getCartList()
+
+            // Show toaster error if have no out of service data
+            var ctaText = context.getString(R.string.mini_cart_cta_ok)
+            ctaText = miniCartCheckoutData.toasterAction.text
+            val errorMessage = miniCartCheckoutData.errorMessage
+            if (miniCartCheckoutData.toasterAction.showCta) {
+                showToaster(view, errorMessage, Toaster.TYPE_ERROR, ctaText) {
+                    scrollToUnavailableSection()
+                    analytics.eventClickAtcToasterErrorCta(errorMessage, ctaText)
+                }
+            } else {
+                showToaster(view, errorMessage, Toaster.TYPE_ERROR, isShowCta = false)
+            }
+            val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
+            analytics.eventClickBuyThenGetToasterError(errorMessage, isOCCFlow)
+        }
+    }
+
+    private fun handleFailedGoToCheckoutWithThrowable(view: View?, globalEvent: GlobalEvent, fragmentManager: FragmentManager, context: Context) {
+        val throwable = globalEvent.throwable
+        if (throwable != null) {
+            when (throwable) {
+                is UnknownHostException -> {
+                    globalErrorBottomSheet.show(
+                        fragmentManager,
+                        context,
+                        GlobalError.NO_CONNECTION,
+                        null,
+                        object : GlobalErrorBottomSheetActionListener {
+                            override fun onGoToHome() {
+                                // No-op
+                            }
+
+                            override fun onRefreshErrorPage() {
+                                showProgressLoading()
+                                viewModel?.goToCheckout(globalEvent.observer)
+                            }
+                        }
+                    )
+                    val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
+                    analytics.eventClickBuyThenGetBottomSheetError(context.getString(globalerrorR.string.noConnectionTitle), isOCCFlow)
+                }
+                is SocketTimeoutException -> {
+                    val message = context.getString(R.string.mini_cart_message_error_checkout_timeout)
+                    val ctaText = context.getString(R.string.mini_cart_cta_ok)
+                    showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
+                        analytics.eventClickAtcToasterErrorCta(message, ctaText)
+                    }
+                    val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
+                    analytics.eventClickBuyThenGetToasterError(message, isOCCFlow)
+                }
+                else -> {
+                    val message = context.getString(R.string.mini_cart_message_error_checkout_failed)
+                    val ctaText = context.getString(R.string.mini_cart_cta_ok)
+                    showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
+                        analytics.eventClickAtcToasterErrorCta(message, ctaText)
+                    }
+                    val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
+                    analytics.eventClickBuyThenGetToasterError(message, isOCCFlow)
+                }
+            }
+        }
+    }
+
+    private fun onSuccessGoToCheckout(context: Context) {
+        val intent = if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+        } else {
+            val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
+            val pageSource = when (pageName) {
+                MiniCartAnalytics.Page.HOME_PAGE -> "${MiniCartWidget.MINICART_PAGE_SOURCE} - homepage"
+                MiniCartAnalytics.Page.SEARCH_PAGE -> "${MiniCartWidget.MINICART_PAGE_SOURCE} - search result"
+                MiniCartAnalytics.Page.CATEGORY_PAGE -> "${MiniCartWidget.MINICART_PAGE_SOURCE} category page"
+                MiniCartAnalytics.Page.DISCOVERY_PAGE -> "${MiniCartWidget.MINICART_PAGE_SOURCE} discovery page"
+                MiniCartAnalytics.Page.RECOMMENDATION_INFINITE -> "${MiniCartWidget.MINICART_PAGE_SOURCE} recommendation infinite page"
+                else -> ""
+            }
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
+                .putExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE, pageSource)
+        }
+
+        context.startActivity(intent)
     }
 
     private fun onFailedDeleteCartItem(
@@ -784,10 +957,65 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
                     message = throwable.message.toString()
                 }
                 viewBinding.bottomsheetContainer.let { view ->
-                    bottomSheetListener?.showToaster(view, message, Toaster.TYPE_ERROR)
+                    showToaster(view, message, Toaster.TYPE_ERROR)
                 }
             }
         }
+    }
+
+    private fun onFailedToLoadMiniCartBottomSheet(globalEvent: GlobalEvent, fragmentManager: FragmentManager) {
+        if (globalEvent.data != null && globalEvent.data is MiniCartData) {
+            val outOfService = (globalEvent.data as MiniCartData).data.outOfService
+            if (outOfService.id.isNotBlank() && outOfService.id != "0") {
+                bottomSheet?.context?.let {
+                    globalErrorBottomSheet.show(
+                        fragmentManager,
+                        it,
+                        GlobalError.SERVER_ERROR,
+                        outOfService,
+                        object : GlobalErrorBottomSheetActionListener {
+                            override fun onGoToHome() {
+                                RouteManager.route(it, ApplinkConst.HOME)
+                            }
+
+                            override fun onRefreshErrorPage() {
+                                showMiniCartListBottomSheet()
+                            }
+                        }
+                    )
+                }
+            } else {
+                showGlobalErrorNoConnection(fragmentManager)
+            }
+        } else {
+            showGlobalErrorNoConnection(fragmentManager)
+        }
+        dismiss()
+        miniCartChatListBottomSheet.dismiss()
+    }
+
+    private fun showGlobalErrorNoConnection(fragmentManager: FragmentManager) {
+        bottomSheet?.context?.let {
+            globalErrorBottomSheet.show(
+                fragmentManager,
+                it,
+                GlobalError.NO_CONNECTION,
+                null,
+                object : GlobalErrorBottomSheetActionListener {
+                    override fun onGoToHome() {
+                        // No-op
+                    }
+
+                    override fun onRefreshErrorPage() {
+                        showMiniCartListBottomSheet()
+                    }
+                }
+            )
+        }
+    }
+
+    fun showMiniCartListBottomSheet() {
+        bottomSheetListener?.onRetryOpenMiniCartListBottomSheet()
     }
 
     private fun onSuccessDeleteCartItem(
@@ -810,11 +1038,11 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
             viewModel.getCartList()
             if (data?.isFromEditBundle == true || data?.isBulkDelete == true) {
                 viewBinding.bottomsheetContainer.let { view ->
-                    bottomSheetListener?.showToaster(view, message, Toaster.TYPE_NORMAL)
+                    showToaster(view, message, Toaster.TYPE_NORMAL)
                 }
             } else {
                 viewBinding.bottomsheetContainer.let { view ->
-                    bottomSheetListener?.showToaster(view, message, Toaster.TYPE_NORMAL, ctaText) {
+                    showToaster(view, message, Toaster.TYPE_NORMAL, ctaText) {
                         analytics.eventClickUndoDelete()
                         showProgressLoading()
                         viewModel.undoDeleteCartItem(false)
@@ -991,7 +1219,9 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
     }
 
     private fun showProgressLoading() {
-        bottomSheetListener?.showProgressLoading()
+        if (progressDialog?.isShowing == false) {
+            progressDialog?.show()
+        }
     }
 
     private fun goToBundlingSelectionPage(bundleId: String) {
@@ -1014,7 +1244,9 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
     }
 
     private fun hideProgressLoading() {
-        bottomSheetListener?.hideProgressLoading()
+        if (progressDialog?.isShowing == true) {
+            progressDialog?.dismiss()
+        }
     }
 
     private fun updateCart() {
@@ -1035,7 +1267,7 @@ class MiniCartListNewBottomSheet : MiniCartListActionListener, MiniCartBottomShe
 
     override fun onDeleteClicked(element: MiniCartProductUiModel) {
         analytics.eventClickDeleteFromTrashBin()
-        bottomSheetListener?.showProgressLoading()
+        showProgressLoading()
         if (element.isBundlingItem) {
             val list = viewModel?.miniCartListBottomSheetUiModel?.value?.visitables ?: emptyList()
             val deletedItems =

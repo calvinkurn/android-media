@@ -6,7 +6,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
@@ -311,7 +310,7 @@ class MiniCartNewWidget @JvmOverloads constructor(
                 abstractionR.dimen.dp_72
             ) ?: 0
             if (isShowCta && ctaText.isNotBlank()) {
-                var tmpCtaClickListener = OnClickListener { }
+                var tmpCtaClickListener = View.OnClickListener { }
                 if (onClickListener != null) {
                     tmpCtaClickListener = onClickListener
                 }
