@@ -48,7 +48,7 @@ Improve the experience of the user to understand the product better with compone
 
 ## Flow Diagram
 
-![](res/CatalogDetail.png)
+![](https://docs-android.tokopedia.net/images/docs/catalog/CatalogDetail.png)
 
 
 
@@ -65,13 +65,13 @@ Improve the experience of the user to understand the product better with compone
 
 |  |  |  |
 | --- | --- | --- |
-| ![](res/image-20210505-073254.png)<br/> | ![](res/image-20210505-073308.png)<br/> | ![](res/image-20210505-073353.png)<br/> |
-| ![](res/image-20210505-073417.png)<br/> | ![](res/image-20210505-073436.png)<br/> | ![](res/image-20210505-073515.png)<br/> |
-| ![](res/image-20210505-073617.png)<br/> | ![](res/image-20210505-073647.png)<br/> | ![](res/image-20210505-073749.png)<br/> |
-| ![](res/image-20210505-073810.png)<br/> | ![](res/image-20210505-073828.png)<br/> | ![](res/image-20210505-073852.png)<br/> |
-| ![](res/image-20210505-073916.png)<br/> | ![](res/image-20210505-073941.png)<br/> | ![](res/image-20210505-073957.png)<br/> |
-| ![](res/image-20210505-074029.png)<br/> | ![](res/image-20210531-045059.png)<br/> | ![](res/image-20210531-045126.png)<br/> |
-| ![](res/Screenshot_1658996613.png)<br/> | ![](res/Screenshot_1658996626.png)<br/> | ![](res/Screenshot_1658996630.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073254.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073308.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073353.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073417.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073436.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073515.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073617.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073647.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073749.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073810.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073828.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073852.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073916.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073941.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-073957.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210505-074029.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210531-045059.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/image-20210531-045126.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/catalog/Screenshot_1658996613.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/Screenshot_1658996626.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/catalog/Screenshot_1658996630.png)<br/> |
 
 ## How-to
 

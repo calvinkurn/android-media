@@ -32,11 +32,11 @@ object ViewToViewTracker {
         product: RecommendationItem,
         androidPageName: String = PAGE_PDP, // remove default value once migrated to global, use RecommendationWidgetTrackingModel.androidPageName instead
         pageTitle: String,
-        productId: String,
+        productAnchorId: String,
         userId: String,
         trackingQueue: TrackingQueue?
     ) {
-        val itemList = arrayListOf(product.asDataLayer(position, pageTitle))
+        val itemList = arrayListOf(product.asDataLayer(position, pageTitle, productAnchorId))
         val dataLayer = DataLayer.mapOf(
             TrackerConstant.EVENT, RecommendationTrackingConstants.Action.PROMO_VIEW,
             TrackerConstant.EVENT_ACTION, ACTION_IMPRESSION,
@@ -55,7 +55,7 @@ object ViewToViewTracker {
                     itemList
                 )
             ),
-            RecommendationTrackingConstants.Tracking.PRODUCT_ID, productId,
+            RecommendationTrackingConstants.Tracking.PRODUCT_ID, productAnchorId,
             TrackerConstant.USERID, userId
         ) as HashMap<String, Any>
 
@@ -64,34 +64,36 @@ object ViewToViewTracker {
 
     private fun RecommendationItem.asPromotionBundle(
         position: Int,
-        headerName: String
+        headerName: String,
+        productAnchorId: String
     ) = Bundle().apply {
         val currentPosition = position + 1
         putString(KEY_CREATIVE_NAME, VALUE_NULL)
         putString(KEY_CREATIVE_SLOT, currentPosition.toString())
-        putString(KEY_ITEM_ID, asItemId())
+        putString(KEY_ITEM_ID, asItemId(productAnchorId))
         putString(KEY_ITEM_NAME, asItemName(currentPosition, headerName))
     }
 
     private fun RecommendationItem.asDataLayer(
         position: Int,
-        headerName: String
+        headerName: String,
+        productAnchorId: String,
     ): Map<String, Any> {
         val currentPosition = position + 1
         return hashMapOf(
             KEY_CREATIVE_NAME to VALUE_NULL,
             KEY_CREATIVE_SLOT to currentPosition.toString(),
-            KEY_ITEM_ID to asItemId(),
+            KEY_ITEM_ID to asItemId(productAnchorId),
             KEY_ITEM_NAME to asItemName(currentPosition, headerName)
         )
     }
 
-    private fun RecommendationItem.asItemId(): String {
+    private fun RecommendationItem.asItemId(productAnchorId: String): String {
         val channelId = VALUE_NULL
         val bannerId = VALUE_NULL
         val targetingType = VALUE_NULL
         val targetingValue = VALUE_NULL
-        return "${channelId}_${bannerId}_${targetingType}_${targetingValue}_${departmentId}_$recommendationType"
+        return "${channelId}_${bannerId}_${targetingType}_${targetingValue}_${departmentId}_${recommendationType}_${productAnchorId}"
     }
 
     private fun RecommendationItem.asItemName(
@@ -106,7 +108,7 @@ object ViewToViewTracker {
         product: RecommendationItem,
         androidPageName: String = PAGE_PDP, // remove default value once migrated to global, use RecommendationWidgetTrackingModel.androidPageName instead
         pageTitle: String,
-        productId: String,
+        productAnchorId: String,
         userId: String
     ) {
         val itemBundle = Bundle().apply {
@@ -118,11 +120,11 @@ object ViewToViewTracker {
             putString(TrackerConstant.CURRENT_SITE, RecommendationTrackingConstants.Tracking.CURRENT_SITE_MP)
             putString(TrackerConstant.TRACKER_ID, TRACKER_ID_CLICK)
 
-            val bundlePromotion = product.asPromotionBundle(position, pageTitle)
+            val bundlePromotion = product.asPromotionBundle(position, pageTitle, productAnchorId)
             val list = arrayListOf(bundlePromotion)
             putParcelableArrayList(RecommendationTrackingConstants.Tracking.PROMOTIONS, list)
 
-            putString(RecommendationTrackingConstants.Tracking.PRODUCT_ID, productId)
+            putString(RecommendationTrackingConstants.Tracking.PRODUCT_ID, productAnchorId)
             putString(TrackerConstant.USERID, userId)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(RecommendationTrackingConstants.Action.SELECT_CONTENT, itemBundle)

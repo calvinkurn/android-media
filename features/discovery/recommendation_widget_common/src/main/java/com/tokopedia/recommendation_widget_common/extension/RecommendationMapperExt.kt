@@ -94,7 +94,6 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 },
                 parentID = recommendation.parentID,
                 addToCartType = getAtcType(),
-                anchorProductId = this.recommendation.firstOrNull()?.id.toString()
             )
         },
         title = title,
