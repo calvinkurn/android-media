@@ -335,9 +335,15 @@ public class GTMAnalytics extends ContextAnalytics {
 
     @Override
     public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
-        Bundle bundle = addWrapperValue(value);
-        bundle = addGclIdIfNeeded(eventName, bundle);
-        pushEventV5(eventName, bundle, context);
+        Observable.fromCallable(() -> {
+                Bundle bundle = addWrapperValue(value);
+                bundle = addGclIdIfNeeded(eventName, bundle);
+                pushEventV5(eventName, bundle, context);
+                return true;
+            })
+            .subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
+            .subscribe(getDefaultSubscriber());
     }
 
     @SuppressWarnings("unchecked")
@@ -824,7 +830,16 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void sendScreen(String screenName, Map<String, String> customDimension) {
+        Observable.fromCallable(() -> {
+                    internalSendScreen(screenName, customDimension);
+                    return true;
+                })
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(getDefaultSubscriber());
+    }
 
+    private void internalSendScreen(String screenName, Map<String, String> customDimension) {
         UserSessionInterface userSession = new UserSession(context);
         final String afUniqueId = !TextUtils.isEmpty(getAfUniqueId(context)) ? getAfUniqueId(context) : "none";
 
