@@ -138,19 +138,41 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     }
 
     private fun setupTextColours(fontColor: String?, backgroundPresent: Boolean) {
-        val isFestiveBackgroundEnabled = lihatSemuaViewModel?.component?.isBackgroundPresent == true
-        if (isFestiveBackgroundEnabled && !fontColor.isNullOrEmpty()) {
+        if (!fontColor.isNullOrEmpty()) {
             lihatTitleTextView.setTextColor(Color.parseColor(fontColor))
-            return
+        } else {
+            setupDefaultColor(backgroundPresent)
         }
+    }
 
+    private fun setupDefaultColor(backgroundPresent: Boolean) {
         fragment.context?.let {
             if (backgroundPresent) {
-                lihatTitleTextView.setTextColor(MethodChecker.getColor(it, R.color.discovery2_dms_white))
-                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, R.color.discovery2_dms_white_95))
+                lihatTitleTextView.setTextColor(
+                    MethodChecker.getColor(
+                        it,
+                        R.color.discovery2_dms_white
+                    )
+                )
+                lihatSubTitleTextView.setTextColor(
+                    MethodChecker.getColor(
+                        it,
+                        R.color.discovery2_dms_white_95
+                    )
+                )
             } else {
-                lihatTitleTextView.setTextColor(MethodChecker.getColor(it, unifyprinciplesR.color.Unify_NN950_96))
-                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, unifyprinciplesR.color.Unify_NN950_68))
+                lihatTitleTextView.setTextColor(
+                    MethodChecker.getColor(
+                        it,
+                        unifyprinciplesR.color.Unify_NN950_96
+                    )
+                )
+                lihatSubTitleTextView.setTextColor(
+                    MethodChecker.getColor(
+                        it,
+                        unifyprinciplesR.color.Unify_NN950_68
+                    )
+                )
             }
         }
     }
