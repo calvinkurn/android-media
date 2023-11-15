@@ -117,6 +117,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merc
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
@@ -125,7 +126,6 @@ import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -219,6 +219,7 @@ open class DiscoveryFragment :
     PermissionListener,
     MiniCartWidgetListener {
 
+    private var bmGmDataParam: BmGmDataParam? = null
     private var recyclerViewPaddingResetNeeded: Boolean = false
     private var thematicHeaderColor: String = ""
     private var navScrollListener: NavRecyclerViewScrollListener? = null
@@ -913,12 +914,7 @@ open class DiscoveryFragment :
                         it.data.requestParams.requestingComponent,
                         it.data.addToCartDataModel.data.cartId
                     )
-                    val requestParams = it.data.requestParams
-                    getMiniCart(
-                        warehouseTco = requestParams.requestingComponent.properties?.warehouseTco.orEmpty(),
-                        offerId = requestParams.requestingComponent.properties?.header?.offerId.orEmpty(),
-                        parentPosition = requestParams.parentPosition
-                    )
+                    getMiniCart(bmGmDataParam)
                 } else {
                     analytics.trackEventProductATCTokonow(
                         it.data.requestParams.requestingComponent,
@@ -946,12 +942,7 @@ open class DiscoveryFragment :
                     it.data.requestParams.requestingComponent,
                     it.data.cartId
                 )
-                val requestParams = it.data.requestParams
-                getMiniCart(
-                    warehouseTco = requestParams.requestingComponent.properties?.warehouseTco.orEmpty(),
-                    offerId = requestParams.requestingComponent.properties?.header?.offerId.orEmpty(),
-                    parentPosition = requestParams.parentPosition
-                )
+                getMiniCart(bmGmDataParam)
             } else if (it is Fail) {
                 if (it.throwable is ResponseErrorException) {
                     showToaster(
@@ -968,12 +959,7 @@ open class DiscoveryFragment :
                     it.data.requestParams.requestingComponent,
                     it.data.cartId
                 )
-                val requestParams = it.data.requestParams
-                getMiniCart(
-                    warehouseTco = requestParams.requestingComponent.properties?.warehouseTco.orEmpty(),
-                    offerId = requestParams.requestingComponent.properties?.header?.offerId.orEmpty(),
-                    parentPosition = requestParams.parentPosition
-                )
+                getMiniCart(bmGmDataParam)
                 showToaster(
                     message = it.data.message,
                     type = Toaster.TYPE_NORMAL
@@ -1006,6 +992,11 @@ open class DiscoveryFragment :
         }
 
         discoveryViewModel.addToCartAction.observe(viewLifecycleOwner) {
+            bmGmDataParam = BmGmDataParam(
+                warehouseTco = it.requestingComponent.properties?.warehouseTco.orEmpty(),
+                offerId = it.requestingComponent.properties?.header?.offerId.orEmpty(),
+                parentPosition = it.parentPosition
+            )
             discoveryAdapter.getViewModelAtPosition(it.parentPosition)
                 ?.let { discoveryBaseViewModel ->
                     if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
@@ -1915,6 +1906,10 @@ open class DiscoveryFragment :
                 }
             }
         )
+
+        AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
+            getMiniCart(bmGmDataParam)
+        }
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
@@ -2301,18 +2296,14 @@ open class DiscoveryFragment :
     }
 
     private fun getMiniCart(
-        warehouseTco: String = String.EMPTY,
-        offerId: String = String.EMPTY,
-        parentPosition: Int = RecyclerView.NO_POSITION
+        bmGmDataParam: BmGmDataParam? = null
     ) {
         val shopId = listOf(userAddressData?.shop_id.orEmpty())
         val warehouseId = userAddressData?.warehouse_id
         discoveryViewModel.getMiniCart(
             shopId = shopId,
             warehouseId = warehouseId,
-            warehouseTco = warehouseTco,
-            offerId = offerId,
-            parentPosition = parentPosition
+            bmGmDataParam = bmGmDataParam
         )
     }
 

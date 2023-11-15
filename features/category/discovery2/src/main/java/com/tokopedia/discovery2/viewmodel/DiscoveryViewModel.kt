@@ -63,6 +63,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.VARIANT_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.WishListManager
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
@@ -78,7 +79,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -297,25 +297,23 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getMiniCart(
         shopId: List<String>,
         warehouseId: String?,
-        warehouseTco: String,
-        offerId: String,
-        parentPosition: Int
+        bmGmDataParam: BmGmDataParam?
     ) {
         if(shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
-                if (warehouseTco.isNotBlankOrZero() || offerId.isNotBlankOrZero()) {
+                if (bmGmDataParam != null) {
                     getMiniCartUseCase.setParams(
                         shopIds = shopId,
                         source = MiniCartSource.TokonowDiscoveryPage,
                         bmGmParam = BmgmParamModel(
-                            offerIds = listOf(offerId.toLongOrZero()),
-                            warehouseIds = listOf(warehouseTco.toLongOrZero())
+                            offerIds = listOf(bmGmDataParam.offerId.toLongOrZero()),
+                            warehouseIds = listOf(bmGmDataParam.warehouseTco.toLongOrZero())
                         )
                     )
                     getMiniCartUseCase.execute({
                         miniCartSimplifiedData = it
                         _miniCart.postValue(Success(it))
-                        _bmGmDataList.postValue(Pair(parentPosition, it.bmGmDataList))
+                        _bmGmDataList.postValue(Pair(bmGmDataParam.parentPosition, it.bmGmDataList))
                     }, {
                         _miniCart.postValue(Fail(it))
                     })
