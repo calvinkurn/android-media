@@ -22,6 +22,8 @@ import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.ImageLoaderStateListener
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.report_content.bottomsheet.ContentReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentSubmitReportBottomSheet
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
@@ -174,6 +176,7 @@ class StoriesDetailFragment @Inject constructor(
         get() = _dialog!!
 
     private var currentPlayingVideoUrl: String = ""
+    private var mCoachMark: CoachMark2? = null
 
     override fun getScreenName(): String {
         return TAG_FRAGMENT_STORIES_DETAIL
@@ -369,6 +372,10 @@ class StoriesDetailFragment @Inject constructor(
                         if (viewModel.isAnyBottomSheetShown) return@collect
                         val message = getString(event.message)
                         requireView().showToaster(message = message)
+                    }
+
+                    is StoriesUiEvent.ShowStoriesTimeCoachmark -> {
+                        showStoriesDurationCoachmark()
                     }
 
                     else -> return@collect
@@ -763,6 +770,8 @@ class StoriesDetailFragment @Inject constructor(
         _dialog?.dismiss()
         _dialog = null
 
+        mCoachMark = null
+
         _binding = null
         super.onDestroyView()
     }
@@ -968,6 +977,33 @@ class StoriesDetailFragment @Inject constructor(
                     dismiss()
                 }
             }.show()
+        }
+    }
+
+    private fun showStoriesDurationCoachmark() {
+        with(binding.vStoriesPartner.tvStoriesTimestamp) {
+            context?.let {
+                if (mCoachMark == null) {
+                    mCoachMark = CoachMark2(it).apply {
+                        onDismissListener = {
+                            viewModel.submitAction(StoriesUiAction.HasSeenDurationCoachMark)
+                        }
+                    }
+                }
+
+                if (mCoachMark?.isShowing != true) {
+                    mCoachMark?.showCoachMark(
+                        arrayListOf(
+                            CoachMark2Item(
+                                this,
+                                getString(storiesR.string.story_manual_duration_coachmark_title),
+                                getString(storiesR.string.story_manual_duration_coachmark_subtitle),
+                                CoachMark2.POSITION_TOP
+                            )
+                        )
+                    )
+                }
+            }
         }
     }
 
