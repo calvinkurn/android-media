@@ -352,7 +352,6 @@ object BestSellerWidgetTracker : BaseTracking(){
             warehouseId = recommendationItem.warehouseId.toString(),
             isFulfillment = recommendationItem.labelGroupList.hasLabelGroupFulfillment()
         )
-
     }
 
     private fun mapToProductTracking(
