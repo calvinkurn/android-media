@@ -328,6 +328,5 @@ class MenuSettingAdapter(
         fun onGiveFeedback()
         fun onOpenSocialMediaLinks()
         fun onNoAccess()
-        fun onSetAppTheme(isDarkModeEnabled: Boolean)
     }
 }
