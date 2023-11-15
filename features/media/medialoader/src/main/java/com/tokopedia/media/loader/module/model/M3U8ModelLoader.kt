@@ -58,6 +58,16 @@ class M3U8ModelLoader : ModelLoader<String, Bitmap> {
     private fun String.isM3u8(): Boolean {
         return Uri.parse(this).lastPathSegment?.endsWith(M3U8_EXTENSION) == true
     }
+
+    class Factory : ModelLoaderFactory<String, Bitmap> {
+        override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<String, Bitmap> {
+            return M3U8ModelLoader()
+        }
+
+        override fun teardown() {
+            // no-op
+        }
+    }
 }
 
 class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitmap> {
@@ -167,14 +177,6 @@ class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitma
             String.format(M3U8_SEGMENT_URL_FORMAT, scheme, host, videoId, segment.url)
         }
     }
-}
-
-class M3U8ModelLoaderFactory : ModelLoaderFactory<String, Bitmap> {
-    override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<String, Bitmap> {
-        return M3U8ModelLoader()
-    }
-
-    override fun teardown() {}
 }
 
 class M3U8LoaderException : Exception()

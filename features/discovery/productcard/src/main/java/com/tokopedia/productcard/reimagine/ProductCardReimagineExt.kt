@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 private val LABEL_COLOR_MAP by lazyThreadSafetyNone { mapOf(
     LIGHT_GREEN to
-        (unifycomponentsR.color.Unify_GN50
+        (unifycomponentsR.color.Unify_GN100
             to unifycomponentsR.color.Unify_GN500),
 
     LABEL_BLACK to

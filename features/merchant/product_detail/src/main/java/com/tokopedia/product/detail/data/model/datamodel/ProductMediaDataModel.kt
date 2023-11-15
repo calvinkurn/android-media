@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
 import com.tokopedia.analytics.performance.perf.LoadableComponent
@@ -18,7 +19,8 @@ data class ProductMediaDataModel(
     var shouldUpdateImage: Boolean = false,
     var shouldAnimateLabel: Boolean = true,
     var containerType: MediaContainerType = MediaContainerType.Square,
-    var recommendation: ProductMediaRecomData = ProductMediaRecomData()
+    var recommendation: ProductMediaRecomData = ProductMediaRecomData(),
+    var isPrefetch: Boolean = false
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
         isFinishedLoading = { false },
@@ -109,8 +111,10 @@ data class MediaDataModel(
     val mediaDescription: String = "",
     val videoUrl: String = "",
     val isAutoPlay: Boolean = false,
-    val variantOptionId: String = ""
+    val variantOptionId: String = "",
+    val isPrefetch: Boolean = false
 ) {
+    var prefetchResource: Drawable? = null
     fun isVideoType(): Boolean = type == ProductMediaDataModel.VIDEO_TYPE
 }
 

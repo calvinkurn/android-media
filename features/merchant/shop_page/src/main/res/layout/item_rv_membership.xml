@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
-    android:background="@drawable/bg_gradient_blue"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
     android:orientation="vertical">
@@ -14,9 +13,7 @@
         android:id="@+id/rv_membership"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"/>
+        android:clipToPadding="false" />
 
     <com.tokopedia.shop.common.util.CircleIndicatorView
         android:id="@+id/circle_rv_indicator"

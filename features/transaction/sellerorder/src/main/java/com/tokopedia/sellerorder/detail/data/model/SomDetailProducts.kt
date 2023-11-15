@@ -5,5 +5,6 @@ package com.tokopedia.sellerorder.detail.data.model
  */
 data class SomDetailProducts(
     val isTopAds: Boolean = false,
-    val isBroadcastChat: Boolean = false
+    val isBroadcastChat: Boolean = false,
+    val isAffiliate: Boolean = false
 )
