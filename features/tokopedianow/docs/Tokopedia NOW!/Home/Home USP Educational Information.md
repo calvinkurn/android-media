@@ -1,6 +1,6 @@
-![image](../../res/home_usp_educational_information.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/home_usp_educational_information.png)
 
-![image](../../res/home_usp_educational_information_bottomsheet.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/home_usp_educational_information_bottomsheet.png)
 
 <!--left header table-->
 | **Type Factory** | `HomeTypeFactory` |

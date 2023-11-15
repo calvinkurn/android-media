@@ -44,13 +44,13 @@ The order list page is a page that shows the list of orders. On this page, the s
 
 
 
-![](../res/somlist/som_list_page_on_customerapp.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_page_on_customerapp.png)
 
 
 
 
 
-![](../res/somlist/som_list_page_on_sellerapp.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_page_on_sellerapp.png)
 
 
 
@@ -64,11 +64,11 @@ There are 2 flows used on the order list page:
 
 - The flow when the user enters the page with no order status filter (using `tokopedia://seller/history?search={searchParam}` app link). This flow is used in this case because when we enter the order list page with no order status filter, the app doesn&#39;t need to send order filter ids when sending the `orderList` query therefore we don&#39;t need to wait for the get the filter data request to be completed.
 
-![](../res/somlist/som_list_no_status_filter_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_no_status_filter_drawio.png)
 
 - The flow when the user enters the page with the order status filter. This flow is used in this case because when we enter the order list page with any order status filter, the app need to send order filter ids belonging to that order status when sending the `orderList` query therefore we need to wait for the get the filter data request to be completed.
 
-![](../res/somlist/som_list_with_status_filter_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_with_status_filter_drawio.png)
 
 # Seller Actions
 
@@ -83,19 +83,19 @@ On this page, the seller can do several actions such as:
 
 The complete flow of this action can be seen in the flowchart below.
 
-![](../res/somlist/som_list_accept_order_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_accept_order_drawio.png)
 
 - Reject order: This action allows the seller to approve the buyer&#39;s order cancellation request. The flow can be seen in the flowchart below.
 
-![](../res/somlist/som_list_reject_order_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_reject_order_drawio.png)
 
 - Edit AWB: This action allows the seller to edit the order AWB number. The flow can be seen in the flowchart below.
 
-![](../res/somlist/som_list_edit_awb_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_edit_awb_drawio.png)
 
 - Reject buyer&#39;s order cancellation request: This action allows the reject buyer&#39;s order cancellation request and continue to process the order. The flow can be seen in the flowchart below.
 
-![](../res/somlist/som_list_reject_order_cancellation_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/sellerorder/somlist/som_list_reject_order_cancellation_drawio.png)
 
 # Navigation
 
@@ -134,8 +134,8 @@ There&#39;s 2 group of query in this page such as:
 
 | **Query** | **Description** | **Documentation** |
 | --- | --- | --- |
-| `query orderList`  | The query for getting the order list data. The data will be used to bind the order list section:![](res/Screen%20Shot%202023-03-30%20at%2012.42.06.png)<br/> | [[Query] Seller Order List](/wiki/spaces/TTD/pages/487754656)  |
-| `query orderFilterSom`  | The query is used for getting 2 type of data:- For getting the filter data. The data will be used to bind the quick filter order on this section:<br/><br/>![](res/Screen%20Shot%202023-03-30%20at%2012.40.15.png)<br/>- For getting data which will be used on the header section (the PLUS logo URL &amp; to show the red dot on the waiting for payment menu icon)<br/><br/>![](res/Screen%20Shot%202023-03-30%20at%2012.54.21.png)<br/> | [[Query] Seller Order Filter Single](/wiki/spaces/TTD/pages/532906293)  |
+| `query orderList`  | The query for getting the order list data. The data will be used to bind the order list section:![](https://docs-android.tokopedia.net/images/docs/sellerorder/Screen%20Shot%202023-03-30%20at%2012.42.06.png)<br/> | [[Query] Seller Order List](/wiki/spaces/TTD/pages/487754656)  |
+| `query orderFilterSom`  | The query is used for getting 2 type of data:- For getting the filter data. The data will be used to bind the quick filter order on this section:<br/><br/>![](https://docs-android.tokopedia.net/images/docs/sellerorder/Screen%20Shot%202023-03-30%20at%2012.40.15.png)<br/>- For getting data which will be used on the header section (the PLUS logo URL &amp; to show the red dot on the waiting for payment menu icon)<br/><br/>![](https://docs-android.tokopedia.net/images/docs/sellerorder/Screen%20Shot%202023-03-30%20at%2012.54.21.png)<br/> | [[Query] Seller Order Filter Single](/wiki/spaces/TTD/pages/532906293)  |
 | `query orderTickers`  | The query for getting the list of tickers to be shown under the quick filter section | [Ticker List](/wiki/spaces/TTD/pages/533430360/Ticker+List)  |
 | `query topAdsGetShopInfo` | The query for checking whether the seller is TopAds user or not so that we can show entry point to TopAds page when the order list is empty |  |
 | `mutation multi_accept_order` | This query is used to send the bulk accept order action which only available in SellerApp | [[Mutation] Action Multi Accept Order GQL](/wiki/spaces/TTD/pages/569573409)  |

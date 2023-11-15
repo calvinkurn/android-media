@@ -198,7 +198,7 @@ class BalanceViewHolder(
         binding?.homeContainerBalance?.homeIvLogoBalance?.run {
             type = ImageUnify.TYPE_CIRCLE
             setImageDrawable(
-                homeThematicUtil.getThematicDrawable(unifyprinciplesR.color.Unify_NN50)
+                homeThematicUtil.getThematicDrawable(unifyprinciplesR.color.Unify_NN50, itemView.context)
             )
         }
     }
@@ -234,7 +234,7 @@ class BalanceViewHolder(
     }
 
     private fun renderTextColor(element: BalanceDrawerItemModel) {
-        val balanceTextColor = homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN950)
+        val balanceTextColor = homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN950, itemView.context)
         binding?.homeContainerBalance?.homeTvTitle?.setTextColor(balanceTextColor)
         when (element.state) {
             BalanceDrawerItemModel.STATE_SUCCESS -> {
@@ -255,7 +255,8 @@ class BalanceViewHolder(
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
                     homeThematicUtil.getThematicColor(
                         element.balanceSubTitleTextAttribute?.colourRef
-                            ?: unifyprinciplesR.color.Unify_GN500
+                            ?: unifyprinciplesR.color.Unify_GN500,
+                        itemView.context
                     )
                 )
             }
@@ -266,20 +267,21 @@ class BalanceViewHolder(
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
                     homeThematicUtil.getThematicColor(
                         element.balanceSubTitleTextAttribute?.colourRef
-                            ?: unifyprinciplesR.color.Unify_NN600
+                            ?: unifyprinciplesR.color.Unify_NN600,
+                        itemView.context
                     )
                 )
             }
             TYPE_WALLET_APP_NOT_LINKED -> {
                 binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.BOLD)
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
-                    homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_GN500)
+                    homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_GN500, itemView.context)
                 )
             }
             else -> {
                 binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.REGULAR)
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
-                    homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN600)
+                    homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN600, itemView.context)
                 )
             }
         }
@@ -287,7 +289,7 @@ class BalanceViewHolder(
 
     private fun setErrorFontSubtitle() {
         binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
-            homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_GN500)
+            homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_GN500, itemView.context)
         )
         binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.BOLD)
     }

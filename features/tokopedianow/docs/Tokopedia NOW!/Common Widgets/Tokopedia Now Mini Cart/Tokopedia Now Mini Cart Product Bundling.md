@@ -24,9 +24,9 @@
 
 There are 2 types of Product Bundling, they are **Single Bundling** and **Multiple Bundling**, the difference lies in the options displayed. For Multiple Bundling, user can choose other options of the bundling with the same title and the other hand Single Bundling only has one option.
 
-![image](../../../res/tokopedia_now_minicart_product_bundling_single.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_minicart_product_bundling_single.png)
 
-![image](../../../res/tokopedia_now_minicart_product_bundling_multiple.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_minicart_product_bundling_multiple.png)
 
 To identify which one is Single or Multiple, we can use `bundleType` field from BE to distinguish, the value from the field would be **“SINGLE”** or **“MULTIPLE”**.
 
