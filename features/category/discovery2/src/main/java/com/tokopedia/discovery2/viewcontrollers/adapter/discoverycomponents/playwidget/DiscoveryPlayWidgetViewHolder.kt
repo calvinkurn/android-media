@@ -160,7 +160,7 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
         discoveryPlayWidgetViewModel?.components?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetOverLayClick(it, UserSession(fragment.context).userId, verticalWidgetPosition, channelPositionInList, item.overlayImageAppLink) }
     }
 
-    override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean, verticalWidgetPosition: Int) {
+    override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean, verticalWidgetPosition: Int, config: PlayWidgetConfigUiModel) {
         discoveryPlayWidgetViewModel?.components?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetReminderClick(it, UserSession(fragment.context).userId, verticalWidgetPosition, channelPositionInList, item.channelId, isRemindMe) }
     }
 }
