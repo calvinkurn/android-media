@@ -248,10 +248,6 @@ object DeeplinkDFApp {
         // play_broadcaster
         DFP(INTERNAL, HOST_PLAY_BROADCASTER, PathType.NO_PATH, ""),
         DFP(INTERNAL, HOST_PLAY_SHORTS, PathType.NO_PATH, ""),
-        // mediapicker
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-album"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
         // live-broadcaster
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/chucker")
     )
