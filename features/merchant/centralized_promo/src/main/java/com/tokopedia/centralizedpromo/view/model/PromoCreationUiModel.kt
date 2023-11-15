@@ -10,12 +10,12 @@ import kotlinx.parcelize.Parcelize
 @Immutable
 data class PromoCreationListUiModel(
     val filterItems: List<FilterPromoUiModel>,
-    val selectedTabId: String,
     override val items: List<PromoCreationUiModel>,
     override val errorMessage: String
 ) : BaseUiListModel<PromoCreationUiModel> {
 
     val aovFilterImpressionHolder = ImpressionHolder()
+    val aovFilterImpressHolder = ImpressHolder()
 }
 
 @Parcelize
