@@ -226,16 +226,16 @@ open class DiscoveryAnalytics(
     //endregion
 
     override fun trackPlayWidgetClick(
-        componentsItem: ComponentsItem,
+        dataItem: DataItem?,
         userID: String?,
+        playModel: PlayWidgetChannelUiModel,
         widgetPosition: Int,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
-        item: PlayWidgetChannelUiModel
+        isAutoPlay: Boolean
     ) {
         val list = ArrayList<Map<String, Any>>()
-        val creativeName = componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING
-        val componentName = componentsItem.data?.firstOrNull()?.let {
+        val creativeName = dataItem?.creativeName ?: EMPTY_STRING
+        val componentName = dataItem?.let {
             getPlayComponentName(it.playWidgetType, it.mobileBanner)
         }
         list.add(
@@ -256,7 +256,7 @@ open class DiscoveryAnalytics(
             eventName = EVENT_PROMO_CLICK,
             eventAction = CLICK_DYNAMIC_BANNER,
             eventLabel = constructPlayEventLabel(
-                item,
+                playModel,
                 channelPositionInList,
                 widgetPosition,
                 isAutoPlay
@@ -272,11 +272,15 @@ open class DiscoveryAnalytics(
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    override fun trackPlayWidgetBannerClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int) {
+    override fun trackPlayWidgetBannerClick(
+        dataItem: DataItem?,
+        userID: String?,
+        widgetPosition: Int
+    ) {
         val map = createGeneralEvent(
             eventName = EVENT_CLICK_DISCOVERY,
             eventAction = CLICK_OTHER_CONTENT,
-            eventLabel = constructSeeOthersPlayEventLabel(componentsItem, widgetPosition)
+            eventLabel = constructSeeOthersPlayEventLabel(dataItem, widgetPosition)
         )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
@@ -288,19 +292,18 @@ open class DiscoveryAnalytics(
     }
 
     override fun trackPlayWidgetReminderClick(
-        componentsItem: ComponentsItem,
+        playModel: PlayWidgetChannelUiModel,
         userID: String?,
         widgetPosition: Int,
         channelPositionInList: Int,
         isRemindMe: Boolean,
-        item: PlayWidgetChannelUiModel,
         isAutoPlay: Boolean
     ) {
         val map = createGeneralEvent(
             eventName = EVENT_CLICK_DISCOVERY,
             eventAction = if (isRemindMe) CLICK_REMIND_ME else CLICK_CANCEL_REMIND_ME,
             eventLabel = constructPlayEventLabel(
-                item,
+                playModel,
                 channelPositionInList,
                 widgetPosition,
                 isAutoPlay
@@ -315,11 +318,15 @@ open class DiscoveryAnalytics(
         getTracker().sendGeneralEvent(map as HashMap<String, Any>)
     }
 
-    override fun trackPlayWidgetLihatSemuaClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int) {
+    override fun trackPlayWidgetLihatSemuaClick(
+        dataItem: DataItem?,
+        userID: String?,
+        widgetPosition: Int
+    ) {
         val map = createGeneralEvent(
             eventName = EVENT_CLICK_DISCOVERY,
             eventAction = CLICK_VIEW_ALL,
-            eventLabel = constructSeeOthersPlayEventLabel(componentsItem, widgetPosition)
+            eventLabel = constructSeeOthersPlayEventLabel(dataItem, widgetPosition)
         )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
@@ -331,10 +338,10 @@ open class DiscoveryAnalytics(
     }
 
     private fun constructSeeOthersPlayEventLabel(
-        componentsItem: ComponentsItem,
+        dataItem: DataItem?,
         widgetPosition: Int
     ): String {
-        return componentsItem.data?.firstOrNull()?.let {
+        return dataItem?.let {
             "${getPlayComponentName(it.playWidgetType, it.mobileBanner)} - ${widgetPosition + 1}" +
                 " - ${it.creativeName ?: EMPTY_STRING}"
         } ?: EMPTY_STRING
@@ -406,16 +413,16 @@ open class DiscoveryAnalytics(
     }
 
     override fun trackPlayWidgetImpression(
-        componentsItem: ComponentsItem,
+        dataItem: DataItem?,
+        playModel: PlayWidgetChannelUiModel,
         userID: String?,
         widgetPosition: Int,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
-        item: PlayWidgetChannelUiModel
+        isAutoPlay: Boolean
     ) {
         val list = ArrayList<Map<String, Any>>()
-        val creativeName = componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING
-        val componentName = componentsItem.data?.firstOrNull()?.let {
+        val creativeName = dataItem?.creativeName ?: EMPTY_STRING
+        val componentName = dataItem?.let {
             getPlayComponentName(it.playWidgetType, it.mobileBanner)
         }
         list.add(
@@ -437,7 +444,7 @@ open class DiscoveryAnalytics(
             eventName = EVENT_PROMO_VIEW,
             eventAction = IMPRESSION_DYNAMIC_BANNER,
             eventLabel = constructPlayEventLabel(
-                item,
+                playModel,
                 channelPositionInList,
                 widgetPosition,
                 isAutoPlay

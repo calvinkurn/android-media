@@ -36,13 +36,34 @@ open class BaseDiscoveryAnalytics(
     open fun trackBrandRecommendationClick(banner: DataItem, bannerPosition: Int, compID: String) {}
     open fun trackBannerClick(banner: DataItem, bannerPosition: Int, userID: String?) {}
     open fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String, itemPosition: Int) {}
-    open fun trackPlayWidgetImpression(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean, item: PlayWidgetChannelUiModel) {}
-    open fun trackPlayWidgetClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean, item: PlayWidgetChannelUiModel) {}
-    open fun trackPlayWidgetBannerClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int) {}
-    open fun trackPlayWidgetLihatSemuaClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int) {}
+    open fun trackPlayWidgetImpression(
+        dataItem: DataItem?,
+        playModel: PlayWidgetChannelUiModel,
+        userID: String?,
+        widgetPosition: Int,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {}
+    open fun trackPlayWidgetClick(
+        dataItem: DataItem?,
+        userID: String?,
+        playModel: PlayWidgetChannelUiModel,
+        widgetPosition: Int,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {}
+    open fun trackPlayWidgetBannerClick(dataItem: DataItem?, userID: String?, widgetPosition: Int) {}
+    open fun trackPlayWidgetLihatSemuaClick(dataItem: DataItem?, userID: String?, widgetPosition: Int) {}
     open fun trackPlayWidgetOverLayClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
     open fun trackPlayWidgetOverLayImpression(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
-    open fun trackPlayWidgetReminderClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, isRemindMe: Boolean, item: PlayWidgetChannelUiModel, isAutoPlay: Boolean) {}
+    open fun trackPlayWidgetReminderClick(
+        playModel: PlayWidgetChannelUiModel,
+        userID: String?,
+        widgetPosition: Int,
+        channelPositionInList: Int,
+        isRemindMe: Boolean,
+        isAutoPlay: Boolean
+    ) {}
     open fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String, itemPosition: Int) {}
     open fun trackClickVideo(videoUrl: String, videoName: String, videoPlayedTime: String) {}
     open fun trackBackClick() {}

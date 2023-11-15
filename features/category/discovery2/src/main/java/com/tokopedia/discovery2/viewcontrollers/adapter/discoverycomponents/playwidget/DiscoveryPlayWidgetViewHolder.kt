@@ -134,12 +134,12 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
     ) {
         discoveryPlayWidgetViewModel?.components?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetClick(
-                it,
+                it.data?.firstOrNull(),
                 UserSession(fragment.context).userId,
+                item,
                 verticalWidgetPosition,
                 channelPositionInList,
-                config.autoPlay,
-                item
+                config.autoPlay
             )
         }
     }
@@ -153,12 +153,12 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
     ) {
         discoveryPlayWidgetViewModel?.components?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetClick(
-                it,
+                it.data?.firstOrNull(),
                 UserSession(fragment.context).userId,
+                item,
                 verticalWidgetPosition,
                 channelPositionInList,
-                config.autoPlay,
-                item
+                config.autoPlay
             )
         }
     }
@@ -172,12 +172,12 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
     ) {
         discoveryPlayWidgetViewModel?.components?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(
-                it,
+                it.data?.firstOrNull(),
+                item,
                 UserSession(fragment.context).userId,
                 verticalWidgetPosition,
                 channelPositionInList,
-                config.autoPlay,
-                item
+                config.autoPlay
             )
         }
     }
@@ -192,12 +192,12 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
         discoveryPlayWidgetViewModel?.components?.let {
             item.video.isLive
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(
-                it,
+                it.data?.firstOrNull(),
+                item,
                 UserSession(fragment.context).userId,
                 verticalWidgetPosition,
                 channelPositionInList,
-                config.autoPlay,
-                item
+                config.autoPlay
             )
         }
     }
@@ -205,7 +205,7 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
     override fun onClickBannerCard(view: PlayWidgetSmallView, verticalWidgetPosition: Int) {
         discoveryPlayWidgetViewModel?.components?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetBannerClick(
-                it,
+                it.data?.firstOrNull(),
                 UserSession(fragment.context).userId,
                 verticalWidgetPosition
             )
@@ -220,7 +220,7 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
     ) {
         discoveryPlayWidgetViewModel?.components?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetBannerClick(
-                it,
+                it.data?.firstOrNull(),
                 UserSession(fragment.context).userId,
                 verticalWidgetPosition
             )
@@ -230,7 +230,7 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
     override fun onClickViewAll(view: PlayWidgetSmallView, verticalWidgetPosition: Int) {
         discoveryPlayWidgetViewModel?.components?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLihatSemuaClick(
-                it,
+                it.data?.firstOrNull(),
                 UserSession(fragment.context).userId,
                 verticalWidgetPosition
             )
@@ -240,7 +240,7 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
     override fun onClickViewAll(view: PlayWidgetMediumView, verticalWidgetPosition: Int) {
         discoveryPlayWidgetViewModel?.components?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLihatSemuaClick(
-                it,
+                it.data?.firstOrNull(),
                 UserSession(fragment.context).userId,
                 verticalWidgetPosition
             )
@@ -292,12 +292,11 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
     ) {
         discoveryPlayWidgetViewModel?.components?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetReminderClick(
-                it,
+                item,
                 UserSession(fragment.context).userId,
                 verticalWidgetPosition,
                 channelPositionInList,
                 isRemindMe,
-                item,
                 config.autoPlay
             )
         }
