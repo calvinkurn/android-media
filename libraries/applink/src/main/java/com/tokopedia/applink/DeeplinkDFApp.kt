@@ -187,7 +187,8 @@ object DeeplinkDFApp {
         DF_SELLER_FEEDBACK to getDfSellerFeedback(),
         DF_SELLER_FRONT_FUNNEL to getDfSellerFrontFunnel(),
         DF_SELLER_TALK to getDfSellerTalk(),
-        DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp()
+        DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp(),
+        DF_STORIES_CREATION to getDfStoriesCreation(),
     )
 
     private fun Map<String, List<DFP>>?.filteredOnDF(context: Context): Map<String, List<DFP>> {
