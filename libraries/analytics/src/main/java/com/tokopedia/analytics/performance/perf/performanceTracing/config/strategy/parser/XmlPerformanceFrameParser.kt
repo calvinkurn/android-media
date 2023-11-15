@@ -65,7 +65,7 @@ class XmlPerformanceFrameParser(
 
     fun finishParsing() {
         onLayoutFinished.invoke()
-//        scope.cancel()
+        scope.cancel()
         isPerformanceTraceFinished = true
         tearDownListener()
     }
