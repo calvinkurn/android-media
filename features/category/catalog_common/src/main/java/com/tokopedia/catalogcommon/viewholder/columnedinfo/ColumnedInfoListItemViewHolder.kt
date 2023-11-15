@@ -23,21 +23,11 @@ class ColumnedInfoListItemViewHolder(
 
     fun bind(
         columnData: ColumnedInfoUiModel.ColumnData,
-        position: Int,
+        position: Int
     ) {
         val rowData = columnData.rowData.getOrNull(position) ?: return
         val rowColor = columnData.rowColor
         binding?.apply {
-            if (columnData.rowIsBold?.first == true) {
-                tfTitle.setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
-            } else {
-                tfTitle.setWeight(com.tokopedia.unifyprinciples.Typography.REGULAR)
-            }
-            if (columnData.rowIsBold?.second == true) {
-                tfValue.setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
-            } else {
-                tfValue.setWeight(com.tokopedia.unifyprinciples.Typography.REGULAR)
-            }
             tfTitle.text = rowData.first
             tfValue.text = rowData.second
             tfTitle.setTextColor(rowColor.first)

@@ -499,17 +499,7 @@ class CatalogDetailUiMapper @Inject constructor(
                         .map {
                             Pair(it.key, it.value)
                         },
-                    rowColor = Pair(
-                        MethodChecker.getColor(context, catalogR.color.catalog_dms_column_info_title_color),
-                        MethodChecker.getColor(
-                            context,
-                            if (darkMode) {
-                                catalogR.color.catalog_dms_column_info_value_color_dark
-                            } else {
-                                catalogR.color.catalog_dms_column_info_value_color_light
-                            }
-                        )
-                    )
+                    rowColor = getColumnInfoTextColor(darkMode)
                 ),
                 fullContent = data?.infoColumn
                     .orEmpty()
@@ -519,7 +509,7 @@ class CatalogDetailUiMapper @Inject constructor(
                             rowData = it.row.map { row ->
                                 Pair(row.key, row.value)
                             },
-                            rowIsBold = Pair(true, false)
+                            rowColor = getColumnInfoTextColor(darkMode)
                         )
                     }
             )
@@ -561,6 +551,18 @@ class CatalogDetailUiMapper @Inject constructor(
         }
         return MethodChecker.getColor(context, textColorRes)
     }
+
+    private fun getColumnInfoTextColor(darkMode: Boolean) = Pair(
+        MethodChecker.getColor(context, catalogR.color.catalog_dms_column_info_title_color),
+        MethodChecker.getColor(
+            context,
+            if (darkMode) {
+                catalogR.color.catalog_dms_column_info_value_color_dark
+            } else {
+                catalogR.color.catalog_dms_column_info_value_color_light
+            }
+        )
+    )
 
     fun isUsingAboveV4Layout(version: Int): Boolean {
         return version >= LAYOUT_VERSION_4_VALUE
