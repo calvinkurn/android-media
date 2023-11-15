@@ -34,6 +34,7 @@ class EPharmacyAttachmentUiUpdater(var mapOfData: LinkedHashMap<String, BaseEPha
         mapOfData.values.filterIsInstance<EPharmacyAttachmentDataModel>().forEach { epDataModel ->
             cartsRequest.add(
                 UpdateCartRequest(
+                    productId = epDataModel.shopInfo?.products?.firstOrNull()?.productId.orZero().toString(),
                     cartId = epDataModel.shopInfo?.products?.firstOrNull()?.cartId.orZero().toString(),
                     quantity = epDataModel.quantityChangedModel?.currentQty ?: (epDataModel.shopInfo?.products?.firstOrNull()?.quantity?.toIntOrZero() ?: 0)
                 )
@@ -41,6 +42,7 @@ class EPharmacyAttachmentUiUpdater(var mapOfData: LinkedHashMap<String, BaseEPha
             epDataModel.subProductsDataModel?.filterIsInstance<EPharmacyAccordionProductDataModel>()?.forEach { epPDM ->
                 cartsRequest.add(
                     UpdateCartRequest(
+                        productId = epPDM.product?.productId.orZero().toString(),
                         cartId = epPDM.product?.cartId.orZero().toString(),
                         quantity = epPDM.product?.qtyComparison?.currentQty ?: (epPDM.product?.quantity?.toIntOrZero() ?: 0)
                     )
