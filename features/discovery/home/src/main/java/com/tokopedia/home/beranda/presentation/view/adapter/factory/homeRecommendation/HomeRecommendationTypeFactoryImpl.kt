@@ -107,7 +107,7 @@ class HomeRecommendationTypeFactoryImpl(
                 topAdsBannerClickListener
             )
 
-            HomeRecommendationPlayWidgetViewHolder.LAYOUT -> HomeRecommendationPlayWidgetViewHolder(parent, homeRecommendationVideoWidgetManager)
+            HomeRecommendationPlayWidgetViewHolder.LAYOUT -> HomeRecommendationPlayWidgetViewHolder(parent, homeRecommendationVideoWidgetManager, homeRecommendationListener)
 
             HomeRecommendationBannerTopAdsViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsViewHolder(parent, homeRecommendationListener)
 
