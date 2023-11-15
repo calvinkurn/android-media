@@ -544,7 +544,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     override fun onCloseItem(widget: RechargeHomepageSections.Widgets) {
-        //TODO rechargeHomepageAnalytics.clickCloseTodoWidget()
+        widget.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_CLOSE }?.run {
+            rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+        }
         viewModel.closeWidgetDigiPerso(widget.favId, widget.type)
     }
 
