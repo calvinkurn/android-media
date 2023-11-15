@@ -30,6 +30,8 @@ import com.tokopedia.digital.home.R as digitalhomeR
 class RechargeHomepageTodoWidgetAdapter(
     var items: List<RechargeHomepageSections.Item>,
     val todoWidgetListener: RechargeHomepageTodoWidgetListener,
+    val todoWidgetSectionId: String,
+    val todoWidgetSectionName: String,
 ) : RecyclerView.Adapter<RechargeHomepageTodoWidgetAdapter.RechargeHomeTodoWidgetListViewHolder>() {
 
     override fun getItemCount(): Int = items.size
@@ -59,7 +61,7 @@ class RechargeHomepageTodoWidgetAdapter(
                 override fun onCloseWidget(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
                     removeItem(element)
                     todoWidgetListener.onCloseItem(
-                        (element as RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel).widget
+                        (element as RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel).widget,
                     )
                 }
             },
@@ -67,7 +69,8 @@ class RechargeHomepageTodoWidgetAdapter(
                 override fun getListSize(): Int {
                     return getListCount()
                 }
-            }
+            },
+            todoWidgetSectionId, todoWidgetSectionName
         )
 
         private val baseAdapter = BaseAdapter(
@@ -120,7 +123,8 @@ class RechargeHomepageTodoWidgetAdapter(
                     viewStickyLayout.tgSubTitleTodoWidget.text = stickyLayout.subtitle
                     viewStickyLayout.imgTodoWidgetBackground.loadImage(TokopediaImageUrl.RECHARGE_SUBHOME_TODO_WIDGET)
                     viewStickyLayout.root.setOnClickListener {
-                        todoWidgetListener.onClickTodoWidget(stickyLayout, false)
+                        todoWidgetListener.onClickTodoWidget(stickyLayout, false, todoWidgetSectionId,
+                            todoWidgetSectionName)
                     }
                     setStickyHeightMatchParent(binding)
                 } else {

@@ -26,6 +26,8 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
     private val todoWidgetListener: RechargeHomepageTodoWidgetListener,
     private val closeItemListener: RechargeHomepageTodoWidgetCloseProcessListener,
     private val todoWidgetItemListener: TodoWidgetItemListener,
+    private val todoWidgetSectionId: String,
+    private val todoWidgetSectionName: String,
 ) : AbstractViewHolder<RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel>(
     binding.root
 ) {
@@ -107,7 +109,7 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
                     btnMainTodoWidget.show()
                     btnMainTodoWidget.text = widget.button
                     btnMainTodoWidget.setOnClickListener {
-                        todoWidgetListener.onClickTodoWidget(widget, true)
+                        todoWidgetListener.onClickTodoWidget(widget, true, todoWidgetSectionId, todoWidgetSectionName)
                     }
                 } else {
                     btnMainTodoWidget.hide()
@@ -171,7 +173,7 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
 
                 if (widget.button.isEmpty()) {
                     root.setOnClickListener {
-                        todoWidgetListener.onClickTodoWidget(widget, false)
+                        todoWidgetListener.onClickTodoWidget(widget, false, todoWidgetSectionId, todoWidgetSectionName)
                     }
                 }
 

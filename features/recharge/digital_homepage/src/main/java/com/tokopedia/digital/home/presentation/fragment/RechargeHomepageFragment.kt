@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Build
@@ -89,6 +90,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     private var enablePersonalize: Boolean = false
     private var sliceOpenApp: Boolean = false
     private var isTripleEntryPointLoaded = false
+    private var todoWidgetSectionId: String = ""
+    private var todoWidgetSectionName: String = ""
 
     lateinit var homeComponentsData: List<RechargeHomepageSections.Section>
     var tickerList: RechargeTickerHomepageModel = RechargeTickerHomepageModel()
@@ -301,6 +304,17 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             })
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode ==  REQUEST_CODE_TODO_WIGDET) {
+            loadSectionData(
+                 todoWidgetSectionId, todoWidgetSectionName, false
+            )
+            todoWidgetSectionName = ""
+            todoWidgetSectionId = ""
+        }
+    }
+
     override fun loadData() {
         adapter.showLoading()
         binding.digitalHomepageToolbar.hide()
@@ -322,7 +336,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         loadSectionData(sectionID, sectionNames)
     }
 
-    private fun loadSectionData(sectionID: String, sectionNames: String) {
+    private fun loadSectionData(sectionID: String, sectionNames: String, dontIgnoreCalledSectionId: Boolean = true) {
         if (sectionID.isNotEmpty()) {
             viewModel.getRechargeHomepageSections(
                 viewModel.createRechargeHomepageSectionsParams(
@@ -330,7 +344,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                     listOf(sectionID.toIntSafely()),
                     enablePersonalize,
                     sectionNames
-                )
+                ),
+                dontIgnoreCalledSectionId
             )
         }
     }
@@ -520,16 +535,25 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onClickTodoWidget(widget: RechargeHomepageSections.Widgets, isButton: Boolean) {
+    override fun onClickTodoWidget(widget: RechargeHomepageSections.Widgets, isButton: Boolean,
+                                   todoWidgetSectionId: String, todoWidgetSectionName: String) {
         widget.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_CLICK }?.run {
             rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
         }
 
-        if (isButton) {
-            RouteManager.route(context, widget.buttonAppLink)
+        val link = if (isButton) {
+            widget.buttonAppLink
         } else {
-            RouteManager.route(context, widget.appLink)
+            widget.appLink
         }
+
+        this.todoWidgetSectionId = todoWidgetSectionId
+        this.todoWidgetSectionName = todoWidgetSectionName
+        val intent = RouteManager.getIntent(context, link)
+        startActivityForResult(
+            intent,
+            REQUEST_CODE_TODO_WIGDET
+        )
     }
 
     override fun onClickThreeButton(optionButtons: List<RechargeHomepageSections.OptionButton>) {
@@ -628,6 +652,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
         const val SEARCH_BAR_TYPE_SOLID = "solid"
         const val SEARCH_BAR_TYPE_TRANSPARENT = "transparent"
+
+        const val REQUEST_CODE_TODO_WIGDET = 1090
 
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16

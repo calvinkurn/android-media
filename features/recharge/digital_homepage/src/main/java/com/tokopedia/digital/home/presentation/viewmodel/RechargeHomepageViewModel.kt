@@ -1,5 +1,6 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -72,13 +73,12 @@ class RechargeHomepageViewModel @Inject constructor(
         }
     }
 
-    fun getRechargeHomepageSections(mapParams: Map<String, Any>) {
+    fun getRechargeHomepageSections(mapParams: Map<String, Any>, dontIgnoreCalledSectionId: Boolean) {
         val requestIDs = (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS] as? List<Int>)
             ?: listOf()
 
-        if (calledSectionIds.contains(requestIDs.firstOrNull() ?: 0)) return
+        if (calledSectionIds.contains(requestIDs.firstOrNull() ?: 0) && dontIgnoreCalledSectionId) return
         calledSectionIds.add(requestIDs.firstOrNull() ?: 0)
-
         val mapParamsWithSectionNames =
             if (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_NAME] != "") {
                 mapParams.filter {

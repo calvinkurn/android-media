@@ -30,7 +30,9 @@ class RechargeHomepageTodoWidgetViewHolder(
                 show()
                 adapter = RechargeHomepageTodoWidgetAdapter(
                     element.section.items,
-                    todoWidgetListener
+                    todoWidgetListener,
+                    element.section.id,
+                    element.section.name
                 )
                 layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
                 binding.root.addOnImpressionListener(element.section) {
