@@ -1,8 +1,9 @@
 package com.tokopedia.shop.info.view.viewmodel
 
 import android.annotation.SuppressLint
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -41,6 +42,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 import com.tokopedia.shop.info.domain.entity.ShopInfo as ReimagineShopInfo
 
@@ -57,7 +59,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val getNearestEpharmacyWarehouseLocationUseCase: GetNearestEpharmacyWarehouseLocationUseCase,
     private val getMessageIdChatUseCase: GetMessageIdChatUseCase,
     private val getShopStatsRawDataUseCase: GetShopStatsRawDataUseCase
-) : BaseViewModel(coroutineDispatcherProvider.main) {
+) : ViewModel() {
 
     companion object {
         private const val ID_FULFILLMENT_SERVICE_E_PHARMACY = 2
@@ -98,81 +100,84 @@ class ShopInfoReimagineViewModel @Inject constructor(
         }
     }
     private fun handleGetShopInfo() {
-        launchCatchError(
+        viewModelScope.launchCatchError(
             context = coroutineDispatcherProvider.io,
             block = {
-                _uiState.update { it.copy(isLoading = true, error = null) }
+                supervisorScope {
+                    _uiState.update { it.copy(isLoading = true, error = null) }
 
-                val shopId = currentState.shopId
+                    val shopId = currentState.shopId
 
-                val shopHeaderLayoutDeferred = async { getShopPageHeaderLayout() }
-                val shopRatingParam = ProductRevGetShopRatingAndTopicsUseCase.Param(shopId)
-                val shopRatingDeferred = async { getShopRatingUseCase.execute(shopRatingParam) }
+                    val shopHeaderLayoutDeferred = async { getShopPageHeaderLayout() }
+                    val shopRatingParam = ProductRevGetShopRatingAndTopicsUseCase.Param(shopId)
+                    val shopRatingDeferred = async { getShopRatingUseCase.execute(shopRatingParam) }
 
-                val shopReviewParam = ProductRevGetShopReviewReadingListUseCase.Param(
-                    shopID = shopId,
-                    limit = FIVE_REVIEW,
-                    page = Int.ONE,
-                    filterBy = "topic=pelayanan",
-                    sortBy = "informative_score desc"
-                )
-                val shopReviewDeferred = async { getShopReviewUseCase.execute(shopReviewParam) }
-
-                val shopInfoDeferred = async { handleGetShopInfo(shopId.toIntOrZero()) }
-                val shopNotesDeferred = async { getShopNotes(shopId) }
-                val shopOperationalHoursDeferred = async { getShopOperationalHours(shopId) }
-                val shopChatPerformanceDeferred = async { getShopChatPerformance(shopId) }
-
-                val shopHeaderLayout = shopHeaderLayoutDeferred.await()
-                val shopRating = shopRatingDeferred.await()
-                val shopReview = shopReviewDeferred.await()
-                val shopInfo = shopInfoDeferred.await()
-                val shopNotes = shopNotesDeferred.await()
-                val shopOperationalHours = shopOperationalHoursDeferred.await()
-                val shopChatPerformance = shopChatPerformanceDeferred.await()
-
-                val pharmacyInfo = if (isEpharmacy(shopInfo)) {
-                    getPharmacyInfo(shopId.toLongOrZero(), currentState.districtId.toLongOrZero())
-                } else {
-                    ShopPharmacyInfo(
-                        showPharmacyInfoSection = false,
-                        nearPickupAddressGmapsUrl = "",
-                        nearestPickupAddress = "",
-                        pharmacistName = "",
-                        pharmacistOperationalHour = emptyList(),
-                        siaNumber = "",
-                        sipaNumber = "",
-                        expandPharmacyInfo = false
+                    val shopReviewParam = ProductRevGetShopReviewReadingListUseCase.Param(
+                        shopID = shopId,
+                        limit = FIVE_REVIEW,
+                        page = Int.ONE,
+                        filterBy = "topic=pelayanan",
+                        sortBy = "informative_score desc"
                     )
-                }
 
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = null,
-                        info = ReimagineShopInfo(
-                            shopImageUrl = shopInfo.shopAssets.avatar,
-                            shopBadgeUrl = shopInfo.goldOS.badge,
-                            shopName = shopInfo.shopCore.name,
-                            shopDescription = shopInfo.shopCore.description,
-                            mainLocation = shopInfo.location,
-                            operationalHours = shopOperationalHours.toFormattedOperationalHours(),
-                            shopJoinDate = shopInfo.createdInfo.shopCreated.toShopJoinDate(),
-                            totalProduct = shopInfo.activeProduct.toIntOrZero(),
-                            shopUsp = shopHeaderLayout.shopPageGetHeaderLayout.toShopUsp(),
-                            showPharmacyLicenseBadge = isEpharmacy(shopInfo)
-                        ),
-                        rating = shopRating,
-                        review = shopReview,
-                        shopPerformance = ShopPerformance(
-                            totalProductSoldCount = shopInfo.shopStats.productSold,
-                            chatPerformance = shopChatPerformance.toChatPerformance(), // TODO replace with real data
-                            orderProcessTime = shopHeaderLayout.shopPageGetHeaderLayout.toOrderProcessTime()
-                        ),
-                        shopNotes = shopNotes.toShopNotes(),
-                        shipments = shopInfo.shipments.toShipments(),
-                        pharmacy = pharmacyInfo
-                    )
+                    val shopReviewDeferred = async { getShopReviewUseCase.execute(shopReviewParam) }
+
+                    val shopInfoDeferred = async { handleGetShopInfo(shopId.toIntOrZero()) }
+                    val shopNotesDeferred = async { getShopNotes(shopId) }
+                    val shopOperationalHoursDeferred = async { getShopOperationalHours(shopId) }
+                    val shopChatPerformanceDeferred = async { getShopChatPerformance(shopId) }
+
+                    val shopHeaderLayout = shopHeaderLayoutDeferred.await()
+                    val shopRating = shopRatingDeferred.await()
+                    val shopReview = shopReviewDeferred.await()
+                    val shopInfo = shopInfoDeferred.await()
+                    val shopNotes = shopNotesDeferred.await()
+                    val shopOperationalHours = shopOperationalHoursDeferred.await()
+                    val shopChatPerformance = shopChatPerformanceDeferred.await()
+
+                    val pharmacyInfo = if (isEpharmacy(shopInfo)) {
+                        getPharmacyInfo(shopId.toLongOrZero(), currentState.districtId.toLongOrZero())
+                    } else {
+                        ShopPharmacyInfo(
+                            showPharmacyInfoSection = false,
+                            nearPickupAddressGmapsUrl = "",
+                            nearestPickupAddress = "",
+                            pharmacistName = "",
+                            pharmacistOperationalHour = emptyList(),
+                            siaNumber = "",
+                            sipaNumber = "",
+                            expandPharmacyInfo = false
+                        )
+                    }
+
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = null,
+                            info = ReimagineShopInfo(
+                                shopImageUrl = shopInfo.shopAssets.avatar,
+                                shopBadgeUrl = shopInfo.goldOS.badge,
+                                shopName = shopInfo.shopCore.name,
+                                shopDescription = shopInfo.shopCore.description,
+                                mainLocation = shopInfo.location,
+                                operationalHours = shopOperationalHours.toFormattedOperationalHours(),
+                                shopJoinDate = shopInfo.createdInfo.shopCreated.toShopJoinDate(),
+                                totalProduct = shopInfo.activeProduct.toIntOrZero(),
+                                shopUsp = shopHeaderLayout.shopPageGetHeaderLayout.toShopUsp(),
+                                showPharmacyLicenseBadge = isEpharmacy(shopInfo)
+                            ),
+                            rating = shopRating,
+                            review = shopReview,
+                            shopPerformance = ShopPerformance(
+                                totalProductSoldCount = shopInfo.shopStats.productSold,
+                                chatPerformance = shopChatPerformance.toChatPerformance(), // TODO replace with real data
+                                orderProcessTime = shopHeaderLayout.shopPageGetHeaderLayout.toOrderProcessTime()
+                            ),
+                            shopNotes = shopNotes.toShopNotes(),
+                            shipments = shopInfo.shipments.toShipments(),
+                            pharmacy = pharmacyInfo
+                        )
+                    }
                 }
             },
             onError = { error ->
@@ -242,7 +247,6 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private suspend fun getShopOperationalHours(shopId: String): ShopOperationalHoursListResponse {
         getShopGqlGetShopOperationalHoursListUseCase.params = GqlGetShopOperationalHoursListUseCase.createRequestParams(shopId)
-        getShopNoteUseCase.isFromCacheFirst = false
         return getShopGqlGetShopOperationalHoursListUseCase.executeOnBackground()
     }
 
@@ -302,7 +306,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
             return
         }
 
-        launchCatchError(
+        viewModelScope.launchCatchError(
             coroutineDispatcherProvider.io,
             block = {
                 _uiState.update { it.copy(isLoadingShopReport = true) }
