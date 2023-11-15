@@ -235,10 +235,14 @@ open class DiscoveryAnalytics(
     ) {
         val list = ArrayList<Map<String, Any>>()
         val creativeName = componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING
+        val componentName = componentsItem.data?.firstOrNull()?.let {
+            getPlayComponentName(it.playWidgetType, it.mobileBanner)
+        }
         list.add(
             mapOf(
                 KEY_ID to "0",
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}",
+                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType" +
+                    " - ${widgetPosition + 1} - - - ${componentName.orEmpty()}",
                 KEY_CREATIVE to creativeName,
                 KEY_POSITION to channelPositionInList
             )
@@ -317,8 +321,10 @@ open class DiscoveryAnalytics(
         componentsItem: ComponentsItem,
         widgetPosition: Int
     ): String {
-        return "${componentsItem.name ?: EMPTY_STRING} - ${widgetPosition + 1} - " +
-            (componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
+        return componentsItem.data?.firstOrNull()?.let {
+            "${getPlayComponentName(it.playWidgetType, it.mobileBanner)} - ${widgetPosition + 1}" +
+                " - ${it.creativeName ?: EMPTY_STRING}"
+        } ?: EMPTY_STRING
     }
 
     override fun trackPlayWidgetOverLayClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {
@@ -396,10 +402,14 @@ open class DiscoveryAnalytics(
     ) {
         val list = ArrayList<Map<String, Any>>()
         val creativeName = componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING
+        val componentName = componentsItem.data?.firstOrNull()?.let {
+            getPlayComponentName(it.playWidgetType, it.mobileBanner)
+        }
         list.add(
             mapOf(
                 KEY_ID to "0",
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}",
+                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType" +
+                    " - ${widgetPosition + 1} - - - ${componentName.orEmpty()}",
                 KEY_CREATIVE to creativeName,
                 KEY_POSITION to channelPositionInList
             )
@@ -440,6 +450,16 @@ open class DiscoveryAnalytics(
 
         return "$sourceIdentifier - $videoType - ${item.partner.id} - ${item.channelId} - " +
             "$channelPositionInList - $widgetPosition - $isAutoPlay - ${item.recommendationType}"
+    }
+
+    private fun getPlayComponentName(widgetType: String?, mobileBanner: String?): String {
+        return if (widgetType == "DISCO_PAGE_V2") {
+            PLAY_CHANNEL_V2_TYPE
+        } else if (!mobileBanner.isNullOrEmpty()) {
+            PLAY_BANNER_TYPE
+        } else {
+            PLAY_CHANNEL_TYPE
+        }
     }
 
     //region DO NOT CHANGE!!
