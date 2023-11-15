@@ -186,7 +186,8 @@ class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
         savingWidgetButton?.setOnClickListener {
             stickyActionButtonHandler?.onSavingsWidgetClicked(
                 plusComponent = savingsWidgetUiModel.plusComponents,
-                isPlus = savingsWidgetUiModel.isPlus
+                isPlus = savingsWidgetUiModel.isPlus,
+                isMixPromo = tickerData.rightText.isNotEmpty()
             )
         }
     }

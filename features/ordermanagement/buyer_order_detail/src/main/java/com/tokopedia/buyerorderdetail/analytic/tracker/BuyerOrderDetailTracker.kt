@@ -21,10 +21,11 @@ object BuyerOrderDetailTracker {
     object SavingsWidget {
         fun clickSavingsWidget(
             orderId: String,
-            isPlus: Boolean
+            isPlus: Boolean,
+            isMixPromo: Boolean
         ) {
-            val plus = if (isPlus) "plus" else "non plus"
-            val trackerId = if (isPlus) "48649" else "48651"
+            val plus = if (isMixPromo) "mix" else if (isPlus) "plus" else "non plus"
+            val trackerId = if (isMixPromo) "48653" else if (isPlus) "48649" else "48651"
 
             mutableMapOf<String, Any>().appendGeneralEventData(
                 eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG,
@@ -40,10 +41,11 @@ object BuyerOrderDetailTracker {
 
         fun impressSavingsWidget(
             orderId: String,
-            isPlus: Boolean
+            isPlus: Boolean,
+            isMixPromo: Boolean
         ) {
-            val plus = if (isPlus) "plus" else "non plus"
-            val trackerId = if (isPlus) "48650" else "48652"
+            val plus = if (isMixPromo) "mix" else if (isPlus) "plus" else "non plus"
+            val trackerId = if (isMixPromo) "48654" else if (isPlus) "48650" else "48652"
             mutableMapOf<String, Any>().appendGeneralEventData(
                 eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_VIEW_PG_IRIS,
                 eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,

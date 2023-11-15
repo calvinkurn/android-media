@@ -8,7 +8,8 @@ data class OrderOneTimeEventUiState(
 sealed class OrderOneTimeEvent {
     data class ImpressSavingsWidget(
         val orderId: String,
-        val isPlus: Boolean
+        val isPlus: Boolean,
+        val isMixPromo: Boolean
     ) : OrderOneTimeEvent()
 
     object Empty : OrderOneTimeEvent()

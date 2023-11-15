@@ -126,10 +126,15 @@ class BuyerOrderDetailStickyActionButtonHandler(
         }
     }
 
-    override fun onSavingsWidgetClicked(plusComponent: PlusComponent, isPlus: Boolean) {
+    override fun onSavingsWidgetClicked(
+        plusComponent: PlusComponent,
+        isPlus: Boolean,
+        isMixPromo: Boolean
+    ) {
         BuyerOrderDetailTracker.SavingsWidget.clickSavingsWidget(
             orderId = viewModel.getOrderId(),
-            isPlus = isPlus
+            isPlus = isPlus,
+            isMixPromo = isMixPromo
         )
         bottomSheetManager.showSavingsWidgetBottomSheet(plusComponent)
     }

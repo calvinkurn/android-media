@@ -5,5 +5,5 @@ import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsU
 
 interface ActionButtonClickListener {
     fun onActionButtonClicked(isFromPrimaryButton: Boolean, button: ActionButtonsUiModel.ActionButton)
-    fun onSavingsWidgetClicked(plusComponent: PlusComponent, isPlus: Boolean)
+    fun onSavingsWidgetClicked(plusComponent: PlusComponent, isPlus: Boolean, isMixPromo: Boolean)
 }

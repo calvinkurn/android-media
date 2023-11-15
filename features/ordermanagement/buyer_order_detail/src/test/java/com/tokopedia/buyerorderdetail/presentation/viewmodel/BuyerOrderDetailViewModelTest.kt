@@ -500,7 +500,8 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         //second assignment, because the first one is default value which OneTimeMethodEvent.Empty
         viewModel.changeOneTimeMethod(event = OrderOneTimeEvent.ImpressSavingsWidget(
             orderId = "asd",
-            isPlus = true
+            isPlus = true,
+            isMixPromo = false
         ))
 
         assertTrue(testResults[1].event is OrderOneTimeEvent.ImpressSavingsWidget)
@@ -509,7 +510,8 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         //re-assign and make sure we dont want to update the data, since we need to run every event exactly once
         viewModel.changeOneTimeMethod(event = OrderOneTimeEvent.ImpressSavingsWidget(
             orderId = "asd",
-            isPlus = true
+            isPlus = true,
+            isMixPromo = false
         ))
 
         assertTrue(testResults.size == 2)

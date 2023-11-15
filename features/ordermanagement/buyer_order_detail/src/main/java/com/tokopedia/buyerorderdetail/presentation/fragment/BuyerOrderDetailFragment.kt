@@ -504,7 +504,8 @@ open class BuyerOrderDetailFragment :
                 is OrderOneTimeEvent.ImpressSavingsWidget -> {
                     BuyerOrderDetailTracker.SavingsWidget.impressSavingsWidget(
                         orderId = it.event.orderId,
-                        isPlus = it.event.isPlus
+                        isPlus = it.event.isPlus,
+                        isMixPromo = it.event.isMixPromo
                     )
                 }
 
@@ -656,7 +657,8 @@ open class BuyerOrderDetailFragment :
         viewModel.changeOneTimeMethod(
             OrderOneTimeEvent.ImpressSavingsWidget(
                 orderId = viewModel.getOrderId(),
-                isPlus = savingWidgetData.isPlus
+                isPlus = savingWidgetData.isPlus,
+                isMixPromo = savingWidgetData.plusTicker.rightText.isNotEmpty()
             )
         )
 
