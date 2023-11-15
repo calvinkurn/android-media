@@ -10,11 +10,9 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class EPharmacyComponentBottomSheet : BottomSheetUnify() {
 
     init {
-        isFullpage = true
-        isDragable = false
+        isFullpage = false
         isHideable = true
         clearContentPadding = true
-        isSkipCollapseState = true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

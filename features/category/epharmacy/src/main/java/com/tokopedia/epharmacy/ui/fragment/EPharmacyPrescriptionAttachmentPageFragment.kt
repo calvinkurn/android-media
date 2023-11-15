@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common_epharmacy.EPHARMACY_CEK_RESEP_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CHOOSER_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_REQUEST_CODE
@@ -29,15 +30,12 @@ import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyShimmerDataModel
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
-import com.tokopedia.epharmacy.network.request.EPharmacyUpdateCartParam
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
-import com.tokopedia.epharmacy.network.response.EPharmacyUpdateCartResponse
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.ATTACH_PRESCRIPTION_PAGE
 import com.tokopedia.epharmacy.utils.ENABLER_IMAGE_URL
 import com.tokopedia.epharmacy.utils.EPHARMACY_ANDROID_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_APPLINK
-import com.tokopedia.epharmacy.utils.EPHARMACY_APP_CHECKOUT_APPLINK
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_SOURCE
@@ -51,6 +49,8 @@ import com.tokopedia.epharmacy.utils.EPharmacyNavigator
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.epharmacy.utils.ERROR_CODE_OUTSIDE_WORKING_HOUR
 import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_ID_STRING
+import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE
+import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY
 import com.tokopedia.epharmacy.utils.EXTRA_SOURCE_STRING
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.FAILED
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.SUCCESS
@@ -269,22 +269,21 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun observerUpdateEPharmacyCart() {
         ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart.observe(viewLifecycleOwner) { updateEPharmacyCart ->
-            when (updateEPharmacyCart) {
-                is Success -> {
-                    if (updateEPharmacyCart.data.status == EPharmacyUpdateCartResponse.UpdateEPharmacyCart.Status.SUCCESS) {
-                        onSuccessUpdateEPharmacyCart()
-                    } else if (updateEPharmacyCart.data.header?.errorMessage.orEmpty().isNotBlank()) {
-                        showToast(TYPE_ERROR, updateEPharmacyCart.data.header?.errorMessage.orEmpty())
-                    }
-                }
-                is Fail -> {
-                    showToasterError(updateEPharmacyCart.throwable)
-                }
+            if (updateEPharmacyCart) {
+                onSuccessUpdateEPharmacyCart()
+            }else {
+                showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_reminder_fail).orEmpty())
             }
         }
     }
 
-    private fun onSuccessUpdateEPharmacyCart() = RouteManager.route(context, EPHARMACY_APP_CHECKOUT_APPLINK)
+    private fun onSuccessUpdateEPharmacyCart() {
+        RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT).apply {
+            putExtra(EXTRA_CHECKOUT_PAGE_SOURCE, EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY)
+        }.also {
+            startActivity(it)
+        }
+    }
 
     private fun onFailGetConsultationDetails(throwable: Throwable) {
         showToasterError(throwable)
@@ -466,13 +465,9 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout()
         ).let { isUpdateCart ->
             if (isUpdateCart) {
-                ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart(getUpdateCartRequestParams())
+                ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart(ePharmacyAttachmentUiUpdater)
             }
         }
-    }
-
-    private fun getUpdateCartRequestParams(): EPharmacyUpdateCartParam {
-        return ePharmacyAttachmentUiUpdater.getUpdateCartParams(tConsultationId)
     }
 
     private fun hasAnyError(): Boolean {

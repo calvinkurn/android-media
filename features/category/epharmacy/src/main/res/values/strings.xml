@@ -71,6 +71,7 @@
     <string name="epharmacy_lihat_invoice">Lihat Invoice</string>
     <string name="epharmacy_tanggal_pembelian">Tanggal Pembelian</string>
     <string name="epharmacy_masa_berlaku_hingga">Masa Berlaku hingga</string>
+    <string name="epharmacy_tanggal_chat_dokter">Tanggal Chat Dokter</string>
     <string name="epharmacy_metode_pembayaran">Metode Pembayaran</string>
     <string name="epharmacy_total_bayar">Total Bayar</string>
     <string name="epharmacy_rincian_pembayaran">Rincian Pembayaran</string>

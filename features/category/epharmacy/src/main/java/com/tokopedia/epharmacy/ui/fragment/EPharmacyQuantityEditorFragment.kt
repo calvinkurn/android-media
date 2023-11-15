@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_QTY_CHANGE
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.R
@@ -28,6 +29,8 @@ import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE
+import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -112,6 +115,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
         observerEPharmacyDetail()
         observerEPharmacyButtonData()
         observerPrescriptionError()
+        observerUpdateEPharmacyCart()
     }
 
     private fun initViews(view: View) {
@@ -140,7 +144,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
 
     private fun addShimmer() {
         ePharmacyRecyclerView?.show()
-        ePharmacyAttachmentUiUpdater.addShimmer()
+        ePharmacyAttachmentUiUpdater.addQuantityEditorShimmer()
         updateUi()
     }
 
@@ -179,7 +183,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
                     EPharmacyButtonState.ACTIVE.state -> {
                         qCTotalAmount?.amountCtaView?.isEnabled = true
                         qCTotalAmount?.amountCtaView?.setOnClickListener {
-                            onDoneButtonClick(cta.redirectLinkApps)
+                            onDoneButtonClick()
                         }
                     }
                     EPharmacyButtonState.DISABLED.state -> {
@@ -191,12 +195,34 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
         }
     }
 
-    private fun onDoneButtonClick(redirectLinkApps: String?) {
-        RouteManager.route(context, redirectLinkApps)
+    private fun onDoneButtonClick() {
+        ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart(ePharmacyAttachmentUiUpdater)
+    }
+
+    private fun observerUpdateEPharmacyCart() {
+        ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart.observe(viewLifecycleOwner) { updateEPharmacyCart ->
+            if (updateEPharmacyCart) {
+                onSuccessUpdateEPharmacyCart()
+            } else {
+                showToast(
+                    Toaster.TYPE_ERROR,
+                    context?.resources?.getString(R.string.epharmacy_reminder_fail).orEmpty()
+                )
+            }
+        }
+    }
+
+    private fun onSuccessUpdateEPharmacyCart() {
+        RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT).apply {
+            putExtra(EXTRA_CHECKOUT_PAGE_SOURCE, EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY)
+        }.also {
+            startActivity(it)
+        }
     }
 
     private fun observerPrescriptionError() {
         ePharmacyPrescriptionAttachmentViewModel.uploadError.observe(viewLifecycleOwner) { error ->
+
         }
     }
 
@@ -207,6 +233,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
             ePharmacyAttachmentUiUpdater.updateModel(component)
         }
         updateUi()
+        qCTotalAmount?.setAmount(calculateTotalAmount())
     }
 
     private fun updateUi() {

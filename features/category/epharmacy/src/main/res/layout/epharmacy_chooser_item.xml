@@ -85,7 +85,7 @@
             />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/fee"
+            android:id="@+id/lblBiayaChatDokter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/divider"
@@ -98,11 +98,11 @@
             />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/duration"
+            android:id="@+id/lblDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/fee"
-            app:layout_constraintStart_toStartOf="@id/fee"
+            app:layout_constraintTop_toBottomOf="@id/lblBiayaChatDokter"
+            app:layout_constraintStart_toStartOf="@id/lblBiayaChatDokter"
             android:layout_marginTop="4dp"
             app:typographyType="paragraph_3"
             android:text="@string/epharmacy_durasi"
@@ -115,14 +115,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="right"
-            app:constraint_referenced_ids="duration,fee"
+            app:constraint_referenced_ids="lblDuration,lblBiayaChatDokter"
             />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/fee_value"
+            android:id="@+id/lblChatDoctorFee"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/fee"
+            app:layout_constraintTop_toTopOf="@id/lblBiayaChatDokter"
             app:layout_constraintStart_toEndOf="@id/barrier"
             app:layout_constraintEnd_toStartOf="@id/chevron"
             app:typographyType="paragraph_3"
@@ -134,10 +134,10 @@
             />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/duration_value"
+            android:id="@+id/lblChatDoctorDuration"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/duration"
+            app:layout_constraintTop_toTopOf="@id/lblDuration"
             app:layout_constraintStart_toEndOf="@id/barrier"
             app:layout_constraintEnd_toStartOf="@id/chevron"
             app:typographyType="paragraph_3"
@@ -153,7 +153,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/divider"
-            app:layout_constraintTop_toBottomOf="@id/duration"
+            app:layout_constraintTop_toBottomOf="@id/lblDuration"
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
             android:visibility="gone"

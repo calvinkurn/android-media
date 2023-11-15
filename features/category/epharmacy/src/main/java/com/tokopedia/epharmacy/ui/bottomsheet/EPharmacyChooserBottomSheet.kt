@@ -167,19 +167,23 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                 renderDuration(duration)
                 renderPrice(price)
                 renderNote(note)
-                knowMoreCta.setOnClickListener{
-                    RouteManager.route(context, "https://www.tokopedia.com/help/article/apa-itu-chat-dokter-di-tokopedia")
+                btnPelajari.setOnClickListener{
+                    routePelajari()
                 }
             }
         }
     }
 
+    private fun routePelajari() {
+        RouteManager.route(context, "https://www.tokopedia.com/help/article/apa-itu-chat-dokter-di-tokopedia")
+    }
+
     private fun renderDuration(durationText: String?) {
         binding?.chooserMiniConsultation?.apply {
             if (durationText?.isNotBlank().orFalse()) {
-                duration.show()
-                durationValue.show()
-                durationValue.text = durationText
+                lblDuration.show()
+                lblChatDoctorDuration.show()
+                lblChatDoctorDuration.text = durationText
             }
         }
     }
@@ -187,9 +191,9 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private fun renderPrice(priceText: String?) {
         binding?.chooserMiniConsultation?.apply {
             if (priceText?.isNotBlank().orFalse()) {
-                fee.show()
-                feeValue.show()
-                feeValue.text = priceText
+                lblBiayaChatDokter.show()
+                lblChatDoctorFee.show()
+                lblChatDoctorFee.text = priceText
             }
         }
     }
@@ -201,10 +205,10 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                 lblPAPTittleOptionBottomsheet.setTextColor(disableColor)
                 lblPAPDescriptionOptionBottomsheet.setTextColor(disableColor)
                 baruLabel.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
-                fee.setTextColor(disableColor)
-                duration.setTextColor(disableColor)
-                feeValue.setTextColor(disableColor)
-                durationValue.setTextColor(disableColor)
+                lblBiayaChatDokter.setTextColor(disableColor)
+                lblDuration.setTextColor(disableColor)
+                lblChatDoctorFee.setTextColor(disableColor)
+                lblChatDoctorDuration.setTextColor(disableColor)
                 chevron.isEnabled = false
                 stepIcon.loadImage(MINI_CONS_CHOOSER_IMAGE_URL_DISABLED)
             }

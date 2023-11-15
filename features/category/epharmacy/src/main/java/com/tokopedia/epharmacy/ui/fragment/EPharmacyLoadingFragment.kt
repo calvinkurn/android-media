@@ -119,6 +119,7 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     private fun onSuccessData(it: Success<EPharmacyVerifyConsultationResponse>) {
         it.data.verifyConsultationOrder?.verifyConsultationOrderData?.pwaLink?.let { pwaLink ->
             if (pwaLink.isNotBlank()) {
+                activity?.finish()
                 routeAction(pwaLink)
             } else {
                 handleFail()
