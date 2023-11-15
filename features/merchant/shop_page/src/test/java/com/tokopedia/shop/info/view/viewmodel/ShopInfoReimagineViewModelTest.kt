@@ -197,6 +197,50 @@ class ShopInfoReimagineViewModelTest {
         }
     }
 
+    //region Shop pharmacy
+    @Test
+    fun `When receive isGoApotik = true from backend while fulfilment service type not GoApotik then showPharmacyLicenseBadge should be false`() {
+        runBlockingTest {
+            // Given
+            val incorrectGoApotikFulfillmentServiceId = 3
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall(
+                response = ShopInfo(
+                    isGoApotik = true,
+                    partnerInfo = listOf(
+                        ShopInfo.PartnerInfoData(
+                            partnerName = "GoApotik",
+                            fsType = incorrectGoApotikFulfillmentServiceId
+                        )
+                    )
+                )
+            )
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+            assertEquals(false, actual.info.showPharmacyLicenseBadge)
+
+            job.cancel()
+        }
+    }
+
     @Test
     fun `When shop is pharmacy should trigger nearest pharmacy and pharmacy info gql call`() {
     }
@@ -208,6 +252,178 @@ class ShopInfoReimagineViewModelTest {
     @Test
     fun `When shop is pharmacy and call to nearest pharmacy and pharmacy info gql call return success should update correct to ui state`() {
     }
+
+    //endregion
+    //region Format Shop USP
+    @Test
+    fun `When get shop info success and there are shop_basic info and shop_attribute_list then should return dynamic usp value correctly`() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            val response = ShopPageHeaderLayoutResponse(
+                shopPageGetHeaderLayout = ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout(
+                    generalComponentConfigList = emptyList(),
+                    isOverrideTheme = false,
+                    widgets = listOf(
+                        ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget(
+                            name = "shop_basic_info",
+                            listComponent = listOf(
+                                ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component(
+                                    name = "shop_attribute_list",
+                                    data = ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component.Data(
+                                        listText = listOf(
+                                            ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component.Text(
+                                                textHtml = "Toko pilihan"
+                                            ),
+                                            ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component.Text(
+                                                textHtml = "Dijamin Original"
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+            mockGetShopPageHeaderGqlCall(response = response)
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(false, actual.isLoading)
+            assertEquals(listOf("Toko pilihan", "Dijamin Original"), actual.info.shopUsp)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When get shop info success and there are no shop_basic_info then should return empty list of dynamic usp`() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            val response = ShopPageHeaderLayoutResponse(
+                shopPageGetHeaderLayout = ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout(
+                    generalComponentConfigList = emptyList(),
+                    isOverrideTheme = false,
+                    widgets = listOf(
+                        ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget(
+                            name = "shop_basic_info",
+                            listComponent = listOf(
+                                ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component(
+                                    name = "shop_component",
+                                    data = ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component.Data(
+                                        listText = listOf(
+                                            ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component.Text(
+                                                textHtml = "Toko pilihan"
+                                            ),
+                                            ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component.Text(
+                                                textHtml = "Dijamin Original"
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+            mockGetShopPageHeaderGqlCall(response = response)
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(false, actual.isLoading)
+            assertEquals(emptyList<String>(), actual.info.shopUsp)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When get shop info success and there are no shop_attribute_list then should return empty list of dynamic usp`() {
+        runBlockingTest {
+            // Given
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            val response = ShopPageHeaderLayoutResponse(
+                shopPageGetHeaderLayout = ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout(
+                    generalComponentConfigList = emptyList(),
+                    isOverrideTheme = false,
+                    widgets = listOf(
+                        ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget(
+                            name = "shop_info",
+                            listComponent = listOf()
+                        )
+                    )
+                )
+            )
+            mockGetShopPageHeaderGqlCall(response = response)
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+
+            assertEquals(false, actual.isLoading)
+            assertEquals(emptyList<String>(), actual.info.shopUsp)
+
+            job.cancel()
+        }
+    }
+    //endregion
+
+    //region Format order process time
+    //endregion
 
     //region Click event
     @Test
@@ -257,7 +473,8 @@ class ShopInfoReimagineViewModelTest {
             mockGetShopReviewGqlCall()
             mockGetShopInfoGqlCall(
                 response = ShopInfo(
-                    isGoApotik = true, partnerInfo = listOf(ShopInfo.PartnerInfoData(partnerName = "GoApotik", fsType = 2))
+                    isGoApotik = true,
+                    partnerInfo = listOf(ShopInfo.PartnerInfoData(partnerName = "GoApotik", fsType = 2))
                 )
             )
             mockGetShopNoteGqlCall()
@@ -553,9 +770,8 @@ class ShopInfoReimagineViewModelTest {
     //endregion
 
     //region helper function
-
-    private fun mockGetShopPageHeaderGqlCall() {
-        coEvery { getShopPageHeaderLayoutUseCase.executeOnBackground() } returns ShopPageHeaderLayoutResponse()
+    private fun mockGetShopPageHeaderGqlCall(response: ShopPageHeaderLayoutResponse = ShopPageHeaderLayoutResponse()) {
+        coEvery { getShopPageHeaderLayoutUseCase.executeOnBackground() } returns response
     }
     private fun mockGetShopRatingGqlCall() {
         val requestParam = ProductRevGetShopRatingAndTopicsUseCase.Param(shopId)
