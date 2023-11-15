@@ -50,7 +50,6 @@ open class DiscoveryAnalytics(
     private var viewedCalendarSet: MutableSet<String> = HashSet()
     private var viewedAnchorTabsSet: MutableSet<String> = HashSet()
 
-    //region do not change
     override fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int?, userID: String?) {
         if (banners.isNotEmpty()) {
             banners.forEachIndexed { index, banner ->
@@ -223,7 +222,6 @@ open class DiscoveryAnalytics(
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
     }
-    //endregion
 
     override fun trackPlayWidgetClick(
         dataItem: DataItem?,
@@ -482,7 +480,6 @@ open class DiscoveryAnalytics(
         }
     }
 
-    //region DO NOT CHANGE!!
 //    https://mynakama.tokopedia.com/datatracker/requestdetail/view/1559
     override fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String, itemPosition: Int) {
         val list = ArrayList<Map<String, Any>>()
@@ -2939,9 +2936,7 @@ open class DiscoveryAnalytics(
         }
         return gtmNameParts.joinToString("-") { " $it " }
     }
-    //endregion
 
-    //region do not change!!
     override fun trackCouponImpression(properties: List<CouponTrackingProperties>) {
         val generalProps = createGeneralCouponEvent(
             EVENT_PROMO_VIEW,
@@ -3075,8 +3070,6 @@ open class DiscoveryAnalytics(
 
         return replacedName
     }
-
-    //endregion
 
     //endregion
 }
