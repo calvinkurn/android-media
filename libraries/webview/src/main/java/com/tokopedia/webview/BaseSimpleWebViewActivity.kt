@@ -191,7 +191,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     private fun checkShouldOverrideBackPress(url: String?): Boolean {
         val shouldOverrideRc = FirebaseRemoteConfigImpl(this)
-            .getBoolean(ENABLE_WEBVIEW_BACK_PRESSED, false)
+            .getBoolean(ENABLE_WEBVIEW_BACK_PRESSED, true)
 
         if (fragment is BaseSessionWebViewFragment && shouldOverrideRc) {
             val query = UriUtil.uriQueryParamsToMap(url ?: "")
