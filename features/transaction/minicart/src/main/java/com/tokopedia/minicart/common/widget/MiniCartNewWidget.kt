@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -61,7 +60,6 @@ class MiniCartNewWidget @JvmOverloads constructor(
     private var config: MiniCartNewWidgetConfig = MiniCartNewWidgetConfig()
     private var miniCartWidgetListener: MiniCartNewWidgetListener? = null
     private var progressDialog: AlertDialog? = null
-    private var coachMark: CoachMark2? = null
 
     private var viewModel: MiniCartViewModel? = null
 
@@ -98,6 +96,21 @@ class MiniCartNewWidget @JvmOverloads constructor(
     private fun initializeView(config: MiniCartNewWidgetConfig) {
         binding?.miniCartTotalAmount?.apply {
             topContentView.visibility = if (config.showTopShadow) View.VISIBLE else View.GONE
+            amountCtaView.setOnClickListener {
+                sendEventClickBuy()
+                showProgressLoading()
+                viewModel?.goToCheckout(GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+            }
+        }
+        initializeProgressDialog(context)
+    }
+
+    private fun initializeProgressDialog(context: Context?) {
+        context?.let {
+            progressDialog = AlertDialog.Builder(it)
+                .setView(R.layout.mini_cart_progress_dialog_view)
+                .setCancelable(true)
+                .create()
         }
     }
 
@@ -150,17 +163,25 @@ class MiniCartNewWidget @JvmOverloads constructor(
         }
     }
 
+    private fun sendEventClickBuy() {
+        val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
+        val products = viewModel?.miniCartSimplifiedData?.value?.miniCartItems?.values?.toList()
+            ?: emptyList()
+        val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
+        analytics.eventClickBuy(pageName, products, isOCCFlow)
+    }
+
     private fun onSuccessGoToCheckout(context: Context) {
         val intent = if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         } else {
             val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
             val pageSource = when (pageName) {
-                MiniCartAnalytics.Page.HOME_PAGE -> "${MiniCartWidget.MINICART_PAGE_SOURCE} - homepage"
-                MiniCartAnalytics.Page.SEARCH_PAGE -> "${MiniCartWidget.MINICART_PAGE_SOURCE} - search result"
-                MiniCartAnalytics.Page.CATEGORY_PAGE -> "${MiniCartWidget.MINICART_PAGE_SOURCE} category page"
-                MiniCartAnalytics.Page.DISCOVERY_PAGE -> "${MiniCartWidget.MINICART_PAGE_SOURCE} discovery page"
-                MiniCartAnalytics.Page.RECOMMENDATION_INFINITE -> "${MiniCartWidget.MINICART_PAGE_SOURCE} recommendation infinite page"
+                MiniCartAnalytics.Page.HOME_PAGE -> "$MINICART_PAGE_SOURCE - homepage"
+                MiniCartAnalytics.Page.SEARCH_PAGE -> "$MINICART_PAGE_SOURCE - search result"
+                MiniCartAnalytics.Page.CATEGORY_PAGE -> "$MINICART_PAGE_SOURCE category page"
+                MiniCartAnalytics.Page.DISCOVERY_PAGE -> "$MINICART_PAGE_SOURCE discovery page"
+                MiniCartAnalytics.Page.RECOMMENDATION_INFINITE -> "$MINICART_PAGE_SOURCE recommendation infinite page"
                 else -> ""
             }
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
