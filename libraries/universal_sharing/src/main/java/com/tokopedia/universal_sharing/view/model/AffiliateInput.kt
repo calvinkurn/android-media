@@ -24,7 +24,10 @@ data class Product(
     var maxProductPrice: String? = "",
 
     @SerializedName("ProductStatus")
-    var productStatus: String? = ""
+    var productStatus: String? = "",
+
+    @SerializedName("FormattedProductPrice")
+    var formattedProductPrice: String? = ""
 )
 
 data class Shop(

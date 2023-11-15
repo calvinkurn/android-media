@@ -13,17 +13,17 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateChannelOneModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
+import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
+import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 
 class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, private val adapterTypeFactory: HomeAdapterFactory, visitables: List<Visitable<*>>) :
-        HomeBaseAdapter<HomeAdapterFactory>(asyncDifferConfig, adapterTypeFactory, visitables){
+        HomeBaseAdapter<HomeAdapterFactory>(asyncDifferConfig, adapterTypeFactory, visitables) {
 
    private var mRecyclerView: RecyclerView? = null
-   private var currentSelected = -1
    private var mLayoutManager: LinearLayoutManager? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
@@ -49,26 +49,24 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
+        if(holder is BannerRevampViewHolder) {
+            holder.resumeIndicator()
+        }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewDetachedFromWindow(holder)
-        if(holder is BannerViewHolder){
-            holder.onPause()
+        if(holder is BannerRevampViewHolder) {
+            holder.pauseIndicator()
         }
     }
 
-    private fun getViewHolder(position: Int): AbstractViewHolder<out Visitable<*>>? {
-        return mRecyclerView?.findViewHolderForAdapterPosition(position) as AbstractViewHolder<out Visitable<*>>?
+    private fun getViewHolder(classType: Class<*>): AbstractViewHolder<out Visitable<*>>? {
+        val index = currentList.indexOfFirst { it::class.java == classType }
+        return mRecyclerView?.findViewHolderForAdapterPosition(index) as? AbstractViewHolder<out Visitable<*>>
     }
 
-    fun onResumeBanner() {
-        if(itemCount > 0){
-            (getViewHolder(0) as? BannerViewHolder)?.onResume()
-        }
-    }
-
-    fun onResumeSpecialRelease() {
+    private fun onResumeSpecialRelease() {
         if(itemCount > 0){
             for (i in 0..(mRecyclerView?.childCount?:0)) {
                 val childView = mRecyclerView?.getChildAt(i)
@@ -84,12 +82,6 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
                     }
                 }
             }
-        }
-    }
-
-    fun onPauseBanner() {
-        if(itemCount > 0){
-            (getViewHolder(0) as? BannerViewHolder)?.onPause()
         }
     }
 
@@ -123,5 +115,14 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
         super.onBindViewHolder(holder, position)
+    }
+
+    fun onPause() {
+        (getViewHolder(BannerRevampDataModel::class.java) as? BannerRevampViewHolder)?.pauseIndicator()
+    }
+
+    fun onResume() {
+        (getViewHolder(BannerRevampDataModel::class.java) as? BannerRevampViewHolder)?.resumeIndicator()
+        onResumeSpecialRelease()
     }
 }

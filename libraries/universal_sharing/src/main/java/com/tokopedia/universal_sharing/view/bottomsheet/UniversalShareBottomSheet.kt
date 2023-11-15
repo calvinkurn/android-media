@@ -1212,7 +1212,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         setIfAffiliate(shareModel)
         if (getImageFromMedia) {
             when (sourceId) {
-                ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP -> {
+                ImageGeneratorConstants.ImageGeneratorSourceId.PDP_WITH_PRICE_STRING -> {
                     executePdpContextualImage(shareModel)
                 }
 
@@ -1324,7 +1324,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 val mediaImageUrl = response.imageUrl
 
                 /* for A/B Testing on PDP Page */
-                if (sourceId == ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP) {
+                if (sourceId == ImageGeneratorConstants.ImageGeneratorSourceId.PDP_WITH_PRICE_STRING) {
                     setAbTestContextual(shareModel, response.sourceId)
                 }
                 SharingUtil.saveImageFromURLToStorage(context, mediaImageUrl) {
