@@ -16,6 +16,7 @@ import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.domain.model.StoriesTrackActivityActionType
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
+import com.tokopedia.stories.uimodel.AuthorType
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
@@ -411,12 +412,18 @@ class StoriesViewModel @AssistedInject constructor(
         val position = if (cachedPos > maxPos) maxPos else cachedPos
         updateDetailData(position = position, isReset = true)
 
+        val currentDetailItems = currentDetail.detailItems[position]
+        val authorIdToCheck = when (currentDetailItems.author.type) {
+            AuthorType.Seller -> userSession.shopId
+            else -> userSession.userId
+        }
+
         if (currentDetail == StoriesDetail()) {
             _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
         } else if (
-            currentDetail.detailItems[position].category == StoriesDetailItem.StoryCategory.Manual &&
+            currentDetailItems.category == StoriesDetailItem.StoryCategory.Manual &&
             !repository.hasSeenManualStoriesDurationCoachmark() &&
-            currentDetail.detailItems[position].author.id == userSession.userId
+            currentDetailItems.author.id == authorIdToCheck
         ) {
             _storiesEvent.emit(StoriesUiEvent.ShowStoriesTimeCoachmark)
         }
