@@ -313,7 +313,7 @@ public class MainParentActivity extends BaseActivity implements
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
         }
         sendNotificationUserSetting();
-        requestDarkModeInto();
+        showDarkModeIntroBottomSheet();
     }
 
     private void sendNotificationUserSetting() {
@@ -1368,7 +1368,7 @@ public class MainParentActivity extends BaseActivity implements
         finish();
     }
 
-    private void requestDarkModeInto() {
+    private void showDarkModeIntroBottomSheet() {
         View view = getWindow().getDecorView();
         DarkModeIntroductionLauncher.INSTANCE
                 .launch(view, getSupportFragmentManager(), userSession.get().isLoggedIn());
