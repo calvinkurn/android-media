@@ -1,6 +1,7 @@
 package com.tokopedia.centralizedpromo.analytic
 
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_CLICK_PROMOTION_CARD
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_IMPRESSION_CARD_AOV
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_CLICK_CLOSE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_CLICK_CREATE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_IMPRESSION
@@ -15,16 +16,19 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CA
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CATEGORY_MVC_PRODUCT
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CLICK_CAMPAIGN_CARD
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CLICK_FILTER_ALL
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CLICK_FILTER_INCREASE_AVERAGE_ORDER_VALUE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CLICK_FILTER_INCREASE_BUYER
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CLICK_FILTER_INCREASE_LOYALTY
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CLICK_FILTER_INCREASE_NEW_ORDER
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_IMPRESSION_BOTTOM_SHEET
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_IMPRESSION_CARD
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_IMPRESSION_FILTER_INCREASE_AVERAGE_ORDER_VALUE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_CLICK_PG
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_VIEW_PG_IRIS
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTER_ALL
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTER_INCREASE_AVERAGE_ORDER_VALUE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTER_INCREASE_BUYER
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTER_INCREASE_LOYALTY
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTER_INCREASE_NEW_ORDER
@@ -33,10 +37,13 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_BOTTOM_SHEET_CREATE_CAMPAIGN
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_BOTTOM_SHEET_PAYWALL
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_CLICK_CARD
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_CLICK_INCREASE_AVERAGE_ORDER_VALUE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_FILTER_ALL
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_IMPRESSION_BOTTOM_SHEET
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_IMPRESSION_BOTTOM_SHEET_PAYWALL
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_IMPRESSION_CARD
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_IMPRESSION_CARD_AOV
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_IMPRESSION_INCREASE_AVERAGE_ORDER_VALUE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_INCREASE_BUYER
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_INCREASE_LOYALTY
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_INCREASE_NEW_ORDER
@@ -59,7 +66,7 @@ object CentralizedPromoTracking {
             TrackerConstant.EVENT to event,
             TrackerConstant.EVENT_CATEGORY to category,
             TrackerConstant.EVENT_ACTION to action,
-            TrackerConstant.EVENT_LABEL to label,
+            TrackerConstant.EVENT_LABEL to label
         )
     }
 
@@ -126,7 +133,6 @@ object CentralizedPromoTracking {
 
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
-
 
     fun sendOpenScreenEvent(
         isLoggedIn: Boolean,
@@ -206,8 +212,20 @@ object CentralizedPromoTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun sendClickFilter(filterId: String) {
+    fun sendImpressionAovFilter() {
+        // TODO: Check for with/without recommendation
+        val data = createMap(
+            event = EVENT_NAME_VIEW_PG_IRIS,
+            action = EVENT_IMPRESSION_FILTER_INCREASE_AVERAGE_ORDER_VALUE,
+            category = EVENT_CATEGORY_ADS_AND_PROMO,
+            label = String.EMPTY,
+            trackerId = TRACKER_ID_IMPRESSION_INCREASE_AVERAGE_ORDER_VALUE
+        ).completeEventInfo()
 
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun sendClickFilter(filterId: String) {
         val trackerId = when (filterId) {
             ID_FILTER_ALL -> {
                 TRACKER_ID_FILTER_ALL
@@ -220,6 +238,9 @@ object CentralizedPromoTracking {
             }
             ID_FILTER_INCREASE_LOYALTY -> {
                 TRACKER_ID_INCREASE_LOYALTY
+            }
+            ID_FILTER_INCREASE_AVERAGE_ORDER_VALUE -> {
+                TRACKER_ID_CLICK_INCREASE_AVERAGE_ORDER_VALUE
             }
             else -> {
                 ""
@@ -239,6 +260,9 @@ object CentralizedPromoTracking {
             ID_FILTER_INCREASE_LOYALTY -> {
                 EVENT_CLICK_FILTER_INCREASE_LOYALTY
             }
+            ID_FILTER_INCREASE_AVERAGE_ORDER_VALUE -> {
+                EVENT_CLICK_FILTER_INCREASE_AVERAGE_ORDER_VALUE
+            }
             else -> {
                 ""
             }
@@ -256,7 +280,6 @@ object CentralizedPromoTracking {
     }
 
     fun sendImpressionCard(featureName: String, tabFilterName: String) {
-
         val data = createMap(
             event = EVENT_NAME_VIEW_PG_IRIS,
             action = EVENT_IMPRESSION_CARD,
@@ -268,8 +291,19 @@ object CentralizedPromoTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun sendClickCampaignCard(filterTabName: String, featureName: String) {
+    fun sendImpressionAovCard(featureName: String) {
+        val data = createMap(
+            event = EVENT_NAME_VIEW_PG_IRIS,
+            action = EVENT_ACTION_IMPRESSION_CARD_AOV,
+            category = EVENT_CATEGORY_ADS_AND_PROMO,
+            label = "$featureName - 1",
+            trackerId = TRACKER_ID_IMPRESSION_CARD_AOV
+        ).completeEventInfo()
 
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun sendClickCampaignCard(filterTabName: String, featureName: String) {
         val data = createMap(
             event = EVENT_NAME_CLICK_PG,
             action = EVENT_CLICK_CAMPAIGN_CARD,
