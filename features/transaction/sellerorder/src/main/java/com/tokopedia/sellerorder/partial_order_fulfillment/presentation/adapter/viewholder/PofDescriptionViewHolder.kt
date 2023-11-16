@@ -3,9 +3,11 @@ package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter
 import android.text.method.LinkMovementMethod
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.databinding.ItemPofDescriptionBinding
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.PofAdapterTypeFactory
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.model.PofDescriptionUiModel
@@ -36,7 +38,8 @@ class PofDescriptionViewHolder(
         ).apply {
             urlList.forEach { url ->
                 url.onClick = {
-                    val intent = RouteManager.getIntentNoFallback(binding.root.context, url.linkUrl)
+                    val appLink = formatUrlToAppLink(url.linkUrl)
+                    val intent = RouteManager.getIntentNoFallback(binding.root.context, appLink)
                     if (intent != null) {
                         listener.onEvent(element.onClickEventData)
                         binding.root.context.startActivity(intent)
@@ -45,5 +48,13 @@ class PofDescriptionViewHolder(
             }
         }.spannedString ?: String.EMPTY
         binding.tvPofDescription.movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    private fun formatUrlToAppLink(url: String): String {
+        return if (url.startsWith(SomConsts.PREFIX_HTTP)) {
+            "${ApplinkConst.WEBVIEW}?url=$url"
+        } else {
+            url
+        }
     }
 }
