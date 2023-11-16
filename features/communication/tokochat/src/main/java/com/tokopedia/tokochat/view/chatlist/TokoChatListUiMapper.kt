@@ -1,6 +1,5 @@
 package com.tokopedia.tokochat.view.chatlist
 
-import android.util.ArrayMap
 import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.GOSEND_INSTANT_SERVICE_TYPE
@@ -51,7 +50,7 @@ class TokoChatListUiMapper@Inject constructor(
     }
 
     fun mapToTypeCounter(channelList: List<ConversationsChannel>): Map<String, Int> {
-        val result = ArrayMap<String, Int>()
+        val result = HashMap<String, Int>()
         channelList.forEach {
             val serviceType = it.metadata?.orderInfo?.serviceType ?: 0
             if ((
@@ -62,7 +61,7 @@ class TokoChatListUiMapper@Inject constructor(
                 val serviceTypeName = getSource(
                     it.metadata?.orderInfo?.serviceType ?: Int.ZERO
                 )
-                val lastCounter: Int = result.getOrDefault(serviceTypeName, Int.ZERO)
+                val lastCounter: Int = result[serviceTypeName] ?: Int.ZERO
                 result[serviceTypeName] = lastCounter + it.unreadCount
             }
         }
