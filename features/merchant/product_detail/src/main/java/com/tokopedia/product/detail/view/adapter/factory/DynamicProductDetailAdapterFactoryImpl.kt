@@ -8,6 +8,8 @@ import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.view.AtcVariantListener
+import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
+import com.tokopedia.product.detail.component.shipment.ShipmentViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
@@ -85,7 +87,6 @@ import com.tokopedia.product.detail.view.viewholder.ProductShopCredibilityViewHo
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductTickerInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductTopAdsImageViewHolder
-import com.tokopedia.product.detail.view.viewholder.ShipmentViewHolder
 import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
@@ -173,7 +174,7 @@ class DynamicProductDetailAdapterFactoryImpl(
     }
 
     override fun type(data: ProductShipmentDataModel): Int {
-        return ShipmentViewHolder.LAYOUT
+        return com.tokopedia.product.detail.view.viewholder.ShipmentViewHolder.LAYOUT
     }
 
     override fun type(data: ProductMerchantVoucherSummaryDataModel): Int {
@@ -279,6 +280,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return BMGMViewHolder.LAYOUT
     }
 
+    override fun type(data: ShipmentUiModel): Int {
+        return ShipmentViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view, listener)
@@ -322,6 +327,7 @@ class DynamicProductDetailAdapterFactoryImpl(
             ProductTopAdsImageViewHolder.LAYOUT -> ProductTopAdsImageViewHolder(view, listener)
             ProductDetailInfoViewHolder.LAYOUT -> ProductDetailInfoViewHolder(view, listener)
             ProductReportViewHolder.LAYOUT -> ProductReportViewHolder(view, listener)
+            com.tokopedia.product.detail.view.viewholder.ShipmentViewHolder.LAYOUT -> com.tokopedia.product.detail.view.viewholder.ShipmentViewHolder(view, listener)
             ShipmentViewHolder.LAYOUT -> ShipmentViewHolder(view, listener)
             ProductMerchantVoucherSummaryViewHolder.LAYOUT -> ProductMerchantVoucherSummaryViewHolder(
                 view,

@@ -13,9 +13,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 /**
  * Created by frenzel
  */
-class HomeThematicUtil @Inject constructor(
-    private val context: Context
-) {
+class HomeThematicUtil @Inject constructor(context: Context) {
     companion object {
         const val COLOR_DARK = "dark"
         const val COLOR_LIGHT = "light"
@@ -43,9 +41,9 @@ class HomeThematicUtil @Inject constructor(
         ColorMode.DEFAULT
     }
 
-    internal fun getThematicColor(actualColorToken: Int): Int {
-        val context = context.modeAware(getColorMode()) ?: this.context
-        return ContextCompat.getColor(context, actualColorToken)
+    internal fun getThematicColor(actualColorToken: Int, context: Context): Int {
+        val ctx = context.modeAware(getColorMode()) ?: context
+        return ContextCompat.getColor(ctx, actualColorToken)
     }
 
     internal fun getThematicColorToken(actualColorToken: Int): Int {
@@ -57,9 +55,9 @@ class HomeThematicUtil @Inject constructor(
         }
     }
 
-    internal fun getThematicDrawable(actualColorToken: Int): Drawable? {
-        val context = context.modeAware(getColorMode()) ?: this.context
-        return ContextCompat.getDrawable(context, actualColorToken)
+    internal fun getThematicDrawable(actualColorToken: Int, context: Context): Drawable? {
+        val ctx = context.modeAware(getColorMode()) ?: context
+        return ContextCompat.getDrawable(ctx, actualColorToken)
     }
 
     fun isDarkMode() = getColorMode() == ColorMode.DARK_MODE
