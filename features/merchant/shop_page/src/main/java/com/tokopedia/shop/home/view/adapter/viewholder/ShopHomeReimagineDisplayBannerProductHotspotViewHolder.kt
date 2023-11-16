@@ -159,6 +159,10 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
     private fun setupImageBannerHotspotData(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel) {
         val ratio = uiModel.header.ratio.takeIf { it.isNotEmpty() } ?: DEFAULT_RATIO
         (imageBannerHotspot?.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ratio
+        val isShowIntroAnimation = uiModel.isShowIntroAnimation
+        if (uiModel.isShowIntroAnimation) {
+            uiModel.isShowIntroAnimation = false
+        }
         uiModel.data.firstOrNull()?.let {
             imageBannerHotspot?.setData(
                 ImageHotspotData(
@@ -174,7 +178,8 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
                     }
                 ),
                 listenerBubbleView = this,
-                ratio = ratio
+                ratio = ratio,
+                isShowIntroAnimation = isShowIntroAnimation
             )
         }
     }
