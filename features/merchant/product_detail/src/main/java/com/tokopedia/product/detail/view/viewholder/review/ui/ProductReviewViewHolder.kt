@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder.review.ui
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -58,7 +59,13 @@ class ProductReviewViewHolder(
             adapter = ratingKeywordAdapter
             layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
             addItemDecoration(ItemSpaceDecorator(space = KEYWORD_ITEM_SPACING))
+            optimizeNestRecyclerView()
         }
+    }
+
+    private fun RecyclerView.optimizeNestRecyclerView() {
+        setRecycledViewPool(listener.getParentRecyclerViewPool())
+        setHasFixedSize(true)
     }
 
     init {
