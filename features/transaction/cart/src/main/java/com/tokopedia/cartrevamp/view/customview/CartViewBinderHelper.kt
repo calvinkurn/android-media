@@ -2,8 +2,7 @@ package com.tokopedia.cartrevamp.view.customview
 
 import java.util.*
 
-
-class ViewBinderHelper {
+class CartViewBinderHelper {
     private var mapStates = Collections.synchronizedMap(HashMap<String, Int>())
     private val mapLayouts: MutableMap<String, CartSwipeRevealLayout> = Collections.synchronizedMap(
         HashMap()

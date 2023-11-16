@@ -93,7 +93,8 @@
             android:clipToPadding="false"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:paddingStart="16dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="0dp">
 
             <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/checkbox_anchor"

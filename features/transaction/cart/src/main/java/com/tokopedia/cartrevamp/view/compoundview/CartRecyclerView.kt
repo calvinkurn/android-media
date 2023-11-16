@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cartrevamp.view.customview.CartSwipeRevealLayout
-import com.tokopedia.cartrevamp.view.customview.ViewBinderHelper
+import com.tokopedia.cartrevamp.view.customview.CartViewBinderHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -19,7 +19,7 @@ class CartRecyclerView : RecyclerView {
         private const val SWIPE_LAYOUT_SUB_VIEW_WIDTH = 80
     }
 
-    private var viewBinderHelper: ViewBinderHelper = ViewBinderHelper()
+    private var viewBinderHelper: CartViewBinderHelper = CartViewBinderHelper()
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -29,7 +29,7 @@ class CartRecyclerView : RecyclerView {
         defStyleAttr
     )
 
-    fun setViewBinderHelper(viewBinderHelper: ViewBinderHelper) {
+    fun setViewBinderHelper(viewBinderHelper: CartViewBinderHelper) {
         this.viewBinderHelper = viewBinderHelper
     }
 

@@ -75,7 +75,7 @@ import com.tokopedia.cartrevamp.view.bottomsheet.CartBundlingBottomSheetListener
 import com.tokopedia.cartrevamp.view.bottomsheet.CartNoteBottomSheet
 import com.tokopedia.cartrevamp.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cartrevamp.view.compoundview.CartToolbarListener
-import com.tokopedia.cartrevamp.view.customview.ViewBinderHelper
+import com.tokopedia.cartrevamp.view.customview.CartViewBinderHelper
 import com.tokopedia.cartrevamp.view.decorator.CartItemDecoration
 import com.tokopedia.cartrevamp.view.di.DaggerCartRevampComponent
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
@@ -133,6 +133,7 @@ import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -312,7 +313,7 @@ class CartRevampFragment :
     private var wishlistIcon: IconUnify? = null
     private var animatedWishlistImage: ImageView? = null
 
-    private val binderHelper = ViewBinderHelper()
+    private val binderHelper = CartViewBinderHelper()
 
     private var editBundleActivityResult: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -384,6 +385,10 @@ class CartRevampFragment :
         private const val TOKONOW_UPDATER_DEBOUNCE = 500L
         private const val TOKONOW_SEE_OTHERS_OR_ALL_LIMIT = 10
         private const val BMGM_TICKER_RELOAD_ACTION = "RELOAD"
+
+        private const val SWIPE_TO_DELETE_ANIMATION_DELAY = 300L
+        private const val SWIPE_TO_DELETE_STOP_ANIMATION_DELAY = 200L
+        private const val SWIPE_TO_DELETE_TRANSLATION_LENGTH = -60f
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartRevampFragment {
@@ -2452,8 +2457,8 @@ class CartRevampFragment :
     private fun startSwipeLayoutOnboardingAnimation(targetView: View) {
         val animation = targetView.animate()
         animation.interpolator = AccelerateDecelerateInterpolator()
-        animation.duration = 300L
-        animation.translationX((-60f).dpToPx())
+        animation.duration = SWIPE_TO_DELETE_ANIMATION_DELAY
+        animation.translationX(SWIPE_TO_DELETE_TRANSLATION_LENGTH.dpToPx())
         animation.setListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator) {
                 // no-op
@@ -2462,7 +2467,7 @@ class CartRevampFragment :
             override fun onAnimationEnd(p0: Animator) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     stopSwipeLayoutOnboardingAnimation(targetView)
-                }, 300L)
+                }, SWIPE_TO_DELETE_ANIMATION_DELAY)
             }
 
             override fun onAnimationCancel(p0: Animator) {
@@ -2479,8 +2484,8 @@ class CartRevampFragment :
     private fun stopSwipeLayoutOnboardingAnimation(targetView: View) {
         val animation = targetView.animate()
         animation.interpolator = OvershootInterpolator()
-        animation.duration = 200L
-        animation.translationX((0f).dpToPx())
+        animation.duration = SWIPE_TO_DELETE_STOP_ANIMATION_DELAY
+        animation.translationX((Float.ZERO).dpToPx())
         animation.setListener(null)
         animation.start()
     }

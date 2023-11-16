@@ -22,7 +22,7 @@ import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.adapter.diffutil.CartDiffUtilCallback
 import com.tokopedia.cartrevamp.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cartrevamp.view.adapter.wishlist.CartWishlistAdapter
-import com.tokopedia.cartrevamp.view.customview.ViewBinderHelper
+import com.tokopedia.cartrevamp.view.customview.CartViewBinderHelper
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
@@ -68,7 +68,7 @@ class CartAdapter constructor(
     private val cartItemActionListener: CartItemAdapter.ActionListener,
     private val sellerCashbackListener: SellerCashbackListener,
     private val userSession: UserSessionInterface,
-    private val binderHelper: ViewBinderHelper
+    private val binderHelper: CartViewBinderHelper
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), CartItemViewHolder.ViewHolderListener {
 
     private val cartDataList = ArrayList<Any>()
