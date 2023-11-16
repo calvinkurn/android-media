@@ -663,7 +663,7 @@
         <value>false</value>
     </entry>
     <entry>
-        <key>android_enable_dark_mode_intro</key>
+        <key>android_enable_dark_mode_intro_bottom_sheet</key>
         <value>true</value>
     </entry>
 </defaultsMap>
