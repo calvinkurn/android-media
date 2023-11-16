@@ -1090,7 +1090,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value = list
             cartProcessor.processSaveShipmentState(
                 newOrderModel,
-                listData.value.address()!!.recipientAddressModel
+                listData.value.address()!!.recipientAddressModel,
+                listData.value
             )
             calculateTotal()
             sendEEStep3()
