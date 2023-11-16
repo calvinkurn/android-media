@@ -134,7 +134,7 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val SOURCE_BACKEND = "backend"
-        private const val PATH_TOKOPEDIA_CARE = "help"
+        private const val PATH_TOKOPEDIA_CARE = "terms"
 
         private const val IS_BLOCKED_MULTIPLE_ACCOUNT = "isBlockedMultipleAccount"
         private const val PROJECT_ID = "projectId"
