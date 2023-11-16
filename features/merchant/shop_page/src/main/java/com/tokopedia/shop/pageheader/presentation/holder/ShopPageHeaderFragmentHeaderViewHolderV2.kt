@@ -943,10 +943,13 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 
     fun cycleDynamicUspText(dynamicUspValue: String) {
         if (dynamicUspValue.isNotEmpty()) {
-            animateDynamicUspText(Int.ZERO.toFloat())?.withEndAction {
-                animateDynamicUspText(Int.ONE.toFloat())
-                updateDynamicUspValue(dynamicUspValue)
-            }
+            animateDynamicUspText(-textDynamicUspPerformance?.height?.toFloat().orZero())
+                ?.withEndAction {
+                    textDynamicUspPerformance?.translationY =
+                        textDynamicUspPerformance?.height?.toFloat().orZero()
+                    animateDynamicUspText(Float.ZERO)
+                    updateDynamicUspValue(dynamicUspValue)
+                }
         }
     }
 
