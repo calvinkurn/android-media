@@ -53,6 +53,8 @@ import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
 import com.tokopedia.checkout.revamp.view.processor.CheckoutResult
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
@@ -2103,7 +2105,7 @@ class CheckoutFragment :
         )
     }
 
-    override fun onEgoldChecked(checked: Boolean) {
+    override fun onEgoldChecked(checked: Boolean, egoldModel: CheckoutEgoldModel) {
         viewModel.updateEgold(checked)
         checkoutEgoldAnalytics.eventClickEgoldRoundup(checked)
         if (isTradeIn) {
@@ -2112,12 +2114,38 @@ class CheckoutFragment :
                 checked
             )
         }
+        val productCatIds = viewModel.getProductCatIds()
+        if (checked) {
+            paymentAddOnsAnalytics.eventCheckCrossSellIcon(
+                egoldModel.getCategoryName(),
+                egoldModel.getCrossSellProductId(),
+                productCatIds
+            )
+        } else {
+            paymentAddOnsAnalytics.eventCheckCrossSellIcon(
+                egoldModel.getCategoryName(),
+                egoldModel.getCrossSellProductId(),
+                productCatIds
+            )
+        }
     }
 
-    override fun onDonationChecked(checked: Boolean) {
+    override fun onDonationChecked(checked: Boolean, checkoutDonationModel: CheckoutDonationModel) {
         viewModel.updateDonation(checked)
+        val productCatIds = viewModel.getProductCatIds()
         if (checked) {
             checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickTopDonasi()
+            paymentAddOnsAnalytics.eventCheckCrossSellIcon(
+                checkoutDonationModel.getCategoryName(),
+                checkoutDonationModel.getCrossSellProductId(),
+                productCatIds
+            )
+        } else {
+            paymentAddOnsAnalytics.eventUncheckCrossSellIcon(
+                checkoutDonationModel.getCategoryName(),
+                checkoutDonationModel.getCrossSellProductId(),
+                productCatIds
+            )
         }
         checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked)
         if (isTradeIn) {
