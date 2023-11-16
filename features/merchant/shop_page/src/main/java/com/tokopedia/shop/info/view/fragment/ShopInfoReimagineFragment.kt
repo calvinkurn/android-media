@@ -437,7 +437,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         if (this.review == review) return
         this.review = review
 
-        val showReview = review.totalReviews.isMoreThanZero()
+        val showReview = review.reviews.size.isMoreThanZero()
 
         binding?.layoutReviewContainer?.isVisible = showReview
         binding?.shopReviewView?.isVisible = showReview
@@ -598,7 +598,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, shopId, APP_LINK_QUERY_STRING_REVIEW_SOURCE)
         RouteManager.route(context, appLink)
     }
-    
+
     private fun redirectToLoginPage() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
@@ -640,10 +640,10 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             anchorView = null
         )
     }
-    
+
     private fun showShopNoteDetailBottomSheet(shopNote: ShopNote) {
         if (!isAdded) return
-        
+
         val bottomSheet = ShopNoteDetailBottomSheet.newInstance(shopNote.title, shopNote.description)
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
