@@ -123,39 +123,51 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
 
     private fun renderQuantityChangedLayout() {
         if (dataModel?.product?.qtyComparison != null && dataModel?.isAccordionEnable.orFalse()) {
-            productAmount.show()
-            productAmount.text = EPharmacyUtils.getTotalAmountFmt(dataModel?.product?.price)
-            if (dataModel?.product?.qtyComparison?.currentQty.isZero()) {
-                dataModel?.product?.qtyComparison?.currentQty = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
-            }
-            if(dataModel?.product?.subTotal == 0.0){
-                dataModel?.product?.subTotal = dataModel?.product?.qtyComparison?.recommendedQty?.toDouble().orZero() * dataModel?.product?.price.orZero()
-            }
-            quantityEditorLayout?.show()
-            initialProductQuantity.text = java.lang.String.format(
-                itemView.context.getString(epharmacyR.string.epharmacy_barang_quantity),
-                dataModel?.product?.qtyComparison?.initialQty.toString()
-            )
-            productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
-            quantityChangedEditor.autoHideKeyboard = true
-            quantityChangedEditor.maxValue = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
-            quantityChangedEditor.minValue = MIN_VALUE_OF_PRODUCT_EDITOR
-            reCalculateSubTotal()
-            quantityChangedEditor.setValue(dataModel?.product?.qtyComparison?.currentQty.orZero())
-            quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
-                if (newValue == MIN_VALUE_OF_PRODUCT_EDITOR || newValue == dataModel?.product?.qtyComparison?.recommendedQty) {
-                    ePharmacyListener?.onToast(
-                        Toaster.TYPE_ERROR,
-                        itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached)
-                            .orEmpty()
-                    )
-                }
-                dataModel?.product?.qtyComparison?.currentQty = newValue
-                val changeInTotal = reCalculateSubTotal()
-                ePharmacyListener?.onQuantityChanged(changeInTotal)
-            }
+            renderQuantityChangeViews()
+            initializeSums()
+            renderEditorLayout()
         } else {
             quantityEditorLayout?.hide()
+        }
+    }
+
+    private fun renderQuantityChangeViews() {
+        productAmount.show()
+        productAmount.text = EPharmacyUtils.getTotalAmountFmt(dataModel?.product?.price)
+        initialProductQuantity.text = java.lang.String.format(
+            itemView.context.getString(epharmacyR.string.epharmacy_barang_quantity),
+            dataModel?.product?.qtyComparison?.initialQty.toString()
+        )
+        productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
+    }
+
+    private fun initializeSums() {
+        if (dataModel?.product?.qtyComparison?.currentQty.isZero()) {
+            dataModel?.product?.qtyComparison?.currentQty = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
+        }
+        if (dataModel?.product?.subTotal == 0.0) {
+            dataModel?.product?.subTotal = dataModel?.product?.qtyComparison?.recommendedQty?.toDouble().orZero() * dataModel?.product?.price.orZero()
+        }
+    }
+
+    private fun renderEditorLayout() {
+        quantityEditorLayout?.show()
+        quantityChangedEditor.autoHideKeyboard = true
+        quantityChangedEditor.maxValue = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
+        quantityChangedEditor.minValue = MIN_VALUE_OF_PRODUCT_EDITOR
+        reCalculateSubTotal()
+        quantityChangedEditor.setValue(dataModel?.product?.qtyComparison?.currentQty.orZero())
+        quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
+            if (newValue == MIN_VALUE_OF_PRODUCT_EDITOR || newValue == dataModel?.product?.qtyComparison?.recommendedQty) {
+                ePharmacyListener?.onToast(
+                    Toaster.TYPE_ERROR,
+                    itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached)
+                        .orEmpty()
+                )
+            }
+            dataModel?.product?.qtyComparison?.currentQty = newValue
+            val changeInTotal = reCalculateSubTotal()
+            ePharmacyListener?.onQuantityChanged(changeInTotal)
         }
     }
 
