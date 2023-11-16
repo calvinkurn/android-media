@@ -75,6 +75,10 @@ class PofProductEditableViewHolder(
         quantityEditorData: PofProductEditableUiModel.QuantityEditorData
     ): TextWatcher {
         return object : TextWatcher {
+            // Keep track of the previous value because somehow afterTextChanged is called twice
+            // when the value changed
+            private var previousValue = quantityEditorData.quantity
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // noop
             }
@@ -86,15 +90,17 @@ class PofProductEditableViewHolder(
             override fun afterTextChanged(text: Editable?) {
                 val quantityText = text?.toString().orEmpty().filter { it.isDigit() }
                 val quantityNumber = quantityText.toIntOrZero()
-                if (quantityText.isNotBlank()) {
+                if (quantityText.isNotBlank() && quantityNumber != previousValue) {
                     if (quantityNumber < quantityEditorData.minQuantity) {
                         binding.qePofProductQuantity.editText.removeTextChangedListener(this)
                         binding.qePofProductQuantity.setValue(quantityEditorData.quantity)
+                        previousValue = quantityEditorData.quantity
                         binding.qePofProductQuantity.editText.addTextChangedListener(this)
                         listener.onEvent(UiEvent.OnTryChangeProductQuantityBelowMinQuantity)
                     } else if (quantityNumber > quantityEditorData.maxQuantity) {
                         binding.qePofProductQuantity.editText.removeTextChangedListener(this)
                         binding.qePofProductQuantity.setValue(quantityEditorData.quantity)
+                        previousValue = quantityEditorData.quantity
                         binding.qePofProductQuantity.editText.addTextChangedListener(this)
                         listener.onEvent(UiEvent.OnTryChangeProductQuantityAboveMaxQuantity)
                     } else {
@@ -105,6 +111,7 @@ class PofProductEditableViewHolder(
                                 oldQuantity = quantityEditorData.quantity
                             )
                         )
+                        previousValue = quantityNumber
                     }
                 }
             }
