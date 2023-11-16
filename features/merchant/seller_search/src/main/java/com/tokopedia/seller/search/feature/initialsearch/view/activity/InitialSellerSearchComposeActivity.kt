@@ -5,7 +5,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
@@ -72,12 +71,12 @@ class InitialSellerSearchComposeActivity :
         setContent {
             NestTheme {
                 val initialStateContainerId =
-                    rememberSaveable { IdViewGenerator.generateUniqueId(InitialSearchComposeFragment::class.java.simpleName) }
-                val suggestionSearchContainerId = rememberSaveable {
+                    remember { IdViewGenerator.generateUniqueId(InitialSearchComposeFragment::class.java.simpleName) }
+                val suggestionSearchContainerId = remember {
                     IdViewGenerator.generateUniqueId(SuggestionSearchComposeFragment::class.java.name)
                 }
 
-                val fragmentManager = rememberSaveable { supportFragmentManager }
+                val fragmentManager = remember { supportFragmentManager }
 
                 val suggestionSearchFragment =
                     remember { fragmentManager.findFragmentById(suggestionSearchContainerId) as? SuggestionSearchComposeFragment }
