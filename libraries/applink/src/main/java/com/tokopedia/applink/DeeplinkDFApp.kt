@@ -176,7 +176,7 @@ object DeeplinkDFApp {
         DF_TRAVEL to getDfTravel(),
         DF_USER_LIVENESS to getDfUserLiveness(),
         DF_USER_SETTINGS to getDfUserSettings(),
-        DF_STORIES_CREATION to getDfStoriesCreation(),
+        DF_STORIES_CREATION to getDfStoriesCreationMainApp(),
     )
 
     fun getDfSellerappMap() = mapOf(
@@ -188,7 +188,7 @@ object DeeplinkDFApp {
         DF_SELLER_FRONT_FUNNEL to getDfSellerFrontFunnel(),
         DF_SELLER_TALK to getDfSellerTalk(),
         DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp(),
-        DF_STORIES_CREATION to getDfStoriesCreation(),
+        DF_STORIES_CREATION to getDfStoriesCreationSellerApp(),
     )
 
     private fun Map<String, List<DFP>>?.filteredOnDF(context: Context): Map<String, List<DFP>> {
@@ -701,13 +701,26 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/settings")
     )
 
-    private fun getDfStoriesCreation() = mutableListOf(
+    private fun getDfStoriesCreationMainApp() = mutableListOf(
         // play_broadcaster
         DFP(INTERNAL, HOST_STORIES, PathType.PATH, PATH_STORIES_CREATION),
         // mediapicker
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-album"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
+    )
+
+    private fun getDfStoriesCreationSellerApp() = mutableListOf(
+        // play_broadcaster
+        DFP(INTERNAL, HOST_STORIES, PathType.PATH, PATH_STORIES_CREATION),
+        // mediapicker
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-album"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
+        // mediaeditor
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/image-editor"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-editor"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor"),
     )
 
     fun Map<String, List<DFP>>.mapDF(): MutableList<DFPSchemeToDF> {
