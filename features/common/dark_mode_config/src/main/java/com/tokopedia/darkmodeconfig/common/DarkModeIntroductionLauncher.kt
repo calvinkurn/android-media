@@ -50,7 +50,7 @@ object DarkModeIntroductionLauncher : CoroutineScope {
             val isEligibleTimeRange = has3DaysOpenedApp(sharedPref)
             val neverOpenedPopup = !hasOpenedPopup(sharedPref)
             val neverOpenedConfigPage = hasOpenedConfigPage(sharedPref)
-            val isEnabled = getDarkModeIntroRemoteConfig(context)
+            val isEnabled = getDarkModeIntroStatusConfig(context)
             val shouldShowPopup = isEligibleTimeRange && isLightModeApp && isDarkModeOS
                     && isLoggedIn && neverOpenedPopup && neverOpenedConfigPage && isEnabled
             if (shouldShowPopup) {
@@ -62,7 +62,7 @@ object DarkModeIntroductionLauncher : CoroutineScope {
         }
     }
 
-    private fun getDarkModeIntroRemoteConfig(context: Context): Boolean {
+    private fun getDarkModeIntroStatusConfig(context: Context): Boolean {
         val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
         return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_DARK_MODE_INTRO, false)
     }
