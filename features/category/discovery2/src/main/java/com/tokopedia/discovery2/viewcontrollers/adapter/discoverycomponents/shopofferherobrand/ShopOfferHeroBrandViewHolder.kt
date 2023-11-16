@@ -35,6 +35,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_MAIN_APP_ENABLE_DISCO_SHOP_OFFER_HERO_BRAND
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
@@ -66,6 +69,10 @@ class ShopOfferHeroBrandViewHolder(
     private val coroutineScope
         by lazy { CoroutineScope(Dispatchers.Main) }
 
+    private val remoteConfig : RemoteConfig by lazy(LazyThreadSafetyMode.NONE) {
+        FirebaseRemoteConfigImpl(fragment.context)
+    }
+
     private val binding: ItemDiscoveryShopOfferHeroBrandLayoutBinding?
         by viewBinding()
 
@@ -73,23 +80,27 @@ class ShopOfferHeroBrandViewHolder(
     private var progressBarJob: Job? = null
 
     init {
-        binding?.apply {
-            setupRecyclerView()
-            setupShopTierWordingAnimation()
+        if (isShopOfferHeroBrandEnabled()) {
+            binding?.apply {
+                setupRecyclerView()
+                setupShopTierWordingAnimation()
+            }
         }
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        viewModel = discoveryBaseViewModel as ShopOfferHeroBrandViewModel
-        viewModel?.let {
-            getSubComponent().inject(it)
-        }
+        if (isShopOfferHeroBrandEnabled()) {
+            viewModel = discoveryBaseViewModel as ShopOfferHeroBrandViewModel
+            viewModel?.let {
+                getSubComponent().inject(it)
+            }
 
-        if (mAdapter.itemCount.isZero() || viewModel?.getProductList().isNullOrEmpty()) {
-            addShimmer()
-        }
+            if (mAdapter.itemCount.isZero() || viewModel?.getProductList().isNullOrEmpty()) {
+                addShimmer()
+            }
 
-        binding?.showProductCarousel()
+            binding?.showProductCarousel()
+        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -392,5 +403,9 @@ class ShopOfferHeroBrandViewHolder(
                 }
             }
         }
+    }
+
+    private fun isShopOfferHeroBrandEnabled(): Boolean {
+        return remoteConfig.getBoolean(ANDROID_MAIN_APP_ENABLE_DISCO_SHOP_OFFER_HERO_BRAND, true)
     }
 }
