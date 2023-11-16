@@ -195,28 +195,32 @@ class PinpointViewModel @Inject constructor(
 
     private fun getDistrictDetail() {
         viewModelScope.launch {
-            searchAddressData?.placeId?.takeIf { it.isNotEmpty() }?.run {
-                val res = getDistrict(
-                    GetDistrictParam(
-                        placeId = this,
-                        isManageAddressFlow = true
+            try {
+                searchAddressData?.placeId?.takeIf { it.isNotEmpty() }?.run {
+                    val res = getDistrict(
+                        GetDistrictParam(
+                            placeId = this,
+                            isManageAddressFlow = true
+                        )
                     )
-                )
-                val data = res.keroPlacesGetDistrict.data
-                searchAddressData = searchAddressData?.copy(
-                    title = data.title,
-                    districtId = data.districtId,
-                    districtName = data.districtName,
-                    cityId = data.cityId,
-                    cityName = data.cityName,
-                    provinceId = data.provinceId,
-                    provinceName = data.provinceName,
-                    postalCode = data.postalCode,
-                    lat = data.latitude.toDoubleOrZero(),
-                    long = data.longitude.toDoubleOrZero()
-                )
+                    val data = res.keroPlacesGetDistrict.data
+                    searchAddressData = searchAddressData?.copy(
+                        title = data.title,
+                        districtId = data.districtId,
+                        districtName = data.districtName,
+                        cityId = data.cityId,
+                        cityName = data.cityName,
+                        provinceId = data.provinceId,
+                        provinceName = data.provinceName,
+                        postalCode = data.postalCode,
+                        lat = data.latitude.toDoubleOrZero(),
+                        long = data.longitude.toDoubleOrZero()
+                    )
+                    getDistrictLocation()
+                }
+            } catch (e: Exception) {
+                handleError(e)
             }
-            getDistrictLocation()
         }
     }
 
