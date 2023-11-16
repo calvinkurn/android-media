@@ -49,7 +49,9 @@ data class Prediction(
     @SerializedName("latitude")
     var latitude: Double = 0.0,
     @SerializedName("longitude")
-    var longitude: Double = 0.0
+    var longitude: Double = 0.0,
+    @SerializedName("title")
+    var title: String = ""
 )
 
 data class MatchedSubstring(

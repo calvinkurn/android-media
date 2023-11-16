@@ -33,7 +33,8 @@ class AutoCompleteMapper @Inject constructor() {
                 it.provinceId,
                 it.postalCode,
                 it.latitude,
-                it.longitude
+                it.longitude,
+                it.title
             )
         }
     }

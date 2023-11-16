@@ -24,7 +24,6 @@ data class SuggestedPlace(
     val postalCode: String = "",
     val lat: Double = 0.0,
     val long: Double = 0.0,
-    // todo
     val title: String = ""
 ) : AutoCompleteVisitable(), Parcelable {
     val formattedAddress: String
