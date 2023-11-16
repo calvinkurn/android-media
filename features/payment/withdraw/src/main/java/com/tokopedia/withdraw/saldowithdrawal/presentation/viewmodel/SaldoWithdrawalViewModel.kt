@@ -3,6 +3,7 @@ package com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -32,10 +33,25 @@ class SaldoWithdrawalViewModel @Inject constructor(
 
     val validatePopUpWithdrawalMutableData = SingleLiveEvent<Result<ValidatePopUpWithdrawal>>()
 
-    fun getValidatePopUpData(bankAccount: BankAccount, shopID: String) {
+    val shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet = SingleLiveEvent<Pair<Boolean, Long>>()
+
+    fun getValidatePopUpData(bankAccount: BankAccount, shopID: String, withdrawalAmount: Long) {
         launchCatchError(block = {
             val popUp = async { validatePopUpUseCase.getValidatePopUpData(bankAccount) }
-            val topadsAutoTopupRecom = async { topadsAutoTopupWithdrawRecomUseCase("") }
+            val topadsAutoTopupRecom = async { topadsAutoTopupWithdrawRecomUseCase(shopID) }
+
+            when(val topadsAutoTopupRecomData = topadsAutoTopupRecom.await()) {
+                is Success -> {
+                    val recomAmount = topadsAutoTopupRecomData.data.data.recommendationValue
+                    val isWDAmountGreaterThanRecom = withdrawalAmount > recomAmount
+                    shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.postValue(
+                        Pair(isWDAmountGreaterThanRecom, recomAmount.toLong())
+                    )
+                }
+                is Fail -> {
+                    shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.postValue(Pair(false, Long.ZERO))
+                }
+            }
 
             when (val popUpData = popUp.await()) {
                 is Success -> {
@@ -46,9 +62,6 @@ class SaldoWithdrawalViewModel @Inject constructor(
                     validatePopUpWithdrawalMutableData.postValue(popUpData)
                 }
             }
-
-            val topadsAutoTopupRecomData = topadsAutoTopupRecom.await()
-
 
         }, onError = {
             validatePopUpWithdrawalMutableData.postValue(Fail(it))

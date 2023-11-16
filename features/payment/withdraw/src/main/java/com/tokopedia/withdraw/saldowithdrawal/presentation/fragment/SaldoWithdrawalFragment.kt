@@ -36,8 +36,10 @@ import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.exception.SubmitWithdrawalException
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.*
+import com.tokopedia.withdraw.saldowithdrawal.presentation.activity.AutoTopAdsBottomSheetActivity
 import com.tokopedia.withdraw.saldowithdrawal.presentation.activity.WithdrawActivity
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.SaldoWithdrawalPagerAdapter
+import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.AutoTopAdsBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.JoinRPOnWithdrawalBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalJoinRPCallback
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModel
@@ -407,7 +409,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                 userId = userSession.get().userId, email = userSession.get().email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
                 isSellerWithdrawal = false, programName = getProgramName(), isJoinRekeningPremium = false)
-        saldoWithdrawalViewModel.getValidatePopUpData(selectedBankAccount, userSession.get().shopId)
+        saldoWithdrawalViewModel.getValidatePopUpData(selectedBankAccount, userSession.get().shopId, withdrawalAmount)
     }
 
     fun initiateSellerWithdrawal(selectedBankAccount: BankAccount, withdrawalAmount: Long) {
@@ -416,7 +418,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                 userId = userSession.get().userId, email = userSession.get().email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
                 isSellerWithdrawal = true, programName = getProgramName(), isJoinRekeningPremium = false)
-        saldoWithdrawalViewModel.getValidatePopUpData(selectedBankAccount, userSession.get().shopId)
+        saldoWithdrawalViewModel.getValidatePopUpData(selectedBankAccount, userSession.get().shopId, withdrawalAmount)
     }
 
     private fun checkAndCreateValidatePopup(validatePopUpWithdrawal: ValidatePopUpWithdrawal) {
@@ -435,6 +437,11 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                 }
             }
             else -> {
+                if (saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.first == true) {
+                    val intent = Intent(context, AutoTopAdsBottomSheetActivity::class.java)
+                    context?.startActivity(intent)
+                    return
+                }
                 openUserVerificationScreen()
             }
         }
