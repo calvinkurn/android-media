@@ -92,6 +92,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     private var isTripleEntryPointLoaded = false
     private var todoWidgetSectionId: String = ""
     private var todoWidgetSectionName: String = ""
+    private var todoWidgetSectionTemplate: String = ""
 
     lateinit var homeComponentsData: List<RechargeHomepageSections.Section>
     var tickerList: RechargeTickerHomepageModel = RechargeTickerHomepageModel()
@@ -307,11 +308,14 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode ==  REQUEST_CODE_TODO_WIGDET) {
-            loadSectionData(
-                 todoWidgetSectionId, todoWidgetSectionName, false
-            )
+            viewModel.refreshSectionList(RechargeHomepageSections.Section(
+                id = todoWidgetSectionId,
+                name = todoWidgetSectionName,
+                template = todoWidgetSectionTemplate
+            ))
             todoWidgetSectionName = ""
             todoWidgetSectionId = ""
+            todoWidgetSectionTemplate = ""
         }
     }
 
@@ -336,7 +340,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         loadSectionData(sectionID, sectionNames)
     }
 
-    private fun loadSectionData(sectionID: String, sectionNames: String, dontIgnoreCalledSectionId: Boolean = true) {
+    private fun loadSectionData(sectionID: String, sectionNames: String) {
         if (sectionID.isNotEmpty()) {
             viewModel.getRechargeHomepageSections(
                 viewModel.createRechargeHomepageSectionsParams(
@@ -344,8 +348,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                     listOf(sectionID.toIntSafely()),
                     enablePersonalize,
                     sectionNames
-                ),
-                dontIgnoreCalledSectionId
+                )
             )
         }
     }
@@ -536,7 +539,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     override fun onClickTodoWidget(widget: RechargeHomepageSections.Widgets, isButton: Boolean,
-                                   todoWidgetSectionId: String, todoWidgetSectionName: String) {
+                                   todoWidgetSectionId: String, todoWidgetSectionName: String,
+                                   todoWidgetSectionTemplate: String
+    ) {
         widget.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_CLICK }?.run {
             rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
         }
@@ -549,6 +554,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         this.todoWidgetSectionId = todoWidgetSectionId
         this.todoWidgetSectionName = todoWidgetSectionName
+        this.todoWidgetSectionTemplate = todoWidgetSectionTemplate
         val intent = RouteManager.getIntent(context, link)
         startActivityForResult(
             intent,

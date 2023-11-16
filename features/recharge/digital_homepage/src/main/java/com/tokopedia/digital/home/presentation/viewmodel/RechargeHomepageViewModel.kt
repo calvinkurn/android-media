@@ -17,9 +17,11 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 import javax.inject.Inject
@@ -73,11 +75,11 @@ class RechargeHomepageViewModel @Inject constructor(
         }
     }
 
-    fun getRechargeHomepageSections(mapParams: Map<String, Any>, dontIgnoreCalledSectionId: Boolean) {
+    fun getRechargeHomepageSections(mapParams: Map<String, Any>) {
         val requestIDs = (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS] as? List<Int>)
             ?: listOf()
 
-        if (calledSectionIds.contains(requestIDs.firstOrNull() ?: 0) && dontIgnoreCalledSectionId) return
+        if (calledSectionIds.contains(requestIDs.firstOrNull() ?: 0)) return
         calledSectionIds.add(requestIDs.firstOrNull() ?: 0)
         val mapParamsWithSectionNames =
             if (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_NAME] != "") {
@@ -113,6 +115,19 @@ class RechargeHomepageViewModel @Inject constructor(
                 localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(
                     localRechargeHomepageSections,
                     RechargeHomepageSections(requestIDs = requestIDs)
+                )
+                mutableRechargeHomepageSections.value = localRechargeHomepageSections
+            }
+        }
+    }
+
+    fun refreshSectionList(section: RechargeHomepageSections.Section) {
+        launch {
+            calledSectionIds.remove(section.id.toIntOrZero())
+            withContext(dispatcher.main) {
+                localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionList(
+                    localRechargeHomepageSections,
+                    section
                 )
                 mutableRechargeHomepageSections.value = localRechargeHomepageSections
             }

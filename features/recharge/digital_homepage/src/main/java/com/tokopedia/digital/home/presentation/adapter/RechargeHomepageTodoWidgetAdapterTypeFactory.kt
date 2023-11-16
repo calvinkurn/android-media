@@ -19,6 +19,7 @@ class RechargeHomepageTodoWidgetAdapterTypeFactory(
     private val todoWidgetItemListener: TodoWidgetItemListener,
     private val todoWidgetSectionId: String,
     private val todoWidgetSectionName: String,
+    private val todoWidgetSectionTemplate: String
 ) : BaseAdapterTypeFactory() {
 
     fun type(model: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel): Int {
@@ -34,7 +35,9 @@ class RechargeHomepageTodoWidgetAdapterTypeFactory(
                     false
                 )
                 RechargeHomepageTodoWidgetAutoPayViewHolder(binding, rechargeHomepageTodoWidgetListener,
-                    closeItemListener, todoWidgetItemListener, todoWidgetSectionId, todoWidgetSectionName)
+                    closeItemListener, todoWidgetItemListener, todoWidgetSectionId, todoWidgetSectionName,
+                    todoWidgetSectionTemplate
+                )
             }
 
             else -> super.createViewHolder(parent, type)

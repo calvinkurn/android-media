@@ -32,6 +32,7 @@ class RechargeHomepageTodoWidgetAdapter(
     val todoWidgetListener: RechargeHomepageTodoWidgetListener,
     val todoWidgetSectionId: String,
     val todoWidgetSectionName: String,
+    val todoWidgetSectionTemplate: String
 ) : RecyclerView.Adapter<RechargeHomepageTodoWidgetAdapter.RechargeHomeTodoWidgetListViewHolder>() {
 
     override fun getItemCount(): Int = items.size
@@ -70,7 +71,7 @@ class RechargeHomepageTodoWidgetAdapter(
                     return getListCount()
                 }
             },
-            todoWidgetSectionId, todoWidgetSectionName
+            todoWidgetSectionId, todoWidgetSectionName, todoWidgetSectionTemplate
         )
 
         private val baseAdapter = BaseAdapter(
@@ -124,7 +125,7 @@ class RechargeHomepageTodoWidgetAdapter(
                     viewStickyLayout.imgTodoWidgetBackground.loadImage(TokopediaImageUrl.RECHARGE_SUBHOME_TODO_WIDGET)
                     viewStickyLayout.root.setOnClickListener {
                         todoWidgetListener.onClickTodoWidget(stickyLayout, false, todoWidgetSectionId,
-                            todoWidgetSectionName)
+                            todoWidgetSectionName, todoWidgetSectionTemplate)
                     }
                     setStickyHeightMatchParent(binding)
                 } else {

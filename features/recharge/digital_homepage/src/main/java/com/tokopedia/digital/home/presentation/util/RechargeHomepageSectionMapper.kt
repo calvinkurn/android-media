@@ -105,6 +105,15 @@ object RechargeHomepageSectionMapper {
         return sections.toList()
     }
 
+    fun updateSectionList(oldData: List<RechargeHomepageSections.Section>,
+                          newData: RechargeHomepageSections.Section): List<RechargeHomepageSections.Section> {
+        val sections = oldData.toMutableList()
+        val index = sections.indexOfFirst { it.id == newData.id}
+        sections.removeAt(index)
+        sections.add(index, newData)
+        return sections.toList()
+    }
+
     fun mapInitialHomepageSections(sections: List<RechargeHomepageSectionSkeleton.Item>): List<RechargeHomepageSections.Section> {
         val sectionsList = mutableListOf<RechargeHomepageSections.Section>()
         for (section in sections) {
