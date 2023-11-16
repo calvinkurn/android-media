@@ -290,4 +290,15 @@ object MacroIntent {
             return intent
         }
     }
+
+    object DigitalProductDetail {
+
+        const val RV_DENOM_GRID = "rv_denom_grid_card"
+
+        fun getPulsaPdpIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://digital/pdp_pulsa_macrobenchmark")
+            return intent
+        }
+    }
 }

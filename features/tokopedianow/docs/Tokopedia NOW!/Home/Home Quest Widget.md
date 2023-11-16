@@ -16,7 +16,7 @@
 
 <!--toc-->
 
-![image](../../res/home_quest.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/home_quest.png)
 
 ## Description
 
@@ -28,13 +28,13 @@ There are 3 status for the widget:
 
 - **On progress**: active quest & clickable to detail quest (hardcoded url + `questId` : `https://www.tokopedia.com/seru/topquest/detail/{questId}`).
 
-![image](../../res/home_quest_on_progress.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/home_quest_on_progress.png)
 
-![image](../../res/home_quest_detail_page.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/home_quest_detail_page.png)
 
 - **Idle**: waiting for the previous quest to be done & not clickable (locked & grey out).
 
-![image](../../res/home_quest_idle.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/home_quest_idle.png)
 
 - **Claimed**: the quest is done & gone from the quest widget.
 
@@ -48,7 +48,7 @@ There are some requirements need to fulfill when developed this page, the requir
 - Widget position will use widget type `tokonow_main_quest` from dynamic channel response.
 - If all quests are finished there will be different UI shown with info if user already got all of the rewards, if user click it will redirect to my coupon page (hardcoded appLink : `tokopedia://rewards/kupon-saya`).
 
-![image](../../res/home_quest_all_rewards_claimed.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/home_quest_all_rewards_claimed.png)
 
 ## Contract Used
 

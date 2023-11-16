@@ -22,5 +22,4 @@ import dagger.Component
 interface SomDetailComponent {
     fun inject(somDetailActivity: SomDetailActivity)
     fun inject(somDetailFragment: SomDetailFragment)
-    fun inject(incomeDetailIncomeBottomSheet: SomDetailTransparencyFeeBottomSheet)
 }

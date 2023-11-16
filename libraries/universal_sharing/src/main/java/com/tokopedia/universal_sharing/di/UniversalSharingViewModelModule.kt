@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.universal_sharing.view.UniversalSharingPostPurchaseViewModel
+import com.tokopedia.universal_sharing.view.sharewidget.UniversalShareWidgetViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -25,5 +26,13 @@ abstract class UniversalSharingViewModelModule {
     @ViewModelKey(UniversalSharingPostPurchaseViewModel::class)
     internal abstract fun bindUniversalSharingPostPurchaseViewModel(
         viewModel: UniversalSharingPostPurchaseViewModel
+    ): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(UniversalShareWidgetViewModel::class)
+    internal abstract fun bindUniversalSharingViewModel(
+        viewModel: UniversalShareWidgetViewModel
     ): ViewModel
 }

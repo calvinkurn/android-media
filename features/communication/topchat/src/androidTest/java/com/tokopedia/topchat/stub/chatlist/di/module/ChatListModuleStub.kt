@@ -9,8 +9,10 @@ import com.tokopedia.iris.util.Session
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.FakeTopchatCacheManager
+import com.tokopedia.topchat.chatlist.data.datastore.TopChatListDataStore
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
+import com.tokopedia.topchat.stub.chatlist.data.TopChatListDataStoreStub
 import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.topchat.stub.fake.FakeIrisSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -57,5 +59,11 @@ class ChatListModuleStub {
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSessionStub(context)
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideTopChatListDataStore(): TopChatListDataStore {
+        return TopChatListDataStoreStub()
     }
 }
