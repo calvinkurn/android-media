@@ -91,12 +91,12 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         sectionComponent.properties?.backgroundImageUrl?.let {
             festiveBackground.show()
-            festiveBackground.loadImageWithoutPlaceholder(it, skipErrorPlaceholder = true)
+            festiveBackground.loadImageWithoutPlaceholder(it)
         }
 
-        sectionComponent.properties?.supergraphicImageUrl?.let {
+        sectionComponent.properties?.foregroundImageUrl?.let {
             festiveForeground.show()
-            festiveForeground.loadImageWithoutPlaceholder(it, skipErrorPlaceholder = true)
+            festiveForeground.loadImageWithoutPlaceholder(it)
         }
     }
 

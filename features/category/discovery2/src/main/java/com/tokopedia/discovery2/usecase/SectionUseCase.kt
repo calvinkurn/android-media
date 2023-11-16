@@ -138,7 +138,10 @@ class SectionUseCase @Inject constructor(
                 }
             }
 
-            val isBackgroundAvailable = !it.properties?.backgroundImageUrl.isNullOrEmpty()
+            val isBackgroundAvailable = it.properties?.run {
+                !(backgroundImageUrl.isNullOrEmpty() && foregroundImageUrl.isNullOrEmpty())
+            } ?: false
+
             applyFestiveBackground(isBackgroundAvailable, components)
 
             it.setComponentsItem(components, component.tabName)
