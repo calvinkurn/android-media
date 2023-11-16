@@ -463,6 +463,110 @@ class ShopInfoReimagineViewModelTest {
     }
 
     @Test
+    fun `When successfully get operational hours, and shop open time 00-00 and close time 23-59 then shop hour status should be set to open 24 hours`() {
+        runBlockingTest {
+            // Given
+
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            val response = ShopOperationalHoursListResponse(
+                getShopOperationalHoursList = GetShopOperationalHoursList(
+                    data = listOf(
+                        ShopOperationalHour(day = 1, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 2, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 3, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 4, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 5, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 6, startTime = "00:00:00", endTime = "23:59:59"),
+                        ShopOperationalHour(day = 7, startTime = "00:00:00", endTime = "23:59:59")
+                    )
+                )
+            )
+            mockGetShopOperationListGqlCall(response = response)
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+            assertEquals(
+                mapOf(
+                    "08:00 - 17:00 WIB" to listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat"),
+                    "Buka 24 Jam" to listOf("Sabtu", "Minggu")
+                ),
+                actual.info.operationalHours
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When successfully get operational hours, and shop open time and shop close time are same then shop hour status should be set to closed`() {
+        runBlockingTest {
+            // Given
+
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            val response = ShopOperationalHoursListResponse(
+                getShopOperationalHoursList = GetShopOperationalHoursList(
+                    data = listOf(
+                        ShopOperationalHour(day = 1, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 2, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 3, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 4, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 5, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 6, startTime = "00:00:00", endTime = "00:00:00"),
+                        ShopOperationalHour(day = 7, startTime = "00:00:00", endTime = "00:00:00")
+                    )
+                )
+            )
+            mockGetShopOperationListGqlCall(response = response)
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+            assertEquals(
+                mapOf(
+                    "08:00 - 17:00 WIB" to listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat"),
+                    "Libur" to listOf("Sabtu", "Minggu")
+                ),
+                actual.info.operationalHours
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
     fun `When get operational hours success but it returns null for data then should return empty operational hours map`() {
         runBlockingTest {
             // Given
