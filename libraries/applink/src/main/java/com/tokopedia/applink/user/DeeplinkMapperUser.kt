@@ -1,7 +1,6 @@
 package com.tokopedia.applink.user
 
 import android.net.Uri
-import android.util.Log
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
@@ -22,10 +21,9 @@ object DeeplinkMapperUser {
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
     const val ROLLENCE_GOTO_LOGIN = "scp_goto_login_and"
     const val ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE = "android_fundinvest"
-    private val WHITELISTED_SCP_OTP_TYPE = listOf<Int>(126, 116)
+    private val WHITELISTED_SCP_OTP_TYPE = listOf<Int>(126, 116, 169)
 
     fun getRegisteredNavigationUser(deeplink: String): String {
-        Log.d("DeeplinkMapperUser", "deeplink mapper $deeplink")
         return when {
             deeplink.startsWith(ApplinkConst.CHANGE_INACTIVE_PHONE) -> deeplink.replace(
                 ApplinkConst.CHANGE_INACTIVE_PHONE,
@@ -81,7 +79,7 @@ object DeeplinkMapperUser {
     }
 
     private fun isRollenceGotoVerificationEnabled(): Boolean {
-        return true
+        return false
     }
 
     private fun isOtpTypeWhitelisted(otpType: Int): Boolean {

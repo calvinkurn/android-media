@@ -33,7 +33,7 @@ object ScpConstants {
         const val INACTIVE_PHONE_VERIFY_EMAIL = 160
         const val INACTIVE_PHONE_VERIFY_PIN = 161
         const val INACTIVE_PHONE_VERIFY_NEW_PHONE = 162
-        const val SQCP = 132
+        const val SQCP = 169
 
         /* OTP Type: 168
         * This is actually OTP with phone number

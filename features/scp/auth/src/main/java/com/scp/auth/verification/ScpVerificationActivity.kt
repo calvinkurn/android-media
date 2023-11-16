@@ -81,6 +81,8 @@ class ScpVerificationActivity : BaseActivity() {
                     if ((error is CVError.UserCancelled).not()) {
                         Toast.makeText(this, "Terjadi Kesalahan $error ${error.message}", Toast.LENGTH_LONG).show()
                         finish()
+                    } else {
+                        finish()
                     }
                 }
             )
@@ -111,9 +113,7 @@ class ScpVerificationActivity : BaseActivity() {
         return when (otpType) {
             ScpConstants.OtpType.REGISTER_EMAIL -> VerificationFlowType.REGISTER_EMAIL
             ScpConstants.OtpType.REGISTER_PHONE_NUMBER -> VerificationFlowType.REGISTER_PHONE
-            ScpConstants.OtpType.INACTIVE_PHONE_VERIFY_EMAIL,
-            ScpConstants.OtpType.INACTIVE_PHONE_VERIFY_PIN,
-            ScpConstants.OtpType.INACTIVE_PHONE_VERIFY_NEW_PHONE -> VerificationFlowType.SQCP
+            ScpConstants.OtpType.SQCP -> VerificationFlowType.SQCP
             else -> VerificationFlowType.REGISTER_EMAIL
         }
     }
