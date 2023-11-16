@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:unify_header_is_show_back_button="true"
-        app:unify_header_is_show_shadow="false"
+        app:unify_header_is_show_shadow="true"
         app:unify_header_title="@string/shop_info_shop_profile" />
     
     <ScrollView
@@ -148,7 +148,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:ellipsize="end"
                 android:maxLines="1"
