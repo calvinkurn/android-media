@@ -50,7 +50,7 @@ class ProductReviewViewHolder(
     private var element: ProductMostHelpfulReviewUiModel? = null
 
     private val keywordAdapter by lazyThreadSafetyNone {
-        RatingKeywordAdapter(callback = callback).also(::setupRvKeyword)
+        RatingKeywordAdapter(callback = callback, pdpListener = listener).also(::setupRvKeyword)
     }
 
     private fun setupRvKeyword(ratingKeywordAdapter: RatingKeywordAdapter) {

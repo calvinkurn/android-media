@@ -5,7 +5,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 import com.tokopedia.product.detail.view.fragment.delegate.BaseComponentCallback
-import com.tokopedia.product.detail.view.viewholder.review.event.OnKeywordClicked
 import com.tokopedia.product.detail.view.viewholder.review.event.ReviewComponentEvent
 import com.tokopedia.product.detail.view.viewholder.review.tracker.ReviewTracker
 
@@ -20,11 +19,23 @@ class ReviewCallback(
 
     override fun onEvent(event: ReviewComponentEvent) {
         when (event) {
-            is OnKeywordClicked -> onKeywordClicked(event = event)
+            is ReviewComponentEvent.OnKeywordClicked -> onKeywordClicked(event = event)
+            is ReviewComponentEvent.OnKeywordImpressed -> onKeywordImpressed(event = event)
         }
     }
 
-    private fun onKeywordClicked(event: OnKeywordClicked) {
+    // region rating keyword
+
+    private fun onKeywordImpressed(event: ReviewComponentEvent.OnKeywordImpressed) {
+        val tracker = createCommonTracker(componentTracker = event.trackerData) ?: return
+        ReviewTracker.onKeywordImpressed(
+            queueTracker = queueTracker,
+            trackerData = tracker,
+            count = event.keywordAmount
+        )
+    }
+
+    private fun onKeywordClicked(event: ReviewComponentEvent.OnKeywordClicked) {
         // action
         val pid = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
         goToReviewDetail(productId = pid, keyword = event.keyword)
@@ -37,6 +48,7 @@ class ReviewCallback(
             count = event.keywordAmount
         )
     }
+    // endregion
 
     private fun goToReviewDetail(productId: String, keyword: String) {
         val context = context ?: return
