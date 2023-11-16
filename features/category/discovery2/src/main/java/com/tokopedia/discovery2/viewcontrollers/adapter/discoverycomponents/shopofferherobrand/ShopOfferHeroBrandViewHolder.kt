@@ -26,6 +26,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shop
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.removeAllItemDecoration
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_DISCO_SHOP_OFFER_BRAND_SEE_MORE_BUY_MORE
@@ -339,6 +340,9 @@ class ShopOfferHeroBrandViewHolder(
         if (appLink.isNullOrBlank()) return
 
         setOnClickListener {
+            viewModel?.let {
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackEventProductBmGmClickSeeMore(it.component)
+            }
             RouteManager.route(fragment.context, appLink)
         }
     }

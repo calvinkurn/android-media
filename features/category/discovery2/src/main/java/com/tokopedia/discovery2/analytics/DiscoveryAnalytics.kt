@@ -11,7 +11,10 @@ import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_CURRENT_SITE
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_ECOMMERCE
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_TRACKER_ID
 import com.tokopedia.quest_widget.tracker.Tracker
 import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
@@ -814,6 +817,7 @@ open class DiscoveryAnalytics(
     ) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
+        val header = componentsItems.getPropertyHeader()
         componentsItems.data?.firstOrNull()?.let {
             productMap[KEY_CATEGORY_ID] = NONE_OTHER
             productMap[DIMENSION40] = it.gtmItemName?.replace("#POSITION", (getParentPosition(componentsItems) + 1).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
@@ -826,8 +830,8 @@ open class DiscoveryAnalytics(
             productMap[KEY_ITEM_VARIANT] = NONE_OTHER
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price.orEmpty())
             productMap[KEY_QUANTITY] = it.quantity
-            productMap[KEY_SHOP_ID] = it.shopId.orEmpty()
-            productMap[KEY_SHOP_NAME] = it.shopName.orEmpty()
+            productMap[KEY_ATC_SHOP_ID] = header?.shopId.orEmpty()
+            productMap[KEY_SHOP_NAME] = header?.shopName.orEmpty()
             productMap[KEY_SHOP_TYPE] = NONE_OTHER
         }
         list.add(productMap)
@@ -839,17 +843,35 @@ open class DiscoveryAnalytics(
         val map = createGeneralEvent(
             eventName = EVENT_PRODUCT_ATC,
             eventAction = PRODUCT_ATC_BUY_MORE_GET_MORE,
-            eventLabel = "${componentsItems.name.orEmpty()} - ${componentsItems.data?.firstOrNull()?.quantity.orZero()} - false"
+            eventLabel = "$COMPONENT_BMGM_NAME - ${componentsItems.data?.firstOrNull()?.quantity.orZero()} - false",
+            shouldSendSourceAsDestination = true
         )
-        map[TRACKER_ID] = TRACKER_ID_ATC_BUY_MORE_GET_MORE
+        map[TRACKER_ID] = TRACKER_ID_BMGM_ATC
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[KEY_E_COMMERCE] = eCommerce
-        map[PAGE_DESTINATION] = sourceIdentifier
         map[PAGE_PATH] = removedDashPageIdentifier
         map[PAGE_TYPE] = pageType
         map[USER_ID] = userSession.userId.orEmpty()
         trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    override fun trackEventProductBmGmClickSeeMore(
+        componentsItems: ComponentsItem
+    ) {
+        val header = componentsItems.getPropertyHeader()
+        val map = createGeneralEvent(
+            eventName = CLICK_HOMEPAGE_EVENT,
+            eventAction = PRODUCT_CLICK_ON_BUY_MORE_GET_MORE,
+            eventLabel = "$COMPONENT_BMGM_NAME - ${header?.shopId.orEmpty()} - ${componentsItems.creativeName} - ${header?.shopName.orEmpty()}",
+            shouldSendSourceAsDestination = true
+        )
+        map[KEY_TRACKER_ID] = TRACKER_ID_BMGM_CLICK_SEE_MORE
+        map[KEY_BUSINESS_UNIT] = HOME_BROWSE
+        map[KEY_CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[PAGE_TYPE] = pageType
+        getTracker().sendGeneralEvent(map)
     }
 
     override fun viewProductsList(
