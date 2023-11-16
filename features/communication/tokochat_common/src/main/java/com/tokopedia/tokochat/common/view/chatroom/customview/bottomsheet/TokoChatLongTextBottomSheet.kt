@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatLongMessageBottomsheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -65,7 +66,9 @@ class TokoChatLongTextBottomSheet: BottomSheetUnify() {
     }
 
     private fun setBottomSheetTitle() {
-        this.setTitle(senderName)
+        this.setTitle(
+            getString(R.string.tokochat_long_text_bottomsheet_title, senderName)
+        )
     }
 
     private fun setLongMessageText() {
