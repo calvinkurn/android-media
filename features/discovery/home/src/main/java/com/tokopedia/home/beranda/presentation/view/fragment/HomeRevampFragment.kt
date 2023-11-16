@@ -96,6 +96,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
+import com.tokopedia.home.beranda.presentation.view.helper.AccurateOffsetLinearLayoutManager
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
@@ -233,7 +234,6 @@ import java.net.URLEncoder
 import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import com.tokopedia.loyalty.R as loyaltyR
 import com.tokopedia.play.widget.R as playwidgetR
 import com.tokopedia.searchbar.R as searchbarR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -379,7 +379,7 @@ open class HomeRevampFragment :
     private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
     private var adapter: HomeRecycleAdapter? = null
-    private var layoutManager: LinearLayoutManager? = null
+    private var layoutManager: AccurateOffsetLinearLayoutManager? = null
     private var messageSnackbar: SnackbarRetry? = null
     private var activityStateListener: ActivityStateListener? = null
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
@@ -818,8 +818,9 @@ open class HomeRevampFragment :
         homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                scrollPositionY += dy
-                handleThematicBackgroundScrollListener(recyclerView, scrollPositionY)
+                scrollPositionY = recyclerView.computeVerticalScrollOffset()
+                updateThematicVerticalPosition()
+                setHomeBottomNavBasedOnScrolling()
                 evaluateHomeComponentOnScroll(recyclerView)
             }
         })
@@ -876,13 +877,13 @@ open class HomeRevampFragment :
         })
     }
 
-    private fun handleThematicBackgroundScrollListener(recyclerView: RecyclerView, dy: Int) {
-        val scrollThematic = scrollThematic@{ it: View ->
-            if ((layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0) <= 0 && dy < 0) return@scrollThematic
-            it.translationY = -(dy.toFloat())
-        }
-        thematicBackground?.let { scrollThematic.invoke(it) }
-        thematicForeground?.let { scrollThematic.invoke(it) }
+    private val thematicScrollListener = scrollThematic@{ view: View ->
+        view.translationY = -(scrollPositionY.toFloat())
+    }
+
+    private fun updateThematicVerticalPosition() {
+        thematicBackground?.let { thematicScrollListener.invoke(it) }
+        thematicForeground?.let { thematicScrollListener.invoke(it) }
     }
 
     private fun trackEmbraceBreadcrumbPosition() {
@@ -919,43 +920,43 @@ open class HomeRevampFragment :
 
     private fun observeHomeThematic() {
         getHomeViewModel().thematicLiveData.observe(viewLifecycleOwner) { thematic ->
-            if(thematic.isShown) {
+            if (thematic.isShown) {
                 context?.let { ctx ->
-                    val thematicImageLoadListener = object: ImageHandler.ImageLoaderStateListener {
+                    val thematicImageLoadListener = object : ImageHandler.ImageLoaderStateListener {
                         override fun successLoad(view: ImageView) {
                             view.show()
-                            if(view == thematicBackground) {
+                            if (view == thematicBackground) {
                                 notifyHomeThematicChanges(thematic, true)
                             }
                         }
 
                         override fun failedLoad(view: ImageView) {
                             view.hide()
-                            if(view == thematicBackground) {
+                            if (view == thematicBackground) {
                                 notifyHomeThematicChanges(thematic, false)
                             }
                         }
                     }
 
-                    if(thematic.backgroundImageURL.isNotEmpty()) {
+                    if (thematic.backgroundImageURL.isNotEmpty()) {
                         thematicBackground?.run {
                             setLayoutHeight(thematic.getActualHeightPx(ctx))
                             loadImageWithoutPlaceholder(
                                 thematic.backgroundImageURL,
                                 "thematicBackground",
                                 listener = thematicImageLoadListener,
-                                skipErrorPlaceholder = true,
+                                skipErrorPlaceholder = true
                             )
                         }
                     }
 
-                    if(thematic.foregroundImageURL.isNotEmpty()) {
+                    if (thematic.foregroundImageURL.isNotEmpty()) {
                         thematicForeground?.run {
                             loadImageWithoutPlaceholder(
                                 thematic.foregroundImageURL,
                                 "thematicForeground",
                                 listener = thematicImageLoadListener,
-                                skipErrorPlaceholder = true,
+                                skipErrorPlaceholder = true
                             )
                         }
                     }
@@ -1080,7 +1081,7 @@ open class HomeRevampFragment :
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         createAndCallSendScreen()
-        adapter?.onResumeBanner()
+        adapter?.onResume()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
@@ -1088,8 +1089,6 @@ open class HomeRevampFragment :
         if (getHomeViewModel().isFirstLoad) {
             getHomeViewModel().isFirstLoad = false
         }
-
-        adapter?.onResumeSpecialRelease()
 
         // refresh home-to-do-widget data if needed
         getHomeViewModel().getCMHomeWidgetData(false)
@@ -1139,7 +1138,7 @@ open class HomeRevampFragment :
     override fun onPause() {
         playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
-        adapter?.onPauseBanner()
+        adapter?.onPause()
         getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
@@ -1442,9 +1441,7 @@ open class HomeRevampFragment :
 
             performanceTrace?.setBlock(data.take(takeLimit))
 
-            adapter?.submitList(data) {
-
-            }
+            adapter?.submitList(data)
         }
     }
 
@@ -1472,10 +1469,10 @@ open class HomeRevampFragment :
     }
 
     private fun setupThematicStatusBarAndToolbar() {
-        if(getThematicUtil().isLightMode()) {
+        if (getThematicUtil().isLightMode()) {
             requestStatusBarDark()
             navToolbar?.switchToLightToolbar()
-        } else if(getThematicUtil().isDarkMode()) {
+        } else if (getThematicUtil().isDarkMode()) {
             requestStatusBarLight()
             navToolbar?.switchToDarkToolbar()
         } else {
@@ -1485,8 +1482,11 @@ open class HomeRevampFragment :
     }
 
     private fun requestStatusBarBasedOnUiMode() {
-        if(context?.isDarkMode() == true) requestStatusBarLight()
-        else requestStatusBarDark()
+        if (context?.isDarkMode() == true) {
+            requestStatusBarLight()
+        } else {
+            requestStatusBarDark()
+        }
     }
 
     private object FixedTheme {
@@ -1555,7 +1555,7 @@ open class HomeRevampFragment :
         if (!this::homePrefController.isInitialized) {
             initInjectorHome()
         }
-        layoutManager = LinearLayoutManager(context)
+        context?.let { layoutManager = AccurateOffsetLinearLayoutManager(it, adapter) }
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
         bannerCarouselCallback = BannerComponentCallback(context, this)
@@ -1598,7 +1598,7 @@ open class HomeRevampFragment :
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
-            getThematicUtil(),
+            getThematicUtil()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1769,7 +1769,7 @@ open class HomeRevampFragment :
             if (activity != null) {
                 showBannerWebViewOnAllPromoClickFromHomeIntent(
                     BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP,
-                    getString(loyaltyR.string.title_activity_promo)
+                    getString(R.string.title_activity_promo)
                 )
             }
         }
@@ -2298,11 +2298,13 @@ open class HomeRevampFragment :
             trackScreen(isVisibleToUser)
             if (isVisibleToUser) {
                 conditionalViewModelRefresh()
+                adapter?.onResume()
+            } else {
+                adapter?.onPause()
             }
             playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
             )
-            adapter?.onResumeSpecialRelease()
             manageCoachmarkOnFragmentVisible(isVisibleToUser)
         }
     }
@@ -2397,12 +2399,18 @@ open class HomeRevampFragment :
 
     override fun onScrollToHomeHeader() {
         homeRecyclerView?.scrollToPosition(Int.ZERO)
+        homeRecyclerView?.post {
+            updateThematicVerticalPosition()
+        }
     }
 
     override fun onScrollToRecommendationForYou() {
         val recommendationForYouIndex = getRecommendationForYouIndex()
         recommendationForYouIndex?.let {
             homeRecyclerView?.scrollToPosition(it)
+            homeRecyclerView?.post {
+                updateThematicVerticalPosition()
+            }
             goToJumperForYouTab(it)
         }
     }
@@ -2835,7 +2843,7 @@ open class HomeRevampFragment :
     }
 
     private fun getRemoteConfigController(): HomeRemoteConfigController {
-        if(!this::homeRemoteConfigController.isInitialized) initInjectorHome()
+        if (!this::homeRemoteConfigController.isInitialized) initInjectorHome()
         return homeRemoteConfigController
     }
 
@@ -3070,7 +3078,7 @@ open class HomeRevampFragment :
     }
 
     private fun getThematicUtil(): HomeThematicUtil {
-        if(!::homeThematicUtil.isInitialized) initInjectorHome()
+        if (!::homeThematicUtil.isInitialized) initInjectorHome()
         return homeThematicUtil
     }
 }

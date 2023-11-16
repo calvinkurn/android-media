@@ -15,7 +15,7 @@ import com.tokopedia.topchat.common.Constant
 import com.tokopedia.unifyprinciples.Typography
 
 class ItemSearchChatViewHolder(
-        itemView: View?
+    itemView: View?
 ) : AbstractViewHolder<SearchResultUiModel>(itemView) {
 
     private var counter: Typography? = itemView?.findViewById(R.id.unread_counter)
@@ -60,8 +60,12 @@ class ItemSearchChatViewHolder(
 
     private fun bindClick(element: SearchResultUiModel) {
         itemView.setOnClickListener {
-            val chatRoomIntent = RouteManager.getIntent(it.context, ApplinkConst.TOPCHAT, element.msgId.toString())
-            chatRoomIntent.putExtra(ApplinkConst.Chat.SOURCE_PAGE, ApplinkConst.Chat.SOURCE_CHAT_SEARCH)
+            val chatRoomIntent = RouteManager.getIntent(
+                it.context,
+                ApplinkConst.TOPCHAT,
+                element.msgId
+            )
+            chatRoomIntent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.Source.SOURCE_CHAT_SEARCH)
             chatRoomIntent.putExtra(Constant.CHAT_USER_ROLE_KEY, element.contact.role)
             chatRoomIntent.putExtra(Constant.CHAT_CURRENT_ACTIVE, element.msgId)
             Utils.putExtraForFoldable(chatRoomIntent, element.msgId, element.contact.role)

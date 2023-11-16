@@ -35,9 +35,9 @@ After the user completes the [booking](https://tokopedia.atlassian.net/wiki/spac
 
 ## Flow Diagram
 
-![](res/Hotel-Home-Page-Order-Hotel-Detail.png)
+![](https://docs-android.tokopedia.net/images/docs/hotel/Hotel-Home-Page-Order-Hotel-Detail.png)
 
-![](res/Hotel-Home-Page-E-voucher-Hotel.png)
+![](https://docs-android.tokopedia.net/images/docs/hotel/Hotel-Home-Page-E-voucher-Hotel.png)
 
 ## How-to
 

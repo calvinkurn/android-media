@@ -2871,7 +2871,7 @@ class CartViewModel @Inject constructor(
 
     fun getEntryPointInfoNoItemSelected() {
         _entryPointInfoEvent.postValue(
-            cartPromoEntryPointProcessor.getEntryPointInfoNoItemSelected()
+            cartPromoEntryPointProcessor.getEntryPointInfoNoItemSelected(LastApplyUiModel())
         )
     }
 

@@ -3,20 +3,20 @@ package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.databinding.HomeComponentItemMissionWidgetCardBinding
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.home_component.R as home_componentR
 
 /**
  * Created by dhaba
  */
 class MissionWidgetCardItemViewHolder(
     view: View,
-    private val missionWidgetComponentListener: MissionWidgetComponentListener,
+    private val missionWidgetComponentListener: MissionWidgetComponentListener
 ) : AbstractViewHolder<CarouselMissionWidgetDataModel>(view) {
 
     private var binding: HomeComponentItemMissionWidgetCardBinding? by viewBinding()
@@ -33,10 +33,10 @@ class MissionWidgetCardItemViewHolder(
     private fun setLayout(element: CarouselMissionWidgetDataModel) {
         binding?.run {
             cardContainerMissionWidget.animateOnPress = element.animateOnPress
-            cardContainerMissionWidget.rootView.setOnClickListener {
+            cardContainerMissionWidget.setOnClickListener {
                 missionWidgetComponentListener.onMissionClicked(element, element.cardPosition)
             }
-            cardContainerMissionWidget.rootView.addOnImpressionListener(element) {
+            cardContainerMissionWidget.addOnImpressionListener(element) {
                 missionWidgetComponentListener.onMissionImpressed(element, element.cardPosition)
             }
             imageMissionWidget.loadImage(element.data.imageURL)

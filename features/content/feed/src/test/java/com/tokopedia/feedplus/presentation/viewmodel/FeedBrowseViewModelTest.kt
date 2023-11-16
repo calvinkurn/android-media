@@ -2,11 +2,11 @@
 //
 //import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 //import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
-//import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
+//import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
 //import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
 //import com.tokopedia.feedplus.data.FeedBrowseModelBuilder
+//import com.tokopedia.feedplus.helper.assertEqualTo
 //import com.tokopedia.feedplus.presentation.robot.createFeedBrowseViewModelRobot
-//import com.tokopedia.tokopedia.feedplus.helper.assertEqualTo
 //import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 //import io.mockk.coEvery
 //import io.mockk.mockk
@@ -62,7 +62,7 @@
 //
 //        robot.use {
 //            val uiState = it.recordState {
-//                viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+//                viewModel.submitAction(FeedBrowseUiAction.LoadInitialPage)
 //            }
 //            uiState.assertEqualTo(expectedResult)
 //        }
@@ -81,7 +81,7 @@
 //
 //        robot.use {
 //            val uiState = it.recordState {
-//                viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+//                viewModel.submitAction(FeedBrowseUiAction.LoadInitialPage)
 //            }
 //            uiState.assertEqualTo(expectedResult)
 //        }

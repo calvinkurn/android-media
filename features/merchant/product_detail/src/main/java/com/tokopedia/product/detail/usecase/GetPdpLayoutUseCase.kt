@@ -519,7 +519,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
             ProductDetailConstant.FINTECH_WIDGET_TYPE,
             ProductDetailConstant.FINTECH_WIDGET_V2_TYPE,
             ProductDetailConstant.CONTENT_WIDGET,
-            ProductDetailConstant.GLOBAL_BUNDLING
+            ProductDetailConstant.GLOBAL_BUNDLING,
+            ProductDetailConstant.NOTIFY_ME
         )
     }
 
@@ -551,7 +552,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         }
     }.catch {
         emit(Result.failure(it))
-    }
+    }.flowOn(dispatcher.io)
 
     private fun prepareRequest() {
         gqlUseCase.clearRequest()
@@ -580,7 +581,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
 
         val pdpLayoutCloudState = processRequestAlwaysCloud(cacheState = pdpLayoutCache)
         emit(pdpLayoutCloudState)
-    }.flowOn(dispatcher.io)
+    }
 
     private suspend fun processRequestCacheOnly(cacheState: CacheState) = runCatching {
         val response = GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY).build().let {

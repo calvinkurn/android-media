@@ -46,17 +46,17 @@ Create a new page for reschedule pickup and this page need to select day, time, 
 
 Entry point to show dialog from three dots bottomsheet on SOM Detail when key equals `reschedule_pickup`
 
-![](../res/reschedulepickup/Screen%20Shot%202022-12-09%20at%2013.32.05.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticseller/reschedulepickup/Screen%20Shot%202022-12-09%20at%2013.32.05.png)
 
   
 if the request reschedule pickup is successful it will display a success dialog
 
-![](../res/reschedulepickup/Screen%20Shot%202022-12-09%20at%2016.27.11.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticseller/reschedulepickup/Screen%20Shot%202022-12-09%20at%2016.27.11.png)
 
   
 but if the request reschedule pickup is failed it will display a failed dialog
 
-![](../res/reschedulepickup/Screen%20Shot%202022-12-09%20at%2016.29.06.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticseller/reschedulepickup/Screen%20Shot%202022-12-09%20at%2016.29.06.png)
 
 ## How-to
 

@@ -118,13 +118,14 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
         changedAddonSelections: List<AddOnUIModel>,
         addonGroups: List<AddOnGroupUIModel>
     ) {
-
         val addOnTypes = AddOnMapper.getSelectedAddonsTypes(addonGroups)
+        val selectedAddOns = AddOnMapper.getSelectedAddons(addonGroups)
         tempChangedAddons = changedAddonSelections
         binding?.btnSave?.isLoading = false
         binding?.addonWidget?.getAddOnAggregatedData(
             selectedAddonIds,
             addOnTypes,
+            selectedAddOns,
             addOnWidgetParam ?: AddOnParam()
         )
     }

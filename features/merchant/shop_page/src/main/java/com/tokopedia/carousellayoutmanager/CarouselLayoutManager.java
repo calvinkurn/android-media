@@ -67,6 +67,8 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
     private final List<OnCenterItemSelectionListener> mOnCenterItemSelectionListeners = new ArrayList<>();
     private int mCenterItemPosition = INVALID_POSITION;
     private int mItemsCount;
+    private int initialChildViewLeftMargin = 0;
+    private int initialChildViewRightMargin = 0;
 
     @Nullable
     private CarouselSavedState mPendingCarouselSavedState;
@@ -374,6 +376,10 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
                                 0 :
                                 Math.max(0, Math.min(itemsCount - 1, mPendingScrollPosition))
                 );
+                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+                initialChildViewLeftMargin = lp.leftMargin;
+                initialChildViewRightMargin = lp.rightMargin;
+                configViewSpacing(view, state.getItemCount());
                 addView(view);
             } else {
                 shouldRecycle = false;
@@ -414,6 +420,28 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
         }
 
         fillData(recycler, state);
+    }
+
+    /**
+     * This function is used to adjust child view horizontal margin, based on the number of items in the adapter
+     */
+    private void configViewSpacing(View view, int itemCount) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        int leftMargin;
+        int rightMargin;
+        if (itemCount == 2 && mOrientation == HORIZONTAL) {
+            leftMargin = initialChildViewLeftMargin /2;
+            rightMargin = initialChildViewRightMargin /2;
+        } else {
+            leftMargin = lp.leftMargin;
+            rightMargin = lp.rightMargin;
+        }
+        lp.setMargins(
+                leftMargin,
+                lp.topMargin,
+                rightMargin,
+                lp.bottomMargin
+        );
     }
 
     private int calculateScrollForSelectingPosition(final int itemPosition, final RecyclerView.State state) {
@@ -490,7 +518,18 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
         for (int i = 0, count = mLayoutHelper.mLayoutOrder.length; i < count; ++i) {
             final LayoutOrder layoutOrder = mLayoutHelper.mLayoutOrder[i];
             final int offset = getCardOffsetByPositionDiff(layoutOrder.mItemPositionDiff);
-            final int start = centerViewStart + offset;
+            int start;
+            //Need to adjust behavior for handling 2 items on rv
+            if (mItemsCount == 2 && HORIZONTAL == mOrientation) {
+                //If there are 2 items, we need to make sure that the first item is always on the left
+                if (layoutOrder.mItemAdapterPosition == 0) {
+                    start = getPaddingStart();
+                } else {
+                    start = centerViewStart + offset + getPaddingStart();
+                }
+            } else {
+                start = centerViewStart + offset + getPaddingStart();
+            }
             final int end = start + mDecoratedChildWidth;
             fillChildItem(start, top, end, bottom, layoutOrder, recycler, i);
         }
@@ -508,9 +547,30 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
         if (null == transformation) {
             view.layout(start, top, end, bottom);
         } else {
-            view.layout(Math.round(start + transformation.mTranslationX), Math.round(top + transformation.mTranslationY),
-                    Math.round(end + transformation.mTranslationX), Math.round(bottom + transformation.mTranslationY));
-
+            //Need to adjust behavior for handling 2 items on rv
+            if (mItemsCount == 2 && HORIZONTAL == mOrientation) {
+                //For only 2 items, need to make sure that horizontal movement doesn't affect horizontal position of the item
+                view.layout(
+                        Math.round(start),
+                        Math.round(top + transformation.mTranslationY),
+                        Math.round(end),
+                        Math.round(bottom + transformation.mTranslationY)
+                );
+                //Need to set pivot for scaling based on first item or second item
+                if (layoutOrder.mItemAdapterPosition == 0) {
+                    view.setPivotX(0f);
+                } else {
+                    view.setPivotX(mDecoratedChildWidth);
+                }
+                view.setPivotY((float) mDecoratedChildHeight / 2);
+            } else {
+                view.layout(
+                        Math.round(start + transformation.mTranslationX),
+                        Math.round(top + transformation.mTranslationY),
+                        Math.round(end + transformation.mTranslationX),
+                        Math.round(bottom + transformation.mTranslationY)
+                );
+            }
             view.setScaleX(transformation.mScaleX);
             view.setScaleY(transformation.mScaleY);
             if(mIsLeftRightChildTransparant) {
@@ -555,7 +615,7 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
         final int centerItem = Math.round(absCurrentScrollPosition);
 
         if (mCircleLayout && 1 < mItemsCount) {
-            if (mItemsCount == 2) {
+            if (mItemsCount == 2 && HORIZONTAL == mOrientation) {
                 final int firstVisible = Math.max(centerItem - mLayoutHelper.mMaxVisibleItems, 0);
                 final int lastVisible = Math.min(centerItem + mLayoutHelper.mMaxVisibleItems, mItemsCount - 1);
                 final int layoutCount = lastVisible - firstVisible + 1;
@@ -613,12 +673,12 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
     }
 
     public int getHeightNoPadding() {
-        return getHeight() - getPaddingEnd() - getPaddingStart();
+        return getHeight();
     }
 
     private View bindChild(final int position, @NonNull final RecyclerView.Recycler recycler) {
         final View view = recycler.getViewForPosition(position);
-
+        configViewSpacing(view, mItemsCount);
         addView(view);
         measureChildWithMargins(view, 0, 0);
 
@@ -665,7 +725,12 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
             dimenDiff = (getWidthNoPadding() - mDecoratedChildWidth) / 2;
         }
         //noinspection NumericCastThatLosesPrecision
-        return (int) Math.round(Math.signum(itemPositionDiff) * dimenDiff * smoothPosition);
+        //Handle scroll behavior for 2 item on horizontal orientation, ensuring that the first item is always on the left
+        if (mItemsCount == 2 && HORIZONTAL == mOrientation) {
+            return dimenDiff;
+        } else {
+            return (int) Math.round(Math.signum(itemPositionDiff) * dimenDiff * smoothPosition);
+        }
     }
 
     /**
