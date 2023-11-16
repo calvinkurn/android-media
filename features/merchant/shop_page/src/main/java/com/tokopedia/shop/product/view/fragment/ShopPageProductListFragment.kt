@@ -1701,7 +1701,8 @@ class ShopPageProductListFragment :
             selectedSortName = sortName,
             filterIndicatorCounter = getIndicatorCount(
                 shopProductFilterParameter?.getMapData()
-            )
+            ),
+            isOverrideTheme = isOverrideTheme()
         )
         shopProductAdapter.setSortFilterData(shopProductSortFilterUiModel)
         if (!viewModel?.isMyShop(shopId).orTrue()) {
