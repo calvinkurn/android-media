@@ -82,7 +82,11 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }
     }
 
-    private fun setupLihat(data: DataItem, componentsItem: ComponentsItem, backgroundPresent: Boolean) {
+    private fun setupLihat(
+        data: DataItem,
+        componentsItem: ComponentsItem,
+        backgroundPresent: Boolean
+    ) {
         if (!data.btnApplink.isNullOrEmpty()) {
             if (backgroundPresent) {
                 lihatImageView.show()
@@ -96,6 +100,8 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 }
                 lihatTextView.show()
                 lihatImageView.hide()
+
+                setupCTATextColor(data.ctaColor)
             }
         } else {
             lihatImageView.hide()
@@ -106,6 +112,14 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }
         lihatImageView.setOnClickListener {
             navigateLihat(data, componentsItem)
+        }
+    }
+
+    private fun setupCTATextColor(ctaColor: String?) {
+        if (!ctaColor.isNullOrEmpty()) {
+            lihatTextView.setTextColor(Color.parseColor(ctaColor))
+        } else {
+            lihatTextView.setTextColor(unifyprinciplesR.color.Unify_GN500)
         }
     }
 
