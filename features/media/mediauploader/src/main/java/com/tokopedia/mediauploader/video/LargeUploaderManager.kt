@@ -66,7 +66,13 @@ class LargeUploaderManager @Inject constructor(
         val videoPolicy = policy?.videoPolicy ?: return UploadResult.Error(POLICY_NOT_FOUND)
 
         // 1. init the uploader
-        getLastState(param, ::initUpload)
+        if (shouldAbleToInitUpload(param).not()) {
+            val init = initUpload(base)
+
+            if (!init.isSuccess()) {
+                return UploadResult.Error(CHUNK_UPLOAD, init.requestId.toString())
+            }
+        }
 
         // getting the upload size of chunk in MB for calculate the chunk size and as size of part numbers
         val sizePerChunk = videoPolicy.chunkSizePerFileInBytes()
@@ -77,13 +83,13 @@ class LargeUploaderManager @Inject constructor(
         // 2. upload per chunk in loop until N of part number
         val isFirstPartUploadSucceed = uploadFirstPart(base.file, sizePerChunk, base.sourceId, policy)
 
-        if (isFirstPartUploadSucceed.not()) {
+        if (isFirstPartUploadSucceed) {
+            // 3. Upload the remaining parts (2 ~ [chunkTotal])
+            uploadPart(base.file, sizePerChunk, base.sourceId, policy)
+        } else {
             UploaderLogger.commonError(base, CHUNK_UPLOAD, requestId)
             return UploadResult.Error(CHUNK_UPLOAD, requestId)
         }
-
-        // 3. Upload the remaining parts (2 ~ [chunkTotal])
-        uploadPart(base.file, sizePerChunk, base.sourceId, policy)
 
         // 4. set a complete state to check the transcoding and get the video url from it.
         if (param.withTranscode) {
@@ -222,26 +228,25 @@ class LargeUploaderManager @Inject constructor(
         this.progressUploader = progressUploader
     }
 
-    private suspend fun getLastState(param: VideoParam, init: suspend (BaseParam) -> Unit) {
+    private fun shouldAbleToInitUpload(param: VideoParam): Boolean {
         val base = param.base as BaseParam
         val data = uploadStateManager.get(base.sourceId, base.file.name)
 
-        if (param.ableToRetry.not()) {
-            init(base)
-            return
-        }
+        // these both validation indicates that the uploader needs to init the uploader.
+        if (param.ableToRetry.not()) return false
+        if (data == null) return false
 
-        if (data == null) {
-            init(base)
-            return
-        }
-
-        if (data.initTimeInMillis.isLessThanHoursOf(THRESHOLD_REQUEST_MAX_TIME)) {
+        return if (data.initTimeInMillis.isLessThanHoursOf(THRESHOLD_REQUEST_MAX_TIME)) {
             mUploadId = data.uploadId
             partUploaded = data.partDone.toMutableMap()
+
+            // the uploader doesn't need to re-init
+            true
         } else {
+
+            // forcibly init the uploader
             resetUpload()
-            init(base)
+            false
         }
     }
 
@@ -252,33 +257,33 @@ class LargeUploaderManager @Inject constructor(
         )
     }
 
-    private suspend fun initUpload(param: BaseParam) {
+    private suspend fun initUpload(param: BaseParam): LargeUploader {
         val fileName = param.file.name
 
-        val init = initUseCase(
+        return initUseCase(
             InitParam(
                 sourceId = param.sourceId,
                 fileName = fileName
             )
-        )
+        ).also {
+            if (it.isSuccess()) {
+                mUploadId = it.uploadId()
 
-        if (init.isSuccess()) {
-            mUploadId = init.uploadId()
-
-            uploadStateManager.set(
-                param.sourceId, LargeUploadCacheParam(
-                    filePath = param.file.path,
-                    uploadId = init.uploadId(),
-                    partDone = partUploaded,
-                    initTimeInMillis = System.currentTimeMillis()
+                uploadStateManager.set(
+                    param.sourceId, LargeUploadCacheParam(
+                        filePath = param.file.path,
+                        uploadId = it.uploadId(),
+                        partDone = partUploaded,
+                        initTimeInMillis = System.currentTimeMillis()
+                    )
                 )
-            )
-        } else {
-            UploaderLogger.commonError(
-                param = param,
-                message = "Fail to init (file=$fileName)",
-                reqId = init.requestId.toString()
-            )
+            } else {
+                UploaderLogger.commonError(
+                    param = param,
+                    message = "Fail to init (file=$fileName)",
+                    reqId = it.requestId.toString()
+                )
+            }
         }
     }
 
