@@ -9,5 +9,5 @@ class ShipmentAddressFormRequest(
     val leasingId: String?,
     val isPlusSelected: Boolean,
     val isCheckoutReimagine: Boolean,
-    val courierAction: String
+    val shipmentAction: String
 )

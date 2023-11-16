@@ -140,7 +140,7 @@ class CheckoutViewModel @Inject constructor(
 
     var isPlusSelected: Boolean = false
 
-    var courierAction: String = "merge"
+    var shipmentAction: String = "merge"
 
     var checkoutPageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
 
@@ -198,7 +198,7 @@ class CheckoutViewModel @Inject constructor(
                 isPlusSelected,
                 isReloadData,
                 isReloadAfterPriceChangeHigher,
-                courierAction
+                shipmentAction
             )
             stopEmbraceTrace()
             when (saf) {
@@ -1620,7 +1620,7 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun doShipmentAction(shipmentAction: ShipmentAction) {
-        courierAction = shipmentAction.action
+        this.shipmentAction = shipmentAction.action
         loadSAF(
             isReloadData = true,
             skipUpdateOnboardingState = true,
@@ -1638,7 +1638,7 @@ class CheckoutViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             val shipmentAction =
                 order.shipmentAction[newCourierItemData.selectedShipper.shipperProductId.toLong()]
-            if (shipmentAction != null && !shipmentAction.action.equals(courierAction, ignoreCase = true)) {
+            if (shipmentAction != null && !shipmentAction.action.equals(this@CheckoutViewModel.shipmentAction, ignoreCase = true)) {
                 if (shipmentAction.popup.title.isEmpty() && shipmentAction.popup.body.isEmpty()) {
                     doShipmentAction(shipmentAction)
                     return@launch
