@@ -25,11 +25,10 @@ data class ColumnedInfoUiModel(
     darkMode
 ) {
     @Parcelize
-    data class ColumnData (
+    data class ColumnData(
         val title: String = "",
         val rowData: List<Pair<String, String>> = emptyList(),
-        val rowColor: Pair<Int, Int> = Pair(Int.ZERO, Int.ZERO),
-        val rowIsBold: Pair<Boolean, Boolean>? = null
+        val rowColor: Pair<Int, Int> = Pair(Int.ZERO, Int.ZERO)
     ) : Parcelable
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {
