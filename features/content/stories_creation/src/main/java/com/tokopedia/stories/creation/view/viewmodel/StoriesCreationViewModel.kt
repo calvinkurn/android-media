@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -45,19 +46,23 @@ class StoriesCreationViewModel @Inject constructor(
     val maxVideoDuration: Int
         get() = _uiState.value.config.maxVideoDuration
 
-    private val storyId: String
+    val storyId: String
         get() = _uiState.value.config.storiesId
 
-    private val selectedAccount: ContentAccountUiModel
+    val selectedAccount: ContentAccountUiModel
         get() = _uiState.value.selectedAccount
 
-    private val productTag: List<String>
+    val productTagSection: List<ProductTagSectionUiModel>
         get() = _uiState.value.productTags
+
+    val maxProductTag: Int
+        get() = _uiState.value.config.maxProductTag
 
     fun submitAction(action: StoriesCreationAction) {
         when (action) {
             is StoriesCreationAction.Prepare -> handlePrepare()
             is StoriesCreationAction.SetMedia -> handleSetMedia(action.media)
+            is StoriesCreationAction.SetProduct -> handleSetProduct(action.productTags)
             is StoriesCreationAction.ClickUpload -> handleClickUpload()
         }
     }
@@ -100,6 +105,16 @@ class StoriesCreationViewModel @Inject constructor(
     private fun handleSetMedia(media: StoriesMedia) {
         _uiState.update {
             it.copy(media = media)
+        }
+    }
+
+    private fun handleSetProduct(
+        productTags: List<ProductTagSectionUiModel>,
+    ) {
+        _uiState.update {
+            it.copy(
+                productTags = productTags
+            )
         }
     }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util.error
+package com.tokopedia.content.product.picker.seller.model.exception
 
 
 /**

@@ -3,7 +3,7 @@ package com.tokopedia.content.product.picker.testcase.campaignEtalase
 import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
 import com.tokopedia.content.product.picker.robot.ContentProductPickerSellerViewModelRobot
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery

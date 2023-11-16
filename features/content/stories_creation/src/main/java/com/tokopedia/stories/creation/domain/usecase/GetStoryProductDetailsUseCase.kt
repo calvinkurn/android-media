@@ -20,7 +20,7 @@ class GetStoryProductDetailsUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
 ) : CoroutineUseCase<GetStoryProductDetailsRequest, GetStoryProductDetailsResponse>(dispatchers.io) {
 
-    private val gqlQuery: GqlQueryInterface = ContentStoryGetProductDetailsQuery()
+    private val gqlQuery: GqlQueryInterface = ContentCreatorStoryGetProductDetailsQuery()
 
     override fun graphqlQuery(): String = gqlQuery.getQuery()
 
@@ -31,12 +31,12 @@ class GetStoryProductDetailsUseCase @Inject constructor(
     companion object {
         private const val PARAM_REQ = "req"
 
-        const val QUERY_NAME = "ContentStoryGetProductDetailsQuery"
+        const val QUERY_NAME = "ContentCreatorStoryGetProductDetailsQuery"
         const val QUERY = """
-            query contentStoryGetProductDetails(
-                ${"$$PARAM_REQ"}: ContentStoryGetProductDetailsRequest!,
+            query contentCreatorStoryGetProductDetails(
+                ${"$$PARAM_REQ"}: ContentCreatorStoryGetProductDetailsRequest!
             ) {
-                contentStoryGetProductDetails(
+                contentCreatorStoryGetProductDetails(
                     $PARAM_REQ: ${"$$PARAM_REQ"}
                 ) {
                     products {

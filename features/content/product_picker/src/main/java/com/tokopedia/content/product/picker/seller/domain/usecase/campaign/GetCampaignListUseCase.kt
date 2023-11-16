@@ -1,11 +1,12 @@
-package com.tokopedia.play.broadcaster.domain.usecase.campaign
+package com.tokopedia.content.product.picker.seller.domain.usecase.campaign
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
+import com.tokopedia.content.product.picker.seller.domain.model.campaign.GetCampaignListResponse
 import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -15,7 +16,7 @@ import javax.inject.Inject
  */
 @GqlQuery(GetCampaignListUseCase.QUERY_NAME, GetCampaignListUseCase.QUERY)
 class GetCampaignListUseCase @Inject constructor(
-    gqlRepository: GraphqlRepository,
+    @ApplicationContext gqlRepository: GraphqlRepository,
     private val dispatchers: CoroutineDispatchers,
 ) : RetryableGraphqlUseCase<GetCampaignListResponse>(gqlRepository) {
 

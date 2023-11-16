@@ -152,7 +152,7 @@ fun StoriesCreationScreen(
         )
 
         StoriesCreationAddProductSection(
-            selectedProductSize = uiState.productTags.size,
+            selectedProductSize = uiState.productList.size,
             onClickAddProduct = onClickAddProduct,
             modifier = Modifier.constrainAs(addProductSection) {
                 top.linkTo(mediaCoverDivider.bottom, 16.dp)

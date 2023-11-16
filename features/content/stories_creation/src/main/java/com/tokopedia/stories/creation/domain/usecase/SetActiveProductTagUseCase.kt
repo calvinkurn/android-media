@@ -15,12 +15,12 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on September 11, 2023
  */
 @GqlQuery(SetActiveProductTagUseCase.QUERY_NAME, SetActiveProductTagUseCase.QUERY)
-internal class SetActiveProductTagUseCase @Inject constructor(
+class SetActiveProductTagUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers,
     @ApplicationContext private val repository: GraphqlRepository,
 ) : CoroutineUseCase<SetActiveProductTagRequest, SetActiveProductTagResponse>(dispatchers.io) {
 
-    private val gqlQuery: GqlQueryInterface = ContentCreatorSetActiveProductTagQuery()
+    private val gqlQuery: GqlQueryInterface = ContentCreatorStorySetActiveProductTagsQuery()
 
     override fun graphqlQuery(): String = gqlQuery.getQuery()
 
@@ -31,12 +31,12 @@ internal class SetActiveProductTagUseCase @Inject constructor(
     companion object {
         private const val PARAM_REQ = "req"
 
-        const val QUERY_NAME = "ContentCreatorSetActiveProductTagQuery"
+        const val QUERY_NAME = "ContentCreatorStorySetActiveProductTagsQuery"
         const val QUERY = """
-            mutation contentCreatorSetActiveProductTag(
-                ${"$$PARAM_REQ"}: contentCreatorSetActiveProductTagRequest!,
+            mutation contentCreatorStorySetActiveProductTags(
+                ${"$$PARAM_REQ"}: ContentCreatorStorySetActiveProductTagsRequest!
             ) {
-                contentCreatorSetActiveProductTag(
+                contentCreatorStorySetActiveProductTags(
                     $PARAM_REQ: ${"$$PARAM_REQ"}
                 ) {
                     productIDs
