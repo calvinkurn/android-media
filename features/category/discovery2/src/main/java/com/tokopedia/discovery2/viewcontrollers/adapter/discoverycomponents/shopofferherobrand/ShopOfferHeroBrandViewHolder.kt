@@ -30,6 +30,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.removeAllItemDecoration
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_DISCO_SHOP_OFFER_BRAND_SEE_MORE_BUY_MORE
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -58,6 +59,7 @@ class ShopOfferHeroBrandViewHolder(
         private const val SHOP_TIER_WORDING_SEPARATOR = "<br/>"
         private const val PROGRESS_BAR_TIER_DELAY = 2500L
         private const val PROGRESS_BAR_SHIMMERING_DELAY = 500L
+        private const val NO_ANIMATION_SIZE = 1
     }
 
     internal val mLayoutManager: LinearLayoutManager
@@ -78,12 +80,12 @@ class ShopOfferHeroBrandViewHolder(
 
     private var viewModel: ShopOfferHeroBrandViewModel? = null
     private var progressBarJob: Job? = null
+    private var hasRunScrollingAnimation: Boolean = false
 
     init {
         if (isShopOfferHeroBrandEnabled()) {
             binding?.apply {
                 setupRecyclerView()
-                setupShopTierWordingAnimation()
             }
         }
     }
@@ -155,34 +157,38 @@ class ShopOfferHeroBrandViewHolder(
         addScrollListener()
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.setupShopTierWordingAnimation() {
-        tpShopTierWording.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    if (tpShopTierWording.lineCount.isMoreThanZero()) {
-                        val animatorSet = AnimatorSet()
+    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.executeShopTierWordingAnimation() {
+        if (!hasRunScrollingAnimation) {
+            tpShopTierWording.viewTreeObserver.addOnGlobalLayoutListener(
+                object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        if (tpShopTierWording.lineCount.isMoreThanZero()) {
+                            val animatorSet = AnimatorSet()
 
-                        val firstAnimation = tpShopTierWording.verticalScrollAnimation(
-                            duration = SHOP_TIER_WORDING_DURATION_ANIMATION,
-                            isReverse = false,
-                            isFromHtml = true
-                        )
-                        val secondAnimation = tpShopTierWording.verticalScrollAnimation(
-                            duration = SHOP_TIER_WORDING_DURATION_ANIMATION,
-                            isReverse = true,
-                            isFromHtml = true
-                        )
+                            val firstAnimation = tpShopTierWording.verticalScrollAnimation(
+                                duration = SHOP_TIER_WORDING_DURATION_ANIMATION,
+                                isReverse = false,
+                                isFromHtml = true
+                            )
+                            val secondAnimation = tpShopTierWording.verticalScrollAnimation(
+                                duration = SHOP_TIER_WORDING_DURATION_ANIMATION,
+                                isReverse = true,
+                                isFromHtml = true
+                            )
 
-                        animatorSet.playSequentially(
-                            firstAnimation,
-                            secondAnimation
-                        )
+                            animatorSet.playSequentially(
+                                firstAnimation,
+                                secondAnimation
+                            )
 
-                        animatorSet.start()
+                            animatorSet.start()
+                        }
+                        tpShopTierWording.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        hasRunScrollingAnimation = true
                     }
-                    tpShopTierWording.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
-            }
-        )
+            )
+        }
     }
 
     private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.addScrollListener() {
@@ -231,7 +237,9 @@ class ShopOfferHeroBrandViewHolder(
 
             sivShopIcon.loadImage(header.shopIcon.orEmpty())
             tpShopName.text = header.shopName.orEmpty().toDecodedString()
-            tpShopTierWording.text = MethodChecker.fromHtml(header.offerTiers?.map { it.tierWording }?.joinToString(SHOP_TIER_WORDING_SEPARATOR))
+            tpShopTierWording.text = getFirstLastOfferTiers(header.offerTiers?.take(3))
+
+            executeShopTierWordingAnimation()
 
             if (header.applink.isNullOrBlank()) return
 
@@ -355,6 +363,19 @@ class ShopOfferHeroBrandViewHolder(
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackEventProductBmGmClickSeeMore(it.component)
             }
             RouteManager.route(fragment.context, appLink)
+        }
+    }
+
+    private fun getFirstLastOfferTiers(
+        list: List<Properties.Header.OfferTier>?
+    ): CharSequence? {
+        val offerTiers = list?.map { it.tierWording } ?: return String.EMPTY
+
+        return if (offerTiers.size > NO_ANIMATION_SIZE) {
+            val newOfferTiers = arrayListOf(offerTiers.first(), offerTiers.last())
+            MethodChecker.fromHtml(newOfferTiers.joinToString(SHOP_TIER_WORDING_SEPARATOR))
+        } else {
+            MethodChecker.fromHtml(offerTiers.joinToString())
         }
     }
 
