@@ -195,6 +195,8 @@ public interface ApplinkConst {
     String TOKO_CHAT = "tokopedia://tokochat";
     String TOKO_CHAT_LIST = "tokopedia://tokochat/list";
 
+    String TOKO_CHAT_BOTTOMSHEET = "tokopedia://tokochat/bottomsheet/{type}";
+
     String CHATBOT_HOST = "chatbot";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String CHAT_BOT = "tokopedia://chatbot";
@@ -872,7 +874,7 @@ public interface ApplinkConst {
         String ORDER_ID_GOJEK = "orderIdGojek";
         String ORDER_ID_TKPD = "orderIdTkpd";
 
-        //bundle params
+        // bundle params
         String IS_FROM_TOKOFOOD_POST_PURCHASE = "isFromTokoFoodPostPurchase";
     }
 

@@ -26,7 +26,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
 import com.tokopedia.tokochat.config.util.TokoChatConnection
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
@@ -227,7 +227,7 @@ open class BaseTokoFoodOrderTrackingFragment :
             val intent = RouteManager.getIntent(it, tokoChatAppLink).apply {
                 putExtra(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, true)
                 if (viewModel.isFromBubble) { // Only assign if it's true
-                    putExtra(TokoChatValueUtil.IS_FROM_BUBBLE_KEY, true)
+                    putExtra(TokoChatCommonValueUtil.IS_FROM_BUBBLE_KEY, true)
                 }
             }
             startActivity(intent)
@@ -648,7 +648,7 @@ open class BaseTokoFoodOrderTrackingFragment :
 
     private fun setDataArguments() {
         viewModel.isFromBubble = arguments?.getBoolean(
-            TokoChatValueUtil.IS_FROM_BUBBLE_KEY,
+            TokoChatCommonValueUtil.IS_FROM_BUBBLE_KEY,
             false
         ) ?: false
     }

@@ -4,8 +4,8 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.common.util.OrderStatusType
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.MAX_DISPLAYED_STRING
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.MAX_DISPLAYED_STRING
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatOrderHistoryResponse
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.getNeedConsentResponse
@@ -47,7 +47,7 @@ class TokoChatGeneralTest : BaseTokoChatRoomTest() {
     fun should_show_disabled_call_button() {
         // Given
         chatOrderHistoryResponse.editAndGetResponseObject {
-            it.tokochatOrderProgress.state = OrderStatusType.COMPLETED
+            it.tokochatOrderProgress.state = OrderStatusType.TOKOFOOD_COMPLETED
         }
 
         // When
@@ -174,7 +174,7 @@ class TokoChatGeneralTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_order_progress_even_when_param_tkpd_order_id_is_empty() {
         // Given
-        val dummyApplink = "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatValueUtil.TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
+        val dummyApplink = "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatCommonValueUtil.TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
 
         // When
         launchChatRoomActivity {
@@ -200,7 +200,7 @@ class TokoChatGeneralTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_local_load_order_progress_even_when_fail_to_translate_gojek_order_id() {
         // Given
-        val dummyApplink = "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatValueUtil.TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
+        val dummyApplink = "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatCommonValueUtil.TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
         GqlResponseStub.getTkpdOrderIdResponse.isError = true
 
         // When

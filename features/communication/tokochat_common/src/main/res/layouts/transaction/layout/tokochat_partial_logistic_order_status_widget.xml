@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tokochat_logistic_card_order_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokochat_logistic_tp_order_status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tokochat_logistic_tp_order_visibility"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingTop="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="8dp"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN600"
+        tools:text="Pesanan Tiba"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokochat_logistic_tp_order_visibility"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/tokochat_logistic_tp_order_status"
+        app:layout_constraintEnd_toStartOf="@id/tokochat_logistic_ic_order_visibility"
+        app:layout_constraintBottom_toBottomOf="@id/tokochat_logistic_tp_order_status"
+        android:layout_marginEnd="2dp"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="body_3"
+        tools:text="Tutup"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/tokochat_logistic_ic_order_visibility"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:layout_constraintTop_toTopOf="@id/tokochat_logistic_tp_order_visibility"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tokochat_logistic_tp_order_visibility"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="12dp"
+        app:icon_color_light_enable="@color/Unify_NN600"
+        app:icon_name="CHEVRON_UP"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tokochat_logistic_cl_order_name_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_logistic_tp_order_status"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingTop="10dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="10dp">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/tokochat_logistic_iv_order_thumbnail"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:unify_image_corner_radius="6"
+            tools:src="@tools:sample/avatars"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tokochat_logistic_tp_order_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/tokochat_logistic_iv_order_thumbnail"
+            app:layout_constraintStart_toEndOf="@id/tokochat_logistic_iv_order_thumbnail"
+            app:layout_constraintEnd_toStartOf="@id/tokochat_logistic_btn_order_progress"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            android:layout_marginStart="9dp"
+            android:layout_marginEnd="8dp"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            android:includeFontPadding="false"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintVertical_bias="1"
+            android:textColor="@color/Unify_NN950"
+            tools:text="Buku Disney Anak 7 Tahun"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tokochat_logistic_tp_additional_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tokochat_logistic_tp_order_name"
+            app:layout_constraintStart_toStartOf="@id/tokochat_logistic_tp_order_name"
+            app:layout_constraintEnd_toEndOf="@id/tokochat_logistic_tp_order_name"
+            android:includeFontPadding="false"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="small"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:visibility="gone"
+            tools:text="+2 produk lainnya"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tokochat_logistic_tp_estimate_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tokochat_logistic_tp_additional_info"
+            app:layout_constraintStart_toStartOf="@id/tokochat_logistic_tp_order_name"
+            app:layout_constraintEnd_toStartOf="@id/tokochat_logistic_tp_estimate_value"
+            app:layout_constraintBottom_toBottomOf="@id/tokochat_logistic_iv_order_thumbnail"
+            app:layout_constraintWidth_default="wrap"
+            app:layout_constrainedWidth="true"
+            android:layout_marginTop="8dp"
+            app:layout_goneMarginTop="0dp"
+            android:includeFontPadding="false"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_3"
+            tools:text="Tiba Pukul:"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tokochat_logistic_tp_estimate_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/tokochat_logistic_tp_estimate_label"
+            app:layout_constraintStart_toEndOf="@id/tokochat_logistic_tp_estimate_label"
+            app:layout_constraintEnd_toEndOf="@id/tokochat_logistic_tp_order_name"
+            app:layout_constraintBottom_toBottomOf="@id/tokochat_logistic_tp_estimate_label"
+            app:layout_constrainedWidth="true"
+            android:includeFontPadding="false"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_3"
+            tools:text="10:00-16:00 WIB"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/tokochat_logistic_btn_order_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:minWidth="88dp"
+            app:layout_constraintTop_toTopOf="@id/tokochat_logistic_iv_order_thumbnail"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/tokochat_logistic_iv_order_thumbnail"
+            tools:text="Ulas"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

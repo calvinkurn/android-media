@@ -37,7 +37,6 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadli
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUser
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
-import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactory
@@ -86,8 +85,7 @@ class UniversalInboxFragment @Inject constructor(
     var topAdsHeadlineViewModel: TopAdsHeadlineViewModel,
     var analytics: UniversalInboxAnalytics,
     var topAdsAnalytic: UniversalInboxTopAdsAnalytic,
-    var userSession: UserSessionInterface,
-    var abTestPlatform: UniversalInboxAbPlatform
+    var userSession: UserSessionInterface
 ) :
     BaseDaggerFragment(),
     UniversalInboxEndlessScrollListener.Listener,

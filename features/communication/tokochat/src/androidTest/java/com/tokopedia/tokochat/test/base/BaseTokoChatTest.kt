@@ -15,8 +15,8 @@ import com.jakewharton.espresso.OkHttp3IdlingResource
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.TOKOFOOD_SERVICE_TYPE
 import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.tokochat.stub.common.BabbleCourierClientStub

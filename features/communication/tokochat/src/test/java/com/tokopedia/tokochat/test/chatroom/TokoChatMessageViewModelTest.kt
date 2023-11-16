@@ -4,7 +4,7 @@ import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
 import com.tokopedia.tokochat.utils.observeAwaitValue
 import io.mockk.coEvery
 import io.mockk.coVerify
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -12,7 +12,7 @@ class TokoChatMessageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when send message should be called exactly once`() {
-        runBlocking {
+        runTest {
             // Given
             val dummyMessage = "message dummy 123"
 
@@ -32,7 +32,7 @@ class TokoChatMessageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when failed to send message should give throwable in error livedata`() {
-        runBlocking {
+        runTest {
             // Given
             val dummyMessage = "message dummy 123"
 
