@@ -8,6 +8,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
+import com.tokopedia.reviewcommon.constant.ReviewCommonConstants
 
 class ReadReviewActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringListener {
 
@@ -38,7 +39,7 @@ class ReadReviewActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringList
     }
 
     private fun getSelectedTopic(): String? {
-        return intent.getStringExtra(ReviewConstants.EXTRAS_SELECTED_TOPIC)
+        return intent.getStringExtra(ReviewCommonConstants.EXTRAS_SELECTED_TOPIC)
     }
 
     override fun startPerformanceMonitoring() {

@@ -85,8 +85,6 @@ object ReviewConstants {
     const val HAS_TICKER_REVIEW_REMINDER = "hasTickerReviewReminder"
     const val HAS_COACHMARK_REMINDER_MESSAGE = "hasCoachmarkReminderMessage"
 
-    const val EXTRAS_SELECTED_TOPIC = "EXTRAS_SELECTED_TOPIC"
-
     const val ARGS_REPUTATION_ID = "ARGS_REPUTATION_ID"
     const val ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID"
     const val ARGS_SHOP_ID = "ARGS_SHOP_ID"
