@@ -96,8 +96,7 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
         binding.apply {
             val questList = uiModel.questList
             val questCount = questList.count()
-            val lastFinishedQuest = questList.lastOrNull { it.isFinished() }
-            val progressIndex = lastFinishedQuest?.let { questList.indexOf(lastFinishedQuest) }
+            val currentProgressPosition = uiModel.currentProgressPosition
             val itemSpacing = binding.viewBackground.width / (questCount - 1)
 
             viewProgress.layoutParams = viewProgress.layoutParams.apply {
@@ -146,7 +145,7 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
                     progressItems[i]
                 }
 
-                if (i == progressIndex) {
+                if (i == currentProgressPosition) {
                     progressAnimEnd = view.x
                 }
 
