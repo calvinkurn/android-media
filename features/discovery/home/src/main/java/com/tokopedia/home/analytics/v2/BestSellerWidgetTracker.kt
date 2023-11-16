@@ -37,20 +37,20 @@ object BestSellerWidgetTracker : BaseTracking(){
 
     fun getImpressionTracker(recommendationItem: RecommendationItem, bestSellerDataModel: BestSellerDataModel, userId: String, position: Int) =
         BaseTrackerBuilder()
-            .constructBasicProductView(
-                event = Event.PRODUCT_VIEW,
-                eventCategory = Category.HOMEPAGE,
-                eventAction = IMPRESSION_ON_PRODUCT.format(BEST_SELLER),
-                eventLabel = Label.NONE,
-                list = getCustomListBestSellerString(recommendationItem, position, bestSellerDataModel),
-                buildCustomList = buildCustomListBestSeller(position, bestSellerDataModel),
-                products = listOf(mapToProductTracking(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName))
-            )
-            .appendBusinessUnit(BusinessUnit.DEFAULT)
-            .appendCurrentSite(CurrentSite.DEFAULT)
-            .appendUserId(userId)
-            .appendChannelId(bestSellerDataModel.id)
-            .build()
+                .constructBasicProductView(
+                        event = Event.PRODUCT_VIEW,
+                        eventCategory = Category.HOMEPAGE,
+                        eventAction = IMPRESSION_ON_PRODUCT.format(BEST_SELLER),
+                        eventLabel = Label.NONE,
+                        list = getCustomListBestSellerString(recommendationItem, position, bestSellerDataModel),
+                        buildCustomList = buildCustomListBestSeller(position, bestSellerDataModel),
+                        products = listOf(mapToProductTracking(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName))
+                )
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendUserId(userId)
+                .appendChannelId(bestSellerDataModel.id)
+                .build()
 
     fun getImpressionTracker(
         bestSellerProductDataModel: BestSellerProductDataModel,
@@ -58,44 +58,44 @@ object BestSellerWidgetTracker : BaseTracking(){
         userId: String,
         position: Int
     ) = BaseTrackerBuilder()
-        .constructBasicProductView(
-            event = Event.PRODUCT_VIEW,
-            eventCategory = Category.HOMEPAGE,
-            eventAction = IMPRESSION_ON_PRODUCT.format(BEST_SELLER),
-            eventLabel = Label.NONE,
-            list = getCustomListBestSellerString(
-                bestSellerProductDataModel,
-                position,
-                bestSellerDataModel,
-            ),
-            buildCustomList = buildCustomListBestSeller(position, bestSellerDataModel),
-            products = listOf(
-                mapToProductTracking(
+            .constructBasicProductView(
+                event = Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = IMPRESSION_ON_PRODUCT.format(BEST_SELLER),
+                eventLabel = Label.NONE,
+                list = getCustomListBestSellerString(
                     bestSellerProductDataModel,
-                    bestSellerDataModel.id,
-                    bestSellerDataModel.title,
-                    bestSellerDataModel.pageName,
+                    position,
+                    bestSellerDataModel,
+                ),
+                buildCustomList = buildCustomListBestSeller(position, bestSellerDataModel),
+                products = listOf(
+                    mapToProductTracking(
+                        bestSellerProductDataModel,
+                        bestSellerDataModel.id,
+                        bestSellerDataModel.title,
+                        bestSellerDataModel.pageName,
+                    )
                 )
             )
-        )
-        .appendBusinessUnit(BusinessUnit.DEFAULT)
-        .appendCurrentSite(CurrentSite.DEFAULT)
-        .appendUserId(userId)
-        .appendChannelId(bestSellerDataModel.id)
-        .build()
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendUserId(userId)
+            .appendChannelId(bestSellerDataModel.id)
+            .build()
 
     private fun buildCustomListBestSeller(position: Int, bestSellerDataModel: BestSellerDataModel): (BaseTrackerConst.Product) -> String {
         return {
             String.format(
-                LIST_BEST_SELLER,
-                position + 1,
-                if (it.isTopAds == true) TOPADS else NONTOPADS,
-                CAROUSEL,
-                it.recommendationType,
-                it.pageName,
-                bestSellerDataModel.chipsPosition,
-                "",
-                it.headerName
+                    LIST_BEST_SELLER,
+                    position + 1,
+                    if (it.isTopAds == true) TOPADS else NONTOPADS,
+                    CAROUSEL,
+                    it.recommendationType,
+                    it.pageName,
+                    bestSellerDataModel.chipsPosition,
+                    "",
+                    it.headerName
             )
         }
     }
@@ -305,53 +305,54 @@ object BestSellerWidgetTracker : BaseTracking(){
 
     fun sendViewAllClickTracker(channelId: String, headerName: String, userId: String) {
         val tracker = DataLayer.mapOf(
-            Event.KEY, Event.CLICK_HOMEPAGE,
-            Category.KEY, Category.HOMEPAGE,
-            Action.KEY, CLICK_SEE_ALL_BEST_SELLER,
-            Label.KEY, "$channelId - $headerName",
-            BusinessUnit.KEY, BusinessUnit.DEFAULT,
-            CurrentSite.KEY, CurrentSite.DEFAULT,
-            ChannelId.KEY, channelId,
-            UserId.KEY, userId
+                Event.KEY, Event.CLICK_HOMEPAGE,
+                Category.KEY, Category.HOMEPAGE,
+                Action.KEY, CLICK_SEE_ALL_BEST_SELLER,
+                Label.KEY, "$channelId - $headerName",
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                ChannelId.KEY, channelId,
+                UserId.KEY, userId
         )
         getTracker().sendEnhanceEcommerceEvent(tracker)
     }
 
     fun sendViewAllCardClickTracker(channelId: String, headerName: String, userId: String) {
         val tracker = DataLayer.mapOf(
-            Event.KEY, Event.CLICK_HOMEPAGE,
-            Category.KEY, Category.HOMEPAGE,
-            Action.KEY, CLICK_SEE_ALL_CARD_BEST_SELLER,
-            Label.KEY, "$channelId - $headerName",
-            BusinessUnit.KEY, BusinessUnit.DEFAULT,
-            CurrentSite.KEY, CurrentSite.DEFAULT,
-            ChannelId.KEY, channelId,
-            UserId.KEY, userId
+                Event.KEY, Event.CLICK_HOMEPAGE,
+                Category.KEY, Category.HOMEPAGE,
+                Action.KEY, CLICK_SEE_ALL_CARD_BEST_SELLER,
+                Label.KEY, "$channelId - $headerName",
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                ChannelId.KEY, channelId,
+                UserId.KEY, userId
         )
         getTracker().sendGeneralEvent(tracker)
     }
 
     private fun mapToProductTracking(recommendationItem: RecommendationItem, channelId: String, headerName: String, pageName: String): BaseTrackerConst.Product{
         return BaseTrackerConst.Product(
-            id = recommendationItem.productId.toString(),
-            name = recommendationItem.name,
-            isTopAds = recommendationItem.isTopAds,
-            recommendationType = recommendationItem.recommendationType,
-            headerName = headerName,
-            isCarousel = true,
-            productPrice = recommendationItem.priceInt.toString(),
-            productPosition = recommendationItem.position.toString(),
-            isFreeOngkir = recommendationItem.isFreeOngkirActive && !recommendationItem.labelGroupList.hasLabelGroupFulfillment(),
-            isFreeOngkirExtra = recommendationItem.isFreeOngkirActive && recommendationItem.labelGroupList.hasLabelGroupFulfillment(),
-            pageName = pageName,
-            cartId = recommendationItem.cartId,
-            channelId = channelId,
-            category = recommendationItem.categoryBreadcrumbs,
-            variant = "",
-            brand = "",
-            warehouseId = recommendationItem.warehouseId.toString(),
-            isFulfillment = recommendationItem.labelGroupList.hasLabelGroupFulfillment()
+                id = recommendationItem.productId.toString(),
+                name = recommendationItem.name,
+                isTopAds = recommendationItem.isTopAds,
+                recommendationType = recommendationItem.recommendationType,
+                headerName = headerName,
+                isCarousel = true,
+                productPrice = recommendationItem.priceInt.toString(),
+                productPosition = recommendationItem.position.toString(),
+                isFreeOngkir = recommendationItem.isFreeOngkirActive && !recommendationItem.labelGroupList.hasLabelGroupFulfillment(),
+                isFreeOngkirExtra = recommendationItem.isFreeOngkirActive && recommendationItem.labelGroupList.hasLabelGroupFulfillment(),
+                pageName = pageName,
+                cartId = recommendationItem.cartId,
+                channelId = channelId,
+                category = recommendationItem.categoryBreadcrumbs,
+                variant = "",
+                brand = "",
+                warehouseId = recommendationItem.warehouseId.toString(),
+                isFulfillment = recommendationItem.labelGroupList.hasLabelGroupFulfillment()
         )
+
     }
 
     private fun mapToProductTracking(

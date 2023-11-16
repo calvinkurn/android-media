@@ -165,15 +165,15 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             )
         )
         return trackingBuilder.constructBasicPromotionView(
-            event = Event.PROMO_VIEW,
-            eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.VIEW_COUPON),
-            eventLabel = Label.NONE,
-            promotions = listPromotions)
-            .appendBusinessUnit(BusinessUnit.DEFAULT)
-            .appendCurrentSite(CurrentSite.DEFAULT)
-            .appendUserId(element.userId)
-            .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_PROMO_VIEW)
-            .build()
+                event = Event.PROMO_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.VIEW_COUPON),
+                eventLabel = Label.NONE,
+                promotions = listPromotions)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendUserId(element.userId)
+                .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_PROMO_VIEW)
+                .build()
     }
 }
