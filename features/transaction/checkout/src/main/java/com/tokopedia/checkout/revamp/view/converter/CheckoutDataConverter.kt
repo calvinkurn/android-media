@@ -410,7 +410,7 @@ class CheckoutDataConverter @Inject constructor() {
             isCashback = product.productCashback.isNotEmpty(),
             fInsurance = product.isProductFinsurance,
             fCancelPartial = product.isProductFcancelPartial,
-            isError = product.isError || groupShop.isError,
+            isError = product.isError,
             errorMessage = product.errorMessage,
             errorMessageDescription = product.errorMessageDescription,
             isFreeShippingExtra = product.isFreeShippingExtra,
