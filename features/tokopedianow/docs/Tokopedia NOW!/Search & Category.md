@@ -14,7 +14,7 @@
 
 ## **Overall Diagram**
 
-![image](../res/searchcategory_overall_diagram.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/searchcategory_overall_diagram.png)
 
 ## **Description**
 
@@ -37,13 +37,13 @@ In short, the params should be like this:
 
 Front End (Android, iOS, and Lite) provide some hacks regarding category filter. Requirement from UX is that we do **NOT** count Category Chips Filter in the Filter Count, but if the category filter is applied from quick filter or filter bottomsheet, it will be counted. Screenshot example:
 
-![image](../res/searchcategory_filter_category_l2_selected.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/searchcategory_filter_category_l2_selected.png)
 
-![image](../res/searchcategory_filter_category_l3_selected.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/searchcategory_filter_category_l3_selected.png)
 
 To achieve this, we modify the filter Option `key` from Backend by adding prefix `exclude_`. Backend will return category filter Option key as `sc`, and then we will modify it to become `exclude_sc`.
 
-![image](../res/searchcategory_copy_option_code.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/searchcategory_copy_option_code.png)
 
 We also have to add prefix `exclude_` in Quick Filter Option, if the Quick Filter Option also exists as Category Chips Filter Option. In the **Screenshot 1** above, `Semua Daging Olahan` in Quick Filter has the modified key `exclude_sc` because it is the same Option as Category Chips filter `Daging Olahan`. 
 
@@ -59,7 +59,7 @@ When sending the parameter to Backend, we will “revert” all the `exclude_` p
 
 This way, all the params that we sent to Backend will **never** contains the `exclude_` prefix.
 
-![image](../res/searchcategory_create_params_code.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/searchcategory_create_params_code.png)
 
  
 
@@ -69,9 +69,9 @@ Do **NOT** discuss `exclude_` prefix hack with Backend team to avoid confusion. 
 
 User can enter Category page L1 and L2 from Category Jumper / Category List bottom sheet. In Front End, Category L2 is only considered as an active filter, and can be unselected to show Category L1 product list.
 
-![image](../res/searchcategory_categorylist_bottomsheet.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/searchcategory_categorylist_bottomsheet.png)
 
-![image](../res/searchcategory_filter_category_l2_l3_selected.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/searchcategory_filter_category_l2_l3_selected.png)
 
 To achieve this, we require the applink to provide both Category L1 and Category L2 Id. So, for apps (iOS and Android), we have this applink for category page:
 
@@ -81,7 +81,7 @@ Category L2: `tokopedia://now/category/<category_id_L1>/<category_id_L2>`
 
 Internally in Android, we convert the applink into internal applink and put the category id as query params in `DeeplinkMapperTokoNow.kt`.
 
-![image](../res/searchcategory_get_registered_navigation_code.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/searchcategory_get_registered_navigation_code.png)
 
 The end result is:
 
@@ -89,11 +89,11 @@ The end result is:
 
 `CategoryActivity.kt` will process this further by taking `category_l1` and `category_l2`, and remove it from the `queryParamMap`. `category_l1`, `category_l2`, and `queryParamMap`will be injected into `CategoryViewModel` from `CategoryParamModule.kt`.
 
-![image](../res/searchcategory_get_component_code.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/searchcategory_get_component_code.png)
 
-![image](../res/searchcategory_category_param_module_code.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/searchcategory_category_param_module_code.png)
 
-![image](../res/searchcategory_category_view_model_code.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/searchcategory_category_view_model_code.png)
 
 In the future, this `categoryL1` and `categoryL2` can also be used for slug, for example `tokopedia://now/category/daging-olahan/daging-sapi`. To achieve this, we first need to check if the `categoryL1` and `categoryL2` is `Int`. If it’s not `Int`, then it’s a slug, and we have to call GQL `TokonowCategoryDetail` [GQL Category Detail API](/wiki/spaces/TokoNow/pages/1456342232/GQL+Category+Detail+API) to get the categoryIds before we get the product list from `ace_search_product_v4`. 
 
@@ -101,9 +101,9 @@ In the future, this `categoryL1` and `categoryL2` can also be used for slug, for
 
 ### Update Product Card Quantity based on Mini Cart Flow Diagram
 
-![image](../res/searchcategory_update_quantity_flow_diagram.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/searchcategory_update_quantity_flow_diagram.png)
 
 ### Check Shop Id and Warehouse Id Flow Diagram
 
-![image](../res/searchcategory_get_shop_and_warehouse_flow_diagram.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/searchcategory_get_shop_and_warehouse_flow_diagram.png)
 

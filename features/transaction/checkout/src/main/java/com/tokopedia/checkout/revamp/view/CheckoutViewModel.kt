@@ -1202,7 +1202,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value = list
             cartProcessor.processSaveShipmentState(
                 newOrderModel,
-                listData.value.address()!!.recipientAddressModel
+                listData.value.address()!!.recipientAddressModel,
+                listData.value
             )
             calculateTotal()
             sendEEStep3()
@@ -1334,7 +1335,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value = list
             cartProcessor.processSaveShipmentState(
                 newOrderModel,
-                listData.value.address()!!.recipientAddressModel
+                listData.value.address()!!.recipientAddressModel,
+                listData.value
             )
             calculateTotal()
             sendEEStep3()
@@ -1399,7 +1401,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value = list
             cartProcessor.processSaveShipmentState(
                 newOrder,
-                listData.value.address()!!.recipientAddressModel
+                listData.value.address()!!.recipientAddressModel,
+                listData.value
             )
             validatePromo()
             pageState.value = CheckoutPageState.Normal
@@ -1826,7 +1829,8 @@ class CheckoutViewModel @Inject constructor(
         listData.value = list
         cartProcessor.processSaveShipmentState(
             newOrder1,
-            listData.value.address()!!.recipientAddressModel
+            listData.value.address()!!.recipientAddressModel,
+            listData.value
         )
         validatePromo()
         pageState.value = CheckoutPageState.Normal
@@ -1864,7 +1868,8 @@ class CheckoutViewModel @Inject constructor(
         listData.value = checkoutItems
         cartProcessor.processSaveShipmentState(
             newOrder,
-            listData.value.address()!!.recipientAddressModel
+            listData.value.address()!!.recipientAddressModel,
+            listData.value
         )
         validatePromo()
         pageState.value = CheckoutPageState.Normal

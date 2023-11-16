@@ -17,7 +17,7 @@
 
 <!--toc-->
 
-![image](../res/seeallcategory_page.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/seeallcategory_page.png)
 
 ## **Description**
 
