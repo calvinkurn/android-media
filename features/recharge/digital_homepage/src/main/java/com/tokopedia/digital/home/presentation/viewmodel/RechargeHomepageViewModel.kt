@@ -245,13 +245,12 @@ class RechargeHomepageViewModel @Inject constructor(
     }
 
     fun closeWidgetDigiPerso(favId: String, type: String) {
-        launchCatchError(block = {
+        launch {
             val data = withContext(dispatcher.io) {
                 digitalPersoCloseWidgetUseCase.digitalPersoCloseWidget(
-                   favId, type
+                    favId, type
                 )
             }
-        }) {
         }
     }
 
