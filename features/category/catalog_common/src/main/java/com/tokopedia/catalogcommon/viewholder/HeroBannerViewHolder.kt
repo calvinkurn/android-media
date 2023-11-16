@@ -24,6 +24,7 @@ import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -34,7 +35,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class HeroBannerViewHolder(
     itemView: View,
     private val heroBannerListener: HeroBannerListener? = null
-): AbstractViewHolder<HeroBannerUiModel>(itemView) {
+) : AbstractViewHolder<HeroBannerUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -43,6 +44,7 @@ class HeroBannerViewHolder(
         private const val RECTANGULAR_CARD_RADIUS = 30F
         private const val BANNER_PREMIUM_RATIO = "1:1.5"
         private const val BANNER_REGULAR_RATIO = "1:1"
+        private const val BANNER_REGULAR_SHADOW_HEIGHT = 55
     }
 
     private val binding by viewBinding<WidgetItemBannerHeroBinding>()
@@ -80,7 +82,6 @@ class HeroBannerViewHolder(
         tfSubtitleBannerPremium.isVisible = isPremium
         iuBrandPremium.isVisible = isPremium
         iuBrandPremiumCard.isVisible = isPremium
-        bgGradient.isVisible = isPremium
 
         // regular views
         tfTitleBanner.isVisible = !isPremium
@@ -103,8 +104,11 @@ class HeroBannerViewHolder(
     }
 
     private fun WidgetItemBannerHeroBinding.renderRegularBrandData(element: HeroBannerUiModel) {
+        val colorBg = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_32)
         tfTitleBanner.text = element.brandTitle
         iuBrand.isVisible = element.brandIconUrl.isNotEmpty()
+        bgGradient.layoutParams.height = BANNER_REGULAR_SHADOW_HEIGHT.dpToPx(itemView.resources.displayMetrics)
+        bgGradient.background = createGradientDrawable(colorBottom = colorBg)
         if (element.brandIconUrl.isNotEmpty()) {
             iuBrand.loadImage(element.brandIconUrl) {
                 listener(onSuccess = { bitmap, _ ->
@@ -164,7 +168,7 @@ class HeroBannerViewHolder(
 
     private fun createCardBackground(bitmap: Bitmap): Drawable {
         val cardColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White)
-        val radius = if (bitmap.width/bitmap.height <= 1.1) {
+        val radius = if (bitmap.width / bitmap.height <= 1.1) {
             RECTANGULAR_CARD_RADIUS
         } else {
             CIRCULAR_CARD_RADIUS
@@ -190,7 +194,7 @@ class HeroBannerViewHolder(
     }
 }
 
-class ImageSliderAdapter(private val context: Context): PagerAdapter() {
+class ImageSliderAdapter(private val context: Context) : PagerAdapter() {
 
     companion object {
         private const val LAST_POSITION_OFFSET = 2
