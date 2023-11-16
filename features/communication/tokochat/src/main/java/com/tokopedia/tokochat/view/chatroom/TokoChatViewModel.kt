@@ -699,11 +699,6 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        groupBookingUseCase.cancel()
-    }
-
     companion object {
         const val DELAY_UPDATE_ORDER_STATE = 15000L
         private const val DELAY_FETCH_IMAGE = 500L
