@@ -9,12 +9,17 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselData
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProduct
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
 import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
 import com.tokopedia.search.result.product.productitem.ProductItemVisitable
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordCardView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.reimagine.LayoutType
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproducttitle.InspirationProductTitleDataView
+import com.tokopedia.search.result.product.separator.VerticalSeparatorDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
@@ -24,6 +29,8 @@ import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
 import io.mockk.verifyOrder
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -52,7 +59,6 @@ private const val inspirationKeywordGridImageSeamlessFunneling =
     "searchproduct/seamlessinspiration/seamless-inspiration-keyword-image-seamless-funneling.json"
 private const val inspirationKeywordGridImageSeamlessDrifting =
     "searchproduct/seamlessinspiration/seamless-inspiration-keyword-image-seamless-drifting.json"
-private const val LAYOUT_INSPIRATION_KEYWORD_SEAMLESS = "carousel_seamless"
 private const val inspirationCarouselSeamlessWithOtherCarousel =
     "searchproduct/seamlessinspiration/inspiration-carousel-seamless-with-other-carousel.json"
 private const val TARGET_CLICK = 0
@@ -379,7 +385,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
 
     private fun SearchInspirationCarousel.getDataInspirationSeamless(): List<InspirationCarouselData> {
         return this.data.filter {
-            it.layout == LAYOUT_INSPIRATION_KEYWORD_SEAMLESS
+            it.layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
         }
     }
 
@@ -416,7 +422,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         this[key]?.get(productIndex) ?: throw IndexOutOfBoundsException()
 
     private fun InspirationProductItemDataView.assertInspirationProductItemDataView(
-        inspirationCarouselProduct: InspirationCarouselProduct
+        inspirationCarouselProduct: InspirationCarouselProduct,
     ) {
         this.id shouldBe inspirationCarouselProduct.id
         this.name shouldBe inspirationCarouselProduct.name
@@ -424,6 +430,9 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         this.imageUrl shouldBe inspirationCarouselProduct.imgUrl
         this.url shouldBe inspirationCarouselProduct.url
         this.applink shouldBe inspirationCarouselProduct.applink
+        this.topAdsViewUrl shouldBe inspirationCarouselProduct.ads.productViewUrl
+        this.topAdsClickUrl shouldBe inspirationCarouselProduct.ads.productClickUrl
+        this.isOrganicAds shouldBe inspirationCarouselProduct.isOrganicAds()
     }
 
     private fun InspirationKeywordCardView.assertInspirationKeywordDataView(
@@ -540,5 +549,50 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
             .filterIsInstance<ProductItemVisitable>()
 
         assertEquals(productItemListBeforeCarousel.size, productCountBeforeCarousel)
+    }
+
+    @Test
+    fun `inspiration carousel seamless_product`() {
+        val searchProductModel = "searchproduct/seamlessinspiration/seamless-product-diversification.json"
+            .jsonToObject<SearchProductModel>()
+
+        `Given search reimagine rollence product card will return non control variant`()
+        `load Data Product Search With Data`(searchProductModel)
+
+        `Then assert inspiration carousel seamless product`(searchProductModel)
+    }
+
+    private fun `Then assert inspiration carousel seamless product`(searchProductModel: SearchProductModel) {
+        val seamlessProductData = searchProductModel.searchInspirationCarousel.data.find {
+            it.layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
+        }!!
+
+        val seamlessProductItemList = seamlessProductData
+            .inspirationCarouselOptions
+            .flatMap { it.inspirationCarouselProducts }
+
+        val seamlessProductTitleIndex =
+            visitableList.indexOfFirst { it is ProductItemDataView } + seamlessProductData.position
+
+        val seamlessProductItemFirstIndex = seamlessProductTitleIndex + 1
+
+        assertThat(
+            visitableList[seamlessProductTitleIndex],
+            instanceOf(InspirationProductTitleDataView::class.java)
+        )
+
+        seamlessProductItemList.forEachIndexed { index, inspirationCarouselProduct ->
+            val inspirationProductItemDataView =
+                visitableList[index + seamlessProductItemFirstIndex] as InspirationProductItemDataView
+
+            inspirationProductItemDataView
+                .assertInspirationProductItemDataView(inspirationCarouselProduct)
+            inspirationProductItemDataView.isShowAdsLabel shouldBe false
+        }
+
+        assertThat(
+            visitableList[seamlessProductItemFirstIndex + seamlessProductItemList.size],
+            instanceOf(VerticalSeparatorDataView::class.java)
+        )
     }
 }
