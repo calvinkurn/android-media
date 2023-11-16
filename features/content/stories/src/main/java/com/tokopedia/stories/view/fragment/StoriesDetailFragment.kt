@@ -515,7 +515,15 @@ class StoriesDetailFragment @Inject constructor(
 
             when (state.category) {
                 StoriesDetailItem.StoryCategory.Manual -> {
-                    val creationTimestamp = ContentDateConverter.convertTime(state.publishedAt)
+                    val creationTimestamp = ContentDateConverter.getDiffTime(state.publishedAt) { dateTime ->
+                        when {
+                            dateTime.day > 30 -> dateTime.yearMonth
+                            dateTime.day in 1..30 -> "${dateTime.day} ${ContentDateConverter.DAY}"
+                            dateTime.hour in 1..23 -> "${dateTime.hour} ${ContentDateConverter.HOUR}"
+                            dateTime.minute in 1..59 -> "${dateTime.minute} ${ContentDateConverter.MINUTE_CONCISE}"
+                            else -> ContentDateConverter.BELOW_1_MINUTE_CONCISE
+                        }
+                    }
 
                     tvStoriesTimestamp.text = getString(
                         storiesR.string.story_creation_timestamp,
