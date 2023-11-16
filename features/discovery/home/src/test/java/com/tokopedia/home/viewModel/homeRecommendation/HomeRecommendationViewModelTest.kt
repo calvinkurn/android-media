@@ -1683,7 +1683,7 @@ class HomeRecommendationViewModelTest {
      *
      */
     @Test
-    fun `Get Success Data Home Recommendation Fetch Initial Page, should return Success State`() {
+    fun `Get Success Data Home Recommendation Fetch Initial Page And Wishlist Product with wrong productId, should return Success State`() {
         val productPage = 1
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
@@ -1720,6 +1720,59 @@ class HomeRecommendationViewModelTest {
                 actualResult.data.homeRecommendations
             )
             assertEquals(homeRecommendationDataModel.isHasNextPage, actualResult.data.isHasNextPage)
+
+            homeRecommendationViewModel.updateWhistlist("12", 0, true)
+
+            val actualResultWishlist = (it.first() as HomeRecommendationCardState.Success).data.homeRecommendations.filterIsInstance<HomeRecommendationItemDataModel>().first()
+            assertTrue(actualResultWishlist.recommendationProductItem.id.isBlank())
+        }
+    }
+
+    @Test
+    fun `Get Success Data Home Recommendation Fetch Initial Page And Wishlist Product with correct productId, should return Success State`() {
+        val productPage = 1
+        val homeRecommendationDataModel = HomeRecommendationDataModel(
+            homeRecommendations = listOf(
+                HomeRecommendationItemDataModel(
+                    recommendationProductItem = HomeRecommendationItemDataModel.HomeRecommendationProductItem(id = "14"),
+                    productCardModel = ProductCardModel(),
+                    position = 1
+                ),
+                HomeRecommendationItemDataModel(
+                    recommendationProductItem = HomeRecommendationItemDataModel.HomeRecommendationProductItem(),
+                    productCardModel = ProductCardModel(),
+                    position = 2
+                )
+            ),
+            isHasNextPage = true
+        )
+
+        getHomeRecommendationCardUseCase.givenDataReturn(homeRecommendationDataModel, productPage)
+
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns true
+
+        // assert HomeRecommendationCardState is equal LoadingState
+        assertCollectingRecommendationCardState {
+            assertTrue(it.first() is HomeRecommendationCardState.Loading)
+        }
+
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
+
+        assertCollectingRecommendationCardState {
+            val actualResult = (it.first() as HomeRecommendationCardState.Success)
+            assertTrue(it.first() is HomeRecommendationCardState.Success)
+            assertEquals(
+                homeRecommendationDataModel.homeRecommendations,
+                actualResult.data.homeRecommendations
+            )
+            assertEquals(homeRecommendationDataModel.isHasNextPage, actualResult.data.isHasNextPage)
+
+            homeRecommendationViewModel.updateWhistlist("14", 0, true)
+
+            val actualResultWishlist = (it.first() as HomeRecommendationCardState.Success).data.homeRecommendations.filterIsInstance<HomeRecommendationItemDataModel>().first()
+            val expectedResultWishlist = homeRecommendationDataModel.homeRecommendations.filterIsInstance<HomeRecommendationItemDataModel>().first()
+
+            assertEquals(expectedResultWishlist.recommendationProductItem.id, actualResultWishlist.recommendationProductItem.id)
         }
     }
 
@@ -1740,7 +1793,7 @@ class HomeRecommendationViewModelTest {
             assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "",  1, "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", 1, "")
 
         assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.EmptyData)
@@ -1773,6 +1826,32 @@ class HomeRecommendationViewModelTest {
             val actualResult = (it.first() as HomeRecommendationCardState.Fail)
             assertTrue(it.first() is HomeRecommendationCardState.Fail)
             assertEquals(exception.localizedMessage, actualResult.throwable.localizedMessage)
+        }
+    }
+
+    @Test
+    fun `Get Failed Data Home Recommendation Fetch Initial Page and hit wishlist product, should return Fail State`() {
+        val productPage = 1
+        val exception = MessageErrorException("something went wrong")
+
+        getHomeRecommendationCardUseCase.givenThrows(exception, productPage)
+
+        every { HomeRecommendationController.isUsingRecommendationCard() } returns true
+
+        // assert HomeRecommendationCardState is equal LoadingState
+        assertCollectingRecommendationCardState {
+            assertTrue(it.first() is HomeRecommendationCardState.Loading)
+        }
+
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
+
+        assertCollectingRecommendationCardState {
+            val actualResult = (it.first() as HomeRecommendationCardState.Fail)
+            assertTrue(it.first() is HomeRecommendationCardState.Fail)
+            assertEquals(exception.localizedMessage, actualResult.throwable.localizedMessage)
+
+            homeRecommendationViewModel.updateWhistlist("14", 0, true)
+            assertTrue(it.first() is HomeRecommendationCardState.Fail)
         }
     }
 
