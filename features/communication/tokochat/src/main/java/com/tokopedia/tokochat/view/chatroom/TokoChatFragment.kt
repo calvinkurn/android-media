@@ -548,6 +548,15 @@ open class TokoChatFragment @Inject constructor(
         viewModel.getTokoChatBackground()
     }
 
+    private fun isOrderStateOngoing(state: String): Boolean {
+        return state !in listOf(
+            OrderStatusType.TOKOFOOD_CANCELLED,
+            OrderStatusType.TOKOFOOD_COMPLETED,
+            OrderStatusType.LOGISTIC_CANCELLED,
+            OrderStatusType.LOGISTIC_COMPLETED
+        )
+    }
+
     private fun observeUpdateOrderTransactionStatus() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.updateOrderTransactionStatus.collect {
@@ -556,13 +565,7 @@ open class TokoChatFragment @Inject constructor(
                         val state = it.data.tokochatOrderProgress.state
                         updateCallIcon(state)
                         updateShowTransactionWidget(it.data.tokochatOrderProgress)
-                        if (state !in listOf(
-                                OrderStatusType.TOKOFOOD_CANCELLED,
-                                OrderStatusType.TOKOFOOD_COMPLETED,
-                                OrderStatusType.LOGISTIC_CANCELLED,
-                                OrderStatusType.LOGISTIC_COMPLETED
-                            )
-                        ) {
+                        if (isOrderStateOngoing(state)) {
                             viewModel.updateOrderStatusParam(
                                 Pair(viewModel.tkpdOrderId, getSourceCategory(viewModel.source))
                             )
@@ -589,13 +592,7 @@ open class TokoChatFragment @Inject constructor(
             when (it) {
                 is Success -> {
                     setShowTransactionWidget(it.data.tokochatOrderProgress)
-                    if (it.data.tokochatOrderProgress.state !in listOf(
-                            OrderStatusType.TOKOFOOD_CANCELLED,
-                            OrderStatusType.TOKOFOOD_COMPLETED,
-                            OrderStatusType.LOGISTIC_CANCELLED,
-                            OrderStatusType.LOGISTIC_COMPLETED
-                        )
-                    ) {
+                    if (isOrderStateOngoing(it.data.tokochatOrderProgress.state)) {
                         viewModel.updateOrderStatusParam(
                             Pair(viewModel.tkpdOrderId, getSourceCategory(viewModel.source))
                         )
@@ -925,13 +922,7 @@ open class TokoChatFragment @Inject constructor(
             }
 
             callMenu.run {
-                val isCallIconDisabled = getOrderState() in
-                    listOf(
-                        OrderStatusType.TOKOFOOD_CANCELLED,
-                        OrderStatusType.TOKOFOOD_COMPLETED,
-                        OrderStatusType.LOGISTIC_CANCELLED,
-                        OrderStatusType.LOGISTIC_COMPLETED
-                    )
+                val isCallIconDisabled = isOrderStateOngoing(getOrderState())
                 val isCallHidden = getOrderState().isBlank()
 
                 when {
@@ -988,12 +979,7 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun updateCallIcon(orderState: String) {
-        val isCompletedOrder = orderState in listOf(
-            OrderStatusType.TOKOFOOD_CANCELLED,
-            OrderStatusType.TOKOFOOD_COMPLETED,
-            OrderStatusType.LOGISTIC_CANCELLED,
-            OrderStatusType.LOGISTIC_COMPLETED
-        )
+        val isCompletedOrder = !isOrderStateOngoing(orderState)
         val isSameOrderStatus = orderState == getOrderState()
 
         if (isCompletedOrder) {

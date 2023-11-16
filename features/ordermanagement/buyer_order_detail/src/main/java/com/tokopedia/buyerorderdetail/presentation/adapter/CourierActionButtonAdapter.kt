@@ -87,7 +87,7 @@ class CourierActionButtonAdapter(
                     ApplinkConst.TokoChat.ORDER_ID_GOJEK,
                     ApplinkConst.TokoChat.PARAM_SOURCE
                 )
-                if (queryParams.size >= 2) {
+                if (queryParams.size >= TOTAL_PARAMS_NEEDED) {
                     courierButtonListener.initGroupBooking(
                         queryParams[0],
                         queryParams[1]
@@ -127,7 +127,7 @@ class CourierActionButtonAdapter(
         }
 
         private fun getXPosition(strCounter: String): Float {
-            return if (strCounter.length > 2) {
+            return if (strCounter.length > THRESHOLD_STR_COUNTER_LENGTH) {
                 ICON_DEFAULT_PERCENTAGE_X_POSITION
             } else {
                 ICON_MAX_PERCENTAGE_X_POSITION
@@ -178,6 +178,9 @@ class CourierActionButtonAdapter(
             private const val ICON_DEFAULT_PERCENTAGE_X_POSITION = 0.9f
             private const val ICON_MAX_PERCENTAGE_X_POSITION = 0.75f
             private const val ICON_PERCENTAGE_Y_POSITION = -0.25f
+
+            private const val TOTAL_PARAMS_NEEDED = 2
+            private const val THRESHOLD_STR_COUNTER_LENGTH = 2
         }
     }
 }
