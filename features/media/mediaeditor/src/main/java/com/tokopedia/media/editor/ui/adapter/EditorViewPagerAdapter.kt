@@ -39,7 +39,7 @@ class EditorViewPagerAdapter(
     private val editorList: List<EditorUiModel>,
     private val listener: Listener
 ) : PagerAdapter() {
-    private val currentPlayer: Array<Player?> = Array(editorList.size) { null }
+    private val currentPlayer: Array<SimpleExoPlayer?> = Array(editorList.size) { null }
 
     fun playVideo(index: Int) {
         currentPlayer[index]?.let {
@@ -55,8 +55,23 @@ class EditorViewPagerAdapter(
         currentPlayer[index]?.playWhenReady = false
     }
 
+    fun releasePlayer(index: Int) {
+        currentPlayer[index]?.let {
+            it.stop()
+            it.release()
+        }
+    }
+
     fun isVideo(index: Int): Boolean {
         return editorList[index].isVideo
+    }
+
+    fun reInitPlayer(index: Int) {
+        val uiModel = editorList[index]
+        val filePath = uiModel.getImageUrl()
+
+        val loopingMediaSource = LoopingMediaSource(getOrCreateMediaSource(Uri.parse(filePath)))
+        currentPlayer[index]?.prepare(loopingMediaSource, true, false)
     }
 
     override fun getCount(): Int {
