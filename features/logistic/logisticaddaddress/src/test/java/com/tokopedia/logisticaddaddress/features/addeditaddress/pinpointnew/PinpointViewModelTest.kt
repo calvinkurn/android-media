@@ -155,6 +155,53 @@ open class PinpointViewModelTest {
     }
 
     @Test
+    fun `WHEN address detail is set THEN dont hit get district location GQL to get pinpoint detail`() {
+        val districtName = "jakarta barat"
+        val cityName = "jakarta"
+        val lat = 106.77
+        val lng = 77.03
+        val districtId = 1111L
+        val postalCode = "13456"
+        viewModel.onViewCreated(
+            searchAddressData = SuggestedPlace(
+                districtName = districtName,
+                cityName = cityName,
+                lat = lat,
+                long = lng,
+                districtId = districtId,
+                postalCode = postalCode
+            ),
+            isEditWarehouse = false,
+            isPositiveFlow = null,
+            lat = 22.22,
+            long = 44.44,
+            source = "source",
+            uiState = AddressUiState.AddAddress
+        )
+
+        viewModel.fetchData()
+
+        coVerify(exactly = 0) {
+            getDistrict(
+                GetDistrictParam(
+                    placeId = "place id",
+                    isManageAddressFlow = true
+                )
+            )
+        }
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.enable)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.show)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.success)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonSecondary.show)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonSecondary.enable)
+        assert(viewModel.uiModel.districtName == districtName)
+        assert(viewModel.uiModel.cityName == cityName)
+        assert(viewModel.uiModel.lat == lat)
+        assert(viewModel.uiModel.long == lng)
+        assert(viewModel.map.value == MoveMap(lat, lng))
+    }
+
+    @Test
     fun `WHEN hit getDistrictLocation but response doesn't have postal code THEN show location not found bottom sheet`() {
         viewModel.onViewCreated(
             searchAddressData = SuggestedPlace(placeId = "place id"),
@@ -866,7 +913,11 @@ open class PinpointViewModelTest {
     // region onResultFromSearchAddress
     @Test
     fun `WHEN search address sent place id THEN set place id to ui model and hit getDistrictLocation`() {
-        viewModel.onResultFromSearchAddress(searchAddressData = SuggestedPlace(placeId = "placeid"), lat = 0.0, long = 0.0)
+        viewModel.onResultFromSearchAddress(
+            searchAddressData = SuggestedPlace(placeId = "placeid"),
+            lat = 0.0,
+            long = 0.0
+        )
         coVerify { getDistrict(GetDistrictParam("placeid", isManageAddressFlow = true)) }
     }
 
