@@ -10,7 +10,8 @@ class DigitalPersoCloseWidgetUseCase(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<DigitalPersoCloseResponse>(graphqlRepository) {
 
     suspend fun digitalPersoCloseWidget(
-        favId: String, type: String
+        favId: String,
+        type: String
     ):  DigitalPersoCloseResponse {
         setGraphqlQuery(MutationDigitalPersonalizationCloseWidget())
         setTypeClass(DigitalPersoCloseResponse::class.java)

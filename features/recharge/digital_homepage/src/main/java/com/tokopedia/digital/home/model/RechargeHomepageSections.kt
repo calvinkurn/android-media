@@ -776,8 +776,8 @@ class RechargeHomepageMyBillsTripleEntryPointsModel(val section: RechargeHomepag
 
 }
 
-class RechargeHomepageTodoWidgetModel(val section: RechargeHomepageSections.Section)
-    : RechargeHomepageSectionModel {
+class RechargeHomepageTodoWidgetModel(val section: RechargeHomepageSections.Section) :
+    RechargeHomepageSectionModel {
 
     override fun visitableId(): String = section.id
     override fun equalsWith(b: Any?): Boolean {
@@ -790,8 +790,8 @@ class RechargeHomepageTodoWidgetModel(val section: RechargeHomepageSections.Sect
         return typeFactory.type(this)
     }
 
-    class RechargeHomepageTodoWidgetAutoPayPostReminderItemModel(val widget: RechargeHomepageSections.Widgets)
-        :Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory> {
+    class RechargeHomepageTodoWidgetAutoPayPostReminderItemModel(val widget: RechargeHomepageSections.Widgets) :
+        Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory> {
         override fun type(typeFactory: RechargeHomepageTodoWidgetAdapterTypeFactory): Int {
             return typeFactory.type(this)
         }

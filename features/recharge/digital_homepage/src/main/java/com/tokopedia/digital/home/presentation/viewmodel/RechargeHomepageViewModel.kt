@@ -1,12 +1,10 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant
-import com.tokopedia.digital.home.domain.DigitalHomepageSearchByDynamicIconUseCase
 import com.tokopedia.digital.home.domain.DigitalPersoCloseWidgetUseCase
 import com.tokopedia.digital.home.model.RechargeHomepageSectionAction
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton

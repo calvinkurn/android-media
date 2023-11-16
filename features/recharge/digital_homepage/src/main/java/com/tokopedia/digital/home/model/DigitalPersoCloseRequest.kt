@@ -2,7 +2,7 @@ package com.tokopedia.digital.home.model
 
 import com.google.gson.annotations.SerializedName
 
-data class DigitalPersoCloseRequest (
+data class DigitalPersoCloseRequest(
    @SerializedName("status")
    val status: Int = 2,
    @SerializedName("type")
