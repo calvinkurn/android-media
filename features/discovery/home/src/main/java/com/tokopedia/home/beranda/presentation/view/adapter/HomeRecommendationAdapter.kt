@@ -44,6 +44,8 @@ class HomeRecommendationAdapter(
                 layout.isFullSpan =
                     item.bannerType != TYPE_VERTICAL_BANNER_ADS
 
+            is HomeRecommendationButtonRetryUiModel -> layout.isFullSpan = true
+
             is HomeRecommendationHeadlineTopAdsDataModel -> layout.isFullSpan = true
             is HomeRecommendationItemDataModel -> layout.isFullSpan = item.isFullSpan()
         }
@@ -105,4 +107,6 @@ interface HomeRecommendationListener : RecomEntityCardViewHolder.Listener, HomeR
     )
 
     fun onRetryGetProductRecommendationData()
+
+    fun onRetryGetNextProductRecommendationData()
 }

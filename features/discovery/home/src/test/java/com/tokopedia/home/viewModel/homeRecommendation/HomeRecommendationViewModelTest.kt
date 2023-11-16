@@ -1865,7 +1865,8 @@ class HomeRecommendationViewModelTest {
                     recommendationProductItem = HomeRecommendationItemDataModel.HomeRecommendationProductItem(),
                     productCardModel = ProductCardModel(),
                     position = 2
-                )
+                ),
+                homeRecommendationViewModel.buttonRetryUiModel
             ),
             isHasNextPage = true
         )

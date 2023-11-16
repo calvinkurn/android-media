@@ -59,6 +59,10 @@ class HomeRecommendationTypeFactoryImpl(
         return HomeRecommendationBannerTopAdsViewHolder.LAYOUT
     }
 
+    override fun type(dataModel: HomeRecommendationButtonRetryUiModel): Int {
+        return HomeRecommendationButtonRetryViewHolder.LAYOUT
+    }
+
     override fun type(uiModel: RecomEntityCardUiModel): Int {
         return RecomEntityCardViewHolder.LAYOUT
     }
@@ -110,6 +114,8 @@ class HomeRecommendationTypeFactoryImpl(
             HomeRecommendationPlayWidgetViewHolder.LAYOUT -> HomeRecommendationPlayWidgetViewHolder(parent, homeRecommendationVideoWidgetManager, homeRecommendationListener)
 
             HomeRecommendationBannerTopAdsViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsViewHolder(parent, homeRecommendationListener)
+
+            HomeRecommendationButtonRetryViewHolder.LAYOUT -> HomeRecommendationButtonRetryViewHolder(parent, homeRecommendationListener)
 
             else -> super.createViewHolder(parent, type)
         }

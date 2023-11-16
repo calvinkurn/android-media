@@ -55,6 +55,7 @@ class HomeRecommendationViewModel @Inject constructor(
 
     private val loadingModel = HomeRecommendationLoading()
     private val loadMoreModel = HomeRecommendationLoadMore()
+    val buttonRetryUiModel = HomeRecommendationButtonRetryUiModel()
     val emptyModel = HomeRecommendationEmpty()
     val homeRecommendationLiveData get() = _homeRecommendationLiveData
     private val _homeRecommendationLiveData: MutableLiveData<HomeRecommendationDataModel> =
@@ -146,6 +147,8 @@ class HomeRecommendationViewModel @Inject constructor(
             val existingRecommendationData =
                 homeRecommendationCardStateValue.data.homeRecommendations.toMutableList()
 
+            existingRecommendationData.remove(buttonRetryUiModel)
+
             _homeRecommendationCardState.tryEmit(
                 HomeRecommendationCardState.LoadingMore(
                     HomeRecommendationDataModel(
@@ -178,6 +181,7 @@ class HomeRecommendationViewModel @Inject constructor(
                 )
             }, onError = {
                 existingRecommendationData.remove(loadMoreModel)
+                existingRecommendationData.add(buttonRetryUiModel)
 
                 _homeRecommendationCardState.emit(
                     HomeRecommendationCardState.FailNextPage(

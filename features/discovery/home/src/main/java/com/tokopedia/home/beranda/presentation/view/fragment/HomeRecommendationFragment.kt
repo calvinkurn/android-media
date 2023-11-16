@@ -117,6 +117,7 @@ class HomeRecommendationFragment :
     }
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
 
+    private var currentPage = 0
     private var totalScrollY = 0
     private var tabIndex = 0
     private var recomId = 0
@@ -351,6 +352,7 @@ class HomeRecommendationFragment :
         endlessRecyclerViewScrollListener =
             object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    currentPage = page
                     viewModel.fetchNextHomeRecommendation(
                         tabName,
                         recomId,
@@ -576,7 +578,10 @@ class HomeRecommendationFragment :
         }
     }
 
-    override fun onPlayVideoWidgetClick(element: HomeRecommendationPlayWidgetUiModel, position: Int) {
+    override fun onPlayVideoWidgetClick(
+        element: HomeRecommendationPlayWidgetUiModel,
+        position: Int
+    ) {
         HomeRecommendationTracking.sendClickVideoRecommendationCardTracking(
             element,
             position,
@@ -587,7 +592,10 @@ class HomeRecommendationFragment :
         }
     }
 
-    override fun onPlayVideoWidgetImpress(element: HomeRecommendationPlayWidgetUiModel, position: Int) {
+    override fun onPlayVideoWidgetImpress(
+        element: HomeRecommendationPlayWidgetUiModel,
+        position: Int
+    ) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressPlayVideoWidgetTracking(
                 element,
@@ -604,6 +612,18 @@ class HomeRecommendationFragment :
             DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
             getLocationParamString(),
             sourceType = sourceType
+        )
+    }
+
+    override fun onRetryGetNextProductRecommendationData() {
+        val currentPage = endlessRecyclerViewScrollListener?.currentPage ?: currentPage
+        viewModel.fetchNextHomeRecommendation(
+            tabName,
+            recomId,
+            DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
+            currentPage,
+            getLocationParamString(),
+            sourceType
         )
     }
 
@@ -695,14 +715,20 @@ class HomeRecommendationFragment :
     ): ProductCardOptionsModel {
         val productCardOptionsModel = ProductCardOptionsModel()
         productCardOptionsModel.hasWishlist = true
-        productCardOptionsModel.isWishlisted = homeRecommendationItemDataModel.recommendationProductItem.isWishlist
-        productCardOptionsModel.productId = homeRecommendationItemDataModel.recommendationProductItem.id
-        productCardOptionsModel.isTopAds = homeRecommendationItemDataModel.recommendationProductItem.isTopAds
+        productCardOptionsModel.isWishlisted =
+            homeRecommendationItemDataModel.recommendationProductItem.isWishlist
+        productCardOptionsModel.productId =
+            homeRecommendationItemDataModel.recommendationProductItem.id
+        productCardOptionsModel.isTopAds =
+            homeRecommendationItemDataModel.recommendationProductItem.isTopAds
         productCardOptionsModel.topAdsWishlistUrl =
             homeRecommendationItemDataModel.recommendationProductItem.wishListUrl
-        productCardOptionsModel.topAdsClickUrl = homeRecommendationItemDataModel.recommendationProductItem.clickUrl
-        productCardOptionsModel.productName = homeRecommendationItemDataModel.recommendationProductItem.name
-        productCardOptionsModel.productImageUrl = homeRecommendationItemDataModel.recommendationProductItem.imageUrl
+        productCardOptionsModel.topAdsClickUrl =
+            homeRecommendationItemDataModel.recommendationProductItem.clickUrl
+        productCardOptionsModel.productName =
+            homeRecommendationItemDataModel.recommendationProductItem.name
+        productCardOptionsModel.productImageUrl =
+            homeRecommendationItemDataModel.recommendationProductItem.imageUrl
         productCardOptionsModel.productPosition = position
         return productCardOptionsModel
     }
