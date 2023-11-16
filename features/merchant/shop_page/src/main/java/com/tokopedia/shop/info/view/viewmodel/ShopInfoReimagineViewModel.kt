@@ -63,10 +63,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     companion object {
         private const val ID_FULFILLMENT_SERVICE_E_PHARMACY = 2
-        private const val ONE_HOUR = 1
-        private const val TWENTY_THREE_HOUR = 23
         private const val TWENTY_FOUR_HOUR = 24
-        private const val ONE_MINUTE = 1
         private const val FIFTY_NINE_MINUTE = 59
         private const val SIXTY_MINUTE = 60
         private const val ONE_DAY = 1
@@ -342,33 +339,38 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
 
     private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): Map<String, List<String>> {
-        val operationalHours = getShopOperationalHoursList?.data ?: emptyList()
+        val operationalHours = getShopOperationalHoursList?.data
 
-        val formattedOperationalHours = mutableMapOf<String, String>()
+        return when {
+            operationalHours == null -> emptyMap()
+            operationalHours.isEmpty() -> emptyMap()
+            else -> {
+                val formattedOperationalHours = mutableMapOf<String, String>()
 
-        val daysDictionary = mapOf(
-            1 to "Senin",
-            2 to "Selasa",
-            3 to "Rabu",
-            4 to "Kamis",
-            5 to "Jumat",
-            6 to "Sabtu",
-            7 to "Minggu"
-        )
+                val daysDictionary = mapOf(
+                    1 to "Senin",
+                    2 to "Selasa",
+                    3 to "Rabu",
+                    4 to "Kamis",
+                    5 to "Jumat",
+                    6 to "Sabtu",
+                    7 to "Minggu"
+                )
 
-        operationalHours.forEach { operationalHour ->
-            val formattedDay = daysDictionary[operationalHour.day].orEmpty()
+                operationalHours.forEach { operationalHour ->
+                    val formattedDay = daysDictionary[operationalHour.day].orEmpty()
 
-            val startTime = operationalHour.startTime.hourAndMinuteOnly()
-            val endTime = operationalHour.endTime.hourAndMinuteOnly()
-            val operationalHourFormat = "%s - %s"
+                    val startTime = operationalHour.startTime.hourAndMinuteOnly()
+                    val endTime = operationalHour.endTime.hourAndMinuteOnly()
+                    val operationalHourFormat = "%s - %s"
 
-            formattedOperationalHours[formattedDay] = String.format(operationalHourFormat, startTime, endTime)
+                    formattedOperationalHours[formattedDay] =
+                        String.format(operationalHourFormat, startTime, endTime)
+                }
+
+                formattedOperationalHours.groupByHours()
+            }
         }
-
-        val result = formattedOperationalHours.groupByHours()
-
-        return result
     }
 
     private fun ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.toOrderProcessTime(): String {

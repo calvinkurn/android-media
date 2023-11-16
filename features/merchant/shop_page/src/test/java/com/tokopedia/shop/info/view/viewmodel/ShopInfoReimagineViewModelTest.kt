@@ -10,6 +10,8 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.GetShopOperationalHoursList
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.info.data.response.GetEpharmacyShopInfoResponse
 import com.tokopedia.shop.info.data.response.GetNearestEpharmacyWarehouseLocationResponse
@@ -697,6 +699,188 @@ class ShopInfoReimagineViewModelTest {
     }
     //endregion
 
+    //region Shop operational hours
+
+    @Test
+    fun `When successfully get operational hours, should group days by its start and end time`() {
+        runBlockingTest {
+            // Given
+
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            val response = ShopOperationalHoursListResponse(
+                getShopOperationalHoursList = GetShopOperationalHoursList(
+                    data = listOf(
+                        ShopOperationalHour(day = 1, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 2, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 3, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 4, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 5, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 6, startTime = "10:00:00", endTime = "15:00:00"),
+                        ShopOperationalHour(day = 7, startTime = "10:00:00", endTime = "12:00:00")
+                    )
+                )
+            )
+            mockGetShopOperationListGqlCall(response = response)
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+            assertEquals(
+                mapOf(
+                    "08:00 - 17:00" to listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat"),
+                    "10:00 - 15:00" to listOf("Sabtu"),
+                    "10:00 - 12:00" to listOf("Minggu")
+                ),
+                actual.info.operationalHours
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When get operational hours success but it returns null for data then should return empty operational hours map`() {
+        runBlockingTest {
+            // Given
+
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            val response = ShopOperationalHoursListResponse(
+                getShopOperationalHoursList = GetShopOperationalHoursList(data = null)
+            )
+            mockGetShopOperationListGqlCall(response = response)
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+            assertEquals(
+                emptyMap<String, List<String>>(),
+                actual.info.operationalHours
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When get operational hours success but it returns null then should return empty operational hours map`() {
+        runBlockingTest {
+            // Given
+
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            val response = ShopOperationalHoursListResponse(
+                getShopOperationalHoursList = null
+            )
+            mockGetShopOperationListGqlCall(response = response)
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+            assertEquals(
+                emptyMap<String, List<String>>(),
+                actual.info.operationalHours
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun ` When get operational hours success but the returned day not defined on app days dictionary then return empty string`() {
+        runBlockingTest {
+            // Given
+
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall()
+            mockGetShopNoteGqlCall()
+            val response = ShopOperationalHoursListResponse(
+                getShopOperationalHoursList = GetShopOperationalHoursList(
+                    data = listOf(
+                        ShopOperationalHour(day = 10, startTime = "10:00:00", endTime = "15:00:00"),
+                        ShopOperationalHour(day = 7, startTime = "10:00:00", endTime = "12:00:00")
+                    )
+                )
+            )
+            mockGetShopOperationListGqlCall(response = response)
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+            assertEquals(
+                mapOf(
+                    "10:00 - 15:00" to listOf(""),
+                    "10:00 - 12:00" to listOf("Minggu")
+                ),
+                actual.info.operationalHours
+            )
+
+            job.cancel()
+        }
+    }
+
+    //endregion
+
     //region Format Shop USP
     @Test
     fun `When get shop info success and there are shop_basic info and shop_attribute_list then should return dynamic usp value correctly`() {
@@ -1248,9 +1432,7 @@ class ShopInfoReimagineViewModelTest {
         coEvery { getShopNoteUseCase.executeOnBackground() } returns response
     }
 
-    private fun mockGetShopOperationListGqlCall() {
-        val response = ShopOperationalHoursListResponse()
-
+    private fun mockGetShopOperationListGqlCall(response: ShopOperationalHoursListResponse = ShopOperationalHoursListResponse()) {
         coEvery {
             getShopGqlGetShopOperationalHoursListUseCase.executeOnBackground()
         } returns response
