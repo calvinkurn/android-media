@@ -19,6 +19,7 @@ import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntityCardBinding
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
 import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.modeAware
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -42,6 +43,10 @@ class RecomEntityCardViewHolder(
     private val binding = ItemRecomEntityCardBinding.bind(itemView)
 
     private var item: RecomEntityCardUiModel? = null
+
+    init {
+        binding.entryPointCard.animateOnPress = CardUnify2.ANIMATE_BOUNCE
+    }
     override fun bind(element: RecomEntityCardUiModel) {
         this.item = element
         setBackgroundCardColor(element.backgroundColor)
@@ -90,13 +95,13 @@ class RecomEntityCardViewHolder(
     }
 
     private fun setOnCardClickListener(element: RecomEntityCardUiModel) {
-        itemView.setOnClickListener {
+        binding.entryPointCard.setOnClickListener {
             listener.onEntityCardClickListener(element, bindingAdapterPosition)
         }
     }
 
     private fun setOnCardImpressionListener(element: RecomEntityCardUiModel) {
-        itemView.addOnImpressionListener(
+        binding.entryPointCard.addOnImpressionListener(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
@@ -151,7 +156,7 @@ class RecomEntityCardViewHolder(
     }
 
     private fun setMinHeightEntryPointCard() {
-        with(itemView) {
+        with(binding.entryPointCard) {
             val minHeightInPx = convertDpToPixel(mingHeightCard, context)
             if (height < minHeightInPx) {
                 val widthSpec =

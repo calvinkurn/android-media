@@ -169,7 +169,7 @@ abstract class BaseTrackerConst {
         private const val CLICK = "click"
         private const val ADD = "add"
         private const val IMPRESSIONS = "impressions"
-        private const val PROMO_VIEW = "promoView"
+        const val PROMO_VIEW = "promoView"
         const val PROMO_CLICK = "promoClick"
         private const val PROMOTIONS = "promotions"
         private const val PRODUCTS = "products"

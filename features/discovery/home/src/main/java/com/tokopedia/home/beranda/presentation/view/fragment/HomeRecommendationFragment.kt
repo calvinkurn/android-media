@@ -561,7 +561,7 @@ class HomeRecommendationFragment :
                 item,
                 position,
                 userSessionInterface.userId
-            ) as HashMap<String, Any>
+            )
         )
     }
 
@@ -593,7 +593,7 @@ class HomeRecommendationFragment :
                 element,
                 position,
                 userSessionInterface.userId
-            ) as HashMap<String, Any>
+            )
         )
     }
 
