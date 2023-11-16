@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.logisticCommon.domain.param.GetDistrictGeoCodeParam
+import com.tokopedia.logisticCommon.domain.param.GetDistrictParam
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictBoundariesUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictCenterUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
@@ -18,7 +19,6 @@ import com.tokopedia.logisticCommon.uimodel.isAdd
 import com.tokopedia.logisticCommon.uimodel.isEdit
 import com.tokopedia.logisticCommon.uimodel.isPinpointOnly
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
-import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper.map
 import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.MapsGeocodeParam
 import com.tokopedia.logisticaddaddress.domain.usecase.MapsGeocodeUseCase
@@ -42,7 +42,6 @@ class PinpointViewModel @Inject constructor(
     private val getDistrictBoundaries: GetDistrictBoundariesUseCase,
     private val getDistrictCenter: GetDistrictCenterUseCase,
     private val getDistrictGeoCode: GetDistrictGeoCodeUseCase,
-    private val getDistrictMapper: GetDistrictMapper,
     private val districtBoundaryMapper: DistrictBoundaryMapper,
     private val mapsGeocodeUseCase: MapsGeocodeUseCase
 ) : ViewModel() {
@@ -56,7 +55,7 @@ class PinpointViewModel @Inject constructor(
     private var addressDataFromWebview: SaveAddressDataModel? = null
 
     // district detail from autocomplete BE (search page)
-    private var searchAddressData: SuggestedPlace? = null
+    private var searchAddressData: PinpointUiModel? = null
 
     var uiModel = PinpointUiModel()
     var addressId = ""
@@ -128,13 +127,13 @@ class PinpointViewModel @Inject constructor(
         this.isEditWarehouse = isEditWarehouse
         this.source = source
         this._isPositiveFlow = isPositiveFlow
-        this.searchAddressData = searchAddressData
+        this.searchAddressData = searchAddressData?.toPinpointUiModel()
     }
 
     fun fetchData() {
         _pinpointBottomSheet.value = getInitialBottomSheetState()
         if (searchAddressData != null) {
-            getDistrictLocation()
+            getLocationDetail()
         } else if (uiModel.hasPinpoint()) {
             getLocationFromLatLong()
         } else if (uiModel.districtId != 0L) {
@@ -186,6 +185,41 @@ class PinpointViewModel @Inject constructor(
         }
     }
 
+    private fun getLocationDetail() {
+        if (searchAddressData?.districtId == 0L) {
+            getDistrictDetail()
+        } else {
+            getDistrictLocation()
+        }
+    }
+
+    private fun getDistrictDetail() {
+        viewModelScope.launch {
+            searchAddressData?.placeId?.takeIf { it.isNotEmpty() }?.run {
+                val res = getDistrict(
+                    GetDistrictParam(
+                        placeId = this,
+                        isManageAddressFlow = true
+                    )
+                )
+                val data = res.keroPlacesGetDistrict.data
+                searchAddressData = searchAddressData?.copy(
+                    title = data.title,
+                    districtId = data.districtId,
+                    districtName = data.districtName,
+                    cityId = data.cityId,
+                    cityName = data.cityName,
+                    provinceId = data.provinceId,
+                    provinceName = data.provinceName,
+                    postalCode = data.postalCode,
+                    lat = data.latitude.toDoubleOrZero(),
+                    long = data.longitude.toDoubleOrZero()
+                )
+            }
+            getDistrictLocation()
+        }
+    }
+
     private fun getDistrictLocation() {
         searchAddressData?.run {
             if (lat != 0.0 && long != 0.0) {
@@ -195,7 +229,7 @@ class PinpointViewModel @Inject constructor(
                 locationNotFound(false)
             } else {
                 if (validateDistrict(districtId)) {
-                    uiModel = toPinpointUiModel()
+                    uiModel = this
                     _pinpointBottomSheet.value = PinpointBottomSheetState.LocationDetail(
                         title = uiModel.title,
                         description = uiModel.formattedAddress,
@@ -360,8 +394,8 @@ class PinpointViewModel @Inject constructor(
 
     fun onResultFromSearchAddress(searchAddressData: SuggestedPlace?, lat: Double, long: Double) {
         if (searchAddressData != null) {
-            this.searchAddressData = searchAddressData
-            getDistrictLocation()
+            this.searchAddressData = searchAddressData.toPinpointUiModel()
+            getLocationDetail()
         } else if (lat != 0.0 && long != 0.0) {
             _map.value = MoveMap(lat, long)
             getDistrictData(lat, long)

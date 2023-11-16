@@ -82,7 +82,6 @@ open class PinpointViewModelTest {
                 getDistrictBoundaries,
                 getDistrictCenter,
                 getDistrictGeoCode,
-                getDistrictMapper,
                 districtBoundaryMapper,
                 mapsGeocodeUseCase
             )
