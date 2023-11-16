@@ -2998,6 +2998,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check tokochat bottomsheet applink`() {
+        val params = "guide-chat"
+        val deeplink = UriUtil.buildUri(ApplinkConst.TOKO_CHAT_BOTTOMSHEET, params)
+        val expectedDeepLink = UriUtil.buildUri(ApplinkConstInternalCommunication.TOKOCHAT_BOTTOMSHEET, params)
+        assertEqualsDeepLinkMapper(deeplink, expectedDeepLink)
+    }
+
+    @Test
     fun `check topchat settings bubble activation applink`() {
         val deepLink = ApplinkConst.TOPCHAT_BUBBLE_ACTIVATION
         val expectedDeepLink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION

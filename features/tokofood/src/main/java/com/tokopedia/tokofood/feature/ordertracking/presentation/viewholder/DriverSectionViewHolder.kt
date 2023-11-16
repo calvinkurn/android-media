@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.DEFAULT_CENSOR_PERCENTAGE
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil
 import com.tokopedia.tokochat.config.util.TokoChatConnection
 import com.tokopedia.tokofood.R
@@ -19,6 +19,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.DriverI
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverInformationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class DriverSectionViewHolder(
     view: View,
@@ -166,14 +167,14 @@ class DriverSectionViewHolder(
             val nn900Color =
                 MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                    unifyprinciplesR.color.Unify_NN900
                 )
             Pair(true, nn900Color)
         } else {
             val nn300Color =
                 MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN300
+                    unifyprinciplesR.color.Unify_NN300
                 )
             Pair(false, nn300Color)
         }

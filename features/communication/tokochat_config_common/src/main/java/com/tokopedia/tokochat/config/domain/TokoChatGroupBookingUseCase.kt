@@ -13,8 +13,8 @@ import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -34,15 +34,25 @@ open class TokoChatGroupBookingUseCase @Inject constructor(
         return flow {
             val conversationRepository = repository.getConversationRepository()
             if (conversationRepository != null) {
-                getGroupBookingCallbackFlow(
-                    conversationRepository,
-                    orderId,
-                    serviceType,
-                    orderChatType
+                emitAll(
+                    getGroupBookingCallbackFlow(
+                        conversationRepository,
+                        orderId,
+                        serviceType,
+                        orderChatType
+                    )
                 )
             } else {
                 emit(TokoChatResult.Error(MessageErrorException(CONVERSATION_NULL)))
             }
+        }
+    }
+
+    fun getServiceType(source: String): TokoChatServiceType {
+        return when (source) {
+            SOURCE_GOSEND_INSTANT -> TokoChatServiceType.GOSEND_INSTANT
+            SOURCE_GOSEND_SAMEDAY -> TokoChatServiceType.GOSEND_SAMEDAY
+            else -> TokoChatServiceType.TOKOFOOD // default tokofood
         }
     }
 
@@ -69,39 +79,36 @@ open class TokoChatGroupBookingUseCase @Inject constructor(
     ): ConversationsGroupBookingListener {
         return object : ConversationsGroupBookingListener {
             override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
-                scope.launch {
-                    onGroupBookingError(scope, error)
-                }
+                onGroupBookingError(scope, error)
             }
             override fun onGroupBookingChannelCreationStarted() {
-                scope.launch {
-                    scope.send(TokoChatResult.Loading)
-                }
+                scope.trySend(TokoChatResult.Loading)
             }
             override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
-                scope.launch {
-                    onGroupBookingSuccess(scope, channelUrl)
-                }
+                onGroupBookingSuccess(scope, channelUrl)
             }
         }
     }
 
-    private suspend fun onGroupBookingError(
+    private fun onGroupBookingError(
         scope: ProducerScope<TokoChatResult<String>>,
         error: ConversationsNetworkError
     ) {
         Timber.d(error)
-        scope.send(TokoChatResult.Error(error))
+        scope.trySend(TokoChatResult.Error(error))
     }
 
-    private suspend fun onGroupBookingSuccess(
+    private fun onGroupBookingSuccess(
         scope: ProducerScope<TokoChatResult<String>>,
         channelUrl: String
     ) {
-        scope.send(TokoChatResult.Success(channelUrl))
+        scope.trySend(TokoChatResult.Success(channelUrl))
     }
 
     companion object {
         private const val CONVERSATION_NULL = "Conversation Repository is null"
+
+        const val SOURCE_GOSEND_INSTANT = "gosend_instant"
+        const val SOURCE_GOSEND_SAMEDAY = "gosend_sameday"
     }
 }
