@@ -128,7 +128,4 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.centralizedPromo)
     implementation projectOrAar(rootProject.ext.features.powerMerchantSubscribe)
     implementation projectOrAar(rootProject.ext.features.scpAuth)
-
-    // Content
-    implementation projectOrAar(rootProject.ext.features.storiesCreation)
 }
