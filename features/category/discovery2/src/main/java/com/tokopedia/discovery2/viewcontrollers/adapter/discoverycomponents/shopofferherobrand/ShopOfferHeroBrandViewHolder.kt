@@ -237,7 +237,7 @@ class ShopOfferHeroBrandViewHolder(
 
             sivShopIcon.loadImage(header.shopIcon.orEmpty())
             tpShopName.text = header.shopName.orEmpty().toDecodedString()
-            tpShopTierWording.text = getFirstLastOfferTiers(header.offerTiers?.take(3))
+            tpShopTierWording.text = getFirstLastOfferTiers(header.offerTiers)
 
             executeShopTierWordingAnimation()
 
