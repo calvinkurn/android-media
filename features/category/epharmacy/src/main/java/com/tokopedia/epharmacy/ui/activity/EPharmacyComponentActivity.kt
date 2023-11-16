@@ -12,11 +12,14 @@ import com.tokopedia.epharmacy.databinding.EpharmacyMiniConsultationTransparentA
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyComponentBottomSheet
+import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 class EPharmacyComponentActivity : BaseActivity(), HasComponent<EPharmacyComponent> {
 
     private var componentName = String.EMPTY
+    private var tConsultationId = 0L
 
     private val ePharmacyComponent: EPharmacyComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
 
@@ -34,12 +37,20 @@ class EPharmacyComponentActivity : BaseActivity(), HasComponent<EPharmacyCompone
     }
 
     private fun openBottomSheet() {
-        EPharmacyComponentBottomSheet.newInstance(componentName).show(supportFragmentManager, EPharmacyComponentBottomSheet::class.simpleName)
+        EPharmacyComponentBottomSheet.newInstance(
+            Bundle().apply {
+                    putString(EPharmacyComponentBottomSheet.COMPONENT_NAME, componentName)
+                    putLong(EPHARMACY_TOKO_CONSULTATION_ID, tConsultationId)
+            }
+        ).show(supportFragmentManager, EPharmacyComponentBottomSheet::class.simpleName)
     }
 
     private fun extractParameters() {
         val pathSegments = Uri.parse(intent.data?.path.orEmpty()).pathSegments
         componentName = if (pathSegments.size > 1) pathSegments[1].orEmpty() else String.EMPTY
+        intent?.data?.let { uri ->
+            tConsultationId = uri.getQueryParameter(EPHARMACY_TOKO_CONSULTATION_ID).toLongOrZero()
+        }
     }
 
     private fun adjustOrientation() {

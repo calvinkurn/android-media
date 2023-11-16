@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.epharmacy.R
+import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyNavigator
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -30,7 +31,9 @@ class EPharmacyComponentBottomSheet : BottomSheetUnify() {
         if (savedInstanceState == null) {
             when (arguments?.getString(COMPONENT_NAME)) {
                 TYPE_QUANTITY_EDITOR -> {
-                    EPharmacyNavigator.navigateToQuantityBottomSheet(childFragmentManager)
+                    arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID)?.let { tConsultationId ->
+                        EPharmacyNavigator.navigateToQuantityBottomSheet(tConsultationId, childFragmentManager)
+                    }
                 }
             }
         }
@@ -45,14 +48,12 @@ class EPharmacyComponentBottomSheet : BottomSheetUnify() {
 
     companion object {
 
-        private const val COMPONENT_NAME = "ComponentName"
+        const val COMPONENT_NAME = "ComponentName"
         private const val TYPE_QUANTITY_EDITOR = "quantity-editor"
 
-        fun newInstance(componentName: String): EPharmacyComponentBottomSheet {
+        fun newInstance(bundle: Bundle): EPharmacyComponentBottomSheet {
             return EPharmacyComponentBottomSheet().apply {
-                arguments = Bundle().apply {
-                    putString(COMPONENT_NAME, componentName)
-                }
+                arguments = bundle
             }
         }
     }

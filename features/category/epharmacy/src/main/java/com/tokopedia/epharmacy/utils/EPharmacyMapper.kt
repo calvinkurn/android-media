@@ -33,7 +33,7 @@ object EPharmacyMapper {
             group.consultationSource?.operatingSchedule,
             group.consultationSource?.note,
             getTickerData(group, shopIndex),
-            getQuantityChangedModel(info),
+            getProductModel(info),
             group.consultationData?.prescription,
             group.consultationData?.partnerConsultationId,
             group.consultationData?.tokoConsultationId,
@@ -82,16 +82,10 @@ object EPharmacyMapper {
         }
     }
 
-    private fun getQuantityChangedModel(info: EGroup.ProductsInfo?): EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product.QtyComparison? {
-        return getQuantityChangedModelProduct(info?.products?.firstOrNull())
+    private fun getProductModel(info: EGroup.ProductsInfo?): EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product? {
+        return info?.products?.firstOrNull()
     }
 
-    private fun getQuantityChangedModelProduct(product: EGroup.ProductsInfo.Product?): EGroup.ProductsInfo.Product.QtyComparison? {
-        return product?.qtyComparison.apply {
-            product?.qtyComparison?.productPrice = product?.price
-            product?.qtyComparison?.subTotal = product?.price.orZero() * product?.qtyComparison?.initialQty?.toDouble().orZero()
-        }
-    }
 
     private fun getUniqueModelName(ePharmacyGroupId: String?, index: Int): String {
         return "${ePharmacyGroupId}_$index"

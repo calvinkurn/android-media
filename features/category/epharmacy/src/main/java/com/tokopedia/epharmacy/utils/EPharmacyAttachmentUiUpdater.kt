@@ -36,7 +36,7 @@ class EPharmacyAttachmentUiUpdater(var mapOfData: LinkedHashMap<String, BaseEPha
                 UpdateCartRequest(
                     productId = epDataModel.shopInfo?.products?.firstOrNull()?.productId.orZero().toString(),
                     cartId = epDataModel.shopInfo?.products?.firstOrNull()?.cartId.orZero().toString(),
-                    quantity = epDataModel.quantityChangedModel?.currentQty ?: (epDataModel.shopInfo?.products?.firstOrNull()?.quantity?.toIntOrZero() ?: 0)
+                    quantity = epDataModel.product?.qtyComparison?.currentQty ?: (epDataModel.shopInfo?.products?.firstOrNull()?.quantity?.toIntOrZero() ?: 0)
                 )
             )
             epDataModel.subProductsDataModel?.filterIsInstance<EPharmacyAccordionProductDataModel>()?.forEach { epPDM ->
@@ -50,5 +50,20 @@ class EPharmacyAttachmentUiUpdater(var mapOfData: LinkedHashMap<String, BaseEPha
             }
         }
         return cartsRequest
+    }
+
+    fun getTotalAmount(): Double {
+        var subTotalAmount = 0.0
+        mapOfData.values.forEach {
+            (it as? EPharmacyAttachmentDataModel)?.let { ePharmacyAttachmentDataModel ->
+                subTotalAmount += ((ePharmacyAttachmentDataModel.product?.qtyComparison?.recommendedQty.orZero()) * (ePharmacyAttachmentDataModel.product?.price.orZero()))
+                ePharmacyAttachmentDataModel.subProductsDataModel?.forEach { model ->
+                    (model as? EPharmacyAccordionProductDataModel)?.let { pModel ->
+                        subTotalAmount += ((pModel.product?.qtyComparison?.recommendedQty.orZero()) * (pModel.product?.price.orZero()))
+                    }
+                }
+            }
+        }
+        return subTotalAmount
     }
 }
