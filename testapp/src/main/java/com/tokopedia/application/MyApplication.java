@@ -136,7 +136,9 @@ public class MyApplication extends BaseMainApplication
                     new Function0<Unit>() {
                         @Override
                         public Unit invoke() {
-                            FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
+                            if (FrameMetricsMonitoring.Companion.getPerfWindow() != null) {
+                                FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
+                            }
                             return null;
                         }
                     }

@@ -192,7 +192,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                     new Function0<Unit>() {
                         @Override
                         public Unit invoke() {
-                            FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
+                            if (FrameMetricsMonitoring.Companion.getPerfWindow() != null) {
+                                FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
+                            }
                             return null;
                         }
                     }

@@ -20,8 +20,6 @@ class XmlViewInfoParser() : ViewInfoParser<View> {
         val viewInfo = ViewInfo(view.javaClass.simpleName, viewIdString, isVisible, getViewHeight(view))
         viewInfoList.add(viewInfo)
 
-        printViewInfo(viewInfo, depth)
-
         try {
             if (view is ViewGroup) {
                 for (i in 0 until view.childCount) {
