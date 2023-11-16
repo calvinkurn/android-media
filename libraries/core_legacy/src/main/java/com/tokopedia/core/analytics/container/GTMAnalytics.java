@@ -1540,7 +1540,10 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private void addOsVersion(Map<String, Object> map, String eventName) {
         // https://tokopedia.atlassian.net/browse/AN-54858
-        String eventAction = String.valueOf(map.get(AppEventTracking.EVENT_ACTION));
+        String eventAction = "";
+        if (map.get(AppEventTracking.EVENT_ACTION) != null) {
+            eventAction = String.valueOf(map.get(AppEventTracking.EVENT_ACTION));
+        }
         if (FirebaseAnalytics.Event.ECOMMERCE_PURCHASE.equals(eventName) ||
                 FirebaseAnalytics.Event.ADD_TO_CART.equals(eventName) ||
                 "addToCart".equals(eventName) ||
