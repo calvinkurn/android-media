@@ -11,7 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.common_epharmacy.EPHARMACY_CEK_RESEP_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_QTY_CHANGE
+import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
+import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
@@ -25,12 +28,19 @@ import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.databinding.EpharmacyQuantityChangeFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.utils.CategoryKeys
+import com.tokopedia.epharmacy.utils.EPHARMACY_APPLINK
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
+import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationAnalytics
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_ID_STRING
 import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE
 import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY
+import com.tokopedia.epharmacy.utils.EXTRA_SOURCE_STRING
+import com.tokopedia.epharmacy.utils.PrescriptionActionType
+import com.tokopedia.epharmacy.utils.UPLOAD_PAGE_SOURCE_PAP
+import com.tokopedia.epharmacy.utils.openDocument
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -55,7 +65,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     private var ePharmacyGlobalError: GlobalError? = null
     private var qCTotalAmount: TotalAmount? = null
     private var tConsultationId = 0L
-
+    private var totalAmount = 0.0
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
@@ -115,6 +125,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
         observerEPharmacyDetail()
         observerEPharmacyButtonData()
         observerPrescriptionError()
+        observerConsultationDetails()
         observerUpdateEPharmacyCart()
     }
 
@@ -138,7 +149,8 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
 
     private fun makeRequestParams(): MutableMap<String, Any?> {
         return mutableMapOf(
-            EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to EPHARMACY_PPG_QTY_CHANGE
+            EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to EPHARMACY_PPG_QTY_CHANGE,
+            EPharmacyPrepareProductsGroupUseCase.PARAM_TOKO_CONSULTATION_ID to tConsultationId
         )
     }
 
@@ -212,6 +224,32 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
         }
     }
 
+    private fun observerConsultationDetails() {
+        ePharmacyPrescriptionAttachmentViewModel.consultationDetails.observe(viewLifecycleOwner) { consultationDetails ->
+            when (consultationDetails) {
+                is Success -> {
+                    consultationDetails.data.epharmacyConsultationDetailsData?.consultationData?.prescription?.firstOrNull()?.documentUrl?.let { url ->
+                        context?.openDocument(url)
+                    }
+                }
+                is Fail -> {
+                    onFailGetConsultationDetails(consultationDetails.throwable)
+                }
+            }
+        }
+    }
+
+    private fun onFailGetConsultationDetails(throwable: Throwable) {
+        showToasterError(throwable)
+    }
+
+    private fun showToasterError(throwable: Throwable) {
+        when (throwable) {
+            is UnknownHostException, is SocketTimeoutException -> showToast(Toaster.TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_internet_error).orEmpty())
+            else -> showToast(Toaster.TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_reminder_fail).orEmpty())
+        }
+    }
+
     private fun onSuccessUpdateEPharmacyCart() {
         RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT).apply {
             putExtra(EXTRA_CHECKOUT_PAGE_SOURCE, EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY)
@@ -233,7 +271,12 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
             ePharmacyAttachmentUiUpdater.updateModel(component)
         }
         updateUi()
-        qCTotalAmount?.setAmount(calculateTotalAmount())
+        setUpTotalAmount()
+    }
+
+    private fun setUpTotalAmount() {
+        totalAmount = calculateTotalAmount()
+        qCTotalAmount?.setAmount(EPharmacyUtils.getTotalAmountFmt(totalAmount))
     }
 
     private fun updateUi() {
@@ -267,30 +310,78 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
         }
     }
 
+    override fun onCTACClick(adapterPosition: Int, modelKey: String?) {
+        super.onCTACClick(adapterPosition, modelKey)
+        val model = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel)
+        redirectAttachmentCTA(
+            model.enablerName,
+            model.chooserLogo,
+            model.epharmacyGroupId,
+            model.prescriptionCTA,
+            model.tokoConsultationId,
+            model.consultationData,
+            model.price,
+            model.operatingSchedule,
+            model.note
+        )
+        EPharmacyMiniConsultationAnalytics.clickAttachPrescriptionButton(
+            model.prescriptionCTA?.title.orEmpty(),
+            ePharmacyPrescriptionAttachmentViewModel.getEnablers().toString(),
+            adapterPosition.toString(),
+            ePharmacyPrescriptionAttachmentViewModel.getShopIds(model.epharmacyGroupId).size.toString(),
+            ePharmacyPrescriptionAttachmentViewModel.getShopIds(model.epharmacyGroupId).toString(),
+            model.epharmacyGroupId
+        )
+    }
+
+    private fun redirectAttachmentCTA(
+        enablerName: String?,
+        chooserLogo: String?,
+        groupId: String?,
+        prescriptionCTA: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionCTA?,
+        tokoConsultationId: String?,
+        consultationData: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData?,
+        price: String?,
+        operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?,
+        note: String?
+    ) {
+        when (prescriptionCTA?.actionType) {
+            PrescriptionActionType.REDIRECT_PRESCRIPTION.type -> {
+                tokoConsultationId?.let {
+                    ePharmacyPrescriptionAttachmentViewModel.getConsultationDetails(it)
+                }
+            }
+            PrescriptionActionType.REDIRECT_CHECK_PRESCRIPTION.type -> {
+                groupId?.let { ePharmacyGroupId ->
+                    startPhotoUpload(enablerName, ePharmacyGroupId, EPHARMACY_CEK_RESEP_REQUEST_CODE)
+                }
+            }
+        }
+    }
+
+    private fun startPhotoUpload(enablerName: String?, groupId: String?, requestCode: Int = EPHARMACY_UPLOAD_REQUEST_CODE) {
+        EPharmacyMiniConsultationAnalytics.clickUploadResepDokter(enablerName, groupId.orEmpty())
+        RouteManager.getIntent(activity, EPHARMACY_APPLINK).apply {
+            putExtra(EXTRA_CHECKOUT_ID_STRING, groupId)
+            putExtra(EXTRA_SOURCE_STRING, UPLOAD_PAGE_SOURCE_PAP)
+        }.also {
+            startActivityForResult(it, requestCode)
+        }
+    }
+
     override fun onToast(toasterType: Int, message: String) {
         super.onToast(toasterType, message)
         showToast(toasterType, message)
     }
 
-    override fun onQuantityChanged() {
-        super.onQuantityChanged()
-        qCTotalAmount?.setAmount(calculateTotalAmount())
+    override fun onQuantityChanged(changeInValue: Double) {
+        super.onQuantityChanged(changeInValue)
+        totalAmount += changeInValue
+        qCTotalAmount?.setAmount(EPharmacyUtils.getTotalAmountFmt(totalAmount))
     }
 
-    // TODO optimize
-    private fun calculateTotalAmount(): String {
-        var subTotalAmount = 0.0
-        ePharmacyAttachmentUiUpdater.mapOfData.values.forEach {
-            (it as? EPharmacyAttachmentDataModel)?.let { ePharmacyAttachmentDataModel ->
-                subTotalAmount += ePharmacyAttachmentDataModel.quantityChangedModel?.subTotal.orZero()
-                ePharmacyAttachmentDataModel.subProductsDataModel?.forEach { model ->
-                    (model as? EPharmacyAccordionProductDataModel)?.let { pModel ->
-                        subTotalAmount += pModel.product?.qtyComparison?.subTotal.orZero()
-                    }
-                }
-            }
-        }
-        return EPharmacyUtils.getTotalAmountFmt(subTotalAmount)
+    private fun calculateTotalAmount(): Double {
+       return ePharmacyAttachmentUiUpdater.getTotalAmount()
     }
 
     override fun getScreenName(): String = CategoryKeys.EPHARMACY_QUANTITY_CHANGE_BS
@@ -302,8 +393,12 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     companion object {
 
         @JvmStatic
-        fun newInstance(): EPharmacyQuantityChangeFragment {
-            return EPharmacyQuantityChangeFragment()
+        fun newInstance(tConsultationId: Long): EPharmacyQuantityChangeFragment {
+            return EPharmacyQuantityChangeFragment().apply {
+                arguments = Bundle().apply {
+                    putLong(EPHARMACY_TOKO_CONSULTATION_ID, tConsultationId)
+                }
+            }
         }
     }
 }

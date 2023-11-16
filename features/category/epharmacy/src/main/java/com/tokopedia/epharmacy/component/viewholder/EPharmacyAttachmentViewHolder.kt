@@ -49,6 +49,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val enablerImage = view.findViewById<ImageUnify>(R.id.enabler_image)
     private val partnerTitle = view.findViewById<Typography>(R.id.partner_title)
     private val productQuantity = view.findViewById<Typography>(R.id.lbl_PAP_productWeight)
+    private val productAmount = view.findViewById<Typography>(R.id.lbl_PAP_productAmount)
     private val productImageUnify = view.findViewById<ImageView>(R.id.product_image)
     private val productImageCard = view.findViewById<CardUnify2>(R.id.product_image_card)
     private val divider = view.findViewById<DividerUnify>(R.id.divider)
@@ -121,49 +122,55 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderQuantityChangedLayout() {
-        if (dataModel?.quantityChangedModel != null && dataModel?.isAccordionEnable.orFalse()) {
-            if (dataModel?.quantityChangedModel?.currentQty?.orZero().isZero()) {
-                dataModel?.quantityChangedModel?.currentQty = dataModel?.quantityChangedModel?.recommendedQty.orZero()
+        if (dataModel?.product?.qtyComparison != null && dataModel?.isAccordionEnable.orFalse()) {
+            productAmount.show()
+            productAmount.text = EPharmacyUtils.getTotalAmountFmt(dataModel?.product?.price)
+            if (dataModel?.product?.qtyComparison?.currentQty.isZero()) {
+                dataModel?.product?.qtyComparison?.currentQty = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
             }
-
+            if(dataModel?.product?.subTotal == 0.0){
+                dataModel?.product?.subTotal = dataModel?.product?.qtyComparison?.recommendedQty?.toDouble().orZero() * dataModel?.product?.price.orZero()
+            }
             quantityEditorLayout?.show()
             initialProductQuantity.text = java.lang.String.format(
                 itemView.context.getString(epharmacyR.string.epharmacy_barang_quantity),
-                dataModel?.quantityChangedModel?.initialQty.toString()
+                dataModel?.product?.qtyComparison?.initialQty.toString()
             )
             productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
-
-            quantityChangedEditor.maxValue = dataModel?.quantityChangedModel?.recommendedQty.orZero()
+            quantityChangedEditor.autoHideKeyboard = true
+            quantityChangedEditor.maxValue = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
             quantityChangedEditor.minValue = MIN_VALUE_OF_PRODUCT_EDITOR
+            reCalculateSubTotal()
+            quantityChangedEditor.setValue(dataModel?.product?.qtyComparison?.currentQty.orZero())
             quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
-                if (newValue == MIN_VALUE_OF_PRODUCT_EDITOR || newValue == dataModel?.quantityChangedModel?.recommendedQty) {
+                if (newValue == MIN_VALUE_OF_PRODUCT_EDITOR || newValue == dataModel?.product?.qtyComparison?.recommendedQty) {
                     ePharmacyListener?.onToast(
                         Toaster.TYPE_ERROR,
                         itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached)
                             .orEmpty()
                     )
                 }
-                dataModel?.quantityChangedModel?.currentQty = newValue
-                reCalculateSubTotal()
-                ePharmacyListener?.onQuantityChanged()
+                dataModel?.product?.qtyComparison?.currentQty = newValue
+                val changeInTotal = reCalculateSubTotal()
+                ePharmacyListener?.onQuantityChanged(changeInTotal)
             }
-            quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.currentQty.orZero())
-            reCalculateSubTotal()
         } else {
             quantityEditorLayout?.hide()
         }
     }
 
-    private fun reCalculateSubTotal() {
-        val subtotal = EPharmacyUtils.getTotalAmount(dataModel?.quantityChangedModel?.currentQty, dataModel?.quantityChangedModel?.productPrice)
-        dataModel?.quantityChangedModel?.subTotal = subtotal
-        totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmountFmt(subtotal))
+    private fun reCalculateSubTotal(): Double {
+        val newTotal = EPharmacyUtils.getTotalAmount(dataModel?.product?.qtyComparison?.currentQty, dataModel?.product?.price)
+        val changeInTotal = newTotal.minus(dataModel?.product?.subTotal ?: 0.0)
+        dataModel?.product?.subTotal = newTotal
+        totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmountFmt(newTotal))
         totalQuantity.displayTextOrHide(
             java.lang.String.format(
                 itemView.context.getString(epharmacyR.string.epharmacy_subtotal_quantity_change),
-                dataModel?.quantityChangedModel?.currentQty.toString()
+                dataModel?.product?.qtyComparison?.currentQty.toString()
             )
         )
+        return changeInTotal
     }
 
     private fun renderOrderTitle() {

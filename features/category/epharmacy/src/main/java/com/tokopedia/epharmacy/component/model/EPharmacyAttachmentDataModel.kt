@@ -21,7 +21,7 @@ data class EPharmacyAttachmentDataModel(
     val operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?,
     val note: String?,
     val ticker: EG.Ticker?,
-    var quantityChangedModel : EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product.QtyComparison?,
+    var product : EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?,
     val prescription: List<EG.ConsultationData.Prescription?>?,
     val partnerConsultationId: String?,
     val tokoConsultationId: String?,

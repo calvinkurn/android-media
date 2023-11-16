@@ -5,13 +5,11 @@ import android.content.Intent
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.common_epharmacy.EPHARMACY_CHECKOUT_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.epharmacy.R
-import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyQuantityChangeFragment
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.webview.ext.encode
@@ -43,9 +41,9 @@ internal object EPharmacyNavigator {
         )
     }
 
-    internal fun prescriptionAttachmentDoneRedirection(activity: Activity?, appLink: String?, requestCode: Int?, result: ArrayList<EPharmacyMiniConsultationResult>): Boolean {
+    internal fun prescriptionAttachmentDoneRedirection(activity: Activity?, appLink: String?, isSendResult: Boolean, result: ArrayList<EPharmacyMiniConsultationResult>): Boolean {
         if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_APP_CHECKOUT_APPLINK)) {
-            if (requestCode != EPHARMACY_CHECKOUT_CONSULTATION_REQUEST_CODE) {
+            if (!isSendResult) {
                 return true
             }
             activity?.setResult(
@@ -70,10 +68,10 @@ internal object EPharmacyNavigator {
         return false
     }
 
-    fun navigateToQuantityBottomSheet(childFragmentManager: FragmentManager) {
+    fun navigateToQuantityBottomSheet(tConsultationId: Long, childFragmentManager: FragmentManager) {
         childFragmentManager.beginTransaction().replace(
             R.id.ep_frame_content,
-            EPharmacyQuantityChangeFragment.newInstance()
+            EPharmacyQuantityChangeFragment.newInstance(tConsultationId)
         ).commit()
     }
 }

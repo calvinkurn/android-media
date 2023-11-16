@@ -14,9 +14,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common_epharmacy.EPHARMACY_CEK_RESEP_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CHOOSER_REQUEST_CODE
-import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
+import com.tokopedia.common_epharmacy.EPHARMACY_SEND_RESULT_KEY
 import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.R
@@ -63,6 +63,7 @@ import com.tokopedia.epharmacy.utils.UPLOAD_PAGE_SOURCE_PAP
 import com.tokopedia.epharmacy.utils.openDocument
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -91,7 +92,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private var tConsultationId = 0L
     private var source = EPHARMACY_PPG_SOURCE_CHECKOUT
-    private var requestCode = 0
+    private var isSendResult = false
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -139,7 +140,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun initArguments() {
         tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
-        requestCode = arguments?.getInt(EPHARMACY_CONSULTATION_REQUEST_CODE).orZero()
+        isSendResult = arguments?.getBoolean(EPHARMACY_SEND_RESULT_KEY).orFalse()
         source = arguments?.getString(EPHARMACY_SOURCE).orEmpty()
     }
 
@@ -461,7 +462,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         EPharmacyNavigator.prescriptionAttachmentDoneRedirection(
             activity,
             appLink,
-            requestCode,
+            isSendResult,
             ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout()
         ).let { isUpdateCart ->
             if (isUpdateCart) {
