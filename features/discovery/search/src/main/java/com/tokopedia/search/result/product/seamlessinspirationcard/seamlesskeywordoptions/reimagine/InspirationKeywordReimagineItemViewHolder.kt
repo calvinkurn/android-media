@@ -123,9 +123,9 @@ class InspirationKeywordReimagineItemViewHolder(
         titleTextView?.text = inspirationKeywordDataView.keyword.generateTitleText(isFunneling)
     }
 
-    private fun String.generateTitleText(isFunneling: Boolean) : CharSequence {
+    private fun String.generateTitleText(isFunneling: Boolean): CharSequence {
         val startIndex = this.indexOf(searchTerm, ignoreCase = true)
-        return if(!isFunneling || startIndex <= 0) {
+        return if(!isFunneling || startIndex < 0) {
             this
         } else {
             this.toSpanTitle(startIndex)
