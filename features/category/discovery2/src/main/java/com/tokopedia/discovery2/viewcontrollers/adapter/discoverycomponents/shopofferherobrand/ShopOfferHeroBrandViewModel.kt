@@ -195,7 +195,7 @@ class ShopOfferHeroBrandViewModel(
     ) {
         if (!hasHeader()) return
 
-        val offerMessages = bmGmDataList.filter { !it.offerMessage.isNullOrEmpty() }.map { it.offerMessage }.firstOrNull()
+        val offerMessages = bmGmDataList.filter { it.offerMessage.isNotEmpty() }.map { it.offerMessage }.firstOrNull()
         _tierChange.value = TierData(
             isProgressBarShown = isShimmerShown || !offerMessages.isNullOrEmpty(),
             isShimmerShown = isShimmerShown,
