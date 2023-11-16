@@ -62,13 +62,13 @@ Bundling as a promotional tool which will enable sellers to add multiple product
 
 This diagram shows how bundling page work flow.
 
-![](res/bundling%20diagram.png)
+![](https://docs-android.tokopedia.net/images/docs/product_service_widget/bundling%20diagram.png)
 
 ## Navigation
 
 This navigation shows how user select product bundling from caller page until add it into the cart.
 
-![](res/Untitled.png)
+![](https://docs-android.tokopedia.net/images/docs/product_service_widget/Untitled.png)
 
 ## How-to
 

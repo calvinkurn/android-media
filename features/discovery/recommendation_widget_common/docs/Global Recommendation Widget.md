@@ -27,7 +27,7 @@ Global Recommendation Widget aims to create a single entry point where all pages
 
 ## Diagram
 
-![image](res/global_recommendation_widget.drawio.png)
+![image](https://docs-android.tokopedia.net/images/docs/recommendation_widget_common/global_recommendation_widget.drawio.png)
 
 
 ## How To

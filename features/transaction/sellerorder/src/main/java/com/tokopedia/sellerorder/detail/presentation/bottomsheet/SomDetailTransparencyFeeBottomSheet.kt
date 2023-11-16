@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.databinding.BottomsheetTransparencyFeeBinding
-import com.tokopedia.sellerorder.detail.di.SomDetailComponent
+import com.tokopedia.sellerorder.detail.di.DaggerSomDetailTransparencyFeeComponent
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailTransparencyFeeAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.DetailTransparencyFeeAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeErrorStateUiModel
@@ -98,8 +98,12 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
     }
 
     private fun initInjector() {
-        (activity as? HasComponent<SomDetailComponent>)?.let { activityComponent ->
-            activityComponent.component.inject(this)
+        activity?.application?.let { application ->
+            DaggerSomDetailTransparencyFeeComponent
+                .builder()
+                .somComponent(SomComponentInstance.getSomComponent(application))
+                .build()
+                .inject(this)
         }
     }
 
