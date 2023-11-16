@@ -142,7 +142,7 @@ class SectionUseCase @Inject constructor(
                 !(backgroundImageUrl.isNullOrEmpty() && foregroundImageUrl.isNullOrEmpty())
             } ?: false
 
-            applyFestiveBackground(isBackgroundAvailable, components)
+            applyFestiveBackground(isBackgroundAvailable, components, it.position)
 
             it.setComponentsItem(components, component.tabName)
             it.noOfPagesLoaded = 1
@@ -154,13 +154,18 @@ class SectionUseCase @Inject constructor(
 
     private fun applyFestiveBackground(
         isBackgroundAvailable: Boolean,
-        components: List<ComponentsItem>
+        components: List<ComponentsItem>,
+        sectionPosition: Int
     ) {
         val isFestiveBackgroundEnable = remoteConfig.getBoolean(SECTION_FESTIVE_BACKGROUND_TOGGLE)
 
         if (isFestiveBackgroundEnable && isBackgroundAvailable && components.allowedToHaveBackground()) {
-            components.forEach { item ->
-                item.isBackgroundPresent = true
+            val offsetPosition = 1
+            components.forEachIndexed { index, item ->
+                item.apply {
+                    isBackgroundPresent = true
+                    position = sectionPosition + offsetPosition + index
+                }
             }
         }
     }
