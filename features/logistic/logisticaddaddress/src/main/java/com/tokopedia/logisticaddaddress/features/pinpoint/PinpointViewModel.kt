@@ -189,7 +189,7 @@ class PinpointViewModel @Inject constructor(
         if (searchAddressData?.districtId == 0L) {
             getDistrictDetail()
         } else {
-            getDistrictLocation()
+            renderLocationDetail()
         }
     }
 
@@ -216,7 +216,7 @@ class PinpointViewModel @Inject constructor(
                         lat = data.latitude.toDoubleOrZero(),
                         long = data.longitude.toDoubleOrZero()
                     )
-                    getDistrictLocation()
+                    renderLocationDetail()
                 }
             } catch (e: Exception) {
                 handleError(e)
@@ -224,7 +224,7 @@ class PinpointViewModel @Inject constructor(
         }
     }
 
-    private fun getDistrictLocation() {
+    private fun renderLocationDetail() {
         searchAddressData?.run {
             if (lat != 0.0 && long != 0.0) {
                 _map.value = MoveMap(lat, long)
