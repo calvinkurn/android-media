@@ -185,31 +185,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                     })
                     .setLocalRootPath("tracker")
                     .initialize();
-
-            AppPerformanceTrace.Companion.init(
-                    this,
-                    new DebugAppPerformanceConfig(),
-                    new Function0<Unit>() {
-                        @Override
-                        public Unit invoke() {
-                            if (FrameMetricsMonitoring.Companion.getPerfWindow() != null) {
-                                FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
-                            }
-                            return null;
-                        }
-                    }
-            );
-        } else {
-            AppPerformanceTrace.Companion.init(
-                    this,
-                    new DefaultAppPerformanceConfig(),
-                    new Function0<Unit>() {
-                        @Override
-                        public Unit invoke() {
-                            return null;
-                        }
-                    }
-            );
         }
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -241,10 +216,40 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
         }
+        initializeAppPerformanceTrace();
     }
 
     private void initGotoSDK() {
         GotoSdk.init(this);
+    }
+    
+    private void initializeAppPerformanceTrace() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            AppPerformanceTrace.Companion.init(
+                    this,
+                    new DebugAppPerformanceConfig(),
+                    new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            if (FrameMetricsMonitoring.Companion.getPerfWindow() != null) {
+                                FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
+                            }
+                            return null;
+                        }
+                    }
+            );
+        } else if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PERFORMANCE_TRACE_V2, true)) {
+            AppPerformanceTrace.Companion.init(
+                    this,
+                    new DefaultAppPerformanceConfig(),
+                    new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            return null;
+                        }
+                    }
+            );
+        }
     }
 
     private void initializationNewRelic() {

@@ -1,6 +1,9 @@
 package com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser
 
 import android.view.View
+import com.tokopedia.analytics.performance.perf.performanceTracing.Error
+import com.tokopedia.analytics.performance.perf.performanceTracing.Result
+import com.tokopedia.analytics.performance.perf.performanceTracing.Success
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.finish.FinishParserStrategyConfig
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.finish.FullRecyclerViewPageFinishParserStrategy
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.start.FullRecyclerViewPageStartParser
@@ -18,9 +21,12 @@ class XmlPerformanceFrameParser(
     val startParserStrategyConfig: StartParserStrategyConfig<View> = FullRecyclerViewPageStartParser(),
     val finishParserStartegyConfig: FinishParserStrategyConfig<View> = FullRecyclerViewPageFinishParserStrategy(),
     val onLayoutRendered: () -> Unit,
-    val onLayoutFinished: () -> Unit
+    val onLayoutFinished: (Result<Boolean>) -> Unit
 ) {
 
+    companion object {
+        private const val DEFAULT_TIMEOUT = 10000
+    }
     protected val scope =
         CoroutineScope(Dispatchers.Main + Job())
 
@@ -29,10 +35,15 @@ class XmlPerformanceFrameParser(
 
     var frameRenderCallback: FrameRenderCallback? = null
 
+    var startTime = System.currentTimeMillis()
     init {
         frameRenderCallback = FrameRenderCallback {
             if (isPerformanceTraceFinished) {
                 tearDownListener()
+            }
+
+            if (isTimeout()) {
+                finishParsing(false, "Parsing timeout.")
             }
 
             if (perfParsingJob?.isActive == true) {
@@ -54,7 +65,7 @@ class XmlPerformanceFrameParser(
 
                     if (isLayoutFinished) {
                         scope.launch(Dispatchers.Main) {
-                            finishParsing()
+                            finishParsing(true)
                         }
                     }
                 }
@@ -63,8 +74,12 @@ class XmlPerformanceFrameParser(
         frameRenderCallback?.start()
     }
 
-    fun finishParsing() {
-        onLayoutFinished.invoke()
+    fun finishParsing(success: Boolean, message: String = "") {
+        if (success) {
+            onLayoutFinished.invoke(Success(success))
+        } else {
+            onLayoutFinished.invoke(Error(message))
+        }
         scope.cancel()
         isPerformanceTraceFinished = true
         tearDownListener()
@@ -72,5 +87,9 @@ class XmlPerformanceFrameParser(
 
     private fun tearDownListener() {
         frameRenderCallback?.stop()
+    }
+
+    private fun isTimeout(): Boolean {
+        return System.currentTimeMillis() - startTime >= DEFAULT_TIMEOUT
     }
 }

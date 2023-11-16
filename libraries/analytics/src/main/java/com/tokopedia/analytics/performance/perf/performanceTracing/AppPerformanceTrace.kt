@@ -17,8 +17,11 @@ class AppPerformanceTrace {
     companion object {
         private var loadableComponentFlow =
             MutableSharedFlow<LoadableComponent>(1, onBufferOverflow = BufferOverflow.SUSPEND)
+
         private var performanceTrace: PerformanceTrace? = null
         private var performanceConfigRepository: AppPerformanceConfigRepository? = null
+        private var isPerformanceTraceEnabled = true
+
         var currentAppPerformanceTraceData: PerformanceTraceData? = null
         var currentAppPerformanceDevState: DevState = DevState(
             state = State.PERF_ENABLED

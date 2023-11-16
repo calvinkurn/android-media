@@ -5,8 +5,6 @@ import android.view.View
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.XmlPerformanceFrameParser
 import com.tokopedia.analytics.performance.perf.performanceTracing.repository.PerformanceRepository
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -36,50 +34,40 @@ class PagePerformanceTrace(
                 traceName = performanceRepository.getTraceName()
             )
         )
-    private var isPerformanceTraceEnabled = true
     private var frameParser: XmlPerformanceFrameParser? = null
 
     init {
-        activity?.applicationContext?.let {
-            val remoteConfig = FirebaseRemoteConfigImpl(it)
-            this.isPerformanceTraceEnabled = remoteConfig.getBoolean(
-                RemoteConfigKey.ENABLE_PERFORMANCE_TRACE_V2,
-                true
-            )
-        }
-        if (isPerformanceTraceEnabled) {
-            scope.launch {
-                loadableComponentFlow.collect { loadableComponent ->
-                    val currentPerformanceData = performanceTraceData.get()
-                    val currentPerformanceBlocks = currentPerformanceData.blocksModel.toMutableMap()
+        scope.launch {
+            loadableComponentFlow.collect { loadableComponent ->
+                val currentPerformanceData = performanceTraceData.get()
+                val currentPerformanceBlocks = currentPerformanceData.blocksModel.toMutableMap()
 
-                    if (currentPerformanceBlocks.containsKey(loadableComponent.name())) {
-                        val blockModel = currentPerformanceBlocks.get(loadableComponent.name())
-                        blockModel?.let { block ->
-                            currentPerformanceBlocks.put(
-                                loadableComponent.name(),
-                                block.copy(
-                                    endTime = System.currentTimeMillis()
-                                )
-                            )
-                        }
-                    } else {
-                        val startTime = System.currentTimeMillis()
+                if (currentPerformanceBlocks.containsKey(loadableComponent.name())) {
+                    val blockModel = currentPerformanceBlocks.get(loadableComponent.name())
+                    blockModel?.let { block ->
                         currentPerformanceBlocks.put(
                             loadableComponent.name(),
-                            BlocksModel(
-                                name = loadableComponent.name(),
-                                startTraceTime = startCurrentTimeMillis,
-                                startTime = startTime
+                            block.copy(
+                                endTime = System.currentTimeMillis()
                             )
                         )
                     }
-                    performanceTraceData.set(
-                        currentPerformanceData.copy(
-                            blocksModel = currentPerformanceBlocks
+                } else {
+                    val startTime = System.currentTimeMillis()
+                    currentPerformanceBlocks.put(
+                        loadableComponent.name(),
+                        BlocksModel(
+                            name = loadableComponent.name(),
+                            startTraceTime = startCurrentTimeMillis,
+                            startTime = startTime
                         )
                     )
                 }
+                performanceTraceData.set(
+                    currentPerformanceData.copy(
+                        blocksModel = currentPerformanceBlocks
+                    )
+                )
             }
         }
     }
@@ -102,12 +90,18 @@ class PagePerformanceTrace(
                 }
             }
         ) {
-            if (!performanceTraceData.get().ttilMeasured()) {
-                recordTTIL()
-                stopMonitoring(Success(performanceTraceData.get()))
+            when (it) {
+                is Success -> {
+                    if (!performanceTraceData.get().ttilMeasured()) {
+                        recordTTIL()
+                        stopMonitoring(Success(performanceTraceData.get()))
+                    }
+                }
+                is Error -> {
+                    stopMonitoring(it)
+                }
             }
         }
-//        rootView.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
     }
 
     override fun stopMonitoring(result: Result<PerformanceTraceData>) {
