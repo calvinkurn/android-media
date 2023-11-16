@@ -53,7 +53,6 @@ class TokoChatListViewModel @Inject constructor(
 
     fun setupViewModelObserver() {
         _actionFlow.process()
-        observeChatListItemFlow()
     }
 
     fun processAction(action: TokoChatListAction) {
@@ -137,7 +136,7 @@ class TokoChatListViewModel @Inject constructor(
                 chatItemList = it.chatItemList + filteredChatItemList,
                 trackerData = trackerData,
                 errorMessage = null,
-                hasNextPage = it.chatItemList.size <= filteredChatItemList.size,
+                hasNextPage = (it.chatItemList.size < filteredChatItemList.size),
                 localListLoaded = true
             )
         }
