@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView3"
         app:typographyType="heading_5"
-        tools:text="Stasiun PalmerahStasiun PalmerahStasiun PalmerahStasiun PalmerahStasiun PalmerahStasiun Palmerah" />
+        tools:text="Stasiun Palmerah" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_autocomplete_desc"
@@ -40,5 +40,5 @@
         app:layout_constraintStart_toStartOf="@+id/tv_autocomplete_title"
         app:layout_constraintTop_toBottomOf="@+id/tv_autocomplete_title"
         app:typographyType="body_3"
-        tools:text="Karet Semanggi, Setiabudi, Kota Administrasi Jakarta Selatan, DKI JakartaKaret Semanggi, Setiabudi, Kota Administrasi Jakarta Selatan, DKI JakartaKaret Semanggi, Setiabudi, Kota Administrasi Jakarta Selatan, DKI JakartaKaret Semanggi, Setiabudi, Kota Administrasi Jakarta Selatan, DKI Jakarta" />
+        tools:text="Karet Semanggi, Setiabudi, Kota Administrasi Jakarta Selatan" />
 </androidx.constraintlayout.widget.ConstraintLayout>

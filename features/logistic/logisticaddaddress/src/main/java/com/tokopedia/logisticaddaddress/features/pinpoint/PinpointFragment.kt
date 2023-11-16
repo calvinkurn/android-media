@@ -144,7 +144,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     putLong(EXTRA_DISTRICT_ID, extra.getLong(EXTRA_DISTRICT_ID))
 
                     // from search page
-//                    putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
                     putParcelable(EXTRA_AUTOCOMPLETE, extra.getParcelable(EXTRA_AUTOCOMPLETE))
 
                     // pinpoint only
