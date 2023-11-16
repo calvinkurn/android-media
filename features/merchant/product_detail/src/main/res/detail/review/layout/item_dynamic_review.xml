@@ -90,14 +90,26 @@
         tools:text="dari 1205 ulasan"
         tools:visibility="visible" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_keyword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:clipToPadding="false"
+        android:paddingHorizontal="16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ic_most_helpful_review_rating_star" />
+
     <com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
         android:id="@+id/review_media_thumbnails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/review_rating"
+        app:layout_constraintTop_toBottomOf="@id/rv_keyword"
         tools:visibility="visible" />
 
     <com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget

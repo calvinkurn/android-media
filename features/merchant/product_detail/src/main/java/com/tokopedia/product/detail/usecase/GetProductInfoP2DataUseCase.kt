@@ -526,6 +526,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 totalRating
                 totalReviewTextAndImage
                 showRatingReview
+                keywords {
+                    text
+                    filter
+                }
             }
            arInfo{
               productIDs
