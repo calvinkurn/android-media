@@ -72,8 +72,7 @@ class HomePlayUseCase @Inject constructor(
     fun reconstructAppLink(appLink: String, playWidgetId: String): String {
         return if (playWidgetTools.isAppLinkSourceFromHome(appLink)) {
             playWidgetTools.reconstructAppLink(appLink, mapOf(KEY_WIDGET_ID to playWidgetId))
-        }
-        else {
+        } else {
             appLink
         }
     }
