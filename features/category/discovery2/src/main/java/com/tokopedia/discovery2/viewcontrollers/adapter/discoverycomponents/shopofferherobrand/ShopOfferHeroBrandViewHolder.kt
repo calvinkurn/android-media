@@ -262,11 +262,9 @@ class ShopOfferHeroBrandViewHolder(
             } else {
                 showProgressBarInfo()
 
+                tpProgressBarTierWording.text = MethodChecker.fromHtml(tierData.offerMessages.firstOrNull())
                 if (tierData.offerMessages.size.isMoreThanZero()) {
-                    tpProgressBarTierWording.text = tierData.offerMessages.firstOrNull()
                     changeProgressBarInfoWithDelay(tierData.offerMessages)
-                } else {
-                    tpProgressBarTierWording.text = tierData.offerMessages.firstOrNull()
                 }
             }
         } else {
@@ -318,7 +316,7 @@ class ShopOfferHeroBrandViewHolder(
 
                     showProgressBarInfo()
 
-                    tpProgressBarTierWording.text = offerMessage
+                    tpProgressBarTierWording.text = MethodChecker.fromHtml(offerMessage)
                 }
             }
         }
