@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
@@ -41,9 +42,9 @@ internal object EPharmacyNavigator {
         )
     }
 
-    internal fun prescriptionAttachmentDoneRedirection(activity: Activity?, appLink: String?, isSendResult: Boolean, result: ArrayList<EPharmacyMiniConsultationResult>): Boolean {
+    internal fun prescriptionAttachmentDoneRedirection(activity: Activity?, appLink: String?, source: String, isSendResult: Boolean, result: ArrayList<EPharmacyMiniConsultationResult>): Boolean {
         if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_APP_CHECKOUT_APPLINK)) {
-            if (!isSendResult) {
+            if (!isSendResult || source != EPHARMACY_PPG_SOURCE_CHECKOUT) {
                 return true
             }
             activity?.setResult(
