@@ -29,7 +29,9 @@ class EPharmacyOrderDetailPaymentViewHolder(
         helpLabel.text = data.helpButton?.label
         helpCaption.text = data.helpButton?.caption
         helpView.setOnClickListener {
-            RouteManager.route(view.context, data.helpButton?.appUrl)
+            if (data.helpButton?.appUrl.orEmpty().isNotBlank()) {
+                RouteManager.route(view.context, data.helpButton?.appUrl)
+            }
         }
     }
 }

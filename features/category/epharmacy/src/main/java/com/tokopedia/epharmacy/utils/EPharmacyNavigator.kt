@@ -44,7 +44,7 @@ internal object EPharmacyNavigator {
 
     internal fun prescriptionAttachmentDoneRedirection(activity: Activity?, appLink: String?, source: String, isSendResult: Boolean, result: ArrayList<EPharmacyMiniConsultationResult>): Boolean {
         if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_APP_CHECKOUT_APPLINK)) {
-            if (!isSendResult || source != EPHARMACY_PPG_SOURCE_CHECKOUT) {
+            if (source != EPHARMACY_PPG_SOURCE_CHECKOUT) {
                 return true
             }
             activity?.setResult(
