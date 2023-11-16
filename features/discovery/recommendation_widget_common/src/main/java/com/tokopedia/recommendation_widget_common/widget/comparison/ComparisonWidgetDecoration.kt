@@ -10,11 +10,9 @@ class ComparisonWidgetDecoration : RecyclerView.ItemDecoration() {
         val itemCount = ((parent.layoutManager?.itemCount?:0)-1)
         val currentPosition = parent.layoutManager?.getPosition(view)
 
-        val comparisonWidgetMarginStart = view.resources.getDimensionPixelSize(R.dimen.comparison_widget_margin_start)
         val comparisonWidgetMarginEnd = view.resources.getDimensionPixelSize(R.dimen.comparison_widget_margin_end)
-        if (currentPosition == 0) {
-            outRect.left = comparisonWidgetMarginStart
-        } else if (currentPosition == itemCount) {
+        if (currentPosition == itemCount) {
+            outRect.left = 0
             outRect.right = comparisonWidgetMarginEnd
         }
     }

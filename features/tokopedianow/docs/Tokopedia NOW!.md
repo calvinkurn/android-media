@@ -32,7 +32,7 @@
 ###### PR:<https://github.com/tokopedia/android-tokopedia-core/pull/30261>
 <!--end expand-->
 
-![image](res/now_logo.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/now_logo.png)
 
 ## Overview
 

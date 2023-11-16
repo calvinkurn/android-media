@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.widget
 import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -51,6 +52,8 @@ class VideoPictureView @JvmOverloads constructor(
         binding.pdpMainThumbnailRv
     )
 
+    private var previouslyPrefetch = false
+
     init {
         addView(binding.root)
         binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
@@ -74,12 +77,13 @@ class VideoPictureView @JvmOverloads constructor(
         componentTrackDataModel: ComponentTrackDataModel?,
         initialScrollPosition: Int,
         containerType: MediaContainerType,
-        recommendation: ProductMediaRecomData
+        recommendation: ProductMediaRecomData,
+        isPrefetch: Boolean
     ) {
         this.mListener = listener
         this.componentTrackDataModel = componentTrackDataModel
 
-        if (videoPictureAdapter == null) {
+        if (videoPictureAdapter == null || previouslyPrefetch) {
             setupViewPagerCallback()
             setupViewPager(containerType = containerType)
             // If first position is video and selected: process the video
@@ -90,13 +94,15 @@ class VideoPictureView @JvmOverloads constructor(
         }
 
         updateInitialThumbnail(media = media)
-        updateImages(listOfImage = media)
+        updateImages(listOfImage = media, previouslyPrefetch = previouslyPrefetch)
         updateMediaLabel(position = pagerSelectedLastPosition)
         setupRecommendationLabel(recommendation = recommendation)
         setupRecommendationLabelListener(position = pagerSelectedLastPosition)
         shouldShowRecommendationLabel(position = pagerSelectedLastPosition)
         scrollToPosition(position = initialScrollPosition)
         renderVideoOnceAtPosition(position = initialScrollPosition)
+
+        previouslyPrefetch = isPrefetch
     }
 
     private fun updateInitialThumbnail(media: List<MediaDataModel>) {
@@ -125,9 +131,9 @@ class VideoPictureView @JvmOverloads constructor(
         renderVideoOnceAtPosition(pagerSelectedPosition)
     }
 
-    private fun updateImages(listOfImage: List<MediaDataModel>?) {
+    private fun updateImages(listOfImage: List<MediaDataModel>?, previouslyPrefetch: Boolean) {
         val mediaList = processMedia(listOfImage)
-        videoPictureAdapter?.submitList(mediaList)
+        videoPictureAdapter?.submitList(mediaList, previouslyPrefetch)
     }
 
     private fun updateThumbnail(pagerPosition: Int) {
@@ -205,11 +211,15 @@ class VideoPictureView @JvmOverloads constructor(
     private fun setupViewPager(
         containerType: MediaContainerType
     ) {
+        val prefetchResource = if (previouslyPrefetch) getPreviousMediaResource() else null
+
         videoPictureAdapter = VideoPictureAdapter(
             listener = mListener,
             componentTrackDataModel = componentTrackDataModel,
             containerType = containerType
-        )
+        ).apply {
+            this.prefetchResource = prefetchResource
+        }
 
         val viewPager = binding.pdpViewPager
         viewPager.adapter = videoPictureAdapter
@@ -222,6 +232,10 @@ class VideoPictureView @JvmOverloads constructor(
                 dimensionRatio = containerType.ratio
             }
         }
+    }
+
+    private fun getPreviousMediaResource(): Drawable? {
+        return videoPictureAdapter?.currentList?.firstOrNull()?.prefetchResource
     }
 
     private fun renderVideoOnceAtPosition(position: Int) {

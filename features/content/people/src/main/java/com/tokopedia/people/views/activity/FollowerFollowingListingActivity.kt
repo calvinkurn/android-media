@@ -8,8 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.people.di.DaggerUserProfileComponent
 import com.tokopedia.people.di.UserProfileModule
@@ -32,7 +30,7 @@ class FollowerFollowingListingActivity : BaseSimpleActivity() {
         setResult(Activity.RESULT_OK, intent)
     }
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         return FollowerFollowingListingFragment.getFragment(
             supportFragmentManager,
             classLoader,
@@ -55,22 +53,28 @@ class FollowerFollowingListingActivity : BaseSimpleActivity() {
     }
 
     private fun forDeeplink() {
-        bundle = intent.extras
-        if (intent.data != null) {
-            bundle = UriUtil.destructiveUriBundle(ApplinkConstInternalGlobal.USER_PROFILE_FOLLOWERS, intent.data, bundle)
+        if (intent.data == null && intent.extras == null) {
+            finish()
+            return
         }
+        val userName =
+            intent.data?.pathSegments?.first() ?: intent.extras?.getString(EXTRA_USERNAME)
+        val activeTab =
+            intent.data?.pathSegments?.last() ?: intent.extras?.getString(EXTRA_ACTIVE_TAB)
+
+        bundle = intent.extras
+        bundle?.putString(EXTRA_USERNAME, userName)
+        bundle?.putString(EXTRA_ACTIVE_TAB, activeTab)
     }
 
     companion object {
+        const val EXTRA_USERNAME = "user_name"
+        const val EXTRA_ACTIVE_TAB = "active_tab"
 
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val intent = Intent(context, FollowerFollowingListingActivity::class.java)
             intent.putExtras(extras)
             return intent
-        }
-
-        fun getFollowerFollowingListing(context: Context, extras: Bundle): Intent {
-            return getCallingIntent(context, extras)
         }
     }
 }
