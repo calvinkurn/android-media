@@ -1,12 +1,16 @@
 package com.tokopedia.darkmodeconfig.common
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.darkmodeconfig.view.bottomsheet.DarkModeIntroBottomSheet
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -27,10 +31,20 @@ import com.tokopedia.darkmodeconfig.R as darkmodeconfigR
 
 object DarkModeIntroductionLauncher : CoroutineScope {
 
+    private const val EXTRA_SHOW_TOASTER = "extra_show_toaster"
+    private val MIN_DAYS_MILLIS_AFTER_FIRST_OPEN = TimeUnit.DAYS.toMillis(3)
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default
 
-    private val MIN_DAYS_MILLIS_AFTER_FIRST_OPEN = TimeUnit.DAYS.toMillis(3)
+    fun withToaster(intent: Intent, view: View): DarkModeIntroductionLauncher {
+        val showToaster = intent.getBooleanExtra(EXTRA_SHOW_TOASTER, false).orFalse()
+        val isDarkMode = view.context.isDarkMode()
+        if (showToaster && isDarkMode) {
+            showToaster(view)
+        }
+        return this
+    }
 
     /**
      * Rules to show the introduction popup :
@@ -41,8 +55,7 @@ object DarkModeIntroductionLauncher : CoroutineScope {
      * 5. Never opened the introduction popup, and
      * 6. Never opened the dark mode config page
      * */
-    fun launch(view: View, fm: FragmentManager, isLoggedIn: Boolean) {
-        val context = view.context
+    fun launch(context: Context, fm: FragmentManager, isLoggedIn: Boolean) {
         launch {
             val sharedPref = getSharedPref(context.applicationContext)
             val isDarkModeOS = context.applicationContext.isDarkMode()
@@ -51,12 +64,12 @@ object DarkModeIntroductionLauncher : CoroutineScope {
             val neverOpenedPopup = !hasOpenedPopup(sharedPref)
             val neverOpenedConfigPage = hasOpenedConfigPage(sharedPref)
             val isAllowedByRemoteConfig = isAllowedByRemoteConfig(context)
-            val shouldShowPopup = isEligibleTimeRange && isLightModeApp && isDarkModeOS
-                    && isLoggedIn && neverOpenedPopup && neverOpenedConfigPage && isAllowedByRemoteConfig
+            val shouldShowPopup = isEligibleTimeRange && isLightModeApp && isDarkModeOS &&
+                isLoggedIn && neverOpenedPopup && neverOpenedConfigPage && isAllowedByRemoteConfig
             if (shouldShowPopup) {
                 markAsOpenedPopup(sharedPref)
                 withContext(Dispatchers.Main) {
-                    showPupUp(view, fm)
+                    showPupUp(context, fm)
                 }
             }
         }
@@ -110,11 +123,17 @@ object DarkModeIntroductionLauncher : CoroutineScope {
         return currentNightMode == AppCompatDelegate.MODE_NIGHT_YES
     }
 
-    private fun showPupUp(view: View, fm: FragmentManager) {
+    private fun showPupUp(context: Context, fm: FragmentManager) {
         DarkModeIntroBottomSheet.getInstance(fm)
             .show(fm, onApplyConfig = {
-                showToaster(view)
+                requestDarkModeToaster(context)
             })
+    }
+
+    private fun requestDarkModeToaster(context: Context) {
+        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+        intent.putExtra(EXTRA_SHOW_TOASTER, true)
+        context.startActivity(intent)
     }
 
     private fun showToaster(view: View) {

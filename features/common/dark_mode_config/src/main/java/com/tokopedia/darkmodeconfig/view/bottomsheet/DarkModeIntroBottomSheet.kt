@@ -12,10 +12,10 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.darkmodeconfig.common.DarkModeAnalytics
 import com.tokopedia.darkmodeconfig.model.UiMode
 import com.tokopedia.darkmodeconfig.view.screen.DarkModeIntroScreen
-import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -57,28 +57,30 @@ internal class DarkModeIntroBottomSheet : BottomSheetUnify() {
 
     private fun createBottomSheetContent(context: Context): LinearLayout {
         return LinearLayout(context).apply {
-            addView(ComposeView(context).apply {
-                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                setContent {
-                    NestTheme {
-                        DarkModeIntroScreen(
-                            onPrimaryClicked = {
-                                applyFollowSystemSetting()
-                            },
-                            onSecondaryClicked = {
-                                dismissBottomSheet()
-                            }
-                        )
+            addView(
+                ComposeView(context).apply {
+                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                    setContent {
+                        NestTheme {
+                            DarkModeIntroScreen(
+                                onPrimaryClicked = {
+                                    applyFollowSystemSetting()
+                                },
+                                onSecondaryClicked = {
+                                    dismissBottomSheet()
+                                }
+                            )
+                        }
                     }
                 }
-            })
+            )
         }
     }
 
     private fun applyFollowSystemSetting() {
+        dismissBottomSheet()
         setOnApplyConfig?.invoke()
         applyAppTheme()
-        dismissBottomSheet()
     }
 
     private fun applyAppTheme() {
