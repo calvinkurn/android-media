@@ -922,7 +922,7 @@ open class TokoChatFragment @Inject constructor(
             }
 
             callMenu.run {
-                val isCallIconDisabled = isOrderStateOngoing(getOrderState())
+                val isCallIconDisabled = !isOrderStateOngoing(getOrderState())
                 val isCallHidden = getOrderState().isBlank()
 
                 when {
