@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.tokochat.util.toggle.TokoChatAbPlatform
 
 object TokoChatValueUtil {
     /**
@@ -43,6 +44,12 @@ object TokoChatValueUtil {
      * Rollence
      */
     const val ROLLENCE_LOGISTIC_CHAT = "gosend_chat_an"
+    fun isTokoChatLogisticEnabled(abTestPlatform: TokoChatAbPlatform): Boolean {
+        return abTestPlatform.getString(
+            ROLLENCE_LOGISTIC_CHAT,
+            ""
+        ) == ROLLENCE_LOGISTIC_CHAT
+    }
 
     private var remoteConfig: RemoteConfig? = null
 
