@@ -13,6 +13,7 @@ import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
 import com.tokopedia.logisticCommon.data.response.KeroPlacesGetDistrict
+import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.logisticCommon.domain.param.GetDistrictGeoCodeParam
 import com.tokopedia.logisticCommon.domain.param.GetDistrictParam
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictBoundariesUseCase
@@ -21,7 +22,6 @@ import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticCommon.uimodel.AddressUiState
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
-import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.KeroAddressGeocode
 import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.MapsGeocodeParam
 import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.MapsGeocodeResponse
@@ -58,7 +58,6 @@ open class PinpointViewModelTest {
     private val getDistrictCenter: GetDistrictCenterUseCase = mockk(relaxed = true)
     private val getDistrictGeoCode: GetDistrictGeoCodeUseCase = mockk(relaxed = true)
     private val mapsGeocodeUseCase = mockk<MapsGeocodeUseCase>(relaxed = true)
-    private val getDistrictMapper = GetDistrictMapper()
     private val districtBoundaryMapper = DistrictBoundaryMapper()
 
     private lateinit var viewModel: PinpointViewModel
@@ -112,14 +111,14 @@ open class PinpointViewModelTest {
             cityName = cityName,
             lat = lat,
             long = lng,
-            placeId = placeId,
             districtId = districtId,
             whDistrictId = whDistrictId,
             addressId = addressId,
             uiState = uiState,
             isEditWarehouse = isEditWarehouse,
             source = source,
-            isPositiveFlow = isPositiveFlow
+            isPositiveFlow = isPositiveFlow,
+            searchAddressData = null
         )
 
         val expectedPinpointModel = PinpointUiModel(
@@ -143,7 +142,7 @@ open class PinpointViewModelTest {
     @Test
     fun `WHEN place id is set THEN hit get district location GQL to get pinpoint detail`() {
         viewModel.onViewCreated(
-            placeId = "place id",
+            searchAddressData = SuggestedPlace(placeId = "place id"),
             isEditWarehouse = false,
             isPositiveFlow = null,
             lat = 22.22,
@@ -160,7 +159,7 @@ open class PinpointViewModelTest {
     @Test
     fun `WHEN hit getDistrictLocation but response doesn't have postal code THEN show location not found bottom sheet`() {
         viewModel.onViewCreated(
-            placeId = "place id",
+            searchAddressData = SuggestedPlace(placeId = "place id"),
             isEditWarehouse = false,
             isPositiveFlow = null,
             source = "source",
@@ -215,7 +214,7 @@ open class PinpointViewModelTest {
     @Test
     fun `WHEN hit getDistrictLocation but response doesn't have district id THEN show location not found bottom sheet`() {
         viewModel.onViewCreated(
-            placeId = "place id",
+            searchAddressData = SuggestedPlace(placeId = "place id"),
             isEditWarehouse = false,
             isPositiveFlow = null,
             source = "source",
@@ -242,7 +241,7 @@ open class PinpointViewModelTest {
     @Test
     fun `WHEN hit getDistrictLocation in ANA negative flow but pinpoint is in different district THEN show toaster and disable primary button`() {
         viewModel.onViewCreated(
-            placeId = "place id",
+            searchAddressData = SuggestedPlace(placeId = "place id"),
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = 11.22,
@@ -283,7 +282,7 @@ open class PinpointViewModelTest {
     @Test
     fun `WHEN hit getDistrictLocation in ANA negative flow but response has error message THEN show location not found bottom sheet`() {
         viewModel.onViewCreated(
-            placeId = "place id",
+            searchAddressData = SuggestedPlace(placeId = "place id"),
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = 11.22,
@@ -320,7 +319,7 @@ open class PinpointViewModelTest {
     @Test
     fun `WHEN hit getDistrictLocation success THEN show location detail bottom sheet and enable btn primary`() {
         viewModel.onViewCreated(
-            placeId = "place id",
+            searchAddressData = SuggestedPlace(placeId = "place id"),
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = 11.22,
@@ -373,7 +372,7 @@ open class PinpointViewModelTest {
     @Test
     fun `WHEN hit getDistrictLocation happens error network THEN show error network toaster`() {
         viewModel.onViewCreated(
-            placeId = "place id",
+            searchAddressData = SuggestedPlace(placeId = "place id"),
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = 11.22,
@@ -406,7 +405,7 @@ open class PinpointViewModelTest {
     @Test
     fun `WHEN hit getDistrictLocation returns error FOREGIN_COUNTRY_MESSAGE THEN show location out of reach bottom sheet`() {
         viewModel.onViewCreated(
-            placeId = "place id",
+            searchAddressData = SuggestedPlace(placeId = "place id"),
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = 11.22,
@@ -436,7 +435,7 @@ open class PinpointViewModelTest {
     @Test
     fun `WHEN hit getDistrictLocation returns error LOCATION_NOT_FOUND_MESSAGE THEN show location not found bottom sheet`() {
         viewModel.onViewCreated(
-            placeId = "place id",
+            searchAddressData = SuggestedPlace(placeId = "place id"),
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = 11.22,
@@ -466,7 +465,7 @@ open class PinpointViewModelTest {
     @Test
     fun `WHEN hit getDistrictLocation returns other error THEN show location not found bottom sheet`() {
         viewModel.onViewCreated(
-            placeId = "place id",
+            searchAddressData = SuggestedPlace(placeId = "place id"),
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = 11.22,
@@ -499,7 +498,7 @@ open class PinpointViewModelTest {
         val lat = 11.22
         val lng = 44.55
         viewModel.onViewCreated(
-            placeId = "",
+            searchAddressData = SuggestedPlace(placeId = ""),
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = lat,
@@ -527,7 +526,7 @@ open class PinpointViewModelTest {
         val provinceName = "province name"
         val formattedAddress = "$districtName, $cityName, $provinceName"
         viewModel.onViewCreated(
-            placeId = "",
+            searchAddressData = SuggestedPlace(placeId = ""),
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = lat,
@@ -581,7 +580,7 @@ open class PinpointViewModelTest {
         val formattedAddress = "$cityName, $districtName, $provinceName"
         val returnedDistrictId = 333L
         viewModel.onViewCreated(
-            placeId = "",
+            searchAddressData = SuggestedPlace(placeId = ""),
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = lat,
@@ -633,7 +632,7 @@ open class PinpointViewModelTest {
         val provinceName = "province name"
         val formattedAddress = "$cityName, $districtName, $provinceName"
         viewModel.onViewCreated(
-            placeId = "",
+            searchAddressData = SuggestedPlace(placeId = ""),
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = lat,
@@ -674,7 +673,7 @@ open class PinpointViewModelTest {
         val lng = 44.55
         val districtId = 1111L
         viewModel.onViewCreated(
-            placeId = "",
+            searchAddressData = SuggestedPlace(placeId = ""),
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = lat,
@@ -700,7 +699,7 @@ open class PinpointViewModelTest {
         val lat = 33.44
         val long = 55.66
         viewModel.onViewCreated(
-            placeId = "",
+            searchAddressData = SuggestedPlace(placeId = ""),
             isEditWarehouse = false,
             isPositiveFlow = false,
             districtId = districtId,
@@ -726,7 +725,7 @@ open class PinpointViewModelTest {
     fun `WHEN hit getDistrictCenter returns other error THEN show location not found bottom sheet`() {
         val districtId = 111L
         viewModel.onViewCreated(
-            placeId = "",
+            searchAddressData = SuggestedPlace(placeId = ""),
             isEditWarehouse = false,
             isPositiveFlow = false,
             districtId = districtId,
@@ -751,7 +750,7 @@ open class PinpointViewModelTest {
         val returnedLat = 11.11
         val returnedLng = 11.33
         viewModel.onViewCreated(
-            placeId = "",
+            searchAddressData = SuggestedPlace(placeId = ""),
             isEditWarehouse = false,
             isPositiveFlow = false,
             districtId = 0,
@@ -803,7 +802,7 @@ open class PinpointViewModelTest {
         val districtName = "district name"
         val cityName = "city name"
         viewModel.onViewCreated(
-            placeId = "",
+            searchAddressData = SuggestedPlace(placeId = ""),
             isEditWarehouse = false,
             isPositiveFlow = false,
             districtId = 0,
@@ -839,7 +838,7 @@ open class PinpointViewModelTest {
         val districtName = "district name"
         val cityName = "city name"
         viewModel.onViewCreated(
-            placeId = "",
+            searchAddressData = SuggestedPlace(placeId = ""),
             isEditWarehouse = false,
             isPositiveFlow = false,
             districtId = 0,
@@ -869,13 +868,13 @@ open class PinpointViewModelTest {
     // region onResultFromSearchAddress
     @Test
     fun `WHEN search address sent place id THEN set place id to ui model and hit getDistrictLocation`() {
-        viewModel.onResultFromSearchAddress("placeid", lat = 0.0, long = 0.0)
+        viewModel.onResultFromSearchAddress(searchAddressData = SuggestedPlace(placeId = "placeid"), lat = 0.0, long = 0.0)
         coVerify { getDistrict(GetDistrictParam("placeid", isManageAddressFlow = true)) }
     }
 
     @Test
     fun `WHEN search address sent lat long THEN move map and hit getDistrictData`() {
-        viewModel.onResultFromSearchAddress("", lat = 13.11, long = 88.09)
+        viewModel.onResultFromSearchAddress(searchAddressData = SuggestedPlace(placeId = ""), lat = 13.11, long = 88.09)
         assert(viewModel.map.value == MoveMap(13.11, 88.09))
         coVerify { viewModel.getDistrictData(13.11, 88.09) }
     }
@@ -888,7 +887,8 @@ open class PinpointViewModelTest {
             isEditWarehouse = true,
             uiState = AddressUiState.PinpointOnly,
             isPositiveFlow = null,
-            source = "shop address"
+            source = "shop address",
+            searchAddressData = null
         )
 
         viewModel.uiModel = viewModel.uiModel.copy(districtId = 1111L)
@@ -904,7 +904,8 @@ open class PinpointViewModelTest {
             isEditWarehouse = false,
             uiState = AddressUiState.PinpointOnly,
             isPositiveFlow = null,
-            source = "checkout"
+            source = "checkout",
+            searchAddressData = null
         )
 
         val result = PinpointUiModel(
@@ -950,7 +951,8 @@ open class PinpointViewModelTest {
             isEditWarehouse = false,
             uiState = AddressUiState.AddAddress,
             isPositiveFlow = null,
-            source = "checkout"
+            source = "checkout",
+            searchAddressData = null
         )
 
         val result = PinpointUiModel(
@@ -985,7 +987,8 @@ open class PinpointViewModelTest {
             isEditWarehouse = false,
             uiState = AddressUiState.AddAddress,
             isPositiveFlow = false,
-            source = "checkout"
+            source = "checkout",
+            searchAddressData = null
         )
 
         val result = PinpointUiModel(
@@ -1021,7 +1024,8 @@ open class PinpointViewModelTest {
             isEditWarehouse = false,
             uiState = AddressUiState.AddAddress,
             isPositiveFlow = null,
-            source = "checkout"
+            source = "checkout",
+            searchAddressData = null
         )
 
         viewModel.discardPinpoint()
@@ -1036,7 +1040,8 @@ open class PinpointViewModelTest {
             isEditWarehouse = false,
             uiState = AddressUiState.AddAddress,
             isPositiveFlow = true,
-            source = "checkout"
+            source = "checkout",
+            searchAddressData = null
         )
 
         viewModel.discardPinpoint()
@@ -1054,7 +1059,8 @@ open class PinpointViewModelTest {
             uiState = AddressUiState.AddAddress,
             isPositiveFlow = false,
             source = "checkout",
-            districtId = districtId
+            districtId = districtId,
+            searchAddressData = null
         )
 
         coEvery { getDistrictBoundaries(districtId) } returns GetDistrictBoundaryResponse()
@@ -1072,7 +1078,8 @@ open class PinpointViewModelTest {
             isEditWarehouse = false,
             uiState = AddressUiState.AddAddress,
             isPositiveFlow = true,
-            source = "checkout"
+            source = "checkout",
+            searchAddressData = null
         )
 
         coEvery { getDistrictBoundaries(districtId) } returns GetDistrictBoundaryResponse()
@@ -1090,7 +1097,8 @@ open class PinpointViewModelTest {
             uiState = AddressUiState.EditAddress,
             isPositiveFlow = true,
             source = "checkout",
-            districtId = districtId
+            districtId = districtId,
+            searchAddressData = null
         )
 
         coEvery { getDistrictBoundaries(districtId) } returns GetDistrictBoundaryResponse()
@@ -1108,7 +1116,8 @@ open class PinpointViewModelTest {
             uiState = AddressUiState.PinpointOnly,
             isPositiveFlow = true,
             source = "checkout",
-            districtId = districtId
+            districtId = districtId,
+            searchAddressData = null
         )
 
         coEvery { getDistrictBoundaries(districtId) } returns GetDistrictBoundaryResponse()
@@ -1126,7 +1135,8 @@ open class PinpointViewModelTest {
             uiState = AddressUiState.AddAddress,
             isPositiveFlow = false,
             source = "checkout",
-            districtId = districtId
+            districtId = districtId,
+            searchAddressData = null
         )
 
         coEvery { getDistrictBoundaries(districtId) } throws defaultThrowable
@@ -1153,7 +1163,8 @@ open class PinpointViewModelTest {
             uiState = AddressUiState.PinpointOnly,
             isEditWarehouse = false,
             source = "checkout",
-            isPositiveFlow = null
+            isPositiveFlow = null,
+            searchAddressData = null
         )
 
         viewModel.fetchData()
@@ -1169,7 +1180,8 @@ open class PinpointViewModelTest {
             uiState = AddressUiState.AddAddress,
             isEditWarehouse = false,
             source = "checkout",
-            isPositiveFlow = false
+            isPositiveFlow = false,
+            searchAddressData = null
         )
 
         assert(!viewModel.isPositiveFlow)
@@ -1181,7 +1193,8 @@ open class PinpointViewModelTest {
             uiState = AddressUiState.AddAddress,
             isEditWarehouse = false,
             source = "checkout",
-            isPositiveFlow = true
+            isPositiveFlow = true,
+            searchAddressData = null
         )
 
         assert(viewModel.isPositiveFlow)
@@ -1193,7 +1206,8 @@ open class PinpointViewModelTest {
             uiState = AddressUiState.AddAddress,
             isEditWarehouse = false,
             source = "checkout",
-            isPositiveFlow = null
+            isPositiveFlow = null,
+            searchAddressData = null
         )
 
         assert(viewModel.isPositiveFlow)
