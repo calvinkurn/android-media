@@ -2,11 +2,11 @@ package com.tokopedia.product.detail.view.viewholder.review.delegate
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 import com.tokopedia.product.detail.view.fragment.delegate.BaseComponentCallback
 import com.tokopedia.product.detail.view.viewholder.review.event.ReviewComponentEvent
 import com.tokopedia.product.detail.view.viewholder.review.tracker.ReviewTracker
+import com.tokopedia.reviewcommon.constant.ReviewCommonConstants
 
 /**
  * Created by yovi.putra on 14/11/23"
@@ -25,7 +25,6 @@ class ReviewCallback(
     }
 
     // region rating keyword
-
     private fun onKeywordImpressed(event: ReviewComponentEvent.OnKeywordImpressed) {
         val tracker = createCommonTracker(componentTracker = event.trackerData) ?: return
         ReviewTracker.onKeywordImpressed(
@@ -53,7 +52,7 @@ class ReviewCallback(
     private fun goToReviewDetail(productId: String, keyword: String) {
         val context = context ?: return
         RouteManager.getIntent(context, ApplinkConst.PRODUCT_REVIEW, productId).apply {
-            putExtra(ProductDetailConstant.REVIEW_PRD_NM, keyword)
+            putExtra(ReviewCommonConstants.EXTRAS_SELECTED_TOPIC, keyword)
         }.also {
             context.startActivity(it)
         }
