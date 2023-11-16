@@ -34,13 +34,10 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     private var factory: ViewModelProvider.Factory? = null
     private var viewModel: ContentCreationViewModel? = null
 
-    @StringRes
-    private var title: Int = R.string.content_creation_bottom_sheet_title
-
     var shouldShowPerformanceAction: Boolean = false
     var listener: ContentCreationBottomSheetListener? = null
     var analytics: ContentCreationAnalytics? = null
-    private var creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
+    var creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
 
     var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
 
@@ -111,7 +108,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
     private fun renderHeaderView() {
         context?.let {
-            setTitle(it.getString(title))
+            setTitle(it.getString(R.string.content_creation_bottom_sheet_title))
 
             if (shouldShowPerformanceAction) {
                 setAction(it.getString(R.string.content_creation_bottom_sheet_performance_action)) { _ ->
@@ -130,18 +127,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun show(
-        fragmentManager: FragmentManager,
-        @StringRes title: Int? = null,
-        showPerformanceAction: Boolean = false,
-        creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty,
-    ) {
-        title?.let {
-            this.title = it
-        }
-        this.shouldShowPerformanceAction = showPerformanceAction
-        this.creationConfig = creationConfig
-
+    fun show(fragmentManager: FragmentManager) {
         if (!isAdded) show(fragmentManager, TAG)
     }
 
