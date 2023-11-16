@@ -302,6 +302,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun renderShopPharmacy(uiState: ShopInfoUiState) {
         val isPharmacy = uiState.pharmacy.showPharmacyInfoSection
         val expandPharmacyInfo = uiState.pharmacy.expandPharmacyInfo
+        val showCtaViewPharmacyLocation = uiState.pharmacy.nearestPickupAddress.isNotEmpty() && uiState.pharmacy.nearestPickupAddressGmapsUrl.isNotEmpty()
 
         binding?.run {
             labelShopPharmacyNearestPickup.isVisible = isPharmacy
@@ -311,8 +312,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             labelShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
 
             tpgCtaExpandPharmacyInfo.isVisible = isPharmacy && !expandPharmacyInfo
-            tpgCtaViewPharmacyMap.isVisible = isPharmacy && expandPharmacyInfo
-            iconViewPharmacyLocation.isVisible = isPharmacy && expandPharmacyInfo
+            tpgCtaViewPharmacyMap.isVisible = isPharmacy && expandPharmacyInfo && showCtaViewPharmacyLocation
+            iconViewPharmacyLocation.isVisible = isPharmacy && expandPharmacyInfo && showCtaViewPharmacyLocation
 
             tpgSectionTitlePharmacyInformation.isVisible = isPharmacy
             tpgShopPharmacyNearestPickup.isVisible = isPharmacy

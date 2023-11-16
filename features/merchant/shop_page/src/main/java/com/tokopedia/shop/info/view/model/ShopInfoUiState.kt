@@ -48,7 +48,7 @@ data class ShopInfoUiState(
 
     val pharmacy: ShopPharmacyInfo = ShopPharmacyInfo(
         showPharmacyInfoSection = false,
-        nearPickupAddressGmapsUrl = "",
+        nearestPickupAddressGmapsUrl = "",
         nearestPickupAddress = "",
         pharmacistName = "",
         pharmacistOperationalHour = emptyList(),

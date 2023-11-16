@@ -139,7 +139,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                     } else {
                         ShopPharmacyInfo(
                             showPharmacyInfoSection = false,
-                            nearPickupAddressGmapsUrl = "",
+                            nearestPickupAddressGmapsUrl = "",
                             nearestPickupAddress = "",
                             pharmacistName = "",
                             pharmacistOperationalHour = emptyList(),
@@ -188,8 +188,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     @SuppressLint("PII Data Exposure")
     private fun handleCtaViewPharmacyLocation() {
-        val effect =
-            ShopInfoUiEffect.RedirectToGmaps(currentState.pharmacy.nearPickupAddressGmapsUrl)
+        val effect = ShopInfoUiEffect.RedirectToGmaps(currentState.pharmacy.nearestPickupAddressGmapsUrl)
         _uiEffect.tryEmit(effect)
     }
 
@@ -266,7 +265,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return ShopPharmacyInfo(
             showPharmacyInfoSection = true,
             nearestPickupAddress = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.address,
-            nearPickupAddressGmapsUrl = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.gMapsURL,
+            nearestPickupAddressGmapsUrl = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.gMapsURL,
             pharmacistOperationalHour = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.epharmacyWorkingHoursFmt,
             pharmacistName = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.apj,
             siaNumber = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.siaNumber,
