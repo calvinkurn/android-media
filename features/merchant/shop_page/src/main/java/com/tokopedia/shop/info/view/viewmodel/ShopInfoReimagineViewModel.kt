@@ -81,7 +81,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
             ShopInfoUiEvent.TapCtaViewPharmacyLocation -> handleCtaViewPharmacyLocation()
             ShopInfoUiEvent.TapIconViewAllShopReview -> handleViewAllReviewClick()
             is ShopInfoUiEvent.RetryGetShopInfo -> handleRetryGetShopInfo()
-            is ShopInfoUiEvent.TapShopNote -> handleTapShopNote(event.noteId)
+            is ShopInfoUiEvent.TapShopNote -> handleTapShopNote(event.shopNote)
             ShopInfoUiEvent.ReportShop -> handleReportShop()
             is ShopInfoUiEvent.TapReviewImage -> handleTapReviewImage(event.productId)
             is ShopInfoUiEvent.TapReviewImageViewAll -> handleTapReviewImageViewAll(event.productId)
@@ -202,8 +202,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
         _uiEffect.tryEmit(effect)
     }
 
-    private fun handleTapShopNote(noteId: String) {
-        val effect = ShopInfoUiEffect.RedirectToShopNoteDetailPage(currentState.shopId, noteId)
+    private fun handleTapShopNote(shopNote: ShopNote) {
+        val effect = ShopInfoUiEffect.ShowShopNoteDetailBottomSheet(shopNote)
         _uiEffect.tryEmit(effect)
     }
 
@@ -301,7 +301,11 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private fun List<ShopNoteModel>.toShopNotes(): List<ShopNote> {
         return map { shopNote ->
-            ShopNote(id = shopNote.id.orEmpty(), title = shopNote.title.orEmpty())
+            ShopNote(
+                id = shopNote.id.orEmpty(),
+                title = shopNote.title.orEmpty(),
+                description = shopNote.content.orEmpty()
+            )
         }
     }
 

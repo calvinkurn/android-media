@@ -275,8 +275,8 @@ class ShopInfoReimagineViewModelTest {
             mockGetShopInfoGqlCall()
             mockGetShopNoteGqlCall(
                 response = listOf(
-                    ShopNoteModel(id = "1", title = "Syarat dan ketentuan pengiriman"),
-                    ShopNoteModel(id = "2", title = "Kebijakan pengembalian")
+                    ShopNoteModel(id = "1", title = "Syarat dan ketentuan pengiriman", content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"),
+                    ShopNoteModel(id = "2", title = "Kebijakan pengembalian", content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua")
                 )
             )
             mockGetShopOperationListGqlCall()
@@ -294,8 +294,8 @@ class ShopInfoReimagineViewModelTest {
 
             assertEquals(
                 listOf(
-                    ShopNote(id = "1", title = "Syarat dan ketentuan pengiriman"),
-                    ShopNote(id = "2", title = "Kebijakan pengembalian")
+                    ShopNote(id = "1", title = "Syarat dan ketentuan pengiriman", description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"),
+                    ShopNote(id = "2", title = "Kebijakan pengembalian", description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua")
                 ),
                 actual.shopNotes
             )
@@ -319,8 +319,8 @@ class ShopInfoReimagineViewModelTest {
             mockGetShopInfoGqlCall()
             mockGetShopNoteGqlCall(
                 response = listOf(
-                    ShopNoteModel(id = "1", title = "Syarat dan ketentuan pengiriman"),
-                    ShopNoteModel(id = null, title = null)
+                    ShopNoteModel(id = "1", title = "Syarat dan ketentuan pengiriman", content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"),
+                    ShopNoteModel(id = null, title = null, content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua")
                 )
             )
             mockGetShopOperationListGqlCall()
@@ -338,8 +338,8 @@ class ShopInfoReimagineViewModelTest {
 
             assertEquals(
                 listOf(
-                    ShopNote(id = "1", title = "Syarat dan ketentuan pengiriman"),
-                    ShopNote(id = "", title = "")
+                    ShopNote(id = "1", title = "Syarat dan ketentuan pengiriman", description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"),
+                    ShopNote(id = "", title = "", description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua")
                 ),
                 actual.shopNotes
             )
@@ -903,6 +903,11 @@ class ShopInfoReimagineViewModelTest {
     fun `When TapShopNote event triggered, UI should receive RedirectToShopNoteDetailPage effect`() {
         runBlockingTest {
             // Given
+            val shopNote = ShopNote(
+                id = "1",
+                title = "Syarat dan ketentuan pengiriman",
+                description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
+            )
             val selectedNoteId = "122"
             val emittedEffects = arrayListOf<ShopInfoUiEffect>()
             val job = launch {
@@ -923,11 +928,11 @@ class ShopInfoReimagineViewModelTest {
             // When
             viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
             viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
-            viewModel.processEvent(ShopInfoUiEvent.TapShopNote(selectedNoteId))
+            viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote))
 
             // Then
             val actual = emittedEffects.last()
-            assertEquals(ShopInfoUiEffect.RedirectToShopNoteDetailPage(shopId, selectedNoteId), actual)
+            assertEquals(ShopInfoUiEffect.ShowShopNoteDetailBottomSheet(shopNote), actual)
             job.cancel()
         }
     }

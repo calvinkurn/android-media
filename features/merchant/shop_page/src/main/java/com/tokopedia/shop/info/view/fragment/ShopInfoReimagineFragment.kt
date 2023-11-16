@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -47,12 +48,12 @@ import com.tokopedia.shop.info.domain.entity.ShopPerformanceDuration
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
+import com.tokopedia.shop.info.view.bottomsheet.ShopNoteDetailBottomSheet
 import com.tokopedia.shop.info.view.model.ShopInfoUiEffect
 import com.tokopedia.shop.info.view.model.ShopInfoUiEvent
 import com.tokopedia.shop.info.view.model.ShopInfoUiState
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoReimagineViewModel
 import com.tokopedia.shop.report.activity.ReportShopWebViewActivity
-import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.toPx
@@ -209,7 +210,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun handleEffect(effect: ShopInfoUiEffect) {
         when (effect) {
             is ShopInfoUiEffect.RedirectToGmaps -> redirectToGmaps(effect.gmapsUrl)
-            is ShopInfoUiEffect.RedirectToShopNoteDetailPage -> redirectToShopNoteDetailPage(effect.shopId, effect.noteId)
+            is ShopInfoUiEffect.ShowShopNoteDetailBottomSheet -> showShopNoteDetailBottomSheet(effect.shopNote)
             ShopInfoUiEffect.RedirectToLoginPage -> redirectToLoginPage()
             is ShopInfoUiEffect.RedirectToChatWebView -> redirectToChatWebView(effect.messageId)
             is ShopInfoUiEffect.RedirectToShopReviewPage -> redirectToShopReviewPage(effect.shopId)
@@ -272,7 +273,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgShopInfoLocation.text = uiState.info.mainLocation
             renderOperationalHours(uiState.info.operationalHours)
             tpgShopInfoJoinDate.text = uiState.info.shopJoinDate
-            tpgShopInfoTotalProduct.text = uiState.info.totalProduct.toString()
+            tpgShopInfoTotalProduct.text = uiState.info.totalProduct.splitByThousand()
         }
     }
 
@@ -286,7 +287,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             operationalHours.forEach { operationalHour ->
                 val hour = operationalHour.key
                 val days = operationalHour.value
-                val groupedDays = days.joinToString(separator = ", ", postfix = ": ") { day -> day }
+                val groupedDays = days.joinToString(separator = ", ", postfix = ":") { day -> day }
 
                 val operationalHourFormat = "%s %s"
                 val text = String.format(operationalHourFormat, groupedDays, hour)
@@ -501,10 +502,10 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
             shopNoteTitle.text = shopNote.title
             shopNoteTitle?.setOnClickListener {
-                viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote.id))
+                viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote))
             }
             shopNoteChevron.setOnClickListener {
-                viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote.id))
+                viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote))
             }
 
             binding?.layoutShopNotesContainer?.addView(shopNoteView)
@@ -597,15 +598,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, shopId, APP_LINK_QUERY_STRING_REVIEW_SOURCE)
         RouteManager.route(context, appLink)
     }
-
-    private fun redirectToShopNoteDetailPage(shopId: String, noteId: String) {
-        if (!isAdded) return
-        if (noteId.isEmpty()) return
-
-        val intent = ShopNoteDetailActivity.createIntent(context, shopId, noteId)
-        startActivity(intent)
-    }
-
+    
     private fun redirectToLoginPage() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
@@ -646,5 +639,12 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             onCtaClicked = {},
             anchorView = null
         )
+    }
+    
+    private fun showShopNoteDetailBottomSheet(shopNote: ShopNote) {
+        if (!isAdded) return
+        
+        val bottomSheet = ShopNoteDetailBottomSheet.newInstance(shopNote.title, shopNote.description)
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 }
