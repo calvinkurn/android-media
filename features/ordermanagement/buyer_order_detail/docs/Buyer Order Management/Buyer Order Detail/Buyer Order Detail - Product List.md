@@ -32,7 +32,7 @@ There are 5 types of product cards in this section which are:
 - Non-bundling product card
 
 This product type only shows exactly 1 product item on each card. This product type shows the non-bundle product item that the buyer purchased without any add-on or with an add-on but from TokoCabang (a non-bundling product purchased alongside any add-on but bought from TokoCabang will be shown as a non-bundling product without add-on).
-![](../../res/productlist/non_bundling_product_card_design.png)
+![](https://docs-android.tokopedia.net/images/docs/buyer_order_detail/productlist/non_bundling_product_card_design.png)
 
 - Non-bundling product card with add-on
 
@@ -44,13 +44,13 @@ This product type only shows exactly 1 product item on each card plus the list o
 
 
 
-![](../../res/productlist/non_bundling_product_with_add_on_collapsed.png)
+![](https://docs-android.tokopedia.net/images/docs/buyer_order_detail/productlist/non_bundling_product_with_add_on_collapsed.png)
 
 
 
 
 
-![](../../res/productlist/non_bundling_product_with_add_on_expanded.png)
+![](https://docs-android.tokopedia.net/images/docs/buyer_order_detail/productlist/non_bundling_product_with_add_on_expanded.png)
 
 
 
@@ -61,23 +61,23 @@ This product type displays multiple product items on each card that belong to a 
 
 The Buy More Save More product has 4 type card type which is single offer, multiple offer, add on (non DT) and add on (DT/TokoCabang)
 
-![img.png](../../res/productlist/buy_more_save_more_product_single_offer.png)
+![img.png](https://docs-android.tokopedia.net/images/docs/buyer_order_detail/productlist/buy_more_save_more_product_single_offer.png)
 Buy More Save More - Single Offer
 
-![img.png](../../res/productlist/buy_more_save_more_product_multiple_offer.png)
+![img.png](https://docs-android.tokopedia.net/images/docs/buyer_order_detail/productlist/buy_more_save_more_product_multiple_offer.png)
 Buy More Save More - Multiple Offer
 
-![img.png](../../res/productlist/buy_more_save_more_product_add_on_dt.png)
+![img.png](https://docs-android.tokopedia.net/images/docs/buyer_order_detail/productlist/buy_more_save_more_product_add_on_dt.png)
 Buy More Save More - Add on (DT)
 
-![img.png](../../res/productlist/buy_more_save_more_product_add_on_dt.png)
+![img.png](https://docs-android.tokopedia.net/images/docs/buyer_order_detail/productlist/buy_more_save_more_product_add_on_dt.png)
 Buy More Save More - Add on (Non DT)
 
 - Bundling product card
 
 This product type shows multiple product items on each card that belong to that specific bundle. In this product type, there will be no attached add-on on the product or the bundling itself because currently there&#39;s no feature that allows the buyer to purchase an add-on on a product bundling.
 
-![](../../res/productlist/bundling_product.png)
+![](https://docs-android.tokopedia.net/images/docs/buyer_order_detail/productlist/bundling_product.png)
 
 - Add-on card
 
@@ -89,13 +89,13 @@ This product type shows exactly 1 add-on on each card. This product type shows t
 
 
 
-![](../../res/productlist/addon_collapsed.png)
+![](https://docs-android.tokopedia.net/images/docs/buyer_order_detail/productlist/addon_collapsed.png)
 
 
 
 
 
-![](../../res/productlist/addon_expanded.png)
+![](https://docs-android.tokopedia.net/images/docs/buyer_order_detail/productlist/addon_expanded.png)
 
 
 

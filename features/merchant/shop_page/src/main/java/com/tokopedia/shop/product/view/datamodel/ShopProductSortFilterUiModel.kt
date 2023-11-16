@@ -12,6 +12,7 @@ data class ShopProductSortFilterUiModel(
     var selectedSortId: String = "",
     var selectedSortName: String = "",
     var isShowSortFilter: Boolean = true,
+    val isOverrideTheme: Boolean = false,
     var filterIndicatorCounter: Int = 0
 ) : Visitable<BaseAdapterTypeFactory> {
     var scrollX: Int = 0

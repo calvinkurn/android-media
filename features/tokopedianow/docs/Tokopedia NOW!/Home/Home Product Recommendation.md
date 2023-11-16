@@ -1,6 +1,6 @@
-![image](../../res/home_product_recommendation.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/home_product_recommendation.png)
 
-![image](../../res/home_product_recommendation_without_atc.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/home_product_recommendation_without_atc.png)
 
 <!--left header table-->
 | **Type Factory** | `HomeTypeFactory` |
