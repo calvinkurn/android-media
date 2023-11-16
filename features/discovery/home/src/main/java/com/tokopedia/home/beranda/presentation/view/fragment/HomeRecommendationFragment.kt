@@ -367,14 +367,16 @@ class HomeRecommendationFragment :
     ) {
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (homeRecommendationItemDataModel.recommendationProductItem.isTopAds) {
-            TopAdsUrlHitter(className).hitImpressionUrl(
-                context,
-                homeRecommendationItemDataModel.recommendationProductItem.trackerImageUrl,
-                homeRecommendationItemDataModel.recommendationProductItem.id,
-                homeRecommendationItemDataModel.recommendationProductItem.name,
-                homeRecommendationItemDataModel.recommendationProductItem.imageUrl,
-                HOME_RECOMMENDATION_FRAGMENT
-            )
+            context?.let {
+                TopAdsUrlHitter(className).hitImpressionUrl(
+                    it,
+                    homeRecommendationItemDataModel.recommendationProductItem.trackerImageUrl,
+                    homeRecommendationItemDataModel.recommendationProductItem.id,
+                    homeRecommendationItemDataModel.recommendationProductItem.name,
+                    homeRecommendationItemDataModel.recommendationProductItem.imageUrl,
+                    HOME_RECOMMENDATION_FRAGMENT
+                )
+            }
             if (userSessionInterface.isLoggedIn) {
                 trackingQueue.putEETracking(
                     getRecommendationProductViewLoginTopAds(
@@ -415,14 +417,16 @@ class HomeRecommendationFragment :
     ) {
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (homeRecommendationItemDataModel.recommendationProductItem.isTopAds) {
-            TopAdsUrlHitter(className).hitClickUrl(
-                context,
-                homeRecommendationItemDataModel.recommendationProductItem.clickUrl,
-                homeRecommendationItemDataModel.recommendationProductItem.id,
-                homeRecommendationItemDataModel.recommendationProductItem.name,
-                homeRecommendationItemDataModel.recommendationProductItem.imageUrl,
-                HOME_RECOMMENDATION_FRAGMENT
-            )
+            context?.let {
+                TopAdsUrlHitter(className).hitClickUrl(
+                    it,
+                    homeRecommendationItemDataModel.recommendationProductItem.clickUrl,
+                    homeRecommendationItemDataModel.recommendationProductItem.id,
+                    homeRecommendationItemDataModel.recommendationProductItem.name,
+                    homeRecommendationItemDataModel.recommendationProductItem.imageUrl,
+                    HOME_RECOMMENDATION_FRAGMENT
+                )
+            }
             if (userSessionInterface.isLoggedIn) {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                     getRecommendationProductClickLoginTopAds(
