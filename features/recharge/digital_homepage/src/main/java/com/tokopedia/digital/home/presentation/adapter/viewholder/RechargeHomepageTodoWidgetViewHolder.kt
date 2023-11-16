@@ -26,6 +26,7 @@ class RechargeHomepageTodoWidgetViewHolder(
 
     override fun bind(element: RechargeHomepageTodoWidgetModel) {
         if (element.section.items.isNotEmpty()) {
+            binding.shimmerTodoWidgetParent.root.hide()
             with(binding.rvTodoWidgetParent) {
                 show()
                 adapter = RechargeHomepageTodoWidgetAdapter(
@@ -43,6 +44,7 @@ class RechargeHomepageTodoWidgetViewHolder(
             with(binding.rvTodoWidgetParent) {
                 hide()
             }
+            binding.shimmerTodoWidgetParent.root.show()
             listener.loadRechargeSectionData(element.section.id, element.section.name)
         }
     }
