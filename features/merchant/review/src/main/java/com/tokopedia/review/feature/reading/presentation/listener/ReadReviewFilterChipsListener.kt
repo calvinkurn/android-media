@@ -8,4 +8,5 @@ interface ReadReviewFilterChipsListener {
     fun onFilterWithRatingClicked(index: Int, isActive: Boolean)
     fun onSortClicked(chipTitle: String)
     fun onClearFiltersClicked()
+    fun onFilterTopic(keywords: List<String>)
 }

@@ -428,6 +428,12 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         }
     }
 
+    override fun onFilterTopic(keywords: List<String>) {
+        clearAllData()
+        showListOnlyLoading()
+        viewModel.setTopicFilter(keywords, isProductReview)
+    }
+
     override fun onFilterWithRatingClicked(index: Int, isActive: Boolean) {
         val ratingFilterTitle = getString(R.string.review_reading_rating_filter_title)
         if (isProductReview) {
@@ -890,6 +896,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
             )
             getRecyclerView(view)?.show()
             setHighlightedTopics(ratingAndTopics.topics, this@ReadReviewFragment)
+            setAvailableTopics(ratingAndTopics.keywords, this@ReadReviewFragment)
             setSeeAll(false)
             show()
         }
