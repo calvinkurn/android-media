@@ -6,6 +6,7 @@ import com.tokopedia.mediauploader.VideoParam
 import com.tokopedia.mediauploader.analytics.UploaderLogger
 import com.tokopedia.mediauploader.common.cache.LargeUploadStateCacheManager
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
+import com.tokopedia.mediauploader.common.data.consts.CHUNK_UPLOAD
 import com.tokopedia.mediauploader.common.data.consts.POLICY_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
@@ -74,11 +75,17 @@ class LargeUploaderManager @Inject constructor(
         chunkTotal = ceil(base.file.length() / sizePerChunk.toDouble()).toInt()
 
         // 2. upload per chunk in loop until N of part number
+        val isFirstPartUploadSucceed = uploadFirstPart(base.file, sizePerChunk, base.sourceId, policy)
+
+        if (isFirstPartUploadSucceed.not()) {
+            UploaderLogger.commonError(base, CHUNK_UPLOAD, requestId)
+            return UploadResult.Error(CHUNK_UPLOAD, requestId)
+        }
+
+        // 3. Upload the remaining parts (2 ~ [chunkTotal])
         uploadPart(base.file, sizePerChunk, base.sourceId, policy)
 
-        // 3. set a complete state to check the transcoding and get the video url from it.
-        val result = completeUpload()
-
+        // 4. set a complete state to check the transcoding and get the video url from it.
         if (param.withTranscode) {
             val transcode = waitTranscode(videoPolicy)
 
@@ -93,6 +100,8 @@ class LargeUploaderManager @Inject constructor(
         }
 
         // 5. if the transcoding success, return the video url!
+        val result = completeUpload()
+
         updateProgressValue()
         resetUpload()
 
@@ -130,6 +139,27 @@ class LargeUploaderManager @Inject constructor(
         }
 
         return null
+    }
+
+    private suspend fun uploadFirstPart(
+        file: File,
+        sizePerChunk: Int,
+        sourceId: String,
+        policy: SourcePolicy
+    ): Boolean {
+        if (partUploaded[UPLOAD_PART_START] == true) return true
+
+        file.slice(UPLOAD_PART_START, sizePerChunk)?.let { byteArrayToSend ->
+            return chunkUpload(
+                sourceId,
+                file,
+                byteArrayToSend,
+                policy.timeOut,
+                UPLOAD_PART_START
+            ).also {
+                updateProgressValue()
+            }
+        } ?: return false
     }
 
     private suspend fun uploadPart(
@@ -249,8 +279,6 @@ class LargeUploaderManager @Inject constructor(
                 message = "Fail to init (file=$fileName)",
                 reqId = init.requestId.toString()
             )
-
-            initUpload(param)
         }
     }
 
@@ -339,6 +367,7 @@ class LargeUploaderManager @Inject constructor(
     }
 
     private fun resetUpload() {
+        requestId = ""
         chunkTotal = 0
         maxRetryTranscoding = 0
         uploadStateManager.clear()

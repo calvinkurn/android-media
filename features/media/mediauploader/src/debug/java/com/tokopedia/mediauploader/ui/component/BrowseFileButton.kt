@@ -36,7 +36,7 @@ inline fun BrowseFileButton(
                 pageType(PageType.GALLERY)
 
                 maxVideoFileSize(262144000)
-                maxVideoDuration(180000)
+                maxVideoDuration(9999999)
                 minVideoDuration(1000)
 
                 maxImageResolution(9999)

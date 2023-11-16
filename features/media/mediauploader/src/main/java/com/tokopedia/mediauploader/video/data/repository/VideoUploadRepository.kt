@@ -9,6 +9,7 @@ import com.tokopedia.mediauploader.video.data.entity.LargeUploader
 import com.tokopedia.mediauploader.video.data.entity.SimpleUploader
 import com.tokopedia.mediauploader.video.data.params.ChunkCheckerParam
 import com.tokopedia.mediauploader.video.data.params.ChunkUploadParam
+import com.tokopedia.mediauploader.video.data.params.InitParam
 import com.tokopedia.mediauploader.video.data.params.SimpleUploadParam
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -17,6 +18,23 @@ class VideoUploadRepository @Inject constructor(
     private val services: VideoUploadServices,
     private val url: MediaUploaderUrl
 ) : BaseRequestRepository() {
+
+    suspend fun initUpload(params: InitParam): LargeUploader {
+        return try {
+            services.initLargeUpload(
+                url = url.largeInit(),
+                fileName = params.fileName,
+                sourceId = params.sourceId
+            )
+        } catch (t: HttpException) {
+            val reqId = getRequestId(t)
+
+            LargeUploader(
+                success = false,
+                requestId = reqId
+            )
+        }
+    }
 
     suspend fun simpleUpload(params: SimpleUploadParam, loader: ProgressUploader?): SimpleUploader {
         val (sourceId, file, timeOut) = params
