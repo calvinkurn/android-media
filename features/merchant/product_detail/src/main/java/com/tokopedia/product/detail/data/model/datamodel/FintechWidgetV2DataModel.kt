@@ -4,7 +4,6 @@ import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.pdp.fintech.view.FintechPriceURLDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import java.util.*
 
 data class FintechWidgetV2DataModel(
     val name: String = "",
@@ -16,7 +15,7 @@ data class FintechWidgetV2DataModel(
     var shopId: String = "",
     var parentId: String = "",
     val widgetSession: Long = 0L
-) : DynamicPdpDataModel {
+): DynamicPdpDataModel {
 
     override fun type() = type
 
@@ -26,11 +25,9 @@ data class FintechWidgetV2DataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return newData is FintechWidgetV2DataModel &&
-            (
-                newData.productId == this.productId &&
-                    newData.idToPriceUrlMap == this.idToPriceUrlMap &&
-                    newData.isLoggedIn == this.isLoggedIn
-                )
+            (newData.productId == this.productId &&
+                newData.idToPriceUrlMap == this.idToPriceUrlMap &&
+                newData.isLoggedIn == this.isLoggedIn)
     }
 
     override fun newInstance() = this.copy()
