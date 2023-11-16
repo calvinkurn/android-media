@@ -67,12 +67,12 @@ class ShopInfoActivity : BaseActivity() {
         return try {
             val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
             val abTestValue = abTestPlatform.getString(
-                key = RollenceKey.AB_TEST_SHOP_INFO_REIMAGINED,
-                defaultValue = RollenceKey.AB_TEST_SHOP_INFO_REIMAGINED_ENABLED
+                key = RollenceKey.AB_TEST_GRADUAL_ROLLOUT_KEY_SHOP_INFO_REIMAGINED,
+                defaultValue = ""
             )
 
-            // abTestValue == RollenceKey.AB_TEST_SHOP_INFO_REIMAGINED_ENABLED
-            true
+            val redirectToReimagineVersion = abTestValue.isNotEmpty()
+            redirectToReimagineVersion
         } catch (throwable: Throwable) {
             false
         }
