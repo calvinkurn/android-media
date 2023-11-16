@@ -8,6 +8,7 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
@@ -131,7 +132,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             )
         }
         masterProductCardItemViewModel?.getProductDataItem()?.let { dataItem ->
-            (fragment as DiscoveryFragment).openVariantBottomSheet(dataItem.productId ?: "")
+            (fragment as DiscoveryFragment).openVariantBottomSheet(
+                productId = dataItem.productId.orEmpty(),
+                parentPosition = masterProductCardItemViewModel?.getParentPositionForCarousel() ?: RecyclerView.NO_POSITION,
+                requestingComponent = masterProductCardItemViewModel?.components
+            )
         }
     }
 

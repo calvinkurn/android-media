@@ -160,6 +160,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -910,11 +911,19 @@ open class DiscoveryFragment :
                             }
                         }
                     )
-                    analytics.trackEventProductATC(
-                        it.data.requestParams.requestingComponent,
-                        it.data.addToCartDataModel.data.cartId
-                    )
-                    getMiniCart(bmGmDataParam)
+                    if (bmGmDataParam != null) {
+                        analytics.trackEventProductBmGmATC(
+                            it.data.requestParams.requestingComponent,
+                            it.data.addToCartDataModel.data.cartId
+                        )
+                        getMiniCart(bmGmDataParam)
+                    } else {
+                        analytics.trackEventProductATC(
+                            it.data.requestParams.requestingComponent,
+                            it.data.addToCartDataModel.data.cartId
+                        )
+                        getMiniCart()
+                    }
                 } else {
                     analytics.trackEventProductATCTokonow(
                         it.data.requestParams.requestingComponent,
@@ -942,7 +951,7 @@ open class DiscoveryFragment :
                     it.data.requestParams.requestingComponent,
                     it.data.cartId
                 )
-                getMiniCart(bmGmDataParam)
+                getMiniCart()
             } else if (it is Fail) {
                 if (it.throwable is ResponseErrorException) {
                     showToaster(
@@ -959,7 +968,7 @@ open class DiscoveryFragment :
                     it.data.requestParams.requestingComponent,
                     it.data.cartId
                 )
-                getMiniCart(bmGmDataParam)
+                getMiniCart()
                 showToaster(
                     message = it.data.message,
                     type = Toaster.TYPE_NORMAL
@@ -980,6 +989,8 @@ open class DiscoveryFragment :
                     ?.let { discoveryBaseViewModel ->
                         if (discoveryBaseViewModel is ProductCardCarouselViewModel) {
                             discoveryBaseViewModel.handleAtcFailed(position)
+                        } else if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
+                            discoveryBaseViewModel.changeTier(false)
                         }
                     }
             } else if (position >= 0) {
@@ -991,10 +1002,9 @@ open class DiscoveryFragment :
             }
         }
 
-        discoveryViewModel.addToCartAction.observe(viewLifecycleOwner) {
-            bmGmDataParam = BmGmDataParam(
-                warehouseTco = it.requestingComponent.properties?.warehouseTco.orEmpty(),
-                offerId = it.requestingComponent.properties?.header?.offerId.orEmpty(),
+        discoveryViewModel.addToCartActionNonVariant.observe(viewLifecycleOwner) {
+            setBmGmDataParam(
+                requestingComponent = it.requestingComponent,
                 parentPosition = it.parentPosition
             )
             discoveryAdapter.getViewModelAtPosition(it.parentPosition)
@@ -1906,9 +1916,10 @@ open class DiscoveryFragment :
                 }
             }
         )
-
         AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
-            getMiniCart(bmGmDataParam)
+            if (bmGmDataParam != null) {
+                getMiniCart(bmGmDataParam)
+            }
         }
     }
 
@@ -2382,7 +2393,15 @@ open class DiscoveryFragment :
         getDiscoveryAnalytics().trackScreenshotAccess(action, label, getUserID())
     }
 
-    fun openVariantBottomSheet(productId: String) {
+    fun openVariantBottomSheet(
+        productId: String,
+        requestingComponent: ComponentsItem?,
+        parentPosition: Int = RecyclerView.NO_POSITION
+    ) {
+        setBmGmDataParam(
+            requestingComponent = requestingComponent,
+            parentPosition = parentPosition
+        )
         context?.let {
             AtcVariantHelper.goToAtcVariant(
                 it,
@@ -2394,6 +2413,28 @@ open class DiscoveryFragment :
                     startActivityForResult(intent, reqCode)
                 }
             )
+        }
+    }
+
+    private fun setBmGmDataParam(
+        requestingComponent: ComponentsItem?,
+        parentPosition: Int
+    ) {
+        /**
+         * Check while adding product to cart, the product has either warehouseTco or offerId.
+         * If yes then set bmGmDataParam, this variable can be used not only for non variant but also variant.
+         * Because in variant we don't get the data back warehouseTco and offerId after onActivityResult is executed.
+         */
+        val warehouseTco = requestingComponent?.properties?.warehouseTco
+        val offerId = requestingComponent?.properties?.header?.offerId
+        bmGmDataParam = if (warehouseTco != null && warehouseTco.isNotBlankOrZero() || offerId != null && offerId.isNotBlankOrZero()) {
+            BmGmDataParam(
+                warehouseTco = requestingComponent.properties?.warehouseTco.orEmpty(),
+                offerId = requestingComponent.properties?.header?.offerId.orEmpty(),
+                parentPosition = parentPosition
+            )
+        } else {
+            null
         }
     }
 

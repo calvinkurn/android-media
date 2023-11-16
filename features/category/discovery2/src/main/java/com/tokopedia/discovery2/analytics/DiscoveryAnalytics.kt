@@ -808,6 +808,50 @@ open class DiscoveryAnalytics(
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
+    override fun trackEventProductBmGmATC(
+        componentsItems: ComponentsItem,
+        cartID: String
+    ) {
+        val list = ArrayList<Map<String, Any>>()
+        val productMap = HashMap<String, Any>()
+        componentsItems.data?.firstOrNull()?.let {
+            productMap[KEY_CATEGORY_ID] = NONE_OTHER
+            productMap[DIMENSION40] = it.gtmItemName?.replace("#POSITION", (getParentPosition(componentsItems) + 1).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+            productMap[DIMENSION45] = cartID
+            productMap[DIMENSION90] = sourceIdentifier
+            productMap[KEY_ITEM_BRAND] = NONE_OTHER
+            productMap[KEY_ITEM_CATEGORY] = NONE_OTHER
+            productMap[KEY_ITEM_ID] = it.productId.toString()
+            productMap[KEY_ITEM_NAME] = it.name.toString()
+            productMap[KEY_ITEM_VARIANT] = NONE_OTHER
+            productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price.orEmpty())
+            productMap[KEY_QUANTITY] = it.quantity
+            productMap[KEY_SHOP_ID] = it.shopId.orEmpty()
+            productMap[KEY_SHOP_NAME] = it.shopName.orEmpty()
+            productMap[KEY_SHOP_TYPE] = NONE_OTHER
+        }
+        list.add(productMap)
+        val productsMap = mapOf(PRODUCTS to list)
+        val eCommerce = mapOf(
+            CURRENCY_CODE to IDR,
+            KEY_ADD to productsMap
+        )
+        val map = createGeneralEvent(
+            eventName = EVENT_PRODUCT_ATC,
+            eventAction = PRODUCT_ATC_BUY_MORE_GET_MORE,
+            eventLabel = "${componentsItems.name.orEmpty()} - ${componentsItems.data?.firstOrNull()?.quantity.orZero()} - false"
+        )
+        map[TRACKER_ID] = TRACKER_ID_ATC_BUY_MORE_GET_MORE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[KEY_E_COMMERCE] = eCommerce
+        map[PAGE_DESTINATION] = sourceIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[PAGE_TYPE] = pageType
+        map[USER_ID] = userSession.userId.orEmpty()
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
     override fun viewProductsList(
         componentsItems: ComponentsItem,
         isLogin: Boolean,

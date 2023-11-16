@@ -134,9 +134,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = _miniCartOperationFailed
     private val _miniCartOperationFailed = SingleLiveEvent<Pair<Int,Int>>()
 
-    val addToCartAction: LiveData<DiscoATCRequestParams>
-        get() = _addToCartAction
-    private val _addToCartAction = MutableLiveData<DiscoATCRequestParams>()
+    val addToCartActionNonVariant: LiveData<DiscoATCRequestParams>
+        get() = _addToCartActionNonVariant
+    private val _addToCartActionNonVariant = MutableLiveData<DiscoATCRequestParams>()
 
     val bmGmDataList: LiveData<Pair<Int,List<BmGmData>>>
         get() = _bmGmDataList
@@ -176,7 +176,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun addProductToCart(
         discoATCRequestParams: DiscoATCRequestParams
     ) {
-        _addToCartAction.value = discoATCRequestParams
+        _addToCartActionNonVariant.value = discoATCRequestParams
         val miniCartItem = if (!discoATCRequestParams.isGeneralCartATC)
             getMiniCartItem(discoATCRequestParams.productId) else null
         when {
@@ -310,29 +310,32 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                             warehouseIds = listOf(bmGmDataParam.warehouseTco.toLongOrZero())
                         )
                     )
-                    getMiniCartUseCase.execute({
-                        miniCartSimplifiedData = it
-                        _miniCart.postValue(Success(it))
+                    executeGetMiniCartUseCase {
                         _bmGmDataList.postValue(Pair(bmGmDataParam.parentPosition, it.bmGmDataList))
-                    }, {
-                        _miniCart.postValue(Fail(it))
-                    })
+                    }
                 } else {
                     getMiniCartUseCase.setParams(
                         shopIds = shopId,
                         source = MiniCartSource.TokonowDiscoveryPage
                     )
-                    getMiniCartUseCase.execute({
-                        miniCartSimplifiedData = it
-                        _miniCart.postValue(Success(it))
-                    }, {
-                        _miniCart.postValue(Fail(it))
-                    })
+                    executeGetMiniCartUseCase()
                 }
             }) {
                 _miniCart.postValue(Fail(it))
             }
         }
+    }
+
+    private fun executeGetMiniCartUseCase(
+        onSuccessAction: ((miniCartSimplifiedData: MiniCartSimplifiedData) -> Unit)? = null
+    ) {
+        getMiniCartUseCase.execute({
+            miniCartSimplifiedData = it
+            _miniCart.postValue(Success(it))
+            onSuccessAction?.invoke(it)
+        }, {
+            _miniCart.postValue(Fail(it))
+        })
     }
 
     private fun removeItemCart(
