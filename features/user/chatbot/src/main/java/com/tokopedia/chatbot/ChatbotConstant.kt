@@ -81,7 +81,8 @@ object ChatbotConstant {
             DYNAMIC_STICKY_BUTTON_RECEIVE,
             DYNAMIC_TEXT_SEND,
             MEDIA_BUTTON_TOGGLE,
-            DYNAMIC_REJECT_REASON
+            DYNAMIC_REJECT_REASON,
+            DYNAMIC_NEW_CHATBOT_SESSION
         )
         val PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT = listOf<Int>(
             DYNAMIC_STICKY_BUTTON_RECEIVE,
