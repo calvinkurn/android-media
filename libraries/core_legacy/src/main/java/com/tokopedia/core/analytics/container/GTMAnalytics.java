@@ -45,6 +45,7 @@ import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.iris.util.Utils;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -336,14 +337,14 @@ public class GTMAnalytics extends ContextAnalytics {
     @Override
     public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
         Observable.fromCallable(() -> {
-                Bundle bundle = addWrapperValue(value);
-                bundle = addGclIdIfNeeded(eventName, bundle);
-                pushEventV5(eventName, bundle, context);
-                return true;
-            })
-            .subscribeOn(Schedulers.io())
-            .unsubscribeOn(Schedulers.io())
-            .subscribe(getDefaultSubscriber());
+                    Bundle bundle = addWrapperValue(value);
+                    bundle = addGclIdIfNeeded(eventName, bundle);
+                    pushEventV5(eventName, bundle, context);
+                    return true;
+                })
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(getDefaultSubscriber());
     }
 
     @SuppressWarnings("unchecked")
@@ -1207,11 +1208,6 @@ public class GTMAnalytics extends ContextAnalytics {
             mappingToGA4(fa, eventName, bundle);
             logV5(context, eventName, bundle);
 
-            // https://tokopedia.atlassian.net/browse/AN-44955
-            addUtmHolder(bundle, eventName);
-            // https://tokopedia.atlassian.net/browse/AN-54858
-            addOsVersion(bundle, eventName);
-
             pushGeneralEcommerce(bundle);
 
             trackEmbraceBreadcrumb(eventName, bundle);
@@ -1453,16 +1449,23 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private void pushGeneralEcommerce(Bundle values) {
-        Observable.just(values)
+        Map<String, Object> map = Utils.bundleToMap(values);
+        Observable.just(map)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
-                    if (!TextUtils.isEmpty(mGclid)) {
-                        if (it.containsKey("event") && !TextUtils.isEmpty(it.getString("event"))) {
-                            String eventName = it.getString("event");
-                            addGclIdIfNeeded(eventName, it);
-                        }
+                    String eventName = null;
+                    if (it.get("event") != null) {
+                        eventName = String.valueOf(it.get("event"));
                     }
+                    if (!TextUtils.isEmpty(mGclid)) {
+                        addGclIdIfNeeded(eventName, it);
+                    }
+                    // https://tokopedia.atlassian.net/browse/AN-44955
+                    addUtmHolder(it, eventName);
+                    // https://tokopedia.atlassian.net/browse/AN-54858
+                    addOsVersion(it, eventName);
+
                     pushIris(it);
                     return true;
                 })
@@ -1482,6 +1485,20 @@ public class GTMAnalytics extends ContextAnalytics {
                 values.putString(KEY_GCLID, mGclid);
         }
         return values;
+    }
+
+    private void addGclIdIfNeeded(String eventName, Map<String, Object> values) {
+        if (null == eventName) return;
+        switch (eventName.toLowerCase()) {
+            case FirebaseAnalytics.Event.ADD_TO_CART:
+            case ADDTOCART:
+            case FirebaseAnalytics.Event.VIEW_ITEM:
+            case VIEWPRODUCT:
+            case PRODUCTVIEW:
+            case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
+            case TRANSACTION:
+                values.put(KEY_GCLID, mGclid);
+        }
     }
 
     public void eventOnline(String uid) {
@@ -1512,31 +1529,31 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
-    private void addUtmHolder(Bundle bundle, String eventName) {
+    private void addUtmHolder(Map<String, Object> map, String eventName) {
         // https://tokopedia.atlassian.net/browse/AN-44955
         if (FirebaseAnalytics.Event.ECOMMERCE_PURCHASE.equals(eventName)) {
-            bundle.putString(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
-            bundle.putString(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
-            bundle.putString(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
+            map.put(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
+            map.put(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
+            map.put(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
         }
     }
 
-    private void addOsVersion(Bundle bundle, String eventName) {
+    private void addOsVersion(Map<String, Object> map, String eventName) {
         // https://tokopedia.atlassian.net/browse/AN-54858
-        String eventAction = bundle.getString(AppEventTracking.EVENT_ACTION);
+        String eventAction = String.valueOf(map.get(AppEventTracking.EVENT_ACTION));
         if (FirebaseAnalytics.Event.ECOMMERCE_PURCHASE.equals(eventName) ||
                 FirebaseAnalytics.Event.ADD_TO_CART.equals(eventName) ||
                 "addToCart".equals(eventName) ||
                 "view product page".equals(eventAction)) {
-            bundle.putString("os_version", Build.VERSION.RELEASE);
+            map.put("os_version", Build.VERSION.RELEASE);
         }
     }
 
-    private void pushIris(Bundle values) {
+    private void pushIris(Map<String, Object> map) {
         if (iris != null &&
-                values.get("event") != null &&
-                !String.valueOf(values.get("event")).equals("")) {
-            iris.saveEvent(values);
+                map.get("event") != null &&
+                !String.valueOf(map.get("event")).equals("")) {
+            iris.saveEvent(map);
         }
     }
 
