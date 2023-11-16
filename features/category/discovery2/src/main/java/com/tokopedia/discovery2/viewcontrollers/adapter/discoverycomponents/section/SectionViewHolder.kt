@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section
 
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -14,6 +15,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -90,14 +92,46 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
         }
 
         sectionComponent.properties?.backgroundImageUrl?.let {
-            festiveBackground.show()
-            festiveBackground.loadImageWithoutPlaceholder(it)
+            renderFestiveBackground(it)
         }
 
         sectionComponent.properties?.foregroundImageUrl?.let {
-            festiveForeground.show()
-            festiveForeground.loadImageWithoutPlaceholder(it)
+            renderFestiveForeground(it)
         }
+    }
+
+    private fun renderFestiveForeground(imageUrl: String) {
+        festiveForeground.show()
+
+        festiveForeground.loadImageWithoutPlaceholder(
+            imageUrl,
+            listener = object : ImageHandler.ImageLoaderStateListener {
+                override fun successLoad(view: ImageView?) {
+                    // no-op
+                }
+
+                override fun failedLoad(view: ImageView?) {
+                    view?.hide()
+                }
+            }
+        )
+    }
+
+    private fun renderFestiveBackground(imageUrl: String) {
+        festiveBackground.show()
+
+        festiveBackground.loadImageWithoutPlaceholder(
+            imageUrl,
+            listener = object : ImageHandler.ImageLoaderStateListener {
+                override fun successLoad(view: ImageView?) {
+                    // no-op
+                }
+
+                override fun failedLoad(view: ImageView?) {
+                    view?.hide()
+                }
+            }
+        )
     }
 
     private fun resetFestiveSection() {
