@@ -46,7 +46,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // Then
         generalResult {
-            assertDriverName(1, "Lorem ipsum")
+            assertDriverName(1, "Lorem")
             assertDriverImageProfile(1)
             assertDriverBadge(1)
             assertDriverTypeOrder(1, "GoFood")
@@ -89,7 +89,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // Then
         generalResult {
-            assertDriverName(0, "Lorem ipsum")
+            assertDriverName(0, "Lorem")
         }
     }
 
@@ -183,7 +183,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
         // Then
         val intent = RouteManager.getIntent(
             context,
-            "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatCommonValueUtil.TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
+            "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatCommonValueUtil.SOURCE_TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
         )
         Intents.intended(IntentMatchers.hasData(intent.data))
     }

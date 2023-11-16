@@ -29,7 +29,7 @@ class TokoChatGeneralTest : BaseTokoChatRoomTest() {
 
         // Then
         HeaderResult.assertHeaderDisplayed(
-            interlocutorName = "Tokofood Driver 13",
+            interlocutorName = "Tokofood",
             licensePlate = "***1OAH"
         )
     }
@@ -174,7 +174,7 @@ class TokoChatGeneralTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_order_progress_even_when_param_tkpd_order_id_is_empty() {
         // Given
-        val dummyApplink = "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatCommonValueUtil.TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
+        val dummyApplink = "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatCommonValueUtil.SOURCE_TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
 
         // When
         launchChatRoomActivity {
@@ -191,7 +191,7 @@ class TokoChatGeneralTest : BaseTokoChatRoomTest() {
             isVisible = true
         )
         HeaderResult.assertHeaderDisplayed(
-            interlocutorName = "Tokofood Driver 13",
+            interlocutorName = "Tokofood",
             licensePlate = "***1OAH"
         )
         HeaderResult.assertCallButtonHeader(isDisabled = false)
@@ -200,7 +200,7 @@ class TokoChatGeneralTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_local_load_order_progress_even_when_fail_to_translate_gojek_order_id() {
         // Given
-        val dummyApplink = "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatCommonValueUtil.TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
+        val dummyApplink = "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatCommonValueUtil.SOURCE_TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
         GqlResponseStub.getTkpdOrderIdResponse.isError = true
 
         // When
@@ -215,7 +215,7 @@ class TokoChatGeneralTest : BaseTokoChatRoomTest() {
             isVisible = true
         )
         HeaderResult.assertHeaderDisplayed(
-            interlocutorName = "Tokofood Driver 13",
+            interlocutorName = "Tokofood",
             licensePlate = "***1OAH"
         )
         HeaderResult.assertCallButtonHeader(isDisabled = true)

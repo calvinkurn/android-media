@@ -74,7 +74,7 @@ abstract class BaseTokoChatRoomTest : BaseTokoChatTest() {
     protected fun launchChatRoomActivity(
         gojekOrderId: String = GOJEK_ORDER_ID_DUMMY,
         tkpdOrderId: String = TKPD_ORDER_ID_DUMMY,
-        source: String = TokoChatCommonValueUtil.TOKOFOOD,
+        source: String = TokoChatCommonValueUtil.SOURCE_TOKOFOOD,
         pushNotifTemplateKey: String? = null,
         isSellerApp: Boolean = false,
         isFromTokoFoodPostPurchase: Boolean = false,

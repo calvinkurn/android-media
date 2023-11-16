@@ -13,10 +13,12 @@ import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
 import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatUploadImageApi
+import com.tokopedia.tokochat.stub.common.TokoChatAbPlatformStub
 import com.tokopedia.tokochat.stub.common.TokoChatCacheManagerStub
 import com.tokopedia.tokochat.stub.common.TokoChatNetworkUtilStub
 import com.tokopedia.tokochat.stub.common.UserSessionStub
 import com.tokopedia.tokochat.stub.repository.TokoChatRepositoryStub
+import com.tokopedia.tokochat.util.toggle.TokoChatAbPlatform
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -88,5 +90,11 @@ object TokoChatModuleStub {
     @Provides
     fun provideTokoChatNetworkUtil(): TokoChatNetworkUtil {
         return TokoChatNetworkUtilStub()
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideAbTestPlatform(): TokoChatAbPlatform {
+        return TokoChatAbPlatformStub()
     }
 }
