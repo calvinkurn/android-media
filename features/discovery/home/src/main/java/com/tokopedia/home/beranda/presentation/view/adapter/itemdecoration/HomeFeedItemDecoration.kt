@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.View
 
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationPlayWidgetViewHolder
+import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.RecomEntityCardViewHolder
 
 class HomeFeedItemDecoration(private val spacing: Int) : RecyclerView.ItemDecoration() {
 
@@ -35,7 +37,11 @@ class HomeFeedItemDecoration(private val spacing: Int) : RecyclerView.ItemDecora
         val adapter = parent.adapter
         return if (viewPosition < 0 || viewPosition > adapter!!.itemCount - 1) {
             false
-        } else adapter.getItemViewType(viewPosition) == HomeRecommendationItemGridViewHolder.LAYOUT
+        } else {
+            adapter.getItemViewType(viewPosition) == HomeRecommendationItemGridViewHolder.LAYOUT ||
+                adapter.getItemViewType(viewPosition) == HomeRecommendationPlayWidgetViewHolder.LAYOUT ||
+                adapter.getItemViewType(viewPosition) == RecomEntityCardViewHolder.LAYOUT
+        }
     }
 
     private fun isTopProductItem(viewPosition: Int): Boolean {

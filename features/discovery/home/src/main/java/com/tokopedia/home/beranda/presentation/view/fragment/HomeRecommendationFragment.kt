@@ -275,17 +275,16 @@ class HomeRecommendationFragment :
                                 showToasterError()
                             }
 
-                            is HomeRecommendationCardState.SuccessNextPage -> {
-                                adapter.submitList(it.data.homeRecommendations)
-                                updateScrollEndlessListener(it.data.isHasNextPage)
-                            }
-
                             is HomeRecommendationCardState.FailNextPage -> {
                                 adapter.submitList(it.data.homeRecommendations)
                                 showToasterError()
                             }
 
                             is HomeRecommendationCardState.LoadingMore -> {
+                                adapter.submitList(it.data.homeRecommendations)
+                            }
+
+                            is HomeRecommendationCardState.UpdateWhistList -> {
                                 adapter.submitList(it.data.homeRecommendations)
                             }
                         }
@@ -653,7 +652,7 @@ class HomeRecommendationFragment :
         if (position > -1 && adapter.itemCount > 0 &&
             adapter.itemCount > position
         ) {
-            viewModel.updateWishlist(id, position, isWishlist)
+            viewModel.updateWhistlist(id, position, isWishlist)
         }
     }
 

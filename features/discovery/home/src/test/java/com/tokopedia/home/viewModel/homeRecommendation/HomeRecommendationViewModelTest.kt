@@ -366,7 +366,7 @@ class HomeRecommendationViewModelTest {
 
         homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.updateWishlist("12", 0, true)
+        homeRecommendationViewModel.updateWhistlist("12", 0, true)
 
         verifyOrder {
             // check on loading
@@ -420,7 +420,7 @@ class HomeRecommendationViewModelTest {
 
         homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.updateWishlist("12", 100, true)
+        homeRecommendationViewModel.updateWhistlist("12", 100, true)
 
         verifyOrder {
             // check on loading
@@ -473,7 +473,7 @@ class HomeRecommendationViewModelTest {
 
         homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.updateWishlist("1332", 0, true)
+        homeRecommendationViewModel.updateWhistlist("1332", 0, true)
 
         verifyOrder {
             // check on loading
@@ -547,7 +547,7 @@ class HomeRecommendationViewModelTest {
 
         homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.updateWishlist("1332", 0, true)
+        homeRecommendationViewModel.updateWhistlist("1332", 0, true)
 
         verifyOrder {
             // check on loading
@@ -655,7 +655,7 @@ class HomeRecommendationViewModelTest {
         homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
         // Try click update wishlist
-        homeRecommendationViewModel.updateWishlist("1332", 0, true)
+        homeRecommendationViewModel.updateWhistlist("1332", 0, true)
 
         // Expect updated
         verifyOrder {
@@ -1836,7 +1836,7 @@ class HomeRecommendationViewModelTest {
 
             assertTrue(it[1] is HomeRecommendationCardState.LoadingMore)
 
-            val actualNextResult = (it[2] as HomeRecommendationCardState.SuccessNextPage)
+            val actualNextResult = (it[2] as HomeRecommendationCardState.Success)
             val expectedNextResult = homeRecommendationDataModel.homeRecommendations.toMutableList().apply {
                 addAll(
                     homeRecommendationNextDataModel.homeRecommendations

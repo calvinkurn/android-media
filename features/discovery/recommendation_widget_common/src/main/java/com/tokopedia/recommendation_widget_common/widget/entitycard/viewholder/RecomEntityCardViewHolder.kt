@@ -56,9 +56,9 @@ class RecomEntityCardViewHolder(
             binding.entryPointCardSpace,
             SQUARE_IMAGE_RATIO
         )
+        setMinHeightEntryPointCard()
         setOnCardImpressionListener(element)
         setOnCardClickListener(element)
-        setMinHeightEntryPointCard()
     }
 
     override fun bindPayload(newItem: RecomEntityCardUiModel?) {
@@ -82,10 +82,10 @@ class RecomEntityCardViewHolder(
                 setLabelIcon(labelState.iconUrl)
             }
             if (item != this) {
+                setMinHeightEntryPointCard()
                 setOnCardImpressionListener(this)
                 setOnCardClickListener(this)
             }
-            setMinHeightEntryPointCard()
         }
     }
 

@@ -29,6 +29,7 @@ import dagger.Lazy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -125,13 +126,13 @@ class HomeRecommendationViewModel @Inject constructor(
                 _homeRecommendationCardState.emit(HomeRecommendationCardState.Success(result))
             }
         }, onError = {
-                _homeRecommendationCardState.emit(
-                    HomeRecommendationCardState.Fail(
-                        HomeRecommendationDataModel(listOf(HomeRecommendationError(it))),
-                        throwable = it
-                    )
+            _homeRecommendationCardState.emit(
+                HomeRecommendationCardState.Fail(
+                    HomeRecommendationDataModel(listOf(HomeRecommendationError(it))),
+                    throwable = it
                 )
-            })
+            )
+        })
     }
 
     private fun fetchNextHomeRecommendationCard(
@@ -173,18 +174,18 @@ class HomeRecommendationViewModel @Inject constructor(
                 )
 
                 _homeRecommendationCardState.emit(
-                    HomeRecommendationCardState.SuccessNextPage(newHomeRecommendationDataModel)
+                    HomeRecommendationCardState.Success(newHomeRecommendationDataModel)
                 )
             }, onError = {
-                    existingRecommendationData.remove(loadMoreModel)
+                existingRecommendationData.remove(loadMoreModel)
 
-                    _homeRecommendationCardState.emit(
-                        HomeRecommendationCardState.FailNextPage(
-                            HomeRecommendationDataModel(existingRecommendationData.toList()),
-                            throwable = it
-                        )
+                _homeRecommendationCardState.emit(
+                    HomeRecommendationCardState.FailNextPage(
+                        HomeRecommendationDataModel(existingRecommendationData.toList()),
+                        throwable = it
                     )
-                })
+                )
+            })
         }
     }
 
@@ -204,7 +205,8 @@ class HomeRecommendationViewModel @Inject constructor(
             )
         )
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.get().setParams(tabName, recommendationId, count, 1, locationParam, sourceType)
+            getHomeRecommendationUseCase.get()
+                .setParams(tabName, recommendationId, count, 1, locationParam, sourceType)
             val data = getHomeRecommendationUseCase.get().executeOnBackground()
             if (data.homeRecommendations.isEmpty()) {
                 _homeRecommendationLiveData.postValue(
@@ -471,9 +473,18 @@ class HomeRecommendationViewModel @Inject constructor(
         }
     }
 
-    fun updateWishlist(id: String, position: Int, isWishlisted: Boolean) {
+    fun updateWhistlist(id: String, position: Int, isWishlisted: Boolean) {
+        if (HomeRecommendationController.isUsingRecommendationCard()) {
+            updateWishlistNewQuery(id, position, isWishlisted)
+        } else {
+            updateWishlistOldQuery(id, position, isWishlisted)
+        }
+    }
+
+    private fun updateWishlistOldQuery(id: String, position: Int, isWishlisted: Boolean) {
         val homeRecomendationList =
-            _homeRecommendationLiveData.value?.homeRecommendations?.filterIsInstance<HomeRecommendationItemDataModel>()?.toMutableList()
+            _homeRecommendationLiveData.value?.homeRecommendations?.filterIsInstance<HomeRecommendationItemDataModel>()
+                ?.toMutableList()
                 ?: mutableListOf()
         var recommendationItem: HomeRecommendationItemDataModel? = null
         var recommendationItemPosition: Int = -1
@@ -503,6 +514,49 @@ class HomeRecommendationViewModel @Inject constructor(
         }
     }
 
+    private fun updateWishlistNewQuery(id: String, position: Int, isWishlisted: Boolean) {
+        val homeRecommendationList =
+            _homeRecommendationLiveData.value?.homeRecommendations?.filterIsInstance<HomeRecommendationItemDataModel>()
+                ?.toMutableList()
+                ?: mutableListOf()
+        var recommendationItem: HomeRecommendationItemDataModel? = null
+        var recommendationItemPosition: Int = -1
+        if (homeRecommendationList.getOrNull(position)?.recommendationProductItem?.id == id) {
+            recommendationItem =
+                homeRecommendationList[position]
+            recommendationItemPosition = position
+        } else {
+            homeRecommendationList.withIndex()
+                .find { it.value.recommendationProductItem.id == id }
+                ?.let {
+                    recommendationItemPosition = it.index
+                    recommendationItem = it.value
+                }
+        }
+        if (recommendationItemPosition != -1) {
+            recommendationItem?.let {
+                launch {
+                    homeRecommendationList[recommendationItemPosition] = it.copy(
+                        recommendationProductItem = it.recommendationProductItem.copy(isWishlist = isWishlisted)
+                    )
+
+                    val homeRecommendationCardStateValue = homeRecommendationCardState.value
+                    if (homeRecommendationCardStateValue is HomeRecommendationCardState.Success) {
+                        val existingRecommendationData =
+                            homeRecommendationCardStateValue.data
+
+                        _homeRecommendationCardState.emit(
+                            HomeRecommendationCardState.UpdateWhistList(
+                                existingRecommendationData.copy(
+                                    homeRecommendations = homeRecommendationList.toList()
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
 
 
     private fun incrementTopadsPage() {
