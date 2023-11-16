@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="dmc_set_theme">Atur Tampilan</string>
+    <string name="dmc_set_theme">Tampilan</string>
     <string name="dmc_light_mode_name">Light Mode</string>
     <string name="dmc_light_mode_description">Tampilan dengan warna cerah, cocok untuk digunakan di siang hari atau tempat terang.</string>
     <string name="dmc_dark_mode_name">Dark Mode</string>
     <string name="dmc_dark_mode_description">Tampilan dengan warna gelap, cocok untuk digunakan di malam hari atau tempat gelap.</string>
-    <string name="dmc_follow_system_name">Ikuti Pengaturan Sistem</string>
+    <string name="dmc_follow_system_name">Gunakan Pengaturan HP-mu</string>
     <string name="dmc_follow_system_description">Sesuaikan tampilan dengan mengikuti pengaturan di HP kamu.</string>
     <string name="dmc_intro_title">Baru Tampilan Warna Gelap</string>
     <string name="dmc_intro_description">Sekarang kamu bisa ubah tampilan warna terang jadi gelap dengan ikuti pengaturan sistem atau kamu bisa ubah manual di pengaturan Tokopedia.</string>
-    <string name="dmc_intro_primary_button">Ikuti Pengaturan Sistem</string>
+    <string name="dmc_intro_primary_button">Gunakan Pengaturan HP</string>
     <string name="dmc_intro_secondary_button">Nanti Aja</string>
     <string name="dmc_apply_dark_mode_toaster_message">Mode tampilan berhasil disimpan</string>
     <string name="dmc_apply_dark_mode_toaster_cta">Oke</string>
