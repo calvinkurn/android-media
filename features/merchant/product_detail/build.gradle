@@ -16,6 +16,7 @@ android {
                     pathSources + 'detail',
                     pathSources + 'detail/a_plus_content',
                     pathSources + 'detail/bmgm',
+                    pathSources + 'detail/shipment',
                     pathSources + 'detail/review',
             ]
         }

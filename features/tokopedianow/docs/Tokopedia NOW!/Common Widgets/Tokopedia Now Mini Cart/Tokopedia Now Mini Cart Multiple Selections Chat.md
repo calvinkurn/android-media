@@ -15,13 +15,13 @@
 
 <!--toc-->
 
-![image](../../../res/tokopedia_now_minicart_multiple_selections_chat_with_oos.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_minicart_multiple_selections_chat_with_oos.png)
 
 ## **Description**
 
 The Bottom Sheet is used to select several products that have been added to the Mini Cart, which will be sent to the chat and also make it easier for user to ask a question about certain products.
 
-![image](../../../res/tokopedia_now_minicart_multiple_selections_chat_on_chat_page.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_minicart_multiple_selections_chat_on_chat_page.png)
 
 ## **Requirements**
 

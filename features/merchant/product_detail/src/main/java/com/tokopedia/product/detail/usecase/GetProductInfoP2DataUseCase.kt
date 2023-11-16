@@ -414,6 +414,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                   isUsingPadding
                   imageHeight
                 }
+                shipmentBody {
+                  icon
+                  text
+                }
               }
               boMetadata
               productMetadata {
@@ -430,6 +434,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 action
                 actionLink
               }
+              background
             }
             merchantVoucherSummary{
                 animatedInfo{

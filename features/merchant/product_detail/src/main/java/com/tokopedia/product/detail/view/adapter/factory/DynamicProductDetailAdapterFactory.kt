@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
@@ -89,6 +90,7 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: DynamicOneLinerDataModel): Int
     fun type(data: APlusImageUiModel): Int
     fun type(data: BMGMUiModel): Int
+    fun type(data: ShipmentUiModel): Int
 
     // This is the new centralized recom widget model.
     // After migration, all recom widgets will only be mapped into this model

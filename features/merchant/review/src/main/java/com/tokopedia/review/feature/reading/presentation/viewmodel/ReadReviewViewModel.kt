@@ -297,6 +297,15 @@ class ReadReviewViewModel @Inject constructor(
         resetPage(isProductReview)
     }
 
+    fun setTopicFilter(
+        keywords: List<String>,
+        isProductReview: Boolean
+    ) {
+        this.filter.topic = if (keywords.isEmpty()) null
+        else FilterType.FilterTopic(keywords.joinToString(","))
+        resetPage(isProductReview)
+    }
+
     fun setFilterFromHighlightedTopic(topic: String, isProductReview: Boolean) {
         val topicsMap = getTopicsMap(isProductReview)
         this.filter.topic = FilterType.FilterTopic(topicsMap[topic] ?: "")
