@@ -4,9 +4,11 @@ package com.tokopedia.mediauploader
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.mediauploader.analytics.UploaderLogger
 import com.tokopedia.mediauploader.common.GetSourcePolicyUseCase
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
+import com.tokopedia.mediauploader.common.model.SourcePolicyModel
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -29,16 +31,18 @@ class UploaderUseCase @Inject constructor(
     override suspend fun execute(params: RequestParams): UploadResult {
         val useCaseParam = setupRequestParams(params)
 
-        val baseParam = useCaseParam.base as BaseParam
-        val imageParam = useCaseParam.image as ImageParam
+        val base = useCaseParam.base as BaseParam
+        val image = useCaseParam.image as ImageParam
 
-        getOrSetGlobalSourcePolicy(
-            file = baseParam.file,
-            sourceId = baseParam.sourceId,
-            isSecure = imageParam.isSecure
-        )
+        val policy = getOrSetGlobalSourcePolicy(base.sourceId, base.file, image.isSecure)
 
-        return request(baseParam) {
+        if (!policy.errorMessage.isNullOrEmpty()) {
+            return UploadResult.Error(policy.errorMessage, policy.requestId.toString()).also {
+                UploaderLogger.commonError(base, it)
+            }
+        }
+
+        return request(base) {
             UploaderFactory(
                 video = videoUploaderManager,
                 image = imageUploaderManager
@@ -73,11 +77,19 @@ class UploaderUseCase @Inject constructor(
     /**
      * A centralized of source policy fetcher.
      */
-    private suspend fun getOrSetGlobalSourcePolicy(sourceId: String, file: File, isSecure: Boolean) {
+    private suspend fun getOrSetGlobalSourcePolicy(
+        sourceId: String,
+        file: File,
+        isSecure: Boolean
+    ): SourcePolicyModel {
         val param = GetSourcePolicyUseCase.Param(file, sourceId, isSecure)
-        val policy = sourcePolicyUseCase(param)
+        val request = sourcePolicyUseCase(param)
 
-        sourcePolicyManager.set(policy)
+        return request.also {
+            if (it.policy != null) {
+                sourcePolicyManager.set(it.policy)
+            }
+        }
     }
 
     // Public Method

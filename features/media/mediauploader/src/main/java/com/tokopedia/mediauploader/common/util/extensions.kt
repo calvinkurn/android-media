@@ -82,11 +82,10 @@ fun Long.isLessThanHoursOf(hours: Int): Boolean {
     return diff < hours
 }
 
-fun String.addPrefix(): String {
+fun String.parseErrorMessage(): Pair<String, String> {
     val pattern = "[(<]".toRegex()
-    val kodeError = "Kode Error:"
 
-    if (!this.contains(pattern)) return this
+    if (!this.contains(pattern)) return Pair(this, "")
 
     // get string index before < or (
     val requestIdIndex = this
@@ -96,5 +95,14 @@ fun String.addPrefix(): String {
     val message = this.substring(0, requestIdIndex).trim()
     val lastMessage = this.substring(requestIdIndex, this.length).trim()
 
-    return "$message $kodeError $lastMessage"
+    val requestId = try {
+        val reqIdPattern = "<(.*?)>".toRegex()
+        val find = reqIdPattern.find(lastMessage)
+
+        find?.groupValues?.get(1) ?: "-1"
+    } catch (t: Throwable) {
+        this
+    }
+
+    return Pair(message, requestId)
 }
