@@ -457,7 +457,6 @@ open class ShopPageHomeFragment :
     }
     var isLoadInitialData = false
     private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
-    private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var globalErrorShopPage: GlobalError? = null
 
     // TODO need to move this one to viewmodel in the future
@@ -1942,7 +1941,6 @@ open class ShopPageHomeFragment :
                 shopId,
                 ShopUtil.getProductPerPage(context),
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
-                initialProductListData,
                 ShopUtil.getShopPageWidgetUserAddressLocalData(context)
                     ?: LocalCacheModel(),
                 isEnableDirectPurchase
@@ -4295,7 +4293,6 @@ open class ShopPageHomeFragment :
                 shopProductFilterParameter?.getMapData()
             )
         )
-        initialProductListData = null
         shopHomeAdapter?.refreshSticky()
         if (!isLoadInitialData && shopHomeAdapter?.isProductGridListPlaceholderExists() == false) {
             refreshProductList()
@@ -4338,10 +4335,6 @@ open class ShopPageHomeFragment :
                 userId
             )
         }
-    }
-
-    fun setInitialProductListData(productListData: ShopProduct.GetShopProduct) {
-        this.initialProductListData = productListData
     }
 
     fun setListWidgetLayoutData(homeLayoutData: HomeLayoutData?) {
