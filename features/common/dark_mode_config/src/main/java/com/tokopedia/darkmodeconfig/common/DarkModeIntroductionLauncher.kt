@@ -50,9 +50,9 @@ object DarkModeIntroductionLauncher : CoroutineScope {
             val isEligibleTimeRange = has3DaysOpenedApp(sharedPref)
             val neverOpenedPopup = !hasOpenedPopup(sharedPref)
             val neverOpenedConfigPage = hasOpenedConfigPage(sharedPref)
-            val isEnabled = getDarkModeIntroStatusConfig(context)
+            val isAllowedByRemoteConfig = isAllowedByRemoteConfig(context)
             val shouldShowPopup = isEligibleTimeRange && isLightModeApp && isDarkModeOS
-                    && isLoggedIn && neverOpenedPopup && neverOpenedConfigPage && isEnabled
+                    && isLoggedIn && neverOpenedPopup && neverOpenedConfigPage && isAllowedByRemoteConfig
             if (shouldShowPopup) {
                 markAsOpenedPopup(sharedPref)
                 withContext(Dispatchers.Main) {
@@ -62,9 +62,11 @@ object DarkModeIntroductionLauncher : CoroutineScope {
         }
     }
 
-    private fun getDarkModeIntroStatusConfig(context: Context): Boolean {
+    private fun isAllowedByRemoteConfig(context: Context): Boolean {
         val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_DARK_MODE_INTRO, false)
+        val isEnabled = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_DARK_MODE_INTRO, false)
+        val isNotForceLightMode = !remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, true)
+        return isEnabled && isNotForceLightMode
     }
 
     private fun hasOpenedConfigPage(sharedPref: SharedPreferences): Boolean {
