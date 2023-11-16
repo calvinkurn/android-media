@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -20,14 +18,10 @@ import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.common.util.DateTimeConstant
 import com.tokopedia.shop.info.domain.entity.ShopNote
-import com.tokopedia.shop.info.domain.entity.ShopPerformance
-import com.tokopedia.shop.info.domain.entity.ShopPerformanceDuration
 import com.tokopedia.shop.info.domain.entity.ShopPharmacyInfo
-import com.tokopedia.shop.info.domain.entity.ShopStatsRawData
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop.info.domain.usecase.GetEpharmacyShopInfoUseCase
 import com.tokopedia.shop.info.domain.usecase.GetNearestEpharmacyWarehouseLocationUseCase
-import com.tokopedia.shop.info.domain.usecase.GetShopStatsRawDataUseCase
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopRatingAndTopicsUseCase
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopReviewReadingListUseCase
 import com.tokopedia.shop.info.view.model.ShopInfoUiEffect
@@ -57,16 +51,11 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val getShopPageHeaderLayoutUseCase: GetShopPageHeaderLayoutUseCase,
     private val getEpharmacyShopInfoUseCase: GetEpharmacyShopInfoUseCase,
     private val getNearestEpharmacyWarehouseLocationUseCase: GetNearestEpharmacyWarehouseLocationUseCase,
-    private val getMessageIdChatUseCase: GetMessageIdChatUseCase,
-    private val getShopStatsRawDataUseCase: GetShopStatsRawDataUseCase
+    private val getMessageIdChatUseCase: GetMessageIdChatUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     companion object {
         private const val ID_FULFILLMENT_SERVICE_E_PHARMACY = 2
-        private const val TWENTY_FOUR_HOUR = 24
-        private const val FIFTY_NINE_MINUTE = 59
-        private const val SIXTY_MINUTE = 60
-        private const val ONE_DAY = 1
 
         const val FIVE_REVIEW = 5
         const val FIRST_PAGE = 1
@@ -134,7 +123,6 @@ class ShopInfoReimagineViewModel @Inject constructor(
                     val shopInfoDeferred = async { handleGetShopInfo(shopId.toIntOrZero()) }
                     val shopNotesDeferred = async { getShopNotes(shopId) }
                     val shopOperationalHoursDeferred = async { getShopOperationalHours(shopId) }
-                    val shopChatPerformanceDeferred = async { getShopChatPerformance(shopId) }
 
                     val shopHeaderLayout = shopHeaderLayoutDeferred.await()
                     val shopRating = shopRatingDeferred.await()
@@ -142,7 +130,6 @@ class ShopInfoReimagineViewModel @Inject constructor(
                     val shopInfo = shopInfoDeferred.await()
                     val shopNotes = shopNotesDeferred.await()
                     val shopOperationalHours = shopOperationalHoursDeferred.await()
-                    val shopChatPerformance = shopChatPerformanceDeferred.await()
 
                     val pharmacyInfo = if (isEpharmacy(shopInfo)) {
                         getPharmacyInfo(
@@ -180,11 +167,6 @@ class ShopInfoReimagineViewModel @Inject constructor(
                             ),
                             rating = shopRating,
                             review = shopReview,
-                            shopPerformance = ShopPerformance(
-                                totalProductSoldCount = shopInfo.shopStats.productSold,
-                                chatPerformance = shopChatPerformance.toChatPerformance(), // TODO replace with real data
-                                orderProcessTime = shopHeaderLayout.shopPageGetHeaderLayout.toOrderProcessTime()
-                            ),
                             shopNotes = shopNotes.toShopNotes(),
                             shipments = shopInfo.shipments.toShipments(),
                             pharmacy = pharmacyInfo
@@ -293,11 +275,6 @@ class ShopInfoReimagineViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getShopChatPerformance(shopId: String): ShopStatsRawData {
-        val param = GetShopStatsRawDataUseCase.Param(shopId = shopId, source = PAGE_SOURCE)
-        return getShopStatsRawDataUseCase.execute(param)
-    }
-
     private fun handleReportShop() {
         if (!userSessionInterface.isLoggedIn) {
             _uiEffect.tryEmit(ShopInfoUiEffect.RedirectToLoginPage)
@@ -373,19 +350,6 @@ class ShopInfoReimagineViewModel @Inject constructor(
         }
     }
 
-    private fun ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.toOrderProcessTime(): String {
-        val shopPerformance = this.widgets.firstOrNull { it.name == "shop_performance" }
-        if (shopPerformance == null) return ""
-
-        val shopPerformanceListComponent = shopPerformance.listComponent
-        val shopHandling = shopPerformanceListComponent.firstOrNull { it.name == "shop_handling" }
-        if (shopHandling == null) return ""
-
-        val listText = shopHandling.data.listText
-        val textHtmls = listText.map { it.textHtml }
-        return textHtmls.firstOrNull().orEmpty()
-    }
-
     private fun ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.toShopUsp(): List<String> {
         val shopBasicInfo = this.widgets.firstOrNull { it.name == "shop_basic_info" }
         if (shopBasicInfo == null) return emptyList()
@@ -428,24 +392,5 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private fun String.toShopJoinDate(): String {
         return toDate(DateTimeConstant.DATE_TIME_DAY_PRECISION).formatTo(DateTimeConstant.DATE_TIME_YEAR_PRECISION)
-    }
-
-    private fun ShopStatsRawData.toChatPerformance(): ShopPerformanceDuration {
-        val chatAndDiscussionReplySpeedMinute = chatAndDiscussionReplySpeed.toInt()
-        val chatAndDiscussionReplySpeedHour = chatAndDiscussionReplySpeedMinute / SIXTY_MINUTE
-        val chatAndDiscussionReplySpeedDay = chatAndDiscussionReplySpeedHour / TWENTY_FOUR_HOUR
-
-        return when {
-            chatAndDiscussionReplySpeedMinute == Int.ZERO -> ShopPerformanceDuration.Minute(value = Int.ONE)
-            chatAndDiscussionReplySpeedMinute < FIFTY_NINE_MINUTE -> ShopPerformanceDuration.Minute(chatAndDiscussionReplySpeedMinute)
-            chatAndDiscussionReplySpeedMinute == SIXTY_MINUTE -> ShopPerformanceDuration.Hour(value = Int.ONE)
-
-            chatAndDiscussionReplySpeedHour < TWENTY_FOUR_HOUR -> ShopPerformanceDuration.Hour(chatAndDiscussionReplySpeedHour)
-            chatAndDiscussionReplySpeedHour == TWENTY_FOUR_HOUR -> ShopPerformanceDuration.Day(value = Int.ONE)
-
-            chatAndDiscussionReplySpeedDay == ONE_DAY -> ShopPerformanceDuration.Day(value = Int.ONE)
-
-            else -> ShopPerformanceDuration.Day(value = chatAndDiscussionReplySpeedDay)
-        }
     }
 }
