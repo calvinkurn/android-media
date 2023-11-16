@@ -1,6 +1,8 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.digital.home.domain.DigitalPersoCloseWidgetUseCase
+import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.model.RechargeHomepageSectionAction
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
@@ -16,6 +18,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -32,6 +35,9 @@ class RechargeHomepageViewModelTest {
 
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
+
+    @RelaxedMockK
+    lateinit var digitalPersoCloseWidgetUseCase: DigitalPersoCloseWidgetUseCase
 
     private lateinit var gqlResponseFail: GraphqlResponse
     private lateinit var rechargeHomepageViewModel: RechargeHomepageViewModel
@@ -50,7 +56,8 @@ class RechargeHomepageViewModelTest {
 
         rechargeHomepageViewModel = RechargeHomepageViewModel(
             graphqlRepository,
-            CoroutineTestDispatchersProvider
+            CoroutineTestDispatchersProvider,
+            digitalPersoCloseWidgetUseCase
         )
     }
 
@@ -215,7 +222,7 @@ class RechargeHomepageViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlSectionResponseSuccess
 
         rechargeHomepageViewModel.getRechargeHomepageSections(
-            rechargeHomepageViewModel.createRechargeHomepageSectionsParams(31, listOf(1))
+            rechargeHomepageViewModel.createRechargeHomepageSectionsParams(31, listOf(1),  sectionNames = "")
         )
         val sections = rechargeHomepageViewModel.rechargeHomepageSections.value
         assert(!sections.isNullOrEmpty())
@@ -294,7 +301,7 @@ class RechargeHomepageViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlSectionResponseSuccess
         rechargeHomepageViewModel.calledSectionIds.add(1)
         rechargeHomepageViewModel.getRechargeHomepageSections(
-            rechargeHomepageViewModel.createRechargeHomepageSectionsParams(31, listOf(1))
+            rechargeHomepageViewModel.createRechargeHomepageSectionsParams(31, listOf(1), sectionNames = "")
         )
         val sections = rechargeHomepageViewModel.rechargeHomepageSections.value
         assert(!sections.isNullOrEmpty())
@@ -409,13 +416,15 @@ class RechargeHomepageViewModelTest {
             val actual = rechargeHomepageViewModel.createRechargeHomepageSectionsParams(
                 31,
                 listOf(1),
-                enablePersonalize
+                enablePersonalize,
+                sectionNames = "todo_widget"
             )
             assertEquals(
                 actual, mapOf(
                     PARAM_RECHARGE_HOMEPAGE_SECTIONS_PLATFORM_ID to 31,
                     PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS to listOf(1),
-                    PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to enablePersonalize
+                    PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to enablePersonalize,
+                    PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_NAME to "todo_widget"
                 )
             )
         }
@@ -425,12 +434,13 @@ class RechargeHomepageViewModelTest {
     fun createRechargeHomepageSectionsParams_Default() {
         with(RechargeHomepageViewModel.Companion) {
             val actual =
-                rechargeHomepageViewModel.createRechargeHomepageSectionsParams(31, listOf(1))
+                rechargeHomepageViewModel.createRechargeHomepageSectionsParams(31, listOf(1), sectionNames = "todo_widget")
             assertEquals(
                 actual, mapOf(
                     PARAM_RECHARGE_HOMEPAGE_SECTIONS_PLATFORM_ID to 31,
                     PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS to listOf(1),
-                    PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to false
+                    PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to false,
+                    PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_NAME to "todo_widget"
                 )
             )
         }
