@@ -6,8 +6,6 @@ sealed class HomeRecommendationCardState<out T> {
     data class EmptyData<T>(val data: T) : HomeRecommendationCardState<T>()
 
     data class Success<T>(val data: T) : HomeRecommendationCardState<T>()
-    data class UpdateWhistList<T>(val data: T) : HomeRecommendationCardState<T>()
-
 
     data class Fail<T>(
         val data: T,

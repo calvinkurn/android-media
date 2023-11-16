@@ -127,13 +127,13 @@ class HomeRecommendationViewModel @Inject constructor(
                 _homeRecommendationCardState.emit(HomeRecommendationCardState.Success(result))
             }
         }, onError = {
-            _homeRecommendationCardState.emit(
-                HomeRecommendationCardState.Fail(
-                    HomeRecommendationDataModel(listOf(HomeRecommendationError(it))),
-                    throwable = it
+                _homeRecommendationCardState.emit(
+                    HomeRecommendationCardState.Fail(
+                        HomeRecommendationDataModel(listOf(HomeRecommendationError(it))),
+                        throwable = it
+                    )
                 )
-            )
-        })
+            })
     }
 
     private fun fetchNextHomeRecommendationCard(
@@ -180,16 +180,16 @@ class HomeRecommendationViewModel @Inject constructor(
                     HomeRecommendationCardState.Success(newHomeRecommendationDataModel)
                 )
             }, onError = {
-                existingRecommendationData.remove(loadMoreModel)
-                existingRecommendationData.add(buttonRetryUiModel)
+                    existingRecommendationData.remove(loadMoreModel)
+                    existingRecommendationData.add(buttonRetryUiModel)
 
-                _homeRecommendationCardState.emit(
-                    HomeRecommendationCardState.FailNextPage(
-                        HomeRecommendationDataModel(existingRecommendationData.toList()),
-                        throwable = it
+                    _homeRecommendationCardState.emit(
+                        HomeRecommendationCardState.FailNextPage(
+                            HomeRecommendationDataModel(existingRecommendationData.toList()),
+                            throwable = it
+                        )
                     )
-                )
-            })
+                })
         }
     }
 
@@ -493,8 +493,7 @@ class HomeRecommendationViewModel @Inject constructor(
         var recommendationItem: HomeRecommendationItemDataModel? = null
         var recommendationItemPosition: Int = -1
         if (homeRecomendationList.getOrNull(position)?.recommendationProductItem?.id == id) {
-            recommendationItem =
-                homeRecomendationList[position]
+            recommendationItem = homeRecomendationList[position]
             recommendationItemPosition = position
         } else {
             homeRecomendationList.withIndex()
@@ -519,49 +518,32 @@ class HomeRecommendationViewModel @Inject constructor(
     }
 
     private fun updateWishlistNewQuery(id: String, position: Int, isWishlisted: Boolean) {
-        val homeRecommendationList =
-            _homeRecommendationLiveData.value?.homeRecommendations?.filterIsInstance<HomeRecommendationItemDataModel>()
-                ?.toMutableList()
-                ?: mutableListOf()
-        var recommendationItem: HomeRecommendationItemDataModel? = null
-        var recommendationItemPosition: Int = -1
-        if (homeRecommendationList.getOrNull(position)?.recommendationProductItem?.id == id) {
-            recommendationItem =
-                homeRecommendationList[position]
-            recommendationItemPosition = position
-        } else {
-            homeRecommendationList.withIndex()
-                .find { it.value.recommendationProductItem.id == id }
-                ?.let {
-                    recommendationItemPosition = it.index
-                    recommendationItem = it.value
-                }
-        }
-        if (recommendationItemPosition != -1) {
+        val homeRecommendationCardStateValue = homeRecommendationCardState.value
+        if (homeRecommendationCardStateValue is HomeRecommendationCardState.Success) {
+            val homeRecommendationList =
+                homeRecommendationCardStateValue.data.homeRecommendations.toMutableList()
+            val homeRecommendationItemList =
+                homeRecommendationList.filterIsInstance<HomeRecommendationItemDataModel>()
+
+            val recommendationItem = homeRecommendationItemList.find { it.recommendationProductItem.id == id }
+
             recommendationItem?.let {
-                launch {
-                    homeRecommendationList[recommendationItemPosition] = it.copy(
+                launch(coroutineContext) {
+                    homeRecommendationList[position] = it.copy(
                         recommendationProductItem = it.recommendationProductItem.copy(isWishlist = isWishlisted)
                     )
 
-                    val homeRecommendationCardStateValue = homeRecommendationCardState.value
-                    if (homeRecommendationCardStateValue is HomeRecommendationCardState.Success) {
-                        val existingRecommendationData =
-                            homeRecommendationCardStateValue.data
-
-                        _homeRecommendationCardState.emit(
-                            HomeRecommendationCardState.UpdateWhistList(
-                                existingRecommendationData.copy(
-                                    homeRecommendations = homeRecommendationList.toList()
-                                )
+                    _homeRecommendationCardState.emit(
+                        HomeRecommendationCardState.Success(
+                            homeRecommendationCardStateValue.data.copy(
+                                homeRecommendations = homeRecommendationList.copy().toList()
                             )
                         )
-                    }
+                    )
                 }
             }
         }
     }
-
 
     private fun incrementTopadsPage() {
         topAdsBannerNextPage = try {

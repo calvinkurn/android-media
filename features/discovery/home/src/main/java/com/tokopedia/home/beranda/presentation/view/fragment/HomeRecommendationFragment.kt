@@ -284,10 +284,6 @@ class HomeRecommendationFragment :
                             is HomeRecommendationCardState.LoadingMore -> {
                                 adapter.submitList(it.data.homeRecommendations)
                             }
-
-                            is HomeRecommendationCardState.UpdateWhistList -> {
-                                adapter.submitList(it.data.homeRecommendations)
-                            }
                         }
                     }
                 }
