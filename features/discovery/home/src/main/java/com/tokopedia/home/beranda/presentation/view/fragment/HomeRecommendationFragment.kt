@@ -694,18 +694,18 @@ class HomeRecommendationFragment :
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
         position: Int
     ): ProductCardOptionsModel {
-        return ProductCardOptionsModel().apply {
-            hasWishlist = true
-            isWishlisted = homeRecommendationItemDataModel.recommendationProductItem.isWishlist
-            productId = homeRecommendationItemDataModel.recommendationProductItem.id
-            isTopAds = homeRecommendationItemDataModel.recommendationProductItem.isTopAds
-            topAdsWishlistUrl =
-                homeRecommendationItemDataModel.recommendationProductItem.wishListUrl
-            topAdsClickUrl = homeRecommendationItemDataModel.recommendationProductItem.clickUrl
-            productName = homeRecommendationItemDataModel.recommendationProductItem.name
-            productImageUrl = homeRecommendationItemDataModel.recommendationProductItem.imageUrl
-            productPosition = position
-        }
+        val productCardOptionsModel = ProductCardOptionsModel()
+        productCardOptionsModel.hasWishlist = true
+        productCardOptionsModel.isWishlisted = homeRecommendationItemDataModel.recommendationProductItem.isWishlist
+        productCardOptionsModel.productId = homeRecommendationItemDataModel.recommendationProductItem.id
+        productCardOptionsModel.isTopAds = homeRecommendationItemDataModel.recommendationProductItem.isTopAds
+        productCardOptionsModel.topAdsWishlistUrl =
+            homeRecommendationItemDataModel.recommendationProductItem.wishListUrl
+        productCardOptionsModel.topAdsClickUrl = homeRecommendationItemDataModel.recommendationProductItem.clickUrl
+        productCardOptionsModel.productName = homeRecommendationItemDataModel.recommendationProductItem.name
+        productCardOptionsModel.productImageUrl = homeRecommendationItemDataModel.recommendationProductItem.imageUrl
+        productCardOptionsModel.productPosition = position
+        return productCardOptionsModel
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
