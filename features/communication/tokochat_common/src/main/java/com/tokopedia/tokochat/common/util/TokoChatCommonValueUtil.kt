@@ -6,7 +6,7 @@ import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 
-object TokoChatValueUtil {
+object TokoChatCommonValueUtil {
     /**
      * Role Value
      */
@@ -41,6 +41,11 @@ object TokoChatValueUtil {
             GOSEND_SAMEDAY_SERVICE_TYPE -> IC_SHOPPING_LOGISTIC_SOURCE
             else -> ""
         }
+    }
+
+    fun isChatLogistic(serviceType: Int): Boolean {
+        return serviceType != GOSEND_INSTANT_SERVICE_TYPE &&
+            serviceType != GOSEND_SAMEDAY_SERVICE_TYPE
     }
 
     fun getSourceIcon(source: String): String {

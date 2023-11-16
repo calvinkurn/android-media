@@ -1,3 +1,4 @@
+ 
 package com.tokopedia.tokochat.test.chatroom
 
 import androidx.lifecycle.MutableLiveData
@@ -6,7 +7,7 @@ import com.tokopedia.tokochat.utils.observeAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -15,11 +16,11 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getMemberLeft should give LiveData String of member left`() {
-        runBlocking {
+        runTest {
             // Given
             val memberLeftLiveDataDummy = MutableLiveData("123")
             coEvery {
-                getChannelUseCase.getMemberLeftLiveData()
+                tokoChatMemberUseCase.getMemberLeftLiveData()
             } returns memberLeftLiveDataDummy
 
             // When
@@ -32,10 +33,10 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when failed to getMemberLeft should give LiveData String of member left`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
-                getChannelUseCase.getMemberLeftLiveData()
+                tokoChatMemberUseCase.getMemberLeftLiveData()
             } throws throwableDummy
 
             // When
@@ -51,7 +52,7 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getUserId should give user id as non empty string`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
                 registrationChannelUseCase.getUserId()
@@ -67,10 +68,10 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when reset member left livedata should return null`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
-                getChannelUseCase.getMemberLeftLiveData()
+                tokoChatMemberUseCase.getMemberLeftLiveData()
             } returns MutableLiveData(null)
 
             // When
@@ -84,7 +85,7 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when user first open, get consent should return true`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
                 getNeedConsentUseCase(any())
@@ -103,7 +104,7 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when user not first open, get consent should return false`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
                 getNeedConsentUseCase(any())
@@ -122,7 +123,7 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `should get error when get consent return result fail with error message`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
                 getNeedConsentUseCase(any())
@@ -141,7 +142,7 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `should get error when get consent return error message`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
                 getNeedConsentUseCase(any())

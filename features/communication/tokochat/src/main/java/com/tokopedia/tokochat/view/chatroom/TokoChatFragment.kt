@@ -48,14 +48,14 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
 import com.tokopedia.tokochat.analytics.TokoChatAnalyticsConstants
 import com.tokopedia.tokochat.common.util.OrderStatusType
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.CUSTOMER
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.DEFAULT_CENSOR_PERCENTAGE
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.DRIVER
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.IS_FROM_BUBBLE_KEY
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.getFirstNameDriver
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.getSourceCategory
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.getSourceIcon
 import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.CUSTOMER
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.DRIVER
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getFirstNameDriver
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSourceCategory
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSourceIcon
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.tokochat.common.view.chatroom.TokoChatBaseFragment
@@ -597,6 +597,9 @@ open class TokoChatFragment @Inject constructor(
                             Pair(viewModel.tkpdOrderId, getSourceCategory(viewModel.source))
                         )
                     }
+                    tokoChatAnalytics?.sendPendingImpressionOnImageAttachment(
+                        it.data.tokochatOrderProgress.state
+                    )
                 }
                 is Fail -> {
                     logExceptionTokoChat(

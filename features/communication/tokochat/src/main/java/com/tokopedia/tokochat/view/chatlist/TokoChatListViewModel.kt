@@ -6,7 +6,7 @@ import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.BATCH_LIMIT
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.BATCH_LIMIT
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.domain.usecase.TokoChatListUseCase
@@ -53,7 +53,6 @@ class TokoChatListViewModel @Inject constructor(
 
     fun setupViewModelObserver() {
         _actionFlow.process()
-        observeChatListItemFlow()
     }
 
     fun processAction(action: TokoChatListAction) {
@@ -84,12 +83,13 @@ class TokoChatListViewModel @Inject constructor(
     }
 
     private fun observeChatListItemFlow() {
+        // Cancel existing job first
         val previousJob = chatListJob
         previousJob?.cancel()
 
         chatListJob = viewModelScope.launch(dispatcher.io) {
             try {
-                previousJob?.join()
+                previousJob?.join() // Wait until previous job finished
                 chatListUseCase.fetchAllCachedChannels(
                     listOf(ChannelType.GroupBooking),
                     BATCH_LIMIT
@@ -136,7 +136,7 @@ class TokoChatListViewModel @Inject constructor(
                 chatItemList = it.chatItemList + filteredChatItemList,
                 trackerData = trackerData,
                 errorMessage = null,
-                hasNextPage = it.chatItemList.size <= filteredChatItemList.size,
+                hasNextPage = (it.chatItemList.size < filteredChatItemList.size),
                 localListLoaded = true
             )
         }
@@ -182,7 +182,7 @@ class TokoChatListViewModel @Inject constructor(
         return mapper.mapToListChat(filteredChannel)
     }
 
-    fun resetChatListData() {
+    private fun resetChatListData() {
         _chatListUiState.update {
             it.copy(
                 isLoading = false,

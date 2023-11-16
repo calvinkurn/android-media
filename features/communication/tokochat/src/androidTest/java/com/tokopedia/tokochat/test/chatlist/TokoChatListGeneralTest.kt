@@ -7,7 +7,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.test.application.annotations.UiTest
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseModelStub
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.test.base.BaseTokoChatListTest
@@ -183,7 +183,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
         // Then
         val intent = RouteManager.getIntent(
             context,
-            "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatValueUtil.TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
+            "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatCommonValueUtil.TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
         )
         Intents.intended(IntentMatchers.hasData(intent.data))
     }

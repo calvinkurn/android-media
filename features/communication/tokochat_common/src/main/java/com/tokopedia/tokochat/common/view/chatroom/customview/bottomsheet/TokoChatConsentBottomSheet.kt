@@ -9,9 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.tokochat_common.databinding.TokochatConsentBottomsheetBinding
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
 import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IMAGE_TOKOCHAT_CONSENT
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat_common.databinding.TokochatConsentBottomsheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
@@ -68,7 +68,7 @@ class TokoChatConsentBottomSheet : BottomSheetUnify() {
 
     private fun loadConsentWidget() {
         binding?.tokochatWidgetConsent?.load(
-            TokoChatValueUtil.consentParam
+            TokoChatCommonValueUtil.consentParam
         )
     }
 
