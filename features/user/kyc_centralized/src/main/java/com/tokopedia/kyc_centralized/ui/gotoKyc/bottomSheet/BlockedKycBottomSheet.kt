@@ -10,8 +10,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycBlockedBinding
 import com.tokopedia.kyc_centralized.di.DaggerGoToKycComponent
@@ -68,10 +66,6 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
                 dismiss()
             }
         }
-
-        binding?.btnSecondary?.setOnClickListener {
-            dismiss()
-        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -112,7 +106,6 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
             tvTitle.text = getString(R.string.goto_kyc_blocked_title_multiple_account)
             tvDescription.text = getString(R.string.goto_kyc_blocked_subtitle_multiple_account)
             btnPrimary.text = getString(R.string.goto_kyc_contact_tokopedia_care)
-            btnSecondary.show()
         }
     }
 
@@ -124,7 +117,6 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
             tvTitle.text = getString(R.string.goto_kyc_blocked_title_general)
             tvDescription.text = getString(R.string.goto_kyc_blocked_subtitle_general)
             btnPrimary.text = getString(R.string.goto_kyc_oke)
-            btnSecondary.hide()
         }
     }
 
