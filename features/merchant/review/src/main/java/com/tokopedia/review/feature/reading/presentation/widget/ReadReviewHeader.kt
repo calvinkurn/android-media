@@ -40,7 +40,9 @@ import timber.log.Timber
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ReadReviewHeader @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     companion object {
@@ -64,7 +66,7 @@ class ReadReviewHeader @JvmOverloads constructor(
         setupViews()
     }
 
-    fun setIsProductReview(isProductReview: Boolean){
+    fun setIsProductReview(isProductReview: Boolean) {
         this.isProductReview = isProductReview
     }
 
@@ -107,7 +109,7 @@ class ReadReviewHeader @JvmOverloads constructor(
     private fun showRatingContainerBorderLine() {
         try {
             binding.containerReviewRating.setBackgroundResource(R.drawable.bg_review_header_bordered)
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             Timber.e(e)
         }
     }
@@ -204,7 +206,7 @@ class ReadReviewHeader @JvmOverloads constructor(
             context.getString(R.string.review_reading_filter_multiple_topic_selected, selectedFilter.size)
         } else {
             selectedFilter.firstOrNull()?.listTitleText
-                    ?: context.getString(R.string.review_reading_filter_all_topics)
+                ?: context.getString(R.string.review_reading_filter_all_topics)
         }
     }
 
@@ -217,8 +219,11 @@ class ReadReviewHeader @JvmOverloads constructor(
                 Pair(context.getString(R.string.review_reading_filter_all_ratings), null)
             }
             else -> {
-                Pair(selectedFilter.firstOrNull()?.listTitleText
-                        ?: context.getString(R.string.review_reading_filter_all_ratings), getIconUnifyDrawable(context, IconUnify.STAR_FILLED, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300)))
+                Pair(
+                    selectedFilter.firstOrNull()?.listTitleText
+                        ?: context.getString(R.string.review_reading_filter_all_ratings),
+                    getIconUnifyDrawable(context, IconUnify.STAR_FILLED, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300))
+                )
             }
         }
     }
@@ -232,10 +237,11 @@ class ReadReviewHeader @JvmOverloads constructor(
     }
 
     private fun getDefaultSort(): String {
-        return if (isProductReview)
+        return if (isProductReview) {
             SortTypeConstants.MOST_HELPFUL_COPY
-        else
+        } else {
             SortTypeConstants.LATEST_COPY
+        }
     }
 
     private fun getDefaultSortTitle(): String {
@@ -278,6 +284,7 @@ class ReadReviewHeader @JvmOverloads constructor(
 
     fun setAvailableTopics(
         keywords: List<Keyword>,
+        selectedTopic: String?,
         listener: ReadReviewFilterChipsListener
     ) {
         if (keywords.isEmpty()) return
@@ -297,6 +304,10 @@ class ReadReviewHeader @JvmOverloads constructor(
                     }
                     isSelected = !isSelected
                     listener.onFilterTopic(selectedTopics.toList())
+                }
+                if (selectedTopic == keyword.text) {
+                    chipType = ChipsUnify.TYPE_SELECTED
+                    selectedTopics.add(keyword.text)
                 }
             }
             chipGroup.addView(chip)
