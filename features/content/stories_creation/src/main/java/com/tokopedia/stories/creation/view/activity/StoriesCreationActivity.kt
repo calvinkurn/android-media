@@ -28,6 +28,7 @@ import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
 import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
+import com.tokopedia.stories.creation.analytic.StoriesCreationAnalytic
 import com.tokopedia.stories.creation.di.StoriesCreationInjector
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBottomSheet
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottomSheet
@@ -60,6 +61,9 @@ class StoriesCreationActivity : BaseActivity() {
 
     @Inject
     lateinit var contentCreationRemoteConfig: ContentCreationRemoteConfigManager
+
+    @Inject
+    lateinit var storiesCreationAnalytic: StoriesCreationAnalytic
 
     private val viewModel by viewModels<StoriesCreationViewModel> { viewModelFactory }
 
@@ -195,6 +199,12 @@ class StoriesCreationActivity : BaseActivity() {
 
                     StoriesCreationScreen(
                         uiState = uiState,
+                        onImpressScreen = {
+                            storiesCreationAnalytic.openScreenCreationPage(
+                                account = viewModel.selectedAccount,
+                                storyId = viewModel.storyId
+                            )
+                        },
                         onLoadMediaPreview = { mediaFilePath ->
                             val file = videoSnapshotHelper.snapVideo(this, mediaFilePath)
 
@@ -210,11 +220,20 @@ class StoriesCreationActivity : BaseActivity() {
                             /** Won't handle for now since UGC is not supported yet */
                         },
                         onClickAddProduct = {
+                            storiesCreationAnalytic.clickAddProduct(
+                                account = viewModel.selectedAccount,
+                            )
+
                             supportFragmentManager.beginTransaction()
                                 .add(ProductSetupFragment::class.java, null, null)
                                 .commit()
                         },
                         onClickUpload = {
+                            storiesCreationAnalytic.clickUpload(
+                                account = viewModel.selectedAccount,
+                                storyId = viewModel.storyId
+                            )
+
                             viewModel.submitAction(StoriesCreationAction.ClickUpload)
                         }
                     )

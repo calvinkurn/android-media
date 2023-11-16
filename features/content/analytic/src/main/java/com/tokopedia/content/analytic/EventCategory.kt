@@ -9,4 +9,6 @@ object EventCategory {
     const val playBroadcastShort = "play broadcast short"
 
     const val browseFeed = "feed browse page"
+
+    const val storyCreation = "play broadcast story"
 }

@@ -63,6 +63,7 @@ import com.tokopedia.nest.components.R as nestcomponentsR
 @Composable
 fun StoriesCreationScreen(
     uiState: StoriesCreationUiState,
+    onImpressScreen: () -> Unit,
     onLoadMediaPreview: suspend (filePath: String) -> StoriesMediaCover,
     onBackPressed: () -> Unit,
     onClickChangeAccount: () -> Unit,
@@ -84,6 +85,10 @@ fun StoriesCreationScreen(
 
     if (uiState.media.filePath.isEmpty()) {
         return
+    }
+
+    LaunchedEffect(Unit) {
+        onImpressScreen()
     }
 
     ConstraintLayout(
@@ -425,6 +430,7 @@ private fun StoriesCreationScreenPreview() {
 
             StoriesCreationScreen(
                 uiState = uiState,
+                onImpressScreen = {},
                 onLoadMediaPreview = { StoriesMediaCover.Loading },
                 onBackPressed = {},
                 onClickChangeAccount = {},
