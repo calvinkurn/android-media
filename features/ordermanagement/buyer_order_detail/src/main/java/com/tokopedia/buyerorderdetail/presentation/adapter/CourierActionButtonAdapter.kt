@@ -157,7 +157,7 @@ class CourierActionButtonAdapter(
                 ApplinkConst.TokoChat.ORDER_ID_GOJEK,
                 ApplinkConst.TokoChat.PARAM_SOURCE
             )
-            if (queryParams.size >= 2) {
+            if (queryParams.size >= TOTAL_PARAMS_NEEDED) {
                 courierButtonListener.onChatButtonClicked(
                     queryParams[0],
                     queryParams[1],
