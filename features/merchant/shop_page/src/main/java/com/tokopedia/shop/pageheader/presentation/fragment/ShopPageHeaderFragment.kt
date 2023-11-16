@@ -1113,7 +1113,13 @@ class ShopPageHeaderFragment :
     private fun getShopShareAndOperationalHourStatusData() {
         shopHeaderViewModel?.getShopShareAndOperationalHourStatusData(
             shopId,
-            shopDomain ?: "",
+            shopDomain.orEmpty(),
+            page = START_PAGE,
+            itemPerPage = ShopUtil.getProductPerPage(context),
+            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
+            keyword = "",
+            etalaseId = "",
+            widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             isRefresh
         )
     }
@@ -1418,12 +1424,6 @@ class ShopPageHeaderFragment :
         shopHeaderViewModel?.getNewShopPageTabData(
             shopId = shopId,
             shopDomain = shopDomain.orEmpty(),
-            page = START_PAGE,
-            itemPerPage = ShopUtil.getProductPerPage(context),
-            shopProductFilterParameter = initialProductFilterParameter
-                ?: ShopProductFilterParameter(),
-            keyword = "",
-            etalaseId = "",
             isRefresh = isRefresh,
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
@@ -2131,9 +2131,6 @@ class ShopPageHeaderFragment :
                         shopRef,
                         shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     ).apply {
-                        shopHeaderViewModel?.productListData?.let {
-                            setInitialProductListData(it)
-                        }
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
                         setHomeTabLottieUrl(it.lottieUrl)
@@ -2150,9 +2147,6 @@ class ShopPageHeaderFragment :
                         shopRef = shopRef,
                         isEnableDirectPurchase = shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     )
-                    shopHeaderViewModel?.productListData?.let {
-                        shopPageProductFragment.setInitialProductListData(it)
-                    }
                     shopPageProductFragment
                 }
 
@@ -2259,9 +2253,6 @@ class ShopPageHeaderFragment :
                 shopRef,
                 shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
             ).apply {
-                shopHeaderViewModel?.productListData?.let {
-                    setInitialProductListData(it)
-                }
                 shopHeaderViewModel?.homeWidgetLayoutData?.let {
                     setListWidgetLayoutData(it)
                 }
