@@ -33,21 +33,21 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
                 getTokoChatOrderProgressUseCase(
                     TokoChatOrderProgressParam(
                         TKPD_ORDER_ID_DUMMY,
-                        TokoChatCommonValueUtil.TOKOFOOD
+                        TokoChatCommonValueUtil.SOURCE_TOKOFOOD
                     )
                 )
             } returns tokoChatOrderProgressResponse
 
             viewModel.loadOrderCompletedStatus(
                 TKPD_ORDER_ID_DUMMY,
-                TokoChatCommonValueUtil.TOKOFOOD
+                TokoChatCommonValueUtil.SOURCE_TOKOFOOD
             )
 
             coVerify {
                 getTokoChatOrderProgressUseCase(
                     TokoChatOrderProgressParam(
                         TKPD_ORDER_ID_DUMMY,
-                        TokoChatCommonValueUtil.TOKOFOOD
+                        TokoChatCommonValueUtil.SOURCE_TOKOFOOD
                     )
                 )
             }
@@ -66,21 +66,21 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
                 getTokoChatOrderProgressUseCase(
                     TokoChatOrderProgressParam(
                         TKPD_ORDER_ID_DUMMY,
-                        TokoChatCommonValueUtil.TOKOFOOD
+                        TokoChatCommonValueUtil.SOURCE_TOKOFOOD
                     )
                 )
             } throws errorException
 
             viewModel.loadOrderCompletedStatus(
                 TKPD_ORDER_ID_DUMMY,
-                TokoChatCommonValueUtil.TOKOFOOD
+                TokoChatCommonValueUtil.SOURCE_TOKOFOOD
             )
 
             coVerify {
                 getTokoChatOrderProgressUseCase(
                     TokoChatOrderProgressParam(
                         TKPD_ORDER_ID_DUMMY,
-                        TokoChatCommonValueUtil.TOKOFOOD
+                        TokoChatCommonValueUtil.SOURCE_TOKOFOOD
                     )
                 )
             }
@@ -104,7 +104,7 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
                 getTokoChatOrderProgressUseCase(
                     TokoChatOrderProgressParam(
                         TKPD_ORDER_ID_DUMMY,
-                        TokoChatCommonValueUtil.TOKOFOOD
+                        TokoChatCommonValueUtil.SOURCE_TOKOFOOD
                     )
                 )
             } returns tokochatOrderProgressResponse
@@ -113,7 +113,7 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
                 viewModel.updateOrderTransactionStatus.first()
             }
 
-            viewModel.updateOrderStatusParam(TKPD_ORDER_ID_DUMMY to TokoChatCommonValueUtil.TOKOFOOD)
+            viewModel.updateOrderStatusParam(TKPD_ORDER_ID_DUMMY to TokoChatCommonValueUtil.SOURCE_TOKOFOOD)
             delay(5000L)
 
             val actualResult = (result.await() as Success).data
@@ -124,7 +124,7 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
                 getTokoChatOrderProgressUseCase(
                     TokoChatOrderProgressParam(
                         TKPD_ORDER_ID_DUMMY,
-                        TokoChatCommonValueUtil.TOKOFOOD
+                        TokoChatCommonValueUtil.SOURCE_TOKOFOOD
                     )
                 )
             }
@@ -142,7 +142,7 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
                 getTokoChatOrderProgressUseCase(
                     TokoChatOrderProgressParam(
                         TKPD_ORDER_ID_DUMMY,
-                        TokoChatCommonValueUtil.TOKOFOOD
+                        TokoChatCommonValueUtil.SOURCE_TOKOFOOD
                     )
                 )
             } throws errorException
@@ -151,7 +151,7 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
                 viewModel.updateOrderTransactionStatus.first()
             }
 
-            viewModel.updateOrderStatusParam(TKPD_ORDER_ID_DUMMY to TokoChatCommonValueUtil.TOKOFOOD)
+            viewModel.updateOrderStatusParam(TKPD_ORDER_ID_DUMMY to TokoChatCommonValueUtil.SOURCE_TOKOFOOD)
             delay(5000L)
 
             val actualResult = result.await() as Fail
@@ -161,7 +161,7 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
                 getTokoChatOrderProgressUseCase(
                     TokoChatOrderProgressParam(
                         TKPD_ORDER_ID_DUMMY,
-                        TokoChatCommonValueUtil.TOKOFOOD
+                        TokoChatCommonValueUtil.SOURCE_TOKOFOOD
                     )
                 )
             }

@@ -1,330 +1,405 @@
 package com.tokopedia.tokochat.test.chatlist
 
-import androidx.lifecycle.liveData
+import android.content.Intent
+import app.cash.turbine.test
 import com.gojek.conversations.babble.network.data.ChannelMetaData
 import com.gojek.conversations.babble.network.data.OrderInfo
 import com.gojek.conversations.channel.ConversationsChannel
-import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.tokochat.base.TokoChatListViewModelTestFixture
-import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.TOKOFOOD
-import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.tokochat.config.util.TokoChatResult
+import com.tokopedia.tokochat.util.TokoChatValueUtil
+import com.tokopedia.tokochat.view.chatlist.TokoChatListAction
 import io.mockk.every
-import io.mockk.invoke
-import io.mockk.verify
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert
+import io.mockk.mockk
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
 
     @Test
-    fun `should return channel list when success get from DB`() {
-        runBlocking {
+    fun `refresh page, get chat list data`() {
+        runTest {
             // Given
             val dummyChannelList = getDummyConversationChannelList()
-            val dummChatList = TokoChatListItemUiModel(
-                "dummyName",
-                "", "", "", "",
-                Long.MAX_VALUE, 0, 0, ""
-            )
             every {
-                chatChannelUseCase.getAllCachedChannels(any())
-            } returns liveData {
-                this.emit(dummyChannelList)
-            }
-            every {
-                mapper.mapToListChat(any())
-            } returns listOf(dummChatList)
-
-            // When
-            viewModel.setupChatListSource()
-            viewModel.chatList.observe({ lifecycle }) {
-                // Then
-                Assert.assertEquals(
-                    dummyChannelList.first().name,
-                    (it as Success).data.first().orderId
+                chatListUseCase.fetchAllCachedChannels(
+                    channelTypes = any(),
+                    defaultBatchSize = any()
                 )
+            } returns flow {
+                emit(TokoChatResult.Loading)
+                delay(10)
+                emit(TokoChatResult.Success(dummyChannelList))
+            }
+
+            every {
+                abTestPlatform.getString(any(), any())
+            } returns TokoChatValueUtil.ROLLENCE_LOGISTIC_CHAT
+
+            every {
+                chatListUseCase.fetchAllRemoteChannels(
+                    channelTypes = any(),
+                    batchSize = any()
+                )
+            } returns flow { }
+
+            viewModel.chatListUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(TokoChatListAction.RefreshPage)
+
+                // Then
+                val initialValue = awaitItem()
+                assertEquals(initialValue.page, 0)
+                assertEquals(initialValue.chatItemList.size, 0)
+                assertEquals(initialValue.errorMessage, null)
+                assertEquals(initialValue.hasNextPage, false)
+                assertEquals(initialValue.trackerData, null)
+                assertEquals(initialValue.localListLoaded, false)
+                assertEquals(initialValue.isLoading, false)
+
+                val localLoadingValue = awaitItem()
+                assertEquals(localLoadingValue.page, 0)
+                assertEquals(localLoadingValue.chatItemList.size, 0)
+                assertEquals(localLoadingValue.errorMessage, null)
+                assertEquals(localLoadingValue.hasNextPage, false)
+                assertEquals(localLoadingValue.trackerData, null)
+                assertEquals(localLoadingValue.localListLoaded, false)
+                assertEquals(localLoadingValue.isLoading, true)
+
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.page, 1)
+                assertEquals(updatedValue.chatItemList.size, 1)
+                assertEquals(updatedValue.errorMessage, null)
+                assertEquals(updatedValue.hasNextPage, true)
+                assertEquals(updatedValue.trackerData?.size, 2)
+                assertEquals(updatedValue.localListLoaded, true)
+                assertEquals(updatedValue.isLoading, false)
+
+                cancelAndConsumeRemainingEvents()
             }
         }
     }
 
     @Test
-    fun `should return empty channel list when success get from empty DB`() {
-        runBlocking {
+    fun `refresh page, get empty chat list data`() {
+        runTest {
             // Given
-            val dummyChannelList: List<ConversationsChannel> = listOf()
             every {
-                chatChannelUseCase.getAllCachedChannels(any())
-            } returns liveData {
-                this.emit(dummyChannelList)
+                chatListUseCase.fetchAllCachedChannels(
+                    channelTypes = any(),
+                    defaultBatchSize = any()
+                )
+            } returns flow {
+                emit(TokoChatResult.Loading)
+                delay(10)
+                emit(TokoChatResult.Success(listOf()))
             }
 
-            // When
-            viewModel.setupChatListSource()
-            viewModel.chatList.observe({ lifecycle }) {
-                // Then
-                Assert.assertEquals(
-                    dummyChannelList.firstOrNull(),
-                    (it as Success).data.firstOrNull()
+            every {
+                abTestPlatform.getString(any(), any())
+            } returns TokoChatValueUtil.ROLLENCE_LOGISTIC_CHAT
+
+            every {
+                chatListUseCase.fetchAllRemoteChannels(
+                    channelTypes = any(),
+                    batchSize = any()
                 )
+            } returns flow { }
+
+            viewModel.chatListUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(TokoChatListAction.RefreshPage)
+
+                skipItems(2) // initial & loading
+
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.page, 1)
+                assertEquals(updatedValue.chatItemList.size, 0)
+                assertEquals(updatedValue.errorMessage, null)
+                assertEquals(updatedValue.hasNextPage, false)
+                assertEquals(updatedValue.trackerData?.size, 0)
+                assertEquals(updatedValue.localListLoaded, true)
+                assertEquals(updatedValue.isLoading, false)
+
+                cancelAndConsumeRemainingEvents()
             }
         }
     }
 
     @Test
-    fun `should throw error when fail to get data from DB`() {
-        runBlocking {
+    fun `refresh page, get large chat list data`() {
+        runTest {
             // Given
-            val dummyChannelList = getDummyConversationChannelList()
-            every {
-                chatChannelUseCase.getAllCachedChannels(any())
-            } returns liveData {
-                this.emit(dummyChannelList)
+            val largeChatData: ArrayList<ConversationsChannel> = arrayListOf()
+            for (i in 0..100) {
+                largeChatData += getDummyConversationChannelList()
             }
             every {
-                mapper.mapToListChat(any())
+                chatListUseCase.fetchAllCachedChannels(
+                    channelTypes = any(),
+                    defaultBatchSize = any()
+                )
+            } returns flow {
+                emit(TokoChatResult.Loading)
+                delay(10)
+                emit(TokoChatResult.Success(largeChatData))
+            }
+
+            every {
+                abTestPlatform.getString(any(), any())
+            } returns TokoChatValueUtil.ROLLENCE_LOGISTIC_CHAT
+
+            every {
+                chatListUseCase.fetchAllRemoteChannels(
+                    channelTypes = any(),
+                    batchSize = any()
+                )
+            } returns flow { }
+
+            viewModel.chatListUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(TokoChatListAction.RefreshPage)
+
+                skipItems(2) // initial & loading
+
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.chatItemList.size, (largeChatData.size / 2)) // half of it expired
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `observe and collect local channels, get error`() {
+        runTest {
+            // Given
+            every {
+                chatListUseCase.fetchAllCachedChannels(
+                    channelTypes = any(),
+                    defaultBatchSize = any()
+                )
+            } returns flow {
+                emit(TokoChatResult.Loading)
+                delay(10)
+                emit(TokoChatResult.Error(throwableDummy))
+            }
+
+            every {
+                abTestPlatform.getString(any(), any())
+            } returns TokoChatValueUtil.ROLLENCE_LOGISTIC_CHAT
+
+            every {
+                chatListUseCase.fetchAllRemoteChannels(
+                    channelTypes = any(),
+                    batchSize = any()
+                )
+            } returns flow { }
+
+            viewModel.chatListUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(TokoChatListAction.RefreshPage)
+
+                skipItems(2) // initial & loading
+
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.errorMessage, throwableDummy.message)
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `observe and collect remote channels, get error`() {
+        runTest {
+            // Given
+            every {
+                chatListUseCase.fetchAllCachedChannels(
+                    channelTypes = any(),
+                    defaultBatchSize = any()
+                )
+            } returns flow {
+                emit(TokoChatResult.Loading)
+                delay(10)
+                emit(TokoChatResult.Success(listOf()))
+            }
+
+            every {
+                abTestPlatform.getString(any(), any())
+            } returns TokoChatValueUtil.ROLLENCE_LOGISTIC_CHAT
+
+            every {
+                chatListUseCase.fetchAllRemoteChannels(
+                    channelTypes = any(),
+                    batchSize = any()
+                )
+            } returns flow {
+                emit(TokoChatResult.Error(throwableDummy))
+            }
+
+            viewModel.chatListUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(TokoChatListAction.RefreshPage)
+
+                skipItems(3) // initial, loading, & empty list
+
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.errorMessage, throwableDummy.message)
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `observe and collect channels, get error`() {
+        runTest {
+            // Given
+            every {
+                chatListUseCase.fetchAllCachedChannels(
+                    channelTypes = any(),
+                    defaultBatchSize = any()
+                )
             } throws throwableDummy
 
-            // When
-            viewModel.setupChatListSource()
-            viewModel.chatList.observe({ lifecycle }) {
+            viewModel.errorUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(TokoChatListAction.RefreshPage)
+
                 // Then
-                Assert.assertEquals(
-                    throwableDummy.message,
-                    (it as Fail).throwable.message
-                )
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.error?.first, throwableDummy)
+                assertEquals(updatedValue.error?.second, "observeChatListItemFlow")
+                cancelAndConsumeRemainingEvents()
             }
         }
     }
 
     @Test
-    fun `should throw error when fail to map data from DB`() {
-        runBlocking {
-            // Given
-            every {
-                chatChannelUseCase.getAllCachedChannels(any())
-            } throws throwableDummy
-
-            // When
-            viewModel.setupChatListSource()
-            viewModel.chatList.observe({ lifecycle }) {
-                // Then
-                Assert.assertEquals(
-                    throwableDummy.message,
-                    (it as Fail).throwable.message
-                )
-            }
-        }
-    }
-
-    @Test
-    fun `should return channel list when success get from remote`() {
-        runBlocking {
+    fun `load next page, get chat list data`() {
+        runTest {
             // Given
             val dummyChannelList = getDummyConversationChannelList()
-            val result = mapOf(Pair(TOKOFOOD, 0))
             every {
-                chatChannelUseCase.getAllChannel(any(), any(), captureLambda(), any())
-            } answers {
-                val onSuccessDummy = lambda<(List<ConversationsChannel>) -> Unit>()
-                onSuccessDummy.invoke(dummyChannelList)
+                chatListUseCase.fetchAllCachedChannels(
+                    channelTypes = any(),
+                    defaultBatchSize = any()
+                )
+            } returns flow {
+                emit(TokoChatResult.Loading)
+                delay(10)
+                emit(TokoChatResult.Success(dummyChannelList))
             }
+
             every {
-                mapper.mapToTypeCounter(any())
-            } returns result
+                abTestPlatform.getString(any(), any())
+            } returns TokoChatValueUtil.ROLLENCE_LOGISTIC_CHAT
 
-            // When
-            viewModel.setupChatListSource()
-            viewModel.loadNextPageChatList(isLoadMore = false)
+            every {
+                chatListUseCase.fetchAllRemoteChannels(
+                    channelTypes = any(),
+                    batchSize = any()
+                )
+            } returns flow { }
 
-            // Then
-            Assert.assertEquals(
-                result,
-                viewModel.chatListPair.value
-            )
+            viewModel.chatListUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(TokoChatListAction.RefreshPage) // 1st page
+                viewModel.processAction(TokoChatListAction.LoadNextPage) // 2nd page
+                viewModel.processAction(TokoChatListAction.LoadNextPage) // 3rd page
+                viewModel.processAction(TokoChatListAction.LoadNextPage) // 4th page
+
+                skipItems(2) // initial & loading
+
+                val firstPageValue = awaitItem()
+                val secondPageValue = awaitItem()
+                val thirdPageValue = awaitItem()
+                val forthPageValue = awaitItem()
+
+                assertEquals(firstPageValue.page, 1)
+                assertEquals(secondPageValue.page, 2)
+                assertEquals(thirdPageValue.page, 3)
+                assertEquals(forthPageValue.page, 4)
+
+                // Then
+                cancelAndConsumeRemainingEvents()
+            }
         }
     }
 
     @Test
-    fun `should return channel list when success get from remote and load more`() {
-        runBlocking {
-            // Given
-            val result = mapOf<String, Int>()
-            every {
-                chatChannelUseCase.getAllChannel(any(), any(), captureLambda(), any())
-            } answers {
-                val onSuccessDummy = lambda<(List<ConversationsChannel>) -> Unit>()
-                onSuccessDummy.invoke(listOf())
-            }
-            every {
-                mapper.mapToTypeCounter(any())
-            } returns result
-
-            // When
-            viewModel.setupChatListSource()
-            viewModel.loadNextPageChatList(isLoadMore = true)
-
-            // Then
-            verify(exactly = 2) {
-                chatChannelUseCase.setLastTimeStamp(any())
-            }
-        }
-    }
-
-    @Test
-    fun `should return channel list when success get from remote but empty`() {
-        runBlocking {
-            // Given
-            val result = mapOf<String, Int>()
-            every {
-                chatChannelUseCase.getAllChannel(any(), any(), captureLambda(), any())
-            } answers {
-                val onSuccessDummy = lambda<(List<ConversationsChannel>) -> Unit>()
-                onSuccessDummy.invoke(listOf())
-            }
-            every {
-                mapper.mapToTypeCounter(any())
-            } returns result
-
-            // When
-            viewModel.setupChatListSource()
-            viewModel.loadNextPageChatList(isLoadMore = false)
-
-            // Then
-            Assert.assertEquals(
-                result,
-                viewModel.chatListPair.value
-            )
-        }
-    }
-
-    @Test
-    fun `should return channel list when success get from remote with big local size`() {
-        runBlocking {
-            // Given
-            val dummyChannelList = getDummyConversationChannelList()
-            val result = mapOf(Pair(TOKOFOOD, 0))
-            every {
-                chatChannelUseCase.getAllChannel(any(), any(), captureLambda(), any())
-            } answers {
-                val onSuccessDummy = lambda<(List<ConversationsChannel>) -> Unit>()
-                onSuccessDummy.invoke(dummyChannelList)
-            }
-            every {
-                mapper.mapToTypeCounter(any())
-            } returns result
-
-            // When
-            viewModel.setupChatListSource()
-            viewModel.loadNextPageChatList(localSize = 100, isLoadMore = false)
-
-            // Then
-            Assert.assertEquals(
-                result,
-                viewModel.chatListPair.value
-            )
-        }
-    }
-
-    @Test
-    fun `should throw error when fail get from remote`() {
-        runBlocking {
-            // Given
-            val dummyError = ConversationsNetworkError(throwableDummy)
-            every {
-                chatChannelUseCase.getAllCachedChannels(any())
-            } returns liveData {
-                this.emit(listOf())
-            }
-            every {
-                chatChannelUseCase.getAllChannel(any(), any(), any(), captureLambda())
-            } answers {
-                val onErrorDummy = lambda<(ConversationsNetworkError?) -> Unit>()
-                onErrorDummy.invoke(dummyError)
-            }
-
-            // When
-            viewModel.setupChatListSource()
-            viewModel.loadNextPageChatList(isLoadMore = false)
-
-            // Then
-            Assert.assertEquals(
-                dummyError.message,
-                viewModel.error.value?.first?.message
-            )
-        }
-    }
-
-    @Test
-    fun `should throw error when fail get from remote but no error message`() {
-        runBlocking {
+    fun `load next page, get error`() {
+        runTest {
             // Given
             every {
-                chatChannelUseCase.getAllCachedChannels(any())
-            } returns liveData {
-                this.emit(listOf())
-            }
-            every {
-                chatChannelUseCase.getAllChannel(any(), any(), any(), captureLambda())
-            } answers {
-                val onErrorDummy = lambda<(ConversationsNetworkError?) -> Unit>()
-                onErrorDummy.invoke(null)
-            }
-
-            // When
-            viewModel.setupChatListSource()
-            viewModel.loadNextPageChatList(isLoadMore = false)
-
-            // Then
-            Assert.assertEquals(
-                null,
-                viewModel.error.value?.first?.message
-            )
-        }
-    }
-
-    @Test
-    fun `should throw error when error calling SDK method`() {
-        runBlocking {
-            // Given
-            every {
-                chatChannelUseCase.getAllChannel(any(), any(), any(), captureLambda())
+                chatListUseCase.fetchAllRemoteChannels(
+                    channelTypes = any(),
+                    batchSize = any()
+                )
             } throws throwableDummy
 
-            // When
-            viewModel.setupChatListSource()
-            viewModel.loadNextPageChatList(isLoadMore = false)
+            viewModel.errorUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(TokoChatListAction.LoadNextPage)
 
-            // Then
-            Assert.assertEquals(
-                throwableDummy.message,
-                viewModel.error.value?.first?.message
-            )
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.error?.first, throwableDummy)
+                assertEquals(updatedValue.error?.second, "loadNextPageChatList")
+                cancelAndConsumeRemainingEvents()
+            }
         }
     }
 
     @Test
-    fun `should empty chatlist data when reset`() {
-        runBlocking {
+    fun `navigate with intent, go to page with intent`() {
+        runTest {
             // Given
-            val dummyChannelList: List<ConversationsChannel> = listOf()
-            every {
-                chatChannelUseCase.getAllCachedChannels(any())
-            } returns liveData {
-                this.emit(dummyChannelList)
+            val dummyIntent = mockk<Intent>(relaxed = true)
+            viewModel.navigationUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(TokoChatListAction.NavigateWithIntent(dummyIntent))
+
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.intent, dummyIntent)
+                assertEquals(updatedValue.applink, "")
             }
+        }
+    }
 
-            // When
-            viewModel.setupChatListSource()
-            viewModel.resetChatListData()
+    @Test
+    fun `navigate with applink, go to page with applink`() {
+        runTest {
+            // Given
+            val dummyApplink = "applink"
+            viewModel.navigationUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(TokoChatListAction.NavigateToPage(dummyApplink))
 
-            // Then
-            Assert.assertEquals(
-                null,
-                viewModel.chatList.value
-            )
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.intent, null)
+                assertEquals(updatedValue.applink, dummyApplink)
+            }
         }
     }
 
@@ -351,7 +426,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
                 lastRead = mapOf(), 0L,
                 metadata = ChannelMetaData(
                     orderInfo = OrderInfo(
-                        0, "", "", "", "",
+                        14, "", "", "", "",
                         null, null, null, null
                     ),
                     null,

@@ -48,7 +48,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
             // Then
             verify(exactly = 1) {
-                getChannelUseCase.registerExtensionProvider(any())
+                tokoChatRoomUseCase.registerExtensionProvider(any())
             }
         }
     }
@@ -64,7 +64,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
             // Then
             verify(exactly = 1) {
-                getChannelUseCase.unRegisterExtensionProvider(any())
+                tokoChatRoomUseCase.unRegisterExtensionProvider(any())
             }
         }
     }

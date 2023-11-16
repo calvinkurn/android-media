@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.base
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokochat.common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokochat.domain.usecase.*
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
@@ -30,10 +31,16 @@ abstract class TokoChatViewModelTestFixture {
     val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
-    protected lateinit var getChannelUseCase: TokoChatRoomUseCase
+    protected lateinit var tokoChatGroupBookingUseCase: TokoChatGroupBookingUseCase
+
+    @RelaxedMockK
+    protected lateinit var tokoChatRoomUseCase: TokoChatRoomUseCase
 
     @RelaxedMockK
     protected lateinit var getChatHistoryUseCase: TokoChatGetChatHistoryUseCase
+
+    @RelaxedMockK
+    protected lateinit var tokoChatMemberUseCase: TokoChatMemberUseCase
 
     @RelaxedMockK
     protected lateinit var markAsReadUseCase: TokoChatMarkAsReadUseCase
@@ -85,8 +92,10 @@ abstract class TokoChatViewModelTestFixture {
         MockKAnnotations.init(this)
         viewModel = spyk(
             TokoChatViewModel(
-                getChannelUseCase,
+                tokoChatGroupBookingUseCase,
+                tokoChatRoomUseCase,
                 getChatHistoryUseCase,
+                tokoChatMemberUseCase,
                 markAsReadUseCase,
                 registrationChannelUseCase,
                 sendMessageUseCase,
