@@ -51,8 +51,10 @@ class TextDescriptionViewHolder(
             if (element.isDarkMode) {
                 it.tgpTextWidgetHighlight.setTextColor(ContextCompat.getColor(itemView.context, TEXT_LOW_EMPHASIS))
                 it.tgpTextWidgetDescription.setTextColor(ContextCompat.getColor(itemView.context, TEXT_LOW_EMPHASIS))
+                it.tgpTextWidgetTitle.setTextColor(ContextCompat.getColor(itemView.context, TEXT_LOW_EMPHASIS))
+            } else {
+                it.tgpTextWidgetTitle.setTextColor(element.widgetTextColor ?: return)
             }
-            it.tgpTextWidgetTitle.setTextColor(element.widgetTextColor ?: return)
         }
     }
 

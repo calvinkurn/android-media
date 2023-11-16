@@ -1,5 +1,6 @@
 package com.tokopedia.catalogcommon.viewholder
 
+import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,7 @@ class ColumnedInfoViewHolder(
             btnSeeMore.setOnClickListener {
                 columnedInfoListener?.onColumnedInfoSeeMoreClicked(element.sectionTitle, element.fullContent)
             }
+            tfTitle.setTextColor(element.widgetTextColor ?: Color.BLACK)
             if (element.darkMode) {
                 btnSeeMore.applyColorMode(ColorMode.DARK_MODE)
             } else {
