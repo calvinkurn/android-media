@@ -5,12 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.dropoff.domain.mapper.AutoCompleteMapper
+import com.tokopedia.dropoff.ui.autocomplete.model.ValidatedDistrict
 import com.tokopedia.logisticCommon.domain.model.SavedAddress
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.logisticCommon.domain.param.GetAddressParam
 import com.tokopedia.logisticCommon.domain.param.GetAutoCompleteParam
+import com.tokopedia.logisticCommon.domain.param.GetDistrictParam
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAutoCompleteUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,6 +23,7 @@ import javax.inject.Inject
 
 class AutoCompleteViewModel @Inject constructor(
     private val getAutoComplete: GetAutoCompleteUseCase,
+    private val getDistrict: GetDistrictUseCase,
     private val getAddress: GetAddressUseCase,
     private val mapper: AutoCompleteMapper
 ) : ViewModel() {
@@ -27,6 +31,9 @@ class AutoCompleteViewModel @Inject constructor(
     private val mAutoCompleteList = MutableLiveData<Result<List<SuggestedPlace>>>()
     val autoCompleteList: LiveData<Result<List<SuggestedPlace>>>
         get() = mAutoCompleteList
+    private val mValidatedDistrict = MutableLiveData<Result<ValidatedDistrict>>()
+    val validatedDistrict: LiveData<Result<ValidatedDistrict>>
+        get() = mValidatedDistrict
     private val mSavedAddress = MutableLiveData<Result<List<SavedAddress>>>()
     val savedAddress: LiveData<Result<List<SavedAddress>>>
         get() = mSavedAddress
@@ -35,6 +42,13 @@ class AutoCompleteViewModel @Inject constructor(
         viewModelScope.launch(onErrorAutoComplete) {
             val autoComplete = getAutoComplete(GetAutoCompleteParam(keyword = keyword))
             mAutoCompleteList.value = Success(mapper.mapAutoComplete(autoComplete))
+        }
+    }
+
+    fun getLatLng(placeId: String) {
+        viewModelScope.launch(onErrorGetLatLng) {
+            val latLng = getDistrict(GetDistrictParam(placeId))
+            mValidatedDistrict.value = Success(mapper.mapValidate(latLng))
         }
     }
 
@@ -47,6 +61,10 @@ class AutoCompleteViewModel @Inject constructor(
 
     private val onErrorAutoComplete = CoroutineExceptionHandler { _, e ->
         mAutoCompleteList.value = Fail(e)
+    }
+
+    private val onErrorGetLatLng = CoroutineExceptionHandler { _, e ->
+        mValidatedDistrict.value = Fail(e)
     }
 
     private val onErrorGetAddress = CoroutineExceptionHandler { _, e ->
