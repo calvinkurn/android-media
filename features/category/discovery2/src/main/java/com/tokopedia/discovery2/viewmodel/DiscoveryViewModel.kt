@@ -294,31 +294,39 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         })
     }
 
-    fun getMiniCart(
+    fun getMiniCartBmGm(
+        shopId: List<String>,
+        bmGmDataParam: BmGmDataParam
+    ) {
+        launchCatchError(block = {
+            getMiniCartUseCase.setParams(
+                shopIds = shopId,
+                source = MiniCartSource.DiscoOfferPage,
+                bmGmParam = BmgmParamModel(
+                    offerIds = listOf(bmGmDataParam.offerId.toLongOrZero()),
+                    warehouseIds = listOf(bmGmDataParam.warehouseTco.toLongOrZero())
+                )
+            )
+            executeGetMiniCartUseCase {
+                _bmGmDataList.postValue(Pair(bmGmDataParam.parentPosition, it.bmGmDataList))
+            }
+        }) {
+            _miniCart.postValue(Fail(it))
+        }
+    }
+
+    fun getMiniCartTokonow(
         shopId: List<String>,
         warehouseId: String?,
-        bmGmDataParam: BmGmDataParam?
     ) {
         if(shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
-                if (bmGmDataParam != null) {
-                    getMiniCartUseCase.setParams(
-                        shopIds = shopId,
-                        source = MiniCartSource.TokonowDiscoveryPage,
-                        bmGmParam = BmgmParamModel(
-                            offerIds = listOf(bmGmDataParam.offerId.toLongOrZero()),
-                            warehouseIds = listOf(bmGmDataParam.warehouseTco.toLongOrZero())
-                        )
-                    )
-                    executeGetMiniCartUseCase {
-                        _bmGmDataList.postValue(Pair(bmGmDataParam.parentPosition, it.bmGmDataList))
-                    }
-                } else {
-                    getMiniCartUseCase.setParams(
-                        shopIds = shopId,
-                        source = MiniCartSource.TokonowDiscoveryPage
-                    )
-                    executeGetMiniCartUseCase()
+                getMiniCartUseCase.setParams(
+                    shopIds = shopId,
+                    source = MiniCartSource.TokonowDiscoveryPage
+                )
+                executeGetMiniCartUseCase {
+                    _miniCart.postValue(Success(it))
                 }
             }) {
                 _miniCart.postValue(Fail(it))
@@ -331,7 +339,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     ) {
         getMiniCartUseCase.execute({
             miniCartSimplifiedData = it
-            _miniCart.postValue(Success(it))
             onSuccessAction?.invoke(it)
         }, {
             _miniCart.postValue(Fail(it))

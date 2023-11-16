@@ -9,6 +9,7 @@ import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase.Companion.PARAM_VALUE_MINICART
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.delay
@@ -45,6 +46,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                 GetMiniCartListUseCase.PARAM_KEY_SHOP_IDS to shopIds,
                 ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
                 GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value,
+                GetMiniCartListUseCase.PARAM_KEY_USE_CASE to PARAM_VALUE_MINICART,
                 GetMiniCartListUseCase.PARAM_KEY_BMGM to bmGmParam
             )
         )

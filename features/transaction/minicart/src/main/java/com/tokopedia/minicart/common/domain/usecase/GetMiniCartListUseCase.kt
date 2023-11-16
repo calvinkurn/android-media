@@ -57,8 +57,9 @@ class GetMiniCartListUseCase @Inject constructor(
         const val PARAM_KEY_SOURCE = "source"
         const val PARAM_KEY_BMGM = "bmgm"
         const val PARAM_KEY_SHOP_DIRECT_PURCHASE = "is_shop_direct_purchase"
-
+        const val PARAM_KEY_USE_CASE = "usecase"
         const val PARAM_VALUE_ID = "id"
+        const val PARAM_VALUE_MINICART = "minicart"
 
         val QUERY = """
             query mini_cart_v3(${'$'}lang: String, ${'$'}additional_params: CartRevampAdditionalParams) {

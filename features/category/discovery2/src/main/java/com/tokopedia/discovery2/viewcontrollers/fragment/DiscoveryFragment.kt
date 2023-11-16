@@ -2309,13 +2309,20 @@ open class DiscoveryFragment :
     private fun getMiniCart(
         bmGmDataParam: BmGmDataParam? = null
     ) {
-        val shopId = listOf(userAddressData?.shop_id.orEmpty())
-        val warehouseId = userAddressData?.warehouse_id
-        discoveryViewModel.getMiniCart(
-            shopId = shopId,
-            warehouseId = warehouseId,
-            bmGmDataParam = bmGmDataParam
-        )
+        if (bmGmDataParam != null) {
+            val shopId = listOf(bmGmDataParam.shopId)
+            discoveryViewModel.getMiniCartBmGm(
+                shopId = shopId,
+                bmGmDataParam = bmGmDataParam
+            )
+        } else {
+            val shopId = listOf(userAddressData?.shop_id.orEmpty())
+            val warehouseId = userAddressData?.warehouse_id
+            discoveryViewModel.getMiniCartTokonow(
+                shopId = shopId,
+                warehouseId = warehouseId
+            )
+        }
     }
 
     fun addOrUpdateItemCart(discoATCRequestParams: DiscoATCRequestParams) {
@@ -2429,8 +2436,10 @@ open class DiscoveryFragment :
         val offerId = requestingComponent?.properties?.header?.offerId
         bmGmDataParam = if (warehouseTco != null && warehouseTco.isNotBlankOrZero() || offerId != null && offerId.isNotBlankOrZero()) {
             BmGmDataParam(
-                warehouseTco = requestingComponent.properties?.warehouseTco.orEmpty(),
-                offerId = requestingComponent.properties?.header?.offerId.orEmpty(),
+                shopId = requestingComponent.data?.firstOrNull()?.shopId.orEmpty(),
+                warehouseTco = warehouseTco.orEmpty(),
+                offerId = offerId.orEmpty(),
+
                 parentPosition = parentPosition
             )
         } else {
