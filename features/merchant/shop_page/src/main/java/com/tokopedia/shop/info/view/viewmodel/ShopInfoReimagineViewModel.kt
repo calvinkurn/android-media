@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -37,6 +38,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.supervisorScope
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.tokopedia.shop.info.domain.entity.ShopInfo as ReimagineShopInfo
 
@@ -62,6 +64,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
         const val SHOP_TOP_REVIEW_SORT_BY_HELPFULNESS = "informative_score desc"
         const val SHOP_TOP_REVIEW_FILTER_BY_SELLER_SERVICE = "topic=pelayanan"
         const val PAGE_SOURCE = "shop_info_page"
+        const val TWENTY_THREE_HOURS_AND_FIFTY_NINE_SECOND = 86399
     }
 
     private val _uiState = MutableStateFlow(ShopInfoUiState())
@@ -340,12 +343,22 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 operationalHours.forEach { operationalHour ->
                     val formattedDay = daysDictionary[operationalHour.day].orEmpty()
 
-                    val startTime = operationalHour.startTime.hourAndMinuteOnly()
-                    val endTime = operationalHour.endTime.hourAndMinuteOnly()
-                    val operationalHourFormat = "%s - %s"
+                    val isShopOpenTwentyFourHours = isShopOpenTwentyFourHours(
+                        operationalHour.startTime,
+                        operationalHour.endTime
+                    )
 
-                    formattedOperationalHours[formattedDay] =
-                        String.format(operationalHourFormat, startTime, endTime)
+                    val isShopClosed = isShopClosed(operationalHour.startTime, operationalHour.endTime)
+
+                    if (isShopOpenTwentyFourHours) {
+                        formattedOperationalHours[formattedDay] = "Buka 24 Jam"
+                    } else if (isShopClosed) {
+                        formattedOperationalHours[formattedDay] = "Libur"
+                    } else {
+                        val startTime = operationalHour.startTime.hourAndMinuteOnly()
+                        val endTime = operationalHour.endTime.hourAndMinuteOnly()
+                        formattedOperationalHours[formattedDay] = "$startTime - $endTime WIB"
+                    }
                 }
 
                 formattedOperationalHours.groupByHours()
@@ -395,5 +408,25 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private fun String.toShopJoinDate(): String {
         return toDate(DateTimeConstant.DATE_TIME_DAY_PRECISION).formatTo(DateTimeConstant.DATE_TIME_YEAR_PRECISION)
+    }
+
+    private fun isShopOpenTwentyFourHours(startTime: String, endTime: String): Boolean {
+        val start = startTime.toDate(DateTimeConstant.TIME_SECOND_PRECISION)
+        val end = endTime.toDate(DateTimeConstant.TIME_SECOND_PRECISION)
+
+        val timeDifferenceMillis = end.time - start.time
+        val timeDifferenceSecond = TimeUnit.MILLISECONDS.toSeconds(timeDifferenceMillis).toInt()
+
+        return timeDifferenceSecond == TWENTY_THREE_HOURS_AND_FIFTY_NINE_SECOND
+    }
+
+    private fun isShopClosed(startTime: String, endTime: String): Boolean {
+        val start = startTime.toDate(DateTimeConstant.TIME_SECOND_PRECISION)
+        val end = endTime.toDate(DateTimeConstant.TIME_SECOND_PRECISION)
+
+        val timeDifferenceMillis = end.time - start.time
+        val timeDifferenceSecond = TimeUnit.MILLISECONDS.toSeconds(timeDifferenceMillis).toInt()
+
+        return timeDifferenceSecond == Int.ZERO
     }
 }

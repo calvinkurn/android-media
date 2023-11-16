@@ -451,9 +451,9 @@ class ShopInfoReimagineViewModelTest {
             val actual = emittedValues.last()
             assertEquals(
                 mapOf(
-                    "08:00 - 17:00" to listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat"),
-                    "10:00 - 15:00" to listOf("Sabtu"),
-                    "10:00 - 12:00" to listOf("Minggu")
+                    "08:00 - 17:00 WIB" to listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat"),
+                    "10:00 - 15:00 WIB" to listOf("Sabtu"),
+                    "10:00 - 12:00 WIB" to listOf("Minggu")
                 ),
                 actual.info.operationalHours
             )
@@ -577,8 +577,8 @@ class ShopInfoReimagineViewModelTest {
             val actual = emittedValues.last()
             assertEquals(
                 mapOf(
-                    "10:00 - 15:00" to listOf(""),
-                    "10:00 - 12:00" to listOf("Minggu")
+                    "10:00 - 15:00 WIB" to listOf(""),
+                    "10:00 - 12:00 WIB" to listOf("Minggu")
                 ),
                 actual.info.operationalHours
             )
