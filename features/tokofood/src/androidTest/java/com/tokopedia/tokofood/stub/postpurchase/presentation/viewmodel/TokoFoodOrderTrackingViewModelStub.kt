@@ -2,6 +2,8 @@ package com.tokopedia.tokofood.stub.postpurchase.presentation.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetDriverPhoneNumberUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
@@ -20,8 +22,8 @@ class TokoFoodOrderTrackingViewModelStub @Inject constructor(
     getTokoFoodOrderDetailUseCase: Lazy<GetTokoFoodOrderDetailUseCase>,
     getTokoFoodOrderStatusUseCase: Lazy<GetTokoFoodOrderStatusUseCase>,
     getDriverPhoneNumberUseCase: Lazy<GetDriverPhoneNumberUseCase>,
-    getUnreadChatCountUseCase: Lazy<GetUnreadChatCountUseCase>,
-    tokoChatConfigGroupBookingUseCase: Lazy<TokoChatConfigGroupBookingUseCase>
+    getTokoChatGroupBookingUseCase: Lazy<TokoChatGroupBookingUseCase>,
+    getTokoChatCounterUseCase: Lazy<TokoChatCounterUseCase>
 ) : TokoFoodOrderTrackingViewModel(
     userSession,
     savedStateHandle,
@@ -29,6 +31,6 @@ class TokoFoodOrderTrackingViewModelStub @Inject constructor(
     getTokoFoodOrderDetailUseCase,
     getTokoFoodOrderStatusUseCase,
     getDriverPhoneNumberUseCase,
-    getUnreadChatCountUseCase,
-    tokoChatConfigGroupBookingUseCase
+    getTokoChatGroupBookingUseCase,
+    getTokoChatCounterUseCase
 )
