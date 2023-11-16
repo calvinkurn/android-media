@@ -8,7 +8,7 @@ import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
 import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usercomponents.userconsent.domain.collection.GetNeedConsentUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -28,7 +28,7 @@ abstract class TokoChatViewModelTestFixture {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = UnconfinedTestRule()
 
     @RelaxedMockK
     protected lateinit var tokoChatGroupBookingUseCase: TokoChatGroupBookingUseCase

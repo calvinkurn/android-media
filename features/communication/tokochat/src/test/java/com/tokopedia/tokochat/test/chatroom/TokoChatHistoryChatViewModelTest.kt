@@ -6,7 +6,7 @@ import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
 import com.tokopedia.tokochat.utils.observeAwaitValue
 import io.mockk.coEvery
 import io.mockk.coVerify
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
@@ -14,7 +14,7 @@ class TokoChatHistoryChatViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getChatHistory should return List of ConversationsMessage`() {
-        runBlocking {
+        runTest {
             // Given
             val dummyListMessage = listOf<ConversationsMessage>()
 
@@ -32,7 +32,7 @@ class TokoChatHistoryChatViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when failed to getChatHistory should give throwable in error livedata`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
                 getChatHistoryUseCase(any())
@@ -51,7 +51,7 @@ class TokoChatHistoryChatViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when loadPreviousMessages should call loadPreviousMessage (from SDK) once`() {
-        runBlocking {
+        runTest {
             // When
             viewModel.loadPreviousMessages()
 
@@ -64,7 +64,7 @@ class TokoChatHistoryChatViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when failed to loadPreviousMessages should give throwable in error livedata`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
                 getChatHistoryUseCase.loadPreviousMessage()
