@@ -149,10 +149,7 @@ class FrameMetricsPopupWindow(
         updateRenderingTime(fpiData = fpiData)
 
         // performance data from AppPerformanceTrace
-        updatePerformanceData(
-            AppPerformanceTrace.currentAppPerformanceTraceData,
-            AppPerformanceTrace.currentAppPerformanceDevState
-        )
+        updatePerformanceInfo()
     }
 
     // region percentage information
@@ -163,7 +160,7 @@ class FrameMetricsPopupWindow(
     }
 
     private fun updatePercentageInfo(percentage: Int) {
-        val sPercentage = "$percentage%"
+        val sPercentage = "Jank %: $percentage%"
         jankyInfoText?.text = sPercentage
     }
 
@@ -191,7 +188,7 @@ class FrameMetricsPopupWindow(
     }
 
     private fun updateFpsInfo(fps: Double) {
-        val sFps = String.format(Locale.getDefault(), "%.0f%s", fps, "fps")
+        val sFps = String.format(Locale.getDefault(), "FPS: %.0f%s", fps, "fps")
         fpsInfoText?.text = sFps
     }
 
@@ -200,6 +197,11 @@ class FrameMetricsPopupWindow(
         state: DevState
     ) {
         when (state.state) {
+            State.PERF_MEASURING -> {
+                activityNameText?.text = "Measuring performance..."
+                ttflText?.text = "..."
+                ttilText?.text = "..."
+            }
             State.PERF_ENABLED -> {
                 if (data != null) {
                     data?.let {
@@ -208,7 +210,7 @@ class FrameMetricsPopupWindow(
                         ttilText?.text = String.format(Locale.getDefault(), "TTIL: %d%s", data.timeToInitialLoad, "ms")
                     }
                 } else {
-                    activityNameText?.text = "Measuring..."
+                    activityNameText?.text = "Performance not started."
                     ttflText?.text = "-"
                     ttilText?.text = "-"
                 }
@@ -266,7 +268,7 @@ class FrameMetricsPopupWindow(
             lable = "s"
         }
 
-        val sFps = String.format(Locale.getDefault(), "%.2f%s", renderTime, lable)
+        val sFps = String.format(Locale.getDefault(), "Frame Dur: %.2f%s", renderTime, lable)
         renderTimeText?.text = sFps
     }
 

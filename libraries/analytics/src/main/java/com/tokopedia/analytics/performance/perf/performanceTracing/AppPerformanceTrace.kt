@@ -50,7 +50,7 @@ class AppPerformanceTrace {
                     if (traceConfig != null) {
                         currentAppPerformanceDevState = DevState(
                             activityName = activity.javaClass.simpleName,
-                            state = State.PERF_ENABLED
+                            state = State.PERF_MEASURING
                         )
                         when (traceConfig.traceType) {
                             TraceType.XML -> {
@@ -58,6 +58,10 @@ class AppPerformanceTrace {
                                     activity = activity,
                                     onPerformanceTraceError = { result ->
                                         Log.d("AppPerformanceTrace", "onPerformanceTraceError: $result")
+                                        currentAppPerformanceDevState = DevState(
+                                            activityName = activity.javaClass.simpleName,
+                                            state = State.PERF_ENABLED
+                                        )
                                         performanceTrace = null
                                     },
                                     onPerformanceTraceFinished = { result ->
@@ -66,6 +70,10 @@ class AppPerformanceTrace {
                                         currentAppPerformanceTraceData = result.data
                                         performanceTrace = null
                                         onPerformanceTraceFinished.invoke()
+                                        currentAppPerformanceDevState = DevState(
+                                            activityName = activity.javaClass.simpleName,
+                                            state = State.PERF_ENABLED
+                                        )
                                     },
                                     performanceRepository = AppPerformanceRepository(traceConfig.traceName),
                                     loadableComponentFlow = loadableComponentFlow
