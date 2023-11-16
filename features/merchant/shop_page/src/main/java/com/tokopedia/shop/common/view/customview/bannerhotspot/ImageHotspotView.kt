@@ -174,6 +174,10 @@ class ImageHotspotView @JvmOverloads constructor(
             hideAllHotspotTag()
         }
     }
+
+    private fun isAllHotspotTagViewVisible(): Boolean {
+        return listHotspot.all { it.hotspotTagView?.isVisible == true }
+    }
     
     override fun onHotspotTagClicked(
         hotspotData: ImageHotspotData.HotspotData,
