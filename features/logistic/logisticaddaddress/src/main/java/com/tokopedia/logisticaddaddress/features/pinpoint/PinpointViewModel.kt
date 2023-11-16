@@ -203,22 +203,29 @@ class PinpointViewModel @Inject constructor(
                             isManageAddressFlow = true
                         )
                     )
-                    val data = res.keroPlacesGetDistrict.data
-                    searchAddressData = searchAddressData?.copy(
-                        title = data.title,
-                        districtId = data.districtId,
-                        districtName = data.districtName,
-                        cityId = data.cityId,
-                        cityName = data.cityName,
-                        provinceId = data.provinceId,
-                        provinceName = data.provinceName,
-                        postalCode = data.postalCode,
-                        lat = data.latitude.toDoubleOrZero(),
-                        long = data.longitude.toDoubleOrZero()
-                    )
-                    renderLocationDetail()
+                    if (res.keroPlacesGetDistrict.messageError.firstOrNull()?.contains(
+                            LOCATION_NOT_FOUND_MESSAGE
+                        ) == true
+                    ) {
+                        locationNotFound(false)
+                    } else {
+                        val data = res.keroPlacesGetDistrict.data
+                        searchAddressData = searchAddressData?.copy(
+                            title = data.title,
+                            districtId = data.districtId,
+                            districtName = data.districtName,
+                            cityId = data.cityId,
+                            cityName = data.cityName,
+                            provinceId = data.provinceId,
+                            provinceName = data.provinceName,
+                            postalCode = data.postalCode,
+                            lat = data.latitude.toDoubleOrZero(),
+                            long = data.longitude.toDoubleOrZero()
+                        )
+                        renderLocationDetail()
+                    }
                 }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 handleError(e)
             }
         }

@@ -97,7 +97,6 @@ open class PinpointViewModelTest {
         val cityName = "jakarta"
         val lat = 106.77
         val lng = 77.03
-        val placeId = "placeid"
         val districtId = 1111L
         val whDistrictId = 1111L
         val addressId = "868934"
@@ -126,7 +125,6 @@ open class PinpointViewModelTest {
             cityName = cityName,
             lat = lat,
             long = lng,
-            placeId = placeId,
             districtId = districtId
         )
 
@@ -498,7 +496,7 @@ open class PinpointViewModelTest {
         val lat = 11.22
         val lng = 44.55
         viewModel.onViewCreated(
-            searchAddressData = SuggestedPlace(placeId = ""),
+            searchAddressData = null,
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = lat,
@@ -526,7 +524,7 @@ open class PinpointViewModelTest {
         val provinceName = "province name"
         val formattedAddress = "$districtName, $cityName, $provinceName"
         viewModel.onViewCreated(
-            searchAddressData = SuggestedPlace(placeId = ""),
+            searchAddressData = null,
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = lat,
@@ -580,7 +578,7 @@ open class PinpointViewModelTest {
         val formattedAddress = "$cityName, $districtName, $provinceName"
         val returnedDistrictId = 333L
         viewModel.onViewCreated(
-            searchAddressData = SuggestedPlace(placeId = ""),
+            searchAddressData = null,
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = lat,
@@ -632,7 +630,7 @@ open class PinpointViewModelTest {
         val provinceName = "province name"
         val formattedAddress = "$cityName, $districtName, $provinceName"
         viewModel.onViewCreated(
-            searchAddressData = SuggestedPlace(placeId = ""),
+            searchAddressData = null,
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = lat,
@@ -673,7 +671,7 @@ open class PinpointViewModelTest {
         val lng = 44.55
         val districtId = 1111L
         viewModel.onViewCreated(
-            searchAddressData = SuggestedPlace(placeId = ""),
+            searchAddressData = null,
             isEditWarehouse = false,
             isPositiveFlow = false,
             lat = lat,
@@ -699,7 +697,7 @@ open class PinpointViewModelTest {
         val lat = 33.44
         val long = 55.66
         viewModel.onViewCreated(
-            searchAddressData = SuggestedPlace(placeId = ""),
+            searchAddressData = null,
             isEditWarehouse = false,
             isPositiveFlow = false,
             districtId = districtId,
@@ -725,7 +723,7 @@ open class PinpointViewModelTest {
     fun `WHEN hit getDistrictCenter returns other error THEN show location not found bottom sheet`() {
         val districtId = 111L
         viewModel.onViewCreated(
-            searchAddressData = SuggestedPlace(placeId = ""),
+            searchAddressData = null,
             isEditWarehouse = false,
             isPositiveFlow = false,
             districtId = districtId,
@@ -750,7 +748,7 @@ open class PinpointViewModelTest {
         val returnedLat = 11.11
         val returnedLng = 11.33
         viewModel.onViewCreated(
-            searchAddressData = SuggestedPlace(placeId = ""),
+            searchAddressData = null,
             isEditWarehouse = false,
             isPositiveFlow = false,
             districtId = 0,
@@ -802,7 +800,7 @@ open class PinpointViewModelTest {
         val districtName = "district name"
         val cityName = "city name"
         viewModel.onViewCreated(
-            searchAddressData = SuggestedPlace(placeId = ""),
+            searchAddressData = null,
             isEditWarehouse = false,
             isPositiveFlow = false,
             districtId = 0,
@@ -838,7 +836,7 @@ open class PinpointViewModelTest {
         val districtName = "district name"
         val cityName = "city name"
         viewModel.onViewCreated(
-            searchAddressData = SuggestedPlace(placeId = ""),
+            searchAddressData = null,
             isEditWarehouse = false,
             isPositiveFlow = false,
             districtId = 0,
@@ -874,7 +872,7 @@ open class PinpointViewModelTest {
 
     @Test
     fun `WHEN search address sent lat long THEN move map and hit getDistrictData`() {
-        viewModel.onResultFromSearchAddress(searchAddressData = SuggestedPlace(placeId = ""), lat = 13.11, long = 88.09)
+        viewModel.onResultFromSearchAddress(searchAddressData = null, lat = 13.11, long = 88.09)
         assert(viewModel.map.value == MoveMap(13.11, 88.09))
         coVerify { viewModel.getDistrictData(13.11, 88.09) }
     }
