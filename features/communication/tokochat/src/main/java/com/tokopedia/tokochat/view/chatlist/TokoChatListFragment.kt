@@ -14,9 +14,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
+import com.tokopedia.tokochat.analytics.TokoChatAnalyticsConstants
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.getSource
 import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
 import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTime
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSource
 import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
@@ -144,7 +145,10 @@ class TokoChatListFragment @Inject constructor(
                 showErrorLayout()
             } else {
                 if (it.trackerData != null) {
-                    tokoChatAnalytics.viewDriverChatList(it.trackerData)
+                    tokoChatAnalytics.viewDriverChatList(
+                        listChatPair = it.trackerData,
+                        role = TokoChatAnalyticsConstants.BUYER
+                    )
                 }
                 if (it.page > 0) { // 0 means haven't load anything
                     setChatListData(it.chatItemList, it.page == 1)
@@ -194,7 +198,6 @@ class TokoChatListFragment @Inject constructor(
     private fun resetChatList() {
         endlessRecyclerViewScrollListener?.resetState()
         adapter.clearAllItemsAndAnimateChanges()
-        viewModel.resetChatListData()
         initChatListData()
     }
 

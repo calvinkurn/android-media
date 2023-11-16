@@ -43,7 +43,7 @@ import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
-import com.tokopedia.buyerorderdetail.presentation.adapter.listener.ChatCounterListener
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.CourierButtonListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
@@ -142,7 +142,7 @@ open class BuyerOrderDetailFragment :
     ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     OwocInfoViewHolder.Listener,
     BmgmSectionViewHolder.Listener,
-    ChatCounterListener {
+    CourierButtonListener {
 
     companion object {
         @JvmStatic
@@ -1111,8 +1111,23 @@ open class BuyerOrderDetailFragment :
         }
     }
 
-    override fun initGroupBooking(orderIdGojek: String, source: String) {
-        viewModel.initGroupBooking(orderIdGojek, source)
+    override fun initGroupBooking(gojekOrderId: String, source: String) {
+        viewModel.initGroupBooking(gojekOrderId, source)
+    }
+
+    override fun onChatButtonClicked(gojekOrderId: String, source: String, counter: String) {
+        val value = viewModel.buyerOrderDetailUiState.value
+        if (value is BuyerOrderDetailUiState.HasData) {
+            val orderStatus = value.orderStatusUiState.data.orderStatusHeaderUiModel.orderStatus
+            val tokopediaOrderId = viewModel.getOrderId()
+            BuyerOrderDetailTracker.sendClickChatButton(
+                orderStatus,
+                tokopediaOrderId,
+                gojekOrderId,
+                source,
+                counter
+            )
+        }
     }
 
     private fun observeGroupBooking() {
