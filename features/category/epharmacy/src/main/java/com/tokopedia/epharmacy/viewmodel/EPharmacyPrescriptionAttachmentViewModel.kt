@@ -1,6 +1,5 @@
 package com.tokopedia.epharmacy.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -87,10 +86,10 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     fun updateEPharmacyCart(uiUpdater: EPharmacyAttachmentUiUpdater) {
         updateCartUseCase.setParams(
             updateCartRequestList = uiUpdater.getUpdateCartParams(),
-            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         )
         updateCartUseCase.execute({
-            _updateEPharmacyCart.postValue(true)
+            _updateEPharmacyCart.postValue(it.data.status)
         }, {
             _updateEPharmacyCart.postValue(false)
         })
@@ -100,7 +99,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         ePharmacyPrepareProductsGroupResponseData = ePharmacyPrepareProductsGroupResponse
         ePharmacyPrepareProductsGroupResponse.let { data ->
             if (data.detailData?.groupsData?.epharmacyGroups?.isNotEmpty() == true) {
-                _productGroupLiveData.postValue(Success(EPharmacyUtils.mapGroupsDataIntoDataModel(data,source)))
+                _productGroupLiveData.postValue(Success(EPharmacyUtils.mapGroupsDataIntoDataModel(data, source)))
                 _buttonLiveData.postValue(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.papPrimaryCTA)
                 showToastData(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.toaster)
             } else {

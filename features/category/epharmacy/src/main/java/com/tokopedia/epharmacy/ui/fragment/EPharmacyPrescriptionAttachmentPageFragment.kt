@@ -272,7 +272,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart.observe(viewLifecycleOwner) { updateEPharmacyCart ->
             if (updateEPharmacyCart) {
                 onSuccessUpdateEPharmacyCart()
-            }else {
+            } else {
                 showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_reminder_fail).orEmpty())
             }
         }
@@ -462,6 +462,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         EPharmacyNavigator.prescriptionAttachmentDoneRedirection(
             activity,
             appLink,
+            source,
             isSendResult,
             ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout()
         ).let { isUpdateCart ->
