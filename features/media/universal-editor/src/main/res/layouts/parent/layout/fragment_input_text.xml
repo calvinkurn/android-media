@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/universal_editor_input_text_hint"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_Static_White"
                 android:textColorHint="@color/Unify_NN500"/>
 
         </LinearLayout>
@@ -100,7 +100,7 @@
     <View
         android:layout_marginStart="16dp"
         android:alpha="0.4"
-        android:background="@color/Neutral_N0"
+        android:background="@color/Unify_Static_White"
         android:id="@+id/line_separator"
         app:layout_constraintLeft_toRightOf="@id/color_alignment_container"
         app:layout_constraintBottom_toBottomOf="@id/color_alignment_container"
