@@ -232,6 +232,7 @@ object RechargeHomepageSectionMapper {
         section.items.firstOrNull()?.run {
             return ReminderWidgetModel(
                 id = section.id,
+                name = section.name,
                 data = ReminderWidget(
                     section.id,
                     listOf(
@@ -280,7 +281,9 @@ object RechargeHomepageSectionMapper {
                 ),
                 channelGrids = section.items.take(imageCount).map { item ->
                     ChannelGrid(item.id, imageUrl = item.mediaUrl, applink = item.applink)
-                })
+                },
+                name = section.name
+            )
         )
     }
 
