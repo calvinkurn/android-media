@@ -17,6 +17,6 @@ class RechargeHomepageReminderWidgetCallback(val listener: RechargeHomepageItemL
     }
 
     override fun getReminderWidgetData(reminderData: ReminderWidgetModel) {
-        listener.loadRechargeSectionData(reminderData.visitableId() ?: "", reminderData.name)  //update to hit with section with section name
+        listener.loadRechargeSectionData(reminderData.visitableId() ?: "", reminderData.name)  //update to hit section with section name
     }
 }
