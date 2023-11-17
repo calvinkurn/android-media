@@ -1054,7 +1054,7 @@ class TopPayActivity :
 
         private const val PAYMENT_RELOAD_IS_TRUE = "payment_reload=true"
         private const val PAYMENT_RELOAD_IS_FALSE = "payment_reload=false"
-        private const val KEY_FINGERPRINT_DATA = "Fingerprint-Data"
+        const val KEY_FINGERPRINT_DATA = "Fingerprint-Data"
         private const val KEY_FINTECH_FINGERPRINT_DATA = "Fintech-Fingerprint-Data"
 
         @JvmStatic

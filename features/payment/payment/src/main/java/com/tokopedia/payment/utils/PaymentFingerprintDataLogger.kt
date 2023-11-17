@@ -2,6 +2,7 @@ package com.tokopedia.payment.utils
 
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.payment.activity.TopPayActivity.Companion.KEY_FINGERPRINT_DATA
 
 class PaymentFingerprintDataLogger {
 
@@ -34,7 +35,7 @@ class PaymentFingerprintDataLogger {
             KEY_LENGTH_3 to length3.toString(),
             KEY_LOAD_METHOD to loadMethod,
             KEY_TRANSACTION_ID to transactionId,
-            KEY_HAS_FINGERPRINT_DATA to String(postData, Charsets.UTF_8).contains("Fingerprint-Data").toString()
+            KEY_HAS_FINGERPRINT_DATA to String(postData, Charsets.UTF_8).contains(KEY_FINGERPRINT_DATA).toString()
         )
 
         ServerLogger.log(
