@@ -53,7 +53,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
             if (supportFragmentManager.findFragmentByTag(TAG) == null) {
                 finish()
             } else {
-                (supportFragmentManager.findFragmentByTag(TAG) as SaldoDepositFragment).resetPageAfterWithdrawal()
+                (supportFragmentManager.findFragmentByTag(TAG) as SaldoDepositFragment).resetPage()
             }
         }
         if (requestCode == REQUEST_CODE_LOGIN) {
@@ -63,6 +63,8 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
                 finish()
             }
         }
+
+        executeParamAction(intent)
     }
 
     private fun initInjector() {
@@ -96,16 +98,20 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         setUpToolbar()
         initializeView()
         hideStatusBar()
-        showToaster()
     }
 
-    private fun showToaster() {
+    private fun executeParamAction(intent: Intent) {
         val queryParam = UriUtil.uriQueryParamsToMap(intent.data.toString())
         val toasterText = queryParam[TOASTER]
+        val shouldReload = queryParam.containsKey(RELOAD)
         if (toasterText?.isNotEmpty() == true) {
             val rootView = findViewById<RelativeLayout>(com.tokopedia.saldodetails.R.id.il_main_content)
             val type = if (queryParam[TOASTER_ERROR] == "true") Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
             Toaster.build(rootView, toasterText, Snackbar.LENGTH_SHORT, type).show()
+        }
+
+        if (shouldReload) {
+            (supportFragmentManager.findFragmentByTag(TAG) as SaldoDepositFragment).resetPage()
         }
     }
 
@@ -142,6 +148,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         private val TAG = "DEPOSIT_FRAGMENT"
         private const val TOASTER = "toaster"
         private const val TOASTER_ERROR = "toaster_error"
+        private const val RELOAD = "reload"
     }
 
     override fun startCoachMarkFlow(anchorView: View?) {

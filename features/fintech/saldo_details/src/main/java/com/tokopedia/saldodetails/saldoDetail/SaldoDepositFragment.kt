@@ -64,6 +64,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     companion object {
         const val REQUEST_WITHDRAW_CODE = 3333
+        const val REQUEST_RESET_AUTO_WD_STATUS = 3334
         const val SALDODETAIL_FINTECH_PLT = "saldodetailfintech_plt"
         const val SALDODETAIL_FINTECH_PLT_PREPARE_METRICS = "saldodetailfintech_plt_prepare_metrics"
         const val SALDODETAIL_FINTECH_PLT_NETWORK_METRICS = "saldodetailfintech_plt_network_metrics"
@@ -328,7 +329,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             ) {
                 saldoTicker.text = autoWDInitData.data.scheduleWording
                 saldoTickerGroup.setAllOnClickListener {
-                    RouteManager.route(context, autoWDInitData.data.redirectLink)
+                    val intent = RouteManager.getIntent(context, "tokopedia://webview?url=https%3A%2F%2F143-staging-feature.tokopedia.com%2Fpayment%2Fgift-card%2Fredemption%3Fpayment_reload%3Dtrue")
+                    startActivityForResult(intent, REQUEST_RESET_AUTO_WD_STATUS)
                 }
             }
         }
@@ -405,7 +407,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         }
     }
 
-    fun resetPageAfterWithdrawal() {
+    fun resetPage() {
         if (::saldoDetailViewModel.isInitialized) {
             saldoDetailViewModel.getUserSaldoBalance()
             saldoDetailViewModel.getAutoWDStatus()
