@@ -69,6 +69,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         return RatesParam.Builder(listShopShipment, shipping)
             .warehouseId(orderCart.shop.warehouseId)
             .cartData(orderCart.cartData)
+            .groupMetadata(orderCart.groupMetadata)
             .build()
             .apply {
                 occ = "1"
