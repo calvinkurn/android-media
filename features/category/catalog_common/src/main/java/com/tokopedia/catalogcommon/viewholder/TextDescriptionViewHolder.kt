@@ -22,7 +22,7 @@ class TextDescriptionViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_text_description
         private val TEXT_LOW_EMPHASIS = R.color.dms_static_Unify_NN600_light
-        private const val layout_4th_version = 4
+        private const val LAYOUT_4TH_VERSION = 4
     }
 
     private val binding by viewBinding<ItemTextDescriptionBinding>()
@@ -30,7 +30,7 @@ class TextDescriptionViewHolder(
     override fun bind(element: TextDescriptionUiModel) {
         binding?.let {
             it.tgpTextWidgetHighlight.showWithCondition(element.item.highlight.isNotEmpty())
-            if (element.layoutVersion == layout_4th_version){
+            if (element.layoutVersion == LAYOUT_4TH_VERSION){
                 it.tgpTextWidgetHighlight.text = element.item.highlight
                 it.tgpTextWidgetTitle.text = element.item.title
                 it.tgpTextWidgetDescription.text = element.item.description
