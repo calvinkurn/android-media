@@ -28,7 +28,7 @@ data class TokoChatOrderProgressResponse(
         @SerializedName("uri")
         val uri: String = "",
         @SerializedName("additionalInfo")
-        val additionalInfo: String = "",
+        var additionalInfo: String = "",
         @SerializedName("ctaButton")
         val button: Button = Button()
     ) {
