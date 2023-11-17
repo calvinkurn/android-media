@@ -249,6 +249,7 @@ class TopPayActivity :
     override fun renderWebViewPostUrl(url: String, postData: ByteArray, isGet: Boolean) {
         if (isGet || isInsufficientBookingStockUrl(url)) {
             paymentFingerprintDataLogger.loadMethod = PaymentPassData.METHOD_GET
+            paymentFingerprintDataLogger.length3 = String(postData, Charsets.UTF_8).length
             paymentFingerprintDataLogger.sendLog(postData)
             scroogeWebView?.validateAndLoadUrl(url, getFingerprintHeader())
         } else {
