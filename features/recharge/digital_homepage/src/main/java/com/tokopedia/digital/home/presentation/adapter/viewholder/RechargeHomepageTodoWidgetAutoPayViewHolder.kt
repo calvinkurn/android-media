@@ -1,5 +1,6 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
+import android.graphics.Paint
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -111,8 +112,11 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
             tgCategoryNameTodoWidget.text = widget.title
             tgProductNameTodoWidget.text = widget.subtitle
             tgPriceTodoWidget.text = widget.price
-            tgSlashPriceTodoWidget.text = widget.slashedPrice
             tgPercentageTodoWidget.text = widget.discount
+            tgSlashPriceTodoWidget.run {
+                    text = widget.slashedPrice
+                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            }
         }
     }
 
