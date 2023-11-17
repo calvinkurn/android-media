@@ -120,4 +120,7 @@ data class Properties(
     @SerializedName("ribbon")
     val ribbon: Ribbon? = null,
 
-    )
+    @SerializedName("foreground_image_url")
+    val foregroundImageUrl: String? = null
+
+)
