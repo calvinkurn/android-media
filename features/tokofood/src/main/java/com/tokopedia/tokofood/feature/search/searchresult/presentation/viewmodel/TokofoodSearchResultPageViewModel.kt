@@ -572,14 +572,14 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     ) {
         launchCatchError(
             block = {
-                val isSuccess = withContext(dispatcher.io) {
+                val result = withContext(dispatcher.io) {
                     keroEditAddressUseCase.execute(addressId, latitude, longitude)
                 }
-                if (isSuccess) {
+                if (result.isSuccess == 1) {
                     _uiEventFlow.tryEmit(
                         TokofoodSearchUiEvent(
                             state = TokofoodSearchUiEvent.EVENT_SUCCESS_EDIT_PINPOINT,
-                            data = Pair(latitude, longitude)
+                            data = result
                         )
                     )
                 } else {
