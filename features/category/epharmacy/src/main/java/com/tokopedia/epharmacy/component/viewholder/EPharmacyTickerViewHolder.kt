@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.component.model.EPharmacyTickerDataModel
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.epharmacy.utils.WEB_VIEW_MIN_VERSION_SUPPORT_CONSULTATION
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
@@ -57,7 +58,7 @@ class EPharmacyTickerViewHolder(
     }
 
     private fun errorWebViewCondition(version: String): Boolean {
-        return version.split(".").firstOrNull().toIntOrZero() < 70
+        return version.split(".").firstOrNull().toIntOrZero() < WEB_VIEW_MIN_VERSION_SUPPORT_CONSULTATION
     }
 
     private fun showWebViewTicker() {
