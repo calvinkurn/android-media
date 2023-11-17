@@ -1007,12 +1007,6 @@ open class DiscoveryFragment :
                 requestingComponent = it.requestingComponent,
                 parentPosition = it.parentPosition
             )
-            discoveryAdapter.getViewModelAtPosition(it.parentPosition)
-                ?.let { discoveryBaseViewModel ->
-                    if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
-                        discoveryBaseViewModel.changeTier(true)
-                    }
-                }
         }
 
         discoveryViewModel.bmGmDataList.observe(viewLifecycleOwner) { (parentPosition, bmGmDataList) ->
