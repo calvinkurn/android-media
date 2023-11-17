@@ -146,8 +146,6 @@ class HomeRecommendationViewModel @Inject constructor(
     ) {
         val existingRecommendationDataMutableList = existingRecommendationData.toMutableList()
 
-        existingRecommendationDataMutableList.remove(buttonRetryUiModel)
-
         _homeRecommendationCardState.tryEmit(
             HomeRecommendationCardState.LoadingMore(
                 HomeRecommendationDataModel(
