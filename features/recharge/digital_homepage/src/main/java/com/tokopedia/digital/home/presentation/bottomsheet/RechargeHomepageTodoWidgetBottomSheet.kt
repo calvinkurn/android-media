@@ -11,7 +11,7 @@ import com.tokopedia.digital.home.presentation.adapter.BottomSheetTodoWidgetAdap
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class RechargeHomepageTodoWidgetBottomSheet: BottomSheetUnify(), BottomSheetTodoWidgetAdapter.BottomSheetAdapterTodoWidgetListener {
+class RechargeHomepageTodoWidgetBottomSheet : BottomSheetUnify(), BottomSheetTodoWidgetAdapter.BottomSheetAdapterTodoWidgetListener {
 
     private var binding by autoClearedNullable<BottomsheetRechargeHomepageTodoWidgetBinding>()
     private var optionButtons: List<RechargeHomepageSections.OptionButton>? = null

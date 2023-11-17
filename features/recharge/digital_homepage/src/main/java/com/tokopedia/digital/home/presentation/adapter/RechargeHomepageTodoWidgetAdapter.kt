@@ -96,6 +96,12 @@ class RechargeHomepageTodoWidgetAdapter(
         }
 
         fun bind(item: RechargeHomepageSections.Item) {
+            renderTitle(item)
+            renderStickyLayout(item)
+            renderRecycleView(item)
+        }
+
+        private fun renderTitle(item: RechargeHomepageSections.Item) {
             with(binding) {
                 if (item.title.isEmpty()) {
                     titleTodoWidget.hide()
@@ -103,6 +109,11 @@ class RechargeHomepageTodoWidgetAdapter(
                     titleTodoWidget.show()
                     titleTodoWidget.text = item.title
                 }
+            }
+        }
+
+        private fun renderStickyLayout(item: RechargeHomepageSections.Item) {
+            with(binding) {
                 val stickyLayout = getStickyLayout(item.widgets)
                 if (stickyLayout != null) {
                     rvTodoWidget.apply {
@@ -124,8 +135,10 @@ class RechargeHomepageTodoWidgetAdapter(
                     viewStickyLayout.tgSubTitleTodoWidget.text = stickyLayout.subtitle
                     viewStickyLayout.imgTodoWidgetBackground.loadImage(TokopediaImageUrl.RECHARGE_SUBHOME_TODO_WIDGET)
                     viewStickyLayout.root.setOnClickListener {
-                        todoWidgetListener.onClickTodoWidget(stickyLayout, false, todoWidgetSectionId,
-                            todoWidgetSectionName, todoWidgetSectionTemplate)
+                        todoWidgetListener.onClickTodoWidget(
+                            stickyLayout, false, todoWidgetSectionId,
+                            todoWidgetSectionName, todoWidgetSectionTemplate
+                        )
                     }
                     setStickyHeightMatchParent(binding)
                 } else {
@@ -146,21 +159,23 @@ class RechargeHomepageTodoWidgetAdapter(
                         )
                     }
                 }
+            }
+        }
 
-                with(binding.rvTodoWidget) {
-                    show()
-                    baseAdapter.setVisitables(mapperTodoList(item.widgets).toList())
-                    adapter = baseAdapter
-                    layoutManager =
-                        LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-                    val displayMetrics = itemView.context.resources.displayMetrics
-                    removeAllItemDecoration()
-                    addItemDecoration(
-                        RechargeTodoWidgetSpaceDecorator(
-                            SPACE_DP.dpToPx(displayMetrics)
-                        )
+        private fun renderRecycleView(item: RechargeHomepageSections.Item) {
+            with(binding.rvTodoWidget) {
+                show()
+                baseAdapter.setVisitables(mapperTodoList(item.widgets).toList())
+                adapter = baseAdapter
+                layoutManager =
+                    LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+                val displayMetrics = itemView.context.resources.displayMetrics
+                removeAllItemDecoration()
+                addItemDecoration(
+                    RechargeTodoWidgetSpaceDecorator(
+                        SPACE_DP.dpToPx(displayMetrics)
                     )
-                }
+                )
             }
         }
     }
@@ -182,9 +197,11 @@ class RechargeHomepageTodoWidgetAdapter(
         widgets.filter {
             it.type != RechargeHomepageConst.BAYAR_SEKALIGUS_TYPE
         }.forEach {
-            itemList.add(RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel(
-                it
-            ))
+            itemList.add(
+                RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel(
+                    it
+                )
+            )
         }
         return itemList
     }
