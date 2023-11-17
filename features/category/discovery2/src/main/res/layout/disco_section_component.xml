@@ -16,21 +16,21 @@
             android:id="@+id/festiveBackground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:minHeight="@dimen/festive_section_min_height"
             android:scaleType="fitXY"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/festiveForeground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:minHeight="@dimen/festive_section_min_height"
             android:scaleType="fitXY"/>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/festiveContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="vertical" />
 
     </FrameLayout>
 

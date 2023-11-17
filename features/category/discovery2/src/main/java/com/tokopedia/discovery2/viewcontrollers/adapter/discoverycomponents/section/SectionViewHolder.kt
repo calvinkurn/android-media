@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.R.dimen.festive_section_min_height
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -107,7 +108,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             imageUrl,
             listener = object : ImageHandler.ImageLoaderStateListener {
                 override fun successLoad(view: ImageView?) {
-                    // no-op
+                    festiveForeground.minimumHeight = 0
                 }
 
                 override fun failedLoad(view: ImageView?) {
@@ -124,7 +125,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             imageUrl,
             listener = object : ImageHandler.ImageLoaderStateListener {
                 override fun successLoad(view: ImageView?) {
-                    // no-op
+                    festiveBackground.minimumHeight = 0
                 }
 
                 override fun failedLoad(view: ImageView?) {
@@ -137,10 +138,14 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
     private fun resetFestiveSection() {
         festiveContainer.removeAllViews()
 
+        val minHeight = itemView.context.resources.getDimensionPixelOffset(festive_section_min_height)
+
         festiveBackground.layout(0, 0, 0, 0)
+        festiveBackground.minimumHeight = minHeight
         festiveBackground.hide()
 
         festiveForeground.layout(0, 0, 0, 0)
+        festiveForeground.minimumHeight = minHeight
         festiveForeground.hide()
     }
 
