@@ -55,7 +55,7 @@ object GlobalSearchSellerMapper {
     ): List<BaseSuggestionSearchSeller> {
         return mutableListOf<BaseSuggestionSearchSeller>().apply {
             var countItem = 0
-            sellerSearch.data.sections.forEach {
+            sellerSearch.data.sections.forEachIndexed { index, it ->
                 when (it.id) {
                     ORDER -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
@@ -78,7 +78,7 @@ object GlobalSearchSellerMapper {
                         }
                         val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
                         if (isVisibleDivider) {
-                            add(DividerSellerSearchUiModel())
+                            add(DividerSellerSearchUiModel(index))
                         }
                     }
 
@@ -103,7 +103,7 @@ object GlobalSearchSellerMapper {
                         }
                         val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
                         if (isVisibleDivider) {
-                            add(DividerSellerSearchUiModel())
+                            add(DividerSellerSearchUiModel(index))
                         }
                     }
 
@@ -118,7 +118,7 @@ object GlobalSearchSellerMapper {
                         countItem += itemCount
                         val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
                         if (isVisibleDivider) {
-                            add(DividerSellerSearchUiModel())
+                            add(DividerSellerSearchUiModel(index))
                         }
                     }
 
@@ -143,7 +143,7 @@ object GlobalSearchSellerMapper {
                         }
                         val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
                         if (isVisibleDivider) {
-                            add(DividerSellerSearchUiModel())
+                            add(DividerSellerSearchUiModel(index))
                         }
                     }
 
@@ -168,7 +168,7 @@ object GlobalSearchSellerMapper {
                         }
                         val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
                         if (isVisibleDivider) {
-                            add(DividerSellerSearchUiModel())
+                            add(DividerSellerSearchUiModel(index))
                         }
                     }
 

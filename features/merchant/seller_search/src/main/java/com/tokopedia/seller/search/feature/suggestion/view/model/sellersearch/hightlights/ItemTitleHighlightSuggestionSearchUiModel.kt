@@ -7,10 +7,14 @@ data class ItemTitleHighlightSuggestionSearchUiModel(
     val title: String = ""
 ) : BaseSuggestionSearchSeller {
     override fun getUniquePosition(): Int {
-        return title.hashCode()
+        return TITLE_HIGHLIGHT_SUGGESTION_SEARCH.hashCode() + title.hashCode()
     }
 
     override fun type(typeFactory: TypeFactorySuggestionSearchAdapter): Int {
         return typeFactory.type(this)
+    }
+
+    companion object {
+        const val TITLE_HIGHLIGHT_SUGGESTION_SEARCH = "TitleHighlightSuggestionSearch"
     }
 }

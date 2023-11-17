@@ -11,6 +11,10 @@ data class HighlightSuggestionSearchUiModel(
     }
 
     override fun getUniquePosition(): Int {
-        return highlightSuggestionSearch.hashCode()
+        return highlightSuggestionSearch.hashCode() + HIGHLIGHT_SUGGESTION_SEARCH_UI_MODEL.hashCode()
+    }
+
+    companion object {
+        const val HIGHLIGHT_SUGGESTION_SEARCH_UI_MODEL = "HighlightSuggestionSearchUiModel"
     }
 }

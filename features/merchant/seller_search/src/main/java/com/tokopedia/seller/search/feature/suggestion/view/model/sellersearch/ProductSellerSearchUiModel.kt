@@ -18,6 +18,6 @@ data class ProductSellerSearchUiModel(
     }
 
     override fun getUniquePosition(): Int {
-        return id.orEmpty().hashCode() + title.orEmpty().hashCode()
+        return id.orEmpty().hashCode() + title.orEmpty().hashCode() + appUrl.orEmpty().hashCode()
     }
 }

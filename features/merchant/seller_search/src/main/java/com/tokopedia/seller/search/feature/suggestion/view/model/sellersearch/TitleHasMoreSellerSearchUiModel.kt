@@ -14,6 +14,6 @@ data class TitleHasMoreSellerSearchUiModel(
     }
 
     override fun getUniquePosition(): Int {
-        return id.hashCode() + title.hashCode()
+        return id.hashCode() + title.hashCode() + appActionLink.hashCode()
     }
 }
