@@ -169,7 +169,7 @@ abstract public class SplashScreen extends AppCompatActivity {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("reason", reason);
         messageMap.put("deeplink", deeplink);
-        ServerLogger.log(Priority.P2, "LINKER", messageMap);
+        ServerLogger.logP2("LINKER", messageMap);
     }
 
     @Override

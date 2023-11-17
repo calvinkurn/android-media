@@ -11,6 +11,7 @@ import java.lang.ref.WeakReference
 object AppUtil {
 
     var currentActivityReference: WeakReference<Activity>? = null
+    var currentActivityName = ""
 
     fun startActivityFromCurrentActivity(intent: Intent): Boolean {
         val reference = currentActivityReference
@@ -29,5 +30,4 @@ object AppUtil {
             context?.packageManager?.getLaunchIntentForPackage("com.tokopedia.sellerapp")
         return topadsIntent != null
     }
-
 }
