@@ -26,8 +26,6 @@ object ProductDetailConstant {
     const val PDP_RESULT_TRACE_P2_DATA = "pdp_result_trace_p2_data"
 
     // PAYLOADS
-    const val PAYLOAD_WISHLIST = 1
-    const val PAYLOAD_TRADEIN_AND_BOE = 421321
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
     const val PAYLOAD_SCROLL_IMAGE_VARIANT = 5
