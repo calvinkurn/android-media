@@ -1911,7 +1911,7 @@ open class DiscoveryFragment :
             }
         )
         AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
-            if (bmGmDataParam != null && shouldRefreshPreviousPage) {
+            if (bmGmDataParam != null && cartId.isNotBlankOrZero()) {
                 getMiniCart(bmGmDataParam)
             }
         }
@@ -2404,16 +2404,28 @@ open class DiscoveryFragment :
             parentPosition = parentPosition
         )
         context?.let {
-            AtcVariantHelper.goToAtcVariant(
-                it,
-                productId,
-                VariantPageSource.DISCOVERY_PAGESOURCE,
-                true,
-                userAddressData?.shop_id ?: "",
-                startActivitResult = { intent, reqCode ->
-                    startActivityForResult(intent, reqCode)
-                }
-            )
+            if (bmGmDataParam != null) {
+                AtcVariantHelper.goToAtcVariant(
+                    context = it,
+                    productId = productId,
+                    pageSource = VariantPageSource.DISCOVERY_PAGESOURCE,
+                    shopId = requestingComponent?.data?.firstOrNull()?.shopId.orEmpty(),
+                    startActivitResult = { intent, reqCode ->
+                        startActivityForResult(intent, reqCode)
+                    }
+                )
+            } else {
+                AtcVariantHelper.goToAtcVariant(
+                    it,
+                    productId,
+                    VariantPageSource.DISCOVERY_PAGESOURCE,
+                    true,
+                    userAddressData?.shop_id.orEmpty(),
+                    startActivitResult = { intent, reqCode ->
+                        startActivityForResult(intent, reqCode)
+                    }
+                )
+            }
         }
     }
 
