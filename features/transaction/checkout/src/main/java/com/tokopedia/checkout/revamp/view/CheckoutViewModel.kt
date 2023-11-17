@@ -2585,7 +2585,9 @@ class CheckoutViewModel @Inject constructor(
                 ?: emptyList()
         if (listShipmentCrossSellModel.isNotEmpty()) {
             for (crossSellModel in listShipmentCrossSellModel) {
-                result.add(Pair(crossSellModel.getCategoryName(), crossSellModel.getCrossSellProductId()))
+                if (crossSellModel.isChecked) {
+                    result.add(Pair(crossSellModel.getCategoryName(), crossSellModel.getCrossSellProductId()))
+                }
             }
         }
         val donationModel = crossSellGroup?.crossSellList?.firstOrNullInstanceOf(CheckoutDonationModel::class.java)
