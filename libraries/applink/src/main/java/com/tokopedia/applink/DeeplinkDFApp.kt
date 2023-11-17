@@ -284,9 +284,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_CONTENT, PathType.PATTERN, "/create_post_v2/"),
         // image_picker_insta
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/image-picker/v2/"),
-        // mediaeditor
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-editor"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor"),
         // image_picker
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/image-picker"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/video-picker"),
@@ -708,6 +705,9 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-album"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
+        // mediaeditor
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-editor"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor"),
     )
 
     private fun getDfStoriesCreationSellerApp() = mutableListOf(
@@ -718,8 +718,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
         // mediaeditor
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/image-editor"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-editor"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor"),
     )
 
