@@ -72,17 +72,20 @@ class TokoChatListUseCase @Inject constructor(
                     timestamp = getLastTimeStamp(),
                     batchSize = batchSize
                 ),
-                onSuccess = onSuccessFetchAllChannel(),
+                onSuccess = onSuccessFetchAllChannel(this),
                 onError = onErrorFetchAllChannel(this)
             )
             awaitClose { channel.close() }
         }
     }
 
-    private fun onSuccessFetchAllChannel(): (List<ConversationsChannel>) -> Unit {
+    private fun onSuccessFetchAllChannel(
+        scope: ProducerScope<TokoChatResult<List<ConversationsChannel>>>
+    ): (List<ConversationsChannel>) -> Unit {
         return { list ->
             // Set to -1 to mark as no more data
             lastTimeStamp = list.lastOrNull()?.createdAt ?: -1
+            scope.trySend(TokoChatResult.Success(list))
         }
     }
 

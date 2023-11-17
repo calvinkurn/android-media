@@ -53,7 +53,7 @@ class TokoChatListUiMapper@Inject constructor(
                     it.metadata?.orderInfo?.serviceType ?: Int.ZERO
                 )
                 val lastCounter: Int = result[serviceTypeName] ?: Int.ZERO
-                result[serviceTypeName] = lastCounter + it.unreadCount
+                result[serviceTypeName] = lastCounter + 1
             }
         }
         return result

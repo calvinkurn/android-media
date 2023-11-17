@@ -8,6 +8,5 @@ data class TokoChatListUiState(
     val page: Int = 0,
     val hasNextPage: Boolean = false,
     val errorMessage: String? = null,
-    val trackerData: Map<String, Int>? = null,
     val localListLoaded: Boolean = false
 )

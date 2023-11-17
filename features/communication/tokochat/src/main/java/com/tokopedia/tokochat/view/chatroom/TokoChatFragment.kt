@@ -195,7 +195,6 @@ open class TokoChatFragment @Inject constructor(
         askTokoChatConsent()
         setupLifeCycleObserver()
         setupListeners()
-        observeGroupBooking()
     }
 
     override fun onResume() {
@@ -300,10 +299,8 @@ open class TokoChatFragment @Inject constructor(
                 var isFinished = false
                 viewModel.isTkpdOrderStatus.collectLatest { status ->
                     if (!isFinished) {
-                        status?.let {
-                            isFinished = it
-                            initGroupBooking() // Success or fail, init group booking
-                        }
+                        isFinished = status
+                        initGroupBooking() // Success or fail, init group booking
                     }
                 }
             }
@@ -426,6 +423,7 @@ open class TokoChatFragment @Inject constructor(
         observeError()
         observeUserConsent()
         observeTkpdOrderId()
+        observeGroupBooking()
     }
 
     private fun observeError() {

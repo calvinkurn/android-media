@@ -58,9 +58,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -132,9 +130,8 @@ class TokoChatViewModel @Inject constructor(
     val imageUploadError: LiveData<Pair<String, Throwable>>
         get() = _imageUploadError
 
-    private val _isTkpdOrderStatus = MutableStateFlow<Boolean?>(null)
-    val isTkpdOrderStatus: StateFlow<Boolean?>
-        get() = _isTkpdOrderStatus
+    private val _isTkpdOrderStatus = MutableSharedFlow<Boolean>()
+    val isTkpdOrderStatus = _isTkpdOrderStatus.asSharedFlow()
 
     private val _error = MutableLiveData<Pair<Throwable, String>>()
     val error: LiveData<Pair<Throwable, String>>
@@ -687,13 +684,12 @@ class TokoChatViewModel @Inject constructor(
     fun translateGojekOrderId(gojekOrderId: String) {
         viewModelScope.launch {
             try {
-                _isTkpdOrderStatus.value = null // reset value
                 getTkpdOrderIdUseCase(gojekOrderId).collectLatest {
                     tkpdOrderId = it
-                    _isTkpdOrderStatus.value = true
+                    _isTkpdOrderStatus.tryEmit(true)
                 }
             } catch (throwable: Throwable) {
-                _isTkpdOrderStatus.value = false
+                _isTkpdOrderStatus.tryEmit(false)
                 _error.value = Pair(throwable, ::translateGojekOrderId.name)
             }
         }

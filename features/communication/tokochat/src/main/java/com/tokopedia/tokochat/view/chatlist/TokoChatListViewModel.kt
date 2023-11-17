@@ -7,7 +7,6 @@ import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.BATCH_LIMIT
-import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.domain.usecase.TokoChatListUseCase
 import com.tokopedia.tokochat.view.chatlist.uistate.TokoChatListErrorUiState
@@ -37,6 +36,9 @@ class TokoChatListViewModel @Inject constructor(
 
     private val _chatListUiState = MutableStateFlow(TokoChatListUiState())
     val chatListUiState = _chatListUiState.asStateFlow()
+
+    private val _chatListTrackerUiState = MutableSharedFlow<Map<String, Int>>()
+    val chatListTrackerUiState = _chatListTrackerUiState.asSharedFlow()
 
     private val _errorUiState = MutableSharedFlow<TokoChatListErrorUiState>(
         extraBufferCapacity = 16
@@ -118,14 +120,8 @@ class TokoChatListViewModel @Inject constructor(
     }
 
     private fun onSuccessGetChatItemList(channelList: List<ConversationsChannel>) {
-        val filteredChatItemList = filterExpiredChannelAndMap(channelList)
-        val trackerData = if (_chatListUiState.value.page == 0 &&
-            _chatListUiState.value.trackerData == null
-        ) {
-            mapper.mapToTypeCounter(channelList)
-        } else {
-            null
-        }
+        val filteredChannelList = filterExpiredChannel(channelList)
+        val chatItemList = mapper.mapToListChat(filteredChannelList)
         // If local data is not flagged, then this is first load from local DB
         if (!_chatListUiState.value.localListLoaded) {
             loadNextPageChatList(channelList.size) // Load the page, then set as true
@@ -133,10 +129,9 @@ class TokoChatListViewModel @Inject constructor(
         _chatListUiState.update {
             it.copy(
                 isLoading = false,
-                chatItemList = it.chatItemList + filteredChatItemList,
-                trackerData = trackerData,
+                chatItemList = it.chatItemList + chatItemList,
                 errorMessage = null,
-                hasNextPage = (it.chatItemList.size < filteredChatItemList.size),
+                hasNextPage = (it.chatItemList.size < chatItemList.size),
                 localListLoaded = true
             )
         }
@@ -156,6 +151,14 @@ class TokoChatListViewModel @Inject constructor(
                         _chatListUiState.update {
                             it.copy(errorMessage = result.throwable.message)
                         }
+                    } else if (result is TokoChatResult.Success) {
+                        // Track if first page
+                        if (chatListUiState.value.page == 1) {
+                            val trackerData = mapper.mapToTypeCounter(
+                                filterExpiredChannel(result.data)
+                            )
+                            _chatListTrackerUiState.emit(trackerData)
+                        }
                     }
                 }
             } catch (throwable: Throwable) {
@@ -173,13 +176,12 @@ class TokoChatListViewModel @Inject constructor(
         }
     }
 
-    private fun filterExpiredChannelAndMap(
+    private fun filterExpiredChannel(
         channelList: List<ConversationsChannel>
-    ): List<TokoChatListItemUiModel> {
-        val filteredChannel = channelList.filter {
+    ): List<ConversationsChannel> {
+        return channelList.filter {
             it.expiresAt > System.currentTimeMillis()
         }
-        return mapper.mapToListChat(filteredChannel)
     }
 
     private fun resetChatListData() {
@@ -190,7 +192,6 @@ class TokoChatListViewModel @Inject constructor(
                 page = 0,
                 hasNextPage = false,
                 errorMessage = null,
-                trackerData = null,
                 localListLoaded = false
             )
         }
