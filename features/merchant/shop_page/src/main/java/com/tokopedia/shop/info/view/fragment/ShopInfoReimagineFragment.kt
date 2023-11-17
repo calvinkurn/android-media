@@ -44,6 +44,7 @@ import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.component.ShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.domain.entity.ShopNote
+import com.tokopedia.shop.info.domain.entity.ShopOperationalHourWithStatus
 import com.tokopedia.shop.info.domain.entity.ShopPerformanceDuration
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopReview
@@ -276,22 +277,22 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgShopInfoTotalProduct.text = uiState.info.totalProduct.splitByThousand()
         }
     }
-
-    private fun renderOperationalHours(operationalHours: Map<String, List<String>>) {
+    
+    private fun renderOperationalHours(operationalHours: Map<String, List<ShopOperationalHourWithStatus>>) {
         binding?.layoutOperationalHoursContainer?.removeAllViews()
 
         if (operationalHours.isEmpty()) {
             val operationalHourTypography = createOperationalHoursTypography("-")
             binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
         } else {
-            operationalHours.forEach { operationalHour ->
-                val hour = operationalHour.key
-                val days = operationalHour.value
-                val groupedDays = days.joinToString(separator = ", ", postfix = ":") { day -> day }
-
-                val operationalHourFormat = "%s %s"
-                val text = String.format(operationalHourFormat, groupedDays, hour)
-
+            operationalHours.forEach { (_, shopOpenCloseTimeWithStatus) ->
+                val groupedDays = shopOpenCloseTimeWithStatus.joinToString(separator = ", ") {
+                    it.day.dayName()
+                }
+                
+                val hour = shopOpenCloseTimeWithStatus.findShopOpenCloseTime()
+               
+                val text = "$groupedDays: $hour"
                 val operationalHourTypography = createOperationalHoursTypography(text)
                 binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
             }
@@ -647,5 +648,40 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         val bottomSheet = ShopNoteDetailBottomSheet.newInstance(shopNote.title, shopNote.description)
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun ShopOperationalHourWithStatus.Day.dayName(): String {
+        return when(this) {
+            ShopOperationalHourWithStatus.Day.MONDAY -> context?.getString(R.string.shop_info_ops_hour_monday).orEmpty()
+            ShopOperationalHourWithStatus.Day.TUESDAY -> context?.getString(R.string.shop_info_ops_hour_tuesday).orEmpty()
+            ShopOperationalHourWithStatus.Day.WEDNESDAY -> context?.getString(R.string.shop_info_ops_hour_wednesday).orEmpty()
+            ShopOperationalHourWithStatus.Day.THURSDAY -> context?.getString(R.string.shop_info_ops_hour_thursday).orEmpty()
+            ShopOperationalHourWithStatus.Day.FRIDAY -> context?.getString(R.string.shop_info_ops_hour_friday).orEmpty()
+            ShopOperationalHourWithStatus.Day.SATURDAY -> context?.getString(R.string.shop_info_ops_hour_saturday).orEmpty()
+            ShopOperationalHourWithStatus.Day.SUNDAY -> context?.getString(R.string.shop_info_ops_hour_sunday).orEmpty()
+            ShopOperationalHourWithStatus.Day.UNDEFINED -> ""
+        }
+    }
+
+    private fun List<ShopOperationalHourWithStatus>.findShopOpenCloseTime(): String {
+        if (isEmpty()) return ""
+        
+        val operationalHour = first()
+        
+        return when (operationalHour.status) {
+            ShopOperationalHourWithStatus.Status.OPEN -> {
+                context?.getString(
+                    R.string.shop_info_ops_hour_placeholder_open_range,
+                    operationalHour.startTime,
+                    operationalHour.endTime
+                ).orEmpty()
+            }
+            ShopOperationalHourWithStatus.Status.CLOSED -> {
+                context?.getString(R.string.shop_info_ops_hour_closed).orEmpty()
+            }
+            ShopOperationalHourWithStatus.Status.OPEN24HOURS -> {
+                context?.getString(R.string.shop_info_ops_hour_open_twenty_four_hour).orEmpty()
+            }
+        }
     }
 }

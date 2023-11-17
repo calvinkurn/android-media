@@ -16,6 +16,7 @@ import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOpera
 import com.tokopedia.shop.info.data.response.GetEpharmacyShopInfoResponse
 import com.tokopedia.shop.info.data.response.GetNearestEpharmacyWarehouseLocationResponse
 import com.tokopedia.shop.info.domain.entity.ShopNote
+import com.tokopedia.shop.info.domain.entity.ShopOperationalHourWithStatus
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopStatsRawData
@@ -424,14 +425,20 @@ class ShopInfoReimagineViewModelTest {
             mockGetShopReviewGqlCall()
             mockGetShopInfoGqlCall()
             mockGetShopNoteGqlCall()
+            
+            //Mock the data to simulate following condition: 
+            // Mon, Tue, Wed, Sat, Sund: Open, 
+            // Thu: Open 24 Hours, 
+            // Fri: Closed 
+            
             val response = ShopOperationalHoursListResponse(
                 getShopOperationalHoursList = GetShopOperationalHoursList(
                     data = listOf(
                         ShopOperationalHour(day = 1, startTime = "08:00:00", endTime = "17:00:00"),
                         ShopOperationalHour(day = 2, startTime = "08:00:00", endTime = "17:00:00"),
                         ShopOperationalHour(day = 3, startTime = "08:00:00", endTime = "17:00:00"),
-                        ShopOperationalHour(day = 4, startTime = "08:00:00", endTime = "17:00:00"),
-                        ShopOperationalHour(day = 5, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 4, startTime = "00:00:00", endTime = "23:59:59"),
+                        ShopOperationalHour(day = 5, startTime = "00:00:00", endTime = "00:00:00"),
                         ShopOperationalHour(day = 6, startTime = "10:00:00", endTime = "15:00:00"),
                         ShopOperationalHour(day = 7, startTime = "10:00:00", endTime = "12:00:00")
                     )
@@ -451,61 +458,58 @@ class ShopInfoReimagineViewModelTest {
             val actual = emittedValues.last()
             assertEquals(
                 mapOf(
-                    "08:00 - 17:00 WIB" to listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat"),
-                    "10:00 - 15:00 WIB" to listOf("Sabtu"),
-                    "10:00 - 12:00 WIB" to listOf("Minggu")
-                ),
-                actual.info.operationalHours
-            )
-
-            job.cancel()
-        }
-    }
-
-    @Test
-    fun `When successfully get operational hours, and shop open time 00-00 and close time 23-59 then shop hour status should be set to open 24 hours`() {
-        runBlockingTest {
-            // Given
-
-            val emittedValues = arrayListOf<ShopInfoUiState>()
-            val job = launch {
-                viewModel.uiState.toList(emittedValues)
-            }
-
-            mockGetShopPageHeaderGqlCall()
-            mockGetShopRatingGqlCall()
-            mockGetShopReviewGqlCall()
-            mockGetShopInfoGqlCall()
-            mockGetShopNoteGqlCall()
-            val response = ShopOperationalHoursListResponse(
-                getShopOperationalHoursList = GetShopOperationalHoursList(
-                    data = listOf(
-                        ShopOperationalHour(day = 1, startTime = "08:00:00", endTime = "17:00:00"),
-                        ShopOperationalHour(day = 2, startTime = "08:00:00", endTime = "17:00:00"),
-                        ShopOperationalHour(day = 3, startTime = "08:00:00", endTime = "17:00:00"),
-                        ShopOperationalHour(day = 4, startTime = "08:00:00", endTime = "17:00:00"),
-                        ShopOperationalHour(day = 5, startTime = "08:00:00", endTime = "17:00:00"),
-                        ShopOperationalHour(day = 6, startTime = "00:00:00", endTime = "23:59:59"),
-                        ShopOperationalHour(day = 7, startTime = "00:00:00", endTime = "23:59:59")
+                    "08:00:17:00" to listOf(
+                        ShopOperationalHourWithStatus(
+                            ShopOperationalHourWithStatus.Day.MONDAY,
+                            "08:00",
+                            "17:00",
+                            ShopOperationalHourWithStatus.Status.OPEN
+                        ),
+                        ShopOperationalHourWithStatus(
+                            ShopOperationalHourWithStatus.Day.TUESDAY,
+                            "08:00",
+                            "17:00",
+                            ShopOperationalHourWithStatus.Status.OPEN
+                        ),
+                        ShopOperationalHourWithStatus(
+                            ShopOperationalHourWithStatus.Day.WEDNESDAY,
+                            "08:00",
+                            "17:00",
+                            ShopOperationalHourWithStatus.Status.OPEN
+                        )
+                    ),
+                    "00:00:23:59" to listOf(
+                        ShopOperationalHourWithStatus(
+                            ShopOperationalHourWithStatus.Day.THURSDAY,
+                            "00:00",
+                            "23:59",
+                            ShopOperationalHourWithStatus.Status.OPEN24HOURS
+                        )
+                    ),
+                    "00:00:00:00" to listOf(
+                        ShopOperationalHourWithStatus(
+                            ShopOperationalHourWithStatus.Day.FRIDAY,
+                            "00:00",
+                            "00:00",
+                            ShopOperationalHourWithStatus.Status.CLOSED
+                        )
+                    ),
+                    "10:00:15:00" to listOf(
+                        ShopOperationalHourWithStatus(
+                            ShopOperationalHourWithStatus.Day.SATURDAY,
+                            "10:00",
+                            "15:00",
+                            ShopOperationalHourWithStatus.Status.OPEN
+                        )
+                    ),
+                    "10:00:12:00" to listOf(
+                        ShopOperationalHourWithStatus(
+                            ShopOperationalHourWithStatus.Day.SUNDAY,
+                            "10:00",
+                            "12:00",
+                            ShopOperationalHourWithStatus.Status.OPEN
+                        )
                     )
-                )
-            )
-            mockGetShopOperationListGqlCall(response = response)
-            mockGetShopStatsRawDataGqlCall()
-            mockGetNearestPharmacyGqlCall()
-            mockGetPharmacyShopInfoGqlCall()
-            mockReportShopGqlCall()
-
-            // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
-
-            // Then
-            val actual = emittedValues.last()
-            assertEquals(
-                mapOf(
-                    "08:00 - 17:00 WIB" to listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat"),
-                    "Buka 24 Jam" to listOf("Sabtu", "Minggu")
                 ),
                 actual.info.operationalHours
             )
@@ -514,57 +518,6 @@ class ShopInfoReimagineViewModelTest {
         }
     }
 
-    @Test
-    fun `When successfully get operational hours, and shop open time and shop close time are same then shop hour status should be set to closed`() {
-        runBlockingTest {
-            // Given
-
-            val emittedValues = arrayListOf<ShopInfoUiState>()
-            val job = launch {
-                viewModel.uiState.toList(emittedValues)
-            }
-
-            mockGetShopPageHeaderGqlCall()
-            mockGetShopRatingGqlCall()
-            mockGetShopReviewGqlCall()
-            mockGetShopInfoGqlCall()
-            mockGetShopNoteGqlCall()
-            val response = ShopOperationalHoursListResponse(
-                getShopOperationalHoursList = GetShopOperationalHoursList(
-                    data = listOf(
-                        ShopOperationalHour(day = 1, startTime = "08:00:00", endTime = "17:00:00"),
-                        ShopOperationalHour(day = 2, startTime = "08:00:00", endTime = "17:00:00"),
-                        ShopOperationalHour(day = 3, startTime = "08:00:00", endTime = "17:00:00"),
-                        ShopOperationalHour(day = 4, startTime = "08:00:00", endTime = "17:00:00"),
-                        ShopOperationalHour(day = 5, startTime = "08:00:00", endTime = "17:00:00"),
-                        ShopOperationalHour(day = 6, startTime = "00:00:00", endTime = "00:00:00"),
-                        ShopOperationalHour(day = 7, startTime = "00:00:00", endTime = "00:00:00")
-                    )
-                )
-            )
-            mockGetShopOperationListGqlCall(response = response)
-            mockGetShopStatsRawDataGqlCall()
-            mockGetNearestPharmacyGqlCall()
-            mockGetPharmacyShopInfoGqlCall()
-            mockReportShopGqlCall()
-
-            // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
-
-            // Then
-            val actual = emittedValues.last()
-            assertEquals(
-                mapOf(
-                    "08:00 - 17:00 WIB" to listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat"),
-                    "Libur" to listOf("Sabtu", "Minggu")
-                ),
-                actual.info.operationalHours
-            )
-
-            job.cancel()
-        }
-    }
 
     @Test
     fun `When get operational hours success but it returns null for data then should return empty operational hours map`() {
@@ -659,11 +612,13 @@ class ShopInfoReimagineViewModelTest {
             mockGetShopReviewGqlCall()
             mockGetShopInfoGqlCall()
             mockGetShopNoteGqlCall()
+
             val response = ShopOperationalHoursListResponse(
                 getShopOperationalHoursList = GetShopOperationalHoursList(
                     data = listOf(
-                        ShopOperationalHour(day = 10, startTime = "10:00:00", endTime = "15:00:00"),
-                        ShopOperationalHour(day = 7, startTime = "10:00:00", endTime = "12:00:00")
+                        ShopOperationalHour(day = 4, startTime = "00:00:00", endTime = "23:59:59"),
+                        ShopOperationalHour(day = 5, startTime = "00:00:00", endTime = "00:00:00"),
+                        ShopOperationalHour(day = 10, startTime = "10:00:00", endTime = "12:00:00")
                     )
                 )
             )
@@ -681,8 +636,30 @@ class ShopInfoReimagineViewModelTest {
             val actual = emittedValues.last()
             assertEquals(
                 mapOf(
-                    "10:00 - 15:00 WIB" to listOf(""),
-                    "10:00 - 12:00 WIB" to listOf("Minggu")
+                    "00:00:23:59" to listOf(
+                        ShopOperationalHourWithStatus(
+                            ShopOperationalHourWithStatus.Day.THURSDAY,
+                            "00:00",
+                            "23:59",
+                            ShopOperationalHourWithStatus.Status.OPEN24HOURS
+                        )
+                    ),
+                    "00:00:00:00" to listOf(
+                        ShopOperationalHourWithStatus(
+                            ShopOperationalHourWithStatus.Day.FRIDAY,
+                            "00:00",
+                            "00:00",
+                            ShopOperationalHourWithStatus.Status.CLOSED
+                        )
+                    ),
+                    "10:00:12:00" to listOf(
+                        ShopOperationalHourWithStatus(
+                            ShopOperationalHourWithStatus.Day.UNDEFINED,
+                            "10:00",
+                            "12:00",
+                            ShopOperationalHourWithStatus.Status.OPEN
+                        )
+                    )
                 ),
                 actual.info.operationalHours
             )

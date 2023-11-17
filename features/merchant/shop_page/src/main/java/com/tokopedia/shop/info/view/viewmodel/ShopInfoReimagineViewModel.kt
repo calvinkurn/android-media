@@ -16,8 +16,10 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.common.util.DateTimeConstant
+import com.tokopedia.shop.info.domain.entity.ShopOperationalHourWithStatus
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
@@ -321,49 +323,47 @@ class ShopInfoReimagineViewModel @Inject constructor(
         }
     }
 
-    private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): Map<String, List<String>> {
-        val operationalHours = getShopOperationalHoursList?.data
+    private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): Map<String, List<ShopOperationalHourWithStatus>> {
+        val unformattedOperationalHours = getShopOperationalHoursList?.data
 
         return when {
-            operationalHours == null -> emptyMap()
-            operationalHours.isEmpty() -> emptyMap()
-            else -> {
-                val formattedOperationalHours = mutableMapOf<String, String>()
-
-                val daysDictionary = mapOf(
-                    1 to "Senin",
-                    2 to "Selasa",
-                    3 to "Rabu",
-                    4 to "Kamis",
-                    5 to "Jumat",
-                    6 to "Sabtu",
-                    7 to "Minggu"
-                )
-
-                operationalHours.forEach { operationalHour ->
-                    val formattedDay = daysDictionary[operationalHour.day].orEmpty()
-
-                    val isShopOpenTwentyFourHours = isShopOpenTwentyFourHours(
-                        operationalHour.startTime,
-                        operationalHour.endTime
-                    )
-
-                    val isShopClosed = isShopClosed(operationalHour.startTime, operationalHour.endTime)
-
-                    if (isShopOpenTwentyFourHours) {
-                        formattedOperationalHours[formattedDay] = "Buka 24 Jam"
-                    } else if (isShopClosed) {
-                        formattedOperationalHours[formattedDay] = "Libur"
-                    } else {
-                        val startTime = operationalHour.startTime.hourAndMinuteOnly()
-                        val endTime = operationalHour.endTime.hourAndMinuteOnly()
-                        formattedOperationalHours[formattedDay] = "$startTime - $endTime WIB"
-                    }
-                }
-
-                formattedOperationalHours.groupByHours()
-            }
+            unformattedOperationalHours == null -> emptyMap()
+            unformattedOperationalHours.isEmpty() -> emptyMap()
+            else -> determineOperationalHours(unformattedOperationalHours)
         }
+    }
+
+
+    private fun determineOperationalHours(
+        unformattedOperationalHours: List<ShopOperationalHour>
+    ): Map<String, List<ShopOperationalHourWithStatus>> {
+        val formattedOperationalHours = mutableListOf<ShopOperationalHourWithStatus>()
+        unformattedOperationalHours.forEach { operationalHour ->
+            val day = ShopOperationalHourWithStatus.Day.values().firstOrNull { it.id == operationalHour.day } ?: ShopOperationalHourWithStatus.Day.UNDEFINED
+            
+            val isShopOpenTwentyFourHours = isShopOpenTwentyFourHours(
+                operationalHour.startTime,
+                operationalHour.endTime
+            )
+            val isShopClosed = isShopClosed(operationalHour.startTime, operationalHour.endTime)
+            
+            val startTime = operationalHour.startTime.hourAndMinuteOnly()
+            val endTime = operationalHour.endTime.hourAndMinuteOnly()
+            
+            val status = if (isShopOpenTwentyFourHours) {
+                ShopOperationalHourWithStatus(day, startTime, endTime, ShopOperationalHourWithStatus.Status.OPEN24HOURS)
+            } else if (isShopClosed) {
+                ShopOperationalHourWithStatus(day, startTime, endTime, ShopOperationalHourWithStatus.Status.CLOSED)
+            } else {
+                ShopOperationalHourWithStatus(day, startTime, endTime, ShopOperationalHourWithStatus.Status.OPEN)
+            }
+
+            formattedOperationalHours.add(status)
+        }
+
+        val groupedResult = formattedOperationalHours.groupByShopOpenAndCloseTime()
+
+        return groupedResult
     }
 
     private fun ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.toShopUsp(): List<String> {
@@ -395,13 +395,13 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return true
     }
 
-    private fun Map<String, String>.groupByHours(): Map<String, List<String>> {
-        return this.entries.groupBy(
-            keySelector = { it.value },
-            valueTransform = { it.key }
-        )
+    private fun List<ShopOperationalHourWithStatus>.groupByShopOpenAndCloseTime(): Map<String, List<ShopOperationalHourWithStatus>> {
+        return this.groupBy {
+            val openCloseTime = it.startTime + ":" + it.endTime
+            openCloseTime
+        }
     }
-
+    
     private fun String.hourAndMinuteOnly(): String {
         return toDate(DateTimeConstant.TIME_SECOND_PRECISION).formatTo(DateTimeConstant.TIME_MINUTE_PRECISION)
     }
