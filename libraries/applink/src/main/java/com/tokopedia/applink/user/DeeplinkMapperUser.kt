@@ -20,6 +20,7 @@ object DeeplinkMapperUser {
     const val ROLLENCE_GOTO_KYC_SA = "goto_kyc_sellerapp"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
     const val ROLLENCE_GOTO_LOGIN = "scp_goto_login_and"
+    private const val ROLLENCE_CVSDK_INTEGRATION = "and_cvsdk_intg"
     const val ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE = "android_fundinvest"
     private val WHITELISTED_SCP_OTP_TYPE = listOf<Int>(126, 116, 169)
 
@@ -79,7 +80,7 @@ object DeeplinkMapperUser {
     }
 
     private fun isRollenceGotoVerificationEnabled(): Boolean {
-        return false
+        return getAbTestPlatform().getString(ROLLENCE_CVSDK_INTEGRATION).isNotEmpty()
     }
 
     private fun isOtpTypeWhitelisted(otpType: Int): Boolean {
