@@ -1861,10 +1861,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if (dynamicBannerDataModel.banner.isEnable) {
             context?.run {
                 viewBinding?.bannerLogin?.let { banner ->
+                    banner.show()
                     banner.loadImage(url = dynamicBannerDataModel.banner.imgUrl) {
                         this.listener(
                             onSuccess = { bitmap, mediaDataSource ->
-                                viewBinding?.bannerLogin?.show()
                                 analytics.eventViewBanner(dynamicBannerDataModel.banner.imgUrl)
                             },
                             onError = {
