@@ -4,10 +4,13 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.play.DiscoPlayWidgetMapper
+import com.tokopedia.discovery2.data.play.DiscoPlayWidgetType
 import com.tokopedia.discovery2.usecase.HideSectionUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.DiscoveryPage
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.DiscoveryPageV2
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
@@ -83,7 +86,8 @@ class DiscoveryPlayWidgetViewModel(
             components.data?.firstOrNull()?.let { dataItem ->
                 playWidgetUIMutableLiveData.value = processPlayWidget(
                     dataItem.playWidgetPlayID,
-                    dataItem.playWidgetTypeIsDynamicVideo
+                    dataItem.playWidgetTypeIsDynamicVideo,
+                    dataItem.playWidgetType
                 )
             } ?: run {
                 hideIfPresentInSection()
@@ -96,14 +100,22 @@ class DiscoveryPlayWidgetViewModel(
 
     private suspend fun processPlayWidget(
         widgetID: String?,
-        playWidgetTypeIsDynamicVideo: Boolean
+        playWidgetTypeIsDynamicVideo: Boolean,
+        playWidgetType: String?
     ): PlayWidgetState {
-        val response = playWidgetTools.getWidgetFromNetwork(
-            widgetType = PlayWidgetUseCase.WidgetType.DiscoveryPage(
-                widgetID ?: "",
+        val type = when (DiscoPlayWidgetMapper.get(playWidgetType)) {
+            DiscoPlayWidgetType.DISCO_PAGE_V2 -> DiscoveryPageV2(
+                widgetID.orEmpty(),
                 playWidgetTypeIsDynamicVideo
             )
-        )
+
+            else -> DiscoveryPage(
+                widgetID.orEmpty(),
+                playWidgetTypeIsDynamicVideo
+            )
+        }
+
+        val response = playWidgetTools.getWidgetFromNetwork(type)
         return playWidgetTools.mapWidgetToModel(response)
     }
 
