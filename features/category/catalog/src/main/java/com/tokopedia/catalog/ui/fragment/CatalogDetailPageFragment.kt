@@ -11,6 +11,8 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -191,6 +193,10 @@ class CatalogDetailPageFragment :
 
     private val userSession: UserSession by lazy {
         UserSession(activity)
+    }
+
+    private val insetsController: WindowInsetsControllerCompat? by lazy {
+       activity?.window?.decorView?.let(ViewCompat::getWindowInsetsController)
     }
 
     private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
@@ -431,6 +437,7 @@ class CatalogDetailPageFragment :
         )
         val colorFont = if (navigationProperties.isDarkMode) colorFontDark else colorFontLight
 
+        insetsController?.isAppearanceLightStatusBars = !navigationProperties.isDarkMode
         toolbarShadow.background =
             DrawableExtension.createGradientDrawable(colorTop = colorBgGradient)
         toolbar.setColors(colorFont)
