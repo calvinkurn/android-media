@@ -98,7 +98,7 @@ class ShopOfferHeroBrandViewModel(
                 productCardModels.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem, component.name))
             }
         }
-        _productMaxHeight.value = productCardModels.getMaxHeightForGridView(
+        this._productMaxHeight.value = productCardModels.getMaxHeightForGridView(
             context = application.applicationContext,
             coroutineDispatcher = Dispatchers.Default,
             productImageWidth = PRODUCT_IMAGE_WIDTH.toPx()
