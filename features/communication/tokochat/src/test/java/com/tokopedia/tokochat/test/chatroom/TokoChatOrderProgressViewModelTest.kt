@@ -1,5 +1,6 @@
 package com.tokopedia.tokochat.test.chatroom
 
+import app.cash.turbine.test
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
 import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
@@ -200,14 +201,17 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
                 getTokopediaOrderIdUseCase(any())
             } returns flowOf(TKPD_ORDER_ID_DUMMY)
 
-            // When
-            viewModel.translateGojekOrderId(GOJEK_ORDER_ID_DUMMY)
+            viewModel.isTkpdOrderStatus.test {
+                // When
+                viewModel.translateGojekOrderId(GOJEK_ORDER_ID_DUMMY)
 
-            // Then
-            Assert.assertEquals(
-                true,
-                viewModel.isTkpdOrderStatus.value
-            )
+                // Then
+                Assert.assertEquals(
+                    true,
+                    awaitItem()
+                )
+                cancelAndConsumeRemainingEvents()
+            }
         }
     }
 
@@ -219,14 +223,17 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
                 getTokopediaOrderIdUseCase(any())
             } throws throwableDummy
 
-            // When
-            viewModel.translateGojekOrderId(GOJEK_ORDER_ID_DUMMY)
+            viewModel.isTkpdOrderStatus.test {
+                // When
+                viewModel.translateGojekOrderId(GOJEK_ORDER_ID_DUMMY)
 
-            // Then
-            Assert.assertEquals(
-                false,
-                viewModel.isTkpdOrderStatus.value
-            )
+                // Then
+                Assert.assertEquals(
+                    false,
+                    awaitItem()
+                )
+                cancelAndConsumeRemainingEvents()
+            }
         }
     }
 }
