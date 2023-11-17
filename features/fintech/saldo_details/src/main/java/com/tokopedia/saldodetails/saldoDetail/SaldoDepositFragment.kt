@@ -329,7 +329,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             ) {
                 saldoTicker.text = autoWDInitData.data.scheduleWording
                 saldoTickerGroup.setAllOnClickListener {
-                    val intent = RouteManager.getIntent(context, "tokopedia://webview?url=https%3A%2F%2F143-staging-feature.tokopedia.com%2Fpayment%2Fgift-card%2Fredemption%3Fpayment_reload%3Dtrue")
+                    val intent = RouteManager.getIntent(context, autoWDInitData.data.redirectLink)
                     startActivityForResult(intent, REQUEST_RESET_AUTO_WD_STATUS)
                 }
             }
@@ -340,7 +340,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         addBalanceAnchorsForCoachMark(true)
         binding?.depositHeaderLayout?.apply {
             newCardBalance.visible()
-            saldoCard.setOnTouchListener { v, event -> true }
             localLoadSaldoBalance.gone()
         }
         setSellerSaldoBalance(
