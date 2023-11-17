@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -43,15 +44,17 @@ import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.component.ShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.domain.entity.ShopNote
+import com.tokopedia.shop.info.domain.entity.ShopOperationalHourWithStatus
+import com.tokopedia.shop.info.domain.entity.ShopPerformanceDuration
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
+import com.tokopedia.shop.info.view.bottomsheet.ShopNoteDetailBottomSheet
 import com.tokopedia.shop.info.view.model.ShopInfoUiEffect
 import com.tokopedia.shop.info.view.model.ShopInfoUiEvent
 import com.tokopedia.shop.info.view.model.ShopInfoUiState
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoReimagineViewModel
 import com.tokopedia.shop.report.activity.ReportShopWebViewActivity
-import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.toPx
@@ -208,7 +211,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun handleEffect(effect: ShopInfoUiEffect) {
         when (effect) {
             is ShopInfoUiEffect.RedirectToGmaps -> redirectToGmaps(effect.gmapsUrl)
-            is ShopInfoUiEffect.RedirectToShopNoteDetailPage -> redirectToShopNoteDetailPage(effect.shopId, effect.noteId)
+            is ShopInfoUiEffect.ShowShopNoteDetailBottomSheet -> showShopNoteDetailBottomSheet(effect.shopNote)
             ShopInfoUiEffect.RedirectToLoginPage -> redirectToLoginPage()
             is ShopInfoUiEffect.RedirectToChatWebView -> redirectToChatWebView(effect.messageId)
             is ShopInfoUiEffect.RedirectToShopReviewPage -> redirectToShopReviewPage(effect.shopId)
@@ -271,34 +274,28 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgShopInfoLocation.text = uiState.info.mainLocation
             renderOperationalHours(uiState.info.operationalHours)
             tpgShopInfoJoinDate.text = uiState.info.shopJoinDate
-            tpgShopInfoTotalProduct.text = uiState.info.totalProduct.toString()
+            tpgShopInfoTotalProduct.text = uiState.info.totalProduct.splitByThousand()
         }
     }
+    
+    private fun renderOperationalHours(operationalHours: Map<String, List<ShopOperationalHourWithStatus>>) {
+        binding?.layoutOperationalHoursContainer?.removeAllViews()
 
-    private fun renderOperationalHours(operationalHours: Map<String, List<String>>) {
-        val linearLayout = binding?.layoutOperationalHoursContainer
-        linearLayout?.removeAllViews()
-
-        operationalHours.forEach {
-            val hour = it.key
-            val days = it.value
-            val groupedDays = days.joinToString(separator = ", ", postfix = ": ") { day -> day }
-
-            val textViewOperationalHour = Typography(context ?: return).apply {
-                setType(Typography.DISPLAY_2)
-                setTextColor(ContextCompat.getColor(this.context, unifyprinciplesR.color.Unify_NN950))
-
-                val params = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                params.topMargin = MARGIN_4_DP.toPx()
-                layoutParams = params
+        if (operationalHours.isEmpty()) {
+            val operationalHourTypography = createOperationalHoursTypography("-")
+            binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
+        } else {
+            operationalHours.forEach { (_, shopOpenCloseTimeWithStatus) ->
+                val groupedDays = shopOpenCloseTimeWithStatus.joinToString(separator = ", ") {
+                    it.day.dayName()
+                }
+                
+                val hour = shopOpenCloseTimeWithStatus.findShopOpenCloseTime()
+               
+                val text = "$groupedDays: $hour"
+                val operationalHourTypography = createOperationalHoursTypography(text)
+                binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
             }
-
-            val operationalHourFormat = "%s %s"
-            textViewOperationalHour.text = String.format(operationalHourFormat, groupedDays, hour)
-            linearLayout?.addView(textViewOperationalHour)
         }
     }
 
@@ -306,6 +303,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun renderShopPharmacy(uiState: ShopInfoUiState) {
         val isPharmacy = uiState.pharmacy.showPharmacyInfoSection
         val expandPharmacyInfo = uiState.pharmacy.expandPharmacyInfo
+        val showCtaViewPharmacyLocation = uiState.pharmacy.nearestPickupAddress.isNotEmpty() && uiState.pharmacy.nearestPickupAddressGmapsUrl.isNotEmpty()
 
         binding?.run {
             labelShopPharmacyNearestPickup.isVisible = isPharmacy
@@ -315,8 +313,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             labelShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
 
             tpgCtaExpandPharmacyInfo.isVisible = isPharmacy && !expandPharmacyInfo
-            tpgCtaViewPharmacyMap.isVisible = isPharmacy && expandPharmacyInfo
-            iconViewPharmacyLocation.isVisible = isPharmacy && expandPharmacyInfo
+            tpgCtaViewPharmacyMap.isVisible = isPharmacy && expandPharmacyInfo && showCtaViewPharmacyLocation
+            iconViewPharmacyLocation.isVisible = isPharmacy && expandPharmacyInfo && showCtaViewPharmacyLocation
 
             tpgSectionTitlePharmacyInformation.isVisible = isPharmacy
             tpgShopPharmacyNearestPickup.isVisible = isPharmacy
@@ -441,7 +439,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         if (this.review == review) return
         this.review = review
 
-        val showReview = review.totalReviews.isMoreThanZero()
+        val showReview = review.reviews.size.isMoreThanZero()
 
         binding?.layoutReviewContainer?.isVisible = showReview
         binding?.shopReviewView?.isVisible = showReview
@@ -459,9 +457,27 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun renderShopPerformance(uiState: ShopInfoUiState) {
         binding?.run {
-            labelProductSoldCount.text = uiState.shopPerformance.totalProductSoldCount.toIntOrZero().thousandFormatted(1).ifEmpty { "-" }
-            labelChatPerformance.text = uiState.shopPerformance.chatPerformance.ifEmpty { "-" }
-            labelOrderProcessTime.text = uiState.shopPerformance.orderProcessTime.ifEmpty { "-" }
+            val showShopPerformanceSection = false
+
+            tpgSectionTitleShopPerformance.isVisible = showShopPerformanceSection
+            tpgProductSoldCount.isVisible = showShopPerformanceSection
+            tpgChatPerformance.isVisible = showShopPerformanceSection
+            tpgOrderProcessDuration.isVisible = showShopPerformanceSection
+
+            tpgChatPerformance.isVisible = showShopPerformanceSection
+            labelProductSoldCount.isVisible = showShopPerformanceSection
+            labelChatPerformance.isVisible = showShopPerformanceSection
+            labelOrderProcessTime.isVisible = showShopPerformanceSection
+
+            if (showShopPerformanceSection) {
+                labelProductSoldCount.text = uiState.shopPerformance.totalProductSoldCount.toIntOrZero().thousandFormatted(1).ifEmpty { "-" }
+                labelChatPerformance.text = when (uiState.shopPerformance.chatPerformance) {
+                    is ShopPerformanceDuration.Day -> getString(R.string.shop_info_placeholder_operational_hour_around_day, uiState.shopPerformance.chatPerformance.value)
+                    is ShopPerformanceDuration.Hour -> getString(R.string.shop_info_placeholder_operational_hour_around_hour, uiState.shopPerformance.chatPerformance.value)
+                    is ShopPerformanceDuration.Minute -> getString(R.string.shop_info_placeholder_operational_hour_around_minute, uiState.shopPerformance.chatPerformance.value)
+                }
+                labelOrderProcessTime.text = uiState.shopPerformance.orderProcessTime.ifEmpty { "-" }
+            }
         }
     }
 
@@ -488,10 +504,10 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
             shopNoteTitle.text = shopNote.title
             shopNoteTitle?.setOnClickListener {
-                viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote.id))
+                viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote))
             }
             shopNoteChevron.setOnClickListener {
-                viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote.id))
+                viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote))
             }
 
             binding?.layoutShopNotesContainer?.addView(shopNoteView)
@@ -585,14 +601,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         RouteManager.route(context, appLink)
     }
 
-    private fun redirectToShopNoteDetailPage(shopId: String, noteId: String) {
-        if (!isAdded) return
-        if (noteId.isEmpty()) return
-
-        val intent = ShopNoteDetailActivity.createIntent(context, shopId, noteId)
-        startActivity(intent)
-    }
-
     private fun redirectToLoginPage() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
@@ -633,5 +641,47 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             onCtaClicked = {},
             anchorView = null
         )
+    }
+
+    private fun showShopNoteDetailBottomSheet(shopNote: ShopNote) {
+        if (!isAdded) return
+
+        val bottomSheet = ShopNoteDetailBottomSheet.newInstance(shopNote.title, shopNote.description)
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun ShopOperationalHourWithStatus.Day.dayName(): String {
+        return when(this) {
+            ShopOperationalHourWithStatus.Day.MONDAY -> context?.getString(R.string.shop_info_ops_hour_monday).orEmpty()
+            ShopOperationalHourWithStatus.Day.TUESDAY -> context?.getString(R.string.shop_info_ops_hour_tuesday).orEmpty()
+            ShopOperationalHourWithStatus.Day.WEDNESDAY -> context?.getString(R.string.shop_info_ops_hour_wednesday).orEmpty()
+            ShopOperationalHourWithStatus.Day.THURSDAY -> context?.getString(R.string.shop_info_ops_hour_thursday).orEmpty()
+            ShopOperationalHourWithStatus.Day.FRIDAY -> context?.getString(R.string.shop_info_ops_hour_friday).orEmpty()
+            ShopOperationalHourWithStatus.Day.SATURDAY -> context?.getString(R.string.shop_info_ops_hour_saturday).orEmpty()
+            ShopOperationalHourWithStatus.Day.SUNDAY -> context?.getString(R.string.shop_info_ops_hour_sunday).orEmpty()
+            ShopOperationalHourWithStatus.Day.UNDEFINED -> ""
+        }
+    }
+
+    private fun List<ShopOperationalHourWithStatus>.findShopOpenCloseTime(): String {
+        if (isEmpty()) return ""
+        
+        val operationalHour = first()
+        
+        return when (operationalHour.status) {
+            ShopOperationalHourWithStatus.Status.OPEN -> {
+                context?.getString(
+                    R.string.shop_info_ops_hour_placeholder_open_range,
+                    operationalHour.startTime,
+                    operationalHour.endTime
+                ).orEmpty()
+            }
+            ShopOperationalHourWithStatus.Status.CLOSED -> {
+                context?.getString(R.string.shop_info_ops_hour_closed).orEmpty()
+            }
+            ShopOperationalHourWithStatus.Status.OPEN24HOURS -> {
+                context?.getString(R.string.shop_info_ops_hour_open_twenty_four_hour).orEmpty()
+            }
+        }
     }
 }

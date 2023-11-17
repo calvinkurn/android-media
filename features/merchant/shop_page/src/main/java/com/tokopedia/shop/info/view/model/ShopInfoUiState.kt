@@ -1,8 +1,10 @@
 package com.tokopedia.shop.info.view.model
 
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.info.domain.entity.ShopInfo
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
+import com.tokopedia.shop.info.domain.entity.ShopPerformanceDuration
 import com.tokopedia.shop.info.domain.entity.ShopPharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopReview
@@ -38,7 +40,7 @@ data class ShopInfoUiState(
     ),
     val shopPerformance: ShopPerformance = ShopPerformance(
         totalProductSoldCount = "",
-        chatPerformance = "",
+        chatPerformance = ShopPerformanceDuration.Minute(Int.ZERO),
         orderProcessTime = ""
     ),
     val shopNotes: List<ShopNote> = emptyList(),
@@ -46,7 +48,7 @@ data class ShopInfoUiState(
 
     val pharmacy: ShopPharmacyInfo = ShopPharmacyInfo(
         showPharmacyInfoSection = false,
-        nearPickupAddressGmapsUrl = "",
+        nearestPickupAddressGmapsUrl = "",
         nearestPickupAddress = "",
         pharmacistName = "",
         pharmacistOperationalHour = emptyList(),

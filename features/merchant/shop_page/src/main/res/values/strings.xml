@@ -269,7 +269,21 @@
     <string name="shop_info_join_date">Tanggal Bergabung</string>
     <string name="shop_info_licensed_pharmacy">Apotek Berlisensi</string>
     <string name="shop_info_total_product">Total produk</string>
-
+    <string name="shop_info_placeholder_operational_hour_around_minute">±%d menit</string>
+    <string name="shop_info_placeholder_operational_hour_around_hour">±%d jam</string>
+    <string name="shop_info_placeholder_operational_hour_around_day">±%d hari</string>
+    <string name="shop_info_placeholder_operational_hour_more_than_day">>%d hari</string>
+    <string name="shop_info_ops_hour_monday">Senin</string>
+    <string name="shop_info_ops_hour_tuesday">Selasa</string>
+    <string name="shop_info_ops_hour_wednesday">Rabu</string>
+    <string name="shop_info_ops_hour_thursday">Kamis</string>
+    <string name="shop_info_ops_hour_friday">Jumat</string>
+    <string name="shop_info_ops_hour_saturday">Sabtu</string>
+    <string name="shop_info_ops_hour_sunday">Minggu</string>
+    <string name="shop_info_ops_hour_open_twenty_four_hour">Buka 24 Jam</string>
+    <string name="shop_info_ops_hour_closed">Libur</string>
+    <string name="shop_info_ops_hour_placeholder_open_range">%s-%s WIB</string>
+    
     <!--Informasi Apotek-->
     <string name="shop_info_pharmacy_information">Informasi apotek</string>
     <string name="shop_info_nearest_pickup_point">Lokasi Pickup Terdekat</string>

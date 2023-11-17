@@ -1,5 +1,7 @@
 package com.tokopedia.shop.info.view.model
 
+import com.tokopedia.shop.info.domain.entity.ShopNote
+
 sealed interface ShopInfoUiEvent {
     data class Setup(val shopId: String, val districtId: String, val cityId: String) :
         ShopInfoUiEvent
@@ -11,7 +13,7 @@ sealed interface ShopInfoUiEvent {
     object TapCtaExpandShopPharmacyInfo : ShopInfoUiEvent
 
     object TapCtaViewPharmacyLocation : ShopInfoUiEvent
-    data class TapShopNote(val noteId: String) : ShopInfoUiEvent
+    data class TapShopNote(val shopNote: ShopNote) : ShopInfoUiEvent
     object RetryGetShopInfo : ShopInfoUiEvent
     object ReportShop : ShopInfoUiEvent
 }

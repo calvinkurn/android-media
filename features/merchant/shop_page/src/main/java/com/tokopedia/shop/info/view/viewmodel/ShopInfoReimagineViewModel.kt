@@ -1,10 +1,10 @@
 package com.tokopedia.shop.info.view.viewmodel
 
 import android.annotation.SuppressLint
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -16,16 +16,15 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.common.util.DateTimeConstant
+import com.tokopedia.shop.info.domain.entity.ShopOperationalHourWithStatus
 import com.tokopedia.shop.info.domain.entity.ShopNote
-import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopPharmacyInfo
-import com.tokopedia.shop.info.domain.entity.ShopStatsRawData
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop.info.domain.usecase.GetEpharmacyShopInfoUseCase
 import com.tokopedia.shop.info.domain.usecase.GetNearestEpharmacyWarehouseLocationUseCase
-import com.tokopedia.shop.info.domain.usecase.GetShopStatsRawDataUseCase
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopRatingAndTopicsUseCase
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopReviewReadingListUseCase
 import com.tokopedia.shop.info.view.model.ShopInfoUiEffect
@@ -40,6 +39,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.supervisorScope
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.tokopedia.shop.info.domain.entity.ShopInfo as ReimagineShopInfo
 
@@ -54,12 +55,18 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val getShopPageHeaderLayoutUseCase: GetShopPageHeaderLayoutUseCase,
     private val getEpharmacyShopInfoUseCase: GetEpharmacyShopInfoUseCase,
     private val getNearestEpharmacyWarehouseLocationUseCase: GetNearestEpharmacyWarehouseLocationUseCase,
-    private val getMessageIdChatUseCase: GetMessageIdChatUseCase,
-    private val getShopStatsRawDataUseCase: GetShopStatsRawDataUseCase
+    private val getMessageIdChatUseCase: GetMessageIdChatUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     companion object {
         private const val ID_FULFILLMENT_SERVICE_E_PHARMACY = 2
+
+        const val FIVE_REVIEW = 5
+        const val FIRST_PAGE = 1
+        const val SHOP_TOP_REVIEW_SORT_BY_HELPFULNESS = "informative_score desc"
+        const val SHOP_TOP_REVIEW_FILTER_BY_SELLER_SERVICE = "topic=pelayanan"
+        const val PAGE_SOURCE = "shop_info_page"
+        const val TWENTY_THREE_HOURS_AND_FIFTY_NINE_SECOND = 86399
     }
 
     private val _uiState = MutableStateFlow(ShopInfoUiState())
@@ -79,7 +86,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
             ShopInfoUiEvent.TapCtaViewPharmacyLocation -> handleCtaViewPharmacyLocation()
             ShopInfoUiEvent.TapIconViewAllShopReview -> handleViewAllReviewClick()
             is ShopInfoUiEvent.RetryGetShopInfo -> handleRetryGetShopInfo()
-            is ShopInfoUiEvent.TapShopNote -> handleTapShopNote(event.noteId)
+            is ShopInfoUiEvent.TapShopNote -> handleTapShopNote(event.shopNote)
             ShopInfoUiEvent.ReportShop -> handleReportShop()
             is ShopInfoUiEvent.TapReviewImage -> handleTapReviewImage(event.productId)
             is ShopInfoUiEvent.TapReviewImageViewAll -> handleTapReviewImageViewAll(event.productId)
@@ -87,13 +94,11 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
 
     private fun handleSetup(shopId: String, districtId: String, cityId: String) {
-        val isMyShop = shopId == userSessionInterface.shopId
-
         _uiState.update {
             it.copy(
                 shopId = shopId,
-                districtId = if (isMyShop) "" else districtId,
-                cityId = if (isMyShop) "" else cityId
+                districtId = districtId,
+                cityId = cityId
             )
         }
     }
@@ -101,78 +106,77 @@ class ShopInfoReimagineViewModel @Inject constructor(
         launchCatchError(
             context = coroutineDispatcherProvider.io,
             block = {
-                _uiState.update { it.copy(isLoading = true, error = null) }
+                supervisorScope {
+                    _uiState.update { it.copy(isLoading = true, error = null) }
 
-                val shopId = currentState.shopId
+                    val shopId = currentState.shopId
 
-                val shopHeaderLayoutDeferred = async { getShopPageHeaderLayout() }
-                val shopRatingParam = ProductRevGetShopRatingAndTopicsUseCase.Param(shopId)
-                val shopRatingDeferred = async { getShopRatingUseCase.execute(shopRatingParam) }
+                    val shopHeaderLayoutDeferred = async { getShopPageHeaderLayout() }
+                    val shopRatingParam = ProductRevGetShopRatingAndTopicsUseCase.Param(shopId)
+                    val shopRatingDeferred = async { getShopRatingUseCase.execute(shopRatingParam) }
 
-                val shopReviewParam = ProductRevGetShopReviewReadingListUseCase.Param(
-                    shopID = shopId,
-                    limit = 5,
-                    page = 1,
-                    filterBy = "topic=pelayanan",
-                    sortBy = "informative_score desc"
-                )
-                val shopReviewDeferred = async { getShopReviewUseCase.execute(shopReviewParam) }
-
-                val shopInfoDeferred = async { handleGetShopInfo(shopId.toIntOrZero()) }
-                val shopNotesDeferred = async { getShopNotes(shopId) }
-                val shopOperationalHoursDeferred = async { getShopOperationalHours(shopId) }
-                val shopChatPerformanceDeferred = async { getShopChatPerformance(shopId) }
-
-                val shopHeaderLayout = shopHeaderLayoutDeferred.await()
-                val shopRating = shopRatingDeferred.await()
-                val shopReview = shopReviewDeferred.await()
-                val shopInfo = shopInfoDeferred.await()
-                val shopNotes = shopNotesDeferred.await()
-                val shopOperationalHours = shopOperationalHoursDeferred.await()
-                val shopChatPerformance = shopChatPerformanceDeferred.await()
-
-                val pharmacyInfo = if (isEpharmacy(shopInfo)) {
-                    getPharmacyInfo(shopId.toLongOrZero(), currentState.districtId.toLongOrZero())
-                } else {
-                    ShopPharmacyInfo(
-                        showPharmacyInfoSection = false,
-                        nearPickupAddressGmapsUrl = "",
-                        nearestPickupAddress = "",
-                        pharmacistName = "",
-                        pharmacistOperationalHour = emptyList(),
-                        siaNumber = "",
-                        sipaNumber = "",
-                        expandPharmacyInfo = false
+                    val shopReviewParam = ProductRevGetShopReviewReadingListUseCase.Param(
+                        shopID = shopId,
+                        limit = FIVE_REVIEW,
+                        page = FIRST_PAGE,
+                        filterBy = SHOP_TOP_REVIEW_FILTER_BY_SELLER_SERVICE,
+                        sortBy = SHOP_TOP_REVIEW_SORT_BY_HELPFULNESS
                     )
-                }
 
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = null,
-                        info = ReimagineShopInfo(
-                            shopImageUrl = shopInfo.shopAssets.avatar,
-                            shopBadgeUrl = shopInfo.goldOS.badge,
-                            shopName = shopInfo.shopCore.name,
-                            shopDescription = shopInfo.shopCore.description,
-                            mainLocation = shopInfo.location,
-                            operationalHours = shopOperationalHours.toFormattedOperationalHours(),
-                            shopJoinDate = shopInfo.createdInfo.shopCreated.toShopJoinDate(),
-                            totalProduct = shopInfo.activeProduct.toIntOrZero(),
-                            shopUsp = shopHeaderLayout.shopPageGetHeaderLayout.toShopUsp(),
-                            showPharmacyLicenseBadge = isEpharmacy(shopInfo)
-                        ),
-                        rating = shopRating,
-                        review = shopReview,
-                        shopPerformance = ShopPerformance(
-                            totalProductSoldCount = shopInfo.shopStats.productSold,
-                            chatPerformance = shopChatPerformance.toChatPerformance(), // TODO replace with real data
-                            orderProcessTime = shopHeaderLayout.shopPageGetHeaderLayout.toOrderProcessTime()
-                        ),
-                        shopNotes = shopNotes.toShopNotes(),
-                        shipments = shopInfo.shipments.toShipments(),
-                        pharmacy = pharmacyInfo
-                    )
+                    val shopReviewDeferred = async { getShopReviewUseCase.execute(shopReviewParam) }
+
+                    val shopInfoDeferred = async { handleGetShopInfo(shopId.toIntOrZero()) }
+                    val shopNotesDeferred = async { getShopNotes(shopId) }
+                    val shopOperationalHoursDeferred = async { getShopOperationalHours(shopId) }
+
+                    val shopHeaderLayout = shopHeaderLayoutDeferred.await()
+                    val shopRating = shopRatingDeferred.await()
+                    val shopReview = shopReviewDeferred.await()
+                    val shopInfo = shopInfoDeferred.await()
+                    val shopNotes = shopNotesDeferred.await()
+                    val shopOperationalHours = shopOperationalHoursDeferred.await()
+
+                    val pharmacyInfo = if (isEpharmacy(shopInfo)) {
+                        getPharmacyInfo(
+                            shopId = shopId.toLongOrZero(),
+                            districtId = currentState.districtId.toLongOrZero()
+                        )
+                    } else {
+                        ShopPharmacyInfo(
+                            showPharmacyInfoSection = false,
+                            nearestPickupAddressGmapsUrl = "",
+                            nearestPickupAddress = "",
+                            pharmacistName = "",
+                            pharmacistOperationalHour = emptyList(),
+                            siaNumber = "",
+                            sipaNumber = "",
+                            expandPharmacyInfo = false
+                        )
+                    }
+
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = null,
+                            info = ReimagineShopInfo(
+                                shopImageUrl = shopInfo.shopAssets.avatar,
+                                shopBadgeUrl = shopInfo.goldOS.badge,
+                                shopName = shopInfo.shopCore.name,
+                                shopDescription = shopInfo.shopCore.description,
+                                mainLocation = shopInfo.location,
+                                operationalHours = shopOperationalHours.toFormattedOperationalHours(),
+                                shopJoinDate = shopInfo.createdInfo.shopCreated.toShopJoinDate(),
+                                totalProduct = shopInfo.activeProduct.toIntOrZero(),
+                                shopUsp = shopHeaderLayout.shopPageGetHeaderLayout.toShopUsp(),
+                                showPharmacyLicenseBadge = isEpharmacy(shopInfo)
+                            ),
+                            rating = shopRating,
+                            review = shopReview,
+                            shopNotes = shopNotes.toShopNotes(),
+                            shipments = shopInfo.shipments.toShipments(),
+                            pharmacy = pharmacyInfo
+                        )
+                    }
                 }
             },
             onError = { error ->
@@ -189,8 +193,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     @SuppressLint("PII Data Exposure")
     private fun handleCtaViewPharmacyLocation() {
-        val effect =
-            ShopInfoUiEffect.RedirectToGmaps(currentState.pharmacy.nearPickupAddressGmapsUrl)
+        val effect = ShopInfoUiEffect.RedirectToGmaps(currentState.pharmacy.nearestPickupAddressGmapsUrl)
         _uiEffect.tryEmit(effect)
     }
 
@@ -203,8 +206,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
         _uiEffect.tryEmit(effect)
     }
 
-    private fun handleTapShopNote(noteId: String) {
-        val effect = ShopInfoUiEffect.RedirectToShopNoteDetailPage(currentState.shopId, noteId)
+    private fun handleTapShopNote(shopNote: ShopNote) {
+        val effect = ShopInfoUiEffect.ShowShopNoteDetailBottomSheet(shopNote)
         _uiEffect.tryEmit(effect)
     }
 
@@ -242,7 +245,6 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private suspend fun getShopOperationalHours(shopId: String): ShopOperationalHoursListResponse {
         getShopGqlGetShopOperationalHoursListUseCase.params = GqlGetShopOperationalHoursListUseCase.createRequestParams(shopId)
-        getShopNoteUseCase.isFromCacheFirst = false
         return getShopGqlGetShopOperationalHoursListUseCase.executeOnBackground()
     }
 
@@ -258,42 +260,23 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     @SuppressLint("PII Data Exposure")
     private suspend fun getPharmacyInfo(shopId: Long, districtId: Long): ShopPharmacyInfo {
-        return try {
-            getNearestEpharmacyWarehouseLocationUseCase.params = GetNearestEpharmacyWarehouseLocationUseCase.createParams(shopId = shopId, districtId = districtId)
-            val nearestWarehouseLocation = getNearestEpharmacyWarehouseLocationUseCase.executeOnBackground()
-            val nearestWarehouseId = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.warehouseID
+        getNearestEpharmacyWarehouseLocationUseCase.params = GetNearestEpharmacyWarehouseLocationUseCase.createParams(shopId = shopId, districtId = districtId)
+        val nearestWarehouseLocation = getNearestEpharmacyWarehouseLocationUseCase.executeOnBackground()
+        val nearestWarehouseId = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.warehouseID
 
-            getEpharmacyShopInfoUseCase.params = GetEpharmacyShopInfoUseCase.createParams(shopId, nearestWarehouseId)
-            val ePharmacyInfo = getEpharmacyShopInfoUseCase.executeOnBackground()
+        getEpharmacyShopInfoUseCase.params = GetEpharmacyShopInfoUseCase.createParams(shopId, nearestWarehouseId)
+        val ePharmacyInfo = getEpharmacyShopInfoUseCase.executeOnBackground()
 
-            ShopPharmacyInfo(
-                showPharmacyInfoSection = true,
-                nearestPickupAddress = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.address,
-                nearPickupAddressGmapsUrl = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.gMapsURL,
-                pharmacistOperationalHour = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.epharmacyWorkingHoursFmt,
-                pharmacistName = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.apj,
-                siaNumber = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.siaNumber,
-                sipaNumber = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.sipaNumber,
-                expandPharmacyInfo = false
-            )
-        } catch (e: Exception) {
-            FirebaseCrashlytics.getInstance().recordException(e)
-            ShopPharmacyInfo(
-                showPharmacyInfoSection = false,
-                nearPickupAddressGmapsUrl = "",
-                nearestPickupAddress = "",
-                pharmacistName = "",
-                pharmacistOperationalHour = emptyList(),
-                siaNumber = "",
-                sipaNumber = "",
-                expandPharmacyInfo = false
-            )
-        }
-    }
-
-    private suspend fun getShopChatPerformance(shopId: String): ShopStatsRawData {
-        val param = GetShopStatsRawDataUseCase.Param(shopId = shopId, source = "shop_info_page")
-        return getShopStatsRawDataUseCase.execute(param)
+        return ShopPharmacyInfo(
+            showPharmacyInfoSection = true,
+            nearestPickupAddress = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.address,
+            nearestPickupAddressGmapsUrl = nearestWarehouseLocation.getNearestEpharmacyWarehouseLocation.data.gMapsURL,
+            pharmacistOperationalHour = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.epharmacyWorkingHoursFmt,
+            pharmacistName = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.apj,
+            siaNumber = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.siaNumber,
+            sipaNumber = ePharmacyInfo.getEpharmacyShopInfo.dataEpharm.sipaNumber,
+            expandPharmacyInfo = false
+        )
     }
 
     private fun handleReportShop() {
@@ -322,7 +305,11 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private fun List<ShopNoteModel>.toShopNotes(): List<ShopNote> {
         return map { shopNote ->
-            ShopNote(id = shopNote.id.orEmpty(), title = shopNote.title.orEmpty())
+            ShopNote(
+                id = shopNote.id.orEmpty(),
+                title = shopNote.title.orEmpty(),
+                description = shopNote.content.orEmpty()
+            )
         }
     }
 
@@ -336,47 +323,47 @@ class ShopInfoReimagineViewModel @Inject constructor(
         }
     }
 
-    private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): Map<String, List<String>> {
-        val operationalHours = getShopOperationalHoursList?.data ?: emptyList()
+    private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): Map<String, List<ShopOperationalHourWithStatus>> {
+        val unformattedOperationalHours = getShopOperationalHoursList?.data
 
-        val formattedOperationalHours = mutableMapOf<String, String>()
-
-        val daysDictionary = mapOf(
-            1 to "Senin",
-            2 to "Selasa",
-            3 to "Rabu",
-            4 to "Kamis",
-            5 to "Jumat",
-            6 to "Sabtu",
-            7 to "Minggu"
-        )
-
-        operationalHours.forEach { operationalHour ->
-            val formattedDay = daysDictionary[operationalHour.day].orEmpty()
-
-            val startTime = operationalHour.startTime.hourAndMinuteOnly()
-            val endTime = operationalHour.endTime.hourAndMinuteOnly()
-            val operationalHourFormat = "%s - %s"
-
-            formattedOperationalHours[formattedDay] = String.format(operationalHourFormat, startTime, endTime)
+        return when {
+            unformattedOperationalHours == null -> emptyMap()
+            unformattedOperationalHours.isEmpty() -> emptyMap()
+            else -> determineOperationalHours(unformattedOperationalHours)
         }
-
-        val result = formattedOperationalHours.groupByHours()
-
-        return result
     }
 
-    private fun ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.toOrderProcessTime(): String {
-        val shopPerformance = this.widgets.firstOrNull { it.name == "shop_performance" }
-        if (shopPerformance == null) return ""
 
-        val shopPerformanceListComponent = shopPerformance.listComponent
-        val shopHandling = shopPerformanceListComponent.firstOrNull { it.name == "shop_handling" }
-        if (shopHandling == null) return ""
+    private fun determineOperationalHours(
+        unformattedOperationalHours: List<ShopOperationalHour>
+    ): Map<String, List<ShopOperationalHourWithStatus>> {
+        val formattedOperationalHours = mutableListOf<ShopOperationalHourWithStatus>()
+        unformattedOperationalHours.forEach { operationalHour ->
+            val day = ShopOperationalHourWithStatus.Day.values().firstOrNull { it.id == operationalHour.day } ?: ShopOperationalHourWithStatus.Day.UNDEFINED
+            
+            val isShopOpenTwentyFourHours = isShopOpenTwentyFourHours(
+                operationalHour.startTime,
+                operationalHour.endTime
+            )
+            val isShopClosed = isShopClosed(operationalHour.startTime, operationalHour.endTime)
+            
+            val startTime = operationalHour.startTime.hourAndMinuteOnly()
+            val endTime = operationalHour.endTime.hourAndMinuteOnly()
+            
+            val status = if (isShopOpenTwentyFourHours) {
+                ShopOperationalHourWithStatus(day, startTime, endTime, ShopOperationalHourWithStatus.Status.OPEN24HOURS)
+            } else if (isShopClosed) {
+                ShopOperationalHourWithStatus(day, startTime, endTime, ShopOperationalHourWithStatus.Status.CLOSED)
+            } else {
+                ShopOperationalHourWithStatus(day, startTime, endTime, ShopOperationalHourWithStatus.Status.OPEN)
+            }
 
-        val listText = shopHandling.data.listText
-        val textHtmls = listText.map { it.textHtml }
-        return textHtmls.firstOrNull().orEmpty()
+            formattedOperationalHours.add(status)
+        }
+
+        val groupedResult = formattedOperationalHours.groupByShopOpenAndCloseTime()
+
+        return groupedResult
     }
 
     private fun ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.toShopUsp(): List<String> {
@@ -408,13 +395,13 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return true
     }
 
-    private fun Map<String, String>.groupByHours(): Map<String, List<String>> {
-        return this.entries.groupBy(
-            keySelector = { it.value },
-            valueTransform = { it.key }
-        )
+    private fun List<ShopOperationalHourWithStatus>.groupByShopOpenAndCloseTime(): Map<String, List<ShopOperationalHourWithStatus>> {
+        return this.groupBy {
+            val openCloseTime = it.startTime + ":" + it.endTime
+            openCloseTime
+        }
     }
-
+    
     private fun String.hourAndMinuteOnly(): String {
         return toDate(DateTimeConstant.TIME_SECOND_PRECISION).formatTo(DateTimeConstant.TIME_MINUTE_PRECISION)
     }
@@ -423,19 +410,23 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return toDate(DateTimeConstant.DATE_TIME_DAY_PRECISION).formatTo(DateTimeConstant.DATE_TIME_YEAR_PRECISION)
     }
 
-    private fun ShopStatsRawData.toChatPerformance(): String {
-        val chatAndDiscussionReplySpeedMinute = chatAndDiscussionReplySpeed.toInt()
-        val chatAndDiscussionReplySpeedHour = chatAndDiscussionReplySpeedMinute / 60
-        val chatAndDiscussionReplySpeedDay = chatAndDiscussionReplySpeedHour / 24
+    private fun isShopOpenTwentyFourHours(startTime: String, endTime: String): Boolean {
+        val start = startTime.toDate(DateTimeConstant.TIME_SECOND_PRECISION)
+        val end = endTime.toDate(DateTimeConstant.TIME_SECOND_PRECISION)
 
-        return when {
-            chatAndDiscussionReplySpeedMinute in 0..1 -> "±1 menit"
-            chatAndDiscussionReplySpeedMinute in 1..59 -> "$chatAndDiscussionReplySpeedMinute menit"
-            chatAndDiscussionReplySpeedMinute == 60 -> "1 jam"
-            chatAndDiscussionReplySpeedHour in 1..23 -> "$chatAndDiscussionReplySpeedHour jam"
-            chatAndDiscussionReplySpeedHour == 24 -> "1 hari"
-            chatAndDiscussionReplySpeedDay > 24 -> "$chatAndDiscussionReplySpeedDay hari"
-            else -> ""
-        }
+        val timeDifferenceMillis = end.time - start.time
+        val timeDifferenceSecond = TimeUnit.MILLISECONDS.toSeconds(timeDifferenceMillis).toInt()
+
+        return timeDifferenceSecond == TWENTY_THREE_HOURS_AND_FIFTY_NINE_SECOND
+    }
+
+    private fun isShopClosed(startTime: String, endTime: String): Boolean {
+        val start = startTime.toDate(DateTimeConstant.TIME_SECOND_PRECISION)
+        val end = endTime.toDate(DateTimeConstant.TIME_SECOND_PRECISION)
+
+        val timeDifferenceMillis = end.time - start.time
+        val timeDifferenceSecond = TimeUnit.MILLISECONDS.toSeconds(timeDifferenceMillis).toInt()
+
+        return timeDifferenceSecond == Int.ZERO
     }
 }
