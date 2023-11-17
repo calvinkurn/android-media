@@ -270,7 +270,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
 
     override fun onDetach() {
         super.onDetach()
-//        removeFiles()
+        removeFiles()
     }
 
     override fun onDestroy() {
