@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -74,6 +75,7 @@ class ShopInfoActivity : BaseActivity() {
             val redirectToReimagineVersion = abTestValue.isNotEmpty()
             redirectToReimagineVersion
         } catch (throwable: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(throwable)
             false
         }
     }
