@@ -824,7 +824,9 @@ class CheckoutLogisticProcessor @Inject constructor(
                         orderModel.validationMetadata
                     )
                 handleSyncShipmentCartItemModel(courierItemData, orderModel)
-                if (courierItemData.scheduleDeliveryUiModel?.isSelected == true && courierItemData.scheduleDeliveryUiModel?.deliveryServices?.isNotEmpty() == true) {
+                val schellyHasSchedule = courierItemData.scheduleDeliveryUiModel?.isSelected == true && courierItemData.scheduleDeliveryUiModel?.deliveryServices?.isNotEmpty() == true
+                val schellyUnavailable = courierItemData.scheduleDeliveryUiModel?.available == false
+                if (schellyHasSchedule || schellyUnavailable) {
                     return@withContext RatesResult(
                         courierItemData,
                         generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
