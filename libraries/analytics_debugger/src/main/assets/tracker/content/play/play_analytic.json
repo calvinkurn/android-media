@@ -1,6 +1,6 @@
 {
   "readme": "Play Viewer - All Analytic",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "event": "openScreen",
