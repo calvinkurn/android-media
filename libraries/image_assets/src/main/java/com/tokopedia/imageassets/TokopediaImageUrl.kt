@@ -396,4 +396,5 @@ object TokopediaImageUrl {
     const val EVENT_SOFTBOOK_ENDED_BOTTOM_SHEET_IMG_URL = "https://images.tokopedia.net/img/event/event_checkout_softbook_ended_bottom_sheet_mini.png"
     const val SELLER_HOME_REWARD_INITIAL_GIF = "https://images.tokopedia.net/img/android/seller_reward/shc_milestone_reward_initial.gif"
     const val SELLER_HOME_REWARD_ENDING_GIF = "https://images.tokopedia.net/img/android/seller_home_common/shc_milestone_reward_ending.gif"
+    const val CATALOG_IMAGE_ASSETS = "https://images.tokopedia.net/img/android/res/singleDpi/catalog_no_products_state_big.png"
 }

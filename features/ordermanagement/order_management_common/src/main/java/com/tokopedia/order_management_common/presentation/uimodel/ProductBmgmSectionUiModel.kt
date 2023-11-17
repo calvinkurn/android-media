@@ -2,6 +2,7 @@ package com.tokopedia.order_management_common.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.order_management_common.presentation.typefactory.BuyMoreGetMoreTypeFactory
 
 data class ProductBmgmSectionUiModel(
@@ -36,7 +37,8 @@ data class ProductBmgmSectionUiModel(
         val addOnSummaryUiModel: AddOnSummaryUiModel? = null,
         val isProcessing: Boolean? = null,
         val button: ActionButtonsUiModel.ActionButton? = null,
-        val insurance: Insurance? = null
+        val insurance: Insurance? = null,
+        val impressHolder: ImpressHolder = ImpressHolder()
     ) {
         data class Insurance(
             val logoUrl: String,

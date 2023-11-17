@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +27,8 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
     private var items = mutableListOf<ShopHomeBannerProductGroupItemType>()
     private var onProductClick: (ProductItemType, Int) -> Unit = { _, _ -> }
     private var onVerticalBannerClick: (VerticalBannerItemType) -> Unit = {}
+    private var onProductCardDrawn: (Int) -> Unit = {}
+    private var shouldRefreshVerticalBannerHeight = true
 
     companion object {
         private const val VIEW_TYPE_SHIMMER = 0
@@ -121,9 +124,21 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
                     val productIndex = bindingAdapterPosition.inc()    
                     onProductClick(product, productIndex) 
                 }
+                
+                calculateProductCardHeight()
             }
         }
 
+        private fun calculateProductCardHeight() {
+            if (shouldRefreshVerticalBannerHeight) {
+                binding.productContainer.post {
+                    val productCardHeight = binding.productContainer.height
+                    onProductCardDrawn(productCardHeight)
+                }
+                shouldRefreshVerticalBannerHeight = false
+            }
+        }
+        
         private fun renderProductImage(product: ProductItemType) {
             binding.imgProduct.loadImage(product.imageUrl)
             binding.imgProduct.cornerRadius = CORNER_RADIUS
@@ -237,8 +252,19 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
 
             banner?.let {
                 binding.imgVerticalBanner.loadImage(banner.imageUrl)
+                
+                if (item.verticalBannerHeight.isMoreThanZero()) {
+                    binding.imgVerticalBanner.height(item.verticalBannerHeight)
+                }
                 binding.root.setOnClickListener { onVerticalBannerClick(banner) }
             }
+        }
+
+        private fun ImageView.height(sizePx: Int) {
+            val layoutParams = this.layoutParams
+            layoutParams.height = sizePx
+
+            this.layoutParams = layoutParams
         }
     }
 
@@ -276,5 +302,9 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
 
     fun setOnVerticalBannerClick(onVerticalBannerClick: (VerticalBannerItemType) -> Unit) {
         this.onVerticalBannerClick = onVerticalBannerClick
+    }
+    
+    fun setOnProductCardDrawn(onProductCardDrawn: (Int) -> Unit) {
+        this.onProductCardDrawn = onProductCardDrawn 
     }
 }

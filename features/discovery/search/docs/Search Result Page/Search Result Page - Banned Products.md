@@ -27,10 +27,10 @@ Google changed its policy to prohibit Apps that encourages the use of Tobacco an
 ### Project Description
 Search Result Page will not show products that goes under category of Tobacco, such as rokok or vape. The UI will simply show simple illustration with message Pencarian terbatas (restricted search).
 
-![image](../res/bannedproducts/description.png)
+![image](https://docs-android.tokopedia.net/images/docs/search/bannedproducts/description.png)
 
 ## Flow Diagram
-![image](../res/bannedproducts/diagram.png)
+![image](https://docs-android.tokopedia.net/images/docs/search/bannedproducts/diagram.png)
 
 
 ## Action Items

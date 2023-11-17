@@ -73,7 +73,7 @@ class SellerReputationViewModel @Inject constructor(
     }
 
     fun getReputationPenaltyRewardMerge() {
-        launch(block = {
+        launchCatchError(block= {
             val getReputationPenaltyRewardMergeResponse = withContext(dispatchers.io) {
                 getReputationShopAndPenaltyRewardUseCase.execute(
                     userSession.shopId.toLongOrZero(),
@@ -83,6 +83,8 @@ class SellerReputationViewModel @Inject constructor(
                 )
             }
             _reputationAndPenaltyMerge.postValue(getReputationPenaltyRewardMergeResponse)
+        }, onError = {
+            _reputationAndPenaltyMerge.postValue(Fail(it))
         })
     }
 

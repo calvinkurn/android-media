@@ -151,7 +151,7 @@ class RechargeHomepageInstrumentTest {
 
     private fun check_trustmark_section() {
         onView(withId(R.id.recycler_view)).perform(
-            RecyclerViewActions.scrollToPosition<RechargeHomepageDualIconsViewHolder>(8)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageDualIconsViewHolder>(7)
         )
         Thread.sleep(1000)
         val viewInteraction = onView(withId(R.id.rv_recharge_home_dual_icons)).check(matches(isDisplayed()))
@@ -166,7 +166,7 @@ class RechargeHomepageInstrumentTest {
 
     private fun check_reminder_section() {
         onView(withId(R.id.recycler_view)).perform(
-            RecyclerViewActions.scrollToPosition<ReminderWidgetViewHolder>(9)
+            RecyclerViewActions.scrollToPosition<ReminderWidgetViewHolder>(8)
         )
         Thread.sleep(1000)
         onView(withId(home_componentR.id.reminder_recommendation_widget_container)).check(matches(isDisplayed()))
@@ -176,7 +176,7 @@ class RechargeHomepageInstrumentTest {
 
     private fun check_dual_banners_section() {
         onView(withId(R.id.recycler_view)).perform(
-            RecyclerViewActions.scrollToPosition<RechargeHomepageDualBannersViewHolder>(10)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageDualBannersViewHolder>(9)
         )
         Thread.sleep(3000)
         onView(withId(R.id.view_recharge_home_dual_banners_container)).check(matches(isDisplayed()))
@@ -186,7 +186,7 @@ class RechargeHomepageInstrumentTest {
 
     private fun check_lego_banners_section() {
         onView(withId(R.id.recycler_view)).perform(
-            RecyclerViewActions.scrollToPosition<DynamicLegoBannerViewHolder>(11)
+            RecyclerViewActions.scrollToPosition<DynamicLegoBannerViewHolder>(10)
         )
         Thread.sleep(1000)
         val viewInteraction = onView(withId(R.id.recycleList)).check(matches(isDisplayed()))
@@ -201,7 +201,7 @@ class RechargeHomepageInstrumentTest {
 
     private fun check_product_cards_section() {
         onView(withId(R.id.recycler_view)).perform(
-            RecyclerViewActions.scrollToPosition<RechargeHomepageProductCardsViewHolder>(12)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageProductCardsViewHolder>(11)
         )
         Thread.sleep(1000)
         val viewInteraction = onView(withId(R.id.rv_recharge_home_product_cards)).check(matches(isDisplayed()))

@@ -10,8 +10,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -44,6 +44,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         private const val ONE_TAB = 1
         private const val MARGIN_16_DP = 16f
         private const val MINIMAL_SHOWCASE_COUNT_ON_A_TAB = 5
+        private const val THREE_TAB = 3
     }
 
     private var tabTotalWidth = 0
@@ -213,9 +214,8 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 else -> {
                     tabsUnify.visible()
 
-                    val screenWidth =
-                        DeviceScreenInfo.getScreenWidth(tabsUnify.context) - MARGIN_16_DP.dpToPx() - MARGIN_16_DP.dpToPx()
-                    if (tabTotalWidth < screenWidth) {
+                    val screenWidth = getScreenWidth()
+                    if (tabTotalWidth < screenWidth || tabs.size <= THREE_TAB) {
                         tabsUnify.customTabMode = TabLayout.MODE_FIXED
                         tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
                     } else {

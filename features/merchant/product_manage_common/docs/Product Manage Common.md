@@ -77,8 +77,8 @@ To include this common module, you can the dependency below on your module:
 
 | **UI** | **Class Name** |
 | --- | --- |
-| ![](res/Screenshot_1676460051.png)<br/>Edit Stock Single Product | `ProductManageQuickEditStockFragment` |
-| ![](res/Screenshot_1676517901.png)<br/>Edit Stock Product Variant | `QuickEditVariantStockBottomSheet` (parent: `QuickEditVariantBottomSheet`) |
+| ![](https://docs-android.tokopedia.net/images/docs/product_manage_common/Screenshot_1676460051.png)<br/>Edit Stock Single Product | `ProductManageQuickEditStockFragment` |
+| ![](https://docs-android.tokopedia.net/images/docs/product_manage_common/Screenshot_1676517901.png)<br/>Edit Stock Product Variant | `QuickEditVariantStockBottomSheet` (parent: `QuickEditVariantBottomSheet`) |
 
 ## What modules depend on module Product Common?
 

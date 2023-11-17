@@ -238,8 +238,8 @@ object AdditionalDeviceInfo {
             val wideVineId =
                 widevineMediaDrm.getPropertyByteArray(MediaDrm.PROPERTY_DEVICE_UNIQUE_ID)
             Base64.encodeToString(wideVineId, Base64.DEFAULT).trim()
-        } catch (e: Exception) {
-            Timber.e(e)
+        } catch (throwable: Throwable) {
+            Timber.e(throwable)
             UNKNOWN
         } finally {
             widevineMediaDrm?.let {

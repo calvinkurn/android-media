@@ -63,4 +63,9 @@ object ShopUtilExt {
         }
         return this
     }
+
+    fun String.clearHtmlTag(): String{
+        val regex = """<[^>]+>""".toRegex()
+        return regex.replace(this, "")
+    }
 }

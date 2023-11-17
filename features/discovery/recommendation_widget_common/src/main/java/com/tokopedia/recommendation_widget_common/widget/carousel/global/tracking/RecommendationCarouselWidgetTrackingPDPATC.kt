@@ -25,6 +25,7 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_BRAND
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_CATEGORY
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_ID
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_LIST
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_NAME
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_VARIANT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.KEY_INDEX
@@ -150,6 +151,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
             putString(CURRENT_SITE, CURRENT_SITE_MP)
             putString(PRODUCT_ID, anchorProductId)
             putString(USERID, userId)
+            putString(ITEM_LIST, listName(item))
             putParcelableArrayList(
                 ITEMS,
                 arrayListOf(

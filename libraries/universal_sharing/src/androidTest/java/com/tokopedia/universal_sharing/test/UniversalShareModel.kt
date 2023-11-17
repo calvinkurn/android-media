@@ -93,7 +93,7 @@ object UniversalShareModel {
                 )
             )
             getImageFromMedia(true)
-            setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP)
+            setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.PDP_WITH_PRICE_STRING)
             enableDefaultShareIntent()
             setImageGeneratorParam(PdpParamModel())
             setLinkProperties(LinkProperties(
