@@ -33,7 +33,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
             // Given
             val expectedResponseCounter = UniversalInboxAllCounterResponse().also {
                 it.chatUnread.unreadBuyer = 1
-                it.notifCenterUnread.notifUnread = "3"
+                it.inboxCounter.notifCenterWrapperUnread.notifUnread = "3"
             }
             val expectedResponseDriver = listOf(getDummyConversationsChannel(unreadCount = 1))
 
@@ -203,7 +203,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
             // Given
             val expectedResponseCounter = UniversalInboxAllCounterResponse().also {
                 it.chatUnread.unreadBuyer = 1
-                it.notifCenterUnread.notifUnread = "3"
+                it.inboxCounter.notifCenterWrapperUnread.notifUnread = "3"
             }
             val expectedResponseDriver = listOf(getDummyConversationsChannel(unreadCount = 1))
 
@@ -255,7 +255,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
             }
             val expectedResponseCounter = UniversalInboxAllCounterResponse().also {
                 it.chatUnread.unreadBuyer = 1
-                it.notifCenterUnread.notifUnread = "3"
+                it.inboxCounter.notifCenterWrapperUnread.notifUnread = "3"
             }
             val expectedResponseDriver = listOf(getDummyConversationsChannel(unreadCount = 1))
             val expectedResult = inboxMenuMapper.mapToInboxMenu(
@@ -325,7 +325,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
             }
             val expectedResponseCounter = UniversalInboxAllCounterResponse().also {
                 it.chatUnread.unreadBuyer = 1
-                it.notifCenterUnread.notifUnread = "3"
+                it.inboxCounter.notifCenterWrapperUnread.notifUnread = "3"
             }
 
             mockWidgetMeta(Result.Success(expectedResponse))
@@ -446,7 +446,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
             }
             val expectedResponseCounter = UniversalInboxAllCounterResponse().also {
                 it.chatUnread.unreadBuyer = 1
-                it.notifCenterUnread.notifUnread = "3"
+                it.inboxCounter.notifCenterWrapperUnread.notifUnread = "3"
             }
             val expectedResponseDriver = listOf(getDummyConversationsChannel(unreadCount = 1))
 
@@ -561,7 +561,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
             val expectedResponse = inboxMenuMapper.generateFallbackMenu(true)
             val expectedResponseCounter = UniversalInboxAllCounterResponse().also {
                 it.chatUnread.unreadBuyer = 1
-                it.notifCenterUnread.notifUnread = "3"
+                it.inboxCounter.notifCenterWrapperUnread.notifUnread = "3"
             }
             val expectedResponseDriver = listOf(getDummyConversationsChannel(unreadCount = 1))
             val expectedResult = inboxMenuMapper.mapToInboxMenu(

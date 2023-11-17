@@ -138,15 +138,15 @@ STATUS
 
 ## Shop Score Page - Flow Chart
 
-![](res/ShopScoreDiagram.drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_score/ShopScoreDiagram.drawio.png)
 
 ## Penalty Page Flow Chart
 
-![](res/image-20231020-072856.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_score/image-20231020-072856.png)
 
 ## Penalty Page Flow Chart (After Poena Revamp)
 
-![](res/poena-20231020-044738.jpg)
+![](https://docs-android.tokopedia.net/images/docs/shop_score/poena-20231020-044738.jpg)
 
 ### Shop Score
 
@@ -156,46 +156,46 @@ STATUS
 
 
 
-![](res/image-20230315-035504.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_score/image-20230315-035504.png)
 
 
 
-![](res/image-20230315-035640.png)
-
-
-
-
-
-![](res/image-20230315-040138.png)
-
-
-
-![](res/image-20230315-040251.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_score/image-20230315-035640.png)
 
 
 
 
 
-![](res/image-20230315-040507.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_score/image-20230315-040138.png)
 
 
 
-![](res/image-20230315-040843.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_score/image-20230315-040251.png)
 
 
 
 
 
-![](res/image-20230315-040614.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_score/image-20230315-040507.png)
 
 
 
-![](res/image-20230315-040936.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_score/image-20230315-040843.png)
+
+
+
+
+
+![](https://docs-android.tokopedia.net/images/docs/shop_score/image-20230315-040614.png)
+
+
+
+![](https://docs-android.tokopedia.net/images/docs/shop_score/image-20230315-040936.png)
 
 ### Penalty (Poena Revamp)
 
 
-![](res/poena_flowchart.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_score/poena_flowchart.png)
 
 
 ## Navigation

@@ -32,19 +32,19 @@ title: "Merchant Page ( Decide )"
 
 
 
-![](../res/decide/merchant_page.png) Merchant Page
+![](https://docs-android.tokopedia.net/images/docs/tokofood/decide/merchant_page.png) Merchant Page
 
 
 
 
 
-![](../res/decide/stick_filter.png) Stick Filter
+![](https://docs-android.tokopedia.net/images/docs/tokofood/decide/stick_filter.png) Stick Filter
 
 
 
 
 
-![](../res/decide/merchant_info_bottom_sheet.png) Merchant Info Bottom Sheet
+![](https://docs-android.tokopedia.net/images/docs/tokofood/decide/merchant_info_bottom_sheet.png) Merchant Info Bottom Sheet
 
 
 
@@ -52,19 +52,19 @@ title: "Merchant Page ( Decide )"
 
 
 
-![](../res/decide/product_detail_bottom_sheet.png) Product Detail Bottom Sheet
+![](https://docs-android.tokopedia.net/images/docs/tokofood/decide/product_detail_bottom_sheet.png) Product Detail Bottom Sheet
 
 
 
 
 
-![](../res/decide/custom_order_detail_bottom_sheet.png) Custom Order Detail Bottom Sheet
+![](https://docs-android.tokopedia.net/images/docs/tokofood/decide/custom_order_detail_bottom_sheet.png) Custom Order Detail Bottom Sheet
 
 
 
 
 
-![](../res/decide/order_customization_page.png) Order Customization Page
+![](https://docs-android.tokopedia.net/images/docs/tokofood/decide/order_customization_page.png) Order Customization Page
 
 
 
