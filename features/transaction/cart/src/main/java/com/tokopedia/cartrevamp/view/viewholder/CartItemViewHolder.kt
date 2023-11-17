@@ -23,6 +23,7 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
 import com.tokopedia.cartrevamp.view.BmGmWidgetView
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
+import com.tokopedia.cartrevamp.view.customview.CartViewBinderHelper
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_HEADER
@@ -48,6 +49,7 @@ import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -62,7 +64,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class CartItemViewHolder constructor(
     private val binding: ItemCartProductRevampBinding,
     private var actionListener: CartItemAdapter.ActionListener?,
-    private var mainCoachMark: CartMainCoachMarkUiModel
+    private var mainCoachMark: CartMainCoachMarkUiModel,
+    private val binderHelper: CartViewBinderHelper
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var viewHolderListener: ViewHolderListener? = null
@@ -85,7 +88,11 @@ class CartItemViewHolder constructor(
         qtyTextWatcher = null
     }
 
-    fun bindData(data: CartItemHolderData, viewHolderListener: ViewHolderListener?, dataSize: Int) {
+    fun bindData(
+        data: CartItemHolderData,
+        viewHolderListener: ViewHolderListener?,
+        dataSize: Int
+    ) {
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
 
@@ -95,6 +102,7 @@ class CartItemViewHolder constructor(
             }
         })
 
+        initSwipeLayout(data)
         initCoachMark()
         setNoteAnimationResource()
         renderAlpha(data)
@@ -106,6 +114,105 @@ class CartItemViewHolder constructor(
         renderQuantity(data, viewHolderListener)
         renderProductAction(data)
         renderBmGmOfferTicker(data)
+    }
+
+    private fun initSwipeLayout(data: CartItemHolderData) {
+        binderHelper.bind(binding.swipeLayout, data.getSwipeLayoutId())
+        if (data.isError) {
+            binderHelper.lockSwipe(data.getSwipeLayoutId())
+        }
+        if (data.isBundlingItem) {
+            binderHelper.bind(binding.swipeLayoutBundling, data.getSwipeLayoutBundlingId())
+            if (data.isMultipleBundleProduct) {
+                binderHelper.lockSwipe(data.getSwipeLayoutId())
+            }
+            if (data.isError || !data.isMultipleBundleProduct) {
+                binderHelper.lockSwipe(data.getSwipeLayoutBundlingId())
+            }
+        }
+        if (shouldLockSwipeLayout()) {
+            binderHelper.lockSwipe(data.getSwipeLayoutId())
+        }
+        if (shouldLockBundlingSwipeLayout() && data.isBundlingItem) {
+            binderHelper.lockSwipe(data.getSwipeLayoutBundlingId())
+        }
+        setSwipeLayoutColor()
+        setSwipeLayoutClickListener(data)
+    }
+
+    private fun setSwipeLayoutColor() {
+        // Icon Delete Color for Light & Dark
+        val rn500Color = ResourcesCompat.getColor(
+            itemView.context.resources,
+            unifyprinciplesR.color.Unify_RN500,
+            null
+        )
+        val rn700Color = ResourcesCompat.getColor(
+            itemView.context.resources,
+            unifyprinciplesR.color.Unify_RN700,
+            null
+        )
+
+        // Swipe Delete Background for Light & Dark
+        val rn100Color = ResourcesCompat.getColor(
+            itemView.context.resources,
+            unifyprinciplesR.color.Unify_RN100,
+            null
+        )
+        val rn300Color = ResourcesCompat.getColor(
+            itemView.context.resources,
+            unifyprinciplesR.color.Unify_RN300,
+            null
+        )
+
+        binding.apply {
+            btnSwipeDelete.setImage(
+                null,
+                rn500Color,
+                null,
+                rn700Color,
+                null
+            )
+            btnSwipeDeleteBundling.setImage(
+                null,
+                rn500Color,
+                null,
+                rn700Color,
+                null
+            )
+            if (itemView.context.isDarkMode()) {
+                flSwipeDelete.setBackgroundColor(rn300Color)
+                flSwipeDeleteBundling.setBackgroundColor(rn300Color)
+            } else {
+                flSwipeDelete.setBackgroundColor(rn100Color)
+                flSwipeDeleteBundling.setBackgroundColor(rn100Color)
+            }
+        }
+    }
+
+    private fun setSwipeLayoutClickListener(data: CartItemHolderData) {
+        binding.apply {
+            flSwipeDelete.setOnClickListener {
+                if (swipeLayout.isOpen()) {
+                    actionListener?.onCartItemDeleteButtonClicked(data, true)
+                    binderHelper.closeAll()
+                }
+            }
+            flSwipeDeleteBundling.setOnClickListener {
+                if (swipeLayoutBundling.isOpen()) {
+                    actionListener?.onCartItemDeleteButtonClicked(data, true)
+                    binderHelper.closeAll()
+                }
+            }
+        }
+    }
+
+    private fun shouldLockSwipeLayout(): Boolean {
+        return false
+    }
+
+    private fun shouldLockBundlingSwipeLayout(): Boolean {
+        return false
     }
 
     private fun initCoachMark() {
@@ -152,7 +259,8 @@ class CartItemViewHolder constructor(
                 } else {
                     BUNDLING_SEPARATOR_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 }
-                val marginErrorBundling = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+                val marginErrorBundling =
+                    IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 if (data.isError) {
@@ -189,13 +297,13 @@ class CartItemViewHolder constructor(
                         ConstraintSet.END,
                         R.id.checkbox_anchor,
                         ConstraintSet.END,
-                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.context.resources.displayMetrics)
+                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
                 }
                 constraintSet.connect(
                     R.id.fl_image_product,
                     ConstraintSet.TOP,
-                    R.id.product_bundling_info,
+                    R.id.swipe_layout_bundling,
                     ConstraintSet.BOTTOM
                 )
                 constraintSet.applyTo(containerProductInformation)
@@ -330,7 +438,11 @@ class CartItemViewHolder constructor(
             if (compoundButton.isPressed) {
                 if (!data.isError) {
                     if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                        actionListener?.onCartItemCheckboxClickChanged(bindingAdapterPosition, data, isChecked)
+                        actionListener?.onCartItemCheckboxClickChanged(
+                            bindingAdapterPosition,
+                            data,
+                            isChecked
+                        )
                         viewHolderListener?.onNeedToRefreshSingleShop(
                             data,
                             bindingAdapterPosition
@@ -430,19 +542,24 @@ class CartItemViewHolder constructor(
 
     private fun renderBundlingInfo(data: CartItemHolderData) {
         if (data.isBundlingItem && data.bundlingItemPosition == BUNDLING_ITEM_HEADER) {
+            binding.swipeLayoutBundling.show()
             binding.productBundlingInfo.show()
             if (data.isError) {
-                val productBundlingInfoParams = binding.productBundlingInfo.layoutParams as MarginLayoutParams
+                val productBundlingInfoParams =
+                    binding.productBundlingInfo.layoutParams as MarginLayoutParams
                 productBundlingInfoParams.marginStart = 0
                 binding.checkboxBundle.gone()
             } else {
-                val productBundlingInfoParams = binding.productBundlingInfo.layoutParams as MarginLayoutParams
-                productBundlingInfoParams.marginStart = IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
+                val productBundlingInfoParams =
+                    binding.productBundlingInfo.layoutParams as MarginLayoutParams
+                productBundlingInfoParams.marginStart =
+                    IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
                 binding.checkboxBundle.show()
             }
 
             renderBundlingInfoDetail(data)
         } else {
+            binding.swipeLayoutBundling.gone()
             binding.productBundlingInfo.gone()
             binding.checkboxBundle.gone()
         }
@@ -624,7 +741,7 @@ class CartItemViewHolder constructor(
                         connect(
                             R.id.v_bundling_product_separator,
                             ConstraintSet.TOP,
-                            if (data.isError) R.id.product_bundling_info else R.id.checkbox_bundle,
+                            if (data.isError) R.id.swipe_layout_bundling else R.id.checkbox_anchor,
                             ConstraintSet.BOTTOM,
                             MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                         )
@@ -633,7 +750,7 @@ class CartItemViewHolder constructor(
                     connect(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.TOP,
-                        if (data.isError) R.id.product_bundling_info else R.id.checkbox_bundle,
+                        if (data.isError) R.id.swipe_layout_bundling else R.id.checkbox_anchor,
                         ConstraintSet.BOTTOM,
                         MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
@@ -1438,8 +1555,10 @@ class CartItemViewHolder constructor(
             }
             binding.bottomDivider.visible()
         } else if (cartItemHolderData.showBmGmBottomDivider) {
-            layoutParams.marginStart = BOTTOM_DIVIDER_BMGM_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
-            layoutParams.bottomMargin = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+            layoutParams.marginStart =
+                BOTTOM_DIVIDER_BMGM_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+            layoutParams.bottomMargin =
+                PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
             binding.bottomDivider.visible()
         } else {
             binding.bottomDivider.gone()
@@ -1453,26 +1572,37 @@ class CartItemViewHolder constructor(
                 0 -> {
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.LOADING
                 }
+
                 1 -> {
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.ACTIVE
-                    binding.itemCartBmgm.bmgmWidgetView.title = data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.joinToString(" • ")
-                    binding.itemCartBmgm.bmgmWidgetView.urlLeftIcon = data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerIcon
-                    binding.itemCartBmgm.bmgmWidgetView.offerId = data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
+                    binding.itemCartBmgm.bmgmWidgetView.title =
+                        data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.joinToString(
+                            " • "
+                        )
+                    binding.itemCartBmgm.bmgmWidgetView.urlLeftIcon =
+                        data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerIcon
+                    binding.itemCartBmgm.bmgmWidgetView.offerId =
+                        data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
                         actionListener?.onBmGmChevronRightClicked(
                             data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerLandingPageLink,
                             data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
-                            data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.joinToString(" • "),
+                            data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.joinToString(
+                                " • "
+                            ),
                             data.shopHolderData.shopId
                         )
                     }
 
                     actionListener?.onCartViewBmGmTicker(
                         data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
-                        data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.joinToString(" • "),
+                        data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.joinToString(
+                            " • "
+                        ),
                         data.shopHolderData.shopId
                     )
                 }
+
                 2 -> {
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.INACTIVE
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {

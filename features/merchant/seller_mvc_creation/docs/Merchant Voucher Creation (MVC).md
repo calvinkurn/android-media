@@ -48,14 +48,14 @@ Merchant Voucher Creation (MVC) module provides feature for seller that can be a
 
 | **Page Name** | **Screenshot** | **Description** |
 | --- | --- | --- |
-| Voucher List Page | ![](res/Voucher_list.png)<br/> | In the **voucher list page**, seller can see their created voucher along with the status of the voucher. Seller can also search, filter and execute various action for selected items. |
-| Voucher Detail Page | ![](res/voucher_detail.png)<br/> | When clicking one of the voucher, seller will be navigated to the **voucher detail page**, where information about the selected voucher is shown in a more detailed manner. Seller also can do various action based on the voucher status. |
-| Voucher Creation Step 1 | ![](res/MVC1.png)<br/> | When seller want to create a voucher, they have to go through **voucher creation page**. The voucher creation page consist of 3 to 4 steps, depends on what type of voucher they want to create (indicated by “Langkah 1 dari 3”) on top of the page. First thing first when entering the voucher creation page, seller will be navigated tothe **voucher creation step 1**, in this step seller need to choose the voucher type before continuing to the next step. |
-| Voucher Creation Step 2 | ![](res/creation_2.png)<br/> | In **voucher creation step 2** seller need to fill out the voucher information consist of a few mandatory fields. Each of the input given will be validated and show the error message under the corresponding input field. The button **Lanjut** will not be enabled until all input are correctly inserted. |
-| Voucher Creation Step 3 | ![](res/creation_3.png)<br/> | In **voucher creation step 3** seller is required to fill out the voucher settings. Various field and input condition will be adjusted based on data inserted by seller from the previous steps. Input validation is also implemented, Button **Lanjut** will not be enabled until all corresponding field are correctly filled out. |
-| Tambah Produk Page | ![](res/add_product.png)<br/> | If seller is choosing **Kupon Produk** at the **voucher creation step 1,** the last step before finishing create voucher is to go through **voucher creation step 4.** In this step seller need to add the product they want to attach the voucher to. |
-| Daftar Produk Page | ![](res/daftar_produk.png)<br/> | After adding the product, seller need to register the product that they have added. In this page seller can add or delete the listed product. |
-| Voucher Summary Page | ![](res/summary.png)<br/> | After finishing all the voucher creation steps, seller will be navigated to the **voucher summary page.** This page will show and summarize the voucher data that seller will create based on the inserted data in **voucher creation page**. Seller still can change the data from each step just by clicking “**ubah**” from the corresponding section or if seller has ensure that all data is correct, voucher will be validated & created when button “**Buat Kupon**“ is clicked. |
+| Voucher List Page | ![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/Voucher_list.png)<br/> | In the **voucher list page**, seller can see their created voucher along with the status of the voucher. Seller can also search, filter and execute various action for selected items. |
+| Voucher Detail Page | ![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/voucher_detail.png)<br/> | When clicking one of the voucher, seller will be navigated to the **voucher detail page**, where information about the selected voucher is shown in a more detailed manner. Seller also can do various action based on the voucher status. |
+| Voucher Creation Step 1 | ![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/MVC1.png)<br/> | When seller want to create a voucher, they have to go through **voucher creation page**. The voucher creation page consist of 3 to 4 steps, depends on what type of voucher they want to create (indicated by “Langkah 1 dari 3”) on top of the page. First thing first when entering the voucher creation page, seller will be navigated tothe **voucher creation step 1**, in this step seller need to choose the voucher type before continuing to the next step. |
+| Voucher Creation Step 2 | ![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/creation_2.png)<br/> | In **voucher creation step 2** seller need to fill out the voucher information consist of a few mandatory fields. Each of the input given will be validated and show the error message under the corresponding input field. The button **Lanjut** will not be enabled until all input are correctly inserted. |
+| Voucher Creation Step 3 | ![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/creation_3.png)<br/> | In **voucher creation step 3** seller is required to fill out the voucher settings. Various field and input condition will be adjusted based on data inserted by seller from the previous steps. Input validation is also implemented, Button **Lanjut** will not be enabled until all corresponding field are correctly filled out. |
+| Tambah Produk Page | ![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/add_product.png)<br/> | If seller is choosing **Kupon Produk** at the **voucher creation step 1,** the last step before finishing create voucher is to go through **voucher creation step 4.** In this step seller need to add the product they want to attach the voucher to. |
+| Daftar Produk Page | ![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/daftar_produk.png)<br/> | After adding the product, seller need to register the product that they have added. In this page seller can add or delete the listed product. |
+| Voucher Summary Page | ![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/summary.png)<br/> | After finishing all the voucher creation steps, seller will be navigated to the **voucher summary page.** This page will show and summarize the voucher data that seller will create based on the inserted data in **voucher creation page**. Seller still can change the data from each step just by clicking “**ubah**” from the corresponding section or if seller has ensure that all data is correct, voucher will be validated & created when button “**Buat Kupon**“ is clicked. |
 
 
 
@@ -102,23 +102,23 @@ Merchant Voucher Creation (MVC) module provides feature for seller that can be a
 
 ## Flow Diagram
 
-![](res/image-20221213-080430.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/image-20221213-080430.png)
 
-![](res/image-20221213-080535.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/image-20221213-080535.png)
 
-![](res/image-20221213-080607.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/image-20221213-080607.png)
 
-![](res/image-20221213-081029.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/image-20221213-081029.png)
 
-![](res/image-20221213-081122.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/image-20221213-081122.png)
 
-![](res/image-20221213-081143.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/image-20221213-081143.png)
 
-![](res/image-20221213-081213.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/image-20221213-081213.png)
 
-![](res/image-20221213-081304.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/image-20221213-081304.png)
 
-![](res/image-20221213-081409.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/image-20221213-081409.png)
 
 
 
@@ -148,13 +148,13 @@ sellerapp://seller-mvc/intro
 ```
 2. **Menu**
 
-![](res/menu.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/menu.png)
 
-![](res/iklan_promosi.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/iklan_promosi.png)
 
-![](res/bottom_sheet.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/bottom_sheet.png)
 
-![](res/Voucher_list.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_mvc_creation/Voucher_list.png)
 
 
 
