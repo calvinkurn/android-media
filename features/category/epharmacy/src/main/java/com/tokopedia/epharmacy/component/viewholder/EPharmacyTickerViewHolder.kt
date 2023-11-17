@@ -1,12 +1,12 @@
 package com.tokopedia.epharmacy.component.viewholder
 
-import android.content.pm.PackageInfo
 import android.os.Build
 import android.view.View
 import android.webkit.WebView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.component.model.EPharmacyTickerDataModel
+import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
@@ -17,7 +17,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.epharmacy.R as epharmacyR
-
 
 class EPharmacyTickerViewHolder(
     val view: View
@@ -37,39 +36,31 @@ class EPharmacyTickerViewHolder(
 
     private fun renderWebViewTicker() {
         getWebViewVersion().let { version ->
-            if(errorWebViewCondition(version)){
+            if (errorWebViewCondition(version)) {
                 showWebViewTicker()
             }
         }
     }
 
-    // WebViewCompat code with exception handling
     private fun getWebViewVersion(): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
                 val info = WebView.getCurrentWebViewPackage()
                 info?.versionName.orEmpty()
-            }catch (e: Exception){
+            } catch (e: Exception) {
+                EPharmacyUtils.logException(e)
                 String.EMPTY
             }
-        }else {
-            try {
-                val webViewFactoryClass =
-                    Class.forName("android.webkit.WebViewFactory")
-                return (webViewFactoryClass.getMethod(
-                    "getLoadedPackageInfo"
-                ).invoke(null) as? PackageInfo)?.versionName.orEmpty()
-            }catch (e: Exception){
-                String.EMPTY
-            }
+        } else {
+            String.EMPTY
         }
     }
 
-    private fun errorWebViewCondition(version: String): Boolean{
+    private fun errorWebViewCondition(version: String): Boolean {
         return version.split(".").firstOrNull().toIntOrZero() < 70
     }
 
-    private fun showWebViewTicker(){
+    private fun showWebViewTicker() {
         val tickerText = itemView.context.resources?.getString(epharmacyR.string.epharmacy_webview_ticker).orEmpty()
         webViewTicker.setHtmlDescription(tickerText)
         webViewTicker.show()
