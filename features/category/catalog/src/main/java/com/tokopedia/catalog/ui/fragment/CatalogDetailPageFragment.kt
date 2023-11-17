@@ -459,6 +459,7 @@ class CatalogDetailPageFragment :
         }
         binding?.toolbarBg?.alpha = scrollProgress
         binding?.toolbar?.tpgTitle?.alpha = scrollProgress
+        binding?.statusBar?.alpha = scrollProgress
     }
 
     // Call this methods if you want to override the CTA & Price widget's theme

@@ -468,7 +468,9 @@ class CatalogDetailUiMapper @Inject constructor(
                                 isSpecCategoryTitle = false,
                                 specTitle = if (isFirstData) rowItem.key else "",
                                 specValue = rowItem.value.ifEmpty { "-" },
-                                specTextTitleColor = getTextColor(isDarkMode, lightModeColor = unifycomponentsR.color.Unify_NN600, darkModeColor = catalogcommonR.color.dms_static_Unify_NN600_light),
+                                specTextTitleColor = getTextColor(isDarkMode,
+                                    lightModeColor = catalogR.color.catalog_dms_light_color_text_description,
+                                    darkModeColor = catalogR.color.catalog_dms_dark_color_text_description),
                                 isDarkMode = isDarkMode
                             )
                             comparisonSpecs.add(insertedItem)
@@ -548,9 +550,9 @@ class CatalogDetailUiMapper @Inject constructor(
 
     private fun getTextColor(darkMode: Boolean): Int {
         val textColorRes = if (darkMode) {
-            unifycomponentsR.color.Unify_Static_White
+            catalogR.color.catalog_dms_dark_color_text_common
         } else {
-            unifycomponentsR.color.Unify_Static_Black
+            catalogR.color.catalog_dms_light_color_text_common
         }
         return MethodChecker.getColor(context, textColorRes)
     }
@@ -566,9 +568,9 @@ class CatalogDetailUiMapper @Inject constructor(
 
     private fun getTextColorTrustmaker(darkMode: Boolean): Int {
         val textColorRes = if (darkMode) {
-            unifycomponentsR.color.Unify_Static_White
+            catalogR.color.catalog_dms_dark_color_text_common
         } else {
-            catalogcommonR.color.dms_static_Unify_NN600_light
+            catalogR.color.catalog_dms_light_color_text_common
         }
         return MethodChecker.getColor(context, textColorRes)
     }
@@ -583,7 +585,14 @@ class CatalogDetailUiMapper @Inject constructor(
     }
 
     private fun getColumnInfoTextColor(darkMode: Boolean) = Pair(
-        MethodChecker.getColor(context, catalogR.color.catalog_dms_column_info_title_color),
+        MethodChecker.getColor(
+            context,
+            if (darkMode) {
+                catalogR.color.catalog_dms_dark_color_text_description
+            } else {
+                catalogR.color.catalog_dms_light_color_text_description
+            }
+        ),
         MethodChecker.getColor(
             context,
             if (darkMode) {

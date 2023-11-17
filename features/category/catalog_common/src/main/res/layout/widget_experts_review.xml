@@ -8,7 +8,7 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/static_color_divider"
+        android:background="@color/dms_static_color_divider"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.carousel.CarouselUnify
@@ -25,7 +25,7 @@
         android:id="@+id/dividerBottom"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/static_color_divider"
+        android:background="@color/dms_static_color_divider"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

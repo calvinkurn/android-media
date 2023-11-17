@@ -21,7 +21,6 @@ class TextDescriptionViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_text_description
-        private val TEXT_LOW_EMPHASIS = R.color.dms_static_Unify_NN600_light
         private const val layout_4th_version = 4
     }
 
@@ -48,11 +47,9 @@ class TextDescriptionViewHolder(
 
     private fun overrideWidgetTheme(element: TextDescriptionUiModel) {
         binding?.let {
-            if (element.isDarkMode) {
-                it.tgpTextWidgetHighlight.setTextColor(ContextCompat.getColor(itemView.context, TEXT_LOW_EMPHASIS))
-                it.tgpTextWidgetDescription.setTextColor(ContextCompat.getColor(itemView.context, TEXT_LOW_EMPHASIS))
-            }
             it.tgpTextWidgetTitle.setTextColor(element.widgetTextColor ?: return)
+            it.tgpTextWidgetHighlight.setTextColor(element.widgetTextColor ?: return)
+            it.tgpTextWidgetDescription.setTextColor(element.widgetTextColor ?: return)
         }
     }
 
