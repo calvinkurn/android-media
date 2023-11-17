@@ -19,7 +19,7 @@ import com.tokopedia.topads.utils.Span
 import com.tokopedia.topads.utils.SpannableUtils
 import com.tokopedia.topads.utils.SpannedString
 import com.tokopedia.topads.view.activity.RoutingCallback
-import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
 
@@ -80,7 +80,7 @@ class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
     private fun loadOnboardingImage(){
         binding?.onboardingImage?.let {
             it.loadImage(ONBOARDING_IMG_URL) {
-                setPlaceHolder(com.tokopedia.unifycomponents.R.drawable.unify_loader_shimmer)
+                setPlaceHolder(unifycomponentsR.drawable.unify_loader_shimmer)
             }
         }
     }
@@ -89,7 +89,7 @@ class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
       binding?.footerText?.let {
           val text = context?.resources?.getString(R.string.mp_ad_creation_onboarding_footer_text).orEmpty()
           it.text = context?.resources?.let { it1 ->
-              val linkColor = ResourcesCompat.getColor(it1,com.tokopedia.unifyprinciples.R.color.Unify_GN500,null)
+              val linkColor = ResourcesCompat.getColor(it1,unifycomponentsR.color.Unify_GN500,null)
               it.movementMethod = LinkMovementMethod.getInstance()
               SpannableUtils.applySpannable(
                   text,
