@@ -3,7 +3,6 @@ package com.tokopedia.play.widget.ui
 import android.content.Context
 import android.net.Uri
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -51,7 +50,6 @@ class PlayVideoWidgetView : CardUnify2 {
             mIsIdleOrEnded = isIdleOrEnded
 
             if (isIdleOrEnded) {
-                Log.d("VideoPlayer", "Id: ${mModel.id}")
                 mListener?.onVideoFinishedPlaying(this@PlayVideoWidgetView)
             }
         }
