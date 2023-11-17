@@ -45,6 +45,7 @@ class HeroBannerViewHolder(
         private const val BANNER_PREMIUM_RATIO = "1:1.5"
         private const val BANNER_REGULAR_RATIO = "1:1"
         private const val BANNER_REGULAR_SHADOW_HEIGHT = 55
+        private const val SQUARE_BRAND_ICON_ASPECT_RATIO_THRESHOLD = 1.1
     }
 
     private val binding by viewBinding<WidgetItemBannerHeroBinding>()
@@ -168,7 +169,7 @@ class HeroBannerViewHolder(
 
     private fun createCardBackground(bitmap: Bitmap): Drawable {
         val cardColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White)
-        val radius = if (bitmap.width / bitmap.height <= 1.1) {
+        val radius = if (bitmap.width / bitmap.height <= SQUARE_BRAND_ICON_ASPECT_RATIO_THRESHOLD) {
             RECTANGULAR_CARD_RADIUS
         } else {
             CIRCULAR_CARD_RADIUS
