@@ -118,8 +118,6 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     private fun setupCTATextColor(ctaColor: String?) {
         if (!ctaColor.isNullOrEmpty()) {
             lihatTextView.setTextColor(Color.parseColor(ctaColor))
-        } else {
-            lihatTextView.setTextColor(unifyprinciplesR.color.Unify_GN500)
         }
     }
 
