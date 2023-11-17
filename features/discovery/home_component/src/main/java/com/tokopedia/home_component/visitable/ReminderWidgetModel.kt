@@ -10,7 +10,7 @@ data class ReminderWidgetModel(
         val id: String = "",
         val data: ReminderWidget = ReminderWidget(),
         var source: ReminderEnum,
-        var name: String = "",
+        val name: String = "",
 ): ImpressHolder(), HomeComponentVisitable {
     override fun visitableId(): String? {
         return id

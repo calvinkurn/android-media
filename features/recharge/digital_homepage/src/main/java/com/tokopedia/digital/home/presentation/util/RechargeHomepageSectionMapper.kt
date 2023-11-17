@@ -157,7 +157,8 @@ object RechargeHomepageSectionMapper {
                             ReminderWidgetModel(
                                 id = id,
                                 data = ReminderWidget(id),
-                                source = ReminderEnum.RECHARGE
+                                source = ReminderEnum.RECHARGE,
+                                name = it.name
                             )
                         } else {
                             getReminderWidgetModel(it)
