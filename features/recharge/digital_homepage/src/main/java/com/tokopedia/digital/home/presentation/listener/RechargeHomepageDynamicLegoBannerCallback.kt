@@ -63,7 +63,7 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: RechargeHomepageIt
     }
 
     override fun getDynamicLegoBannerData(channelModel: ChannelModel) {
-        listener.loadRechargeSectionData(channelModel.id, channelModel.layout)
+        listener.loadRechargeSectionData(channelModel.id, "") // set empty to hit with sectionId
     }
     override fun onSeeAllTwoImage(channelModel: ChannelModel, position: Int) {
         RechargeHomepageSections.Section(applink = channelModel.channelHeader.applink)
