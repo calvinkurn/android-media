@@ -91,7 +91,10 @@ class LargeUploaderManager @Inject constructor(
             return UploadResult.Error(CHUNK_UPLOAD, requestId)
         }
 
-        // 4. set a complete state to check the transcoding and get the video url from it.
+        // 4. if the transcoding success, return the video url!
+        val result = completeUpload()
+
+        // 5. set a complete state to check the transcoding and get the video url from it.
         if (param.withTranscode) {
             val transcode = waitTranscode(videoPolicy)
 
@@ -104,9 +107,6 @@ class LargeUploaderManager @Inject constructor(
                 }
             }
         }
-
-        // 5. if the transcoding success, return the video url!
-        val result = completeUpload()
 
         updateProgressValue()
         resetUpload()
