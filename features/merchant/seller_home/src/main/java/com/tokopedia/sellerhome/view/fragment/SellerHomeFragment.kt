@@ -183,9 +183,9 @@ import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.globalerror.R as globalerrorR
 import com.tokopedia.sellerhomecommon.R as sellerhomecommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 2020-01-14
@@ -653,13 +653,14 @@ class SellerHomeFragment :
     }
 
     override fun sendMilestoneRewardActionClickedListener(reward: MilestoneItemRewardUiModel) {
-        context?.let {
+        activity?.let {
             if (reward.buttonApplink.isBlank()) {
                 reward.rewardDetailUiModel?.let { uiModel ->
                     showRewardDetailBottomSheet(uiModel)
                 }
             } else {
-                RouteManager.route(it, reward.buttonApplink)
+                val intent = RouteManager.getIntent(it, reward.buttonApplink)
+                it.startActivityForResult(intent, REQ_CODE_MILESTONE_WIDGET)
             }
         }
     }
