@@ -1,6 +1,7 @@
 package com.tokopedia.play.widget.ui.carousel
 
 import android.content.Context
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.content.common.ui.itemdecoration.FocusedCarouselItemDecoration
 
 /**
@@ -8,4 +9,7 @@ import com.tokopedia.content.common.ui.itemdecoration.FocusedCarouselItemDecorat
  */
 class PlayWidgetCarouselItemDecoration(
     context: Context
-) : FocusedCarouselItemDecoration(context)
+) : FocusedCarouselItemDecoration(context) {
+
+    override val horizontalOffset: Int = context.resources.getDimensionPixelOffset(unifyprinciplesR.dimen.spacing_lvl2)
+}
