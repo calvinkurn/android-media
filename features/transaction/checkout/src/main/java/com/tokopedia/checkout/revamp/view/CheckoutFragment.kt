@@ -2122,7 +2122,7 @@ class CheckoutFragment :
                 productCatIds
             )
         } else {
-            paymentAddOnsAnalytics.eventCheckCrossSellIcon(
+            paymentAddOnsAnalytics.eventUncheckCrossSellIcon(
                 egoldModel.getCategoryName(),
                 egoldModel.getCrossSellProductId(),
                 productCatIds
