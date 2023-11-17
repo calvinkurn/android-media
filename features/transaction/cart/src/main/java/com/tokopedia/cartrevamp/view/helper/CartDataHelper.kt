@@ -570,4 +570,38 @@ object CartDataHelper {
         }
         return listCartStringOrderWithBmGmOfferId
     }
+
+    fun getDefaultAndMultipleBundlingProductPositionInPair(
+        cartDataList: ArrayList<Any>,
+        startPosition: Int,
+        endPosition: Int
+    ): Pair<Int, Int> {
+        var defaultProductPosition: Int = RecyclerView.NO_POSITION
+        var bundlingProductPosition: Int = RecyclerView.NO_POSITION
+        loop@ for (i in startPosition..endPosition) {
+            val currentData = cartDataList[i]
+
+            if (hasReachAllShopItems(currentData)) {
+                return Pair(
+                    defaultProductPosition,
+                    bundlingProductPosition
+                )
+            }
+
+            if (currentData !is CartItemHolderData || currentData.isError) continue@loop
+
+            if (defaultProductPosition == RecyclerView.NO_POSITION && (!currentData.isBundlingItem || (!currentData.isMultipleBundleProduct))) {
+                defaultProductPosition = i
+            }
+
+            if (bundlingProductPosition == RecyclerView.NO_POSITION && currentData.isBundlingItem && currentData.isMultipleBundleProduct) {
+                bundlingProductPosition = i
+            }
+
+            if (defaultProductPosition != RecyclerView.NO_POSITION && bundlingProductPosition != RecyclerView.NO_POSITION) {
+                break@loop
+            }
+        }
+        return Pair(defaultProductPosition, bundlingProductPosition)
+    }
 }
