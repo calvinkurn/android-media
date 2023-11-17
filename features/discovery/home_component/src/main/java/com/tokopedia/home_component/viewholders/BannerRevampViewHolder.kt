@@ -210,11 +210,11 @@ class BannerRevampViewHolder(
     }
 
     override fun onLongPress() {
-        bannerIndicator.pauseAnimation()
+        pauseIndicator()
     }
 
     override fun onRelease() {
-        bannerIndicator.continueAnimation()
+        resumeIndicator()
     }
 
     override fun isDrag(): Boolean {
@@ -243,6 +243,14 @@ class BannerRevampViewHolder(
         if (position != RecyclerView.NO_POSITION && this.channelGrids.size > position) {
             action.invoke(this.channelGrids[position])
         }
+    }
+
+    fun pauseIndicator() {
+        bannerIndicator.pauseAnimation()
+    }
+
+    fun resumeIndicator() {
+        bannerIndicator.continueAnimation()
     }
 
     companion object {

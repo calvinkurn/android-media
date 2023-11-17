@@ -16,7 +16,7 @@ import com.tokopedia.trackingoptimizer.db.model.TrackingRegularDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingScreenNameDbModel
 import com.tokopedia.trackingoptimizer.gson.HashMapJsonUtil
 import com.tokopedia.trackingoptimizer.model.EventModel
-import com.tokopedia.trackingoptimizer.model.ScreenCustomModel
+import java.util.Calendar
 
 class TrackRepository private constructor(
     val context: Context,
@@ -118,6 +118,25 @@ class TrackRepository private constructor(
             return
         }
 
+        val inputCustomDimensionAndTimeMap = if (inputCustomDimensionMap.isNullOrEmpty()) {
+            HashMap()
+        } else {
+            inputCustomDimensionMap
+        }.also {
+            it["hits_time"] = Calendar.getInstance().timeInMillis
+        }
+        putEEWithTime(
+            inputEvent,
+            inputCustomDimensionAndTimeMap,
+            inputEnhanceECommerceMap
+        )
+    }
+
+    fun putEEWithTime(
+        inputEvent: EventModel,
+        inputCustomDimensionMap: HashMap<String, Any>,
+        inputEnhanceECommerceMap: HashMap<String, Any>?
+    ) {
         // it has list? if No, put into Full EE. It cannot be appended.
         val inputList: ArrayList<Any>? = HashMapJsonUtil.findList(inputEnhanceECommerceMap)
         if (inputList == null || inputList.size == 0) {
@@ -199,7 +218,6 @@ class TrackRepository private constructor(
             // replacing old data
             directPutEE(inputEvent, inputCustomDimensionMap, inputEnhanceECommerceMap)
         }
-
     }
 
     fun moveEETrackingToFull(

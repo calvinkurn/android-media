@@ -2,7 +2,6 @@ package com.tokopedia.catalogcommon.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.ItemTextDescriptionBinding
@@ -48,11 +47,9 @@ class TextDescriptionViewHolder(
 
     private fun overrideWidgetTheme(element: TextDescriptionUiModel) {
         binding?.let {
-            if (element.isDarkMode) {
-                it.tgpTextWidgetHighlight.setTextColor(ContextCompat.getColor(itemView.context, TEXT_LOW_EMPHASIS))
-                it.tgpTextWidgetDescription.setTextColor(ContextCompat.getColor(itemView.context, TEXT_LOW_EMPHASIS))
-            }
             it.tgpTextWidgetTitle.setTextColor(element.widgetTextColor ?: return)
+            it.tgpTextWidgetHighlight.setTextColor(element.widgetTextColor ?: return)
+            it.tgpTextWidgetDescription.setTextColor(element.widgetTextColor ?: return)
         }
     }
 

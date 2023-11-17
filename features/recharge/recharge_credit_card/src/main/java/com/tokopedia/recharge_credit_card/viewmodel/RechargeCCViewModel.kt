@@ -8,6 +8,7 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipMode
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.repository.RechargeFavoriteNumberRepository
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
+import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -21,11 +22,15 @@ import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankList
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankListReponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCCatalogPrefix
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCDppoConsentUimodel
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetail
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
 import com.tokopedia.recharge_credit_card.isMasked
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -36,7 +41,8 @@ import javax.inject.Inject
 class RechargeCCViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val dispatcher: CoroutineDispatcher,
-    private val rechargeFavoriteNumberRepo: RechargeFavoriteNumberRepository
+    private val rechargeFavoriteNumberRepo: RechargeFavoriteNumberRepository,
+    private val getDppoConsentUseCase: GetDppoConsentUseCase
 ) : BaseViewModel(dispatcher) {
 
     var prefixData: RechargeCCCatalogPrefix = RechargeCCCatalogPrefix()
@@ -51,6 +57,7 @@ class RechargeCCViewModel @Inject constructor(
     private val _autoCompleteData = MutableLiveData<RechargeNetworkResult<List<AutoCompleteModel>>>()
     private val _prefillData = MutableLiveData<RechargeNetworkResult<PrefillModel>>()
     private val _menuDetail = MutableLiveData<RechargeNetworkResult<RechargeCCMenuDetail>>()
+    private val _dppoConsent = MutableLiveData<Result<RechargeCCDppoConsentUimodel>>()
 
     val creditCardSelected: LiveData<RechargeCreditCard> = _rechargeCreditCard
     val prefixSelect: LiveData<RechargeNetworkResult<RechargeCCCatalogPrefix>> = _prefixSelect
@@ -59,6 +66,7 @@ class RechargeCCViewModel @Inject constructor(
     val autoCompleteData: LiveData<RechargeNetworkResult<List<AutoCompleteModel>>> = _autoCompleteData
     val prefillData: LiveData<RechargeNetworkResult<PrefillModel>> = _prefillData
     val menuDetail: LiveData<RechargeNetworkResult<RechargeCCMenuDetail>> = _menuDetail
+    val dppoConsent: LiveData<Result<RechargeCCDppoConsentUimodel>> = _dppoConsent
 
     var categoryName: String = ""
     var loyaltyStatus: String = ""
@@ -152,6 +160,22 @@ class RechargeCCViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun getDppoConsent(categoryId: Int) {
+        launchCatchError(block = {
+            val data = getDppoConsentUseCase.execute(categoryId)
+            val uiData = RechargeCCDppoConsentUimodel(
+                description = if (data.persoData.items.isNotEmpty()) {
+                    data.persoData.items[0].title
+                } else {
+                    ""
+                }
+            )
+            _dppoConsent.postValue(Success(uiData))
+        }) {
+            _dppoConsent.postValue(Fail(it))
         }
     }
 

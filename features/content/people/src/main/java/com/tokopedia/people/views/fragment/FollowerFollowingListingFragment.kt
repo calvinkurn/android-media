@@ -7,26 +7,35 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.people.R
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
+import com.tokopedia.people.databinding.UpFollowFollowingParentContentBinding
+import com.tokopedia.people.databinding.UpFollowFollowingParentShimmerBinding
 import com.tokopedia.people.databinding.UpFragmentFollowerFollowingListingBinding
+import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
-import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_DISPLAY_NAME
-import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_IS_FOLLOWERS
-import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWERS
-import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWINGS
+import com.tokopedia.people.views.activity.FollowerFollowingListingActivity.Companion.EXTRA_ACTIVE_TAB
+import com.tokopedia.people.views.activity.FollowerFollowingListingActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.uimodel.FollowListUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.state.LoadingState
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.unifycomponents.setCustomText
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.people.R as peopleR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class FollowerFollowingListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
@@ -37,11 +46,21 @@ class FollowerFollowingListingFragment @Inject constructor(
     private val binding: UpFragmentFollowerFollowingListingBinding
         get() = _binding!!
 
-    private var userId = ""
+    private val bindingContent: UpFollowFollowingParentContentBinding
+        get() = binding.layoutFollowFollowingParentContent
+
+    private val bindingShimmer: UpFollowFollowingParentShimmerBinding
+        get() = binding.layoutFollowFollowingParentShimmer
 
     private val viewModel: FollowerFollowingViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
+        ViewModelProviders.of(this, viewModelFactory)[FollowerFollowingViewModel::class.java]
     }
+
+    private val userId: String
+        get() = arguments?.getString(EXTRA_USERNAME).orEmpty()
+
+    private val selectedTab: String
+        get() = arguments?.getString(EXTRA_ACTIVE_TAB).orEmpty()
 
     private val onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
@@ -64,71 +83,85 @@ class FollowerFollowingListingFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setHeader()
-        setMainUi()
-
-        observeFollowCount()
+        setData()
+        observeData()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
+        bindingContent.viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
         _binding = null
     }
 
-    private fun setMainUi() {
-        val bundle = arguments ?: return
+    private fun setData() {
+        viewModel.getProfile(userId)
+    }
 
-        val totalFollowers = bundle.getString(EXTRA_TOTAL_FOLLOWERS).orEmpty()
-        val totalFollowing = bundle.getString(EXTRA_TOTAL_FOLLOWINGS).orEmpty()
+    private fun setTabs(
+        prevState: ProfileUiModel?,
+        currState: ProfileUiModel
+    ) {
+        if (prevState == currState || currState == ProfileUiModel.Empty) return
 
-        binding.tpFollow.getUnifyTabLayout().setTabTextColors(
+        bindingContent.tpFollow.getUnifyTabLayout().setTabTextColors(
             MethodChecker.getColor(
                 activity,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                unifyprinciplesR.color.Unify_NN600
             ),
-            MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            MethodChecker.getColor(
+                activity,
+                unifyprinciplesR.color.Unify_GN500
+            )
         )
 
         val listOfPages = listOf<Pair<String, Fragment>>(
             Pair(
-                String.format(getString(R.string.up_title_followers), totalFollowers),
+                String.format(
+                    getString(peopleR.string.up_title_followers),
+                    currState.stats.totalFollowerFmt
+                ),
                 FollowerListingFragment.getFragment(
                     childFragmentManager,
-                    requireContext().classLoader,
-                    bundle
+                    requireContext().classLoader
                 )
             ),
             Pair(
-                String.format(getString(R.string.up_title_following), totalFollowing),
+                String.format(
+                    getString(peopleR.string.up_title_following),
+                    currState.stats.totalFollowingFmt
+                ),
                 FollowingListingFragment.getFragment(
                     childFragmentManager,
-                    requireContext().classLoader,
-                    bundle
+                    requireContext().classLoader
                 )
             )
         )
 
-        binding.viewPager.adapter = ViewPagerAdapter(this, listOfPages.map(Pair<String, Fragment>::second))
+        bindingContent.viewPager.adapter =
+            ViewPagerAdapter(this, listOfPages.map(Pair<String, Fragment>::second))
 
-        TabsUnifyMediator(binding.tpFollow, binding.viewPager) { tab, position ->
+        TabsUnifyMediator(bindingContent.tpFollow, bindingContent.viewPager) { tab, position ->
             tab.setCustomText(listOfPages[position].first)
         }
 
-        binding.viewPager.registerOnPageChangeCallback(onPageChangeCallback)
+        bindingContent.viewPager.registerOnPageChangeCallback(onPageChangeCallback)
 
-        if (arguments?.getBoolean(EXTRA_IS_FOLLOWERS, true) == true) {
-            binding.tpFollow.getUnifyTabLayout().getTabAt(FOLLOWERS_PAGE_POSITION)?.select()
-        } else {
-            binding.tpFollow.getUnifyTabLayout().getTabAt(FOLLOWING_PAGE_POSITION)?.select()
-        }
+        bindingContent.viewPager.setCurrentItem(
+            if (selectedTab == EXTRA_FOLLOWING) {
+                FOLLOWING_PAGE_POSITION
+            } else {
+                FOLLOWERS_PAGE_POSITION
+            },
+            false
+        )
     }
 
-    private fun setHeader() {
-        val header = view?.findViewById<HeaderUnify>(R.id.header_follower)
+    private fun setHeader(prevName: String?, currName: String) {
+        if (prevName == currName) return
+
+        val header = view?.findViewById<HeaderUnify>(peopleR.id.header_follower)
         header?.apply {
-            title = arguments?.getString(EXTRA_DISPLAY_NAME).toString()
-            userId = arguments?.getString(UserProfileFragment.EXTRA_USER_ID).toString()
+            title = currName
             subheaderView?.gone()
 
             setNavigationOnClickListener {
@@ -137,20 +170,60 @@ class FollowerFollowingListingFragment @Inject constructor(
         }
     }
 
-    private fun observeFollowCount() {
+    private fun observeData() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.profileInfo.withCache().collectLatest { (prevState, currState) ->
+                setHeader(prevState?.name, currState.name)
+                setTabs(prevState, currState)
+            }
+        }
         viewModel.followCount.observe(viewLifecycleOwner) {
             updateFollowCount(it)
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.loadingState.withCache().collectLatest { (prevState, currState) ->
+                updateLoadingPage(prevState, currState)
+            }
+        }
+    }
+
+    private fun updateLoadingPage(
+        prevState: LoadingState?,
+        currState: LoadingState
+    ) {
+        if (prevState == currState) return
+
+        when (currState) {
+            is LoadingState.Error -> {
+                bindingContent.root.hide()
+                bindingShimmer.root.hide()
+                binding.globalError.show()
+                binding.globalError.setType(GlobalError.SERVER_ERROR)
+                binding.globalError.setActionClickListener { viewModel.getProfile(userId) }
+            }
+
+            LoadingState.Hide -> {
+                bindingContent.root.show()
+                binding.globalError.hide()
+                bindingShimmer.root.hide()
+            }
+
+            LoadingState.Show -> {
+                bindingContent.root.hide()
+                binding.globalError.hide()
+                bindingShimmer.root.show()
+            }
         }
     }
 
     private fun updateFollowCount(followCount: FollowListUiModel.FollowCount) {
-        binding.tpFollow.getUnifyTabLayout().let { tabLayout ->
+        bindingContent.tpFollow.getUnifyTabLayout().let { tabLayout ->
             if (tabLayout.tabCount < DEFAULT_TAB_TOTAL) return@let
 
             tabLayout.getTabAt(FOLLOWERS_PAGE_POSITION)?.let { tab ->
                 val oldValue = tab.getCustomText()
                 val newValue = String.format(
-                    getString(R.string.up_title_followers),
+                    getString(peopleR.string.up_title_followers),
                     followCount.totalFollowers
                 )
                 if (oldValue != newValue) tab.setCustomText(newValue)
@@ -159,7 +232,7 @@ class FollowerFollowingListingFragment @Inject constructor(
             tabLayout.getTabAt(FOLLOWING_PAGE_POSITION)?.let {
                 val oldValue = it.getCustomText()
                 val newValue = String.format(
-                    getString(com.tokopedia.people.R.string.up_title_following),
+                    getString(peopleR.string.up_title_following),
                     followCount.totalFollowing
                 )
                 if (oldValue != newValue) it.setCustomText(newValue)
@@ -184,9 +257,11 @@ class FollowerFollowingListingFragment @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "FollowerFollowingListingFragment"
         const val REQUEST_CODE_LOGIN_TO_FOLLOW = 100
+        const val EXTRA_FOLLOWING = "following"
+        const val EXTRA_FOLLOWERS = "followers"
 
+        private const val TAG = "FollowerFollowingListingFragment"
         private const val FOLLOWERS_PAGE_POSITION = 0
         private const val FOLLOWING_PAGE_POSITION = 1
         private const val DEFAULT_TAB_TOTAL = 2
@@ -196,7 +271,8 @@ class FollowerFollowingListingFragment @Inject constructor(
             classLoader: ClassLoader,
             bundle: Bundle
         ): FollowerFollowingListingFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowerFollowingListingFragment
+            val oldInstance =
+                fragmentManager.findFragmentByTag(TAG) as? FollowerFollowingListingFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 FollowerFollowingListingFragment::class.java.name

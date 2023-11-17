@@ -1,16 +1,20 @@
 package com.tokopedia.catalog.ui.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
 import com.tokopedia.catalog.ui.fragment.CatalogLandingPageFragment
-import com.tokopedia.oldcatalog.ui.activity.CatalogDetailPageActivity as OldCatalogDetailPageActivity
 import com.tokopedia.core.analytics.AppScreen
+import com.tokopedia.oldcatalog.ui.activity.CatalogDetailPageActivity as OldCatalogDetailPageActivity
 
 class CatalogDetailPageActivity :  BaseSimpleActivity(),
     CatalogLandingPageFragment.CatalogLandingPageFragmentListener {
@@ -43,6 +47,7 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_catalog_detail_page)
+        setStatusBarToTransparent(this)
         catalogId = if (intent.hasExtra(EXTRA_CATALOG_ID))
             intent.getStringExtra(EXTRA_CATALOG_ID) ?: ""
         else {
@@ -88,5 +93,13 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
                 CatalogLandingPageFragment.CATALOG_LOADER_PAGE_FRAGMENT_TAG
             )
             .commit()
+    }
+
+    private fun setStatusBarToTransparent(activity: Activity) {
+        val window = activity.window
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.statusBarColor = Color.TRANSPARENT
     }
 }

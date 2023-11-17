@@ -34,8 +34,9 @@ import com.tokopedia.play_common.R as commonR
 class PlayBroInteractiveBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
-    private val router: Router,
-) : BottomSheetUnify(), PlayGameLeaderboardViewComponent.Listener,
+    private val router: Router
+) : BottomSheetUnify(),
+    PlayGameLeaderboardViewComponent.Listener,
     QuizOptionDetailViewComponent.Listener {
 
     private val sheetType
@@ -78,12 +79,12 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         leaderboardSheetView.addItemTouchListener(object :
-            RecyclerView.SimpleOnItemTouchListener() {
-            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                bottomSheet.updateScrollingChild(rv)
-                return false
-            }
-        })
+                RecyclerView.SimpleOnItemTouchListener() {
+                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                    bottomSheet.updateScrollingChild(rv)
+                    return false
+                }
+            })
         leaderboardSheetView.clearTopPadding()
 
         choiceDetailSheetView.addOnTouchListener { v, _, _, _, _ ->
@@ -102,7 +103,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                 }
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
         if (Type.mapFromString(sheetType) != Type.UNKNOWN) {
@@ -111,7 +112,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                 Type.LEADERBOARD -> setupLeaderBoard()
                 Type.REPORT -> setupReport()
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
             observeQuizDetail()
@@ -151,8 +152,9 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                         )
                     }
                     QuizDetailStateUiModel.Empty -> {
-                        if (isVisible)
+                        if (isVisible) {
                             dismiss()
+                        }
                     }
                 }
             }
@@ -177,7 +179,6 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         choiceDetailSheetView.hide()
     }
 
-
     private fun showLoadingChoiceDetail() {
         leaderboardSheetView.hide()
         choiceDetailSheetView.setLoading()
@@ -194,7 +195,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                     dataUiModel.choice.interactiveId,
-                    dataUiModel.choice.interactiveTitle,
+                    dataUiModel.choice.interactiveTitle
                 )
             }
             Type.REPORT -> {
@@ -202,14 +203,13 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                     dataUiModel.choice.interactiveId,
-                    dataUiModel.choice.interactiveTitle,
+                    dataUiModel.choice.interactiveTitle
                 )
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
-
     }
 
     private fun showErrorChoiceDetail() {
@@ -229,23 +229,23 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                     parentViewModel.interactiveId,
-                    parentViewModel.activeInteractiveTitle,
+                    parentViewModel.activeInteractiveTitle
                 )
             }
             Type.LEADERBOARD -> {
                 analytic.onClickCloseGameResultBottomsheet(
                     parentViewModel.channelId,
-                    parentViewModel.channelTitle,
+                    parentViewModel.channelTitle
                 )
             }
             Type.REPORT -> {
                 analytic.onClickCloseGameResultReport(
                     parentViewModel.channelId,
-                    parentViewModel.channelTitle,
+                    parentViewModel.channelTitle
                 )
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
         dismiss()
@@ -258,11 +258,11 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     ) {
         analytic.onClickChatWinnerIcon(
             parentViewModel.channelId,
-            parentViewModel.channelTitle,
+            parentViewModel.channelTitle
         )
         router.route(
             requireContext(),
-            "${ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG}${ADDITIONAL_ARG}",
+            "${ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG}$ADDITIONAL_ARG",
             winner.id,
             winner.topChatMessage
         )
@@ -272,7 +272,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         if (!isQuizDetail()) {
             analytic.onClickRefreshGameResult(
                 parentViewModel.channelId,
-                parentViewModel.channelTitle,
+                parentViewModel.channelTitle
             )
         }
         parentViewModel.submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
@@ -285,7 +285,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                     item.interactiveId,
-                    item.interactiveTitle,
+                    item.interactiveTitle
                 )
             }
             Type.REPORT -> {
@@ -293,11 +293,11 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                     item.interactiveId,
-                    item.interactiveTitle,
+                    item.interactiveTitle
                 )
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
         parentViewModel.submitAction(PlayBroadcastAction.ClickQuizChoiceOption(item))
@@ -318,7 +318,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     parentViewModel.channelTitle,
                     leaderboard.id,
                     leaderboard.title,
-                    leaderboard.reward,
+                    leaderboard.reward
                 )
             Type.REPORT ->
                 analytic.onImpressReportLeaderboard(
@@ -326,10 +326,10 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     parentViewModel.channelTitle,
                     leaderboard.id,
                     leaderboard.title,
-                    leaderboard.leaderBoardType.toString().lowercase(),
+                    leaderboard.leaderBoardType.toString().lowercase()
                 )
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -339,7 +339,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             parentViewModel.channelId,
             parentViewModel.channelTitle,
             parentViewModel.interactiveId,
-            parentViewModel.activeInteractiveTitle,
+            parentViewModel.activeInteractiveTitle
         )
         parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnChoiceDetail)
     }
@@ -357,27 +357,28 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         super.onDismiss(dialog)
     }
 
-
     companion object {
         private const val HEIGHT_MULTIPLIER = 0.65f
 
         private const val ARG_TYPE = "ARG_TYPE"
         private const val ARG_SIZE = "ARG_SIZE"
-        private const val ADDITIONAL_ARG = "&source=tx_ask_buyer"
+        private const val ADDITIONAL_ARG = "&source=${ApplinkConst.Chat.Source.SOURCE_ASK_BUYER}"
 
         private const val TAG = "PlayQuizDetailBottomSheet"
         private fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             type: Type,
-            size: Size,
+            size: Size
         ): PlayBroInteractiveBottomSheet {
             val oldInstance =
                 fragmentManager.findFragmentByTag(TAG) as? PlayBroInteractiveBottomSheet
-            return oldInstance ?: (fragmentManager.fragmentFactory.instantiate(
-                classLoader,
-                PlayBroInteractiveBottomSheet::class.java.name,
-            ) as PlayBroInteractiveBottomSheet).apply {
+            return oldInstance ?: (
+                fragmentManager.fragmentFactory.instantiate(
+                    classLoader,
+                    PlayBroInteractiveBottomSheet::class.java.name
+                ) as PlayBroInteractiveBottomSheet
+                ).apply {
                 arguments = Bundle().apply {
                     putString(ARG_TYPE, type.sheetType)
                     putString(ARG_SIZE, size.tag)
@@ -387,21 +388,21 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
 
         fun setupQuizDetail(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): PlayBroInteractiveBottomSheet {
             return getFragment(fragmentManager, classLoader, Type.QUIZ_DETAIL, Size.HALF)
         }
 
         fun setupOngoingLeaderboard(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): PlayBroInteractiveBottomSheet {
             return getFragment(fragmentManager, classLoader, Type.LEADERBOARD, Size.HALF)
         }
 
         fun setupReportLeaderboard(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): PlayBroInteractiveBottomSheet {
             return getFragment(fragmentManager, classLoader, Type.REPORT, Size.FULL)
         }

@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.ProductBundlingItemDiffUtilCallback
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -79,6 +79,7 @@ class ProductBundlingItemAdapter(
                 setupBundleItemProductNote(it.productNote)
                 setItemOnClickListener(it.orderId, it.orderDetailId, it.orderStatusId)
                 setupBundleItemButton(model.button, model.isProcessing)
+                setupImpressListener(model)
             }
         }
 
@@ -124,6 +125,7 @@ class ProductBundlingItemAdapter(
                         ) {
                             setupBundleItemButton(newItem.button, newItem.isProcessing)
                         }
+                        setupImpressListener(newItem)
                         containerProductInfo?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                         return
                     }
@@ -184,6 +186,12 @@ class ProductBundlingItemAdapter(
             }
         }
 
+        private fun setupImpressListener(model: ProductListUiModel.ProductUiModel) {
+            itemView.addOnImpressionListener(model.impressHolder) {
+                listener.onImpressed(model)
+            }
+        }
+
         private fun setItemOnClickListener(orderId: String, orderDetailId: String, orderStatusId: String) {
             itemView.setOnClickListener {
                 listener.onBundleItemClicked(orderId, orderDetailId, orderStatusId)
@@ -212,6 +220,7 @@ class ProductBundlingItemAdapter(
             fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductUiModel)
             fun onBundleItemSeeSimilarProducts(uiModel: ProductListUiModel.ProductUiModel)
             fun onBundleWarrantyClaim(uiModel: ProductListUiModel.ProductUiModel)
+            fun onImpressed(uiModel: ProductListUiModel.ProductUiModel)
         }
     }
 }
