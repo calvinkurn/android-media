@@ -14,6 +14,7 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidg
 import com.tokopedia.digital.home.presentation.listener.TodoWidgetItemListener
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.CATEGORY_TYPE
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.POSTPAIDREMINDER_TYPE
+import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.PREPAIDREMINDER_TYPE
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
@@ -68,15 +69,16 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
                     }
                 }
 
+
                 setCardHeightMatchParent()
-                setCardWidth(
-                    (widget.type.startsWith(POSTPAIDREMINDER_TYPE) || widget.type.startsWith(
-                        CATEGORY_TYPE
-                    ))
-                        && (todoWidgetItemListener.getListSize() > Int.ONE)
-                )
+                setCardWidth(smallCardType(widget) && (todoWidgetItemListener.getListSize() > Int.ONE))
             }
         }
+    }
+
+    private fun smallCardType(widget: RechargeHomepageSections.Widgets): Boolean {
+        return (widget.type.startsWith(POSTPAIDREMINDER_TYPE) || widget.type.startsWith(
+            PREPAIDREMINDER_TYPE) || widget.type.startsWith(CATEGORY_TYPE))
     }
 
     private fun renderImgIcon(
@@ -133,7 +135,7 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
             }
 
             if (widget.price.isEmpty()) {
-                renderPriceEmpty(binding)
+                renderPriceEmpty(widget, binding)
             } else {
                 renderPriceNotEmpty(binding)
             }
@@ -141,6 +143,7 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
     }
 
     private fun renderPriceEmpty(
+        widget: RechargeHomepageSections.Widgets,
         binding: ViewRechargeHomeTodoWidgetAutopayBinding
     ) {
         with(binding) {
@@ -151,13 +154,24 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
             labelParams.bottomToBottom = tgFavoriteNumberTodoWidget.id
             iconThreeButtonTodoWidget.layoutParams = labelParams
 
-            tgFavoriteNumberTodoWidget.apply {
-                setMargin(
-                    getDimens(unifyprinciplesR.dimen.unify_space_0),
-                    getDimens(unifyprinciplesR.dimen.unify_space_32),
-                    getDimens(unifyprinciplesR.dimen.unify_space_0),
-                    getDimens(unifyprinciplesR.dimen.unify_space_0)
-                )
+            if (!smallCardType(widget)) {
+                tgFavoriteNumberTodoWidget.apply {
+                    setMargin(
+                        getDimens(unifyprinciplesR.dimen.unify_space_0),
+                        getDimens(unifyprinciplesR.dimen.unify_space_32),
+                        getDimens(unifyprinciplesR.dimen.unify_space_0),
+                        getDimens(unifyprinciplesR.dimen.unify_space_0)
+                    )
+                }
+            } else {
+                tgFavoriteNumberTodoWidget.apply {
+                    setMargin(
+                        getDimens(unifyprinciplesR.dimen.unify_space_0),
+                        getDimens(unifyprinciplesR.dimen.unify_space_8),
+                        getDimens(unifyprinciplesR.dimen.unify_space_0),
+                        getDimens(unifyprinciplesR.dimen.unify_space_0)
+                    )
+                }
             }
         }
     }
