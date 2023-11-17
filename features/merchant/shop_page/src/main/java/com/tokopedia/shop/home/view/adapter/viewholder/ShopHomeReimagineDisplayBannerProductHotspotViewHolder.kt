@@ -218,11 +218,11 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
 
     private fun initRecyclerView(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel) {
         val ratio = uiModel.header.ratio.takeIf { it.isNotEmpty() } ?: DEFAULT_RATIO
-        carouselLayoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true, false)
-        carouselLayoutManager?.setPostLayoutListener(CarouselZoomPostLayoutListener())
-        carouselLayoutManager?.maxVisibleItems = Int.ONE
-        carouselLayoutManager?.removeOnItemSelectionListener(itemSelectListener)
-        carouselLayoutManager?.addOnItemSelectionListener(itemSelectListener)
+        val layoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, isCircularRvLayout(uiModel), false)
+        layoutManager.setPostLayoutListener(CarouselZoomPostLayoutListener())
+        layoutManager.maxVisibleItems = Int.ONE
+        layoutManager.removeOnItemSelectionListener(itemSelectListener)
+        layoutManager.addOnItemSelectionListener(itemSelectListener)
         recyclerViewProductHotspot?.apply {
             isNestedScrollingEnabled = false
             (this@apply.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ratio
@@ -250,6 +250,10 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
                 uiModel?.data?.size.orZero()
             ) { currentSelectedItemPositionWhenUserTouchItem }
         }
+    }
+
+    private fun isCircularRvLayout(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel): Boolean {
+        return uiModel.data.size > 2
     }
 
     private fun updateRecyclerViewHeightBasedOnFirstChild() {

@@ -60,7 +60,9 @@ abstract class IrisDb : RoomDatabase() {
 
         private fun buildDatabase(context: Context): IrisDb {
             return Room.databaseBuilder(context, IrisDb::class.java, DATABASE_NAME)
-                .addMigrations(MIGRATION_1_2).addMigrations(MIGRATION_2_3).build()
+                .addMigrations(MIGRATION_1_2).addMigrations(MIGRATION_2_3)
+                .fallbackToDestructiveMigration()
+                .fallbackToDestructiveMigrationOnDowngrade().build()
         }
     }
 }

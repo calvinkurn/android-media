@@ -21,7 +21,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil.setElement
-import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerViewHolder
 import com.tokopedia.shop.home.view.model.*
@@ -105,7 +105,7 @@ open class ShopHomeAdapter(
         holder: AbstractViewHolder<*>,
         position: Int
     ) {
-        if(anyFestivityOnShopHomeWidget() && data[position] == firstNonFestivityUiModel()){
+        if(anyFestivityOnShopHomeWidget() && data.getOrNull(position) == firstNonFestivityUiModel()){
             holder.itemView.setMargin(
                 holder.itemView.marginLeft,
                 DEFAULT_MARGIN_ON_FESTIVITY_BORDER.toPx(),
@@ -328,7 +328,7 @@ open class ShopHomeAdapter(
 
     fun pauseSliderBannerAutoScroll() {
         val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
-            it.name == WidgetName.SLIDER_BANNER || it.name == WidgetName.BMGM_BANNER
+            it.name == WidgetNameEnum.SLIDER_BANNER.value || it.name == WidgetNameEnum.BMGM_BANNER.value
         }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.pauseTimer()
@@ -338,7 +338,7 @@ open class ShopHomeAdapter(
 
     fun resumeSliderBannerAutoScroll() {
         val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
-            it.name == WidgetName.SLIDER_BANNER || it.name == WidgetName.BMGM_BANNER
+            it.name == WidgetNameEnum.SLIDER_BANNER.value || it.name == WidgetNameEnum.BMGM_BANNER.value
         }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.resumeTimer()

@@ -1276,5 +1276,4 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         startActivityForResult(intent, REQUEST_CODE_PARTNER_KYC);
     }
 
-
 }

@@ -16,7 +16,7 @@ android {
     namespace 'com.tokopedia.journeydebugger'
     testNamespace 'com.tokopedia.journeydebugger.test'
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
     }
     buildFeatures {
         viewBinding true
@@ -43,7 +43,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     api rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 

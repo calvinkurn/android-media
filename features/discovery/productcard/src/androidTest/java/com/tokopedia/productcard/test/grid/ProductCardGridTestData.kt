@@ -382,8 +382,9 @@ private fun testMixedVariantWithLabelPriceAndSlashPriceReposition(): ProductCard
         R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewDiscount to isDisplayedWithText(productCardModel.discountPercentage),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.labelPriceReposition to isDisplayedWithText(labelPrice.title),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
