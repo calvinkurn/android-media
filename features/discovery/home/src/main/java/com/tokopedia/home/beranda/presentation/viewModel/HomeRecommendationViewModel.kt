@@ -94,10 +94,11 @@ class HomeRecommendationViewModel @Inject constructor(
         count: Int,
         page: Int,
         locationParam: String = "",
-        sourceType: String
+        sourceType: String,
+        existingRecommendationData: List<Visitable<HomeRecommendationTypeFactoryImpl>>
     ) {
         if (HomeRecommendationController.isUsingRecommendationCard()) {
-            fetchNextHomeRecommendationCard(tabName, page, locationParam, sourceType)
+            fetchNextHomeRecommendationCard(tabName, page, locationParam, sourceType, existingRecommendationData)
         } else {
             loadNextData(tabName, recommendationId, count, page, locationParam, sourceType)
         }
@@ -140,57 +141,54 @@ class HomeRecommendationViewModel @Inject constructor(
         tabName: String,
         page: Int,
         locationParam: String,
-        sourceType: String
+        sourceType: String,
+        existingRecommendationData: List<Visitable<HomeRecommendationTypeFactoryImpl>>
     ) {
-        val homeRecommendationCardStateValue = homeRecommendationCardState.value
-        if (homeRecommendationCardStateValue is HomeRecommendationCardState.Success) {
-            val existingRecommendationData =
-                homeRecommendationCardStateValue.data.homeRecommendations.toMutableList()
+        val existingRecommendationDataMutableList = existingRecommendationData.toMutableList()
 
-            existingRecommendationData.remove(buttonRetryUiModel)
+        existingRecommendationDataMutableList.remove(buttonRetryUiModel)
 
-            _homeRecommendationCardState.tryEmit(
-                HomeRecommendationCardState.LoadingMore(
-                    HomeRecommendationDataModel(
-                        homeRecommendations = existingRecommendationData.apply {
-                            add(loadMoreModel)
-                        }.toList()
-                    )
+        _homeRecommendationCardState.tryEmit(
+            HomeRecommendationCardState.LoadingMore(
+                HomeRecommendationDataModel(
+                    homeRecommendations = existingRecommendationDataMutableList.apply {
+                        add(loadMoreModel)
+                    }.toList()
                 )
             )
+        )
 
-            launchCatchError(coroutineContext, block = {
-                val result = getHomeRecommendationCardUseCase.get().execute(
-                    page,
-                    tabName,
-                    sourceType,
-                    locationParam
-                )
+        launchCatchError(coroutineContext, block = {
+            val result = getHomeRecommendationCardUseCase.get().execute(
+                page,
+                tabName,
+                sourceType,
+                locationParam
+            )
 
-                existingRecommendationData.remove(loadMoreModel)
+            existingRecommendationDataMutableList.remove(loadMoreModel)
 
-                existingRecommendationData.addAll(result.homeRecommendations)
+            existingRecommendationDataMutableList.addAll(result.homeRecommendations)
 
-                val newHomeRecommendationDataModel = HomeRecommendationDataModel(
-                    homeRecommendations = existingRecommendationData.toList(),
-                    isHasNextPage = result.isHasNextPage
-                )
+            val newHomeRecommendationDataModel = HomeRecommendationDataModel(
+                homeRecommendations = existingRecommendationData.toList(),
+                isHasNextPage = result.isHasNextPage
+            )
+
+            _homeRecommendationCardState.emit(
+                HomeRecommendationCardState.Success(newHomeRecommendationDataModel)
+            )
+        }, onError = {
+                existingRecommendationDataMutableList.remove(loadMoreModel)
+                existingRecommendationDataMutableList.add(buttonRetryUiModel)
 
                 _homeRecommendationCardState.emit(
-                    HomeRecommendationCardState.Success(newHomeRecommendationDataModel)
-                )
-            }, onError = {
-                    existingRecommendationData.remove(loadMoreModel)
-                    existingRecommendationData.add(buttonRetryUiModel)
-
-                    _homeRecommendationCardState.emit(
-                        HomeRecommendationCardState.FailNextPage(
-                            HomeRecommendationDataModel(existingRecommendationData.toList()),
-                            throwable = it
-                        )
+                    HomeRecommendationCardState.FailNextPage(
+                        HomeRecommendationDataModel(existingRecommendationData.toList()),
+                        throwable = it
                     )
-                })
-        }
+                )
+            })
     }
 
     private fun loadInitialPage(
@@ -525,7 +523,8 @@ class HomeRecommendationViewModel @Inject constructor(
             val homeRecommendationItemList =
                 homeRecommendationList.filterIsInstance<HomeRecommendationItemDataModel>()
 
-            val recommendationItem = homeRecommendationItemList.find { it.recommendationProductItem.id == id }
+            val recommendationItem =
+                homeRecommendationItemList.find { it.recommendationProductItem.id == id }
 
             recommendationItem?.let {
                 launch(coroutineContext) {

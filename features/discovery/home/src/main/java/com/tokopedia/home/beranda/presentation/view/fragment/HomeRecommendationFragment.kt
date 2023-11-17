@@ -278,7 +278,6 @@ class HomeRecommendationFragment :
 
                             is HomeRecommendationCardState.FailNextPage -> {
                                 adapter.submitList(it.data.homeRecommendations)
-                                showToasterError()
                             }
 
                             is HomeRecommendationCardState.LoadingMore -> {
@@ -349,13 +348,15 @@ class HomeRecommendationFragment :
             object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     currentPage = page
+                    val existingRecommendationData = adapter.currentList
                     viewModel.fetchNextHomeRecommendation(
                         tabName,
                         recomId,
                         DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
                         page,
                         getLocationParamString(),
-                        sourceType
+                        sourceType,
+                        existingRecommendationData
                     )
                 }
             }
@@ -616,15 +617,7 @@ class HomeRecommendationFragment :
     }
 
     override fun onRetryGetNextProductRecommendationData() {
-        val currentPage = endlessRecyclerViewScrollListener?.currentPage ?: currentPage
-        viewModel.fetchNextHomeRecommendation(
-            tabName,
-            recomId,
-            DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
-            currentPage,
-            getLocationParamString(),
-            sourceType
-        )
+        endlessRecyclerViewScrollListener?.loadMoreNextPage()
     }
 
     private fun initListeners() {
