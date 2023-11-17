@@ -20,10 +20,10 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.databinding.ItemPdpShimmerShipmentBinding
-import com.tokopedia.product.detail.databinding.ItemShipmentBinding
+import com.tokopedia.product.detail.databinding.ItemShipmentOldBinding
 import com.tokopedia.product.detail.databinding.ItemShipmentOptionBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentBinding
-import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
+import com.tokopedia.product.detail.databinding.ViewShipmentErrorOldBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentPlusBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.isInflated
@@ -40,7 +40,7 @@ class ShipmentViewHolder(
 ) : AbstractViewHolder<ProductShipmentDataModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_shipment
+        val LAYOUT = R.layout.item_shipment_old
 
         private const val TIPS_TYPE = "tips"
         private const val TICKER_INFO_TYPE = "info"
@@ -51,7 +51,7 @@ class ShipmentViewHolder(
     }
 
     private val context = view.context
-    private val binding = ItemShipmentBinding.bind(view)
+    private val binding = ItemShipmentOldBinding.bind(view)
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null
 
@@ -62,7 +62,7 @@ class ShipmentViewHolder(
     }
 
     private val viewErrorDelegate = lazy {
-        ViewShipmentErrorBinding.bind(
+        ViewShipmentErrorOldBinding.bind(
             binding.pdpShipmentStateError.inflate()
         )
     }
@@ -74,7 +74,7 @@ class ShipmentViewHolder(
     }
 
     private val viewMain: ViewShipmentBinding by viewMainDelegate
-    private val viewError: ViewShipmentErrorBinding by viewErrorDelegate
+    private val viewError: ViewShipmentErrorOldBinding by viewErrorDelegate
     private val viewLoading: ItemPdpShimmerShipmentBinding by viewLoadingDelegate
     private val viewShipmentPlus: ViewShipmentPlusBinding by lazyThreadSafetyNone {
         ViewShipmentPlusBinding.bind(viewMain.vsShipmentPlus.inflate())

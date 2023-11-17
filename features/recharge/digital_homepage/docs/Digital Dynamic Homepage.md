@@ -35,13 +35,13 @@ Digital Homepage is a page containing a list of digital products. There are seve
 
 | Recharge Subhomepage | Travel Subhomepage | Streaming Subhomepage |
 | --- | --- | --- |
-| ![](res/Screenshot_20230111_085119.png)<br/> | ![](res/Screenshot_20230111_085032.png)<br/> | ![](res/Screenshot_20230111_085507.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/Screenshot_20230111_085119.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/Screenshot_20230111_085032.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/Screenshot_20230111_085507.png)<br/> |
 
 ## Tech Design
 
 ### How Dynamic sub-homepage works?
 
-![](res/Untitled Diagram.png)
+![](https://docs-android.tokopedia.net/images/docs/digital_homepage/Untitled Diagram.png)
 
 Visit diagram here: <https://drive.google.com/file/d/148hmVKe7eCGqurSMEef6XyIcgM-gBFok/view?usp=sharing> 
 
@@ -54,7 +54,7 @@ Visit diagram here: <https://drive.google.com/file/d/148hmVKe7eCGqurSMEef6XyIcgM
 
 ### List of Dynamic sub-homepage’s component
 
-![](res/image-20210112-045934.png)
+![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210112-045934.png)
 
 Tech Design diagram: <https://drive.google.com/file/d/1IYPgRqP5taKQr6HUVgvZ512dtZ8iCSAF/view?usp=sharing> 
 
@@ -66,39 +66,39 @@ Tech Design diagram: <https://drive.google.com/file/d/1IYPgRqP5taKQr6HUVgvZ512dt
 
 | **No** | **TEMPLATE** | **ViewHolder** | **Screenshot** |
 | --- | --- | --- | --- |
-| 1 | `TOP_BANNER` | `RechargeHomepageBannerViewHolder` | ![](res/image-20210520-100242.png)<br/> |
-| 2 | `TOP_BANNER_EMPTY` | `RechargeHomepageBannerEmptyViewHolder` | ![](res/image-20210520-100950.png)<br/> |
-| 3 | `TOP_ICONS` | `RechargeHomepageFavoriteViewHolder` | ![](res/image-20210520-093244.png)<br/> |
-| 4 | `DYNAMIC_ICONS` | `RechargeHomepageCategoryViewHolder` | ![](res/image-20210520-093256.png)<br/> |
-| 5 | `DUAL_ICONS` | `RechargeHomepageDualIconsViewHolder` | ![](res/image-20210520-093748.png)<br/> |
-| 6 | `URGENCY_WIDGETS` | `ReminderWidgetViewHolder` | ![](res/image-20210520-114955.png)<br/> |
-| 7 | `VIDEO_HIGHLIGHT` | `RechargeHomepageVideoHighlightViewHolder` | ![](res/image-20210520-102120.png)<br/> |
-| 8 | `SINGLE_BANNER` | `RechargeHomepageSingleBannerViewHolder` | ![](res/image-20210520-103143.png)<br/> |
-| 9 | `COUNTDOWN_SINGLE_BANNER` | `RechargeHomepageSingleBannerViewHolder`notes: - the widget will automatically disappear if the countdown time is expired<br/> | ![](res/image-20210520-103143.png)<br/> |
-| 10 | `DUAL_BANNERS` | `RechargeHomepageDualBannerViewHolder` | ![](res/image-20210520-103507.png)<br/> |
-| 11 | `LEGO_BANNERS` | `DynamicLegoBannerViewHolder` | ![](res/image-20210520-115450.png)<br/> |
-| 12 | `PRODUCT_CARD_ROW` | `RechargeHomepageProductCardsViewHolder` | ![](res/image-20210520-104103.png)<br/>New UI in v.3.131 above:![](res/image-20210623-110014.png)<br/> |
-| 13 | `PRODUCT_CARD_ROW_1X1` | `RechargeHomepageProductCardsViewHolder` | ![](res/image-20210623-110034.png)<br/>using the same view holder with `PRODUCT_CARD_ROW` |
-| 14 | `COUNTDOWN_PRODUCT_BANNER` | `RechargeHomepageProductBannerViewHolder` | ![](res/image-20210520-105628.png)<br/> |
-| 15 | `PRODUCT_CARD_CUSTOM_BANNER` | `RechargeHomepageProductCardCustomBannerViewHolder` | ![](res/image-20210520-110848.png)<br/> |
-| 16 | `MINI_CAROUSELL` | `RechargeHomepageCarousellViewHolder` | ![](res/image-20210520-115830.png)<br/> |
-| 17 | `SWIPE_BANNER` | `RechargeHomepageSwipeBannerViewHolder` | ![](res/ScreenShot20230217at184109.png)<br/> |
-| 18 | `PRODUCT_CARD_DGU` | `RechargeHomepageProductCardUnifyViewHolder` | ![](res/ScreenShot20230217at184630.png)<br/> |
-| 19 | `3_ICONS` | `RechargeHomepageThreeIconsViewHolder` | ![](res/ScreenShot20230215at195224.png)<br/> |
-| 20 | `PRODUCT_CARD_CUSTOM_BANNER_V2` | `RechargeHomepageProductCardCustomBannerV2ViewHolder` | ![](res/ScreenShot20230215at195147.png)<br/> |
-| 21 | `2X2_BANNER` | `RechargeHomepageRecommendationBannerViewHolder` | ![](res/ScreenShot20230215at195251.png)<br/> |
-| 22 | `PRODUCT_CARD_CUSTOM_LAST_ITEM` | `RechargeHomepageProductCardCustomLastItemViewHolder` | ![](res/ScreenShot20230215at195112.png)<br/> |
-| 23 | `OFFERING_WIDGET` | `RechargeHomepageOfferingWidgetViewHolder` | ![](res/ScreenShot20230215at194747.png)<br/> |
-| 24 | `BILL_WIDGET` | `RechargeHomepageMyBillsWidgetViewHolder` | ![](res/ScreenShot20230215at194700.png)<br/> |
-| 25 | `MYBILLS_ENTRYPOINT` | `RechargeHomepageMyBillsEntryPointWidgetViewHolder` | ![](res/ScreenShot20230215at194645.png)<br/> |
-| 26 | `3_BUTTONS_MYBILLS_ENTRYPOINT` | `RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder` | ![](res/ScreenShot20230522at125551.png)<br/> |
-| - | For loading purposes | `RechargeHomepageLoadingViewHolder` | ![](res/image-20210520-115856.png)<br/> |
+| 1 | `TOP_BANNER` | `RechargeHomepageBannerViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-100242.png)<br/> |
+| 2 | `TOP_BANNER_EMPTY` | `RechargeHomepageBannerEmptyViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-100950.png)<br/> |
+| 3 | `TOP_ICONS` | `RechargeHomepageFavoriteViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-093244.png)<br/> |
+| 4 | `DYNAMIC_ICONS` | `RechargeHomepageCategoryViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-093256.png)<br/> |
+| 5 | `DUAL_ICONS` | `RechargeHomepageDualIconsViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-093748.png)<br/> |
+| 6 | `URGENCY_WIDGETS` | `ReminderWidgetViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-114955.png)<br/> |
+| 7 | `VIDEO_HIGHLIGHT` | `RechargeHomepageVideoHighlightViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-102120.png)<br/> |
+| 8 | `SINGLE_BANNER` | `RechargeHomepageSingleBannerViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-103143.png)<br/> |
+| 9 | `COUNTDOWN_SINGLE_BANNER` | `RechargeHomepageSingleBannerViewHolder`notes: - the widget will automatically disappear if the countdown time is expired<br/> | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-103143.png)<br/> |
+| 10 | `DUAL_BANNERS` | `RechargeHomepageDualBannerViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-103507.png)<br/> |
+| 11 | `LEGO_BANNERS` | `DynamicLegoBannerViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-115450.png)<br/> |
+| 12 | `PRODUCT_CARD_ROW` | `RechargeHomepageProductCardsViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-104103.png)<br/>New UI in v.3.131 above:![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210623-110014.png)<br/> |
+| 13 | `PRODUCT_CARD_ROW_1X1` | `RechargeHomepageProductCardsViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210623-110034.png)<br/>using the same view holder with `PRODUCT_CARD_ROW` |
+| 14 | `COUNTDOWN_PRODUCT_BANNER` | `RechargeHomepageProductBannerViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-105628.png)<br/> |
+| 15 | `PRODUCT_CARD_CUSTOM_BANNER` | `RechargeHomepageProductCardCustomBannerViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-110848.png)<br/> |
+| 16 | `MINI_CAROUSELL` | `RechargeHomepageCarousellViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-115830.png)<br/> |
+| 17 | `SWIPE_BANNER` | `RechargeHomepageSwipeBannerViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShot20230217at184109.png)<br/> |
+| 18 | `PRODUCT_CARD_DGU` | `RechargeHomepageProductCardUnifyViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShot20230217at184630.png)<br/> |
+| 19 | `3_ICONS` | `RechargeHomepageThreeIconsViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShot20230215at195224.png)<br/> |
+| 20 | `PRODUCT_CARD_CUSTOM_BANNER_V2` | `RechargeHomepageProductCardCustomBannerV2ViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShot20230215at195147.png)<br/> |
+| 21 | `2X2_BANNER` | `RechargeHomepageRecommendationBannerViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShot20230215at195251.png)<br/> |
+| 22 | `PRODUCT_CARD_CUSTOM_LAST_ITEM` | `RechargeHomepageProductCardCustomLastItemViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShot20230215at195112.png)<br/> |
+| 23 | `OFFERING_WIDGET` | `RechargeHomepageOfferingWidgetViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShot20230215at194747.png)<br/> |
+| 24 | `BILL_WIDGET` | `RechargeHomepageMyBillsWidgetViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShot20230215at194700.png)<br/> |
+| 25 | `MYBILLS_ENTRYPOINT` | `RechargeHomepageMyBillsEntryPointWidgetViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShot20230215at194645.png)<br/> |
+| 26 | `3_BUTTONS_MYBILLS_ENTRYPOINT` | `RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShot20230522at125551.png)<br/> |
+| - | For loading purposes | `RechargeHomepageLoadingViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-115856.png)<br/> |
 
 ### How sub-homepage’s search bar works?
 
 - Happy Flow
 
-![](res/image-20210520-083934.png)
+![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-083934.png)
 
 ## API List
 

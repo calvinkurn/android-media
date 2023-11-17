@@ -10,7 +10,8 @@ import kotlinx.parcelize.Parcelize
 data class EditorParam(
     private var ratioList: ArrayList<ImageRatioType> = createDefaultRatioList(),
     private var editorToolsList: ArrayList<Int> = createDefaultEditorTools(),
-    private var autoCropRatio: ImageRatioType? = null
+    private var autoCropRatio: ImageRatioType? = null,
+    private var customCtaText: String? = null
 ) : Parcelable {
     private var addLogoIndex = 0
 
@@ -47,6 +48,11 @@ data class EditorParam(
     fun ratioListAdd1to1() = ratioList.add(ImageRatioType.RATIO_1_1)
     fun ratioListAdd3to4() = ratioList.add(ImageRatioType.RATIO_3_4)
     fun ratioListAdd2to1() = ratioList.add(ImageRatioType.RATIO_2_1)
+
+    fun getCustomCtaText() = customCtaText
+    fun setCustomCtaText(text: String) {
+        customCtaText = text
+    }
 
     private fun setAutoCropRatio(ratio: ImageRatioType) {
         autoCropRatio = ratio

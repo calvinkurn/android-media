@@ -1082,7 +1082,17 @@ class ShopPageReimagineHeaderFragment :
     }
 
     private fun getShopShareAndOperationalHourStatusData() {
-        shopHeaderViewModel?.getShopShareAndOperationalHourStatusData(shopId, shopDomain ?: "", isRefresh)
+        shopHeaderViewModel?.getShopShareAndOperationalHourStatusData(
+            shopId,
+            shopDomain.orEmpty(),
+            page = START_PAGE,
+            itemPerPage = ShopUtil.getProductPerPage(context),
+            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
+            keyword = "",
+            etalaseId = "",
+            widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
+            isRefresh
+        )
     }
 
     private fun getSellerPlayWidget() {
@@ -1370,11 +1380,6 @@ class ShopPageReimagineHeaderFragment :
         shopHeaderViewModel?.getNewShopPageTabData(
             shopId = shopId,
             shopDomain = shopDomain.orEmpty(),
-            page = START_PAGE,
-            itemPerPage = ShopUtil.getProductPerPage(context),
-            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
-            keyword = "",
-            etalaseId = "",
             isRefresh = isRefresh,
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
@@ -1417,7 +1422,7 @@ class ShopPageReimagineHeaderFragment :
                 ),
                 ShopPageColorSchema.ColorSchemaName.DIVIDER to ShopUtil.getColorHexString(
                     it,
-                    unifyprinciplesR.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN400_32
                 ),
                 ShopPageColorSchema.ColorSchemaName.NAV_TEXT_ACTIVE to ShopUtil.getColorHexString(
                     it,
@@ -1993,9 +1998,6 @@ class ShopPageReimagineHeaderFragment :
                         isEnableDirectPurchase = getIsEnableDirectPurchase(headerData),
                         isShouldShowFeed = isShowFeed
                     )
-                }
-                shopHeaderViewModel?.productListData?.let { productListData ->
-                    setInitialProductListData(productListData)
                 }
                 setShopId(shopId)
                 setUserId(userId)

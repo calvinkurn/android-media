@@ -42,9 +42,9 @@ Handphone Trade-In Program is a **Make It Happen** service where Tokopedia user 
 - MVVM, Kotlin and Coroutines  
   Here is the flow diagram for how tradein 3.0 works
 
-![](res/image-20220323-065306.png)
+![](https://docs-android.tokopedia.net/images/docs/tradein/image-20220323-065306.png)
 
-![](res/image-20220323-065337.png)
+![](https://docs-android.tokopedia.net/images/docs/tradein/image-20220323-065337.png)
 
 ## How-to
 
@@ -75,23 +75,23 @@ testing page link - `tokopedia://product/775243897`
 
 money in - `tokopedia://money_in/device_validation`
 
-![](res/Screenshot_1648019267.png)
+![](https://docs-android.tokopedia.net/images/docs/tradein/Screenshot_1648019267.png)
 
-![](res/Screenshot_1648019272.png)
+![](https://docs-android.tokopedia.net/images/docs/tradein/Screenshot_1648019272.png)
 
-![](res/Screenshot_1648019279.png)
+![](https://docs-android.tokopedia.net/images/docs/tradein/Screenshot_1648019279.png)
 
-![](res/Screenshot_1648019282.png)
+![](https://docs-android.tokopedia.net/images/docs/tradein/Screenshot_1648019282.png)
 
-![](res/Screenshot_1648019706.png)
+![](https://docs-android.tokopedia.net/images/docs/tradein/Screenshot_1648019706.png)
 
-![](res/Screenshot_1648019709.png)
+![](https://docs-android.tokopedia.net/images/docs/tradein/Screenshot_1648019709.png)
 
-![](res/Screenshot_1648019713.png)
+![](https://docs-android.tokopedia.net/images/docs/tradein/Screenshot_1648019713.png)
 
-![](res/Screenshot_1648019716.png)
+![](https://docs-android.tokopedia.net/images/docs/tradein/Screenshot_1648019716.png)
 
-![](res/Screenshot_1648019720.png)
+![](https://docs-android.tokopedia.net/images/docs/tradein/Screenshot_1648019720.png)
 
 After clicking Mulai Tes HP, user is directed to laku6 functional test and from there after completion we get a broadcast from sdk to send user to checkout.
 

@@ -69,7 +69,8 @@ class ProductMediaViewHolder(
             componentTrackDataModel = getComponentTrackData(element),
             initialScrollPosition = scrollPosition,
             containerType = element.containerType,
-            recommendation = element.recommendation
+            recommendation = element.recommendation,
+            isPrefetch = element.isPrefetch
         )
     }
 
