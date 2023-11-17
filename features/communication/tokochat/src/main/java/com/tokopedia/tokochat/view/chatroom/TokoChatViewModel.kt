@@ -686,10 +686,10 @@ class TokoChatViewModel @Inject constructor(
             try {
                 getTkpdOrderIdUseCase(gojekOrderId).collectLatest {
                     tkpdOrderId = it
-                    _isTkpdOrderStatus.tryEmit(true)
+                    _isTkpdOrderStatus.emit(true)
                 }
             } catch (throwable: Throwable) {
-                _isTkpdOrderStatus.tryEmit(false)
+                _isTkpdOrderStatus.emit(false)
                 _error.value = Pair(throwable, ::translateGojekOrderId.name)
             }
         }
