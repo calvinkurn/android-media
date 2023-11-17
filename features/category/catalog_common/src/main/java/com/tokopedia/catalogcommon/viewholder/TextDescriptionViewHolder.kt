@@ -28,7 +28,7 @@ class TextDescriptionViewHolder(
     override fun bind(element: TextDescriptionUiModel) {
         binding?.let {
             it.tgpTextWidgetHighlight.showWithCondition(element.item.highlight.isNotEmpty())
-            if (element.layoutVersion == LAYOUT_4TH_VERSION){
+            if (element.item.highlight.isNotEmpty()){
                 it.tgpTextWidgetHighlight.text = element.item.highlight
                 it.tgpTextWidgetTitle.text = element.item.title
                 it.tgpTextWidgetDescription.text = element.item.description
