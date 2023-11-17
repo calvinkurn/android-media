@@ -428,13 +428,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             }
             inActiveViewRightIcon?.visibility = View.GONE
             inActiveViewLeftImage?.visibility = View.VISIBLE
-            inActiveViewWording?.setWeight(
-                if (enableNewInterface) {
-                    Typography.BOLD
-                } else {
-                    Typography.REGULAR
-                }
-            )
+            inActiveViewWording?.setWeight(Typography.REGULAR)
             inActiveViewWording?.visibility = View.VISIBLE
             if (switcherView?.displayedChild != 1) {
                 // only trigger animation if currently showing different view
