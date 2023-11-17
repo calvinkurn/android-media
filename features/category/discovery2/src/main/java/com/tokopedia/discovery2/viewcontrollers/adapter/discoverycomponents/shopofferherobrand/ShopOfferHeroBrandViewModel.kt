@@ -116,7 +116,7 @@ class ShopOfferHeroBrandViewModel(
         }
     }
 
-    private fun setHeader() {
+    fun getHeader() {
         _header.value = component.getPropertyHeader()
     }
 
@@ -126,7 +126,6 @@ class ShopOfferHeroBrandViewModel(
             block = {
                 productCardsUseCase?.loadFirstPageComponents(component.id, component.pageEndPoint, PRODUCT_PER_PAGE)
                 component.shouldRefreshComponent = null
-                setHeader()
                 setProductsList(
                     onEmptyListener = {
                         _productList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))

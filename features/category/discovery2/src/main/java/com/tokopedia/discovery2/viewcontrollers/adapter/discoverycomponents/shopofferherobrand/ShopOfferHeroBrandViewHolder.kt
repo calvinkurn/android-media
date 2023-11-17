@@ -393,7 +393,12 @@ class ShopOfferHeroBrandViewHolder(
     }
 
     private fun handleSuccessState(components: ArrayList<ComponentsItem>) {
-        if (components.isNotEmpty()) mAdapter.setDataList(components) else binding?.root?.hide()
+        if (components.isNotEmpty()) {
+            mAdapter.setDataList(components)
+            viewModel?.getHeader()
+        } else {
+            binding?.root?.hide()
+        }
     }
 
     private fun handleFailState() {
