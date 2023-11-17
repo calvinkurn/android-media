@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils.Companion.getParentPosition
 import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.data.play.DiscoPlayWidgetType
 import com.tokopedia.discovery2.data.producthighlight.DiscoveryOCSDataModel
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -467,11 +468,11 @@ open class DiscoveryAnalytics(
         val videoType = if (item.video.isLive) "live" else "vod"
 
         return "$sourceIdentifier - $videoType - ${item.partner.id} - ${item.channelId} - " +
-            "$channelPositionInList - $widgetPosition - $isAutoPlay - ${item.recommendationType}"
+            "$channelPositionInList - ${widgetPosition + 1} - $isAutoPlay - ${item.recommendationType}"
     }
 
     private fun getPlayComponentName(widgetType: String?, mobileBanner: String?): String {
-        return if (widgetType == "DISCO_PAGE_V2") {
+        return if (widgetType == DiscoPlayWidgetType.DISCO_PAGE_V2.name) {
             PLAY_CHANNEL_V2_TYPE
         } else if (!mobileBanner.isNullOrEmpty()) {
             PLAY_BANNER_TYPE
