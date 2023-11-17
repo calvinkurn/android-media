@@ -68,7 +68,8 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                         setupTitleImage(data)
                         setupBackgroundImage(data)
                         setupLihat(data, componentItem, backgroundImageView.isVisible)
-                        setupTextColours(data.fontColor, backgroundImageView.isVisible)
+                        setupTitleTextColours(data.fontColor, backgroundImageView.isVisible)
+                        setupSubtitleTextColours(backgroundImageView.isVisible)
                         setupTimer(data, backgroundImageView.isVisible)
                         setupPadding(backgroundImageView.isVisible, titleImageViewParent.isVisible)
                     }
@@ -149,15 +150,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         lihatSubTitleTextView.setTextAndCheckShow(subtitle)
     }
 
-    private fun setupTextColours(fontColor: String?, backgroundPresent: Boolean) {
-        if (!fontColor.isNullOrEmpty()) {
-            lihatTitleTextView.setTextColor(Color.parseColor(fontColor))
-        } else {
-            setupDefaultColor(backgroundPresent)
-        }
-    }
-
-    private fun setupDefaultColor(backgroundPresent: Boolean) {
+    private fun setupTitleTextColours(fontColor: String?, backgroundPresent: Boolean) {
         fragment.context?.let {
             if (backgroundPresent) {
                 lihatTitleTextView.setTextColor(
@@ -166,6 +159,24 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                         R.color.discovery2_dms_white
                     )
                 )
+            } else {
+                if (!fontColor.isNullOrEmpty()) {
+                    lihatTitleTextView.setTextColor(Color.parseColor(fontColor))
+                } else {
+                    lihatTitleTextView.setTextColor(
+                        MethodChecker.getColor(
+                            it,
+                            unifyprinciplesR.color.Unify_NN950_96
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setupSubtitleTextColours(backgroundPresent: Boolean) {
+        fragment.context?.let {
+            if (backgroundPresent) {
                 lihatSubTitleTextView.setTextColor(
                     MethodChecker.getColor(
                         it,
@@ -173,12 +184,6 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                     )
                 )
             } else {
-                lihatTitleTextView.setTextColor(
-                    MethodChecker.getColor(
-                        it,
-                        unifyprinciplesR.color.Unify_NN950_96
-                    )
-                )
                 lihatSubTitleTextView.setTextColor(
                     MethodChecker.getColor(
                         it,
