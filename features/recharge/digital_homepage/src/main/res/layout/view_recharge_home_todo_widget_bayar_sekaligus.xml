@@ -54,7 +54,6 @@
         app:icon_color_night_enable="@color/Unify_NN0"
         app:layout_constraintTop_toBottomOf="@id/tg_title_todo_widget"
         app:layout_constraintEnd_toEndOf="@id/img_todo_widget_background"
-        android:layout_marginEnd="8dp"
         android:padding="4dp"
         app:icon_name="CHEVRON_RIGHT"
         />
