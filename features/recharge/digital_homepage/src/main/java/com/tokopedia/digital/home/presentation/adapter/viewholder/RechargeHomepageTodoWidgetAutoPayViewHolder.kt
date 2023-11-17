@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetAutopayBinding
+import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidgetCloseProcessListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidgetListener
@@ -50,128 +51,12 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
     ) {
         with(binding) {
             element.widget.let { widget ->
-                imgIconTodoWidget.loadImage(widget.iconUrl)
-
-                if (widget.isCloseButton) {
-                    imgCloseTodoWidget.show()
-                    imgCloseTodoWidget.setOnClickListener {
-                        closeItemListener.onCloseWidget(element)
-                    }
-                } else {
-                    imgCloseTodoWidget.hide()
-                }
-
-                tgCategoryNameTodoWidget.text = widget.title
-                tgProductNameTodoWidget.text = widget.subtitle
-                tgFavoriteNumberTodoWidget.text = widget.label
-                tgPriceTodoWidget.text = widget.price
-                tgSlashPriceTodoWidget.text = widget.slashedPrice
-                tgPercentageTodoWidget.text = widget.discount
-
-                if (widget.type.startsWith(CATEGORY_TYPE)) {
-                    tgFavoriteNumberTodoWidget.maxLines = MAX_LINE_CATEGORY
-                } else {
-                    tgFavoriteNumberTodoWidget.maxLines = MAX_LINE_NON_CATEGORY
-                }
-
-                if (widget.price.isEmpty()) {
-                    val labelParams = iconThreeButtonTodoWidget.layoutParams as ConstraintLayout.LayoutParams
-                    labelParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
-                    labelParams.topToTop = tgFavoriteNumberTodoWidget.id
-                    labelParams.bottomToBottom = tgFavoriteNumberTodoWidget.id
-                    iconThreeButtonTodoWidget.layoutParams = labelParams
-
-                    tgFavoriteNumberTodoWidget.apply {
-                        setMargin(
-                            getDimens(unifyprinciplesR.dimen.unify_space_0),
-                            getDimens(unifyprinciplesR.dimen.unify_space_32),
-                            getDimens(unifyprinciplesR.dimen.unify_space_0),
-                            getDimens(unifyprinciplesR.dimen.unify_space_0)
-                        )
-                    }
-                } else {
-                    val labelParams = iconThreeButtonTodoWidget.layoutParams as ConstraintLayout.LayoutParams
-                    labelParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
-                    labelParams.bottomToBottom = tgPriceTodoWidget.id
-                    labelParams.topToTop = tgPriceTodoWidget.id
-                    iconThreeButtonTodoWidget.layoutParams = labelParams
-
-                    tgFavoriteNumberTodoWidget.apply {
-                        setMargin(
-                            getDimens(unifyprinciplesR.dimen.unify_space_0),
-                            getDimens(unifyprinciplesR.dimen.unify_space_12),
-                            getDimens(unifyprinciplesR.dimen.unify_space_0),
-                            getDimens(unifyprinciplesR.dimen.unify_space_0)
-                        )
-                    }
-                }
-
-                if (widget.button.isNotEmpty()) {
-                    btnMainTodoWidget.show()
-                    btnMainTodoWidget.text = widget.button
-                    btnMainTodoWidget.setOnClickListener {
-                        todoWidgetListener.onClickTodoWidget(widget, true, todoWidgetSectionId,
-                            todoWidgetSectionName, todoWidgetSectionTemplate)
-                    }
-                } else {
-                    btnMainTodoWidget.hide()
-                }
-
-                if (widget.optionButtons.isNotEmpty()) {
-                    iconThreeButtonTodoWidget.show()
-                    iconThreeButtonTodoWidget.setOnClickListener {
-                        todoWidgetListener.onClickThreeButton(widget.optionButtons)
-                    }
-
-                    btnMainTodoWidget.apply {
-                        setMargin(
-                            getDimens(unifyprinciplesR.dimen.unify_space_0),
-                            getDimens(unifyprinciplesR.dimen.unify_space_0),
-                            getDimens(unifyprinciplesR.dimen.unify_space_8),
-                            getDimens(unifyprinciplesR.dimen.unify_space_0)
-                        )
-                    }
-                } else {
-                    iconThreeButtonTodoWidget.hide()
-
-                    btnMainTodoWidget.apply {
-                        setMargin(
-                            getDimens(unifyprinciplesR.dimen.unify_space_0),
-                            getDimens(unifyprinciplesR.dimen.unify_space_0),
-                            getDimens(unifyprinciplesR.dimen.unify_space_0),
-                            getDimens(unifyprinciplesR.dimen.unify_space_0)
-                        )
-                    }
-                }
-
-                if (widget.reason.isNotEmpty()) {
-                    tgInfoTodoWidget.show()
-                    viewInfoTodoWidget.show()
-                    tgInfoTodoWidget.text = widget.reason
-
-                    val labelParams = btnMainTodoWidget.layoutParams as ConstraintLayout.LayoutParams
-                    labelParams.endToStart = iconThreeButtonTodoWidget.id
-                    labelParams.endToEnd = ConstraintLayout.LayoutParams.UNSET
-                    labelParams.bottomToBottom = iconThreeButtonTodoWidget.id
-                    labelParams.topToTop = iconThreeButtonTodoWidget.id
-                    btnMainTodoWidget.layoutParams = labelParams
-                } else {
-                    tgInfoTodoWidget.hide()
-                    viewInfoTodoWidget.hide()
-
-                    val labelParams = btnMainTodoWidget.layoutParams as ConstraintLayout.LayoutParams
-                    labelParams.endToStart = ConstraintLayout.LayoutParams.UNSET
-                    labelParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
-                    if (widget.price.isNotEmpty()) {
-                        labelParams.bottomToBottom = tgPriceTodoWidget.id
-                        labelParams.topToTop = tgPriceTodoWidget.id
-                    } else {
-                        labelParams.bottomToBottom = tgFavoriteNumberTodoWidget.id
-                        labelParams.topToTop = tgFavoriteNumberTodoWidget.id
-                    }
-
-                    btnMainTodoWidget.layoutParams = labelParams
-                }
+                renderImgIcon(widget, binding)
+                renderCloseButton(element, binding)
+                renderText(widget, binding)
+                renderFavoriteNumber(widget, binding)
+                renderButton(widget, binding)
+                renderReason(widget, binding)
 
                 if (widget.button.isEmpty()) {
                     root.setOnClickListener {
@@ -185,6 +70,154 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
                     (widget.type.startsWith(POSTPAIDREMINDER_TYPE) || widget.type.startsWith(CATEGORY_TYPE))
                         && (todoWidgetItemListener.getListSize() > Int.ONE)
                 )
+            }
+        }
+    }
+
+    private fun renderImgIcon(widget: RechargeHomepageSections.Widgets, binding: ViewRechargeHomeTodoWidgetAutopayBinding) {
+        with(binding) {
+            imgIconTodoWidget.loadImage(widget.iconUrl)
+        }
+    }
+
+    private fun renderCloseButton(element: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel, binding: ViewRechargeHomeTodoWidgetAutopayBinding) {
+        with(binding) {
+            if (element.widget.isCloseButton) {
+                imgCloseTodoWidget.show()
+                imgCloseTodoWidget.setOnClickListener {
+                    closeItemListener.onCloseWidget(element)
+                }
+            } else {
+                imgCloseTodoWidget.hide()
+            }
+        }
+    }
+
+    private fun renderText(widget: RechargeHomepageSections.Widgets, binding: ViewRechargeHomeTodoWidgetAutopayBinding) {
+        with(binding) {
+            tgCategoryNameTodoWidget.text = widget.title
+            tgProductNameTodoWidget.text = widget.subtitle
+            tgPriceTodoWidget.text = widget.price
+            tgSlashPriceTodoWidget.text = widget.slashedPrice
+            tgPercentageTodoWidget.text = widget.discount
+        }
+    }
+
+    private fun renderFavoriteNumber(widget: RechargeHomepageSections.Widgets, binding: ViewRechargeHomeTodoWidgetAutopayBinding) {
+        with(binding) {
+            tgFavoriteNumberTodoWidget.text = widget.label
+            if (widget.type.startsWith(CATEGORY_TYPE)) {
+                tgFavoriteNumberTodoWidget.maxLines = MAX_LINE_CATEGORY
+            } else {
+                tgFavoriteNumberTodoWidget.maxLines = MAX_LINE_NON_CATEGORY
+            }
+
+            if (widget.price.isEmpty()) {
+                val labelParams = iconThreeButtonTodoWidget.layoutParams as ConstraintLayout.LayoutParams
+                labelParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                labelParams.topToTop = tgFavoriteNumberTodoWidget.id
+                labelParams.bottomToBottom = tgFavoriteNumberTodoWidget.id
+                iconThreeButtonTodoWidget.layoutParams = labelParams
+
+                tgFavoriteNumberTodoWidget.apply {
+                    setMargin(
+                        getDimens(unifyprinciplesR.dimen.unify_space_0),
+                        getDimens(unifyprinciplesR.dimen.unify_space_32),
+                        getDimens(unifyprinciplesR.dimen.unify_space_0),
+                        getDimens(unifyprinciplesR.dimen.unify_space_0)
+                    )
+                }
+            } else {
+                val labelParams = iconThreeButtonTodoWidget.layoutParams as ConstraintLayout.LayoutParams
+                labelParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                labelParams.bottomToBottom = tgPriceTodoWidget.id
+                labelParams.topToTop = tgPriceTodoWidget.id
+                iconThreeButtonTodoWidget.layoutParams = labelParams
+
+                tgFavoriteNumberTodoWidget.apply {
+                    setMargin(
+                        getDimens(unifyprinciplesR.dimen.unify_space_0),
+                        getDimens(unifyprinciplesR.dimen.unify_space_12),
+                        getDimens(unifyprinciplesR.dimen.unify_space_0),
+                        getDimens(unifyprinciplesR.dimen.unify_space_0)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun renderButton(widget: RechargeHomepageSections.Widgets, binding: ViewRechargeHomeTodoWidgetAutopayBinding) {
+        with(binding) {
+            if (widget.button.isNotEmpty()) {
+                btnMainTodoWidget.show()
+                btnMainTodoWidget.text = widget.button
+                btnMainTodoWidget.setOnClickListener {
+                    todoWidgetListener.onClickTodoWidget(widget, true, todoWidgetSectionId,
+                        todoWidgetSectionName, todoWidgetSectionTemplate)
+                }
+            } else {
+                btnMainTodoWidget.hide()
+            }
+
+            if (widget.optionButtons.isNotEmpty()) {
+                iconThreeButtonTodoWidget.show()
+                iconThreeButtonTodoWidget.setOnClickListener {
+                    todoWidgetListener.onClickThreeButton(widget.optionButtons)
+                }
+
+                btnMainTodoWidget.apply {
+                    setMargin(
+                        getDimens(unifyprinciplesR.dimen.unify_space_0),
+                        getDimens(unifyprinciplesR.dimen.unify_space_0),
+                        getDimens(unifyprinciplesR.dimen.unify_space_8),
+                        getDimens(unifyprinciplesR.dimen.unify_space_0)
+                    )
+                }
+            } else {
+                iconThreeButtonTodoWidget.hide()
+
+                btnMainTodoWidget.apply {
+                    setMargin(
+                        getDimens(unifyprinciplesR.dimen.unify_space_0),
+                        getDimens(unifyprinciplesR.dimen.unify_space_0),
+                        getDimens(unifyprinciplesR.dimen.unify_space_0),
+                        getDimens(unifyprinciplesR.dimen.unify_space_0)
+                    )
+                }
+            }
+
+        }
+    }
+
+    private fun renderReason(widget: RechargeHomepageSections.Widgets, binding: ViewRechargeHomeTodoWidgetAutopayBinding) {
+        with(binding) {
+            if (widget.reason.isNotEmpty()) {
+                tgInfoTodoWidget.show()
+                viewInfoTodoWidget.show()
+                tgInfoTodoWidget.text = widget.reason
+
+                val labelParams = btnMainTodoWidget.layoutParams as ConstraintLayout.LayoutParams
+                labelParams.endToStart = iconThreeButtonTodoWidget.id
+                labelParams.endToEnd = ConstraintLayout.LayoutParams.UNSET
+                labelParams.bottomToBottom = iconThreeButtonTodoWidget.id
+                labelParams.topToTop = iconThreeButtonTodoWidget.id
+                btnMainTodoWidget.layoutParams = labelParams
+            } else {
+                tgInfoTodoWidget.hide()
+                viewInfoTodoWidget.hide()
+
+                val labelParams = btnMainTodoWidget.layoutParams as ConstraintLayout.LayoutParams
+                labelParams.endToStart = ConstraintLayout.LayoutParams.UNSET
+                labelParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                if (widget.price.isNotEmpty()) {
+                    labelParams.bottomToBottom = tgPriceTodoWidget.id
+                    labelParams.topToTop = tgPriceTodoWidget.id
+                } else {
+                    labelParams.bottomToBottom = tgFavoriteNumberTodoWidget.id
+                    labelParams.topToTop = tgFavoriteNumberTodoWidget.id
+                }
+
+                btnMainTodoWidget.layoutParams = labelParams
             }
         }
     }

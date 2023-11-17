@@ -8,7 +8,6 @@ import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +40,6 @@ import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchAct
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomeSectionDecoration
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapter
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetViewHolder
 import com.tokopedia.digital.home.presentation.bottomsheet.RechargeHomepageTodoWidgetBottomSheet
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
@@ -66,8 +64,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     RechargeHomepageAdapter.LoaderListener,
     RechargeSearchBarWidget.FocusChangeListener,
     RechargeHomepageTodoWidgetListener,
-    RechargeHomepageTodoWidgetBottomSheet.BottomSheetTodoWidgetListener
-{
+    RechargeHomepageTodoWidgetBottomSheet.BottomSheetTodoWidgetListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -308,15 +305,23 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode ==  REQUEST_CODE_TODO_WIGDET) {
-            viewModel.refreshSectionList(RechargeHomepageSections.Section(
-                id = todoWidgetSectionId,
-                name = todoWidgetSectionName,
-                template = todoWidgetSectionTemplate
-            ))
-            todoWidgetSectionName = ""
-            todoWidgetSectionId = ""
-            todoWidgetSectionTemplate = ""
+            refreshSectionList()
+            resetSectionData()
         }
+    }
+
+    private fun refreshSectionList() {
+        viewModel.refreshSectionList(RechargeHomepageSections.Section(
+            id = todoWidgetSectionId,
+            name = todoWidgetSectionName,
+            template = todoWidgetSectionTemplate
+        ))
+    }
+
+    private fun resetSectionData() {
+        todoWidgetSectionName = ""
+        todoWidgetSectionId = ""
+        todoWidgetSectionTemplate = ""
     }
 
     override fun loadData() {
@@ -546,15 +551,24 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
         }
 
+        setSectionData(todoWidgetSectionId, todoWidgetSectionName, todoWidgetSectionTemplate)
+        redirectTodoWidget(widget, isButton)
+    }
+
+    private fun setSectionData(todoWidgetSectionId: String, todoWidgetSectionName: String,
+                               todoWidgetSectionTemplate: String) {
+        this.todoWidgetSectionId = todoWidgetSectionId
+        this.todoWidgetSectionName = todoWidgetSectionName
+        this.todoWidgetSectionTemplate = todoWidgetSectionTemplate
+    }
+
+    private fun redirectTodoWidget(widget: RechargeHomepageSections.Widgets, isButton: Boolean) {
         val link = if (isButton) {
             widget.buttonAppLink
         } else {
             widget.appLink
         }
 
-        this.todoWidgetSectionId = todoWidgetSectionId
-        this.todoWidgetSectionName = todoWidgetSectionName
-        this.todoWidgetSectionTemplate = todoWidgetSectionTemplate
         val intent = RouteManager.getIntent(context, link)
         startActivityForResult(
             intent,
@@ -563,6 +577,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     override fun onClickThreeButton(optionButtons: List<RechargeHomepageSections.OptionButton>) {
+        showTodoWidgetBottomSheet(optionButtons)
+    }
+
+    private fun showTodoWidgetBottomSheet(optionButtons: List<RechargeHomepageSections.OptionButton>) {
         val bottomSheet = RechargeHomepageTodoWidgetBottomSheet()
         bottomSheet.setOptionButtons(optionButtons)
         bottomSheet.setListener(this)
