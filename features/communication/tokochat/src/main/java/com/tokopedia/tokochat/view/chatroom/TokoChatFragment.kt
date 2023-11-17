@@ -1609,7 +1609,7 @@ open class TokoChatFragment @Inject constructor(
         )
     }
 
-    protected fun isConnectedToNetwork(): Boolean {
+    private fun isConnectedToNetwork(): Boolean {
         return if (context != null) {
             networkUtil.isNetworkAvailable(requireContext())
         } else {

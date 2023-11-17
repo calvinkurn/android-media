@@ -13,7 +13,8 @@ open class TokoChatRoomUseCase @Inject constructor(
 ) {
 
     open fun isChatConnected(): Boolean {
-        return repository.getConversationRepository()?.isChatConnected() ?: false
+        // Do not intervene with chatroom when get null
+        return repository.getConversationRepository()?.isChatConnected() ?: true
     }
 
     fun getRemoteGroupBookingChannel(
