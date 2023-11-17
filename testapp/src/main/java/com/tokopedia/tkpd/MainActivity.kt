@@ -154,7 +154,7 @@ class MainActivity : BaseActivity() {
         /*
          * Put your default applink here
          */
-        return ""
+        return "tokopedia://epharmacy/attach-prescription/"
     }
 
     data class Model(
