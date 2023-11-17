@@ -137,6 +137,10 @@ class ThematicWidgetViewHolder(
 
     private fun configReimagined(uiModel: ThematicWidgetUiModel) {
         dynamicHeaderCustomView?.configReimaginedColor(uiModel.header.colorSchema)
+        setupBackgroundColor(
+            startBackGroundColor = uiModel.firstBackgroundColor,
+            endBackGroundColor = uiModel.secondBackgroundColor
+        )
     }
 
     private fun configDefaultColor(uiModel: ThematicWidgetUiModel) {
@@ -182,7 +186,7 @@ class ThematicWidgetViewHolder(
     }
 
     private fun configMarginFestivity() {
-        val rvLayoutParams = rvProduct?.layoutParams as? ConstraintLayout.LayoutParams
+        val rvLayoutParams = rvProduct?.layoutParams as? ViewGroup.MarginLayoutParams
         rvLayoutParams?.setMargins(
             rvLayoutParams.leftMargin,
             Int.ZERO,
@@ -201,7 +205,7 @@ class ThematicWidgetViewHolder(
     }
 
     private fun configMarginNonFestivity() {
-        val rvLayoutParams = rvProduct?.layoutParams as? ConstraintLayout.LayoutParams
+        val rvLayoutParams = rvProduct?.layoutParams as? ViewGroup.MarginLayoutParams
         rvLayoutParams?.setMargins(
             rvLayoutParams.leftMargin,
             RV_DEFAULT_MARGIN_TOP.dpToPx().toInt(),
@@ -356,8 +360,8 @@ class ThematicWidgetViewHolder(
 
     private fun setupBackgroundColor(startBackGroundColor: String?, endBackGroundColor: String?) {
         val colors = intArrayOf(
-            getBackGroundColor(itemView.context, startBackGroundColor, unifyprinciplesR.color.Unify_NN50),
-            getBackGroundColor(itemView.context, endBackGroundColor, unifyprinciplesR.color.Unify_NN50)
+            getBackGroundColor(itemView.context, startBackGroundColor, R.color.dms_clr_thematic_widget_bg_default_first_color),
+            getBackGroundColor(itemView.context, endBackGroundColor, R.color.dms_clr_thematic_widget_bg_default_second_color)
         )
         val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors)
         viewParallaxBackground?.background = gradientDrawable

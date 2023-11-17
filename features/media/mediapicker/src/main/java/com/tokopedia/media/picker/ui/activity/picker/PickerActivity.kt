@@ -35,7 +35,17 @@ import com.tokopedia.media.picker.utils.parcelableArrayListExtra
 import com.tokopedia.media.picker.utils.parcelableExtra
 import com.tokopedia.media.picker.utils.permission.hasPermissionRequiredGranted
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
-import com.tokopedia.picker.common.*
+import com.tokopedia.picker.common.EXTRA_EDITOR_PICKER
+import com.tokopedia.picker.common.EXTRA_PICKER_PARAM
+import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
+import com.tokopedia.picker.common.EditorResult
+import com.tokopedia.picker.common.MediaEditor
+import com.tokopedia.picker.common.PickerParam
+import com.tokopedia.picker.common.PickerResult
+import com.tokopedia.picker.common.RESULT_INTENT_EDITOR
+import com.tokopedia.picker.common.RESULT_INTENT_PREVIEW
+import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
+import com.tokopedia.picker.common.UniversalEditor
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.component.NavToolbarComponent
@@ -49,8 +59,12 @@ import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalSt
 import com.tokopedia.utils.image.ImageProcessingUtil
 import javax.inject.Inject
 
-open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
-    NavToolbarComponent.Listener, PickerActivityContract, BottomNavUiComponent.Listener {
+open class PickerActivity :
+    BaseActivity(),
+    PermissionFragment.Listener,
+    NavToolbarComponent.Listener,
+    PickerActivityContract,
+    BottomNavUiComponent.Listener {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -106,6 +120,27 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             listener = this
         )
     }
+
+    private val editorIntentLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            it?.let { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    result.data.parcelableExtra<EditorResult>(RESULT_INTENT_EDITOR)
+                        ?.let { editorResult ->
+                            val selectedIncludeMedia =
+                                viewModel.editorParam.value?.first?.selectedIncludeMedia
+                                    ?: emptyList()
+                            onFinishIntent(
+                                PickerResult(
+                                    editorResult.originalPaths,
+                                    editedImages = editorResult.editedImages,
+                                    selectedIncludeMedia = selectedIncludeMedia
+                                )
+                            )
+                        }
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -178,13 +213,6 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
                     onFinishIntent(it)
                 }
             }
-        } else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_EDITOR_PAGE && data != null) {
-            data.parcelableExtra<EditorResult>(RESULT_INTENT_EDITOR)?.let {
-                val selectedIncludeMedia = viewModel.editorParam.value?.first?.selectedIncludeMedia ?: emptyList()
-                onFinishIntent(
-                    PickerResult(it.originalPaths, editedImages = it.editedImages, selectedIncludeMedia = selectedIncludeMedia)
-                )
-            }
         }
     }
 
@@ -208,7 +236,9 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     private fun setupParam() {
         val mParam = intent?.parcelableExtra<PickerParam>(EXTRA_PICKER_PARAM)
 
-        if (mParam?.pageSourceName()?.isNotEmpty() == true && mParam.subPageSourceName().isEmpty()) {
+        if (mParam?.pageSourceName()?.isNotEmpty() == true && mParam.subPageSourceName()
+            .isEmpty()
+        ) {
             param.disposeSubPicker()
         }
 
@@ -233,10 +263,12 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
                 pagerContainer.setupCameraPage()
             }
+
             PageType.GALLERY -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
                 pagerContainer.setupGalleryPage()
             }
+
             else -> {
                 pagerContainer.setupCommonPage()
                 bottomNavTab.setupView()
@@ -289,7 +321,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             val (result, param) = it
 
             val intent = MediaEditor.intent(this@PickerActivity, result.originalPaths, param)
-            startActivityForResult(intent, REQUEST_EDITOR_PAGE)
+            editorIntentLauncher.launch(intent)
         }
 
         viewModel.isLoading.observe(this) {
@@ -383,15 +415,15 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     private fun onEditorIntent(data: PickerResult) {
-        if (param.get().isImmersiveEditorEnabled() && featureToggleManager.isImmersiveEditorEnable()) {
-            // immersive editor
-            val intent = UniversalEditor.
-            intent(this) {
-                param.get().let { pickerParam ->
-                    trackerExtra = pickerParam.immersiveTrackerData()
-                    setPageSource(param.get().pageSource())
-                }
+        val param = param.get()
+
+        if (param.isImmersiveEditorEnabled() && featureToggleManager.isImmersiveEditorEnable()) {
+            val intent = UniversalEditor.intent(this) {
+                setPageSource(param.pageSource())
                 filePaths(data.originalPaths)
+                param.immersiveEditorParam()?.let {
+                    setCustomParam(it)
+                }
             }
 
             immersiveEditorIntent.launch(intent)
@@ -653,5 +685,4 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         private const val TOAST_DELAYED = 3000L
         private const val MILLIS_TO_SEC = 1000
     }
-
 }

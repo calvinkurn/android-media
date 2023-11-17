@@ -140,7 +140,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private var isLoadInitialData = false
     private var isUserSessionActive = false
     private var tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData? = null
-    private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var shopPageHeaderDataModel: ShopPageHeaderDataModel ? = null
     private var shopPagePageHeaderWidgetList: List<ShopPageHeaderWidgetUiModel> = listOf()
     private var shopHeaderLayoutData: ShopPageHeaderLayoutUiModel = ShopPageHeaderLayoutUiModel()
@@ -441,10 +440,8 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     internal fun updateShareIcon(newShareIconId: Int) {
-        navToolbar?.let {
-            iconShareId = newShareIconId
-            it.updateIcon(IconList.ID_SHARE, iconShareId)
-        }
+        iconShareId = newShareIconId
+        navToolbar?.updateIcon(IconList.ID_SHARE, iconShareId)
     }
 
     private fun isCartShownInNewNavToolbar(): Boolean {
@@ -622,9 +619,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                         shopRef,
                         shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     ).apply {
-                        initialProductListData?.let {
-                            setInitialProductListData(it)
-                        }
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
                         setHomeTabLottieUrl(it.lottieUrl)
@@ -644,9 +638,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                         shopRef = shopRef,
                         isEnableDirectPurchase = shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     )
-                    initialProductListData?.let {
-                        shopPageProductFragment.setInitialProductListData(it)
-                    }
                     shopPageProductFragment
                 }
 
@@ -756,10 +747,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     fun setTabData(tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData) {
         this.tabData = tabData
-    }
-
-    fun setInitialProductListData(initialProductListData: ShopProduct.GetShopProduct) {
-        this.initialProductListData = initialProductListData
     }
 
     fun updateShopTickerData(tickerResultData: ShopPageHeaderTickerData) {

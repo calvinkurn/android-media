@@ -3,6 +3,9 @@ package com.tokopedia.analytics.performance.util
 object EmbraceKey {
 
     const val KEY_MP_HOME = "mp_home"
+    const val KEY_TTIL_HOME = "ttil_perf_trace_home"
+    const val KEY_TTFL_HOME = "ttfl_perf_trace_home"
+
     const val KEY_PDP_RESULT_TRACE = "pdp_result_trace"
     const val KEY_PDP_RESULT_TRACE_P2_DATA = "pdp_result_trace_p2_data"
     const val KEY_MP_SHOP_HOME_V2 = "mp_shop_home_v2"

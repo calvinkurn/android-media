@@ -81,7 +81,7 @@ d. Campaign Rule & Save Campaign
 
 ## Flow Diagram
 
-![](res/Screen%20Shot%202022-12-15%20at%2016.52.49.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_shop_flash_sale/Screen%20Shot%202022-12-15%20at%2016.52.49.png)
 
 
 
@@ -99,13 +99,13 @@ The first way is by using applink, ***Flash Sale Toko*** have this 2 applinks, t
 	2. *sellerapp://shop-flash-sale/history*
 2. **Menu**
 
-![](res/Screenshot_20230105-122221_Tokopedia%20Seller-20230105-052714.jpg)
+![](https://docs-android.tokopedia.net/images/docs/seller_shop_flash_sale/Screenshot_20230105-122221_Tokopedia%20Seller-20230105-052714.jpg)
 
-![](res/Screenshot_20230105-122246_Tokopedia%20Seller-20230105-052820.jpg)
+![](https://docs-android.tokopedia.net/images/docs/seller_shop_flash_sale/Screenshot_20230105-122246_Tokopedia%20Seller-20230105-052820.jpg)
 
-![](res/Screenshot_20230105-122255_Tokopedia%20Seller-20230105-052906.jpg)
+![](https://docs-android.tokopedia.net/images/docs/seller_shop_flash_sale/Screenshot_20230105-122255_Tokopedia%20Seller-20230105-052906.jpg)
 
-![](res/Screenshot_20230105-122305_Tokopedia%20Seller-20230105-052520.jpg)
+![](https://docs-android.tokopedia.net/images/docs/seller_shop_flash_sale/Screenshot_20230105-122305_Tokopedia%20Seller-20230105-052520.jpg)
 
 
 

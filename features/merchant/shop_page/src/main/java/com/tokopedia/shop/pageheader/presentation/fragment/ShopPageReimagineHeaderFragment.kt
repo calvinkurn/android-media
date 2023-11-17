@@ -120,6 +120,7 @@ import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
+import com.tokopedia.shop.common.util.ShopUtilExt.clearHtmlTag
 import com.tokopedia.shop.common.util.ShopUtilExt.setAnchorViewToShopHeaderBottomViewContainer
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
@@ -259,7 +260,6 @@ class ShopPageReimagineHeaderFragment :
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
         private const val VIEWPAGER_PAGE_LIMIT = 1
-        private const val SOURCE_SHOP = "shop"
         private const val CART_LOCAL_CACHE_NAME = "CART"
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
         private const val PATH_HOME = "home"
@@ -1082,7 +1082,17 @@ class ShopPageReimagineHeaderFragment :
     }
 
     private fun getShopShareAndOperationalHourStatusData() {
-        shopHeaderViewModel?.getShopShareAndOperationalHourStatusData(shopId, shopDomain ?: "", isRefresh)
+        shopHeaderViewModel?.getShopShareAndOperationalHourStatusData(
+            shopId,
+            shopDomain.orEmpty(),
+            page = START_PAGE,
+            itemPerPage = ShopUtil.getProductPerPage(context),
+            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
+            keyword = "",
+            etalaseId = "",
+            widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
+            isRefresh
+        )
     }
 
     private fun getSellerPlayWidget() {
@@ -1370,11 +1380,6 @@ class ShopPageReimagineHeaderFragment :
         shopHeaderViewModel?.getNewShopPageTabData(
             shopId = shopId,
             shopDomain = shopDomain.orEmpty(),
-            page = START_PAGE,
-            itemPerPage = ShopUtil.getProductPerPage(context),
-            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
-            keyword = "",
-            etalaseId = "",
             isRefresh = isRefresh,
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
@@ -1417,7 +1422,7 @@ class ShopPageReimagineHeaderFragment :
                 ),
                 ShopPageColorSchema.ColorSchemaName.DIVIDER to ShopUtil.getColorHexString(
                     it,
-                    unifyprinciplesR.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN400_32
                 ),
                 ShopPageColorSchema.ColorSchemaName.NAV_TEXT_ACTIVE to ShopUtil.getColorHexString(
                     it,
@@ -1994,9 +1999,6 @@ class ShopPageReimagineHeaderFragment :
                         isShouldShowFeed = isShowFeed
                     )
                 }
-                shopHeaderViewModel?.productListData?.let { productListData ->
-                    setInitialProductListData(productListData)
-                }
                 setShopId(shopId)
                 setUserId(userId)
                 setIsMyShop(isMyShop)
@@ -2163,7 +2165,7 @@ class ShopPageReimagineHeaderFragment :
                     ApplinkConst.TOPCHAT_ASKSELLER,
                     shopId,
                     "",
-                    SOURCE_SHOP,
+                    ApplinkConst.Chat.Source.SOURCE_SHOP,
                     shopPageHeaderDataModel?.shopName.orEmpty(),
                     shopPageHeaderDataModel?.avatar.orEmpty()
                 )
@@ -2931,8 +2933,8 @@ class ShopPageReimagineHeaderFragment :
                             } else {
                                 ShopPageParamModel.ShopInfoName.FREE_TEXT.infoNameValue
                             }
-                        shopInfoValue = textValueComponentUiModel.text[Int.ZERO].textHtml
-                        shopInfoLabel = textValueComponentUiModel.text[Int.ONE].textHtml
+                        shopInfoValue = textValueComponentUiModel.text.getOrNull(Int.ZERO)?.textHtml.orEmpty().clearHtmlTag()
+                        shopInfoLabel = textValueComponentUiModel.text.getOrNull(Int.ONE)?.textHtml.orEmpty().clearHtmlTag()
                     }
 
                     ShopPageParamModel.ShopInfoType.IMAGE_ONLY.typeName -> {

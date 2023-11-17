@@ -1,10 +1,14 @@
 package com.tokopedia.product.detail.view.viewholder
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -39,11 +43,28 @@ class ProductPictureViewHolder(
             listener?.onMainImageClicked(componentTrackDataModel, adapterPosition)
         }
 
+        if (data.prefetchResource != null) {
+            binding.pdpMainImg.setImageDrawable(data.prefetchResource)
+        }
+
         Glide.with(view.context)
+            .asDrawable()
             .load(data.urlOriginal)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .placeholder(data.prefetchResource)
+            .transition(DrawableTransitionOptions.withCrossFade())
             .fitCenter()
-            .into(binding.pdpMainImg)
+            .into(object : SimpleTarget<Drawable>() {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
+                    binding.pdpMainImg.setImageDrawable(resource)
+                    if (data.isPrefetch) {
+                        data.prefetchResource = resource
+                    }
+                }
+            })
     }
 
     private fun setImageScale() {
