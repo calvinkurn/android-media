@@ -4,7 +4,6 @@
   "query": [
     {
       "businessUnit": "content",
-      "clientId": ".*",
       "eventCategory": "shop page - seller",
       "currentSite": "tokopediamarketplace",
       "event": "clickContent",
@@ -16,7 +15,6 @@
     },
     {
       "businessUnit": "content",
-      "clientId": ".*",
       "eventCategory": "shop page - seller",
       "currentSite": "tokopediamarketplace",
       "event": "clickContent",
@@ -28,7 +26,6 @@
     },
     {
       "businessUnit": "content",
-      "clientId": ".*",
       "eventCategory": "shop page - seller",
       "currentSite": "tokopediamarketplace",
       "event": "viewContentIris",
@@ -40,7 +37,6 @@
     },
     {
       "businessUnit": "content",
-      "clientId": ".*",
       "eventCategory": "shop page - seller",
       "currentSite": "tokopediamarketplace",
       "event": "viewContentIris",
@@ -52,7 +48,6 @@
     },
     {
       "businessUnit": "content",
-      "clientId": ".*",
       "eventCategory": "shop page - seller",
       "currentSite": "tokopediamarketplace",
       "event": "clickContent",
