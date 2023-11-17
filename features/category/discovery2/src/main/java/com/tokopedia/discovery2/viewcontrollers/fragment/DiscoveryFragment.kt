@@ -1917,7 +1917,7 @@ open class DiscoveryFragment :
             }
         )
         AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
-            if (bmGmDataParam != null) {
+            if (bmGmDataParam != null && shouldRefreshPreviousPage) {
                 getMiniCart(bmGmDataParam)
             }
         }

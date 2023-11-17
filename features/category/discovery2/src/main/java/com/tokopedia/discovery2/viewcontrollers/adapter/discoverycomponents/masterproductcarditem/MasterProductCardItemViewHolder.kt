@@ -20,6 +20,7 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.productcard.ATCNonVariantListener
@@ -100,15 +101,23 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             }
             masterProductCardGridView?.setAddToCartNonVariantClickListener(this)
             masterProductCardGridView?.setAddToCartOnClickListener {
-                handleATC(
-                    masterProductCardItemViewModel?.getProductDataItem()?.minQuantity ?: 1,
-                    masterProductCardItemViewModel?.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
-                )
+                if (checkForVariantProductCard(masterProductCardItemViewModel?.getProductDataItem()?.parentProductId)) {
+                    openVariantSheet()
+                } else {
+                    handleATC(
+                        masterProductCardItemViewModel?.getProductDataItem()?.minQuantity ?: 1,
+                        masterProductCardItemViewModel?.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
+                    )
+                }
             }
         }
         productCardView.setOnClickListener {
             handleUIClick(it)
         }
+    }
+
+    private fun checkForVariantProductCard(parentProductId: String?): Boolean {
+        return parentProductId != null && parentProductId.toLongOrZero()>0
     }
 
     private fun showNotificationReminderPrompt() {
