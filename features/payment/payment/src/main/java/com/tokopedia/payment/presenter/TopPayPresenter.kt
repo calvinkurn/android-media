@@ -7,6 +7,7 @@ import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint
 import com.tokopedia.payment.fingerprint.domain.GetPostDataOtpUseCase
 import com.tokopedia.payment.fingerprint.domain.PaymentFingerprintUseCase
 import com.tokopedia.payment.fingerprint.domain.SaveFingerPrintUseCase
+import com.tokopedia.payment.utils.PaymentFingerprintDataLogger
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import rx.Subscription
@@ -18,20 +19,24 @@ import java.util.*
 /**
  * Created by kris on 3/14/17. Tokopedia
  */
-class TopPayPresenter(private val saveFingerPrintUseCase: SaveFingerPrintUseCase,
-                      private val paymentFingerprintUseCase: PaymentFingerprintUseCase,
-                      private val getPostDataOtpUseCase: GetPostDataOtpUseCase,
-                      private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopPayContract.View?>(), TopPayContract.Presenter {
+class TopPayPresenter(
+    private val saveFingerPrintUseCase: SaveFingerPrintUseCase,
+    private val paymentFingerprintUseCase: PaymentFingerprintUseCase,
+    private val getPostDataOtpUseCase: GetPostDataOtpUseCase,
+    private val userSession: UserSessionInterface
+) : BaseDaggerPresenter<TopPayContract.View?>(), TopPayContract.Presenter {
 
     private val compositeSubscription = CompositeSubscription()
 
     override val userId: String
         get() = userSession.userId
 
-    override fun processUriPayment() {
+    override fun processUriPayment(logger: PaymentFingerprintDataLogger) {
         val paymentPassData = view?.paymentPassData
         if (paymentPassData != null) {
+            logger.transactionId = paymentPassData.transactionId
             try {
+                logger.length2 = paymentPassData.queryString.length
                 val postData = paymentPassData.queryString.toByteArray()
                 val method = paymentPassData.method ?: PaymentPassData.METHOD_POST
                 view?.renderWebViewPostUrl(paymentPassData.redirectUrl, postData, method.equals(PaymentPassData.METHOD_GET, true))
@@ -46,24 +51,30 @@ class TopPayPresenter(private val saveFingerPrintUseCase: SaveFingerPrintUseCase
     override fun registerFingerPrint(transactionId: String?, publicKey: String?, date: String?, accountSignature: String?, userId: String?) {
         view?.let {
             it.showProgressDialog()
-            saveFingerPrintUseCase.execute(saveFingerPrintUseCase.createRequestParams(transactionId, publicKey, date, accountSignature, userId),
-                    subscriberRegisterFingerPrint)
+            saveFingerPrintUseCase.execute(
+                saveFingerPrintUseCase.createRequestParams(transactionId, publicKey, date, accountSignature, userId),
+                subscriberRegisterFingerPrint
+            )
         }
     }
 
     override fun paymentFingerPrint(transactionId: String?, publicKey: String?, date: String?, accountSignature: String?, userId: String?) {
         view?.let {
             it.showProgressDialog()
-            paymentFingerprintUseCase.execute(paymentFingerprintUseCase.createRequestParams(transactionId, publicKey, date, accountSignature, userId),
-                    subscriberPaymentFingerPrint)
+            paymentFingerprintUseCase.execute(
+                paymentFingerprintUseCase.createRequestParams(transactionId, publicKey, date, accountSignature, userId),
+                subscriberPaymentFingerPrint
+            )
         }
     }
 
     override fun getPostDataOtp(transactionId: String, urlOtp: String) {
         view?.let {
             it.showProgressDialog()
-            getPostDataOtpUseCase.execute(getPostDataOtpUseCase.createRequestParams(transactionId),
-                    getSubscriberPostDataOTP(urlOtp))
+            getPostDataOtpUseCase.execute(
+                getPostDataOtpUseCase.createRequestParams(transactionId),
+                getSubscriberPostDataOTP(urlOtp)
+            )
         }
     }
 
@@ -76,7 +87,6 @@ class TopPayPresenter(private val saveFingerPrintUseCase: SaveFingerPrintUseCase
     }
 
     private fun getSubscriberPostDataOTP(urlOtp: String): Subscriber<HashMap<String, String>?> {
-
         return object : Subscriber<HashMap<String, String>?>() {
             override fun onCompleted() {}
             override fun onError(e: Throwable?) {
@@ -101,10 +111,13 @@ class TopPayPresenter(private val saveFingerPrintUseCase: SaveFingerPrintUseCase
             if (sb.isNotEmpty()) {
                 sb.append("&")
             }
-            sb.append(String.format("%s=%s",
+            sb.append(
+                String.format(
+                    "%s=%s",
                     urlEncodeUTF8(key),
                     urlEncodeUTF8(value)
-            ))
+                )
+            )
         }
         return sb.toString()
     }

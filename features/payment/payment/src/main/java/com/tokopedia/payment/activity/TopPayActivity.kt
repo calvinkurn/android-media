@@ -124,6 +124,7 @@ class TopPayActivity :
     private var isPaymentPageLoadingTimeout: Boolean = false
 
     private val paymentPageTimeOutLogging by lazy { PaymentPageTimeOutLogging(this.application) }
+    private val paymentFingerprintDataLogger by lazy { PaymentFingerprintDataLogger() }
 
     private var reloadUrl = ""
 
@@ -235,7 +236,7 @@ class TopPayActivity :
 
     private fun setActionVar() {
         generateDeviceInfoData()
-        presenter.processUriPayment()
+        presenter.processUriPayment(paymentFingerprintDataLogger)
 
         val message = intent.getStringExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE)
         if (!message.isNullOrEmpty()) {
@@ -247,8 +248,13 @@ class TopPayActivity :
 
     override fun renderWebViewPostUrl(url: String, postData: ByteArray, isGet: Boolean) {
         if (isGet || isInsufficientBookingStockUrl(url)) {
+            paymentFingerprintDataLogger.loadMethod = PaymentPassData.METHOD_GET
+            paymentFingerprintDataLogger.sendLog(postData)
             scroogeWebView?.validateAndLoadUrl(url, getFingerprintHeader())
         } else {
+            paymentFingerprintDataLogger.loadMethod = PaymentPassData.METHOD_POST
+            paymentFingerprintDataLogger.length3 = String(postData, Charsets.UTF_8).length
+            paymentFingerprintDataLogger.sendLog(postData)
             scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this) ?: "", postData)
         }
     }
@@ -892,9 +898,19 @@ class TopPayActivity :
     }
 
     private fun generateDeviceInfoData() {
+        val queryStringHashOriginal = paymentPassData?.queryString ?: ""
+        paymentFingerprintDataLogger.lengthOri = queryStringHashOriginal.length
+
         if (remoteConfig.getBoolean(RemoteConfigKey.PAYMENT_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER, true)) {
             val additionalData = "$KEY_FINGERPRINT_DATA=${getFingerprintData()}&$KEY_FINTECH_FINGERPRINT_DATA=${getFintechFingerprintData()}"
             paymentPassData?.queryString = "${paymentPassData?.queryString}&$additionalData"
+
+            val queryStringHashUpdated = paymentPassData?.queryString ?: ""
+            paymentFingerprintDataLogger.length1 = queryStringHashUpdated.length
+            paymentFingerprintDataLogger.isToggledOn = true
+        } else {
+            paymentFingerprintDataLogger.length1 = queryStringHashOriginal.length
+            paymentFingerprintDataLogger.isToggledOn = false
         }
     }
 
