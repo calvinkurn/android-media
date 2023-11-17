@@ -15,6 +15,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.setPadding
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.FontAlignment.Companion.toGravity
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.getTypeface as unifyTypeFaceGetter
 
@@ -45,7 +46,7 @@ class EditorEditTextView @JvmOverloads constructor(
 
         addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(newText: Editable?) {
-                if ((newText?.toString()?.length ?: 0) <= 0) {
+                if (newText?.toString()?.length.orZero() <= 0) {
                     isSpanImplemented = false
                 }
             }
@@ -63,7 +64,7 @@ class EditorEditTextView @JvmOverloads constructor(
     private fun setSpan(paramText: CharSequence?): SpannableString {
         val spanString = SpannableString(paramText)
         val roundedSpan = RoundedSpan(
-            backgroundColor,
+            backgroundColor = backgroundColor,
             padding = textBackgroundPadding,
             radius = textRoundedSize,
             lineHeightExtra = lineSpacingExtra
@@ -89,7 +90,7 @@ class EditorEditTextView @JvmOverloads constructor(
         }
 
         var spanString: SpannableString? = null
-        if ((text?.length ?: 0) > 0) {
+        if (text?.length.orZero() > 0) {
             spanString = setSpan(text)
             isSpanImplemented = true
         }
