@@ -2221,7 +2221,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
     }
 
     @Test
-    fun `WHEN schedule delivery not recommended from SAF or all schedule slot is full (delivery_service empty) THEN should render failed`() {
+    fun `WHEN schedule delivery not recommended from SAF and all schedule slot is full (delivery_service empty) THEN should render failed`() {
         // Given
         coEvery { scheduleDeliveryUseCase(any()) } returns DataProvider.provideScheduleDeliveryRatesResponse()
 
@@ -2267,6 +2267,59 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         assertEquals(
             null,
             (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
+    }
+
+    @Test
+    fun `WHEN schedule delivery unavailable THEN should render schelly widget with greyed out section`() {
+        // Given
+        coEvery { scheduleDeliveryUseCase(any()) } returns DataProvider.provideScheduleDeliveryUnAvailableRatesResponse()
+
+        val orderModel =
+            CheckoutOrderModel(
+                "1",
+                ratesValidationFlow = true,
+                shippingId = 1,
+                spId = 1,
+                isRecommendScheduleDelivery = true,
+                shippingComponents = ShippingComponents.SCHELLY
+            )
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("1"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify {
+            scheduleDeliveryUseCase(any())
+        }
+        assert(
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData?.scheduleDeliveryUiModel != null
+        )
+        assertEquals(
+            false,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData?.scheduleDeliveryUiModel?.isSelected
         )
     }
 
