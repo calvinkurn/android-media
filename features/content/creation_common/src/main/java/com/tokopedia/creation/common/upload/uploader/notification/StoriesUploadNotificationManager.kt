@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.upload.model.CreationUploadData
-import com.tokopedia.creation.common.upload.uploader.activity.PlayShortsPostUploadActivity
+import com.tokopedia.creation.common.upload.uploader.activity.ContentCreationPostUploadActivity
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
 import javax.inject.Inject
 
@@ -36,11 +36,12 @@ class StoriesUploadNotificationManager @Inject constructor(
         val storiesUploadData = uploadData
         if (storiesUploadData !is CreationUploadData.Stories) return null
 
-        val intent = PlayShortsPostUploadActivity.getIntent(
+        val intent = ContentCreationPostUploadActivity.getIntent(
             context,
             channelId = storiesUploadData.creationId,
             authorId = storiesUploadData.authorId,
             authorType = storiesUploadData.authorType,
+            uploadType = storiesUploadData.uploadType.type,
             appLink = storiesUploadData.applink,
         ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK

@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.creation.common.upload.uploader.activity.PlayShortsPostUploadActivity
+import com.tokopedia.creation.common.upload.uploader.activity.ContentCreationPostUploadActivity
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
 import javax.inject.Inject
 import com.tokopedia.creation.common.R
@@ -35,11 +35,12 @@ class ShortsUploadNotificationManager @Inject constructor(
     )
 
     override fun generateSuccessPendingIntent(): PendingIntent? {
-        val intent = PlayShortsPostUploadActivity.getIntent(
+        val intent = ContentCreationPostUploadActivity.getIntent(
             context,
             channelId = uploadData?.creationId.orEmpty(),
             authorId = uploadData?.authorId.orEmpty(),
             authorType = uploadData?.authorType.orEmpty(),
+            uploadType = uploadData?.uploadType?.type.orEmpty(),
             appLink = uploadData?.let { getPlayRoomAppLink(it) }.orEmpty()
         ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
