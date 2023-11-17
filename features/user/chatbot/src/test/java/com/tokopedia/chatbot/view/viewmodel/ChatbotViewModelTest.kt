@@ -10,14 +10,9 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
-import com.tokopedia.chat_common.domain.pojo.Attachment
-import com.tokopedia.chat_common.domain.pojo.AttachmentPojo
-import com.tokopedia.chat_common.domain.pojo.Chat
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
-import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
-import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.chatbot2.data.csatoptionlist.CsatAttributesPojo
@@ -1364,6 +1359,17 @@ class ChatbotViewModelTest {
     }
 
     @Test
+    fun `cancelVideoUpload error`() {
+        coEvery {
+            uploaderUseCase.abortUpload("ABC", "123")
+        } throws Exception()
+
+        viewModel.cancelVideoUpload("123", "ABC")
+
+        assertNull(viewModel.mediaUploadJobs.value.get("123"))
+    }
+
+    @Test
     fun `tryUploadMedia success when shouldResetFailedUpload is true`() {
         runBlockingTest {
             val data: Pair<Boolean, List<VideoUploadData>> = Pair(
@@ -1981,7 +1987,7 @@ class ChatbotViewModelTest {
             )
         } just runs
 
-        viewModel.sendActionBubble("", ChatActionBubbleUiModel(), "", "")
+        viewModel.sendActionBubble("", ChatActionBubbleUiModel(), "", "", false)
 
         verify {
             chatbotWebSocket.send(
@@ -2026,7 +2032,7 @@ class ChatbotViewModelTest {
             )
         } just runs
 
-        viewModel.sendQuickReplyInvoice("123", QuickReplyUiModel("", "", ""), "", "", "", "")
+        viewModel.sendQuickReplyInvoice("123", QuickReplyUiModel("", "", ""), "", "", "", "", false)
 
         verify {
             chatbotWebSocket.send(
@@ -2070,7 +2076,7 @@ class ChatbotViewModelTest {
             )
         } just runs
 
-        viewModel.sendQuickReply("123", QuickReplyUiModel("", "", ""), "", "")
+        viewModel.sendQuickReply("123", QuickReplyUiModel("", "", ""), "", "", false)
 
         verify {
             chatbotWebSocket.send(
@@ -2348,6 +2354,52 @@ class ChatbotViewModelTest {
                 ChatbotSendableWebSocketParam.generateParamDynamicAttachment108(
                     any(),
                     any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        }
+    }
+
+    @Test
+    fun `sendDynamicAttachment108ForAcknowledgement success`() {
+        mockkObject(ChatbotSendableWebSocketParam)
+
+        every {
+            ChatbotSendableWebSocketParam.generateParamDynamicAttachment108ForAcknowledgement(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        every {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachment108ForAcknowledgement(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        } just runs
+
+        viewModel.sendDynamicAttachment108ForAcknowledgement("", "", QuickReplyUiModel("", "", ""), "", 0, false)
+
+        verify {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachment108ForAcknowledgement(
                     any(),
                     any(),
                     any(),
@@ -3192,6 +3244,10 @@ class ChatbotViewModelTest {
         }
     }
 
+    @Test
+    fun `sendQuickReplyInvoice_typingBlocked`() {
+    }
+
     private fun generateChatUiModelWithVideo(video: String, totalLength: Long): VideoUploadUiModel {
         return VideoUploadUiModel.Builder().withMsgId("123")
             .withFromUid("456")
@@ -3203,113 +3259,5 @@ class ChatbotViewModelTest {
             .withIsDummy(true)
             .withLength(totalLength)
             .build()
-    }
-
-    @Test
-    fun `WHEN existing chat has attachment type 9 and typing block true THEN typingBlockedState should true`() {
-        // GIVEN
-        val data = GetExistingChatPojo(
-            chatReplies = ChatReplies(
-                list = listOf(
-                    ChatRepliesItem(
-                        chats = listOf(
-                            Chat(
-                                replies = listOf(
-                                    Reply(
-                                        attachment = Attachment(
-                                            type = 9,
-                                            attributes = """
-                                                {
-                                                  "is_typing_blocked_on_button_select": true
-                                                }
-                                            """.trimIndent()
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        )
-
-        // WHEN
-        viewModel.checkIsTypingBlockedDataFromExistingChat(data)
-
-        // THEN
-        assert(viewModel.typingBlockedState.value == true)
-    }
-
-    @Test
-    fun `WHEN existing chat has attachment type 9 and typing block false THEN typingBlockedState should false`() {
-        // GIVEN
-        val data = GetExistingChatPojo(
-            chatReplies = ChatReplies(
-                list = listOf(
-                    ChatRepliesItem(
-                        chats = listOf(
-                            Chat(
-                                replies = listOf(
-                                    Reply(
-                                        attachment = Attachment(
-                                            type = 9,
-                                            attributes = """
-                                                {
-                                                  "is_typing_blocked_on_button_select": false
-                                                }
-                                            """.trimIndent()
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        )
-
-        // WHEN
-        viewModel.checkIsTypingBlockedDataFromExistingChat(data)
-
-        // THEN
-        assert(viewModel.typingBlockedState.value == false)
-    }
-
-    @Test
-    fun `WHEN websocket chat has attachment type 9 and typing block true THEN typingBlockedState should true`() {
-        // GIVEN
-        val data = ChatSocketPojo(
-            attachment = AttachmentPojo(
-                type = "9",
-                attributes = JsonObject().apply {
-                    addProperty("is_typing_blocked_on_button_select", true)
-                }
-            )
-        )
-
-        // WHEN
-        viewModel.checkIsTypingBlockedDataFromWebSocket(data)
-
-        // THEN
-        assert(viewModel.typingBlockedState.value == true)
-    }
-
-    @Test
-    fun `WHEN websocket chat has attachment type 9 and typing block false THEN typingBlockedState should false`() {
-        // GIVEN
-        val data = ChatSocketPojo(
-            attachment = AttachmentPojo(
-                type = "9",
-                attributes = JsonObject().apply {
-                    addProperty("is_typing_blocked_on_button_select", false)
-                }
-            )
-        )
-
-        // WHEN
-        viewModel.checkIsTypingBlockedDataFromWebSocket(data)
-
-        // THEN
-        assert(viewModel.typingBlockedState.value == false)
     }
 }

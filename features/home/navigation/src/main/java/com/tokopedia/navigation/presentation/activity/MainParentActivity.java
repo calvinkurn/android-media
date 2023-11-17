@@ -276,6 +276,7 @@ public class MainParentActivity extends BaseActivity implements
                     PERFORMANCE_TRACE_HOME,
                     LifecycleOwnerKt.getLifecycleScope(this),
                     this,
+                    null,
                     null
             );
         } catch (Exception e) {
