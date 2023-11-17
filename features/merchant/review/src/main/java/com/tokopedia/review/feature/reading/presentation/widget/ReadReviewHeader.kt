@@ -308,6 +308,8 @@ class ReadReviewHeader @JvmOverloads constructor(
                 if (selectedTopic == keyword.text) {
                     chipType = ChipsUnify.TYPE_SELECTED
                     selectedTopics.add(keyword.text)
+                    isSelected = true
+                    listener.onFilterTopic(selectedTopics.toList())
                 }
             }
             chipGroup.addView(chip)
