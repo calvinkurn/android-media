@@ -571,7 +571,8 @@ class ChatbotFragment2 :
                         startTime,
                         opponentId,
                         hashMap[EVENT].toBlankOrString(),
-                        hashMap[USED_BY].toBlankOrString()
+                        hashMap[USED_BY].toBlankOrString(),
+                        false
                     )
                 }
                 enableTyping()
@@ -630,7 +631,8 @@ class ChatbotFragment2 :
             startTime,
             opponentId,
             hashMap.get(EVENT).toString(),
-            hashMap.get(USED_BY).toString()
+            hashMap.get(USED_BY).toString(),
+            false
         )
         smallReplyBox?.clearChatText()
         isFloatingSendButton = false
@@ -1027,10 +1029,6 @@ class ChatbotFragment2 :
             context?.let { context ->
                 RouteManager.route(context, applink)
             }
-        }
-
-        viewModel.typingBlockedState.observe(viewLifecycleOwner) {
-            handleIsTypingBlocked(it)
         }
     }
 
@@ -1562,7 +1560,8 @@ class ChatbotFragment2 :
             messageId,
             model,
             SendableUiModel.generateStartTime(),
-            opponentId
+            opponentId,
+            false
         )
         getViewState()?.hideQuickReplyOnClick()
         hideCsatRatingView()
@@ -1947,14 +1946,15 @@ class ChatbotFragment2 :
                 messageId,
                 selected,
                 SendableUiModel.generateStartTime(),
-                opponentId
+                opponentId,
+                model.isTypingBlocked ?: false
             )
             handleIsTypingBlocked(model.isTypingBlocked)
         }
     }
 
-    private fun handleIsTypingBlocked(isTypingBlocked: Boolean) {
-        if (isTypingBlocked) {
+    private fun handleIsTypingBlocked(isTypingBlocked: Boolean?) {
+        if (isTypingBlocked == true) {
             hideReplyBox()
         } else {
             enableTyping()
@@ -2280,7 +2280,8 @@ class ChatbotFragment2 :
             messageId,
             selected,
             SendableUiModel.generateStartTime(),
-            opponentId
+            opponentId,
+            false
         )
         enableTyping()
     }

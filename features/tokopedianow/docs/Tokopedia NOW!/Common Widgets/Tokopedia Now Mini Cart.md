@@ -8,7 +8,7 @@
 
 <!--toc-->
 
-![image](../../res/tokopedia_now_minicart_bottom_sheet.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_minicart_bottom_sheet.png)
 
 ## **Description**
 
@@ -25,7 +25,7 @@
 
 ## **Flow Diagram**
 
-![image](../../res/tokopedia_now_minicart_flow_diagram.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_minicart_flow_diagram.png)
 
 ## **Features**
 
@@ -35,6 +35,6 @@ Even though the Mini Cart is owned by another team, we frequently make changes t
 
 | **Name** | **Screenshot**                                                         | **Link** |
 | --- |------------------------------------------------------------------------| --- |
-| Multiple Selections Chat | ![image](../../res/tokopedia_now_minicart_multiple_selections_chat.png)<br/> | [Mini Cart Multiple Selections Chat](/wiki/spaces/PA/pages/2136178938/Mini+Cart+Multiple+Selections+Chat)  |
-| Product Bundling | ![image](../../res/tokopedia_now_minicart_product_bundling.png)<br/>         | [Mini Cart Product Bundling](/wiki/spaces/PA/pages/2131689552/Mini+Cart+Product+Bundling)  |
+| Multiple Selections Chat | ![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_minicart_multiple_selections_chat.png)<br/> | [Mini Cart Multiple Selections Chat](/wiki/spaces/PA/pages/2136178938/Mini+Cart+Multiple+Selections+Chat)  |
+| Product Bundling | ![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_minicart_product_bundling.png)<br/>         | [Mini Cart Product Bundling](/wiki/spaces/PA/pages/2131689552/Mini+Cart+Product+Bundling)  |
 

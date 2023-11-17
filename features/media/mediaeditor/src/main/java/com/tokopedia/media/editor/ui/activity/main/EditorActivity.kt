@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.di.EditorInjector
@@ -51,9 +52,13 @@ class EditorActivity : BaseEditorActivity() {
         supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
 
+        val ctaText = editorParam.get().getCustomCtaText()
+
         setHeader(
             getString(editorR.string.editor_main_header_title_text),
-            getString(editorR.string.editor_main_header_action_text)
+            ctaText.ifNullOrBlank {
+                getString(editorR.string.editor_main_header_action_text)
+            }
         )
 
         InternalStorageCleaner.cleanUpInternalStorageIfNeeded(

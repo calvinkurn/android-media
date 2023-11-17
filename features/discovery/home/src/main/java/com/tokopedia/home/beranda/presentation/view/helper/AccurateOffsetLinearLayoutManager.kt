@@ -2,15 +2,17 @@ package com.tokopedia.home.beranda.presentation.view.helper
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
-import android.os.Bundle
 import android.os.Parcelable
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
+import java.lang.reflect.Type
 
-class AccurateOffsetLinearLayoutManager(context: Context?, val adapter: HomeRecycleAdapter? = null) : LinearLayoutManager(context) {
+class AccurateOffsetLinearLayoutManager(context: Context, val adapter: HomeRecycleAdapter? = null) : LinearLayoutManager(context) {
 
+    private val cacheManager = SaveInstanceCacheManager(context, ACCURATE_LAYOUT_MANAGER)
     // map of child adapter position to its height.
     private val childSizesMap = hashMapOf<Int, Int>()
 
@@ -41,33 +43,26 @@ class AccurateOffsetLinearLayoutManager(context: Context?, val adapter: HomeRecy
         return scrolledY
     }
 
-    override fun onSaveInstanceState(): Parcelable {
-        val bundle = Bundle()
-        bundle.putParcelable(SAVED_INSTANCE_STATE, super.onSaveInstanceState())
-        bundle.putSerializable(SAVED_CHILD_SIZE_MAP, childSizesMap)
-        return bundle
+    override fun onSaveInstanceState(): Parcelable? {
+        cacheManager.put(SAVED_CHILD_SIZE_MAP, childSizesMap)
+        return super.onSaveInstanceState()
     }
 
     @SuppressLint("RestrictedApi")
     override fun onRestoreInstanceState(state: Parcelable?) {
-        var savedInstanceState = state
         try {
-            if(state is Bundle) {
-                val childSizesMap = state.getSerializable(SAVED_CHILD_SIZE_MAP) as? Map<Int, Int>
-                childSizesMap?.let {
-                    this.childSizesMap.clear()
-                    this.childSizesMap.putAll(it)
-                }
-                savedInstanceState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    state.getParcelable(SAVED_INSTANCE_STATE, SavedState::class.java)
-                } else state.getParcelable(SAVED_INSTANCE_STATE)
+            val type: Type = object : TypeToken<HashMap<Int, Int>>() {}.type
+            val childSizesMap = cacheManager.get(SAVED_CHILD_SIZE_MAP, type, hashMapOf<Int, Int>())
+            childSizesMap?.let {
+                this.childSizesMap.clear()
+                this.childSizesMap.putAll(it)
             }
+            super.onRestoreInstanceState(state)
         } catch (_: Exception) { }
-        super.onRestoreInstanceState(savedInstanceState)
     }
 
     companion object {
-        private const val SAVED_INSTANCE_STATE = "saved_instance_state"
+        private const val ACCURATE_LAYOUT_MANAGER = "accurate_layout_manager"
         private const val SAVED_CHILD_SIZE_MAP = "saved_child_size_map"
     }
 }
