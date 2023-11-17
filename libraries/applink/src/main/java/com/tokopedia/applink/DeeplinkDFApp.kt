@@ -702,7 +702,7 @@ object DeeplinkDFApp {
     )
 
     private fun getDfStoriesCreationMainApp() = mutableListOf(
-        // play_broadcaster
+        // stories_creation
         DFP(INTERNAL, HOST_STORIES, PathType.PATH, PATH_STORIES_CREATION),
         // mediapicker
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-album"),
@@ -711,7 +711,7 @@ object DeeplinkDFApp {
     )
 
     private fun getDfStoriesCreationSellerApp() = mutableListOf(
-        // play_broadcaster
+        // stories_creation
         DFP(INTERNAL, HOST_STORIES, PathType.PATH, PATH_STORIES_CREATION),
         // mediapicker
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-album"),
