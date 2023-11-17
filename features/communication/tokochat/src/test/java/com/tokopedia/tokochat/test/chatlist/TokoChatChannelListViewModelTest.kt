@@ -57,7 +57,6 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
                 assertEquals(initialValue.chatItemList.size, 0)
                 assertEquals(initialValue.errorMessage, null)
                 assertEquals(initialValue.hasNextPage, false)
-                assertEquals(initialValue.trackerData, null)
                 assertEquals(initialValue.localListLoaded, false)
                 assertEquals(initialValue.isLoading, false)
 
@@ -66,7 +65,6 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
                 assertEquals(localLoadingValue.chatItemList.size, 0)
                 assertEquals(localLoadingValue.errorMessage, null)
                 assertEquals(localLoadingValue.hasNextPage, false)
-                assertEquals(localLoadingValue.trackerData, null)
                 assertEquals(localLoadingValue.localListLoaded, false)
                 assertEquals(localLoadingValue.isLoading, true)
 
@@ -75,7 +73,6 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
                 assertEquals(updatedValue.chatItemList.size, 1)
                 assertEquals(updatedValue.errorMessage, null)
                 assertEquals(updatedValue.hasNextPage, true)
-                assertEquals(updatedValue.trackerData?.size, 2)
                 assertEquals(updatedValue.localListLoaded, true)
                 assertEquals(updatedValue.isLoading, false)
 
@@ -123,7 +120,6 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
                 assertEquals(updatedValue.chatItemList.size, 0)
                 assertEquals(updatedValue.errorMessage, null)
                 assertEquals(updatedValue.hasNextPage, false)
-                assertEquals(updatedValue.trackerData?.size, 0)
                 assertEquals(updatedValue.localListLoaded, true)
                 assertEquals(updatedValue.isLoading, false)
 
