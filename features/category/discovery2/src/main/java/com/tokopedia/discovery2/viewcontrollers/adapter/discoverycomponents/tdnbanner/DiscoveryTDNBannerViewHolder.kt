@@ -44,12 +44,13 @@ class DiscoveryTDNBannerViewHolder(
         by lazy { (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics() }
 
     private var viewModel: DiscoveryTDNBannerViewModel? = null
-    private var shouldHitService: Boolean = true
+    private var tdnBannerUiModels: MutableList<TdnBannerUiModel> = ArrayList()
 
     init {
         binding?.apply {
             showWidget()
             tdnBannerView.setTdnResponseListener(this@DiscoveryTDNBannerViewHolder)
+            tdnBannerUiModels.clear()
         }
     }
 
@@ -95,6 +96,7 @@ class DiscoveryTDNBannerViewHolder(
             } else {
                 hideWidget()
             }
+            updateCurrentTdnBanners(categoriesList)
         }
     }
 
@@ -108,10 +110,7 @@ class DiscoveryTDNBannerViewHolder(
         owner: LifecycleOwner
     ) {
         if (userSession.isLoggedIn) {
-            if (!shouldHitService) return
-
             viewModel?.componentLiveData?.observe(owner) { component ->
-                shouldHitService = false
                 addHeader(component)
                 getBannerData(component)
             }
@@ -141,13 +140,22 @@ class DiscoveryTDNBannerViewHolder(
         component: ComponentsItem
     ) {
         component.data?.firstOrNull()?.run {
-            tdnBannerView.getTdnData(
-                source = inventoryId.orEmpty(),
-                adsCount = adsCount.orZero(),
-                dimenId = dimensionId.toIntSafely(),
-                depId = depID.orEmpty(),
-                productID = productId.orEmpty()
-            )
+            /**
+             * check if the data exist should not hit the gql then set existing data to the ui widget
+             */
+            val currentTdnBannerUiModel = tdnBannerUiModels.firstOrNull { it.id == component.id }
+            if (currentTdnBannerUiModel != null) {
+                onTdnBannerResponse(currentTdnBannerUiModel.tdnBanners.toMutableList())
+            } else {
+                tdnBannerUiModels.add(TdnBannerUiModel(component.id))
+                tdnBannerView.getTdnData(
+                    source = inventoryId.orEmpty(),
+                    adsCount = adsCount.orZero(),
+                    dimenId = dimensionId.toIntSafely(),
+                    depId = depID.orEmpty(),
+                    productID = productId.orEmpty()
+                )
+            }
         }
     }
 
@@ -197,6 +205,18 @@ class DiscoveryTDNBannerViewHolder(
                 shopId = bannerData.bannerName,
                 itemPosition = bannerData.position
             )
+        }
+    }
+
+    private fun updateCurrentTdnBanners(
+        categoriesList: MutableList<List<TopAdsImageViewModel>>
+    ) {
+        val tdnBannerUiModel = tdnBannerUiModels.firstOrNull { it.id == viewModel?.components?.id }
+        if (tdnBannerUiModel != null) {
+            val newList = categoriesList.map { ArrayList(it) }
+            val index = tdnBannerUiModels.indexOf(tdnBannerUiModel)
+            tdnBannerUiModels.removeAt(index)
+            tdnBannerUiModels.add(index, tdnBannerUiModel.copy(tdnBanners = newList))
         }
     }
 }

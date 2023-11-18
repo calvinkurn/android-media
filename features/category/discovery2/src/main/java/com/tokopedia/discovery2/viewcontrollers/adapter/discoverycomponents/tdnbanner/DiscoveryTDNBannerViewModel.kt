@@ -18,5 +18,4 @@ class DiscoveryTDNBannerViewModel(
     init {
         componentMutableLiveData.value = components
     }
-
 }
