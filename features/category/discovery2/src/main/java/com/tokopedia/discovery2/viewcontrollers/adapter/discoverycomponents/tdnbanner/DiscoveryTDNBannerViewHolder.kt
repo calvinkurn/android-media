@@ -48,7 +48,6 @@ class DiscoveryTDNBannerViewHolder(
 
     init {
         binding?.apply {
-            showWidget()
             tdnBannerView.setTdnResponseListener(this@DiscoveryTDNBannerViewHolder)
             tdnBannerUiModels.clear()
         }
@@ -58,6 +57,7 @@ class DiscoveryTDNBannerViewHolder(
         discoveryBaseViewModel: DiscoveryBaseViewModel
     ) {
         viewModel = discoveryBaseViewModel as? DiscoveryTDNBannerViewModel
+        binding?.showWidget()
     }
 
     override fun setUpObservers(
