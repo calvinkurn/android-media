@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Environment
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -19,7 +20,6 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
-
 
 class DownloadManagerNakamaProgressDialog(
     private val progressDialog: ProgressDialog?,
@@ -63,7 +63,6 @@ class DownloadManagerNakamaProgressDialog(
         var finishDownload = false
 
         launch {
-
             withContext(Dispatchers.Main) {
                 setDialogPending()
             }
@@ -142,7 +141,7 @@ class DownloadManagerNakamaProgressDialog(
 
         this.fileNamePath =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                .toString() + "/$fileName"
+            .toString() + "/$fileName"
 
         val file = File(fileNamePath)
 
@@ -185,6 +184,7 @@ class DownloadManagerNakamaProgressDialog(
                 it.startActivity(intent)
             } catch (e: Exception) {
                 e.printStackTrace()
+                FirebaseCrashlytics.getInstance().recordException(e)
             }
         }
     }
