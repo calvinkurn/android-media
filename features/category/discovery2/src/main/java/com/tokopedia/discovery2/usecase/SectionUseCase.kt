@@ -12,11 +12,15 @@ import com.tokopedia.discovery2.datamapper.getMapWithoutRpc
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.repository.section.SectionRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.remoteconfig.RemoteConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class SectionUseCase @Inject constructor(private val sectionRepository: SectionRepository) {
+class SectionUseCase @Inject constructor(
+    private val sectionRepository: SectionRepository,
+    private val remoteConfig: RemoteConfig
+) {
 
     suspend fun getChildComponents(componentId: String, pageEndPoint: String): Boolean {
         val component = getComponent(componentId, pageEndPoint)
@@ -133,12 +137,59 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                     }
                 }
             }
+
+            val isBackgroundAvailable = it.properties?.run {
+                !(backgroundImageUrl.isNullOrEmpty() && foregroundImageUrl.isNullOrEmpty())
+            } ?: false
+
+            applyFestiveBackground(isBackgroundAvailable, components, it.position)
+
             it.setComponentsItem(components, component.tabName)
             it.noOfPagesLoaded = 1
             it.verticalProductFailState = false
             return true
         }
         return false
+    }
+
+    private fun applyFestiveBackground(
+        isBackgroundAvailable: Boolean,
+        components: List<ComponentsItem>,
+        sectionPosition: Int
+    ) {
+        val isFestiveBackgroundEnable = remoteConfig.getBoolean(SECTION_FESTIVE_BACKGROUND_TOGGLE)
+
+        if (isFestiveBackgroundEnable && isBackgroundAvailable && components.allowedToHaveBackground()) {
+            val offsetPosition = 1
+            components.forEachIndexed { index, item ->
+                item.apply {
+                    isBackgroundPresent = true
+                    position = sectionPosition + offsetPosition + index
+                }
+            }
+        }
+    }
+
+    private fun List<ComponentsItem>.allowedToHaveBackground(): Boolean {
+        val componentsSupportBG = arrayOf(
+            ComponentNames.LihatSemua.componentName,
+            ComponentNames.ProductCardSingle.componentName,
+            ComponentNames.SingleBanner.componentName,
+            ComponentNames.DoubleBanner.componentName,
+            ComponentNames.TripleBanner.componentName,
+            ComponentNames.QuadrupleBanner.componentName,
+            ComponentNames.CalendarWidgetCarousel.componentName,
+            ComponentNames.ProductHighlight.componentName,
+            ComponentNames.ProductCardCarousel.componentName
+        )
+
+        var areComponentsSupportBG = true
+
+        forEach { item ->
+            areComponentsSupportBG = componentsSupportBG.find { item.name == it } != null
+        }
+
+        return areComponentsSupportBG
     }
 
     private fun getQueryFilterString(
@@ -155,10 +206,15 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
         queryParameterMapWithRpc?.let {
             for (entry in it) {
                 val adjustedValue = Utils.isRPCFilterApplicableForTab(entry.value, sectionComponent)
-                if (adjustedValue.isNotEmpty())
+                if (adjustedValue.isNotEmpty()) {
                     queryParameterMap[RPC_FILTER_KEY + entry.key] = adjustedValue
+                }
             }
         }
         return Utils.getQueryString(queryParameterMap)
+    }
+
+    companion object {
+        private const val SECTION_FESTIVE_BACKGROUND_TOGGLE = "android_main_app_enable_disco_section_background"
     }
 }

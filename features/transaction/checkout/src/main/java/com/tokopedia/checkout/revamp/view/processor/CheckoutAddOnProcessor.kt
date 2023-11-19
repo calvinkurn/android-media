@@ -99,7 +99,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                         if (shipmentCartItemModel.hasEthicalProducts) {
                             shopIds.add(shipmentCartItemModel.shopId.toString())
                             enablerNames.add(shipmentCartItemModel.enablerLabel)
-                            for (cartItemModel in shipmentCartItemModel.products) {
+                            for (cartItemModel in tempProductMap.values) {
                                 if (cartItemModel.ethicalDrugDataModel.needPrescription) {
                                     cartIds.add(cartItemModel.cartId.toString())
                                 }
@@ -162,7 +162,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                                                                                 )
                                                                         }
                                                                         shipmentCartItemModel.errorTitle =
-                                                                            "Yaah, ada ${shipmentCartItemModel.products.size} barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain."
+                                                                            "Yaah, ada ${tempProductMap.size} barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain."
                                                                         shipmentCartItemModel.isCustomEpharmacyError =
                                                                             true
                                                                         shipmentCartItemModel.spId =
@@ -308,7 +308,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                 if (shipmentCartItemModel.hasEthicalProducts) {
                     shopIds.add(shipmentCartItemModel.shopId.toString())
                     enablerNames.add(shipmentCartItemModel.enablerLabel)
-                    for (cartItemModel in shipmentCartItemModel.products) {
+                    for (cartItemModel in tempProductMap.values) {
                         if (cartItemModel.ethicalDrugDataModel.needPrescription) {
                             cartIds.add(cartItemModel.cartId.toString())
                         }
@@ -372,7 +372,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                                                                         )
                                                                 }
                                                                 shipmentCartItemModel.errorTitle =
-                                                                    "Yaah, ada ${shipmentCartItemModel.products.size} barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain."
+                                                                    "Yaah, ada ${tempProductMap.size} barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain."
                                                                 shipmentCartItemModel.isCustomEpharmacyError =
                                                                     true
                                                                 shipmentCartItemModel.spId =

@@ -30,7 +30,7 @@ This is a Mini Cart Widget for *Buy More Get/Save More(BMGM or BMSM)* project wh
 
 1. **Mini Cart View**
 
-![](res/Screen%20Shot%202023-09-05%20at%2010.40.48-20230905-034115.png)
+![](https://docs-android.tokopedia.net/images/docs/main/Screen%20Shot%202023-09-05%20at%2010.40.48-20230905-034115.png)
 2. **Mini Cart Detail BottomSheet**  
 **Unique case :** 
 
@@ -39,7 +39,7 @@ This is a Mini Cart Widget for *Buy More Get/Save More(BMGM or BMSM)* project wh
 	2. Show product price per item and use wholesale price if eligible  
 	
 	
-	![](res/Screen%20Shot%202023-09-05%20at%2010.42.19-20230905-034250.png)
+	![](https://docs-android.tokopedia.net/images/docs/main/Screen%20Shot%202023-09-05%20at%2010.42.19-20230905-034250.png)
 
 ## Tech Stack
 
@@ -52,17 +52,17 @@ There are some flow in mini cart
 
 - **Initial Load** and **Add to Cart** flow of *Mini Cart* in *Offer Landing Page*
 
-![](res/image-20230904-091601.png)
+![](https://docs-android.tokopedia.net/images/docs/main/image-20230904-091601.png)
 
 - View **Cart Detail Bottom Sheet** flow  
 *Cart Detail Bottom Sheet* page is using local database as the data source. We are using ***PersistentCacheManager***. Here is the flow :
 
-![](res/image-20230904-095906.png)
+![](https://docs-android.tokopedia.net/images/docs/main/image-20230904-095906.png)
 
 - Open **Cart Page/Cek Keranjang** flow  
 Before we open the Cart Page, we should make all of attached product in offer landing page automatically checked in Cart Page by invoking ***mutation setCheckboxState***. It’s fire and forget, so it will open the Cart page no matter what. Here is the detail flow :
 
-![](res/open%20cart%20flow-20230912-062242.png)
+![](https://docs-android.tokopedia.net/images/docs/main/open%20cart%20flow-20230912-062242.png)
 
 ## Navigation
 
@@ -74,10 +74,10 @@ Before we open the Cart Page, we should make all of attached product in offer la
 
 	1. From ***Mini Cart*** on Offer Landing Page
 	
-	![](res/Screen%20Shot%202023-09-05%20at%2010.35.55-20230905-033635.png)
+	![](https://docs-android.tokopedia.net/images/docs/main/Screen%20Shot%202023-09-05%20at%2010.35.55-20230905-033635.png)
 	2. Click ***(i)*** icon on Checkout Page, in ***Buy More Save More******Section***
 	
-	![](res/Screen%20Shot%202023-10-06%20at%2016.51.35-20231006-095151.png)
+	![](https://docs-android.tokopedia.net/images/docs/main/Screen%20Shot%202023-10-06%20at%2016.51.35-20231006-095151.png)
 
 ### GQL
 
