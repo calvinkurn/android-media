@@ -120,12 +120,15 @@ data class Properties(
     @SerializedName("ribbon")
     val ribbon: Ribbon? = null,
 
+    @SerializedName("foreground_image_url")
+    val foregroundImageUrl: String? = null,
+
     @SerializedName("header")
     val header: Header? = null,
 
     @SerializedName("warehouse_tco")
     val warehouseTco: String? = null
-    ) {
+) {
     data class Header(
         @SerializedName("applink")
         val applink: String? = null,

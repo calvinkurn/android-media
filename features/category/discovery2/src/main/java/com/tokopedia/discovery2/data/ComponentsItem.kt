@@ -115,7 +115,8 @@ data class ComponentsItem(
     var myCouponList: List<MyCoupon>? = null,
     var claimCouponList: List<CatalogWithCouponList>? = null,
     var isFirstShown: Boolean = true,
-    var itemPosition: Int = 0
+    var itemPosition: Int = 0,
+    var isBackgroundPresent: Boolean = false
 ) {
 
     private var componentsItem: List<ComponentsItem>? = null
