@@ -124,7 +124,7 @@ class ShopOfferHeroBrandViewModel(
         isLoading = true
         launchCatchError(
             block = {
-                productCardsUseCase?.loadFirstPageComponents(component.id, component.pageEndPoint, PRODUCT_PER_PAGE)
+                productCardsUseCase?.loadFirstPageComponents(component.id, component.pageEndPoint)
                 component.shouldRefreshComponent = null
                 setProductsList(
                     onEmptyListener = {
@@ -144,7 +144,7 @@ class ShopOfferHeroBrandViewModel(
     fun loadMore() {
         isLoading = true
         launchCatchError(block = {
-            if (productCardsUseCase?.getCarouselPaginatedData(component.id, component.pageEndPoint, PRODUCT_PER_PAGE) == true) {
+            if (productCardsUseCase?.getCarouselPaginatedData(component.id, component.pageEndPoint) == true) {
                 setProductsList(
                     onEmptyListener = { /* nothing to do */ }
                 )

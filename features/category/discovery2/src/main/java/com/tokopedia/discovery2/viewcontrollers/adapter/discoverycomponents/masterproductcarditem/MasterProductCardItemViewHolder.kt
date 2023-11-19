@@ -134,12 +134,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun openVariantSheet() {
-        masterProductCardItemViewModel?.components?.let {
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATCTokonow(
-                it,
-                ""
-            )
-        }
         masterProductCardItemViewModel?.getProductDataItem()?.let { dataItem ->
             (fragment as DiscoveryFragment).openVariantBottomSheet(
                 productId = dataItem.productId.orEmpty(),

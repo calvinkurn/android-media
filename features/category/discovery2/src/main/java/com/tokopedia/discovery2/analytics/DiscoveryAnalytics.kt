@@ -819,7 +819,7 @@ open class DiscoveryAnalytics(
         val productMap = HashMap<String, Any>()
         val header = componentsItems.getPropertyHeader()
         componentsItems.data?.firstOrNull()?.let {
-            productMap[KEY_CATEGORY_ID] = NONE_OTHER
+            productMap[KEY_ATC_CATEGORY_ID] = NONE_OTHER
             productMap[DIMENSION40] = it.gtmItemName?.replace("#POSITION", (getParentPosition(componentsItems) + 1).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
             productMap[DIMENSION45] = cartID
             productMap[DIMENSION90] = sourceIdentifier

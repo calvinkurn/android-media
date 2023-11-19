@@ -780,7 +780,9 @@ class Utils {
             } else {
                 ValueAnimator.ofInt(0, totalHeight - lineHeight)
             }
-            animator.duration = duration
+            val newDuration = duration / 5
+            animator.startDelay = newDuration * 3
+            animator.duration = newDuration * 2
             animator.addUpdateListener { animation ->
                 val animatedValue = animation.animatedValue as Int
                 scrollTo(0, animatedValue)

@@ -55,8 +55,9 @@ class ShopOfferHeroBrandViewHolder(
 ) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     companion object {
         private const val PREFETCH_ITEM_COUNT = 4
-        private const val SHOP_TIER_WORDING_DURATION_ANIMATION = 2000L
+        private const val SHOP_TIER_WORDING_ANIMATION_DURATION = 2000L
         private const val SHOP_TIER_WORDING_SEPARATOR = "<br/>"
+        private const val SHOP_TIER_WORDING_DELAY_DURATION = 500L
         private const val PROGRESS_BAR_TIER_DELAY = 2500L
         private const val PROGRESS_BAR_SHIMMERING_DELAY = 500L
         private const val NO_ANIMATION_SIZE = 1
@@ -163,28 +164,30 @@ class ShopOfferHeroBrandViewHolder(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         if (tpShopTierWording.lineCount.isMoreThanZero()) {
-                            val animatorSet = AnimatorSet()
+                            tpShopTierWording.postDelayed({
+                                val animatorSet = AnimatorSet()
 
-                            val firstAnimation = tpShopTierWording.verticalScrollAnimation(
-                                duration = SHOP_TIER_WORDING_DURATION_ANIMATION,
-                                isReverse = false,
-                                isFromHtml = true
-                            )
-                            val secondAnimation = tpShopTierWording.verticalScrollAnimation(
-                                duration = SHOP_TIER_WORDING_DURATION_ANIMATION,
-                                isReverse = true,
-                                isFromHtml = true
-                            )
+                                val firstAnimation = tpShopTierWording.verticalScrollAnimation(
+                                    duration = SHOP_TIER_WORDING_ANIMATION_DURATION,
+                                    isReverse = false,
+                                    isFromHtml = true
+                                )
+                                val secondAnimation = tpShopTierWording.verticalScrollAnimation(
+                                    duration = SHOP_TIER_WORDING_ANIMATION_DURATION,
+                                    isReverse = true,
+                                    isFromHtml = true
+                                )
 
-                            animatorSet.playSequentially(
-                                firstAnimation,
-                                secondAnimation
-                            )
+                                animatorSet.playSequentially(
+                                    firstAnimation,
+                                    secondAnimation
+                                )
 
-                            animatorSet.start()
+                                animatorSet.start()
+                                hasRunScrollingAnimation = true
+                            }, SHOP_TIER_WORDING_DELAY_DURATION)
                         }
                         tpShopTierWording.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        hasRunScrollingAnimation = true
                     }
                 }
             )
