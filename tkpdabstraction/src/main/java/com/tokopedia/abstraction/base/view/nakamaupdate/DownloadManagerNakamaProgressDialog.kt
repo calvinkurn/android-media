@@ -5,13 +5,13 @@ import android.app.DownloadManager
 import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -19,6 +19,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
+
 
 class DownloadManagerNakamaProgressDialog(
     private val progressDialog: ProgressDialog?,
@@ -28,6 +29,7 @@ class DownloadManagerNakamaProgressDialog(
     companion object {
         private const val MAX_PROGRESS = 100
         private const val DELAY_UPDATE_PROGRESS = 500L
+        private const val DELAY_MAX_UPDATE_PROGRESS = 300L
         private const val MESSAGE_PREPARE_DOWNLOAD = "Preparing to download..."
         private const val MESSAGE_DOWNLOADING = "Downloading new version..."
         private const val VERSION_PARAM = "version"
@@ -37,7 +39,7 @@ class DownloadManagerNakamaProgressDialog(
         initDialog()
     }
 
-    private val downloadManager by lazy {
+    private val downloadManager by lazy(LazyThreadSafetyMode.NONE) {
         weakActivity.get()?.let { ContextCompat.getSystemService(it, DownloadManager::class.java) }
     }
 
@@ -52,14 +54,15 @@ class DownloadManagerNakamaProgressDialog(
         showProgressDialog()
         val request = getDownloadRequest(apkUrl)
 
-        handleDownloadCompletion(request)
+        downloadID = downloadManager?.enqueue(request) ?: -1L
+
+        handleDownloadCompletion()
     }
 
-    private fun handleDownloadCompletion(request: DownloadManager.Request) {
+    private fun handleDownloadCompletion() {
         var finishDownload = false
 
         launch {
-            downloadID = downloadManager?.enqueue(request) ?: -1L
 
             withContext(Dispatchers.Main) {
                 setDialogPending()
@@ -87,16 +90,15 @@ class DownloadManagerNakamaProgressDialog(
                                     finishDownload = true
                                     withContext(Dispatchers.Main) {
                                         progressDialog?.progress = MAX_PROGRESS
-                                        changeStyleAndHideProgressDialog()
+                                        delay(DELAY_MAX_UPDATE_PROGRESS)
+                                        changeStyleAndDismissProgressDialog()
+                                        updateInstallApk(fileNamePath)
                                     }
-                                    updateInstallApk(fileNamePath)
                                 }
 
                                 DownloadManager.STATUS_FAILED -> {
                                     finishDownload = true
-                                    withContext(Dispatchers.Main) {
-                                        changeStyleAndHideProgressDialog()
-                                    }
+                                    changeStyleAndDismissProgressDialog()
                                 }
 
                                 DownloadManager.STATUS_RUNNING -> {
@@ -138,10 +140,20 @@ class DownloadManagerNakamaProgressDialog(
     ): DownloadManager.Request {
         val fileName = getFileNameFromUrl(apkUrl)
 
-        this.fileNamePath = "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)}/$fileName"
+        this.fileNamePath =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                .toString() + "/$fileName"
+
+        val file = File(fileNamePath)
+
+        if (file.exists()) {
+            file.delete()
+        }
+
+        val uri = Uri.fromFile(file)
 
         return DownloadManager.Request(Uri.parse(apkUrl))
-            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+            .setDestinationUri(uri)
             .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
             .setTitle(fileName)
             .setAllowedOverRoaming(true)
@@ -153,20 +165,26 @@ class DownloadManagerNakamaProgressDialog(
 
     private fun updateInstallApk(fileName: String) {
         weakActivity.get()?.let {
-            val uri = FileProvider.getUriForFile(
-                it,
-                it.applicationContext.packageName + ".provider",
-                File(fileName)
-            )
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(
-                    uri,
-                    "application/vnd.android.package-archive"
+            val file = File(fileName)
+            val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                FileProvider.getUriForFile(
+                    it,
+                    it.applicationContext.packageName + ".provider",
+                    file
                 )
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            } else {
+                Uri.fromFile(file)
             }
-            it.runOnUiThread {
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "application/vnd.android.package-archive")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
+
+            try {
                 it.startActivity(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
@@ -200,14 +218,14 @@ class DownloadManagerNakamaProgressDialog(
         }
     }
 
-    private fun changeStyleAndHideProgressDialog() {
+    private fun changeStyleAndDismissProgressDialog() {
         progressDialog?.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        hideProgressDialog()
+        dismissProgressDialog()
     }
 
-    private fun hideProgressDialog() {
+    private fun dismissProgressDialog() {
         if (progressDialog?.isShowing == true) {
-            progressDialog.hide()
+            progressDialog.dismiss()
         }
     }
 
