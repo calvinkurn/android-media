@@ -31,6 +31,7 @@ class CheckoutDropshipWidget : ConstraintLayout {
 
     private var binding: ItemCheckoutDropshipBinding? = null
     private var actionListener: DropshipWidgetListener? = null
+    var cartStringGroup: String = ""
 
     val dropshipName: TextFieldUnify2?
         get() = binding?.tfDropshipName
@@ -57,8 +58,9 @@ class CheckoutDropshipWidget : ConstraintLayout {
     private fun initView() {
         when (state) {
             State.GONE -> setViewGone()
-            State.ENABLED -> setViewEnabled()
             State.DISABLED -> setViewDisabled()
+            State.INIT -> setViewInit()
+            State.SELECTED -> setViewSelected()
         }
 
         invalidate()
@@ -72,6 +74,7 @@ class CheckoutDropshipWidget : ConstraintLayout {
 
         fun showToasterErrorProtectionUsage()
 
+        fun onClickDropshipSwitch(isChecked: Boolean)
     }
 
     fun setupListener(dropshipListener: DropshipWidgetListener) {
@@ -86,17 +89,24 @@ class CheckoutDropshipWidget : ConstraintLayout {
         }
     }
 
-    private fun setViewEnabled() {
+    private fun setViewInit() {
         binding?.containerDropship?.visible()
-        initSwitch(false)
+        initSwitch()
         renderDefaultDropship()
     }
 
+    private fun setViewSelected() {
+        binding?.containerDropship?.visible()
+        initSwitch()
+        showDetailDropship()
+    }
+
     private fun setViewDisabled() {
-        if (state == State.ENABLED) actionListener?.showToasterErrorProtectionUsage()
+        if (state == State.SELECTED) actionListener?.showToasterErrorProtectionUsage()
         binding?.containerDropship?.visible()
         hideDetailDropship()
-        initSwitch(false)
+        disableSwitch()
+        renderDefaultDropship()
     }
 
     private fun hideDetailDropship() {
@@ -121,17 +131,26 @@ class CheckoutDropshipWidget : ConstraintLayout {
     private fun renderDefaultDropship() {
         binding?.tvDropshipTitle?.setDropshipLabel()
         hideDetailDropship()
-        binding?.tfDropshipName?.editText?.hint = context.getString(checkoutR.string.dropship_name)
-        binding?.tfDropshipPhone?.editText?.hint = context.getString(checkoutR.string.dropship_phone)
     }
 
-    private fun initSwitch(isEnabled: Boolean) {
+    private fun initSwitch() {
         binding?.switchDropship?.visible()
         binding?.switchDropship?.apply {
-            isChecked = isEnabled
             setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) validateShowingDetailDropship()
-                else hideDetailDropship()
+                actionListener?.onClickDropshipSwitch(isChecked)
+                /*if (isChecked) validateShowingDetailDropship()
+                else hideDetailDropship()*/
+            }
+        }
+    }
+
+    private fun disableSwitch() {
+        binding?.switchDropship?.apply {
+            visible()
+            isChecked = false
+            setOnClickListener {
+                actionListener?.showToasterErrorProtectionUsage()
+                binding?.switchDropship?.isChecked = false
             }
         }
     }
@@ -177,6 +196,7 @@ class CheckoutDropshipWidget : ConstraintLayout {
     enum class State(val id: Int) {
         GONE(-1), // totally gone
         DISABLED(0), // show dropship widget, but show toaster onclick
-        ENABLED(1); // show dropship widget and enable to click
+        INIT(1), // show init dropship widget
+        SELECTED(2) // show dropship name & phone
     }
 }

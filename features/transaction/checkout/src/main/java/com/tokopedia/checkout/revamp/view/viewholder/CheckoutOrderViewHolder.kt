@@ -330,10 +330,18 @@ class CheckoutOrderViewHolder(
 
     private fun renderDropshipWidget(order: CheckoutOrderModel) {
         binding.dropshipWidget.setupListener(this)
-        binding.dropshipWidget.state = if (order.isEnableDropship) {
-            CheckoutDropshipWidget.State.ENABLED
+        // binding.dropshipWidget.cartStringGroup = order.cartStringGroup
+        binding.dropshipWidget.state = order.stateDropship
+        if (order.isEnableDropship) {
+            if (order.useDropship) {
+                binding.dropshipWidget.state = CheckoutDropshipWidget.State.SELECTED
+                binding.dropshipWidget.dropshipName?.editText?.setText(order.dropshiperName)
+                binding.dropshipWidget.dropshipPhone?.editText?.setText(order.dropshiperPhone)
+            } else {
+                binding.dropshipWidget.state = CheckoutDropshipWidget.State.INIT
+            }
         } else {
-            CheckoutDropshipWidget.State.GONE
+            binding.dropshipWidget.state = CheckoutDropshipWidget.State.GONE
         }
     }
 
@@ -418,5 +426,9 @@ class CheckoutOrderViewHolder(
 
     override fun showToasterErrorProtectionUsage() {
         listener.showDropshipToasterErrorProtectionUsage()
+    }
+
+    override fun onClickDropshipSwitch(isChecked: Boolean) {
+        listener.onCheckChangedDropship(isChecked, bindingAdapterPosition)
     }
 }

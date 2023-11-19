@@ -149,4 +149,6 @@ interface CheckoutAdapterListener {
     fun showDropshipToasterErrorProtectionUsage()
 
     fun checkLatestProtectionOptIn(cartStringGroup: String): Boolean
+
+    fun onCheckChangedDropship(isChecked: Boolean, position: Int)
 }

@@ -2621,4 +2621,8 @@ class CheckoutFragment :
     override fun checkLatestProtectionOptIn(cartStringGroup: String): Boolean {
         return viewModel.isAnyProtectionAddonOptIn(cartStringGroup)
     }
+
+    override fun onCheckChangedDropship(isChecked: Boolean, position: Int) {
+        viewModel.setDropshipSwitch(isChecked, position)
+    }
 }

@@ -1839,6 +1839,18 @@ class CheckoutViewModel @Inject constructor(
                 pageState.value = CheckoutPageState.Normal
                 return@launch
             }
+
+            val indexDropship = cartProcessor.validateDropship(listData.value)
+            if (indexDropship > -1) {
+                    commonToaster.emit(CheckoutPageToaster(
+                            Toaster.TYPE_NORMAL,
+                            "Pastikan Anda telah melengkapi informasi tambahan."
+                    ))
+                pageState.value = CheckoutPageState.Normal
+                pageState.value = CheckoutPageState.ScrollTo(indexDropship)
+                return@launch
+            }
+
             val validateUsePromoRevampUiModel = promoProcessor.finalValidateUse(
                 promoProcessor.generateValidateUsePromoRequest(
                     listData.value,
@@ -2428,7 +2440,7 @@ class CheckoutViewModel @Inject constructor(
 
         if (indexOrder > 0) {
             val order = checkoutItems[indexOrder] as CheckoutOrderModel
-            var newStateDropship = CheckoutDropshipWidget.State.GONE
+            val newStateDropship: CheckoutDropshipWidget.State
             if (checked && order.shipment.courierItemData?.isSelected == true) {
                 newStateDropship = CheckoutDropshipWidget.State.DISABLED
                 viewModelScope.launch(dispatchers.immediate) {
@@ -2439,13 +2451,18 @@ class CheckoutViewModel @Inject constructor(
                         )
                     )
                 }
+                val newOrder = order.copy(
+                        stateDropship = newStateDropship,
+                        useDropship = false,
+                )
+                checkoutItems[indexOrder] = newOrder
             } else {
-                newStateDropship = CheckoutDropshipWidget.State.ENABLED
+                newStateDropship = CheckoutDropshipWidget.State.INIT
+                val newOrder = order.copy(
+                        stateDropship = newStateDropship
+                )
+                checkoutItems[indexOrder] = newOrder
             }
-            val newOrder = order.copy(
-                stateDropship = newStateDropship
-            )
-            checkoutItems[indexOrder] = newOrder
         }
 
         val oldList = checkoutProductModel.addOnProduct.listAddOnProductData
@@ -2526,6 +2543,28 @@ class CheckoutViewModel @Inject constructor(
         checkoutItems[position] = newOrder
         listData.value = checkoutItems
         calculateTotal()
+    }
+
+     fun setDropshipSwitch(isChecked: Boolean, position: Int) {
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
+        if (isChecked && checkoutProcessor.checkProtectionAddOnOptIn(getOrderProducts(checkoutOrderModel.cartStringGroup))) {
+            viewModelScope.launch(dispatchers.immediate) {
+                commonToaster.emit(
+                        CheckoutPageToaster(
+                                Toaster.TYPE_NORMAL,
+                                "Fitur dropshipper tidak dapat digunakan ketika menggunakan layanan tambahan"
+                        )
+                )
+            }
+            val newOrder = checkoutOrderModel.copy(stateDropship = CheckoutDropshipWidget.State.DISABLED)
+            checkoutItems[position] = newOrder
+            listData.value = checkoutItems
+        } else {
+            val newOrder = checkoutOrderModel.copy(useDropship = isChecked)
+            checkoutItems[position] = newOrder
+            listData.value = checkoutItems
+        }
     }
 
     fun getOrderProducts(cartStringGroup: String): List<CheckoutProductModel> {
