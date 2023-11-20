@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.reimagine
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Build
 import android.text.Spannable
@@ -108,11 +109,20 @@ class InspirationKeywordReimagineItemViewHolder(
 
     private fun setImageKeyword(inspirationKeywordDataView: InspirationKeywordDataView) {
         val iconKeyword = binding?.searchInspirationKeywordReimagineImage
-        iconKeyword?.shouldShowWithAction(!type.isIconKeyword()){
-            iconKeyword.loadImageRounded(
-                inspirationKeywordDataView.imageKeyword,
-                8f.toPx()
-            )
+        iconKeyword?.shouldShowWithAction(!type.isIconKeyword()) {
+            iconKeyword.apply {
+                loadImageRounded(
+                    inspirationKeywordDataView.imageKeyword,
+                    8f.toPx()
+                )
+                setColorFilter(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.search_dms_inspiration_keyword_image_overlay,
+                    ),
+                    PorterDuff.Mode.SRC_OVER
+                )
+            }
         }
     }
 
