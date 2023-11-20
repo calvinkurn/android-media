@@ -549,6 +549,9 @@ data class DataItem(
     @field:SerializedName("inactive_icon_image_url")
     val inactiveIconImageUrl: String? = null,
 
+    @SerializedName("cta_color")
+    val ctaColor: String? = "",
+
     var shopAdsClickURL: String? = "",
 
     var shopAdsViewURL: String? = "",

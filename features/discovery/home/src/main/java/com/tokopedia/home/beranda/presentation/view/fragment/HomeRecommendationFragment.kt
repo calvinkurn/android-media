@@ -117,7 +117,6 @@ class HomeRecommendationFragment :
     }
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
 
-    private var currentPage = 0
     private var totalScrollY = 0
     private var tabIndex = 0
     private var recomId = 0
@@ -130,6 +129,7 @@ class HomeRecommendationFragment :
     private var homeCategoryListener: HomeCategoryListener? = null
     private var component: BerandaComponent? = null
     private var coachmarkLocalCache: CoachMarkLocalCache? = null
+    private var homeRecomCurrentPage = 1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -278,7 +278,6 @@ class HomeRecommendationFragment :
 
                             is HomeRecommendationCardState.FailNextPage -> {
                                 adapter.submitList(it.data.homeRecommendations)
-                                showToasterError()
                             }
 
                             is HomeRecommendationCardState.LoadingMore -> {
@@ -348,14 +347,15 @@ class HomeRecommendationFragment :
         endlessRecyclerViewScrollListener =
             object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    currentPage = page
+                    homeRecomCurrentPage = page
                     viewModel.fetchNextHomeRecommendation(
                         tabName,
                         recomId,
                         DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
                         page,
                         getLocationParamString(),
-                        sourceType
+                        sourceType,
+                        adapter.currentList.toList()
                     )
                 }
             }
@@ -616,14 +616,15 @@ class HomeRecommendationFragment :
     }
 
     override fun onRetryGetNextProductRecommendationData() {
-        val currentPage = endlessRecyclerViewScrollListener?.currentPage ?: currentPage
+        val currentPage = endlessRecyclerViewScrollListener?.currentPage ?: homeRecomCurrentPage
         viewModel.fetchNextHomeRecommendation(
             tabName,
             recomId,
             DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
             currentPage,
             getLocationParamString(),
-            sourceType
+            sourceType,
+            adapter.currentList.toList()
         )
     }
 

@@ -67,4 +67,9 @@ sealed interface MiniCartSource {
         override val value: String
             get() = "shop_page"
     }
+
+    object DiscoOfferPage: MiniCartSource {
+        override val value: String
+            get() = "offer_page"
+    }
 }

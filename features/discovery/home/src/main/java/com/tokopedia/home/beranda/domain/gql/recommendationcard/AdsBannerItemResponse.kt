@@ -45,14 +45,14 @@ data class AdsBannerItemResponse(
 data class BannerImage(
     @SerializedName("dimension")
     val dimension: Dimension = Dimension(),
-    @SerializedName("URL")
-    val uRL: String = ""
+    @SerializedName("url")
+    val url: String = ""
 ) {
     data class Dimension(
         @SerializedName("height")
         val height: Int = 0,
         @SerializedName("ID")
-        val iD: String = "0",
+        val id: String = "0",
         @SerializedName("width")
         val width: Int = 0
     )
@@ -134,7 +134,7 @@ data class Shop(
         @SerializedName("review")
         val review: Int = 0,
         @SerializedName("URL")
-        val uRL: String = ""
+        val url: String = ""
     ) {
 
         data class ImageM(

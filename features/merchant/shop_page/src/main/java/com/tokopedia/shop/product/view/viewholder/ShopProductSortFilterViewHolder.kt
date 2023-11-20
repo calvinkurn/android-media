@@ -15,6 +15,7 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
@@ -53,6 +54,8 @@ class ShopProductSortFilterViewHolder(
     override fun bind(data: ShopProductSortFilterUiModel) {
         removeOnScrollChangedListener()
         this.shopProductSortFilterUiModel = data
+        val isOverrideTheme = data.isOverrideTheme
+        overrideWidgetContentTheme(isOverrideTheme = isOverrideTheme)
         itemView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 addScrollListener()
@@ -154,6 +157,12 @@ class ShopProductSortFilterViewHolder(
             )
         )
         sortFilterWidget?.sortFilterPrefix?.background = chipBackground
+    }
+
+    private fun overrideWidgetContentTheme(isOverrideTheme: Boolean) {
+        if (isOverrideTheme) {
+            sortFilterWidget?.applyColorMode(ColorMode.LIGHT_MODE)
+        }
     }
 
     private fun addScrollListener() {

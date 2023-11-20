@@ -101,7 +101,7 @@ class HomeRecommendationCardMapper @Inject constructor(
         }
 
         return HomeRecommendationDataModel(
-            homeRecommendationTypeFactoryImplList,
+            homeRecommendationTypeFactoryImplList.toList(),
             getHomeRecommendationCard.hasNextPage
         )
     }
@@ -197,7 +197,7 @@ class HomeRecommendationCardMapper @Inject constructor(
             adClickUrl = adsBanner.adClickURL,
             adViewUrl = adsBanner.adViewURL,
             applink = adsBanner.appLink,
-            imageUrl = imageBanner?.uRL.orEmpty(),
+            imageUrl = imageBanner?.url.orEmpty(),
             imageWidth = imageBanner?.dimension?.width.orZero(),
             imageHeight = imageBanner?.dimension?.height.orZero(),
             shopId = adsBanner.banner.shop.id

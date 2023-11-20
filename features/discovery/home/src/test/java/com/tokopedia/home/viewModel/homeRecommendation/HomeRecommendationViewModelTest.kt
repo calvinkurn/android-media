@@ -237,7 +237,14 @@ class HomeRecommendationViewModelTest {
 
         homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "")
+        homeRecommendationViewModel.fetchNextHomeRecommendation(
+            "",
+            1,
+            0,
+            2,
+            sourceType = "",
+            existingRecommendationData = homeRecommendationDataModel.homeRecommendations.plus(homeRecommendationDataModel2.homeRecommendations)
+        )
 
         verifyOrder {
             // check on loading
@@ -304,7 +311,7 @@ class HomeRecommendationViewModelTest {
 
         homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "")
+        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "", existingRecommendationData = homeRecommendationDataModel.homeRecommendations)
 
         verifyOrder {
             // check on loading
@@ -914,7 +921,7 @@ class HomeRecommendationViewModelTest {
 
         homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "")
+        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "", existingRecommendationData = homeRecommendationDataModel.homeRecommendations)
 
         verifyOrder {
             // check on loading
@@ -1024,7 +1031,7 @@ class HomeRecommendationViewModelTest {
 
         homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "")
+        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "", existingRecommendationData = homeRecommendationDataModel.homeRecommendations)
 
         verifyOrder {
             // check on loading
@@ -1133,7 +1140,7 @@ class HomeRecommendationViewModelTest {
 
         homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
 
-        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "")
+        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "", existingRecommendationData = homeRecommendationDataModel.homeRecommendations)
 
         verifyOrder {
             // check on loading
@@ -1911,16 +1918,12 @@ class HomeRecommendationViewModelTest {
 
             getHomeRecommendationCardUseCase.givenDataReturnMatch(homeRecommendationNextDataModel, productPage)
 
-            homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, productPage, locationParam = "", sourceType = "")
+            homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, productPage, locationParam = "", sourceType = "", existingRecommendationData = homeRecommendationDataModel.homeRecommendations)
 
-            assertTrue(it[1] is HomeRecommendationCardState.LoadingMore)
-
-            val actualNextResult = (it[2] as HomeRecommendationCardState.Success)
-            val expectedNextResult = homeRecommendationDataModel.homeRecommendations.toMutableList().apply {
-                addAll(
-                    homeRecommendationNextDataModel.homeRecommendations
-                )
-            }.toList()
+            val actualNextResult = (it[1] as HomeRecommendationCardState.Success)
+            val expectedNextResult = homeRecommendationNextDataModel.homeRecommendations.toMutableList().apply {
+                addAll(homeRecommendationDataModel.homeRecommendations)
+            }
 
             assertEquals(
                 expectedNextResult,
@@ -1976,11 +1979,9 @@ class HomeRecommendationViewModelTest {
 
             getHomeRecommendationCardUseCase.givenThrows(exception, productPage)
 
-            homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, productPage, locationParam = "", sourceType = "")
+            homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, productPage, locationParam = "", sourceType = "", existingRecommendationData = homeRecommendationDataModel.homeRecommendations)
 
-            assertTrue(it[1] is HomeRecommendationCardState.LoadingMore)
-
-            val actualNextResult = (it[2] as HomeRecommendationCardState.FailNextPage)
+            val actualNextResult = (it[1] as HomeRecommendationCardState.FailNextPage)
 
             assertEquals(
                 exception.localizedMessage,
@@ -2009,7 +2010,7 @@ class HomeRecommendationViewModelTest {
         assertCollectingRecommendationCardState {
             assertTrue(it.first() is HomeRecommendationCardState.Fail)
 
-            homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, productPage, locationParam = "", sourceType = "")
+            homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, productPage, locationParam = "", sourceType = "", existingRecommendationData = (it.first() as HomeRecommendationCardState.Fail).data.homeRecommendations)
             assertTrue(it.first() is HomeRecommendationCardState.Fail)
         }
     }
