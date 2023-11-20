@@ -496,6 +496,7 @@ class ShopInfoFragment :
         if (!isErrorGetEpharmData(epharmData)) {
             fragmentShopInfoBinding?.let { binding ->
                 binding.layoutPartialShopInfoDescription.shopGoApotikContainer.visibility = View.VISIBLE
+                binding.layoutPartialShopInfoDescription.badgeLicensedApotek.visibility = View.VISIBLE
 
                 val emptyChar = "-"
                 val weblinkPrefix = "tokopedia://webview?url="

@@ -5,16 +5,19 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.listener.AccordionListener
 import com.tokopedia.catalogcommon.listener.BannerListener
+import com.tokopedia.catalogcommon.listener.ColumnedInfoListener
 import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.listener.TextDescriptionListener
 import com.tokopedia.catalogcommon.listener.TopFeatureListener
 import com.tokopedia.catalogcommon.listener.TrustMakerListener
 import com.tokopedia.catalogcommon.listener.VideoExpertListener
+import com.tokopedia.catalogcommon.listener.VideoListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
+import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
@@ -26,10 +29,12 @@ import com.tokopedia.catalogcommon.uimodel.SupportFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
+import com.tokopedia.catalogcommon.uimodel.VideoUiModel
 import com.tokopedia.catalogcommon.viewholder.AccordionInformationViewHolder
 import com.tokopedia.catalogcommon.viewholder.BannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.BlankViewHolder
 import com.tokopedia.catalogcommon.viewholder.CharacteristicViewHolder
+import com.tokopedia.catalogcommon.viewholder.ColumnedInfoViewHolder
 import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.catalogcommon.viewholder.DoubleBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.ExpertReviewViewHolder
@@ -42,6 +47,7 @@ import com.tokopedia.catalogcommon.viewholder.SupportFeatureViewHolder
 import com.tokopedia.catalogcommon.viewholder.TextDescriptionViewHolder
 import com.tokopedia.catalogcommon.viewholder.TopFeatureViewHolder
 import com.tokopedia.catalogcommon.viewholder.TrustmakerViewHolder
+import com.tokopedia.catalogcommon.viewholder.VideoViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 
@@ -56,6 +62,8 @@ class CatalogAdapterFactoryImpl(
     private val topFeatureListener: TopFeatureListener? = null,
     private val doubleBannerListener: DoubleBannerListener? = null,
     private val comparisonItemListener: ComparisonViewHolder.ComparisonItemListener? = null,
+    private val videoListener: VideoListener? = null,
+    private val columnedInfoListener: ColumnedInfoListener? = null,
     private val isDisplayingTopSpec: Boolean = true
 ) : BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
@@ -75,7 +83,9 @@ class CatalogAdapterFactoryImpl(
             DoubleBannerViewHolder.LAYOUT -> DoubleBannerViewHolder(view, doubleBannerListener)
             ExpertReviewViewHolder.LAYOUT -> ExpertReviewViewHolder(view, videoExpertListener)
             SupportFeatureViewHolder.LAYOUT -> SupportFeatureViewHolder(view)
-            ComparisonViewHolder.LAYOUT -> ComparisonViewHolder(view, comparisonItemListener,isDisplayingTopSpec)
+            ComparisonViewHolder.LAYOUT -> ComparisonViewHolder(view, comparisonItemListener, isDisplayingTopSpec)
+            VideoViewHolder.LAYOUT -> VideoViewHolder(view, videoListener)
+            ColumnedInfoViewHolder.LAYOUT -> ColumnedInfoViewHolder(view, columnedInfoListener)
             BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
@@ -139,5 +149,13 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: ComparisonUiModel): Int {
         return ComparisonViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: VideoUiModel): Int {
+        return VideoViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: ColumnedInfoUiModel): Int {
+        return ColumnedInfoViewHolder.LAYOUT
     }
 }
