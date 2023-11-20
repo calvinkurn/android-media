@@ -234,7 +234,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             @NonNull
             @Override
             public String getActivityName() {
-                return AppUtil.INSTANCE.getCurrentActivityName();
+                return AppUtil.currentActivityName;
             }
 
             @NotNull
