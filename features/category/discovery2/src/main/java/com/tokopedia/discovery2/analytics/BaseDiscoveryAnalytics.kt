@@ -117,6 +117,8 @@ open class BaseDiscoveryAnalytics(
     open fun trackScreenshotAccess(eventAction: String = "", eventLabel: String = "", userID: String?) {}
     open fun trackEventProductATCTokonow(componentsItems: ComponentsItem, cartId: String) {}
     open fun trackEventProductATC(componentsItems: ComponentsItem, cartID: String) {}
+    open fun trackEventProductBmGmATC(componentsItems: ComponentsItem, cartID: String) {}
+    open fun trackEventProductBmGmClickSeeMore(componentsItems: ComponentsItem) {}
     open fun trackMerchantVoucherMultipleImpression(
         components: ComponentsItem,
         userID: String?,

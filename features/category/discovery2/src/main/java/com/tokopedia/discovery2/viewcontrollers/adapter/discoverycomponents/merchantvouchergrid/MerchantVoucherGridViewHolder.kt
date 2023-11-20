@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.Redirection
 import com.tokopedia.discovery2.databinding.MerchantVoucherGridLayoutBinding
@@ -16,101 +15,148 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.binding.viewBinding
 
 class MerchantVoucherGridViewHolder(
     itemView: View,
     val fragment: Fragment
 ): AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+    companion object {
+        private const val SCROLL_UP_DIRECTION = 1
+        private const val GRID_SPAN_COUNT = 2
+    }
 
-    private val binding = MerchantVoucherGridLayoutBinding.bind(itemView)
+    private val binding: MerchantVoucherGridLayoutBinding?
+        by viewBinding()
 
-    private var adapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
+    private val mAdapter: DiscoveryRecycleAdapter
+        by lazy {
+            DiscoveryRecycleAdapter(fragment)
+        }
+
+    private val mLayoutManager: GridLayoutManager
+        by lazy {
+            GridLayoutManager(
+                itemView.context,
+                GRID_SPAN_COUNT,
+                GridLayoutManager.VERTICAL,
+                false
+            )
+        }
+
+    private val userSession: UserSessionInterface
+        by lazy {
+            UserSession(fragment.context)
+        }
 
     private var viewModel: MerchantVoucherGridViewModel? = null
 
     init {
-        binding.merchantVoucherRv.adapter = adapter
+        binding?.setupRecyclerView()
+        handlePagination()
     }
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as? MerchantVoucherGridViewModel
 
-        viewModel?.let {
-            getSubComponent().inject(it)
-        }
+        viewModel?.apply {
+            getSubComponent().inject(this)
 
-        binding.merchantVoucherRv.layoutManager = GridLayoutManager(
-            itemView.context,
-            2,
-            GridLayoutManager.VERTICAL,
-            false
-        )
+            if (!userSession.isLoggedIn) return
 
-        if (UserSession(fragment.context).isLoggedIn) {
-            addShimmer()
-            viewModel?.fetchCoupons()
+            loadFirstPageCoupon()
         }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
-        lifecycleOwner?.let { lifeCycle ->
-            viewModel?.getSyncPageLiveData()?.observe(lifeCycle) { needReSync ->
-                if (needReSync) (fragment as? DiscoveryFragment)?.reSync()
-            }
+        if (lifecycleOwner == null) return
 
-            viewModel?.couponList?.observe(lifeCycle) {
-                renderMerchantVouchers(it)
-            }
-
-            viewModel?.seeMore?.observe(lifeCycle) { redirection ->
-                renderSeeMoreButton(redirection)
-            }
-
-            viewModel?.loadError?.observe(lifeCycle) {
-                if (it) handleErrorState()
-            }
-        }
-    }
-
-    private fun renderSeeMoreButton(redirection: Redirection) {
-        binding.seeMoreBtn.run {
-            text = redirection.ctaText
-
-            setOnClickListener {
-                RouteManager.route(itemView.context, redirection.applink)
-            }
-
-            show()
+        viewModel?.apply {
+            observeCouponList(lifecycleOwner)
+            observeSeeMore(lifecycleOwner)
+            observeNoMorePages(lifecycleOwner)
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
-        lifecycleOwner?.let { viewModel?.couponList?.removeObservers(it) }
-        lifecycleOwner?.let { viewModel?.seeMore?.removeObservers(it) }
-        lifecycleOwner?.let { viewModel?.loadError?.removeObservers(it) }
+        if (lifecycleOwner == null) return
+
+        viewModel?.apply {
+            couponList.removeObservers(lifecycleOwner)
+            seeMore.removeObservers(lifecycleOwner)
+            noMorePages.removeObservers(lifecycleOwner)
+        }
     }
 
-    private fun addShimmer() {
-        val shimmerComponent = ComponentsItem(
-            name = ComponentNames.Shimmer.componentName,
-            shimmerHeight = SHIMMER_HEIGHT
-        )
-
-        adapter.setDataList(arrayListOf(shimmerComponent, shimmerComponent))
+    private fun handlePagination() {
+        getParentFragment()?.onMerchantVoucherScrolledCallback = { parentRecyclerView ->
+            val isAtTheBottomOfThePage = !parentRecyclerView.canScrollVertically(SCROLL_UP_DIRECTION)
+            viewModel?.loadMore(isAtTheBottomOfThePage)
+        }
     }
 
-    private fun renderMerchantVouchers(items: ArrayList<ComponentsItem>?) {
-        binding.merchantVoucherRv.show()
-        adapter.setDataList(items)
+    private fun getParentFragment(): DiscoveryFragment? = fragment as? DiscoveryFragment
+
+    private fun MerchantVoucherGridViewModel.observeCouponList(
+        lifecycleOwner: LifecycleOwner
+    ) {
+        binding?.apply {
+            couponList.observe(lifecycleOwner) { result ->
+                when (result) {
+                    is Success -> showWidget(result.data)
+                    is Fail -> hideWidget()
+                }
+            }
+        }
     }
 
-    private fun handleErrorState() {
-        binding.merchantVoucherRv.hide()
-        binding.seeMoreBtn.hide()
+    private fun MerchantVoucherGridViewModel.observeNoMorePages(
+        lifecycleOwner: LifecycleOwner
+    ) {
+        noMorePages.observe(lifecycleOwner) {
+            getParentFragment()?.onMerchantVoucherScrolledCallback = null
+        }
     }
 
-    companion object {
-        private const val SHIMMER_HEIGHT = 300
+    private fun MerchantVoucherGridViewModel.observeSeeMore(
+        lifecycleOwner: LifecycleOwner
+    ) {
+        seeMore.observe(lifecycleOwner) { redirection ->
+            binding?.renderSeeMoreButton(redirection)
+        }
+    }
+
+    private fun MerchantVoucherGridLayoutBinding.showWidget(items: ArrayList<ComponentsItem>?) {
+        merchantVoucherRv.show()
+        mAdapter.setDataList(items)
+    }
+
+    private fun MerchantVoucherGridLayoutBinding.hideWidget() {
+        merchantVoucherRv.hide()
+        seeMoreBtn.hide()
+    }
+
+    private fun MerchantVoucherGridLayoutBinding.renderSeeMoreButton(redirection: Redirection) {
+        seeMoreBtn.apply {
+            show()
+
+            text = redirection.ctaText
+
+            setOnClickListener {
+                if (!redirection.applink.isNullOrBlank()) {
+                    RouteManager.route(itemView.context, redirection.applink)
+                }
+            }
+        }
+    }
+
+    private fun MerchantVoucherGridLayoutBinding.setupRecyclerView() {
+        merchantVoucherRv.adapter = mAdapter
+        merchantVoucherRv.layoutManager = mLayoutManager
     }
 }

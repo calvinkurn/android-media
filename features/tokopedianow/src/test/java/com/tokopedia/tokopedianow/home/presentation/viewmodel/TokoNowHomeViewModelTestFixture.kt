@@ -31,10 +31,12 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.tokopedianow.buyercomm.domain.model.GetBuyerCommunication.GetBuyerCommunicationResponse
 import com.tokopedia.tokopedianow.buyercomm.domain.usecase.GetBuyerCommunicationUseCase
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetHomeBannerV2DataResponse.GetHomeBannerV2Response
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetHomeBannerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
@@ -157,6 +159,9 @@ abstract class TokoNowHomeViewModelTestFixture {
     lateinit var getBuyerCommunicationUseCase: GetBuyerCommunicationUseCase
 
     @RelaxedMockK
+    lateinit var getHomeBannerUseCase: GetHomeBannerUseCase
+
+    @RelaxedMockK
     lateinit var playWidgetTools: PlayWidgetTools
 
     @RelaxedMockK
@@ -202,6 +207,7 @@ abstract class TokoNowHomeViewModelTestFixture {
             redeemCouponUseCase,
             getProductBundleRecomUseCase,
             getBuyerCommunicationUseCase,
+            getHomeBannerUseCase,
             playWidgetTools,
             addressData,
             userSession,
@@ -263,7 +269,7 @@ abstract class TokoNowHomeViewModelTestFixture {
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetBannerItem(expectedResponse: Visitable<*>) {
+    protected fun verifyGetBannerItem(expectedResponse: Visitable<*>?) {
         val homeLayoutList = viewModel.homeLayoutList.value
         val actualResponse = (homeLayoutList as Success).data.items.find { it is BannerDataModel }
         Assert.assertEquals(expectedResponse, actualResponse)
@@ -699,6 +705,16 @@ abstract class TokoNowHomeViewModelTestFixture {
         } throws error
     }
 
+    protected fun onGetHomeBannerUseCase_thenReturn(response: GetHomeBannerV2Response) {
+        coEvery {
+            getHomeBannerUseCase.execute(any())
+        } returns response
+    }
+
+    protected fun onGetHomeBannerUseCase_thenThrows(error: Throwable) {
+        coEvery {
+            getHomeBannerUseCase.execute(any())
+        } throws error
     protected fun onGetQuestWidgetAbTest_thenReturn(value: String) {
         coEvery {
             abTestPlatform.getString("now_experiment")

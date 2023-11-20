@@ -19,9 +19,9 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BOLD
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class PriceBoxView @JvmOverloads constructor(
@@ -178,7 +178,7 @@ class PriceBoxView @JvmOverloads constructor(
 
         binding.priceContainer.setBackgroundColor(ColorUtils.setAlphaComponent(parseColor, PRICE_BG_ALPHA))
 
-        ImageUtils.loadImage(binding.cardBackground, url)
+        binding.cardBackground.loadImage(url)
 
         binding.freeTextContainer.setBackgroundColor(ColorUtils.setAlphaComponent(parseColor, FREE_TEXT_BG_ALPHA))
     }

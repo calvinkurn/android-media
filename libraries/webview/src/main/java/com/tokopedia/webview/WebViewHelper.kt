@@ -511,14 +511,14 @@ object WebViewHelper {
                 docType,
                 imageBase64
             )
-            executeJs(script, webView)
+            executeJs(script, webView) { value -> Timber.d("executeJS result: $value") }
         }
     }
 
-    private fun executeJs(script: String, webView: WebView) {
+    fun executeJs(script: String, webView: WebView, onResult: (value: String) -> Unit) {
         webView.evaluateJavascript(
             script
-        ) { value: String -> Timber.d("executeJS result: $value") }
+        ) { value: String -> onResult(value) }
     }
 
     fun getBase64FromImagePath(imagePath: String): String? {

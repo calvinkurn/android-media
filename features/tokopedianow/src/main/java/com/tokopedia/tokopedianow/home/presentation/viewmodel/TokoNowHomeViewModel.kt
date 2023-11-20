@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
@@ -38,9 +39,11 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MI
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.HomeBannerMapper.mapHomeBanner
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetHomeBannerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
@@ -163,6 +166,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val redeemCouponUseCase: RedeemCouponUseCase,
     private val getProductBundleRecomUseCase: GetProductBundleRecomUseCase,
     private val getBuyerCommunicationUseCase: GetBuyerCommunicationUseCase,
+    private val getHomeBannerUseCase: GetHomeBannerUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface,
@@ -852,7 +856,17 @@ class TokoNowHomeViewModel @Inject constructor(
             is TokoNowCategoryMenuUiModel -> getCategoryMenuDataAsync(addressData).await()
             is TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, addressData).await()
             is TokoNowBundleUiModel -> getProductBundleRecomAsync(item).await()
+            is BannerDataModel -> getBannerDataAsync(item).await()
             else -> removeUnsupportedLayout(item)
+        }
+    }
+
+    private fun getBannerDataAsync(item: BannerDataModel): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val response = getHomeBannerUseCase.execute(addressData.getAddressData())
+            homeLayoutItemList.mapHomeBanner(item, response)
+        }) {
+            homeLayoutItemList.removeItem(item.visitableId())
         }
     }
 

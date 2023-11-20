@@ -57,6 +57,7 @@
             android:layout_height="wrap_content"
             android:padding="4dp"
             android:textSize="11sp"
+            app:typographyWeight="bold"
             tools:text="20%" />
 
         <com.tokopedia.unifyprinciples.Typography

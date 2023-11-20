@@ -1005,7 +1005,6 @@ object HomeLayoutMapper {
             // region Dynamic Channel Component
             // Layout content data already returned from dynamic channel query, set state to loaded.
             LEGO_3_IMAGE, LEGO_6_IMAGE, LAYOUT_LEGO_4_IMAGE -> mapLegoBannerDataModel(response, loadedState)
-            BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
             PRODUCT_RECOM -> mapResponseToProductRecom(response, loadedState, miniCartData, warehouseId, hasBlockedAddToCart)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
             MIX_LEFT_CAROUSEL_ATC -> mapResponseToLeftCarousel(response, loadedState, miniCartData, warehouseId, MIX_LEFT_CAROUSEL_ATC, hasBlockedAddToCart)
@@ -1015,6 +1014,7 @@ object HomeLayoutMapper {
 
             // region TokoNow Component
             // Layout need to fetch content data from other GQL, set state to not loaded.
+            BANNER_CAROUSEL -> mapSliderBannerModel(response, notLoadedState)
             CATEGORY -> mapToCategoryLayout(response, notLoadedState)
             BUNDLING_WIDGET -> mapToProductBundleLayout(response, notLoadedState)
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, notLoadedState)
