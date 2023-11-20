@@ -34,7 +34,11 @@ data class ProductRevGetShopReviewReadingListResponse(
             @SerializedName("reviewerLabel")
             val reviewerLabel: String,
             @SerializedName("avatar")
-            val avatar: String
+            val avatar: String,
+            @SerializedName("state")
+            val state: State,
+            @SerializedName("badRatingReasonFmt")
+            val badRatingReasonFmt: String
         ) {
             data class LikeDislike(
                 @SerializedName("likeStatus")
@@ -55,7 +59,24 @@ data class ProductRevGetShopReviewReadingListResponse(
                 @SerializedName("productID")
                 val productID: String,
                 @SerializedName("productName")
-                val productName: String
+                val productName: String,
+                @SerializedName("productVariant")
+                val productVariant: ProductVariant
+            ) {
+                data class ProductVariant(
+                    @SerializedName("variantID")
+                    val variantId: String,
+                    @SerializedName("variantName")
+                    val variantName: String
+                )
+            }
+            data class State(
+                @SerializedName("isReportable")
+                val isReportable: Boolean,
+                @SerializedName("isAutoReply")
+                val isAutoReply: Boolean,
+                @SerializedName("isAnonymous")
+                val isAnonymous: Boolean
             )
         }
     }

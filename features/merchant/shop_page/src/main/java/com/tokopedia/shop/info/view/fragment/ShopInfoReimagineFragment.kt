@@ -34,6 +34,12 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewDetail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewerUserInfo
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
@@ -217,12 +223,14 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             is ShopInfoUiEffect.RedirectToChatWebView -> redirectToChatWebView(effect.messageId)
             is ShopInfoUiEffect.RedirectToShopReviewPage -> redirectToShopReviewPage(effect.shopId)
             is ShopInfoUiEffect.RedirectToProductReviewPage -> redirectToProductReviewPage(
-                effect.productId,
                 effect.reviewImageIndex,
-                effect.shopId
+                effect.shopId,
+                effect.review
             )
 
-            is ShopInfoUiEffect.RedirectToProductReviewGallery -> redirectToProductReviewGallery(effect.shopId, effect.productId)
+            is ShopInfoUiEffect.RedirectToProductReviewGallery -> redirectToProductReviewGallery(
+                effect.productId
+            )
         }
     }
 
@@ -264,7 +272,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         binding?.run {
             imgShop.loadImage(uiState.info.shopImageUrl)
-            
+
             imgShopBadge.isVisible = hasShopBadge
             if (hasShopBadge) {
                 imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
@@ -327,13 +335,13 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             labelShopPharmacySiaNumber.isVisible = isPharmacy && expandPharmacyInfo
             labelShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
 
-            //Show CTA "Lihat Selengkapnya" when pharmacy info collapsed
+            // Show CTA "Lihat Selengkapnya" when pharmacy info collapsed
             if (isPharmacy && !expandPharmacyInfo) {
                 tpgCtaExpandPharmacyInfo.visible()
             } else {
                 tpgCtaExpandPharmacyInfo.invisible()
             }
-            
+
             tpgCtaViewPharmacyMap.isVisible = isPharmacy && expandPharmacyInfo && showCtaViewPharmacyLocation
             iconViewPharmacyLocation.isVisible = isPharmacy && expandPharmacyInfo && showCtaViewPharmacyLocation
 
@@ -468,7 +476,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         if (showReview) {
             binding?.shopReviewView?.renderReview(viewLifecycleOwner.lifecycle, this, review)
             binding?.shopReviewView?.setOnReviewImageClick { review, reviewImageIndex ->
-                viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(review.product.productId, reviewImageIndex))
+                viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(review, reviewImageIndex))
             }
             binding?.shopReviewView?.setOnReviewImageViewAllClick { buyerReview ->
                 viewModel.processEvent(ShopInfoUiEvent.TapReviewImageViewAll(buyerReview.product.productId))
@@ -600,7 +608,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         constraintSet.applyTo(binding?.constraintLayout)
     }
-    
+
     private fun redirectToGmaps(gmapsUrl: String) {
         if (!isAdded) return
         if (gmapsUrl.isEmpty()) return
@@ -634,21 +642,78 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         startActivityForResult(intent, REQUEST_CODE_REPORT_SHOP)
     }
 
-    private fun redirectToProductReviewPage(productId: String, mediaPosition: Int, shopId: String) {
+    private fun redirectToProductReviewPage(
+        reviewImageIndex: Int,
+        shopId: String,
+        review: ShopReview.Review
+    ) {
         ReviewMediaGalleryRouter.routeToReviewMediaGallery(
             context = context ?: return,
             pageSource = ReviewMediaGalleryRouter.PageSource.SHOP_INFO_PAGE,
-            productID = productId,
+            productID = review.product.productId,
             shopID = shopId,
             isProductReview = true,
             isFromGallery = false,
-            mediaPosition = mediaPosition,
+            mediaPosition = reviewImageIndex.inc(),
             showSeeMore = false,
-            preloadedDetailedReviewMediaResult = null
+            preloadedDetailedReviewMediaResult = createReviewModel(review)
         ).run { startActivity(this) }
     }
 
-    private fun redirectToProductReviewGallery(shopId: String, productId: String) {
+    private fun createReviewModel(review: ShopReview.Review): ProductrevGetReviewMedia {
+        val reviewDetail = ReviewDetail(
+            shopId = shopId,
+            user = ReviewerUserInfo(
+                userId = review.reviewerId,
+                fullName = review.reviewerName,
+                image = review.avatar,
+                url = "",
+                label = review.reviewerLabel
+            ),
+            feedbackId = review.reviewId,
+            variantName = review.product.productVariant.variantName,
+            rating = review.rating,
+            review = review.reviewText,
+            createTimestamp = review.reviewTime,
+            isReportable = review.state.isReportable,
+            isAnonymous = review.state.isAnonymous,
+            isLiked = review.likeDislike.likeStatus == Int.ONE,
+            totalLike = review.likeDislike.totalLike,
+            userStats = emptyList(),
+            badRatingReasonFmt = review.badRatingReasonFmt
+        )
+
+        val reviewMedia = review.attachments.mapIndexed { index, attachment ->
+            ReviewMedia(
+                imageId = attachment.attachmentId,
+                feedbackId = review.reviewId,
+                mediaNumber = index.plus(Int.ONE)
+            )
+        }
+
+        val reviewGalleryImages = review.attachments.map { attachment ->
+            ReviewGalleryImage(
+                attachmentId = attachment.attachmentId,
+                thumbnailURL = attachment.thumbnailURL,
+                fullsizeURL = attachment.fullSizeURL,
+                description = review.reviewText,
+                feedbackId = review.reviewId
+            )
+        }
+
+        return ProductrevGetReviewMedia(
+            reviewMedia = reviewMedia,
+            detail = Detail(
+                reviewDetail = listOf(reviewDetail),
+                reviewGalleryImages = reviewGalleryImages,
+                reviewGalleryVideos = emptyList(),
+                mediaCountFmt = review.attachments.size.toString(),
+                mediaCount = review.attachments.size.toLong()
+            )
+        )
+    }
+
+    private fun redirectToProductReviewGallery(productId: String) {
         val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_REPUTATION, productId)
         RouteManager.route(context, appLink)
     }

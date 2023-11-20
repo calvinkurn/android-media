@@ -83,6 +83,29 @@ class ShopInfoReimagineViewModelTest {
     private val shopId = "955452"
     private val districtId = "12"
     private val cityId = "1"
+    private val review = ShopReview.Review(
+        reviewerId = "1",
+        rating = 5,
+        reviewTime = "1 Minggu Lalu",
+        reviewText = "Packaging rapi",
+        reviewerName = "Fajar",
+        reviewId = "100",
+        reviewerLabel = "Juara Ulasan",
+        likeDislike = ShopReview.Review.LikeDislike(totalLike = 100, likeStatus = 1),
+        avatar = "htpps://tokopedia.net/avatar.jpg",
+        attachments = listOf(),
+        product = ShopReview.Review.Product(
+            productId = "1111",
+            productName = "iPhone 15 Pro",
+            productVariant = ShopReview.Review.Product.ProductVariant("iP15Wh", "Putih")
+        ),
+        badRatingReasonFmt = "",
+        state = ShopReview.Review.State(
+            isReportable = false,
+            isAutoReply = false,
+            isAnonymous = false
+        )
+    )
 
     @Before
     fun setup() {
@@ -1182,6 +1205,7 @@ class ShopInfoReimagineViewModelTest {
     fun `When TapReviewImage event triggered, UI should receive RedirectToProductReviewPage effect`() {
         runBlockingTest {
             // Given
+
             val selectedProductId = "133"
             val emittedEffects = arrayListOf<ShopInfoUiEffect>()
             val job = launch {
@@ -1202,11 +1226,11 @@ class ShopInfoReimagineViewModelTest {
             // When
             viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
             viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
-            viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(selectedProductId, 1))
+            viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(review, 1))
 
             // Then
             val actual = emittedEffects.last()
-            assertEquals(ShopInfoUiEffect.RedirectToProductReviewPage(selectedProductId, shopId, 1), actual)
+            assertEquals(ShopInfoUiEffect.RedirectToProductReviewPage(review, shopId, 1), actual)
             job.cancel()
         }
     }
@@ -1239,7 +1263,7 @@ class ShopInfoReimagineViewModelTest {
 
             // Then
             val actual = emittedEffects.last()
-            assertEquals(ShopInfoUiEffect.RedirectToProductReviewGallery(selectedProductId, shopId), actual)
+            assertEquals(ShopInfoUiEffect.RedirectToProductReviewGallery(selectedProductId), actual)
             job.cancel()
         }
     }
