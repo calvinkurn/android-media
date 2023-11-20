@@ -6,7 +6,7 @@ import android.view.View
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.unifycomponents.BaseCustomView
 
-class ShopAdsSingleItemLayout : BaseCustomView {
+class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
     constructor(context: Context) : super(context) {
         init()
     }

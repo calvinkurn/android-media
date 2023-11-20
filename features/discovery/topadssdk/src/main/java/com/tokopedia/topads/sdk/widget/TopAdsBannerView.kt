@@ -152,11 +152,31 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val container = findViewById<View>(R.id.container)
         val cpmData = cpmModel?.data?.getOrNull(index)
         val shopAdsWithThreeProducts = findViewById<ShopAdsWithThreeProducts>(R.id.shopAdsWithThreeProducts)
-        val shopAdsWithSingleProduct = findViewById<ShopAdsSingleItemLayout>(R.id.shopAdsWithSingleProduct)
+        val shopAdsWithSingleProductHorizontal = findViewById<ShopAdsSingleItemHorizontalLayout>(R.id.shopAdsWithSingleProductHorizontal)
+        val shopAdsWithSingleProductVertical = findViewById<ShopAdsSingleItemVerticalLayout>(R.id.shopAdsWithSingleProductVertical)
         linearLayoutMerchantVoucher = findViewById(R.id.linearLayoutMerchantVoucher)
         topAdsFlashSaleTimer= findViewById(R.id.topAdsFlashSaleTimer)
 
-        if (cpmData?.cpm?.layout != LAYOUT_6 && cpmData?.cpm?.layout != LAYOUT_5 && cpmData?.cpm?.layout != LAYOUT_8 && cpmData?.cpm?.layout != LAYOUT_9) {
+        if(cpmData?.cpm?.layout == LAYOUT_10){
+            topAdsCarousel.hide()
+            shopDetail?.hide()
+            shopAdsProductView.hide()
+            adsBannerShopCardView?.hide()
+            shopAdsWithThreeProducts.hide()
+            list?.hide()
+            shopAdsWithSingleProductHorizontal.show()
+            shopAdsWithSingleProductVertical.hide()
+        } else if(cpmData?.cpm?.layout == LAYOUT_11){
+            topAdsCarousel.hide()
+            shopDetail?.hide()
+            shopAdsProductView.hide()
+            adsBannerShopCardView?.hide()
+            shopAdsWithThreeProducts.hide()
+            list?.hide()
+            shopAdsWithSingleProductHorizontal.hide()
+            shopAdsWithSingleProductVertical.show()
+            setSingleAdsProductVertical(cpmData, appLink, adsClickUrl, topAdsBannerViewClickListener, shopAdsWithSingleProductVertical)
+        } else if (cpmData?.cpm?.layout != LAYOUT_6 && cpmData?.cpm?.layout != LAYOUT_5 && cpmData?.cpm?.layout != LAYOUT_8 && cpmData?.cpm?.layout != LAYOUT_9) {
             if (isEligible(cpmData)) {
                 if (cpmData != null && (cpmData.cpm.layout == LAYOUT_2)) {
                     list?.gone()
@@ -292,7 +312,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             shopAdsWithThreeProducts.hide()
             container?.setBackgroundResource(0)
             setShopAdsProduct(cpmModel, shopAdsProductView)
-        }else if((cpmData.cpm?.layout == LAYOUT_8 || cpmData.cpm?.layout == LAYOUT_9) && isEligible(cpmData)){
+        }
+        else if((cpmData.cpm?.layout == LAYOUT_8 || cpmData.cpm?.layout == LAYOUT_9) && isEligible(cpmData)){
             topAdsCarousel.hide()
             shopDetail?.hide()
             shopAdsProductView.hide()
@@ -300,23 +321,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             shopAdsWithThreeProducts.show()
             list?.hide()
             setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerViewClickListener, hasAddProductToCartButton)
-        } else if(cpmData.cpm?.layout == LAYOUT_10 || cpmData.cpm?.layout == LAYOUT_11){
-            topAdsCarousel.hide()
-            shopDetail?.hide()
-            shopAdsProductView.hide()
-            adsBannerShopCardView?.hide()
-            shopAdsWithThreeProducts.hide()
-            list?.hide()
-            shopAdsWithSingleProduct.show()
-//            topAdsCarousel.hide()
-//            shopDetail?.hide()
-//            shopAdsProductView.hide()
-//            adsBannerShopCardView?.hide()
-//            shopAdsWithThreeProducts.show()
-//            list?.hide()
-//            setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerViewClickListener, hasAddProductToCartButton)
         }
-
     }
 
     private fun hideFlashSaleToko() {
@@ -432,6 +437,36 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             repeat(ITEM_3) { items.add(BannerProductShimmerUiModel()) }
         }
         return items
+    }
+
+    private fun setSingleAdsProductVertical(
+        cpmData: CpmData,
+        appLink: String,
+        adsClickUrl: String,
+        topAdsBannerClickListener: TopAdsBannerClickListener?,
+        shopAdsWithSingleProductVertical: ShopAdsSingleItemVerticalLayout
+    ) {
+        shopAdsWithSingleProductVertical.setShopProductModel(
+            ShopAdsWithThreeProductModel(
+                isOfficial = cpmData.cpm.cpmShop.isPowerMerchant,
+                isPMPro = cpmData.cpm.cpmShop.isPMPro,
+                isPowerMerchant = cpmData.cpm.cpmShop.isPowerMerchant,
+                shopBadge = cpmData.cpm.badges.firstOrNull()?.imageUrl ?: "",
+                shopName = cpmData.cpm.cpmShop.name,
+                shopImageUrl = cpmData.cpm.cpmImage.fullEcs,
+                shopWidgetImageUrl = cpmData.cpm.widgetImageUrl,
+                merchantVouchers = cpmData.cpm.cpmShop.merchantVouchers,
+                listItems = getItems(cpmData, appLink, adsClickUrl),
+                items = cpmData,
+                shopApplink = appLink,
+                adsClickUrl = adsClickUrl,
+                topAdsBannerClickListener = topAdsBannerClickListener,
+                hasAddToCartButton = false,
+                impressionListener = impressionListener,
+                shopWidgetAddToCartClickListener = shopWidgetAddToCartClickListener,
+                variant = cpmData.cpm?.layout ?: 0
+            )
+        )
     }
 
     private fun setShopAdsProduct(cpmModel: CpmModel, shopAdsProductView: ShopAdsWithOneProductView) {

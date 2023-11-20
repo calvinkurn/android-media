@@ -8,7 +8,8 @@
     tools:background="@color/white"
     tools:layout_height="@dimen/sdk_dp_300"
     android:paddingHorizontal="16dp"
-    android:paddingVertical="12dp">
+    android:paddingVertical="12dp"
+    tools:viewBindingIgnore="true">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/headerShopImage"

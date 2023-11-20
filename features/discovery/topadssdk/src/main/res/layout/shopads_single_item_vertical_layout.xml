@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="16dp"
-    android:paddingVertical="12dp">
+    android:paddingVertical="12dp"
+    tools:viewBindingIgnore="true">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/headerShopImage"
