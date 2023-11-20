@@ -90,10 +90,4 @@ class TextFlipper(context: Context?, attrs: AttributeSet?) : TextSwitcher(contex
         stopFlipping()
         super.setCurrentText(text)
     }
-
-    fun setWeight(weightType: Int) {
-        for (i in 0 until childCount) {
-            (getChildAt(i) as? Typography)?.setWeight(weightType)
-        }
-    }
 }

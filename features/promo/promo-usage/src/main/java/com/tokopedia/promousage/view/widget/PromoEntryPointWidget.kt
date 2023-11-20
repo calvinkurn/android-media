@@ -204,12 +204,12 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             if (enableNewInterface) {
                 loadingView?.background = ResourcesCompat.getDrawable(
                     resources,
-                    R.drawable.background_promo_checkout_teal,
+                    R.drawable.background_promo_checkout_teal_new,
                     null
                 )
                 activeViewFrame?.background = ResourcesCompat.getDrawable(
                     resources,
-                    R.drawable.background_promo_checkout_teal,
+                    R.drawable.background_promo_checkout_teal_new,
                     null
                 )
                 inActiveViewFrame?.background = ResourcesCompat.getDrawable(
@@ -219,7 +219,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 )
                 errorView?.background = ResourcesCompat.getDrawable(
                     resources,
-                    R.drawable.background_promo_checkout_yellow,
+                    R.drawable.background_promo_checkout_yellow_new,
                     null
                 )
 
@@ -389,12 +389,12 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         inActiveViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
         inActiveViewWording?.children?.forEach {
             if (it is Typography) {
+                it.setWeight(Typography.REGULAR)
                 it.setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
             }
         }
         inActiveViewRightIcon?.visibility = View.GONE
         inActiveViewLeftImage?.visibility = View.VISIBLE
-        inActiveViewWording?.setWeight(Typography.REGULAR)
         inActiveViewWording?.visibility = View.VISIBLE
         switcherView?.displayedChild = 1
         switcherView?.visibility = View.VISIBLE
@@ -423,12 +423,12 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             inActiveViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             inActiveViewWording?.children?.forEach {
                 if (it is Typography) {
+                    it.setWeight(Typography.REGULAR)
                     it.setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
                 }
             }
             inActiveViewRightIcon?.visibility = View.GONE
             inActiveViewLeftImage?.visibility = View.VISIBLE
-            inActiveViewWording?.setWeight(Typography.REGULAR)
             inActiveViewWording?.visibility = View.VISIBLE
             if (switcherView?.displayedChild != 1) {
                 // only trigger animation if currently showing different view
@@ -442,12 +442,12 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             inActiveViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             inActiveViewWording?.children?.forEach {
                 if (it is Typography) {
+                    it.setWeight(Typography.REGULAR)
                     it.setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
                 }
             }
             inActiveViewRightIcon?.visibility = View.GONE
             inActiveViewLeftImage?.visibility = View.VISIBLE
-            inActiveViewWording?.setWeight(Typography.REGULAR)
             inActiveViewWording?.visibility = View.VISIBLE
             switcherView?.displayedChild = 1
             switcherView?.visibility = View.VISIBLE
@@ -480,13 +480,15 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewDescWording?.visibility = View.GONE
         activeViewLeftImage?.visibility = View.VISIBLE
         activeViewRightIcon?.visibility = View.VISIBLE
-        activeViewWording?.setWeight(
-            if (enableNewInterface) {
-                Typography.BOLD
-            } else {
-                Typography.REGULAR
+        activeViewWording?.children?.forEach {
+            if (it is Typography) {
+                if (enableNewInterface) {
+                    it.setWeight(Typography.BOLD)
+                } else {
+                    it.setWeight(Typography.REGULAR)
+                }
             }
-        )
+        }
         activeViewWording?.visibility = View.VISIBLE
         if (animate && switcherView?.visibility == View.VISIBLE) {
             activeViewLeftImage?.setImageUrl(leftImageUrl)
@@ -560,13 +562,15 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewDescWording?.visibility = View.GONE
         activeViewLeftImage?.visibility = View.VISIBLE
         activeViewRightIcon?.visibility = View.VISIBLE
-        activeViewWording?.setWeight(
-            if (enableNewInterface) {
-                Typography.BOLD
-            } else {
-                Typography.REGULAR
+        activeViewWording?.children?.forEach {
+            if (it is Typography) {
+                if (enableNewInterface) {
+                    it.setWeight(Typography.BOLD)
+                } else {
+                    it.setWeight(Typography.REGULAR)
+                }
             }
-        )
+        }
         activeViewWording?.visibility = View.VISIBLE
         if (switcherView?.visibility == View.VISIBLE || loadingView?.visibility == View.VISIBLE) {
             switcherView?.visibility = View.VISIBLE
@@ -718,9 +722,14 @@ class PromoEntryPointWidget @JvmOverloads constructor(
      */
     fun showActive(
         wording: String,
-        rightIcon: Int,
+        rightIcon: Int? = null,
         onClickListener: () -> Unit = {}
     ) {
+        if (enableNewInterface) {
+            activeViewFrame?.visibility = View.VISIBLE
+        } else {
+            activeViewFrame?.visibility = View.GONE
+        }
         activeViewConfettiFrame?.visibility = View.GONE
         activeViewSummaryLayout?.visibility = View.GONE
         activeViewDivider?.visibility = View.GONE
@@ -731,8 +740,22 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewWording?.visibility = View.VISIBLE
         switcherView?.reset()
         activeViewLeftImage?.setImageUrl(PROMO_COUPON_ICON)
+        activeViewWording?.children?.forEach {
+            if (it is Typography) {
+                if (enableNewInterface) {
+                    it.setWeight(Typography.BOLD)
+                } else {
+                    it.setWeight(Typography.REGULAR)
+                }
+            }
+        }
         activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
-        activeViewRightIcon?.setImage(rightIcon)
+        if (rightIcon != null) {
+            activeViewRightIcon?.setImage(rightIcon)
+            activeViewRightIcon?.visibility = View.VISIBLE
+        } else {
+            activeViewRightIcon?.visibility = View.GONE
+        }
         switcherView?.displayedChild = 0
         switcherView?.visibility = View.VISIBLE
         errorView?.visibility = View.GONE
@@ -774,13 +797,15 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewDivider?.visibility = View.GONE
         activeViewLeftImage?.visibility = View.VISIBLE
         activeViewRightIcon?.visibility = View.VISIBLE
-        activeViewWording?.setWeight(
-            if (enableNewInterface) {
-                Typography.BOLD
-            } else {
-                Typography.REGULAR
+        activeViewWording?.children?.forEach {
+            if (it is Typography) {
+                if (enableNewInterface) {
+                    it.setWeight(Typography.BOLD)
+                } else {
+                    it.setWeight(Typography.REGULAR)
+                }
             }
-        )
+        }
         activeViewWording?.visibility = View.VISIBLE
         activeViewTitleWording?.visibility = View.GONE
         activeViewDescWording?.visibility = View.GONE

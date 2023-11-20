@@ -48,10 +48,8 @@ class CheckoutPromoViewHolder(
     }
 
     private fun initPromoButton(enableNewInterface: Boolean) {
-        if (binding.btnCheckoutPromo.enableNewInterface != enableNewInterface) {
-            binding.btnCheckoutPromo.enableNewInterface = enableNewInterface
-            binding.btnCheckoutPromo.init()
-        }
+        binding.btnCheckoutPromo.enableNewInterface = enableNewInterface
+        binding.btnCheckoutPromo.init()
     }
 
     private fun processNewEntryPointInfo(model: CheckoutPromoModel) {

@@ -3069,23 +3069,36 @@ class CartRevampFragment :
                 }
 
                 is EntryPointInfoEvent.Inactive -> {
-                    val message = if (data.isNoItemSelected) {
-                        getString(R.string.promo_desc_no_selected_item)
-                    } else {
-                        data.message
-                    }
-                    if (message.isNotBlank()) {
-                        binding?.promoCheckoutBtnCart?.showInactive(
-                            message,
+                    if (data.isNoItemSelected && enableNewInterface) {
+                        val message = getString(R.string.promo_desc_no_selected_item)
+                        binding?.promoCheckoutBtnCart?.showActive(
+                            wording = message,
                             onClickListener = {
                                 guardCartClick {
-                                    if (data.isNoItemSelected) {
-                                        showToastMessageGreen(getString(R.string.promo_choose_item_cart))
-                                        PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
-                                    }
+                                    showToastMessageGreen(getString(R.string.promo_choose_item_cart))
+                                    PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
                                 }
                             }
                         )
+                    } else {
+                        val message = if (data.isNoItemSelected) {
+                            getString(R.string.promo_desc_no_selected_item)
+                        } else {
+                            data.message
+                        }
+                        if (message.isNotBlank()) {
+                            binding?.promoCheckoutBtnCart?.showInactive(
+                                message,
+                                onClickListener = {
+                                    guardCartClick {
+                                        if (data.isNoItemSelected) {
+                                            showToastMessageGreen(getString(R.string.promo_choose_item_cart))
+                                            PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
+                                        }
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
 
@@ -3258,10 +3271,8 @@ class CartRevampFragment :
     }
 
     private fun initPromoButton(enableNewInterface: Boolean) {
-        if (binding?.promoCheckoutBtnCart?.enableNewInterface != enableNewInterface) {
-            binding?.promoCheckoutBtnCart?.enableNewInterface = enableNewInterface
-            binding?.promoCheckoutBtnCart?.init()
-        }
+        binding?.promoCheckoutBtnCart?.enableNewInterface = enableNewInterface
+        binding?.promoCheckoutBtnCart?.init()
     }
 
     private fun observeGlobalEvent() {
