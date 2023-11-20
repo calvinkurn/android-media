@@ -1,6 +1,8 @@
 package com.tokopedia.device.info
 
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import java.lang.Exception
@@ -44,5 +46,13 @@ object DeviceScreenInfo {
     @JvmStatic
     fun isTablet(context: Context): Boolean {
         return context.resources.getBoolean(R.bool.isTablet)
+    }
+
+    fun isFoldable(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            context.packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_HINGE_ANGLE)
+        } else {
+            false
+        }
     }
 }

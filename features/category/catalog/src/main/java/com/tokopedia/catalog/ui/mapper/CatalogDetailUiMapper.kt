@@ -29,6 +29,7 @@ import com.tokopedia.catalogcommon.util.getColorDarkMode
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
 import javax.inject.Inject
@@ -442,7 +443,7 @@ class CatalogDetailUiMapper @Inject constructor(
         val displayedComparisons = data?.comparison.orEmpty()
             .filter { it.id != INVALID_CATALOG_ID }
             .take(COMPARISON_COUNT)
-        return if (displayedComparisons.isEmpty()) {
+        return if (displayedComparisons.size <= Int.ONE) {
             BlankUiModel()
         } else {
             ComparisonUiModel(

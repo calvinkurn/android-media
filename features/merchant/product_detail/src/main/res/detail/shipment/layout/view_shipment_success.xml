@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/pdp_shipment_background"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:unify_image_disable_shimmering_placeholder="true"
+        app:unify_image_placeholder="@android:color/transparent"
+        tools:src="@tools:sample/avatars" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pdp_shipment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/pdp_shipment_header_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toTopOf="@id/pdp_shipment_header_barrier_bottom"
+            app:layout_constraintEnd_toStartOf="@id/pdp_shipment_header_price"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/pdp_shipment_header_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@id/pdp_shipment_header_barrier_bottom"
+            app:layout_constraintEnd_toStartOf="@id/pdp_shipment_header_slash_price"
+            app:layout_constraintStart_toEndOf="@id/pdp_shipment_header_logo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginStart="0dp"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="Ongkir Instant 3 jam mulai Rp40.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/pdp_shipment_header_slash_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toTopOf="@id/pdp_shipment_header_barrier_bottom"
+            app:layout_constraintEnd_toStartOf="@id/pdp_shipment_chevron"
+            app:layout_constraintStart_toEndOf="@id/pdp_shipment_header_price"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_2"
+            tools:text="Rp10.000" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/pdp_shipment_chevron"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/pdp_shipment_header_barrier_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="pdp_shipment_header_logo, pdp_shipment_header_price, pdp_shipment_header_slash_price, pdp_shipment_chevron" />
+
+        <LinearLayout
+            android:id="@+id/pdp_shipment_container_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/pdp_shipment_header_barrier_bottom" />
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/pdp_shipment_ticker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            app:closeButtonVisibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pdp_shipment_container_body"
+            app:tickerShapeType="loose"
+            app:tickerType="announcement"
+            tools:descriptionText="Maaf, pengiriman terjadwal belum tersedia untuk beberapa produk pada kategori ini."
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.TipsUnify
+            android:id="@+id/pdp_shipment_tips"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pdp_shipment_ticker"
+            app:layout_goneMarginTop="10dp"
+            app:unify_tips_description="Test"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ViewStub
+        android:id="@+id/pdp_shipment_plus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout="@layout/view_shipment_plus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_container" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
