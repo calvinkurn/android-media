@@ -425,12 +425,12 @@ class ShopInfoReimagineViewModelTest {
             mockGetShopReviewGqlCall()
             mockGetShopInfoGqlCall()
             mockGetShopNoteGqlCall()
-            
-            //Mock the data to simulate following condition: 
-            // Mon, Tue, Wed, Sat, Sund: Open, 
-            // Thu: Open 24 Hours, 
-            // Fri: Closed 
-            
+
+            // Mock the data to simulate following condition:
+            // Mon, Tue, Wed, Sat, Sund: Open,
+            // Thu: Open 24 Hours,
+            // Fri: Closed
+
             val response = ShopOperationalHoursListResponse(
                 getShopOperationalHoursList = GetShopOperationalHoursList(
                     data = listOf(
@@ -517,7 +517,6 @@ class ShopInfoReimagineViewModelTest {
             job.cancel()
         }
     }
-
 
     @Test
     fun `When get operational hours success but it returns null for data then should return empty operational hours map`() {
@@ -1042,11 +1041,11 @@ class ShopInfoReimagineViewModelTest {
             // When
             viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
             viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
-            viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(selectedProductId))
+            viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(selectedProductId, 1))
 
             // Then
             val actual = emittedEffects.last()
-            assertEquals(ShopInfoUiEffect.RedirectToProductReviewPage(selectedProductId), actual)
+            assertEquals(ShopInfoUiEffect.RedirectToProductReviewPage(selectedProductId, shopId, 1), actual)
             job.cancel()
         }
     }
@@ -1079,7 +1078,7 @@ class ShopInfoReimagineViewModelTest {
 
             // Then
             val actual = emittedEffects.last()
-            assertEquals(ShopInfoUiEffect.RedirectToProductReviewPage(selectedProductId), actual)
+            assertEquals(ShopInfoUiEffect.RedirectToProductReviewGallery(selectedProductId, shopId), actual)
             job.cancel()
         }
     }
