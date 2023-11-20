@@ -45,8 +45,8 @@ data class AdsBannerItemResponse(
 data class BannerImage(
     @SerializedName("dimension")
     val dimension: Dimension = Dimension(),
-    @SerializedName("URL")
-    val uRL: String = ""
+    @SerializedName("url")
+    val url: String = ""
 ) {
     data class Dimension(
         @SerializedName("height")
