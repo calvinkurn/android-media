@@ -139,13 +139,31 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
                 }
 
                 if (i == currentProgressPosition) {
-                    progressAnimEnd = view.x
+                    setProgressAnimEnd(i, uiModel, view)
                 }
 
                 resetProgresItem(view)
             }
 
             imageStar.bringToFront()
+        }
+    }
+
+    private fun setProgressAnimEnd(
+        index: Int,
+        uiModel: HomeQuestWidgetUiModel,
+        view: HomeQuestProgressCircleView
+    ) {
+        val questCount = uiModel.questList.count() - 1
+        val currentProgressPosition = uiModel.currentProgressPosition
+        val isProgressLastQuest = currentProgressPosition == questCount
+        progressAnimEnd = if(index == questCount && isProgressLastQuest) {
+            val offset = context.resources.getDimensionPixelSize(
+                unifyprinciplesR.dimen.unify_space_12
+            )
+            view.x - offset
+        } else {
+            view.x
         }
     }
 
