@@ -218,11 +218,11 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
 
     private fun initRecyclerView(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel) {
         val ratio = uiModel.header.ratio.takeIf { it.isNotEmpty() } ?: DEFAULT_RATIO
-        val layoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, isCircularRvLayout(uiModel), false)
-        layoutManager.setPostLayoutListener(CarouselZoomPostLayoutListener())
-        layoutManager.maxVisibleItems = Int.ONE
-        layoutManager.removeOnItemSelectionListener(itemSelectListener)
-        layoutManager.addOnItemSelectionListener(itemSelectListener)
+        carouselLayoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, isCircularRvLayout(uiModel), false)
+        carouselLayoutManager?.setPostLayoutListener(CarouselZoomPostLayoutListener())
+        carouselLayoutManager?.maxVisibleItems = Int.ONE
+        carouselLayoutManager?.removeOnItemSelectionListener(itemSelectListener)
+        carouselLayoutManager?.addOnItemSelectionListener(itemSelectListener)
         recyclerViewProductHotspot?.apply {
             isNestedScrollingEnabled = false
             (this@apply.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ratio
@@ -243,13 +243,12 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
         recyclerView: RecyclerView,
         carouselLayoutManager: CarouselLayoutManager
     ) {
-        if (recyclerView.onFlingListener == null) {
-            recyclerView.onFlingListener = CarouselHorizontalFlingSwipeEffect(
-                recyclerView,
-                carouselLayoutManager,
-                uiModel?.data?.size.orZero()
-            ) { currentSelectedItemPositionWhenUserTouchItem }
-        }
+        recyclerView.onFlingListener = null
+        recyclerView.onFlingListener = CarouselHorizontalFlingSwipeEffect(
+            recyclerView,
+            carouselLayoutManager,
+            uiModel?.data?.size.orZero()
+        ) { currentSelectedItemPositionWhenUserTouchItem }
     }
 
     private fun isCircularRvLayout(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel): Boolean {
@@ -263,7 +262,7 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
                     val firstChildHeight = recyclerViewProductHotspot.findViewHolderForAdapterPosition(
                         Int.ZERO
                     )?.itemView?.height.orZero()
-                    val lp = recyclerViewProductHotspot.layoutParams as? ViewGroup.LayoutParams
+                    val lp = recyclerViewProductHotspot.layoutParams
                     lp?.height = firstChildHeight
                     recyclerViewProductHotspot.layoutParams = lp
                     recyclerViewProductHotspot.viewTreeObserver.removeOnGlobalLayoutListener(this)

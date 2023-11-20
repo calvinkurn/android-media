@@ -4,7 +4,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -187,23 +186,25 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
 
     private fun initRecyclerView(uiModel: ShopHomeDisplayWidgetUiModel) {
         val ratio = uiModel.header.ratio.takeIf { it.isNotEmpty() } ?: DEFAULT_RATIO
-        val layoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, isCircularRvLayout(uiModel), false)
-        layoutManager.setPostLayoutListener(CarouselZoomPostLayoutListener())
-        layoutManager.maxVisibleItems = Int.ONE
-        layoutManager.removeOnItemSelectionListener(itemSelectionListener)
-        layoutManager.addOnItemSelectionListener(itemSelectionListener)
+        carouselLayoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, isCircularRvLayout(uiModel), false)
+        carouselLayoutManager?.setPostLayoutListener(CarouselZoomPostLayoutListener())
+        carouselLayoutManager?.maxVisibleItems = Int.ONE
+        carouselLayoutManager?.removeOnItemSelectionListener(itemSelectionListener)
+        carouselLayoutManager?.addOnItemSelectionListener(itemSelectionListener)
         recyclerView?.apply {
             isNestedScrollingEnabled = false
             (this@apply.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ratio
             this.layoutManager = carouselLayoutManager
             this.setHasFixedSize(true)
             this.addOnScrollListener(CenterScrollListener())
-            DefaultChildSelectionListener.initCenterItemListener(
-                itemClickListener,
-                recyclerView,
-                layoutManager
-            )
-            setupFlingListener(this, layoutManager)
+            carouselLayoutManager?.let {
+                DefaultChildSelectionListener.initCenterItemListener(
+                    itemClickListener,
+                    recyclerView,
+                    it
+                )
+                setupFlingListener(this, it)
+            }
             this.adapter = adapterShopWidgetAdvanceCarouselBanner
             this.removeOnItemTouchListener(itemTouchListener)
             this.addOnItemTouchListener(itemTouchListener)
@@ -225,13 +226,12 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
         recyclerView: RecyclerView,
         carouselLayoutManager: CarouselLayoutManager
     ) {
-        if (recyclerView.onFlingListener == null) {
-            recyclerView.onFlingListener = CarouselHorizontalFlingSwipeEffect(
-                recyclerView,
-                carouselLayoutManager,
-                uiModel.data?.size.orZero()
-            ) { currentSelectedItemPositionWhenUserTouchItem }
-        }
+        recyclerView.onFlingListener = null
+        recyclerView.onFlingListener = CarouselHorizontalFlingSwipeEffect(
+            recyclerView,
+            carouselLayoutManager,
+            uiModel.data?.size.orZero()
+        ) { currentSelectedItemPositionWhenUserTouchItem }
     }
 
     private fun isCircularRvLayout(uiModel: ShopHomeDisplayWidgetUiModel): Boolean {
@@ -245,7 +245,7 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
                     val firstChildHeight = recyclerView.findViewHolderForAdapterPosition(
                         Int.ZERO
                     )?.itemView?.height.orZero()
-                    val lp = recyclerView.layoutParams as? ViewGroup.LayoutParams
+                    val lp = recyclerView.layoutParams
                     lp?.height = firstChildHeight
                     recyclerView.layoutParams = lp
                     recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
