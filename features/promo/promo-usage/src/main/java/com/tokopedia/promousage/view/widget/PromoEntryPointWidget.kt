@@ -725,11 +725,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         rightIcon: Int? = null,
         onClickListener: () -> Unit = {}
     ) {
-        if (enableNewInterface) {
-            activeViewFrame?.visibility = View.VISIBLE
-        } else {
-            activeViewFrame?.visibility = View.GONE
-        }
+        activeViewFrame?.visibility = View.VISIBLE
         activeViewConfettiFrame?.visibility = View.GONE
         activeViewSummaryLayout?.visibility = View.GONE
         activeViewDivider?.visibility = View.GONE
