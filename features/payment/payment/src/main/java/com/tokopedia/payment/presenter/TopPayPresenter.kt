@@ -34,8 +34,8 @@ class TopPayPresenter(
     override fun processUriPayment(logger: PaymentFingerprintDataLogger) {
         val paymentPassData = view?.paymentPassData
         if (paymentPassData != null) {
-            logger.transactionId = paymentPassData.transactionId
             try {
+                logger.transactionId = paymentPassData.transactionId
                 logger.length2 = paymentPassData.queryString.length
                 val postData = paymentPassData.queryString.toByteArray()
                 val method = paymentPassData.method ?: PaymentPassData.METHOD_POST
