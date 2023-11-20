@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowQuestProgressBarViewBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HomeQuestProgressBarView @JvmOverloads constructor(
@@ -35,8 +36,8 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
         true
     )
 
-    private val defaultStrokeResId =  unifyprinciplesR.color.Unify_NN100_20
-    private val defaultColorResId = unifyprinciplesR.color.Unify_BN700
+    private val defaultStrokeResId =  R.color.tokopedianow_quest_circle_border_dms_color
+    private val defaultColorResId = R.color.tokopedianow_quest_progress_dms_color
 
     private var progressAnimEnd = DEFAULT_PROGRESS
     private var progressItems = mutableListOf<HomeQuestProgressCircleView>()
