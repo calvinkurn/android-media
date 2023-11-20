@@ -35,11 +35,16 @@ class FeedProductButtonView(
         totalProducts: Int,
         trackerData: FeedTrackerDataModel?,
         topAdsTrackerData: FeedTopAdsTrackerDataModel?,
-        positionInFeed: Int
+        positionInFeed: Int,
+        enableProductIconAnim: Boolean
     ) = with(binding) {
 
         bind(products, totalProducts)
-        bindProductIcon(hasVoucher, isContainsDiscountProduct(products)) {
+        bindProductIcon(
+            enableProductIconAnim,
+            hasVoucher,
+            isContainsDiscountProduct(products)
+        ) {
             onClick(
                 postId,
                 author,
@@ -120,16 +125,21 @@ class FeedProductButtonView(
         }
     }
 
-    private fun bindProductIcon(hasVoucher: Boolean, hasDiscount: Boolean, onClick: () -> Unit) {
-        if (hasVoucher || hasDiscount) {
-            binding.icPlayProductSeeMore.hide()
-            binding.lottieProductSeeMore.show()
-            binding.lottieProductSeeMore.setAnimationFromUrl(binding.root.context.getString(contentcommonR.string.feed_product_icon_anim))
-            binding.lottieProductSeeMore.setOnClickListener { onClick() }
+    private fun bindProductIcon(
+        enableProductIconAnim: Boolean,
+        hasVoucher: Boolean,
+        hasDiscount: Boolean,
+        onClick: () -> Unit,
+    ) = with(binding) {
+        if (enableProductIconAnim && (hasVoucher || hasDiscount)) {
+            icPlayProductSeeMore.hide()
+            lottieProductSeeMore.show()
+            lottieProductSeeMore.setAnimationFromUrl(root.context.getString(contentcommonR.string.feed_product_icon_anim))
+            lottieProductSeeMore.setOnClickListener { onClick() }
         } else {
-            binding.icPlayProductSeeMore.show()
-            binding.lottieProductSeeMore.hide()
-            binding.icPlayProductSeeMore.setOnClickListener { onClick() }
+            icPlayProductSeeMore.show()
+            lottieProductSeeMore.hide()
+            icPlayProductSeeMore.setOnClickListener { onClick() }
         }
     }
 
