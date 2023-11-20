@@ -273,7 +273,8 @@ class CheckoutDataConverter @Inject constructor() {
                 courierSelectionErrorTitle = groupShop.courierSelectionErrorData.title,
                 courierSelectionErrorDescription = groupShop.courierSelectionErrorData.description,
                 subtotalAddOnMap = mapSubtotalAddons(groupShop.listSubtotalAddOn),
-                shipmentAction = groupShop.shipmentAction
+                shipmentAction = groupShop.shipmentAction,
+                groupingState = groupShop.groupingState
             )
             for (cartItemModel in products) {
                 if (cartItemModel.ethicalDrugDataModel.needPrescription && !cartItemModel.isError) {
