@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -91,7 +90,6 @@ class ProductManageQuickEditStockFragment(
         )
         setChild(binding?.root)
         setTitle(getString(R.string.product_manage_quick_edit_stock_title))
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         initInjector()
     }
 

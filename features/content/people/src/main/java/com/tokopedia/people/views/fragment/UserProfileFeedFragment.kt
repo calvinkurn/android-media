@@ -148,7 +148,7 @@ class UserProfileFeedFragment @Inject constructor(
             viewModel.uiState.withCache().collectLatest {
                 val prev = it.prevValue?.feedPostsContent
                 val value = it.value.feedPostsContent
-                if ((prev == null && value == UserFeedPostsUiModel()) || (prev == value)) return@collectLatest
+                if ((prev == null && value == UserFeedPostsUiModel.Empty) || (prev == value)) return@collectLatest
                 renderFeedPosts(value)
             }
         }
