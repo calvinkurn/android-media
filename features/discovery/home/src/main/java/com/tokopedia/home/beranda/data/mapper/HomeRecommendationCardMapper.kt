@@ -101,7 +101,7 @@ class HomeRecommendationCardMapper @Inject constructor(
         }
 
         return HomeRecommendationDataModel(
-            homeRecommendationTypeFactoryImplList,
+            homeRecommendationTypeFactoryImplList.toList(),
             getHomeRecommendationCard.hasNextPage
         )
     }
