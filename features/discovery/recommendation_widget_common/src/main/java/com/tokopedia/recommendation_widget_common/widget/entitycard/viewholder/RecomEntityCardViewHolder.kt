@@ -18,7 +18,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntityCardBinding
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
-import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
+import com.tokopedia.recommendation_widget_common.widget.entitycard.uimodel.RecomEntityCardUiModel
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.modeAware
@@ -87,7 +87,6 @@ class RecomEntityCardViewHolder(
                 setLabelIcon(labelState.iconUrl)
             }
             if (item != this) {
-                setMinHeightEntryPointCard()
                 setOnCardImpressionListener(this)
                 setOnCardClickListener(this)
             }

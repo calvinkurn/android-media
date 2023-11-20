@@ -2,44 +2,34 @@ package com.tokopedia.home.beranda.domain.gql.recommendationcard
 
 import com.google.gson.annotations.SerializedName
 
-data class AdsBannerItemResponse(
-    @SerializedName("Item")
-    val item: Item = Item()
+data class AdsBanner(
+    @SerializedName("adClickURL")
+    val adClickURL: String = "",
+    @SerializedName("adRefKey")
+    val adRefKey: String = "",
+    @SerializedName("adViewURL")
+    val adViewURL: String = "",
+    @SerializedName("appLink")
+    val appLink: String = "",
+    @SerializedName("banner")
+    val banner: Banner = Banner(),
+    @SerializedName("ID")
+    val id: String = "0",
+    @SerializedName("redirect")
+    val redirect: String = ""
 ) {
-    data class Item(
-        @SerializedName("AdsBanner")
-        val adsBanner: AdsBanner = AdsBanner()
-    ) {
-        data class AdsBanner(
-            @SerializedName("adClickURL")
-            val adClickURL: String = "",
-            @SerializedName("adRefKey")
-            val adRefKey: String = "",
-            @SerializedName("adViewURL")
-            val adViewURL: String = "",
-            @SerializedName("appLink")
-            val appLink: String = "",
-            @SerializedName("banner")
-            val banner: Banner = Banner(),
-            @SerializedName("ID")
-            val id: String = "0",
-            @SerializedName("redirect")
-            val redirect: String = ""
-        ) {
-            data class Banner(
-                @SerializedName("bannerImages")
-                val bannerImages: List<BannerImage> = listOf(),
-                @SerializedName("layoutType")
-                val layoutType: String = "",
-                @SerializedName("name")
-                val name: String = "",
-                @SerializedName("position")
-                val position: String = "",
-                @SerializedName("shop")
-                val shop: Shop = Shop()
-            )
-        }
-    }
+    data class Banner(
+        @SerializedName("bannerImages")
+        val bannerImages: List<BannerImage> = listOf(),
+        @SerializedName("layoutType")
+        val layoutType: String = "",
+        @SerializedName("name")
+        val name: String = "",
+        @SerializedName("position")
+        val position: String = "",
+        @SerializedName("shop")
+        val shop: Shop = Shop()
+    )
 }
 
 data class BannerImage(
@@ -97,6 +87,7 @@ data class Shop(
         @SerializedName("xsURL")
         val xsURL: String = ""
     )
+
     data class Badge(
         @SerializedName("imageURL")
         val imageURL: String = "",
@@ -143,6 +134,7 @@ data class Shop(
             @SerializedName("imageMURL")
             val imageMURL: String = ""
         )
+
         data class FreeShippingCampaign(
             @SerializedName("imgURL")
             val imgURL: String = "",

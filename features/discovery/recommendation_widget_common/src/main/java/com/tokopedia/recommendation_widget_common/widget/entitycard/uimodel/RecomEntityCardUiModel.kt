@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget.entitycard.model
+package com.tokopedia.recommendation_widget_common.widget.entitycard.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder

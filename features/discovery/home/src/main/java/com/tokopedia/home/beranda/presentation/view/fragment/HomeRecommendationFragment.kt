@@ -62,7 +62,7 @@ import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
+import com.tokopedia.recommendation_widget_common.widget.entitycard.uimodel.RecomEntityCardUiModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
@@ -107,7 +107,7 @@ class HomeRecommendationFragment :
 
     private val adapter by lazy { HomeRecommendationAdapter(adapterFactory) }
 
-    private val staggeredGridLayoutManager by lazy {
+    private val staggeredGridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         StaggeredGridLayoutManager(
             DynamicChannelTabletConfiguration.getSpanCountForHomeRecommendationAdapter(
                 requireContext()
@@ -259,21 +259,27 @@ class HomeRecommendationFragment :
                     viewModel.homeRecommendationCardState.collect {
                         when (it) {
                             is HomeRecommendationCardState.Success -> {
-                                adapter.submitList(it.data.homeRecommendations)
-                                updateScrollEndlessListener(it.data.isHasNextPage)
+                                adapter.submitList(it.data.homeRecommendations) {
+                                    updateScrollEndlessListener(it.data.isHasNextPage)
+                                }
                             }
 
                             is HomeRecommendationCardState.Loading -> {
-                                adapter.submitList(it.data.homeRecommendations)
+                                adapter.submitList(it.data.homeRecommendations) {
+                                    updateScrollEndlessListener(false)
+                                }
                             }
 
                             is HomeRecommendationCardState.EmptyData -> {
-                                adapter.submitList(it.data.homeRecommendations)
+                                adapter.submitList(it.data.homeRecommendations) {
+                                    updateScrollEndlessListener(false)
+                                }
                             }
 
                             is HomeRecommendationCardState.Fail -> {
-                                adapter.submitList(it.data.homeRecommendations)
-                                showToasterError()
+                                adapter.submitList(it.data.homeRecommendations) {
+                                    updateScrollEndlessListener(false)
+                                }
                             }
 
                             is HomeRecommendationCardState.FailNextPage -> {

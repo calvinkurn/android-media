@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.data.mapper
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home.beranda.domain.gql.recommendationcard.AdsBannerItemResponse
+import com.tokopedia.home.beranda.domain.gql.recommendationcard.AdsBanner
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.PlayVideoWidgetResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
+import com.tokopedia.recommendation_widget_common.widget.entitycard.uimodel.RecomEntityCardUiModel
 import com.tokopedia.topads.sdk.domain.model.ImageShop
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import dagger.Lazy
@@ -159,8 +159,8 @@ class HomeRecommendationCardMapper @Inject constructor(
         )
     }
 
-    private fun convertDataJsonToAdsBannerItem(dataStringJson: String): AdsBannerItemResponse? {
-        return convertDataJsonToModel<AdsBannerItemResponse>(dataStringJson)
+    private fun convertDataJsonToAdsBannerItem(dataStringJson: String): AdsBanner? {
+        return convertDataJsonToModel<AdsBanner>(dataStringJson)
     }
 
     private fun convertDataJsonToRecommendationPlayWidget(dataStringJson: String): PlayVideoWidgetResponse? {
@@ -176,15 +176,15 @@ class HomeRecommendationCardMapper @Inject constructor(
         }
     }
 
-    private fun mapToTopAdsImageViewModel(adsBannerItemResponse: AdsBannerItemResponse): TopAdsImageViewModel {
-        val adsBanner = adsBannerItemResponse.item.adsBanner
-        val imageShop = adsBanner.banner.shop.image
-        val imageBanner = adsBanner.banner.bannerImages.firstOrNull()
+    private fun mapToTopAdsImageViewModel(adsBannerItemResponse: AdsBanner): TopAdsImageViewModel {
+        val adsBanner = adsBannerItemResponse.banner
+        val imageShop = adsBannerItemResponse.banner.shop.image
+        val imageBanner = adsBannerItemResponse.banner.bannerImages.firstOrNull()
 
         return TopAdsImageViewModel(
-            bannerId = adsBanner.id,
-            bannerName = adsBanner.banner.name,
-            position = adsBanner.banner.position.toIntSafely(),
+            bannerId = adsBannerItemResponse.id,
+            bannerName = adsBanner.name,
+            position = adsBanner.position.toIntSafely(),
             ImpressHolder = ImageShop(
                 imageShop.cover,
                 imageShop.sURL,
@@ -193,14 +193,14 @@ class HomeRecommendationCardMapper @Inject constructor(
                 imageShop.sEcs,
                 imageShop.xsEcs
             ),
-            layoutType = adsBanner.banner.layoutType,
-            adClickUrl = adsBanner.adClickURL,
-            adViewUrl = adsBanner.adViewURL,
-            applink = adsBanner.appLink,
+            layoutType = adsBannerItemResponse.banner.layoutType,
+            adClickUrl = adsBannerItemResponse.adClickURL,
+            adViewUrl = adsBannerItemResponse.adViewURL,
+            applink = adsBannerItemResponse.appLink,
             imageUrl = imageBanner?.url.orEmpty(),
             imageWidth = imageBanner?.dimension?.width.orZero(),
             imageHeight = imageBanner?.dimension?.height.orZero(),
-            shopId = adsBanner.banner.shop.id
+            shopId = adsBannerItemResponse.banner.shop.id
         )
     }
 

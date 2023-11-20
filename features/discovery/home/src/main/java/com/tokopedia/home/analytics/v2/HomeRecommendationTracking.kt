@@ -23,7 +23,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
-import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
+import com.tokopedia.recommendation_widget_common.widget.entitycard.uimodel.RecomEntityCardUiModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -428,7 +428,6 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         position: Int,
         userId: String
     ): HashMap<String, Any> {
-
         val playWidgetTrackerModel = homeRecomPlayWidgetUiModel.playVideoTrackerUiModel
         val playVideoWidgetUiModel = homeRecomPlayWidgetUiModel.playVideoWidgetUiModel
         val widgetPosition = "0"
@@ -459,9 +458,12 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             Label.KEY, "$FOR_YOU - ${playWidgetTrackerModel.videoType} - ${playWidgetTrackerModel.partnerId} - ${playWidgetTrackerModel.playChannelId} - $itemPosition - $widgetPosition - ${playVideoWidgetUiModel.isAutoPlay} - ${playWidgetTrackerModel.recommendationType} - $homeChannelId",
             BusinessUnit.KEY, PLAY,
             CurrentSite.KEY, CurrentSite.DEFAULT,
-            Ecommerce.KEY, DataLayer.mapOf(
-                Ecommerce.PROMO_VIEW, DataLayer.mapOf(
-                    Promotion.KEY, listOf(
+            Ecommerce.KEY,
+            DataLayer.mapOf(
+                Ecommerce.PROMO_VIEW,
+                DataLayer.mapOf(
+                    Promotion.KEY,
+                    listOf(
                         promotion
                     )
                 )
@@ -493,9 +495,12 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             Label.KEY, "${recomEntityCardUiModel.layoutCard} - ${recomEntityCardUiModel.layoutItem} - ${recomEntityCardUiModel.title}",
             BusinessUnit.KEY, BusinessUnit.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
-            Ecommerce.KEY, DataLayer.mapOf(
-                Ecommerce.PROMO_VIEW, DataLayer.mapOf(
-                    Promotion.KEY, listOf(
+            Ecommerce.KEY,
+            DataLayer.mapOf(
+                Ecommerce.PROMO_VIEW,
+                DataLayer.mapOf(
+                    Promotion.KEY,
+                    listOf(
                         mapOf(
                             Promotion.CREATIVE_NAME to "",
                             Promotion.CREATIVE_SLOT to creativeSlot,
