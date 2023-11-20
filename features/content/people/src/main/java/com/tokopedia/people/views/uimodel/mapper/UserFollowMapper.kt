@@ -1,5 +1,6 @@
 package com.tokopedia.people.views.uimodel.mapper
 
+import android.webkit.URLUtil
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowerV2
@@ -15,8 +16,11 @@ class UserFollowMapper @Inject constructor() {
         return FollowListUiModel.Follower(
             total = mapFollowCount(response.profileHeader.stats),
             followers = response.profileFollowers.profileFollower.map {
-                if (it.profile.encryptedUserID.isNotBlank()) mapUser(it, myUserId)
-                else mapShop(it)
+                if (it.profile.encryptedUserID.isNotBlank()) {
+                    mapUser(it, myUserId)
+                } else {
+                    mapShop(it)
+                }
             },
             nextCursor = response.profileFollowers.newCursor
         )
@@ -26,8 +30,11 @@ class UserFollowMapper @Inject constructor() {
         return FollowListUiModel.Following(
             total = mapFollowCount(response.profileHeader.stats),
             followingList = response.profileFollowings.profileFollower.map {
-                if (it.profile.encryptedUserID.isNotBlank()) mapUser(it, myUserId)
-                else mapShop(it)
+                if (it.profile.encryptedUserID.isNotBlank()) {
+                    mapUser(it, myUserId)
+                } else {
+                    mapShop(it)
+                }
             },
             nextCursor = response.profileFollowings.newCursor
         )
@@ -52,16 +59,23 @@ class UserFollowMapper @Inject constructor() {
     }
 
     private fun mapShop(data: ProfileFollowerV2): PeopleUiModel.ShopUiModel {
-        val badges = data.profile.badges
         return PeopleUiModel.ShopUiModel(
             id = data.profile.userID,
             logoUrl = data.profile.imageCover,
-            badgeUrl = if (badges.isNotEmpty()) {
-                if (badges.size > 1) badges[1] else badges[0]
-            } else { "" },
+            badgeUrl = getShopBadgeUrl(data.profile.badges).orEmpty(),
             name = MethodChecker.fromHtml(data.profile.name).toString(),
             isFollowed = data.isFollow,
             appLink = data.profile.sharelink.applink
         )
+    }
+
+    /**
+     * "badges": [
+     *   "Official Store",
+     *   "https://images.tokopedia.net/img/official_store/badge_os.png"
+     *  ]
+     */
+    private fun getShopBadgeUrl(badgesData: List<String>): String? {
+        return badgesData.firstOrNull { URLUtil.isNetworkUrl(it) }
     }
 }

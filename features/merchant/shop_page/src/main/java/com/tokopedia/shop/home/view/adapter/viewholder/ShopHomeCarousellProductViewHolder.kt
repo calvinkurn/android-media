@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.annotation.SuppressLint
+import android.graphics.PorterDuff
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,11 +12,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapter
@@ -26,8 +29,10 @@ import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.carouselproductcard.R as carouselproductcardR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-//need to surpress this one, since there are no pii related data defined on this class
+// need to surpress this one, since there are no pii related data defined on this class
 @SuppressLint("PII Data Exposure")
 class ShopHomeCarousellProductViewHolder(
     itemView: View,
@@ -42,7 +47,7 @@ class ShopHomeCarousellProductViewHolder(
     }
     private val viewBinding: ItemShopHomeProductCarouselBinding? by viewBinding()
     private var textViewTitle: TextView? = null
-    private var textViewCta: TextView? = null
+    private var iconCtaChevron: IconUnify? = null
     private var ivBadge: ImageView? = null
     private var etalaseHeaderContainer: View? = null
     private var recyclerView: CarouselProductCardView? = null
@@ -62,7 +67,7 @@ class ShopHomeCarousellProductViewHolder(
     private fun initView() {
         textViewTitle = viewBinding?.etalaseHeaderContainer?.tvTitle
         ivBadge = viewBinding?.etalaseHeaderContainer?.imageViewEtalaseBadge
-        textViewCta = viewBinding?.etalaseHeaderContainer?.tvSeeAll
+        iconCtaChevron = viewBinding?.etalaseHeaderContainer?.iconCtaChevron
         etalaseHeaderContainer = viewBinding?.etalaseHeaderContainer?.root
         recyclerView = viewBinding?.recyclerViewCarousel
         recyclerViewForSingleOrDoubleProductCard = viewBinding?.recyclerViewCarouselSingleOrDoubleProductCard
@@ -70,7 +75,10 @@ class ShopHomeCarousellProductViewHolder(
 
     override fun bind(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
         this.shopHomeCarousellProductUiModel = shopHomeCarousellProductUiModel
-        bindShopProductCarousel(shopHomeCarousellProductUiModel.productList)
+        bindShopProductCarousel(
+            shopHomeProductViewModelList = shopHomeCarousellProductUiModel.productList,
+            isOverrideWidgetTheme = shopHomeCarousellProductUiModel.header.isOverrideTheme
+        )
         val title = shopHomeCarousellProductUiModel.header.title
         val ctaText = shopHomeCarousellProductUiModel.header.ctaText
         if (title.isEmpty() && ctaText.isEmpty()) {
@@ -78,10 +86,9 @@ class ShopHomeCarousellProductViewHolder(
         }
         ivBadge?.visibility = View.GONE
         textViewTitle?.text = MethodChecker.fromHtml(title)
-        textViewCta?.apply {
+        iconCtaChevron?.apply {
             if (ctaText.isNotEmpty()) {
                 show()
-                text = MethodChecker.fromHtml(shopHomeCarousellProductUiModel.header.ctaText)
                 setOnClickListener {
                     shopHomeCarouselProductListener.onCtaClicked(shopHomeCarousellProductUiModel)
                 }
@@ -90,37 +97,48 @@ class ShopHomeCarousellProductViewHolder(
             }
         }
         setWidgetImpressionListener(shopHomeCarousellProductUiModel)
-        checkFestivity(shopHomeCarousellProductUiModel)
+        configColorTheme(shopHomeCarousellProductUiModel)
     }
 
-    private fun checkFestivity(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
+    private fun configColorTheme(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
         if (shopHomeCarousellProductUiModel.isFestivity) {
-            configFestivity()
+            configFestivityColor()
         } else {
-            configNonFestivity()
+            if (shopHomeCarousellProductUiModel.header.isOverrideTheme) {
+                configReimaginedColor(shopHomeCarousellProductUiModel.header.colorSchema)
+            } else {
+                configDefaultColor()
+            }
         }
     }
 
-    private fun configFestivity() {
-        val festivityTextColor = MethodChecker.getColor(
-            itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-        )
-        textViewTitle?.setTextColor(festivityTextColor)
-        textViewCta?.setTextColor(festivityTextColor)
+    private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
+        textViewTitle?.setTextColor(titleColor)
+        iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
     }
 
-    private fun configNonFestivity() {
+    private fun configFestivityColor() {
+        val festivityTextColor = MethodChecker.getColor(
+            itemView.context,
+            unifyprinciplesR.color.Unify_Static_White
+        )
+        textViewTitle?.setTextColor(festivityTextColor)
+        iconCtaChevron?.setColorFilter(festivityTextColor, PorterDuff.Mode.SRC_ATOP)
+    }
+
+    private fun configDefaultColor() {
         val defaultTitleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            unifyprinciplesR.color.Unify_NN950
         )
         val defaultCtaColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            unifyprinciplesR.color.Unify_NN900
         )
         textViewTitle?.setTextColor(defaultTitleColor)
-        textViewCta?.setTextColor(defaultCtaColor)
+        iconCtaChevron?.setColorFilter(defaultCtaColor, PorterDuff.Mode.SRC_ATOP)
     }
 
     private fun setWidgetImpressionListener(model: ShopHomeCarousellProductUiModel) {
@@ -129,8 +147,11 @@ class ShopHomeCarousellProductViewHolder(
         }
     }
 
-    private fun bindShopProductCarousel(shopHomeProductViewModelList: List<ShopHomeProductUiModel>) {
-        recyclerView?.isNestedScrollingEnabled = false
+    private fun bindShopProductCarousel(
+        shopHomeProductViewModelList: List<ShopHomeProductUiModel>,
+        isOverrideWidgetTheme: Boolean
+    ) {
+        recyclerView?.findViewById<RecyclerView>(carouselproductcardR.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
         recyclerViewForSingleOrDoubleProductCard?.isNestedScrollingEnabled = false
         initProductCardListener(shopHomeProductViewModelList)
         val listProductCardModel = shopHomeProductViewModelList.map {
@@ -139,11 +160,16 @@ class ShopHomeCarousellProductViewHolder(
                 hasThreeDots = false,
                 shopHomeProductViewModel = it,
                 isWideContent = false,
-                productRating = if (it.rating != 0.0) it.rating.toString() else ""
+                productRating = if (it.rating != 0.0) it.rating.toString() else "",
+                forceLightModeColor = shopHomeListener.isOverrideTheme()
             )
         }
         if (isProductCardSingleOrDouble(shopHomeProductViewModelList)) {
-            configRecyclerViewSingleOrDoubleProductCard(shopHomeProductViewModelList, listProductCardModel)
+            configRecyclerViewSingleOrDoubleProductCard(
+                shopHomeProductViewModelList = shopHomeProductViewModelList,
+                listProductCardModel = listProductCardModel,
+                isOverrideWidgetTheme = isOverrideWidgetTheme
+            )
         } else {
             configRecyclerView(listProductCardModel)
         }
@@ -302,20 +328,22 @@ class ShopHomeCarousellProductViewHolder(
 
     private fun configRecyclerViewSingleOrDoubleProductCard(
         shopHomeProductViewModelList: List<ShopHomeProductUiModel>,
-        listProductCardModel: List<ProductCardModel>
+        listProductCardModel: List<ProductCardModel>,
+        isOverrideWidgetTheme: Boolean
     ) {
         shopHomeCarousellProductUiModel?.let {
             recyclerView?.hide()
             recyclerViewForSingleOrDoubleProductCard?.show()
             productCarouselSingleOrDoubleAdapter = ShopHomeCarouselProductAdapter(
                 ShopHomeCarouselProductAdapterTypeFactory(
-                    it,
-                    listProductCardModel,
-                    carouselProductCardOnItemAddToCartListener,
-                    carouselProductCardOnItemClickListener,
-                    carouselProductCardOnItemImpressedListener,
-                    carouselProductCardOnItemATCNonVariantClickListener,
-                    carouselProductCardOnItemAddVariantClickListener
+                    shopHomeCarouselProductUiModel = it,
+                    listProductCardModel = listProductCardModel,
+                    carouselProductCardOnItemAddToCartListener = carouselProductCardOnItemAddToCartListener,
+                    carouselProductCardOnItemClickListener = carouselProductCardOnItemClickListener,
+                    carouselProductCardOnItemImpressedListener = carouselProductCardOnItemImpressedListener,
+                    carouselProductCardOnItemATCNonVariantClickListener = carouselProductCardOnItemATCNonVariantClickListener,
+                    carouselProductCardOnItemAddVariantClickListener = carouselProductCardOnItemAddVariantClickListener,
+                    isOverrideWidgetTheme = isOverrideWidgetTheme
                 )
             )
             val totalProductSize = shopHomeProductViewModelList.size

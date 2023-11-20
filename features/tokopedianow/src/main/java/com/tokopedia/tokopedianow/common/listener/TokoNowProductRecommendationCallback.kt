@@ -74,6 +74,7 @@ class TokoNowProductRecommendationCallback(
 
     override fun onSeeAllClicked(
         context: Context,
+        channelId: String,
         headerName: String,
         appLink: String,
         widgetId: String

@@ -1,8 +1,8 @@
 package com.tokopedia.tokofood.merchant
 
-import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
-import com.tokopedia.tokofood.data.*
+import com.tokopedia.tokofood.data.generateTestDeliveryCoverageResult
+import com.tokopedia.tokofood.data.generateTestGetStateChosenAddressQglResponse
+import com.tokopedia.tokofood.data.generateTestKeroEditAddressResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -57,39 +57,10 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
     }
 
     @Test
-    fun `when checkUserEligibilityForAnaRevamp is success expect eligibility data`() {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            val testData = generateTestKeroAddrIsEligibleForAddressFeature()
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData) -> Unit>().invoke(testData.data)
-        }
-        val expectedResult = generateTestKeroAddrIsEligibleForAddressFeature()
-        viewModel.checkUserEligibilityForAnaRevamp()
-        val actualResult = viewModel.eligibleForAnaRevamp.value
-        Assert.assertEquals(expectedResult.data.eligibleForRevampAna.eligible, (actualResult as Success).data.eligible)
-    }
-
-    @Test
-    fun `when checkUserEligibilityForAnaRevamp is failed expect fail response`() {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(Throwable())
-        }
-        viewModel.checkUserEligibilityForAnaRevamp()
-        val actualResult = viewModel.eligibleForAnaRevamp.value
-        Assert.assertTrue(actualResult is Fail)
-    }
-
-    @Test
     fun `when getChooseAddress is success expect chosen address data`() {
         coEvery {
-            getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
-        } answers {
-            val testData = generateTestGetStateChosenAddressQglResponse()
-            firstArg<(GetStateChosenAddressResponse) -> Unit>().invoke(testData.response)
-        }
+            getChooseAddressWarehouseLocUseCase(any())
+        } returns generateTestGetStateChosenAddressQglResponse().response
         val expectedResult = generateTestGetStateChosenAddressQglResponse()
         viewModel.getChooseAddress("tokofood")
         val actualResult = viewModel.chooseAddress.value
@@ -98,12 +69,10 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
 
     @Test
     fun `when getChooseAddress is success expect fail response`() {
-        coEvery {
-            getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(Throwable())
-        }
-        viewModel.getChooseAddress("tokofood")
+        val param = "tokofood"
+        val error = Exception("test exception")
+        coEvery { getChooseAddressWarehouseLocUseCase.invoke(param) } throws error
+        viewModel.getChooseAddress(param)
         val actualResult = viewModel.chooseAddress.value
         Assert.assertTrue(actualResult is Fail)
     }
@@ -113,7 +82,7 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
         coEvery {
             checkDeliveryCoverageUseCase.executeOnBackground()
         } returns generateTestDeliveryCoverageResult()
-        viewModel.checkDeliveryCoverage("merchantId","latlong","timezone")
+        viewModel.checkDeliveryCoverage("merchantId", "latlong", "timezone")
         val expectedResponse = generateTestDeliveryCoverageResult()
         val actualResponse = viewModel.checkDeliveryCoverageResult.value
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
@@ -124,7 +93,7 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
         coEvery {
             checkDeliveryCoverageUseCase.executeOnBackground()
         } throws Throwable()
-        viewModel.checkDeliveryCoverage("merchantId","latlong","timezone")
+        viewModel.checkDeliveryCoverage("merchantId", "latlong", "timezone")
         coVerify { checkDeliveryCoverageUseCase.executeOnBackground() }
         val actualResponse = viewModel.checkDeliveryCoverageResult.value
         assert(actualResponse is Fail)

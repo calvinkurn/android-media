@@ -91,7 +91,7 @@ open class RegisterEmailBase : LoginRegisterBase() {
     fun inputEmailRegister(value: String) {
         val viewInteraction = onView(
             allOf(
-                withId(R.id.text_field_input),
+                withId(com.tokopedia.unifycomponents.R.id.text_field_input),
                 isDescendantOfA(withId(R.id.wrapper_email))
             )
         )
@@ -105,7 +105,7 @@ open class RegisterEmailBase : LoginRegisterBase() {
     }
 
     fun inputName(value: String) {
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.wrapper_name))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.wrapper_name))))
             .check(matches(isDisplayed()))
             .perform(clearText(), typeText(value))
     }
@@ -113,7 +113,7 @@ open class RegisterEmailBase : LoginRegisterBase() {
     fun inputPassword(value: String) {
         onView(
             allOf(
-                withId(R.id.text_field_input),
+                withId(com.tokopedia.unifycomponents.R.id.text_field_input),
                 isDescendantOfA(withId(R.id.wrapper_password))
             )
         ).check(matches(isDisplayed())).perform(clearText(), typeText(value))

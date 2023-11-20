@@ -237,7 +237,7 @@ class OfficialCategoriesTab(context: Context,
                 context,
                 image_view_category_icon,
                 categoriesItemTab[position].inactiveIconUrl,
-                R.drawable.ic_loading_image
+                com.tokopedia.design.R.drawable.ic_loading_image
             )
             text_view_category_title?.text = categoriesItemTab[position].title
         }

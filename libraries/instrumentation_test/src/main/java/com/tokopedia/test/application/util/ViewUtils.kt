@@ -26,7 +26,7 @@ object ViewUtils {
     @JvmStatic
     fun View?.takeScreenShot(fileName: String, dir: String = "") {
         if (this != null) {
-            this.setBackgroundColor(ContextCompat.getColor(this.context, R.color.Unify_N0))
+            this.setBackgroundColor(ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             Handler(Looper.getMainLooper()).post {
                 val bitmap = Bitmap.createBitmap(
                         this.width,
@@ -70,7 +70,7 @@ object ViewUtils {
                     bgDrawable.draw(b1)
                 } else {
                     //does not have background drawable, then draw white background on the canvas
-                    b1.drawColor(ContextCompat.getColor(context!!, R.color.Unify_N0))
+                    b1.drawColor(ContextCompat.getColor(context!!, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 }
                 view.draw(b1)
 

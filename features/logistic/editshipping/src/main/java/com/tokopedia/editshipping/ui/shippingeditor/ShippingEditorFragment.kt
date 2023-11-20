@@ -12,8 +12,6 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,21 +40,25 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.ShippingEditorStat
 import com.tokopedia.editshipping.domain.model.shippingEditor.TickerModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ValidateShippingEditorModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.WarehousesModel
-import com.tokopedia.editshipping.ui.EditShippingActivity
 import com.tokopedia.editshipping.ui.bottomsheet.ShipperDetailBottomSheet
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.FeatureInfoAdapter
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShipperProductItemAdapter
+import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShipperValidationBoAdapter
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorDetailsAdapter
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorItemAdapter
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.WarehouseInactiveAdapter
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -64,6 +66,11 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -103,6 +110,7 @@ class ShippingEditorFragment :
 
     private var shippingEditorOnDemandAdapter = ShippingEditorItemAdapter(this, this)
     private var shippingEditorConventionalAdapter = ShippingEditorItemAdapter(this, this)
+    private var finishToastJob: Job? = null
     private var binding by autoClearedNullable<FragmentShippingEditorNewBinding>()
 
     override fun getScreenName(): String = ""
@@ -124,10 +132,10 @@ class ShippingEditorFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkWhitelistedUser()
+        fetchData()
         initViews()
         initAdapter()
-        initViewModel()
+        initObserver()
     }
 
     override fun onPause() {
@@ -137,14 +145,12 @@ class ShippingEditorFragment :
         super.onPause()
     }
 
-    private fun checkWhitelistedUser() {
-        viewModel.getWhitelistData(userSession.shopId.toLong())
-    }
-
     private fun initViews() {
         renderTickerOnDemand()
         renderTextDetailCourier()
-        binding?.btnSaveShipper?.setOnClickListener { saveButtonShippingEditor() }
+        binding?.run {
+            btnSaveShipper.setOnClickListener { saveButtonShippingEditor() }
+        }
     }
 
     private fun renderTickerOnDemand() {
@@ -197,122 +203,119 @@ class ShippingEditorFragment :
         binding?.rvConventional?.layoutManager = LinearLayoutManager(context)
     }
 
-    private fun initViewModel() {
-        viewModel.shopWhitelist.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShippingEditorState.Success -> {
-                        if (it.data.data.eligibilityState == 1) {
-                            binding?.swipeRefresh?.isRefreshing = false
-                            fetchData()
-                        } else {
-                            activity?.finish()
-                            val intent =
-                                context?.let { context -> EditShippingActivity.createIntent(context) }
-                            startActivityForResult(intent, REQUEST_EDIT_SHIPPING)
-                        }
-                    }
-
-                    is ShippingEditorState.Fail -> {
-                        binding?.swipeRefresh?.isRefreshing = false
-                        if (it.throwable != null) {
-                            handleError(it.throwable)
-                        }
-                    }
-
-                    else -> {
-                        binding?.swipeRefresh?.isRefreshing = true
-                    }
-                }
-            }
-        )
-
+    private fun initObserver() {
         viewModel.shipperList.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShippingEditorState.Success -> {
-                        updateData(it.data.shippers)
-                        renderTicker(it.data.ticker)
-                        checkWhitelabelCoachmarkState()
-                    }
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is ShippingEditorState.Success -> {
+                    showSuccessLayout()
+                    updateData(it.data.shippers)
+                    renderTicker(it.data.ticker)
+                    checkWhitelabelCoachmarkState()
+                    renderDropOffButton(binding?.buttonDropOff, it.data.dropOffMapsUrl)
+                    updateHeaderTickerData(it.data.tickerHeader)
+                }
 
-                    is ShippingEditorState.Fail -> {
-                        binding?.swipeRefresh?.isRefreshing = false
-                        if (it.throwable != null) {
-                            handleError(it.throwable)
-                        }
-                    }
-
-                    else -> {
-                        binding?.shippingEditorLayout?.gone()
-                        binding?.btnSaveShipper?.gone()
-                        binding?.swipeRefresh?.isRefreshing = true
+                is ShippingEditorState.Fail -> {
+                    binding?.swipeRefresh?.isRefreshing = false
+                    if (it.throwable != null) {
+                        handleError(it.throwable)
                     }
                 }
-            }
-        )
 
-        viewModel.shipperTickerList.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShippingEditorState.Success -> {
-                        binding?.swipeRefresh?.isRefreshing = false
-                        binding?.shippingEditorLayout?.visible()
-                        binding?.btnSaveShipper?.visible()
-                        binding?.globalError?.gone()
-                        updateHeaderTickerData(it.data.headerTicker)
-                    }
-                    else -> {
-                        //no-op
-                    }
+                else -> {
+                    binding?.shippingEditorLayout?.gone()
+                    binding?.btnSaveShipper?.gone()
+                    binding?.swipeRefresh?.isRefreshing = true
                 }
             }
-        )
+        }
 
         viewModel.shipperDetail.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShippingEditorState.Success -> {
-                        binding?.swipeRefresh?.isRefreshing = false
-                        updateBottomsheetData(it.data)
-                    }
-                    is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
-                    else -> binding?.swipeRefresh?.isRefreshing = true
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is ShippingEditorState.Success -> {
+                    binding?.swipeRefresh?.isRefreshing = false
+                    updateBottomsheetData(it.data)
                 }
+
+                is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
+                else -> binding?.swipeRefresh?.isRefreshing = true
             }
-        )
+        }
 
         viewModel.validateDataShipper.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShippingEditorState.Success -> {
-                        binding?.swipeRefresh?.isRefreshing = false
-                        validateSaveData(it.data)
-                    }
-                    is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
-                    else -> binding?.swipeRefresh?.isRefreshing = true
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is ShippingEditorState.Success -> {
+                    binding?.swipeRefresh?.isRefreshing = false
+                    validateSaveData(it.data)
                 }
+
+                is ShippingEditorState.Fail -> {
+                    showToaster(it.errorMessage, Toaster.TYPE_ERROR)
+                    binding?.swipeRefresh?.isRefreshing = false
+                }
+                else -> binding?.swipeRefresh?.isRefreshing = true
             }
-        )
+        }
 
         viewModel.saveShippingData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShippingEditorState.Success -> {
-                        binding?.swipeRefresh?.isRefreshing = false
-                        fetchData()
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is ShippingEditorState.Success -> {
+                    binding?.swipeRefresh?.isRefreshing = false
+                    finishToastJob?.cancel()
+                    finishToastJob = CoroutineScope(Dispatchers.Main).launch {
+                        delay(FINISH_ACTIVITY_DELAY)
+                        activity?.finish()
                     }
-                    is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
-                    else -> binding?.swipeRefresh?.isRefreshing = true
+                    showToaster(getString(R.string.success_save_shipping), Toaster.TYPE_NORMAL)
                 }
+
+                is ShippingEditorState.Fail -> {
+                    binding?.swipeRefresh?.isRefreshing = false
+                    showToaster(it.errorMessage, Toaster.TYPE_ERROR)
+                }
+                else -> binding?.swipeRefresh?.isRefreshing = true
             }
-        )
+        }
+    }
+
+    private fun showSuccessLayout() {
+        binding?.swipeRefresh?.isRefreshing = false
+        binding?.shippingEditorLayout?.visible()
+        binding?.btnSaveShipper?.visible()
+        binding?.globalError?.gone()
+    }
+
+    private fun renderDropOffButton(button: UnifyButton?, dropOffMapsUrl: String) {
+        button?.run {
+            if (dropOffMapsUrl.isNotEmpty()) {
+                setDrawable(getIconUnifyDrawable(context, IconUnify.LOCATION))
+                setOnClickListener {
+                    RouteManager.route(context, generateWebviewApplink(dropOffMapsUrl, showHeader = true))
+                }
+                visible()
+            } else {
+                gone()
+            }
+        }
+    }
+
+    private fun showToaster(error: String, type: Int) {
+        view?.let { view ->
+            Toaster.build(
+                view,
+                error,
+                Toaster.LENGTH_SHORT,
+                type = type
+            ).show()
+        }
     }
 
     private fun fetchData() {
@@ -426,8 +429,8 @@ class ShippingEditorFragment :
         }
     }
 
-    private fun convertFeatureIdToString(featureId: List<Long>?): String? {
-        return featureId?.joinToString(separator = ",")
+    private fun convertFeatureIdToString(featureId: List<Long>?): String {
+        return featureId?.joinToString(separator = ",").orEmpty()
     }
 
     private fun openBottomSheetWarehouseInactive(
@@ -532,10 +535,11 @@ class ShippingEditorFragment :
             })
         }
         if (uiContentModel.body.isNotEmpty()) {
-            context?.let {
-                child.pointOne.text = HtmlLinkHelper(it, uiContentModel.body[0]).spannedString
-                child.pointTwo.text = HtmlLinkHelper(it, uiContentModel.body[1]).spannedString
-                child.pointThree.text = HtmlLinkHelper(it, uiContentModel.body[2]).spannedString
+            child.rvValidationBo.run {
+                val shipperAdapter = ShipperValidationBoAdapter()
+                shipperAdapter.setData(uiContentModel.body)
+                adapter = shipperAdapter
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }
         }
         child.btnNonaktifkan.setOnClickListener {
@@ -554,8 +558,8 @@ class ShippingEditorFragment :
         }
     }
 
-    private fun generateWebviewApplink(url: String): String {
-        return "${ApplinkConst.WEBVIEW}?titlebar=false&url=$url"
+    private fun generateWebviewApplink(url: String, showHeader: Boolean = false): String {
+        return "${ApplinkConst.WEBVIEW}?titlebar=$showHeader&url=$url"
     }
 
     private fun setupChildCourierInactive(
@@ -736,21 +740,11 @@ class ShippingEditorFragment :
 
     private fun setupBottomSheetShipperInfoChild(child: BottomsheetShipperInfoBinding) {
         if (bottomSheetShipperInfoType == BOTTOMSHEET_AWB_OTOMATIS_INFO) {
-            child.imgInfoCourier.setImageDrawable(
-                ContextCompat.getDrawable(
-                    child.root.context,
-                    R.drawable.ic_awb_otomatis
-                )
-            )
+            child.imgInfoCourier.setImageUrl(TokopediaImageUrl.IMG_EDITSHIPPING_AWB_OTOMATIS)
             child.tvInfoCourier.text = getString(R.string.awb_otomatis_title)
             child.tvInfoCourierDetail.text = getString(R.string.awb_otomatis_detail)
         } else {
-            child.imgInfoCourier.setImageDrawable(
-                ContextCompat.getDrawable(
-                    child.root.context,
-                    R.drawable.ic_non_tunai
-                )
-            )
+            child.imgInfoCourier.setImageUrl(TokopediaImageUrl.IMG_EDITSHIPPING_NON_TUNAI)
             child.tvInfoCourier.text = getString(R.string.non_tunai_title)
             child.tvInfoCourierDetail.text = getString(R.string.non_tunai_detail)
         }
@@ -763,14 +757,7 @@ class ShippingEditorFragment :
             shippingEditorConventionalAdapter.getActiveSpIds()
         )
         if (activatedSpIds.isEmpty()) {
-            view?.let {
-                Toaster.build(
-                    it,
-                    EditShippingConstant.DEFAULT_ERROR_MESSAGE,
-                    Toaster.LENGTH_SHORT,
-                    type = Toaster.TYPE_ERROR
-                ).show()
-            }
+            showToaster(EditShippingConstant.DEFAULT_ERROR_SHIPPING_EDITOR, Toaster.TYPE_ERROR)
         } else {
             viewModel.validateShippingEditor(userSession.shopId.toLong(), activatedSpIds)
         }
@@ -802,37 +789,21 @@ class ShippingEditorFragment :
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
 
                     else -> {
-                        view?.let {
-                            showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.build(
-                                it,
-                                EditShippingConstant.DEFAULT_ERROR_MESSAGE,
-                                Toaster.LENGTH_SHORT,
-                                type = Toaster.TYPE_ERROR
-                            ).show()
-                        }!!
+                        showGlobalError(GlobalError.SERVER_ERROR)
+                        showToaster(EditShippingConstant.DEFAULT_ERROR_MESSAGE, Toaster.TYPE_ERROR)
                     }
                 }
             }
             else -> {
-                view?.let {
-                    showGlobalError(GlobalError.SERVER_ERROR)
-                    if (throwable.message?.contains(ERROR_CODE_NO_ACCESS) == true) {
-                        Toaster.build(
-                            it,
-                            getString(R.string.txt_error_no_access),
-                            Toaster.LENGTH_SHORT,
-                            type = Toaster.TYPE_ERROR
-                        ).show()
-                    } else {
-                        Toaster.build(
-                            it,
-                            throwable.message
-                                ?: EditShippingConstant.DEFAULT_ERROR_MESSAGE,
-                            Toaster.LENGTH_SHORT,
-                            type = Toaster.TYPE_ERROR
-                        ).show()
-                    }
+                showGlobalError(GlobalError.SERVER_ERROR)
+                if (throwable.message?.contains(ERROR_CODE_NO_ACCESS) == true) {
+                    showToaster(getString(R.string.txt_error_no_access), Toaster.TYPE_ERROR)
+                } else {
+                    showToaster(
+                        throwable.message
+                            ?: EditShippingConstant.DEFAULT_ERROR_MESSAGE,
+                        Toaster.TYPE_ERROR
+                    )
                 }
             }
         }
@@ -855,18 +826,9 @@ class ShippingEditorFragment :
     }
 
     private fun getWhitelabelView(): View? {
-        val whitelabelServiceIndex = shippingEditorOnDemandAdapter.getWhitelabelServicePosition()
+        val whitelabelServiceIndex = shippingEditorOnDemandAdapter.getSamedayServicePosition()
         return if (whitelabelServiceIndex != RecyclerView.NO_POSITION) {
             binding?.rvOnDemand?.findViewHolderForAdapterPosition(whitelabelServiceIndex)?.itemView
-        } else {
-            null
-        }
-    }
-
-    private fun getNormalServiceView(): View? {
-        val normalServiceIndex = shippingEditorOnDemandAdapter.getFirstNormalServicePosition()
-        return if (normalServiceIndex != RecyclerView.NO_POSITION) {
-            binding?.rvOnDemand?.findViewHolderForAdapterPosition(normalServiceIndex)?.itemView
         } else {
             null
         }
@@ -887,9 +849,7 @@ class ShippingEditorFragment :
         context?.let {
             val whitelabelView = getWhitelabelView()
             if (whitelabelView != null) {
-                val normalServiceView = getNormalServiceView()
-                val coachMarkItems =
-                    generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
+                val coachMarkItems = generateOnBoardingCoachMark(it, whitelabelView)
 
                 CoachMark2(it).apply {
                     setOnBoardingListener(coachMarkItems)
@@ -902,27 +862,16 @@ class ShippingEditorFragment :
 
     private fun generateOnBoardingCoachMark(
         context: Context,
-        normalService: View?,
         whitelabelService: View
     ): ArrayList<CoachMark2Item> {
         val coachMarkItems = ArrayList<CoachMark2Item>()
-        normalService?.let { view ->
-            coachMarkItems.add(
-                CoachMark2Item(
-                    view,
-                    context.getString(R.string.whitelabel_onboarding_title_coachmark),
-                    context.getString(R.string.whitelabel_onboarding_description_coachmark),
-                    CoachMark2.POSITION_TOP
-                )
-            )
-        }
 
         whitelabelService.let { view ->
             coachMarkItems.add(
                 CoachMark2Item(
                     view,
-                    context.getString(R.string.whitelabel_instan_title_coachmark),
-                    context.getString(R.string.whitelabel_instan_description_coachmark),
+                    context.getString(R.string.whitelabel_sameday_title_coachmark),
+                    context.getString(R.string.whitelabel_sameday_description_coachmark),
                     CoachMark2.POSITION_TOP
                 )
             )
@@ -979,8 +928,8 @@ class ShippingEditorFragment :
 
         private const val BOTTOMSHEET_AWB_OTOMATIS_INFO = 1
 
-        private const val REQUEST_EDIT_SHIPPING = 1998
         private const val COACHMARK_ON_BOARDING_DELAY = 1000L
+        private const val FINISH_ACTIVITY_DELAY = 2000L
 
         private const val STATE_AWB_VALIDATION = "awb_otomatis"
         private const val ERROR_CODE_NO_ACCESS = "555"

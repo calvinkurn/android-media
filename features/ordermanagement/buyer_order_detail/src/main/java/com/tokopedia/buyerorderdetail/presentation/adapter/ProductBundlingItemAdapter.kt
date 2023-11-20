@@ -12,12 +12,13 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.ProductBundlingItemDiffUtilCallback
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -30,7 +31,7 @@ class ProductBundlingItemAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_buyer_order_detail_product_bundling_list_item, parent, false)
+            .inflate(R.layout.item_buyer_order_detail_product_bundling_list_item, parent, false)
         return ViewHolder(view, listener)
     }
 
@@ -78,6 +79,7 @@ class ProductBundlingItemAdapter(
                 setupBundleItemProductNote(it.productNote)
                 setItemOnClickListener(it.orderId, it.orderDetailId, it.orderStatusId)
                 setupBundleItemButton(model.button, model.isProcessing)
+                setupImpressListener(model)
             }
         }
 
@@ -123,6 +125,7 @@ class ProductBundlingItemAdapter(
                         ) {
                             setupBundleItemButton(newItem.button, newItem.isProcessing)
                         }
+                        setupImpressListener(newItem)
                         containerProductInfo?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                         return
                     }
@@ -183,6 +186,12 @@ class ProductBundlingItemAdapter(
             }
         }
 
+        private fun setupImpressListener(model: ProductListUiModel.ProductUiModel) {
+            itemView.addOnImpressionListener(model.impressHolder) {
+                listener.onImpressed(model)
+            }
+        }
+
         private fun setItemOnClickListener(orderId: String, orderDetailId: String, orderStatusId: String) {
             itemView.setOnClickListener {
                 listener.onBundleItemClicked(orderId, orderDetailId, orderStatusId)
@@ -191,12 +200,15 @@ class ProductBundlingItemAdapter(
 
         private fun onItemActionClicked(key: String) {
             element?.let {
-                when(key) {
+                when (key) {
                     BuyerOrderDetailActionButtonKey.BUY_AGAIN -> {
                         listener.onBundleItemAddToCart(it)
                     }
                     BuyerOrderDetailActionButtonKey.SEE_SIMILAR_PRODUCTS -> {
                         listener.onBundleItemSeeSimilarProducts(it)
+                    }
+                    BuyerOrderDetailActionButtonKey.WARRANTY_CLAIM -> {
+                        listener.onBundleWarrantyClaim(it)
                     }
                     else -> {}
                 }
@@ -207,6 +219,8 @@ class ProductBundlingItemAdapter(
             fun onBundleItemClicked(orderId: String, orderDetailId: String, orderStatusId: String)
             fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductUiModel)
             fun onBundleItemSeeSimilarProducts(uiModel: ProductListUiModel.ProductUiModel)
+            fun onBundleWarrantyClaim(uiModel: ProductListUiModel.ProductUiModel)
+            fun onImpressed(uiModel: ProductListUiModel.ProductUiModel)
         }
     }
 }

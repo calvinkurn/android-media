@@ -55,7 +55,9 @@ data class DataModel(
     var isTradeIn: Boolean = false,
     var message: ArrayList<String> = arrayListOf(),
     var ovoValidationDataModel: OvoValidationDataModel = OvoValidationDataModel(),
-    var refreshPrerequisitePage: Boolean = false
+    var refreshPrerequisitePage: Boolean = false,
+    var addOns: List<AddOn> = emptyList(),
+    var isFulfillment: Boolean = false
 ) : Parcelable
 
 @Parcelize
@@ -106,4 +108,11 @@ data class OvoInsufficientTopup(
     var text: String = "",
     var applink: String = "",
     var enable: Boolean = false
+) : Parcelable
+
+@Parcelize
+data class AddOn(
+    var id: String = "",
+    var uniqueId: String = "",
+    var status: Int = 0
 ) : Parcelable

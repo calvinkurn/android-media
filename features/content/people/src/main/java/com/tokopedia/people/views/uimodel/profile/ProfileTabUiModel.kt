@@ -3,6 +3,21 @@ package com.tokopedia.people.views.uimodel.profile
 /**
  * created by fachrizalmrsln on 10/11/2022
  */
+
+sealed interface ProfileTabState {
+
+    object Unknown : ProfileTabState
+
+    data class Success(
+        val profileTab: ProfileTabUiModel,
+    ) : ProfileTabState
+
+    data class Error(
+        val error: Throwable
+    ) : ProfileTabState
+
+}
+
 data class ProfileTabUiModel(
     val showTabs: Boolean = false,
     val tabs: List<Tab> = emptyList(),

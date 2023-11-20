@@ -28,6 +28,9 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
         val list = withContext(Dispatchers.Default) {
             when (productComponentName) {
+            ComponentNames.ProductCardColumnList.componentName -> {
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardColumnList.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
+            }
             ComponentNames.ProductCardRevamp.componentName -> {
                 if (componentProperties?.template == Constant.ProductTemplate.LIST) {
                     DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.MasterProductCardItemList.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
@@ -52,6 +55,13 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
             ComponentNames.CalendarWidgetGrid.componentName, ComponentNames.CalendarWidgetCarousel.componentName ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.CalendarWidgetItem.componentName, componentProperties, creativeName,
                     parentComponentPosition = componentItem?.position, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
+            ComponentNames.ShopOfferHeroBrand.componentName -> DiscoveryDataMapper().mapListToComponentList(
+                itemList = componentData,
+                subComponentName = ComponentNames.ShopOfferHeroBrandProductItem.componentName,
+                properties = componentProperties,
+                creativeName = creativeName,
+                parentListSize = componentsListSize
+            )
             else ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, null, creativeName, parentListSize = componentsListSize)
 

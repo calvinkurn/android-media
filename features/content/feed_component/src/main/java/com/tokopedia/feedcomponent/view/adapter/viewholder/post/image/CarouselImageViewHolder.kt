@@ -20,6 +20,8 @@ import com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignOngoingVi
 import com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignUpcomingView
 import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 
@@ -101,9 +103,13 @@ class CarouselImageViewHolder(
         }
 
         likeAnim.setImageDrawable(
-            MethodChecker.getDrawable(
+            getIconUnifyDrawable(
                 itemView.context,
-                R.drawable.ic_thumb_filled
+                IconUnify.THUMB_FILLED,
+                MethodChecker.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
+                )
             )
         )
 

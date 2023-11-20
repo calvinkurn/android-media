@@ -14,12 +14,12 @@ import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
@@ -47,6 +47,12 @@ class CartGroupViewHolder(
     }
 
     fun bindData(cartGroupHolderData: CartGroupHolderData) {
+        itemView.addOnImpressionListener(cartGroupHolderData, onView = {
+            if (!cartGroupHolderData.isError && cartGroupHolderData.isCollapsed) {
+                actionListener.onAvailableCartItemImpression(cartGroupHolderData.productUiModelList)
+            }
+        })
+
         renderGroupName(cartGroupHolderData)
         renderGroupBadge(cartGroupHolderData)
         renderIconPin(cartGroupHolderData)
@@ -59,7 +65,6 @@ class CartGroupViewHolder(
         renderFreeShipping(cartGroupHolderData)
         renderEstimatedTimeArrival(cartGroupHolderData)
         renderMaximumWeight(cartGroupHolderData)
-        renderAddOnInfo(cartGroupHolderData)
     }
 
     private fun renderIconPin(cartGroupHolderData: CartGroupHolderData) {
@@ -116,19 +121,21 @@ class CartGroupViewHolder(
     private fun renderGroupName(cartGroupHolderData: CartGroupHolderData) {
         binding.tvShopName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
         if (cartGroupHolderData.isError) {
-            val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopId
-            val shopName = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopName
+            val shop = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData
             binding.tvShopName.setOnClickListener {
                 actionListener.onCartShopNameClicked(
-                    shopId,
-                    shopName,
+                    shop?.shopId,
+                    shop?.shopName,
                     cartGroupHolderData.isTokoNow
                 )
             }
         } else if (cartGroupHolderData.groupAppLink.isNotEmpty()) {
             binding.tvShopName.setOnClickListener {
                 actionListener.onCartGroupNameClicked(
-                    cartGroupHolderData.groupAppLink
+                    cartGroupHolderData.groupAppLink,
+                    cartGroupHolderData.shop.shopId,
+                    cartGroupHolderData.shop.shopName,
+                    cartGroupHolderData.isTypeOWOC()
                 )
             }
         } else {
@@ -375,31 +382,6 @@ class CartGroupViewHolder(
             with(binding) {
                 tickerWarning.gone()
             }
-        }
-    }
-
-    private fun renderAddOnInfo(cartGroupHolderData: CartGroupHolderData) {
-        if (cartGroupHolderData.addOnText.isNotEmpty()) {
-            binding.addonInfoWidgetLayout.root.visible()
-            binding.addonInfoWidgetLayout.descAddonInfo.text = cartGroupHolderData.addOnText
-            binding.addonInfoWidgetLayout.ivAddonLeft.loadImage(cartGroupHolderData.addOnImgUrl)
-            binding.addonInfoWidgetLayout.root.setOnClickListener {
-                if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_GIFTING) {
-                    actionListener.onClickAddOnCart(
-                        cartGroupHolderData.productUiModelList.firstOrNull()?.productId ?: "",
-                        cartGroupHolderData.addOnId
-                    )
-                } else if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_EPHARMACY) {
-                    actionListener.onClickEpharmacyInfoCart(cartGroupHolderData.enablerLabel, cartGroupHolderData.shop.shopId, cartGroupHolderData.productUiModelList)
-                }
-            }
-            if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_GIFTING) {
-                actionListener.addOnImpression(
-                    cartGroupHolderData.productUiModelList.firstOrNull()?.productId ?: ""
-                )
-            }
-        } else {
-            binding.addonInfoWidgetLayout.root.gone()
         }
     }
 

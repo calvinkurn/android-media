@@ -71,6 +71,7 @@ object RecommendationConstants {
     const val PARAM_SCHEME = "scheme"
     const val PARAM_ALL_VALUE = "all"
     const val PARAM_GROUP_IDS_KEY = "groupIDs"
+    const val PARAM_AD_GROUP_IDS_KEY = "adGroupIDs"
     const val PER_PAGE_COUNT_VALUE = 20
 
     const val SEARCH_REPORT_EDU_URL = "https://seller.tokopedia.com/edu/topads-laporan-pencarian/"

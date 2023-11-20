@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.gotoKyc.domain
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kyc_centralized.gotoKyc.utils.createSuccessResponse
@@ -26,11 +27,12 @@ class GetChallengeUseCaseTest {
     private lateinit var useCase: GetChallengeUseCase
 
     private val repository = mockk<GraphqlRepository>(relaxed = true)
+    private val context = mockk<Context>(relaxed = true)
     private val dispatcher = CoroutineTestDispatchersProvider
 
     @Before
     fun setup() {
-        useCase = GetChallengeUseCase(repository, dispatcher)
+        useCase = GetChallengeUseCase(repository, context, dispatcher)
     }
 
     @Test
@@ -85,7 +87,7 @@ class GetChallengeUseCaseTest {
 
         val result = useCase(challengeId)
         assertTrue(result is GetChallengeResult.Failed)
-        assertEquals(message, result.throwable.message)
+        assertEquals("$message ", result.throwable.message)
     }
 
     @Test
@@ -105,6 +107,6 @@ class GetChallengeUseCaseTest {
 
         val result = useCase(challengeId)
         assertTrue(result is GetChallengeResult.Failed)
-        assertEquals(message, result.throwable.message)
+        assertEquals("$message ", result.throwable.message)
     }
 }

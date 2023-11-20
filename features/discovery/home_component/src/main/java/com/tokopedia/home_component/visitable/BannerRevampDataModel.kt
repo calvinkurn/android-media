@@ -7,22 +7,22 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
 
-/**
- * Created by devarafikry on 17/11/20.
- */
 data class BannerRevampDataModel(
-        val channelModel: ChannelModel? = null,
-        val isCache: Boolean = false,
-) : ImpressHolder(), HomeComponentVisitable, LoadableComponent by BlocksLoadableComponent(
-    { (channelModel?.channelGrids?.size ?: 0) > 3 },
-    "BannerRevampDataModel"
-) {
+    val channelModel: ChannelModel? = null,
+    val isCache: Boolean = false,
+    val isBleeding: Boolean = false,
+) : ImpressHolder(),
+    HomeComponentVisitable,
+    LoadableComponent by BlocksLoadableComponent(
+        { (channelModel?.channelGrids?.size ?: 0) > 1 },
+        "BannerRevampDataModel"
+    ) {
     override fun visitableId(): String? {
         return channelModel?.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return b is BannerRevampDataModel && b.channelModel == channelModel
+        return b is BannerRevampDataModel && b.isCache == isCache && b.channelModel == channelModel
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {

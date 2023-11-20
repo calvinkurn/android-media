@@ -77,6 +77,7 @@ class UserProfileReviewFragment @Inject constructor(
 
     private val adapter: UserReviewAdapter by lazyThreadSafetyNone {
         UserReviewAdapter(
+            lifecycleOwner = viewLifecycleOwner,
             listener = object : UserReviewViewHolder.Review.Listener {
                 override fun onImpressCard(review: UserReviewUiModel.Review, position: Int) {
                     userReviewImpressCoordinator.impress(review) {

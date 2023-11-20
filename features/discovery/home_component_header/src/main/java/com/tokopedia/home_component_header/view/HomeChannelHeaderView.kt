@@ -5,8 +5,8 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
 import android.widget.FrameLayout
@@ -16,18 +16,18 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.home_component_header.R
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.util.DateHelper
-import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
 import com.tokopedia.home_component_header.util.ViewUtils.convertDpToPixel
 import com.tokopedia.home_component_header.util.getLink
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 class HomeChannelHeaderView : FrameLayout {
-    private val itemView: View
+    private var channelHeaderContainer: ConstraintLayout? = null
 
-    private val channelHeaderContainer: ConstraintLayout
     private var channelTitle: Typography? = null
     private var channelSubtitle: Typography? = null
     private var countDownView: TimerUnifySingle? = null
@@ -36,22 +36,12 @@ class HomeChannelHeaderView : FrameLayout {
     private var headerCtaMode: Int = CTA_MODE_SEE_ALL
     private var listener: HomeChannelHeaderListener? = null
 
-    private val isUsingHeaderRevamp = HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()
-    private val layoutStrategy: HeaderLayoutStrategy = HeaderLayoutStrategyFactory.create(isUsingHeaderRevamp)
-
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initHeaderWithAttrs(attrs)
     }
     constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initHeaderWithAttrs(attrs)
-    }
-
-    init {
-        val view = LayoutInflater.from(context).inflate(layoutStrategy.getLayout(), this)
-        this.itemView = view
-
-        channelHeaderContainer = view.findViewById(R.id.channel_title_container)
     }
 
     private fun initHeaderWithAttrs(attrs: AttributeSet?) {
@@ -66,10 +56,12 @@ class HomeChannelHeaderView : FrameLayout {
 
     fun bind(
         channelHeader: ChannelHeader,
-        listener: HomeChannelHeaderListener,
+        listener: HomeChannelHeaderListener? = null,
         colorMode: Int? = null,
-        ctaMode: Int? = null
+        ctaMode: Int? = null,
+        maxLines: Int = ONE_MAX_LINE,
     ) {
+        init(channelHeader.layoutStrategy)
         this.listener = listener
         colorMode?.let {
             this.headerColorMode = it
@@ -78,20 +70,31 @@ class HomeChannelHeaderView : FrameLayout {
             this.headerCtaMode = it
         }
         handleHeaderComponent(channelHeader)
+        applyRuleHeaderTitleLine(maxLines)
+    }
+
+    private fun init(layoutStrategy: HeaderLayoutStrategy) {
+        if(channelHeaderContainer == null) {
+            inflate(context, layoutStrategy.getLayout(), this).also {
+                channelHeaderContainer = findViewById(R.id.channel_title_container)
+            }
+        }
     }
 
     private fun handleHeaderComponent(channelHeader: ChannelHeader) {
-        val stubChannelTitle: View? = itemView.findViewById(R.id.channel_title)
-        val stubCountDownView: View? = itemView.findViewById(R.id.count_down)
-        val stubSeeAllButton: View? = itemView.findViewById(R.id.see_all_button)
-        val stubSeeAllButtonUnify: View? = itemView.findViewById(R.id.see_all_button_unify)
-        val stubChannelSubtitle: View? = itemView.findViewById(R.id.channel_subtitle)
-        val stubCtaButton: View? = itemView.findViewById(R.id.cta_button)
-        channelHeaderContainer.let {
+        val stubChannelTitle: View? = findViewById(R.id.channel_title)
+        val stubCountDownView: View? = findViewById(R.id.count_down)
+        val stubSeeAllButton: View? = findViewById(R.id.see_all_button)
+        val stubSeeAllButtonUnify: View? = findViewById(R.id.see_all_button_unify)
+        val stubChannelSubtitle: View? = findViewById(R.id.channel_subtitle)
+        val stubChannelIconSubtitle: View? = findViewById(R.id.channel_subtitle_icon)
+        val stubCtaButton: View? = findViewById(R.id.cta_button)
+        channelHeaderContainer?.let { channelHeaderContainer ->
             handleTitle(channelHeader.name, channelHeaderContainer, stubChannelTitle, channelHeader)
             handleSubtitle(channelHeader.subtitle, stubChannelSubtitle, channelHeader)
-            layoutStrategy.renderCta(
-                itemView,
+            channelHeader.layoutStrategy.renderIconSubtitle(this, channelHeader, stubChannelIconSubtitle)
+            channelHeader.layoutStrategy.renderCta(
+                this,
                 channelHeaderContainer,
                 stubCtaButton,
                 stubSeeAllButton,
@@ -104,7 +107,7 @@ class HomeChannelHeaderView : FrameLayout {
                 headerColorMode
             )
             handleHeaderExpiredTime(channelHeader, stubCountDownView, channelHeaderContainer)
-            handleBackgroundColor(channelHeader, it, stubCtaButton, stubSeeAllButtonUnify)
+            handleBackgroundColor(channelHeader, channelHeaderContainer, stubCtaButton, stubSeeAllButtonUnify)
         }
     }
 
@@ -114,19 +117,21 @@ class HomeChannelHeaderView : FrameLayout {
          * Only show channel header name when it is exist
          */
         if (channelHeaderName?.isNotEmpty() == true) {
-            channelHeaderContainer.visibility = View.VISIBLE
+            stubChannelTitle?.show()
+            channelHeaderContainer.show()
             channelTitle = if (stubChannelTitle is ViewStub &&
                 !isViewStubHasBeenInflated(stubChannelTitle)
             ) {
                 val stubChannelView = stubChannelTitle.inflate()
                 stubChannelView?.findViewById(R.id.channel_title)
             } else {
-                itemView.findViewById(R.id.channel_title)
+                findViewById(R.id.channel_title)
             }
+
             channelTitle?.text = channelHeaderName
             channelTitle?.gravity = Gravity.CENTER_VERTICAL
             channelTitle?.visibility = View.VISIBLE
-            layoutStrategy.renderTitle(
+            channelHeader.layoutStrategy.renderTitle(
                 context,
                 channelHeader,
                 channelTitle,
@@ -143,8 +148,24 @@ class HomeChannelHeaderView : FrameLayout {
             }
             constraintSet.applyTo(channelHeaderContainer)
         } else {
-            channelHeaderContainer.visibility = View.GONE
+            stubChannelTitle?.hide()
+            channelHeaderContainer.hide()
         }
+    }
+
+    private fun applyRuleHeaderTitleLine(maxLines: Int) {
+        when (maxLines) {
+            TWO_MAX_LINE -> {
+                channelTitle?.applyMaxLineHeaderTitle(maxLines, TWO_LINE_MAX_EMS, null)
+            }
+            else -> channelTitle?.applyMaxLineHeaderTitle(maxLines, ONE_LINE_MAX_EMS, TextUtils.TruncateAt.END )
+        }
+    }
+
+    private fun Typography?.applyMaxLineHeaderTitle(maxLine: Int, maxEms: Int, ellipsize: TextUtils.TruncateAt?) {
+        this?.maxLines = maxLine
+        this?.maxEms = maxEms
+        this?.ellipsize = ellipsize
     }
 
     private fun handleSubtitle(channelSubtitleName: String?, stubChannelSubtitle: View?, channelHeader: ChannelHeader) {
@@ -159,11 +180,11 @@ class HomeChannelHeaderView : FrameLayout {
                 val stubChannelView = stubChannelSubtitle.inflate()
                 stubChannelView?.findViewById(R.id.channel_subtitle)
             } else {
-                itemView.findViewById(R.id.channel_subtitle)
+                findViewById(R.id.channel_subtitle)
             }
             channelSubtitle?.text = channelSubtitleName
             channelSubtitle?.visibility = View.VISIBLE
-            layoutStrategy.renderSubtitle(
+            channelHeader.layoutStrategy.renderSubtitle(
                 context,
                 channelHeader,
                 channelSubtitle,
@@ -188,7 +209,7 @@ class HomeChannelHeaderView : FrameLayout {
                 val inflatedStubCountDownView = stubCountDownView.inflate()
                 inflatedStubCountDownView.findViewById(R.id.count_down)
             } else {
-                itemView.findViewById(R.id.count_down)
+                findViewById(R.id.count_down)
             }
 
             val expiredTime = DateHelper.getExpiredTime(channelHeader.expiredTime)
@@ -220,8 +241,8 @@ class HomeChannelHeaderView : FrameLayout {
                 it.visibility = View.GONE
             }
         }
-        layoutStrategy.setSubtitleConstraints(hasExpiredTime(channelHeader), channelHeaderContainer, context.resources)
-        layoutStrategy.setContainerPadding(channelHeaderContainer, hasExpiredTime(channelHeader), context.resources)
+        channelHeader.layoutStrategy.setSubtitleConstraints(hasExpiredTime(channelHeader), channelHeaderContainer, context.resources)
+        channelHeader.layoutStrategy.setContainerPadding(channelHeaderContainer, hasExpiredTime(channelHeader), context.resources)
     }
 
     private fun handleBackgroundColor(channelHeader: ChannelHeader, titleContainer: ConstraintLayout, stubSeeAllButton: View?, stubSeeAllButtonUnify: View?) {
@@ -247,6 +268,10 @@ class HomeChannelHeaderView : FrameLayout {
         return !TextUtils.isEmpty(channelHeader.expiredTime)
     }
 
+    private fun hasIconSubtitle(channelHeader: ChannelHeader): Boolean {
+        return !TextUtils.isEmpty(channelHeader.iconSubtitleUrl)
+    }
+
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
         return viewStub?.parent == null
     }
@@ -260,5 +285,10 @@ class HomeChannelHeaderView : FrameLayout {
         const val CTA_MODE_SEE_ALL = 0
         const val CTA_MODE_RELOAD = 1
         const val CTA_MODE_CLOSE = 2
+
+        private const val ONE_LINE_MAX_EMS = 12
+        private const val ONE_MAX_LINE = 1
+        private const val TWO_LINE_MAX_EMS = 32
+        private const val TWO_MAX_LINE = 2
     }
 }

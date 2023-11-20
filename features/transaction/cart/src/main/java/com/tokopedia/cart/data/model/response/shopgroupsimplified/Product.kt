@@ -89,5 +89,7 @@ data class Product(
     @SerializedName("ethical_drug")
     val ethicalDrug: EthicalDrug = EthicalDrug(),
     @SerializedName("bundle_ids")
-    val bundleIds: List<String> = emptyList()
+    val bundleIds: List<String> = emptyList(),
+    @SerializedName("add_ons_product")
+    val addOn: AddOn = AddOn()
 )

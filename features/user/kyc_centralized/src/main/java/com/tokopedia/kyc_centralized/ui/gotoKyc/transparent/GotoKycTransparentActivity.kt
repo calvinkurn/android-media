@@ -1,5 +1,8 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.transparent
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -12,6 +15,7 @@ class GotoKycTransparentActivity: BaseSimpleActivity(), HasComponent<GoToKycComp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        adjustOrientation()
         toolbar.hide()
     }
 
@@ -19,4 +23,11 @@ class GotoKycTransparentActivity: BaseSimpleActivity(), HasComponent<GoToKycComp
 
     override fun getComponent(): GoToKycComponent =
         ActivityComponentFactory.instance.createGoToKycActivityComponent(this)
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun adjustOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
 }

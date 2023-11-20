@@ -1,5 +1,5 @@
-query {
-    GetBankListWD{
+query GetBankListWDV2($isAdmin: Boolean!){
+    GetBankListWDV2(isAdmin: $isAdmin){
         status
         message
         data {
@@ -24,6 +24,23 @@ query {
             default_bank_account
             warning_message
             warning_color
+            notes
+            wallet_app_data {
+                message
+                cta_copy_writing
+                cta_link
+            }
+        }
+        gopay_data {
+            limit
+            limit_copy_writing
+            image_url
+            widget_note
+            bottomsheet_data {
+                title
+                description
+                balance
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.shop.campaign.view.adapter.ShopCampaignCarouselProductHighlightAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapterTypeFactory
@@ -67,6 +68,9 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
                 typeFactory.type(this)
             }
             is ShopHomeCarouselProductAdapterTypeFactory -> {
+                typeFactory.type(this)
+            }
+            is ShopCampaignCarouselProductHighlightAdapterTypeFactory -> {
                 typeFactory.type(this)
             }
             else -> {

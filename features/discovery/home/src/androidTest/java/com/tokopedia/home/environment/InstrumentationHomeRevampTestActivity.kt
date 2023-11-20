@@ -14,9 +14,8 @@ import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMoni
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.*
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
-import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
 import com.tokopedia.home.di.DaggerHomeTestComponent
-import com.tokopedia.home.test.R
+import com.tokopedia.home.test.R as hometestR
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
@@ -33,18 +32,22 @@ class InstrumentationHomeRevampTestActivity :
     var isFromCache: Boolean = false
 
     override fun requestStatusBarDark() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            this.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-            this.window.statusBarColor = Color.TRANSPARENT
-        }
+        forceRequestStatusBarDark()
     }
 
     override fun requestStatusBarLight() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             this.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+            this.window.statusBarColor = Color.TRANSPARENT
+        }
+    }
+
+    override fun forceRequestStatusBarDark() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            this.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
             this.window.statusBarColor = Color.TRANSPARENT
         }
@@ -64,7 +67,7 @@ class InstrumentationHomeRevampTestActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         startHomePerformanceMonitoring()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home_test)
+        setContentView(hometestR.layout.activity_home_test)
 
         val homeFragment: Fragment = HomeRevampFragment()
 
@@ -76,19 +79,12 @@ class InstrumentationHomeRevampTestActivity :
             }
         }
 
-        initializeFragmentFramePerformanceIndex(homeFragment)
         val fragmentTransaction = supportFragmentManager
             .beginTransaction()
         fragmentTransaction
-            .replace(R.id.container_home, homeFragment)
+            .replace(hometestR.id.container_home, homeFragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
-    }
-
-    private fun initializeFragmentFramePerformanceIndex(homeFragment: Fragment) {
-        if (homeFragment is FramePerformanceIndexInterface) {
-            fragmentFramePerformanceIndexMonitoring = homeFragment.framePerformanceIndexData
-        }
     }
 
     override fun getFpiPerformanceResultData(): FpiPerformanceData? {

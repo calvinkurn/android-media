@@ -1,24 +1,25 @@
 package com.tokopedia.catalog.ui.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
-import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
-import com.tokopedia.common_category.interfaces.CategoryNavigationListener
+import com.tokopedia.catalog.ui.fragment.CatalogLandingPageFragment
 import com.tokopedia.core.analytics.AppScreen
+import com.tokopedia.oldcatalog.ui.activity.CatalogDetailPageActivity as OldCatalogDetailPageActivity
 
 class CatalogDetailPageActivity :  BaseSimpleActivity(),
-        CategoryNavigationListener,
-        BaseCategorySectionFragment.SortAppliedListener{
+    CatalogLandingPageFragment.CatalogLandingPageFragmentListener {
 
     private var catalogId: String = ""
-    private var navigationListenerList: ArrayList<CategoryNavigationListener.ClickListener> = ArrayList()
-    private var visibleFragmentListener: CategoryNavigationListener.VisibleClickListener? = null
 
     companion object {
         private const val CATALOG_DETAIL_TAG = "CATALOG_DETAIL_TAG"
@@ -46,54 +47,60 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_catalog_detail_page)
+        setStatusBarToTransparent(this)
         catalogId = if (intent.hasExtra(EXTRA_CATALOG_ID))
             intent.getStringExtra(EXTRA_CATALOG_ID) ?: ""
         else {
             val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
-            if (pathSegments.size > 0) pathSegments[0]?.split("-")?.lastOrNull()?.trim() ?: "" else ""
+            pathSegments.firstOrNull()?.split("-")?.lastOrNull()?.trim() ?: ""
         }
         catalogId = catalogId.split("-").lastOrNull()?.trim() ?: ""
-        prepareView(savedInstanceState == null)
+
+        handleVersionRoute(savedInstanceState)
     }
 
-    private fun prepareView(savedInstanceIsNull : Boolean) {
-        if(savedInstanceIsNull) {
-            supportFragmentManager.beginTransaction()
-                    .replace(R.id.catalog_detail_parent_view,
-                            CatalogDetailPageFragment.newInstance(catalogId),
-                            CatalogDetailPageFragment.CATALOG_DETAIL_PAGE_FRAGMENT_TAG
-                    )
-                    .commit()
+    override fun onLayoutBelowVersion3() {
+        val intent = OldCatalogDetailPageActivity.createIntent(this, catalogId)
+        startActivity(intent)
+        finish()
+    }
+
+    override fun onLayoutAboveVersion4() {
+        loadV4Layout()
+    }
+
+    private fun handleVersionRoute(savedInstanceState: Bundle?) {
+        if(savedInstanceState == null) {
+            prepareLoader()
         }
     }
 
-    override fun setupSearchNavigation(clickListener: CategoryNavigationListener.ClickListener) {
-        navigationListenerList.add(clickListener)
+    private fun loadV4Layout() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.catalog_detail_parent_view,
+                CatalogDetailPageFragment.newInstance(catalogId),
+                CatalogDetailPageFragment.CATALOG_DETAIL_PAGE_FRAGMENT_TAG
+            )
+            .commit()
     }
 
-    override fun setUpVisibleFragmentListener(visibleClickListener: CategoryNavigationListener.VisibleClickListener) {
-        visibleFragmentListener = visibleClickListener
+    private fun prepareLoader() {
+        val fragment = CatalogLandingPageFragment.newInstance(catalogId)
+        fragment.setListener(this)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.catalog_detail_parent_view,
+                fragment,
+                CatalogLandingPageFragment.CATALOG_LOADER_PAGE_FRAGMENT_TAG
+            )
+            .commit()
     }
 
-    override fun hideBottomNavigation() {
-
-    }
-
-    override fun onSortApplied(showTick: Boolean) {
-
-    }
-
-    override fun onBackPressed() {
-        if(supportFragmentManager.fragments.firstOrNull() is CatalogDetailPageFragment){
-            supportFragmentManager.fragments.firstOrNull()?.let {
-                if(it is CatalogDetailPageFragment && it.isBottomSheetOpen){
-                    it.onBackPressed()
-                }else{
-                    super.onBackPressed()
-                }
-            }
-        }else {
-            super.onBackPressed()
-        }
+    private fun setStatusBarToTransparent(activity: Activity) {
+        val window = activity.window
+        window.decorView.systemUiVisibility =
+            (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN) or
+                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.statusBarColor = Color.TRANSPARENT
     }
 }

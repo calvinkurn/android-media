@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.addon.presentation.customview.AddOnWidgetView
+            android:id="@+id/addon_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:addonwidget_show_description="true"
+            android:layout_marginHorizontal="16dp"/>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/layout_error"
+            android:visibility="gone"
+            android:orientation="horizontal"
+            android:background="@drawable/toaster_bg_error"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="16dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tfError"
+                android:text="@string/action_save"
+                android:layout_weight="1"
+                app:typographyType="display_3"
+                android:textColor="@color/Unify_NN0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tfErrorAction"
+                android:text="@string/action_oke"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                android:textColor="@color/Unify_NN0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.tokopedia.unifycomponents.CardUnify2
+            android:id="@+id/cardBg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-12dp"
+            android:layout_marginEnd="-12dp"
+            android:padding="12dp"
+            app:card_type="shadow" >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tfAddonTotalTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/addon_total_text"
+                    app:typographyType="paragraph_3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tfAddonTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    tool:text="Rp20.000"
+                    android:text="@string/addon_total_default_text"
+                    app:typographyType="paragraph_2"
+                    app:typographyWeight="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tfAddonTotalTitle" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btnSave"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/action_save"
+                    android:layout_marginEnd="16dp"
+                    app:unifyButtonSize="medium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.tokopedia.unifycomponents.CardUnify2>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</ScrollView>

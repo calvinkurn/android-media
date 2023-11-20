@@ -163,7 +163,9 @@ data class CheckoutGiftingAddOn(
     @SerializedName("item_qty")
     var itemQty: Int = 0,
     @SerializedName("item_metadata")
-    var itemMetadata: String = ""
+    var itemMetadata: String = "",
+    @SerializedName("item_unique_id")
+    var itemUniqueId: String = ""
 )
 
 data class BundleInfo(

@@ -10,6 +10,7 @@ import com.tokopedia.inbox.universalinbox.stub.di.base.UniversalInboxFakeAppModu
 import com.tokopedia.inbox.universalinbox.stub.di.base.UniversalInboxFakeBaseAppComponent
 import com.tokopedia.inbox.universalinbox.stub.di.recommendationwidget.DaggerUniversalInboxRecommendationWidgetComponentStub
 import com.tokopedia.inbox.universalinbox.stub.di.recommendationwidget.UniversalInboxRecommendationWidgetComponentStub
+import com.tokopedia.inbox.universalinbox.stub.di.tokochat.UniversalInboxTokoChatCourierConversationModule
 
 class UniversalInboxFakeActivityComponentFactory : UniversalInboxActivityComponentFactory() {
 
@@ -24,6 +25,9 @@ class UniversalInboxFakeActivityComponentFactory : UniversalInboxActivityCompone
             .build()
         universalInboxComponent = DaggerUniversalInboxComponentStub.builder()
             .universalInboxFakeBaseAppComponent(baseComponent)
+            .universalInboxTokoChatCourierConversationModule(
+                UniversalInboxTokoChatCourierConversationModule(context as Application)
+            )
             .build()
         recommendationWidgetComponent =
             DaggerUniversalInboxRecommendationWidgetComponentStub.builder()

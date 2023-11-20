@@ -2,14 +2,16 @@ package com.tokopedia.tokochat.view.chatroom
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.di.TokoChatActivityComponentFactory
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.util.TokoChatValueUtil
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
-import com.tokopedia.tokochat_common.util.TokoChatViewUtil.setBackIconUnify
-import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
+import com.tokopedia.tokochat.common.util.TokoChatViewUtil.setBackIconUnify
+import com.tokopedia.tokochat.common.view.chatroom.TokoChatBaseActivity
+import javax.inject.Inject
 
 /**
  * Base Applink: [com.tokopedia.applink.ApplinkConst.TOKO_CHAT]
@@ -34,8 +36,11 @@ import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
  */
 open class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
 
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
+
     override fun setupFragmentFactory() {
-        supportFragmentManager.fragmentFactory = TokoChatFragmentFactory()
+        supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
     private fun initializeTokoChatComponent(): TokoChatComponent {
@@ -48,6 +53,15 @@ open class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
 
     override fun getComponent(): TokoChatComponent {
         return tokoChatComponent ?: initializeTokoChatComponent()
+    }
+
+    private fun initInjector() {
+        component.inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
+        super.onCreate(savedInstanceState)
     }
 
     override fun getNewFragment(): Fragment {

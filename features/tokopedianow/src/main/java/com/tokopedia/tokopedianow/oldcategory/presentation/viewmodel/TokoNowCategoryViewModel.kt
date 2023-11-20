@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -14,6 +13,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.PREFIX_ALL
 import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
@@ -37,12 +37,12 @@ import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
-import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse.CategoryResponse
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
+import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -72,13 +72,14 @@ class TokoNowCategoryViewModel @Inject constructor(
     private val getCategoryFirstPageUseCase: UseCase<CategoryModel>,
     @param:Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
     private val getCategoryLoadMorePageUseCase: UseCase<CategoryModel>,
-    getFilterUseCase: UseCase<DynamicFilterModel>,
+    getFilterUseCase: GetFilterUseCase,
     getProductCountUseCase: UseCase<String>,
     getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
     cartService: CartService,
     getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     private val getCategoryListUseCase: GetCategoryListUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    remoteConfig: RemoteConfig,
     chooseAddressWrapper: ChooseAddressWrapper,
     affiliateService: NowAffiliateService,
     userSession: UserSessionInterface
@@ -91,6 +92,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     cartService,
     getWarehouseUseCase,
     setUserPreferenceUseCase,
+    remoteConfig,
     chooseAddressWrapper,
     affiliateService,
     userSession
@@ -215,9 +217,10 @@ class TokoNowCategoryViewModel @Inject constructor(
         )
     }
 
-    override fun createVisitableListWithEmptyProduct() {
-        super.createVisitableListWithEmptyProduct()
-
+    override fun createVisitableListWithEmptyProduct(
+        violation: AceSearchProductModel.Violation
+    ) {
+        super.createVisitableListWithEmptyProduct(violation)
         val categoryMenuIndex = minOf(visitableList.size, 2)
         val categoryMenuUIModel = TokoNowCategoryMenuUiModel(
             state = TokoNowLayoutState.LOADING
@@ -336,15 +339,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     }
 
     private fun setSharingModel(categoryModel: CategoryModel) {
-        var categoryIdLvl2 = DEFAULT_CATEGORY_ID
-        var categoryIdLvl3 = DEFAULT_CATEGORY_ID
-
-        queryParam.forEach {
-            when (it.key) {
-                "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}" -> categoryIdLvl2 = it.value
-                SearchApiConst.SC -> categoryIdLvl3 = it.value
-            }
-        }
+        val (categoryIdLvl2, categoryIdLvl3) = getCategorySelectedIdL2L3()
 
         val title = getTitleCategory(categoryIdLvl2, categoryModel)
         val constructedLink = getConstructedLink(categoryModel.categoryDetail.data.url, categoryIdLvl2, categoryIdLvl3)
@@ -358,6 +353,20 @@ class TokoNowCategoryViewModel @Inject constructor(
             url = constructedLink.second,
             utmCampaignList = utmCampaignList
         )
+    }
+
+    fun getCategorySelectedIdL2L3(): Pair<String, String> {
+        var categoryIdLvl2 = DEFAULT_CATEGORY_ID
+        var categoryIdLvl3 = DEFAULT_CATEGORY_ID
+
+        queryParam.forEach {
+            when (it.key) {
+                "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}" -> categoryIdLvl2 = it.value
+                SearchApiConst.SC -> categoryIdLvl3 = it.value
+            }
+        }
+
+        return Pair(categoryIdLvl2, categoryIdLvl3)
     }
 
     private fun getTitleCategory(categoryIdLvl2: String, categoryModel: CategoryModel): String {
@@ -433,5 +442,17 @@ class TokoNowCategoryViewModel @Inject constructor(
         } else {
             listOf(tokonowParam[SearchApiConst.SRP_PAGE_ID] ?: "")
         }
+    }
+
+    override fun onViewReloadPage(
+        needToResetQueryParams: Boolean,
+        updateMoreQueryParams: () -> Unit
+    ) {
+        super.onViewReloadPage(
+            needToResetQueryParams = needToResetQueryParams,
+            updateMoreQueryParams = {
+                updateQueryParamWithCategoryIds()
+            }
+        )
     }
 }

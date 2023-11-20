@@ -2,13 +2,14 @@ package com.tokopedia.mvc.presentation.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.campaign.data.response.GetTargetedTickerResponse
+import com.tokopedia.campaign.mapper.GetTargetedTickerMapper
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.data.mapper.GetInitiateVoucherPageMapper
-import com.tokopedia.mvc.data.mapper.GetTargetedTickerMapper
 import com.tokopedia.mvc.data.mapper.ProductListMapper
 import com.tokopedia.mvc.data.mapper.ShopBasicDataMapper
 import com.tokopedia.mvc.data.response.GetInitiateVoucherPageResponse
-import com.tokopedia.mvc.data.response.GetTargetedTickerResponse
 import com.tokopedia.mvc.data.response.ProductListResponse
 import com.tokopedia.mvc.data.response.ShopBasicDataResponse
 import com.tokopedia.mvc.data.response.UpdateStatusVoucherDataModel
@@ -22,7 +23,6 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
-import com.tokopedia.mvc.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListChildUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase

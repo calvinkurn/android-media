@@ -1,9 +1,11 @@
 package com.tokopedia.tokochat.util
 
+import android.content.Context
 import android.os.Build
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object TokoChatValueUtil {
     /**
@@ -37,21 +39,36 @@ object TokoChatValueUtil {
     const val BUBBLES_NOTIF = "bubbles_notif"
     const val BUBBLES_PREF = "tokochat_bubbles_awareness"
 
-    fun shouldShowBubblesAwareness(): Boolean {
-        return shouldShowBubblesAwarenessRollence() && shouldShowBubblesAwarenessOS()
+    private var remoteConfig: RemoteConfig? = null
+
+    fun shouldShowBubblesAwareness(context: Context?): Boolean {
+        return shouldShowBubblesAwarenessRollence(context) && shouldShowBubblesAwarenessOS()
     }
     private fun shouldShowBubblesAwarenessOS(): Boolean {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
     }
-    private fun shouldShowBubblesAwarenessRollence(): Boolean {
+    private fun shouldShowBubblesAwarenessRollence(context: Context?): Boolean {
         return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.TOKOCHAT_BUBBLES,
-                ""
-            ) == RollenceKey.TOKOCHAT_BUBBLES
-        } catch (e: Throwable) {
-            FirebaseCrashlytics.getInstance().recordException(e)
-            false
+            context?.let {
+                getRemoteConfig(it).getBoolean(
+                    RemoteConfigKey.IS_TOKOCHAT_BUBBLES_ENABLED,
+                    true
+                )
+            }.orTrue()
+        } catch (ignore: Throwable) {
+            true
         }
     }
+
+    private fun getRemoteConfig(context: Context): RemoteConfig {
+        val rc = remoteConfig
+        return if (rc == null) {
+            val newRc = FirebaseRemoteConfigImpl(context)
+            remoteConfig = newRc
+            newRc
+        } else {
+            rc
+        }
+    }
+
 }

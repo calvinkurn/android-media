@@ -18,15 +18,17 @@ data class PostAtcComponentData(
 
     @SerializedName("button")
     @Expose
-    val button: Button = Button()
-) {
-    data class Button(
-        @SerializedName("text")
-        @Expose
-        val text: String = "",
+    val button: PostAtcLayout.ProductPostAtcInfo.Button = PostAtcLayout.ProductPostAtcInfo.Button(),
 
-        @SerializedName("cartID")
-        @Expose
-        val cartId: String = ""
-    )
-}
+    @SerializedName("queryParam")
+    @Expose
+    val queryParam: String = "",
+
+    @SerializedName("offerID")
+    @Expose
+    val offerId: String = "",
+
+    @SerializedName("thematicID")
+    @Expose
+    val thematicId: String = ""
+)

@@ -8,7 +8,7 @@
     </item>
     <item>
         <shape>
-            <solid android:color="@color/Unify_YN500"/>
+            <solid android:color="@color/Unify_GN500"/>
             <corners android:radius="6dp"/>
         </shape>
     </item>

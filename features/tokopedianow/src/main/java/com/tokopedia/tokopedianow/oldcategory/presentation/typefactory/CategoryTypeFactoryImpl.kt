@@ -48,21 +48,21 @@ class CategoryTypeFactoryImpl(
     private val tokoNowProductCardListener: TokoNowProductCardListener,
     feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 ) : BaseSearchCategoryTypeFactoryImpl(
-    tokoNowEmptyStateOocListener,
-    chooseAddressListener,
-    titleListener,
-    bannerListener,
-    quickFilterListener,
-    categoryFilterListener,
-    productItemListener,
-    switcherWidgetListener,
-    tokoNowEmptyStateNoResultListener,
-    feedbackWidgetListener,
-    productCardCompactListener,
-    productCardCompactSimilarProductTrackerListener,
-    productRecommendationOocBindListener,
-    productRecommendationOocListener,
-    productRecommendationListener
+    tokoNowEmptyStateOocListener = tokoNowEmptyStateOocListener,
+    chooseAddressListener = chooseAddressListener,
+    titleListener = titleListener,
+    bannerListener = bannerListener,
+    quickFilterListener = quickFilterListener,
+    categoryFilterListener = categoryFilterListener,
+    productItemListener = productItemListener,
+    switcherWidgetListener = switcherWidgetListener,
+    tokoNowEmptyStateNoResultListener = tokoNowEmptyStateNoResultListener,
+    feedbackWidgetListener = feedbackWidgetListener,
+    productCardCompactListener = productCardCompactListener,
+    productCardCompactSimilarProductTrackerListener =productCardCompactSimilarProductTrackerListener,
+    productRecommendationBindOocListener = productRecommendationOocBindListener,
+    productRecommendationOocListener = productRecommendationOocListener,
+    productRecommendationListener = productRecommendationListener
 ),
     CategoryTypeFactory {
 

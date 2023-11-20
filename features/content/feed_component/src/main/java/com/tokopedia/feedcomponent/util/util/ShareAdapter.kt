@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.unifyprinciples.Typography
 
@@ -52,7 +51,7 @@ class ShareAdapter(private val mShareTypes : List<ShareBottomSheets.ShareType>)
             iconView.setImageDrawable(
                     when (type) {
                         is ShareBottomSheets.ShareType.ActivityShare -> type.getActivityIcon(context)
-                        is ShareBottomSheets.ShareType.ActionShare -> MethodChecker.getDrawable(context, type.imageResource)
+                        is ShareBottomSheets.ShareType.ActionShare -> type.imageResource
                     }
             )
 

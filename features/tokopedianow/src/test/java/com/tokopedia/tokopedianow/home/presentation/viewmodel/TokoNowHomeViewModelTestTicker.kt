@@ -1,22 +1,29 @@
 package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.home_component.model.ChannelConfig
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelHeader
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ChannelStyle
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.common.domain.model.GetHomeBannerV2DataResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetHomeBannerV2DataResponse.Banners
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
-import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
-import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.mapper.HomeHeaderMapper.createHomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
@@ -38,17 +45,30 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         val categorySliderBannerId = "2222"
         val categorySliderBannerTitle = "Banner Tokonow"
 
+        val getHomeBannerV2Response = GetHomeBannerV2DataResponse.GetHomeBannerV2Response(
+            banners = listOf(
+                Banners(
+                    id = "1",
+                    title = "Banner 1991",
+                    imageUrl = "https://www.tokopedia.net/image.png",
+                    applink = "tokopedia://now",
+                    url = "https://www.tokopedia.net/someweburl",
+                    backColor = "#FFFFFF"
+                )
+            )
+        )
+
         onGetHomeLayoutData_thenReturn(
             layoutResponse = createHomeLayoutList()
         )
         onGetTicker_thenReturn(
             errorThrowable = NullPointerException()
         )
+        onGetHomeBannerUseCase_thenReturn(getHomeBannerV2Response)
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = true
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(
             localCacheModel = LocalCacheModel()
@@ -56,9 +76,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
-                TokoNowChooseAddressWidgetUiModel(
-                    id = CHOOSE_ADDRESS_WIDGET_ID
-                ),
+                createHomeHeaderUiModel(),
                 createDynamicLegoBannerDataModel(
                     id = dynamicLegoBannerId,
                     groupId = String.EMPTY,
@@ -70,10 +88,25 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
                     categoryList = null,
                     state = TokoNowLayoutState.HIDE
                 ),
-                createSliderBannerDataModel(
-                    id = categorySliderBannerId,
-                    groupId = String.EMPTY,
-                    headerName = categorySliderBannerTitle
+                BannerDataModel(
+                    channelModel = ChannelModel(
+                        id = "2222",
+                        groupId = "",
+                        style = ChannelStyle.ChannelHome,
+                        channelHeader = ChannelHeader(name = "Banner Tokonow"),
+                        channelConfig = ChannelConfig(layout = "tokonow_banner"),
+                        layout = "tokonow_banner",
+                        channelGrids = listOf(
+                            ChannelGrid(
+                                id = "1",
+                                attribution = "Banner 1991",
+                                imageUrl = "https://www.tokopedia.net/image.png",
+                                applink = "tokopedia://now",
+                                url = "https://www.tokopedia.net/someweburl",
+                                backColor = "#FFFFFF"
+                            )
+                        )
+                    )
                 )
             ),
             state = TokoNowLayoutState.UPDATE
@@ -81,7 +114,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
 
         verifyGetTickerUseCaseCalled()
         verifyGetHomeLayoutDataUseCaseCalled()
-        verifyGetHomeLayoutResponseSuccess(expectedResult)
+        verifyGetHomeLayoutListSuccess(expectedResult)
         verifyBlockAddToCartNull()
     }
 
@@ -101,7 +134,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         val repurchaseLayout = "recent_purchase_tokonow"
 
         val tickerResponse = createTicker()
-        val tickerList = TickerMapper.mapTickerData(tickerResponse).second
+        val tickerList = TickerMapper.mapTickerData(tickerResponse).tickerList
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
                 id = repurchaseChannelId,
@@ -132,8 +165,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = true
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(
             localCacheModel = LocalCacheModel()
@@ -150,9 +182,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
         val homeLayoutItems = listOf(
-            TokoNowChooseAddressWidgetUiModel(
-                id = CHOOSE_ADDRESS_WIDGET_ID
-            ),
+            createHomeHeaderUiModel(),
             TokoNowTickerUiModel(
                 id = HomeStaticLayoutId.TICKER_WIDGET_ID,
                 tickers = tickerList
@@ -170,7 +200,8 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
                         maxOrder = repurchaseProductMaxOrder,
                         position = repurchaseProductPosition,
                         originalPosition = repurchaseProductPosition,
-                        headerName = repurchaseProductTitle
+                        headerName = repurchaseProductTitle,
+                        blockAddToCart = true
                     )
                 ),
                 state = TokoNowLayoutState.SHOW
@@ -185,8 +216,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         verifyGetTickerUseCaseCalled()
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetRepurchaseWidgetUseCaseCalled()
-        verifyGetHomeLayoutResponseSuccess(expectedResult)
+        verifyGetHomeLayoutListSuccess(expectedResult)
         verifyBlockAddToCartNotNull()
     }
-
 }

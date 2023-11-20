@@ -7,10 +7,10 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
-import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayoutListener
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
+import com.tokopedia.topchat.chatroom.view.listener.StoriesWidgetListener
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.user.session.UserSessionInterface
@@ -23,10 +23,10 @@ class FakeTopChatViewStateImpl(
     attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
     stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
     headerMenuListener: HeaderMenuListener,
-    chatTextAreaTabLayoutListener: ChatTextAreaTabLayoutListener,
+    storiesWidgetListener: StoriesWidgetListener,
     toolbar: Toolbar,
     analytics: TopChatAnalytics,
-    userSession: UserSessionInterface
+    userSession: UserSessionInterface,
 ) : TopChatViewStateImpl(
     view,
     typingListener,
@@ -35,7 +35,7 @@ class FakeTopChatViewStateImpl(
     attachmentMenuListener,
     stickerMenuListener,
     headerMenuListener,
-    chatTextAreaTabLayoutListener,
+    storiesWidgetListener,
     toolbar,
     analytics, userSession
 ) {

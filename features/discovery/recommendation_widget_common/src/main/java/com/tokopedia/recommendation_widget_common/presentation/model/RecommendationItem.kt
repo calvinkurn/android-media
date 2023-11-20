@@ -31,6 +31,7 @@ data class RecommendationItem(
     val shopId: Int = 0,
     val shopType: String = "",
     val shopName: String = "",
+    val warehouseId: Long = 0L,
     var cartId: String = "",
     var quantity: Int = 0,
     val header: String = "",
@@ -49,7 +50,6 @@ data class RecommendationItem(
     val addToCartType: AddToCartType = AddToCartType.None,
     // for tracker field
     val dimension61: String = "",
-    val anchorProductId: String = "",
     // for tokonow
     val parentID: Long = 0L,
     var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity
@@ -199,6 +199,8 @@ data class RecommendationItem(
             isVariant = isProductHasParentID(),
             stockQty = currentQuantity
         )
+
+    fun isUseQuantityEditor(): Boolean = addToCartType == AddToCartType.QuantityEditor
 }
 
 data class RecommendationSpecificationLabels(

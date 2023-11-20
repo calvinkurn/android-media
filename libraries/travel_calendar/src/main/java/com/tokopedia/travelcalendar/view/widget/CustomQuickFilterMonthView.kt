@@ -1,31 +1,29 @@
 package com.tokopedia.travelcalendar.view.widget
 
 import android.content.Context
-import androidx.appcompat.widget.AppCompatTextView
 import android.util.AttributeSet
-import android.view.View
-
+import android.view.LayoutInflater
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.travelcalendar.R
-
-import kotlinx.android.synthetic.main.item_month_quick_filter.view.*
+import com.tokopedia.travelcalendar.databinding.ItemMonthQuickFilterBinding
 import org.jetbrains.annotations.NotNull
 
 /**
  * Created by nabillasabbaha on 28/12/18.
  */
-class CustomQuickFilterMonthView @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                           defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+class CustomQuickFilterMonthView @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
+    BaseCustomView(context, attrs, defStyleAttr) {
 
-    private val monthName: AppCompatTextView
-
-    init {
-        val view = View.inflate(context, R.layout.item_month_quick_filter, this)
-        monthName = view.month
-    }
+    private var binding: ItemMonthQuickFilterBinding = ItemMonthQuickFilterBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
 
     fun setTextMonth(month: String) {
-        monthName.text = month
+        binding.month.text = month
     }
 }

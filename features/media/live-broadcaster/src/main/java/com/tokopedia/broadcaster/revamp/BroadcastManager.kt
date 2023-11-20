@@ -9,6 +9,8 @@ import android.os.Looper
 import android.util.Pair
 import android.view.Surface
 import android.view.SurfaceHolder
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.broadcaster.revamp.util.BroadcasterUtil
@@ -62,6 +64,8 @@ class BroadcastManager @Inject constructor(
 
     private var mEglCore: EglCore? = null
 
+    private var isFlipGracePeriod = false
+
     private var mConnectionId: Pair<Int, ConnectionConfig>? = null
     private var mConnectionState: Streamer.CONNECTION_STATE? = null
 
@@ -92,6 +96,9 @@ class BroadcastManager @Inject constructor(
     private var mAudioRate: String? = null
     private var mVideoRate: String? = null
     private var mVideoFps: String? = null
+
+    private var mSurfaceSize: Broadcaster.Size? = null
+    private var mVideoSize: Streamer.Size? = null
 
     private val mAudioCallback =
         Streamer.AudioCallback { audioFormat, data, audioInputLength, channelCount, sampleRate, samplesPerFrame ->
@@ -153,6 +160,7 @@ class BroadcastManager @Inject constructor(
         }
 
         mWithByteplus = withByteplus
+        mSurfaceSize = surfaceSize
 
         mStreamerWrapper = if (withByteplus) {
             StreamerWithByteplus()
@@ -239,6 +247,7 @@ class BroadcastManager @Inject constructor(
             videoConfig.videoSize = getAndroidVideoSize(supportedSize)
         }
 
+        mVideoSize = videoConfig.videoSize
         builder.setVideoConfig(videoConfig)
 
         // camera preview and it's size, if surface view size changes, then
@@ -298,7 +307,7 @@ class BroadcastManager @Inject constructor(
                 builder.addCamera(
                     CameraConfig().apply {
                         this.cameraId = it.cameraId
-                        this.videoSize = BroadcasterUtil.findFlipSize(it.recordSizes, videoSize)
+                        this.videoSize = BroadcasterUtil.getVideoSize(it.recordSizes, TARGET_ASPECT_RATIO)
                     }
                 )
             }
@@ -306,44 +315,59 @@ class BroadcastManager @Inject constructor(
 
         if (mWithByteplus == true) {
             try {
+                val textureSize = getSurfaceSizeForPusher(Streamer.Size(surfaceSize.width, surfaceSize.height), videoConfig.videoSize)
+
                 effectManager.init()
-                effectManager.setupTexture(surfaceSize.width, surfaceSize.height).also {
+                effectManager.setupTexture(
+                    surfaceSize.width,
+                    surfaceSize.height,
+                    textureSize.width,
+                    textureSize.height
+                ).also {
                     builder.setSurface(Surface(effectManager.getSurfaceTexture()))
                 }
 
-                effectManager.setRenderListener(surfaceSize.width, surfaceSize.height, object : EffectManager.Listener {
+                effectManager.setRenderListener(object : EffectManager.Listener {
                     override fun onRenderFrame(
                         destinationTexture: Int,
                         textureWidth: Int,
                         textureHeight: Int
                     ) {
-                        renderDisplayFrame(surfaceSize, textureWidth, textureHeight, destinationTexture)
-                        renderCodecFrame(surfaceSize,textureWidth, textureHeight, destinationTexture)
+                        renderDisplayFrame(destinationTexture)
+                        renderCodecFrame(textureWidth, textureHeight, destinationTexture)
                     }
                 })
 
                 effectManager.getHandler()?.post {
-                    mEglCore = EglCore(null, EglCore.FLAG_RECORDABLE)
-                    mDisplaySurface = WindowSurface(mEglCore, holder.surface, false)
-                    mDisplaySurface?.makeCurrent()
-                    mStreamerWrapper?.pusherStreamer = createCodecStreamer(
-                        context,
-                        audioConfig,
-                        videoConfig
-                    )?.apply {
-                        startVideoCapture()
-                        startAudioCapture(mAudioCallback)
-                    }
+                    try {
+                        val pusherVideoConfig = BroadcasterUtil.getVideoConfig(mVideoRate, mVideoFps)
+                        pusherVideoConfig.videoSize = textureSize
 
-                    mCodecSurface = WindowSurface(mEglCore, mStreamerWrapper?.pusherStreamer?.encoderSurface, false)
+                        initializeSurfaceWithByteplusSDK(context, holder, audioConfig, pusherVideoConfig)
+                    } catch (e: Throwable) {
+                        Firebase.crashlytics.recordException(e)
+                    }
                 }
             }
-            catch (_: ExceptionInInitializerError) {
+            catch (e: ExceptionInInitializerError) {
+                Firebase.crashlytics.recordException(e)
+
                 broadcastInitStateChanged(
                     BroadcastInitState.ByteplusInitializationError(
                         BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
                     )
                 )
+                return
+            }
+            catch (throwable: Throwable) {
+                Firebase.crashlytics.recordException(throwable)
+
+                broadcastInitStateChanged(
+                    BroadcastInitState.ByteplusInitializationError(
+                        BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
+                    )
+                )
+                return
             }
         }
 
@@ -384,6 +408,27 @@ class BroadcastManager @Inject constructor(
         broadcastInitStateChanged(BroadcastInitState.Initialized)
     }
 
+    private fun initializeSurfaceWithByteplusSDK(
+        context: Context,
+        holder: SurfaceHolder,
+        audioConfig: AudioConfig,
+        videoConfig: VideoConfig,
+    ) {
+        mEglCore = EglCore(null, EglCore.FLAG_RECORDABLE)
+        mDisplaySurface = WindowSurface(mEglCore, holder.surface, false)
+        mDisplaySurface?.makeCurrent()
+        mStreamerWrapper?.pusherStreamer = createCodecStreamer(
+            context,
+            audioConfig,
+            videoConfig
+        )?.apply {
+            startVideoCapture()
+            startAudioCapture(mAudioCallback)
+        }
+
+        mCodecSurface = WindowSurface(mEglCore, mStreamerWrapper?.pusherStreamer?.encoderSurface, false)
+    }
+
     private fun createCodecStreamer(
         context: Context,
         audioConfig: AudioConfig,
@@ -403,39 +448,39 @@ class BroadcastManager @Inject constructor(
     }
 
     private fun renderDisplayFrame(
-        surfaceSize: Broadcaster.Size,
-        textureWidth: Int,
-        textureHeight: Int,
         destinationTexture: Int
     ) {
-        if (mDisplaySurface != null) {
+        val surfaceSize = mSurfaceSize ?: return
+
+        if (mDisplaySurface != null && !isFlipGracePeriod) {
             mDisplaySurface?.makeCurrent()
             effectManager.drawFrameBase(
-                textureWidth = textureWidth,
-                textureHeight = textureHeight,
+                textureWidth = surfaceSize.width,
+                textureHeight = surfaceSize.height,
                 surfaceWidth = surfaceSize.width,
                 surfaceHeight = surfaceSize.height,
                 dstTexture = destinationTexture,
+                isFlip = false,
             )
             mDisplaySurface?.swapBuffers()
         }
     }
 
     private fun renderCodecFrame(
-        surfaceSize: Broadcaster.Size,
         textureWidth: Int,
         textureHeight: Int,
         destinationTexture: Int
     ) {
-        if (mCodecSurface != null) {
+        if (mCodecSurface != null && !isFlipGracePeriod) {
             mStreamerWrapper?.pusherStreamer?.drainEncoder()
             mCodecSurface?.makeCurrent()
             effectManager.drawFrameBase(
                 textureWidth = textureWidth,
                 textureHeight = textureHeight,
-                surfaceWidth = surfaceSize.width,
-                surfaceHeight = surfaceSize.height,
+                surfaceWidth = textureWidth,
+                surfaceHeight = textureHeight,
                 dstTexture = destinationTexture,
+                isFlip = mSelectedCamera?.isFront == true,
             )
             mCodecSurface?.setPresentationTime(System.nanoTime())
             mCodecSurface?.swapBuffers()
@@ -453,9 +498,37 @@ class BroadcastManager @Inject constructor(
         }
     }
 
+    private fun getSurfaceSizeForPusher(
+        surfaceSize: Streamer.Size,
+        videoSize: Streamer.Size,
+    ): Streamer.Size {
+        return if (surfaceSize.width < videoSize.width || surfaceSize.height < videoSize.height) {
+            Streamer.Size(videoSize.width, videoSize.height)
+        } else {
+            Streamer.Size(surfaceSize.width, surfaceSize.height)
+        }
+    }
+
     override fun updateSurfaceSize(surfaceSize: Broadcaster.Size) {
+        mSurfaceSize = surfaceSize
         mStreamerWrapper?.setSurfaceSize(Streamer.Size(surfaceSize.width, surfaceSize.height))
         GLES20.glViewport(0, 0, surfaceSize.width, surfaceSize.height)
+
+        if (mWithByteplus == true) {
+            val videoSize = mVideoSize ?: return
+
+            val textureSize = getSurfaceSizeForPusher(
+                surfaceSize = Streamer.Size(surfaceSize.width, surfaceSize.height),
+                videoSize = videoSize
+            )
+
+            effectManager.updateSurfaceTexture(
+                surfaceWidth = surfaceSize.width,
+                surfaceHeight = surfaceSize.height,
+                textureWidth = textureSize.width,
+                textureHeight = textureSize.height,
+            )
+        }
     }
 
     override fun start(rtmpUrl: String) {
@@ -581,6 +654,8 @@ class BroadcastManager @Inject constructor(
     }
 
     override fun flip() {
+        if (mWithByteplus == true && isFlipGracePeriod) return
+
         if (mStreamerWrapper?.displayStreamer == null || !isVideoCaptureStarted()) {
             // preventing accidental touch issues
             return
@@ -597,6 +672,10 @@ class BroadcastManager @Inject constructor(
         updateFpsRanges(mSelectedCamera)
 
         if (mBroadcastOn) mAdaptiveBitrate?.resume()
+
+        executeWhenByteplusActive {
+            startDelayFlipCamera()
+        }
     }
 
     override fun snapShot() {
@@ -779,6 +858,19 @@ class BroadcastManager @Inject constructor(
         mStreamerWrapper?.changeFpsRange(fpsRange)
     }
 
+    private fun startDelayFlipCamera() {
+        /**
+         * Need to force delay when flipping camera since
+         * the flip() is not flipping immediately & there's no callbacks that indicate
+         * when larix is rendering front / back camera.
+         */
+        isFlipGracePeriod = true
+
+        Handler().postDelayed({
+            isFlipGracePeriod = false
+        }, FLIP_CAMERA_DELAY)
+    }
+
     private fun findPreferredCamera(cameraList: List<BroadcasterCamera>): BroadcasterCamera {
         val activeCamId = mStreamerWrapper?.activeCameraId()
         if (activeCamId != null) {
@@ -787,7 +879,7 @@ class BroadcastManager @Inject constructor(
                 return activeCamera
         }
 
-        val frontFacingCamera = cameraList.firstOrNull { it.lensFacing == BroadcasterCamera.LENS_FACING_FRONT }
+        val frontFacingCamera = cameraList.firstOrNull { it.isFront }
         if (frontFacingCamera != null)
             return frontFacingCamera
 
@@ -853,9 +945,15 @@ class BroadcastManager @Inject constructor(
         mListeners.forEach { it.onBroadcastStatisticUpdate(mMetric) }
     }
 
+    private fun executeWhenByteplusActive(onExecute: () -> Unit) {
+        if (mWithByteplus == true) onExecute()
+    }
+
     companion object {
         private const val STATISTIC_TIMER_DELAY = 1000L
         private const val STATISTIC_DEFAULT_INTERVAL = 3000L
+
+        private const val FLIP_CAMERA_DELAY = 1000L
 
         private const val TARGET_ASPECT_RATIO = 16.0 / 9.0
     }

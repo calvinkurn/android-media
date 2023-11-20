@@ -8,6 +8,7 @@
             "header": "",
             "label_action": "",
             "feature_id": "top_campaign",
+            "tracking_option": 2,
             "items": [
               {
                 "id": "20100612",
@@ -30,6 +31,7 @@
             "id": "recent_view",
             "feature_id": "recent_view",
             "header": "Terakhir dilihat",
+            "tracking_option": 2,
             "label_action": "",
             "items": [
               {
@@ -69,6 +71,7 @@
             "feature_id": "popular_search",
             "header": "Pencarian populer",
             "label_action": "Refresh",
+            "tracking_option": 2,
             "items": [
               {
                 "id": "0",
@@ -197,6 +200,7 @@
             "feature_id": "new_section",
             "header": "New Section",
             "label_action": "",
+            "tracking_option": 2,
             "items": [
               {
                 "id": "0",
@@ -325,6 +329,7 @@
             "header": "Populer di Putra Group",
             "label_action": "",
             "feature_id": "product_suggestion",
+            "tracking_option": 2,
             "items": [
               {
                 "id": "0",
@@ -423,6 +428,7 @@
             "feature_id": "recent_search",
             "header": "Terakhir dicari",
             "label_action": "",
+            "tracking_option": 2,
             "items": [
             {
               "id": "1",

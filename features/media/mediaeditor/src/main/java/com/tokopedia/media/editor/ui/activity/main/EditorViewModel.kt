@@ -36,8 +36,11 @@ class EditorViewModel @Inject constructor(
     private var _editorParam = MutableLiveData<EditorParam>()
     val editorParam: LiveData<EditorParam> get() = _editorParam
 
-    private var _editorResult = MutableLiveData<List<String>>()
-    val editorResult: LiveData<List<String>> = _editorResult
+    private var _editorResult = MutableLiveData<List<String?>>()
+    val editorResult: LiveData<List<String?>> = _editorResult
+
+    private var _isVideoStop = MutableLiveData<Boolean>()
+    val isVideoStop: LiveData<Boolean> = _isVideoStop
 
     fun setEditorParam(data: EditorParam) {
         _editorParam.postValue(data)
@@ -107,6 +110,7 @@ class EditorViewModel @Inject constructor(
     fun finishPage(
         dataList: List<EditorUiModel>
     ) {
+        _isVideoStop.value = true
         viewModelScope.launch(coroutineDispatchers.io) {
             val filteredData = dataList.map {
                 if (it.isImageEdited()) {
@@ -115,7 +119,7 @@ class EditorViewModel @Inject constructor(
 
                     val addTextFlatten = async {
                         it.getOverlayTextValue()?.textImagePath?.let { textImagePath ->
-                            saveImageRepository.flattenImage(
+                            return@async saveImageRepository.flattenImage(
                                 it.getImageUrl(),
                                 textImagePath,
                                 it.getOriginalUrl()
@@ -124,15 +128,15 @@ class EditorViewModel @Inject constructor(
                     }
 
                     val addLogoFlatten = async {
-                        val addTextOrOriginalResult = addTextFlatten.await()
-
-                        it.getOverlayLogoValue()?.let { overlayData ->
-                            saveImageRepository.flattenImage(
-                                addTextOrOriginalResult,
-                                overlayData.overlayLogoUrl,
-                                it.getOriginalUrl()
-                            )
-                        } ?: addTextOrOriginalResult
+                        addTextFlatten.await()?.let { addTextResult ->
+                            it.getOverlayLogoValue()?.let { overlayData ->
+                                return@async saveImageRepository.flattenImage(
+                                    addTextResult,
+                                    overlayData.overlayLogoUrl,
+                                    it.getOriginalUrl()
+                                )
+                            } ?: addTextResult
+                        }
                     }
 
                     addLogoFlatten.await()

@@ -15,14 +15,14 @@ class PlayChannelInfoModelBuilder {
         channelInfo: PlayChannelInfoUiModel = buildChannelInfo(),
         rtnConfigInfo: PlayRealTimeNotificationConfig = buildRtnConfigInfo(),
         popUpConfig: PlayPopUpConfigUiModel = buildPopUpConfig(),
-        widgetConfig: ExploreWidgetConfig = ExploreWidgetConfig(),
+        widgetConfig: PlayChannelRecommendationConfig = PlayChannelRecommendationConfig(),
         commentUiModel: PlayCommentUiModel = buildCommentConfig(),
     ) = PlayChannelDetailUiModel(
             shareInfo = shareInfo,
             channelInfo = channelInfo,
             rtnConfigInfo = rtnConfigInfo,
             popupConfig = popUpConfig,
-            exploreWidgetConfig = widgetConfig,
+            channelRecomConfig = widgetConfig,
             commentConfig = commentUiModel,
     )
 

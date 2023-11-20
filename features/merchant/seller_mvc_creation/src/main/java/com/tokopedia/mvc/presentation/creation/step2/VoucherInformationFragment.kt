@@ -20,6 +20,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -62,7 +63,6 @@ import com.tokopedia.mvc.util.tracker.VoucherInfoTracker
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -96,6 +96,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
         private const val DEBOUNCE = 300L
         private const val minimumActivePeriodCountToShowFullSchedule = 2
+        private const val MAX_VOUCHER_CODE_COUNT = 10
     }
 
     // binding
@@ -343,7 +344,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
         if (pageMode == PageMode.EDIT) {
             voucherCodeSectionBinding?.run {
-                tfVoucherCode.disable()
+                tfVoucherCode.apply {
+                    disable()
+                }
             }
             voucherPeriodSectionBinding?.run {
                 cbRepeatPeriod.disable()
@@ -379,7 +382,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 getString(R.string.smvc_creation_step_two_out_of_three_sub_title_label)
             }
             setNavigationOnClickListener {
-                viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton)
+                onFragmentBackPressed()
                 tracker.sendClickKembaliArrowEvent(voucherConfiguration.voucherId)
             }
         }
@@ -544,6 +547,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
         voucherCodeSectionBinding?.run {
             tfVoucherCode.apply {
+                if (pageMode != PageMode.EDIT) setCounter(MAX_VOUCHER_CODE_COUNT)
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldKodeKuponEvent(voucherConfiguration.voucherId)
                 }
@@ -974,6 +978,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         } else {
             navigateToVoucherSummaryPage(voucherConfiguration)
         }
+        activity?.finish()
     }
 
     private fun navigateToNextStep(

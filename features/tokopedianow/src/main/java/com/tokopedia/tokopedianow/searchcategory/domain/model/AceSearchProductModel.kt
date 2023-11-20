@@ -142,7 +142,33 @@ data class AceSearchProductModel(
 
             @SerializedName("products")
             @Expose
-            val productList: List<Product> = listOf()
+            val productList: List<Product> = listOf(),
+
+            @SerializedName("violation")
+            @Expose
+            val violation: Violation = Violation()
+    )
+
+    data class Violation(
+        @SerializedName("headerText")
+        @Expose
+
+        val headerText: String = "",
+        @SerializedName("descriptionText")
+        @Expose
+        val descriptionText: String = "",
+
+        @SerializedName("imageURL")
+        @Expose
+        val imageUrl: String = "",
+
+        @SerializedName("ctaURL")
+        @Expose
+        val ctaUrl: String = "",
+
+        @SerializedName("buttonText")
+        @Expose
+        val buttonText: String = "",
     )
 
     data class Redirection(

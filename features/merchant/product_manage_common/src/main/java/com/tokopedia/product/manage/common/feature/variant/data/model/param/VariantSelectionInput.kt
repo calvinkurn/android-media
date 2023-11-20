@@ -9,6 +9,9 @@ data class VariantSelectionInput(
     @SerializedName("variantID")
     val id: String,
     @Expose
+    @SerializedName("name")
+    val name: String,
+    @Expose
     @SerializedName("unitID")
     val unitID: String,
     @Expose

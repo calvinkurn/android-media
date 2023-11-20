@@ -7,8 +7,10 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.onKeyboardVisibleListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -177,6 +179,20 @@ class PartialButtonActionView private constructor(
         btnTokonowVar.hide()
         txtTotalStockTokonowVar.hide()
         dividerTokonow.hide()
+        keyboardVisibleListener()
+    }
+
+    private fun keyboardVisibleListener() {
+        view.onKeyboardVisibleListener(
+            onShow = { rootView, keyboardHeight ->
+                if (rootView.paddingBottom == keyboardHeight) return@onKeyboardVisibleListener
+                rootView.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, keyboardHeight)
+            },
+            onHide = { rootView, _ ->
+                if (rootView.paddingBottom == Int.ZERO) return@onKeyboardVisibleListener
+                rootView.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
+            }
+        )
     }
 
     private fun renderTokoNowVar() = with(view) {

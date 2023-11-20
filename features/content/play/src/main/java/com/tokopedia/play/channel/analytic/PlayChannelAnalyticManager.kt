@@ -8,6 +8,7 @@ import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
 import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.uimodel.ExploreWidgetType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.event.AtcSuccessEvent
 import com.tokopedia.play.view.uimodel.event.BuySuccessEvent
@@ -78,8 +79,14 @@ class PlayChannelAnalyticManager @Inject constructor(
                     }
                     KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
                     KebabIconUiComponent.Event.OnImpressed -> analytic2?.impressKebab()
-                    ExploreWidgetViewComponent.Event.OnImpressed -> analytic2?.impressExploreIcon()
-                    ExploreWidgetViewComponent.Event.OnClicked -> analytic2?.clickExploreIcon()
+                    is ExploreWidgetViewComponent.Event.OnImpressed -> {
+                        val type = if (it.widgetInfo.categoryWidgetConfig.hasCategory) ExploreWidgetType.Category else ExploreWidgetType.Default
+                        analytic2?.impressExploreIcon(it.widgetInfo, type)
+                    }
+                    is ExploreWidgetViewComponent.Event.OnClicked -> {
+                        val type = if (it.widgetInfo.categoryWidgetConfig.hasCategory) ExploreWidgetType.Category else ExploreWidgetType.Default
+                        analytic2?.clickExploreIcon(it.widgetInfo, type)
+                    }
                 }
             }
         }

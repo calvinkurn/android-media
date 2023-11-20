@@ -26,10 +26,10 @@ class KycSharedPreferenceImpl @Inject constructor(
         sharedPreferences.edit().remove(key).apply()
     }
 
-    override fun saveStringCache(key: String, value: String) {
-        sharedPreferences.edit()
+    override fun saveStringCache(key: String, value: String): Boolean {
+        return sharedPreferences.edit()
             .putString(key, value)
-            .apply()
+            .commit()
     }
 
     override fun getStringCache(key: String): String {
@@ -40,8 +40,8 @@ class KycSharedPreferenceImpl @Inject constructor(
         sharedPreferences.edit().remove(key).apply()
     }
 
-    override fun saveProjectId(projectId: String) {
-        saveStringCache(KEY_PROJECT_ID, projectId)
+    override fun saveProjectId(projectId: String): Boolean {
+        return saveStringCache(KEY_PROJECT_ID, projectId)
     }
 
     override fun getProjectId(): String {
@@ -71,10 +71,10 @@ interface KycSharedPreference {
     fun saveByteArrayCache(key: String, data: ByteArray)
     fun getByteArrayCache(key: String): ByteArray?
     fun removeCache(key: String)
-    fun saveStringCache(key: String, value: String)
+    fun saveStringCache(key: String, value: String): Boolean
     fun getStringCache(key: String): String
     fun removeStringCache(key: String)
-    fun saveProjectId(projectId: String)
+    fun saveProjectId(projectId: String): Boolean
     fun getProjectId(): String
     fun removeProjectId()
 }

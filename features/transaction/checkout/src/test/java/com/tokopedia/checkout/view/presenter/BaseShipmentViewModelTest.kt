@@ -15,14 +15,14 @@ import com.tokopedia.checkout.view.ShipmentViewModel
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
@@ -48,7 +48,7 @@ open class BaseShipmentViewModelTest {
     lateinit var checkoutUseCase: CheckoutUseCase
 
     @MockK
-    lateinit var editAddressUseCase: EditAddressUseCase
+    lateinit var editAddressUseCase: UpdatePinpointUseCase
 
     @MockK
     lateinit var changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase
@@ -64,6 +64,9 @@ open class BaseShipmentViewModelTest {
 
     @MockK
     lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
+
+    @MockK
+    lateinit var saveAddOnStateUseCase: SaveAddOnStateUseCase
 
     @MockK(relaxUnitFun = true)
     lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
@@ -93,9 +96,6 @@ open class BaseShipmentViewModelTest {
     @MockK(relaxed = true)
     lateinit var getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase
 
-    @MockK(relaxed = true)
-    lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
     @MockK
     lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine
 
@@ -123,7 +123,6 @@ open class BaseShipmentViewModelTest {
             getShipmentAddressFormV4UseCase,
             saveShipmentStateGqlUseCase,
             changeShippingAddressGqlUseCase,
-            eligibleForAddressUseCase,
             editAddressUseCase,
             getRatesUseCase,
             getRatesApiUseCase,
@@ -136,6 +135,7 @@ open class BaseShipmentViewModelTest {
             updateDynamicDataPassingUseCase,
             dynamicPaymentFeeCheckoutUseCase,
             checkoutUseCase,
+            saveAddOnStateUseCase,
             shipmentDataConverter,
             shippingCourierConverter,
             ratesStatesConverter,

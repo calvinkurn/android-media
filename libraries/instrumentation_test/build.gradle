@@ -87,6 +87,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation projectOrAar(rootProject.ext.libraries.keys)
@@ -130,6 +131,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+
+    implementation rootProject.ext.composeDependencies.composeUiTest
+    debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 
     api rootProject.ext.miscDependencies.coroutineTest
 

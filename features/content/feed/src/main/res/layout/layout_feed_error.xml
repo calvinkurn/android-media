@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:background="@color/Unify_Static_Black">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_feed_no_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_above="@id/ty_feed_no_content_title"
+        android:layout_centerHorizontal="true"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="IMAGE" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/ty_feed_no_content_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="12dp"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_Static_White"
+        app:typographyType="heading_3"
+        tools:text="@string/feed_label_no_content_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/ty_feed_no_content_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ty_feed_no_content_title"
+        android:layout_marginTop="8dp"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_Static_White"
+        app:typographyType="display_2"
+        tools:text="@string/feed_label_no_content_subtitle" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_show_other_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ty_feed_no_content_subtitle"
+        android:layout_marginTop="16dp"
+        app:unifyButtonInvers="true"
+        app:unifyButtonSize="medium"
+        app:unifyButtonVariant="ghost"
+        tools:text="@string/feed_label_no_content_button" />
+
+</RelativeLayout>

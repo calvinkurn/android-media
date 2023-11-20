@@ -1,5 +1,6 @@
 package com.tokopedia.people.views.adapter
 
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.viewholder.UserReviewMediaViewHolder
@@ -8,13 +9,14 @@ import com.tokopedia.people.views.viewholder.UserReviewMediaViewHolder
  * Created By : Jonathan Darwin on May 16, 2023
  */
 class UserReviewMediaAdapter(
+    lifecycleOwner: LifecycleOwner,
     listener: Listener,
 ) : BaseDiffUtilAdapter<UserReviewMediaAdapter.Model>() {
 
     init {
         delegatesManager
             .addDelegate(UserReviewMediaAdapterDelegate.Image(listener))
-            .addDelegate(UserReviewMediaAdapterDelegate.Video(listener))
+            .addDelegate(UserReviewMediaAdapterDelegate.Video(lifecycleOwner, listener))
     }
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {

@@ -1,57 +1,56 @@
 package com.tokopedia.entertainment.pdp.adapter.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.PartialEventPdpDescriptionBinding
 import com.tokopedia.entertainment.pdp.adapter.EventPDPHighlightAdapter
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPHighlightEntity
 import com.tokopedia.entertainment.pdp.listener.OnBindItemListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.partial_event_pdp_description.view.*
 
-class EventPDPHighlightViewHolder(view: View, val onBindItemListener: OnBindItemListener) :
-        AbstractViewHolder<EventPDPHighlightEntity>(view) {
+class EventPDPHighlightViewHolder(val binding: PartialEventPdpDescriptionBinding, val onBindItemListener: OnBindItemListener) :
+        AbstractViewHolder<EventPDPHighlightEntity>(binding.root) {
 
     var eventHighlightAdapter = EventPDPHighlightAdapter(onBindItemListener)
 
     override fun bind(element: EventPDPHighlightEntity) {
-        with(itemView) {
+        with(binding) {
             if (element.isLoaded) {
-                shimmering.gone()
+                shimmering.root.gone()
                 container.show()
                 eventHighlightAdapter.setList(element.list)
 
                 if (!element.title_small.isNullOrEmpty()) {
-                    tg_event_pdp_title_small.text = element.title_small
+                    tgEventPdpTitleSmall.text = element.title_small
                 } else {
-                    tg_event_pdp_title_small.gone()
+                    tgEventPdpTitleSmall.gone()
                 }
 
                 if(!element.title_big.isNullOrEmpty()){
-                    tg_event_pdp_title_big.text = element.title_big
+                    tgEventPdpTitleBig.text = element.title_big
                 } else {
-                    tg_event_pdp_title_big.gone()
+                    tgEventPdpTitleBig.gone()
                 }
 
                 if (!element.list.isNullOrEmpty()) {
-                    rv_event_pdp_highlight.apply {
-                        adapter = eventHighlightAdapter
-                        layoutManager = LinearLayoutManager(
-                                this@with.context,
+                    rvEventPdpHighlight.let {
+                        it.adapter = eventHighlightAdapter
+                        it.layoutManager = LinearLayoutManager(
+                                root.context,
                                 RecyclerView.VERTICAL, false
                         )
                     }
                     onBindItemListener.performancePdp()
                 } else {
-                    rv_event_pdp_highlight.gone()
+                    rvEventPdpHighlight.gone()
                 }
 
 
             } else {
-                shimmering.show()
+                shimmering.root.show()
             }
         }
     }

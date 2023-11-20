@@ -185,6 +185,8 @@ data class Coupon(
     val boClashingInfos: List<BoClashingInfo> = emptyList(),
     @SerializedName("currency_details_str")
     val currencyDetailStr: String = "",
+    @SerializedName("cta")
+    val cta: CTA = CTA(),
     @SerializedName("coachmark")
     val coachMark: PromoCoachmark = PromoCoachmark(),
     @SerializedName("is_highlighted")
@@ -246,6 +248,19 @@ data class SecondaryCoupon(
     val isBebasOngkir: Boolean = false,
     @SerializedName("additional_bo_datas")
     val additionalBoData: List<AdditionalBoData> = emptyList()
+)
+
+data class CTA(
+    @SerializedName("text")
+    val text: String = "",
+    @SerializedName("url")
+    val url: String = "",
+    @SerializedName("app_link")
+    val applink: String = "",
+    @SerializedName("type")
+    val type: String = "",
+    @SerializedName("json_metadata")
+    val jsonMetadata: String = ""
 )
 
 data class AdditionalBoData(
@@ -317,6 +332,7 @@ data class PromoInfo(
         const val ICON_DOT = "DOT"
         const val ICON_NONE = "NONE"
         const val ICON_URL = "URL"
+        const val ICON_DT = "DT"
     }
 }
 

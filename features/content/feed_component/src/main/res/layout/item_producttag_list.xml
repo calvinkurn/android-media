@@ -87,7 +87,7 @@
                 android:ellipsize="end"
                 android:gravity="bottom"
                 android:maxLines="1"
-                android:textColor="@color/Unify_YN500"
+                android:textColor="@color/Unify_NN950"
                 android:visibility="visible"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"

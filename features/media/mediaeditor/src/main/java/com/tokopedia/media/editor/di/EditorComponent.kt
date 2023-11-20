@@ -13,6 +13,7 @@ import dagger.Component
 @Component(
     modules = [
         EditorModule::class,
+        EditorColorProviderModule::class,
         EditorCommonModule::class,
         EditorNetworkModule::class,
         EditorFragmentModule::class,

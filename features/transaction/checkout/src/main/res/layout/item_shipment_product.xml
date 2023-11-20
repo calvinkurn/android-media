@@ -272,6 +272,24 @@
                 tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan! afadf asfsaf safas safasfsaf asfasf safasf"
                 tools:visibility="visible" />
 
+            <LinearLayout
+                android:id="@+id/ll_addon_product_bundling"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/tv_optional_note_to_seller"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/iv_product_image">
+
+                <include
+                    android:id="@+id/item_shipment_addon_product_bundling"
+                    layout="@layout/item_shipment_addon_product"
+                    tools:visibility="visible"/>
+
+            </LinearLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.unifycomponents.ticker.Ticker
@@ -380,9 +398,8 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <!--Gifting: Gifting Experience - Product Level-->
         <LinearLayout
-            android:id="@+id/ll_gifting_addon_product_level"
+            android:id="@+id/ll_addon_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -390,9 +407,25 @@
             android:visibility="gone">
 
             <include
+                android:id="@+id/item_shipment_addon_product"
+                layout="@layout/item_shipment_addon_product"
+                tools:visibility="visible"/>
+
+        </LinearLayout>
+
+        <!--Gifting: Gifting Experience - Product Level-->
+        <LinearLayout
+            android:id="@+id/ll_gifting_addon_product_level"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <include
                 android:id="@+id/item_shipment_gifting_addon_product_level"
                 layout="@layout/item_shipment_gifting_addon_product_level"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
 
         </LinearLayout>
 

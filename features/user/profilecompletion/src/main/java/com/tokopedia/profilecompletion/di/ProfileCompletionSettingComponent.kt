@@ -19,6 +19,7 @@ import com.tokopedia.profilecompletion.profilecompletion.view.fragment.ProfileCo
 import com.tokopedia.profilecompletion.profilecompletion.view.fragment.ProfileCompletionGenderFragment
 import com.tokopedia.profilecompletion.profileinfo.view.bottomsheet.CloseAccountBottomSheet
 import com.tokopedia.profilecompletion.profileinfo.view.fragment.ProfileInfoFragment
+import com.tokopedia.profilecompletion.profilemanagement.ProfileManagementActivity
 import dagger.Component
 
 
@@ -49,4 +50,5 @@ interface ProfileCompletionSettingComponent {
     fun inject(fragment: ChangeBioUsernameFragment)
     fun inject(fragment: ProfileSettingWebViewFragment)
     fun inject(bottomSheet: CloseAccountBottomSheet)
+    fun inject(activity: ProfileManagementActivity)
 }

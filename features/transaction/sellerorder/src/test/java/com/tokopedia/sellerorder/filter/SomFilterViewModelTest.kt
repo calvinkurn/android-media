@@ -592,7 +592,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             }!!.somFilterData
             .find {
                 it.isSelected
-            }?.id ?: SomConsts.SORT_BY_DEADLINE_DATE_ASCENDING.toLong()
+            }?.id ?: SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING.toLong()
     }
 
     private fun getSelectedStatusOrderFilterIds(somFilterUiModels: List<BaseSomFilter>): List<Int> {

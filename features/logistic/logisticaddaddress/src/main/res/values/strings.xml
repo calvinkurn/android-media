@@ -1,47 +1,11 @@
 <resources>
     <string name="app_name">logisticaddaddress</string>
-    <string name="minimal_karakter">Minimal 5 karakter</string>
-    <string name="address_type_default">Rumah</string>
-    <string name="title_update_address">Ubah Alamat</string>
-    <string name="error_field_required">Harus diisi</string>
-    <string name="desc_delivery_location">Pastikan lokasi yang Anda tandai di peta sesuai dengan alamat yang Anda isi di atas</string>
-    <string name="title_delivery_location_pickup">Lokasi Pickup (Opsional)</string>
-    <string name="hint_type_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
     <string name="choose_this_location">Pilih lokasi ini</string>
     <string name="choose_this_incomplete_location">Lengkapi Alamat</string>
-    <string name="error_min_phone_numer">Nomor telepon minimal 6 angka</string>
-    <string name="error_max_phone_numer">Nomor telepon maksimum 20 angka</string>
-    <string name="error_min_5_address">Alamat minimum 5 karakter</string>
-    <string name="error_max_128_character">Maksimal 128 karakter.</string>
-    <string name="error_min_5_character">Minimal 5 karakter</string>
-    <string name="error_max_post_code">Kode Pos maksimum 10 angka</string>
-    <string name="title_activity_add_address">Tambah Alamat</string>
-    <string name="title_receiver_name">Nama Penerima</string>
-    <string name="title_save_address_as_layout">Simpan Alamat sebagai (Contoh: Alamat rumah, Alamat kantor, Alamat pacar)</string>
-    <string name="title_address_add_address">Alamat</string>
     <string name="choose_location">Pilih Lokasi</string>
     <string name="title_post_code">Kode Pos</string>
-    <string name="title_receiver_phone_no">Nomor Telepon Penerima</string>
-    <string name="title_save">Simpan</string>
-    <string name="title_province">Provinsi</string>
-    <string name="title_regency">Kabupaten</string>
-    <string name="title_sub_district">Kecamatan</string>
-    <string name="error_province">Provinsi harus dipilih</string>
-    <string name="error_regency">Kabupaten harus dipilih</string>
-    <string name="error_sub_district">Kecamatan harus dipilih</string>
     <string name="hint_district_recommendation_search">Tulis min 3 karakter</string>
     <string name="hint_advice_search_address">Untuk mempersingkat waktu, isi dengan kecamatan tujuan pengiriman</string>
-    <string name="hint_search_address_no_result">Tidak menemukan data, harap mencari berdasarkan kota, kabupaten atau kecamatan Anda</string>
-    <string name="logistic_district_recommendation_label">Kota atau Kecamatan</string>
-    <string name="logistic_zip_code_label">Kode Pos</string>
-
-    <string name="title_shipping_dest">Tujuan Pengiriman</string>
-    <string name="text_information_google_map">* Pastikan lokasi google map anda sesuai dengan alamat yang anda masukan</string>
-    <string name="permission_location_neverask">Anda tidak memberikan izin akses untuk Lokasi. Anda bisa memberikan izin melalui Pengaturan.</string>
-    <string name="need_permission_location">Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan?</string>
-    <string name="permission_location_denied">Anda tidak memberikan izin akses untuk Lokasi.</string>
-    <string name="wait_generate_address">Harap Tunggu . . .</string>
-    <string name="hint_gojek_pick_address">Cari Lokasi</string>
 
     <string name="title_activity_search_address">Kota atau kecamatan</string>
     <string name="message_advice_search_address">Untuk mempersingkat waktu, isi dengan kecamatan tujuan pengiriman</string>
@@ -49,7 +13,6 @@
 
     <string name="navigate_up">Navigate Up</string>
     <string name="pointer">Map Pointer</string>
-    <string name="title_bottomsheet_search_location">Cari Lokasi</string>
     <string name="current_location">Current Location</string>
     <string name="tv_current_location_text">Gunakan lokasi saya saat ini</string>
     <string name="tv_detail_address_info">Tulis Detail Alamat Anda dengan jelas</string>
@@ -59,50 +22,23 @@
     <string name="invalid_desc">Tenang, kamu tetap bisa pilih lokasi ini dengan melengkapi alamat secara manual.</string>
     <string name="out_of_indonesia_title">Lokasi di luar jangkauan</string>
     <string name="out_of_indonesia_desc">Saat ini Tokopedia hanya melayani pengiriman di Indonesia.</string>
-    <string name="undetected_title">Alamatmu di peta kurang lengkap</string>
-    <string name="undetected_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
     <string name="research_description">ic_research</string>
     <string name="invalid_img_description">alamat tidak mendukung</string>
     <string name="change_pinpoint">Ubah Pinpoint</string>
-    <string name="address_based_on_pinpoint">Alamat (Berdasarkan pinpoint)</string>
-    <string name="add_new_address_address_label">Label Alamat</string>
-    <string name="add_new_address_name_label">Nama Penerima</string>
-    <string name="add_new_address_phone_label">No Ponsel</string>
-    <string name="add_new_address_save">Simpan</string>
     <string name="mismatch_title">Pinpoint Gagal Disimpan</string>
-    <string name="mismatch_desc">Pinpoint Anda gagal disimpan. Silahkan pilih Kota atau Kecamatan secara manual terlebih dahulu</string>
     <string name="mismatch_btn_title">Mengerti</string>
-    <string name="et_kota_kecamatan_label">Kota atau Kecamatan</string>
-    <string name="et_kode_pos_label">Kode Pos</string>
-    <string name="alamat_label">Alamat</string>
-    <string name="min_5_char">Minimal 5 karakter</string>
-    <string name="define_pinpoint">Tentukan Lokasi Pinpoint Anda</string>
     <string name="kota_kecamatan">Kota atau Kecamatan</string>
     <string name="kota_populer">Kota populer</string>
-    <string name="label_action_snackbar_close">Tutup</string>
-    <string name="choose_district_first">Silahkan Pilih Kota/Kecamatan terlebih dahulu</string>
-    <string name="invalid_district">Alamat tidak sesuai dengan peta. Mohon pilih kembali alamat pada peta.</string>
     <string name="rationale_need_location">Akses lokasi diperlukan untuk menggunakan fitur ini. Perbolehkan?</string>
     <string name="undetected_location">Lokasi tidak terdeteksi</string>
     <string name="undetected_location_desc">Kami tidak dapat mengakses lokasi Anda. Untuk menggunakan fitur ini silakan aktifkan layanan lokasi Anda.</string>
     <string name="undetected_location_desc_2">Untuk menggunakan fitur ini silakan aktifkan layanan lokasi perangkat Anda</string>
     <string name="btn_ok">Ok</string>
     <string name="btn_lain_kali">Lain Kali</string>
-    <string name="activate_location_service">Aktifkan Layanan Lokasi</string>
-    <string name="validate_label_alamat">Label Alamat harus diisi</string>
-    <string name="validate_nama_penerima">Nama Penerima harus diisi</string>
     <string name="validate_no_ponsel">No. Ponsel harus diisi</string>
-    <string name="validate_no_ponsel_less_char">Nomor HP penerima terlalu pendek, min. 9 angka</string>
-    <string name="validate_detail_alamat">Detail Alamat harus diisi</string>
-    <string name="validate_kota_kecamatan">Kota Kecamatan harus diisi</string>
     <string name="validate_kode_pos">Kode Pos harus diisi</string>
-    <string name="validate_kode_pos_length">Kode Pos minimal 5 karakter</string>
     <string name="validate_alamat">Alamat harus diisi</string>
-    <string name="validate_alamat_length">Alamat minimal 5 karakter</string>
-    <string name="disabled_location_notif_title">Lokasi Anda Belum Terisi</string>
-    <string name="disabled_location_notfi_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
     <string name="not_found_location">Lokasi tidak terdeteksi</string>
-    <string name="not_found_location_desc">Kami tidak dapat menentukan lokasimu, silakan geser pada peta atau tulis secara manual</string>
     <string name="content_desc_place_name">text nama tempat</string>
     <string name="content_desc_et_detail_address">input detail alamat</string>
     <string name="content_desc_btn_choose_location">button pilih lokasi ini</string>
@@ -110,7 +46,6 @@
     <string name="content_desc_et_label_address">input label alamat</string>
     <string name="content_desc_et_receiver_name">input nama penerima</string>
     <string name="content_desc_et_phone">input nomor telepon</string>
-    <string name="content_desc_btn_save_address">button simpan alamat</string>
     <string name="content_desc_receiver_name">input nama penerima</string>
     <string name="content_desc_address">input alamat</string>
     <string name="content_desc_district">input kota atau kecamatan</string>
@@ -119,7 +54,9 @@
     <string name="content_desc_value_location">input lokasi pickup</string>
     <string name="content_desc_save_button">button simpan</string>
     <string name="lokasi_saat_ini">Lokasi saat ini</string>
+
     <string name="toaster_failed_get_district">Oops, alamat gagal dipilih. Silakan coba lagi.</string>
+    <string name="toaster_not_avail_shop_loc">Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>
@@ -141,14 +78,13 @@
         <item>Kos</item>
     </string-array>
 
-    <string name="toaster_not_avail_shop_loc">Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.</string>
-
     <string name="contact_not_found">Kontak tidak ditemukan</string>
     <string name="rationale_need_contact">Untuk pakai fitur ini, izinkan Tokpedia mengakses kontakmu.</string>
-    <string name="contact_title_coachmark">Pilih no. HP langsung dari kontakmu</string>
-    <string name="contact_desc_coachmark">Jadi lebih mudah menambahkan nomor HP penerima pesanan!</string>
 
     <!--Search Page-->
+
+    <string name="title_toolbar_search_address">Cari Alamat</string>
+    <string name="subtitle_toolbar_search_address">Di mana lokasi tujuan pengirimanmu?</string>
     <string name="txt_hint_search">Tulis nama jalan/gedung/perumahan</string>
     <string name="txt_message_initial_load">Mau cara lain? Isi alamat secara manual</string>
     <string name="txt_message_ana_negative">Tidak ketemu? Isi alamat secara manual</string>

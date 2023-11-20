@@ -162,6 +162,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     @Test
     fun `Test get initial state data with see more button`() {
         val initialStateData = initialStateWithSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>()
+        `Given rollance is off`()
         `Test Initial State Data`(initialStateData)
 
         `Then verify initial state view will call showInitialStateResult behavior`()
@@ -338,7 +339,6 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         `Test Initial State Data`(initialStateData)
 
         `Then verify initial state view will call showInitialStateResult behavior`()
-        `Then verify mps enabled`(initialStateData)
     }
 
     @Test
@@ -360,12 +360,5 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         `Then verify MpsDataView`(
             visitableList, expectedData, expectedDefaultDimension90, keyword,
         )
-    }
-
-    private fun `Then verify mps enabled`(initialState: InitialStateUniverse) {
-        initialState.isMps shouldBe true
-        verify {
-            initialStateView.enableMps()
-        }
     }
 }

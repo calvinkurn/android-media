@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view.uimodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
@@ -50,7 +51,7 @@ data class CartGroupHolderData(
     var boCode: String = "",
     var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
     var enablerLabel: String = ""
-) {
+) : ImpressHolder() {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
 
@@ -158,6 +159,18 @@ class CartShopCoachmarkPlusData(
     val isShown: Boolean = false,
     val title: String = "",
     val content: String = ""
+)
+
+class AddOnProductData(
+    val id: Long = 0L,
+    val status: Int = -1,
+    val type: Int = -1
+)
+
+class AddOnProductWidget(
+    val wording: String = "",
+    val leftIcon: String = "",
+    val rightIcon: String = ""
 )
 
 enum class CartShopGroupTickerState {

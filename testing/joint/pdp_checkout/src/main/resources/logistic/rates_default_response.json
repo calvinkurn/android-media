@@ -31,7 +31,10 @@
                 "text_notes": "",
                 "text_service_desc": "",
                 "text_eta_summarize": "",
-                "error_code": 1
+                "error_code": 1,
+                "text_service_ticker": ""
+
+
               },
               "order_priority": {
                 "is_now": false,
@@ -135,7 +138,8 @@
                 "text_notes": "",
                 "text_service_desc": "",
                 "text_eta_summarize": "",
-                "error_code": 1
+                "error_code": 1,
+                "text_service_ticker": ""
               },
               "order_priority": {
                 "is_now": false,
@@ -239,7 +243,8 @@
                 "text_notes": "",
                 "text_service_desc": "",
                 "text_eta_summarize": "",
-                "error_code": 1
+                "error_code": 1,
+                "text_service_ticker": ""
               },
               "order_priority": {
                 "is_now": false,

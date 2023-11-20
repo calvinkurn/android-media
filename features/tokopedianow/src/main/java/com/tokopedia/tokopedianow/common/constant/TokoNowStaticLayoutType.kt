@@ -7,10 +7,12 @@ import androidx.annotation.StringDef
  */
 @Retention(AnnotationRetention.SOURCE)
 @StringDef(
-    TokoNowStaticLayoutType.PRODUCT_ADS_CAROUSEL
+    TokoNowStaticLayoutType.PRODUCT_ADS_CAROUSEL,
+    TokoNowStaticLayoutType.PRODUCT_CARD_ITEM
 )
 annotation class TokoNowStaticLayoutType {
     companion object {
         const val PRODUCT_ADS_CAROUSEL = "product_ads_carousel"
+        const val PRODUCT_CARD_ITEM = "product_card_item"
     }
 }

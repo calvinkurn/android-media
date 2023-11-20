@@ -15,9 +15,8 @@
     <application
         android:allowBackup="true"
         android:name="com.tokopedia.sellerapp.di.SellerApp"
-        android:icon="@mipmap/ic_launcher_customerapp"
+        android:icon="@mipmap/ic_wear_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_customerapp_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
 

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_placeholder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingTop="16dp"
+    android:visibility="gone"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:visibility="visible">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/placeholder_title"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        app:layout_constraintHorizontal_weight="0.6"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/cta"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/cta"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintCircleRadius="8dp"
+        app:layout_constraintHorizontal_weight="0.4"
+        app:layout_constraintLeft_toRightOf="@id/placeholder_title"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/switcher_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/placeholder_title"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <LinearLayout
+        android:id="@+id/etalase_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/switcher_placeholder">
+
+        <include
+            layout="@layout/etalase_tab_direct_purchase_shimmering"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <include
+            layout="@layout/etalase_tab_direct_purchase_shimmering"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <include
+            layout="@layout/etalase_tab_direct_purchase_shimmering"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        <include
+            layout="@layout/etalase_tab_direct_purchase_shimmering"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        <include
+            layout="@layout/etalase_tab_direct_purchase_shimmering"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        app:layout_constraintTop_toBottomOf="@id/etalase_placeholder"
+        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+        <include
+            layout="@layout/partial_direct_purchase_shimmering"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"/>
+
+        <include
+            layout="@layout/partial_direct_purchase_shimmering"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.constraintlayout.widget.ConstraintLayout>

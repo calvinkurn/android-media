@@ -32,6 +32,7 @@ data class ItemChatListPojo(
     val lastReplyMessage: String get() = attributes?.lastReplyMessage ?: ""
     val thumbnail: String get() = attributes?.contact?.thumbnail ?: ""
     val name: String get() = attributes?.contact?.contactName ?: ""
+    val id: String get() = attributes?.contact?.contactId ?: ""
     val isPinned: Boolean get() = attributes?.pinStatus == 1
     val totalUnread: String get() = attributes?.unreadReply?.toString() ?: ""
     var isActive: Boolean = false

@@ -9,6 +9,9 @@ object DigitalTrackingConst {
     object Event {
         const val ADD_TO_CART = "addToCart"
         const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
+        const val CLICK_DIGITAL = "clickDigital"
+        const val SELECT_CONTENT = "select_content"
+        const val VIEW_ITEM = "view_item"
     }
 
     object Category {
@@ -20,6 +23,9 @@ object DigitalTrackingConst {
     object Action {
         const val CLICK_BELI = "click beli"
         const val VIEW_PDP_PAGE = "view pdp page"
+        const val CLOSE_COACHMARK = "click close coachmark"
+        const val CLICK_BAYAR_LAINNYA = "click bayar lainnya"
+        const val IMPRESS_MULTI_BUTTON = "impression multicheckout button"
     }
 
     object Label {
@@ -61,5 +67,24 @@ object DigitalTrackingConst {
 
     object Other {
         const val KEY_TRACKER_ID = "trackerId"
+    }
+
+    object Id {
+        const val IMPRESS_MULTI_CHECKOUT = "47590"
+        const val CLOSE_COACHMARK_ID = "47591"
+        const val CLICK_MULTICHECKOUT_BUTTON = "47592"
+    }
+
+    object Promotion {
+        const val CREATIVE_NAME = "creative_name"
+        const val CREATIVE_SLOT = "creative_slot"
+        const val ITEM_ID = "item_id"
+        const val ITEM_NAME = "item_name"
+        const val PROMOTION = "promotions"
+    }
+
+    object PatternString {
+        const val TWO_STRING_PATTERN = "%s_%s"
+        const val THREE_STRING_PATTERN = "%s - %s - %s"
     }
 }

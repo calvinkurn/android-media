@@ -15,6 +15,7 @@ import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Rule
@@ -204,5 +205,31 @@ class PlayViewModelCreatePageTest {
         }
 
         coVerify { repo.getCountComment(any()) }
+    }
+
+    @Test
+    fun `check is logged in vm is returning expected` () {
+        val channelData = channelDataBuilder.buildChannelData(
+            channelDetail = channelInfoBuilder.buildChannelDetail(
+                channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.VOD),
+                commentUiModel = channelInfoBuilder.buildCommentConfig()
+            )
+        )
+
+        val repo: PlayViewerRepository = mockk(relaxed = true)
+        every { repo.getChannelData(any()) } returns channelData
+
+        val robot = createPlayViewModelRobot(
+            repo = repo
+        )
+
+        val expected = false
+
+        robot.use {
+            it.createPage(channelData)
+            it.focusPage(channelData)
+            it.setLoggedIn(expected)
+            it.viewModel.isLoggedIn.assertFalse()
+        }
     }
 }

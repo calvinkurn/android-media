@@ -43,6 +43,20 @@ object CommonTopupBillsGqlQuery {
                 rule
                 title
               }
+              items{
+                name
+                text
+                style
+                placeholder
+                help
+                color
+                coachmark
+                validations {
+                    rule
+                    title
+                    message
+                }
+              }
             }
           }
         }
@@ -159,6 +173,13 @@ object CommonTopupBillsGqlQuery {
             }
             express_checkout
             menu_label
+            buttons {
+              text
+              color
+              coachmark
+              position
+              type
+            }
           }
         }
     """.trimIndent()
@@ -297,53 +318,4 @@ object CommonTopupBillsGqlQuery {
           }
         }
     """.trimIndent()
-
-
-    val ADD_BILL_QUERY by lazy {
-        """
-    mutation rechargeSBMAddBill(${'$'}addRequest: RechargeSBMAddBillRequest!) {
-        rechargeSBMAddBill(addRequest: ${'$'}addRequest) {
-            ErrorMessage
-            Message
-            bill: Bill {
-            flag: Flag
-            index: Index
-            UUID
-            productID: ProductID
-            productName: ProductName
-            categoryID: CategoryID
-            categoryName: CategoryName
-            operatorID:OperatorID
-            operatorName: OperatorName
-            clientNumber: ClientNumber
-            amount: Amount
-            amountText: AmountText
-            iconURL: IconURL
-            newBillLabel: NewBillLabel{
-            isNewBill: IsNewBill
-            text: Text
-        }
-            date: Date
-            dateText: DateText
-            disabled: Disabled
-            disabledText: DisabledText
-            checkoutFields: CheckoutFields {
-            name: Name
-            value: Value
-        }
-            billName: BillName
-            isChecked: IsChecked
-            DueDate
-            DueMessage{
-                Type
-                Text
-            }
-            DueDateLabel{
-                Type
-                Text
-            }
-        }
-        }
-    }""".trimIndent()
-    }
 }

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.home.beranda.data.balance.HomeHeaderUseCase
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
@@ -14,6 +15,8 @@ import com.tokopedia.home.beranda.data.model.GetHomeBalanceWidgetData
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
+import com.tokopedia.home.beranda.data.newatf.AtfMapper
+import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.di.module.query.AtfQuery
 import com.tokopedia.home.beranda.di.module.query.BusinessUnitDataQuery
@@ -30,17 +33,14 @@ import com.tokopedia.home.beranda.di.module.query.TokopoinstListQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.gql.feed.GetHomeRecommendationContent
-import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationV2UseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetRecommendationTabUseCase
-import com.tokopedia.home.beranda.domain.interactor.HomeRecommendationFeedUseCase
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeAtfRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitDataRepository
@@ -72,6 +72,7 @@ import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
+import com.tokopedia.home.beranda.helper.DeviceScreenHelper
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
@@ -138,7 +139,10 @@ class HomeUseCaseModule {
         homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
         userSession: UserSessionInterface,
         homeMissionWidgetRepository: HomeMissionWidgetRepository,
-        homeTodoWidgetRepository: HomeTodoWidgetRepository
+        homeTodoWidgetRepository: HomeTodoWidgetRepository,
+        homeAtfUseCase: HomeAtfUseCase,
+        homeHeaderUseCase: HomeHeaderUseCase,
+        atfMapper: AtfMapper
     ) = HomeDynamicChannelUseCase(
         homeDataMapper = homeDataMapper,
         bestSellerRevampMapper = bestSellerRevampMapper,
@@ -167,27 +171,21 @@ class HomeUseCaseModule {
         homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
         userSessionInterface = userSession,
         homeMissionWidgetRepository = homeMissionWidgetRepository,
-        homeTodoWidgetRepository = homeTodoWidgetRepository
+        homeTodoWidgetRepository = homeTodoWidgetRepository,
+        homeAtfUseCase = homeAtfUseCase,
+        homeHeaderUseCase = homeHeaderUseCase,
+        atfMapper = atfMapper,
     )
 
     @Provides
     fun provideGetHomeRecommendationUseCase(
         graphqlRepository: GraphqlRepository,
-        homeRecommendationMapper: HomeRecommendationMapper,
-        remoteConfig: RemoteConfig
-    ): HomeRecommendationFeedUseCase {
-        val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
-        return if (isUsingV2) {
-            GetHomeRecommendationV2UseCase(
-                com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<GetHomeRecommendationContent>(graphqlRepository),
-                homeRecommendationMapper
-            )
-        } else {
-            GetHomeRecommendationUseCase(
-                com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedContentGqlResponse>(graphqlRepository),
-                homeRecommendationMapper
-            )
-        }
+        homeRecommendationMapper: HomeRecommendationMapper
+    ): GetHomeRecommendationUseCase {
+        return GetHomeRecommendationUseCase(
+            com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<GetHomeRecommendationContent>(graphqlRepository),
+            homeRecommendationMapper
+        )
     }
 
     @Provides
@@ -216,10 +214,10 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetHomeBalanceWidgetUseCase(graphqlRepository: GraphqlRepository): GetHomeBalanceWidgetUseCase {
+    fun provideGetHomeBalanceWidgetUseCase(graphqlRepository: GraphqlRepository, deviceScreenHelper: DeviceScreenHelper): GetHomeBalanceWidgetUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<GetHomeBalanceWidgetData>(graphqlRepository)
         useCase.setGraphqlQuery(GetHomeBalanceWidgetQuery())
-        return GetHomeBalanceWidgetUseCase(useCase)
+        return GetHomeBalanceWidgetUseCase(useCase, deviceScreenHelper)
     }
 
     @HomeScope
@@ -256,8 +254,7 @@ class HomeUseCaseModule {
     @Provides
     fun getRecommendationTabUseCase(graphqlRepository: GraphqlRepository, remoteConfig: RemoteConfig): GetRecommendationTabUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedTabGqlResponse>(graphqlRepository)
-        val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
-        return GetRecommendationTabUseCase(useCase, isUsingV2)
+        return GetRecommendationTabUseCase(useCase)
     }
 
     @Provides
@@ -322,10 +319,14 @@ class HomeUseCaseModule {
 
     @HomeScope
     @Provides
-    fun provideGetHomeAtfUseCase(graphqlRepository: GraphqlRepository, homeRoomDataSource: HomeRoomDataSource): HomeAtfRepository {
+    fun provideGetHomeAtfUseCase(
+        graphqlRepository: GraphqlRepository,
+        homeRoomDataSource: HomeRoomDataSource,
+        deviceScreenHelper: DeviceScreenHelper
+    ): HomeAtfRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeAtfData>(graphqlRepository)
         useCase.setGraphqlQuery(AtfQuery())
-        return HomeAtfRepository(useCase, homeRoomDataSource)
+        return HomeAtfRepository(useCase, homeRoomDataSource, deviceScreenHelper)
     }
 
     @Provides
@@ -369,4 +370,27 @@ class HomeUseCaseModule {
     fun provideTopAdsHeadlineUseCase(graphqlRepository: GraphqlRepository): GetTopAdsHeadlineUseCase {
         return GetTopAdsHeadlineUseCase(graphqlRepository)
     }
+
+//    @Provides
+//    @HomeScope
+//    fun provideDynamicPositionRepository(
+//        atfDao: AtfDao,
+//        atfDataRepository: HomeAtfRepository,
+//        homeRoomDataSource: HomeRoomDataSource,
+//    ) = DynamicPositionRepository(atfDao, atfDataRepository, homeRoomDataSource)
+//
+//    @Provides
+//    @HomeScope
+//    fun provideBannerRepository(
+//        homePageBannerRepository: HomePageBannerRepository,
+//        homeChooseAddressRepository: HomeChooseAddressRepository,
+//        atfDao: AtfDao,
+//    ) = BannerRepository(homePageBannerRepository, homeChooseAddressRepository, atfDao)
+//
+//    @Provides
+//    @HomeScope
+//    fun provideAtfRepository(
+//        dynamicPositionRepository: DynamicPositionRepository,
+//        bannerRepository: BannerRepository,
+//    ) = AtfRepository(dynamicPositionRepository, bannerRepository)
 }

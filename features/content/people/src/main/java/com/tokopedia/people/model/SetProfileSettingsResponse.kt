@@ -7,11 +7,11 @@ import com.google.gson.annotations.SerializedName
  */
 data class SetProfileSettingsResponse(
     @SerializedName("feedXProfileSetProfileSettings")
-    val data: Data
+    val data: Data = Data()
 ) {
 
     data class Data(
         @SerializedName("success")
-        val success: Boolean,
+        val success: Boolean = false,
     )
 }

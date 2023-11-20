@@ -1,7 +1,6 @@
 package com.tokopedia.media.picker.ui.activity.picker
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.media.picker.data.FeatureToggleManager
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.mapper.toModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
@@ -45,7 +44,6 @@ class PickerViewModelTest {
     private val deviceInfoRepository = mockk<DeviceInfoRepository>()
     private val mediaRepository = mockk<MediaFileRepository>()
     private val paramCacheManager = mockk<PickerCacheManager>()
-    private val featureToggleManager = mockk<FeatureToggleManager>()
     private val networkStateManager = mockk<NetworkStateManager>()
     private val resourcesManager = mockk<ResourceManager>()
 
@@ -67,7 +65,6 @@ class PickerViewModelTest {
             mediaRepository,
             bitmapConverterRepository,
             paramCacheManager,
-            featureToggleManager,
             networkStateManager,
             resourcesManager,
             coroutineScopeRule.dispatchers,
@@ -298,40 +295,6 @@ class PickerViewModelTest {
         // Given
         val param = PickerParam()
 
-        every { paramCacheManager.set(any()) } returns param
-
-        // When
-        viewModel.setPickerParam(param)
-
-        // Then
-        assert(viewModel.pickerParam.value != null)
-    }
-
-    @Test
-    fun `it should be able to apply the picker param and remove the editor`() {
-        // Given
-        val param = PickerParam().apply {
-            withEditor { /* no-op */ }
-        }
-
-        every { featureToggleManager.isEditorEnabled() } returns false
-        every { paramCacheManager.set(any()) } returns param
-
-        // When
-        viewModel.setPickerParam(param)
-
-        // Then
-        assert(viewModel.pickerParam.value != null)
-    }
-
-    @Test
-    fun `it should be able to apply the picker param and add the editor`() {
-        // Given
-        val param = PickerParam().apply {
-            withEditor { /* no-op */ }
-        }
-
-        every { featureToggleManager.isEditorEnabled() } returns true
         every { paramCacheManager.set(any()) } returns param
 
         // When

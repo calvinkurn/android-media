@@ -76,6 +76,25 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/profileInfoImageSubtitle" />
 
+            <include
+                android:id="@+id/item_profile_management"
+                layout="@layout/item_profile_management"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fragmentInfoDivider1"/>
+
+
+            <View
+                android:id="@+id/fragmentInfoDivider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/item_profile_management" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:id="@+id/fragmentProfileInfoRv"
@@ -83,7 +102,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragmentInfoDivider1" />
+                app:layout_constraintTop_toBottomOf="@id/fragmentInfoDivider2" />
 
             <View
                 android:id="@+id/divider_close_account"

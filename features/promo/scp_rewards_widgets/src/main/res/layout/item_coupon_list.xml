@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.scp_rewards_widgets.coupon_section.CouponViewCard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_coupon_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_16"
+    android:theme="@style/Theme.MaterialComponents.Light" />
+

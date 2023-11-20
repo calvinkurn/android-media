@@ -20,17 +20,17 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
         private const val PRINT_JOB_NAME = "Shipping Label"
 
         private val MEDIA_SIZES = mapOf<String, PrintAttributes.MediaSize>(
-                "ISO_A0" to PrintAttributes.MediaSize.ISO_A0,
-                "ISO_A1" to PrintAttributes.MediaSize.ISO_A1,
-                "ISO_A2" to PrintAttributes.MediaSize.ISO_A2,
-                "ISO_A3" to PrintAttributes.MediaSize.ISO_A3,
-                "ISO_A4" to PrintAttributes.MediaSize.ISO_A4,
-                "ISO_A5" to PrintAttributes.MediaSize.ISO_A5,
-                "ISO_A6" to PrintAttributes.MediaSize.ISO_A6,
-                "ISO_A7" to PrintAttributes.MediaSize.ISO_A7,
-                "ISO_A8" to PrintAttributes.MediaSize.ISO_A8,
-                "ISO_A9" to PrintAttributes.MediaSize.ISO_A9,
-                "ISO_A10" to PrintAttributes.MediaSize.ISO_A10
+            "ISO_A0" to PrintAttributes.MediaSize.ISO_A0,
+            "ISO_A1" to PrintAttributes.MediaSize.ISO_A1,
+            "ISO_A2" to PrintAttributes.MediaSize.ISO_A2,
+            "ISO_A3" to PrintAttributes.MediaSize.ISO_A3,
+            "ISO_A4" to PrintAttributes.MediaSize.ISO_A4,
+            "ISO_A5" to PrintAttributes.MediaSize.ISO_A5,
+            "ISO_A6" to PrintAttributes.MediaSize.ISO_A6,
+            "ISO_A7" to PrintAttributes.MediaSize.ISO_A7,
+            "ISO_A8" to PrintAttributes.MediaSize.ISO_A8,
+            "ISO_A9" to PrintAttributes.MediaSize.ISO_A9,
+            "ISO_A10" to PrintAttributes.MediaSize.ISO_A10
         )
     }
 
@@ -49,6 +49,7 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
             it.addJavascriptInterface(SomPrintAwbJavascriptInterface(), JAVASCRIPT_INTERFACE_NAME)
             it.settings.builtInZoomControls = true
             it.settings.loadWithOverviewMode = true
+            it.settings.textZoom = 100
             webView = it
         }
     }
@@ -59,7 +60,9 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
                 if (printJob == null || printJob?.isCompleted == true || printJob?.isFailed == true || printJob?.isCancelled == true) {
                     webView?.run {
                         val printManager = ContextCompat.getSystemService(
-                            context, PrintManager::class.java)
+                            context,
+                            PrintManager::class.java
+                        )
                         val printAdapter = createPrintDocumentAdapter(PRINT_JOB_NAME)
                         val builder = PrintAttributes.Builder()
                         if (mediaSizeId.isNotEmpty()) {
@@ -69,7 +72,10 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
                         }
                         if (!isFinishing) {
                             printJob = printManager?.print(
-                                PRINT_JOB_NAME, printAdapter, builder.build())
+                                PRINT_JOB_NAME,
+                                printAdapter,
+                                builder.build()
+                            )
                         }
                     }
                 }

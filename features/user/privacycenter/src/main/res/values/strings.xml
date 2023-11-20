@@ -8,25 +8,6 @@
     <string name="privacy_center_error_network_title">Koneksi internetmu terganggu</string>
     <string name="privacy_center_error_network_detail">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu.</string>
 
-    <!--Section | account linking-->
-    <string name="account_linking_partner_gojek">Gojek</string>
-    <string name="account_linking_title">Akun tersambung</string>
-    <string name="account_linking_subtitle">Atur aplikasi yang tersambung ke Tokopedia</string>
-    <string name="account_linking_text_detail_unlinked">Sambungin Akun</string>
-    <string name="account_linking_label_account_linked">+%1$s - Tersambung %2$s</string>
-    <string name="account_linking_label_account_unlinked">Belum tersambung</string>
-    <string name="account_linking_subtitle_failed">Klik ikon di samping buat coba lagi.</string>
-    <string name="account_linking_skip_for_now">Lewatin Dulu</string>
-
-    <!--Account Linking Webview-->
-    <string name="account_linking_label_link_account_menu_skip">Lewati</string>
-    <string name="account_linking_label_toolbar_verifikasi_akun">Verifikasi Akun</string>
-    <string name="account_linking_label_toolbar_aktifasi_gopay">\u0020\u0020\u0020Aktifin GoPay</string>
-    <string name="account_linking_title_skip_gopay_dialog">Aktifin GoPay lain kali?</string>
-    <string name="account_linking_desc_skip_gopay_dialog">Tenang aja, akun Tokopedia &amp; Gojek kamu tetap kesambung. Kamu bisa aktifin GoPay belakangan.</string>
-    <string name="account_linking_label_primary_btn_gopay_dialog">Iya, Nanti Aja</string>
-    <string name="account_linking_label_secondary_btn_gopay_dialog">Kembali</string>
-
     <!--Section | Consent Withdrawal -->
     <string name="consent_withdrawal_section_title">Persetujuan kamu</string>
     <string name="consent_withdrawal_section_description">Atur fitur apa aja yang boleh akses datamu</string>

@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HomeNavItemSellerBinding
@@ -45,11 +44,9 @@ class SellerViewHolder(
         }
 
         if (profileSeller.hasShop) {
-            TrackingProfileSection.onClickShopAndAffiliate(TrackingProfileSection.CLICK_SHOP_ACCOUNT)
-            RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
+            mainNavListener.onProfileSectionClicked(TrackingProfileSection.CLICK_SHOP_ACCOUNT, ApplinkConstInternalSellerapp.SELLER_MENU)
         } else {
-            TrackingProfileSection.onClickShopAndAffiliate(TrackingProfileSection.CLICK_OPEN_SHOP)
-            RouteManager.route(context, ApplinkConst.CREATE_SHOP)
+            mainNavListener.onProfileSectionClicked(TrackingProfileSection.CLICK_SHOP_ACCOUNT, ApplinkConst.CREATE_SHOP)
         }
     }
 

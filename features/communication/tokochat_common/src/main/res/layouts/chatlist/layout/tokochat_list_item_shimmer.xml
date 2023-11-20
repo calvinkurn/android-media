@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:paddingTop="14dp"
+    android:paddingBottom="14dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/tokochat_list_shimmer_image"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:loader_type="circle" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/tokochat_list_shimmer_name"
+        android:layout_width="75dp"
+        android:layout_height="9dp"
+        app:layout_constraintLeft_toRightOf="@id/tokochat_list_shimmer_image"
+        app:layout_constraintBottom_toTopOf="@id/tokochat_list_barrier_shimmer"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="4dp"
+        app:loader_type="line" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/tokochat_list_shimmer_message"
+        android:layout_width="141dp"
+        android:layout_height="9dp"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_list_barrier_shimmer"
+        app:layout_constraintLeft_toRightOf="@id/tokochat_list_shimmer_image"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="12dp"
+        app:loader_type="line" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/tokochat_list_barrier_shimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

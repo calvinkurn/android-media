@@ -23,6 +23,7 @@
     <dimen name="dp_64">64dp</dimen>
     <dimen name="dp_82">82dp</dimen>
     <dimen name="sp_8">8sp</dimen>
+    <dimen name="dp_1">1dp</dimen>
     <dimen name="sp_16">16sp</dimen>
     <dimen name="width_product_empty_state_buyer">133dp</dimen>
     <dimen name="play_sgc_btn_start_live_width">120dp</dimen>
@@ -33,4 +34,6 @@
     <dimen name="header_button_shop_note_height">24dp</dimen>
     <dimen name="header_button_margin_left">4dp</dimen>
     <dimen name="shop_carousel_height">0dp</dimen>
+    <dimen name="voucher_slider_widget_item_width">350dp</dimen>
+    <dimen name="voucher_slider_widget_item_spacing">4dp</dimen>
 </resources>

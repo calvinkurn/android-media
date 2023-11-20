@@ -15,4 +15,6 @@
     <color name="initial_state_clear_all">@color/Unify_RN500</color>
     <color name="initial_state_refresh">@color/Unify_GN500</color>
 
+    <color name="autocomplete_component_dms_search_education">@color/Unify_NN0</color>
+
 </resources>

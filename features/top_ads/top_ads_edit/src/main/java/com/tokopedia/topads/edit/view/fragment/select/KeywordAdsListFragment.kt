@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.Constants.KEYWORD_CHARACTER_COUNT
@@ -363,11 +362,11 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         val tooltipView =
             layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
                 .apply {
-                    tvToolTipText = this.findViewById(R.id.tooltip_text)
+                    tvToolTipText = this.findViewById(com.tokopedia.topads.common.R.id.tooltip_text)
                     tvToolTipText?.text =
                         getString(com.tokopedia.topads.common.R.string.topads_common_tip_memilih_kata_kunci)
 
-                    imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+                    imgTooltipIcon = this.findViewById(com.tokopedia.topads.common.R.id.tooltip_icon)
                     imgTooltipIcon?.setImageDrawable(AppCompatResources.getDrawable(this.context,
                         com.tokopedia.topads.common.R.drawable.topads_ic_tips))
                 }

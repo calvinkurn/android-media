@@ -10,9 +10,13 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.Attachment
+import com.tokopedia.chat_common.domain.pojo.Chat
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
+import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.chatbot2.data.csatoptionlist.CsatAttributesPojo
@@ -87,6 +91,7 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.universal_sharing.domain.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -144,6 +149,7 @@ class ChatbotViewModelTest {
     private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
     private lateinit var uploaderUseCase: UploaderUseCase
     private lateinit var chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase
+    private lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
     private lateinit var chatbotWebSocket: ChatbotWebSocket
     private lateinit var chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler
     private lateinit var dispatcher: CoroutineDispatchers
@@ -181,6 +187,7 @@ class ChatbotViewModelTest {
         chatbotWebSocketStateHandler = mockk(relaxed = true)
         dispatcher = testRule.dispatchers
         uploaderUseCase = mockk(relaxed = true)
+        extractBranchLinkUseCase = mockk(relaxed = true)
         chatResponse = mockk(relaxed = true)
         chatBotSecureImageUploadUseCase = mockk(relaxed = true)
 
@@ -206,6 +213,7 @@ class ChatbotViewModelTest {
                 chatbotWebSocket,
                 chatbotWebSocketStateHandler,
                 chatBotSecureImageUploadUseCase,
+                extractBranchLinkUseCase,
                 testRule.dispatchers
             )
     }
@@ -1355,6 +1363,17 @@ class ChatbotViewModelTest {
     }
 
     @Test
+    fun `cancelVideoUpload error`() {
+        coEvery {
+            uploaderUseCase.abortUpload("ABC", "123")
+        } throws Exception()
+
+        viewModel.cancelVideoUpload("123", "ABC")
+
+        assertNull(viewModel.mediaUploadJobs.value.get("123"))
+    }
+
+    @Test
     fun `tryUploadMedia success when shouldResetFailedUpload is true`() {
         runBlockingTest {
             val data: Pair<Boolean, List<VideoUploadData>> = Pair(
@@ -1954,6 +1973,7 @@ class ChatbotViewModelTest {
                 any(),
                 any(),
                 any(),
+                any(),
                 any()
             )
         } returns mockk(relaxed = true)
@@ -1964,17 +1984,19 @@ class ChatbotViewModelTest {
                     any(),
                     any(),
                     any(),
+                    any(),
                     any()
                 ),
                 any()
             )
         } just runs
 
-        viewModel.sendActionBubble("", ChatActionBubbleUiModel(), "", "")
+        viewModel.sendActionBubble("", ChatActionBubbleUiModel(), "", "", false)
 
         verify {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendBubbleAction(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -1995,6 +2017,7 @@ class ChatbotViewModelTest {
                 any(),
                 any(),
                 any(),
+                any(),
                 any()
             )
         } returns mockk(relaxed = true)
@@ -2006,17 +2029,19 @@ class ChatbotViewModelTest {
                     any(),
                     any(),
                     any(),
+                    any(),
                     any()
                 ),
                 any()
             )
         } just runs
 
-        viewModel.sendQuickReplyInvoice("123", QuickReplyUiModel("", "", ""), "", "", "", "")
+        viewModel.sendQuickReplyInvoice("123", QuickReplyUiModel("", "", ""), "", "", "", "", false)
 
         verify {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendQuickReplyEventArticle(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -2037,6 +2062,7 @@ class ChatbotViewModelTest {
                 any(),
                 any(),
                 any(),
+                any(),
                 any()
             )
         } returns mockk(relaxed = true)
@@ -2047,17 +2073,19 @@ class ChatbotViewModelTest {
                     any(),
                     any(),
                     any(),
+                    any(),
                     any()
                 ),
                 any()
             )
         } just runs
 
-        viewModel.sendQuickReply("123", QuickReplyUiModel("", "", ""), "", "")
+        viewModel.sendQuickReply("123", QuickReplyUiModel("", "", ""), "", "", false)
 
         verify {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendQuickReply(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -2330,6 +2358,52 @@ class ChatbotViewModelTest {
                 ChatbotSendableWebSocketParam.generateParamDynamicAttachment108(
                     any(),
                     any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        }
+    }
+
+    @Test
+    fun `sendDynamicAttachment108ForAcknowledgement success`() {
+        mockkObject(ChatbotSendableWebSocketParam)
+
+        every {
+            ChatbotSendableWebSocketParam.generateParamDynamicAttachment108ForAcknowledgement(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        every {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachment108ForAcknowledgement(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        } just runs
+
+        viewModel.sendDynamicAttachment108ForAcknowledgement("", "", QuickReplyUiModel("", "", ""), "", 0, false)
+
+        verify {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachment108ForAcknowledgement(
                     any(),
                     any(),
                     any(),
@@ -3154,6 +3228,26 @@ class ChatbotViewModelTest {
         verify { ticketListContactUsUsecase.cancelJobs() }
     }
 
+    @Test
+    fun extractBranchLinkTest() {
+        coEvery { extractBranchLinkUseCase.invoke(any()).android_deeplink } returns "tokopedia://home"
+        viewModel.extractBranchLink("")
+        assertNotNull(viewModel.applink.value)
+    }
+
+    @Test
+    fun extractBranchLinkExceptionTest() {
+        val exception = java.lang.Exception("Validate Data Exception")
+
+        coEvery { extractBranchLinkUseCase.invoke(any()).android_deeplink } throws exception
+        viewModel.extractBranchLink("")
+
+        assertNotNull(viewModel.applink.value)
+        viewModel.applink.value?.let {
+            assertTrue(it.isEmpty())
+        }
+    }
+
     private fun generateChatUiModelWithVideo(video: String, totalLength: Long): VideoUploadUiModel {
         return VideoUploadUiModel.Builder().withMsgId("123")
             .withFromUid("456")
@@ -3165,5 +3259,62 @@ class ChatbotViewModelTest {
             .withIsDummy(true)
             .withLength(totalLength)
             .build()
+    }
+
+    @Test
+    fun `WHEN existing chat has dynamic attachment 110 THEN new chatbot session state should true`() {
+        // GIVEN
+        val data = GetExistingChatPojo(
+            chatReplies = ChatReplies(
+                list = listOf(
+                    ChatRepliesItem(
+                        chats = listOf(
+                            Chat(
+                                replies = listOf(
+                                    Reply(
+                                        attachment = Attachment(
+                                            type = 34,
+                                            attributes = """
+                                                {
+                                                    "dynamic_attachment": {
+                                                        "attribute": {
+                                                            "content_code": 110,
+                                                            "dynamic_content": "{\"is_new_chatbot_session\": true }"
+                                                        }
+                                                    }
+                                                }
+                                            """.trimIndent()
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        // WHEN
+        viewModel.checkForAttachmentDirectActionFromExistingChat(data)
+
+        // THEN
+        assert(viewModel.dynamicAttachmentNewChatbotSession.value == true)
+    }
+
+    @Test
+    fun `WHEN websocket chat has dynamic attachment 110 THEN new chatbot session state should true`() {
+        // GIVEN
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_110_NEW_CHATBOT_SESSION)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        // WHEN
+        viewModel.handleDynamicAttachment34(chatResponse)
+
+        // THEN
+        assert(viewModel.dynamicAttachmentNewChatbotSession.value == true)
     }
 }

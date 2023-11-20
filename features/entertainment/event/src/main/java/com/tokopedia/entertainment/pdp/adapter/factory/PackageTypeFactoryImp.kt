@@ -8,12 +8,9 @@ import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTicketBannerVi
 import com.tokopedia.entertainment.pdp.adapter.viewholder.PackageParentViewHolder
 import com.tokopedia.entertainment.pdp.data.EventPDPTicketBanner
 import com.tokopedia.entertainment.pdp.data.EventPDPTicketGroup
-import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
-import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 
-class PackageTypeFactoryImpl(private val onBindItemTicketListener: OnBindItemTicketListener,
-                            private val onCoachmarkListener: OnCoachmarkListener): BaseAdapterTypeFactory(), PackageTypeFactory {
+class PackageTypeFactoryImpl(private val onBindItemTicketListener: OnBindItemTicketListener ): BaseAdapterTypeFactory(), PackageTypeFactory {
     
 
     override fun type(dataModel: EventPDPTicketGroup): Int {
@@ -26,7 +23,7 @@ class PackageTypeFactoryImpl(private val onBindItemTicketListener: OnBindItemTic
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
-            PackageParentViewHolder.LAYOUT -> PackageParentViewHolder(view, onBindItemTicketListener, onCoachmarkListener)
+            PackageParentViewHolder.LAYOUT -> PackageParentViewHolder(view, onBindItemTicketListener)
             EventPDPTicketBannerViewHolder.LAYOUT -> EventPDPTicketBannerViewHolder(view)
             else -> super.createViewHolder(view, type)
         }

@@ -8,5 +8,7 @@ data class UserDataResponse(
     @SerializedName("password")
     val password: String?,
     @SerializedName("tribe")
-    val tribe: String? = null
+    val tribe: String? = null,
+    @SerializedName("id")
+    val id: Long? = 0
 )

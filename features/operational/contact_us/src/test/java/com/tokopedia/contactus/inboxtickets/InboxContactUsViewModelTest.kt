@@ -17,7 +17,6 @@ import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
@@ -32,7 +31,7 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class InboxContactUsViewModelTest {
 
-    var chipTopUsecase: ChipTopBotStatusUseCase =  mockk(relaxed = true)
+    var chipTopUsecase: ChipTopBotStatusUseCase = mockk(relaxed = true)
 
     var getTicketUsecase: GetTicketListUseCase = mockk(relaxed = true)
 
@@ -425,6 +424,44 @@ class InboxContactUsViewModelTest {
     }
 
     @Test
+    fun `check getItemTicketOnPositionMoreThanSize shouldReturnNull`() {
+        runBlockingTest {
+            val listResponse = createListTicketHasNextAndPref(true)
+            val optionsSelected = listOf(
+                InboxFilterSelection(ALL, "All", false),
+                InboxFilterSelection(IN_PROGRESS, "In Progress", false),
+                InboxFilterSelection(NEED_RATING, "Rating", false),
+                InboxFilterSelection(CLOSED, "Closed", true)
+            )
+            viewModel.setOptionsFilter(optionsSelected)
+            coEvery { getTicketUsecase.invoke(any()) } returns listResponse
+            viewModel.getTicketItems()
+
+            val ticketItem = viewModel.getItemTicketOnPosition(10)
+            assertEquals(null, ticketItem)
+        }
+    }
+
+    @Test
+    fun `check getItemTicketOnNegativePosition shouldReturnNull`() {
+        runBlockingTest {
+            val listResponse = createListTicketHasNextAndPref(true)
+            val optionsSelected = listOf(
+                InboxFilterSelection(ALL, "All", false),
+                InboxFilterSelection(IN_PROGRESS, "In Progress", false),
+                InboxFilterSelection(NEED_RATING, "Rating", false),
+                InboxFilterSelection(CLOSED, "Closed", true)
+            )
+            viewModel.setOptionsFilter(optionsSelected)
+            coEvery { getTicketUsecase.invoke(any()) } returns listResponse
+            viewModel.getTicketItems()
+
+            val ticketItem = viewModel.getItemTicketOnPosition(-1)
+            assertEquals(null, ticketItem)
+        }
+    }
+
+    @Test
     fun `check restart paging`() {
         viewModel.restartPageOfList()
         val stateData = viewModel.uiState.value
@@ -450,7 +487,7 @@ class InboxContactUsViewModelTest {
                     welcomeMessage = welcomeMessage,
                     isChatbotActive = isChatbotActive
                 ),
-                    messageError= messageError
+                messageError = messageError
             )
         )
     }

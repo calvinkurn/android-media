@@ -99,7 +99,7 @@
     <string name="review_create_neutral_title">Apa yang harus diperbaiki?</string>
     <string name="review_create_positive_title">Apa yang kamu suka?</string>
     <string name="review_create_best_title">Apa yang bikin kamu puas?</string>
-    <string name="review_create_add_picture_title">Fotoin dong barangnya</string>
+    <string name="review_create_add_picture_title">Kasih foto atau video barang</string>
     <string name="review_create_hide_name">Sembunyikan namamu</string>
     <string name="review_create_text_area_placeholder">Ceritakan pengalamanmu terkait barang ini.</string>
     <string name="review_create_empty_photo">Tambah foto</string>
@@ -118,12 +118,6 @@
     <string name="review_form_progress_bar_bad_need_bad_rating_reason">Pilih dulu alasanmu, yuk</string>
     <string name="review_form_add_photo">Kasih liat foto barang</string>
     <string name="review_form_add_media">Kasih liat foto atau video barang</string>
-    <string name="review_form_send_rating_only_dialog_title">Mau coba kasih rating dulu?</string>
-    <string name="review_form_send_rating_only_body">Selama 30 hari ke depan, kamu bisa ubah &amp; lengkapi ulasanmu di halaman Riwayat.</string>
-    <string name="review_form_send_rating_only_exit">Keluar Halaman</string>
-    <string name="review_form_send_rating_only">Kasih Rating</string>
-    <string name="review_form_dismiss_form_dialog_title">Ulasanmu belum dikirim, lho</string>
-    <string name="review_form_dismiss_form_dialog_body">Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini. Yakin tetap mau keluar?</string>
     <string name="review_form_dismiss_form_dialog_stay">Lanjutkan Ulasan</string>
     <string name="review_form_neutral_title">Apa yang bikin kamu kurang puas?</string>
     <string name="review_form_bad_title">Apa yang bikin kamu tidak puas?</string>
@@ -194,6 +188,7 @@
     <string name="review_edit_dialog_exit">Keluar</string>
     <string name="review_edit_fail">Ulasan tidak tersimpan. Cek koneksi internetmu dan coba lagi, ya</string>
     <string name="review_edit_blank_error">Oops, tulis dulu komentarmu terkait barang ini atau pelayanan toko.</string>
+    <string name="review_edit_cannot_change_rating">Oops, kamu tidak bisa ubah rating karena sudah 2x diubah atau lewat 30 hari sejak dikirim.</string>
 
     <string name="review_seller_tab_title">Ulasan Pembeli</string>
 
@@ -222,7 +217,6 @@
     <string name="already_favorite">\u2713</string>
     <string name="seller">Penjual</string>
     <string name="filter_time">Waktu</string>
-    <string name="filter_all_time">Semua Waktu</string>
     <string name="filter_last_7_days">7 Hari Terakhir</string>
     <string name="filter_this_month">Bulan Ini</string>
     <string name="filter_last_3_month">3 Bulan Terakhir</string>

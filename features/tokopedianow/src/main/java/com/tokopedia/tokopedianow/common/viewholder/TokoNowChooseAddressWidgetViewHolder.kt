@@ -15,9 +15,9 @@ import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowChooseAddressWidgetBinding
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
-import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE_TRACKING
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoNowChooseAddressWidgetViewHolder(
         itemView: View,
@@ -38,12 +38,20 @@ class TokoNowChooseAddressWidgetViewHolder(
 
     override fun bind(element: TokoNowChooseAddressWidgetUiModel) {
         setupChooseAddressWidget(element)
+        chooseAddressWidget?.updateWidget()
     }
 
-    private fun bindChooseAddressWidget() {
+    override fun bind(element: TokoNowChooseAddressWidgetUiModel?, payloads: MutableList<Any>) {
+        if(payloads.firstOrNull() == true) {
+            chooseAddressWidget?.updateWidget()
+        }
+    }
+
+    private fun bindChooseAddressWidget(element: TokoNowChooseAddressWidgetUiModel) {
         tokoNowView?.getFragmentPage()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
+                    chooseAddressWidget?.updateWidget()
                     tokoNowView.refreshLayoutPage()
                 }
 
@@ -61,7 +69,9 @@ class TokoNowChooseAddressWidgetViewHolder(
 
                 override fun getLocalizingAddressHostSourceData(): String = SOURCE
 
-                override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE_TRACKING
+                override fun getLocalizingAddressHostSourceTrackingData(): String = element.trackingSource
+
+                override fun getEventLabelHostPage(): String = element.eventLabelHostPage
 
                 override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
 
@@ -72,13 +82,17 @@ class TokoNowChooseAddressWidgetViewHolder(
                 override fun isFromTokonowPage(): Boolean {
                     return true
                 }
+
+                override fun onChangeTextColor(): Int {
+                    return unifyprinciplesR.color.Unify_NN950_96
+                }
             })
         }
     }
 
     private fun setupChooseAddressWidget(element: TokoNowChooseAddressWidgetUiModel) {
         chooseAddressWidget = binding?.chooseAddressWidget
-        bindChooseAddressWidget()
+        bindChooseAddressWidget(element)
         showCoachMark()
         setBackgroundColor(element)
     }

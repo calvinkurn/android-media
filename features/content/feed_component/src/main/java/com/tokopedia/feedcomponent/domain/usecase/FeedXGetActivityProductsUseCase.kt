@@ -8,10 +8,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import javax.inject.Inject
 
 class FeedXGetActivityProductsUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val addressHelper: ChosenAddressRequestHelper,
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<Map<String, Any>, FeedXGQLResponse>(dispatchers.io) {
 
@@ -19,7 +21,7 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
         graphqlRepository.request(
             graphqlQuery(),
             params,
-            GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
+            GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
         )
 
     override fun graphqlQuery(): String = """
@@ -29,6 +31,9 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
                 products {
                     id
                     shopID
+                    isParent
+                    parentID
+                    hasVariant
                     name
                     coverURL
                     webLink
@@ -57,6 +62,7 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
                         id
                         channel
                     }
+                    isStockAvailable
                 }
                 isFollowed
                 contentType
@@ -79,10 +85,12 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
     """.trimIndent()
 
     fun getFeedDetailParam(detailId: String, cursor: String): Map<String, Any> {
+        val whId = addressHelper.getChosenAddress().tokonow.warehouseId
         val queryMap = mapOf(
             PARAM_ACTIVITY_ID to detailId,
             PARAM_CURSOR to cursor,
-            PARAM_LIMIT to LIMIT_DETAIL
+            PARAM_LIMIT to LIMIT_DETAIL,
+            PARAMS_WH_ID to whId
         )
         return mapOf("req" to queryMap)
     }
@@ -92,5 +100,6 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
         private const val PARAM_LIMIT = "limit"
         private const val PARAM_CURSOR = "cursor"
         private const val LIMIT_DETAIL = 99
+        private const val PARAMS_WH_ID = "warehouseID"
     }
 }

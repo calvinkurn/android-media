@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.inbox.pending
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.review.feature.bulkreview.GetBulkReviewRecommendationUseCase
 import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevMarkAsSeenUseCase
 import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevWaitForFeedbackUseCase
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
@@ -26,6 +27,9 @@ abstract class ReviewPendingViewModelTestFixture {
     @RelaxedMockK
     lateinit var markAsSeenUseCase: ProductrevMarkAsSeenUseCase
 
+    @RelaxedMockK
+    lateinit var bulkReviewUseCase: GetBulkReviewRecommendationUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -34,6 +38,6 @@ abstract class ReviewPendingViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ReviewPendingViewModel(CoroutineTestDispatchersProvider, userSession, productrevWaitForFeedbackUseCase, getProductIncentiveOvo, markAsSeenUseCase)
+        viewModel = ReviewPendingViewModel(CoroutineTestDispatchersProvider, userSession, productrevWaitForFeedbackUseCase, getProductIncentiveOvo, markAsSeenUseCase, bulkReviewUseCase)
     }
 }

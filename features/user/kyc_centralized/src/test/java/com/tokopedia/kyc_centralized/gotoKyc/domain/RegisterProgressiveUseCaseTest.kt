@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.gotoKyc.domain
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kyc_centralized.gotoKyc.utils.createSuccessResponse
@@ -27,11 +28,12 @@ class RegisterProgressiveUseCaseTest {
     private lateinit var useCase: RegisterProgressiveUseCase
 
     private val repository = mockk<GraphqlRepository>(relaxed = true)
+    private val context = mockk<Context>(relaxed = true)
     private val dispatcher = CoroutineTestDispatchersProvider
 
     @Before
     fun setup() {
-        useCase = RegisterProgressiveUseCase(repository, dispatcher)
+        useCase = RegisterProgressiveUseCase(repository, context, dispatcher)
     }
 
     @Test
@@ -50,7 +52,7 @@ class RegisterProgressiveUseCaseTest {
 
         val result = useCase(parameter)
         assertTrue(result is RegisterProgressiveResult.Failed)
-        assertEquals(message.joinToString(), result.throwable.message)
+        assertEquals("${message.joinToString()} ", result.throwable.message)
     }
 
     @Test
@@ -98,5 +100,31 @@ class RegisterProgressiveUseCaseTest {
         assertTrue(result is RegisterProgressiveResult.NotRiskyUser)
         assertEquals(status, result.status)
         assertEquals(rejectionReason, result.rejectionReason)
+    }
+
+    @Test
+    fun `get register progressive then return exhausted`() = runBlocking {
+        val parameter = RegisterProgressiveParam()
+        val message = "KYC_CHALLENGE_CREATION_QUOTA_EXCEEDED"
+        val cooldownTimeInSeconds = "3600"
+        val maximumAttemptsAllowed = "3"
+        val response = createSuccessResponse(
+            RegisterProgressiveResponse(
+                RegisterProgressiveKYC(
+                    data = RegisterProgressiveKYCData(
+                        message = message,
+                        cooldownTimeInSeconds = cooldownTimeInSeconds,
+                        maximumAttemptsAllowed = maximumAttemptsAllowed
+                    )
+                )
+            )
+        )
+
+        coEvery { repository.response(any(), any()) } returns response
+
+        val result = useCase(parameter)
+        assertTrue(result is RegisterProgressiveResult.Exhausted)
+        assertEquals(cooldownTimeInSeconds, result.cooldownTimeInSeconds)
+        assertEquals(maximumAttemptsAllowed, result.maximumAttemptsAllowed)
     }
 }

@@ -151,12 +151,4 @@ class SharedEditHeadlineViewModel @Inject constructor(
             it.adOperations.firstOrNull()?.ad?.title = stepperModel.groupName
         }
     }
-
-    fun getStatus(): String {
-        return if (status == "1") {
-            STATUS_PUBLISHED
-        } else {
-            STATUS_INACTIVE
-        }
-    }
 }

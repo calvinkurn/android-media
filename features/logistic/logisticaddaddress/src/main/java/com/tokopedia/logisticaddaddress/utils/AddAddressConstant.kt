@@ -13,5 +13,4 @@ object AddAddressConstant {
     const val IMAGE_OUTSIDE_INDONESIA = TokopediaImageUrl.IMAGE_OUTSIDE_INDONESIA
     const val LOCATION_NOT_FOUND = TokopediaImageUrl.LOCATION_NOT_FOUND
     const val MAPS_EMPTY = TokopediaImageUrl.MAPS_EMPTY
-
 }

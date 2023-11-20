@@ -31,12 +31,39 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:closeButtonVisibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/header"
+                app:tickerShapeType="full"
+                app:tickerType="announcement"
+                tools:visibility="visible" />
+
+            <ViewStub
+                android:id="@+id/layout_recap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inflatedId="@+id/recap_layout"
+                android:layout="@layout/smvc_voucher_detail_recap_section"/>
+
             <ViewStub
                 android:id="@+id/layout_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inflatedId="@+id/header_layout"
                 android:layout="@layout/smvc_voucher_detail_header_section" />
+
+            <ViewStub
+                android:id="@+id/layout_performance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inflatedId="@+id/performance_layout"
+                android:layout="@layout/smvc_voucher_detail_performance_section" />
 
             <ViewStub
                 android:id="@+id/layout_voucher_type"

@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingHorizontal="16dp"
-    android:paddingBottom="8dp">
+    android:layout_height="wrap_content">
 
-    <com.tokopedia.mvcwidget.views.MvcView
-        android:id="@+id/productDetailMerchantVoucherWidget"
-        android:layout_width="match_parent"
+    <ViewStub
+        android:id="@+id/mvc_content_stub"
         android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="true"
-        android:visibility="gone" />
+        android:layout_width="match_parent"
+        android:layout="@layout/item_dynamic_mvc_content" />
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+</FrameLayout>

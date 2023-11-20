@@ -7,7 +7,6 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import javax.inject.Inject
 import com.tokopedia.media.editor.R as editorR
 
@@ -24,22 +23,27 @@ interface AddTextColorProvider{
 }
 
 class AddTextColorProviderImpl @Inject constructor(
-    @ApplicationContext val context: Context
+    val context: Context
 ): AddTextColorProvider {
-    private val black2 = ContextCompat.getColor(context, editorR.color.dms_editor_add_text_black)
-    private val white2 = ContextCompat.getColor(context, editorR.color.dms_editor_add_text_white)
+    private val blackColor = ContextCompat.getColor(context, editorR.color.dms_editor_add_text_black)
+    private val whiteColor = ContextCompat.getColor(context, editorR.color.dms_editor_add_text_white)
 
-    private val blackText2 = context.getString(editorR.string.add_text_color_name_black)
-    private val whiteText2 = context.getString(editorR.string.add_text_color_name_white)
+    // used on UI
+    private val blackColorText = context.getString(editorR.string.add_text_color_name_black)
+    private val whiteColorText = context.getString(editorR.string.add_text_color_name_white)
+
+    // used on tracker
+    private val blackTextIdn = context.getString(editorR.string.add_text_color_name_black_idn)
+    private val whiteTextIdn = context.getString(editorR.string.add_text_color_name_white_idn)
 
     private val listOfTextColor = listOf(
-        black2,
-        white2
+        blackColor,
+        whiteColor
     )
 
     private val listOfTextWithBackgroundColor = mapOf(
-        black2 to blackText2,
-        white2 to whiteText2
+        blackColor to blackColorText,
+        whiteColor to whiteColorText
     )
 
     override fun getListOfTextColor(): List<Int> {
@@ -57,8 +61,8 @@ class AddTextColorProviderImpl @Inject constructor(
     override fun getTextColorOnBackgroundMode(backgroundColor: Int): Int {
         // if background white, text black. vice versa
         return when (backgroundColor) {
-            black2 -> white2
-            else -> black2
+            blackColor -> whiteColor
+            else -> blackColor
         }
     }
 
@@ -72,13 +76,13 @@ class AddTextColorProviderImpl @Inject constructor(
 
     override fun getTextColorName(color: Int): String {
         return when(color){
-            black2 -> blackText2
-            white2 -> whiteText2
+            blackColor -> blackTextIdn
+            whiteColor -> whiteTextIdn
             else -> color.toString()
         }
     }
 
     override fun drawableToWhite(drawable: Drawable) {
-        implementDrawableColor(drawable, white2)
+        implementDrawableColor(drawable, whiteColor)
     }
 }

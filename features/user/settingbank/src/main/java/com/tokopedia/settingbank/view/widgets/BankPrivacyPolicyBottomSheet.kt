@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.settingbank.R
+import com.tokopedia.settingbank.databinding.BottomSheetsPrivacyPolicyBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheets_privacy_policy.*
-
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class BankPrivacyPolicyBottomSheet : BottomSheetUnify() {
 
-
+    private var binding by autoClearedNullable<BottomSheetsPrivacyPolicyBinding>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,31 +20,28 @@ class BankPrivacyPolicyBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         setDefaultParams()
-        initBottomSheet()
+        initBottomSheet(container)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun initBottomSheet() {
+    private fun initBottomSheet(container: ViewGroup?) {
         context?.run {
-            val child = LayoutInflater.from(this)
-                .inflate(R.layout.bottom_sheets_privacy_policy, ConstraintLayout(this), false)
+            binding = BottomSheetsPrivacyPolicyBinding.inflate(LayoutInflater.from(context), container, false)
             setTitle(TITLE)
-            setChild(child)
+            setChild(binding?.root)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        privacyWebview.settings.apply {
+        binding?.privacyWebview?.settings?.apply {
             javaScriptEnabled = true
             domStorageEnabled = true
         }
-        context?.let{
-            privacyWebview.loadUrl(it.getString(R.string.sbank_privacy_url))
+        context?.let {
+            binding?.privacyWebview?.loadUrl(it.getString(R.string.sbank_privacy_url))
         }
-
     }
-
 
     private fun setDefaultParams() {
         isFullpage = true

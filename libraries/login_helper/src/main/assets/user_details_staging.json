@@ -3,35 +3,43 @@
   "users" : [
     {
       "email" : "vesiXn1xTyqsw8NSv7n124UCCDyIrwpENmHO7ojElHhijn08AGRTOSZrPlA1C4wo",
-      "password" : "UNl/ZUaRgZVZoKzzG6G2rQ=="
+      "password" : "UNl/ZUaRgZVZoKzzG6G2rQ==",
+      "tribe": "Chatbot"
     },
     {
       "email" : "jDfDN9bWixfDAxlxkphUqzRkdafJCpcwIKvGAQFKOHOnIkp29bDPrlVA06u8zA2o",
-      "password" : "qiqbLTvjg+7QuOoazoKHpA=="
+      "password" : "qiqbLTvjg+7QuOoazoKHpA==",
+      "tribe": "Chatbot"
     },
     {
       "email" : "bNomIZKoZ3Nxbo72w3BaYO1QAktiA7PhnOT0qmeCyOU=",
-      "password" : "/wPrvZZWD3lLZlVJgOBGOQ=="
+      "password" : "/wPrvZZWD3lLZlVJgOBGOQ==",
+      "tribe": "Chatbot"
     },
     {
       "email" : "Czz+NHZWyobLBvZZwnotvaTxZdf4q6igvldpcgSTR3Y=",
-      "password" : "4huQbW/Usrf4kKnr29AUhA=="
+      "password" : "4huQbW/Usrf4kKnr29AUhA==",
+      "tribe": "Chatbot"
     },
     {
       "email" : "+Ak2AI7kzLDLibJXwucqDHmdafz3PMxxibiuLREa8GrwHSQBmkiXaZa1ZJctM8tD",
-      "password" : "whKNMn33pPJgjVAm2mTj9A=="
+      "password" : "whKNMn33pPJgjVAm2mTj9A==",
+      "tribe": "Fintech"
     },
     {
       "email" : "7I/hGsdzmhNoc8lqb6r2uhrZ3yecgDLbAUdmkaXGSNHTcirIzujC5uKT+Frk+Zis",
-      "password" : "G5qJb0va57imuNVmWgTYBg=="
+      "password" : "G5qJb0va57imuNVmWgTYBg==",
+      "tribe": "All"
     },
     {
       "email" : "cctx06i3nubnsb/HAC3IQV1GO8sEnqJfRMcRYoHI3pg2ii2lYQOUeQbPEFNP96s2",
-      "password" : "8E6GTMiNLIRaNq/Ca5SOBA=="
+      "password" : "8E6GTMiNLIRaNq/Ca5SOBA==",
+      "tribe": "Fintech"
     },
     {
       "email" : "cctx06i3nubnsb/HAC3IQYKq6FMb3wOSP7nn3B9IDfkI4kgxjLHBc8co8rRdA+o4",
-      "password" : "+O8xEPg7f9FHQSqwuRyoOQ=="
+      "password" : "+O8xEPg7f9FHQSqwuRyoOQ==",
+      "tribe": "Fintech"
     }
   ]
 }

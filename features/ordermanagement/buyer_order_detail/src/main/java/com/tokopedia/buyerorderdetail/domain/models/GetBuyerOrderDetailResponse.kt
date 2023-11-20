@@ -45,6 +45,9 @@ data class GetBuyerOrderDetailResponse(
             @SerializedName("order_id")
             val orderId: String = "0",
             @Expose
+            @SerializedName("group_type")
+            val groupType: String = "0",
+            @Expose
             @SerializedName("order_status")
             val orderStatus: OrderStatus = OrderStatus(),
             @Expose
@@ -93,6 +96,7 @@ data class GetBuyerOrderDetailResponse(
             fun getDriverTippingInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.DRIVER_TIPPING_INFO }
             }
+
             fun getPodInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.POD_INFO }
             }
@@ -100,8 +104,22 @@ data class GetBuyerOrderDetailResponse(
             data class BomAdditionalData(
                 @SerializedName("epharmacy_data")
                 @Expose
-                val epharmacyData: EpharmacyData = EpharmacyData()
+                val epharmacyData: EpharmacyData = EpharmacyData(),
+                @SerializedName("group_order_data")
+                val groupOrderData: GroupOrderData? = GroupOrderData()
             ) {
+
+                data class GroupOrderData(
+                    @SerializedName("tx_id")
+                    val txId: String = "0",
+                    @SerializedName("icon_url")
+                    val iconUrl: String = "",
+                    @SerializedName("title")
+                    val title: String = "",
+                    @SerializedName("description")
+                    val description: String = ""
+                )
+
                 data class EpharmacyData(
                     @SerializedName("consultation_date")
                     @Expose
@@ -294,6 +312,7 @@ data class GetBuyerOrderDetailResponse(
                         @SerializedName("value")
                         val value: String = ""
                     )
+
                     data class SummaryInfo(
                         @SerializedName("details")
                         val details: List<Detail> = listOf(),
@@ -479,6 +498,91 @@ data class GetBuyerOrderDetailResponse(
                 )
             }
 
+            data class AddonInfo(
+                @SerializedName("icon_url")
+                @Expose
+                val iconUrl: String = "",
+                @SerializedName("label")
+                @Expose
+                val label: String = "",
+                @SerializedName("order_level")
+                @Expose
+                val orderLevel: OrderLevel? = OrderLevel()
+            ) {
+
+                data class OrderLevel(
+                    @SerializedName("addons")
+                    @Expose
+                    val addons: List<Addon>? = listOf(),
+                    @SerializedName("total")
+                    @Expose
+                    val total: Long = 0,
+                    @SerializedName("total_price")
+                    @Expose
+                    val totalPrice: Double = 0.0,
+                    @SerializedName("total_price_str")
+                    @Expose
+                    val totalPriceStr: String = "",
+                    @SerializedName("total_quantity")
+                    @Expose
+                    val totalQuantity: Int = 0
+                ) {
+                    data class Addon(
+                        @SerializedName("id")
+                        @Expose
+                        val id: String = "0",
+                        @SerializedName("image_url")
+                        @Expose
+                        val imageUrl: String = "",
+                        @SerializedName("metadata")
+                        @Expose
+                        val metadata: Metadata? = Metadata(),
+                        @SerializedName("name")
+                        @Expose
+                        val name: String = "",
+                        @SerializedName("order_id")
+                        @Expose
+                        val orderId: String = "0",
+                        @SerializedName("price_str")
+                        @Expose
+                        val priceStr: String = "",
+                        @SerializedName("price")
+                        @Expose
+                        val price: Double = 0.0,
+                        @SerializedName("quantity")
+                        @Expose
+                        val quantity: Int = 0,
+                        @SerializedName("subtotal_price_str")
+                        @Expose
+                        val subtotalPriceStr: String = "",
+                        @SerializedName("type")
+                        @Expose
+                        val type: String = ""
+                    ) {
+                        data class Metadata(
+                            @SerializedName("add_on_note")
+                            @Expose
+                            val addonNote: AddonNote = AddonNote()
+                        ) {
+                            data class AddonNote(
+                                @SerializedName("notes")
+                                @Expose
+                                val notes: String = "",
+                                @SerializedName("short_notes")
+                                @Expose
+                                val shortNotes: String = "",
+                                @SerializedName("to")
+                                @Expose
+                                val to: String = "",
+                                @SerializedName("from")
+                                @Expose
+                                val from: String = ""
+                            )
+                        }
+                    }
+                }
+            }
+
             data class Details(
                 @SerializedName("bundle_icon")
                 @Expose
@@ -497,12 +601,97 @@ data class GetBuyerOrderDetailResponse(
                 val nonBundles: List<NonBundle>? = listOf(),
                 @SerializedName("partial_fulfillment")
                 val partialFulfillment: PartialFulfillment? = PartialFulfillment(),
+                @SerializedName("bmgm_icon")
+                val bmgmIcon: String = "",
+                @SerializedName("bmgms")
+                val bmgms: List<Bmgm>? = null,
                 @SerializedName("ticker_info")
                 val tickerInfo: TickerInfo = TickerInfo(),
                 @SerializedName("total_products")
                 @Expose
                 val totalProducts: Long = 0
             ) {
+
+                data class Bmgm(
+                    @SerializedName("bmgm_tier_name")
+                    val bmgmTierName: String = "",
+                    @SerializedName("total_price_note")
+                    val totalPriceNote: String = "",
+                    @SerializedName("id")
+                    val id: String = "",
+                    @SerializedName("order_detail")
+                    val orderDetail: List<OrderDetail> = listOf(),
+                    @SerializedName("price_after_benefit")
+                    val priceAfterBenefit: Double = 0.0,
+                    @SerializedName("price_after_benefit_formatted")
+                    val priceAfterBenefitFormatted: String = "",
+                    @SerializedName("price_before_benefit")
+                    val priceBeforeBenefit: Double = 0.0,
+                    @SerializedName("price_before_benefit_formatted")
+                    val priceBeforeBenefitFormatted: String = "",
+                    @SerializedName("tier_discount_amount")
+                    val tierDiscountAmount: Int = 0,
+                    @SerializedName("tier_discount_amount_formatted")
+                    val tierDiscountAmountFormatted: String = ""
+                ) {
+                    data class OrderDetail(
+                        @SerializedName("order_detail_id")
+                        val orderDetailId: String = "0",
+                        @SerializedName("product_id")
+                        val productId: String = "0",
+                        @SerializedName("product_name")
+                        val productName: String = "",
+                        @SerializedName("thumbnail")
+                        val thumbnail: String = "",
+                        @SerializedName("price")
+                        val price: Double = 0.0,
+                        @SerializedName("price_text")
+                        val priceText: String = "",
+                        @SerializedName("quantity")
+                        val quantity: Int = 0,
+                        @SerializedName("total_price")
+                        val totalPrice: Double = 0.0,
+                        @SerializedName("total_price_text")
+                        val totalPriceText: String = "",
+                        @SerializedName("notes")
+                        val notes: String = "",
+                        @SerializedName("button")
+                        val button: Button? = Button(),
+                        @SerializedName("category")
+                        val category: String = "0",
+                        @SerializedName("category_id")
+                        val categoryId: String = "0",
+                        @SerializedName("addon_summary")
+                        val addonSummary: AddonSummary? = AddonSummary()
+                    )
+                }
+
+                data class PartialFulfillment(
+                    @SerializedName("fulfilled")
+                    val fulfilled: Fulfilled = Fulfilled(),
+                    @SerializedName("unfulfilled")
+                    val unfulfilled: Unfulfilled = Unfulfilled()
+                ) {
+                    data class Fulfilled(
+                        @SerializedName("header")
+                        val header: Header = Header()
+                    )
+
+                    data class Unfulfilled(
+                        @SerializedName("details")
+                        val details: List<NonBundle> = listOf(),
+                        @SerializedName("header")
+                        val header: Header = Header()
+                    )
+
+                    data class Header(
+                        @SerializedName("quantity")
+                        val quantity: String = "",
+                        @SerializedName("title")
+                        val title: String = ""
+                    )
+                }
+
                 data class Bundle(
                     @SerializedName("bundle_id")
                     @Expose
@@ -643,171 +832,12 @@ data class GetBuyerOrderDetailResponse(
 
                     @Expose
                     @SerializedName("price_text")
-                    val priceText: String = ""
-                ) {
+                    val priceText: String = "",
 
-                    data class AddonSummary(
-                        @SerializedName("addons")
-                        @Expose
-                        val addons: List<Addon>? = listOf(),
-                        @SerializedName("total")
-                        @Expose
-                        val total: Double = 0.0,
-                        @SerializedName("total_price")
-                        @Expose
-                        val totalPrice: Double = 0.0,
-                        @SerializedName("total_price_str")
-                        @Expose
-                        val totalPriceStr: String = "",
-                        @SerializedName("total_quantity")
-                        @Expose
-                        val totalQuantity: Int = 0
-                    ) {
-                        data class Addon(
-                            @SerializedName("id")
-                            @Expose
-                            val id: String = "0",
-                            @SerializedName("image_url")
-                            @Expose
-                            val imageUrl: String = "",
-                            @SerializedName("metadata")
-                            @Expose
-                            val metadata: AddonInfo.OrderLevel.Addon.Metadata? = AddonInfo.OrderLevel.Addon.Metadata(),
-                            @SerializedName("name")
-                            @Expose
-                            val name: String = "",
-                            @SerializedName("order_id")
-                            @Expose
-                            val orderId: String = "0",
-                            @SerializedName("price_str")
-                            @Expose
-                            val priceStr: String = "",
-                            @SerializedName("quantity")
-                            @Expose
-                            val quantity: Int = 0,
-                            @SerializedName("subtotal_price")
-                            @Expose
-                            val subtotalPrice: Double = 0.0,
-                            @SerializedName("subtotal_price_str")
-                            @Expose
-                            val subtotalPriceStr: String = "",
-                            @SerializedName("type")
-                            @Expose
-                            val type: String = ""
-                        )
-                    }
-                }
-
-                data class PartialFulfillment(
-                    @SerializedName("fulfilled")
-                    val fulfilled: Fulfilled = Fulfilled(),
-                    @SerializedName("unfulfilled")
-                    val unfulfilled: Unfulfilled = Unfulfilled()
-                ) {
-                    data class Fulfilled(
-                        @SerializedName("header")
-                        val header: Header = Header()
-                    )
-
-                    data class Unfulfilled(
-                        @SerializedName("details")
-                        val details: List<NonBundle> = listOf(),
-                        @SerializedName("header")
-                        val header: Header = Header()
-                    )
-
-                    data class Header(
-                        @SerializedName("quantity")
-                        val quantity: String = "",
-                        @SerializedName("title")
-                        val title: String = ""
-                    )
-                }
-            }
-
-            data class AddonInfo(
-                @SerializedName("icon_url")
-                @Expose
-                val iconUrl: String = "",
-                @SerializedName("label")
-                @Expose
-                val label: String = "",
-                @SerializedName("order_level")
-                @Expose
-                val orderLevel: OrderLevel? = OrderLevel()
-            ) {
-
-                data class OrderLevel(
-                    @SerializedName("addons")
                     @Expose
-                    val addons: List<Addon>? = listOf(),
-                    @SerializedName("total")
-                    @Expose
-                    val total: Long = 0,
-                    @SerializedName("total_price")
-                    @Expose
-                    val totalPrice: Double = 0.0,
-                    @SerializedName("total_price_str")
-                    @Expose
-                    val totalPriceStr: String = "",
-                    @SerializedName("total_quantity")
-                    @Expose
-                    val totalQuantity: Int = 0
-                ) {
-                    data class Addon(
-                        @SerializedName("id")
-                        @Expose
-                        val id: String = "0",
-                        @SerializedName("image_url")
-                        @Expose
-                        val imageUrl: String = "",
-                        @SerializedName("metadata")
-                        @Expose
-                        val metadata: Metadata? = Metadata(),
-                        @SerializedName("name")
-                        @Expose
-                        val name: String = "",
-                        @SerializedName("order_id")
-                        @Expose
-                        val orderId: String = "0",
-                        @SerializedName("price_str")
-                        @Expose
-                        val priceStr: String = "",
-                        @SerializedName("price")
-                        @Expose
-                        val price: Double = 0.0,
-                        @SerializedName("quantity")
-                        @Expose
-                        val quantity: Int = 0,
-                        @SerializedName("subtotal_price_str")
-                        @Expose
-                        val subtotalPriceStr: String = "",
-                        @SerializedName("type")
-                        @Expose
-                        val type: String = ""
-                    ) {
-                        data class Metadata(
-                            @SerializedName("add_on_note")
-                            @Expose
-                            val addonNote: AddonNote = AddonNote()
-                        ) {
-                            data class AddonNote(
-                                @SerializedName("notes")
-                                @Expose
-                                val notes: String = "",
-                                @SerializedName("short_notes")
-                                @Expose
-                                val shortNotes: String = "",
-                                @SerializedName("to")
-                                @Expose
-                                val to: String = "",
-                                @SerializedName("from")
-                                @Expose
-                                val from: String = ""
-                            )
-                        }
-                    }
-                }
+                    @SerializedName("product_url")
+                    val productUrl: String = ""
+                )
             }
         }
     }

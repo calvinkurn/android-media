@@ -107,7 +107,7 @@ class SearchBarKeywordAdapter(
             } else {
                 ChipsUnify.TYPE_NORMAL
             }
-            view.chip_right_icon.setImageResource(R.drawable.unify_chips_ic_close)
+            view.chip_right_icon.setImageResource(com.tokopedia.unifycomponents.R.drawable.unify_chips_ic_close)
             if (data.shouldShowCoachMark) {
                 listener.showCoachMark(view)
             }

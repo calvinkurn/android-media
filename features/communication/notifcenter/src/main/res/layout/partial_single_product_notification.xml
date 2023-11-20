@@ -22,7 +22,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
 
-        <com.tokopedia.notifcenter.widget.RoundedImageView
+        <com.tokopedia.notifcenter.view.customview.widget.RoundedImageView
             android:id="@+id/iv_thumbnail"
             android:layout_width="@dimen/notif_dp_96"
             android:layout_height="@dimen/notif_dp_96"
@@ -58,7 +58,7 @@
             app:typographyType="body_3"
             tools:text="This is really long product name that appear on the screen" />
 
-        <com.tokopedia.notifcenter.widget.ProductVariantLayout
+        <com.tokopedia.notifcenter.view.customview.widget.ProductVariantLayout
             android:id="@+id/pvl_variant"
             android:layout_width="@dimen/notif_dp_0"
             android:layout_height="@dimen/notif_dp_20"
@@ -73,7 +73,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_product_name"
             tools:visibility="visible"/>
 
-        <com.tokopedia.notifcenter.widget.CampaignRedView
+        <com.tokopedia.notifcenter.view.customview.widget.CampaignRedView
             android:id="@+id/cl_campaign"
             android:layout_width="@dimen/notif_dp_0"
             android:layout_height="wrap_content"

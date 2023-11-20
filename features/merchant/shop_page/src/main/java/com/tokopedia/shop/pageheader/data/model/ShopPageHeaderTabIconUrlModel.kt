@@ -6,5 +6,7 @@ data class ShopPageHeaderTabIconUrlModel(
     @SerializedName("dark_mode")
     val darkModeUrl: String = "",
     @SerializedName("light_mode")
-    val lightModeUrl: String = ""
+    val lightModeUrl: String = "",
+    @SerializedName("dark_theme")
+    val darkThemeUrl: String = ""
 )

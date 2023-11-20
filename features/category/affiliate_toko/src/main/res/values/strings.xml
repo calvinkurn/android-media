@@ -206,4 +206,6 @@
     <string name="affiliate_tokonow_promo_title">Komisi fresh dari Tokopedia NOW!</string>
     <string name="affiliate_tokonow_promo_subtitle">Kini udah bisa promosi &amp; share link NOW!</string>
     <string name="link_history_entry">Riwayat link dipromosikan</string>
+    <string name="affiliate_back_to_wishlist">Kembali ke Koleksi Wishlist</string>
+    <string name="affiliate_go_to_promote">Ke Halaman Promosikan</string>
 </resources>

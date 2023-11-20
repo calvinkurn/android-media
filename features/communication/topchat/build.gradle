@@ -39,6 +39,36 @@ android {
         androidTest {
             java.srcDirs += "$projectDir/src/testCommon/java"
         }
+        main {
+            res {
+                srcDirs 'src/main/res',
+                        'src/main/res/layouts/chatroom/page',
+                        'src/main/res/layouts/chatroom/general',
+                        'src/main/res/layouts/chatroom/replyarea',
+                        'src/main/res/layouts/chatroom/sticker',
+                        'src/main/res/layouts/chatroom/messagebubble',
+                        'src/main/res/layouts/chatroom/messagebubble/autoreply',
+                        'src/main/res/layouts/chatroom/smartreplywidget',
+                        'src/main/res/layouts/chatroom/attachment/product',
+                        'src/main/res/layouts/chatroom/attachment/productbundling',
+                        'src/main/res/layouts/chatroom/attachment/image',
+                        'src/main/res/layouts/chatroom/attachment/voucher',
+                        'src/main/res/layouts/chatroom/attachment/invoice',
+                        'src/main/res/layouts/chatroom/attachment/reviewreminder',
+                        'src/main/res/layouts/chatroom/orderprogress',
+                        'src/main/res/layouts/chatroom/broadcast',
+                        'src/main/res/layouts/chatroom/bubbles',
+
+                        'src/main/res/layouts/chatlist/page',
+                        'src/main/res/layouts/chatlist/list',
+                        'src/main/res/layouts/chatlist/filter',
+                        'src/main/res/layouts/chatlist/operationalinsight',
+
+                        'src/main/res/layouts/chatsearch',
+                        'src/main/res/layouts/chatsetting',
+                        'src/main/res/layouts/chattemplate'
+            }
+        }
     }
 
 }
@@ -57,7 +87,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.merchantVoucher)
     implementation projectOrAar(rootProject.ext.features.seamlessLoginCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
-    implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
     implementation projectOrAar(rootProject.ext.features.reputationCommon)
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
@@ -72,12 +101,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
-    implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.websocket)
-    implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -94,6 +120,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
+    implementation projectOrAar(rootProject.ext.features.storiesWidget)
 
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.principles
@@ -107,7 +134,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -116,24 +142,17 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.viewPager2
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.window
     implementation rootProject.ext.miscDependencies.viewModelKtx
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.fragmentKtx
     implementation rootProject.ext.miscDependencies.coreKtx
+    implementation rootProject.ext.miscDependencies.dataStorePreferences
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
-    implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
-
-    implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
@@ -141,6 +160,7 @@ dependencies {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
 
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.junit
@@ -157,6 +177,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testImplementation rootProject.ext.testDependencies.turbine
 }
 
 project.ext {

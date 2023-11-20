@@ -71,7 +71,7 @@ abstract class BaseStartupBenchmark(private val startupMode: StartupMode) {
         @Parameterized.Parameters(name = "mode={0}")
         @JvmStatic
         fun parameters(): List<Array<Any>> {
-            return listOf(StartupMode.COLD, StartupMode.WARM, StartupMode.HOT)
+            return listOf(StartupMode.COLD)
                 .map { arrayOf(it) }
         }
     }

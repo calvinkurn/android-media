@@ -24,11 +24,11 @@ android {
         exclude 'META-INF/**'
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
     }
     defaultConfig {
         multiDexEnabled true
@@ -80,6 +80,7 @@ dependencies {
     implementation project(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.reviewCommon)
+    implementation projectOrAar(rootProject.ext.features.searchbar)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -103,7 +104,7 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.composeDependencies.composeActivity
 
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     //Below Hardcoded dependencies are very old. Will refactor it later (TECH DEBT)
     implementation 'com.google.android.material:material:1.4.0'
@@ -132,6 +133,8 @@ dependencies {
     }
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
     androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.composeDependencies.composeUiTest
+    debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 

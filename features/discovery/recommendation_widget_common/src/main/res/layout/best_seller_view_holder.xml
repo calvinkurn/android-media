@@ -71,13 +71,25 @@
         android:id="@+id/best_seller_loading_recommendation"
         layout="@layout/partial_recom_shimmering_grid_list_horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="346dp"
         android:visibility="gone"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/best_seller_chip_filter_recyclerview"
         tools:visibility="visible" />
+
+    <include
+        android:id="@+id/best_seller_empty_state"
+        layout="@layout/best_seller_empty_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/best_seller_chip_filter_recyclerview"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/home_component_divider_footer"

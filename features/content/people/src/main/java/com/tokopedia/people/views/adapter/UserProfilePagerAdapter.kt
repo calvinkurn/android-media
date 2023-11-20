@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -34,9 +35,29 @@ class UserProfilePagerAdapter(
 
     private val listFragment = mutableListOf<ProfileTabUiModel.Tab>()
 
-    fun insertFragment(tabs: List<ProfileTabUiModel.Tab>) {
-        if (tabs.isEmpty()) return
+    private var selectedPosition = 0
 
+    private val onTabSelectedListener = object : TabLayout.OnTabSelectedListener {
+        override fun onTabSelected(tab: TabLayout.Tab?) {
+            if (tab == null) return
+            onOpenTab(listFragment[tab.position].key.value)
+            setupTab(tab, isSelected = true)
+            selectedPosition = tab.position
+        }
+
+        override fun onTabReselected(tab: TabLayout.Tab?) {
+            if (tab == null) return
+            setupTab(tab, isSelected = true)
+            selectedPosition = tab.position
+        }
+
+        override fun onTabUnselected(tab: TabLayout.Tab?) {
+            if (tab == null) return
+            setupTab(tab, isSelected = false)
+        }
+    }
+
+    fun updateFragment(tabs: List<ProfileTabUiModel.Tab>) {
         if (isTabCountAndOrderStillSame(tabs)) {
             for (i in 0 until tabLayout.getUnifyTabLayout().tabCount) {
                 tabLayout.getUnifyTabLayout().getTabAt(i)?.let { tab ->
@@ -44,10 +65,18 @@ class UserProfilePagerAdapter(
                 }
             }
         } else {
+            selectedPosition = selectedPosition.coerceAtMost(tabs.size - 1).coerceAtLeast(0)
+
+            removeTabSelectedListener()
+
+            val diffUtil = UserProfilePagerDiffUtil(listFragment, tabs)
+            val diffResult = DiffUtil.calculateDiff(diffUtil)
             listFragment.clear()
             listFragment.addAll(tabs)
+            diffResult.dispatchUpdatesTo(this)
 
             attachTab()
+            viewPager.setCurrentItem(selectedPosition, true)
         }
     }
 
@@ -75,28 +104,15 @@ class UserProfilePagerAdapter(
         TabsUnifyMediator(tabLayout, viewPager) { tab, position ->
             setupTab(tab, isSelected = false)
         }
-        tabSelectedListener()
+        addTabSelectedListener()
     }
 
-    private fun tabSelectedListener() {
-        tabLayout.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                if (tab == null) return
+    private fun addTabSelectedListener() {
+        tabLayout.getUnifyTabLayout().addOnTabSelectedListener(onTabSelectedListener)
+    }
 
-                onOpenTab(listFragment[tab.position].key.value)
-                setupTab(tab, isSelected = true)
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-                if (tab == null) return
-                setupTab(tab, isSelected = true)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-                if (tab == null) return
-                setupTab(tab, isSelected = false)
-            }
-        })
+    private fun removeTabSelectedListener() {
+        tabLayout.getUnifyTabLayout().removeOnTabSelectedListener(onTabSelectedListener)
     }
 
     private fun setupTab(tab: TabLayout.Tab, isSelected: Boolean) {

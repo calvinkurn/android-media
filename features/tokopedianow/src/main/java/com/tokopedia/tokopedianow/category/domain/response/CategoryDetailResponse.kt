@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.category.domain.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 data class CategoryDetailResponse(
         @SerializedName("TokonowCategoryDetail")
@@ -62,9 +63,9 @@ data class CategoryDetailResponse(
             @Expose
             val navigation: Navigation = Navigation(),
 
-            @SerializedName("color")
+            @SerializedName("colorObj")
             @Expose
-            val color: String = "",
+            val colorObj: ColorObj = ColorObj(),
 
             @SerializedName("recommendation")
             @Expose
@@ -73,6 +74,16 @@ data class CategoryDetailResponse(
             @SerializedName("child")
             @Expose
             val child: List<ChildItem> = listOf()
+    )
+
+    data class ColorObj(
+        @SerializedName("hexLight")
+        @Expose
+        val hexLight: String = String.EMPTY,
+
+        @SerializedName("hexDark")
+        @Expose
+        val hexDark: String = String.EMPTY
     )
 
     data class ChildItem(
@@ -108,9 +119,9 @@ data class CategoryDetailResponse(
         @Expose
         val minAge: Int = 0,
 
-        @SerializedName("color")
+        @SerializedName("colorObj")
         @Expose
-        val color: String = ""
+        val colorObj: ColorObj = ColorObj()
     )
 
     data class RecommendationItem(
@@ -134,9 +145,9 @@ data class CategoryDetailResponse(
         @Expose
         val imageUrl: String = "",
 
-        @SerializedName("color")
+        @SerializedName("colorObj")
         @Expose
-        val color: String = ""
+        val colorObj: ColorObj = ColorObj(),
     )
 
     data class Navigation(

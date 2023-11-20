@@ -93,7 +93,7 @@ class PDPTicketEventActivityTest {
     }
 
     fun click_package() {
-        val accordion = onView(withId(R.id.accordion_header))
+        val accordion = onView(withId(com.tokopedia.accordion.R.id.accordion_header))
         accordion
                 .check(matches(isDisplayed()))
                 .perform(click())
@@ -118,23 +118,23 @@ class PDPTicketEventActivityTest {
         val pilihInteraction = onView(AllOf.allOf(withId(R.id.txtPilih_ticket), isDisplayed()))
         pilihInteraction.perform(click())
 
-        val addQuantiryinteraction = onView(withId(R.id.quantity_editor_add))
+        val addQuantiryinteraction = onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add))
         addQuantiryinteraction.perform(click())
         addQuantiryinteraction.perform(click())
         Thread.sleep(3000)
 
-        onView(withId(R.id.quantity_editor_qty)).check(matches(withText("3")))
+        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).check(matches(withText("3")))
         onView(withId(R.id.txtTotalHarga)).check(matches(withText("Rp150.000")))
 
-        val subtractQuantityinteraction = onView(withId(R.id.quantity_editor_substract))
+        val subtractQuantityinteraction = onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_substract))
         subtractQuantityinteraction.perform(click())
 
-        onView(withId(R.id.quantity_editor_qty)).check(matches(withText("2")))
+        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).check(matches(withText("2")))
         onView(withId(R.id.txtTotalHarga)).check(matches(withText("Rp100.000")))
     }
 
     fun edit_quantity() {
-        onView(withId(R.id.quantity_editor_qty)).perform(replaceText("5"))
+        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).perform(replaceText("5"))
         onView(withId(R.id.txtTotalHarga)).check(matches(withText("Rp250.000")))
     }
 

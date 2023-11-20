@@ -55,22 +55,22 @@ fun STATE.getInitialProgress(): Float {
 
 @Composable
 fun STATE.getTextColorBasedOnState(): Color {
-    var color = colorResource(id = R.color.Unify_GN500)
+    var color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500)
     when(this) {
         STATE.SYNC -> {
-            color = colorResource(id = R.color.Unify_YN300)
+            color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_YN300)
         }
         STATE.COMPANION_NOT_LOGIN -> {
-            color = colorResource(id = R.color.Unify_RN500)
+            color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_RN500)
         }
         STATE.COMPANION_NOT_REACHABLE -> {
-            color = colorResource(id = R.color.Unify_RN500)
+            color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_RN500)
         }
         STATE.COMPANION_NOT_INSTALLED -> {
-            color = colorResource(id = R.color.Unify_RN500)
+            color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_RN500)
         }
         STATE.CONNECTED -> {
-            color = colorResource(id = R.color.Unify_GN500)
+            color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         }
     }
     return color

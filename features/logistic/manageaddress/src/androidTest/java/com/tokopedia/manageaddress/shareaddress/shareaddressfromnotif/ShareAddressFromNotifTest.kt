@@ -38,11 +38,12 @@ class ShareAddressFromNotifTest {
             launchFrom(mActivityTestRule, "123")
             selectFirstAddress()
             clickShareAddressButton()
+            intendingIntent()
             clickDisagreeButton()
             repo.isValidAddressFromNotif = true
             selectFirstAddress()
-            clickShareAddressButton()
             intendingIntent()
+            clickShareAddressButton()
             clickAgreeButton()
         } validateAnalytics {
             hasPassedAnalytics(cassavaRule, QUERY_ID)

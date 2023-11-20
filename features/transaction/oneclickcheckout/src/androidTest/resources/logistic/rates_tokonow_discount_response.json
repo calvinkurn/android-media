@@ -31,7 +31,8 @@
                 "text_notes": "",
                 "text_service_desc": "",
                 "text_eta_summarize": "Estimasi tiba hari ini",
-                "error_code": 0
+                "error_code": 0,
+                "text_service_ticker": ""
               },
               "order_priority": {
                 "is_now": false,

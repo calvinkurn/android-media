@@ -53,13 +53,12 @@ class CampaignDataPickerViewModelTest {
         MockKAnnotations.init(this)
     }
 
-
     //region getUpcomingCampaigns
 
     @Test
     fun `When get upcoming campaign success, observer should successfully receive the data`() =
         runBlocking {
-            //Given
+            // Given
             val today = Date()
             val tomorrow = Date().advanceDayBy(days = 1)
 
@@ -86,30 +85,27 @@ class CampaignDataPickerViewModelTest {
                 getSellerCampaignListUseCase.execute(rows = 100, offset = 0, statusId = activeCampaignStatusIds)
             } returns campaignMetadata
 
-
-            //When
+            // When
             viewModel.getUpcomingCampaigns()
 
-            //Then
+            // Then
             val actual = viewModel.campaigns.getOrAwaitValue()
             assertEquals(expected, actual)
         }
 
-
-
     @Test
     fun `When get upcoming campaign error, observer should receive error result`() =
         runBlocking {
-            //Given
+            // Given
             val error = MessageErrorException("Server error")
             val expected = Fail(error)
 
             coEvery { getSellerCampaignListUseCase.execute(rows = 100, offset = 0, statusId = activeCampaignStatusIds) } throws error
 
-            //When
+            // When
             viewModel.getUpcomingCampaigns()
 
-            //Then
+            // Then
             val actual = viewModel.campaigns.getOrAwaitValue()
             assertEquals(expected, actual)
         }
@@ -120,7 +116,7 @@ class CampaignDataPickerViewModelTest {
     @Test
     fun `When get remaining quota success, observer should successfully receive the data`() =
         runBlocking {
-            //Given
+            // Given
             val remainingQuota = 5
             val campaignAttribute = CampaignAttribute(
                 success = true,
@@ -138,10 +134,10 @@ class CampaignDataPickerViewModelTest {
                 )
             } returns campaignAttribute
 
-            //When
+            // When
             viewModel.getCampaignQuota(month = anyInt(), year = anyInt(), vpsPackageId = 1)
 
-            //Then
+            // Then
             val actual = viewModel.campaignQuota.getOrAwaitValue()
             assertEquals(expected, actual)
         }
@@ -149,7 +145,7 @@ class CampaignDataPickerViewModelTest {
     @Test
     fun `When get remaining quota error, observer should receive error result`() =
         runBlocking {
-            //Given
+            // Given
             val error = MessageErrorException("Server error")
             val expected = Fail(error)
 
@@ -161,10 +157,10 @@ class CampaignDataPickerViewModelTest {
                 )
             } throws error
 
-            //When
+            // When
             viewModel.getCampaignQuota(month = anyInt(), year = anyInt(), vpsPackageId = 1)
 
-            //Then
+            // Then
             val actual = viewModel.campaignQuota.getOrAwaitValue()
             assertEquals(expected, actual)
         }
@@ -197,7 +193,8 @@ class CampaignDataPickerViewModelTest {
             CampaignUiModel.ThematicInfo(0, 0, "", 0, ""),
             Date(),
             Date(),
-            CampaignUiModel.PackageInfo(packageId = 1, packageName = "VPS Package Elite")
+            CampaignUiModel.PackageInfo(packageId = 1, packageName = "VPS Package Elite"),
+            isOosImprovement = false
         )
     }
 }

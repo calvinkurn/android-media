@@ -75,6 +75,8 @@ data class GetSellerCampaignListResponse(
             val useUpcomingWidget: Boolean = false,
             @SerializedName("package_info")
             val packageInfo: PackageInfo = PackageInfo(),
+            @SerializedName("is_oos_improvement")
+            val isOosImprovement: Boolean = true
         ) {
             data class GradientColor(
                 @SerializedName("first_color")

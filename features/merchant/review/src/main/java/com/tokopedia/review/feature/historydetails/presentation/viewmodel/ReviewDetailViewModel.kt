@@ -33,6 +33,8 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
 
     private val _submitReputationResult = MutableLiveData<ReviewViewState<Int>>()
 
+    private var reviewEdited: Boolean = false
+
     val reviewDetails: LiveData<ReviewViewState<ProductrevGetReviewDetail>>
         get() = _reviewDetails
 
@@ -105,6 +107,12 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
             _submitReputationResult.postValue(Fail(it))
         }
     }
+
+    fun onReviewEdited() {
+        reviewEdited = true
+    }
+
+    fun isReviewEdited() = reviewEdited
 
     private fun <T> MutableLiveData<T>.notifyObserver() {
         this.value = this.value

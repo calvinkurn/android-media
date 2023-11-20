@@ -97,6 +97,15 @@ class OrderSummaryPageAdapter(
         return 0
     }
 
+    fun getAddOnProductServiceIndex(cartId: String): Int {
+        for (index in products.indices) {
+            if (products[index].cartId == cartId) {
+                return productStartIndex + index
+            }
+        }
+        return 0
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         when (viewType) {
@@ -117,7 +126,7 @@ class OrderSummaryPageAdapter(
                 return OrderShopCard(CardOrderShopBinding.inflate(inflater, parent, false), shopListener, analytics)
             }
             OrderProductCard.VIEW_TYPE -> {
-                return OrderProductCard(CardOrderProductBinding.inflate(inflater, parent, false), productListener, analytics)
+                return OrderProductCard(CardOrderProductBinding.inflate(inflater, parent, false), productListener, analytics, inflater)
             }
             OrderPreferenceCard.VIEW_TYPE -> {
                 return OrderPreferenceCard(CardOrderPreferenceBinding.inflate(inflater, parent, false), preferenceListener, analytics)

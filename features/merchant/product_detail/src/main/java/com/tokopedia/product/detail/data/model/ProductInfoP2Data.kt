@@ -4,15 +4,16 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
-import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.usp.UniqueSellingPointTokoCabang
 import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouseResponse
+import com.tokopedia.product.detail.data.model.bmgm.BMGMData
 import com.tokopedia.product.detail.data.model.bottom_sheet_edu.BottomSheetEduData
 import com.tokopedia.product.detail.data.model.bottom_sheet_edu.asUiModel
 import com.tokopedia.product.detail.data.model.custom_info_title.CustomInfoTitle
+import com.tokopedia.product.detail.data.model.dynamiconeliner.DynamicOneLiner
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
@@ -27,8 +28,6 @@ import com.tokopedia.product.detail.data.model.shopFinishRate.ShopFinishRate
 import com.tokopedia.product.detail.data.model.shop_additional.ProductShopAdditional
 import com.tokopedia.product.detail.data.model.shop_review.ShopReviewData
 import com.tokopedia.product.detail.data.model.shop_review.asUiModel
-import com.tokopedia.product.detail.data.model.social_proof.SocialProofData
-import com.tokopedia.product.detail.data.model.social_proof.asUiModel
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
@@ -135,10 +134,6 @@ data class ProductInfoP2Data(
     @Expose
     var reviewImage: ProductReviewImageListQuery = ProductReviewImageListQuery(),
 
-    @SerializedName("bundleInfo")
-    @Expose
-    var bundleInfoList: List<BundleInfo> = emptyList(),
-
     @SerializedName("rating")
     @Expose
     var rating: ProductRatingCount = ProductRatingCount(),
@@ -171,17 +166,21 @@ data class ProductInfoP2Data(
     @Expose
     val customInfoTitle: List<CustomInfoTitle> = emptyList(),
 
-    @SerializedName("socialProofComponent")
-    @Expose
-    val socialProof: List<SocialProofData> = emptyList(),
-
     @SerializedName("reviewList")
     @Expose
     val shopReview: ShopReviewData = ShopReviewData(),
 
     @SerializedName("bottomSheetEdu")
     @Expose
-    val bottomSheetEdu: BottomSheetEduData = BottomSheetEduData()
+    val bottomSheetEdu: BottomSheetEduData = BottomSheetEduData(),
+
+    @SerializedName("dynamicOneLiner")
+    @Expose
+    val dynamicOneLiner: List<DynamicOneLiner> = emptyList(),
+
+    @SerializedName("bmgm")
+    @Expose
+    val bmgm: BMGMData = BMGMData()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
@@ -214,7 +213,6 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     helpfulReviews = mostHelpFulReviewData.list,
     imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage),
     alternateCopy = cartRedirection.alternateCopy,
-    bundleInfoMap = bundleInfoList.associateBy { it.productId },
     rating = rating,
     ticker = ticker,
     navBar = navBar,
@@ -223,7 +221,8 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     arInfo = arInfo,
     obatKeras = obatKeras,
     customInfoTitle = customInfoTitle,
-    socialProof = socialProof.asUiModel(),
     shopReview = shopReview.asUiModel(),
-    bottomSheetEdu = bottomSheetEdu.asUiModel()
+    bottomSheetEdu = bottomSheetEdu.asUiModel(),
+    dynamicOneLiner = dynamicOneLiner,
+    bmgm = bmgm
 )

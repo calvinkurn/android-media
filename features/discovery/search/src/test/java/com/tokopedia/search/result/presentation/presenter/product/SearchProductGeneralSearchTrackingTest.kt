@@ -38,6 +38,9 @@ private const val withRedirection = "${generalSearchTrackingDirectory}with-redir
 private const val withGlobalNav = "${generalSearchTrackingDirectory}with-global-nav.json"
 private const val withGlobalNavEmptySource =
     "${generalSearchTrackingDirectory}with-global-nav-empty-source.json"
+private const val responseCode15RequestTimeoutProducts =
+    "${generalSearchTrackingDirectory}response-code-15-timeout-product.json"
+private const val REQUEST_TIMEOUT_RESPONSE_CODE = "15"
 
 internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTestFixtures() {
 
@@ -167,7 +170,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -195,11 +198,11 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             ),
             userId = userId,
             isResultFound = true.toString(),
-            categoryIdMapping = "1759,1758,65",
-            categoryNameMapping = "Fashion Pria,Handphone & Tablet,Fashion Wanita",
+            categoryIdMapping = "62,63,65,1759",
+            categoryNameMapping = "Olahraga,Otomotif,Handphone & Tablet,Fashion Pria",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -231,7 +234,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -264,7 +267,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "$previousKeyword - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -294,11 +297,11 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             ),
             userId = userId,
             isResultFound = true.toString(),
-            categoryIdMapping = "1759,1758",
-            categoryNameMapping = "Fashion Pria,Fashion Wanita",
+            categoryIdMapping = "1758,1759",
+            categoryNameMapping = "Fashion Wanita,Fashion Pria",
             relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -328,13 +331,13 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             ),
             userId = userId,
             isResultFound = true.toString(),
-            categoryIdMapping = "1759,1758",
-            categoryNameMapping = "Fashion Pria,Fashion Wanita",
+            categoryIdMapping = "1758,1759",
+            categoryNameMapping = "Fashion Wanita,Fashion Pria",
             relatedKeyword = "$previousKeyword - " +
                 "${searchProductModel.searchProduct.data.related.relatedKeyword}," +
                 searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -364,12 +367,12 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             ),
             userId = userId,
             isResultFound = true.toString(),
-            categoryIdMapping = "1759,1758",
-            categoryNameMapping = "Fashion Pria,Fashion Wanita",
+            categoryIdMapping = "1758,1759",
+            categoryNameMapping = "Fashion Wanita,Fashion Pria",
             relatedKeyword = "$previousKeyword - " +
                 searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -399,13 +402,13 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             ),
             userId = userId,
             isResultFound = true.toString(),
-            categoryIdMapping = "1759,1758",
-            categoryNameMapping = "Fashion Pria,Fashion Wanita",
+            categoryIdMapping = "1758,1759",
+            categoryNameMapping = "Fashion Wanita,Fashion Pria",
             relatedKeyword = "$previousKeyword - " +
                 "${searchProductModel.searchProduct.data.related.relatedKeyword}," +
                 searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -435,11 +438,11 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             ),
             userId = userId,
             isResultFound = true.toString(),
-            categoryIdMapping = "1759,1758",
-            categoryNameMapping = "Fashion Pria,Fashion Wanita",
+            categoryIdMapping = "1758,1759",
+            categoryNameMapping = "Fashion Wanita,Fashion Pria",
             relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -469,11 +472,11 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             ),
             userId = userId,
             isResultFound = true.toString(),
-            categoryIdMapping = "1759,1758",
-            categoryNameMapping = "Fashion Pria,Fashion Wanita",
+            categoryIdMapping = "1758,1759",
+            categoryNameMapping = "Fashion Wanita,Fashion Pria",
             relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.suggestion.suggestion}",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -502,11 +505,43 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             ),
             userId = userId,
             isResultFound = true.toString(),
-            categoryIdMapping = "1759,1758",
-            categoryNameMapping = "Fashion Pria,Fashion Wanita",
+            categoryIdMapping = "1758,1759",
+            categoryNameMapping = "Fashion Wanita,Fashion Pria",
             relatedKeyword = "$NONE - $NONE",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
+            componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
+        )
+
+        `Test General Search Tracking`(
+            searchProductModel,
+            expectedGeneralSearchTrackingModel,
+        )
+    }
+
+    @Test
+    fun `General search tracking with response code 15`() {
+        val searchProductModel = responseCode15RequestTimeoutProducts.jsonToObject<SearchProductModel>()
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+            eventCategory = SearchEventTracking.Category.EVENT_TOP_NAV,
+            eventLabel = String.format(
+                SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
+                keyword,
+                searchProductModel.searchProduct.header.keywordProcess,
+                REQUEST_TIMEOUT_RESPONSE_CODE,
+                NONE,
+                NONE,
+                NONE,
+                searchProductModel.searchProduct.header.totalData,
+            ),
+            userId = userId,
+            isResultFound = false.toString(),
+            categoryIdMapping = "",
+            categoryNameMapping = "",
+            relatedKeyword = "$NONE - $NONE",
+            pageSource = pageSource,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -538,7 +573,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -570,7 +605,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -602,7 +637,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -644,7 +679,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -686,7 +721,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -734,7 +769,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
                 "${searchParameter[SearchApiConst.NAVSOURCE]}." +
                 "local_search." +
                 "${searchParameter[SearchApiConst.SRP_PAGE_ID]}",
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -776,7 +811,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = searchRef,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -818,7 +853,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = externalReference,
         )

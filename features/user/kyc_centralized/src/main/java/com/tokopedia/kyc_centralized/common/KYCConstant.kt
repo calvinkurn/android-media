@@ -4,6 +4,7 @@ package com.tokopedia.kyc_centralized.common
  * @author by nisie on 12/11/18.
  */
 object KYCConstant {
+    const val KEY_KNOWN_ERROR_CODE = "KYC-KNOW-ERROR-CODE"
     const val ERROR_STATUS_UNKNOWN = "1001"
     const val KYC_PROJECT_ID = 1
     const val EXTRA_STRING_IMAGE_RESULT = "image_result"
@@ -56,6 +57,7 @@ object KYCConstant {
     const val collectionIdGotoKycNonProgressiveProduction = "23d6102a-a625-4036-964a-aa039198605a"
 
     const val PROJECT_ID_ACCOUNT = "7"
+    const val PARAM_BLOCKED_IS_MULTIPLE_ACCOUNT = "blocked_is_multiple_account"
 
     object SharedPreference {
         /*
@@ -85,5 +87,8 @@ object KYCConstant {
     object ActivityResult {
         const val RESULT_FINISH = 99
         const val RELOAD = 98
+        const val LAUNCH_CALLBACK = 97
+        const val LAUNCH_TOKO_KYC = 96
+        const val BLOCKED_KYC = 95
     }
 }

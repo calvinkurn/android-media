@@ -9,8 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.campaign.base.BaseCampaignManageProductListFragment
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
@@ -18,12 +16,15 @@ import com.tokopedia.campaign.components.adapter.LoadingDelegateAdapter
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.entity.LoadingItem
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -59,14 +60,17 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.viewh
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.viewholder.FlashSaleManageProductListItemViewHolder
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEffect
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEvent
+import com.tokopedia.tkpd.flashsale.util.ResourceProvider
+import com.tokopedia.tkpd.flashsale.util.TickerUtil
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_VARIANT
 import com.tokopedia.tkpd.flashsale.util.tracker.FlashSaleManageProductListPageTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import kotlinx.coroutines.flow.collect
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import javax.inject.Inject
 
 class FlashSaleManageProductListFragment :
@@ -136,6 +140,7 @@ class FlashSaleManageProductListFragment :
         configRecyclerView()
         getCampaignDetailBottomSheetData()
         getReservedProductList()
+        loadTickerData()
         observeUiState()
         observeUiEffect()
         getFlashSaleSubmissionProgress(campaignId)
@@ -156,9 +161,11 @@ class FlashSaleManageProductListFragment :
             pageSize = 10,
             onLoadNextPage = {
                 flashSaleAdapter.addItem(LoadingItem)
-            }, onLoadNextPageFinished = {
+            },
+            onLoadNextPageFinished = {
                 flashSaleAdapter.removeItem(LoadingItem)
-            })
+            }
+        )
         rvProductList?.apply {
             attachOnScrollListener({
                 coachMark?.dismissCoachMark()
@@ -181,29 +188,55 @@ class FlashSaleManageProductListFragment :
         )
     }
 
-    private fun configTicker(totalProduct: Int) {
-        ticker?.shouldShowWithAction(!totalProduct.isZero()) {
+    private fun loadTickerData() {
+        viewModel.processEvent(
+            FlashSaleManageProductListUiEvent.GetTickerData(
+                rollenceValueList = TickerUtil.getRollenceValues()
+            )
+        )
+    }
+
+    private fun setupTicker(isShowTicker: Boolean, tickerList: List<RemoteTicker>) {
+        if (isShowTicker) {
+            var tickerDataList: MutableList<TickerData> = mutableListOf()
             ticker?.apply {
-                tickerType = TYPE_ANNOUNCEMENT
+                isVisible = true
                 tickerShape = Ticker.SHAPE_LOOSE
-                setHtmlDescription(
-                    String.format(getString(R.string.stfs_manage_product_list_ticker_manage_product))
-                )
+                tickerList.map {
+                    val description = ResourceProvider(context).getTickerDescriptionFormat(
+                        content = it.description,
+                        link = it.actionAppUrl,
+                        textLink = it.actionLabel
+                    )
+
+                    tickerDataList.add(
+                        TickerData(
+                            title = it.title,
+                            description = description,
+                            type = TickerUtil.getTickerType(it.type),
+                            isFromHtml = true
+                        )
+                    )
+                }
+
+                val tickerAdapter = TickerPagerAdapter(activity ?: return, tickerDataList)
+                tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                        routeToUrl(linkUrl.toString())
+                    }
+                })
+
+                addPagerView(tickerAdapter, tickerDataList)
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        redirectToManageProductPage()
+                        routeToUrl(linkUrl.toString())
                     }
 
                     override fun onDismiss() {
                     }
-
                 })
             }
         }
-    }
-
-    private fun redirectToManageProductPage() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
     }
 
     private fun observeUiEffect() {
@@ -453,13 +486,13 @@ class FlashSaleManageProductListFragment :
 
     private fun configCoachMarkForFirstProductItem() {
         rvProductList?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                rvProductList?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                showCoachMarkOnFirstProductItem()
-                setSharedPrefCoachMarkAlreadyShown()
-            }
-        })
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    rvProductList?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    showCoachMarkOnFirstProductItem()
+                    setSharedPrefCoachMarkAlreadyShown()
+                }
+            })
     }
 
     private fun setSharedPrefCoachMarkAlreadyShown() {
@@ -507,7 +540,7 @@ class FlashSaleManageProductListFragment :
                 hideGlobalErrorState()
                 setLoadingShimmeringData(it.isLoading)
                 if (!it.isLoading) {
-                    configTicker(it.totalProduct)
+                    setupTicker(isShowTicker = it.showTicker, tickerList = it.tickerList)
                     showTotalProduct(it.totalProduct)
                     updateDelegateData(it.listDelegateItem)
                     checkShouldEnableButtonSubmit()
@@ -549,10 +582,11 @@ class FlashSaleManageProductListFragment :
 
     private fun setLoadingShimmeringData(isLoadingProductList: Boolean) {
         flashSaleAdapter.apply {
-            if (isLoadingProductList)
+            if (isLoadingProductList) {
                 addItem(FlashSaleManageProductListShimmeringItem)
-            else
+            } else {
                 removeItem(FlashSaleManageProductListShimmeringItem)
+            }
         }
     }
 
@@ -576,8 +610,9 @@ class FlashSaleManageProductListFragment :
     }
 
     override fun onBackArrowClicked() {
-        if (sseProgressDialog?.isShowing() == false)
+        if (sseProgressDialog?.isShowing() == false) {
             showClickBackDialog()
+        }
     }
 
     override fun onFragmentBackPressed(): Boolean {
@@ -732,5 +767,4 @@ class FlashSaleManageProductListFragment :
     override fun onGlobalErrorActionClickRetry() {
         getReservedProductList()
     }
-
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
@@ -122,6 +123,12 @@ class ProductDetailNavigation : FrameLayout, NavigationListener {
     fun updateItemPosition() {
         navigationTab?.updateItemPosition()
     }
+
+    fun disableNavigationScrollUpListener() {
+        navigationTab?.disableScrollUpListener()
+    }
+
+    fun getNavigationTabHeight() = navigationTab?.height.orZero()
 
     private fun getConfiguration(offsetY: Int, firstItem: NavigationTab.Item?): Configuration {
         return if (firstItem?.componentName == ProductDetailConstant.MEDIA) {

@@ -20,6 +20,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokochat.common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
 import com.tokopedia.tokochat.domain.cache.TokoChatBubblesCache
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
@@ -30,6 +35,7 @@ import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetTokopediaOrderIdUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetTypingUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
@@ -42,10 +48,6 @@ import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.getTokoChatPhotoPath
 import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
-import com.tokopedia.tokochat_common.util.TokoChatCacheManager
-import com.tokopedia.tokochat_common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -54,7 +56,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -82,6 +86,7 @@ class TokoChatViewModel @Inject constructor(
     private val getImageUrlUseCase: TokoChatGetImageUseCase,
     private val uploadImageUseCase: TokoChatUploadImageUseCase,
     private val getNeedConsentUseCase: GetNeedConsentUseCase,
+    private val getTkpdOrderIdUseCase: TokoChatGetTokopediaOrderIdUseCase,
     private val viewUtil: TokoChatViewUtil,
     private val imageAttachmentExtensionProvider: TokoChatImageAttachmentExtensionProvider,
     private val cacheManager: TokoChatCacheManager,
@@ -121,6 +126,10 @@ class TokoChatViewModel @Inject constructor(
     private val _imageUploadError = MutableLiveData<Pair<String, Throwable>>()
     val imageUploadError: LiveData<Pair<String, Throwable>>
         get() = _imageUploadError
+
+    private val _isTkpdOrderStatus = MutableStateFlow<Boolean?>(null)
+    val isTkpdOrderStatus: StateFlow<Boolean?>
+        get() = _isTkpdOrderStatus
 
     private val _error = MutableLiveData<Pair<Throwable, String>>()
     val error: LiveData<Pair<Throwable, String>>
@@ -634,8 +643,22 @@ class TokoChatViewModel @Inject constructor(
         )
     }
 
+    fun translateGojekOrderId(gojekOrderId: String) {
+        viewModelScope.launch {
+            try {
+                _isTkpdOrderStatus.value = null // reset value
+                getTkpdOrderIdUseCase(gojekOrderId).collectLatest {
+                    tkpdOrderId = it
+                    _isTkpdOrderStatus.value = true
+                }
+            } catch (throwable: Throwable) {
+                _isTkpdOrderStatus.value = false
+                _error.value = Pair(throwable, ::translateGojekOrderId.name)
+            }
+        }
+    }
+
     companion object {
-        const val TOKOFOOD_SERVICE_TYPE = 5
         const val DELAY_UPDATE_ORDER_STATE = 5000L
         private const val DELAY_FETCH_IMAGE = 500L
         private const val ERROR_COMPRESSED_IMAGE_NULL = "Compressed image null"

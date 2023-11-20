@@ -75,5 +75,9 @@ data class ShipmentAddressFormDataResponse(
     @SerializedName("dynamic_data_passing")
     val dynamicDataPassing: ShipmentDynamicDataPassing = ShipmentDynamicDataPassing(),
     @SerializedName("platform_fee")
-    val shipmentPlatformFee: ShipmentPlatformFee = ShipmentPlatformFee()
+    val shipmentPlatformFee: ShipmentPlatformFee = ShipmentPlatformFee(),
+    @SerializedName("add_ons_summary")
+    val listSummaryAddOns: List<ShipmentSummaryAddOn> = emptyList(),
+    @SerializedName("payment_level_add_ons")
+    val paymentLevelAddOns: List<PaymentLevelAddOnItem> = emptyList()
 )

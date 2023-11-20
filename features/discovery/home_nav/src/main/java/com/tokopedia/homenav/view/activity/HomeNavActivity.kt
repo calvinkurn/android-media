@@ -20,6 +20,7 @@ import com.tokopedia.utils.resources.isDarkMode
 class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
 
     private var pageSource: String = ""
+    private var pageSourcePath: String = ""
     private var toolbar: NavToolbar? = null
     private var fragmentContainer: View? = null
     private val navPerformanceMonitoring = PerformanceMonitoring()
@@ -50,6 +51,7 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
         overridePendingTransition(R.anim.slide_top, R.anim.nav_fade_out)
         setContentView(R.layout.activity_main_nav)
         pageSource = intent.getStringExtra(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE)?:""
+        pageSourcePath = intent.getStringExtra(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE_PATH)?:""
         findViewById<NavToolbar>(R.id.toolbar)?.let {
             it.setToolbarTitle(getString(R.string.title_main_nav))
             it.setupToolbarWithStatusBar(
@@ -78,7 +80,7 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
             navController.navigateUp()
         }
         navController.setGraph(R.navigation.nav_graph,
-                MainNavFragmentArgs(StringMainNavArgsSourceKey = pageSource).toBundle())
+                MainNavFragmentArgs(StringMainNavArgsSourceKey = pageSource, StringMainNavArgsSourcePathKey = pageSourcePath).toBundle())
     }
 
     private fun setupView() {

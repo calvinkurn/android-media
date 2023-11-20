@@ -125,16 +125,16 @@ class HotelHomepageActivityTest {
         onView(withTagStringValue(R.id.tv_hotel_homepage_guest_info.toString())).perform(ViewActions.click())
         Thread.sleep(1000)
 
-        onView(AllOf.allOf(withId(R.id.image_button_plus),
+        onView(AllOf.allOf(withId(com.tokopedia.common.travel.R.id.image_button_plus),
                 isDescendantOfA(AllOf.allOf(withId(R.id.spv_hotel_room),
-                        hasDescendant(AllOf.allOf(withId(R.id.textview_title), withText("Kamar")))))))
+                        hasDescendant(AllOf.allOf(withId(com.tokopedia.common.travel.R.id.textview_title), withText("Kamar")))))))
                 .perform(click())
                 .check(matches(isDisplayed()))
         Thread.sleep(1000)
 
-        onView(AllOf.allOf(withId(R.id.image_button_plus),
+        onView(AllOf.allOf(withId(com.tokopedia.common.travel.R.id.image_button_plus),
                 isDescendantOfA(AllOf.allOf(withId(R.id.spv_hotel_adult),
-                        hasDescendant(AllOf.allOf(withId(R.id.textview_title), withText("Tamu")))))))
+                        hasDescendant(AllOf.allOf(withId(com.tokopedia.common.travel.R.id.textview_title), withText("Tamu")))))))
                 .perform(click())
                 .check(matches(isDisplayed()))
         Thread.sleep(1000)

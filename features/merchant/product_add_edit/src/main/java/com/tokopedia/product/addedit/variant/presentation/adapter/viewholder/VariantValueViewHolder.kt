@@ -18,7 +18,7 @@ class VariantValueViewHolder(
 
     init {
         chipsVariantValueName?.setOnRemoveListener {
-            removeButtonClickListener.onRemoveButtonClicked(adapterPosition)
+            removeButtonClickListener.onRemoveButtonClicked(bindingAdapterPosition)
         }
     }
 

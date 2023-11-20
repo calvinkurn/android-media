@@ -32,5 +32,6 @@ data class FlightOrderDetailPaymentModel(
         val accountBranch: String,
         val accountNo: String,
         val accountName: String,
-        val total: String
+        val total: String,
+        val additionalInfo: String
 ) : Parcelable

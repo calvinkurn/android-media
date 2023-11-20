@@ -17,7 +17,9 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_ATC_CLP_PRODUCT_TOKONOW
@@ -102,6 +104,7 @@ class TokoNowCategoryFragment :
         get() = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPerformanceMonitoring(true)
         super.onCreate(savedInstanceState)
 
         initViewModel()
@@ -141,7 +144,7 @@ class TokoNowCategoryFragment :
         }
     }
 
-    override fun createNavToolbarIconBuilder(): IconBuilder = IconBuilder()
+    override fun createNavToolbarIconBuilder(): IconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.TOKONOW))
         .addShare()
         .addCart()
         .addGlobalNav()
@@ -203,6 +206,8 @@ class TokoNowCategoryFragment :
 
         getViewModel().openScreenTrackingUrlLiveData.observe(this::sendOpenScreenTracking)
         getViewModel().shareLiveData.observe(this::setCategorySharingModel)
+        getViewModel().firstPageSuccessTriggerLiveData.observe(this::triggerFirstPageExperiment)
+        getViewModel().loadMoreSuccessTriggerLiveData.observe(this::sendImpressPageExperiment)
     }
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
@@ -611,8 +616,10 @@ class TokoNowCategoryFragment :
         }
     }
 
-    override fun refreshLayout() {
-        super.refreshLayout()
+    override fun refreshLayout(
+        needToResetQueryParams: Boolean
+    ) {
+        super.refreshLayout(needToResetQueryParams)
         refreshProductRecommendation(TOKONOW_CLP)
     }
 
@@ -626,6 +633,22 @@ class TokoNowCategoryFragment :
         return CategoryMenuCallback(
             viewModel = tokoNowCategoryViewModel,
             userId = userSession.userId
+        )
+    }
+
+    override fun triggerFirstPageExperiment(unit: Unit) {
+        super.triggerFirstPageExperiment(unit)
+        sendImpressPageExperiment(unit)
+    }
+
+    private fun sendImpressPageExperiment(unit: Unit) {
+        val (categoryIdLvl2, categoryIdLvl3) = getViewModel().getCategorySelectedIdL2L3()
+        CategoryTracking.sendImpressCategoryPageExperimentEvent(
+            categoryIdLvl1 = getViewModel().categoryL1,
+            categoryIdLvl2 = categoryIdLvl2,
+            categoryIdLvl3 = categoryIdLvl3,
+            numberOfProduct = getViewModel().getRows(),
+            warehouseId = getViewModel().warehouseId
         )
     }
 }

@@ -79,8 +79,8 @@ fun isDialogOfferLoginShowing() {
         "Lanjut masuk dengan nomor ini\n$validPhoneNumber"
     )
     isDisplayed(
-        R.id.dialog_btn_secondary,
-        R.id.dialog_btn_primary
+        com.tokopedia.dialog.R.id.dialog_btn_secondary,
+        com.tokopedia.dialog.R.id.dialog_btn_primary
     )
 }
 
@@ -94,8 +94,8 @@ fun isDialogConfirmPhoneNumberShowing() {
         validPhoneNumber
     )
     isDisplayed(
-        R.id.dialog_btn_secondary,
-        R.id.dialog_btn_primary
+        com.tokopedia.dialog.R.id.dialog_btn_secondary,
+        com.tokopedia.dialog.R.id.dialog_btn_primary
     )
 }
 
@@ -106,9 +106,9 @@ fun isGlobalErrorShowing() {
 }
 
 fun clickPrimaryButtonDialog() {
-    clickOnButtonDialog(R.id.dialog_btn_primary)
+    clickOnButtonDialog(com.tokopedia.dialog.R.id.dialog_btn_primary)
 }
 
 fun clickSecondaryButtonDialog() {
-    clickOnButtonDialog(R.id.dialog_btn_secondary)
+    clickOnButtonDialog(com.tokopedia.dialog.R.id.dialog_btn_secondary)
 }

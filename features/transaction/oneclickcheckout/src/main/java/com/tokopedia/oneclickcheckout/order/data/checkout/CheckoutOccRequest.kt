@@ -78,7 +78,9 @@ data class AddOnItem(
     @SerializedName("item_qty")
     val itemQty: Long = 0,
     @SerializedName("item_metadata")
-    val itemMetadata: String = ""
+    val itemMetadata: String = "",
+    @SerializedName("item_unique_id")
+    val itemUniqueId: String = ""
 )
 
 data class ProductData(

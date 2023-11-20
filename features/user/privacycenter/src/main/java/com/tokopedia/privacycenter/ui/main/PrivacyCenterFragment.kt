@@ -18,7 +18,6 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.privacycenter.R
@@ -26,12 +25,8 @@ import com.tokopedia.privacycenter.common.PrivacyCenterConst
 import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
 import com.tokopedia.privacycenter.databinding.SectionFooterImageBinding
 import com.tokopedia.privacycenter.di.PrivacyCenterComponent
-import com.tokopedia.privacycenter.ui.accountlinking.LinkAccountWebViewActivity
-import com.tokopedia.privacycenter.ui.accountlinking.LinkAccountWebviewFragment
 import com.tokopedia.privacycenter.ui.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.ui.main.analytics.TrackerScrollState
-import com.tokopedia.privacycenter.ui.main.section.accountlinking.AccountLinkingSection
-import com.tokopedia.privacycenter.ui.main.section.accountlinking.AccountLinkingViewModel
 import com.tokopedia.privacycenter.ui.main.section.activity.ActivitySection
 import com.tokopedia.privacycenter.ui.main.section.consentwithdrawal.ConsentWithdrawalSection
 import com.tokopedia.privacycenter.ui.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
@@ -42,7 +37,11 @@ import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicySe
 import com.tokopedia.privacycenter.ui.main.section.recommendation.RecommendationSection
 import com.tokopedia.privacycenter.ui.main.section.recommendation.RecommendationViewModel
 import com.tokopedia.privacycenter.ui.main.section.tokopediacare.TokopediaCareSection
-import com.tokopedia.privacycenter.utils.*
+import com.tokopedia.privacycenter.utils.getDynamicColorStatusBar
+import com.tokopedia.privacycenter.utils.getIconBackWithColor
+import com.tokopedia.privacycenter.utils.getIdColor
+import com.tokopedia.privacycenter.utils.getResColor
+import com.tokopedia.privacycenter.utils.setTextStatusBar
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -54,7 +53,6 @@ import javax.inject.Inject
 class PrivacyCenterFragment :
     BaseDaggerFragment(),
     AppBarLayout.OnOffsetChangedListener,
-    AccountLinkingSection.Listener,
     RecommendationSection.Listener {
 
     private var binding by autoClearedNullable<FragmentPrivacyCenterBinding>()
@@ -67,12 +65,6 @@ class PrivacyCenterFragment :
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(
             PrivacyCenterViewModel::class.java
-        )
-    }
-
-    private val viewModelAccountLinkingSection by lazy {
-        ViewModelProvider(this, viewModelFactory).get(
-            AccountLinkingViewModel::class.java
         )
     }
 
@@ -144,7 +136,7 @@ class PrivacyCenterFragment :
                             if (!section.isTrack) {
                                 withContext(Dispatchers.Main) {
                                     if (binding?.rootContent?.getChildAt(index)
-                                        ?.getLocalVisibleRect(scrollBounds) == true
+                                            ?.getLocalVisibleRect(scrollBounds) == true
                                     ) {
                                         section.isTrack = true
                                         counterTracker++
@@ -247,16 +239,12 @@ class PrivacyCenterFragment :
         when (requestCode) {
             REQUEST_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    viewModelAccountLinkingSection.getAccountLinkingStatus()
                     viewModelRecommendationSection.getConsentSocialNetwork()
                     viewModelConsentWithdrawalSection.getConsentGroupList()
                     setUpUserNameToolbar()
                 } else {
                     requireActivity().finish()
                 }
-            }
-            REQUEST_ACCOUNT_WEBVIEW_REQUEST -> {
-                viewModelAccountLinkingSection.getAccountLinkingStatus()
             }
         }
     }
@@ -315,30 +303,7 @@ class PrivacyCenterFragment :
         )
     }
 
-    override fun onItemAccountLinkingClicked(isLinked: Boolean) {
-        goToAccountLinkingWebview(isLinked)
-    }
-
-    private fun goToAccountLinkingWebview(isLinked: Boolean) {
-        if (isLinked) {
-            LinkAccountWebViewActivity.gotoSuccessPage(activity, LinkAccountWebviewFragment.BACK_BTN_APPLINK)
-        } else {
-            val intent = RouteManager.getIntent(
-                activity,
-                ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW
-            ).apply {
-                putExtra(
-                    ApplinkConstInternalGlobal.PARAM_LD,
-                    LinkAccountWebviewFragment.BACK_BTN_APPLINK
-                )
-            }
-            startActivityForResult(intent, REQUEST_ACCOUNT_WEBVIEW_REQUEST)
-        }
-    }
-
     inner class PrivacyCenterSectionDelegateImpl : PrivacyCenterSectionDelegate {
-        override val accountLinkingSection: AccountLinkingSection =
-            AccountLinkingSection(context, viewModelAccountLinkingSection, this@PrivacyCenterFragment)
         override val activitySection: ActivitySection = ActivitySection(context)
         override val recommendationSection: RecommendationSection = RecommendationSection(
             context,
@@ -366,6 +331,5 @@ class PrivacyCenterFragment :
         private const val REQUEST_LOGIN = 200
         private const val REQUEST_LOCATION_PERMISSION = 100
         private const val OFFSET_CHANGE_COLOR_STATUS_BAR = -136
-        private const val REQUEST_ACCOUNT_WEBVIEW_REQUEST = 101
     }
 }

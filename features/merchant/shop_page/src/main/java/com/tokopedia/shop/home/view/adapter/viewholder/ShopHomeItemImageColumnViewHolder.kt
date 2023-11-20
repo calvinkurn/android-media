@@ -19,7 +19,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopHomeItemImageColumnViewHolder(
     itemView: View,
     val listener: ShopHomeDisplayWidgetListener,
-    private val heightRatio: Float
+    private val heightRatio: Float,
+    private val imageColumnRoundedSize: Float
 ) : RecyclerView.ViewHolder(itemView) {
 
     var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
@@ -34,6 +35,7 @@ class ShopHomeItemImageColumnViewHolder(
         try {
             if (ivMultipleColumn?.context.isValidGlideContext()) {
                 ivMultipleColumn?.heightRatio = heightRatio
+                ivMultipleColumn?.cornerRadius = imageColumnRoundedSize.toInt()
                 ivMultipleColumn?.setImageUrl(data.imageUrl, heightRatio = heightRatio)
             }
         } catch (e: Exception) {

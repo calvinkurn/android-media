@@ -138,6 +138,7 @@ class CartListPresenter @Inject constructor(
 
     private var cartListData: CartData? = null
     private var summaryTransactionUiModel: SummaryTransactionUiModel? = null
+    private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
     private var promoSummaryUiModel: PromoSummaryData? = null
 
     private var hasPerformChecklistChange: Boolean = false
@@ -166,6 +167,8 @@ class CartListPresenter @Inject constructor(
 
     // Cart shop ticker debounce job
     private var cartShopGroupTickerJob: Job? = null
+
+    private var totalQtyWithAddon: Int = 0
 
     companion object {
         private const val PERCENTAGE = 100.0f
@@ -210,7 +213,17 @@ class CartListPresenter @Inject constructor(
             CartUiModelMapper.mapPromoSummaryUiModel(cartListData.promoSummary)
     }
 
-    override fun getSummaryTransactionUiModel(): SummaryTransactionUiModel? {
+    override fun getSummaryTransactionUiModel(selectedCartItemData: List<CartItemHolderData>): SummaryTransactionUiModel? {
+        val updatedAddOnSummary = cartListData?.shoppingSummary?.summaryAddOnList?.let {
+            CartUiModelMapper.mapSummariesAddOnsFromSelectedItems(it, selectedCartItemData)
+        }
+        if (updatedAddOnSummary != null) {
+            var totalAddOnPrice = 0L
+            for (entry in updatedAddOnSummary) {
+                totalAddOnPrice += entry.priceValue.toLong()
+            }
+            summaryTransactionUiModel?.listSummaryAddOns = updatedAddOnSummary
+        }
         return summaryTransactionUiModel
     }
 
@@ -267,6 +280,7 @@ class CartListPresenter @Inject constructor(
             }
             setCartListData(cartData)
             summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData)
+            summariesAddOnUiModel = CartUiModelMapper.getShoppingSummaryAddOns(cartData.shoppingSummary.summaryAddOnList)
             showChoosePromoWidget = cartData.promo.showChoosePromoWidget
             promoTicker = cartData.promo.ticker
             it.renderLoadGetCartDataFinish()
@@ -626,6 +640,7 @@ class CartListPresenter @Inject constructor(
         var subtotalBeforeSlashedPrice = 0.0
         var subtotalPrice = 0.0
         var subtotalCashback = 0.0
+        var totalAddOnPrice = 0.0
 
         // Collect all Cart Item & also calculate total weight on each shop
         val cartItemDataList = getAvailableCartItemDataList(dataList)
@@ -636,32 +651,40 @@ class CartListPresenter @Inject constructor(
         subtotalBeforeSlashedPrice += returnValueMarketplaceProduct.second.first
         subtotalPrice += returnValueMarketplaceProduct.second.second
         subtotalCashback += returnValueMarketplaceProduct.third
+        totalAddOnPrice += returnValueMarketplaceProduct.second.third
 
         updateSummaryTransactionUiModel(
             subtotalBeforeSlashedPrice,
             subtotalPrice,
             totalItemQty,
-            subtotalCashback
+            subtotalCashback,
+            totalAddOnPrice
         )
+
+        val totalPayment = subtotalPrice + totalAddOnPrice
         view?.updateCashback(subtotalCashback)
-        view?.renderDetailInfoSubTotal(totalItemQty.toString(), subtotalPrice, dataList.isEmpty())
+        view?.renderDetailInfoSubTotal(totalItemQty.toString(), totalPayment, dataList.isEmpty())
     }
 
     private fun updateSummaryTransactionUiModel(
         subtotalBeforeSlashedPrice: Double,
         subtotalPrice: Double,
         totalItemQty: Int,
-        subtotalCashback: Double
+        subtotalCashback: Double,
+        totalAddOnPrice: Double
     ) {
+        val priceAfterAddon = subtotalPrice + totalAddOnPrice
+        val priceAfterAddonBeforeSlashedPrice = subtotalBeforeSlashedPrice + totalAddOnPrice
+
         summaryTransactionUiModel?.qty = totalItemQty.toString()
-        if (subtotalBeforeSlashedPrice == 0.0) {
+        if (priceAfterAddonBeforeSlashedPrice == 0.0) {
             summaryTransactionUiModel?.totalValue = subtotalPrice.toLong()
         } else {
             summaryTransactionUiModel?.totalValue = subtotalBeforeSlashedPrice.toLong()
         }
         summaryTransactionUiModel?.discountValue =
-            (subtotalBeforeSlashedPrice - subtotalPrice).toLong()
-        summaryTransactionUiModel?.paymentTotal = subtotalPrice.toLong()
+            (priceAfterAddonBeforeSlashedPrice - priceAfterAddon).toLong()
+        summaryTransactionUiModel?.paymentTotal = priceAfterAddon.toLong()
         summaryTransactionUiModel?.sellerCashbackValue = subtotalCashback.toLong()
     }
 
@@ -790,11 +813,12 @@ class CartListPresenter @Inject constructor(
         return Triple(tmpSubtotalBeforeSlashedPrice, tmpSubTotalPrice, tmpSubtotalCashback)
     }
 
-    private fun calculatePriceMarketplaceProduct(allCartItemDataList: ArrayList<CartItemHolderData>): Triple<Int, Pair<Double, Double>, Double> {
+    private fun calculatePriceMarketplaceProduct(allCartItemDataList: ArrayList<CartItemHolderData>): Triple<Int, Triple<Double, Double, Double>, Double> {
         var totalItemQty = 0
         var subtotalBeforeSlashedPrice = 0.0
         var subtotalPrice = 0.0
         var subtotalCashback = 0.0
+        var totalAddOnPrice = 0.0
 
         val subtotalWholesaleBeforeSlashedPriceMap = HashMap<String, Double>()
         val subtotalWholesalePriceMap = HashMap<String, Double>()
@@ -864,6 +888,17 @@ class CartListPresenter @Inject constructor(
                 subtotalPrice = returnValueNormalProduct.second
                 subtotalCashback = returnValueNormalProduct.third
             }
+
+            if (cartItemHolderData.addOnsProduct.listData.isNotEmpty()) {
+                totalQtyWithAddon = itemQty
+                cartItemHolderData.addOnsProduct.listData.forEach {
+                    val qtyToCalculate = if (it.fixedQuantity) 1 else totalQtyWithAddon
+
+                    // subtotalPrice += (qtyToCalculate * it.price)
+                    totalAddOnPrice += (qtyToCalculate * it.price)
+                    // subtotalBeforeSlashedPrice += (qtyToCalculate * it.price)
+                }
+            }
         }
 
         if (subtotalWholesaleBeforeSlashedPriceMap.isNotEmpty()) {
@@ -884,7 +919,7 @@ class CartListPresenter @Inject constructor(
             }
         }
 
-        val pricePair = Pair(subtotalBeforeSlashedPrice, subtotalPrice)
+        val pricePair = Triple(subtotalBeforeSlashedPrice, subtotalPrice, totalAddOnPrice)
         return Triple(totalItemQty, pricePair, subtotalCashback)
     }
 
@@ -1387,6 +1422,10 @@ class CartListPresenter @Inject constructor(
             setDimension45(cartItemHolderData.cartId)
             setDimension54(cartItemHolderData.isFulfillment)
             setDimension53(cartItemHolderData.productOriginalPrice > 0)
+            setShopId(cartItemHolderData.shopHolderData.shopId)
+            setShopName(cartItemHolderData.shopHolderData.shopName)
+            setShopType(cartItemHolderData.shopHolderData.shopTypeInfo.titleFmt)
+            setDimension82(cartItemHolderData.categoryId)
             setProductName(cartItemHolderData.productName)
             setProductID(cartItemHolderData.productId)
             setPrice(cartItemHolderData.productPrice.toString())
@@ -1398,9 +1437,6 @@ class CartListPresenter @Inject constructor(
             )
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setQty(cartItemHolderData.quantity)
-            setShopId(cartItemHolderData.shopHolderData.shopId)
-            setShopType(cartItemHolderData.shopHolderData.shopTypeInfo.titleFmt)
-            setShopName(cartItemHolderData.shopHolderData.shopName)
             setCategoryId(cartItemHolderData.categoryId)
             setWarehouseId(cartItemHolderData.warehouseId)
             setProductWeight(cartItemHolderData.productWeight.toString())
@@ -1422,6 +1458,7 @@ class CartListPresenter @Inject constructor(
             } else {
                 setBoAffordability("")
             }
+            setDimension136(cartItemHolderData.cartString)
         }
         return enhancedECommerceProductCartMapData
     }
@@ -2115,7 +2152,8 @@ class CartListPresenter @Inject constructor(
                         Product(
                             it.productId.toLong(),
                             it.isFreeShipping,
-                            it.isFreeShippingExtra
+                            it.isFreeShippingExtra,
+                            it.shopHolderData.shopId.toLongOrZero()
                         )
                     }
                 }

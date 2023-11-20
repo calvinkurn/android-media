@@ -7,7 +7,6 @@ import com.tokopedia.productcard.compact.productcard.presentation.customview.Pro
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
@@ -33,6 +32,8 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherW
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultTrackerListener
 
 class SearchTypeFactoryImpl(
     tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener,
@@ -44,7 +45,8 @@ class SearchTypeFactoryImpl(
     productItemListener: ProductItemListener,
     productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener,
     switcherWidgetListener: SwitcherWidgetListener,
-    tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultListener,
+    tokoNowEmptyStateNoResultTrackerListener: TokoNowEmptyStateNoResultTrackerListener,
     productRecommendationBindOocListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener,
     productRecommendationOocListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
     productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?,
@@ -65,6 +67,7 @@ class SearchTypeFactoryImpl(
     productItemListener,
     switcherWidgetListener,
     tokoNowEmptyStateNoResultListener,
+    tokoNowEmptyStateNoResultTrackerListener,
     feedbackWidgetListener,
     productCardCompactListener,
     productCardCompactSimilarProductTrackerListener,

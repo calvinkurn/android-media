@@ -29,6 +29,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
+import com.tokopedia.dialog.R as dialogR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.coachmark.R as coachmarkR
 
 /**
  * Created By : Jonathan Darwin on April 12, 2023
@@ -61,11 +64,12 @@ class BeautificationRobot {
         mockCoachMarkSharedPref = mockContentCoachMarkSharedPref,
         mockBroadcastTimer = mockBroadcastTimer,
         mockGetChannelUseCase = mockGetChannelUseCase,
-        mockValueWrapper = mockValueWrapper,
+        mockGetAddedTagUseCase = mockGetAddedTagUseCase,
+        mockValueWrapper = mockValueWrapper
     )
 
     private val playBroadcastRepositoryTestModule = PlayBroadcastRepositoryTestModule(
-        mockRepo = mockRepo
+        mockRepo = mockRepo,
     )
 
     fun init() {
@@ -101,7 +105,7 @@ class BeautificationRobot {
         coEvery {
             mockContentCoachMarkSharedPref.hasBeenShown(
                 ContentCoachMarkSharedPref.Key.PlayBroadcasterFaceFilter,
-                any(),
+                any()
             )
         } returns true
     }
@@ -125,7 +129,6 @@ class BeautificationRobot {
         launch()
             .performDelay(1000)
             .clickDialogPrimaryCTA()
-
     }
 
     fun launchLiveWithNoDownloadedPreset() = chainable {
@@ -144,7 +147,6 @@ class BeautificationRobot {
 
         launch()
             .clickDialogPrimaryCTA()
-
     }
 
     fun clickBeautificationMenu() = chainable {
@@ -153,7 +155,7 @@ class BeautificationRobot {
     }
 
     fun clickCloseBeautificationCoachMark() = chainable {
-        click(com.tokopedia.coachmark.R.id.simple_ic_close) {
+        click(coachmarkR.id.simple_ic_close) {
             inRoot(RootMatchers.isPlatformPopup())
         }
     }
@@ -180,19 +182,19 @@ class BeautificationRobot {
     }
 
     fun clickDialogPrimaryCTA() = chainable {
-        click(com.tokopedia.dialog.R.id.dialog_btn_primary)
+        click(dialogR.id.dialog_btn_primary)
     }
 
     fun clickDialogSecondaryCTA() = chainable {
-        click(com.tokopedia.dialog.R.id.dialog_btn_secondary)
+        click(dialogR.id.dialog_btn_secondary)
     }
 
     fun slideBeautificationSlider(distance: Float) = chainable {
-        horizontalSlide(com.tokopedia.unifycomponents.R.id.range_slider_max_button, distance)
+        horizontalSlide(unifycomponentsR.id.range_slider_max_button, distance)
     }
 
     fun clickToasterCTA() = chainable {
-        click(com.tokopedia.unifycomponents.R.id.snackbar_btn)
+        click(unifycomponentsR.id.snackbar_btn)
     }
 
     fun performDelay(delayInMillis: Long = 500) = chainable {

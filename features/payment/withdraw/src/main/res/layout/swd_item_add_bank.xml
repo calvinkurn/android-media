@@ -1,14 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifyprinciples.Typography xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tvBankAccountSettingTitle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/unify_space_8"
-    android:drawablePadding="@dimen/unify_space_16"
-    android:paddingTop="@dimen/unify_space_8"
-    android:paddingBottom="@dimen/unify_space_8"
-    android:textColor="@color/Unify_NN950_68"
-    app:typographyType="heading_5"
-    tools:text="@string/swd_title_add_account_bank" />
+    android:orientation="horizontal">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icAdd"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:visibility="gone"
+        app:icon_name="ADD_CIRCLE"
+        tools:visibility="visible"
+        android:layout_marginRight="8dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBankAccountSettingTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/unify_space_16"
+        android:textColor="@color/Unify_NN600"
+        android:layout_gravity="center_vertical"
+        app:typographyType="heading_5"
+        tools:text="@string/swd_title_add_account_bank" />
+
+</LinearLayout>

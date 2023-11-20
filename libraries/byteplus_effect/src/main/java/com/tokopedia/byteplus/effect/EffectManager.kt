@@ -17,11 +17,18 @@ interface EffectManager {
     fun setupTexture(
         surfaceWidth: Int,
         surfaceHeight: Int,
+        textureWidth: Int,
+        textureHeight: Int,
+    )
+
+    fun updateSurfaceTexture(
+        surfaceWidth: Int,
+        surfaceHeight: Int,
+        textureWidth: Int,
+        textureHeight: Int,
     )
 
     fun setRenderListener(
-        surfaceWidth: Int,
-        surfaceHeight: Int,
         listener: Listener,
     )
 
@@ -31,6 +38,7 @@ interface EffectManager {
         surfaceWidth: Int,
         surfaceHeight: Int,
         dstTexture: Int,
+        isFlip: Boolean,
     )
 
     fun setCameraPosition(isFront: Boolean)

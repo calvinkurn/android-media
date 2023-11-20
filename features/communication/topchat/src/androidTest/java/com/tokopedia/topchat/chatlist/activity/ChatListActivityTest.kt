@@ -32,6 +32,7 @@ class ChatListActivityTest : ChatListTest() {
         // Given
         (userSession as UserSessionStub).hasShopStub = false
         chatListUseCase.response = exEmptyChatListPojo
+        setLastSeenTab(isSellerTab = false)
 
         // When
         startChatListActivity()
@@ -52,6 +53,7 @@ class ChatListActivityTest : ChatListTest() {
         // Given
         (userSession as UserSessionStub).hasShopStub = false
         chatListUseCase.response = exSize2ChatListPojo
+        setLastSeenTab(isSellerTab = false)
 
         // When
         startChatListActivity()
@@ -89,6 +91,7 @@ class ChatListActivityTest : ChatListTest() {
         // Given
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = true)
 
         // When
         startChatListActivity()
@@ -103,6 +106,7 @@ class ChatListActivityTest : ChatListTest() {
         // Given
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = true)
 
         // When
         startChatListActivity()
@@ -121,6 +125,7 @@ class ChatListActivityTest : ChatListTest() {
             this.chatWhitelistFeature.isWhitelist = true
         }
         userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = true)
 
         // When
         startChatListActivity()
@@ -136,6 +141,7 @@ class ChatListActivityTest : ChatListTest() {
         // Given
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = false)
 
         // When
         startChatListActivity()
@@ -147,33 +153,34 @@ class ChatListActivityTest : ChatListTest() {
     }
 
     @Test
-    fun should_show_mvc_icon_when_user_on_buyer_tab_and_rollence_active() {
+    fun should_show_mvc_icon_when_user_on_buyer_tab_and_label_is_not_empty() {
         // Given
         chatListUseCase.response = exBroadcastChatListPojo
         userSession.setIsShopOwner(true)
         setLastSeenTab(isSellerTab = false)
-        setRollenceMVCIcon(isActive = true)
 
         // When
         startChatListActivity()
 
         // Then
-        BroadcastResult.assertMVCVoucherVisible(isVisible = true)
+        BroadcastResult.assertMVCVoucherVisible(indexTab = 1, isVisible = true)
     }
 
     @Test
-    fun should_not_show_icon_when_user_on_buyer_tab_and_rollence_inactive() {
+    fun should_not_show_icon_when_user_on_buyer_tab_and_label_is_empty() {
         // Given
         chatListUseCase.response = exBroadcastChatListPojo
+        chatListUseCase.response.apply {
+            this.data.list.first().attributes?.labelIcon = ""
+        }
         userSession.setIsShopOwner(true)
         setLastSeenTab(isSellerTab = false)
-        setRollenceMVCIcon(isActive = false)
 
         // When
         startChatListActivity()
 
         // Then
-        BroadcastResult.assertMVCVoucherVisible(isVisible = false)
+        BroadcastResult.assertMVCVoucherVisible(indexTab = 1, isVisible = false)
     }
 
     @Test
@@ -182,14 +189,13 @@ class ChatListActivityTest : ChatListTest() {
         chatListUseCase.response = exBroadcastChatListPojo
         userSession.setIsShopOwner(true)
         setLastSeenTab(isSellerTab = true)
-        setRollenceMVCIcon(isActive = true)
 
         // When
         startChatListActivity()
 
         // Then
         Thread.sleep(500)
-        BroadcastResult.assertMVCVoucherVisible(isVisible = false)
+        BroadcastResult.assertMVCVoucherVisible(indexTab = 0, isVisible = false)
     }
 
     @Test

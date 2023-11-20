@@ -111,4 +111,6 @@
 
     <string name="download_trx_fee_report_ticker_title">Download laporan biaya transaksi &lt;a href="#"&gt;%1$s&lt;/a&gt;</string>
     <string name="download_trx_fee_report_ticker_title_link">di sini</string>
+
+    <string name="saldo_transaction_detail_account_name">"%1$s - %2$s"</string>
 </resources>

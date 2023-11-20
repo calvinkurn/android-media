@@ -32,7 +32,7 @@ interface PlayShortsRepository {
 
     suspend fun getTagRecommendation(
         creationId: String,
-    ): Set<PlayTagUiModel>
+    ): PlayTagUiModel
 
     suspend fun saveTag(
         shortsId: String,

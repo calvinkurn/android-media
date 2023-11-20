@@ -178,7 +178,10 @@ suspend inline fun View.awaitPreDraw() = suspendCancellableCoroutine<Unit> { con
     val vto = viewTreeObserver
     val listener = object : ViewTreeObserver.OnPreDrawListener {
         override fun onPreDraw(): Boolean {
-            cont.resume(Unit)
+            if (cont.isActive) {
+                cont.resume(Unit)
+            } else return true
+
             when {
                 vto.isAlive -> vto.removeOnPreDrawListener(this)
                 else -> viewTreeObserver.removeOnPreDrawListener(this)

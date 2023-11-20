@@ -54,7 +54,7 @@ class SpacingViewModelTest {
     fun `test for setupSpacingView when data is empty`() {
         coEvery { componentsItem.data } returns null
 
-        viewModel.setupSpacingView()
+        viewModel.setupSpacingView(context)
 
         assert(viewModel.getViewBackgroundColor().value == null)
     }
@@ -66,7 +66,7 @@ class SpacingViewModelTest {
         list.add(item)
         coEvery { componentsItem.data } returns list
 
-        viewModel.setupSpacingView()
+        viewModel.setupSpacingView(context)
 
         assert(viewModel.getViewBackgroundColor().value == null)
     }
@@ -82,7 +82,7 @@ class SpacingViewModelTest {
         list.add(item)
         coEvery { componentsItem.data } returns list
 
-        viewModel.setupSpacingView()
+        viewModel.setupSpacingView(context)
 
         assert(viewModel.getViewHeight().value != null)
 
@@ -99,7 +99,7 @@ class SpacingViewModelTest {
         list.add(item)
         coEvery { componentsItem.data } returns list
 
-        viewModel.setupSpacingView()
+        viewModel.setupSpacingView(context)
 
         assert(viewModel.getViewBackgroundColor().value != null)
     }
@@ -114,7 +114,7 @@ class SpacingViewModelTest {
         list.add(item)
         coEvery { componentsItem.data } returns list
 
-        viewModel.setupSpacingView()
+        viewModel.setupSpacingView(context)
 
         assert(viewModel.getViewBackgroundColor().value != null)
     }

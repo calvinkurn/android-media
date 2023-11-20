@@ -1,7 +1,9 @@
 package com.tokopedia.shop.home.view.model
 
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 
 data class ShopHomeFlashSaleUiModel(
     override val widgetId: String,
@@ -15,8 +17,12 @@ data class ShopHomeFlashSaleUiModel(
 
     val impressHolder = ImpressHolder()
 
-    override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
-        return typeFactory.type(this)
+    override fun type(typeFactory: ShopWidgetTypeFactory): Int {
+        return if (typeFactory is ShopHomeAdapterTypeFactory) {
+            typeFactory.type(this)
+        } else {
+            Int.ZERO
+        }
     }
     data class FlashSaleItem(
         val campaignId: String = "",

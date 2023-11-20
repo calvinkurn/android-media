@@ -30,13 +30,25 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
+import com.tokopedia.home_component.listener.MixTopComponentListener
+import com.tokopedia.home_component.model.ChannelBanner
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelHeader
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleTimerDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
+import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleProductGridShimmerDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.loader.module.GlideApp
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLOSE_MEMBERSHIP
@@ -65,11 +77,16 @@ import com.tokopedia.thankyou_native.presentation.adapter.factory.BottomContentF
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
+import com.tokopedia.thankyou_native.presentation.helper.PostPurchaseShareHelper
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
+import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel.Companion.FLASHSALE_TAG
 import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListener
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
+import com.tokopedia.thankyou_native.presentation.views.listener.BannerListener
+import com.tokopedia.thankyou_native.presentation.views.listener.FlashSaleWidgetListener
 import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
+import com.tokopedia.thankyou_native.presentation.views.listener.MixTopComponentListenerCallback
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -88,6 +105,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 import javax.inject.Inject
 
@@ -95,7 +113,9 @@ abstract class ThankYouBaseFragment :
     BaseDaggerFragment(),
     OnDialogRedirectListener,
     RegisterMemberShipListener,
-    MarketplaceRecommendationListener {
+    MarketplaceRecommendationListener,
+    BannerListener,
+    FlashSaleWidgetListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
@@ -118,6 +138,9 @@ abstract class ThankYouBaseFragment :
 
     @Inject
     lateinit var gyroRecommendationAnalytics: dagger.Lazy<GyroRecommendationAnalytics>
+
+    @Inject
+    lateinit var postPurchaseShareHelper: dagger.Lazy<PostPurchaseShareHelper>
 
     override var iRecommendationView: IRecommendationView? = null
 
@@ -147,10 +170,12 @@ abstract class ThankYouBaseFragment :
     private var gyroTokomemberItemSuccess: GyroTokomemberItem? = null
     private var memberShipCardId: String = ""
 
+    private var trackingQueue: TrackingQueue? = null
+
     private val bottomContentAdapter: BottomContentAdapter by lazy(LazyThreadSafetyMode.NONE) {
         BottomContentAdapter(
             ArrayList(),
-            BottomContentFactory(this, this)
+            BottomContentFactory(this, this, this, MixTopComponentListenerCallback(this))
         )
     }
 
@@ -173,11 +198,6 @@ abstract class ThankYouBaseFragment :
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        digitalRecomTrackingQueue?.sendAll()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getFeatureListingContainer()?.gone()
@@ -198,13 +218,20 @@ abstract class ThankYouBaseFragment :
                 this::showTopAdsHeadlineView,
                 this::hideTopAdsHeadlineView
             )
+
+            showOnBoardingShare()
         }
     }
 
     private fun getFeatureRecommendationData() {
         thanksPageData.configFlagData?.apply {
             if (isThanksWidgetEnabled && shouldHideFeatureRecom == false) {
-                thanksPageDataViewModel.checkForGoPayActivation(thanksPageData)
+                thanksPageDataViewModel.checkForGoPayActivation(
+                    thanksPageData,
+                    ChooseAddressUtils
+                        .getLocalizingAddressData(this@ThankYouBaseFragment.requireContext())
+                        .convertToLocationParams()
+                )
             }
         }
     }
@@ -688,6 +715,28 @@ abstract class ThankYouBaseFragment :
         return RouteManager.getIntent(context, ApplinkConst.PURCHASE_ORDER)
     }
 
+    override fun getFlashSaleWidgetPosition(): Int {
+        return thanksPageDataViewModel.widgetOrder.indexOf(FLASHSALE_TAG)
+    }
+    override fun getTrackingQueueObj(): TrackingQueue? {
+        if (trackingQueue == null) {
+            activity?.let {
+                trackingQueue = TrackingQueue(it)
+            }
+        }
+        return trackingQueue
+    }
+    override fun getUserId(): String {
+        return userSession.userId
+    }
+    override fun route(applink: String) {
+        RouteManager.route(context, applink)
+    }
+    override fun getMerchantCode(): String = thanksPageData.merchantCode
+    override fun getPaymentId(): String = thanksPageData.paymentID
+    override fun getPaymentMethod(): String = thanksPageData.gatewayName
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (iRecommendationView != null) {
@@ -736,27 +785,6 @@ abstract class ThankYouBaseFragment :
         val isAboveRecomm = cpmModel.data[0].cpm.position == 1
 
         if (isWidgetOrderingEnabled) {
-            if (!isAboveRecomm) {
-                val newList = thanksPageDataViewModel.widgetOrder.toMutableList()
-
-                val digitalIndex = newList.indexOf(DigitalRecommendationWidgetModel.TAG)
-                val marketplaceIndex = newList.indexOf(MarketplaceRecommendationWidgetModel.TAG)
-                val headlineIndex = newList.indexOf(HeadlineAdsWidgetModel.TAG)
-
-                if (headlineIndex != -1) {
-                    if (digitalIndex != -1 || marketplaceIndex != -1) {
-                        newList.removeAt(headlineIndex)
-
-                        newList.add(
-                            maxOf(marketplaceIndex, digitalIndex) + 1,
-                            HeadlineAdsWidgetModel.TAG
-                        )
-                    }
-                }
-
-                thanksPageDataViewModel.widgetOrder = newList
-            }
-
             thanksPageDataViewModel.addBottomContentWidget(HeadlineAdsWidgetModel(cpmModel))
             return
         }
@@ -782,6 +810,17 @@ abstract class ThankYouBaseFragment :
         } else if (bottomSheetContentItem.membershipType == CLOSE_MEMBERSHIP) {
             openTokomemberBottomsheet()
         }
+    }
+
+    override fun onBannerClick(bannerItem: BannerItem, position: Int) {
+        if (context == null) return
+        thankYouPageAnalytics.get().sendBannerClickEvent(thanksPageData, bannerItem, position)
+        RouteManager.route(context, bannerItem.applink)
+    }
+
+    override fun onBannerImpressed(bannerItem: BannerItem, position: Int) {
+        if (context == null) return
+        thankYouPageAnalytics.get().sendBannerImpressionEvent(thanksPageData, bannerItem, position)
     }
 
     private fun openTokomemberBottomsheet() {
@@ -913,6 +952,24 @@ abstract class ThankYouBaseFragment :
                 indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
                 slideToShow =
                     if (banner.items.size > 1) SLIDE_TO_SHOW_MULTIPLE_ITEM else SLIDE_TO_SHOW_1_ITEM
+            }
+        }
+    }
+
+    private fun showOnBoardingShare() {
+        if (isAdded) {
+            activity?.let {
+                val navToolbar: NavToolbar? = it.findViewById(R.id.globalNabToolbar)
+                navToolbar?.let { toolbar ->
+                    toolbar.getShareIconView()?.let { id ->
+                        context?.let { context ->
+                            postPurchaseShareHelper.get().showCoachMarkShare(
+                                context = context,
+                                anchorView = id
+                            )
+                        }
+                    }
+                }
             }
         }
     }

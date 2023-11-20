@@ -14,17 +14,17 @@ import java.util.concurrent.TimeoutException
  */
 
 fun GetHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel: HomeRecommendationDataModel) {
-    setParams("", 0, 10, 0, sourceType = "")
+    setParams("", 0, 10, 0, "", sourceType = "")
     coEvery { executeOnBackground() } returns homeRecommendationDataModel
 }
 
 fun GetHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel: HomeRecommendationDataModel, nextReturnData: HomeRecommendationDataModel) {
-    setParams("", 0, 10, 0, sourceType = "")
+    setParams("", 0, 10, 0, "", sourceType = "")
     coEvery { executeOnBackground() } returns homeRecommendationDataModel andThen nextReturnData
 }
 
 fun GetHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel: HomeRecommendationDataModel, exception: Exception) {
-    setParams("", 0, 10, 0, sourceType = "")
+    setParams("", 0, 10, 0, "", sourceType = "")
     coEvery { executeOnBackground() } returns homeRecommendationDataModel andThenThrows exception
 }
 

@@ -1,8 +1,11 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.domain
 
+import android.content.Context
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
 import com.gojek.OneKycSdk
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.network.exception.MessageErrorException
 import kotlinx.coroutines.withContext
@@ -10,6 +13,7 @@ import javax.inject.Inject
 
 class CheckEligibilityUseCase @Inject constructor(
     private val oneKycSdk: OneKycSdk,
+    @ApplicationContext private val context: Context,
     private val dispatchers: CoroutineDispatchers
 ) {
     suspend fun invoke(): CheckEligibilityResult {
@@ -37,14 +41,39 @@ class CheckEligibilityUseCase @Inject constructor(
                     }
                 }
             } else {
-                CheckEligibilityResult.Failed(MessageErrorException(response.errors?.first()?.message.orEmpty()))
+                CheckEligibilityResult.Failed(
+                    mappingErrorMessage(
+                        message = response.errors?.first()?.message.orEmpty(),
+                        errorCode = response.errors?.first()?.code.orEmpty()
+                    )
+                )
             }
         }
+    }
+
+    private fun mappingErrorMessage(message: String, errorCode: String): MessageErrorException {
+        var keyKnowError = ""
+        val messageError: String
+
+        when {
+            LIST_COMMON_ERROR_CODE.contains(errorCode) -> {
+                messageError = context.getString(R.string.goto_kyc_error_know_code)
+                keyKnowError = KYCConstant.KEY_KNOWN_ERROR_CODE
+            }
+            else -> {
+                messageError = message
+            }
+        }
+
+        val generateErrorCode = context.getString(R.string.error_code, errorCode)
+
+        return MessageErrorException("$messageError $generateErrorCode", keyKnowError)
     }
 
     companion object {
         private const val FLOW = "flow"
         private const val REASON_CODE = "reasonCode"
+        private val LIST_COMMON_ERROR_CODE = listOf("1539", "30009", "30003", "900", "1546")
     }
 }
 

@@ -4,10 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemSomProductBundlingProductBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
@@ -22,11 +23,11 @@ class SomDetailProductBundlingAdapter(
     private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?
 ) : RecyclerView.Adapter<SomDetailProductBundlingAdapter.ViewHolder>() {
 
-    var products = emptyList<SomDetailOrder.Data.GetSomDetail.Details.Product>()
+    var products = emptyList<SomDetailOrder.GetSomDetail.Details.Product>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_som_product_bundling_product, parent, false)
+            .inflate(R.layout.item_som_product_bundling_product, parent, false)
         return ViewHolder(view)
     }
 
@@ -40,18 +41,24 @@ class SomDetailProductBundlingAdapter(
 
         private val binding by viewBinding<ItemSomProductBundlingProductBinding>()
 
-        fun bind(product: SomDetailOrder.Data.GetSomDetail.Details.Product) {
+        fun bind(product: SomDetailOrder.GetSomDetail.Details.Product) {
             binding?.run {
                 root.setOnClickListener {
                     actionListener?.onClickProduct(product.orderDetailId.toLongOrZero())
                 }
-                imgSomBundleProduct.loadImage(product.thumbnail)
+                imgSomBundleProduct.loadProductImage(
+                    url = product.thumbnail,
+                    archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
+                )
                 tvSomBundleProductName.text = product.name
                 tvSomBundlePrice.text = StringBuilder("${product.quantity} x ${product.priceText}")
                 if (product.note.isNotEmpty()) {
                     tvSomBundleNotes.visible()
-                    tvSomBundleNotes.text = product.note.replace("\\n", System.getProperty("line.separator")
-                            ?: "")
+                    tvSomBundleNotes.text = product.note.replace(
+                        "\\n",
+                        System.getProperty("line.separator")
+                            ?: ""
+                    )
                 } else {
                     tvSomBundleNotes.gone()
                 }

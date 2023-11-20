@@ -42,7 +42,19 @@ data class KycProjectInfo(
 	val dataSource: String = "",
 
     @SerializedName("WaitMessage")
-    val waitMessage: String = ""
+    val waitMessage: String = "",
+
+    @SerializedName("ErrorMessages")
+    val errorMessages: List<String> = emptyList(),
+
+    @SerializedName("ErrorCode")
+    val errorCode: String = "",
+
+    @SerializedName("IsBlocked")
+    val isBlocked: Boolean = false,
+
+    @SerializedName("NonEligibleGoToKYCReason")
+    val nonEligibleGoToKYCReason: String = ""
 )
 
 data class TypeListItem(

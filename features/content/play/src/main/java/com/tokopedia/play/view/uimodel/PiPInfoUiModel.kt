@@ -12,6 +12,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
 data class PiPInfoUiModel(
         val channelId: String,
         val source: PlaySource,
+        val pageSourceName: String, // for tracker
         val partnerId: Long?,
         val channelType: PlayChannelType,
         val videoPlayer: PlayVideoPlayerUiModel.General,

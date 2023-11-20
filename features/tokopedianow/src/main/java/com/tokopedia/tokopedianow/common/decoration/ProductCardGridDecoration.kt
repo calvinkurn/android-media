@@ -8,7 +8,8 @@ import com.tokopedia.tokopedianow.R
 
 class ProductCardGridDecoration(
     private val spacing: Int,
-): RecyclerView.ItemDecoration() {
+    private val topSpacing: Int? = null
+) : RecyclerView.ItemDecoration() {
 
     companion object {
         const val INVALID_ITEM_POSITION = -1
@@ -23,11 +24,12 @@ class ProductCardGridDecoration(
         const val DIVIDED_BY_FOUR = 4
     }
 
-    override fun getItemOffsets(outRect: Rect,
-                                view: View,
-                                parent: RecyclerView,
-                                state: RecyclerView.State) {
-
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
+    ) {
         val absolutePos = parent.getChildAdapterPosition(view)
         val halfSpace = spacing / DIVIDED_BY_TWO
         val quarterSpace = spacing / DIVIDED_BY_FOUR
@@ -57,7 +59,13 @@ class ProductCardGridDecoration(
         return if (layoutManager is GridLayoutManager) layoutManager.spanCount else SPAN_COUNT_DEFAULT
     }
 
-    private fun getTopOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int = if (isTopProductItem(parent, absolutePos, relativePos, totalSpanCount)) spacing / DIVIDED_BY_TWO else spacing / DIVIDED_BY_FOUR
+    private fun getTopOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int {
+        return if (isTopProductItem(parent, absolutePos, relativePos, totalSpanCount)) {
+            topSpacing ?: (spacing / DIVIDED_BY_TWO)
+        } else {
+            spacing / DIVIDED_BY_FOUR
+        }
+    }
 
     private fun getLeftProductOffset(relativePos: Int, halfSpace: Int): Int = when (relativePos) {
         START_PRODUCT_POSITION -> spacing

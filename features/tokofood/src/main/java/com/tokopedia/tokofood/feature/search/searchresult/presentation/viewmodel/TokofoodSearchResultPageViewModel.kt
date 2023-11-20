@@ -15,8 +15,6 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.logisticCommon.data.constant.AddressConstant
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodFilterSortMapper
@@ -54,7 +52,6 @@ import javax.inject.Inject
 class TokofoodSearchResultPageViewModel @Inject constructor(
     private val tokofoodSearchMerchantUseCase: TokofoodSearchMerchantUseCase,
     private val tokofoodFilterSortUseCase: TokofoodFilterSortUseCase,
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
     private val tokofoodMerchantSearchResultMapper: TokofoodMerchantSearchResultMapper,
     private val tokofoodFilterSortMapper: TokofoodFilterSortMapper,
@@ -280,7 +277,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         val localCacheModel = localCacheModelLiveData.value
         val addressId = localCacheModel?.address_id
         if (addressId.isNullOrBlank()) {
-            checkEligibleForAnaRevamp()
+            emitNoAddressRevampState()
         } else {
             editPinpoint(addressId, latitude, longitude)
         }
@@ -420,7 +417,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         localCacheModelLiveData.value.let {
             when {
                 it == null || it.address_id.isBlank() -> {
-                    checkEligibleForAnaRevamp()
+                    emitNoAddressRevampState()
                 }
                 it.latLong.isBlank() -> {
                     emitNoPinpointState()
@@ -430,22 +427,6 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun checkEligibleForAnaRevamp() {
-        eligibleForAddressUseCase.eligibleForAddressFeature(
-            {
-                if (it.eligibleForRevampAna.eligible) {
-                    emitNoAddressRevampState()
-                } else {
-                    emitNoAddressState()
-                }
-            },
-            {
-                emitNoAddressState()
-            },
-            AddressConstant.ANA_REVAMP_FEATURE_ID
-        )
     }
 
     private suspend fun emitSuccessIfInCoverage(
@@ -464,15 +445,6 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
             TokofoodSearchUiState(
                 state = TokofoodSearchUiState.STATE_OOC,
                 data = MerchantSearchOOCUiModel.NO_PINPOINT
-            )
-        )
-    }
-
-    private fun emitNoAddressState() {
-        _uiState.tryEmit(
-            TokofoodSearchUiState(
-                state = TokofoodSearchUiState.STATE_OOC,
-                data = MerchantSearchOOCUiModel.NO_ADDRESS
             )
         )
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
@@ -26,9 +27,9 @@ import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycOnboardProgressive
 import com.tokopedia.kyc_centralized.di.DaggerGoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycMainActivity
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycMainParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycRouterFragment
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -47,6 +48,12 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<LayoutGotoKycOnboardProgressiveBinding>()
 
+    private var exhaustedParam = DobChallengeExhaustedParam()
+    private var isLaunchCallback = false
+
+    private var dismissDialogWithDataListener: (DobChallengeExhaustedParam) -> Unit = {}
+    private var dismissDialogLaunchCallBackListener: (Unit) -> Unit = {}
+
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
             Activity.RESULT_OK -> {
@@ -54,6 +61,10 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
             }
             KYCConstant.ActivityResult.RESULT_FINISH -> {
                 finishWithResult(Activity.RESULT_CANCELED)
+            }
+            KYCConstant.ActivityResult.LAUNCH_CALLBACK -> {
+                isLaunchCallback = true
+                dismiss()
             }
         }
     }
@@ -72,6 +83,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     private var projectId = ""
     private var source = ""
+    private var callback = ""
     private var encryptedName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,6 +93,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         arguments?.let {
             projectId = it.getString(PROJECT_ID).orEmpty()
             source = it.getString(SOURCE).orEmpty()
+            callback = it.getString(CALLBACK).orEmpty()
             encryptedName = it.getString(ENCRYPTED_NAME).orEmpty()
         }
     }
@@ -118,8 +131,6 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         )
 
         binding?.consentGotoKycProgressive?.load(
-            lifecycleOwner = viewLifecycleOwner,
-            viewModelStoreOwner = this,
             consentCollectionParam = consentParam
         )
 
@@ -128,6 +139,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun initView() {
         setTokopediaCareView()
         binding?.apply {
@@ -159,11 +171,21 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                 is RegisterProgressiveResult.Loading -> {
                     setButtonLoading(true)
                 }
+                is RegisterProgressiveResult.Exhausted -> {
+                    setButtonLoading(false)
+                    exhaustedParam.apply {
+                        isExhausted = true
+                        cooldownTimeInSeconds = it.cooldownTimeInSeconds
+                        maximumAttemptsAllowed = it.maximumAttemptsAllowed
+                    }
+                    dismiss()
+                }
                 is RegisterProgressiveResult.RiskyUser -> {
                     setButtonLoading(false)
                     val parameter = GotoKycMainParam(
                         projectId = projectId,
-                        challengeId = it.challengeId
+                        challengeId = it.challengeId,
+                        callback = callback
                     )
                     gotoDobChallenge(parameter)
                 }
@@ -174,7 +196,8 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                         sourcePage = source,
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                         status = it.status.toString(),
-                        rejectionReason = it.rejectionReason
+                        rejectionReason = it.rejectionReason,
+                        callback = callback
                     )
                     gotoStatusSubmissionPending(parameter)
                 }
@@ -211,6 +234,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun setTokopediaCareView() {
         val message = getString(R.string.goto_kyc_question_ktp_issue)
         val spannable = SpannableString(message)
@@ -259,6 +283,11 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
+        if (isLaunchCallback) {
+            dismissDialogLaunchCallBackListener(Unit)
+        } else {
+            dismissDialogWithDataListener(exhaustedParam)
+        }
 
         GotoKycAnalytics.sendClickOnButtonCloseOnboardingBottomSheet(
             projectId = projectId,
@@ -266,21 +295,37 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         )
     }
 
+    fun setOnLaunchCallbackListener(isLaunchCallback: (Unit) -> Unit) {
+        dismissDialogLaunchCallBackListener = isLaunchCallback
+    }
+
+    fun setOnDismissWithDataListener(exhaustedParam: (DobChallengeExhaustedParam) -> Unit) {
+        dismissDialogWithDataListener = exhaustedParam
+    }
+
     companion object {
         private const val PATH_TOKOPEDIA_CARE = "help/article/nama-yang-muncul-bukan-nama-saya?lang=id?isBack=true"
 
         private const val PROJECT_ID = "project_id"
         private const val SOURCE = "source"
+        private const val CALLBACK = "callBack"
         private const val ENCRYPTED_NAME = "encrypted_name"
 
-        fun newInstance(projectId: String, source: String, encryptedName: String) =
+        fun newInstance(projectId: String, source: String, encryptedName: String, callback: String) =
             OnboardProgressiveBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(PROJECT_ID, projectId)
                     putString(SOURCE, source)
+                    putString(CALLBACK, callback)
                     putString(ENCRYPTED_NAME, encryptedName)
                 }
             }
     }
 
 }
+
+data class DobChallengeExhaustedParam(
+    var isExhausted: Boolean = false,
+    var cooldownTimeInSeconds: String = "",
+    var maximumAttemptsAllowed: String = ""
+)

@@ -73,6 +73,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected String authKey;
     private NetworkRouter networkRouter;
 
+    boolean isRefreshing = false;
+
     @Deprecated
     /*
       use interface instead.
@@ -357,13 +359,20 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     private String getNewToken(Response response, Request finalRequest) {
-        try {
-            AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-            String path = getRefreshQueryPath(finalRequest, response);
-            return accessTokenRefresh.refreshToken(context, userSession, networkRouter, path);
-        }catch (Exception e) {
-            return "";
+        if (!isRefreshing) {
+            isRefreshing = true;
+            try {
+                AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+                String path = getRefreshQueryPath(finalRequest, response);
+                String newToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, path);
+                isRefreshing = false;
+                return newToken;
+            } catch (Exception e) {
+                isRefreshing = false;
+                return "";
+            }
         }
+        return "";
     }
 
     protected Response refreshTokenAndGcmUpdate(Chain chain, Response response, Request finalRequest) throws IOException {

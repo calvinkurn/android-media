@@ -26,10 +26,21 @@ sealed class PlayProductUiModel {
         val number: String,
         val isNumerationShown: Boolean,
         val rating: String,
+        val label: Label,
         val soldQuantity: String,
+
     ) : PlayProductUiModel() {
 
         val impressHolder = ImpressHolder()
+        data class Label (
+            val rankColors: List<String>,
+            val rankFmt: String,
+            val rankType: String,
+        ) {
+            companion object {
+                const val RIBBON_TYPE_DEFAULT = "no ribbon"
+            }
+        }
 
         companion object {
             val Empty: Product
@@ -52,6 +63,11 @@ sealed class PlayProductUiModel {
                     isNumerationShown = false,
                     rating = "",
                     soldQuantity = "",
+                    label = Label(
+                        rankColors = emptyList(),
+                        rankFmt = "",
+                        rankType = "",
+                    )
                 )
         }
     }

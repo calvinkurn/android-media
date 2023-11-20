@@ -34,6 +34,9 @@ data class DataItem(
     @SerializedName("target_component_id")
     var targetComponentId: String? = "",
 
+    @SerializedName("target_component_ids")
+    var targetComponentIds: List<Int> = emptyList(),
+
     @SerializedName("background_image")
     val backgroundImage: String? = "",
 
@@ -115,6 +118,9 @@ data class DataItem(
     @SerializedName("action")
     val action: String? = "",
 
+    @SerializedName("move_action")
+    val moveAction: MoveAction? = null,
+
     @SerializedName("notification_title")
     val notificationTitle: String? = "",
 
@@ -148,7 +154,7 @@ data class DataItem(
     @SerializedName("box_color", alternate = ["background_color", "header_color"])
     val boxColor: String? = "",
 
-    @SerializedName("font_color", alternate = ["text_color"])
+    @SerializedName("font_color", alternate = ["text_color", "benefit_text_color"])
     val fontColor: String? = "",
 
     @SerializedName("variant")
@@ -157,7 +163,7 @@ data class DataItem(
     @SerializedName("color")
     val color: String? = "",
 
-    @SerializedName("button_text")
+    @SerializedName("button_text", alternate = ["cta_redirection_text"])
     var buttonText: String? = "",
 
     @SerializedName("creative_name")
@@ -256,7 +262,7 @@ data class DataItem(
     @SerializedName("subtitle")
     val subtitle: String? = "",
 
-    @SerializedName("subtitle_1")
+    @SerializedName("subtitle_1", alternate = ["min_purchase_str"])
     val subtitle_1: String? = "",
 
     @SerializedName("thumbnail_url")
@@ -385,6 +391,9 @@ data class DataItem(
     @SerializedName("image")
     val image: String = "",
 
+    @SerializedName("lottie_image")
+    val lottieImage: String = "",
+
     @SerializedName("tracking_fields")
     val trackingFields: TrackingFields? = null,
 
@@ -436,7 +445,7 @@ data class DataItem(
     @SerializedName("shop_type")
     val shopType: String? = null,
 
-    @SerializedName("shop_badge_image_url")
+    @SerializedName("shop_badge_image_url", alternate = ["shop_badge"])
     val shopBadgeImageUrl: String? = null,
 
     @SerializedName("benefit_title")
@@ -483,7 +492,7 @@ data class DataItem(
 
     var quantity: Int = 0,
 
-    @SerializedName("backgroud_image_url")
+    @SerializedName("backgroud_image_url", alternate = ["background_image_url"])
     var backgroundImageUrl: String? = "",
 
     @SerializedName("catalog_slugs")
@@ -534,6 +543,15 @@ data class DataItem(
     @field:SerializedName("target_section_id")
     val targetSectionID: String? = null,
 
+    @field:SerializedName("icon_image_url")
+    val iconImageUrl: String? = null,
+
+    @field:SerializedName("inactive_icon_image_url")
+    val inactiveIconImageUrl: String? = null,
+
+    @SerializedName("cta_color")
+    val ctaColor: String? = "",
+
     var shopAdsClickURL: String? = "",
 
     var shopAdsViewURL: String? = "",
@@ -571,6 +589,9 @@ data class DataItem(
     var itemWeight: Float? = 1.0f,
 
     var typeProductHighlightComponentCard: String? = "",
+
+    @SerializedName("warehouse_id")
+    var warehouseId: Long? = null
 ) {
     val leftMargin: Int
         get() {

@@ -14,7 +14,7 @@ isBlockedBy
  */
 @GqlQuery(UserDetailsUseCase.QUERY_NAME, UserDetailsUseCase.QUERY)
 class UserDetailsUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository,
+    graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ProfileHeaderBase>(graphqlRepository) {
 
     init {
@@ -25,7 +25,7 @@ class UserDetailsUseCase @Inject constructor(
 
     suspend fun executeOnBackground(username: String): ProfileHeaderBase {
         val request = mapOf(
-            KEY_USERNAME to username,
+            KEY_USERNAME to username
         )
         setRequestParams(request)
 
@@ -52,7 +52,6 @@ class UserDetailsUseCase @Inject constructor(
                       weblink
                       applink
                     }
-                    badges
                     liveplaychannel {
                       islive
                       liveplaychannelid
@@ -60,6 +59,12 @@ class UserDetailsUseCase @Inject constructor(
                         applink
                         weblink
                       }
+                    }
+                    userBadges {
+                      link
+                      isClickable
+                      bottomsheetTitle
+                      bottomsheetDescription
                     }
                   }
                   stats {

@@ -37,6 +37,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightUiM
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.LoadingUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.SaranTopAdsChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState.*
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTracker
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.TopAdsListAllInsightViewModel
 import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.ChipsAdapter
@@ -234,6 +235,7 @@ class SaranTabsFragment : BaseDaggerFragment() {
 
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
         { adGroupList, item ->
+            RecommendationTracker.clickGroupList()
             val bundle = Bundle()
             bundle.putString(AD_GROUP_TYPE_KEY, item.adGroupType)
             bundle.putString(AD_GROUP_NAME_KEY, item.adGroupName)

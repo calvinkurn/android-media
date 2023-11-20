@@ -58,8 +58,10 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
@@ -85,6 +87,7 @@ import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategory
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
 import com.tokopedia.tokopedianow.searchcategory.analytics.ProductAdsCarouselAnalytics
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryPageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.bottomsheet.TokoNowProductFeedbackBottomSheet
@@ -157,6 +160,7 @@ abstract class BaseSearchCategoryFragment:
     @Inject
     lateinit var productRecommendationViewModel: TokoNowProductRecommendationViewModel
 
+    protected var pltMonitoring: SearchCategoryPageLoadTimeMonitoring? = null
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
@@ -206,6 +210,7 @@ abstract class BaseSearchCategoryFragment:
         configureRecyclerView()
         observeViewModel()
 
+        pltMonitoring?.startNetworkPerformanceMonitoring()
         getViewModel().onViewCreated(miniCartWidgetSource)
     }
 
@@ -245,6 +250,15 @@ abstract class BaseSearchCategoryFragment:
         val newList = visitables.toMutableList()
         newList[data.first] = data.second
         searchCategoryAdapter?.submitList(newList)
+    }
+
+    protected fun initPerformanceMonitoring(isCategoryPage: Boolean) {
+        pltMonitoring = SearchCategoryPageLoadTimeMonitoring()
+        pltMonitoring?.initPerformanceMonitoring(isCategoryPage)
+    }
+
+    private fun stopPerformanceMonitoring(unit: Unit) {
+        pltMonitoring?.stopPerformanceMonitoring()
     }
 
     protected open fun updateProductRecommendation(needToUpdate: Boolean) { /* override to use this function */ }
@@ -334,7 +348,7 @@ abstract class BaseSearchCategoryFragment:
             onClick = ::onNavToolbarShareClicked,
         )
 
-    protected open fun createNavToolbarIconBuilder() = IconBuilder()
+    protected open fun createNavToolbarIconBuilder() = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.TOKONOW))
         .addCart()
         .addGlobalNav()
 
@@ -399,12 +413,18 @@ abstract class BaseSearchCategoryFragment:
 
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
-            refreshLayout()
+            refreshLayout(
+                needToResetQueryParams = false
+            )
         }
     }
 
-    protected open fun refreshLayout() {
-        getViewModel().onViewReloadPage()
+    protected open fun refreshLayout(
+        needToResetQueryParams: Boolean = true
+    ) {
+        getViewModel().onViewReloadPage(
+            needToResetQueryParams = needToResetQueryParams
+        )
         refreshProductRecommendation(TOKONOW_NO_RESULT)
     }
 
@@ -528,6 +548,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
         getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
         getViewModel().updateAdsCarouselLiveData.observe(::updateAdsProductCarousel)
+        getViewModel().stopPerformanceMonitoringLiveData.observe(::stopPerformanceMonitoring)
 
         getViewModel().blockAddToCartLiveData.observe(viewLifecycleOwner) {
             showToasterWhenAddToCartBlocked()
@@ -610,6 +631,7 @@ abstract class BaseSearchCategoryFragment:
     protected open fun submitList(visitableList: List<Visitable<*>>) {
         if (visitableList.isNotEmpty()) showContent()
         searchCategoryAdapter?.submitList(visitableList)
+        pltMonitoring?.stopRenderPerformanceMonitoring()
     }
 
     private fun showContent() {
@@ -905,6 +927,8 @@ abstract class BaseSearchCategoryFragment:
         NetworkErrorHelper.showEmptyState(context, view, ErrorHandler.getErrorMessage(context, throwable)) {
             getViewModel().onViewReloadPage()
         }
+
+        pltMonitoring?.stopPerformanceMonitoring()
     }
 
     protected abstract fun sendTrackingQuickFilter(quickFilterTracking: Pair<Option, Boolean>)
@@ -1166,11 +1190,16 @@ abstract class BaseSearchCategoryFragment:
             context = context,
             viewModel = getViewModel(),
             analytics = analytics,
-            startActivityResult = ::startActivityForResult
+            startActivityResult = ::startActivityForResult,
+            showToasterWhenAddToCartBlocked = ::showToasterWhenAddToCartBlocked
         )
     }
 
     override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
+
+    protected open fun triggerFirstPageExperiment(unit: Unit) {
+        pltMonitoring?.startRenderPerformanceMonitoring()
+    }
 
     protected fun showToasterWhenAddToCartBlocked() {
         showToaster(

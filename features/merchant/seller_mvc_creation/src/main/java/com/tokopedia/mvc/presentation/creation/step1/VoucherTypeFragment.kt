@@ -34,7 +34,6 @@ import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.mvc.util.tracker.VoucherTypeTracker
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class VoucherTypeFragment : BaseDaggerFragment() {
@@ -125,7 +124,6 @@ class VoucherTypeFragment : BaseDaggerFragment() {
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        activity?.finish()
         context?.let {
             val source = SharedPreferencesUtil().getEditCouponSourcePage(it)
             if (source == VoucherDetailActivity::class.java.toString()) {
@@ -135,6 +133,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                 RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_MVC_LIST)
             }
         }
+        activity?.finish()
         return super.onFragmentBackPressed()
     }
 

@@ -3,6 +3,9 @@ package com.tokopedia.people.views.viewholder
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
@@ -48,12 +51,26 @@ class UserReviewMediaViewHolder private constructor() {
     }
 
     class Video(
+        private val lifecycleOwner: LifecycleOwner,
         private val binding: ItemUserReviewMediaVideoBinding,
         private val listener: UserReviewMediaAdapter.Listener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val player by lazyThreadSafetyNone {
             SimpleExoPlayer.Builder(itemView.context).build()
+        }
+
+        init {
+            lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
+                override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                    when (event) {
+                        Lifecycle.Event.ON_DESTROY -> {
+                            player.release()
+                        }
+                        else -> {}
+                    }
+                }
+            })
         }
 
         fun bind(feedbackId: String, productId: String, attachment: UserReviewUiModel.Attachment.Video) {
@@ -74,9 +91,11 @@ class UserReviewMediaViewHolder private constructor() {
 
         companion object {
             fun create(
+                lifecycleOwner: LifecycleOwner,
                 parent: ViewGroup,
                 listener: UserReviewMediaAdapter.Listener,
             ) = Video(
+                lifecycleOwner,
                 ItemUserReviewMediaVideoBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,

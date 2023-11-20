@@ -159,7 +159,9 @@ object MixTopTracking : BaseTrackerConst() {
             recommendationType = grid.recommendationType,
             pageName = pageName,
             isCarousel = true,
-            headerName = headerName
+            headerName = headerName,
+            warehouseId = grid.warehouseId,
+            isFulfillment = grid.labelGroup.hasLabelGroupFulfillment()
     )
 
     fun getBackgroundClickComponent(channels: ChannelModel, userId: String = "") = DataLayer.mapOf(

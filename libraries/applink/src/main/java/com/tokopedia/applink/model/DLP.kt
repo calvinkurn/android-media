@@ -10,9 +10,17 @@ class DLP(
 ) {
 
     companion object {
+        /**
+         * @deprecated Use {@link #goToLink()} instead, to be covered in jacoco report
+         */
+        @Deprecated("Use goToDeeplink instead, to be covered in jacoco report")
         @JvmName("goToStr")
         fun goTo(targetDeeplink: String): DLP {
             return DLP(Always) { _, _, _, _ -> targetDeeplink }
+        }
+
+        fun goToLink(targetDeeplink: () -> String): DLP {
+            return DLP(Always) { _, _, _, _ -> targetDeeplink.invoke() }
         }
 
         @JvmName("goTo")
@@ -24,6 +32,7 @@ class DLP(
         fun goTo(targetDeeplink: (uri: Uri, deeplink: String) -> String): DLP {
             return DLP(Always) { _, uri, deepl, _ -> targetDeeplink(uri, deepl) }
         }
+
         @JvmName("goToUri")
         fun goTo(targetDeeplink: (uri: Uri) -> String): DLP {
             return DLP(Always) { _, uri, _, _ -> targetDeeplink(uri) }
@@ -102,6 +111,10 @@ class DLP(
             }
         }
 
+        @Deprecated(
+            "Usage of this method will not be covered in Jacoco reports. " +
+                "Please use similar method with lambda as its parameter"
+        )
         @JvmName("matchStr")
         fun matchPattern(
             pathCheck: String,
@@ -110,6 +123,10 @@ class DLP(
             return DLP(MatchPattern(pathCheck)) { _, _, _, _ -> targetDeeplink }
         }
 
+        @Deprecated(
+            "Usage of this method will not be covered in Jacoco reports. " +
+                "Please use similar method with lambda as its parameter"
+        )
         @JvmName("startStr")
         fun startsWith(pathCheck: String, targetDeeplink: String): DLP {
             return DLP(StartsWith(pathCheck)) { _, _, _, _ -> targetDeeplink }
@@ -223,7 +240,6 @@ class StartsWith(sourcePath: String) : DLPLogic(logic = { _, uri, _ ->
         (uriPath.trimSlash().startsWith(sourcePath.trimSlash()) to null)
     }
     result
-
 })
 
 fun String.trimSlash(): String {

@@ -9,6 +9,7 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.unifycomponents.CardUnify2
 import javax.inject.Inject
 
 class BestSellerMapper @Inject constructor() {
@@ -88,6 +89,7 @@ class BestSellerMapper @Inject constructor() {
         BestSellerProductDataModel(
             productCardModel = recommendationItem.toProductCardModel(
                 productCardListType = ProductListType.BEST_SELLER,
+                animateOnPress = CardUnify2.ANIMATE_OVERLAY,
             ),
             applink = recommendationItem.appUrl,
             productId = recommendationItem.productId.toString(),
@@ -100,6 +102,9 @@ class BestSellerMapper @Inject constructor() {
             cartId = recommendationItem.cartId,
             categoryBreadcrumbs = recommendationItem.categoryBreadcrumbs,
             pageName = recommendationItem.pageName,
-            header = recommendationItem.header
+            header = recommendationItem.header,
+            warehouseId = recommendationItem.warehouseId.toString(),
+            clickUrl = recommendationItem.clickUrl,
+            trackerImageUrl = recommendationItem.trackerImageUrl
         )
 }

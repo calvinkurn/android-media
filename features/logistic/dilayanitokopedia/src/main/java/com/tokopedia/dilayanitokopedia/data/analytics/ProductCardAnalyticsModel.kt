@@ -9,6 +9,6 @@ data class ProductCardAnalyticsModel(
     val productName: String = "",
     val price: String = "",
     val productBrand: String = "",
-    val productCategory: String = "",
-    val productVariant: String = ""
+    val productVariant: String = "",
+    val categoryBreadcrumbs: String = ""
 )

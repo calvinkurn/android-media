@@ -25,9 +25,12 @@ import com.tokopedia.people.views.uimodel.action.UserProfileSettingsAction
 import javax.inject.Inject
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
+import com.tokopedia.people.di.UserProfileInjector
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.views.screen.ProfileSettingsScreen
 import com.tokopedia.people.views.uimodel.event.UserProfileSettingsEvent
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 /**
  * Created By : Jonathan Darwin on May 10, 2023
@@ -65,8 +68,16 @@ class ProfileSettingsActivity : AppCompatActivity() {
                         viewModel.uiEvent.collect { event ->
                             when (event) {
                                 is UserProfileSettingsEvent.ErrorSetShowReview -> {
+                                    val message = when (event.throwable) {
+                                        is UnknownHostException, is SocketTimeoutException -> {
+                                            getString(R.string.up_error_local_error)
+                                        }
+                                        else -> {
+                                            event.throwable.message ?: getString(R.string.up_error_unknown)
+                                        }
+                                    }
 
-                                    view.showErrorToast(event.throwable.message ?: getString(R.string.up_error_unknown))
+                                    view.showErrorToast(message)
                                 }
                             }
                         }
@@ -88,13 +99,7 @@ class ProfileSettingsActivity : AppCompatActivity() {
     }
 
     private fun inject() {
-        DaggerUserProfileComponent.builder()
-            .baseAppComponent(
-                (applicationContext as BaseMainApplication).baseAppComponent,
-            )
-            .userProfileModule(UserProfileModule(this))
-            .build()
-            .inject(this)
+        UserProfileInjector.get(this).inject(this)
     }
 
     private fun setupListener() {

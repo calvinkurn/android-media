@@ -7,25 +7,25 @@ import java.util.ArrayList
 data class ScpRewardsCelebrationModel(
     @Expose
     @SerializedName("scpRewardsCelebrationPage")
-  val scpRewardsCelebrationPage : RewardsGetMedaliCelebrationPage? = null
-){
+    val scpRewardsCelebrationPage: RewardsGetMedaliCelebrationPage? = null
+) {
     data class RewardsGetMedaliCelebrationPage(
         @Expose
         @SerializedName("resultStatus")
-       val resultStatus : ResultStatus = ResultStatus(),
+        val resultStatus: ResultStatus = ResultStatus(),
         @Expose
         @SerializedName("celebrationPage")
-       val celebrationPage : CelebrationPage? = null
-    ){
+        val celebrationPage: CelebrationPage? = null
+    ) {
         data class ResultStatus(
             @Expose
             @SerializedName("code")
-            val code:String = "",
+            val code: String = "",
             @Expose
             @SerializedName("status")
-            val status:String = ""
+            val status: String = ""
         )
-        data class CelebrationPage (
+        data class CelebrationPage(
             @Expose
             @SerializedName("isNeedAppUpdate")
             val isNeedAppUpdate: Boolean = false,
@@ -99,14 +99,14 @@ data class ScpRewardsCelebrationModel(
             @SerializedName("benefitButton")
             val benefitButton: ArrayList<BenefitButton>? = null
 
-        ){
+        ) {
             data class BenefitImage(
                 @Expose
                 @SerializedName("imageURL")
                 val imageURL: String = "",
                 @Expose
                 @SerializedName("status")
-                val status:String = ""
+                val status: String = ""
             )
             data class BenefitButton(
                 @Expose
@@ -132,6 +132,6 @@ data class ScpRewardsCelebrationModel(
     }
 }
 
-fun ScpRewardsCelebrationModel.getBenefitCta(autoApply:Boolean) : ScpRewardsCelebrationModel.RewardsGetMedaliCelebrationPage.CelebrationPage.BenefitButton?{
-    return scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.find { it.isAutoApply == autoApply }
+fun ScpRewardsCelebrationModel.getBenefitCta(buttonType: String): ScpRewardsCelebrationModel.RewardsGetMedaliCelebrationPage.CelebrationPage.BenefitButton? {
+    return scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.find { it.unifiedStyle == buttonType }
 }

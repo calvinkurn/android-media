@@ -4,9 +4,14 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.IOption
+import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.filter.common.data.SortModel
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
@@ -22,6 +27,7 @@ import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.search.utils.manualFilterToggleMap
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.filter.R as filterR
 
 @SearchScope
 class BottomSheetFilterViewDelegate @Inject constructor(
@@ -34,6 +40,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private val lastFilterListener: LastFilterListener,
     private val screenNameProvider: ScreenNameProvider,
     private val userSessionInterface: UserSessionInterface,
+    private val reimagineRollence: ReimagineRollence,
 ) : BottomSheetFilterView,
     ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider,
@@ -45,6 +52,8 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
 
     private var callback: BottomSheetFilterCallback? = null
+
+    private var sortBottomSheet: FilterGeneralDetailBottomSheet? = null
 
     private val pageSource: String by lazy {
         Dimension90Utils.getDimension90(getSearchParameter()?.getSearchParameterMap().orEmpty())
@@ -63,10 +72,11 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
         sortFilterBottomSheet = SortFilterBottomSheet().also {
             it.show(
-                getFragment().parentFragmentManager,
-                getSearchParameter()?.getSearchParameterHashMap(),
-                dynamicFilterModel,
-                this
+                fragmentManager = getFragment().parentFragmentManager,
+                mapParameter = getSearchParameter()?.getSearchParameterHashMap(),
+                dynamicFilterModel = dynamicFilterModel,
+                callback = this,
+                isReimagine = reimagineRollence.search2Component().isReimagineQuickFilter(),
             )
         }
         sortFilterBottomSheet?.setOnDismissListener {
@@ -76,12 +86,92 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         }
     }
 
+    override fun openBottomSheetSort(
+        dynamicFilterModel: DynamicFilterModel?,
+        callback: BottomSheetFilterCallback
+    ) {
+        if (!getFragment().isAdded) return
+        this.callback = callback
+
+        applyActiveSort(dynamicFilterModel)
+
+        sortBottomSheet = FilterGeneralDetailBottomSheet().also {
+            it.show(
+                fragmentManager = getFragment().parentFragmentManager,
+                filter = createSortModel(dynamicFilterModel),
+                optionCallback = createSortListener(),
+                enableResetButton = false,
+            )
+        }
+
+        sortBottomSheet?.setOnDismissListener {
+            sortBottomSheet = null
+            this.callback?.onBottomSheetFilterDismissed()
+            this.callback = null
+        }
+    }
+
+    private fun createSortModel(dynamicFilterModel: DynamicFilterModel?): SortModel? {
+        dynamicFilterModel ?: return null
+
+        val title = context?.resources?.getString(filterR.string.title_sort_but) ?: ""
+
+        return SortModel(dynamicFilterModel.data.sort, title)
+    }
+
+    private fun createSortListener() = object : FilterGeneralDetailBottomSheet.OptionCallback {
+        override fun onApplyButtonClicked(optionList: List<IOption>?) {
+            val selectedSort = getSelectedOption(optionList) ?: return
+
+            sortBottomSheet = null
+
+            val sortParam = selectedSort.toMapParam()
+
+            trackEventApplySort(sortParam)
+
+            val parameter = filterController.getParameter() +
+                sortParam +
+                manualFilterToggleMap() +
+                componentIdMap(SearchSortFilterTracking.SORT_COMPONENT_ID)
+
+            applyParameter(parameter)
+        }
+    }
+
+    private fun trackEventApplySort(sortParam: Map<String, String>) {
+        SearchSortFilterTracking.eventApplySort(
+            keyword = getSearchParameter()?.getSearchQuery().orEmpty(),
+            pageSource = pageSource,
+            selectedSort = sortParam,
+        )
+    }
+
+    private fun getSelectedOption(optionList: List<IOption>?): Sort? =
+        optionList?.firstOrNull { it.inputState.toBoolean() } as? Sort
+
+    private fun applyParameter(parameter: Map<String, String>) {
+        parameterListener.refreshSearchParameter(parameter)
+
+        lastFilterListener.updateLastFilter()
+
+        parameterListener.reloadData()
+    }
+
     override fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel) {
         val searchParameterMap = getSearchParameter()?.getSearchParameterHashMap() ?: mapOf()
 
         filterController.appendFilterList(searchParameterMap, dynamicFilterModel.data.filter)
 
         sortFilterBottomSheet?.setDynamicFilterModel(dynamicFilterModel)
+
+        applyActiveSort(dynamicFilterModel)
+        sortBottomSheet?.setOptionHolder(createSortModel(dynamicFilterModel))
+    }
+
+    private fun applyActiveSort(dynamicFilterModel: DynamicFilterModel?) {
+        dynamicFilterModel?.data?.sort?.forEach {
+            it.inputState = (getSearchParameter()?.get(it.key) == it.value).toString()
+        }
     }
 
     override fun onApplySortFilter(
@@ -91,20 +181,16 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
         sortFilterBottomSheet = null
 
-        applySortAndFilter(applySortFilterModel)
+        trackApplyFilterAndSort(applySortFilterModel)
 
-        val requestParams = applySortFilterModel.mapParameter +
+        val parameter = applySortFilterModel.mapParameter +
             manualFilterToggleMap() +
             componentIdMap(SearchSortFilterTracking.FILTER_COMPONENT_ID)
 
-        parameterListener.refreshSearchParameter(requestParams)
-
-        lastFilterListener.updateLastFilter()
-
-        parameterListener.reloadData()
+        applyParameter(parameter)
     }
 
-    private fun applySortAndFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+    private fun trackApplyFilterAndSort(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         SearchSortFilterTracking.eventApplyFilter(
             keyword = getSearchParameter()?.getSearchQuery().orEmpty(),
             pageSource = pageSource,
@@ -125,10 +211,10 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private fun getFilterCountText(productCountText: String?): String {
         val context = context ?: return ""
         return if (productCountText.isNullOrBlank()) {
-            context.getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
+            context.getString(filterR.string.bottom_sheet_filter_finish_button_no_count)
         } else {
             String.format(
-                context.getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
+                context.getString(filterR.string.bottom_sheet_filter_finish_button_template_text),
                 productCountText
             )
         }
@@ -137,6 +223,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun onViewDestroyed() {
         sortFilterBottomSheet = null
+        sortBottomSheet = null
         callback = null
     }
 

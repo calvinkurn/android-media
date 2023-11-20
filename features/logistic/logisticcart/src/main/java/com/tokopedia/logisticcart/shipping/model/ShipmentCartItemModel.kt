@@ -2,9 +2,10 @@ package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import kotlinx.parcelize.Parcelize
+import java.util.HashMap
 
 @Parcelize
 data class ShipmentCartItemModel(
@@ -38,8 +39,8 @@ data class ShipmentCartItemModel(
     val enablerLabel: String = "",
 
     // AddOns
-    val addOnsOrderLevelModel: AddOnsDataModel = AddOnsDataModel(),
-    val addOnWordingModel: AddOnWordingModel = AddOnWordingModel(),
+    val addOnsOrderLevelModel: AddOnGiftingDataModel = AddOnGiftingDataModel(),
+    val addOnWordingModel: AddOnGiftingWordingModel = AddOnGiftingWordingModel(),
     val addOnDefaultFrom: String = "",
     val addOnDefaultTo: String = "",
 
@@ -141,7 +142,10 @@ data class ShipmentCartItemModel(
     val groupInfoName: String = "",
     val groupInfoBadgeUrl: String = "",
     val groupInfoDescription: String = "",
-    val groupInfoDescriptionBadgeUrl: String = ""
+    val groupInfoDescriptionBadgeUrl: String = "",
+
+    // add ons subtotal
+    var subtotalAddOnMap: HashMap<Int, String> = hashMapOf()
 ) : Parcelable, ShipmentCartItem {
 
     val isCustomPinpointError: Boolean

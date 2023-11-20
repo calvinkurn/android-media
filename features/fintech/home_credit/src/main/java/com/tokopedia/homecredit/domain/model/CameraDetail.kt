@@ -8,9 +8,9 @@ import com.tokopedia.homecredit.R
 
 data class CameraDetail(
     @DrawableRes
-    val cameraCutout: Int,
+    val cameraCutout: Int?,
     @DrawableRes
-    val cameraCutoutReview: Int,
+    val cameraCutoutReview: Int?,
     val cameraFacing: Facing,
     val cameraTitle: String,
     val cameraTips: String,
@@ -22,8 +22,8 @@ data class CameraDetail(
         fun create(context: Context?, isKtp: Boolean): CameraDetail {
             return if (isKtp) {
                 CameraDetail(
-                    R.drawable.ktp,
-                    R.drawable.ktp_review,
+                    null,
+                    null,
                     Facing.BACK,
                     context?.getString(R.string.hc_camera_ktp_title) ?: "",
                     context?.getString(R.string.hc_camera_ktp_tips) ?: "",

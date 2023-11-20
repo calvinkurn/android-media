@@ -19,10 +19,13 @@ object RecommendationTrackingConstants {
 
         const val CATEGORY_PDP = "product detail page"
         const val BUSINESS_UNIT_HOME = "home & browse"
+        const val BUSINESS_UNIT_PG = "Physical Goods"
 
         const val CATEGORY_ID = "category_id"
         const val DIMENSION_40 = "dimension40"
         const val DIMENSION_45 = "dimension45"
+        const val DIMENSION_56 = "dimension56"
+        const val DIMENSION_84 = "dimension84"
         const val DIMENSION_90 = "dimension90"
 
         const val ITEM_BRAND = "item_brand"
@@ -50,6 +53,9 @@ object RecommendationTrackingConstants {
         const val LIST = "list"
 
         fun String.convertToWidgetType(): String = replace("-", " ")
+
+        const val CLICK_HOMEPAGE = "clickHomepage"
+        const val CLICK_PG = "clickPG"
     }
 
     object Action {

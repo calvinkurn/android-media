@@ -1,9 +1,10 @@
 package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -72,7 +73,7 @@ data class CartItemModel(
     val bundleOriginalPrice: Double = 0.0,
     val bundleQuantity: Int = 0,
     val bundleIconUrl: String = "",
-    val addOnProductLevelModel: AddOnsDataModel = AddOnsDataModel(),
+    val addOnGiftingProductLevelModel: AddOnGiftingDataModel = AddOnGiftingDataModel(),
     val addOnDefaultFrom: String = "",
     val addOnDefaultTo: String = "",
     val isTokoCabang: Boolean = false,
@@ -81,11 +82,13 @@ data class CartItemModel(
     val ethicalDrugDataModel: EthicalDrugDataModel = EthicalDrugDataModel(),
     val cartItemPosition: Int = 0,
     var isLastItemInOrder: Boolean = false,
-    val addOnOrderLevelModel: AddOnWordingModel = AddOnWordingModel(),
+    val addOnOrderLevelModel: AddOnGiftingWordingModel = AddOnGiftingWordingModel(),
 
     // new
     val shouldShowShopInfo: Boolean = false,
     val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
     val cartStringOrder: String = "",
-    val originWarehouseIds: List<Long> = emptyList()
+    val originWarehouseIds: List<Long> = emptyList(),
+    val addOnProduct: AddOnProductDataModel = AddOnProductDataModel(),
+    val campaignId: Int = -1
 ) : Parcelable, ShipmentCartItem

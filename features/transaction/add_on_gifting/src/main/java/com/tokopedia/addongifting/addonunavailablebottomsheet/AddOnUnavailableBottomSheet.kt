@@ -13,6 +13,7 @@ import com.tokopedia.addongifting.R
 import com.tokopedia.addongifting.databinding.LayoutAddOnUnavailableBottomSheetBinding
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class AddOnUnavailableBottomSheet : BottomSheetUnify() {
 
@@ -69,7 +70,9 @@ class AddOnUnavailableBottomSheet : BottomSheetUnify() {
         adapter?.notifyDataSetChanged()
 
         viewBinding?.labelDescription?.text = MethodChecker.fromHtml(addOnProductData.unavailableBottomSheetData.description)
-        viewBinding?.tickerInformation?.setHtmlDescription(addOnProductData.unavailableBottomSheetData.tickerMessage)
+        context?.let { ctx ->
+            viewBinding?.tickerInformation?.description = HtmlLinkHelper(ctx, addOnProductData.unavailableBottomSheetData.tickerMessage).spannedString!!
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {

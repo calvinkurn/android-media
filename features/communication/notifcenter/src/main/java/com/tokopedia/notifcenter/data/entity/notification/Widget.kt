@@ -1,6 +1,5 @@
 package com.tokopedia.notifcenter.data.entity.notification
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Widget(
@@ -17,7 +16,7 @@ data class Widget(
     @SerializedName("ios_button_link")
     val iosButtonLink: String = "",
     @SerializedName("message")
-    val message: String = "",
+    var message: String = "",
     @SerializedName("mobile_button_link")
     val mobileButtonLink: String = "",
     @SerializedName("title")

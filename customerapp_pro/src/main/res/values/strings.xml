@@ -202,4 +202,7 @@
     <string name="title_add_name_empty"> </string>
     <string name="title_add_email">Tambah Email</string>
 
+    <!--    Category  -->
+    <string name="label_affiliate">Affiliate</string>
+
 </resources>

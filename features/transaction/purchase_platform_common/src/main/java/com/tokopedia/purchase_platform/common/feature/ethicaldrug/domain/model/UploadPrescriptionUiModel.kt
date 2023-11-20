@@ -15,6 +15,8 @@ data class UploadPrescriptionUiModel(
     var uploadedImageCount: Int = 0,
     var descriptionText: String = "",
     var isError: Boolean = false,
+    val isIncompletePrescriptionError: Boolean = false,
+    val productErrorCount: Int = 0,
     var frontEndValidation: Boolean = false,
     var consultationFlow: Boolean = false,
     var rejectedWording: String = "",
@@ -24,7 +26,9 @@ data class UploadPrescriptionUiModel(
     // data for trackers
     var enablerNames: List<String> = emptyList(),
     var shopIds: List<String> = emptyList(),
-    var cartIds: List<String> = emptyList()
+    var cartIds: List<String> = emptyList(),
+
+    var hasShowAnimation: Boolean = false
 ) : Parcelable {
 
     fun getWidgetState(): String {

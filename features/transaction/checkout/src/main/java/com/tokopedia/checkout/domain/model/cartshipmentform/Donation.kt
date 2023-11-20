@@ -8,5 +8,6 @@ data class Donation(
     var title: String = "",
     var nominal: Int = 0,
     var description: String = "",
-    var isChecked: Boolean = false
+    var isChecked: Boolean = false,
+    var iconUrl: String = ""
 ) : Parcelable

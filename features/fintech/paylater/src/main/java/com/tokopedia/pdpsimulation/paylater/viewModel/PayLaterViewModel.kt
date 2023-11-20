@@ -56,7 +56,13 @@ class PayLaterViewModel @Inject constructor(
     var shopId: String? = null
     var cardDetailSelected:Detail?= null
 
-    fun getPayLaterAvailableDetail(price: Double, productId: String, shopId: String?) {
+    fun getPayLaterAvailableDetail(
+        price: Double,
+        productId: String,
+        shopId: String?,
+        parentId: String,
+        categoryId: String,
+    ) {
         finalProductPrice = price
         paylaterGetSimulationV3UseCase.cancelJobs()
         paylaterGetSimulationV3UseCase.getPayLaterSimulationDetails(
@@ -65,6 +71,8 @@ class PayLaterViewModel @Inject constructor(
             price,
             productId,
             shopId.orEmpty(),
+            parentId,
+            categoryId
         )
     }
 

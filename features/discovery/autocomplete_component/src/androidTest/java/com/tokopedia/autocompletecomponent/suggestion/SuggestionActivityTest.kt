@@ -3,17 +3,18 @@ package com.tokopedia.autocompletecomponent.suggestion
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.autocompletecomponent.createFakeBaseAppComponent
-import com.tokopedia.autocompletecomponent.di.DaggerAutoCompleteComponent
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.Companion.SUGGESTION_FRAGMENT_TAG
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.SuggestionViewUpdateListener
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionViewListenerModule
 import com.tokopedia.autocompletecomponent.test.R
+import com.tokopedia.autocompletecomponent.util.SuggestionMPSListener
 import com.tokopedia.discovery.common.constants.SearchApiConst
 
 class SuggestionActivityTest:
     AppCompatActivity(),
-    SuggestionViewUpdateListener {
+    SuggestionViewUpdateListener,
+    SuggestionMPSListener {
 
     private lateinit var suggestionFragment: SuggestionFragment
 
@@ -27,7 +28,7 @@ class SuggestionActivityTest:
             .suggestionViewListenerModule(SuggestionViewListenerModule(this))
             .build()
 
-        suggestionFragment = SuggestionFragment.create(component)
+        suggestionFragment = SuggestionFragment.create(component, this)
 
         supportFragmentManager
             .beginTransaction()
@@ -58,4 +59,5 @@ class SuggestionActivityTest:
     private fun getBaseAppComponent() = createFakeBaseAppComponent(this)
 
     override fun finish() { }
+    override fun clickSuggestionMPS(item: BaseSuggestionDataView) {}
 }

@@ -12,7 +12,6 @@ sealed interface UserProfileUiEvent {
     data class ErrorLoadProfile(val throwable: Throwable) : UserProfileUiEvent
     data class ErrorFollowUnfollow(val throwable: Throwable) : UserProfileUiEvent
     data class ErrorUpdateReminder(val throwable: Throwable) : UserProfileUiEvent
-    data class ErrorGetProfileTab(val throwable: Throwable) : UserProfileUiEvent
     data class ErrorFeedPosts(val throwable: Throwable) : UserProfileUiEvent
     data class ErrorVideoPosts(val throwable: Throwable) : UserProfileUiEvent
     data class ErrorLoadReview(val throwable: Throwable) : UserProfileUiEvent

@@ -5,21 +5,18 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
-import com.tokopedia.tokopedianow.search.domain.mapper.CategoryJumperMapper.createCategoryJumperDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addBroadMatchDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addSuggestionDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.updateSuggestionDataView
-import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactory
@@ -29,6 +26,7 @@ import com.tokopedia.tokopedianow.search.utils.SEARCH_QUERY_PARAM_MAP
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartProductItem
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
+import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.AllProductTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SearchTitle
@@ -50,12 +48,13 @@ class TokoNowSearchViewModel @Inject constructor (
     private val getSearchFirstPageUseCase: UseCase<SearchModel>,
     @param:Named(SEARCH_LOAD_MORE_PAGE_USE_CASE)
     private val getSearchLoadMorePageUseCase: UseCase<SearchModel>,
-    getFilterUseCase: UseCase<DynamicFilterModel>,
+    getFilterUseCase: GetFilterUseCase,
     getProductCountUseCase: UseCase<String>,
     getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
     cartService: CartService,
     getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    remoteConfig: RemoteConfig,
     chooseAddressWrapper: ChooseAddressWrapper,
     affiliateService: NowAffiliateService,
     userSession: UserSessionInterface
@@ -68,6 +67,7 @@ class TokoNowSearchViewModel @Inject constructor (
     cartService,
     getWarehouseUseCase,
     setUserPreferenceUseCase,
+    remoteConfig,
     chooseAddressWrapper,
     affiliateService,
     userSession,
@@ -80,7 +80,6 @@ class TokoNowSearchViewModel @Inject constructor (
     private val addToCartBroadMatchTrackingMutableLiveData: SingleLiveEvent<Triple<Int, String, ProductCardCompactCarouselItemUiModel>> = SingleLiveEvent()
     private var responseCode: String = ""
     private var suggestionModel: AceSearchProductModel.Suggestion? = null
-    private var searchCategoryJumper: SearchCategoryJumperData? = null
     private var related: AceSearchProductModel.Related? = null
     private var recommendationCategoryId: String = ""
 
@@ -120,11 +119,13 @@ class TokoNowSearchViewModel @Inject constructor (
         headerList.updateSuggestionDataView(suggestionModel, suggestionDataViewIndex)
     }
 
-    override fun createVisitableListWithEmptyProduct() {
+    override fun createVisitableListWithEmptyProduct(
+        violation: AceSearchProductModel.Violation
+    ) {
         if (isShowBroadMatch())
             createVisitableListWithEmptyProductBroadmatch()
         else
-            super.createVisitableListWithEmptyProduct()
+            super.createVisitableListWithEmptyProduct(violation)
     }
 
     override fun getKeywordForGeneralSearchTracking() = query
@@ -141,20 +142,9 @@ class TokoNowSearchViewModel @Inject constructor (
     override fun createFooterVisitableList(): List<Visitable<SearchTypeFactory>> {
         val broadMatchVisitableList = createBroadMatchVisitableList()
         return broadMatchVisitableList + if (serviceType == NOW_15M) {
-            listOf(
-                createCategoryJumperDataView(
-                    searchCategoryJumper = searchCategoryJumper,
-                    chooseAddressData = chooseAddressData
-                )
-            )
+            listOf()
         } else {
-            listOf(
-                createCategoryJumperDataView(
-                    searchCategoryJumper = searchCategoryJumper,
-                    chooseAddressData = chooseAddressData
-                ),
-                CTATokopediaNowHomeDataView(),
-            )
+            listOf(CTATokopediaNowHomeDataView())
         }
     }
 
@@ -162,23 +152,21 @@ class TokoNowSearchViewModel @Inject constructor (
 
     override fun getRecomCategoryId(pageName: String): List<String> = listOf(recommendationCategoryId)
 
-    override fun createProductAdsParam(): GetProductAdsParam {
+    override fun createProductAdsParam(): MutableMap<String?, Any> {
         val query = queryParamMutable[SearchApiConst.Q].orEmpty()
-        val warehouseIds = AddressMapper.mapToWarehouseIds(chooseAddressData)
 
         return GetProductAdsParam(
             query = query,
-            warehouseIds = warehouseIds,
             src = GetProductAdsParam.SRC_SEARCH_TOKONOW,
-            userId = userSession.userId
-        )
+            userId = userSession.userId,
+            addressData = chooseAddressData
+        ).generateQueryParams()
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
         val searchProduct = searchModel.searchProduct
         responseCode = searchModel.getResponseCode()
         suggestionModel = searchModel.getSuggestion()
-        searchCategoryJumper = searchModel.searchCategoryJumper
         related = searchModel.getRelated()
 
         val searchProductHeader = searchProduct.header

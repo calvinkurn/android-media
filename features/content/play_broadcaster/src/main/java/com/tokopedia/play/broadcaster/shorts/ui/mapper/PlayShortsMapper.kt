@@ -20,7 +20,7 @@ interface PlayShortsMapper {
 
     fun mapShortsConfig(response: GetBroadcasterAuthorConfigResponse): PlayShortsConfigUiModel
 
-    fun mapTagRecommendation(response: GetRecommendedChannelTagsResponse): Set<PlayTagUiModel>
+    fun mapTagRecommendation(response: GetRecommendedChannelTagsResponse): PlayTagUiModel
 
     fun mapBroadcasterCheckAffiliate(response: BroadcasterCheckAffiliateResponseModel): BroadcasterCheckAffiliateResponseUiModel
 

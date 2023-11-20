@@ -33,6 +33,7 @@
     <string name="shop_page_product_bundle_preorder_button_text">PreOrder</string>
     <string name="shop_page_product_single_bundle_package_text">Paket:</string>
     <string name="shop_page_product_bundle_count">1 Barang</string>
+    <string name="shop_page_product_bundle_dynamic_count">%d Barang</string>
 
     <!--product bundle widget common-->
     <string name="product_bundle_action_button_text">Lihat Paket</string>

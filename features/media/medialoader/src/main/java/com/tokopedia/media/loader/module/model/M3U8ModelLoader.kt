@@ -3,7 +3,6 @@ package com.tokopedia.media.loader.module.model
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.os.Build
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Key
@@ -59,6 +58,16 @@ class M3U8ModelLoader : ModelLoader<String, Bitmap> {
     private fun String.isM3u8(): Boolean {
         return Uri.parse(this).lastPathSegment?.endsWith(M3U8_EXTENSION) == true
     }
+
+    class Factory : ModelLoaderFactory<String, Bitmap> {
+        override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<String, Bitmap> {
+            return M3U8ModelLoader()
+        }
+
+        override fun teardown() {
+            // no-op
+        }
+    }
 }
 
 class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitmap> {
@@ -69,6 +78,7 @@ class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitma
 
     private var isCancelled: Boolean = false
     private var connection: HttpURLConnection? = null
+    private var retriever: MediaMetadataRetriever? = null
 
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in Bitmap>) {
         try {
@@ -90,6 +100,7 @@ class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitma
 
     override fun cancel() {
         isCancelled = true
+        try { retriever?.release() } catch (_: Throwable) {}
     }
 
     override fun getDataClass(): Class<Bitmap> {
@@ -143,19 +154,15 @@ class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitma
             return null
         }
 
-        val retriever = MediaMetadataRetriever()
+        retriever = MediaMetadataRetriever()
         return try {
-            retriever.setDataSource(url, mutableMapOf())
-            retriever.getFrameAtTime(0L, MediaMetadataRetriever.OPTION_CLOSEST)
+            retriever?.setDataSource(url, mutableMapOf())
+            retriever?.getFrameAtTime(0L, MediaMetadataRetriever.OPTION_CLOSEST)
         } catch (t: Throwable) {
             ErrorHandler.getErrorMessage(null, M3U8LoaderException().apply { initCause(t) })
             null
         } finally {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                retriever.close()
-            } else {
-                retriever.release()
-            }
+            retriever?.release()
         }
     }
 
@@ -170,14 +177,6 @@ class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitma
             String.format(M3U8_SEGMENT_URL_FORMAT, scheme, host, videoId, segment.url)
         }
     }
-}
-
-class M3U8ModelLoaderFactory : ModelLoaderFactory<String, Bitmap> {
-    override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<String, Bitmap> {
-        return M3U8ModelLoader()
-    }
-
-    override fun teardown() {}
 }
 
 class M3U8LoaderException : Exception()

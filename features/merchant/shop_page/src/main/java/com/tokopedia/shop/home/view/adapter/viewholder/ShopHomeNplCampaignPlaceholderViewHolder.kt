@@ -12,7 +12,7 @@ class ShopHomeNplCampaignPlaceholderViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_new_product_launch_campaign_placeholder
+        val LAYOUT = R.layout.item_shop_product_campaign_placeholder
     }
 
     override fun bind(model: ShopHomeNewProductLaunchCampaignUiModel) {

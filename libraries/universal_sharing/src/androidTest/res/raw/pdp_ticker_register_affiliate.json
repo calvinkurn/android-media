@@ -1,0 +1,30 @@
+{
+  "generateAffiliateLinkEligibility": {
+    "Status": 1,
+    "ShowTicker": true,
+    "TickerType": 1,
+    "Message": "User Is Not Registered",
+    "AffiliateEligibility": {
+      "IsRegistered": false,
+      "IsEligible": false
+    },
+    "Banner": {
+      "Icon": "https://images.tokopedia.net/img/affiliate/icon/affiliate_icon.png",
+      "Title": "<b>Tokopedia Affiliate</b>",
+      "Message": "Daftar dan raih <b>komisi <b style=\"color:#00AA5B;\"><font color=\"#00AA5B\">Rp20.000</font></b></b>/barang terjual dengan bagikan link ini.",
+      "CtaLink": "https://tokopedia.link/xnnqVSxE7sb"
+    },
+    "EligibleCommission": {
+      "IsEligible": true,
+      "AmountFormatted": "",
+      "Amount": "0.000000",
+      "Message": "",
+      "Badge": "",
+      "ExpiredDate": "",
+      "ExpiredDateFormatted": "",
+      "SellerAmount": "0.000000",
+      "SellerAmountFormatted": "",
+      "SsaStatus": false
+    }
+  }
+}

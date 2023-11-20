@@ -18,9 +18,7 @@ import java.util.*
  * @author by nisie on 23/11/18.
  */
 open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
-        BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterTypeFactory) {
-
-
+    BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterTypeFactory) {
 
     var typingModel = TypingChatModel()
 
@@ -89,64 +87,61 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
                     val myTime = (now.replyTime!!).toLong() / SECONDS
                     var prevTime: Long = 0
 
-                    if (visitables[position + 1] != null
-                            && visitables[position + 1] is BaseChatUiModel) {
+                    if (visitables[position + 1] != null &&
+                        visitables[position + 1] is BaseChatUiModel
+                    ) {
                         val prev = visitables[position + 1] as BaseChatUiModel
                         prevTime = (prev.replyTime!!).toLong() / SECONDS
                     }
 
                     (visitables[position] as BaseChatUiModel)
-                            .isShowDate = !compareTime(context, myTime, prevTime)
+                        .isShowDate = !compareTime(context, myTime, prevTime)
                 } catch (e: NumberFormatException) {
                     (visitables[position] as BaseChatUiModel).isShowDate = false
                 } catch (e: Exception) {
                     (visitables[position] as BaseChatUiModel).isShowDate = false
                 }
-
             } else {
                 try {
                     (visitables[position] as BaseChatUiModel).isShowDate = true
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
             }
         }
     }
 
-
     private fun showTimeBaseChat(position: Int) {
         if (position != 0) {
             try {
-
                 val now: BaseChatUiModel = visitables[position] as BaseChatUiModel
                 var next: BaseChatUiModel = visitables[position - 1] as BaseChatUiModel
                 val myTime = ((now.replyTime)?.toLong() ?: 0L) / SECONDS
                 var nextItemTime: Long = 0
 
-                if (visitables[position - 1] != null
-                        && visitables[position - 1] is BaseChatUiModel) {
+                if (visitables[position - 1] != null &&
+                    visitables[position - 1] is BaseChatUiModel
+                ) {
                     next = visitables[position - 1] as BaseChatUiModel
                     nextItemTime = ((next.replyTime)?.toLong() ?: 0L) / SECONDS
                 }
 
                 (visitables[position] as BaseChatUiModel)
-                        .isShowTime = !(compareHour(nextItemTime, myTime)
-                        && compareSender(now, next))
-
+                    .isShowTime = !(
+                    compareHour(nextItemTime, myTime) &&
+                        compareSender(now, next)
+                    )
             } catch (e: NumberFormatException) {
                 (visitables[position] as BaseChatUiModel).isShowTime = true
             } catch (e: ClassCastException) {
                 (visitables[position] as BaseChatUiModel).isShowTime = true
             }
-
         } else {
             try {
                 (visitables[position] as BaseChatUiModel).isShowTime = true
             } catch (e: ClassCastException) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -170,22 +165,22 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
                     }
                 }
 
-                (visitables.get(position) as SendableUiModel).isShowRole = !(prev != null
-                        && compareSender(now, prev)
-                        && compareHour(myTime, prevTime))
+                (visitables.get(position) as SendableUiModel).isShowRole = !(
+                    prev != null &&
+                        compareSender(now, prev) &&
+                        compareHour(myTime, prevTime)
+                    )
             } catch (e: NumberFormatException) {
                 (visitables.get(position) as SendableUiModel).isShowRole = false
             } catch (e: ClassCastException) {
                 (visitables.get(position) as SendableUiModel).isShowRole = false
             }
-
         } else {
             try {
                 (visitables.get(position) as SendableUiModel).isShowRole = true
             } catch (e: ClassCastException) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -228,19 +223,16 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         if (visitables.size > 1) notifyItemRangeChanged(0, 1)
     }
 
-    fun addNewMessage(item: Visitable<*>) {
-        addElement(item)
-    }
-
     fun removeDummy(visitable: Visitable<*>) {
         if (visitable is SendableUiModel && visitables.isNotEmpty()) {
             val iter = visitables.iterator()
 
             while (iter.hasNext()) {
                 val chatItem = iter.next()
-                if (chatItem is SendableUiModel
-                        && chatItem.isDummy
-                        && chatItem.startTime == visitable.startTime) {
+                if (chatItem is SendableUiModel &&
+                    chatItem.isDummy &&
+                    chatItem.startTime == visitable.startTime
+                ) {
                     val position = this.visitables.indexOf(chatItem)
                     this.visitables.remove(chatItem)
                     notifyItemRemoved(position)
@@ -273,5 +265,4 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         const val SECONDS: Long = 1000000
         private const val ITEM_COUNT = 10
     }
-
 }

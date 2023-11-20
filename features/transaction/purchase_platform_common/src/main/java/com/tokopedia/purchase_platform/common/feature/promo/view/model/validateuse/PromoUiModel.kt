@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse
 
 import android.os.Parcelable
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -27,5 +28,6 @@ data class PromoUiModel(
     var benefitSummaryInfoUiModel: BenefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(),
     var tickerInfoUiModel: TickerInfoUiModel = TickerInfoUiModel(),
     var cashbackVoucherDescription: String = "",
-    var tokopointsDetailUiModel: TokopointsDetailUiModel = TokopointsDetailUiModel()
+    var tokopointsDetailUiModel: TokopointsDetailUiModel = TokopointsDetailUiModel(),
+    var userGroupMetadata: List<UserGroupMetadata> = emptyList()
 ) : Parcelable

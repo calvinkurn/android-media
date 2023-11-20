@@ -103,6 +103,10 @@ data class AttributesCart(
         @SerializedName("channel_id")
         @Expose
         var channelId: String? = null,
+
+        @SerializedName("redirect_url")
+        @Expose
+        var redirectUrl: String? = null,
 ) {
     data class UserInputPrice(
 

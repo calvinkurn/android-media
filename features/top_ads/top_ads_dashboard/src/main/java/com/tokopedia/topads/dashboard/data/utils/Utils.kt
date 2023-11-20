@@ -27,7 +27,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
-import com.tokopedia.topads.common.extension.ZERO
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TIME_DURATION_FOR_INTERRUPT_SHEET

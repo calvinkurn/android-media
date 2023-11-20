@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselBundleBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleWidgetAdapter
@@ -20,6 +21,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class InspirationProductBundleViewHolder(
     itemView: View,
     private val listener: InspirationBundleListener,
+    private val isReimagine: Boolean
 ) : AbstractViewHolder<InspirationProductBundleDataView>(itemView),
     ProductBundleListener {
 
@@ -35,6 +37,7 @@ class InspirationProductBundleViewHolder(
     private var productBundle: InspirationProductBundleDataView? = null
 
     override fun bind(element: InspirationProductBundleDataView) {
+        setPadding()
         productBundle = element
         bindTitle(element)
         bindContent(element)
@@ -51,7 +54,7 @@ class InspirationProductBundleViewHolder(
     }
 
     private fun bindContent(element: InspirationProductBundleDataView) {
-
+        setMarginProductCardList()
         binding?.rvProductBundle?.let {
             if (it.itemDecorationCount == 0) it.addItemDecoration(createItemDecoration())
 
@@ -224,5 +227,47 @@ class InspirationProductBundleViewHolder(
         private fun getRightOffsetNotLastItem(): Int {
             return DEFAULT_OFFSET
         }
+    }
+
+    private fun setPadding() {
+        if (isReimagine) {
+            paddingContainerReimagineVersion()
+        } else {
+            paddingContainerControlVersion()
+        }
+    }
+
+    private fun paddingContainerReimagineVersion() {
+        val suggestionTextView = binding?.constraintContainerCarouselBundle ?: return
+        val contextResource = suggestionTextView.context.resources
+        val paddingTop = contextResource.getDimensionPixelSize(R.dimen.search_bundle_carousel_padding_top)
+        suggestionTextView.setPadding(0, paddingTop, 0, 0)
+    }
+
+    private fun paddingContainerControlVersion() {
+        val suggestionTextView = binding?.constraintContainerCarouselBundle ?: return
+        suggestionTextView.setPadding(0, 0, 0, 0)
+    }
+
+    private fun setMarginProductCardList() {
+        if (isReimagine) {
+            setMarginProductCardListReimagine()
+        } else {
+            setMarginProductCardListControl()
+        }
+    }
+
+    private fun setMarginProductCardListReimagine() {
+        val tgProductBundleTitle = binding?.rvProductBundle ?: return
+        val contextResource = tgProductBundleTitle.context.resources
+        val marginTop = contextResource.getDimensionPixelSize(R.dimen.search_bundle_carousel_bundle_list_margin_top_reimagine)
+        tgProductBundleTitle.setMargin(0, marginTop,0, 0)
+    }
+
+    private fun setMarginProductCardListControl() {
+        val tgProductBundleTitle = binding?.rvProductBundle ?: return
+        val contextResource = tgProductBundleTitle.context.resources
+        val marginTop = contextResource.getDimensionPixelSize(R.dimen.search_bundle_carousel_bundle_list_margin_control)
+        tgProductBundleTitle.setMargin(0, marginTop,0,0)
     }
 }

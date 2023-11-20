@@ -9,5 +9,6 @@ data class BalanceAndPointUiModel(
     var isFailed: Boolean = false,
     var isActive: Boolean = true,
     var hideTitle: Boolean = false,
-    var type: String = ""
+    var type: String = "",
+    var statusName: String = ""
 )

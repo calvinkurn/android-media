@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse
 
 import android.os.Parcelable
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfoUiModel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -10,5 +11,6 @@ data class AdditionalInfoUiModel(
     var emptyCartInfoUiModel: EmptyCartInfoUiModel = EmptyCartInfoUiModel(),
     var usageSummariesUiModel: List<UsageSummariesUiModel> = emptyList(),
     var promoSpIds: List<PromoSpIdUiModel> = emptyList(),
-    var pomlAutoApplied: Boolean = false
+    var pomlAutoApplied: Boolean = false,
+    var bebasOngkirInfo: LastApplyBebasOngkirInfoUiModel = LastApplyBebasOngkirInfoUiModel()
 ) : Parcelable

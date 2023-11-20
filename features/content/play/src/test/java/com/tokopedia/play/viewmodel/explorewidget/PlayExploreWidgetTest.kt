@@ -1,30 +1,31 @@
 package com.tokopedia.play.viewmodel.explorewidget
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.content.common.model.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayChannelInfoModelBuilder
-import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
+import com.tokopedia.play.robot.play.getPrivateField
 import com.tokopedia.play.util.assertEmpty
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
+import com.tokopedia.play.util.assertType
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.event.ShowVariantSheet
 import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
-import com.tokopedia.play.view.viewcomponent.ExploreWidgetViewComponent
+import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Rule
 import org.junit.Test
 
@@ -43,7 +44,13 @@ class PlayExploreWidgetTest {
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
 
     private val config =
-        ExploreWidgetConfig(group = "explore", sourceType = "Suneo", sourceId = "25490")
+        PlayChannelRecommendationConfig(
+            exploreWidgetConfig = ExploreWidgetConfig(
+                group = "explore",
+                sourceType = "Suneo",
+                sourceId = "25490"
+            )
+        )
 
     private val mockChannelData = channelDataBuilder.buildChannelData(
         channelDetail = channelInfoBuilder.buildChannelDetail(
@@ -79,7 +86,7 @@ class PlayExploreWidgetTest {
             state = ResultState.Loading
         ),
         SubSlotUiModel,
-        WidgetItemUiModel(item = PlayWidgetUiMock.getSamplePlayWidget(), id = 1)
+        ExploreWidgetItemUiModel(item = PlayWidgetUiMock.getSamplePlayWidget(), id = 1)
     )
 
     init {
@@ -97,7 +104,12 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val state = it.recordState {}
-            state.channel.exploreWidgetConfig.assertEqualTo(config)
+            state.channel.channelRecomConfig.exploreWidgetConfig.assertType<ExploreWidgetConfig> {
+                c -> c.sourceId.assertEqualTo(config.exploreWidgetConfig.sourceId)
+                c.group.assertEqualTo(config.exploreWidgetConfig.group)
+                c.sourceType.assertEqualTo(config.exploreWidgetConfig.sourceType)
+                c.categoryName.assertEqualTo(config.exploreWidgetConfig.categoryName)
+            }
         }
     }
 
@@ -114,7 +126,12 @@ class PlayExploreWidgetTest {
             val state = it.recordState {
                 it.submitAction(DismissExploreWidget)
             }
-            state.channel.exploreWidgetConfig.assertEqualTo(config)
+            state.channel.channelRecomConfig.exploreWidgetConfig.assertType<ExploreWidgetConfig> {
+                    c -> c.sourceId.assertEqualTo(config.exploreWidgetConfig.sourceId)
+                c.group.assertEqualTo(config.exploreWidgetConfig.group)
+                c.sourceType.assertEqualTo(config.exploreWidgetConfig.sourceType)
+                c.categoryName.assertEqualTo(config.exploreWidgetConfig.categoryName)
+            }
             state.exploreWidget.data.widgets.assertEmpty()
             state.exploreWidget.data.chips.assertEqualTo(TabMenuUiModel.Empty)
             it.viewModel.isAnyBottomSheetsShown.assertFalse()
@@ -149,7 +166,7 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
             }
             stateAndEvent.second.any { it is ExploreWidgetState }
         }
@@ -167,12 +184,19 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
             stateAndEvent.first.exploreWidget.data.state.isFail.assertTrue()
-            stateAndEvent.first.exploreWidget.data.param.sourceId.assertEqualTo(config.sourceId)
-            stateAndEvent.first.exploreWidget.data.param.sourceType.assertEqualTo(config.sourceType)
+
+            val param = it.viewModel.getPrivateField<MutableStateFlow<Map<ExploreWidgetType, WidgetParamUiModel>>>("widgetQuery")
+            param.value.getValue(ExploreWidgetType.Default).assertType<WidgetParamUiModel> {
+                c ->
+                c.sourceId.assertEqualTo(config.exploreWidgetConfig.sourceId)
+                c.sourceType.assertEqualTo(config.exploreWidgetConfig.sourceType)
+                c.group.assertEqualTo(config.exploreWidgetConfig.group)
+                c.isRefresh.assertFalse()
+            }
         }
     }
 
@@ -188,8 +212,8 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
-                it.submitAction(EmptyPageWidget)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
+                it.submitAction(EmptyPageWidget(ExploreWidgetType.Default))
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
         }
@@ -207,7 +231,7 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
                 it.submitAction(RefreshWidget)
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
@@ -227,7 +251,7 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
                 it.submitAction(RefreshWidget)
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
@@ -247,8 +271,8 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
-                it.submitAction(NextPageWidgets)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
+                it.submitAction(NextPageWidgets(ExploreWidgetType.Default))
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
             stateAndEvent.second.any { it !is ExploreWidgetState }
@@ -267,11 +291,54 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
-                it.submitAction(NextPageWidgets)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
+                it.submitAction(NextPageWidgets(ExploreWidgetType.Default))
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
             stateAndEvent.first.exploreWidget.data.state.isFail.assertTrue()
         }
+    }
+
+    @Test
+    fun `if theres category get two tabs`() {
+        createPlayViewModelRobot(
+            repo = repo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ).use {
+            it.createPage(mockChannelData)
+            it.focusPage(mockChannelData)
+
+            val state = it.recordState {}
+            state.channel.channelRecomConfig.exploreWidgetConfig.assertType<ExploreWidgetConfig> {
+                    c -> c.sourceId.assertEqualTo(config.exploreWidgetConfig.sourceId)
+                c.group.assertEqualTo(config.exploreWidgetConfig.group)
+                c.sourceType.assertEqualTo(config.exploreWidgetConfig.sourceType)
+                c.categoryName.assertEqualTo(config.exploreWidgetConfig.categoryName)
+            }
+            it.viewModel.exploreWidgetTabs.size.assertEqualTo(1)
+            it.viewModel.exploreWidgetTabs.first().assertEqualTo("Eksplor")
+            it.viewModel.exploreWidgetTabs.last().assertEqualTo("Eksplor")
+        }
+    }
+
+    @Test
+    fun `hidesheet` () {
+        createPlayViewModelRobot(
+            repo = repo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ).use {
+            it.createPage(mockChannelData)
+            it.focusPage(mockChannelData)
+
+            val event = it.recordEvent {
+                FetchWidgets(ExploreWidgetType.Default)
+                submitAction(HideBottomSheet)
+            }
+
+            it.viewModel.isAnyBottomSheetsShown.assertFalse()
+        }
+
     }
 }

@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.util.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -115,6 +116,7 @@ class PlayBroadcastBeautificationViewModelTest {
             }
 
             state.beautificationConfig.isUnknown.assertTrue()
+            robot.getViewModel().isBeautificationEnabled.assertFalse()
             assert(state.menuList.firstOrNull { item -> item.menu == DynamicPreparationMenu.Menu.FaceFilter } == null)
         }
     }
@@ -137,6 +139,12 @@ class PlayBroadcastBeautificationViewModelTest {
             }
 
             state.beautificationConfig.isUnknown.assertFalse()
+            robot.getViewModel().isBeautificationEnabled.assertTrue()
+            robot.getViewModel().faceFiltersWithoutNoneOption.assertEqualTo(
+                mockBeautificationConfigAvailable.faceFilters.filter { faceFilter ->
+                    !faceFilter.isRemoveEffect
+                }
+            )
 
             assert(state.menuList.firstOrNull { item -> item.menu == DynamicPreparationMenu.Menu.FaceFilter } != null)
 
@@ -165,6 +173,7 @@ class PlayBroadcastBeautificationViewModelTest {
             }
 
             state.beautificationConfig.isUnknown.assertTrue()
+            robot.getViewModel().isBeautificationEnabled.assertFalse()
             assert(state.menuList.firstOrNull { item -> item.menu == DynamicPreparationMenu.Menu.FaceFilter } == null)
         }
     }
@@ -189,6 +198,7 @@ class PlayBroadcastBeautificationViewModelTest {
             }
 
             state.beautificationConfig.isUnknown.assertTrue()
+            robot.getViewModel().isBeautificationEnabled.assertFalse()
 
             assert(state.menuList.firstOrNull { item -> item.menu == DynamicPreparationMenu.Menu.FaceFilter } == null)
 
@@ -320,12 +330,14 @@ class PlayBroadcastBeautificationViewModelTest {
         )
 
         robot.use {
-            val state = it.recordState {
+            val (state, events) = it.recordStateAndEvents {
                 getAccountConfiguration()
                 it.getViewModel().submitAction(PlayBroadcastAction.RemoveBeautificationMenu)
             }
 
             assert(state.menuList.firstOrNull { item -> item.menu == DynamicPreparationMenu.Menu.FaceFilter } == null)
+            state.beautificationConfig.assertEqualTo(BeautificationConfigUiModel.Empty)
+            events.last().assertEvent(PlayBroadcastEvent.InitializeBroadcaster(BroadcastingConfigUiModel()))
         }
     }
 
@@ -399,6 +411,7 @@ class PlayBroadcastBeautificationViewModelTest {
                 if (idx == mockSelectedFaceFilterPosition) {
                     e.active.assertTrue()
                     e.isSelected.assertTrue()
+                    robot.getViewModel().selectedFaceFilter?.assertEqualTo(e) ?: fail("Selected face filter shouldn't be null")
                 }
                 else {
                     e.active.assertEqualTo(prevState.beautificationConfig.faceFilters[idx].active)
@@ -433,6 +446,7 @@ class PlayBroadcastBeautificationViewModelTest {
                 if (idx == mockSelectedFaceFilterPosition) {
                     e.active.assertTrue()
                     e.isSelected.assertTrue()
+                    robot.getViewModel().selectedFaceFilter?.assertEqualTo(e) ?: fail("Selected face filter shouldn't be null")
                 }
                 else {
                     e.active.assertFalse()
@@ -493,6 +507,7 @@ class PlayBroadcastBeautificationViewModelTest {
             state.beautificationConfig.presets.forEachIndexed { idx, e ->
                 if (idx == mockPresetNoneOptionPosition) {
                     e.isSelected.assertTrue()
+                    robot.getViewModel().selectedPreset?.assertEqualTo(e) ?: fail("Selected preset shouldn't be null")
                 } else {
                     e.isSelected.assertFalse()
                 }
@@ -524,6 +539,7 @@ class PlayBroadcastBeautificationViewModelTest {
             state.beautificationConfig.presets.forEachIndexed { idx, e ->
                 if (idx == mockPresetOptionPosition) {
                     e.isSelected.assertTrue()
+                    robot.getViewModel().selectedPreset?.assertEqualTo(e) ?: fail("Selected preset shouldn't be null")
                 } else {
                     e.isSelected.assertFalse()
                 }

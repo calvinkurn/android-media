@@ -58,5 +58,6 @@ data class UpdateCartOccProfileRequest(
     companion object {
         const val EXPRESS_CHECKOUT_PARAM = "express_checkout_param"
         const val INSTALLMENT_TERM = "installment_term"
+        const val GATEWAY_CODE = "gateway_code"
     }
 }

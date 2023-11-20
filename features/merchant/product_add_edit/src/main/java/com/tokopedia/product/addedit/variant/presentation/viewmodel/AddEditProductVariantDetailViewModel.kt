@@ -28,10 +28,7 @@ import com.tokopedia.product.addedit.variant.presentation.extension.getSelection
 import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.extension.lastCurrentHeaderPosition
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
-import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.getVariantName
-import com.tokopedia.product.manage.common.feature.variant.data.model.Selection
 import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -64,6 +61,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     val hasWholesale = Transformations.map(productInputModel) {
         it.detailInputModel.wholesaleList.isNotEmpty()
+    }
+
+    val isSingleProductVariant = Transformations.map(productInputModel) {
+        it.variantInputModel.isSingleProductVariant()
     }
 
     val isEditMode: Boolean get() = productInputModel.getValueOrDefault().productId.orZero() > 0

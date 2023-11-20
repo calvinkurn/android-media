@@ -106,31 +106,105 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:weightSum="100"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tpg_voucher_setting_title"
         app:layout_constraintTop_toBottomOf="@+id/ll_deduction_type">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpg_voucher_nominal_label"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
-            tools:text="Nominal Cashback"
-            android:textColor="@color/Unify_NN600"
-            app:typographyType="display_3"
-            app:typographyWeight="reguler" />
+            android:orientation="horizontal"
+            android:weightSum="100">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpg_voucher_nominal"
-            android:layout_width="0dp"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_voucher_nominal_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                tools:text="Nominal Cashback"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_voucher_nominal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="20%" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_parent_initial_cashback"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
-            android:textColor="@color/Unify_NN950"
-            app:typographyType="display_3"
-            app:typographyWeight="reguler"
-            tools:text="20%" />
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:weightSum="100"
+            tools:visibility="visible">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_initial_cashback_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:text="Cashback awal"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_initial_cashback"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="20%" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_parent_additional_subsidy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:weightSum="100"
+            tools:visibility="visible">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_additional_subsidy_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:text="Tambahan subsidi"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_additional_subsidy"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="10%" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -224,15 +298,33 @@
             app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpg_voucher_quota"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
-            android:textColor="@color/Unify_NN950"
-            app:typographyType="display_3"
-            app:typographyWeight="reguler"
-            tools:text="100" />
+            android:orientation="vertical"
+            android:layout_weight="50">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_voucher_quota"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="100" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_voucher_quota_subsidy_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey_550"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                android:visibility="gone"
+                tools:text="(Semua kuota di subsidi)"
+                tools:visibility="visible"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

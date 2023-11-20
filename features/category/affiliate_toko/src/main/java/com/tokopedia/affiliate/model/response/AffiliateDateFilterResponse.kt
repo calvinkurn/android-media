@@ -3,7 +3,7 @@ import com.google.gson.annotations.SerializedName
 
 data class AffiliateDateFilterResponse(
     @SerializedName("getAffiliateDateFilter")
-    var `data`: Data?
+    var dateFilterData: Data?
 ) {
     data class Data(
         @SerializedName("GetAffiliateDateFilter")

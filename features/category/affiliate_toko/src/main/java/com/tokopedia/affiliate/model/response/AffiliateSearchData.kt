@@ -8,7 +8,7 @@ data class AffiliateSearchData(
 ) {
     data class SearchAffiliate(
         @SerializedName("data")
-        var `data`: Data?
+        var searchData: Data?
     ) {
         data class Data(
             @SerializedName("cards")
@@ -124,7 +124,7 @@ data class AffiliateSearchData(
                             @SerializedName("description")
                             var description: String?,
                             @SerializedName("messageType")
-                            var messageType: Int?,
+                            var messageType: Int?
                         )
                     }
                 }
@@ -148,7 +148,7 @@ data class AffiliateSearchData(
                     @SerializedName("ctaText") val ctaText: String?,
                     @SerializedName("ctaType") val ctaType: Int?,
                     @SerializedName("ctaAction") val ctaAction: Int?,
-                    @SerializedName("ctaLink") val ctaLink: CtaLink?,
+                    @SerializedName("ctaLink") val ctaLink: CtaLink?
                 ) {
 
                     data class CtaLink(

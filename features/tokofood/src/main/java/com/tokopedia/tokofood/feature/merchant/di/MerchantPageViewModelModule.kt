@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokofood.common.di.TokoFoodScope
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.ManageLocationViewModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
-import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModelOld
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.OrderCustomizationViewModel
 import dagger.Binds
 import dagger.Module
@@ -25,12 +24,6 @@ abstract class MerchantPageViewModelModule {
     @IntoMap
     @ViewModelKey(MerchantPageViewModel::class)
     abstract fun provideMerchantPageViewModel(viewModel: MerchantPageViewModel): ViewModel
-
-    @TokoFoodScope
-    @Binds
-    @IntoMap
-    @ViewModelKey(MerchantPageViewModelOld::class)
-    abstract fun provideMerchantPageViewModelOld(viewModel: MerchantPageViewModelOld): ViewModel
 
     @TokoFoodScope
     @Binds

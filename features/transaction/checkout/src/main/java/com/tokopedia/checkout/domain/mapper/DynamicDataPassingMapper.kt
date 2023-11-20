@@ -2,7 +2,7 @@ package com.tokopedia.checkout.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 
 object DynamicDataPassingMapper {
@@ -33,7 +33,7 @@ object DynamicDataPassingMapper {
     }
 
     fun getAddOnFromSAF(
-        addOnResult: AddOnsDataModel,
+        addOnResult: AddOnGiftingDataModel,
         isOcs: Boolean
     ): DynamicDataPassingParamRequest.AddOn {
         val listAddOnData: List<DynamicDataPassingParamRequest.AddOn.AddOnDataParam> = addOnResult.addOnsDataItemModelList.map { dataItem ->

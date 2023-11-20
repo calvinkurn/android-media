@@ -216,7 +216,7 @@ class MixTopComponentViewHolder(
 
     private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
         startSnapHelper.attachToRecyclerView(recyclerView)
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction, this)
         adapter = MixTopComponentAdapter(visitables, typeFactoryImpl)
         recyclerView.adapter = adapter
     }
@@ -311,8 +311,8 @@ class MixTopComponentViewHolder(
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
+                    componentName = HOME_MIX_TOP,
                     listener = this,
-                    componentName = HOME_MIX_TOP
             ))
         }
         return list

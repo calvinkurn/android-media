@@ -2,11 +2,10 @@ package com.tokopedia.tokochat.stub.common
 
 import com.gojek.conversations.courier.BabbleCourierClient
 import com.gojek.conversations.courier.CourierState
-import com.gojek.conversations.courier.retry.policy.RetryPolicy
 import rx.Observable
 import javax.inject.Inject
 
-class BabbleCourierClientStub @Inject constructor(): BabbleCourierClient {
+class BabbleCourierClientStub @Inject constructor() : BabbleCourierClient {
 
     private var courierState: CourierState = CourierState.CONNECTED
     private var clientId: String = "testClientId"
@@ -24,21 +23,14 @@ class BabbleCourierClientStub @Inject constructor(): BabbleCourierClient {
         return service.newInstance()
     }
 
-    override fun getProfileApiRetryPolicy(): RetryPolicy {
-        return object : RetryPolicy {
-            override fun getRetryMillis(): Long {
-                return 0L
-            }
-            override fun reset() {}
-        }
-    }
+    override fun getAppType(): String = ""
+
+    override fun getOwnerId(): String = clientId
+
+    override fun getOwnerType(): String = ""
 
     override fun getStateObserver(): Observable<CourierState> {
         return Observable.just(courierState)
-    }
-
-    override fun getUniqueClientId(profileId: String): String {
-        return clientId
     }
 
     override fun init(chatProfileId: String?) {

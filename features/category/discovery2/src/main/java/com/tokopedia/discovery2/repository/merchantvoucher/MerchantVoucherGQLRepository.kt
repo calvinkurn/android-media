@@ -27,9 +27,11 @@ class MerchantVoucherGQLRepository @Inject constructor() : BaseRepository(), Mer
         val componentData = response.data.component?.data
         val componentProperties = response.data.component?.properties
         val creativeName = response.data.component?.creativeName ?: ""
-        val nextPage = response.data.component?.compAdditionalInfo?.nextPage
+        val compAdditionalInfo = response.data.component?.compAdditionalInfo
+        val nextPage = compAdditionalInfo?.nextPage
         val subComponentName = when(productComponentName){
             ComponentNames.MerchantVoucherList.componentName -> ComponentNames.MerchantVoucherListItem.componentName
+            ComponentNames.MerchantVoucherGrid.componentName -> ComponentNames.MerchantVoucherGridItem.componentName
             else -> ComponentNames.MerchantVoucherCarouselItem.componentName
         }
         val list = withContext(Dispatchers.Default) {
@@ -37,7 +39,8 @@ class MerchantVoucherGQLRepository @Inject constructor() : BaseRepository(), Mer
                 componentData,
                 subComponentName,
                 componentProperties,
-                creativeName
+                creativeName,
+                compAdditionalInfo
             )
         }
         return Pair(list, nextPage)

@@ -22,18 +22,6 @@ import java.util.Map;
 @Deprecated
 public class TrackingUtils{
     private static final String PARAM_1 = "af_param_1";
-    // consider replacing this with getGtm().sendCampaignV4V5 instead.
-    @Deprecated
-    public static void eventCampaign(Context context, Campaign campaign) {
-        if (!isValidCampaign(campaign.getCampaign())) return;
-
-        // V5
-        TrackApp.getInstance().getGTM().sendCampaign(campaign.getCampaign());
-
-        // v4
-        TrackApp.getInstance().getGTM().pushEvent("campaignTrack", campaign.getCampaign());
-        TrackApp.getInstance().getGTM().sendGeneralEvent(campaign.getNullCampaignMap());
-    }
 
     public static void activityBasedAFEvent(Context context, String tag) {
         Map<String, Object> afValue = new HashMap<>();

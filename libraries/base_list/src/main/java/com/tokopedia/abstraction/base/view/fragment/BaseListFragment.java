@@ -28,6 +28,8 @@ import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.List;
 
+import kotlin.Deprecated;
+
 /**
  * Fragment that using recyclerview and has capability to show the data list,
  * handle simple pagination when onscroll to bottom, can have swiperefresh to refresh the list,
@@ -82,6 +84,9 @@ import java.util.List;
  * 8.Customize [[LOADING STATE]]
  *   override getLoadingModel()
  */
+@Deprecated(
+       message =  "Please don't use it because it will give bad perfomance in your page and this class use BaseListAdapter, it has deprecated"
+)
 public abstract class BaseListFragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseDaggerFragment
         implements BaseListViewListener<T>, BaseListAdapter.OnAdapterInteractionListener<T>,
         ErrorNetworkModel.OnRetryListener{
@@ -340,7 +345,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     protected Visitable getEmptyDataViewModel() {
         EmptyModel emptyModel = new EmptyModel();
-        emptyModel.setContent(getString(R.string.title_no_result));
+        emptyModel.setContent(getString(com.tokopedia.abstraction.R.string.title_no_result));
         return emptyModel;
     }
 

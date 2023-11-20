@@ -21,7 +21,8 @@ class GetPaymentFeeCheckoutUseCase @Inject constructor(
         params = mapOf(
             PROFILE_CODE_PARAM to request.profileCode,
             GATEWAY_CODE_PARAM to request.gatewayCode,
-            PAYMENT_AMOUNT_PARAM to request.paymentAmount
+            PAYMENT_AMOUNT_PARAM to request.paymentAmount,
+            PAYMENT_ADDITIONAL_DATA to request.additionalData
         )
     }
 
@@ -55,11 +56,12 @@ class GetPaymentFeeCheckoutUseCase @Inject constructor(
         private const val PROFILE_CODE_PARAM = "profileCode"
         private const val GATEWAY_CODE_PARAM = "gatewayCode"
         private const val PAYMENT_AMOUNT_PARAM = "paymentAmount"
+        private const val PAYMENT_ADDITIONAL_DATA = "additionalData"
         private const val QUERY_GET_PAYMENT_FEE = "GetPaymentFeeCheckoutQuery"
 
         private const val QUERY = """
-            query getPaymentFeeCheckout(${"$"}profileCode: String!, ${"$"}gatewayCode: String, ${"$"}paymentAmount: Float!) {
-                getPaymentFeeCheckout(profileCode: ${"$"}profileCode, gatewayCode: ${"$"}gatewayCode, paymentAmount: ${"$"}paymentAmount) {
+            query getPaymentFeeCheckout(${"$"}profileCode: String!, ${"$"}gatewayCode: String, ${"$"}paymentAmount: Float!, ${"$"}additionalData: String) {
+                getPaymentFeeCheckout(profileCode: ${"$"}profileCode, gatewayCode: ${"$"}gatewayCode, paymentAmount: ${"$"}paymentAmount, additionalData: ${"$"}additionalData) {
                     success
                     errors {
                         code

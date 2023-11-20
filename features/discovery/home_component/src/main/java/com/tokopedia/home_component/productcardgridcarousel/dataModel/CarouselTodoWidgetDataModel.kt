@@ -1,40 +1,44 @@
 package com.tokopedia.home_component.productcardgridcarousel.dataModel
 
+import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home_component.listener.TodoWidgetComponentListener
-import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
-import com.tokopedia.home_component.viewholders.TodoWidgetDismissListener
+import com.tokopedia.home_component.visitable.TodoWidgetDataModel
+import com.tokopedia.home_component.widget.common.carousel.HomeComponentCarouselDiffUtil
+import com.tokopedia.home_component.widget.todo.TodoWidgetTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * Created by frenzel
  */
-class CarouselTodoWidgetDataModel(
-    val id: Long = 0L,
-    val title: String = "",
-    val dataSource: String = "",
-    val dueDate: String = "",
-    val contextInfo: String = "",
-    val price: String = "",
-    val slashedPrice: String = "",
-    val discountPercentage: String = "",
-    val cardApplink: String = "",
-    val ctaType: String = "",
-    val ctaMode: String = "",
-    val ctaText: String = "",
-    val ctaApplink: String = "",
-    val imageUrl: String = "",
-    val feParam: String = "",
-    val todoWidgetComponentListener: TodoWidgetComponentListener,
-    val channel: ChannelModel,
-    val verticalPosition: Int = -1,
-    val cardPosition: Int = -1,
-    val cardInteraction: Boolean = false,
-    val isCarousel: Boolean = false,
-    val todoWidgetDismissListener: TodoWidgetDismissListener,
-) : Visitable<CommonCarouselProductCardTypeFactory>, ImpressHolder() {
-    override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {
+data class CarouselTodoWidgetDataModel(
+    val data: TodoWidgetDataModel,
+    val channelId: String,
+    val headerName: String,
+    val cardInteraction: Boolean,
+    val isCarousel: Boolean,
+    val verticalPosition: Int,
+    val cardPosition: Int,
+) : Visitable<TodoWidgetTypeFactory>, HomeComponentCarouselDiffUtil, ImpressHolder() {
+
+    companion object {
+        const val PAYLOAD_ITEM_POSITION = "item_position"
+    }
+
+    override fun type(typeFactory: TodoWidgetTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun getId(): String = data.id.toString()
+
+    override fun equalsWith(visitable: Any?): Boolean {
+        return visitable is CarouselTodoWidgetDataModel && visitable == this
+    }
+
+    override fun getChangePayloadFrom(visitable: Any?): Bundle {
+        val bundle = Bundle()
+        if(visitable is CarouselTodoWidgetDataModel && visitable.cardPosition != cardPosition) {
+            bundle.putBoolean(PAYLOAD_ITEM_POSITION, true)
+        }
+        return bundle
     }
 }

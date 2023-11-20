@@ -20,6 +20,7 @@ class GetProductListMetaUseCase @Inject constructor(
         private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_EXTRA_INFO = "extraInfo"
         private const val EXTRA_INFO_RBAC = "rbac"
+        private const val EXTRA_INFO_ARCHIVAL= "archival"
 
         const val query = """
             query ProductListMeta(${"$"}shopID:String!, ${"$"}extraInfo:[String]){
@@ -60,7 +61,7 @@ class GetProductListMetaUseCase @Inject constructor(
 
     fun setParams(shopId: String) {
         val requestParams = RequestParams.create()
-        val extraInfo = listOf(EXTRA_INFO_RBAC)
+        val extraInfo = listOf(EXTRA_INFO_RBAC,EXTRA_INFO_ARCHIVAL)
         requestParams.putString(PARAM_SHOP_ID, shopId)
         requestParams.putObject(PARAM_EXTRA_INFO, extraInfo)
         setRequestParams(requestParams.parameters)

@@ -48,13 +48,13 @@
         <item>Kamu bisa atur jadwal Bayar Otomatis, periode Bayar Otomatis, dan metode pembayaran kapan pun di halaman Bayar Otomatis.</item>
     </string-array>
     <string-array name="subscription_plus_more_info_bottomsheet_description_title">
-        <item>Mudah diatur sesuai kebutuhan</item>
-        <item>Aman &amp; tenang</item>
-        <item>Beragam keuntungan PLUS</item>
+        <item>Anti telat bayar langganan</item>
+        <item>Mudah atur perpanjang otomatis</item>
+        <item>Aman dan tenang</item>
     </string-array>
     <string-array name="subscription_plus_more_info_bottomsheet_description_desc">
-        <item>Langgananmu terbayar otomatis dan ada pengingat untuk isi saldo pas langganan akan berakhir.</item>
-        <item>Tokopedia menjaga keamanan data langganan PLUS dan transaksi kamu.</item>
-        <item>Lanjut berhemat dengan promo eksklusif PLUS &amp; Bebas Ongkir lebih banyak.</item>
+        <item>PLUS akan kabari kamu sebelum langganan terbayar otomatis dengan metode pembayaran pilihan.</item>
+        <item>Kamu bisa ubah metode bayar atau nonaktifkan Perpanjang Otomatis kapan aja di halaman PLUS.</item>
+        <item>Tokopedia menjaga keamanan data langganan PLUS &amp; transaksi kamu.</item>
     </string-array>
 </resources>

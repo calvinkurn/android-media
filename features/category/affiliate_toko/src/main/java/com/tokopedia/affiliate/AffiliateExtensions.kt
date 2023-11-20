@@ -11,7 +11,6 @@ import com.tokopedia.affiliate.model.pojo.AffiliateHeaderItemData
 import com.tokopedia.affiliate.model.pojo.AffiliateTermsAndConditionData
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateWebViewBottomSheet
-import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTermsAndConditionModel
@@ -87,46 +86,42 @@ fun Ticker.setAnnouncementData(
     context: FragmentActivity?,
     source: Int = PAGE_ANNOUNCEMENT_ALL
 ) {
-    when (announcementData.getAffiliateAnnouncementV2?.data?.type) {
-        AffiliateBaseFragment.WARNING -> {
+    when (announcementData.getAffiliateAnnouncementV2?.announcementData?.type) {
+        WARNING ->
             setupTickerView(
                 source,
-                announcementData.getAffiliateAnnouncementV2?.data,
+                announcementData.getAffiliateAnnouncementV2?.announcementData,
                 this,
                 Ticker.TYPE_WARNING,
                 context
             )
-        }
 
-        AffiliateBaseFragment.ERROR -> {
+        ERROR ->
             setupTickerView(
                 source,
-                announcementData.getAffiliateAnnouncementV2?.data,
+                announcementData.getAffiliateAnnouncementV2?.announcementData,
                 this,
                 Ticker.TYPE_ERROR,
                 context
             )
-        }
 
-        AffiliateBaseFragment.ANNOUNCEMENT -> {
+        ANNOUNCEMENT ->
             setupTickerView(
                 source,
-                announcementData.getAffiliateAnnouncementV2?.data,
+                announcementData.getAffiliateAnnouncementV2?.announcementData,
                 this,
                 Ticker.TYPE_ANNOUNCEMENT,
                 context
             )
-        }
 
-        else -> {
+        else ->
             setupTickerView(
                 source,
-                announcementData.getAffiliateAnnouncementV2?.data,
+                announcementData.getAffiliateAnnouncementV2?.announcementData,
                 this,
                 Ticker.TYPE_INFORMATION,
                 context
             )
-        }
     }
 }
 

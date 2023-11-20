@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.tokochat.databinding.TokochatGeneralUnavailableBottomsheetBinding
-import com.tokopedia.tokochat_common.util.TokoChatUrlUtil
+import com.tokopedia.tokochat.common.util.TokoChatUrlUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 

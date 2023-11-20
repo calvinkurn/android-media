@@ -45,4 +45,6 @@ interface ShopHomeFlashSaleWidgetListener {
         position: Int,
         name: String
     )
+
+    fun isForceLightModeColorOnShopFlashSaleWidget() : Boolean
 }

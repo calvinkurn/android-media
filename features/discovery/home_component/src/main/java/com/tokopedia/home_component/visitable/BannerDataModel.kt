@@ -17,11 +17,17 @@ data class BannerDataModel(
         val dimenMarginBottom: Int = com.tokopedia.home_component.R.dimen.home_banner_default_margin_bottom,
         val cardInteraction: Boolean = false,
         val enableDotsAndInfiniteScroll: Boolean = false,
-        val scrollTransitionDuration: Long = 5000L
+        val scrollTransitionDuration: Long = OLD_IDLE_DURATION
 ): ImpressHolder(), HomeComponentVisitable, LoadableComponent by BlocksLoadableComponent(
     { (channelModel?.channelGrids?.size ?: 0) > 3 },
     "HomeBannerDataModel"
 ) {
+
+    companion object {
+        const val OLD_IDLE_DURATION = 5000L
+        const val NEW_IDLE_DURATION = 6000L
+    }
+
     override fun visitableId(): String? {
         return channelModel?.id
     }

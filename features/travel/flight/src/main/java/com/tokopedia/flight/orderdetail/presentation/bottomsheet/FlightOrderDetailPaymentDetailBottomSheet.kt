@@ -19,6 +19,7 @@ class FlightOrderDetailPaymentDetailBottomSheet : BottomSheetUnify() {
 
     var paymentDetailData: List<FlightOrderDetailSimpleModel> = arrayListOf()
     var amenitiesDetailData: List<FlightOrderDetailSimpleModel> = arrayListOf()
+    var insuranceDetailData: List<FlightOrderDetailSimpleModel> = arrayListOf()
     var totalAmount: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +46,7 @@ class FlightOrderDetailPaymentDetailBottomSheet : BottomSheetUnify() {
     private fun renderView() {
         renderPaymentDetailView()
         renderAmenitiesDetailView()
+        renderInsuranceDetailView()
 
         mChildView.tgFlightOrderPaymentDetailTotal.text = totalAmount
     }
@@ -73,15 +75,31 @@ class FlightOrderDetailPaymentDetailBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun renderInsuranceDetailView() {
+        if (insuranceDetailData.isNotEmpty()) {
+            mChildView.rvFlightOrderPaymentDetailInsurance.visibility = View.VISIBLE
+            val adapter = FlightOrderDetailSimpleAdapter(insuranceDetailData)
+            mChildView.rvFlightOrderPaymentDetailInsurance.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            mChildView.rvFlightOrderPaymentDetailInsurance.setHasFixedSize(true)
+            mChildView.rvFlightOrderPaymentDetailInsurance.adapter = adapter
+        } else {
+            mChildView.rvFlightOrderPaymentDetailInsurance.visibility = View.VISIBLE
+        }
+    }
+
     companion object {
         const val TAG = "TagFlightOrderDetailPaymentdetailBottomSheet"
 
-        fun getInstance(paymentDetailData: List<FlightOrderDetailSimpleModel>,
-                        amenitiesDetailData: List<FlightOrderDetailSimpleModel>,
-                        totalAmount: String): FlightOrderDetailPaymentDetailBottomSheet =
+        fun getInstance(
+            paymentDetailData: List<FlightOrderDetailSimpleModel>,
+            amenitiesDetailData: List<FlightOrderDetailSimpleModel>,
+            insuranceDetailData: List<FlightOrderDetailSimpleModel>,
+            totalAmount: String
+        ): FlightOrderDetailPaymentDetailBottomSheet =
                 FlightOrderDetailPaymentDetailBottomSheet().also {
                     it.paymentDetailData = paymentDetailData
                     it.amenitiesDetailData = amenitiesDetailData
+                    it.insuranceDetailData = insuranceDetailData
                     it.totalAmount = totalAmount
                 }
     }

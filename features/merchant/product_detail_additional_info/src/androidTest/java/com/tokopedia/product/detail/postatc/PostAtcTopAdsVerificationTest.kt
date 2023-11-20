@@ -13,7 +13,7 @@ import com.tokopedia.product.detail.common.PostAtcHelper
 import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
 import com.tokopedia.product.detail.postatc.view.PostAtcActivity
 import com.tokopedia.product.detail.postatc.view.PostAtcBottomSheet
-import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationViewHolder
+import com.tokopedia.product.detail.postatc.view.component.recommendation.GlobalRecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -23,6 +23,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 
 class PostAtcTopAdsVerificationTest {
 
@@ -82,11 +83,11 @@ class PostAtcTopAdsVerificationTest {
 
     private fun checkTopAdsOnProductRecommendationViewHolder(recyclerView: RecyclerView, position: Int) {
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(position)
-        if (viewHolder is RecommendationViewHolder) {
+        if (viewHolder is GlobalRecommendationViewHolder) {
             waitForData()
             clickOnEachItemRecyclerView(
                 viewHolder.itemView,
-                com.tokopedia.recommendation_widget_common.R.id.rv_product,
+                recommendation_widget_commonR.id.recommendation_carousel_product,
                 0
             )
         }

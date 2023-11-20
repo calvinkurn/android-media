@@ -1230,6 +1230,16 @@ class FlightHomepageViewModelTest {
     }
 
     @Test
+    fun validateSendTrackingEventClickTransaction() {
+        val screenName = "tokopedia"
+        flightHomepageViewModel.sendTrackingClickTransaction(screenName)
+
+        verify {
+            flightAnalytics.eventClickTransactions(screenName)
+        }
+    }
+
+    @Test
     fun getDppoConsentRecharge_Success() {
         // given
         val consentDesc = "Tokopedia"

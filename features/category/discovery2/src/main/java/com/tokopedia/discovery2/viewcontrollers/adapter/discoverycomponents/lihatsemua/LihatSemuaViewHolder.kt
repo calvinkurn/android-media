@@ -31,6 +31,8 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
@@ -66,7 +68,8 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                         setupTitleImage(data)
                         setupBackgroundImage(data)
                         setupLihat(data, componentItem, backgroundImageView.isVisible)
-                        setupTextColours(backgroundImageView.isVisible)
+                        setupTitleTextColours(data.fontColor, backgroundImageView.isVisible)
+                        setupSubtitleTextColours(backgroundImageView.isVisible)
                         setupTimer(data, backgroundImageView.isVisible)
                         setupPadding(backgroundImageView.isVisible, titleImageViewParent.isVisible)
                     }
@@ -80,7 +83,11 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }
     }
 
-    private fun setupLihat(data: DataItem, componentsItem: ComponentsItem, backgroundPresent: Boolean) {
+    private fun setupLihat(
+        data: DataItem,
+        componentsItem: ComponentsItem,
+        backgroundPresent: Boolean
+    ) {
         if (!data.btnApplink.isNullOrEmpty()) {
             if (backgroundPresent) {
                 lihatImageView.show()
@@ -94,6 +101,8 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 }
                 lihatTextView.show()
                 lihatImageView.hide()
+
+                setupCTATextColor(data.ctaColor)
             }
         } else {
             lihatImageView.hide()
@@ -104,6 +113,12 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }
         lihatImageView.setOnClickListener {
             navigateLihat(data, componentsItem)
+        }
+    }
+
+    private fun setupCTATextColor(ctaColor: String?) {
+        if (!ctaColor.isNullOrEmpty()) {
+            lihatTextView.setTextColor(Color.parseColor(ctaColor))
         }
     }
 
@@ -135,14 +150,46 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         lihatSubTitleTextView.setTextAndCheckShow(subtitle)
     }
 
-    private fun setupTextColours(backgroundPresent: Boolean) {
+    private fun setupTitleTextColours(fontColor: String?, backgroundPresent: Boolean) {
         fragment.context?.let {
             if (backgroundPresent) {
-                lihatTitleTextView.setTextColor(MethodChecker.getColor(it, R.color.discovery2_dms_white))
-                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, R.color.discovery2_dms_white_95))
+                lihatTitleTextView.setTextColor(
+                    MethodChecker.getColor(
+                        it,
+                        R.color.discovery2_dms_white
+                    )
+                )
             } else {
-                lihatTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
-                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+                if (!fontColor.isNullOrEmpty()) {
+                    lihatTitleTextView.setTextColor(Color.parseColor(fontColor))
+                } else {
+                    lihatTitleTextView.setTextColor(
+                        MethodChecker.getColor(
+                            it,
+                            unifyprinciplesR.color.Unify_NN950_96
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setupSubtitleTextColours(backgroundPresent: Boolean) {
+        fragment.context?.let {
+            if (backgroundPresent) {
+                lihatSubTitleTextView.setTextColor(
+                    MethodChecker.getColor(
+                        it,
+                        R.color.discovery2_dms_white_95
+                    )
+                )
+            } else {
+                lihatSubTitleTextView.setTextColor(
+                    MethodChecker.getColor(
+                        it,
+                        unifyprinciplesR.color.Unify_NN950_68
+                    )
+                )
             }
         }
     }
@@ -197,7 +244,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
             } else {
                 textTitleParent.setPadding(
                     if (isTitleImagePresent) {
-                        it.getDimensionPixelOffset(R.dimen.dp_4)
+                        it.getDimensionPixelOffset(abstractionR.dimen.dp_4)
                     } else {
                         it.getDimensionPixelOffset(
                             R.dimen.dp_16
@@ -264,7 +311,11 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     }
 
     private fun navigateToAppLink(data: DataItem) {
-        lihatSemuaViewModel?.navigate(fragment.activity, data.btnApplink)
+        if (data.moveAction?.type != null) {
+            Utils.routingBasedOnMoveAction(data.moveAction, fragment)
+        } else {
+            lihatSemuaViewModel?.navigate(fragment.activity, data.btnApplink)
+        }
     }
 
     interface OnLihatSemuaClickListener {

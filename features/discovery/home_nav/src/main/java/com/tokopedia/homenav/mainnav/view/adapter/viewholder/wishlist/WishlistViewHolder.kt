@@ -56,7 +56,7 @@ class WishlistViewHolder(itemView: View,
         if (element.collections.isEmpty() || element.isEmptyState) {
             visitableList.add(EmptyStateWishlistDataModel())
         } else {
-            visitableList.addAll(element.collections.map { WishlistModel(it) })
+            visitableList.addAll(element.collections.mapIndexed { index, it -> WishlistModel(it, index) })
             if(element.showViewAll) {
                 visitableList.add(OtherWishlistModel())
                 binding?.wishlistRv?.setHeightBasedOnCardMaxHeight()

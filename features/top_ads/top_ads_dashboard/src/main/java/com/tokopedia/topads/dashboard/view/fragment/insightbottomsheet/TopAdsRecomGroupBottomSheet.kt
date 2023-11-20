@@ -17,7 +17,7 @@ import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.model.CountDataItem
+import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopadsRecomGroupBsAdapter
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter

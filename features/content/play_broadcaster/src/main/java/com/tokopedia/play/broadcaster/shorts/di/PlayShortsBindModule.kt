@@ -9,7 +9,6 @@ import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAn
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalyticImpl
-import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSender
 import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSenderImpl
@@ -17,7 +16,6 @@ import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnal
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalyticImpl
-import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
@@ -78,8 +76,11 @@ import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.byteplus.effect.util.asset.checker.AssetCheckerImpl
 import com.tokopedia.byteplus.effect.util.asset.manager.AssetManager
 import com.tokopedia.byteplus.effect.util.asset.manager.AssetManagerImpl
-import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
+import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
+import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import com.tokopedia.play_common.util.device.PlayDeviceSpec
@@ -156,7 +157,7 @@ abstract class PlayShortsBindModule {
     @PlayShortsScope
     abstract fun bindProductRepository(
         repo: PlayBroProductRepositoryImpl
-    ): PlayBroProductRepository
+    ): ContentProductPickerSellerRepository
 
     @Binds
     @PlayShortsScope
@@ -173,7 +174,7 @@ abstract class PlayShortsBindModule {
     /** Play Broadcaster Util */
     @Binds
     @PlayShortsScope
-    abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): PlayBroadcastDialogCustomizer
+    abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): ContentDialogCustomizer
 
     /** Play Broadcaster Analytic */
     @Binds
@@ -194,7 +195,7 @@ abstract class PlayShortsBindModule {
 
     @Binds
     @PlayShortsScope
-    abstract fun bindSetupProductAnalytic(setupProductAnalytic: PlayShortsSetupProductAnalyticImpl): PlayBroSetupProductAnalytic
+    abstract fun bindSetupProductAnalytic(setupProductAnalytic: PlayShortsSetupProductAnalyticImpl): ContentProductPickerSellerAnalytic
 
     @Binds
     @PlayShortsScope
@@ -206,7 +207,7 @@ abstract class PlayShortsBindModule {
 
     @Binds
     @PlayShortsScope
-    abstract fun bindPinProductAnalytic(pinProductAnalytic: PlayBroadcastPinProductAnalyticImpl): PlayBroadcastPinProductAnalytic
+    abstract fun bindPinProductAnalytic(pinProductAnalytic: PlayBroadcastPinProductAnalyticImpl): ContentPinnedProductAnalytic
 
     @Binds
     @PlayShortsScope

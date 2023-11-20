@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.flashsale.data.response
 
-
 import com.google.gson.annotations.SerializedName
 
 data class GetFlashSaleListForSellerMetaResponse(
@@ -9,9 +8,7 @@ data class GetFlashSaleListForSellerMetaResponse(
 ) {
     data class GetFlashSaleListForSellerMeta(
         @SerializedName("tab_list")
-        val tabList: List<Tab> = listOf(),
-        @SerializedName("ticker_non_multiloc_message")
-        val tickerNonMultiLocMessage: String = ""
+        val tabList: List<Tab> = listOf()
     ) {
         data class Tab(
             @SerializedName("display_name")

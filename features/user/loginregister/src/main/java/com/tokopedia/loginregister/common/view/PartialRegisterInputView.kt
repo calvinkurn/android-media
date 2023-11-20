@@ -131,6 +131,7 @@ class PartialRegisterInputView : BaseCustomView {
     }
 
     fun onErrorInputEmailPhoneValidate(message: String?) {
+        hideEmailExtension()
         setWrapperInputEmailPhoneError(viewBinding.inputEmailPhone, message)
     }
 
@@ -345,7 +346,7 @@ class PartialRegisterInputView : BaseCustomView {
 
     fun showLoginEmailView(email: String) {
         isButtonValidatorActivated = false
-        showForgotPassword()
+        showNeedHelp()
         viewBinding.wrapperPassword.show()
         viewBinding.changeButton.show()
 
@@ -364,7 +365,7 @@ class PartialRegisterInputView : BaseCustomView {
 
     fun showDefaultView() {
         isButtonValidatorActivated = true
-        hideForgotPassword()
+        hideNeedHelp()
         viewBinding.wrapperPassword.hide()
         viewBinding.changeButton.hide()
         defaultMessageInputEmailPhone()
@@ -392,12 +393,12 @@ class PartialRegisterInputView : BaseCustomView {
         }
     }
 
-    fun showForgotPassword() {
-        viewBinding.forgotPass.show()
+    fun showNeedHelp() {
+        viewBinding.needHelp.show()
     }
 
-    fun hideForgotPassword() {
-        viewBinding.forgotPass.hide()
+    fun hideNeedHelp() {
+        viewBinding.needHelp.hide()
     }
 
     fun setPassword(pass: String) {

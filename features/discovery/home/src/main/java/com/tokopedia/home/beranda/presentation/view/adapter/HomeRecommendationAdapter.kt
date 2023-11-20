@@ -1,9 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.adapter
 
-import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_VERTICAL_BANNER_ADS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.isFullSpan
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.smart_recycler_helper.*
@@ -37,13 +38,14 @@ class HomeRecommendationAdapter(
      */
     override fun bind(holder: SmartAbstractViewHolder<SmartVisitable<*>>, item: HomeRecommendationVisitable) {
         val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-        when(item){
+        when (item) {
             is HomeRecommendationLoading,
             is HomeRecommendationError,
             is HomeRecommendationEmpty,
-            is HomeRecommendationLoadMore,
-            is HomeRecommendationBannerTopAdsDataModel -> layout.isFullSpan = true
+            is HomeRecommendationLoadMore -> layout.isFullSpan = true
+            is HomeRecommendationBannerTopAdsDataModel -> layout.isFullSpan = item.bannerType != TYPE_VERTICAL_BANNER_ADS
             is HomeRecommendationHeadlineTopAdsDataModel -> layout.isFullSpan = true
+            is HomeRecommendationItemDataModel -> layout.isFullSpan = item.isFullSpan()
         }
         holder.bind(item, listener)
     }

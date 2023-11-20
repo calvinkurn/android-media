@@ -4,6 +4,7 @@ import com.gojek.conversations.extensions.ExtensionMessage
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat.stub.repository.TokoChatRepositoryStub
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 class TokoChatSendMessageUseCaseStub @Inject constructor(
     @ActivityScope tokoChatRepositoryStub: TokoChatRepositoryStub
-): TokoChatSendMessageUseCase(tokoChatRepositoryStub) {
+) : TokoChatSendMessageUseCase(tokoChatRepositoryStub) {
 
     override fun addTransientMessage(channel: String, extensionMessage: ExtensionMessage) {
         val dummyExtensionMessage = dummyExtensionMessageImageAttachment()
@@ -28,14 +29,14 @@ class TokoChatSendMessageUseCaseStub @Inject constructor(
         super.setTransientMessageFailed(TEST_ID)
     }
 
-    private fun dummyExtensionMessageImageAttachment() : ExtensionMessage {
+    private fun dummyExtensionMessageImageAttachment(): ExtensionMessage {
         return ExtensionMessage(
             extensionId = TokoChatValueUtil.PICTURE,
             extensionMessageId = TokoChatValueUtil.PICTURE,
             extensionVersion = Int.ONE,
             transientId = TEST_ID,
             messageId = TEST_ID,
-            message = com.tokopedia.tokochat_common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG,
+            message = IMAGE_ATTACHMENT_MSG,
             isCanned = false,
             cannedMessagePayload = null,
             payload = createExtensionPayloadImageAttachment()
@@ -53,5 +54,4 @@ class TokoChatSendMessageUseCaseStub @Inject constructor(
     companion object {
         const val TEST_ID: String = "testId"
     }
-
 }

@@ -43,7 +43,7 @@
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_order"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -57,8 +57,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_product_price_label"
             app:layout_constraintTop_toBottomOf="@id/tv_total_order"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
+
+        <LinearLayout
+            android:id="@+id/ll_addons_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_product_price_value" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_product_addons_price_label"
@@ -68,8 +78,8 @@
             android:text="@string/occ_lbl_total_item_addons_price"
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_total_product_price_value"
-            app:typographyType="body_3"
+            app:layout_constraintTop_toBottomOf="@id/ll_addons_product"
+            app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -82,8 +92,8 @@
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_product_addons_price_label"
-            app:layout_constraintTop_toBottomOf="@id/tv_total_product_price_value"
-            app:typographyType="body_3"
+            app:layout_constraintTop_toBottomOf="@id/ll_addons_product"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -95,7 +105,7 @@
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_product_addons_price_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -109,7 +119,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_purchase_protection_price_label"
             app:layout_constraintTop_toBottomOf="@id/tv_total_product_addons_price_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -121,7 +131,7 @@
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_purchase_protection_price_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -135,7 +145,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_product_discount_label"
             app:layout_constraintTop_toBottomOf="@id/tv_purchase_protection_price_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -147,7 +157,7 @@
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_product_discount_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -161,7 +171,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_shipping_price_label"
             app:layout_constraintTop_toBottomOf="@id/tv_total_product_discount_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -173,7 +183,7 @@
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_shipping_price_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -187,7 +197,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_shipping_discount_label"
             app:layout_constraintTop_toBottomOf="@id/tv_total_shipping_price_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -199,7 +209,7 @@
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_shipping_discount_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -213,7 +223,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_insurance_price_label"
             app:layout_constraintTop_toBottomOf="@id/tv_total_shipping_discount_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -225,7 +235,7 @@
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_insurance_price_value"
-            app:typographyType="body_3" />
+            app:typographyType="display_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_installment_fee_price_value"
@@ -238,7 +248,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_installment_fee_price_label"
             app:layout_constraintTop_toBottomOf="@id/tv_total_insurance_price_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <View
@@ -292,7 +302,7 @@
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_total_payment"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -306,7 +316,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_payment_price_label"
             app:layout_constraintTop_toBottomOf="@id/divider_total_payment"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <View
@@ -348,7 +358,7 @@
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_installment"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -362,7 +372,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_installment_term_label"
             app:layout_constraintTop_toBottomOf="@id/divider_installment"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -374,7 +384,7 @@
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_installment_term_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -388,7 +398,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_installment_per_period_label"
             app:layout_constraintTop_toBottomOf="@id/tv_total_installment_term_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -400,7 +410,7 @@
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_installment_per_period_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -414,7 +424,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_installment_first_date_label"
             app:layout_constraintTop_toBottomOf="@id/tv_total_installment_per_period_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -426,7 +436,7 @@
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_installment_first_date_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -440,7 +450,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_installment_last_date_label"
             app:layout_constraintTop_toBottomOf="@id/tv_total_installment_first_date_value"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

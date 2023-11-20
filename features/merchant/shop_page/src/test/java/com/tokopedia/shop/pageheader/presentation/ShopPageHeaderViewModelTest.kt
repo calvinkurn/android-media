@@ -129,6 +129,7 @@ class ShopPageHeaderViewModelTest {
     private lateinit var shopPageHeaderViewModel: ShopPageHeaderViewModel
 
     private val SAMPLE_SHOP_ID = "123"
+    private val mockShopHomeTabName = "HomeTab"
     private val mockExtParam = "fs_widget%3D23600"
 
     private val addressWidgetData: LocalCacheModel = LocalCacheModel()
@@ -190,24 +191,18 @@ class ShopPageHeaderViewModelTest {
             )
         )
         coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
-        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
-            data = listOf(ShopProduct(), ShopProduct())
-        )
         shopPageHeaderViewModel.getNewShopPageTabData(
             SAMPLE_SHOP_ID,
             "shop domain",
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
             false,
             addressWidgetData,
-            mockExtParam
+            mockExtParam,
+            mockShopHomeTabName,
+            mapOf(),
+            false
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Success)
-        assert(shopPageHeaderViewModel.productListData.data.size == 2)
     }
 
     @Test
@@ -225,24 +220,18 @@ class ShopPageHeaderViewModelTest {
             )
         )
         coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
-        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
-            data = listOf(ShopProduct(), ShopProduct())
-        )
         shopPageHeaderViewModel.getNewShopPageTabData(
             shopId = SAMPLE_SHOP_ID,
             shopDomain = "shop domain",
-            page = 1,
-            itemPerPage = 10,
-            shopProductFilterParameter = ShopProductFilterParameter(),
-            keyword = "",
-            etalaseId = "",
             isRefresh = false,
             widgetUserAddressLocalData = addressWidgetData,
-            extParam = mockExtParam
+            extParam = mockExtParam,
+            tabName = mockShopHomeTabName,
+            mapOf(),
+            false
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Success)
-        assert(shopPageHeaderViewModel.productListData.data.size == 2)
     }
 
     @Test
@@ -259,29 +248,25 @@ class ShopPageHeaderViewModelTest {
             )
         )
         coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
-        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
-            data = listOf(ShopProduct(), ShopProduct())
-        )
         mockkObject(ShopPageHeaderMapper)
         every {
             ShopPageHeaderMapper.mapToNewShopPageP1HeaderData(
                 shopInfoCoreData = any(),
                 shopPageGetDynamicTabResponse = any(),
-                feedWhitelistData = any(),
-                shopPageHeaderLayoutData = any()
+                shopPageHeaderLayoutData = any(),
+                mapOf(),
+                false
             )
         } throws Exception()
         shopPageHeaderViewModel.getNewShopPageTabData(
             SAMPLE_SHOP_ID,
             "shop domain",
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
             false,
             addressWidgetData,
-            mockExtParam
+            mockExtParam,
+            mockShopHomeTabName,
+            mapOf(),
+            false
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Fail)
@@ -293,14 +278,12 @@ class ShopPageHeaderViewModelTest {
         shopPageHeaderViewModel.getNewShopPageTabData(
             SAMPLE_SHOP_ID,
             "shop domain",
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
             true,
             addressWidgetData,
-            mockExtParam
+            mockExtParam,
+            mockShopHomeTabName,
+            mapOf(),
+            false
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Fail)
@@ -312,14 +295,12 @@ class ShopPageHeaderViewModelTest {
         shopPageHeaderViewModel.getNewShopPageTabData(
             "0",
             "domain",
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
             true,
             addressWidgetData,
-            mockExtParam
+            mockExtParam,
+            mockShopHomeTabName,
+            mapOf(),
+            false
         )
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value != null)
     }
@@ -643,11 +624,35 @@ class ShopPageHeaderViewModelTest {
         coEvery {
             gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
         } returns ShopOperationalHourStatus()
-        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
+        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct(), ShopProduct())
+        )
+        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(
+            mockShopId,
+            mockShopDomain,
+            1,
+            10,
+            ShopProductFilterParameter(),
+            "",
+            "",
+            addressWidgetData,
+            false
+        )
         assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value is Success)
         assert(shopPageHeaderViewModel.shopPageShopShareData.value is Success)
+        assert(shopPageHeaderViewModel.productListData.data.size == 2)
 
-        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData("0", mockShopDomain, true)
+        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(
+            "0",
+            mockShopDomain,
+            1,
+            10,
+            ShopProductFilterParameter(),
+            "",
+            "",
+            addressWidgetData,
+            true
+        )
         assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value is Success)
         assert(shopPageHeaderViewModel.shopPageShopShareData.value is Success)
     }
@@ -662,7 +667,17 @@ class ShopPageHeaderViewModelTest {
         coEvery {
             gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
         } throws Exception()
-        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
+        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(
+            mockShopId,
+            mockShopDomain,
+            1,
+            10,
+            ShopProductFilterParameter(),
+            "",
+            "",
+            addressWidgetData,
+            false
+        )
         assert(shopPageHeaderViewModel.shopPageShopShareData.value == null)
     }
 
@@ -676,7 +691,17 @@ class ShopPageHeaderViewModelTest {
         coEvery {
             gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
         } throws Exception()
-        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
+        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(
+            mockShopId,
+            mockShopDomain,
+            1,
+            10,
+            ShopProductFilterParameter(),
+            "",
+            "",
+            addressWidgetData,
+            false
+        )
         assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value == null)
     }
 
@@ -690,7 +715,17 @@ class ShopPageHeaderViewModelTest {
         coEvery {
             gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
         } returns ShopOperationalHourStatus()
-        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
+        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(
+            mockShopId,
+            mockShopDomain,
+            1,
+            10,
+            ShopProductFilterParameter(),
+            "",
+            "",
+            addressWidgetData,
+            false
+        )
         assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value == null)
         assert(shopPageHeaderViewModel.shopPageShopShareData.value == null)
     }

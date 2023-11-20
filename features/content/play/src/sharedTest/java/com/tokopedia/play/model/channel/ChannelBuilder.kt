@@ -9,6 +9,7 @@ import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelReportUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeInfoUiModel
@@ -57,7 +58,7 @@ interface ChannelBuilder : TagItemBuilder, ChannelStatusBuilder {
         emptyBottomSheetInfo: PlayEmptyBottomSheetInfoUiModel = PlayEmptyBottomSheetInfoUiModel(),
         bottomSheetTitle: String = "",
         popupConfig: PlayPopUpConfigUiModel = PlayPopUpConfigUiModel(),
-        exploreWidgetConfig: ExploreWidgetConfig = ExploreWidgetConfig(),
+        channelRecomConfig: PlayChannelRecommendationConfig = PlayChannelRecommendationConfig(),
         showCart: Boolean = false,
     ): PlayChannelDetailUiModel
 

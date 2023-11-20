@@ -164,9 +164,9 @@ class TopAdsCreditHistoryFragment :
                 ContextCompat.getColor(
                     it,
                     if (data.status == ACTIVE_STATUS) {
-                        com.tokopedia.topads.common.R.color.Unify_GN500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     } else {
-                        com.tokopedia.topads.common.R.color.Unify_NN950_32
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
                     }
                 )
             )

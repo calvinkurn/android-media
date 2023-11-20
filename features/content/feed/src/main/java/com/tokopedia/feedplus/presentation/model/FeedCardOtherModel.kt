@@ -60,6 +60,7 @@ data class FeedScoreModel(
 
 data class FeedCardCtaModel(
     val texts: List<String> = emptyList(),
+    val subtitles: List<String> = emptyList(),
     val color: String = "",
     val colorGradient: List<FeedCardCtaGradientModel> = emptyList()
 )
@@ -92,9 +93,9 @@ data class FeedCardCampaignModel(
     companion object {
         private const val LABEL_FOLLOWERS_ONLY = "followers_only"
 
-         const val NO = "no"
-         const val ONGOING = "ongoing"
-         const val UPCOMING = "upcoming"
+        const val NO = "no"
+        const val ONGOING = "ongoing"
+        const val UPCOMING = "upcoming"
     }
 }
 

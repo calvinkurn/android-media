@@ -25,7 +25,6 @@ object MCCMQuery {
                 id
                 title
                 mediaURL
-                mediaUrlType
                 mediaURLDarkMode
                 label1
                 label2
@@ -37,6 +36,7 @@ object MCCMQuery {
                 descriptions
                 pricePlain
                 slashedPricePlain
+                campaignLabelText
                 trackingData {
                     productID
                     operatorID

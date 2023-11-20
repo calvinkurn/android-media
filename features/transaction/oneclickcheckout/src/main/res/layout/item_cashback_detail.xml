@@ -15,7 +15,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/tv_total_cashback_value"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Dapat Cashback Senilai" />
 
@@ -30,7 +30,7 @@
         app:layout_constraintLeft_toRightOf="@id/tv_total_cashback_label"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="Rp1.000.000" />
 

@@ -44,6 +44,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.top_ads_headline.R as top_ads_headlineR
+import com.tokopedia.topads.common.R as topadscommonR
 
 private const val ROW = 50
 const val MAX_PRODUCT_SELECTION = 10
@@ -330,18 +332,18 @@ class TopAdsProductListFragment : BaseDaggerFragment(),
             totalCount += it.size
         }
         selectProductInfo?.text =
-            String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), totalCount)
+            String.format(getString(topadscommonR.string.format_selected_produk), totalCount)
     }
 
     private fun setUpToolTip() {
         val tooltipView =
-            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
+            layoutInflater.inflate(topadscommonR.layout.tooltip_custom_view, null)
                 .apply {
-                    val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
+                    val tvToolTipText = this.findViewById<Typography>(topadscommonR.id.tooltip_text)
                     tvToolTipText?.text = getString(R.string.topads_headline_tooltip_text)
 
-                    val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
-                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+                    val imgTooltipIcon = this.findViewById<ImageUnify>(topadscommonR.id.tooltip_icon)
+                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(topadscommonR.drawable.topads_ic_tips))
                 }
         tooltipBtn?.addItem(tooltipView)
         tooltipBtn?.setOnClickListener {
@@ -353,13 +355,13 @@ class TopAdsProductListFragment : BaseDaggerFragment(),
             tipsList.apply {
                 add(TipsUiHeaderModel(R.string.topads_headline_tips_choosing_product))
                 add(TipsUiRowModel(R.string.topads_headline_tips_choose_product_with_most_reviews,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_tips_choose_product_with_most_popularity,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_tips_choose_product_with_same_category,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_tips_name_and_photo_correct,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
             }
             val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList) }
             tipsListSheet?.show(childFragmentManager, "")
@@ -511,7 +513,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(),
 
     override fun onProductOverSelect() {
         view?.let {
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_60)
+            Toaster.toasterCustomBottomHeight = it.resources.getDimensionPixelSize(top_ads_headlineR.dimen.toaster_custom_bottom_height)
             Toaster.build(it,
                 getString(R.string.topads_headline_over_product_selection),
                 Snackbar.LENGTH_LONG,

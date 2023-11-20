@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.recommendation_widget_common.infinite.main.InfiniteRecommendationViewModel
 import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetStateModule
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetViewModel
@@ -17,7 +18,7 @@ import dagger.multibindings.IntoMap
  */
 @Module(
     includes = [
-        RecommendationWidgetStateModule::class,
+        RecommendationWidgetStateModule::class
     ]
 )
 abstract class RecommendationViewModelModule {
@@ -44,5 +45,13 @@ abstract class RecommendationViewModelModule {
     @ViewModelKey(RecommendationWidgetViewModel::class)
     abstract fun provideRecommendationWidgetViewModel(
         viewModel: RecommendationWidgetViewModel
+    ): ViewModel
+
+    @RecommendationWidgetScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(InfiniteRecommendationViewModel::class)
+    abstract fun provideInfiniteRecommendationViewModel(
+        viewModel: InfiniteRecommendationViewModel
     ): ViewModel
 }

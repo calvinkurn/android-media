@@ -2,16 +2,15 @@ package com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.tokopedia.logisticseller.R
+import androidx.compose.ui.unit.dp
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupOptions
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupUiEvent
-import com.tokopedia.nest.components.NestBottomSheet
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 
@@ -22,38 +21,26 @@ fun RescheduleBottomSheetLayout(
     onEvent: (ReschedulePickupUiEvent) -> Unit,
     onBottomSheetClosed: () -> Unit
 ) {
-    NestBottomSheet(
-        getBottomSheetTitle(currentScreen),
-        onClosePressed = onBottomSheetClosed
-    ) {
-        when (currentScreen) {
-            RescheduleBottomSheetState.DAY -> RescheduleBottomSheetContent(
-                items = options.dayOptions,
-                onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectDay(it)) },
-                onBottomSheetClosed = onBottomSheetClosed
-            )
-            RescheduleBottomSheetState.TIME -> RescheduleBottomSheetContent(
-                items = options.timeOptions,
-                onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectTime(it)) },
-                onBottomSheetClosed = onBottomSheetClosed
-            )
-            RescheduleBottomSheetState.REASON -> RescheduleBottomSheetContent(
-                items = options.reasonOptions,
-                onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectReason(it)) },
-                onBottomSheetClosed = onBottomSheetClosed
-            )
-            RescheduleBottomSheetState.NONE -> onBottomSheetClosed()
-        }
-    }
-}
+    when (currentScreen) {
+        RescheduleBottomSheetState.DAY -> RescheduleBottomSheetContent(
+            items = options.dayOptions,
+            onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectDay(it)) },
+            onBottomSheetClosed = onBottomSheetClosed
+        )
 
-@Composable
-fun getBottomSheetTitle(currentScreen: RescheduleBottomSheetState): String {
-    return when (currentScreen) {
-        RescheduleBottomSheetState.DAY -> stringResource(id = R.string.title_reschedule_day_bottomsheet)
-        RescheduleBottomSheetState.TIME -> stringResource(id = R.string.title_reschedule_time_bottomsheet)
-        RescheduleBottomSheetState.REASON -> stringResource(id = R.string.title_reschedule_reason_bottomsheet)
-        RescheduleBottomSheetState.NONE -> ""
+        RescheduleBottomSheetState.TIME -> RescheduleBottomSheetContent(
+            items = options.timeOptions,
+            onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectTime(it)) },
+            onBottomSheetClosed = onBottomSheetClosed
+        )
+
+        RescheduleBottomSheetState.REASON -> RescheduleBottomSheetContent(
+            items = options.reasonOptions,
+            onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectReason(it)) },
+            onBottomSheetClosed = onBottomSheetClosed
+        )
+
+        RescheduleBottomSheetState.NONE -> {}
     }
 }
 
@@ -81,6 +68,9 @@ private fun <T> RescheduleBottomSheetContent(
                     )
                 }
             )
+            if (it != items.size - 1) {
+                Divider(thickness = 0.5.dp, color = NestTheme.colors.NN._300)
+            }
         }
     }
 }

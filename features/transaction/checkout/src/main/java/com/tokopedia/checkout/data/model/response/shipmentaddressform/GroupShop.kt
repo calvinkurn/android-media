@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
-import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnGiftingResponse
 
 data class GroupShop(
     @SerializedName("group_type")
@@ -16,7 +16,7 @@ data class GroupShop(
     @SerializedName("group_shop_v2_saf")
     val groupShopV2: List<GroupShopV2> = emptyList(),
     @SerializedName("add_ons")
-    val addOns: AddOnsResponse = AddOnsResponse(),
+    val addOns: AddOnGiftingResponse = AddOnGiftingResponse(),
     @SerializedName("errors")
     val errors: List<String> = emptyList(),
     @SerializedName("errors_unblocking")
@@ -64,5 +64,7 @@ data class GroupShop(
     @SerializedName("scheduled_delivery")
     val scheduledDelivery: ScheduleDelivery = ScheduleDelivery(),
     @SerializedName("rates_validation_flow")
-    val ratesValidationFlow: Boolean = false
+    val ratesValidationFlow: Boolean = false,
+    @SerializedName("subtotal_add_ons")
+    val listSubtotalAddOns: List<SubtotalAddOn> = emptyList()
 )

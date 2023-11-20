@@ -143,6 +143,8 @@ class BulkReviewViewModel @Inject constructor(
         private const val TOASTER_ID_REMOVE_REVIEW = 0
     }
 
+    private var defaultReviewItemRating = BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING
+
     // region stateflow that need to be saved and restored
     private val getFormRequestState = MutableStateFlow<BulkReviewGetFormRequestState>(BulkReviewGetFormRequestState.Requesting())
     private val getBadRatingCategoryRequestState = MutableStateFlow<BulkReviewGetBadRatingCategoryRequestState>(BulkReviewGetBadRatingCategoryRequestState.Requesting())
@@ -174,7 +176,7 @@ class BulkReviewViewModel @Inject constructor(
     private val reviewItemsRatingUiState = combine(
         getFormRequestState,
         reviewItemsRating,
-        bulkReviewRatingUiStateMapper::map
+        ::mapReviewRatingUiState
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_TIMEOUT_MILLIS),
@@ -361,7 +363,7 @@ class BulkReviewViewModel @Inject constructor(
                         add(
                             BulkReviewItemRatingUiModel(
                                 inboxID = inboxID,
-                                rating = BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING,
+                                rating = defaultReviewItemRating,
                                 animate = false
                             )
                         )
@@ -792,6 +794,10 @@ class BulkReviewViewModel @Inject constructor(
         bulkReviewToasterCtaKeyEvents.tryEmit(data)
     }
 
+    fun setDefaultReviewItemRating(rating: Int) {
+        defaultReviewItemRating = rating
+    }
+
     fun onCancelBadRatingCategoryBottomSheet() {
         val uiState = _badRatingCategoryBottomSheetUiState.value
         if (uiState is BulkReviewBadRatingCategoryBottomSheetUiState.Showing) {
@@ -799,6 +805,17 @@ class BulkReviewViewModel @Inject constructor(
                 enqueueToasterErrorNoBadRatingCategoryReasonSelected()
             }
         }
+    }
+
+    private fun mapReviewRatingUiState(
+        getFormRequestState: BulkReviewGetFormRequestState,
+        reviewItemsRating: List<BulkReviewItemRatingUiModel>
+    ): Map<String, BulkReviewRatingUiState> {
+        return bulkReviewRatingUiStateMapper.map(
+            getFormRequestState = getFormRequestState,
+            reviewItemsRating = reviewItemsRating,
+            defaultReviewItemRating = defaultReviewItemRating
+        )
     }
 
     private fun mapMediaItems(
@@ -1388,7 +1405,7 @@ class BulkReviewViewModel @Inject constructor(
             }
         }.find {
             it.inboxID == inboxID
-        }?.rating ?: BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING
+        }?.rating ?: defaultReviewItemRating
     }
 
     private fun shouldShowBadRatingCategoryBottomSheet(

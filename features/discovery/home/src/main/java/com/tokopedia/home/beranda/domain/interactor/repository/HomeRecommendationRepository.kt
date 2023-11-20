@@ -20,16 +20,21 @@ class HomeRecommendationRepository @Inject constructor(
     companion object {
         const val PAGE_NAME = "pageName"
         const val QUERY_PARAM = "queryParam"
+        const val SHOP_ID = "shopIDs"
     }
 
     override suspend fun getRemoteData(bundle: Bundle): List<RecommendationWidget> {
         val pageName = bundle.getString(PAGE_NAME, "")
         val queryParam = bundle.getString(QUERY_PARAM, "")
+        val shopId = bundle.getString(SHOP_ID, "")
+
+        val shopIds = if(shopId.isNotEmpty()) listOf(shopId) else emptyList()
 
         return getRecommendationUseCase.get().getData(
                 GetRecommendationRequestParam(
                         pageName = pageName,
-                        queryParam = queryParam
+                        queryParam = queryParam,
+                        shopIds = shopIds
                 )
         )
     }

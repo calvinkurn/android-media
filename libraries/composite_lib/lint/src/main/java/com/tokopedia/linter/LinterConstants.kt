@@ -1,6 +1,5 @@
 package com.tokopedia.linter
 
-
 enum class Priority(var value: Int) {
     Low(1),
     Medium(5),
@@ -12,6 +11,7 @@ sealed class LinterConstants {
     object GradleConstructs : LinterConstants() {
         const val DEPENDENCIES = "dependencies"
         const val IMPLEMENTATION = "implementation"
+        const val TEST_IMPLEMENTATION = "testImplementation"
         const val BUILD_SCRIPT = "buildscript"
         const val REPOSITORIES = "implementation"
     }
@@ -54,7 +54,8 @@ sealed class LinterConstants {
         const val BOTTOM_LEFT_RADIUS = "bottomLeftRadius"
         const val TOP_RIGHT_RADIUS = "topRightRadius"
         const val TOP_LEFT_RADIUS = "topLeftRadius"
+        const val START_COLOR = "startColor"
+        const val END_COLOR = "endColor"
+        const val CENTER_COLOR = "centerColor"
     }
 }
-
-

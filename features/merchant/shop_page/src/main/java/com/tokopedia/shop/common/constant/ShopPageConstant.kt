@@ -44,6 +44,9 @@ object ShopPageConstant {
     const val SHARED_PREF_AFFILIATE_CHANNEL = "SHARED_PREF_AFFILIATE_CHANNEL"
     const val SHOP_PAGE_SHARED_PREFERENCE = "SHOP_PAGE_PREFERENCE"
     const val SHOP_COMPARISON_WIDGET_PAGE_NAME = "shop_comparison"
+    const val HACHIKO_VOUCHER_GRAPHQL_API_VERSION = "2.0.0"
+    const val LABEL_GROUP_INTEGRITY_POSITION_VALUE = "integrity"
+    const val FORMAT_CONVERT_PERCENTAGE_TO_HEX = "%02X"
     object ShopLayoutFeatures {
         const val DIRECT_PURCHASE = "direct_purchase"
     }
@@ -62,6 +65,7 @@ object ShopPageConstant {
     object ShopTickerType {
         const val WARNING = "warning"
         const val INFO = "info"
+        const val DANGER = "danger"
     }
 
     object ShopTierType {
@@ -72,7 +76,23 @@ object ShopPageConstant {
         const val POWER_MERCHANT_PRO = 3
     }
 
-    object RequestParamValue{
+    object RequestParamValue {
         const val PAGE_NAME_SHOP_COMPARISON_WIDGET = "shop_comparison"
+    }
+
+    object ShopTabActiveStatus {
+        const val ACTIVE = 1
+        const val INACTIVE = 0
+    }
+
+    /**
+     * This is the constant for shop page performance improvement history
+     */
+    @Suppress("unused")
+    object ShopPageFeatureImprovementType {
+        const val V3_IMPROVEMENT            = "V3"      // Faster shop header using more slimmer P1 network call
+        const val V4_REIMAGINED             = "V4"       // Shop Page Reimagined
+        const val V4_WITH_OPTIMIZED_P1      = "V4.1"       // Shop Page Reimagined with more optimized P1
+        const val V4_2      = "V4.2"                    // Shop Page Reimagined with more optimized P1 by removeing getShopProduct on P1
     }
 }
