@@ -348,7 +348,6 @@ class HomeRecommendationFragment :
         endlessRecyclerViewScrollListener =
             object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    currentPage = page
                     viewModel.fetchNextHomeRecommendation(
                         tabName,
                         recomId,
@@ -356,7 +355,7 @@ class HomeRecommendationFragment :
                         page,
                         getLocationParamString(),
                         sourceType,
-                        adapter.currentList
+                        adapter.currentList.toList()
                     )
                 }
             }
