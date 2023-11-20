@@ -13,6 +13,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 object ApplinkConstInternalMarketplace {
 
     const val HOST_MARKETPLACE = "marketplace"
+    const val HOST_HOME = "home"
 
     const val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_MARKETPLACE"
 
@@ -238,7 +239,6 @@ object ApplinkConstInternalMarketplace {
 
     // ShopPenaltyActivity
     const val SHOP_PENALTY = "$INTERNAL_MARKETPLACE/shop-penalty"
-    const val SHOP_PENALTY_OLD = "$INTERNAL_MARKETPLACE/shop-penalty-old"
 
     // ShopPenaltyDetailPageActivity
     @JvmField

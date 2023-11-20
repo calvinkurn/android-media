@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.gojek.kyc.sdk.config.KycSdkAnalyticsConfig
 import com.gojek.kyc.sdk.core.analytics.IKycSdkEventTrackingProvider
@@ -38,14 +39,22 @@ class GotoKycEventTrackingProvider @Inject constructor(
         eventProperties: Map<String, Any?>,
         productName: String?
     ) {
-        sendTracker(
-            eventName = eventName,
-            eventProperties = eventProperties
-        )
+        val projectId = kycSharedPreference.getProjectId()
+        if (projectId.isNotEmpty()) {
+            sendTracker(
+                eventName = eventName,
+                eventProperties = eventProperties,
+                projectId = projectId
+            )
+        }
+
+        if (eventName == IMAGE_CAPTURED) {
+            GotoKycCleanupStorageWorker.scheduleWorker(context)
+        }
     }
 
-    private fun sendTracker(eventName: String, eventProperties: Map<String, Any?>) {
-        val projectId = kycSharedPreference.getProjectId()
+    @SuppressLint("PII Data Exposure")
+    private fun sendTracker(eventName: String, eventProperties: Map<String, Any?>, projectId: String) {
         when (eventName) {
             CAMERA_OPENED -> {
                 when (eventProperties[ACTUAL_USAGE]) {
@@ -425,8 +434,6 @@ class GotoKycEventTrackingProvider @Inject constructor(
                 }
             }
             IMAGE_CAPTURED -> {
-                GotoKycCleanupStorageWorker.scheduleWorker(context)
-
                 when (eventProperties[CAPTURE_MODE]) {
                     AUTO_CAPTURE -> {
                         when (eventProperties[TYPE]) {

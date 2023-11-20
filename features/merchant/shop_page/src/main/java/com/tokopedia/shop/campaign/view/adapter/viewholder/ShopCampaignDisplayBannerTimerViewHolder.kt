@@ -30,7 +30,7 @@ import com.tokopedia.shop.databinding.ItemShopCampaignDisplayBannerTimerBinding
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.util.DateHelper.SHOP_CAMPAIGN_BANNER_TIMER_MORE_THAN_1_DAY_DATE_FORMAT
 import com.tokopedia.shop.home.util.DateHelper.millisecondsToDays
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.CardUnify2
@@ -50,7 +50,7 @@ import java.util.*
 
 class ShopCampaignDisplayBannerTimerViewHolder(
     itemView: View,
-    private val listener: ShopHomeDisplayBannerTimerWidgetListener,
+    private val listener: ShopHomeReimagineDisplayBannerTimerWidgetListener,
     private val shopCampaignInterface: ShopCampaignInterface
 ) : AbstractViewHolder<ShopWidgetDisplayBannerTimerUiModel>(itemView), CoroutineScope {
 
@@ -85,8 +85,9 @@ class ShopCampaignDisplayBannerTimerViewHolder(
     override fun bind(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         setBannerImage(uiModel)
         setTimer(uiModel)
-        if (!GlobalConfig.isSellerApp())
+        if (!GlobalConfig.isSellerApp()) {
             setRemindMe(uiModel)
+        }
         setWidgetImpressionListener(uiModel)
         setItemClickListener(uiModel)
         configColorMode()
@@ -120,7 +121,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
     }
 
     private fun setTimeDescriptionColor(color: Int) {
-        for(i in Int.ZERO until timeDescriptionContainer?.childCount.orZero()) {
+        for (i in Int.ZERO until timeDescriptionContainer?.childCount.orZero()) {
             val child = timeDescriptionContainer?.getChildAt(i)
             if (child is Typography) {
                 child.setTextColorCompat(color)
@@ -152,7 +153,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
             textTimerDescription?.show()
             val days = model.data?.timeCounter?.millisecondsToDays().orZero()
             if (days >= Int.ONE) {
-                val formattedDate = getFormattedDate(statusCampaign, model,false)
+                val formattedDate = getFormattedDate(statusCampaign, model, false)
                 setTimerNonUnify(formattedDate)
             } else {
                 val formattedDate = getFormattedDate(statusCampaign, model, true)
@@ -319,7 +320,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
                 val isHideRemindMeTextAfterXSeconds = uiModel.data?.isHideRemindMeTextAfterXSeconds.orFalse()
                 if (isHideRemindMeTextAfterXSeconds) {
                     hideRemindMeText(uiModel, false)
-                }else{
+                } else {
                     buttonRemindMe?.show()
                     launchCatchError(block = {
                         delay(DURATION_TO_HIDE_REMIND_ME_WORDING)
@@ -382,7 +383,6 @@ class ShopCampaignDisplayBannerTimerViewHolder(
         }
     }
 
-
     private fun isStatusCampaignFinished(statusCampaign: StatusCampaign?): Boolean {
         return statusCampaign == StatusCampaign.FINISHED
     }
@@ -394,5 +394,4 @@ class ShopCampaignDisplayBannerTimerViewHolder(
     private fun isStatusCampaignUpcoming(statusCampaign: StatusCampaign?): Boolean {
         return statusCampaign == StatusCampaign.UPCOMING
     }
-
 }

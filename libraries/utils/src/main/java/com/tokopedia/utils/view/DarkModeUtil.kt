@@ -44,7 +44,7 @@ object DarkModeUtil {
             val unify = stringToUnifyColor(context, hexColor)
             val unifyColor = unify.unifyColor
             if (unifyColor != null) {
-                return getHexColorByColorInt(unifyColor)
+                return getDmsHexColorByIntColor(unifyColor)
             }
         }
         return hexColor
@@ -62,7 +62,7 @@ object DarkModeUtil {
      * By performing (0xFFFFFF & colorValue), you obtain a value that
      * represents the RGB color without any additional bits.
      * */
-    private fun getHexColorByColorInt(color: Int): String {
+    fun getDmsHexColorByIntColor(color: Int): String {
         return String.format(HEX_COLOR_FORMAT, 0xFFFFFF and color)
     }
 

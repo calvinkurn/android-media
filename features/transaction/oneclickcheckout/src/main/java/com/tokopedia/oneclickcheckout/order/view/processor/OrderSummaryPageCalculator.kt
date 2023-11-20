@@ -487,8 +487,9 @@ class OrderSummaryPageCalculator @Inject constructor(
                         it.status == ADD_ON_PRODUCT_STATUS_CHECK ||
                             it.status == ADD_ON_PRODUCT_STATUS_MANDATORY
                     }.forEach { addOnProductChecked ->
-                        totalAddOnProductPrice += addOnProductChecked.price * product.orderQuantity
-                        addOnsProductSelectedList.add(addOnProductChecked.copy(productQuantity = product.orderQuantity))
+                        val addOnQty = if (addOnProductChecked.fixedQuantity) 1 else product.orderQuantity
+                        totalAddOnProductPrice += addOnProductChecked.price * addOnQty
+                        addOnsProductSelectedList.add(addOnProductChecked.copy(productQuantity = addOnQty))
                     }
                 }
             }

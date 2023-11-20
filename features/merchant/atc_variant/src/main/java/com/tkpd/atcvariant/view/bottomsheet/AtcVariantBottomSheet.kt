@@ -235,6 +235,7 @@ class AtcVariantBottomSheet :
         val productId = adapter.getHeaderDataModel()?.productId ?: ""
 
         AtcCommonMapper.putChatProductInfoTo(intent, productId)
+        intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.Source.SOURCE_PDP)
         startActivity(intent)
     }
 
@@ -787,7 +788,8 @@ class AtcVariantBottomSheet :
         if (state == VariantConstant.STATE_SELECTED || state == VariantConstant.STATE_SELECTED_EMPTY) return
         adapter.removeTextWatcherQuantityViewHolder(rvVariantBottomSheet)
         viewModel.onVariantClicked(
-            sharedViewModel.aggregatorParams.value?.showQtyEditor ?: false,
+            sharedViewModel.aggregatorParams.value?.isTokoNow ?: false ||
+                sharedViewModel.aggregatorParams.value?.showQtyEditor ?: false,
             variantOptions.variantCategoryKey,
             variantOptions.variantId,
             variantOptions.imageOriginal,

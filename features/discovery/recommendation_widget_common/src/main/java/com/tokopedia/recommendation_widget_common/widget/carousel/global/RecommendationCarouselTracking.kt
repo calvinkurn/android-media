@@ -19,6 +19,7 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_BRAND
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_CATEGORY
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_ID
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_LIST
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_NAME
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_VARIANT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.KEY_INDEX
@@ -63,7 +64,8 @@ object RecommendationCarouselTracking {
         recomItem: RecommendationItem,
         userId: String,
         quantity: Int,
-        androidPageName: String = RecommendationWidgetSource.PDP.trackingValue // remove default value after recommendation carousel widget migration
+        androidPageName: String = RecommendationWidgetSource.PDP.trackingValue, // remove default value after recommendation carousel widget migration
+        anchorProductId: String
     ) {
         val bundle = Bundle().apply {
             putString(EVENT, RecommendationTrackingConstants.Action.ADD_TO_CART)
@@ -77,18 +79,19 @@ object RecommendationCarouselTracking {
             putString(CURRENT_SITE, CURRENT_SITE_MP)
             putString(TRACKER_ID, TRACKER_ID_ATC)
 
+            val itemList = ATC_DIMENSION_40_FORMAT.format(
+                recomItem.pageName,
+                recomItem.recommendationType,
+                if (recomItem.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
+                recomItem.type.convertToWidgetType(),
+                anchorProductId
+            )
+
+            putString(ITEM_LIST, itemList)
+
             val bundleProduct = Bundle().apply {
                 putString(RecommendationTrackingConstants.Tracking.CATEGORY_ID, recomItem.departmentId.toString())
-                putString(
-                    DIMENSION_40,
-                    ATC_DIMENSION_40_FORMAT.format(
-                        recomItem.pageName,
-                        recomItem.recommendationType,
-                        if (recomItem.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
-                        recomItem.type.convertToWidgetType(),
-                        recomItem.anchorProductId
-                    )
-                )
+                putString(DIMENSION_40, itemList)
                 putString(DIMENSION_45, recomItem.cartId)
                 putString(DIMENSION_56, recomItem.warehouseId.toString())
                 putString(DIMENSION_90, "%s.%s".format(androidPageName, recomItem.recommendationType))
@@ -135,7 +138,7 @@ object RecommendationCarouselTracking {
                         item.pageName,
                         item.recommendationType,
                         if (item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
-                    ),
+                    ) + if(trackingModel.anchorId.isNotEmpty()) " - ${trackingModel.anchorId}" else "",
                     DIMENSION_56 to item.warehouseId.toString(),
                     KEY_INDEX to item.position + 1,
                     ITEM_BRAND to VALUE_NONE_OTHER,
@@ -169,7 +172,7 @@ object RecommendationCarouselTracking {
                         item.pageName,
                         item.recommendationType,
                         if (item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
-                    ))
+                    ) + if(trackingModel.anchorId.isNotEmpty()) " - ${trackingModel.anchorId}" else "")
                     putString(DIMENSION_56, item.warehouseId.toString())
                     putInt(KEY_INDEX, item.position + 1)
                     putString(ITEM_BRAND, VALUE_NONE_OTHER)

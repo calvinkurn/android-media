@@ -3,6 +3,7 @@ package com.tokopedia.minicart.cartlist
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.ProductDataModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
@@ -48,6 +49,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         const val PLACEHOLDER_OVERWEIGHT_VALUE = "{{weight}}"
 
         private const val BUNDLE_NO_VARIANT_CONST = -1
+        private const val BUNDLE_MIN_ORDER_CONST = 1
     }
 
     fun mapUiModel(miniCartData: MiniCartData): MiniCartListUiModel {
@@ -103,12 +105,13 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     }
                 }
                 bundleProducts = it.bundleProducts.map { bundleProduct ->
-                    ShopHomeBundleProductUiModel().apply {
-                        productId = bundleProduct.productID
-                        productName = bundleProduct.productName
-                        productImageUrl = bundleProduct.imageUrl
-                        productAppLink = bundleProduct.appLink
-                    }
+                    ShopHomeBundleProductUiModel(
+                        productId = bundleProduct.productID,
+                        productName = bundleProduct.productName,
+                        productImageUrl = bundleProduct.imageUrl,
+                        productAppLink = bundleProduct.appLink,
+                        minOrder = bundleProduct.minOrder
+                    )
                 }
             }
         }
@@ -128,11 +131,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    fun mapToAddToCartBundleProductDetailParam(productDetails: List<ShopHomeBundleProductUiModel>, quantity: Int, shopId: String, userId: String): List<ProductDetail> {
+    fun mapToAddToCartBundleProductDetailParam(productDetails: List<ShopHomeBundleProductUiModel>, quantity: Int?, shopId: String, userId: String): List<ProductDetail> {
         return productDetails.map {
             ProductDetail(
                 productId = it.productId,
-                quantity = quantity,
+                quantity = quantity ?: it.minOrder ?: BUNDLE_MIN_ORDER_CONST,
                 shopId = shopId,
                 customerId = userId
             )

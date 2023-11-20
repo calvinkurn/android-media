@@ -4,13 +4,14 @@ import android.os.Parcelable
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.filter.common.helper.copyParcelable
 import kotlinx.android.parcel.Parcelize
 import java.util.ArrayList
 
 @Parcelize
 class Filter(@SerializedName("title")
              @Expose
-             var title: String = "",
+             override var title: String = "",
 
              @SerializedName("subTitle", alternate = ["subtitle"])
              @Expose
@@ -22,7 +23,7 @@ class Filter(@SerializedName("title")
 
              @SerializedName("search")
              @Expose
-             var search: Search = Search(),
+             override var search: Search = Search(),
 
              @SerializedName("isNew")
              @Expose
@@ -38,25 +39,26 @@ class Filter(@SerializedName("title")
 
              @SerializedName("options")
              @Expose
-             var options: List<Option> = ArrayList()) : Parcelable {
+             override var options: List<Option> = ArrayList(),
+) : Parcelable, OptionHolder {
 
     fun clone(
-            title: String? = null,
-            subTitle: String? = null,
-            templateName: String? = null,
-            search: Search? = null,
-            isNew: Boolean? = null,
-            filterAttributeDetail: String? = null,
-            options: List<Option>? = null,
+        title: String? = null,
+        subTitle: String? = null,
+        templateName: String? = null,
+        search: Search? = null,
+        isNew: Boolean? = null,
+        filterAttributeDetail: String? = null,
+        options: List<Option>? = null,
     ): Filter {
         return Filter(
-                title = title ?: this.title,
-                subTitle = subTitle ?: this.subTitle,
-                templateName = templateName ?: this.templateName,
-                search = search ?: this.search,
-                isNew = isNew ?: this.isNew,
-                filterAttributeDetail = filterAttributeDetail ?: this.filterAttributeDetail,
-                options = options ?: this.options,
+            title = title ?: this.title,
+            subTitle = subTitle ?: this.subTitle,
+            templateName = templateName ?: this.templateName,
+            search = search ?: this.search,
+            isNew = isNew ?: this.isNew,
+            filterAttributeDetail = filterAttributeDetail ?: this.filterAttributeDetail,
+            options = options ?: this.options,
         )
     }
 
@@ -66,7 +68,7 @@ class Filter(@SerializedName("title")
     val isCategoryFilter: Boolean
         get() = TEMPLATE_NAME_CATEGORY.equals(templateName)
 
-    val isColorFilter: Boolean
+    override val isColorFilter: Boolean
         get() = TEMPLATE_NAME_COLOR.equals(templateName)
 
     val isOfferingFilter: Boolean
@@ -81,7 +83,7 @@ class Filter(@SerializedName("title")
     val isSizeFilter: Boolean
         get() = TEMPLATE_NAME_SIZE.equals(templateName)
 
-    val isLocationFilter: Boolean
+    override val isLocationFilter: Boolean
         get() = TEMPLATE_NAME_LOCATION.equals(templateName)
 
     val isBrandFilter: Boolean
@@ -92,8 +94,8 @@ class Filter(@SerializedName("title")
 
     val isExpandableFilter: Boolean
         get() = (isCategoryFilter || isColorFilter || isRatingFilter
-                || isSizeFilter || isBrandFilter || isLocationFilter
-                || isOtherFilter || options.size > 1)
+            || isSizeFilter || isBrandFilter || isLocationFilter
+            || isOtherFilter || options.size > 1)
 
     val isKeywordFilter: Boolean
         get() = TEMPLATE_NEGATIVE_KEYWORD == templateName
@@ -110,6 +112,8 @@ class Filter(@SerializedName("title")
             } + option
         }
     }
+
+    override fun copy(): OptionHolder? = copyParcelable()
 
     override fun toString(): String {
         return Gson().toJson(this)

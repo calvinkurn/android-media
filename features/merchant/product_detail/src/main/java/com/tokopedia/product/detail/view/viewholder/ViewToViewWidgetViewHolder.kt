@@ -2,12 +2,10 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewWidgetBasicListener
@@ -15,7 +13,7 @@ import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewWi
 
 class ViewToViewWidgetViewHolder(
     view: View,
-    private val listener: DynamicProductDetailListener,
+    private val listener: DynamicProductDetailListener
 ) : AbstractViewHolder<ViewToViewWidgetDataModel>(view),
     ViewToViewWidgetBasicListener {
 
@@ -24,7 +22,7 @@ class ViewToViewWidgetViewHolder(
     private val viewToViewWidget: ViewToViewWidgetView =
         itemView.findViewById(R.id.widget_view_to_view)
 
-    private fun ViewToViewWidgetDataModel.shouldShowLoading() : Boolean {
+    private fun ViewToViewWidgetDataModel.shouldShowLoading(): Boolean {
         return recomWidgetData == null || recomWidgetData?.recommendationItemList?.isEmpty() == true || isLoading
     }
 
@@ -48,7 +46,7 @@ class ViewToViewWidgetViewHolder(
                             state = RecommendationCarouselData.STATE_READY
                         ),
                         adapterPosition = bindingAdapterPosition,
-                        basicListener = this,
+                        basicListener = this
                     )
                 }
             }
@@ -67,7 +65,7 @@ class ViewToViewWidgetViewHolder(
     override fun onViewToViewItemClicked(
         data: ViewToViewItemData,
         itemPosition: Int,
-        adapterPosition: Int,
+        adapterPosition: Int
     ) {
         val title = viewToView?.recomWidgetData?.title.orEmpty()
         listener.onViewToViewClicked(data, title, itemPosition, adapterPosition)
@@ -78,7 +76,11 @@ class ViewToViewWidgetViewHolder(
             it.state = RecommendationCarouselData.STATE_LOADING
             bind(it)
         }
-        listener.onViewToViewReload(pageName)
+        listener.onViewToViewReload(
+            pageName = pageName,
+            queryParam = viewToView?.queryParam.orEmpty(),
+            thematicId = viewToView?.thematicId.orEmpty()
+        )
     }
 
     override fun onWidgetFail(pageName: String, e: Throwable) {

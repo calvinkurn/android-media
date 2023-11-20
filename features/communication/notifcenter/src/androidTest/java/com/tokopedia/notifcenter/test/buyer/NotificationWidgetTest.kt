@@ -4,12 +4,25 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.notifcenter.stub.data.response.GqlResponseStub
 import com.tokopedia.notifcenter.test.base.BaseNotificationTest
 import com.tokopedia.notifcenter.test.robot.detailResult
+import com.tokopedia.notifcenter.test.robot.generalResult
 import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 @UiTest
 class NotificationWidgetTest : BaseNotificationTest() {
+
+    @Test
+    fun open_notifcenter_as_buyer_show_global_menu_nav_bar() {
+        // When
+        launchActivity()
+
+        // Then
+        generalResult {
+            assertNavToolbarGlobal()
+        }
+    }
+
     @Test
     fun should_render_widget_message() {
         // Given

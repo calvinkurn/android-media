@@ -13,7 +13,10 @@ import java.lang.annotation.RetentionPolicy;
         TelcoComponentType.PRODUCT_ROAMING,
         TelcoComponentType.PRODUCT_PAKET_DATA,
         TelcoComponentType.TELCO_PREPAID,
-        TelcoComponentType.TELCO_POSTPAID})
+        TelcoComponentType.TELCO_POSTPAID,
+        TelcoComponentType.FAV_NUMBER_PREPAID,
+        TelcoComponentType.FAV_NUMBER_POSTPAID,
+})
 @Retention(RetentionPolicy.SOURCE)
 public @interface TelcoComponentType {
     int TELCO_PREPAID = 2;

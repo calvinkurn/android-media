@@ -1,0 +1,63 @@
+{
+  "readme": "Digital PDP pulsa",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewDigitalIris",
+      "eventLabel": ".* - .* - .*",
+      "eventAction": "impression check balance widget",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43697",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickDigital",
+      "eventLabel": ".* - .* - .*",
+      "eventAction": "click check balance widget",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43698",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "viewDigitalIris",
+      "eventLabel": ".* - .*",
+      "eventAction": "impression pdp otp pop up",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43699",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickDigital",
+      "eventLabel": ".* - .*",
+      "eventAction": "click pdp otp pop up",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43700",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43702",
+      "currentSite": "tokopediadigitalRecharge",
+      "isLoggedInStatus": ".*",
+      "screenName": "iframe-otp",
+      "event": "clickDigital",
+      "userId": ".*",
+      "eventAction": "click close otp",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*"
+    }
+  ]
+}

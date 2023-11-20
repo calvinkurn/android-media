@@ -6,26 +6,40 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.model.AtfData
+import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetMapper
 import com.tokopedia.home.beranda.domain.model.*
+import com.tokopedia.home.beranda.helper.LazyLoadDataMapper
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
+import com.tokopedia.home.constant.AtfKey.TYPE_BANNER_V2
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
+import com.tokopedia.home.constant.AtfKey.TYPE_ICON_V2
+import com.tokopedia.home.constant.AtfKey.TYPE_MISSION
+import com.tokopedia.home.constant.AtfKey.TYPE_MISSION_V2
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
+import com.tokopedia.home.constant.AtfKey.TYPE_TODO
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicIconComponent
+import com.tokopedia.home_component.model.DynamicIconComponent.DynamicIcon
 import com.tokopedia.home_component.model.TrackingAttributionModel
-import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
+import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
+import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
+import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsChannelConfig
+import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsHomeComponentHeader
+import com.tokopedia.home_component.widget.todo.TodoWidgetMapper.getAsChannelConfig
+import com.tokopedia.home_component.widget.todo.TodoWidgetMapper.getAsHomeComponentHeader
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
@@ -36,7 +50,7 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class HomeVisitableFactoryImpl(
     val userSessionInterface: UserSessionInterface?,
-    val homePrefController: HomePrefController,
+    private val homePrefController: HomePrefController,
     val remoteConfig: RemoteConfig,
     private val homeDefaultDataSource: HomeDefaultDataSource
 ) : HomeVisitableFactory {
@@ -87,7 +101,7 @@ class HomeVisitableFactoryImpl(
         return this
     }
 
-    override fun addHomeHeaderOvo(): HomeVisitableFactory {
+    override fun addHomeHeader(): HomeVisitableFactory {
         val homeHeader = HomeHeaderDataModel()
         val headerViewModel = HeaderDataModel()
         headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn ?: false
@@ -154,13 +168,15 @@ class HomeVisitableFactoryImpl(
         visitableList.add(viewModelDynamicIcon)
     }
 
-    private fun addDynamicIconData(id: String = "", type: Int = 1, defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false) {
+    private fun addDynamicIconData(id: String = "", defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false, componentName: String) {
         if (isCache && homePrefController.isUsingDifferentAtfRollenceVariant()) return
+        val iconType = if(componentName == TYPE_ICON_V2) DynamicIconComponentDataModel.Type.SMALL else DynamicIconComponentDataModel.Type.BIG
+        val numOfRows = if(componentName == TYPE_ICON_V2) 2 else 1
         val viewModelDynamicIcon = DynamicIconComponentDataModel(
             id = id,
             dynamicIconComponent = DynamicIconComponent(
-                defaultIconList.map {
-                    DynamicIconComponent.DynamicIcon(
+                defaultIconList.mapIndexed { idx, it ->
+                    DynamicIcon(
                         id = it.id,
                         applink = it.applinks,
                         imageUrl = it.imageUrl,
@@ -172,12 +188,14 @@ class HomeVisitableFactoryImpl(
                         brandId = it.brandId,
                         categoryPersona = it.categoryPersona,
                         campaignCode = it.campaignCode,
-                        withBackground = it.withBackground
+                        withBackground = it.withBackground,
+                        position = idx,
                     )
                 }
             ),
+            numOfRows = numOfRows,
+            type = iconType,
             isCache = isCache,
-            type = type
         )
 
         visitableList.add(viewModelDynamicIcon)
@@ -257,23 +275,24 @@ class HomeVisitableFactoryImpl(
                 } else {
                     it.dataList.forEachIndexed { index, data ->
                         when (data.component) {
-                            TYPE_ICON -> {
+                            TYPE_ICON, TYPE_ICON_V2 -> {
                                 data.atfStatusCondition(
                                     onLoading = {
                                         visitableList.add(ShimmeringIconDataModel(data.id.toString()))
                                     },
                                     onError = {
                                         visitableList.add(ErrorStateIconModel())
+                                        if(data.component == TYPE_ICON_V2) visitableList.add(ErrorStateIconModel())
                                     },
                                     onSuccess = {
                                         val icon = data.getAtfContent<DynamicHomeIcon>()
-                                        addDynamicIconData(data.id.toString(), icon?.type ?: 1, icon?.dynamicIcon ?: listOf(), isCache)
+                                        addDynamicIconData(data.id.toString(), icon?.dynamicIcon ?: listOf(), isCache, data.component)
                                     }
                                 )
                                 iconPosition++
                             }
 
-                            TYPE_BANNER -> {
+                            TYPE_BANNER, TYPE_BANNER_V2 -> {
                                 data.atfStatusCondition(
                                     onLoading = {
                                         visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
@@ -286,11 +305,11 @@ class HomeVisitableFactoryImpl(
                                         }
                                     },
                                     onSuccess = {
-                                        if (HomeRollenceController.isUsingAtf2Variant()) {
-                                            addHomePageBannerAtf2Data(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(), index)
-                                        } else {
-                                            addHomePageBannerData(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(), index)
-                                        }
+                                        this.addHomePageBannerData(
+                                            data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(),
+                                            index,
+                                            data.component == TYPE_BANNER_V2
+                                        )
                                     }
                                 )
                                 channelPosition++
@@ -303,6 +322,52 @@ class HomeVisitableFactoryImpl(
                                     }
                                 )
                                 tickerPosition++
+                            }
+
+                            TYPE_TODO -> {
+                                data.atfStatusCondition(
+                                    onLoading = {
+                                        visitableList.add(
+                                            TodoWidgetListDataModel(
+                                                status = TodoWidgetListDataModel.STATUS_LOADING,
+                                                showShimmering = data.isShimmer,
+                                                source = TodoWidgetListDataModel.SOURCE_ATF,
+                                            )
+                                        )
+                                    },
+                                    onSuccess = {
+                                        addTodoWidgetData(
+                                            data.getAtfContent<HomeTodoWidgetData.GetHomeTodoWidget>(),
+                                            data.id,
+                                            data.param,
+                                            index,
+                                            data.isShimmer,
+                                        )
+                                    }
+                                )
+                            }
+
+                            TYPE_MISSION, TYPE_MISSION_V2 -> {
+                                data.atfStatusCondition(
+                                    onLoading = {
+                                        visitableList.add(
+                                            MissionWidgetListDataModel(
+                                                status = MissionWidgetListDataModel.STATUS_LOADING,
+                                                showShimmering = data.isShimmer,
+                                                source = MissionWidgetListDataModel.SOURCE_ATF,
+                                                widgetParam = data.param,
+                                            )
+                                        )
+                                    },
+                                    onSuccess = {
+                                        addMissionWidgetData(
+                                            data,
+                                            data.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>(),
+                                            index,
+                                            isCache,
+                                        )
+                                    }
+                                )
                             }
 
                             TYPE_CHANNEL -> {
@@ -349,49 +414,11 @@ class HomeVisitableFactoryImpl(
         return this
     }
 
-    private fun addHomePageBannerData(bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel?, index: Int) {
-        if (!isCache) {
-            bannerDataModel?.let {
-                val channelModel = ChannelModel(
-                    channelGrids = it.slides?.map {
-                        ChannelGrid(
-                            applink = it.applink,
-                            campaignCode = it.campaignCode,
-                            id = it.id.toString(),
-                            imageUrl = it.imageUrl,
-                            attribution = it.creativeName,
-                            persona = it.persona,
-                            categoryPersona = it.categoryPersona,
-                            brandId = it.brandId,
-                            categoryId = it.categoryId
-                        )
-                    } ?: listOf(),
-                    groupId = "",
-                    id = "",
-                    trackingAttributionModel = TrackingAttributionModel(
-                        promoName = String.format(
-                            PROMO_NAME_BANNER_CAROUSEL,
-                            (index + 1).toString(),
-                            VALUE_BANNER_DEFAULT
-                        )
-                    )
-                )
-                visitableList.add(
-                    BannerDataModel(
-                        channelModel = channelModel,
-                        isCache = isCache,
-                        dimenMarginTop = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
-                        dimenMarginBottom = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
-                        cardInteraction = true,
-                        enableDotsAndInfiniteScroll = true,
-                        scrollTransitionDuration = BannerDataModel.NEW_IDLE_DURATION
-                    )
-                )
-            }
-        }
-    }
-
-    private fun addHomePageBannerAtf2Data(bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel?, index: Int) {
+    private fun addHomePageBannerData(
+        bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel?,
+        index: Int,
+        isBleeding: Boolean,
+    ) {
         bannerDataModel?.let {
             val channelModel = ChannelModel(
                 verticalPosition = index,
@@ -409,9 +436,66 @@ class HomeVisitableFactoryImpl(
             visitableList.add(
                 BannerRevampDataModel(
                     channelModel = channelModel,
-                    isCache = isCache
+                    isCache = isCache,
+                    isBleeding = isBleeding,
                 )
             )
+        }
+    }
+
+    private fun addTodoWidgetData(
+        data: HomeTodoWidgetData.GetHomeTodoWidget?,
+        id: Int,
+        param: String,
+        index: Int,
+        isShimmer: Boolean,
+    ) {
+        data?.let {
+            val todo = if(!isCache) {
+                TodoWidgetListDataModel(
+                    id = id.toString(),
+                    todoWidgetList = LazyLoadDataMapper.mapTodoWidgetData(it.todos),
+                    header = data.header.getAsHomeComponentHeader(),
+                    config = data.config.getAsChannelConfig(),
+                    widgetParam = param,
+                    verticalPosition = index,
+                    status = TodoWidgetListDataModel.STATUS_SUCCESS,
+                    showShimmering = isShimmer,
+                    source = TodoWidgetListDataModel.SOURCE_ATF,
+                )
+            } else {
+                TodoWidgetListDataModel(
+                    status = TodoWidgetListDataModel.STATUS_LOADING,
+                    showShimmering = isShimmer,
+                    source = TodoWidgetListDataModel.SOURCE_ATF,
+                )
+            }
+            visitableList.add(todo)
+        }
+
+    }
+
+    private fun addMissionWidgetData(
+        atfData: AtfData,
+        data: HomeMissionWidgetData.GetHomeMissionWidget?,
+        index: Int,
+        isCache: Boolean,
+    ) {
+        data?.let {
+            val mission = MissionWidgetListDataModel(
+                id = atfData.id.toString(),
+                name = atfData.name,
+                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(it.missions, isCache),
+                header = data.header.getAsHomeComponentHeader(),
+                config = data.config.getAsChannelConfig(),
+                verticalPosition = index,
+                status = MissionWidgetListDataModel.STATUS_SUCCESS,
+                showShimmering = atfData.isShimmer,
+                source = MissionWidgetListDataModel.SOURCE_ATF,
+                type = MissionWidgetMapper.getMissionWidgetType(atfData.component),
+                widgetParam = atfData.param
+            )
+            visitableList.add(mission)
         }
     }
 

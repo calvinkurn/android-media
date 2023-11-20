@@ -14,8 +14,10 @@ import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPage
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.header.HeaderUnify
 import java.util.ArrayList
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
+class TopupBillsPersoFavoriteNumberActivity :
+    BaseSimpleActivity(),
     HasComponent<CommonTopupBillsComponent> {
 
     protected lateinit var clientNumberType: String
@@ -66,8 +68,8 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.common_topup_fav_number_title))
 
-        //draw background without overdraw GPU
-        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+        // draw background without overdraw GPU
+        window.setBackgroundDrawableResource(unifyprinciplesR.color.Unify_Background)
 
         toolbar.elevation = 0f
         (toolbar as HeaderUnify).transparentMode = false
@@ -81,7 +83,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             dgCategoryIds,
             dgOperatorIds,
             loyaltyStatus,
-            pageConfig,
+            pageConfig
         )
     }
 
@@ -98,7 +100,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             dgOperatorIds: ArrayList<String>,
             categoryName: String,
             loyaltyStatus: String,
-            favoriteNumberPageConfig: FavoriteNumberPageConfig = FavoriteNumberPageConfig.TELCO,
+            favoriteNumberPageConfig: FavoriteNumberPageConfig = FavoriteNumberPageConfig.TELCO
         ): Intent {
             val intent = Intent(context, TopupBillsPersoFavoriteNumberActivity::class.java)
             val extras = Bundle()
@@ -121,5 +123,4 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
         const val EXTRA_LOYALTY_STATUS = "EXTRA_LOYALTY_STATUS"
         const val EXTRA_FAVORITE_NUMBER_PAGE_CONFIG = "EXTRA_FAVORITE_NUMBER_PAGE_CONFIG"
     }
-
 }

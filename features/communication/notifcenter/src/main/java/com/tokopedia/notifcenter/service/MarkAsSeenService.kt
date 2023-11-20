@@ -45,12 +45,12 @@ class MarkAsSeenService : JobIntentServiceX() {
             role = role,
             notifIds = notifIds
         )
-        try {
-            scope.launch {
+        scope.launch {
+            try {
                 markAsSeenUseCase(param)
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
             }
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
         }
     }
 

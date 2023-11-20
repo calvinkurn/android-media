@@ -18,6 +18,7 @@ import javax.inject.Inject
 class RequestParamsGenerator @Inject constructor(
     private val userSession: UserSessionInterface,
     private val pagination: Pagination,
+    private val lastClickedProductIdProvider: LastClickedProductIdProvider,
 ) {
 
     private val userId: String
@@ -122,14 +123,18 @@ class RequestParamsGenerator @Inject constructor(
     ): RequestParams {
         val requestParams = RequestParams.create()
 
-        putRequestParamsOtherParameters(
-            requestParams,
-            searchParameter,
-        )
+        putRequestParamsOtherParameters(requestParams, searchParameter)
         putRequestParamsChooseAddress(requestParams, chooseAddressParams)
+        putRequestParamsLastClickedProductId(requestParams)
         requestParams.putAll(searchParameter)
 
         return requestParams
+    }
+
+    private fun putRequestParamsLastClickedProductId(requestParams: RequestParams) {
+        val lastClickedProductId = lastClickedProductIdProvider.lastClickedProductId
+        if (lastClickedProductId.isNotEmpty())
+            requestParams.putString(SearchApiConst.LAST_CLICK, lastClickedProductId)
     }
 
     fun createSameSessionRecommendationParam(

@@ -14,8 +14,13 @@ android {
             res.srcDirs = [
                     pathSources,
                     pathSources + 'detail',
-                    pathSources + 'detail/a_plus_content'
+                    pathSources + 'detail/a_plus_content',
+                    pathSources + 'detail/bmgm',
+                    pathSources + 'detail/shipment'
             ]
+        }
+        androidTest {
+            resources.srcDirs += "$projectDir/src/androidTest/resources"
         }
     }
 
@@ -44,7 +49,6 @@ android {
         viewBinding true
         buildConfig true
     }
-
 }
 
 buildscript {
@@ -86,7 +90,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
-    implementation projectOrAar(rootProject.ext.features.topAdsDetailSheet)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
@@ -111,6 +114,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.minicart)
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
     implementation projectOrAar(rootProject.ext.features.productServiceWidget)
+    implementation projectOrAar(rootProject.ext.features.storiesWidget)
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.miscDependencies.rxAndroid
@@ -173,7 +177,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.testCore
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents

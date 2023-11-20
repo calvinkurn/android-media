@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceTypeFactory
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceVisitable
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceVisitable
 
 // simple logic :
 // title : check tag title, then check text title
@@ -43,11 +43,13 @@ data class BalanceDrawerItemModel(
     }
 
     override fun areContentsTheSame(newItem: BalanceVisitable): Boolean {
-        return newItem is BalanceDrawerItemModel && newItem.state == this.state
+        return newItem == this
     }
 
     override fun areItemsTheSame(newItem: BalanceVisitable): Boolean {
-        return newItem == this
+        return newItem is BalanceDrawerItemModel &&
+            newItem.drawerItemType == this.drawerItemType &&
+            newItem.state == this.state
     }
 
     override fun type(typeFactory: BalanceTypeFactory): Int {

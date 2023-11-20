@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Ada medali baru buatmu!"
-            android:textColor="@color/toaster_text_color"
+            android:textColor="@color/Unify_NN0"
             app:typographyType="display_2"
             app:typographyWeight="bold" />
 
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Jagoan Rumah Tangga Unilever"
-            android:textColor="@color/toaster_text_color"
+            android:textColor="@color/Unify_NN0"
             android:layout_marginTop="2dp"
             app:typographyType="display_3" />
 
@@ -66,7 +66,7 @@
         android:minWidth="0dp"
         tools:text="Cek"
         android:textAllCaps="false"
-        android:textColor="@color/toaster_text_color"
+        android:textColor="@color/Unify_NN0"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

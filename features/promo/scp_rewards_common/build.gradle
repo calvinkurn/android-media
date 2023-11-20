@@ -26,6 +26,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.miscDependencies.coreKtx
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation (rootProject.ext.firebase.crashlytics)
 
     testImplementation rootProject.ext.testDependencies.junit

@@ -133,10 +133,27 @@ object Constant {
         const val TRIPLEDOUBLEEMPTY = "tripleDoubleEmpty"
         const val STATUS = "status"
         const val PROMO = "promo"
+        const val PRICE = "price"
+        const val V2_STYLE = "product_highlight_v2"
+        const val ATC_OCS = "ocs"
+        enum class Type {
+            SINGLE,
+            DOUBLE,
+            TRIPLE
+        }
+    }
+
+    internal object CompType {
+        const val SHOP_CARD = "shop_card"
     }
 
     const val REDIRECTION = "redirection"
     const val NAVIGATION = "navigation"
     const val TAB_BACKGROUND =
         "https://images.tokopedia.net/img/android/res/default_recom_tab_background.png"
+
+    internal object PropertyType {
+        const val ATF_BANNER = "atf_banner"
+        const val TARGETING_BANNER = "targeting_banner"
+    }
 }

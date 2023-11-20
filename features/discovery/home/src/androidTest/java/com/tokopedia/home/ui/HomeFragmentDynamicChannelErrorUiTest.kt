@@ -18,6 +18,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_ERROR_COUN
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
+import com.tokopedia.home.ui.HomeMockValueHelper.setupAtfRefactorConfig
 import com.tokopedia.home.ui.HomeMockValueHelper.setupDynamicChannelQueryRemoteConfig
 import com.tokopedia.home.ui.HomeMockValueHelper.setupRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
@@ -55,6 +56,7 @@ class HomeFragmentDynamicChannelErrorUiTest {
             setupAbTestRemoteConfig()
             setupRemoteConfig()
             setupDynamicChannelQueryRemoteConfig()
+            setupAtfRefactorConfig(false)
             super.beforeActivityLaunched()
         }
     }
@@ -76,7 +78,7 @@ class HomeFragmentDynamicChannelErrorUiTest {
     }
 
     @Test
-    fun testDynamicChannelError() {
+    fun testOldDynamicChannelError() {
         assertDynamicChannelError()
     }
 

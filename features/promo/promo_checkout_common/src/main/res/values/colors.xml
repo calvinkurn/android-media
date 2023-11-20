@@ -7,4 +7,6 @@
     <color name="promo_checkout_grey_nonactive_text">#42000000</color>
     <color name="promo_checkout_background">#f3f4f5</color>
 
+    <color name="dms_promo_checkout_transparent">#00000000</color>
+    <color name="dms_promo_checkout_grey_5_alpha">#0D000000</color>
 </resources>

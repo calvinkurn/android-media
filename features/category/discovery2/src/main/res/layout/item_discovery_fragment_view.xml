@@ -5,27 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
-        android:id="@+id/choose_address_widget"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_32"
-        android:paddingTop="4dp"
-        android:paddingStart="@dimen/dp_19"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible"/>
-
-    <View
-        android:id="@+id/divider_view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:paddingTop="@dimen/dp_13"
-        android:visibility="gone"
-        android:background="@color/Unify_NN50"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
-        tools:visibility="visible"/>
     <!--     Can add layout for CustomView here-->
     <FrameLayout
         android:layout_width="wrap_content"
@@ -34,7 +13,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/header_comp_holder"
         app:layout_constraintBottom_toTopOf="@id/discovery_recyclerView"
-        app:layout_constraintTop_toBottomOf="@id/divider_view"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
         android:id="@+id/discovery_recyclerView"

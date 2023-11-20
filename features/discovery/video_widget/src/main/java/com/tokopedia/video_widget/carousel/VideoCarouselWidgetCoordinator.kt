@@ -79,9 +79,13 @@ class VideoCarouselWidgetCoordinator(
         widget?.setWidgetListener(listener)
     }
 
-    fun connect(widget: VideoCarouselView, dataView: VideoCarouselDataView) {
+    fun connect(
+        widget: VideoCarouselView,
+        dataView: VideoCarouselDataView,
+        isReimagine: Boolean,
+    ) {
         this.dataView = dataView
-        widget.setCarouselModel(dataView)
+        widget.setCarouselModel(dataView, isReimagine)
         autoPlayCoordinator.configureAutoPlay(widget, dataView.config)
     }
 

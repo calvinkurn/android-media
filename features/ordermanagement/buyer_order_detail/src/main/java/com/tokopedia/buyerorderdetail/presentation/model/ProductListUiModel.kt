@@ -5,9 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 
 data class ProductListUiModel(
     val productList: List<ProductUiModel>,
+    val productBmgmList: List<ProductBmgmSectionUiModel>,
     val productBundlingList: List<ProductBundlingUiModel>,
     val productUnFulfilledList: List<ProductUiModel>?,
     val productFulfilledHeaderLabel: ProductPofHeaderLabelUiModel?,
@@ -67,6 +71,7 @@ data class ProductListUiModel(
         val shopId: String? = null,
         val shopName: String? = null,
         val shopType: Int? = null,
+        val impressHolder: ImpressHolder = ImpressHolder()
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()

@@ -121,7 +121,7 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
 
     val newTrackingRepository: TrackRepositoryImpl<TrackingRegularDbModel, TrackingEEDbModel,
             TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
-        TrackRepository(context)
+        TrackRepository.getInstance(context)
     }
 
     internal fun putEETracking(map: HashMap<String, Any>? = null) {

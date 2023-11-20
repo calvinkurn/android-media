@@ -1,7 +1,6 @@
 package com.tokopedia.topads.dashboard.recommendation.common
 
 object TopAdsProductRecommendationConstants {
-    const val SHOP_Id_KEY = "shop_id"
     const val DEFAULT_SELECTED_ITEMS_COUNT = 0
     const val FAILED_LIST_STATE_IMG_URL = "https://images.tokopedia.net/img/android/topads/insight_centre_page/global-illustration.png"
     const val CREATE_GROUP_SUCCESS_DIALOG_IMG_URL = "https://images.tokopedia.net/img/android/topads/createads_success/mp_group_creation_success_dialog.png"
@@ -16,7 +15,6 @@ object TopAdsProductRecommendationConstants {
     const val AUTO_BID_CONST = "auto_bid"
     const val CONST_2 = 2
     const val KEYWORD = "keyword"
-    const val DEFAULT_EMPTY_STRING = ""
     const val DEFAULT_PRICE_BID = 0.0
     const val DEFAULT_SUGGESTED_BID = 0.0
     const val TOPADS_MOVE_GROUP_SOURCE = "top_ads_create"

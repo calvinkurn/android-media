@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -16,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_SHO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.kyc_centralized.common.KycUrl
@@ -27,6 +30,7 @@ import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
@@ -37,6 +41,9 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
     @Inject
     lateinit var kycSharedPreference: KycSharedPreference
 
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     private var viewBinding by autoClearedNullable<FragmentUserIdentificationInfoSimpleBinding>()
     private var projectId = 0
     private var defaultStatusBarColor = 0
@@ -44,6 +51,18 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
     private var redirectUrl = ""
     private var kycType = ""
     private var savedInstanceState: Bundle? = null
+
+    private val startLoginForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                saveInitDataToPreference()
+            }
+            else -> {
+                activity?.setResult(Activity.RESULT_CANCELED)
+                activity?.finish()
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,7 +88,23 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
         }
 
         this.savedInstanceState = savedInstanceState
-        saveInitDataToPreference()
+        handleRequireLogin()
+    }
+
+    private fun handleRequireLogin() {
+        if (userSessionInterface.isLoggedIn) {
+            saveInitDataToPreference()
+        } else {
+            gotoLogin()
+        }
+    }
+
+    private fun gotoLogin() {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalUserPlatform.LOGIN
+        )
+        startLoginForResult.launch(intent)
     }
 
     private fun initAction() {

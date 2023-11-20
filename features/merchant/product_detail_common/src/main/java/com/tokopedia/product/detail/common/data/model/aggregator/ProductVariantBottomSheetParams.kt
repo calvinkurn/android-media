@@ -34,4 +34,6 @@ data class ProductVariantBottomSheetParams(
         var trackerListNamePdp: String = "",
         var isShopOwner: Boolean = false,
         var cacheId: String = ""
-)
+) {
+        fun showQtyEditorOrTokoNow() : Boolean = isTokoNow || showQtyEditor
+}

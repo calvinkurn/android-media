@@ -12,7 +12,8 @@ import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsU
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -20,6 +21,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ProductCardCarouselViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -33,7 +35,7 @@ class ProductCardCarouselViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        Dispatchers.setMain(TestCoroutineDispatcher())
+        Dispatchers.setMain(UnconfinedTestDispatcher())
 
         mockkConstructor(URLParser::class)
         every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
@@ -44,7 +46,6 @@ class ProductCardCarouselViewModelTest {
         Dispatchers.resetMain()
         unmockkConstructor(URLParser::class)
     }
-
 
     @Test
     fun `test for components`() {
@@ -122,7 +123,6 @@ class ProductCardCarouselViewModelTest {
         assert(viewModel.atcFailed.value == 5)
     }
 
-
     @Test
     fun `get error component`() {
         every { componentsItem.pageEndPoint } returns "abc"
@@ -174,7 +174,7 @@ class ProductCardCarouselViewModelTest {
     @Test
     fun `test for reset Component`() {
         val componentsItemLocal = spyk(ComponentsItem(id = "2"))
-         var viewModel: ProductCardCarouselViewModel =
+        val viewModel: ProductCardCarouselViewModel =
             spyk(ProductCardCarouselViewModel(application, componentsItemLocal, 99))
         componentsItemLocal.noOfPagesLoaded = 5
         componentsItemLocal.pageLoadedCounter = 5
@@ -212,7 +212,7 @@ class ProductCardCarouselViewModelTest {
     }
 
     @Test
-    fun `test for add Load More on error`() {
+    fun `given next page is available then should add LoadMore component`() {
         mockkObject(Utils)
         viewModel.productCardsUseCase = productCardsUseCase
         val componentsItemNew = ComponentsItem(id = "1")
@@ -224,13 +224,72 @@ class ProductCardCarouselViewModelTest {
         every { Utils.nextPageAvailable(componentsItem, 10) } returns true
         coEvery {
             productCardsUseCase.getCarouselPaginatedData(
-                componentsItem.id, componentsItem.pageEndPoint, 10
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                10
             )
         } returns true
 
         viewModel.fetchCarouselPaginatedProducts()
 
-        assert(viewModel.getProductCarouselItemsListData().value?.size == 3)
+        val components = viewModel.getProductCarouselItemsListData().value
+
+        assert(components?.size == 3)
+        assert(components?.last()?.name == ComponentNames.LoadMore.componentName)
     }
 
+    @Test
+    fun `given redirection data is available then should add ViewAll component`() {
+        mockkObject(Utils)
+        viewModel.productCardsUseCase = productCardsUseCase
+        val componentsItemNew = ComponentsItem(id = "1")
+        val list = ArrayList<ComponentsItem>()
+        list.add(componentsItemNew)
+
+        every { viewModel.getProductList() } returns list
+        every { componentsItem.properties?.mixLeft?.bannerImageUrlMobile } returns "false"
+        every { Utils.nextPageAvailable(componentsItem, 10) } returns false
+        every { componentsItem.compAdditionalInfo?.redirection?.applink } returns "tokopedia://shop/9368166"
+        coEvery {
+            productCardsUseCase.getCarouselPaginatedData(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                10
+            )
+        } returns true
+
+        viewModel.fetchCarouselPaginatedProducts()
+
+        val components = viewModel.getProductCarouselItemsListData().value
+
+        assert(components?.size == 3)
+        assert(components?.last()?.name == ComponentNames.ViewAllCardCarousel.componentName)
+    }
+
+    @Test
+    fun `given neither next page or redirection is available then should not add anymore component`() {
+        mockkObject(Utils)
+        viewModel.productCardsUseCase = productCardsUseCase
+        val componentsItemNew = ComponentsItem(id = "1")
+        val list = ArrayList<ComponentsItem>()
+        list.add(componentsItemNew)
+
+        every { viewModel.getProductList() } returns list
+        every { componentsItem.properties?.mixLeft?.bannerImageUrlMobile } returns "false"
+        every { Utils.nextPageAvailable(componentsItem, 10) } returns false
+        every { componentsItem.compAdditionalInfo?.redirection?.applink } returns null
+        coEvery {
+            productCardsUseCase.getCarouselPaginatedData(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                10
+            )
+        } returns true
+
+        viewModel.fetchCarouselPaginatedProducts()
+
+        val components = viewModel.getProductCarouselItemsListData().value
+
+        assert(components?.size == 2)
+    }
 }

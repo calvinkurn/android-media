@@ -17,7 +17,7 @@ class ShippingDurationUiModel(
     var isCodAvailable: Boolean = false,
     var codText: String? = null,
     var isShowShippingInformation: Boolean = false,
-    var merchantVoucherModel: MerchantVoucherModel? = null,
+    var merchantVoucherModel: MerchantVoucherModel = MerchantVoucherModel(),
     var etaErrorCode: Int = 0,
-    var dynamicPriceModel: DynamicPriceModel? = null
-) : Parcelable, RatesViewModelType
+    var dynamicPriceModel: DynamicPriceModel = DynamicPriceModel()
+) : RatesViewModelType, Parcelable

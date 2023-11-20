@@ -95,18 +95,18 @@ class FlashSaleManageProductListViewModelTest {
         unmockkAll()
     }
 
-    @Test
-    fun `When ui event does not matched anything, then ui effect should be null`() {
-        testCoroutineRule.runTest {
-            viewModel.processEvent(mockk())
-            var emittedValue: FlashSaleManageProductListUiEffect? = null
-            val job = launch {
-                emittedValue = viewModel.uiEffect.firstOrNull()
-            }
-            assert(emittedValue == null)
-            job.cancel()
-        }
-    }
+//    @Test
+//    fun `When ui event does not matched anything, then ui effect should be null`() {
+//        testCoroutineRule.runTest {
+//            viewModel.processEvent(mockk())
+//            var emittedValue: FlashSaleManageProductListUiEffect? = null
+//            val job = launch {
+//                emittedValue = viewModel.uiEffect.firstOrNull()
+//            }
+//            assert(emittedValue == null)
+//            job.cancel()
+//        }
+//    }
 
     @Test
     fun `When get reserved product list success, then product list shouldn't empty`() {

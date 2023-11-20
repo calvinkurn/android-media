@@ -276,6 +276,7 @@ class CartFragment :
     private var isCheckUncheckDirectAction = true
     private var isNavToolbar = false
     private var plusCoachMark: CoachMark2? = null
+    private var availableCartItemImpressionList: MutableSet<CartItemHolderData> = mutableSetOf()
 
     // temporary variable to handle case edit bundle
     // this is useful if there are multiple same bundleId in cart
@@ -1011,7 +1012,10 @@ class CartFragment :
                 viewLifecycleOwner.lifecycle.addObserver(this)
                 setOnBackButtonClickListener(
                     disableDefaultGtmTracker = true,
-                    backButtonClickListener = ::onBackPressed
+                    backButtonClickListener = {
+                        onBackPressed()
+                        sendCartImpressionAnalytic()
+                    }
                 )
                 setIcon(
                     IconBuilder(IconBuilderFlag(pageSource = NavSource.CART)).addIcon(
@@ -1401,6 +1405,7 @@ class CartFragment :
 
     override fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
         cartPageAnalytics.eventClickAtcCartClickProductName(cartItemHolderData.productName)
+        sendCartImpressionAnalytic()
         routeToProductDetailPage(cartItemHolderData.productId)
     }
 
@@ -2139,6 +2144,7 @@ class CartFragment :
     }
 
     override fun onCartGroupNameClicked(appLink: String, shopId: String, shopName: String, isOWOC: Boolean) {
+        sendCartImpressionAnalytic()
         if (!isOWOC && shopId.isNotEmpty()) {
             cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
         }
@@ -2148,6 +2154,7 @@ class CartFragment :
     override fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean) {
         if (shopId != null && shopName != null) {
             cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
+            sendCartImpressionAnalytic()
             if (isTokoNow) {
                 routeToTokoNowHomePage()
             } else {
@@ -3254,6 +3261,7 @@ class CartFragment :
     private fun navigateToShipmentPage() {
         FLAG_BEGIN_SHIPMENT_PROCESS = true
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = true
+        sendCartImpressionAnalytic()
         routeToCheckoutPage()
     }
 
@@ -4619,6 +4627,25 @@ class CartFragment :
                 showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
             }
         }
+    }
+
+    override fun onAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>) {
+        availableCartItemImpressionList.addAll(availableCartItems)
+    }
+
+    private fun sendCartImpressionAnalytic() {
+        val analyticData = arrayListOf<Map<String, Any>>()
+        availableCartItemImpressionList.forEach {
+            val productDataMap = mapOf(
+                ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
+                ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
+                ConstantTransactionAnalytics.Key.ITEM_ID to it.cartId,
+                ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
+            )
+            analyticData.add(productDataMap)
+        }
+        cartPageAnalytics.sendCartImpressionEvent(analyticData, userSession.userId)
+        availableCartItemImpressionList = mutableSetOf()
     }
 
     override fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String) {

@@ -140,17 +140,11 @@ class AffiliateTransactionDetailFragment :
     private fun showError(it: Throwable?) {
         view?.findViewById<GlobalError>(R.id.commision_global_error)?.run {
             when (it) {
-                is UnknownHostException, is SocketTimeoutException -> {
-                    setType(GlobalError.NO_CONNECTION)
-                }
+                is UnknownHostException, is SocketTimeoutException -> setType(GlobalError.NO_CONNECTION)
 
-                is IllegalStateException -> {
-                    setType(GlobalError.PAGE_FULL)
-                }
+                is IllegalStateException -> setType(GlobalError.PAGE_FULL)
 
-                else -> {
-                    setType(GlobalError.SERVER_ERROR)
-                }
+                else -> setType(GlobalError.SERVER_ERROR)
             }
             show()
             setActionClickListener {
@@ -259,6 +253,7 @@ class AffiliateTransactionDetailFragment :
             PAGE_PDP -> "Produk"
             PAGE_SHOP -> "Toko"
             PAGE_EVENT -> "Event"
+            PAGE_WISHLIST -> "Koleksi"
             else -> "None"
         }
     }
@@ -308,6 +303,7 @@ class AffiliateTransactionDetailFragment :
         private const val PAGE_PDP = "PDP"
         private const val PAGE_SHOP = "SHOP"
         private const val PAGE_EVENT = "CAMPAIGN"
+        private const val PAGE_WISHLIST = "WISHLIST"
         fun newInstance(transactionId: String?): Fragment {
             return AffiliateTransactionDetailFragment().apply {
                 arguments = Bundle().apply {

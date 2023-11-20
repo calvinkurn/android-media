@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardListView
+import com.tokopedia.productcard.reimagine.ProductCardGridView
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
@@ -24,6 +25,7 @@ import kotlin.math.roundToInt
 class ProductItemDecoration(
     private val spacing: Int,
     private val adapter: ProductListAdapter? = null,
+    private val isReimagineProductCard: Boolean = false,
 ) : ItemDecoration() {
 
     private var verticalCardViewOffset = 0
@@ -42,8 +44,12 @@ class ProductItemDecoration(
         R.layout.search_inspiration_seamless_product_card_with_viewstub,
         R.layout.search_inspiration_seamless_product_card_list,
         R.layout.search_inspiration_seamless_product_card_list_with_viewstub,
-        R.layout.search_inspiration_semless_keyword
+        R.layout.search_inspiration_semless_keyword,
+        R.layout.search_result_product_card_reimagine_grid,
+        R.layout.search_inspiration_seamless_reimagine_product_card,
     )
+    private val marginMultiplier: Double
+        get() = if (isReimagineProductCard) REIMAGINE_MARGIN_MULTIPLIER else 1.0
 
     override fun getItemOffsets(outRect: Rect,
                                 view: View,
@@ -63,12 +69,15 @@ class ProductItemDecoration(
             verticalCardViewOffset = getVerticalCardViewOffset(view)
             horizontalCardViewOffset = getHorizontalCardViewOffset(view) + listViewExperimentHorizontalOffset
 
-            outRect.left = getLeftOffset(relativePos, totalSpanCount)
+            outRect.left = getLeftOffset(relativePos, totalSpanCount) - additionalMarginStart(view)
             outRect.top = getTopOffset(parent, adapterPosition, relativePos, totalSpanCount)
             outRect.right = getRightOffset(relativePos, totalSpanCount)
             outRect.bottom = getBottomOffsetNotBottomItem()
         }
     }
+
+    private fun additionalMarginStart(view: View) =
+        if (view is ProductCardGridView) view.additionalMarginStart else 0
 
     private fun getProductItemRelativePosition(parent: RecyclerView, view: View): Int {
         return when (view.layoutParams) {
@@ -169,12 +178,14 @@ class ProductItemDecoration(
     }
 
     private fun getLeftOffset(relativePos: Int, totalSpanCount: Int): Int {
-        return if (isFirstInRow(relativePos, totalSpanCount)) getLeftOffsetFirstInRow() else getLeftOffsetNotFirstInRow()
+        return if (isFirstInRow(relativePos, totalSpanCount)) getLeftOffsetFirstInRow()
+        else getLeftOffsetNotFirstInRow()
     }
 
     private fun getLeftOffsetFirstInRow() = spacing - horizontalCardViewOffset
 
-    private fun getLeftOffsetNotFirstInRow() = spacing / LEFT_OFFSET_NOT_FIRST_ITEM_DIVISOR - horizontalCardViewOffset
+    private fun getLeftOffsetNotFirstInRow() =
+        (spacing / LEFT_OFFSET_NOT_FIRST_ITEM_DIVISOR * marginMultiplier).toInt() - horizontalCardViewOffset
 
     private fun getTopOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int {
         return if (isTopProductItem(parent, absolutePos, relativePos, totalSpanCount))
@@ -193,7 +204,8 @@ class ProductItemDecoration(
 
     private fun getRightOffsetLastInRow() = spacing - horizontalCardViewOffset
 
-    private fun getRightOffsetNotLastInRow() = spacing / RIGHT_OFFSET_NOT_LAST_ITEM_DIVISOR - horizontalCardViewOffset
+    private fun getRightOffsetNotLastInRow() =
+        (spacing / RIGHT_OFFSET_NOT_LAST_ITEM_DIVISOR * marginMultiplier).toInt() - horizontalCardViewOffset
 
     private fun getBottomOffsetNotBottomItem() = spacing / BOTTOM_OFFSET_NOT_BOTTOM_ITEM_DIVISOR - verticalCardViewOffset
 
@@ -226,5 +238,7 @@ class ProductItemDecoration(
         private const val TOP_OFFSET_NOT_TOP_ITEM_DIVISOR = 4
         private const val LEFT_OFFSET_NOT_FIRST_ITEM_DIVISOR = 4
         private const val BOTTOM_OFFSET_NOT_BOTTOM_ITEM_DIVISOR = 4
+
+        private const val REIMAGINE_MARGIN_MULTIPLIER = 1.5
     }
 }

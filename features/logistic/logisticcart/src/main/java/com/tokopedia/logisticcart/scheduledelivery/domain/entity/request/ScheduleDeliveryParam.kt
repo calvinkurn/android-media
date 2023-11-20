@@ -1,7 +1,12 @@
 package com.tokopedia.logisticcart.scheduledelivery.domain.entity.request
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.graphql.data.GqlParam
 
+data class OngkirGetScheduledDeliveryRatesInput(
+    @SerializedName("param")
+    val data: ScheduleDeliveryParam
+) : GqlParam
 data class ScheduleDeliveryParam(
     @SerializedName("origin")
     val origin: String = "",
@@ -48,8 +53,8 @@ data class ScheduleDeliveryParam(
     @SerializedName("insurance")
     val insurance: Long = 0,
     @SerializedName("product_insurance")
-    val productInsurance: Long = 0,
-) {
+    val productInsurance: Long = 0
+) : GqlParam {
 
     fun toMap() = mapOf(
         "param" to this

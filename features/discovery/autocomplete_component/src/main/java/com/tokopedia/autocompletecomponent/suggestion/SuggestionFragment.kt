@@ -26,11 +26,13 @@ import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopL
 import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
 import com.tokopedia.autocompletecomponent.util.OnScrollListenerAutocomplete
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
+import com.tokopedia.autocompletecomponent.util.SuggestionMPSListener
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.reimagine.Search1InstAuto
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -56,8 +58,10 @@ class SuggestionFragment :
         @JvmStatic
         fun create(
             component: SuggestionComponent,
+            mpsListener: SuggestionMPSListener,
         ) = SuggestionFragment().apply {
             component.inject(this)
+            mpsSuggestionListener = mpsListener
         }
     }
 
@@ -87,10 +91,10 @@ class SuggestionFragment :
 
     private val suggestionAdapter by lazy {
         val suggestionTypeFactory= SuggestionAdapterTypeFactory(
-        suggestionListener = this,
-        suggestionTopShopListener = this,
-        suggestionChipListener = this,
-        isReimagine = reimagineRollence?.search1InstAuto() != Search1InstAuto.CONTROL
+            suggestionListener = this,
+            suggestionTopShopListener = this,
+            suggestionChipListener = this,
+            isReimagine = reimagineRollence?.search1InstAuto() != Search1InstAuto.CONTROL
         )
         SuggestionAdapter(suggestionTypeFactory)
     }
@@ -104,6 +108,8 @@ class SuggestionFragment :
     }
 
     private var coachMark: CoachMark2? = null
+
+    private var mpsSuggestionListener: SuggestionMPSListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -198,7 +204,6 @@ class SuggestionFragment :
 
     fun getSuggestion(searchParameter: Map<String, String>, activeKeyword: SearchBarKeyword) {
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
-
         presenter?.getSuggestion(searchParameter, activeKeyword)
     }
 
@@ -212,6 +217,10 @@ class SuggestionFragment :
 
     override fun onItemClicked(item: BaseSuggestionDataView) {
         presenter?.onSuggestionItemClicked(item)
+    }
+
+    override fun addToMPSKeyword(item: BaseSuggestionDataView) {
+        mpsSuggestionListener?.clickSuggestionMPS(item)
     }
 
     override fun onChipImpressed(item: BaseSuggestionDataView.ChildItem) {

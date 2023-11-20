@@ -1,3 +1,9 @@
+---
+title: "Tokopedia Now Product Card"
+labels:
+- product-card-compact
+- tokopedia-now
+---
 <!--left header table-->
 | **Status** | <!--start status:GREEN-->RELEASE<!--end status--> |
 | --- | --- |
@@ -24,7 +30,7 @@ A redesign of the product card is needed if we’re going to improve the browsin
 
 Hierarchy shows how important are the components in product card. Knowing this knowledge is essential to decide what things need to show at certain period.
 
-![image](../../res/tokopedia_now_product_card_hierarchy_of_needs.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_card_hierarchy_of_needs.png)
 
 ## Types
 
@@ -32,15 +38,15 @@ There are two types which can cause different components and placements in the p
 
 ### Product List / SRP Page
 
-![image](../../res/tokopedia_now_product_card_description_product_grid.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_card_description_product_grid.png)
 
-![image](../../res/tokopedia_now_product_card_description_product_grid_more_info.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_card_description_product_grid_more_info.png)
 
 ### Carousel
 
-![image](../../res/tokopedia_now_product_card_description_product_carousel.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_card_description_product_carousel.png)
 
-![image](../../res/tokopedia_now_product_card_description_product_carousel_more_info.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_card_description_product_carousel_more_info.png)
 
 ## States
 
@@ -48,15 +54,15 @@ Apart from the types above, there are 3 states that can occur on a product card,
 
 - Normal State
 
-![image](../../res/tokopedia_now_product_card_normal_state.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_card_normal_state.png)
 
 - OOS (Out of Stock) State
 
-![image](../../res/tokopedia_now_product_card_oos_state.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_card_oos_state.png)
 
 - Flash Sale State
 
-![image](../../res/tokopedia_now_product_card_flash_sale_state.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_card_flash_sale_state.png)
 
 ## Capabilities
 
@@ -74,7 +80,7 @@ Interaction :
 	- Idle for two seconds.
 - If the user wants to update the quantity, can click the button again, and it will become a quantity editor.
 
-![image](../../res/tokopedia_now_product_card_quantity_editor.gif)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_card_quantity_editor.gif)
 
 ### Wishlist Button
 
@@ -85,15 +91,15 @@ Interaction :
 - Easing - ease in and out.
 - Movement - 1x each (to left and to right) .
 
-![image](../../res/tokopedia_now_product_card_wishlist_button.gif)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_card_wishlist_button.gif)
 
 ### Similar Product
 
 In product card, there is an entry point to open a bottomsheet filled of similar products. What we need to do is only click “Pilihan Serupa” (the similar product’s entry point).
 
-![image](../../res/tokopedia_now_product_card_similar_product_entry_point.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_card_similar_product_entry_point.png)
 
-![image](../../res/tokopedia_now_product_card_similar_product_bottom_sheet.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_card_similar_product_bottom_sheet.png)
 
 ## How to Use
 
@@ -161,7 +167,7 @@ The following bellow are some properties that can be set on product card.
 
 Apart from the properties, there are several conditions that need to be known to help you out determine what kind of content you need to show on product card which are illustrated with the graphic below.
 
-![image](../../res/tokopedia_now_product_card_conditions.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_card_conditions.png)
 
 ### 3. On Click Quantity Editor Listener
 

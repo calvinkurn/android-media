@@ -131,11 +131,15 @@ class OrderPriceSummaryBottomSheet {
                     ).apply {
                         tvLabel.text = summaryAddOnProduct.wording.replace(
                             oldValue = SUMMARY_WORD_TO_BE_REPLACED,
-                            newValue = (addOnsProductSelectedFiltered.sumOf { it.productQuantity }).toString()
+                            newValue = (
+                                addOnsProductSelectedFiltered.sumOf {
+                                    if (it.fixedQuantity) 1 else it.productQuantity
+                                }
+                                ).toString()
                         )
 
                         tvValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            price = addOnsProductSelectedFiltered.sumOf { it.price * it.productQuantity },
+                            price = addOnsProductSelectedFiltered.sumOf { it.price * (if (it.fixedQuantity) 1 else it.productQuantity) },
                             hasSpace = false
                         ).removeDecimalSuffix()
 

@@ -58,8 +58,6 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
     var boosterList = ""
     var sourceEngine = ""
     var minOrder = 1
-    var isShopOfficialStore = false
-    var isShopPowerMerchant = false
     var productUrl = ""
     var pageTitle: String? = null
     val isAds: Boolean
@@ -101,6 +99,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
                 "variant", "none / other",
                 "list", SearchTracking.getActionFieldString(isOrganicAds, topadsTag, componentId),
                 "index", position.toString(),
+                "dimension40", SearchTracking.getActionFieldString(isOrganicAds, topadsTag, componentId),
                 "dimension56", warehouseID.ifNullOrBlank { "0" },
                 "dimension61", filterSortParams.ifEmpty { "none / other" },
                 "dimension79", shopID,
@@ -133,6 +132,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
             "variant", "none / other",
             "list", SearchTracking.getActionFieldString(isOrganicAds, topadsTag, componentId),
             "index", position.toString(),
+            "dimension40", SearchTracking.getActionFieldString(isOrganicAds, topadsTag, componentId),
             "dimension45", cartId,
             "dimension56", warehouseID.ifNullOrBlank { "0" },
             "dimension61", filterSortParams.ifEmpty { "none / other" },
@@ -213,8 +213,6 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
             item.isNew = topAds.product.isProductNewLabel
             item.shopID = topAds.shop.id
             item.shopName = topAds.shop.name
-            item.isShopOfficialStore = topAds.shop.isShop_is_official
-            item.isShopPowerMerchant = topAds.shop.isGoldShop
             item.shopUrl = topAds.shop.uri
             item.originalPrice = topAds.product.campaign.originalPrice
             item.discountPercentage = topAds.product.campaign.discountPercentage

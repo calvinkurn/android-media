@@ -147,6 +147,25 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".category.presentation.activity.TokoNowCategoryL2Activity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_tokopedia_now"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_category_l2" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name="com.tokopedia.tokopedianow.repurchase.presentation.activity.TokoNowRepurchaseActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"

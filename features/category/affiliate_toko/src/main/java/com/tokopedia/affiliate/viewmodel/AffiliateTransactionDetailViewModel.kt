@@ -18,7 +18,7 @@ import com.tokopedia.affiliate.usecase.AffiliateCommissionDetailsUseCase
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
+import com.tokopedia.universal_sharing.domain.usecase.ExtractBranchLinkUseCase
 import javax.inject.Inject
 
 class AffiliateTransactionDetailViewModel @Inject constructor(

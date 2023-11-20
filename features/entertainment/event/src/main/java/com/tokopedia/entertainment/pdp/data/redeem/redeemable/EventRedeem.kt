@@ -28,6 +28,8 @@ data class Data(
     val redemptions: List<Participant>? = emptyList(),
     @SerializedName("redemption_status")
     val redemptionStatus: Int = 0,
+    @SerializedName("seating_numbers")
+    val seatingNumbers: String = "",
 )
 
 data class Product(

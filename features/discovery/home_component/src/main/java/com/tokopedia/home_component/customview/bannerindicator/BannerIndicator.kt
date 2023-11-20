@@ -85,6 +85,8 @@ class BannerIndicator : LinearLayout {
         bannerAnimatorSet.resume()
     }
 
+    fun isCurrentPosition(position: Int): Boolean = currentPosition == position
+
     fun setBannerIndicators(totalBanner: Int, startFrom: Int = -1) {
         this.removeAllViews()
         this.totalBanner = totalBanner
@@ -152,13 +154,17 @@ class BannerIndicator : LinearLayout {
                     }
                     android.os.Handler(Looper.getMainLooper()).postDelayed(
                         {
+                            val index = nextTransition % totalBanner
                             bannerAnimatorSet.removeAllListeners()
                             bannerAnimator.removeAllUpdateListeners()
                             minimizeIndicatorBanner(progressIndicator)
-                            getChildProgressBar(nextTransition % totalBanner)?.let {
+                            getChildProgressBar(index)?.let {
                                 maximizeAnimator(it, nextTransition)
                             }
-                            listener?.onChangePosition(nextTransition)
+                            listener?.onChangePosition(
+                                index = index,
+                                position = nextTransition
+                            )
                         },
                         NO_DELAY
                     )
@@ -227,7 +233,7 @@ class BannerIndicator : LinearLayout {
         return try {
             Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE) == 0f
         } catch (_: Settings.SettingNotFoundException) {
-            true
+            false
         }
     }
 }

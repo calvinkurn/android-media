@@ -16,24 +16,27 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shipment_add_on_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         app:layout_constraintTop_toTopOf="@id/cb_addon_item"
         app:layout_constraintBottom_toBottomOf="@id/cb_addon_item"
         app:layout_constraintStart_toEndOf="@id/cb_addon_item"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="6dp"
+        app:layout_constraintEnd_toStartOf="@id/ic_product_addon_info"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
         app:typographyType="display_3"
         app:typographyWeight="reguler"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_product_addon_info"
-        android:layout_width="13dp"
-        android:layout_height="13dp"
-        android:layout_marginStart="6dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintStart_toEndOf="@id/tv_shipment_add_on_name"
         app:layout_constraintTop_toTopOf="@id/tv_shipment_add_on_name"
         app:layout_constraintBottom_toBottomOf="@id/tv_shipment_add_on_name"
+        app:layout_constraintEnd_toStartOf="@id/tv_shipment_add_on_price"
         app:icon_name="INFORMATION"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -43,6 +46,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/cb_addon_item"
         app:layout_constraintBottom_toBottomOf="@id/cb_addon_item"
+        app:layout_constraintStart_toEndOf="@id/ic_product_addon_info"
         app:typographyWeight="bold"
         app:typographyType="display_3"/>
 

@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -18,7 +20,11 @@ data class ProductSingleVariantDataModel(
     var isRefreshing: Boolean = false,
     var thumbnailType: String = "", // single variant for thumbnail variant in pdp
     var title: String = ""
-) : DynamicPdpDataModel {
+) : DynamicPdpDataModel,
+    LoadableComponent by BlocksLoadableComponent(
+        isFinishedLoading = { false },
+        customBlocksName = "ProductSingleVariantDataModel"
+    ) {
 
     override fun type(): String = type
 
@@ -66,6 +72,10 @@ data class ProductSingleVariantDataModel(
             }
         }
         return isChanged
+    }
+
+    override fun isLoading(): Boolean {
+        return variantLevelOne == null
     }
 
     val isThumbnailType get() = thumbnailType == ProductDetailConstant.THUMB_MINI_VARIANT_OPTIONS

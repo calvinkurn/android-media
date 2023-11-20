@@ -1,5 +1,6 @@
 package com.tokopedia.rechargegeneral.di
 
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import dagger.Module
@@ -18,4 +19,10 @@ class RechargeGeneralModule {
     @RechargeGeneralScope
     @Provides
     fun provideRechargeGeneralMapper(): RechargeGeneralMapper = RechargeGeneralMapper()
+
+    @RechargeGeneralScope
+    @Provides
+    fun provideAnalyticsCommonMultiCheckout(): CommonMultiCheckoutAnalytics {
+        return CommonMultiCheckoutAnalytics()
+    }
 }

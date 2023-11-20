@@ -12,19 +12,12 @@
         android:layout_marginStart="2dp"
         android:layout_marginEnd="1dp"
         />
-    <androidx.cardview.widget.CardView
-        android:layout_width="@dimen/comparison_widget_product_card_width"
-        android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true"
-        android:layout_marginStart="2dp"
-        app:cardBackgroundColor="@android:color/transparent"
-        app:cardElevation="0dp"
-        >
-        <com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsView
-            android:id="@+id/specsView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
 
-    </androidx.cardview.widget.CardView>
+    <com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsView
+        android:id="@+id/specsView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_difference_card_use_compat_padding"
+        />
+
 </LinearLayout>

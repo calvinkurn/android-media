@@ -41,6 +41,8 @@ data class AffiliatePerformanceListData(
                     var defaultLinkURL: String?,
                     @SerializedName("Image")
                     var image: Image?,
+                    @SerializedName("ImageArray")
+                    var imageArray: List<Image?>?,
                     @SerializedName("ItemID")
                     var itemID: String?,
                     @SerializedName("LinkGeneratedAt")

@@ -11,6 +11,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFIL
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_PRODUCT_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_SHOP_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_WIDGET_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME
@@ -23,13 +25,15 @@ import com.tokopedia.config.GlobalConfig
 object DeeplinkMapperContent {
 
     private const val EXTRA_SOURCE_NAME = "source"
+    private const val EXTRA_WIDGET_ID = "widget_id"
+    private const val EXTRA_ENTRY_POINT = "entrypoint"
 
     /**
      * https://www.tokopedia.com/
      */
     fun getNavContentFromHttp(uri: Uri, deepLink: String): String {
         val pathSegments = uri.pathSegments.joinToString("/")
-        return if (pathSegments.startsWith("play", false)) {
+        return if (pathSegments.startsWith(ApplinkConstInternalContent.PLAY_PATH_LITE, false)) {
             goToAppLinkPlayInternal(uri)
         } else if (pathSegments.startsWith("feed", false) ||
             pathSegments.startsWith("content", false)
@@ -99,6 +103,12 @@ object DeeplinkMapperContent {
                     put(UF_EXTRA_FEED_TAB_NAME, tabName)
                 }
 
+                val widgetId = uri.getQueryParameter(EXTRA_WIDGET_ID)
+                if (widgetId != null) put(UF_EXTRA_FEED_WIDGET_ID, widgetId)
+
+                val entryPoint = uri.getQueryParameter(EXTRA_ENTRY_POINT)
+                if (entryPoint != null) put(UF_EXTRA_FEED_ENTRY_POINT, entryPoint)
+
                 val postId = uri.lastPathSegment?.toIntOrNull() ?: return@buildMap
                 put(UF_EXTRA_FEED_SOURCE_ID, postId)
             }
@@ -138,6 +148,12 @@ object DeeplinkMapperContent {
             buildMap {
                 val sourceName = uri.getQueryParameter(EXTRA_SOURCE_NAME)
                 if (sourceName != null) put(UF_EXTRA_FEED_SOURCE_NAME, sourceName)
+
+                val widgetId = uri.getQueryParameter(EXTRA_WIDGET_ID)
+                if (widgetId != null) put(UF_EXTRA_FEED_WIDGET_ID, widgetId)
+
+                val entryPoint = uri.getQueryParameter(EXTRA_ENTRY_POINT)
+                if (entryPoint != null) put(UF_EXTRA_FEED_ENTRY_POINT, entryPoint)
             }
         )
     }

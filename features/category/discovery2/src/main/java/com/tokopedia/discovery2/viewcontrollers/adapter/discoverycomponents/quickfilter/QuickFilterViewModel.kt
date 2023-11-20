@@ -27,9 +27,9 @@ import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-const val RPC_FILTER_KEY = "rpc_"
 const val DEFAULT_SORT_ID = "23"
 const val SORT_KEY = "ob"
+const val SORT_FILTER_KEY = "sortfilter_ob"
 class QuickFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     @JvmField
@@ -272,9 +272,17 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     fun getSearchParameterHashMap() = components.searchParameter.getSearchParameterHashMap()
 
     private fun addDefaultToSearchParameter() {
-        if (components.isFromCategory && !components.searchParameter.contains(SORT_KEY)) {
-            components.searchParameter.set(SORT_KEY, DEFAULT_SORT_ID)
+        val searchParameter = components.searchParameter
+
+        if (searchParameter.contains(SORT_KEY) || searchParameter.contains(SORT_FILTER_KEY)) return
+
+        val key = if (components.isFromCategory) {
+            SORT_KEY
+        } else {
+            SORT_FILTER_KEY
         }
+
+        searchParameter.set(key, DEFAULT_SORT_ID)
     }
 
     fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
@@ -309,28 +317,30 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             val targetList = targetID.split(",")
             if (targetList.isNotEmpty()) {
                 launchCatchError(block = {
+                    val formattedParameters = FilterKeyFormatter
+                        .format(
+                            selectedFilterMapParameter,
+                            populateFilterKeys(components.filters)
+                        )
+
                     productCountMutableLiveData.value = quickFilterGQLRepository
                         ?.getQuickFilterProductCountData(
                             targetList.first(),
                             components.pageEndPoint,
-                            appendRPCInKey(selectedFilterMapParameter),
+                            formattedParameters,
                             getUserId()
-                        )?.component?.compAdditionalInfo?.totalProductData
-                        ?.productCountWording ?: ""
-                }, onError = {
-                        it.printStackTrace()
+                        )?.component
+                        ?.compAdditionalInfo
+                        ?.totalProductData
+                        ?.productCountWording.orEmpty()
+                }, onError = { throwable ->
+                        Timber.e(throwable)
                     })
             }
         }
     }
 
-    private fun appendRPCInKey(selectedFilterMapParameter: Map<String, String>): MutableMap<String, String> {
-        val filtersQueryParameterMap = mutableMapOf<String, String>()
-        selectedFilterMapParameter.forEach { (key, value) ->
-            if (value.isNotEmpty()) {
-                filtersQueryParameterMap[RPC_FILTER_KEY + key] = value
-            }
-        }
-        return filtersQueryParameterMap
-    }
+    private fun populateFilterKeys(filters: ArrayList<Filter>) = filters
+        .map { it.options.first().key }
+        .toSet()
 }

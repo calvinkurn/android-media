@@ -55,6 +55,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
@@ -174,15 +175,12 @@ class ShopPageHeaderViewModel @Inject constructor(
     fun getNewShopPageTabData(
         shopId: String,
         shopDomain: String,
-        page: Int,
-        itemPerPage: Int,
-        shopProductFilterParameter: ShopProductFilterParameter,
-        keyword: String,
-        etalaseId: String,
         isRefresh: Boolean,
         widgetUserAddressLocalData: LocalCacheModel,
         extParam: String,
-        tabName: String
+        tabName: String,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String> = mapOf(),
+        isEnableShopReimagined: Boolean
     ) {
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
@@ -232,43 +230,16 @@ class ShopPageHeaderViewModel @Inject constructor(
                 }
             )
 
-            val productListDataAsync = asyncCatchError(
-                dispatcherProvider.io,
-                block = {
-                    getProductListData(
-                        shopId = shopId,
-                        page = page,
-                        itemPerPage = itemPerPage,
-                        shopProductFilterParameter = shopProductFilterParameter,
-                        keyword = keyword,
-                        etalaseId = etalaseId,
-                        widgetUserAddressLocalData = widgetUserAddressLocalData
-                    )
-                },
-                onError = {
-                    shopPageP1Data.postValue(
-                        Fail(
-                            ShopAsyncErrorException(
-                                ShopAsyncErrorException.AsyncQueryType.SHOP_INITIAL_PRODUCT_LIST,
-                                it
-                            )
-                        )
-                    )
-                    null
-                }
-            )
             shopP1DataAsync.await()?.let { shopPageHeaderP1Data ->
-                productListDataAsync.await()?.let { shopProductData ->
-                    productListData = shopProductData
-                }
                 shopHeaderWidgetDataAsync.await()?.let { shopPageHeaderWidgetData ->
                     shopPageP1Data.postValue(
                         Success(
                             ShopPageHeaderMapper.mapToNewShopPageP1HeaderData(
                                 shopInfoCoreData = shopPageHeaderP1Data.shopInfoCoreAndAssetsData,
                                 shopPageGetDynamicTabResponse = shopPageHeaderP1Data.shopPageGetDynamicTabResponse,
-                                feedWhitelistData = shopPageHeaderP1Data.feedWhitelist,
-                                shopPageHeaderLayoutData = shopPageHeaderWidgetData
+                                shopPageHeaderLayoutData = shopPageHeaderWidgetData,
+                                shopPageColorSchemaDefaultConfigColor = shopPageColorSchemaDefaultConfigColor,
+                                isEnableShopReimagined = isEnableShopReimagined
                             )
                         )
                     )
@@ -451,7 +422,17 @@ class ShopPageHeaderViewModel @Inject constructor(
             })
     }
 
-    fun getShopShareAndOperationalHourStatusData(shopId: String, shopDomain: String, isRefresh: Boolean) {
+    fun getShopShareAndOperationalHourStatusData(
+        shopId: String,
+        shopDomain: String,
+        page: Int,
+        itemPerPage: Int,
+        shopProductFilterParameter: ShopProductFilterParameter,
+        keyword: String,
+        etalaseId: String,
+        widgetUserAddressLocalData: LocalCacheModel,
+        isRefresh: Boolean
+    ) {
         launchCatchError(dispatcherProvider.io, block = {
             val shopInfoData = asyncCatchError(
                 dispatcherProvider.io,
@@ -475,7 +456,27 @@ class ShopPageHeaderViewModel @Inject constructor(
                     null
                 }
             )
+            val productListDataAsync = asyncCatchError(
+                dispatcherProvider.io,
+                block = {
+                    getProductListData(
+                        shopId = shopId,
+                        page = page,
+                        itemPerPage = itemPerPage,
+                        shopProductFilterParameter = shopProductFilterParameter,
+                        keyword = keyword,
+                        etalaseId = etalaseId,
+                        widgetUserAddressLocalData = widgetUserAddressLocalData
+                    )
+                },
+                onError = {
+                    null
+                }
+            )
             shopInfoData.await()?.let { shopInfo ->
+                productListDataAsync.await()?.let { shopProductData ->
+                    productListData = shopProductData
+                }
                 _shopPageShopShareData.postValue(Success(shopInfo))
                 shopOperationalHourStatusData.await()?.let { shopOperationalHourStatus ->
                     _shopPageTickerData.postValue(Success(ShopPageHeaderTickerData(shopInfo, shopOperationalHourStatus)))

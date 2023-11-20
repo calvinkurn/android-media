@@ -4,15 +4,16 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.carouselproductcard.databinding.CarouselPagingProductCardLayoutBinding
+import com.tokopedia.carouselproductcard.helper.CarouselPagingUtil
 import com.tokopedia.carouselproductcard.helper.StartPagerSnapHelper
 import com.tokopedia.carouselproductcard.paging.GroupPaginationOnScrollListener.PaginationListener
-import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlin.math.max
 
@@ -20,19 +21,25 @@ import kotlin.math.max
 class CarouselPagingProductCardView: ConstraintLayout {
 
     private var binding: CarouselPagingProductCardLayoutBinding? = null
-    private val config = AttributesConfig()
-    private val adapter: Adapter by lazy {
-        Adapter(TypeFactoryImpl(config.pagingPaddingHorizontal))
-    }
-    private val layoutManager: GridLayoutManager by lazy {
-        GridLayoutManager(context, config.itemPerPage, HORIZONTAL, false).apply {
-            spanSizeLookup = spanSizeLookup()
-        }
-    }
-    private val snapHelper: StartPagerSnapHelper by lazy {
-        StartPagerSnapHelper(config.pagingPaddingHorizontal, config.itemPerPage)
-    }
     private var groupPaginationOnScrollListener: GroupPaginationOnScrollListener? = null
+    private var layoutManager: GridLayoutManager? = null
+    private var itemDecoration: ItemDecoration? = null
+
+    private val config = AttributesConfig()
+    private val util = CarouselPagingUtil(
+        context,
+        config.itemWidthPercentage,
+        config.pagingPaddingHorizontal
+    )
+
+    private val adapter: Adapter by lazy {
+        Adapter(TypeFactoryImpl(util))
+    }
+
+    private val snapHelper: StartPagerSnapHelper by lazy {
+        StartPagerSnapHelper(config.pagingPaddingHorizontal)
+    }
+
     private val showPagingIndicator
         get() = config.showPagingIndicator
 
@@ -79,27 +86,34 @@ class CarouselPagingProductCardView: ConstraintLayout {
 
     private fun initRecyclerView() {
         binding?.carouselPagingProductCardRecyclerView?.run {
+            updatePadding(
+                right = util.getRemainingScreenSize()
+            )
+
             adapter = this@CarouselPagingProductCardView.adapter
-            layoutManager = this@CarouselPagingProductCardView.layoutManager
             itemAnimator = null
 
-            addDivider()
             addPaginationSnap()
 
             setHasFixedSize(true)
         }
     }
 
-    private fun RecyclerView.addDivider() {
-        if (itemDecorationCount > 0) return
+    private fun RecyclerView.addDivider(
+        model: CarouselPagingModel
+    ) {
+        itemDecoration?.apply {
+            removeItemDecoration(this)
+        }
 
-        val itemDecoration = ItemDecoration(
+        itemDecoration = ItemDecoration(
             context,
             config.pagingPaddingHorizontal,
-            config.itemPerPage,
-        )
-        itemDecoration.setDrawable(ItemDecoration.createDrawable(context))
-        addItemDecoration(itemDecoration)
+            model.itemPerPage,
+        ).apply {
+            setDrawable(ItemDecoration.createDrawable(context))
+            addItemDecoration(this)
+        }
     }
 
     private fun RecyclerView.addPaginationSnap() {
@@ -115,12 +129,25 @@ class CarouselPagingProductCardView: ConstraintLayout {
         listener: CarouselPagingListener,
         recycledViewPool: RecycledViewPool? = RecycledViewPool(),
     ) {
+        layoutManager = GridLayoutManager(
+            context,
+            model.itemPerPage,
+            HORIZONTAL,
+            false
+        ).apply {
+            spanSizeLookup = spanSizeLookup()
+        }
+
+        snapHelper.itemPerPage = model.itemPerPage
+
         binding?.carouselPagingProductCardRecyclerView?.run {
+            layoutManager = this@CarouselPagingProductCardView.layoutManager
+            addDivider(model)
             setRecycledViewPool(recycledViewPool)
             setupOnScrollListener(model, listener)
         }
 
-        val visitableList = VisitableFactory.from(model, config.itemPerPage, listener)
+        val visitableList = VisitableFactory.from(model, model.itemPerPage, listener)
         adapter.submitList(visitableList)
 
         configurePageControl(model)
@@ -182,7 +209,7 @@ class CarouselPagingProductCardView: ConstraintLayout {
     private fun RecyclerView.scrollByDistance(position: Int) {
         post {
             val layoutManager = this@CarouselPagingProductCardView.layoutManager
-            val view = layoutManager.findViewByPosition(position) ?: return@post
+            val view = layoutManager?.findViewByPosition(position) ?: return@post
             val distance = snapHelper.calculateDistanceToFinalSnap(layoutManager, view)
             scrollBy(distance[0], distance[1])
         }
@@ -194,7 +221,7 @@ class CarouselPagingProductCardView: ConstraintLayout {
     ) = GroupPaginationOnScrollListener(
             currentGroup = model.selectedGroup,
             currentPageInGroup = model.currentPageInGroup,
-            currentPageCount = model.selectedProductGroup?.getPageCount(config.itemPerPage) ?: 0,
+            currentPageCount = model.selectedProductGroup?.getPageCount(model.itemPerPage) ?: 0,
             paginationListener = paginationListener(listener)
         )
 
@@ -221,7 +248,7 @@ class CarouselPagingProductCardView: ConstraintLayout {
         val selectedProductGroup = model.selectedProductGroup ?: return
 
         binding?.pageControlCarouselPaging?.run {
-            setIndicator(selectedProductGroup.getPageCount(config.itemPerPage))
+            setIndicator(selectedProductGroup.getPageCount(model.itemPerPage))
             setCurrentIndicator(model.currentPageInGroup - 1)
         }
     }

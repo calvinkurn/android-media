@@ -128,7 +128,7 @@ class TokoNowEmptyStateNoResultViewHolder(
     ) {
         binding?.apply {
             tokonowEmptyProductPrimaryButton.showIfWithBlock(
-                predicate = !hasActiveFilter || element.defaultTextPrimaryButton.isNotBlank()
+                predicate = (!hasActiveFilter || element.defaultTextPrimaryButton.isNotBlank()) && element.enablePrimaryButton
             ) {
                 if (element.defaultTextPrimaryButton.isNotBlank()) {
                     text = element.defaultTextPrimaryButton
@@ -154,7 +154,7 @@ class TokoNowEmptyStateNoResultViewHolder(
     ) {
         binding?.apply {
             tokonowEmptyProductSecondaryButton.showWithCondition(
-                shouldShow = !hasActiveFilter && element.defaultTextPrimaryButton.isBlank()
+                shouldShow = !hasActiveFilter && element.defaultTextPrimaryButton.isBlank() && element.enableSecondaryButton
             )
             tokonowEmptyProductSecondaryButton.setOnClickListener {
                 tokoNowEmptyStateNoResultListener?.goToTokopediaNowHome()

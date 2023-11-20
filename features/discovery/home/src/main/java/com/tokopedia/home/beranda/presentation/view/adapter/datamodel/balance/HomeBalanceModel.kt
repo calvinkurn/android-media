@@ -39,21 +39,6 @@ data class HomeBalanceModel(
         return typeFactory.type(this)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as HomeBalanceModel
-
-        if (balanceDrawerItemModels != other.balanceDrawerItemModels) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return balanceDrawerItemModels.hashCode()
-    }
-
     fun mapBalanceData(
         tokopointDrawerListHomeData: TokopointsDrawerListHomeData? = null,
         walletAppData: WalletAppData? = null,

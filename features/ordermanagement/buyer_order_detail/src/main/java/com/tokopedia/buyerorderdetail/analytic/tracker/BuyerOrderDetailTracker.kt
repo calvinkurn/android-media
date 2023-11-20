@@ -285,6 +285,33 @@ object BuyerOrderDetailTracker {
             .sendGeneralEvent()
     }
 
+    fun eventClickWarrantyClaim(
+        orderId: String
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_CLAIM_WARRANTY,
+            eventLabel = orderId
+        ).apply {
+            put(BuyerOrderDetailTrackerConstant.EVENT_KEY_TRACKER_ID, BuyerOrderDetailTrackerConstant.TRACKER_ID_47433)
+        }.appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .sendGeneralEvent()
+    }
+
+    fun eventImpressionWarrantyClaimButton(orderId: String) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_VIEW_PG_IRIS,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_IMPRESSION_CLAIM_WARRANTY,
+            eventLabel = orderId
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_48377)
+            .sendGeneralEvent()
+    }
+
     fun eventSuccessATC(
         products: List<ProductListUiModel.ProductUiModel>,
         atcResult: List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct>,

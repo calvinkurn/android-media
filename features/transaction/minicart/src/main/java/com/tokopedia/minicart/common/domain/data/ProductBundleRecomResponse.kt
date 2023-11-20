@@ -71,7 +71,9 @@ data class ProductBundleRecomResponse(
                     @SerializedName("productName")
                     val productName: String = "",
                     @SerializedName("webLink")
-                    val webLink: String = ""
+                    val webLink: String = "",
+                    @SerializedName("minOrder")
+                    val minOrder: Int = 1,
                 )
             }
         }

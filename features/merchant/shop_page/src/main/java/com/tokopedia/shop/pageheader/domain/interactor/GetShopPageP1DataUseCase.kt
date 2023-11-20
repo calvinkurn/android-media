@@ -1,7 +1,5 @@
 package com.tokopedia.shop.pageheader.domain.interactor
 
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -16,7 +14,6 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -84,7 +81,6 @@ class GetShopPageP1DataUseCase @Inject constructor(
                 )
             )
             add(getShopInfoCoreAndAssetsDataRequest(shopId, shopDomain))
-            add(getFeedWhitelistRequest(shopId))
         }
         gqlUseCase.clearRequest()
         gqlUseCase.setCacheStrategy(
@@ -100,11 +96,9 @@ class GetShopPageP1DataUseCase @Inject constructor(
         val gqlResponse = gqlUseCase.executeOnBackground()
         val getShopDynamicTabData = getResponseData<ShopPageGetDynamicTabResponse>(gqlResponse)
         val getShopInfoCoreAndAssetsData = getResponseData<ShopInfo.Response>(gqlResponse).result.data.first()
-        val getFeedWhitelist = getResponseData<WhitelistQuery>(gqlResponse).whitelist
         return NewShopPageHeaderP1(
             shopPageGetDynamicTabResponse = getShopDynamicTabData,
-            shopInfoCoreAndAssetsData = getShopInfoCoreAndAssetsData,
-            feedWhitelist = getFeedWhitelist
+            shopInfoCoreAndAssetsData = getShopInfoCoreAndAssetsData
         )
     }
 
@@ -142,17 +136,6 @@ class GetShopPageP1DataUseCase @Inject constructor(
         return createGraphqlRequest<ShopInfo.Response>(
             mapQuery[GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS].orEmpty(),
             params.parameters
-        )
-    }
-
-    private fun getFeedWhitelistRequest(shopId: String): GraphqlRequest {
-        val params = GetWhitelistUseCase.createRequestParams(
-            GetWhitelistUseCase.WHITELIST_SHOP,
-            shopId
-        )
-        return createGraphqlRequest<WhitelistQuery>(
-            mapQuery[ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST].orEmpty(),
-            params
         )
     }
 

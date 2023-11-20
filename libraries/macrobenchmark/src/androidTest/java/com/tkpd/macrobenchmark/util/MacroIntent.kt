@@ -230,11 +230,11 @@ object MacroIntent {
         const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
 
         const val RECYCLER_VIEW_ID = "rv_pdp"
-        const val TRACE = "pdp_result_trace"
+        const val TRACE = "perf_trace_pdp"
 
         fun getIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-detail/6961809872/?layoutID=4")
+            intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-detail/1742093676/?layoutID=4")
             return intent
         }
     }
@@ -264,6 +264,17 @@ object MacroIntent {
         fun getIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://logistic/reschedulepickup?order_id=1111111")
+            return intent
+        }
+    }
+
+    object DigitalProductDetail {
+
+        const val RV_DENOM_GRID = "rv_denom_grid_card"
+
+        fun getPulsaPdpIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://digital/pdp_pulsa_macrobenchmark")
             return intent
         }
     }

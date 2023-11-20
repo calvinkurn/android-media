@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.scp_rewards.common.utils.hide
 import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.WidgetMedalDetailBinding
-import com.tokopedia.scp_rewards_common.parseColor
+import com.tokopedia.scp_rewards_common.utils.parseColor
 
 class MedalDetailView(private val context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs) {

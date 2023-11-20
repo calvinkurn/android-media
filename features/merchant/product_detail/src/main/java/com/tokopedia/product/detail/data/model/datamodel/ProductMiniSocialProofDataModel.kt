@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
@@ -11,9 +13,12 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductMiniSocialProofDataModel(
     val type: String = "",
     val name: String = "",
-    var shouldRender: Boolean = false,
-    var items: List<SocialProofUiModel> = emptyList()
-) : DynamicPdpDataModel {
+    val items: List<SocialProofUiModel> = emptyList()
+) : DynamicPdpDataModel,
+    LoadableComponent by BlocksLoadableComponent(
+        isFinishedLoading = { false },
+        customBlocksName = "ProductMiniSocialProofDataModel"
+    ) {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
@@ -27,7 +32,7 @@ data class ProductMiniSocialProofDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductMiniSocialProofDataModel) {
-            shouldRender == newData.shouldRender && items.hashCode() == newData.items.hashCode()
+            items.hashCode() == newData.items.hashCode()
         } else {
             false
         }
@@ -39,5 +44,9 @@ data class ProductMiniSocialProofDataModel(
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
+    }
+
+    override fun isLoading(): Boolean {
+        return items.isEmpty()
     }
 }

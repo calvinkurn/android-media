@@ -63,6 +63,9 @@ unifyconfig/unifyproject.config
 customerapp/src/main/assets/df.cfg
 sellerapp/src/main/assets/df.cfg
 
+libraries/applink/ma_df.txt
+libraries/applink/sa_df.txt
+
 jacoco.exec
 /robust/
 /tools/ktlint
