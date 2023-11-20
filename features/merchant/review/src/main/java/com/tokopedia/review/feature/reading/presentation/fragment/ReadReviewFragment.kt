@@ -41,6 +41,8 @@ import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
+import com.tokopedia.review.feature.reading.data.AvailableFilters
+import com.tokopedia.review.feature.reading.data.Keyword
 import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.data.ProductReviewDetail
@@ -438,10 +440,38 @@ open class ReadReviewFragment :
         }
     }
 
-    override fun onFilterTopic(keywords: List<String>) {
+    override fun onFilterTopic(keyword: String) {
         clearAllData()
         showListOnlyLoading()
-        viewModel.setTopicFilter(keywords, isProductReview)
+        viewModel.setTopicFilter(keyword, isProductReview)
+    }
+
+    override fun onClickTopicChip(keyword: Keyword, position: Int, isActive: Boolean) {
+        ReadReviewTracking.trackOnClickChipTopicExtraction(
+            productId = viewModel.getProductId(),
+            position = position,
+            keyword = keyword,
+            isActive = isActive,
+            userId = viewModel.userId,
+            trackingQueue = trackingQueue
+        )
+    }
+
+    override fun onImpressTopicChip(keyword: Keyword, position: Int) {
+        ReadReviewTracking.trackOnImpressChipTopicExtraction(
+            productId = viewModel.getProductId(),
+            position = position,
+            keyword = keyword,
+            userId = viewModel.userId,
+            trackingQueue = trackingQueue
+        )
+    }
+
+    override fun onClickLihatSemua() {
+        ReadReviewTracking.onClickLihatSemuaTopicExtraction(
+            productId = viewModel.getProductId(),
+            userId = viewModel.userId
+        )
     }
 
     override fun onFilterWithRatingClicked(index: Int, isActive: Boolean) {
@@ -711,6 +741,7 @@ open class ReadReviewFragment :
         } else {
             getShopIdFromArguments()
         }
+        viewModel.setTopicFilter(selectedTopic ?: "", isProductReview)
         loadData(defaultInitialPage)
     }
 
@@ -907,7 +938,7 @@ open class ReadReviewFragment :
             setListener(this@ReadReviewFragment)
             setAvailableFilters(
                 ratingAndTopics.topics,
-                ratingAndTopics.availableFilters,
+                manageAvailableFilters(ratingAndTopics),
                 this@ReadReviewFragment
             )
             getRecyclerView(view)?.show()
@@ -916,6 +947,14 @@ open class ReadReviewFragment :
             setSeeAll(false)
             show()
         }
+    }
+
+    private fun manageAvailableFilters(
+        ratingAndTopics: ProductrevGetProductRatingAndTopic
+    ): AvailableFilters {
+        return if (ratingAndTopics.keywords.isNotEmpty()) {
+            ratingAndTopics.availableFilters.copy(topics = false)
+        } else ratingAndTopics.availableFilters
     }
 
     open fun onSuccessGetShopRatingAndTopic(shopRatingAndTopics: ProductrevGetShopRatingAndTopic) {
