@@ -57,7 +57,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentReviewViewpagerItemBinding>()
     private val review by lazy { arguments?.getParcelable<ShopReview.Review>(BUNDLE_KEY_REVIEW) }
-    private var onReviewImageClick: (ShopReview.Review) -> Unit = {}
+    private var onReviewImageClick: (ShopReview.Review, Int) -> Unit = { _, _ -> }
     private var onReviewImageViewAllClick: (ShopReview.Review) -> Unit = {}
     private var isReviewTextAlreadyExpanded = false
 
@@ -82,7 +82,6 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
     private fun renderReview(review: ShopReview.Review?) {
         review?.let {
-            binding?.root?.setOnClickListener { onReviewImageClick(review) }
             binding?.imgAvatar?.loadImage(review.avatar)
             binding?.tpgReviewerName?.text = review.reviewerName
 
@@ -226,7 +225,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
             }
     }
 
-    fun setOnReviewImageClick(onReviewImageClick: (ShopReview.Review) -> Unit) {
+    fun setOnReviewImageClick(onReviewImageClick: (ShopReview.Review, Int) -> Unit) {
         this.onReviewImageClick = onReviewImageClick
     }
 
@@ -254,16 +253,17 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
             MARGIN_START_REVIEW_IMAGE.toPx()
         }
         imgReview.layoutParams = layoutParams
+        imgReview.setOnClickListener { onReviewImageClick(review, currentIndex) }
         overlay.layoutParams = layoutParams
 
         imgReview.loadImage(attachment.thumbnailURL)
-        imgReview.setOnClickListener { onReviewImageViewAllClick(review) }
 
         val isRenderingLastReviewImage = currentIndex == MAX_ATTACHMENT - Int.ONE
         val showCtaViewAll = reviewCount > MAX_ATTACHMENT && isRenderingLastReviewImage
         val remainingReviewImageCount = reviewCount - MAX_ATTACHMENT
 
         overlay.isVisible = showCtaViewAll
+        overlay.setOnClickListener { onReviewImageViewAllClick(review) }
 
         val tpgCtaViewAll = reviewImageView.findViewById<Typography>(R.id.tpgCtaViewAll)
         tpgCtaViewAll.isVisible = showCtaViewAll
@@ -271,6 +271,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
             R.string.shop_info_placeholder_attachment_text,
             remainingReviewImageCount.toString()
         )
+        tpgCtaViewAll.setOnClickListener { onReviewImageViewAllClick(review) }
 
         return reviewImageView
     }

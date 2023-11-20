@@ -89,7 +89,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
             is ShopInfoUiEvent.RetryGetShopInfo -> handleRetryGetShopInfo()
             is ShopInfoUiEvent.TapShopNote -> handleTapShopNote(event.shopNote)
             ShopInfoUiEvent.ReportShop -> handleReportShop()
-            is ShopInfoUiEvent.TapReviewImage -> handleTapReviewImage(event.productId)
+            is ShopInfoUiEvent.TapReviewImage -> handleTapReviewImage(event.productId, event.reviewImageIndex)
             is ShopInfoUiEvent.TapReviewImageViewAll -> handleTapReviewImageViewAll(event.productId)
         }
     }
@@ -228,13 +228,13 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return getShopInfoUseCase.executeOnBackground()
     }
 
-    private fun handleTapReviewImage(productId: String) {
-        val effect = ShopInfoUiEffect.RedirectToProductReviewPage(productId)
+    private fun handleTapReviewImage(productId: String, reviewImageIndex: Int) {
+        val effect = ShopInfoUiEffect.RedirectToProductReviewPage(productId, currentState.shopId, reviewImageIndex)
         _uiEffect.tryEmit(effect)
     }
 
     private fun handleTapReviewImageViewAll(productId: String) {
-        val effect = ShopInfoUiEffect.RedirectToProductReviewPage(productId)
+        val effect = ShopInfoUiEffect.RedirectToProductReviewGallery(productId, currentState.shopId)
         _uiEffect.tryEmit(effect)
     }
 
