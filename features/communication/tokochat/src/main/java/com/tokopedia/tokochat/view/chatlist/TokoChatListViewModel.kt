@@ -122,17 +122,15 @@ class TokoChatListViewModel @Inject constructor(
     private fun onSuccessGetChatItemList(channelList: List<ConversationsChannel>) {
         val filteredChannelList = filterExpiredChannel(channelList)
         val chatItemList = mapper.mapToListChat(filteredChannelList)
-        // If local data is not flagged, then this is first load from local DB
-        if (!_chatListUiState.value.localListLoaded) {
-            loadNextPageChatList(channelList.size) // Load the page, then set as true
-        }
+        // This is first load from local DB
+        // Load the first page from remote
+        loadNextPageChatList(channelList.size)
         _chatListUiState.update {
             it.copy(
                 isLoading = false,
                 chatItemList = it.chatItemList + chatItemList,
                 errorMessage = null,
-                hasNextPage = (it.chatItemList.size < chatItemList.size),
-                localListLoaded = true
+                hasNextPage = (it.chatItemList.size < chatItemList.size)
             )
         }
     }
@@ -191,8 +189,7 @@ class TokoChatListViewModel @Inject constructor(
                 chatItemList = listOf(),
                 page = 0,
                 hasNextPage = false,
-                errorMessage = null,
-                localListLoaded = false
+                errorMessage = null
             )
         }
     }

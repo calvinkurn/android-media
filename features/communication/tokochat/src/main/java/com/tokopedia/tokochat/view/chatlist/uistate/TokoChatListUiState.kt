@@ -7,6 +7,5 @@ data class TokoChatListUiState(
     val isLoading: Boolean = false,
     val page: Int = 0,
     val hasNextPage: Boolean = false,
-    val errorMessage: String? = null,
-    val localListLoaded: Boolean = false
+    val errorMessage: String? = null
 )
