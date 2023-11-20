@@ -94,6 +94,7 @@ class TopPayPresenterTest {
             queryString = ""
             redirectUrl = mockUrl
             method = PaymentPassData.METHOD_GET
+            transactionId = "1"
         }
 
         // When
@@ -117,6 +118,7 @@ class TopPayPresenterTest {
             queryString = ""
             redirectUrl = mockUrl
             method = PaymentPassData.METHOD_POST
+            transactionId = "1"
         }
 
         // When
@@ -139,6 +141,7 @@ class TopPayPresenterTest {
         every { view.paymentPassData } returns PaymentPassData().apply {
             queryString = ""
             redirectUrl = mockUrl
+            transactionId = "1"
         }
 
         // When
