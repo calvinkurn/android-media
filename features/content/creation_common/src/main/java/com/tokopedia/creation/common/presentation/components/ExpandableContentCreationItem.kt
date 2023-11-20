@@ -131,7 +131,10 @@ fun ExpandableContentCreationItem(
 
             NestTypography(
                 text = data.title,
-                textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold),
+                textStyle = NestTheme.typography.display2.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = NestTheme.colors.NN._950,
+                ),
                 maxLines = 1,
                 modifier = Modifier.weight(1f)
             )
