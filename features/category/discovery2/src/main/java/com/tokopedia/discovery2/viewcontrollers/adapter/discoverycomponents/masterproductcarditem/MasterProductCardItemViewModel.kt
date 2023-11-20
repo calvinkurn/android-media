@@ -313,7 +313,11 @@ class MasterProductCardItemViewModel(val application: Application, val component
     }
 
     fun getParentPositionForCarousel(): Int {
-        return if (components.name == ComponentNames.ProductCardSprintSaleCarouselItem.componentName || components.name == ComponentNames.ProductCardCarouselItem.componentName) {
+        return if (
+            components.name == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
+            components.name == ComponentNames.ProductCardCarouselItem.componentName ||
+            components.name == ComponentNames.ShopOfferHeroBrandProductItem.componentName
+        ) {
             getComponent(components.parentComponentId, components.pageEndPoint)?.let {
                 it.position
             } ?: CAROUSEL_NOT_FOUND
