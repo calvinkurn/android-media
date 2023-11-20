@@ -1,6 +1,6 @@
 package com.tokopedia.shop.common.extension
 
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -14,7 +14,7 @@ fun String.toDate(
         format.timeZone = timeZone
         format.parse(this) ?: Date()
     } catch (e: Exception) {
-        FirebaseCrashlytics.getInstance().recordException(e)
+        Timber.e(e)
         Date()
     }
 }
