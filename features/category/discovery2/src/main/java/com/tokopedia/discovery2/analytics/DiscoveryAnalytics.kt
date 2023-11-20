@@ -9,6 +9,7 @@ import com.tokopedia.discovery2.data.producthighlight.DiscoveryOCSDataModel
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT
@@ -817,9 +818,8 @@ open class DiscoveryAnalytics(
     ) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
-        val header = componentsItems.getPropertyHeader()
         componentsItems.data?.firstOrNull()?.let {
-            productMap[KEY_ATC_CATEGORY_ID] = NONE_OTHER
+            productMap[KEY_ATC_CATEGORY_ID] = String.EMPTY
             productMap[DIMENSION40] = it.gtmItemName?.replace("#POSITION", (getParentPosition(componentsItems) + 1).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
             productMap[DIMENSION45] = cartID
             productMap[DIMENSION90] = sourceIdentifier
@@ -830,8 +830,8 @@ open class DiscoveryAnalytics(
             productMap[KEY_ITEM_VARIANT] = NONE_OTHER
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price.orEmpty())
             productMap[KEY_QUANTITY] = it.quantity
-            productMap[KEY_ATC_SHOP_ID] = header?.shopId.orEmpty()
-            productMap[KEY_SHOP_NAME] = header?.shopName.orEmpty()
+            productMap[KEY_ATC_SHOP_ID] = it.shopId.orEmpty()
+            productMap[KEY_SHOP_NAME] = it.shopName.orEmpty()
             productMap[KEY_SHOP_TYPE] = NONE_OTHER
         }
         list.add(productMap)
