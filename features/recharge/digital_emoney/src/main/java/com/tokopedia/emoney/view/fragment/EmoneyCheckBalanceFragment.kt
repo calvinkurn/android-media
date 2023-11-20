@@ -134,8 +134,14 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         val rawPublicKey = getPublicKey()
         val rawPrivateKey = getPrivateKey()
+
         val bRawPublicKey = getBPublicKey()
         val bRawPrivateKey = getBPrivateKey()
+
+        val MID = getMId()
+        val TID = getTId()
+        val ATD = getATD()
+
         if (CardUtils.isTapcashCard(intent)) {
             issuerActive = ISSUER_ID_TAP_CASH
             showLoading(getOperatorName(issuerActive))
@@ -168,8 +174,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             val isoDep = IsoDep.get(tag)
             if(bcaIsMyCard.strLogRsp.startsWith(GEN_2_CARD) && dataBalance.cardNo.isNotEmpty()) {
                 showLoading(getOperatorName(issuerActive))
-                bcaBalanceViewModel.processBCATagBalance(isoDep, M_ID, T_ID, bRawPublicKey,
-                    bRawPrivateKey, getCurrentBCAFlazzTimeStamp(), TEMP_ATD)
+                bcaBalanceViewModel.processBCATagBalance(isoDep, MID, TID, bRawPublicKey,
+                    bRawPrivateKey, getCurrentBCAFlazzTimeStamp(), ATD)
             } else if(bcaIsMyCard.strLogRsp.startsWith(GEN_1_CARD) && dataBalance.cardNo.isNotEmpty()){
                 showLoading(getOperatorName(issuerActive))
                 bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, bRawPublicKey, bRawPrivateKey)
@@ -512,6 +518,18 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         }
     }
 
+    private fun getMId(): String {
+        return getString(com.tokopedia.keys.R.string.mjhfihkid)
+    }
+
+    private fun getTId(): String {
+        return getString(com.tokopedia.keys.R.string.tijfbnnid)
+    }
+
+    private fun getATD(): String {
+        return getString(com.tokopedia.keys.R.string.aokfokotd)
+    }
+
     private fun showCommonMessageError() {
         context?.let { context ->
             val errorMessage = ErrorHandler.getErrorMessagePair(context, MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD), errorHanlderBuilder)
@@ -546,9 +564,6 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         private const val RC_KEY = "rc"
         private const val TAPCASH_ERROR_LOGGER = "TAPCASH_ERROR_LOGGER"
         private const val TAPCASH_NETWORK_ERROR_LOGGER = "TAPCASH_NETWORK_ERROR_LOGGER"
-        private const val M_ID = "000885000015999"
-        private const val T_ID = "ETES0067"
-        private const val TEMP_ATD = "01BTESTDEVAOZ5L0LDraBjL9d5JKVhFR0RJ4dlZu0aWBs"
 
         fun newInstance(): Fragment {
             return EmoneyCheckBalanceFragment()
