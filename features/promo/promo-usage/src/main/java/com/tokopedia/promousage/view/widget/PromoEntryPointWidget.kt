@@ -859,11 +859,13 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewWording?.visibility = View.GONE
         activeViewLeftImage?.visibility = View.VISIBLE
         activeViewRightIcon?.visibility = View.VISIBLE
-        activeViewTitleWording?.weightType = if (enableNewInterface) {
-            Typography.BOLD
-        } else {
-            Typography.REGULAR
-        }
+        activeViewTitleWording?.setWeight(
+            if (enableNewInterface) {
+                Typography.BOLD
+            } else {
+                Typography.REGULAR
+            }
+        )
         activeViewTitleWording?.visibility = View.VISIBLE
         activeViewDescWording?.visibility = View.VISIBLE
         activeViewRightIcon?.visibility = View.VISIBLE
