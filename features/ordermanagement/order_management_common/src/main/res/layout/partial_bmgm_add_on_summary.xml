@@ -36,15 +36,14 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBomDetailBmgmAddonsTotalPrice"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="6dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintBottom_toBottomOf="@id/ivAddOnSummary"
+        app:layout_constraintBottom_toBottomOf="@id/tvAddOnLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/tvAddOnLabel"
-        app:layout_constraintTop_toTopOf="@id/ivAddOnSummary"
+        app:layout_constraintTop_toTopOf="@id/tvAddOnLabel"
         app:typographyType="display_3"
         tools:text="Rp. 10.000" />
 

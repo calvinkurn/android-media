@@ -131,6 +131,7 @@ class SomDetailAdapterFactoryImpl(
         fun onClickProduct(orderDetailId: Long)
         fun onCopiedAddress(address: String, str: String)
         override fun onCopyAddOnDescription(label: String, description: CharSequence)
+        override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String)
         fun onResoClicked(redirectPath: String)
         fun onDropOffButtonClicked(url: String)
         fun onDetailIncomeClicked()

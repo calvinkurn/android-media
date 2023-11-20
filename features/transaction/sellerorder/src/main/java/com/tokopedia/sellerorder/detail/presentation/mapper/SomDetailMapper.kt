@@ -35,7 +35,8 @@ object SomDetailMapper {
     }
 
     private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includeProducts(
-        somGetOrderDetailResponse: SomDetailOrder.GetSomDetail?
+        somGetOrderDetailResponse: SomDetailOrder.GetSomDetail?,
+        addOnsExpandableState: List<String>
     ) {
         SomGetOrderDetailResponseMapper.mapResponseToProductsHeaderUiModel(somGetOrderDetailResponse)
             ?.let {
@@ -43,7 +44,8 @@ object SomDetailMapper {
             }
         addAll(
             SomGetOrderDetailResponseMapper.mapResponseToProductsUiModels(
-                somGetOrderDetailResponse
+                somGetOrderDetailResponse,
+                addOnsExpandableState
             )
         )
     }
@@ -107,13 +109,14 @@ object SomDetailMapper {
     fun mapSomGetOrderDetailResponseToVisitableList(
         somGetOrderDetailResponse: SomDetailOrder.GetSomDetail?,
         somGetSomDynamicPrice: SomDynamicPriceResponse.GetSomDynamicPrice?,
-        resolutionTicketStatusResponse: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
+        resolutionTicketStatusResponse: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?,
+        addOnsExpandableState: List<String>
     ): List<Visitable<SomDetailAdapterFactory>> {
         return arrayListOf<Visitable<SomDetailAdapterFactory>>().apply {
             includeHeader(somGetOrderDetailResponse)
             includeDivider()
             includeReso(resolutionTicketStatusResponse)
-            includeProducts(somGetOrderDetailResponse)
+            includeProducts(somGetOrderDetailResponse, addOnsExpandableState)
             includeDivider()
             includeShipment(somGetOrderDetailResponse)
             includeDivider()

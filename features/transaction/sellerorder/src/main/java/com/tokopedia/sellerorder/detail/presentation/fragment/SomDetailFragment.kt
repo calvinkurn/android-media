@@ -121,7 +121,6 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCo
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailAddOnViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailIncomeViewHolder
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.BottomSheetManager
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBaseRejectOrderBottomSheet
@@ -150,9 +149,9 @@ import com.tokopedia.webview.KEY_URL
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.sellerorder.R as sellerorderR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.sellerorder.R as sellerorderR
 
 /**x
  * Created by fwidjaja on 2019-09-30.
@@ -211,6 +210,8 @@ open class SomDetailFragment :
     protected val bottomSheetManager by lazy {
         view?.let { if (it is ViewGroup) BottomSheetManager(it, childFragmentManager) else null }
     }
+
+    private val addOnsExpandableState = mutableListOf<String>()
 
     private fun createChatIcon(context: Context): IconUnify {
         return IconUnify(requireContext(), IconUnify.CHAT).apply {
@@ -429,9 +430,10 @@ open class SomDetailFragment :
                 checkUserRole()
             }
         }
+
         recyclerViewSharedPool.setMaxRecycledViews(
-            SomDetailAddOnViewHolder.RES_LAYOUT,
-            SomDetailAddOnViewHolder.MAX_RECYCLED_VIEWS
+            R.layout.item_som_detail_add_on,
+            10
         )
     }
 
@@ -653,7 +655,8 @@ open class SomDetailFragment :
             SomDetailMapper.mapSomGetOrderDetailResponseToVisitableList(
                 somDetail,
                 somDynamicPriceResponse,
-                resolutionTicketStatusResponse
+                resolutionTicketStatusResponse,
+                addOnsExpandableState
             )
         )
         transparencyFeeCoachMarkHandler.attach()
@@ -1184,6 +1187,10 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
         somDetailTransparencyFeeBottomSheet.show(childFragmentManager)
     }
 
+    override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
+        expandCollapseAddOn(addOnsIdentifier, isExpand)
+    }
+
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
         activity?.resources?.let {
             somDetailViewModel.rejectOrder(orderRejectRequestParam)
@@ -1664,6 +1671,14 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
 
     protected fun getAdapterTypeFactory(): SomDetailAdapterFactoryImpl {
         return SomDetailAdapterFactoryImpl(this, recyclerViewSharedPool)
+    }
+
+    private fun expandCollapseAddOn(addOnIdentifier: String, isExpand: Boolean) {
+        if (isExpand) {
+            addOnsExpandableState.remove(addOnIdentifier)
+        } else {
+            addOnsExpandableState.add(addOnIdentifier)
+        }
     }
 
     inner class TransparencyFeeCoachMarkHandler: RecyclerView.OnScrollListener() {
