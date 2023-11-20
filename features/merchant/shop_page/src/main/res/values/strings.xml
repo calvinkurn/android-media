@@ -82,6 +82,7 @@
     <string name="shop_product_empty_title_etalase_desc">Tidak ada produk di etalase ini</string>
     <string name="shop_product_empty_title_desc">Tidak ada produk di toko ini</string>
     <string name="shop_page_label_description">Deskripsi Toko</string>
+    <string name="licensed_apotik_badge">Apotek Berlisensi</string>
     <string name="shop_page_label_nearest_pickup">Lokasi Pickup Terdekat</string>
     <string name="shop_page_label_see_location">Lihat Lokasi</string>
     <string name="shop_info_label_manage_note">Atur</string>
