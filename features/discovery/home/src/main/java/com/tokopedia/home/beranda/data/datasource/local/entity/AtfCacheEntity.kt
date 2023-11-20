@@ -1,18 +1,44 @@
 package com.tokopedia.home.beranda.data.datasource.local.entity
 
+import android.annotation.SuppressLint
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.home.constant.AtfKey
 
 @Entity
 data class AtfCacheEntity(
-        @PrimaryKey
-        val id: Int = 0,
-        val position: Int = 0,
-        val name: String = "",
-        val component: String = "",
-        val param: String = "",
-        val isOptional: Boolean = false,
-        var content: String? = "",
-        var status: Int = AtfKey.STATUS_SUCCESS
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("id")
+    @Expose
+    val id: Int = 0,
+    @PrimaryKey
+    @SerializedName("position")
+    @Expose
+    val position: Int = 0,
+    @SerializedName("name")
+    @Expose
+    val name: String = "",
+    @SerializedName("component")
+    @Expose
+    val component: String = "",
+    @SerializedName("param")
+    @Expose
+    val param: String = "",
+    @SerializedName("isOptional")
+    @Expose
+    val isOptional: Boolean = false,
+    @SerializedName("content")
+    @Expose
+    var content: String? = "",
+    @SerializedName("status")
+    @Expose
+    var status: Int = AtfKey.STATUS_SUCCESS,
+    @SerializedName("isShimmer")
+    @Expose
+    val isShimmer: Boolean = true,
+    @SerializedName("lastUpdate")
+    @Expose
+    val lastUpdate: Long = System.currentTimeMillis(),
 )

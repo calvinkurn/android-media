@@ -23,13 +23,14 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMa
 import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -37,8 +38,10 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -150,6 +153,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
 
         every { userSession.userId } returns userId
         mockkObject(EpharmacyInfoUiStateMapper)
+        mockkStatic(TrackApp::class)
+        justRun { TrackApp.getInstance().gtm.sendGeneralEvent(any()) }
     }
 
     @After
@@ -300,6 +305,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     any<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(),
                     any<GetInsuranceDetailRequestState>(),
                     any<Map<String, AddToCartSingleRequestState>>(),
+                    any<Boolean>(),
                     any<Boolean>()
                 )
             } returns showingState

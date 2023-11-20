@@ -8,5 +8,6 @@ data class ShopPageHeaderUiModel(
     val isAtc: Int = -1,
     val etalaseId: String = "",
     val isShowEtalaseName: Int = -1,
-    val data: List<ShopPageHeaderDataUiModel> = listOf()
+    val data: List<ShopPageHeaderDataUiModel> = listOf(),
+    val widgetStyle: String = ""
 )

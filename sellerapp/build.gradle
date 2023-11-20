@@ -138,8 +138,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     configurations.all {
@@ -180,6 +180,7 @@ repositories {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    implementation 'com.huawei.hms:ads-installreferrer:3.4.62.300'
     implementation platform(rootProject.ext.firebase.bom)
     implementation platform(rootProject.ext.networkDependencies.okhttpBom)
 
@@ -268,6 +269,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
     implementation projectOrAar(rootProject.ext.features.loginregister)
+    implementation projectOrAar(rootProject.ext.features.accountlinking)
     implementation projectOrAar(rootProject.ext.features.chooseaccount)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.features.fcm_common)
@@ -385,7 +387,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     implementation rootProject.ext.supportLibDependencies.exifinterface
-    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
@@ -418,6 +420,13 @@ dependencies {
     implementation (rootProject.ext.tkpdLibDependencies.ucrop) {
         exclude group: 'com.android.support'
     }
+
+    // Requirement to DF product_detail
+    implementation projectOrAar(rootProject.ext.features.playWidget)
+    implementation projectOrAar(rootProject.ext.features.productShare)
+    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
+    implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
+    implementation projectOrAar(rootProject.ext.features.referral)
 }
 
 apply plugin: 'com.google.gms.google-services'

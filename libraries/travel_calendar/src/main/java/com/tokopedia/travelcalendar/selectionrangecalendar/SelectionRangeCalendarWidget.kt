@@ -10,24 +10,23 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
-import com.tokopedia.calendar.UnifyCalendar
-import com.tokopedia.travelcalendar.R
-import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY_MM_DD
 import com.tokopedia.travelcalendar.TravelCalendarComponentInstance
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
+import com.tokopedia.travelcalendar.databinding.DialogCalendarMultiPickBinding
 import com.tokopedia.travelcalendar.stringToDate
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.dialog_calendar_multi_pick.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by jessica on 03/07/19
@@ -38,8 +37,9 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    protected var binding by autoClearedNullable<DialogCalendarMultiPickBinding>()
+
     lateinit var selectionRangeCalendarViewModel: SelectionRangeCalendarViewModel
-    lateinit var calendar: CalendarPickerView
 
     var isFirstTime: Boolean = true
 
@@ -106,45 +106,46 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
     }
 
     private fun initChildLayout() {
-        val childView = View.inflate(context, R.layout.dialog_calendar_multi_pick, null)
-        val rootCalendar = childView.findViewById<UnifyCalendar>(R.id.calendar_unify)
-        calendar = rootCalendar.calendarPickerView as CalendarPickerView
-        setChild(childView)
+        binding = DialogCalendarMultiPickBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        text_checkin.text = minDateLabel
-        text_checkout.text = maxDateLabel
+        binding?.run {
+            textCheckin.text = minDateLabel
+            textCheckout.text = maxDateLabel
 
-        loading_progress_bar.visibility = View.VISIBLE
+            loadingProgressBar.visibility = View.VISIBLE
+            selectionRangeCalendarViewModel.getTravelHolidayDate()
 
-        selectionRangeCalendarViewModel.getTravelHolidayDate()
-
-        selectionRangeCalendarViewModel.holidayResult.observe(this, Observer {
-            loading_progress_bar.visibility = View.GONE
-            when (it) {
-                is Success -> {
-                    if (isFirstTime && it.data.data.isNotEmpty()) {
-                        renderCalendar(mappingHolidayData(it.data))
-                        isFirstTime = false
+            selectionRangeCalendarViewModel.holidayResult.observe(
+                this@SelectionRangeCalendarWidget,
+                Observer {
+                    loadingProgressBar.visibility = View.GONE
+                    when (it) {
+                        is Success -> {
+                            if (isFirstTime && it.data.data.isNotEmpty()) {
+                                renderCalendar(mappingHolidayData(it.data))
+                                isFirstTime = false
+                            }
+                        }
+                        is Fail -> {
+                            renderCalendar(arrayListOf())
+                        }
                     }
                 }
-                is Fail -> {
-                    renderCalendar(arrayListOf())
-                }
+            )
+
+            context?.let {
+                dateIn.typeface = Typography.getFontType(it, true, Typography.DISPLAY_1)
+                dateOut.typeface = Typography.getFontType(it, true, Typography.DISPLAY_1)
             }
-        })
 
-        context?.let {
-            date_in.typeface = Typography.getFontType(it, true, Typography.DISPLAY_1)
-            date_out.typeface = Typography.getFontType(it, true, Typography.DISPLAY_1)
+            dateIn.keyListener = null
+            dateOut.keyListener = null
         }
-
-        date_in.keyListener = null
-        date_out.keyListener = null
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -154,12 +155,11 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
 
     fun setLayoutMargin() {
         context?.let {
-            var padding = it.resources.getDimension(RUnify.dimen.layout_lvl2).toInt()
+            var padding = it.resources.getDimension(unifyprinciplesR.dimen.layout_lvl2).toInt()
             bottomSheetWrapper.setPadding(0, padding, 0, 0)
             bottomSheetHeader.setPadding(padding, 0, padding, 0)
         }
     }
-
 
     open fun renderCalendar(legends: ArrayList<Legend>) {
         val nextYear = Calendar.getInstance()
@@ -176,98 +176,106 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
             if (it.before(yesterday.time) || it.after(nextYear.time)) minDate = yesterday.time
         }
         maxDate?.let {
-            if (minDate != null && (it.before(yesterday.time) || it.after(nextYear.time))) maxDate =
-                yesterday.time
-        }
-
-        minDate?.let { minDate ->
-            maxDate?.let { maxDate ->
-                calendar.init(yesterday.time, nextYear.time, legends)
-                    .inMode(CalendarPickerView.SelectionMode.RANGE)
-                    .maxRange(rangeDateSelected)
-                    .withSelectedDates(listOf(minDate, maxDate))
-                date_in.requestFocus()
+            if (minDate != null && (it.before(yesterday.time) || it.after(nextYear.time))) {
+                maxDate =
+                    yesterday.time
             }
         }
 
-        if (maxDate == null) {
-            minDate?.let {
-                calendar.let { calendar ->
-                    calendar.init(yesterday.time, nextYear.time, legends)
-                        .inMode(CalendarPickerView.SelectionMode.RANGE)
-                        .maxRange(rangeDateSelected)
-                        .withSelectedDate(it)
-                    date_out.requestFocus()
+        binding?.run {
+            minDate?.let { minDate ->
+                maxDate?.let { maxDate ->
+                    calendarUnify.calendarPickerView?.init(yesterday.time, nextYear.time, legends)
+                        ?.inMode(CalendarPickerView.SelectionMode.RANGE)
+                        ?.maxRange(rangeDateSelected)
+                        ?.withSelectedDates(listOf(minDate, maxDate))
+                    dateIn.requestFocus()
                 }
             }
-        }
 
-        val defaultIndLocale = Locale("id", "ID")
-        val dateFormat = SimpleDateFormat("E, d MMM", defaultIndLocale)
-        dateFormat.timeZone = TimeZone.getDefault()
-
-        if (minDate != null) date_in.setText(dateFormat.format(minDate))
-        if (maxDate != null) date_out.setText(dateFormat.format(maxDate))
-
-        date_in.setOnFocusChangeListener { view, hasFocus ->
             if (maxDate == null) {
-                if (date_in?.isFocused == true) date_out.requestFocus()
-            } else {
-                if (date_out?.isFocused == true) date_in.requestFocus()
-            }
-        }
-
-        calendar.let {
-            it.setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
-                override fun onNotifyMax() {
-                    listenerMaxRange?.onNotifyMax()
-                }
-
-            })
-
-            it.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
-
-                override fun onDateSelected(date: Date) {
-
-                    if ((minDate != null && maxDate != null) || (maxDate == null && date.before(
-                            minDate
-                        ))
-                    ) {
-                        date_in.setText(dateFormat.format(date))
-                        date_out.setText("")
-                        minDate = date
-                        maxDate = null
-                        date_out.requestFocus()
-                        minDate?.let { dateIn -> onDateInClicked(dateIn) }
-                    } else if (minDate != null && maxDate == null && ((!canSelectSameDay && date.after(
-                            minDate
-                        )) || (canSelectSameDay && !date.before(minDate)))
-                    ) {
-                        if ((calendar.selectedDates.size > 1 && !canSelectSameDay) || canSelectSameDay) {
-                            date_out.setText(dateFormat.format(date))
-                            maxDate = date
-                            date_out.requestFocus()
-                            if (listener != null) {
-                                listener?.onDateClick(
-                                    minDate ?: Date(), maxDate
-                                        ?: date
-                                )
-                                GlobalScope.launch {
-                                    delay(DISMISS_DELAY)
-                                    dismissAllowingStateLoss()
-                                }
-                            }
-                        } else {
-                            minDate = date
-                            maxDate = null
-                        }
+                minDate?.let {
+                    calendarUnify.calendarPickerView?.let { calendar ->
+                        calendar.init(yesterday.time, nextYear.time, legends)
+                            .inMode(CalendarPickerView.SelectionMode.RANGE)
+                            .maxRange(rangeDateSelected)
+                            .withSelectedDate(it)
+                        dateOut.requestFocus()
                     }
                 }
+            }
 
-                override fun onDateUnselected(date: Date) {
+            val defaultIndLocale = Locale("id", "ID")
+            val dateFormat = SimpleDateFormat("E, d MMM", defaultIndLocale)
+            dateFormat.timeZone = TimeZone.getDefault()
 
+            if (minDate != null) dateIn.setText(dateFormat.format(minDate))
+            if (maxDate != null) dateOut.setText(dateFormat.format(maxDate))
+
+            dateIn.setOnFocusChangeListener { view, hasFocus ->
+                if (maxDate == null) {
+                    if (dateIn.isFocused == true) dateOut.requestFocus()
+                } else {
+                    if (dateOut.isFocused == true) dateIn.requestFocus()
                 }
-            })
+            }
+
+            calendarUnify.calendarPickerView?.let {
+                it.setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
+                    override fun onNotifyMax() {
+                        listenerMaxRange?.onNotifyMax()
+                    }
+                })
+
+                it.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
+
+                    override fun onDateSelected(date: Date) {
+                        if ((minDate != null && maxDate != null) || (
+                            maxDate == null && date.before(
+                                    minDate
+                                )
+                            )
+                        ) {
+                            dateIn.setText(dateFormat.format(date))
+                            dateOut.setText("")
+                            minDate = date
+                            maxDate = null
+                            dateOut.requestFocus()
+                            minDate?.let { dateIn -> onDateInClicked(dateIn) }
+                        } else if (minDate != null && maxDate == null && (
+                            (
+                                !canSelectSameDay && date.after(
+                                        minDate
+                                    )
+                                ) || (canSelectSameDay && !date.before(minDate))
+                            )
+                        ) {
+                            if ((it.selectedDates.size > 1 && !canSelectSameDay) || canSelectSameDay) {
+                                dateOut.setText(dateFormat.format(date))
+                                maxDate = date
+                                dateOut.requestFocus()
+                                if (listener != null) {
+                                    listener?.onDateClick(
+                                        minDate ?: Date(),
+                                        maxDate
+                                            ?: date
+                                    )
+                                    GlobalScope.launch {
+                                        delay(DISMISS_DELAY)
+                                        dismissAllowingStateLoss()
+                                    }
+                                }
+                            } else {
+                                minDate = date
+                                maxDate = null
+                            }
+                        }
+                    }
+
+                    override fun onDateUnselected(date: Date) {
+                    }
+                })
+            }
         }
     }
 
@@ -316,9 +324,13 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         private const val DISMISS_DELAY: Long = 300
 
         fun getInstance(
-            minDate: String?, maxDate: String?, rangeYear: Int,
-            rangeDateSelected: Long, minDateLabel: String,
-            maxDateLabel: String, minSelectableDateFromToday: Int = 0,
+            minDate: String?,
+            maxDate: String?,
+            rangeYear: Int,
+            rangeDateSelected: Long,
+            minDateLabel: String,
+            maxDateLabel: String,
+            minSelectableDateFromToday: Int = 0,
             canSelectSameDay: Boolean = false
         ): SelectionRangeCalendarWidget =
             SelectionRangeCalendarWidget().also {

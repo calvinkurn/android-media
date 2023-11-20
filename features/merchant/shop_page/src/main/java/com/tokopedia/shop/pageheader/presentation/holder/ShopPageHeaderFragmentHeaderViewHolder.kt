@@ -50,7 +50,7 @@ class ShopPageHeaderFragmentHeaderViewHolder(
     private val shopPageHeaderActionButtonWidgetNoteButtonComponentListener: ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.Listener,
     private val shopPagePlayWidgetListener: ShopPageHeaderPlayWidgetViewHolder.Listener,
     private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener,
-    private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener
+    private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener,
 ) {
     private var isShopFavorite = false
     private var isUserNeverFollow = false
@@ -96,7 +96,7 @@ class ShopPageHeaderFragmentHeaderViewHolder(
                 shopPageHeaderActionButtonWidgetNoteButtonComponentListener,
                 shopPageTrackingSGCPlayWidget,
                 shopPagePlayWidgetListener,
-                shopPageHeaderPerformanceWidgetImageTextListener
+                shopPageHeaderPerformanceWidgetImageTextListener,
             )
         )
         rvShopPageHeaderWidget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -198,6 +198,7 @@ class ShopPageHeaderFragmentHeaderViewHolder(
         tickerShopStatus?.tickerType = when (shopTickerType) {
             ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
             ShopTickerType.WARNING -> Ticker.TYPE_WARNING
+            ShopTickerType.DANGER -> Ticker.TYPE_ERROR
             else -> Ticker.TYPE_WARNING
         }
         tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()

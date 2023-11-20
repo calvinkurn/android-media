@@ -60,7 +60,7 @@
         layout="@layout/catalog_products_no_data_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/search_product_quick_sort_filter"
+        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
         android:visibility="gone"
         tools:visibility="visible"
         android:layout_marginStart="@dimen/spacing_lvl4"

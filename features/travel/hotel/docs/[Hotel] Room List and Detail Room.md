@@ -35,9 +35,9 @@ Hotel is a product that allows users to book hotels, guest houses, villas, etc.,
 
 ## Flow Diagram
 
-![](res/Room-List-Page.jpeg)
+![](https://docs-android.tokopedia.net/images/docs/hotel/Room-List-Page.jpeg)
 
-![](res/Room-Page-Activity.jpeg)
+![](https://docs-android.tokopedia.net/images/docs/hotel/Room-Page-Activity.jpeg)
 
 ## Navigation
 

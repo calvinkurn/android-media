@@ -21,6 +21,8 @@
     <string name="shop_page_error_title_get_p1">Koneksi internetmu terganggu!</string>
     <string name="shop_page_error_sub_title_get_p1">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
     <string name="shop_page_atc_label_cta">Oke</string>
+    <string name="shop_page_see_more_product_desc">Masih banyak barang lainnya, lho!</string>
+    <string name="shop_page_see_more">Lihat Semua</string>
 
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
@@ -36,13 +38,14 @@
 
     <string name="shop_info_go_apotik_sia_number_title">Nomor SIA:</string>
     <string name="shop_info_go_apotik_sipa_number_title">Nomor SIPA:</string>
-    <string name="shop_info_go_apotik_apj_title">APJ:</string>
+    <string name="shop_info_go_apotik_apj_title">Apotek Jaga:</string>
+    <string name="shop_info_go_apotik_open_hours">Jadwal Praktek Apoteker:</string>
 
     <string name="shop_info_label_statistic">Statistik Toko</string>
     <string name="shop_info_label_satisfied">Kepuasan Toko</string>
     <string name="shop_info_label_logistic">Dukungan Pengiriman</string>
 
-    <string name="shop_info_label_open_since_v3">Buka Sejak %1$s</string>
+    <string name="shop_info_label_open_since_v3">Buka Sejak : %1$s</string>
 
     <string name="shop_note_empty_note_title_buyer">Toko ini belum memiliki catatan toko.</string>
     <string name="shop_note_empty_note_title_seller">Toko Anda belum memiliki catatan toko.</string>
@@ -79,6 +82,9 @@
     <string name="shop_product_empty_title_etalase_desc">Tidak ada produk di etalase ini</string>
     <string name="shop_product_empty_title_desc">Tidak ada produk di toko ini</string>
     <string name="shop_page_label_description">Deskripsi Toko</string>
+    <string name="licensed_apotik_badge">Apotek Berlisensi</string>
+    <string name="shop_page_label_nearest_pickup">Lokasi Pickup Terdekat</string>
+    <string name="shop_page_label_see_location">Lihat Lokasi</string>
     <string name="shop_info_label_manage_note">Atur</string>
     <string name="shop_note_title">Catatan Toko</string>
     <string name="shop_info_label_process_time">Waktu Proses</string>
@@ -243,4 +249,13 @@
     <string name="text_desc_etalase_not_found">Mungkin kamu salah jalan atau alamat. Ayo balik sebelum gelap!</string>
     <string name="text_back_to_shop_page">Balik ke Halaman Toko</string>
 
+
+    <string name="shop_page_dot_character">•</string>
+    <string name="shop_page_placeholder_discount_percentage">%d%%</string>
+    <string name="shop_page_dot_separator">\u2022</string>
+    <string name="shop_showcase_navigation_tab_widget_content_description">imgBackgroundGradient</string>
+    <string name="shop_home_showcase_navigation_top_main_banner_content_description">imgBackgroundGradient</string>
+
+    <string name="shop_content_description_gradient_black">Background Etalase Utama</string>
+    
 </resources>

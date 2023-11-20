@@ -9,6 +9,7 @@ import androidx.annotation.ColorRes
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcProgressBarWidgetBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -69,20 +70,20 @@ class ShopScorePMWidget : FrameLayout {
         val colors = when (state) {
             is State.Good -> {
                 binding?.tvShcCurrentProgress?.setTextColor(
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                    context.getResColor(unifyprinciplesR.color.Unify_NN950)
                 )
                 intArrayOf(
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500),
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_GN600)
+                    context.getResColor(unifyprinciplesR.color.Unify_GN500),
+                    context.getResColor(unifyprinciplesR.color.Unify_GN600)
                 )
             }
             is State.Warning -> {
                 binding?.tvShcCurrentProgress?.setTextColor(
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_YN400)
+                    context.getResColor(unifyprinciplesR.color.Unify_YN400)
                 )
                 intArrayOf(
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_YN300),
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_YN400)
+                    context.getResColor(unifyprinciplesR.color.Unify_YN300),
+                    context.getResColor(unifyprinciplesR.color.Unify_YN400)
                 )
             }
             is State.Custom -> {
@@ -96,11 +97,11 @@ class ShopScorePMWidget : FrameLayout {
             }
             else -> {
                 binding?.tvShcCurrentProgress?.setTextColor(
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                    context.getResColor(unifyprinciplesR.color.Unify_RN500)
                 )
                 intArrayOf(
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_RN400),
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                    context.getResColor(unifyprinciplesR.color.Unify_RN400),
+                    context.getResColor(unifyprinciplesR.color.Unify_RN500)
                 )
             }
         }

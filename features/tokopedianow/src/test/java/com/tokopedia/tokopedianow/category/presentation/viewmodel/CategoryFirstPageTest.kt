@@ -8,11 +8,10 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMappe
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
-import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
+class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `getFirstPage should return result with first 3 showcases for the first page of pagination`() {
@@ -32,18 +31,9 @@ class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
         )
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenReturns()
-        onCategoryProduct_thenReturns(
-            uniqueId = getUniqueId(
-                isLoggedIn = isLoggedIn,
-                userId = userId,
-                deviceId = deviceId
-            )
-        )
+        onCategoryProduct_thenReturns()
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
-        viewModel.getFirstPage()
+        viewModel.onViewCreated()
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -53,17 +43,15 @@ class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress()
+            .mapToChooseAddress(addressData)
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
-            tickerList = targetedTickerResponse
+            targetedTickerResponse
         )
         val tickerUiModel = categoryDetailResponse
-            .mapToTicker(
-                tickerData = tickerDataList
-            )
-        val hasBlockedAddToCart = tickerDataList.first
+            .mapToTicker(tickerDataList.tickerList)
+        val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
         // map title
         val titleUiModel = categoryDetailResponse
@@ -84,7 +72,7 @@ class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
             tickerUiModel,
             titleUiModel,
             categoryNavigationUiModel,
-            productRecommendationUiModel,
+            productRecommendationUiModel
         )
 
         val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()
@@ -101,11 +89,11 @@ class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
             .verifyValueEquals(
                 CategoryOpenScreenTrackerModel(
                     id = categoryDetailResponse.categoryDetail.data.id,
-                    name= categoryDetailResponse.categoryDetail.data.name,
-                    url=categoryDetailResponse.categoryDetail.data.url
+                    name = categoryDetailResponse.categoryDetail.data.name,
+                    url = categoryDetailResponse.categoryDetail.data.url
                 )
             )
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(resultList)
     }
 
@@ -129,18 +117,10 @@ class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenReturns()
         onCategoryProduct_thenThrows(
-            uniqueId = getUniqueId(
-                isLoggedIn = isLoggedIn,
-                userId = userId,
-                deviceId = deviceId
-            ),
             expectedCategoryIdL2Failed = expectedCategoryIdL2Failed
         )
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
-        viewModel.getFirstPage()
+        viewModel.onViewCreated()
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -150,17 +130,15 @@ class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress()
+            .mapToChooseAddress(addressData)
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
-            tickerList = targetedTickerResponse
+            targetedTickerResponse
         )
         val tickerUiModel = categoryDetailResponse
-            .mapToTicker(
-                tickerData = tickerDataList
-            )
-        val hasBlockedAddToCart = tickerDataList.first
+            .mapToTicker(tickerDataList.tickerList)
+        val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
         // map title
         val titleUiModel = categoryDetailResponse
@@ -181,7 +159,7 @@ class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
             tickerUiModel,
             titleUiModel,
             categoryNavigationUiModel,
-            productRecommendationUiModel,
+            productRecommendationUiModel
         )
 
         val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()
@@ -199,26 +177,11 @@ class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
             .verifyValueEquals(
                 CategoryOpenScreenTrackerModel(
                     id = categoryDetailResponse.categoryDetail.data.id,
-                    name= categoryDetailResponse.categoryDetail.data.name,
-                    url=categoryDetailResponse.categoryDetail.data.url
+                    name = categoryDetailResponse.categoryDetail.data.name,
+                    url = categoryDetailResponse.categoryDetail.data.url
                 )
             )
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(resultList)
-    }
-
-    @Test
-    fun `modify layout while its value is null should make getFirstPage error and do nothing`() {
-        val privateFieldNameLayout = "layout"
-
-        viewModel.mockPrivateField(
-            name = privateFieldNameLayout,
-            value = null
-        )
-
-        viewModel.getFirstPage()
-
-        viewModel.categoryPage
-            .verifyValueEquals(null)
     }
 }

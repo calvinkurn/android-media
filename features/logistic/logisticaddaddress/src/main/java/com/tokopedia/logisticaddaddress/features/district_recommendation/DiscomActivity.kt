@@ -1,7 +1,10 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -30,6 +33,7 @@ class DiscomActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setOrientation()
         supportActionBar?.hide()
     }
 
@@ -38,5 +42,12 @@ class DiscomActivity : BaseSimpleActivity() {
         val isPinpoint = intent.getBooleanExtra(ARGUMENT_IS_PINPOINT, false)
         val isLocalization = intent.getBooleanExtra(IS_LOCALIZATION, false)
         return DiscomFragment.newInstance(isPinpoint, addressState, isLocalization)
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun setOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 }

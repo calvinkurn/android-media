@@ -3,10 +3,13 @@ package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.logisticcart.databinding.ItemCourierBinding
+import com.tokopedia.logisticcart.databinding.ItemNotifierBinding
+import com.tokopedia.logisticcart.databinding.ItemProductShipmentDetailBinding
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.NotifierViewHolder
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.PreOrderViewHolder
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ProductShipmentDetailViewHolder
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
-import com.tokopedia.logisticcart.shipping.model.PreOrderModel
+import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 
@@ -34,17 +37,38 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun getItemViewType(position: Int): Int = when (data[position]) {
-        is PreOrderModel -> PreOrderViewHolder.LAYOUT
         is NotifierModel -> NotifierViewHolder.LAYOUT
+        is ProductShipmentDetailModel -> ProductShipmentDetailViewHolder.LAYOUT
         else -> ShippingCourierViewHolder.ITEM_VIEW_SHIPMENT_COURIER
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            PreOrderViewHolder.LAYOUT -> PreOrderViewHolder(view)
-            NotifierViewHolder.LAYOUT -> NotifierViewHolder(view)
-            else -> ShippingCourierViewHolder(view, cartPosition)
+            NotifierViewHolder.LAYOUT -> NotifierViewHolder(
+                ItemNotifierBinding.inflate(
+                    inflater,
+                    parent,
+                    false
+                )
+            )
+
+            ProductShipmentDetailViewHolder.LAYOUT -> ProductShipmentDetailViewHolder(
+                ItemProductShipmentDetailBinding.inflate(
+                    inflater,
+                    parent,
+                    false
+                )
+            )
+
+            else -> ShippingCourierViewHolder(
+                ItemCourierBinding.inflate(
+                    inflater,
+                    parent,
+                    false
+                ),
+                cartPosition
+            )
         }
     }
 
@@ -54,9 +78,14 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is PreOrderViewHolder -> holder.bindData(data[position] as PreOrderModel)
-            is ShippingCourierViewHolder -> holder.bindData(data[position] as ShippingCourierUiModel, shippingCourierAdapterListener, position == itemCount - 1)
+            is ShippingCourierViewHolder -> holder.bindData(
+                data[position] as ShippingCourierUiModel,
+                shippingCourierAdapterListener,
+                position == itemCount - 1
+            )
+
             is NotifierViewHolder -> holder.bindData(data[position] as NotifierModel)
+            is ProductShipmentDetailViewHolder -> holder.bindData(data[position] as ProductShipmentDetailModel)
         }
     }
 }

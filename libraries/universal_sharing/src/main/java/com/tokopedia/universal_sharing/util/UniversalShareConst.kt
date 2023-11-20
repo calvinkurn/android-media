@@ -13,6 +13,7 @@ object UniversalShareConst {
         const val PACKAGE_NAME_TWITTER = "com.twitter.android"
         const val PACKAGE_NAME_TELEGRAM = "org.telegram.messenger"
         const val PACKAGE_NAME_GMAIL = "com.google.android.gm"
+        const val NO_PACKAGE_CHANNEL = "no_package_channel"
     }
 
     // remote config Social media ordering keys
@@ -35,6 +36,10 @@ object UniversalShareConst {
         const val GLOBAL_AFFILIATE_FEATURE_FLAG = "android_enable_affiliate_universal_sharing"
         const val GLOBAL_ENABLE_OG_IMAGE_TRANSFORM = "android_enable_og_image_transformation"
         const val SOCIAL_MEDIA_ORDERING = "android_universal_sharing_order"
+        const val KEY_AB_TESTING = "newshare_pdp"
+        const val VALUE_VARIANT_A = "newshare_pdp_A"
+        const val VALUE_VARIANT_B = "newshare_pdp_B"
+        const val CONTROL_VARIANT = "control_variant"
     }
 
     // Image Type of the share link
@@ -56,5 +61,11 @@ object UniversalShareConst {
         const val PREVIEW_IMG_SCREENSHOT_WIDTH = 1080
         const val THUMBNAIL_IMG_SCREENSHOT_HEIGHT = 200
         const val THUMBNAIL_IMG_SCREENSHOT_WIDTH = 360
+    }
+
+    object ShopTypeIcon {
+        const val OFFICIAL_STORE = "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png"
+        const val PM = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png"
+        const val PM_PRO = "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png"
     }
 }

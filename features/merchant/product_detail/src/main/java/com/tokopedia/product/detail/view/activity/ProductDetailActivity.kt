@@ -6,10 +6,12 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
@@ -18,6 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailPrefetch
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
@@ -53,6 +56,16 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         private const val PRODUCT_PERFORMANCE_MONITORING_NON_VARIANT_VALUE = "non-variant"
         private const val PRODUCT_VIDEO_DETAIL_TAG = "videoDetailTag"
         private const val PRODUCT_DETAIL_TAG = "productDetailTag"
+        private const val P1_PREFETCH_PERF_TRACE_NAME = "pdp_p1_prefetch_perf_trace"
+        private const val P1_CACHE_PERF_TRACE_NAME = "pdp_p1_cache_perf_trace"
+        private const val P1_NETWORK_PERF_TRACE_NAME = "pdp_p1_network_perf_trace"
+
+        const val P1_PREFETCH_KEY = "prefetch"
+        const val P1_CACHE_KEY = "cache"
+        const val P1_NETWORK_KEY = "network"
+
+        private const val P1_state = "State"
+        private const val P1_blocks_count = "blocks_count"
 
         private const val AFFILIATE_HOST = "affiliate"
         private const val PARAM_CAMPAIGN_ID = "campaign_id"
@@ -60,9 +73,9 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
         @JvmStatic
         fun createIntent(context: Context, productUrl: String) =
-                Intent(context, ProductDetailActivity::class.java).apply {
-                    data = Uri.parse(productUrl)
-                }
+            Intent(context, ProductDetailActivity::class.java).apply {
+                data = Uri.parse(productUrl)
+            }
 
         @JvmStatic
         fun createIntent(context: Context, shopDomain: String, productKey: String) = Intent(context, ProductDetailActivity::class.java).apply {
@@ -93,16 +106,24 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private var productDetailComponent: ProductDetailComponent? = null
     private var campaignId: String? = null
     private var variantId: String? = null
+    private var prefetchDuration = 0L
+    private var cacheDuration = 0L
+    private var p1NetworkDuration = 0L
 
-    //Performance Monitoring
+    // Performance Monitoring
     var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var performanceMonitoringP1: PerformanceMonitoring? = null
     private var performanceMonitoringP2Data: PerformanceMonitoring? = null
 
-    //Temporary (disscussion/talk, review/ulasan)
+    private var p1PrefetchPerformanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring()
+    private var p1CachePerformanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring()
+    private var p1NetworkPerformanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring()
+
+    // Temporary (disscussion/talk, review/ulasan)
     private var performanceMonitoringP2Other: PerformanceMonitoring? = null
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
 
+    private var blocksPerformanceTrace: BlocksPerformanceTrace? = null
     var productDetailLoadTimeMonitoringListener: ProductDetailLoadTimeMonitoringListener? = null
 
     @Inject
@@ -152,6 +173,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     fun getPltPerformanceResultData(): PltPerformanceData? = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
 
+    fun getBlocksPerformanceMonitoring(): BlocksPerformanceTrace? = blocksPerformanceTrace
     fun goToHomePageClicked() {
         if (isTaskRoot) {
             RouteManager.route(this, ApplinkConst.HOME)
@@ -168,8 +190,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private fun initializeComponent(): ProductDetailComponent {
         val baseComponent = (applicationContext as BaseMainApplication).baseAppComponent
         return DaggerProductDetailComponent.builder()
-                .baseAppComponent(baseComponent)
-                .build()
+            .baseAppComponent(baseComponent)
+            .build()
     }
 
     override fun getParentViewResourceID(): Int {
@@ -178,8 +200,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     fun addNewFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().add(parentViewResourceID, fragment, PRODUCT_VIDEO_DETAIL_TAG)
-                .addToBackStack(PRODUCT_VIDEO_DETAIL_TAG)
-                .commit()
+            .addToBackStack(PRODUCT_VIDEO_DETAIL_TAG)
+            .commit()
         hidePdpFragment()
     }
 
@@ -222,28 +244,30 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     }
 
     override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(
-            productId,
-            warehouseId,
-            shopDomain,
-            productKey,
-            isFromDeeplink,
-            trackerAttribution,
-            trackerListName,
-            affiliateString = affiliateString,
-            affiliateUniqueId = affiliateUniqueId,
-            deeplinkUrl,
-            layoutId,
-            extParam,
-            getSource(),
-            affiliateChannel = affiliateChannel,
-            campaignId = campaignId,
-            variantId = variantId
+        productId,
+        warehouseId,
+        shopDomain,
+        productKey,
+        isFromDeeplink,
+        trackerAttribution,
+        trackerListName,
+        affiliateString = affiliateString,
+        affiliateUniqueId = affiliateUniqueId,
+        deeplinkUrl,
+        layoutId,
+        extParam,
+        getSource(),
+        affiliateChannel = affiliateChannel,
+        campaignId = campaignId,
+        variantId = variantId,
+        prefetchCacheId = intent.getStringExtra(ProductDetailPrefetch.PREFETCH_DATA_CACHE_ID)
     )
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
     override fun onCreate(savedInstanceState: Bundle?) {
         try {
+            initBlocksPLTMonitoring()
             userSessionInterface = UserSession(this)
             isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
 
@@ -275,7 +299,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
                     productKey = segmentUri[segmentUri.size - 1]
                 }
             } else if (uri.pathSegments.size >= 2 && // might be tokopedia.com/
-                    uri.host != AFFILIATE_HOST) {
+                uri.host != AFFILIATE_HOST
+            ) {
                 val segmentUri = uri.pathSegments
                 if (segmentUri.size > 1) {
                     shopDomain = segmentUri[segmentUri.size - 2]
@@ -332,17 +357,72 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         val uri = intent.data
         val uriString = uri?.toString() ?: ""
         ProductDetailServerLogger.logNewRelicProductCannotOpen(
-                uriString,
-                t
+            uriString,
+            t
         )
         finish()
     }
 
+    private fun initBlocksPLTMonitoring() {
+        p1PrefetchPerformanceMonitoring?.startTrace(P1_PREFETCH_PERF_TRACE_NAME)
+        p1CachePerformanceMonitoring?.startTrace(P1_CACHE_PERF_TRACE_NAME)
+        p1NetworkPerformanceMonitoring?.startTrace(P1_NETWORK_PERF_TRACE_NAME)
+
+        blocksPerformanceTrace = BlocksPerformanceTrace(
+            context = this,
+            traceName = "perf_trace_pdp",
+            scope = lifecycleScope,
+            touchListenerActivity = this,
+            onPerformanceTraceCancelled = { state ->
+                p1PrefetchPerformanceMonitoring?.putCustomAttribute(P1_state, state.name)
+                p1CachePerformanceMonitoring?.putCustomAttribute(P1_state, state.name)
+                p1NetworkPerformanceMonitoring?.putCustomAttribute(P1_state, state.name)
+                p1PrefetchPerformanceMonitoring?.stopTrace()
+                p1CachePerformanceMonitoring?.stopTrace()
+                p1NetworkPerformanceMonitoring?.stopTrace()
+            }
+        ) { summaryModel, capturedBlocks -> }
+
+        blocksPerformanceTrace?.onBlocksRendered = { summaryModel, capturedBlocks, elapsedTime, identifier ->
+            recordP1PrefetchPerformance(capturedBlocks, identifier, elapsedTime)
+            recordP1CachePerformance(capturedBlocks, identifier, elapsedTime)
+            recordP1NetworkPerformance(capturedBlocks, identifier, elapsedTime)
+        }
+    }
+
+    private fun recordP1PrefetchPerformance(capturedBlocks: Set<String>, identifier: String, elapsedTime: Long) {
+        if (capturedBlocks.isNotEmpty() && identifier == P1_PREFETCH_KEY && prefetchDuration == 0L) {
+            this.prefetchDuration = elapsedTime
+            p1PrefetchPerformanceMonitoring?.putMetric(P1_blocks_count, capturedBlocks.size.toLong())
+            p1PrefetchPerformanceMonitoring?.stopTrace()
+            p1PrefetchPerformanceMonitoring = null
+        }
+    }
+
+    private fun recordP1CachePerformance(capturedBlocks: Set<String>, identifier: String, elapsedTime: Long) {
+        if (identifier == P1_CACHE_KEY && cacheDuration == 0L) {
+            this.cacheDuration = elapsedTime
+            p1CachePerformanceMonitoring?.putMetric(P1_blocks_count, capturedBlocks.size.toLong())
+            p1CachePerformanceMonitoring?.stopTrace()
+            p1CachePerformanceMonitoring = null
+        }
+    }
+
+    private fun recordP1NetworkPerformance(capturedBlocks: Set<String>, identifier: String, elapsedTime: Long) {
+        if (identifier == P1_NETWORK_KEY && p1NetworkDuration == 0L) {
+            this.p1NetworkDuration = elapsedTime
+            p1NetworkPerformanceMonitoring?.putMetric(P1_blocks_count, capturedBlocks.size.toLong())
+            p1NetworkPerformanceMonitoring?.stopTrace()
+            p1NetworkPerformanceMonitoring = null
+        }
+    }
+
     private fun initPLTMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                ProductDetailConstant.PDP_RESULT_PLT_PREPARE_METRICS,
-                ProductDetailConstant.PDP_RESULT_PLT_NETWORK_METRICS,
-                ProductDetailConstant.PDP_RESULT_PLT_RENDER_METRICS)
+            ProductDetailConstant.PDP_RESULT_PLT_PREPARE_METRICS,
+            ProductDetailConstant.PDP_RESULT_PLT_NETWORK_METRICS,
+            ProductDetailConstant.PDP_RESULT_PLT_RENDER_METRICS
+        )
         pageLoadTimePerformanceMonitoring?.startMonitoring(ProductDetailConstant.PDP_RESULT_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }

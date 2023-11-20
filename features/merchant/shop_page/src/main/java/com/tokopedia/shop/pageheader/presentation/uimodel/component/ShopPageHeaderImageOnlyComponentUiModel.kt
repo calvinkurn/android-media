@@ -7,6 +7,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.
 data class ShopPageHeaderImageOnlyComponentUiModel(
     override val name: String = "",
     override val type: String = "",
+    val shopId: String = "",
     val image: String = "",
     val imageLink: String = "",
     val isBottomSheet: Boolean = false

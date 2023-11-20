@@ -34,7 +34,9 @@ object PromoRequestMapperTestHelper {
                 val productDetailsItem = ProductDetail(
                     productId = cartItemHolderData.productId.toLongOrZero(),
                     quantity = cartItemHolderData.quantity,
-                    bundleId = cartItemHolderData.bundleId.toLongOrZero()
+                    bundleId = cartItemHolderData.bundleId.toLongOrZero(),
+                    isChecked = cartItemHolderData.isSelected,
+                    cartId = cartItemHolderData.cartId
                 )
                 tmpProductDetails.add(productDetailsItem)
             }

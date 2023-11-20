@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bmgm_overlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardBackgroundColor="@color/Unify_Overlay_Lvl2"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/bmgm_show_more_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_Static_White"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Lihat 50 produk lainnya" />
+
+</androidx.cardview.widget.CardView>

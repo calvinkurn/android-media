@@ -11,7 +11,7 @@ import dagger.Provides
 class UniversalShareModule {
 
     @Provides
-    open fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 }

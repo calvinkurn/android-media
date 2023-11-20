@@ -17,6 +17,8 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSaleWidgetListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private var isFestivity: Boolean = false
+
     companion object {
         private const val SINGLE_PRODUCT = 1
         private const val DOUBLE_PRODUCT = 2
@@ -99,8 +101,8 @@ class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSal
         this.flashSaleUiModel = flashSaleUiModel
     }
 
-    fun setHeightMeasureListener(listener: HeightMeasureListener) {
-        measureListener = listener
+    fun setIsFestivity(isFestivity: Boolean) {
+        this.isFestivity = isFestivity
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -130,7 +132,7 @@ class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSal
             PRODUCT_CARD_BIG_GRID -> {
                 val itemView =
                     parent.inflateLayout(R.layout.item_shop_home_flash_sale_product_card_grid_big)
-                ShopHomeFlashSaleProductCardBigGridViewHolder(itemView, listener, parentPosition)
+                ShopHomeFlashSaleProductCardBigGridViewHolder(itemView, listener, parentPosition, isFestivity)
             }
 
             else -> {

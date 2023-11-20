@@ -13,10 +13,11 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     testOptions {
+        animationsDisabled true
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 

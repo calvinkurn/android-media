@@ -10,5 +10,7 @@ data class EgoldMessage(
     @SerializedName("ticker_text")
     val tickerText: String = "",
     @SerializedName("tooltip_text")
-    val tooltipText: String = ""
+    val tooltipText: String = "",
+    @SerializedName("tooltip_title_text")
+    val tooltipTitleText: String = ""
 )

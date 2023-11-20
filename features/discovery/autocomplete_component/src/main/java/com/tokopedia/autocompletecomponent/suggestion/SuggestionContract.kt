@@ -113,9 +113,14 @@ interface SuggestionContract {
         val chooseAddressData: LocalCacheModel?
 
         val className: String
+
+        fun addToMPSKeyword(item: BaseSuggestionDataView)
     }
 
     interface Presenter : CustomerPresenter<View> {
+
+        fun isMPS(): Boolean
+
         fun getSearchParameter(): Map<String, String>
 
         fun getActiveKeyword() : SearchBarKeyword

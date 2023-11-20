@@ -33,7 +33,6 @@ import com.tokopedia.editshipping.util.EditShippingConstant.DEFAULT_ERROR_MESSAG
 import com.tokopedia.editshipping.util.EditShippingConstant.DEFAULT_LAT
 import com.tokopedia.editshipping.util.EditShippingConstant.DEFAULT_LONG
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_IS_EDIT_WAREHOUSE
-import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_IS_FULL_FLOW
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_LAT
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_LONG
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_WAREHOUSE_DATA
@@ -430,10 +429,12 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         viewModel.getZipCode(warehouseModel?.districtId.toString())
 
-        if (warehouseModel?.latLon?.isNotEmpty() == true) {
-            viewModel.getDistrictGeocode(warehouseModel?.latLon)
-        } else {
-            viewModel.getDistrictGeocode("$DEFAULT_LAT,$DEFAULT_LONG")
+        warehouseModel?.let { warehouse ->
+            if (warehouse.latLon.isNotEmpty()) {
+                viewModel.getDistrictGeocode(warehouse.latLon)
+            } else {
+                viewModel.getDistrictGeocode("$DEFAULT_LAT,$DEFAULT_LONG")
+            }
         }
     }
 

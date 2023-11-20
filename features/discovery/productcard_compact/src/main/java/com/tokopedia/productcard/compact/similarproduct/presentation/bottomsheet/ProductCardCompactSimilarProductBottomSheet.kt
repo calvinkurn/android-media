@@ -36,6 +36,8 @@ class ProductCardCompactSimilarProductBottomSheet : BottomSheetUnify() {
     }
 
     var triggerProductId = ""
+    var finishActivityOnDismiss: Boolean = true
+
     var items: List<Visitable<*>> = emptyList()
         set(value) {
             field = value
@@ -73,7 +75,9 @@ class ProductCardCompactSimilarProductBottomSheet : BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        activity?.finish()
+        if(finishActivityOnDismiss) {
+            activity?.finish()
+        }
     }
 
     private fun configureBottomSheet() {

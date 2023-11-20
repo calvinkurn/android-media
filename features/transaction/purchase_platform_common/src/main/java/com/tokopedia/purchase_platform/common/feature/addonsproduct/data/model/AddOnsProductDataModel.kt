@@ -20,6 +20,7 @@ data class AddOnsProductDataModel(
         var name: String = String.EMPTY,
         var status: Int = 1,
         var type: Int = 1,
-        var productQuantity: Int = 0
+        var productQuantity: Int = 0,
+        var fixedQuantity: Boolean = false
     )
 }

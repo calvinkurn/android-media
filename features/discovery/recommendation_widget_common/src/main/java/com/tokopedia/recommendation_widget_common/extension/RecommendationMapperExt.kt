@@ -94,7 +94,6 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 },
                 parentID = recommendation.parentID,
                 addToCartType = getAtcType(),
-                anchorProductId = this.recommendation.firstOrNull()?.id.toString()
             )
         },
         title = title,
@@ -132,6 +131,7 @@ fun RecommendationItem.toProductCardModel(
     productCardListType: ProductListType = ProductListType.CONTROL,
     cardType: Int = CardUnify2.TYPE_SHADOW,
     animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
+    forceLightMode: Boolean = false,
 ): ProductCardModel {
     val productCardAnimate = if(cardInteraction == true) CardUnify2.ANIMATE_OVERLAY_BOUNCE else animateOnPress
     var variant: ProductCardModel.Variant? = null
@@ -177,6 +177,7 @@ fun RecommendationItem.toProductCardModel(
         cardType = cardType,
         animateOnPress = productCardAnimate,
         productListType = productCardListType,
+        forceLightModeColor = forceLightMode,
     )
 }
 

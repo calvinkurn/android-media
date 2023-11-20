@@ -95,8 +95,6 @@ class FeedPostVideoViewHolder(
         binding.feedCommentButton.root,
         binding.menuButton,
         binding.shareButton,
-        binding.productTagButton.root,
-        binding.productTagView.root,
         binding.overlayTop.root,
         binding.overlayBottom.root,
         binding.overlayRight.root,
@@ -536,6 +534,7 @@ class FeedPostVideoViewHolder(
         )
         campaignView.resetView()
         campaignView.startAnimation()
+        mVideoPlayer?.toggleVideoVolume(listener.isMuted())
         mVideoPlayer?.resume()
         listener.onWatchPostVideo(element, trackerModel)
         onScrolling(false)

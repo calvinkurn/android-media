@@ -14,10 +14,13 @@ import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginTop
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -26,8 +29,12 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.WidgetRechargeClientNumberBinding
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
+import com.tokopedia.recharge_component.listener.ClientNumberCheckBalanceListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailBottomSheetModel
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPModel
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceUnitModel
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberAutoCompleteModel
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
@@ -55,6 +62,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
     private var mInputFieldListener: ClientNumberInputFieldListener? = null
     private var mAutoCompleteListener: ClientNumberAutoCompleteListener? = null
     private var mFilterChipListener: ClientNumberFilterChipListener? = null
+    private var mCheckBalanceListener: ClientNumberCheckBalanceListener? = null
 
     private var autoCompleteAdapter: TopupBillsAutoCompleteAdapter? = null
 
@@ -365,11 +373,122 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
     fun setListener(
         inputFieldListener: ClientNumberInputFieldListener?,
         autoCompleteListener: ClientNumberAutoCompleteListener?,
-        filterChipListener: ClientNumberFilterChipListener?
+        filterChipListener: ClientNumberFilterChipListener?,
+        checkBalanceListener: ClientNumberCheckBalanceListener?
     ) {
         mInputFieldListener = inputFieldListener
         mAutoCompleteListener = autoCompleteListener
         mFilterChipListener = filterChipListener
+        mCheckBalanceListener = checkBalanceListener
+    }
+
+    fun showCheckBalanceOtpWidget() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalanceOtp.show()
+    }
+
+    fun hideCheckBalanceOtpWidget() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalanceOtp.hide()
+    }
+
+    fun showCheckBalanceWidget() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.show()
+    }
+
+    fun hideCheckBalanceWidget() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.hide()
+    }
+
+    fun showCheckBalanceWidgetShimmering() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.showShimmering()
+    }
+
+    fun hideCheckBalanceWidgetShimmering() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.hideShimmering()
+    }
+
+    fun showCheckBalanceWidgetLocalLoad(onClick: () -> Unit) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.showLocalLoad {
+            onClick.invoke()
+        }
+    }
+
+    fun hideCheckBalanceWidgetLocalLoad() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.hideLocalLoad()
+    }
+
+    fun renderCheckBalanceOTPWidget(checkBalanceOTPModel: RechargeCheckBalanceOTPModel) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalanceOtp.run {
+            setTitle(checkBalanceOTPModel.subtitle)
+            setNotificationLabel(checkBalanceOTPModel.label)
+            setOnClickListener {
+                mCheckBalanceListener?.onClickCheckBalanceOTPWidget(checkBalanceOTPModel.bottomSheetModel)
+            }
+        }
+    }
+
+    fun renderCheckBalanceWidget(
+        balanceInfo: List<RechargeCheckBalanceUnitModel>,
+        balanceDetailBottomSheetModel: RechargeCheckBalanceDetailBottomSheetModel
+    ) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.run {
+            showCheckBalanceRV()
+            setBalanceInfo(balanceInfo)
+            if (balanceDetailBottomSheetModel.details.isNotEmpty()) {
+                setListener(object : RechargeCheckBalanceWidget.RechargeCheckBalanceWidgetListener {
+                    override fun onClickWidget() {
+                        mCheckBalanceListener?.onClickCheckBalanceWidget(balanceDetailBottomSheetModel)
+                    }
+                })
+            }
+        }
+    }
+
+    fun showCheckBalanceWarning(
+        message: String,
+        type: String,
+        isShowOnlyWarning: Boolean = false,
+        isClickable: Boolean = false
+    ) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.run {
+            if (isShowOnlyWarning) {
+                hideCheckBalanceRV()
+                setWarningContainerMargin(marginTop = Int.ZERO)
+            } else {
+                setWarningContainerMargin()
+            }
+            when (type) {
+                CHECK_BALANCE_WARNING -> showWarningMessage(message, isClickable)
+                CHECK_BALANCE_CRITICAL -> showCriticalMessage(message, isClickable)
+                CHECK_BALANCE_INFORMATION -> showInformationMessage(message, isClickable)
+                else -> showInformationMessage(message, isClickable)
+            }
+        }
+    }
+
+    fun hideCheckBalanceWarning() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.hideWidgetMessage()
+    }
+
+    fun resetCheckBalanceWarningText() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.resetWidgetMessage()
+    }
+
+    fun removeClientNumberBottomPadding() {
+        binding.clientNumberWidgetMainLayout.root.setPadding(
+            Int.ZERO,
+            PADDING_16.dpToPx(resources.displayMetrics),
+            Int.ZERO,
+            Int.ZERO
+        )
+    }
+
+    fun showClientNumberBottomPadding() {
+        binding.clientNumberWidgetMainLayout.root.setPadding(
+            Int.ZERO,
+            PADDING_16.dpToPx(resources.displayMetrics),
+            Int.ZERO,
+            PADDING_16.dpToPx(resources.displayMetrics)
+        )
     }
 
     fun startShakeAnimation() {
@@ -418,7 +537,10 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         private const val FADE_DURATION = 200L
         private const val ALPHA_0_5 = 0.5f
         private const val ALPHA_1_0 = 1.0f
+        private const val PADDING_16 = 16
 
-        private const val DEFAULT_EMPTY_STRING = ""
+        private const val CHECK_BALANCE_INFORMATION = "information"
+        private const val CHECK_BALANCE_CRITICAL = "critical"
+        private const val CHECK_BALANCE_WARNING = "warning"
     }
 }

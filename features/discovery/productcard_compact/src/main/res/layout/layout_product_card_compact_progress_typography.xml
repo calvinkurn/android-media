@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifyprinciples.Typography xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/progress_typography"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textColor="@color/product_card_compact_dms_progress_bar_label_text_color"
+    app:typographyType="small"
+    app:typographyWeight="bold" />

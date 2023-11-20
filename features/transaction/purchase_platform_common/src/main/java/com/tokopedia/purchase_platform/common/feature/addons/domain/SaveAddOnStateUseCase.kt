@@ -43,10 +43,10 @@ class SaveAddOnStateUseCase @Inject constructor(
 
         return if (isFireAndForget) {
             graphqlRepository.response(listOf(requestFireAndForget))
-                .getSuccessData<SaveAddOnStateResponse>()
+                .getSuccessData()
         } else {
             graphqlRepository.response(listOf(request))
-                .getSuccessData<SaveAddOnStateResponse>()
+                .getSuccessData()
         }
     }
 

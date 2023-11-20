@@ -1,14 +1,23 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section
 
 import android.view.View
+import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.R.dimen.festive_section_min_height
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.home_component.util.ImageHandler
+import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -21,6 +30,14 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
     val shimmer: ConstraintLayout = itemView.findViewById(R.id.section_shimmer)
     private var carouselEmptyState: LocalLoad = itemView.findViewById(R.id.viewEmptyState)
 
+    private val festiveContainer: LinearLayoutCompat = itemView.findViewById(R.id.festiveContainer)
+
+    private val festiveBackground: AppCompatImageView =
+        itemView.findViewById(R.id.festiveBackground)
+
+    private val festiveForeground: AppCompatImageView =
+        itemView.findViewById(R.id.festiveForeground)
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as SectionViewModel
         viewModel?.let {
@@ -28,6 +45,9 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
         }
         viewModel?.shouldShowShimmer()?.let { shimmer.showWithCondition(it) }
         viewModel?.shouldShowError()?.let { carouselEmptyState.showWithCondition(it) }
+
+        resetFestiveSection()
+        addChildComponent()
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -56,6 +76,86 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                     handleError()
                 }
             }
+        }
+    }
+
+    private fun addChildComponent() {
+        val sectionComponent = viewModel?.components
+
+        val items = sectionComponent?.getComponentsItem() ?: return
+
+        val shouldSupportFestive = items.find { !it.isBackgroundPresent } == null
+
+        if (!shouldSupportFestive) return
+
+        items.forEach { item ->
+            addComponentView(item)
+        }
+
+        sectionComponent.properties?.backgroundImageUrl?.let {
+            renderFestiveBackground(it)
+        }
+
+        sectionComponent.properties?.foregroundImageUrl?.let {
+            renderFestiveForeground(it)
+        }
+    }
+
+    private fun renderFestiveForeground(imageUrl: String) {
+        festiveForeground.show()
+
+        festiveForeground.loadImageWithoutPlaceholder(
+            imageUrl,
+            listener = object : ImageHandler.ImageLoaderStateListener {
+                override fun successLoad(view: ImageView?) {
+                    festiveForeground.minimumHeight = 0
+                }
+
+                override fun failedLoad(view: ImageView?) {
+                    view?.hide()
+                }
+            }
+        )
+    }
+
+    private fun renderFestiveBackground(imageUrl: String) {
+        festiveBackground.show()
+
+        festiveBackground.loadImageWithoutPlaceholder(
+            imageUrl,
+            listener = object : ImageHandler.ImageLoaderStateListener {
+                override fun successLoad(view: ImageView?) {
+                    festiveBackground.minimumHeight = 0
+                }
+
+                override fun failedLoad(view: ImageView?) {
+                    view?.hide()
+                }
+            }
+        )
+    }
+
+    private fun resetFestiveSection() {
+        festiveContainer.removeAllViews()
+
+        val minHeight = itemView.context.resources.getDimensionPixelOffset(festive_section_min_height)
+
+        festiveBackground.layout(0, 0, 0, 0)
+        festiveBackground.minimumHeight = minHeight
+        festiveBackground.hide()
+
+        festiveForeground.layout(0, 0, 0, 0)
+        festiveForeground.minimumHeight = minHeight
+        festiveForeground.hide()
+    }
+
+    private fun addComponentView(item: ComponentsItem) {
+        val component = ComponentsList.values().find { it.componentName == item.name } ?: return
+
+        component.let {
+            festiveContainer.addView(
+                CustomViewCreator.getCustomViewObject(itemView.context, it, item, fragment)
+            )
         }
     }
 

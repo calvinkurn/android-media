@@ -48,7 +48,6 @@ import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.model.pojo.TokonowRemoteConfigData
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.setAnnouncementData
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateDiscoPromoListActivity
 import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
@@ -233,7 +232,7 @@ class AffiliatePromoFragment :
                     getString(R.string.affiliate_promo)
                 }
             setOnBackButtonClickListener {
-                (activity as? AffiliateActivity)?.handleBackButton(false)
+                activity?.finish()
             }
         }
 
@@ -305,7 +304,7 @@ class AffiliatePromoFragment :
 
     fun handleBack() {
         if (binding?.recommendedLayout?.isVisible == true) {
-            (activity as? AffiliateActivity)?.handleBackButton(false)
+            activity?.finish()
         } else {
             showDefaultState()
         }
@@ -707,7 +706,8 @@ class AffiliatePromoFragment :
         productIdentifier: String,
         status: Int?,
         type: String?,
-        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?,
+        imageArray: List<String?>?
     ) {
         AffiliatePromotionBottomSheet.newInstance(
             AffiliatePromotionBottomSheetParams(

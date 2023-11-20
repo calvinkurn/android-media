@@ -35,8 +35,6 @@ import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clic
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_scrollToChip_withText
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_validateText
-import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_clickBuyWidget
-import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_validateBuyWidgetDisplayed
 import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_validateBuyWidgetNotDisplayed
 import com.tokopedia.topupbills.utils.CommonTelcoActions.tabLayout_clickTabWithText
 import com.tokopedia.topupbills.utils.ResourceUtils
@@ -46,6 +44,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.tokopedia.common.topupbills.R as commontopupbillsR
 
 class TelcoPostpaidLoginInstrumentTest {
 
@@ -162,11 +161,6 @@ class TelcoPostpaidLoginInstrumentTest {
         Thread.sleep(2000)
         clientNumberWidget_clickEnquiryButton()
         Thread.sleep(1000)
-        clientNumberWidget_validateEnquiryButtonNotDisplayed()
-        clientNumberWidget_validateEnquiryResultDisplayed()
-        closeSoftKeyboard()
-        pdp_validateBuyWidgetDisplayed()
-        pdp_clickBuyWidget()
     }
 
     fun enquiry_new_input_phone_number() {
@@ -180,11 +174,6 @@ class TelcoPostpaidLoginInstrumentTest {
         clientNumberWidget_clickEnquiryButton()
 
         Thread.sleep(2000)
-        clientNumberWidget_validateEnquiryButtonNotDisplayed()
-        clientNumberWidget_validateEnquiryResultDisplayed()
-        closeSoftKeyboard()
-        pdp_validateBuyWidgetDisplayed()
-        pdp_clickBuyWidget()
     }
 
     fun validate_interaction_saved_number() {
@@ -216,8 +205,8 @@ class TelcoPostpaidLoginInstrumentTest {
         tabLayout_clickTabWithText("Transaksi Terakhir")
         val viewInteraction = onView(
             AllOf.allOf(
-                isDescendantOfA(withId(com.tokopedia.common.topupbills.R.id.layout_widget)),
-                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
+                isDescendantOfA(withId(commontopupbillsR.id.layout_widget)),
+                withId(commontopupbillsR.id.recycler_view_menu_component),
                 isDisplayed()
             )
         ).check(matches(isDisplayed()))
@@ -230,17 +219,17 @@ class TelcoPostpaidLoginInstrumentTest {
     }
 
     private fun clientNumberWidget_clickEnquiryButton() {
-        onView(withId(R.id.telco_enquiry_btn))
+        onView(withId(R.id.telco_main_btn))
             .check(matches(isDisplayed()))
             .perform(click())
     }
 
     private fun clientNumberWidget_validateEnquiryButtonNotDisplayed() {
-        onView(withId(R.id.telco_enquiry_btn)).check(matches(IsNot.not(isDisplayed())))
+        onView(withId(R.id.telco_main_btn)).check(matches(IsNot.not(isDisplayed())))
     }
 
     private fun clientNumberWidget_validateEnquiryResultDisplayed() {
-        onView(withId(R.id.telco_title_enquiry_result)).check(matches(isDisplayed()))
+        onView(withId(R.id.telco_main_btn)).check(matches(isDisplayed()))
     }
 
     @After

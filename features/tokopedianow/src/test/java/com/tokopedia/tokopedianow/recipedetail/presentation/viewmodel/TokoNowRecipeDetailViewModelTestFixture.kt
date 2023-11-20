@@ -8,8 +8,8 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
@@ -105,19 +105,15 @@ open class TokoNowRecipeDetailViewModelTestFixture {
     }
 
     protected fun onGetAddressData_thenReturn(response: GetStateChosenAddressResponse) {
-        every {
-            getAddressUseCase.getStateChosenAddress(any(), any(), GET_ADDRESS_SOURCE)
-        } answers {
-            firstArg<(GetStateChosenAddressResponse) -> Unit>().invoke(response)
-        }
+        coEvery {
+            getAddressUseCase(GET_ADDRESS_SOURCE)
+        } returns response
     }
 
     protected fun onGetAddressData_thenReturn(throwable: Throwable) {
-        every {
-            getAddressUseCase.getStateChosenAddress(any(), any(), GET_ADDRESS_SOURCE)
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+        coEvery {
+            getAddressUseCase(GET_ADDRESS_SOURCE)
+        } throws throwable
     }
 
     protected fun onGetMiniCart_thenReturn(response: MiniCartSimplifiedData) {
@@ -153,17 +149,17 @@ open class TokoNowRecipeDetailViewModelTestFixture {
     }
 
     protected fun verifyGetAddressDataUseCaseCalled() {
-        coVerify { getAddressUseCase.getStateChosenAddress(any(), any(), GET_ADDRESS_SOURCE) }
+        coVerify { getAddressUseCase(GET_ADDRESS_SOURCE) }
     }
 
     protected fun verifyGetAddressDataUseCaseNotCalled() {
-        coVerify(exactly = 0) { getAddressUseCase.getStateChosenAddress(any(), any(), any()) }
+        coVerify(exactly = 0) { getAddressUseCase(GET_ADDRESS_SOURCE) }
     }
 
     protected fun verifyGetRecipeUseCaseCalled(
         recipeId: String = "",
         slug: String = "",
-        warehouseId: String = "0",
+        warehouseId: String = "0"
     ) {
         coVerify { getRecipeUseCase.execute(eq(recipeId), eq(slug), eq(warehouseId)) }
     }

@@ -1,4 +1,4 @@
-![image](../../res/repurchase_filter_chips.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/repurchase_filter_chips.png)
 
 <!--left header table-->
 | **Type Factory** | `RepurchaseTypeFactory` |

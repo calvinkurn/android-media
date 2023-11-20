@@ -31,7 +31,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 class RecommendationCarouselWidgetView :
     ConstraintLayout,
     IRecommendationWidgetView<RecommendationCarouselModel>,
-    RecommendationHeaderListener,
     DefaultLifecycleObserver {
 
     constructor(context: Context) : super(context)
@@ -56,17 +55,24 @@ class RecommendationCarouselWidgetView :
         get() = LAYOUT
 
     override fun bind(model: RecommendationCarouselModel) {
-        if (!model.hasData) hide()
-        else bindData(model)
+        if (!model.hasData) {
+            hide()
+        } else {
+            bindData(model)
+        }
     }
 
     private fun bindData(model: RecommendationCarouselModel) {
         show()
 
-        binding.recommendationHeaderView.bindData(model.widget, this)
+        binding.recommendationHeaderView.bindData(
+            data = model.widget,
+            listener = headerViewListener(model = model)
+        )
 
-        if (!binding.recommendationCarouselProduct.isVisible)
+        if (!binding.recommendationCarouselProduct.isVisible) {
             binding.recommendationCarouselLoading.root.show()
+        }
 
         binding.recommendationCarouselProduct.bindCarouselProductCardViewGrid(
             productCardModelList = model.widget.recommendationItemList.toProductCardModels(),
@@ -75,7 +81,7 @@ class RecommendationCarouselWidgetView :
             carouselProductCardOnItemClickListener = itemClickListener(model),
             carouselSeeMoreClickListener = seeMoreClickListener(model),
             carouselProductCardOnItemATCNonVariantClickListener = itemAddToCartNonVariantListener(model),
-            finishCalculate = ::finishCalculateCarouselHeight,
+            finishCalculate = ::finishCalculateCarouselHeight
         )
     }
 
@@ -90,27 +96,29 @@ class RecommendationCarouselWidgetView :
             ) {
                 val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
 
-                if (productCardModel.isTopAds)
+                if (productCardModel.isTopAds) {
                     TopAdsUrlHitter(context).hitImpressionUrl(
                         this@RecommendationCarouselWidgetView::class.java.simpleName,
                         productRecommendation.trackerImageUrl,
                         productRecommendation.productId.toString(),
                         productRecommendation.name,
-                        productRecommendation.imageUrl,
+                        productRecommendation.imageUrl
                     )
+                }
 
-                if (model.widgetTracking != null)
+                if (model.widgetTracking != null) {
                     model.widgetTracking.sendEventItemImpression(
                         trackingQueue,
                         productRecommendation
                     )
-                else
+                } else {
                     RecommendationCarouselTracking.sendEventItemImpression(
                         trackingQueue,
                         model.widget,
                         productRecommendation,
                         model.trackingModel
                     )
+                }
             }
         }
 
@@ -118,7 +126,7 @@ class RecommendationCarouselWidgetView :
         object : CarouselProductCardListener.OnItemClickListener {
             override fun onItemClick(
                 productCardModel: ProductCardModel,
-                carouselProductCardPosition: Int,
+                carouselProductCardPosition: Int
             ) {
                 val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
 
@@ -130,7 +138,7 @@ class RecommendationCarouselWidgetView :
                         productRecommendation.name,
                         productRecommendation.imageUrl
                     )
-
+                if(model.listener?.onProductClick(productRecommendation) == true) return
                 if (model.widgetTracking != null)
                     model.widgetTracking.sendEventItemClick(productRecommendation)
                 else
@@ -153,32 +161,34 @@ class RecommendationCarouselWidgetView :
         }
 
     private fun itemAddToCartNonVariantListener(model: RecommendationCarouselModel) =
-        object: CarouselProductCardListener.OnATCNonVariantClickListener {
+        object : CarouselProductCardListener.OnATCNonVariantClickListener {
             override fun onATCNonVariantClick(
                 productCardModel: ProductCardModel,
                 carouselProductCardPosition: Int,
-                quantity: Int,
+                quantity: Int
             ) {
                 val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
                 recommendationWidgetViewModel?.onAddToCartNonVariant(
                     model,
                     productRecommendation,
-                    quantity,
+                    quantity
                 )
             }
+        }
+
+    private fun headerViewListener(model: RecommendationCarouselModel) =
+        object : RecommendationHeaderListener {
+            override fun onSeeAllClick(link: String) {
+                model.widgetTracking?.sendEventSeeAll()
+                RouteManager.route(context, link)
+            }
+
+            override fun onChannelExpired(widget: RecommendationWidget) {}
         }
 
     private fun finishCalculateCarouselHeight() {
         binding.recommendationCarouselProduct.show()
         binding.recommendationCarouselLoading.root.hide()
-    }
-
-    override fun onSeeAllClick(link: String) {
-        RouteManager.route(context, link)
-    }
-
-    override fun onChannelExpired(widget: RecommendationWidget) {
-
     }
 
     override fun onPause(owner: LifecycleOwner) {

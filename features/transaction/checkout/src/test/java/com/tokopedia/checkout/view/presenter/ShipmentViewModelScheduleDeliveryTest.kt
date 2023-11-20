@@ -97,7 +97,8 @@ class ShipmentViewModelScheduleDeliveryTest : BaseShipmentViewModelTest() {
     fun `WHEN get shipping rates and schedule delivery rates success with default selly THEN should render success with selly`() {
         // Given
         val ratesResponse = DataProvider.provideRatesV3Response()
-        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRecommendedRatesResponse()
+        val ratesScheduleDeliveryResponse =
+            DataProvider.provideScheduleDeliveryRecommendedRatesResponse()
         val shippingRecommendationData =
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
@@ -176,7 +177,12 @@ class ShipmentViewModelScheduleDeliveryTest : BaseShipmentViewModelTest() {
         // Then
         verify {
             getRatesWithScheduleUseCase.execute(any(), any())
-            view.setSelectedCourier(itemPosition, match { it.scheduleDeliveryUiModel!!.isSelected }, true, false)
+            view.setSelectedCourier(
+                itemPosition,
+                match { it.scheduleDeliveryUiModel!!.isSelected },
+                true,
+                false
+            )
         }
     }
 
@@ -738,10 +744,14 @@ class ShipmentViewModelScheduleDeliveryTest : BaseShipmentViewModelTest() {
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
             ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
-        shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first { it.productData.shipperProductId == 28 }.productData.error =
+        val courier =
+            shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first { it.productData.shipperProductId == 28 }
+        courier.productData = courier.productData.copy(
+            error =
             ErrorProductData().apply {
                 errorMessage = "error"
             }
+        )
 
         every { getRatesWithScheduleUseCase.execute(any(), any()) } returns Observable.just(
             shippingRecommendationData
@@ -821,10 +831,14 @@ class ShipmentViewModelScheduleDeliveryTest : BaseShipmentViewModelTest() {
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
             ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
-        shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }.productData.error =
+        val courier =
+            shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }
+        courier.productData = courier.productData.copy(
+            error =
             ErrorProductData().apply {
                 errorMessage = "error"
             }
+        )
 
         every { getRatesWithScheduleUseCase.execute(any(), any()) } returns Observable.just(
             shippingRecommendationData

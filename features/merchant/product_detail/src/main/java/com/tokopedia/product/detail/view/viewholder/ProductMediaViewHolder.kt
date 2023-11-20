@@ -2,8 +2,8 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -13,21 +13,27 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 /**
  * Created by Yehezkiel on 04/05/20
  */
-class ProductMediaViewHolder(private val view: View,
-                             private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductMediaDataModel>(view) {
+class ProductMediaViewHolder(
+    private val view: View,
+    private val listener: DynamicProductDetailListener
+) : AbstractViewHolder<ProductMediaDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_media
     }
     private val binding = ItemDynamicProductMediaBinding.bind(view)
 
     override fun bind(element: ProductMediaDataModel) {
-
         setupViewpager(element)
 
         element.shouldAnimateLabel = false
         element.shouldUpdateImage = false
 
-        view.addOnImpressionListener(element.impressHolder) {
+        view.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
     }
@@ -39,6 +45,14 @@ class ProductMediaViewHolder(private val view: View,
         }
 
         payloads.forEach { processPayload(it as? Int, element) }
+        view.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
+            listener.onImpressComponent(getComponentTrackData(element))
+        }
     }
 
     private fun processPayload(payload: Int?, element: ProductMediaDataModel) = when (payload) {
@@ -63,7 +77,8 @@ class ProductMediaViewHolder(private val view: View,
             componentTrackDataModel = getComponentTrackData(element),
             initialScrollPosition = scrollPosition,
             containerType = element.containerType,
-            recommendation = element.recommendation
+            recommendation = element.recommendation,
+            isPrefetch = element.isPrefetch
         )
     }
 
@@ -71,7 +86,10 @@ class ProductMediaViewHolder(private val view: View,
         listener.getProductVideoCoordinator()?.onPause()
     }
 
-    private fun getComponentTrackData(element: ProductMediaDataModel?) = ComponentTrackDataModel(element?.type
-            ?: "", element?.name ?: "", adapterPosition + 1)
-
+    private fun getComponentTrackData(element: ProductMediaDataModel?) = ComponentTrackDataModel(
+        element?.type
+            ?: "",
+        element?.name ?: "",
+        adapterPosition + 1
+    )
 }

@@ -13,7 +13,6 @@ import com.tokopedia.topads.common.domain.usecase.GetTopAdsGroupsStatisticsUseCa
 import com.tokopedia.topads.common.domain.usecase.GetTopAdsGroupsUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsManageGroupAdsUseCase
 import com.tokopedia.topads.util.AdGroupTestUtils.PER_PAGE
 import com.tokopedia.topads.util.AdGroupTestUtils.addInfiniteLoadingError
 import com.tokopedia.topads.util.AdGroupTestUtils.chooseAdGroup
@@ -54,7 +53,6 @@ class MpAdsGroupsViewModelTest {
     private val getTopAdsGroupsUseCase: GetTopAdsGroupsUseCase = mockk()
     private val getTopAdsGroupStatsUseCase: GetTopAdsGroupsStatisticsUseCase = mockk()
     private val getTopadsDepositsUseCase: TopAdsGetDepositUseCase = mockk()
-    private val topAdsManageGroupAdsUseCase: TopAdsManageGroupAdsUseCase = mockk()
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk()
 
     private val productId = ""
@@ -70,7 +68,6 @@ class MpAdsGroupsViewModelTest {
             getTopAdsGroupsUseCase,
             getTopAdsGroupStatsUseCase,
             getTopadsDepositsUseCase,
-            topAdsManageGroupAdsUseCase,
             topAdsCreateUseCase,
             userSession,
             rule.dispatchers
@@ -82,7 +79,6 @@ class MpAdsGroupsViewModelTest {
             getTopAdsGroupsUseCase,
             getTopAdsGroupStatsUseCase,
             getTopadsDepositsUseCase,
-            topAdsManageGroupAdsUseCase,
             topAdsCreateUseCase,
             userSession,
             rule.dispatchers

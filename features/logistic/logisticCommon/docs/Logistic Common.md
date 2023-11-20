@@ -37,7 +37,7 @@ implementation projectOrAar(rootProject.ext.features.logisticCommon)
 
 Use to show bottom sheet with information on changes in estimated delivery orders.
 
-![](res/delayed_eta_bottom_sheet.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticCommon/delayed_eta_bottom_sheet.png)
 
 <!--start expand:newInstance()-->
 call the fragment 
@@ -159,7 +159,7 @@ return true when google map available
 
  helper to show button user consent. this view also contain listener to route user.
 
-![](res/logistic_user_consent_button.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticCommon/logistic_user_consent_button.png)
 
 <!--start expand:displayUserConsent()-->
 to use this object call `LogisticUserConsentHelper.displayUserConsent()`

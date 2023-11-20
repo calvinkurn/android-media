@@ -16,54 +16,124 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 
 data class SearchProductModel(
-        @SerializedName("ace_search_product_v4")
-        @Expose
-        val searchProduct: SearchProduct = SearchProduct(),
+    @SerializedName("ace_search_product_v4")
+    @Expose
+    val searchProduct: SearchProduct = SearchProduct(),
 
-        @SerializedName("quick_filter")
-        @Expose
-        var quickFilterModel: DataValue = DataValue(),
+    @SerializedName("searchProductV5")
+    @Expose
+    val searchProductV5: SearchProductV5 = SearchProductV5(),
 
-        @SerializedName("productAds")
-        @Expose
-        val topAdsModel: TopAdsModel = TopAdsModel(),
+    @SerializedName("quick_filter")
+    @Expose
+    var quickFilterModel: DataValue = DataValue(),
 
-        @SerializedName("headlineAds")
-        @Expose
-        val cpmModel: CpmModel = CpmModel(),
+    @SerializedName("productAds")
+    @Expose
+    val topAdsModel: TopAdsModel = TopAdsModel(),
 
-        @SerializedName("global_search_navigation")
-        @Expose
-        val globalSearchNavigation: GlobalSearchNavigation = GlobalSearchNavigation(),
+    @SerializedName("headlineAds")
+    @Expose
+    val cpmModel: CpmModel = CpmModel(),
 
-        @SerializedName("searchInspirationCarouselV2")
-        @Expose
-        val searchInspirationCarousel: SearchInspirationCarousel = SearchInspirationCarousel(),
+    @SerializedName("global_search_navigation")
+    @Expose
+    val globalSearchNavigation: GlobalSearchNavigation = GlobalSearchNavigation(),
 
-        @SerializedName("searchInspirationWidget")
-        @Expose
-        val searchInspirationWidget: SearchInspirationWidget = SearchInspirationWidget(),
+    @SerializedName("searchInspirationCarouselV2")
+    @Expose
+    val searchInspirationCarousel: SearchInspirationCarousel = SearchInspirationCarousel(),
 
-        @SerializedName("fetchLastFilter")
-        val lastFilter: LastFilter = LastFilter(),
+    @SerializedName("searchInspirationWidget")
+    @Expose
+    val searchInspirationWidget: SearchInspirationWidget = SearchInspirationWidget(),
+
+    @SerializedName("fetchLastFilter")
+    val lastFilter: LastFilter = LastFilter(),
 ) {
 
     private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
 
-    val isPostProcessing: Boolean
-        get() = searchProduct.header.meta.isPostProcessing
+    fun hasProducts(isV5: Boolean): Boolean =
+        if (isV5) searchProductV5.data.productList.isNotEmpty()
+        else searchProduct.data.productList.isNotEmpty()
 
-    val isShowButtonAtc: Boolean
-        get() = searchProduct.header.meta.showButtonAtc
+    fun isQuerySafe(isV5: Boolean): Boolean =
+        if (isV5) searchProductV5.header.isQuerySafe
+        else searchProduct.data.isQuerySafe
 
-    val backendFilters: String
-        get() = searchProduct.backendFilters
+    fun isPostProcessing(isV5: Boolean): Boolean =
+        if (isV5) searchProductV5.header.meta.isPostProcessing
+        else searchProduct.header.meta.isPostProcessing
 
-    val backendFiltersToggle: String
-        get() = searchProduct.backendFiltersToggle
+    fun isShowButtonAtc(isV5: Boolean): Boolean =
+        if (isV5) searchProductV5.header.meta.showButtonAtc
+        else searchProduct.header.meta.showButtonAtc
 
-    val keywordIntention: Int
-        get() = searchProduct.data.keywordIntention
+    fun autocompleteApplink(isV5: Boolean): String =
+        if (isV5) searchProductV5.header.autocompleteApplink
+        else searchProduct.data.autocompleteApplink
+
+    fun backendFilters(isV5: Boolean): String =
+        if (isV5) searchProductV5.backendFilters
+        else searchProduct.backendFilters
+
+    fun componentId(isV5: Boolean): String =
+        if (isV5) searchProductV5.header.componentID
+        else searchProduct.header.componentId
+
+    fun totalData(isV5: Boolean): Long =
+        if (isV5) searchProductV5.header.totalData
+        else searchProduct.header.totalData.toLong()
+
+    fun additionalParams(isV5: Boolean): String =
+        if (isV5) searchProductV5.header.additionalParams
+        else searchProduct.header.additionalParams
+
+    fun backendFiltersToggle(isV5: Boolean): String =
+        if (isV5) searchProductV5.header.backendFiltersToggle
+        else searchProduct.backendFiltersToggle
+
+    fun keywordIntention(isV5: Boolean): Int =
+        if (isV5) searchProductV5.header.keywordIntention
+        else searchProduct.data.keywordIntention
+
+    val errorMessage: String
+        get() = searchProduct.errorMessage
+
+    fun redirectApplink(isV5: Boolean): String =
+        if (isV5) searchProductV5.data.redirection.redirectApplink
+        else searchProduct.data.redirection.redirectApplink
+
+    fun responseCode(isV5: Boolean) =
+        if (isV5) searchProductV5.header.responseCode
+        else searchProduct.header.responseCode
+
+    fun keywordProcess(isV5: Boolean) =
+        if (isV5) searchProductV5.header.keywordProcess
+        else searchProduct.header.keywordProcess
+
+    fun ticker(isV5: Boolean) =
+        if (isV5) searchProductV5.data.ticker
+        else searchProduct.data.ticker
+
+    fun suggestion(isV5: Boolean) =
+        if (isV5) searchProductV5.data.suggestion
+        else searchProduct.data.suggestion
+
+    fun relatedKeyword(isV5: Boolean) =
+        if (isV5) searchProductV5.relatedKeyword
+        else searchProduct.relatedKeyword
+
+    fun violation(isV5: Boolean) =
+        if (isV5) searchProductV5.data.violation
+        else searchProduct.data.violation
+
+    fun banner(isV5: Boolean) =
+        if (isV5) searchProductV5.data.banner
+        else searchProduct.data.banner
+
+    fun productListType() = searchProduct.header.meta.productListType
 
     fun setTopAdsImageViewModelList(topAdsImageViewModelList: List<TopAdsImageViewModel>) {
         this.topAdsImageViewModelList.clear()
@@ -71,8 +141,6 @@ data class SearchProductModel(
     }
 
     fun getTopAdsImageViewModelList(): List<TopAdsImageViewModel> = topAdsImageViewModelList
-
-    fun getProductListType(): String = searchProduct.header.meta.productListType
 
     data class SearchProduct (
             @SerializedName("header")
@@ -92,6 +160,9 @@ data class SearchProductModel(
 
         val errorMessage: String
             get() = header.errorMessage
+
+        val relatedKeyword: String
+            get() = data.related.relatedKeyword
     }
 
     data class SearchProductHeader(
@@ -132,10 +203,10 @@ data class SearchProductModel(
         @SerializedName("productListType")
         val productListType: String = "",
 
-        @SerializedName("isPostProcessing")
+        @SerializedName("isPostProcessing", alternate = ["hasPostProcessing"])
         val isPostProcessing: Boolean = false,
 
-        @SerializedName("showButtonAtc")
+        @SerializedName("showButtonAtc", alternate = ["hasButtonATC"])
         val showButtonAtc: Boolean = false,
     )
 
@@ -190,7 +261,7 @@ data class SearchProductModel(
     )
 
     data class Redirection(
-            @SerializedName("redirectApplink")
+            @SerializedName("redirectApplink", alternate = ["applink"])
             @Expose
             val redirectApplink: String = ""
     )
@@ -205,11 +276,11 @@ data class SearchProductModel(
             val query: String = "",
 
             @SuppressLint("Invalid Data Type")
-            @SerializedName("typeId")
+            @SerializedName("typeId", alternate = ["id"])
             @Expose
             val typeId: Int = 0,
 
-            @SerializedName("componentId")
+            @SerializedName("componentId", alternate = ["componentID"])
             @Expose
             val componentId: String = "",
 
@@ -319,6 +390,10 @@ data class SearchProductModel(
             @SerializedName("componentId")
             @Expose
             val componentId: String = "",
+
+            @SerializedName("warehouseIdDefault")
+            @Expose
+            val warehouseIdDefault: String = "",
     ) {
             fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
@@ -333,6 +408,10 @@ data class SearchProductModel(
         @SerializedName("imageUrl")
         @Expose
         val imageUrl: String = "",
+
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
 
         @SerializedName("show")
         @Expose
@@ -362,7 +441,7 @@ data class SearchProductModel(
             @Expose
             val text: String = "",
 
-            @SerializedName("componentId")
+            @SerializedName("componentId", alternate = ["componentID"])
             @Expose
             val componentId: String = "",
 
@@ -384,11 +463,11 @@ data class SearchProductModel(
             @Expose
             val applink: String = "",
 
-            @SerializedName("imageUrl")
+            @SerializedName("imageUrl", alternate = ["imageURL"])
             @Expose
             val imageUrl: String = "",
 
-            @SerializedName("componentId")
+            @SerializedName("componentId", alternate = ["componentID"])
             @Expose
             val componentId: String = "",
 

@@ -9,4 +9,5 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
  */
 abstract class BaseBalanceViewHolder<T>(v: View) : RecyclerView.ViewHolder(v) {
     abstract fun bind(model: T?, listener: HomeCategoryListener?)
+    open fun bind(model: T?, listener: HomeCategoryListener?, payloads: MutableList<Any>) { }
 }

@@ -9,7 +9,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -22,15 +21,15 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.*
 import com.tokopedia.discovery2.Constant.DISCOVERY_APPLINK
-import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
+import com.tokopedia.discovery2.Constant.PropertyType.ATF_BANNER
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.NavToolbarConfig
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
@@ -64,6 +63,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.VARIANT_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.WishListManager
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
@@ -72,6 +72,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
+import com.tokopedia.minicart.common.domain.data.BmGmData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
@@ -108,6 +110,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
     private val discoveryAnchorTabLiveData = MutableLiveData<Result<ComponentsItem>>()
+    private val discoveryNavToolbarConfig = MutableLiveData<NavToolbarConfig>()
 
     var miniCartSimplifiedData: MiniCartSimplifiedData? = null
 
@@ -131,6 +134,14 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = _miniCartOperationFailed
     private val _miniCartOperationFailed = SingleLiveEvent<Pair<Int,Int>>()
 
+    val addToCartActionNonVariant: LiveData<DiscoATCRequestParams>
+        get() = _addToCartActionNonVariant
+    private val _addToCartActionNonVariant = MutableLiveData<DiscoATCRequestParams>()
+
+    val bmGmDataList: LiveData<Pair<Int,List<BmGmData>>>
+        get() = _bmGmDataList
+    private val _bmGmDataList = MutableLiveData<Pair<Int,List<BmGmData>>>()
+
     private val _scrollState  = MutableLiveData<ScrollData>()
     val scrollState: LiveData<ScrollData> = _scrollState
 
@@ -142,6 +153,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     var isAffiliateInitialized = false
     private var randomUUIDAffiliate: String? = null
     private var bottomTabNavDataComponent : ComponentsItem?  = null
+    private var components: List<ComponentsItem> = listOf()
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
@@ -164,6 +176,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun addProductToCart(
         discoATCRequestParams: DiscoATCRequestParams
     ) {
+        _addToCartActionNonVariant.value = discoATCRequestParams
         val miniCartItem = if (!discoATCRequestParams.isGeneralCartATC)
             getMiniCartItem(discoATCRequestParams.productId) else null
         when {
@@ -281,20 +294,55 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         })
     }
 
-    fun getMiniCart(shopId: List<String>, warehouseId: String?) {
-        if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
+    fun getMiniCartBmGm(
+        shopId: List<String>,
+        bmGmDataParam: BmGmDataParam
+    ) {
+        launchCatchError(block = {
+            getMiniCartUseCase.setParams(
+                shopIds = shopId,
+                source = MiniCartSource.DiscoOfferPage,
+                bmGmParam = BmgmParamModel(
+                    offerIds = listOf(bmGmDataParam.offerId.toLongOrZero()),
+                    warehouseIds = listOf(bmGmDataParam.warehouseTco.toLongOrZero())
+                )
+            )
+            executeGetMiniCartUseCase {
+                _bmGmDataList.postValue(Pair(bmGmDataParam.parentPosition, it.bmGmDataList))
+            }
+        }) {
+            _miniCart.postValue(Fail(it))
+        }
+    }
+
+    fun getMiniCartTokonow(
+        shopId: List<String>,
+        warehouseId: String?,
+    ) {
+        if(shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
-                getMiniCartUseCase.setParams(shopId, MiniCartSource.TokonowDiscoveryPage)
-                getMiniCartUseCase.execute({
-                    miniCartSimplifiedData = it
+                getMiniCartUseCase.setParams(
+                    shopIds = shopId,
+                    source = MiniCartSource.TokonowDiscoveryPage
+                )
+                executeGetMiniCartUseCase {
                     _miniCart.postValue(Success(it))
-                }, {
-                    _miniCart.postValue(Fail(it))
-                })
+                }
             }) {
                 _miniCart.postValue(Fail(it))
             }
         }
+    }
+
+    private fun executeGetMiniCartUseCase(
+        onSuccessAction: ((miniCartSimplifiedData: MiniCartSimplifiedData) -> Unit)? = null
+    ) {
+        getMiniCartUseCase.execute({
+            miniCartSimplifiedData = it
+            onSuccessAction?.invoke(it)
+        }, {
+            _miniCart.postValue(Fail(it))
+        })
     }
 
     private fun removeItemCart(
@@ -347,6 +395,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
+                        components = it.components
                         setDiscoveryLiveState(it.pageInfo)
                         setPageInfo(it)
                         withContext(Dispatchers.Default) {
@@ -377,6 +426,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             pageInfoData.additionalInfo = discoPageData.additionalInfo
             campaignCode = pageInfoData.campaignCode ?: ""
             discoveryPageInfo.value = Success(pageInfoData)
+            setNavToolbarConfigData(pageInfoData)
+        }
+    }
+
+    private fun setNavToolbarConfigData(pageInfoData: PageInfo) {
+        if (discoveryNavToolbarConfig.value == null) {
+            val firstComponent = components.firstOrNull()
+            discoveryNavToolbarConfig.value = NavToolbarConfig(
+                isExtendedLayout = firstComponent != null && firstComponent.name == ComponentNames.SliderBanner.componentName && firstComponent.properties?.type == ATF_BANNER,
+                color = pageInfoData.thematicHeader?.color.orEmpty()
+            )
         }
     }
 
@@ -385,6 +445,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
     fun getDiscoveryLiveStateData(): LiveData<DiscoveryLiveState> = discoveryLiveStateData
     fun getDiscoveryAnchorTabLiveData(): LiveData<Result<ComponentsItem>> = discoveryAnchorTabLiveData
+    fun getDiscoveryNavToolbarConfigLiveData(): LiveData<NavToolbarConfig> = discoveryNavToolbarConfig
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
         val queryMap: MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")

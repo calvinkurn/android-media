@@ -4,7 +4,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.scp_rewards_widgets.R
-import com.tokopedia.scp_rewards_widgets.constants.CouponState
+import com.tokopedia.scp_rewards_widgets.constants.CouponStatus
 import com.tokopedia.scp_rewards_widgets.databinding.RewardsViewLayoutBinding
 import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -40,9 +40,9 @@ class RewardsViewHolder(itemView: View) : AbstractViewHolder<MedalRewardsModel>(
         binding?.rewardExpiryInfo?.apply {
             text = data.statusDescription
             val textColorToken = when (data.status) {
-                CouponState.ACTIVE -> unifyprinciplesR.color.Unify_NN950
-                CouponState.EXPIRED -> unifyprinciplesR.color.Unify_RN500
-                CouponState.INACTIVE -> unifyprinciplesR.color.Unify_NN600
+                CouponStatus.ACTIVE -> unifyprinciplesR.color.Unify_NN950
+                CouponStatus.EXPIRED -> unifyprinciplesR.color.Unify_RN500
+                CouponStatus.INACTIVE -> unifyprinciplesR.color.Unify_NN600
                 else -> unifyprinciplesR.color.Unify_RN500
             }
             setTextColor(ContextCompat.getColor(context, textColorToken))

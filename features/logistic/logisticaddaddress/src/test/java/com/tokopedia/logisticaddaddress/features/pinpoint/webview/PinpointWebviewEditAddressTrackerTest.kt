@@ -2,7 +2,7 @@ package com.tokopedia.logisticaddaddress.features.pinpoint.webview
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.EditAddressPinpointTracker
 import io.mockk.Runs
 import io.mockk.every
@@ -22,7 +22,7 @@ class PinpointWebviewEditAddressTrackerTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val repo: KeroRepository = mockk(relaxed = true)
+    private val getDistrictGeocode: GetDistrictGeoCodeUseCase = mockk(relaxed = true)
     private val liveDataObserver: Observer<PinpointWebviewState> = mockk(relaxed = true)
 
     private lateinit var viewModel: PinpointWebviewViewModel
@@ -30,7 +30,7 @@ class PinpointWebviewEditAddressTrackerTest {
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        viewModel = PinpointWebviewViewModel(repo)
+        viewModel = PinpointWebviewViewModel(getDistrictGeocode)
         viewModel.pinpointState.observeForever(liveDataObserver)
         viewModel.setSource("EDIT_ADDRESS")
         every { liveDataObserver.onChanged(any()) } just Runs

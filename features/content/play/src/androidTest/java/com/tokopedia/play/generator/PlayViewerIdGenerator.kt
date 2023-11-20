@@ -174,7 +174,8 @@ class PlayViewerIdGenerator {
                     analytic = mockk(relaxed = true),
                     pipSessionStorage = mockk(relaxed = true),
                     playLog = mockk(relaxed = true),
-                    router = mockk(relaxed = true)
+                    router = mockk(relaxed = true),
+                    queryParamStorage = mockk(relaxed = true),
                 )
             }
         )
@@ -217,6 +218,8 @@ class PlayViewerIdGenerator {
     )
     private val fileWriter = FileWriter()
 
+    // https://tokopedia.atlassian.net/browse/AN-53593
+    // so the error is due to permission problem, which is  java.io.FileNotFoundException: /storage/emulated/0/Download/res_id_result/play_youtube.csv (Permission denied)
     @Test
     fun inhousePlayer() {
         val tagItem = uiModelBuilder.buildTagItem(
@@ -332,6 +335,8 @@ class PlayViewerIdGenerator {
         }
     }
 
+    // https://tokopedia.atlassian.net/browse/AN-53593
+    // so the error is due to permission problem, which is  java.io.FileNotFoundException: /storage/emulated/0/Download/res_id_result/play_youtube.csv (Permission denied)
     @Test
     fun youTubePlayer() {
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(

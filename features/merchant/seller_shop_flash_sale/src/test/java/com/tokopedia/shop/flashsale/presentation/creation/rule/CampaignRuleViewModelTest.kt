@@ -347,7 +347,7 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                     isCampaignRuleSubmit = false,
                     upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
                 )
-                val validationResult = CampaignRuleValidationResult.BothSectionsInvalid
+                val validationResult = CampaignRuleValidationResult.InvalidPaymentMethod
                 val expected = CampaignRuleActionResult.ValidationFail(validationResult)
 
                 coEvery {
@@ -714,7 +714,7 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                     isCampaignRuleSubmit = false,
                     upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
                 )
-                val validationResult = CampaignRuleValidationResult.BothSectionsInvalid
+                val validationResult = CampaignRuleValidationResult.InvalidPaymentMethod
                 val expected = CampaignRuleActionResult.ValidationFail(validationResult)
 
                 coEvery {

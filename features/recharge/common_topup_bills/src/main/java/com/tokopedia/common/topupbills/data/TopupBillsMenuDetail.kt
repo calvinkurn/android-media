@@ -30,5 +30,8 @@ class TopupBillsMenuDetail(
         val isExpressCheckout: Boolean = false,
         @SerializedName("menu_label")
         @Expose
-        val menuLabel: String = ""
+        val menuLabel: String = "",
+        @SerializedName("buttons")
+        @Expose
+        val multiCheckoutButtons: List<MultiCheckoutButtons> = listOf(),
 )

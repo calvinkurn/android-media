@@ -2,15 +2,11 @@ package com.tokopedia.inbox.universalinbox.test
 
 import com.tokopedia.inbox.universalinbox.test.base.BaseUniversalInboxTest
 import com.tokopedia.inbox.universalinbox.test.robot.generalRobot
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertApplinkChatBuyer
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertApplinkChatSeller
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertApplinkDiscussion
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertApplinkReview
+import com.tokopedia.inbox.universalinbox.test.robot.menuResult
 import com.tokopedia.inbox.universalinbox.test.robot.menuRobot
-import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertApplinkPDP
+import com.tokopedia.inbox.universalinbox.test.robot.recommendationResult
 import com.tokopedia.inbox.universalinbox.test.robot.recommendationRobot
-import com.tokopedia.inbox.universalinbox.test.robot.widget.WidgetResult.assertApplinkChatListDriver
-import com.tokopedia.inbox.universalinbox.test.robot.widget.WidgetResult.assertApplinkHelp
+import com.tokopedia.inbox.universalinbox.test.robot.widgetResult
 import com.tokopedia.inbox.universalinbox.test.robot.widgetRobot
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
@@ -27,7 +23,9 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         }
 
         // Then
-        assertApplinkChatBuyer()
+        menuResult {
+            assertApplinkChatBuyer()
+        }
     }
 
     @Test
@@ -40,7 +38,9 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         }
 
         // Then
-        assertApplinkChatSeller()
+        menuResult {
+            assertApplinkChatSeller()
+        }
     }
 
     @Test
@@ -53,7 +53,9 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         }
 
         // Then
-        assertApplinkDiscussion()
+        menuResult {
+            assertApplinkDiscussion()
+        }
     }
 
     @Test
@@ -66,7 +68,9 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         }
 
         // Then
-        assertApplinkReview()
+        menuResult {
+            assertApplinkReview()
+        }
     }
 
     @Test
@@ -79,7 +83,9 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         }
 
         // Then
-        assertApplinkHelp()
+        widgetResult {
+            assertApplinkHelp()
+        }
     }
 
     @Test
@@ -88,14 +94,17 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         generalRobot {
-            scrollToPosition(10)
+            scrollToPosition(8) // trigger rv load
+            scrollToPosition(11)
         }
         recommendationRobot {
-            clickProductOnPosition(10)
+            clickProductOnPosition(11)
         }
 
         // Then
-        assertApplinkPDP()
+        recommendationResult {
+            assertApplinkPDP()
+        }
     }
 
     @Test
@@ -108,6 +117,8 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         }
 
         // Then
-        assertApplinkChatListDriver()
+        widgetResult {
+            assertApplinkChatListDriver()
+        }
     }
 }

@@ -49,6 +49,7 @@
                 "priceStr": "Rp2.045.000",
                 "wishlist": false,
                 "ratingAverage": "4.6",
+                "warehouseIdDefault": "1234",
                 "labelGroups": [
                   {
                     "title": "Terjual 72",
@@ -63,6 +64,7 @@
                 "badges": [
                   {
                     "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+                    "title": "Kab. Sidoarjo",
                     "show": true
                   }
                 ],

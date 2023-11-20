@@ -4,18 +4,6 @@
   "query" : [
     {
       "event": "clickTopNav",
-      "eventCategory": "top nav",
-      "eventAction": "click - shop - recent search",
-      "eventLabel": ".* - keyword: .*",
-      "screenName": "/",
-      "currentSite": "tokopediamarketplace",
-      "userId": ".+",
-      "businessUnit": "search",
-      "sessionIris": ".*",
-      "pageSource": ".*"
-    },
-    {
-      "event": "clickTopNav",
       "eventCategory": "top nav - /",
       "eventAction": "click see more - recent search",
       "eventLabel": "",
@@ -25,14 +13,17 @@
       "sessionIris": ".*"
     },
     {
-      "event": "clickSearch",
-      "eventCategory": "top nav",
-      "eventAction": "click - recent search",
-      "eventLabel": "value: .* - po: .* - applink: .*",
-      "sessionIris": ".*",
+      "component": "none",
       "businessUnit": "search",
+      "eventCategory": "search component",
       "currentSite": "tokopediamarketplace",
-      "pageSource": ".*"
+      "pageSource": ".*",
+      "pageDestination": ".+",
+      "event": "clickSearch",
+      "eventAction": "click",
+      "sessionIris": ".+",
+      "eventLabel": "keyword:.* \\| value_id:.* \\| value_name:.*",
+      "campaignCode": "none"
     },
     {
       "event": "select_content",
@@ -60,28 +51,6 @@
       "eventCategory": "top nav - homepage",
       "eventAction": "click refresh on popular search",
       "eventLabel": "",
-      "sessionIris": ".*"
-    },
-    {
-      "event": "clickTopNav",
-      "eventCategory": "top nav",
-      "eventAction": "click - popular search - .*",
-      "eventLabel": "value: .* - title: .* - po: .*",
-      "businessUnit": "search",
-      "currentSite": "tokopediamarketplace",
-      "userId": ".+",
-      "sessionIris": ".*",
-      "pageSource": ".*"
-    },
-    {
-      "event": "clickTopNav",
-      "eventCategory": "top nav - initial state - /",
-      "eventAction": "click - curated campaign - .*",
-      "eventLabel": ".* - .*",
-      "campaignCode": ".*",
-      "businessUnit": "search",
-      "currentSite": "tokopediamarketplace",
-      "userId": ".+",
       "sessionIris": ".*"
     },
     {

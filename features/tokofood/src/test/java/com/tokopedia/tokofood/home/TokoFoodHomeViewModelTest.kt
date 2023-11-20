@@ -79,7 +79,8 @@ class TokoFoodHomeViewModelTest : TokoFoodHomeViewModelTestFixture() {
 
     @Test
     fun `when getting chooseAddress should throw chooseAddress's exception and get failed result`() {
-        onGetChooseAddress_thenReturn(Throwable())
+        val error = Exception("test error")
+        onGetChooseAddress_thenReturn(error)
 
         var actualResponse: Result<GetStateChosenAddressResponse>? = null
         runTest {
@@ -441,7 +442,7 @@ class TokoFoodHomeViewModelTest : TokoFoodHomeViewModelTestFixture() {
 
     @Test
     fun `when getting homeLayout should throw homeLayout's exception and get the failed result`() {
-        onGetHomeLayoutData_thenReturn(Throwable())
+        onGetHomeLayoutData_thenReturn(Throwable(), createAddress())
 
         var actualResponse: Result<TokoFoodListUiModel>? = null
 

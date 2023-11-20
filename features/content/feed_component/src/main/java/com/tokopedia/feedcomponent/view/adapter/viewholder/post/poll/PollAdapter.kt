@@ -6,18 +6,23 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_poll_option.view.*
+import com.tokopedia.kotlin.extensions.view.visible
 
 /**
  * @author by milhamj on 12/12/18.
@@ -53,51 +58,58 @@ class PollAdapter(private val contentPosition: Int,
                            private val listener: PollOptionListener?)
         : RecyclerView.ViewHolder(v) {
 
+        private val shadowLayer: RelativeLayout = itemView.findViewById(R.id.shadowLayer)
+        private val percent: TextView = itemView.findViewById(R.id.percent)
+        private val percentLayout: LinearLayout = itemView.findViewById(R.id.percentLayout)
+        private val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
+        private val tvOption: TextView = itemView.findViewById(R.id.option)
+        private val imageView: SquareImageView = itemView.findViewById(R.id.imageView)
+
         fun bind(element: PollContentOptionModel) {
             val context = itemView.context
             if (element.selected == PollContentOptionModel.DEFAULT) {
-                itemView.shadowLayer.hide()
-                itemView.percent.hide()
-                itemView.percentLayout.hide()
-                itemView.progressBar.progress = 0
-                itemView.progressBar.progressDrawable = MethodChecker.getDrawable(context, R.drawable.poll_option_image_default)
+                shadowLayer.hide()
+                percent.hide()
+                percentLayout.hide()
+                progressBar.progress = 0
+                progressBar.progressDrawable = MethodChecker.getDrawable(context, R.drawable.poll_option_image_default)
             } else {
-                itemView.shadowLayer.show()
-                itemView.percent.show()
-                itemView.percentLayout.show()
-                itemView.progressBar.progress = element.percentage
+                shadowLayer.show()
+                percent.show()
+                percentLayout.show()
+                progressBar.progress = element.percentage
                 if (element.selected == PollContentOptionModel.SELECTED) {
-                    itemView.progressBar.progressDrawable = MethodChecker.getDrawable(context, R.drawable.poll_option_image_selected)
+                    progressBar.progressDrawable = MethodChecker.getDrawable(context, R.drawable.poll_option_image_selected)
                 } else if (element.selected == PollContentOptionModel.UNSELECTED) {
-                    itemView.progressBar.progressDrawable = MethodChecker.getDrawable(context, R.drawable.poll_option_image_unselected)
+                    progressBar.progressDrawable = MethodChecker.getDrawable(context, R.drawable.poll_option_image_unselected)
                 }
             }
 
-            itemView.option.text = element.option
-            itemView.percent.text = element.percentage.toString()
+            tvOption.text = element.option
+            percent.text = element.percentage.toString()
             val target = object : CustomTarget<Bitmap>() {
                 override fun onLoadCleared(placeholder: Drawable?) {
 
                 }
 
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    itemView.imageView.setImageBitmap(resource)
-                    itemView.imageView.post {
-                        itemView.shadowLayer.layoutParams = RelativeLayout.LayoutParams(
-                                itemView.imageView.height,
-                                itemView.imageView.width)
+                    imageView.setImageBitmap(resource)
+                    imageView.post {
+                        shadowLayer.layoutParams = RelativeLayout.LayoutParams(
+                                imageView.height,
+                                imageView.width)
 
                         if (element.selected == PollContentOptionModel.DEFAULT) {
-                            itemView.shadowLayer.visibility = View.GONE
+                            shadowLayer.gone()
                         } else {
-                            itemView.shadowLayer.visibility = View.VISIBLE
+                            shadowLayer.visible()
                         }
                     }
                 }
 
             }
             ImageHandler.loadImageWithTarget(
-                    itemView.imageView.context,
+                    imageView.context,
                     element.imageUrl,
                     target
             )

@@ -10,7 +10,8 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_
 import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
-import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.domain.pojo.Chat
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CHAT_SEPARATOR
@@ -57,13 +58,51 @@ import javax.inject.Inject
  */
 open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatMapper() {
 
+    override fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
+        val listChat: ArrayList<Visitable<*>> = ArrayList()
+
+        for (chatItemPojo in pojo.chatReplies.list) {
+            for (chatItemPojoByDate in chatItemPojo.chats) {
+                for ((index, chatItemPojoByDateByTime) in chatItemPojoByDate.replies.withIndex()) {
+                    if (hasAttachment(chatItemPojoByDateByTime)) {
+                        val attachmentIds = getAttachmentIds(pojo.chatReplies.attachmentIds)
+                        val hasReplied = validateActionButtonHasBeenReplied(index, chatItemPojoByDateByTime, chatItemPojoByDate)
+                        if (!hasReplied) {
+                            listChat.add(mapAttachment(chatItemPojoByDateByTime, attachmentIds))
+                        }
+                    } else {
+                        listChat.add(convertToMessageUiModel(chatItemPojoByDateByTime))
+                    }
+                }
+            }
+        }
+
+        return listChat
+    }
+
+    private fun validateActionButtonHasBeenReplied(
+        index: Int,
+        chatItemPojoByDateByTime: Reply,
+        chatItemPojoByDate: Chat
+    ): Boolean {
+        val attachmentId = chatItemPojoByDateByTime.attachment.type.toString()
+        if (attachmentId != TYPE_CHAT_BALLOON_ACTION) return false
+
+        return if (index < (chatItemPojoByDate.replies.size - 1)) {
+            val nextItem = chatItemPojoByDate.replies[index + 1]
+            !nextItem.isOpposite
+        } else {
+            false
+        }
+    }
+
     override fun mapAttachment(
         chatItemPojoByDateByTime: Reply,
         attachmentIds: List<String>
     ): Visitable<*> {
         return when (chatItemPojoByDateByTime.attachment.type.toString()) {
             TYPE_QUICK_REPLY -> convertToQuickReply(chatItemPojoByDateByTime)
-            TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(chatItemPojoByDateByTime)
+            TYPE_QUICK_REPLY_SEND -> convertToMessageUiModel(chatItemPojoByDateByTime)
             TYPE_CHAT_BALLOON_ACTION -> convertToBalloonAction(chatItemPojoByDateByTime)
             TYPE_INVOICES_SELECTION -> convertToInvoicesSelection(chatItemPojoByDateByTime)
             TYPE_CHAT_SEPARATOR -> convertToChatSeprator(chatItemPojoByDateByTime)
@@ -72,7 +111,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_STICKY_BUTTON -> convertToStickyButtonActionsViewModel(
                 chatItemPojoByDateByTime
             )
-            TYPE_CSAT_VIEW -> convertToMessageViewModel(chatItemPojoByDateByTime)
+            TYPE_CSAT_VIEW -> convertToMessageUiModel(chatItemPojoByDateByTime)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
             TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(
                 chatItemPojoByDateByTime,
@@ -297,7 +336,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             pojo.replyTime,
             pojo.msg,
             convertToChatActionBubbleViewModelList(pojoAttribute),
-            status = pojo.status
+            status = pojo.status,
+            isTypingBlocked = pojoAttribute.isTypingBlockedOnButtonSelect
         )
     }
 

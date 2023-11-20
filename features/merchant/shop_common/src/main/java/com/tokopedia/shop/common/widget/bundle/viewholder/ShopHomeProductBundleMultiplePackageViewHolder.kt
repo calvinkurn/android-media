@@ -29,12 +29,14 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
 
     private var viewBinding: ItemShopHomeBundleProductMultipleBinding? by viewBinding()
     private var typographyBundleProductName: Typography? = null
+    private var typographyBundleProductMultipleCount: Typography? = null
     private var imageBundleProduct: ImageUnify? = null
     private var bundleProductsContainer: ConstraintLayout? = null
 
     init {
         viewBinding?.apply {
             typographyBundleProductName = tvBundleProductMultipleName
+            typographyBundleProductMultipleCount = tvBundleProductMultipleCount
             imageBundleProduct = ivBundleProductMultiple
             bundleProductsContainer = multipleBundleProductsContainer
         }
@@ -50,6 +52,13 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
     ) {
         imageBundleProduct?.loadImage(bundleProductItem.productImageUrl)
         typographyBundleProductName?.text = bundleProductItem.productName
+
+        if (bundleProductItem.minOrder != null) {
+            typographyBundleProductMultipleCount?.text = itemView.context.getString(R.string.shop_page_product_bundle_dynamic_count, bundleProductItem.minOrder)
+        } else {
+            typographyBundleProductMultipleCount?.text = itemView.context.getString(R.string.shop_page_product_bundle_count)
+        }
+
         itemView.addOnImpressionListener(bundleProductItem){
             itemListener?.impressionProductItemBundleMultiple(
                 bundleProductItem,

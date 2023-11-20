@@ -1,5 +1,6 @@
 package com.tokopedia.iris.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.iris.util.DEFAULT_MAX_ROW
 import com.tokopedia.iris.util.DEFAULT_PERF_SAMPLE
@@ -32,3 +33,10 @@ data class PerfConfiguration(
         samplingRate.roundToInt()
     }
 }
+
+data class PerfWhitelistConfiguration(
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("whitelist_user_id")
+    var whitelistUserId: List<String> = listOf(),
+    @SerializedName("whitelist_version_suffix") var whiteListVersion: List<String> = listOf()
+)

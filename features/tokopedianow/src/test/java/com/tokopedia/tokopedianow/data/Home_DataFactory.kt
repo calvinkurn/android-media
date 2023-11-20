@@ -70,7 +70,7 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
             ),
             HomeLayoutResponse(
                     id = "2222",
-                    layout = "banner_carousel_v2",
+                    layout = "tokonow_banner",
                     header = Header(
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
@@ -140,7 +140,7 @@ fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
     return listOf(
             HomeLayoutResponse(
                     id = "2222",
-                    layout = "banner_carousel_v2",
+                    layout = "tokonow_banner",
                     header = Header(
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
@@ -203,7 +203,7 @@ fun createQuestWidgetList(code: String, reason: String = ""): GetQuestListRespon
 fun createHomeLayoutData(): HomeLayoutResponse {
     return HomeLayoutResponse(
             id = "2222",
-            layout = "banner_carousel_v2",
+            layout = "tokonow_banner",
             header = Header(
                     name = "Banner Tokonow",
                     serverTimeUnix = 0
@@ -487,7 +487,8 @@ fun createHomeProductCardUiModel(
     parentId: String = "",
     position: Int = 0,
     originalPosition: Int = 0,
-    headerName: String = ""
+    headerName: String = "",
+    blockAddToCart: Boolean = false
 ): TokoNowRepurchaseProductUiModel {
     return TokoNowRepurchaseProductUiModel(
         channelId = channelId,
@@ -501,7 +502,8 @@ fun createHomeProductCardUiModel(
         position = position,
         originalPosition = originalPosition,
         needToShowQuantityEditor = true,
-        headerName = headerName
+        headerName = headerName,
+        blockAddToCart = blockAddToCart
     )
 }
 

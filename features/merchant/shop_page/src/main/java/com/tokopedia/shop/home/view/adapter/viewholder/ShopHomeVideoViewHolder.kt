@@ -3,27 +3,30 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.Group
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.WidgetShopPageVideoYoutubeBinding
 import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
-import timber.log.Timber
-import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by rizqiaryansa on 2020-02-26.
@@ -38,6 +41,8 @@ class ShopHomeVideoViewHolder(
         @LayoutRes
         val LAYOUT_RES = R.layout.widget_shop_page_video_youtube
         const val KEY_YOUTUBE_VIDEO_ID = "v"
+        private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
+        private val SHOP_RE_IMAGINE_RADIUS = 4f.dpToPx()
     }
     private val viewBinding: WidgetShopPageVideoYoutubeBinding? by viewBinding()
     private var youTubeThumbnailShopPageImageUnify: ShopCarouselBannerImageUnify? = null
@@ -91,8 +96,9 @@ class ShopHomeVideoViewHolder(
                 }
                 youTubeThumbnailShopPageImageUnify?.apply {
                     try {
-                        if (context.isValidGlideContext())
+                        if (context.isValidGlideContext()) {
                             urlSrc = highResVideoThumbnailUrl
+                        }
                     } catch (e: Throwable) {
                     }
                 }
@@ -110,6 +116,47 @@ class ShopHomeVideoViewHolder(
                 show()
             }
         }
+        configColorTheme(model)
+        configViewForShopReimagined()
+    }
+
+    private fun configViewForShopReimagined() {
+        youTubeThumbnailShopPageImageUnify?.let {
+            it.cornerRadius = SHOP_RE_IMAGINE_RADIUS.toInt()
+            setShopReimaginedContainerMargin(it)
+        }
+    }
+
+    private fun setShopReimaginedContainerMargin(shopCarouselBannerImageUnify: ShopCarouselBannerImageUnify) {
+        (shopCarouselBannerImageUnify.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+        (shopCarouselBannerImageUnify.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
+    }
+
+    private fun configColorTheme(element: ShopHomeDisplayWidgetUiModel) {
+        if (element.header.isOverrideTheme) {
+            setReimaginedColorConfig(element.header.colorSchema)
+        } else {
+            setDefaultColorConfig()
+        }
+    }
+
+    private fun setReimaginedColorConfig(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(
+            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+        )
+        setHeaderColor(titleColor)
+    }
+
+    private fun setDefaultColorConfig() {
+        val titleColor = MethodChecker.getColor(
+            itemView.context,
+            unifyprinciplesR.color.Unify_NN950_96
+        )
+        setHeaderColor(titleColor)
+    }
+
+    private fun setHeaderColor(titleColor: Int) {
+        textViewTitle?.setTextColor(titleColor)
     }
 
     override fun onClick(view: View?) {

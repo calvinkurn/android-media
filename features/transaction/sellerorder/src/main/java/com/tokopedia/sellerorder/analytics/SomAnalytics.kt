@@ -28,8 +28,6 @@ object SomAnalytics {
     private const val CLICK_RESET_BUTTON_ON_FILTER_PAGE = "click reset button on filter page"
     private const val CLICK_TOLAK_PESANAN = "click tolak pesanan"
     private const val CLICK_ACCEPT_ORDER_POPUP = "click accept order popup"
-    private const val CLICK_KONFIRMASI = "click konfirmasi"
-    private const val CLICK_REQUEST_PICKUP_POPUP = "click request pickup popup"
     private const val CLICK_BUTTON_TOLAK_PESANAN_POPUP = "click button tolak pesanan - popup"
     private const val CLICK_BUTTON_DOWNLOAD_INVOICE = "click button download invoice"
     private const val CLICK_START_ADVERTISE = "click start advertise"
@@ -75,19 +73,25 @@ object SomAnalytics {
     }
 
     private fun sendEventCategoryAction(
-        event: String, eventCategory: String,
+        event: String,
+        eventCategory: String,
         eventAction: String
     ) {
         sendEventCategoryActionLabel(event, eventCategory, eventAction, "")
     }
 
     private fun sendEventCategoryActionLabel(
-        event: String, eventCategory: String,
-        eventAction: String, eventLabel: String
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             TrackAppUtils.gtmData(
-                event, eventCategory, eventAction, eventLabel
+                event,
+                eventCategory,
+                eventAction,
+                eventLabel
             )
         )
     }
@@ -180,16 +184,6 @@ object SomAnalytics {
         var success = "success"
         if (!isSuccess) success = "failed"
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_ACCEPT_ORDER_POPUP, success)
-    }
-
-    fun eventClickKonfirmasi(isSuccess: Boolean) {
-        var success = "success"
-        if (!isSuccess) success = "failed"
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_KONFIRMASI, success)
-    }
-
-    fun eventClickRequestPickupPopup() {
-        sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_REQUEST_PICKUP_POPUP)
     }
 
     fun eventClickButtonTolakPesananPopup(statusOrder: String, statusOrderName: String) {
@@ -426,7 +420,6 @@ object SomAnalytics {
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
-
 
     fun sendClickOnResolutionWidgetEvent(userId: String) {
         val trackerId = if (GlobalConfig.isSellerApp()) {

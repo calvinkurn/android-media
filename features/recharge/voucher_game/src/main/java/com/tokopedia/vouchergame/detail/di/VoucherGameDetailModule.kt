@@ -1,5 +1,6 @@
 package com.tokopedia.vouchergame.detail.di
 
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.product.CatalogData
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -25,5 +26,12 @@ class VoucherGameDetailModule {
     @Provides
     fun provideCatalogProductInputUseCase(graphqlUseCase: GraphqlUseCase<CatalogData.Response>): RechargeCatalogProductInputUseCase =
            RechargeCatalogProductInputUseCase(graphqlUseCase)
+
+    @VoucherGameDetailScope
+    @Provides
+    fun provideAnalyticsCommonMultiCheckout(): CommonMultiCheckoutAnalytics {
+        return CommonMultiCheckoutAnalytics()
+    }
+
 
 }

@@ -3,19 +3,23 @@ package com.tokopedia.catalog.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.basemvvm.repository.BaseRepository
-import com.tokopedia.catalog.repository.CatalogAllReviewRepository
-import com.tokopedia.catalog.repository.CatalogComparisonProductRepository
-import com.tokopedia.catalog.repository.catalogdetail.CatalogDetailRepository
-import com.tokopedia.catalog.usecase.detail.CatalogAllReviewUseCase
-import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
-import com.tokopedia.catalog.usecase.detail.CatalogDetailUseCase
-import com.tokopedia.catalog.usecase.listing.CatalogCategoryProductUseCase
-import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
-import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
-import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
+import com.tokopedia.catalog.domain.GetProductListFromSearchUseCase
+import com.tokopedia.catalog.ui.mapper.CatalogDetailUiMapper
+import com.tokopedia.oldcatalog.repository.CatalogAllReviewRepository
+import com.tokopedia.oldcatalog.repository.CatalogComparisonProductRepository
+import com.tokopedia.oldcatalog.repository.catalogdetail.CatalogDetailRepository
+import com.tokopedia.oldcatalog.usecase.detail.CatalogAllReviewUseCase
+import com.tokopedia.oldcatalog.usecase.detail.CatalogComparisonProductUseCase
+import com.tokopedia.oldcatalog.usecase.detail.CatalogDetailUseCase
+import com.tokopedia.oldcatalog.usecase.listing.CatalogCategoryProductUseCase
+import com.tokopedia.oldcatalog.usecase.listing.CatalogDynamicFilterUseCase
+import com.tokopedia.oldcatalog.usecase.listing.CatalogGetProductListUseCase
+import com.tokopedia.oldcatalog.usecase.listing.CatalogQuickFilterUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
@@ -56,14 +60,22 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+
+    @CatalogScope
+    @Provides
     fun provideCatalogComparisonProductRepository(): CatalogComparisonProductRepository {
         return CatalogComparisonProductRepository()
     }
 
     @CatalogScope
     @Provides
-    fun getProductCatalogOneUseCase(catalogDetailRepository: CatalogDetailRepository): CatalogDetailUseCase {
-        return CatalogDetailUseCase(catalogDetailRepository)
+    fun getProductCatalogOneUseCase(
+        catalogDetailRepository: CatalogDetailRepository,
+        context: Context,
+        userSession: UserSessionInterface
+    ): CatalogDetailUseCase {
+        return CatalogDetailUseCase(catalogDetailRepository, CatalogDetailUiMapper(context), userSession)
     }
 
     @CatalogScope
@@ -118,4 +130,10 @@ class CatalogUseCaseModule {
     @CatalogScope
     @Provides
     fun providesTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
+
+    @CatalogScope
+    @Provides
+    fun providesNewCatalogGetProductListUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): GetProductListFromSearchUseCase {
+        return GetProductListFromSearchUseCase(graphqlRepository)
+    }
 }

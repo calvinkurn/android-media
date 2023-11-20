@@ -111,4 +111,6 @@ interface ActionListener {
     fun onViewFreeShippingPlusBadge()
 
     fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData)
+
+    fun onAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>)
 }

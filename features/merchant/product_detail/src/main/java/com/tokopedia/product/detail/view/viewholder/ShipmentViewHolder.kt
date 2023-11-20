@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.view.updateLayoutParams
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -16,14 +15,15 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.databinding.ItemPdpShimmerShipmentBinding
-import com.tokopedia.product.detail.databinding.ItemShipmentBinding
+import com.tokopedia.product.detail.databinding.ItemShipmentOldBinding
 import com.tokopedia.product.detail.databinding.ItemShipmentOptionBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentBinding
-import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
+import com.tokopedia.product.detail.databinding.ViewShipmentErrorOldBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentPlusBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.isInflated
@@ -40,7 +40,7 @@ class ShipmentViewHolder(
 ) : AbstractViewHolder<ProductShipmentDataModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_shipment
+        val LAYOUT = R.layout.item_shipment_old
 
         private const val TIPS_TYPE = "tips"
         private const val TICKER_INFO_TYPE = "info"
@@ -51,7 +51,7 @@ class ShipmentViewHolder(
     }
 
     private val context = view.context
-    private val binding = ItemShipmentBinding.bind(view)
+    private val binding = ItemShipmentOldBinding.bind(view)
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null
 
@@ -62,7 +62,7 @@ class ShipmentViewHolder(
     }
 
     private val viewErrorDelegate = lazy {
-        ViewShipmentErrorBinding.bind(
+        ViewShipmentErrorOldBinding.bind(
             binding.pdpShipmentStateError.inflate()
         )
     }
@@ -74,7 +74,7 @@ class ShipmentViewHolder(
     }
 
     private val viewMain: ViewShipmentBinding by viewMainDelegate
-    private val viewError: ViewShipmentErrorBinding by viewErrorDelegate
+    private val viewError: ViewShipmentErrorOldBinding by viewErrorDelegate
     private val viewLoading: ItemPdpShimmerShipmentBinding by viewLoadingDelegate
     private val viewShipmentPlus: ViewShipmentPlusBinding by lazyThreadSafetyNone {
         ViewShipmentPlusBinding.bind(viewMain.vsShipmentPlus.inflate())
@@ -142,7 +142,12 @@ class ShipmentViewHolder(
         renderTips(rates)
         renderShipmentPlus(element.shipmentPlusData)
 
-        itemView.addOnImpressionListener(element.impressHolder) {
+        itemView.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
             val componentTrackData = getComponentTrackData(element)
             listener.onImpressComponent(componentTrackData)
             if (rates.isScheduled) {

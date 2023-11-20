@@ -12,6 +12,5 @@ data class FeedAuthorModel(
     val badgeUrl: String,
     val logoUrl: String,
     val appLink: String,
-    val encryptedUserId: String,
-    val isLive: Boolean
+    val encryptedUserId: String
 )

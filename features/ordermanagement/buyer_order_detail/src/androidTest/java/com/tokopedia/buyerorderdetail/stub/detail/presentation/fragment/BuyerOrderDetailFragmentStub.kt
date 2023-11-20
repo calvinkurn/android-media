@@ -21,11 +21,13 @@ class BuyerOrderDetailFragmentStub : BuyerOrderDetailFragment() {
             scpRewardsMedalTouchPointWidgetListener = this,
             pofRefundInfoListener = this,
             owocInfoListener = this,
+            bmgmListener = this,
             productViewListener = this,
             bottomSheetListener = this,
             navigator = navigator,
             buyerOrderDetailBindRecomWidgetListener = this,
-            orderResolutionListener = this
+            orderResolutionListener = this,
+            recyclerViewSharedPool = recyclerViewSharedPool
         )
     }
 

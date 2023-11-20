@@ -111,7 +111,7 @@ class CarouselPagingProductCardActivityTest: AppCompatActivity(), Listener {
         }
 
         private val item: CarouselPagingProductCardView? by lazy {
-            itemView.findViewById(R.id.carouselPagingProductCardView)
+            itemView as? CarouselPagingProductCardView
         }
 
         fun bind(carouselPagingModel: CarouselPagingModel) {
