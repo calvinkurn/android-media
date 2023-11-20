@@ -44,7 +44,7 @@ Create a new confirmation dialog for the user to return goods. This dialog will 
 
 Entry point to show dialog from SOM Detail and SOM List 
 
-![](../res/returntoshipper/Screen%20Shot%202022-12-09%20at%2009.47.04.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticseller/returntoshipper/Screen%20Shot%202022-12-09%20at%2009.47.04.png)
 
 - On first condition will load [Get General Information](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2096759219/Get+General+Information) to get data for showing confirmation dialog
 
@@ -52,14 +52,14 @@ Entry point to show dialog from SOM Detail and SOM List
 	- If success `response.status == 200`,   
 	Show success dialog → `viewModel.confirmationRtsState` is `ShowRtsConfirmDialog`
 	
-	![](../res/returntoshipper/Screen%20Shot%202023-03-07%20at%2014.14.00.png)
+	![](https://docs-android.tokopedia.net/images/docs/logisticseller/returntoshipper/Screen%20Shot%202023-03-07%20at%2014.14.00.png)
 	
 	
 		- On dismissed dialog will finish activity with result `Activity.RESULT_CANCELED`
 	- If failed `response.status != 200`,   
 	Show toaster (`viewModel.confirmationRtsState` is `ShowToaster`) and finish activity with result `Activity.RESULT_FIRST_USER`
 	
-	![](../res/returntoshipper/Screen%20Shot%202023-03-07%20at%2014.46.51.png)
+	![](https://docs-android.tokopedia.net/images/docs/logisticseller/returntoshipper/Screen%20Shot%202023-03-07%20at%2014.46.51.png)
 - When user clicked ***Bantuan*** (secondary button) will open webview   
 (url get from `data.article_url` on from response [Get General Information](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2096759219/Get+General+Information))
 - When user clicked ***Ya, Sudah Terima*** (primary button) request [Request General Information](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2096828655/Request+General+Information)
@@ -68,14 +68,14 @@ Entry point to show dialog from SOM Detail and SOM List
 	- If success `response.status == 200`,   
 	Show success dialog → `viewModel.confirmationRtsState` is `ShowRtsSuccessDialog`
 	
-	![](../res/returntoshipper/Screen%20Shot%202022-12-09%20at%2016.33.17.png)
+	![](https://docs-android.tokopedia.net/images/docs/logisticseller/returntoshipper/Screen%20Shot%202022-12-09%20at%2016.33.17.png)
 	
 	
 		- When dialog dismissed will finish activity with result `Activity.RESULT_OK`
 	- If failed `response.status != 200`,   
 	Show success dialog → `viewModel.confirmationRtsState` is `ShowRtsFailedDialog`
 	
-	![](../res/returntoshipper/Screen%20Shot%202022-12-09%20at%2016.34.23.png)
+	![](https://docs-android.tokopedia.net/images/docs/logisticseller/returntoshipper/Screen%20Shot%202022-12-09%20at%2016.34.23.png)
 	
 	
 		- When dialog dismissed will finish activity with result `Activity.RESULT_FIRST_USER`

@@ -23,7 +23,7 @@
 
 ### **Description**
 
-![image](../../res/tokopedia_now_sort_filter_bottom_sheet.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_sort_filter_bottom_sheet.png)
 
 This bottom sheet is used for showing all available sort filter options in TokoNOW, latest there are 2 options :
 

@@ -35,7 +35,7 @@ When users want to cancel Hotel Booking, we need to show the rule of refund and 
 
 ## Flow Diagram
 
-![](res/Hotel-Home-Page-Cancel.png)
+![](https://docs-android.tokopedia.net/images/docs/hotel/Hotel-Home-Page-Cancel.png)
 
 ## How-to
 
@@ -72,7 +72,7 @@ Here is the GQL for supporting the Order Detail Hotel page
 | **No** | **Stories** | **Flow** | **Screenshot**                                                                                                                                                                       |
 | --- | --- | --- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 1 | User want to see cancel detail page | 1. User go To Daftar Transaksi Page<br/>2. Click Item that user want to see<br/>3. Scroll Page to the bottom and then click button “Batalkan Pesanan”<br/> | [Go To Cancelation Page.webm](/wiki/download/attachments/2248804998/Go%20To%20Cancelation%20Page.webm?version=1&modificationDate=1684226941085&cacheVersion=1&api=v2&width=340)<br/> |
-| 2 | User want to cancel page but it’s out of cancelation date | 1. User go To Daftar Transaksi Page<br/>2. Click Item that user want to see<br/>3. Scroll Page to the bottom and then click button “Batalkan Pesanan”<br/>4. Page will shown the out of date message<br/> | ![](res/Screen-Shot-2023-05-16.png)<br/>                                                                                                                               |
+| 2 | User want to cancel page but it’s out of cancelation date | 1. User go To Daftar Transaksi Page<br/>2. Click Item that user want to see<br/>3. Scroll Page to the bottom and then click button “Batalkan Pesanan”<br/>4. Page will shown the out of date message<br/> | ![](https://docs-android.tokopedia.net/images/docs/hotel/Screen-Shot-2023-05-16.png)<br/>                                                                                                                               |
 | 3 | User want to cancel Hotel book and success | 1. User go To Daftar Transaksi Page<br/>2. Click Item that user want to see<br/>3. Scroll Page to the bottom and then click button “Batalkan Pesanan”<br/>4. Pick Reason of Cancellation<br/>5. Click button “Lanjutkan”<br/>6. Page will shown the success cancellation message<br/> | [Cancel Hotel Book.webm](/wiki/download/attachments/2248804998/Cancel%20Hotel%20Book.webm?version=2&modificationDate=1684227193308&cacheVersion=1&api=v2)<br/>                       |
 
 ## Useful Links

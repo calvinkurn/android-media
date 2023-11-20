@@ -1,6 +1,6 @@
 {
   "readme": "Play - Tokonow",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "event": "viewContentIris",
