@@ -113,6 +113,7 @@ class TopPayPresenter(
             }
             sb.append(
                 String.format(
+                    Locale.getDefault(),
                     "%s=%s",
                     urlEncodeUTF8(key),
                     urlEncodeUTF8(value)
