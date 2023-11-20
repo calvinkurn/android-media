@@ -76,7 +76,7 @@ class PlayWidgetQueryParamBuilder {
                 }
                 is PlayWidgetUseCase.WidgetType.DiscoveryPage, is PlayWidgetUseCase.WidgetType.DiscoveryPageV2 -> {
                     appendLine(",")
-                    appendLine("${'$'}$PARAM_IS_DYNAMIC_VIDEO: ${'$'}${PARAM_IS_DYNAMIC_VIDEO}")
+                    appendLine("${PARAM_IS_DYNAMIC_VIDEO}: ${'$'}${PARAM_IS_DYNAMIC_VIDEO}")
                 }
                 else -> {
                     //do nothing with other widget type
