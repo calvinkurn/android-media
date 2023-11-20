@@ -1,14 +1,13 @@
-package com.tokopedia.stories.creation.util
+package com.tokopedia.content.common.util.device
 
 import android.os.Build
 
 /**
- * Created By : Jonathan Darwin on November 08, 2023
+ * Created By : Jonathan Darwin on November 20, 2023
  */
-object DeviceUtil {
+object ContentDeviceUtil {
 
-    val isProbablyEmulator by lazy {
-        (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+    val isProbablyEmulator = (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
         || Build.FINGERPRINT.startsWith("generic")
         || Build.FINGERPRINT.startsWith("unknown")
         || Build.HARDWARE.contains("goldfish")
@@ -25,5 +24,4 @@ object DeviceUtil {
         || Build.PRODUCT.contains("vbox86p")
         || Build.PRODUCT.contains("emulator")
         || Build.PRODUCT.contains("simulator")
-    }
 }
