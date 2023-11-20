@@ -46,6 +46,8 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
@@ -172,11 +174,13 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             val bcaIsMyCard = bcaLibrary.C_BCAIsMyCard()
             val dataBalance = bcaLibrary.C_BCACheckBalance()
             val isoDep = IsoDep.get(tag)
-            if(bcaIsMyCard.strLogRsp.startsWith(GEN_2_CARD) && dataBalance.cardNo.isNotEmpty()) {
+            if(bcaIsMyCard.strLogRsp.startsWith(GEN_2_CARD) && dataBalance.cardNo.isNotEmpty() &&
+                getRollenceBCA()) {
                 showLoading(getOperatorName(issuerActive))
                 bcaBalanceViewModel.processBCATagBalance(isoDep, MID, TID, bRawPublicKey,
                     bRawPrivateKey, getCurrentBCAFlazzTimeStamp(), ATD)
-            } else if(bcaIsMyCard.strLogRsp.startsWith(GEN_1_CARD) && dataBalance.cardNo.isNotEmpty()){
+            } else if(bcaIsMyCard.strLogRsp.startsWith(GEN_1_CARD) && dataBalance.cardNo.isNotEmpty() &&
+                getRollenceBCA()){
                 showLoading(getOperatorName(issuerActive))
                 bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, bRawPublicKey, bRawPrivateKey)
             } else {
@@ -528,6 +532,13 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private fun getATD(): String {
         return getString(com.tokopedia.keys.R.string.aokfokotd)
+    }
+
+    private fun getRollenceBCA(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.BCA_ROLLENCE,
+            ""
+        ) == RollenceKey.BCA_ROLLENCE
     }
 
     private fun showCommonMessageError() {
