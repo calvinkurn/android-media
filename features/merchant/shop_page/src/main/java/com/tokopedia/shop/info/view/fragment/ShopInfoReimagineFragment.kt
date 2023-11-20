@@ -253,12 +253,20 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun renderShopCoreInfo(uiState: ShopInfoUiState) {
         val hasUsp = uiState.info.shopUsp.isNotEmpty()
         val hasPharmacyLicenseBadge = uiState.info.showPharmacyLicenseBadge
-
+        val hasShopBadge = uiState.info.shopBadgeUrl.isNotEmpty()
+        
         binding?.run {
             imgShop.loadImage(uiState.info.shopImageUrl)
-            imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
+            
+            imgShopBadge.isVisible = hasShopBadge
+            if (hasShopBadge) {
+                imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
+                
+            }
+            
             tpgShopName.text = uiState.info.shopName
             tpgLicensedPharmacy.isVisible = hasPharmacyLicenseBadge
+            
             val shopDynamicUsp = uiState.info.shopUsp.joinToString(separator = " • ") { it }
             tpgShopUsp.text = MethodChecker.fromHtml(shopDynamicUsp)
             tpgShopUsp.isVisible = uiState.info.shopUsp.isNotEmpty()
