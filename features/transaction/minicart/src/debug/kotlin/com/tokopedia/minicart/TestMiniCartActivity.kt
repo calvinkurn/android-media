@@ -4,12 +4,16 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.cartlist.MiniCartListNewBottomSheet
 import com.tokopedia.minicart.cartlist.MiniCartListNewBottomSheetListener
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartNewWidget
 import com.tokopedia.minicart.common.widget.MiniCartNewWidgetListener
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TestMiniCartActivity : AppCompatActivity() {
 
@@ -23,7 +27,9 @@ class TestMiniCartActivity : AppCompatActivity() {
             initialize(
                 MiniCartNewWidget.MiniCartNewWidgetConfig(
                     showTopShadow = false,
-                    showChevron = true
+                    showChevron = true,
+                    overridePrimaryButtonWording = "apa ini",
+                    additionalButton = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500))
                 ),
                 this@TestMiniCartActivity,
                 this@TestMiniCartActivity,

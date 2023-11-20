@@ -3,6 +3,7 @@ package com.tokopedia.minicart.common.widget
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -96,9 +97,18 @@ class MiniCartNewWidget @JvmOverloads constructor(
         binding?.miniCartTotalAmount?.apply {
             topContentView.visibility = if (config.showTopShadow) View.VISIBLE else View.GONE
             amountCtaView.setOnClickListener {
-                sendEventClickBuy()
-                showProgressLoading()
-                viewModel?.goToCheckout(GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                if (config.overridePrimaryButtonAction) {
+                    miniCartWidgetListener?.onPrimaryButtonClickListener()
+                } else {
+                    sendEventClickBuy()
+                    showProgressLoading()
+                    viewModel?.goToCheckout(GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                }
+            }
+            if (config.additionalButton != null) {
+                totalAmountAdditionalButton.setOnClickListener {
+                    miniCartWidgetListener?.onAdditionalButtonClickListener()
+                }
             }
         }
         initializeProgressDialog(context)
@@ -127,12 +137,6 @@ class MiniCartNewWidget @JvmOverloads constructor(
     private fun observeGlobalEvent(lifecycleOwner: LifecycleOwner) {
         viewModel?.globalEvent?.observe(lifecycleOwner) {
             when (it.state) {
-//                GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
-//                    onSuccessDeleteCartItem(it)
-//                }
-//                GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET -> {
-//                    onFailedToLoadMiniCartBottomSheet(it, fragment)
-//                }
                 GlobalEvent.STATE_SUCCESS_TO_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
                         context?.let { context ->
@@ -150,13 +154,13 @@ class MiniCartNewWidget @JvmOverloads constructor(
         }
     }
 
-    fun showProgressLoading() {
+    private fun showProgressLoading() {
         if (progressDialog?.isShowing == false) {
             progressDialog?.show()
         }
     }
 
-    fun hideProgressLoading() {
+    private fun hideProgressLoading() {
         if (progressDialog?.isShowing == true) {
             progressDialog?.dismiss()
         }
@@ -301,7 +305,7 @@ class MiniCartNewWidget @JvmOverloads constructor(
         }
     }
 
-    fun showToaster(view: View? = null, message: String, type: Int, ctaText: String = "Oke", isShowCta: Boolean = true, onClickListener: View.OnClickListener? = null) {
+    private fun showToaster(view: View? = null, message: String, type: Int, ctaText: String = "Oke", isShowCta: Boolean = true, onClickListener: View.OnClickListener? = null) {
         if (message.isBlank()) return
         var toasterViewRoot = view
         if (toasterViewRoot == null) toasterViewRoot = this.binding?.root
@@ -329,26 +333,61 @@ class MiniCartNewWidget @JvmOverloads constructor(
     }
 
     private fun renderWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
+        if (!miniCartSimplifiedData.isShowMiniCartWidget) {
+            renderEmptyWidget(miniCartSimplifiedData)
+            setTotalAmountLoading(false)
+        } else if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
             renderUnavailableWidget(miniCartSimplifiedData)
+            setTotalAmountLoading(false)
         } else {
             renderAvailableWidget(miniCartSimplifiedData)
+            setTotalAmountLoading(false)
+            binding?.miniCartTotalAmount?.apply {
+                setAdditionalButton(config.additionalButton)
+            }
         }
-        setTotalAmountLoading(false)
         setAmountViewLayoutParams()
         validateAmountCtaLabel(miniCartSimplifiedData)
+    }
+
+    private fun renderEmptyWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        binding?.miniCartTotalAmount?.apply {
+            setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
+            setAmount("Rp-")
+            val overridePrimaryButtonWording = config.overridePrimaryButtonWording
+            if (overridePrimaryButtonWording.isNullOrBlank()) {
+                val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
+                    ?: context.getString(R.string.mini_cart_widget_cta_text_default)
+                setCtaText(ctaText)
+            } else {
+                setCtaText(overridePrimaryButtonWording)
+            }
+            amountCtaView.isEnabled = false
+            amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
+            amountCtaView.requestLayout()
+            setAdditionalButton(null)
+        }
+        binding?.textCannotProcess?.gone()
+        binding?.textCannotProcessQuantity?.gone()
+        binding?.imageChevronUnavailable?.gone()
     }
 
     private fun renderUnavailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         binding?.miniCartTotalAmount?.apply {
             setLabelTitle("")
             setAmount("")
-            val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
-                ?: context.getString(R.string.mini_cart_widget_cta_text_default)
-            setCtaText(ctaText)
+            val overridePrimaryButtonWording = config.overridePrimaryButtonWording
+            if (overridePrimaryButtonWording.isNullOrBlank()) {
+                val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
+                    ?: context.getString(R.string.mini_cart_widget_cta_text_default)
+                setCtaText(ctaText)
+            } else {
+                setCtaText(overridePrimaryButtonWording)
+            }
             amountCtaView.isEnabled = false
             amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
             amountCtaView.requestLayout()
+            setAdditionalButton(null)
         }
         binding?.textCannotProcess?.apply {
             text = context.getString(R.string.mini_cart_label_cannot_process)
@@ -374,12 +413,18 @@ class MiniCartNewWidget @JvmOverloads constructor(
         binding?.miniCartTotalAmount?.apply {
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false).removeDecimalSuffix())
-            val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
-                ?: context.getString(R.string.mini_cart_widget_cta_text_default)
-            setCtaText("$ctaText (${miniCartSimplifiedData.miniCartWidgetData.totalProductCount})")
+            val overridePrimaryButtonWording = config.overridePrimaryButtonWording
+            if (overridePrimaryButtonWording.isNullOrBlank()) {
+                val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
+                    ?: context.getString(R.string.mini_cart_widget_cta_text_default)
+                setCtaText("$ctaText (${miniCartSimplifiedData.miniCartWidgetData.totalProductCount})")
+            } else {
+                setCtaText(overridePrimaryButtonWording)
+            }
             amountCtaView.isEnabled = true
             amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
             amountCtaView.requestLayout()
+            setAdditionalButton(config.additionalButton)
         }
         binding?.textCannotProcess?.gone()
         binding?.textCannotProcessQuantity?.gone()
@@ -424,7 +469,7 @@ class MiniCartNewWidget @JvmOverloads constructor(
     }
 
     private fun validateAmountCtaLabel(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
+        if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true && config.overridePrimaryButtonWording.isNullOrBlank()) {
             // Change button from `Beli Langsung` to `Beli` if ellipsis
             binding?.miniCartTotalAmount?.post {
                 val ellipsis = binding?.miniCartTotalAmount?.amountCtaView?.layout?.getEllipsisCount(0) ?: 0
@@ -449,14 +494,25 @@ class MiniCartNewWidget @JvmOverloads constructor(
         viewModel?.getLatestWidgetState(shopIds)
     }
 
-    companion object {
-        private const val COACH_MARK_TAG = "coachmark_tokonow"
+    /*
+    * Function to trigger update mini cart data
+    * This will trigger widget to update the UI with provided data
+    * */
+    fun updateData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        setTotalAmountLoading(true)
+        viewModel?.setMiniCartABTestData(miniCartSimplifiedData.miniCartWidgetData.isOCCFlow, miniCartSimplifiedData.miniCartWidgetData.buttonBuyWording)
+        viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)
+    }
 
+    companion object {
         private const val MINICART_PAGE_SOURCE = "minicart - tokonow"
     }
 
     data class MiniCartNewWidgetConfig(
         val showTopShadow: Boolean = true,
-        val showChevron: Boolean = true
+        val showChevron: Boolean = true,
+        val overridePrimaryButtonAction: Boolean = false,
+        val overridePrimaryButtonWording: String? = null,
+        val additionalButton: Drawable? = null
     )
 }
