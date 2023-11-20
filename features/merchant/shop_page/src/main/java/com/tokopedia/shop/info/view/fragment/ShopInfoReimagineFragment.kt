@@ -264,7 +264,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         binding?.run {
             imgShop.loadImage(uiState.info.shopImageUrl)
-
+            
             imgShopBadge.isVisible = hasShopBadge
             if (hasShopBadge) {
                 imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
@@ -327,7 +327,13 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             labelShopPharmacySiaNumber.isVisible = isPharmacy && expandPharmacyInfo
             labelShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
 
-            tpgCtaExpandPharmacyInfo.isVisible = isPharmacy && !expandPharmacyInfo
+            //Show CTA "Lihat Selengkapnya" when pharmacy info collapsed
+            if (isPharmacy && !expandPharmacyInfo) {
+                tpgCtaExpandPharmacyInfo.visible()
+            } else {
+                tpgCtaExpandPharmacyInfo.invisible()
+            }
+            
             tpgCtaViewPharmacyMap.isVisible = isPharmacy && expandPharmacyInfo && showCtaViewPharmacyLocation
             iconViewPharmacyLocation.isVisible = isPharmacy && expandPharmacyInfo && showCtaViewPharmacyLocation
 
@@ -594,7 +600,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         constraintSet.applyTo(binding?.constraintLayout)
     }
-
+    
     private fun redirectToGmaps(gmapsUrl: String) {
         if (!isAdded) return
         if (gmapsUrl.isEmpty()) return
