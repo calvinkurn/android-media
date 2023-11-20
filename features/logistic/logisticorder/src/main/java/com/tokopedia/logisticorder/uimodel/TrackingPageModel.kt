@@ -30,9 +30,6 @@ data class TrackOrderModel(
 
 @Parcelize
 data class DetailModel(
-    var shipperId: String = "",
-    var shipperProductId: String = "",
-    var isBuyer: Boolean = true,
     var shipperCity: String = "",
     var shipperName: String = "",
     var receiverCity: String = "",

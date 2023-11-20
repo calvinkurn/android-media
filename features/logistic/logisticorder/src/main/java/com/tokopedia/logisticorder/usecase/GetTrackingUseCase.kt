@@ -45,9 +45,6 @@ class GetTrackingUseCase @Inject constructor(
             data {
               track_order {
                 detail {
-                  shipper_id
-                  sp_id
-                  is_buyer
             	  shipper_city
         		  shipper_name
                   receiver_city
