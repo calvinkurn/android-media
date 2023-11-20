@@ -20,7 +20,7 @@
             app:titleTextAppearance="?titleTextAppearance"
             tools:layout_height="wrap_content" />
 
-        <com.tokopedia.design.text.SearchInputView
+        <com.tokopedia.unifycomponents.SearchBarUnify
             android:id="@+id/search_input_dropoff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -1,7 +1,12 @@
 package com.tokopedia.analyticsdebugger.sse.ui.fragment
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -15,12 +20,10 @@ import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.sse.di.DaggerSSELoggingComponent
 import com.tokopedia.analyticsdebugger.sse.ui.adapter.SSELogAdapter
 import com.tokopedia.analyticsdebugger.sse.ui.viewmodel.SSELoggingViewModel
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.fragment_sse_logging.*
 import javax.inject.Inject
 
 /**
