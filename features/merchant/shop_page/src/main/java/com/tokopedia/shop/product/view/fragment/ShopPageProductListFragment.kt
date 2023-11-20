@@ -818,7 +818,7 @@ class ShopPageProductListFragment :
     private fun handleWishlistActionAddToWishlistV2(productCardOptionsModel: ProductCardOptionsModel) {
         context?.let { context ->
             view?.let { v ->
-                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v)
+                AddRemoveWishlistV2Handler.buildAddToWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
         if (productCardOptionsModel.wishlistResult.isSuccess) {
@@ -829,7 +829,7 @@ class ShopPageProductListFragment :
     private fun handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel: ProductCardOptionsModel) {
         context?.let { context ->
             view?.let { v ->
-                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v)
+                AddRemoveWishlistV2Handler.buildRemoveWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
         if (productCardOptionsModel.wishlistResult.isSuccess) {
@@ -1701,7 +1701,8 @@ class ShopPageProductListFragment :
             selectedSortName = sortName,
             filterIndicatorCounter = getIndicatorCount(
                 shopProductFilterParameter?.getMapData()
-            )
+            ),
+            isOverrideTheme = isOverrideTheme()
         )
         shopProductAdapter.setSortFilterData(shopProductSortFilterUiModel)
         if (!viewModel?.isMyShop(shopId).orTrue()) {

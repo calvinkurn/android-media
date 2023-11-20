@@ -149,15 +149,8 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleL
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
-import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.WidgetName.BMGM_BANNER
-import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
-import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
-import com.tokopedia.shop.home.WidgetName.VIDEO
-import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
-import com.tokopedia.shop.home.WidgetType.DYNAMIC
-import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
-import com.tokopedia.shop.home.WidgetType.PROMO
+import com.tokopedia.shop.home.WidgetNameEnum
+import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
@@ -166,9 +159,9 @@ import com.tokopedia.shop.home.util.ShopHomeReimagineShowcaseNavigationDependenc
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineDisplayBannerProductHotspotViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineDisplayBannerProductHotspotViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineTerlarisViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerWidgetListener
@@ -180,14 +173,14 @@ import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
-import com.tokopedia.shop.home.view.listener.ShopHomeReimagineDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeReimagineShowcaseNavigationListener
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
@@ -1591,7 +1584,8 @@ open class ShopPageHomeFragment :
             selectedSortName = sortName,
             filterIndicatorCounter = getIndicatorCount(
                 shopProductFilterParameter?.getMapData()
-            )
+            ),
+            isOverrideTheme = isOverrideTheme()
         )
         shopHomeAdapter?.setSortFilterData(shopProductSortFilterUiModel)
     }
@@ -1798,7 +1792,7 @@ open class ShopPageHomeFragment :
         return if (!ShopPageRemoteConfigChecker.isEnableShopHomeNplWidget(context)) {
             dataWidgetLayoutUiModel.copy(
                 listWidgetLayout = dataWidgetLayoutUiModel.listWidgetLayout.filter {
-                    it.widgetName != WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
+                    it.widgetName != WidgetNameEnum.NEW_PRODUCT_LAUNCH_CAMPAIGN.value
                 }
             )
         } else {
@@ -2053,15 +2047,15 @@ open class ShopPageHomeFragment :
     }
 
     private fun isWidgetPersoComparison(data: ShopPageWidgetUiModel): Boolean {
-        return data.widgetType == PERSONALIZATION && data.widgetName == PERSO_PRODUCT_COMPARISON
+        return data.widgetType == WidgetTypeEnum.PERSONALIZATION.value && data.widgetName == WidgetNameEnum.PERSO_PRODUCT_COMPARISON.value
     }
 
     private fun isWidgetMvc(data: ShopPageWidgetUiModel): Boolean {
-        return data.widgetType == PROMO && data.widgetName == VOUCHER_STATIC
+        return data.widgetType == WidgetTypeEnum.PROMO.value && data.widgetName == WidgetNameEnum.VOUCHER_STATIC.value
     }
 
     protected fun isWidgetPlay(data: ShopPageWidgetUiModel): Boolean {
-        return data.widgetType == DYNAMIC && data.widgetName == PLAY_CAROUSEL_WIDGET
+        return data.widgetType == WidgetTypeEnum.DYNAMIC.value && data.widgetName == WidgetNameEnum.PLAY_CAROUSEL_WIDGET.value
     }
 
     private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageWidgetUiModel> {
@@ -2594,7 +2588,7 @@ open class ShopPageHomeFragment :
         val destinationLink: String
         val creativeUrl: String
         when (displayWidgetUiModel?.name ?: "") {
-            VIDEO -> {
+            WidgetNameEnum.VIDEO.value -> {
                 destinationLink = displayWidgetItem.videoUrl
                 creativeUrl = displayWidgetItem.videoUrl
             }
@@ -2604,7 +2598,7 @@ open class ShopPageHomeFragment :
             }
         }
         when (displayWidgetUiModel?.name ?: "") {
-            BMGM_BANNER -> {
+            WidgetNameEnum.BMGM_BANNER.value -> {
                 val applinkUri = Uri.parse(displayWidgetItem.appLink)
                 val offerId = applinkUri.path?.drop(Int.ONE).orEmpty()
                 shopPageHomeTracking.impressBmgmBanner(
@@ -2642,7 +2636,7 @@ open class ShopPageHomeFragment :
         val destinationLink: String
         val creativeUrl: String
         when (displayWidgetUiModel?.name ?: "") {
-            VIDEO -> {
+            WidgetNameEnum.VIDEO.value -> {
                 destinationLink = displayWidgetItem.videoUrl
                 creativeUrl = displayWidgetItem.videoUrl
             }
@@ -2652,7 +2646,7 @@ open class ShopPageHomeFragment :
             }
         }
         val segmentName = when (displayWidgetUiModel?.name.orEmpty()) {
-            VIDEO -> {
+            WidgetNameEnum.VIDEO.value -> {
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_VIDEO
             }
             else -> {
@@ -2660,7 +2654,7 @@ open class ShopPageHomeFragment :
             }
         }
         when (displayWidgetUiModel?.name ?: "") {
-            BMGM_BANNER -> {
+            WidgetNameEnum.BMGM_BANNER.value -> {
                 val applinkUri = Uri.parse(displayWidgetItem.appLink)
                 val offerId = applinkUri.path?.drop(Int.ONE).orEmpty()
                 shopPageHomeTracking.clickBmgmBanner(
@@ -2710,7 +2704,7 @@ open class ShopPageHomeFragment :
 
     override fun onDisplayWidgetImpression(model: ShopHomeDisplayWidgetUiModel, position: Int) {
         val segmentName = when (model.name) {
-            VIDEO -> {
+            WidgetNameEnum.VIDEO.value -> {
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_VIDEO
             }
             else -> {
@@ -3689,7 +3683,7 @@ open class ShopPageHomeFragment :
     private fun handleWishlistActionAddToWishlistV2(productCardOptionsModel: ProductCardOptionsModel) {
         context?.let { context ->
             view?.let { v ->
-                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v)
+                AddRemoveWishlistV2Handler.buildAddToWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
         if (productCardOptionsModel.wishlistResult.isSuccess) {
@@ -3707,7 +3701,7 @@ open class ShopPageHomeFragment :
     private fun handleWishlistActionRemoveFromWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         context?.let { context ->
             view?.let { v ->
-                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
+                AddRemoveWishlistV2Handler.buildRemoveWishlistV2SuccessToaster(wishlistResult, context, v).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
         if (wishlistResult.isSuccess) {

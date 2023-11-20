@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.data
 
+import android.content.pm.ComponentInfo
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.Constant.LABEL_FULFILLMENT
@@ -115,7 +116,8 @@ data class ComponentsItem(
     var myCouponList: List<MyCoupon>? = null,
     var claimCouponList: List<CatalogWithCouponList>? = null,
     var isFirstShown: Boolean = true,
-    var itemPosition: Int = 0
+    var itemPosition: Int = 0,
+    var isBackgroundPresent: Boolean = false
 ) {
 
     private var componentsItem: List<ComponentsItem>? = null
@@ -149,4 +151,6 @@ data class ComponentsItem(
     fun isFulfillment(dataItem: DataItem?): Boolean = dataItem?.labelsGroupList?.any { it.position == LABEL_FULFILLMENT }.orFalse()
 
     fun getWarehouseId(dataItem: DataItem?): Long = dataItem?.warehouseId.orZero()
+
+    fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = getComponentsItem()?.firstOrNull()?.compAdditionalInfo
 }

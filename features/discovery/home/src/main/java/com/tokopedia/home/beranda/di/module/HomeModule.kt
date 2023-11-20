@@ -95,7 +95,9 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun provideHomeThematicUtil(): HomeThematicUtil = HomeThematicUtil()
+    fun provideHomeThematicUtil(
+        @ApplicationContext context: Context
+    ): HomeThematicUtil = HomeThematicUtil(context)
 
     @HomeScope
     @Provides

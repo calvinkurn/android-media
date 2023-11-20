@@ -38,19 +38,19 @@ Bottomsheet for showing delivery schedules in `checkout` page. Data is supplied 
 
 - Normal Flow
 
-![](../res/shippingschedulebottomsheet/project_description_normal_flow.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulebottomsheet/project_description_normal_flow.png)
 - User not meet minimum purchase OR User does not have free ongkir quota anymore
 
-![](../res/shippingschedulebottomsheet/jadwal_tersedia_min_transaction.png)![](../res/shippingschedulebottomsheet/jadwal_tersedia_kuota_ongkir_habis.png)
+![](../res/shippingschedulebottomsheet/jadwal_tersedia_min_transaction.png)![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulebottomsheet/jadwal_tersedia_kuota_ongkir_habis.png)
 - User click info icon
 
-![](../res/shippingschedulebottomsheet/bottomsheet_schedule_delivery_info.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulebottomsheet/bottomsheet_schedule_delivery_info.png)
 
 ## Navigation
 
 This bottomsheet will show when click icon chevron right on schedule delivery option widget
 
-![](../res/shippingschedulebottomsheet/navigation.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulebottomsheet/navigation.png)
 
 ## How-to
 
@@ -101,9 +101,9 @@ Model for showing schedule delivery bottomsheet
 
 | **Variable name** | **Type** | **Description**                                                                                                                                                                                                                                                                                                       |
 | --- | --- |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| date | `ChooseDateUiModel` | Show list of dates for schedule delivery. ![](../res/shippingschedulebottomsheet/list_date_schedule_delivery.png)Shown time slot list is from `date.content` that has one of the time slot selected (`date.content.isSelected`) ![](../res/shippingschedulebottomsheet/time_slot_list.png) |
-| availableTitle | `TitleSectionUiModel` | Section title for available time slot ![](../res/shippingschedulebottomsheet/available_time_slot.png)                                                                                                                                                                                                                                                                                |
-| unavailableTitle | `TitleSectionUiModel` | Section title for unavailable time slot ![](../res/shippingschedulebottomsheet/unavailable_time_slot.png)                                                                                                                                                                                                                                                                              |
+| date | `ChooseDateUiModel` | Show list of dates for schedule delivery. ![](../res/shippingschedulebottomsheet/list_date_schedule_delivery.png)Shown time slot list is from `date.content` that has one of the time slot selected (`date.content.isSelected`) ![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulebottomsheet/time_slot_list.png) |
+| availableTitle | `TitleSectionUiModel` | Section title for available time slot ![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulebottomsheet/available_time_slot.png)                                                                                                                                                                                                                                                                                |
+| unavailableTitle | `TitleSectionUiModel` | Section title for unavailable time slot ![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulebottomsheet/unavailable_time_slot.png)                                                                                                                                                                                                                                                                              |
 | infoUiModel | `BottomSheetInfoUiModel` | Data for bottom sheet schedule delivery info                                                                                                                                                                                                                                                                          |
 
 ### ChooseDateUiModel
@@ -157,14 +157,14 @@ Model for showing time slot section title
 | **Variable name** | **Type** | **Description** | **Example**                                                                                                                                              |
 | --- | --- | --- |----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | title | String | Title of time slot title section | “Jadwal Tersedia”or“Jadwal habis atau tidak tersedia”                                                                                                    |
-| content | String | Description to show edge case wording.Wording is from BE:`deliveryService.deliveryProduct.promoText` | ![](../res/shippingschedulebottomsheet/jadwal_tersedia_min_transaction.png)  “Belanja min. Rp50.000 untuk gratis ongkir” or“Kuota gratis ongkirmu habis” |
+| content | String | Description to show edge case wording.Wording is from BE:`deliveryService.deliveryProduct.promoText` | ![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulebottomsheet/jadwal_tersedia_min_transaction.png)  “Belanja min. Rp50.000 untuk gratis ongkir” or“Kuota gratis ongkirmu habis” |
 | icon | Int | icon (info) | `IconUnify.INFORMATION`                                                                                                                                  |
 
 ### BottomSheetInfoUiModel
 
 Model for showing bottom sheet schedule delivery info 
 
-![](../res/shippingschedulebottomsheet/bottomsheet_schedule_delivery_info.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulebottomsheet/bottomsheet_schedule_delivery_info.png)
 
 | **Variable name** | **Type** | **Description** | **Example** |
 | --- | --- | --- | --- |

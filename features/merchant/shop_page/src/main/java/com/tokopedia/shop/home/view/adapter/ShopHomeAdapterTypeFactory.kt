@@ -13,40 +13,7 @@ import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
-import com.tokopedia.shop.home.WidgetName.ADD_ONS
-import com.tokopedia.shop.home.WidgetName.ADVANCED_SLIDER_BANNER
-import com.tokopedia.shop.home.WidgetName.BANNER_PRODUCT_GROUP
-import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
-import com.tokopedia.shop.home.WidgetName.BMGM_BANNER
-import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
-import com.tokopedia.shop.home.WidgetName.DIRECT_PURCHASED_BY_ETALASE
-import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
-import com.tokopedia.shop.home.WidgetName.INFO_CARD
-import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
-import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
-import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
-import com.tokopedia.shop.home.WidgetName.PRODUCT
-import com.tokopedia.shop.home.WidgetName.PRODUCT_BUNDLE_MULTIPLE
-import com.tokopedia.shop.home.WidgetName.PRODUCT_BUNDLE_SINGLE
-import com.tokopedia.shop.home.WidgetName.PRODUCT_VERTICAL
-import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
-import com.tokopedia.shop.home.WidgetName.REIMAGINE_BANNER_PRODUCT_HOTSPOT
-import com.tokopedia.shop.home.WidgetName.REMINDER
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_BIG
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_MEDIUM
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_SMALL
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_NAVIGATION_BANNER
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_MEDIUM
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_SMALL
-import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
-import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
-import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
-import com.tokopedia.shop.home.WidgetName.TRENDING
-import com.tokopedia.shop.home.WidgetName.VIDEO
-import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.util.ShopHomeReimagineShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.view.adapter.viewholder.CarouselPlayWidgetViewHolder
@@ -155,48 +122,58 @@ open class ShopHomeAdapterTypeFactory(
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         return when (baseShopHomeWidgetUiModel.name) {
-            DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> getShopHomeMultipleImageColumnViewHolder(baseShopHomeWidgetUiModel)
-            SLIDER_SQUARE_BANNER -> getShopHomeSliderSquareViewHolder(baseShopHomeWidgetUiModel)
-            SLIDER_BANNER, BMGM_BANNER -> getShopHomeSliderBannerViewHolder(baseShopHomeWidgetUiModel)
-            ADVANCED_SLIDER_BANNER -> ShopHomeDisplayAdvanceCarouselBannerViewHolder.LAYOUT_RES
-            VIDEO -> ShopHomeVideoViewHolder.LAYOUT_RES
-            PRODUCT -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
-            VOUCHER_STATIC -> ShopHomeVoucherViewHolder.LAYOUT
-            SHOWCASE_NAVIGATION_BANNER -> determineShowcaseNavigationBannerWidgetAppearance(baseShopHomeWidgetUiModel)
-            BANNER_PRODUCT_GROUP -> determineBannerProductGroupWidgetAppearance(baseShopHomeWidgetUiModel)
-            RECENT_ACTIVITY, BUY_AGAIN, REMINDER, ADD_ONS, TRENDING -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
-            NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
-            FLASH_SALE_TOKO -> getShopFlashSaleViewHolder(baseShopHomeWidgetUiModel)
-            PLAY_CAROUSEL_WIDGET -> CarouselPlayWidgetViewHolder.LAYOUT
-            INFO_CARD -> ShopHomeCardDonationViewHolder.LAYOUT
-            PRODUCT_BUNDLE_SINGLE, PRODUCT_BUNDLE_MULTIPLE -> ShopHomeProductBundleParentWidgetViewHolder.LAYOUT
-            SHOWCASE_SLIDER_SMALL, SHOWCASE_SLIDER_MEDIUM -> return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
-            SHOWCASE_SLIDER_TWO_ROWS -> {
+            WidgetNameEnum.DISPLAY_SINGLE_COLUMN.value,
+            WidgetNameEnum.DISPLAY_DOUBLE_COLUMN.value,
+            WidgetNameEnum.DISPLAY_TRIPLE_COLUMN.value -> getShopHomeMultipleImageColumnViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.SLIDER_SQUARE_BANNER.value -> getShopHomeSliderSquareViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.SLIDER_BANNER.value,
+            WidgetNameEnum.BMGM_BANNER.value -> getShopHomeSliderBannerViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.ADVANCED_SLIDER_BANNER.value -> ShopHomeDisplayAdvanceCarouselBannerViewHolder.LAYOUT_RES
+            WidgetNameEnum.VIDEO.value -> ShopHomeVideoViewHolder.LAYOUT_RES
+            WidgetNameEnum.PRODUCT.value -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.VOUCHER_STATIC.value -> ShopHomeVoucherViewHolder.LAYOUT
+            WidgetNameEnum.SHOWCASE_NAVIGATION_BANNER.value -> determineShowcaseNavigationBannerWidgetAppearance(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.BANNER_PRODUCT_GROUP.value -> determineBannerProductGroupWidgetAppearance(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.RECENT_ACTIVITY.value,
+            WidgetNameEnum.BUY_AGAIN.value,
+            WidgetNameEnum.REMINDER.value,
+            WidgetNameEnum.ADD_ONS.value,
+            WidgetNameEnum.TRENDING.value -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.NEW_PRODUCT_LAUNCH_CAMPAIGN.value -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.FLASH_SALE_TOKO.value -> getShopFlashSaleViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.PLAY_CAROUSEL_WIDGET.value -> CarouselPlayWidgetViewHolder.LAYOUT
+            WidgetNameEnum.INFO_CARD.value -> ShopHomeCardDonationViewHolder.LAYOUT
+            WidgetNameEnum.PRODUCT_BUNDLE_SINGLE.value,
+            WidgetNameEnum.PRODUCT_BUNDLE_MULTIPLE.value -> ShopHomeProductBundleParentWidgetViewHolder.LAYOUT
+            WidgetNameEnum.SHOWCASE_SLIDER_SMALL.value,
+            WidgetNameEnum.SHOWCASE_SLIDER_MEDIUM.value -> return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
+            WidgetNameEnum.SHOWCASE_SLIDER_TWO_ROWS.value -> {
                 showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_HORIZONTAL
                 showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE
                 return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
             }
-            SHOWCASE_GRID_SMALL -> {
+            WidgetNameEnum.SHOWCASE_GRID_SMALL.value -> {
                 showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_VERTICAL
                 showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_THREE_COLUMN_SIZE
                 return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
             }
-            SHOWCASE_GRID_MEDIUM, SHOWCASE_GRID_BIG -> {
+            WidgetNameEnum.SHOWCASE_GRID_MEDIUM.value,
+            WidgetNameEnum.SHOWCASE_GRID_BIG.value -> {
                 showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_VERTICAL
                 showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE
                 return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
             }
-            PERSO_PRODUCT_COMPARISON -> {
+            WidgetNameEnum.PERSO_PRODUCT_COMPARISON.value -> {
                 getPersoProductComparisonViewHolder(baseShopHomeWidgetUiModel)
             }
-            BANNER_TIMER -> {
+            WidgetNameEnum.BANNER_TIMER.value -> {
                 getShopHomeDisplayBannerTimerViewHolder(baseShopHomeWidgetUiModel)
             }
-            REIMAGINE_BANNER_PRODUCT_HOTSPOT -> {
+            WidgetNameEnum.REIMAGINE_BANNER_PRODUCT_HOTSPOT.value -> {
                 getShopHomeDisplayBannerProductHotspotViewHolder()
             }
-            PRODUCT_VERTICAL -> getTerlarisViewHolder(baseShopHomeWidgetUiModel)
-            DIRECT_PURCHASED_BY_ETALASE -> ShopHomeDirectPurchasedByEtalaseViewHolder.LAYOUT
+            WidgetNameEnum.PRODUCT_VERTICAL.value -> getTerlarisViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.DIRECT_PURCHASED_BY_ETALASE.value -> ShopHomeDirectPurchasedByEtalaseViewHolder.LAYOUT
 
             else -> HideViewHolder.LAYOUT
         }
@@ -458,7 +435,10 @@ open class ShopHomeAdapterTypeFactory(
             ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
                 ShopLayoutLoadingShimmerViewHolder(parent)
             }
-            ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(parent, shopProductEtalaseListViewHolderListener)
+            ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(
+                parent,
+                shopProductEtalaseListViewHolderListener
+            )
             ShopHomeNplCampaignViewHolder.LAYOUT -> {
                 ShopHomeNplCampaignViewHolder(parent, shopHomeCampaignNplWidgetListener)
             }

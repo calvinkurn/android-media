@@ -350,5 +350,7 @@ object ProductTrackingConstant {
         const val TRACKER_ID_IMPRESSION_LOCATION_RESTRICTION = "40906"
         const val TRACKER_ID_CLICK_A_PLUS_MORE = "45824"
         const val TRACKER_ID_CLICK_A_PLUS_LESS = "45825"
+        const val VALUE_TRACKER_ID_CLICK_SHARE_WIDGET = "48001"
+        const val VALUE_TRACKER_ID_CLICK_DIRECT_CHANNEL = "48135"
     }
 }
