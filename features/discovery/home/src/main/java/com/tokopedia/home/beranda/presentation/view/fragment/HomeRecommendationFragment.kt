@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -50,7 +49,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationLi
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationButtonRetryUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
@@ -131,6 +129,7 @@ class HomeRecommendationFragment :
     private var homeCategoryListener: HomeCategoryListener? = null
     private var component: BerandaComponent? = null
     private var coachmarkLocalCache: CoachMarkLocalCache? = null
+    private var homeRecomCurrentPage = 1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -348,6 +347,7 @@ class HomeRecommendationFragment :
         endlessRecyclerViewScrollListener =
             object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    homeRecomCurrentPage = page
                     viewModel.fetchNextHomeRecommendation(
                         tabName,
                         recomId,
@@ -616,10 +616,16 @@ class HomeRecommendationFragment :
     }
 
     override fun onRetryGetNextProductRecommendationData() {
-        val homeRecommendationTypeFactoryList = adapter.currentList.filterIsInstance<Visitable<HomeRecommendationTypeFactoryImpl>>().toMutableList()
-        homeRecommendationTypeFactoryList.remove(HomeRecommendationButtonRetryUiModel())
-        adapter.submitList(homeRecommendationTypeFactoryList)
-        endlessRecyclerViewScrollListener?.loadMoreNextPage()
+        val currentPage = endlessRecyclerViewScrollListener?.currentPage ?: homeRecomCurrentPage
+        viewModel.fetchNextHomeRecommendation(
+            tabName,
+            recomId,
+            DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
+            currentPage,
+            getLocationParamString(),
+            sourceType,
+            adapter.currentList.toList()
+        )
     }
 
     private fun initListeners() {

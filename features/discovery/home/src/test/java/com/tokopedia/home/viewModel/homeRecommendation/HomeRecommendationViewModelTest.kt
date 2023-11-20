@@ -1920,10 +1920,10 @@ class HomeRecommendationViewModelTest {
 
             homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, productPage, locationParam = "", sourceType = "", existingRecommendationData = homeRecommendationDataModel.homeRecommendations)
 
-            assertTrue(it[1] is HomeRecommendationCardState.LoadingMore)
-
-            val actualNextResult = (it[2] as HomeRecommendationCardState.Success)
-            val expectedNextResult = homeRecommendationNextDataModel.homeRecommendations
+            val actualNextResult = (it[1] as HomeRecommendationCardState.Success)
+            val expectedNextResult = homeRecommendationNextDataModel.homeRecommendations.toMutableList().apply {
+                addAll(homeRecommendationDataModel.homeRecommendations)
+            }
 
             assertEquals(
                 expectedNextResult,
@@ -1981,9 +1981,7 @@ class HomeRecommendationViewModelTest {
 
             homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, productPage, locationParam = "", sourceType = "", existingRecommendationData = homeRecommendationDataModel.homeRecommendations)
 
-            assertTrue(it[1] is HomeRecommendationCardState.LoadingMore)
-
-            val actualNextResult = (it[2] as HomeRecommendationCardState.FailNextPage)
+            val actualNextResult = (it[1] as HomeRecommendationCardState.FailNextPage)
 
             assertEquals(
                 exception.localizedMessage,

@@ -146,17 +146,20 @@ class HomeRecommendationViewModel @Inject constructor(
     ) {
         val existingRecommendationDataMutableList = existingRecommendationData.toMutableList()
 
-        _homeRecommendationCardState.tryEmit(
-            HomeRecommendationCardState.LoadingMore(
-                HomeRecommendationDataModel(
-                    homeRecommendations = existingRecommendationDataMutableList.apply {
-                        add(loadMoreModel)
-                    }.toList()
-                )
-            )
-        )
+        existingRecommendationDataMutableList.removeAll { it is HomeRecommendationLoadMore }
+        existingRecommendationDataMutableList.removeAll { it is HomeRecommendationButtonRetryUiModel }
+
+        existingRecommendationDataMutableList.add(loadMoreModel)
 
         launchCatchError(coroutineContext, block = {
+            _homeRecommendationCardState.emit(
+                HomeRecommendationCardState.LoadingMore(
+                    HomeRecommendationDataModel(
+                        homeRecommendations = existingRecommendationDataMutableList.toList()
+                    )
+                )
+            )
+
             val result = getHomeRecommendationCardUseCase.get().execute(
                 page,
                 tabName,
@@ -164,12 +167,12 @@ class HomeRecommendationViewModel @Inject constructor(
                 locationParam
             )
 
-            existingRecommendationDataMutableList.remove(loadMoreModel)
+            existingRecommendationDataMutableList.removeAll { it is HomeRecommendationLoadMore }
 
             existingRecommendationDataMutableList.addAll(result.homeRecommendations)
 
             val newHomeRecommendationDataModel = HomeRecommendationDataModel(
-                homeRecommendations = existingRecommendationData.toList(),
+                homeRecommendations = existingRecommendationDataMutableList.toList(),
                 isHasNextPage = result.isHasNextPage
             )
 
@@ -177,12 +180,15 @@ class HomeRecommendationViewModel @Inject constructor(
                 HomeRecommendationCardState.Success(newHomeRecommendationDataModel)
             )
         }, onError = {
-                existingRecommendationDataMutableList.remove(loadMoreModel)
+                existingRecommendationDataMutableList.removeAll {
+                        existingRecommendationData ->
+                    existingRecommendationData is HomeRecommendationLoadMore
+                }
                 existingRecommendationDataMutableList.add(buttonRetryUiModel)
 
                 _homeRecommendationCardState.emit(
                     HomeRecommendationCardState.FailNextPage(
-                        HomeRecommendationDataModel(existingRecommendationData.toList()),
+                        HomeRecommendationDataModel(existingRecommendationDataMutableList.toList()),
                         throwable = it
                     )
                 )
