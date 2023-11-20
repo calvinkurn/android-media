@@ -230,8 +230,18 @@ class ScpAuthActivity : BaseActivity() {
                 }
 
                 override fun onProgressiveSignupFlow(accountDetails: GeneralAccountDetails) {
-                    GotoSdk.LSDKINSTANCE?.closeScreenAndExit()
-                    viewModel.register(accountDetails)
+                    if (ScpUtils.isProgressiveSignupEnabled()) {
+                        GotoSdk.LSDKINSTANCE?.closeScreenAndExit()
+                        viewModel.register(accountDetails)
+                    } else {
+                        val credential = if (accountDetails.phoneNumber.isNotEmpty()) {
+                            UserCredential(
+                                phoneNumber = accountDetails.phoneNumber,
+                                countryCode = accountDetails.countryCode
+                            )
+                        } else UserCredential(email = accountDetails.email)
+                        gotoRegisterInitial(credential)
+                    }
                 }
             },
             clientFlowListener = object : LSdkClientFlowListener {
