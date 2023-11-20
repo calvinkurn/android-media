@@ -157,6 +157,7 @@ import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -922,7 +923,6 @@ open class DiscoveryFragment :
                             it.data.requestParams.requestingComponent,
                             it.data.addToCartDataModel.data.cartId
                         )
-                        getMiniCart()
                     }
                 } else {
                     analytics.trackEventProductATCTokonow(
@@ -939,6 +939,11 @@ open class DiscoveryFragment :
                 if (it.throwable is ResponseErrorException) {
                     showToaster(
                         message = it.throwable.message.orEmpty(),
+                        type = Toaster.TYPE_ERROR
+                    )
+                } else {
+                    showToaster(
+                        message = ErrorHandler.getErrorMessage(context, it.throwable),
                         type = Toaster.TYPE_ERROR
                     )
                 }
