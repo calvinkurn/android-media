@@ -19,14 +19,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ScpAuthViewModel @Inject constructor(
-    val getUserInfoAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
-    val registerV2AndSaveSessionUseCase: GetRegisterV2AndSaveSessionUseCase,
-    val userSessionInterface: UserSessionInterface,
+    private val getUserInfoAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
+    private val registerV2AndSaveSessionUseCase: GetRegisterV2AndSaveSessionUseCase,
+    private val userSessionInterface: UserSessionInterface,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val _onLoginSuccess = MutableLiveData<Boolean>()
     val onLoginSuccess: LiveData<Boolean> = _onLoginSuccess
+
+    private val _onProgressiveSignupSuccess = MutableLiveData<String>()
+    val onProgressiveSignupSuccess: LiveData<String> = _onProgressiveSignupSuccess
 
     private val _showFullScreenLoading = MutableLiveData<Boolean>()
     val showFullScreenLoading: LiveData<Boolean> = _showFullScreenLoading
@@ -63,14 +66,14 @@ class ScpAuthViewModel @Inject constructor(
                     is Success -> {
                         ScpUtils.saveTokens(resp.data.accessToken, resp.data.refreshToken)
                         getUserInfoAndSaveSessionUseCase(Unit)
-                        _onLoginSuccess.postValue(true)
+                        _onProgressiveSignupSuccess.postValue(account.fullname)
                     }
                     is Fail -> {
-                        _onLoginSuccess.postValue(false)
+                        _onProgressiveSignupSuccess.postValue("")
                     }
                 }
             } catch (e: Exception) {
-                _onLoginSuccess.postValue(false)
+                _onProgressiveSignupSuccess.postValue("")
             } finally {
                 _showFullScreenLoading.postValue(false)
             }

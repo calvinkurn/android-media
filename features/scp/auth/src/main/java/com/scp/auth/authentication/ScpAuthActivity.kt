@@ -4,16 +4,22 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.scp.auth.GotoSdk
 import com.scp.auth.common.analytics.AuthAnalyticsMapper
 import com.scp.auth.common.utils.ScpConstants
 import com.scp.auth.common.utils.ScpUtils
+import com.scp.auth.common.utils.ScpUtils.createGenericBottomSheet
+import com.scp.auth.common.utils.ScpUtils.createNoConnectionBottomSheet
 import com.scp.auth.common.utils.TkpdAdditionalHeaders
 import com.scp.auth.common.utils.goToForgotGotoPin
 import com.scp.auth.common.utils.goToForgotPassword
@@ -32,6 +38,7 @@ import com.scp.login.core.domain.contracts.configs.LSdkSsoUiConfigs
 import com.scp.login.core.domain.contracts.configs.LSdkUiConfig
 import com.scp.login.core.domain.contracts.listener.LSdkClientFlowListener
 import com.scp.login.core.domain.contracts.listener.LSdkLoginFlowListener
+import com.scp.login.core.utils.DeviceUtils.hideKeyboard
 import com.scp.verification.core.domain.common.entities.Failure
 import com.scp.verification.core.domain.common.listener.ForgetContext
 import com.scp.verification.features.gotopin.CVPinManager
@@ -60,10 +67,13 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.scp.auth.databinding.ActivityScpAuthBinding
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+
 
 class ScpAuthActivity : BaseActivity() {
 
@@ -78,14 +88,26 @@ class ScpAuthActivity : BaseActivity() {
 
     private var isHitRegisterPushNotif: Boolean = false
 
+    private var noConnectionBottomSheet: BottomSheetUnify? = null
+    private var genericErrorBottomSheet: BottomSheetUnify? = null
+
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(
             ScpAuthViewModel::class.java
         )
     }
 
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        // lost network connection
+        override fun onLost(network: Network) {
+            showNoConnectionBottomSheet()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        registerNetworkCallback()
+
         GotoSdk.setActivty(this)
         val binding = ActivityScpAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -102,7 +124,14 @@ class ScpAuthActivity : BaseActivity() {
                 if (it) {
                     postLoginAction()
                 } else {
-                    handleError()
+                    handleError("Terjadi Kesalahan")
+                }
+            }
+            onProgressiveSignupSuccess.observe(this@ScpAuthActivity) {
+                if (it.isNotEmpty()) {
+                    onProgressiveSignupSuccess(it)
+                } else {
+                    showGenericErrorBottomSheet()
                 }
             }
         }
@@ -115,10 +144,22 @@ class ScpAuthActivity : BaseActivity() {
         }
     }
 
-    private fun handleError(){
+    private fun onProgressiveSignupSuccess(name: String) {
+        postLoginAction()
+        val text = if (userSession.name.lowercase(Locale.getDefault()).contains("topper")) {
+            "Halo ${userSession.name}. Kamu bisa ubah namamu di halaman Profil, ya!"
+        } else if (userSession.name != name) {
+            "Halo, ${userSession.name}! Kamu bisa ubah namamu di halaman Profil, ya!"
+        } else {
+            "Selamat datang di Tokopedia, $name!"
+        }
+        GlobalToasterWorker.scheduleWorker(applicationContext, text)
+    }
+
+    private fun handleError(errorMsg: String){
         try {
             ScpUtils.clearTokens()
-            Toast.makeText(this@ScpAuthActivity, "Terjadi Kesalahan", Toast.LENGTH_LONG).show()
+            Toast.makeText(this@ScpAuthActivity, errorMsg, Toast.LENGTH_LONG).show()
             finish()
         } catch (ignored: Exception) {}
     }
@@ -134,6 +175,21 @@ class ScpAuthActivity : BaseActivity() {
 
     private fun isShowGoogleLogin(): Boolean {
         return firebaseRemoteConfig.getBoolean(CONFIG_GOOGLE_LOGIN, false)
+    }
+
+    private fun registerNetworkCallback() {
+        val context = applicationContext ?: return
+        val connectivityManager = ContextCompat.getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
+        val networkRequest = NetworkRequest.Builder().build()
+        try {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                connectivityManager.registerDefaultNetworkCallback(networkCallback)
+            } else {
+                connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 
     private fun startGotoLogin() {
@@ -384,6 +440,26 @@ class ScpAuthActivity : BaseActivity() {
         val stringDate = DateFormat.format("EEEE, MMMM d, yyyy ", date.time)
         dataMap["timestamp"] = stringDate
         TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
+    }
+
+    fun showNoConnectionBottomSheet() {
+        hideKeyboard()
+        noConnectionBottomSheet = if(noConnectionBottomSheet == null) createNoConnectionBottomSheet {
+            finish()
+        } else noConnectionBottomSheet
+        if(noConnectionBottomSheet?.isAdded == false) {
+            noConnectionBottomSheet?.show(supportFragmentManager,  "")
+        }
+    }
+
+    fun showGenericErrorBottomSheet() {
+        hideKeyboard()
+        genericErrorBottomSheet = if(genericErrorBottomSheet == null) createGenericBottomSheet {
+            finish()
+        } else genericErrorBottomSheet
+        if(genericErrorBottomSheet?.isAdded == false) {
+            genericErrorBottomSheet?.show(supportFragmentManager, "")
+        }
     }
 
     companion object {

@@ -1,11 +1,16 @@
 package com.scp.auth.common.utils
 
 import android.content.Context
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.scp.auth.GotoSdk
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSession
 
 object ScpUtils {
@@ -48,4 +53,48 @@ object ScpUtils {
         val userSession = UserSession(context)
         userSession.loginMethod = loginMethod
     }
+
+    fun AppCompatActivity.createNoConnectionBottomSheet(onClick: () -> Unit): BottomSheetUnify {
+        val bs = BottomSheetUnify().apply {
+            val mView = GlobalError(this@createNoConnectionBottomSheet).apply {
+                setType(GlobalError.NO_CONNECTION)
+                errorSecondaryAction.visibility = View.GONE
+                setPadding(
+                    paddingLeft,
+                    paddingTop,
+                    paddingRight,
+                    16.toPx()
+                )
+                setActionClickListener {
+                    onClick.invoke()
+                    dismiss()
+                }
+            }
+            setChild(mView)
+        }
+        return bs
+    }
+
+    fun AppCompatActivity.createGenericBottomSheet(onClick: () -> Unit): BottomSheetUnify {
+        val bs = BottomSheetUnify()
+        val mView = GlobalError(this).apply {
+            setType(GlobalError.SERVER_ERROR)
+            setPadding(
+                paddingLeft,
+                paddingTop,
+                paddingRight,
+                16.toPx()
+            )
+            setActionClickListener {
+                onClick.invoke()
+                bs.dismiss()
+            }
+        }
+        bs.setOnDismissListener {
+            onClick.invoke()
+        }
+        bs.setChild(mView)
+        return bs
+    }
+
 }
