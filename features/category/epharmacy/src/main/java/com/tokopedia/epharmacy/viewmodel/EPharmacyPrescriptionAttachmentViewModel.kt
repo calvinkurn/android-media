@@ -15,6 +15,8 @@ import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationRes
 import com.tokopedia.epharmacy.usecase.EPharmacyGetConsultationDetailsUseCase
 import com.tokopedia.epharmacy.usecase.EPharmacyInitiateConsultationUseCase
 import com.tokopedia.epharmacy.utils.*
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,6 +29,9 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private val ePharmacyGetConsultationDetailsUseCase: EPharmacyGetConsultationDetailsUseCase,
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
 ) : BaseViewModel(dispatcherBackground) {
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private val _productGroupLiveData = MutableLiveData<Result<EPharmacyDataModel>>()
     val productGroupLiveDataResponse: LiveData<Result<EPharmacyDataModel>> = _productGroupLiveData
@@ -75,7 +80,8 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         ePharmacyPrepareProductsGroupResponseData = ePharmacyPrepareProductsGroupResponse
         ePharmacyPrepareProductsGroupResponse.let { data ->
             if (data.detailData?.groupsData?.epharmacyGroups?.isNotEmpty() == true) {
-                _productGroupLiveData.postValue(Success(EPharmacyUtils.mapGroupsDataIntoDataModel(data)))
+                val tickerWebViewText = remoteConfig.getString(RemoteConfigKey.REDIRECT_EPHARMACY_WEB_VIEW_VERSION_LOW)
+                _productGroupLiveData.postValue(Success(EPharmacyUtils.mapGroupsDataIntoDataModel(data, tickerWebViewText)))
                 _buttonLiveData.postValue(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.papPrimaryCTA)
                 showToastData(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.toaster)
             } else {
