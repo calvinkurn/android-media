@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.view.ViewStub
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -98,6 +99,13 @@ class ProductBmgmItemAdapter(
                 setupDividerAddonSummary(it)
                 setItemOnClickListener(it)
                 setupBmgmItemButton(it.button, it.isProcessing == true)
+                setupImpressionListener(it)
+            }
+        }
+
+        private fun setupImpressionListener(model: ProductBmgmSectionUiModel.ProductUiModel) {
+            itemView.addOnImpressionListener(model.impressHolder) {
+                listener.onBmgmItemImpressed(model)
             }
         }
 
@@ -224,6 +232,7 @@ class ProductBmgmItemAdapter(
             fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
             fun onBmgmItemSeeSimilarProducts(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
             fun onBmgmItemWarrantyClaim(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
+            fun onBmgmItemImpressed(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
         }
     }
 }

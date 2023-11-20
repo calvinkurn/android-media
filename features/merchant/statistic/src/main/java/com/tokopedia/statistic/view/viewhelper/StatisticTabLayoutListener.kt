@@ -7,7 +7,6 @@ import com.google.android.material.tabs.TabLayout
  */
 
 fun TabLayout.setOnTabSelectedListener(callback: (tab: TabLayout.Tab) -> Unit) {
-    this.clearOnTabSelectedListeners()
     this.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
         override fun onTabSelected(tab: TabLayout.Tab) {

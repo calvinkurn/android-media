@@ -20,6 +20,7 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 }
 
 project.ext {

@@ -83,7 +83,9 @@ import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
+import com.tokopedia.home_account.fundsAndInvestment.FundsAndInvestmentComposeActivity
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
+import com.tokopedia.home_account.view.activity.FundsAndInvestmentActivity
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
@@ -144,7 +146,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
@@ -1232,6 +1233,17 @@ open class HomeAccountUserFragment :
         }
     }
 
+    private fun goToFundsAndInvestment() {
+        val directionActivity = if (DeeplinkMapperUser.isFundsAndInvestmentComposeActivated()) {
+            FundsAndInvestmentComposeActivity::class.java
+        } else {
+            FundsAndInvestmentActivity::class.java
+        }
+
+        val intent = Intent(activity, directionActivity)
+        startActivity(intent)
+    }
+
     private fun goToApplink(applink: String) {
         if (applink.isNotEmpty()) {
             val intent = RouteManager.getIntent(context, applink)
@@ -1310,7 +1322,7 @@ open class HomeAccountUserFragment :
                     userId = userSession.userId
                 )
                 homeAccountAnalytic.eventClickViewMoreWalletAccountPage()
-                goToApplink(item.applink)
+                goToFundsAndInvestment()
             }
 
             AccountConstants.SettingCode.SETTING_MORE_MEMBER -> {
@@ -1780,7 +1792,7 @@ open class HomeAccountUserFragment :
                 addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
             val bottomSheet = BottomSheetUnify()
 
-            ImageUtils.loadImage(iconAddName, getString(R.string.add_name_url_icon))
+            iconAddName.loadImage(getString(R.string.add_name_url_icon))
             iconAddName.setOnClickListener {
                 gotoChangeName(profile)
                 bottomSheet.dismiss()

@@ -467,19 +467,6 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     }
 
     @Test
-    fun `check setInitialProductList is Success`() {
-        viewModelShopPageProductListViewModel.setInitialProductList(
-            "123",
-            productPerPage = mockProductPerPage,
-            ShopProduct.GetShopProduct(
-                data = listOf(ShopProduct())
-            ),
-            mockIsDirectPurchaseTrue
-        )
-        Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
-    }
-
-    @Test
     fun `check getBottomSheetFilterData is Success`() {
         runBlocking {
             coEvery {

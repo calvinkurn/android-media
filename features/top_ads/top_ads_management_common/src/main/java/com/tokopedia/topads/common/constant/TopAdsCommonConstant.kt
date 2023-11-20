@@ -38,6 +38,7 @@ object TopAdsCommonConstant {
     const val CONST_1 = 1
     const val CONST_2 = 2
     const val CONST_3 = 3
+    const val CONST_4 = 4
     const val DEFAULT_NEW_KEYWORD_VALUE = "800"
     const val RECOMMENDATION_BUDGET_MULTIPLIER = 40
     const val PRODUCT_ID = "productID"
@@ -47,6 +48,9 @@ object TopAdsCommonConstant {
     const val STATUS_IKLAN_ACTION_DEACTIVATE = "toggle_off"
     const val CURRENT_SITE = "current_site"
     const val GROUP_IDS_KEY = "groupIDs"
+    const val PARAM_AD_GROUP_TYPE = "adGroupType"
+    const val PARAM_PRODUCT_IDS = "productIDs"
+    const val MAXIMUM_DAILY_BUDGET = "10000000"
 
     var TOPADS_GRAPHQL_TA_URL = when (TokopediaUrl.getInstance().TYPE) {
         Env.STAGING -> "https://gql-staging.tokopedia.com/graphql/ta"

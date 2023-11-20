@@ -30,7 +30,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 162
-        const val SIZE_PATH = 266
+        const val SIZE_PATH = 268
     }
 
     override fun setup() {
@@ -810,14 +810,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check promo with dash appLink then should return promo detail in customerapp`() {
         val appLink = UriUtil.buildUri(ApplinkConst.PROMO_WITH_DASH, "abc")
-        val expected = UriUtil.buildUri(ApplinkConstInternalPromo.PROMO_DETAIL, "abc")
+        val expected = "${DeeplinkConstant.SCHEME_INTERNAL}://global/discovery/deals"
         assertEqualsDeepLinkMapper(appLink, expected)
     }
 
     @Test
     fun `check promo detail appLink then should return promo detail in customerapp`() {
         val appLink = UriUtil.buildUri(ApplinkConst.PROMO_DETAIL, "abc")
-        val expected = UriUtil.buildUri(ApplinkConstInternalPromo.PROMO_DETAIL, "abc")
+        val expected = "${DeeplinkConstant.SCHEME_INTERNAL}://global/discovery/deals"
         assertEqualsDeepLinkMapper(appLink, expected)
     }
 
@@ -1046,6 +1046,20 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check profile following appLink then should return tokopedia internal profile following in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://people/123456/following"
+        val appLink = UriUtil.buildUri(ApplinkConst.PROFILE, "123456/following")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check profile followers appLink then should return tokopedia internal profile followers in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://people/123456/followers"
+        val appLink = UriUtil.buildUri(ApplinkConst.PROFILE, "123456/followers")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check profile after post appLink then should return tokopedia internal profile after post in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://people/123456?after_post=true"
         val appLink = UriUtil.buildUri(ApplinkConst.PROFILE_AFTER_POST, "123456")
@@ -1220,7 +1234,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check shop penalty appLink then should return tokopedia internal shop penalty in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-penalty-old"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-penalty"
         assertEqualsDeepLinkMapper(ApplinkConst.SHOP_PENALTY, expectedDeepLink)
     }
 

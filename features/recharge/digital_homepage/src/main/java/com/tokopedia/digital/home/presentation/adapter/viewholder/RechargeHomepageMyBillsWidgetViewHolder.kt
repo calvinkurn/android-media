@@ -51,7 +51,7 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         } else {
             binding.shimmerMyBills.root.visible()
             binding.container.gone()
-            listener.loadRechargeSectionData(element.visitableId())
+            listener.loadRechargeSectionData(element.visitableId(), element.section.name)
         }
     }
 

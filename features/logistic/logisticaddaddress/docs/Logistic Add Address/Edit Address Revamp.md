@@ -50,11 +50,11 @@ For detail about navigation can see this [figma](https://www.figma.com/file/XHEx
 
 **With Pinpoint**
 
-![](../res/editnewaddress/navigation_with_pinpoint.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticaddaddress/editnewaddress/navigation_with_pinpoint.png)
 
 **Without Pinpoint**
 
-![](../res/editnewaddress/navigation_without_pinpoint.png)![](../res/editnewaddress/navigation_without_pinpoint_two.png)
+![](../res/editnewaddress/navigation_without_pinpoint.png)![](https://docs-android.tokopedia.net/images/docs/logisticaddaddress/editnewaddress/navigation_without_pinpoint_two.png)
 
 ## Tech Stack
 
@@ -67,7 +67,7 @@ For detail about navigation can see this [figma](https://www.figma.com/file/XHEx
 
 ## Flow Diagram
 
-![](../res/editnewaddress/flow_diagram.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticaddaddress/editnewaddress/flow_diagram.png)
 
 ## How-to
 

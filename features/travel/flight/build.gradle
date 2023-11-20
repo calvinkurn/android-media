@@ -31,12 +31,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     buildFeatures{
@@ -99,7 +99,7 @@ dependencies {
     implementation rootProject.ext.firebase.crashlytics
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     /* Navigation Component */
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
@@ -127,7 +127,7 @@ dependencies {
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 
     testImplementation rootProject.ext.testDependencies.junit

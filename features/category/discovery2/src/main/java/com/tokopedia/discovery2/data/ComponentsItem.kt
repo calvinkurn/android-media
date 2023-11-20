@@ -115,7 +115,8 @@ data class ComponentsItem(
     var myCouponList: List<MyCoupon>? = null,
     var claimCouponList: List<CatalogWithCouponList>? = null,
     var isFirstShown: Boolean = true,
-    var itemPosition: Int = 0
+    var itemPosition: Int = 0,
+    var isBackgroundPresent: Boolean = false
 ) {
 
     private var componentsItem: List<ComponentsItem>? = null
@@ -144,9 +145,13 @@ data class ComponentsItem(
 
     fun getPropertyRows(): Int = properties?.rows.toIntSafely()
 
+    fun getPropertyHeader(): Properties.Header? = properties?.header
+
     fun getComponentsItemSize(): Int = getComponentsItem()?.size.orZero()
 
     fun isFulfillment(dataItem: DataItem?): Boolean = dataItem?.labelsGroupList?.any { it.position == LABEL_FULFILLMENT }.orFalse()
 
     fun getWarehouseId(dataItem: DataItem?): Long = dataItem?.warehouseId.orZero()
+
+    fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = getComponentsItem()?.firstOrNull()?.compAdditionalInfo
 }

@@ -41,6 +41,7 @@ internal class PromoRecommendationDelegateAdapter(
     private val onClickUsePromoRecommendation: () -> Unit,
     private val onClickPromo: (PromoItem) -> Unit,
     private val onImpressionPromo: (PromoItem) -> Unit,
+    private val onRecommendationAnimationEnd: () -> Unit,
     private val onClickClose: () -> Unit
 ) : DelegateAdapter<PromoRecommendationItem, PromoRecommendationDelegateAdapter.ViewHolder>(
     PromoRecommendationItem::class.java
@@ -66,10 +67,12 @@ internal class PromoRecommendationDelegateAdapter(
             as? DelegatePayload.UpdatePromoRecommendation
         val isReload = payload?.isReload ?: true
         val isPromoStateUpdated = payload?.isPromoStateUpdated ?: true
+        val isPromoStartAnimation = payload?.isPromoStartAnimating ?: false
         viewHolder.bind(
             item = item,
             isReload = isReload,
-            isPromoStateUpdated = isPromoStateUpdated
+            isPromoStateUpdated = isPromoStateUpdated,
+            isStartAnimating = isPromoStartAnimation
         )
     }
 
@@ -87,7 +90,8 @@ internal class PromoRecommendationDelegateAdapter(
         fun bind(
             item: PromoRecommendationItem,
             isReload: Boolean = true,
-            isPromoStateUpdated: Boolean = true
+            isPromoStateUpdated: Boolean = true,
+            isStartAnimating: Boolean = false
         ) {
             if (isReload) {
                 setupRecyclerView()
@@ -95,7 +99,7 @@ internal class PromoRecommendationDelegateAdapter(
             }
             if (isPromoStateUpdated) {
                 submitItems(item)
-                renderContent(item)
+                renderContent(item, isStartAnimating)
                 setupListener(item)
             }
         }
@@ -121,7 +125,10 @@ internal class PromoRecommendationDelegateAdapter(
             binding.ivPromoRecommendationBackground.visible()
         }
 
-        private fun renderContent(item: PromoRecommendationItem) {
+        private fun renderContent(
+            item: PromoRecommendationItem,
+            isStartAnimating: Boolean = false
+        ) {
             if (item.selectedCodes.containsAll(item.codes)) {
                 binding.tpgRecommendationTitle.text =
                     item.messageSelected.toSpannableHtmlString(binding.tpgRecommendationTitle.context)
@@ -130,17 +137,19 @@ internal class PromoRecommendationDelegateAdapter(
                     item.message.toSpannableHtmlString(binding.tpgRecommendationTitle.context)
             }
             if (item.codes.size > 1) {
-                if (item.selectedCodes.containsAll(item.codes)) {
-                    binding.ivCheckmark.visible()
-                    binding.ivCheckmarkOutline.invisible()
-                } else {
-                    binding.ivCheckmark.invisible()
-                    binding.ivCheckmarkOutline.invisible()
-                }
-                if (item.selectedCodes.containsAll(item.codes)) {
-                    binding.btnRecommendationUseVoucher.invisible()
-                } else {
-                    binding.btnRecommendationUseVoucher.visible()
+                if (!item.showAnimation || isStartAnimating) {
+                    if (item.selectedCodes.containsAll(item.codes)) {
+                        binding.ivCheckmark.visible()
+                        binding.ivCheckmarkOutline.invisible()
+                    } else {
+                        binding.ivCheckmark.invisible()
+                        binding.ivCheckmarkOutline.invisible()
+                    }
+                    if (item.selectedCodes.containsAll(item.codes)) {
+                        binding.btnRecommendationUseVoucher.invisible()
+                    } else {
+                        binding.btnRecommendationUseVoucher.visible()
+                    }
                 }
             } else {
                 binding.ivCheckmark.invisible()
@@ -159,10 +168,9 @@ internal class PromoRecommendationDelegateAdapter(
             binding.btnRecommendationUseVoucher.setOnClickListener {
                 if (!item.isCalculating) {
                     startButtonAnimation {
-                        startMessageAnimation(item.messageSelected) {
-                            onClickUsePromoRecommendation()
-                        }
+                        startMessageAnimation(item.messageSelected)
                     }
+                    onClickUsePromoRecommendation()
                 }
             }
             binding.btnBottomSheetHeaderClose.setOnClickListener {
@@ -245,6 +253,7 @@ internal class PromoRecommendationDelegateAdapter(
             LottieCompositionFactory.fromUrl(binding.lottieAnimationView.context, item.animationUrl)
                 .addListener { result ->
                     binding.lottieAnimationView.setComposition(result)
+                    binding.lottieAnimationView.removeAllAnimatorListeners()
                     binding.lottieAnimationView.addAnimatorListener(object :
                             Animator.AnimatorListener {
                             override fun onAnimationStart(animator: Animator) {
@@ -252,7 +261,7 @@ internal class PromoRecommendationDelegateAdapter(
                             }
 
                             override fun onAnimationEnd(animator: Animator) {
-                                // no-op
+                                onRecommendationAnimationEnd()
                             }
 
                             override fun onAnimationCancel(animator: Animator) {

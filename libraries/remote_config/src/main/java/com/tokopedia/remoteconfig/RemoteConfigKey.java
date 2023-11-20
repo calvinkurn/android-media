@@ -250,8 +250,6 @@ public class RemoteConfigKey {
 
     public static final String FEED_NEW_ICON = "FeedNewIcon";
 
-    public static final String IS_SHOP_PENALTY_NEW_PAGE = "android_shop_penalty_new";
-
     public static final String SELLER_FEEDBACK_KMP = "android_seller_feedback_kmp";
 
     public static final String SCP_REWARDS_MEDALI_TOUCH_POINT = "android_scp_rewards_medali_touch_point";
@@ -291,4 +289,18 @@ public class RemoteConfigKey {
     public static final String ENABLE_PDP_P1_CACHEABLE = "android_pdp_p1_should_cacheable";
 
     public static final String ENABLE_PDP_P1_CACHE_AGE = "android_pdp_p1_cache_age";
+
+    public static final String SELLER_SEARCH_COMPOSE = "android_seller_search_compose";
+
+    public static final String ANDROID_CREDIT_CARD_ENABLE_AUTOFILL_GOOGLE_WALLET = "android_credit_card_enable_autofill_google_wallet";
+
+    public static final String ANDROID_PM_OPT_OUT_DATE = "android_pm_opt_out_date";
+
+    public static final String ENABLE_PDP_PREFETCH = "android_pdp_enable_prefetch";
+
+    public static final String LOAD_PRODUCT_IMAGE_ARCHIVAL_KEY = "android_load_product_image_archival_enabled";
+
+    public static final String ENABLE_WEBVIEW_BACK_PRESSED = "android_webview_enable_override_back_pressed";
+
+    public static final String ANDROID_MAIN_APP_ENABLE_DISCO_SHOP_OFFER_HERO_BRAND = "android_main_app_enable_disco_shop_offer_hero_brand";
 }

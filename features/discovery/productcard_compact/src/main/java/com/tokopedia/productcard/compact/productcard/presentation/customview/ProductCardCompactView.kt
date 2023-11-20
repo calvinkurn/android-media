@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
@@ -252,7 +253,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         needToChangeMaxLinesName: Boolean,
     ) {
         productNameTypography.showIfWithBlock(name.isNotBlank()) {
-            text = name
+            text = MethodChecker.fromHtml(name)
             maxLines = if (needToChangeMaxLinesName && promoLayout?.isVisible == true) {
                 MAX_LINES_NEEDED_TO_CHANGE
             } else {

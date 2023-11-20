@@ -31,7 +31,7 @@
 <!--end expand-->
 
 ## Overview
-![OCC page/OSP](res/overview_occ.png)
+![OCC page/OSP](https://docs-android.tokopedia.net/images/docs/oneclickcheckout/overview_occ.png)
 
 One Click Checkout (OCC) aka Beli Langsung is a “quick buy” process for Marketplace products. Using OCC, user will be able to directly checkout without having to navigate through Cart page & Checkout page (aka normal buy process).
 
@@ -72,15 +72,15 @@ See this slide for more info: https://docs.google.com/presentation/d/11aVJHnpPx6
 
 ## Flow Diagram
 #### OSP First Load Flow
-![image](res/osp_first_load_flow.png)
+![image](https://docs-android.tokopedia.net/images/docs/oneclickcheckout/osp_first_load_flow.png)
 <br />
 
 #### OSP Checkout Flow
-![image](res/osp_checkout_flow.png)
+![image](https://docs-android.tokopedia.net/images/docs/oneclickcheckout/osp_checkout_flow.png)
 <br />
 
 ## Navigation
-![image](res/navigation_occ.gif)
+![image](https://docs-android.tokopedia.net/images/docs/oneclickcheckout/navigation_occ.gif)
 
 #### How To
 To navigate to OCC page/OSP, please do one of the following:
