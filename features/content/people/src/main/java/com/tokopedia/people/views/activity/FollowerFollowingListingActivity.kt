@@ -39,12 +39,11 @@ class FollowerFollowingListingActivity : BaseSimpleActivity() {
     }
 
     private fun inject() {
-        DaggerUserProfileComponent.builder()
-            .baseAppComponent(
+        DaggerUserProfileComponent.factory()
+            .component(
                 (applicationContext as BaseMainApplication).baseAppComponent,
+                this,
             )
-            .userProfileModule(UserProfileModule(this))
-            .build()
             .inject(this)
     }
 
