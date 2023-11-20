@@ -13,12 +13,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.darkmodeconfig.R
+import com.tokopedia.darkmodeconfig.common.DarkModeAnalytics
 import com.tokopedia.darkmodeconfig.common.PrefKey
 import com.tokopedia.darkmodeconfig.model.UiMode
 import com.tokopedia.darkmodeconfig.view.screen.DarkModeConfigScreen
-import com.tokopedia.abstraction.constant.TkpdCache
-import com.tokopedia.darkmodeconfig.common.DarkModeAnalytics
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -109,8 +109,8 @@ class DarkModeConfigActivity : BaseActivity() {
     }
 
     private fun applyAppTheme(mode: UiMode) {
-        sendAnalytics(mode)
         saveDarkModeState(mode)
+        sendAnalytics(mode)
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         AppCompatDelegate.setDefaultNightMode(mode.screenMode)
     }
@@ -124,7 +124,16 @@ class DarkModeConfigActivity : BaseActivity() {
         lifecycleScope.launch(Dispatchers.Default) {
             val editor = sharedPref.edit()
             editor.putInt(TkpdCache.Key.KEY_DARK_MODE_CONFIG_SCREEN_MODE, option.screenMode)
+            editor.putBoolean(TkpdCache.Key.KEY_DARK_MODE, getDarkModeStatus(option))
             editor.apply()
+        }
+    }
+
+    private fun getDarkModeStatus(mode: UiMode): Boolean {
+        return when (mode) {
+            is UiMode.Light -> false
+            is UiMode.Dark -> true
+            is UiMode.FollowSystemSetting -> applicationContext.isDarkMode()
         }
     }
 
