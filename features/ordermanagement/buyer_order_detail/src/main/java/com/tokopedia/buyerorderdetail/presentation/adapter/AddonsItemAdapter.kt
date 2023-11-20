@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
@@ -63,7 +64,9 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
 
         private fun ItemBuyerOrderDetailAddonsListBinding.setDataViews(item: AddonsListUiModel.AddonItemUiModel) {
             tvBomDetailAddonsName.text = getAddonNameText(root.context, item)
-            ivBomDetailAddonsThumbnail.setImageUrl(item.addOnsThumbnailUrl)
+            ivBomDetailAddonsThumbnail.showIfWithBlock(item.addOnsThumbnailUrl.isNotEmpty()) {
+                ivBomDetailAddonsThumbnail.setImageUrl(item.addOnsThumbnailUrl)
+            }
             tvBomDetailAddonsPriceQuantity.text =
                 root.context.getString(
                     R.string.label_product_price_and_quantity,

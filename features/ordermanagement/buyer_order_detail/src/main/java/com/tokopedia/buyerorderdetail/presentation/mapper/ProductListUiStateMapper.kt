@@ -35,7 +35,8 @@ object ProductListUiStateMapper {
         currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
-        warrantyClaimButtonImpressed: Boolean
+        warrantyClaimButtonImpressed: Boolean,
+        addOnsExpandableState : List<String>
     ): ProductListUiState {
         val p1DataRequestState = getBuyerOrderDetailDataRequestState.getP1DataRequestState
         val getBuyerOrderDetailRequestState = getBuyerOrderDetailDataRequestState
@@ -61,15 +62,20 @@ object ProductListUiStateMapper {
                     currentState,
                     singleAtcRequestStates,
                     collapseProductList,
-                    warrantyClaimButtonImpressed
+                    warrantyClaimButtonImpressed,
+                    addOnsExpandableState
                 )
             }
         }
     }
 
-    fun mapToProductListProductUiModel(uiModel: ProductBmgmSectionUiModel.ProductUiModel): ProductListUiModel.ProductUiModel {
+    // This mapper only being used while do atc in bmgm
+    // so no need to taking into account about expandable addOns
+    fun mapToProductListProductUiModel(
+        uiModel: ProductBmgmSectionUiModel.ProductUiModel
+    ): ProductListUiModel.ProductUiModel {
         val addOnSummaryUiModel = uiModel.addOnSummaryUiModel
-
+        val addOnsIdentifier = generateAddOnsIdentifier(uiModel.productId, uiModel.orderDetailId)
         val buttonUiModel = uiModel.button
         val actionButton = ActionButtonsUiModel.ActionButton(
             key = buttonUiModel?.key.orEmpty(),
@@ -109,6 +115,7 @@ object ProductListUiStateMapper {
             quantity = uiModel.quantity,
             productNote = uiModel.productNote,
             addonsListUiModel = AddonsListUiModel(
+                addOnIdentifier = addOnsIdentifier,
                 totalPriceText = addOnSummaryUiModel?.totalPriceText.orEmpty(),
                 addonsLogoUrl = addOnSummaryUiModel?.addonsLogoUrl.orEmpty(),
                 addonsTitle = addOnSummaryUiModel?.addonsTitle.orEmpty(),
@@ -165,7 +172,8 @@ object ProductListUiStateMapper {
         currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
-        warrantyClaimButtonImpressed: Boolean
+        warrantyClaimButtonImpressed: Boolean,
+        addOnsExpandableState: List<String>
     ): ProductListUiState {
         return when (
             val insuranceDetailRequestState =
@@ -178,7 +186,8 @@ object ProductListUiStateMapper {
                     currentState,
                     singleAtcRequestStates,
                     collapseProductList,
-                    warrantyClaimButtonImpressed
+                    warrantyClaimButtonImpressed,
+                    addOnsExpandableState
                 )
             }
 
@@ -188,7 +197,8 @@ object ProductListUiStateMapper {
                     insuranceDetailRequestState,
                     singleAtcRequestStates,
                     collapseProductList,
-                    warrantyClaimButtonImpressed
+                    warrantyClaimButtonImpressed,
+                    addOnsExpandableState
                 )
             }
         }
@@ -210,7 +220,8 @@ object ProductListUiStateMapper {
         currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
-        warrantyClaimButtonImpressed: Boolean
+        warrantyClaimButtonImpressed: Boolean,
+        addOnsExpandableState: List<String>
     ): ProductListUiState {
         return if (currentState is ProductListUiState.HasData) {
             mapOnReloading(
@@ -219,7 +230,8 @@ object ProductListUiStateMapper {
                 currentState,
                 singleAtcRequestStates,
                 collapseProductList,
-                warrantyClaimButtonImpressed
+                warrantyClaimButtonImpressed,
+                addOnsExpandableState
             )
         } else {
             mapOnDataReady(
@@ -227,7 +239,8 @@ object ProductListUiStateMapper {
                 insuranceDetailRequestState,
                 singleAtcRequestStates,
                 collapseProductList,
-                warrantyClaimButtonImpressed
+                warrantyClaimButtonImpressed,
+                addOnsExpandableState
             )
         }
     }
@@ -243,14 +256,16 @@ object ProductListUiStateMapper {
         insuranceDetailRequestState: GetInsuranceDetailRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
-        warrantyClaimButtonImpressed: Boolean
+        warrantyClaimButtonImpressed: Boolean,
+        addOnsExpandableState: List<String>
     ): ProductListUiState {
         return mapOnDataReady(
             buyerOrderDetailData,
             insuranceDetailRequestState,
             singleAtcRequestStates,
             collapseProductList,
-            warrantyClaimButtonImpressed
+            warrantyClaimButtonImpressed,
+            addOnsExpandableState
         )
     }
 
@@ -270,7 +285,8 @@ object ProductListUiStateMapper {
         currentState: ProductListUiState.HasData,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
-        warrantyClaimButtonImpressed: Boolean
+        warrantyClaimButtonImpressed: Boolean,
+        addOnsExpandableState: List<String>
     ): ProductListUiState {
         val insuranceDetailData = when (insuranceDetailRequestState) {
             is GetInsuranceDetailRequestState.Requesting -> {
@@ -296,7 +312,8 @@ object ProductListUiStateMapper {
                 insuranceDetailData,
                 singleAtcRequestStates,
                 collapseProductList,
-                warrantyClaimButtonImpressed
+                warrantyClaimButtonImpressed,
+                addOnsExpandableState
             )
         )
     }
@@ -306,7 +323,8 @@ object ProductListUiStateMapper {
         insuranceDetailRequestState: GetInsuranceDetailRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
-        warrantyClaimButtonImpressed: Boolean
+        warrantyClaimButtonImpressed: Boolean,
+        addOnsExpandableState: List<String>
     ): ProductListUiState {
         val insuranceDetailData = insuranceDetailRequestState.let {
             if (it is GetInsuranceDetailRequestState.Complete.Success) {
@@ -326,7 +344,8 @@ object ProductListUiStateMapper {
                 insuranceDetailData,
                 singleAtcRequestStates,
                 collapseProductList,
-                warrantyClaimButtonImpressed
+                warrantyClaimButtonImpressed,
+                addOnsExpandableState
             )
         )
     }
@@ -421,7 +440,8 @@ object ProductListUiStateMapper {
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
-        warrantyClaimButtonImpressed: Boolean
+        warrantyClaimButtonImpressed: Boolean,
+        addOnsExpandableState: List<String>
     ): ProductListUiModel {
         /**
          * Map product bmgm response into UI model and limit the number of mapped items based on
@@ -441,7 +461,8 @@ object ProductListUiStateMapper {
             MAX_PRODUCT_WHEN_COLLAPSED,
             singleAtcResultFlow,
             insuranceDetailData,
-            warrantyClaimButtonImpressed
+            warrantyClaimButtonImpressed,
+            addOnsExpandableState
         )
 
         /**
@@ -482,7 +503,8 @@ object ProductListUiStateMapper {
                 remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBmgmList.size - productBundlingList.size,
                 isPof = false,
                 shop = shop,
-                warrantyClaimButtonImpressed = warrantyClaimButtonImpressed
+                warrantyClaimButtonImpressed = warrantyClaimButtonImpressed,
+                addOnsExpandableState = addOnsExpandableState
             )
             mapProductList
         } ?: (Int.ZERO to emptyList())
@@ -498,7 +520,8 @@ object ProductListUiStateMapper {
         val (numOfRemovedAddOn, addOnList) = getAddonsSectionOrderLevel(
             addonInfo = addonInfo,
             collapseProductList = collapseProductList,
-            remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBmgmList.size - productBundlingList.size - nonProductBundlingList.size
+            remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBmgmList.size - productBundlingList.size - nonProductBundlingList.size,
+            addOnsExpandableState = addOnsExpandableState
         )
         val (numOfRemovedUnfulfilled, unFulfilledProductList) = details?.partialFulfillment?.unfulfilled?.details?.let {
             getUnFulfilledProducts(
@@ -510,7 +533,8 @@ object ProductListUiStateMapper {
                 collapseProductList = collapseProductList,
                 remainingSlot = MAX_UNFULFILLED_PRODUCT_WHEN_COLLAPSED,
                 isPof = true,
-                warrantyClaimButtonImpressed = warrantyClaimButtonImpressed
+                warrantyClaimButtonImpressed = warrantyClaimButtonImpressed,
+                addOnsExpandableState = addOnsExpandableState
             )
         } ?: (Int.ZERO to emptyList())
         val tickerDetails = mapTickerDetails(details?.tickerInfo)
@@ -575,7 +599,8 @@ object ProductListUiStateMapper {
         collapseProductList: Boolean,
         remainingSlot: Int,
         shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop? = null,
-        warrantyClaimButtonImpressed: Boolean
+        warrantyClaimButtonImpressed: Boolean,
+        addOnsExpandableState: List<String>
     ): Pair<Int, List<ProductListUiModel.ProductUiModel>> {
         /**
          * Reduce the non-bundle response items to be mapped based on the remaining slot on the product
@@ -602,7 +627,8 @@ object ProductListUiStateMapper {
                 insuranceDetailData = insuranceDetailData,
                 singleAtcResultFlow = singleAtcResultFlow,
                 shop = shop,
-                warrantyClaimButtonImpressed = warrantyClaimButtonImpressed
+                warrantyClaimButtonImpressed = warrantyClaimButtonImpressed,
+                addOnsExpandableState = addOnsExpandableState
             )
         }.orEmpty()
         return numOfRemovedNonBundles to mappedNonBundles
@@ -668,7 +694,8 @@ object ProductListUiStateMapper {
         remainingSlot: Int,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
-        warrantyClaimButtonImpressed: Boolean
+        warrantyClaimButtonImpressed: Boolean,
+        addOnsExpandableState: List<String>
     ): Pair<Int, List<ProductBmgmSectionUiModel>> {
         /**
          * Reduce the bmgm response items to be mapped based on the remaining slot on the product
@@ -701,7 +728,8 @@ object ProductListUiStateMapper {
                         addOnIcon,
                         singleAtcResultFlow,
                         insuranceDetailData,
-                        warrantyClaimButtonImpressed
+                        warrantyClaimButtonImpressed,
+                        addOnsExpandableState
                     )
                 }
             )
@@ -763,10 +791,13 @@ object ProductListUiStateMapper {
     private fun getAddonsSectionOrderLevel(
         addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?,
         collapseProductList: Boolean,
-        remainingSlot: Int
+        remainingSlot: Int,
+        addOnsExpandableState: List<String>
     ): Pair<Int, AddonsListUiModel?> {
+        val addOnsIdentifier = "ordertodo"
         val mappedAddOn = addonInfo?.let { addonInfo ->
             AddonsListUiModel(
+                addOnIdentifier = addOnsIdentifier,
                 addonsTitle = addonInfo.label,
                 addonsLogoUrl = addonInfo.iconUrl,
                 totalPriceText = addonInfo.orderLevel?.totalPriceStr.orEmpty(),
@@ -785,7 +816,9 @@ object ProductListUiStateMapper {
                         providedByShopItself = false
                     )
                 }.orEmpty()
-            )
+            ).also {
+                it.isExpand = !addOnsExpandableState.contains(addOnsIdentifier)
+            }
         }
 
         return if (mappedAddOn?.addonsItemList.isNullOrEmpty()) {
@@ -814,7 +847,8 @@ object ProductListUiStateMapper {
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
         remainingSlot: Int,
-        warrantyClaimButtonImpressed: Boolean
+        warrantyClaimButtonImpressed: Boolean,
+        addOnsExpandableState: List<String>
     ): Pair<Int, List<ProductListUiModel.ProductUiModel>> {
         val (numOfRemovedUnfulfilled, reducedUnfulfilled) = details.partialFulfillment?.unfulfilled?.details?.run {
             if (collapseProductList) {
@@ -833,7 +867,8 @@ object ProductListUiStateMapper {
                 isPof = isPof,
                 insuranceDetailData = insuranceDetailData,
                 singleAtcResultFlow = singleAtcResultFlow,
-                warrantyClaimButtonImpressed = warrantyClaimButtonImpressed
+                warrantyClaimButtonImpressed = warrantyClaimButtonImpressed,
+                addOnsExpandableState = addOnsExpandableState
             )
         }.orEmpty()
         return numOfRemovedUnfulfilled to mappedUnfulfilled
@@ -849,7 +884,8 @@ object ProductListUiStateMapper {
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop? = null,
-        warrantyClaimButtonImpressed: Boolean
+        warrantyClaimButtonImpressed: Boolean,
+        addOnsExpandableState: List<String>
     ): ProductListUiModel.ProductUiModel {
         return ProductListUiModel.ProductUiModel(
             button = mapActionButton(product.button),
@@ -868,7 +904,13 @@ object ProductListUiStateMapper {
             totalPrice = product.totalPrice,
             totalPriceText = product.totalPriceText,
             isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting,
-            addonsListUiModel = getAddonsSectionProductLevel(details, addonSummary),
+            addonsListUiModel = getAddonsSectionProductLevel(
+                product.productId,
+                product.orderDetailId,
+                details,
+                addonSummary,
+                addOnsExpandableState
+            ),
             insurance = mapInsurance(product.productId, insuranceDetailData),
             isPof = isPof,
             productUrl = product.productUrl,
@@ -945,8 +987,10 @@ object ProductListUiStateMapper {
         addOnIcon: String,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
-        warrantyClaimButtonImpressed: Boolean
+        warrantyClaimButtonImpressed: Boolean,
+        addOnsExpandableState: List<String>
     ): ProductBmgmSectionUiModel.ProductUiModel {
+        val addOnIdentifier = generateAddOnsIdentifier(product.productId, product.orderDetailId)
         return ProductBmgmSectionUiModel.ProductUiModel(
             orderId = orderId,
             orderStatusId = orderStatusId,
@@ -965,6 +1009,7 @@ object ProductListUiStateMapper {
             button = mapActionButton(product.button),
             addOnSummaryUiModel = product.addonSummary?.let {
                 com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
+                    addOnIdentifier = addOnIdentifier,
                     totalPriceText = it.totalPriceStr,
                     addonsLogoUrl = addOnIcon,
                     addonsTitle = addOnLabel,
@@ -984,7 +1029,9 @@ object ProductListUiStateMapper {
                             providedByShopItself = true
                         )
                     }.orEmpty()
-                )
+                ).also {addOnSummaryUiModel ->
+                    addOnSummaryUiModel.isExpand = !addOnsExpandableState.contains(addOnIdentifier)
+                }
             },
             impressHolder = ImpressHolder().apply { if (warrantyClaimButtonImpressed) invoke() }
         )
@@ -1067,10 +1114,15 @@ object ProductListUiStateMapper {
     }
 
     private fun getAddonsSectionProductLevel(
+        productId: String,
+        orderDetailId: String,
         details: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details,
-        addonSummary: AddonSummary?
+        addonSummary: AddonSummary?,
+        addOnsExpandableState: List<String>
     ): AddonsListUiModel {
+        val addOnsIdentifier = generateAddOnsIdentifier(productId, orderDetailId)
         return AddonsListUiModel(
+            addOnIdentifier = addOnsIdentifier,
             addonsTitle = details.addonLabel,
             addonsLogoUrl = details.addonIcon,
             totalPriceText = addonSummary?.totalPriceStr.orEmpty(),
@@ -1089,6 +1141,13 @@ object ProductListUiStateMapper {
                     providedByShopItself = true
                 )
             }.orEmpty()
-        )
+        ).also {
+            it.isExpand = !addOnsExpandableState.contains(addOnsIdentifier)
+        }
     }
+
+    private fun generateAddOnsIdentifier(
+        productId: String,
+        orderDetailId: String
+    ) = productId + orderDetailId
 }

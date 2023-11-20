@@ -9,16 +9,19 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
 import com.tokopedia.order_management_common.databinding.PartialBmgmAddOnSummaryBinding
 import com.tokopedia.order_management_common.presentation.factory.AddOnAdapterFactory
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.util.RecyclerViewItemDivider
+import com.tokopedia.order_management_common.util.rotateBackIcon
+import com.tokopedia.order_management_common.util.rotateIcon
 import com.tokopedia.unifycomponents.toPx
 
 class BmgmAddOnSummaryViewHolder(
-    bmgmAddOnListener: BmgmAddOnViewHolder.Listener,
+    private val bmgmAddOnListener: BmgmAddOnViewHolder.Listener,
     private val binding: PartialBmgmAddOnSummaryBinding?,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) {
@@ -59,7 +62,7 @@ class BmgmAddOnSummaryViewHolder(
             val dividerDrawable = try {
                 MethodChecker.getDrawable(
                     root.context,
-                    R.drawable.om_detail_add_on_dash_divider
+                    R.drawable.ic_dash_divider
                 )
             } catch (t: Throwable) {
                 FirebaseCrashlytics.getInstance().recordException(t)
@@ -82,20 +85,68 @@ class BmgmAddOnSummaryViewHolder(
             } else {
                 root.show()
                 setupAddOnSummaryIcon(element.addonsLogoUrl)
-                setupAddOnSummaryLabel(element.addonsTitle)
+                setupAddOnSummaryLabel(
+                    element.addonsTitle,
+                    element.isExpand,
+                    element.totalPriceText
+                )
                 if (element.addonItemList.isNotEmpty()) {
                     setupAddOnSummaryAddOns(element.addonItemList)
                 }
+
+                root.setOnClickListener {
+                    element.isExpand = !element.isExpand
+                    bmgmAddOnListener.onAddOnsBmgmExpand(element.isExpand, element.addOnIdentifier)
+                    setupChevronExpandable(element.isExpand, element.totalPriceText)
+                }
+
+                setupChevronExpandable(element.isExpand, element.totalPriceText)
             }
         }
+    }
+
+    private fun PartialBmgmAddOnSummaryBinding.setupChevronExpandable(
+        isExpand: Boolean,
+        totalPriceFmt: String
+    ) {
+        if (isExpand) {
+            expandView()
+        } else {
+            collapseView(totalPriceFmt)
+        }
+    }
+
+    private fun PartialBmgmAddOnSummaryBinding.expandView() {
+        tvBomDetailBmgmAddonsTotalPrice.hide()
+        rvAddOn.show()
+        icBomDetailBmgmAddonsIconArrowDown.rotateBackIcon()
+    }
+
+    private fun PartialBmgmAddOnSummaryBinding.collapseView(totalPriceFmt: String) {
+        tvBomDetailBmgmAddonsTotalPrice.showIfWithBlock(totalPriceFmt.isNotEmpty()) {
+            text = totalPriceFmt
+        }
+        rvAddOn.hide()
+        icBomDetailBmgmAddonsIconArrowDown.rotateIcon()
     }
 
     private fun PartialBmgmAddOnSummaryBinding.setupAddOnSummaryIcon(icon: String) {
         ivAddOnSummary.loadImage(icon)
     }
 
-    private fun PartialBmgmAddOnSummaryBinding.setupAddOnSummaryLabel(label: String) {
+    private fun PartialBmgmAddOnSummaryBinding.setupAddOnSummaryLabel(
+        label: String,
+        isExpand: Boolean,
+        totalPriceFmt: String
+    ) {
         tvAddOnLabel.text = label
+
+        if (!isExpand) {
+            tvBomDetailBmgmAddonsTotalPrice.show()
+            tvBomDetailBmgmAddonsTotalPrice.text = totalPriceFmt
+        } else {
+            tvBomDetailBmgmAddonsTotalPrice.hide()
+        }
     }
 
     private fun setupAddOnSummaryAddOns(addons: List<AddOnSummaryUiModel.AddonItemUiModel>) {

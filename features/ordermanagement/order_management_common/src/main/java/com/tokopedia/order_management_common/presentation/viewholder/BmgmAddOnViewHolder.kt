@@ -109,5 +109,6 @@ class BmgmAddOnViewHolder(
 
     interface Listener {
         fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence)
+        fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)
     }
 }

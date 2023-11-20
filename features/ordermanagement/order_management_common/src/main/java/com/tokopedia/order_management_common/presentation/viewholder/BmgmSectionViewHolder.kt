@@ -73,6 +73,10 @@ class BmgmSectionViewHolder(
         }
     }
 
+    override fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String) {
+        listener.onAddOnsBmgmExpand(isExpand, addOnsIdentifier)
+    }
+
     override fun onCopyAddOnDescription(label: String, description: CharSequence) {
         listener.onCopyAddOnDescription(label, description)
     }
@@ -160,6 +164,7 @@ class BmgmSectionViewHolder(
     }
 
     interface Listener {
+        fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)
         fun onCopyAddOnDescription(label: String, description: CharSequence)
         fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
         fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel)

@@ -226,7 +226,12 @@ class ProductBmgmItemAdapter(
             listener.onCopyAddOnDescription(label, description)
         }
 
+        override fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String) {
+            listener.onAddOnsBmgmExpand(isExpand, addOnsIdentifier)
+        }
+
         interface Listener {
+            fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)
             fun onCopyAddOnDescription(label: String, description: CharSequence)
             fun onBmgmItemClicked(item: ProductBmgmSectionUiModel.ProductUiModel)
             fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel)

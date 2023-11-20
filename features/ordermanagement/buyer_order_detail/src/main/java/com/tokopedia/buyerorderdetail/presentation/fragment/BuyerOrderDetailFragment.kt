@@ -1097,6 +1097,14 @@ open class BuyerOrderDetailFragment :
         // no op for bmgm add on because there is no function copy
     }
 
+    override fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String) {
+        viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
+    }
+
+    override fun onAddOnsExpand(addOnsIdentifier: String, isExpand: Boolean) {
+        viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
+    }
+
     private fun showToaster(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
