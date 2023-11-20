@@ -119,7 +119,6 @@ class HomeRecommendationFragment :
     }
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
 
-    private var currentPage = 0
     private var totalScrollY = 0
     private var tabIndex = 0
     private var recomId = 0
