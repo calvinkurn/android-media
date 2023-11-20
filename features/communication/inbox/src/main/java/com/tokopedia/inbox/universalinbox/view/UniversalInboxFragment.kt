@@ -68,7 +68,6 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
@@ -320,7 +319,7 @@ class UniversalInboxFragment @Inject constructor(
             // It means refresh
             if (it.isLoading && it.productRecommendation.isEmpty()) {
                 adapter.getMenuSeparatorPosition()?.let { position ->
-                    scrollToPositionWithFullVisibility(position)
+                    binding?.inboxRv?.scrollToPosition(position)
                 }
             }
 
@@ -358,7 +357,10 @@ class UniversalInboxFragment @Inject constructor(
     private suspend fun observeAutoScrollUiState() {
         viewModel.autoScrollUiState.collectLatest {
             if (it.shouldScroll) {
-                scrollToPositionWithFullVisibility(it.toPosition)
+                binding?.inboxRv?.let { recyclerView ->
+                    // Scroll one screen away
+                    recyclerView.smoothScrollBy(0, recyclerView.height)
+                }
                 // Reset after scroll
                 viewModel.processAction(UniversalInboxAction.ResetUserScrollState)
             }
@@ -922,34 +924,6 @@ class UniversalInboxFragment @Inject constructor(
             }
         }
         return result
-    }
-
-    private fun scrollToPositionWithFullVisibility(position: Int) {
-        binding?.inboxRv?.let { recyclerView ->
-            val layoutManager = recyclerView.layoutManager as? StaggeredGridLayoutManager
-            layoutManager?.let { lm ->
-                // Scroll to the position
-                lm.scrollToPositionWithOffset(position, RV_SCROLL_OFFSET.toPx())
-
-                // Adjust the scroll
-                binding?.inboxRv?.post {
-                    val view = lm.findViewByPosition(position)
-                    view?.let {
-                        val recyclerViewHeight = recyclerView.height
-                        val itemTop = it.top
-                        val itemBottom = it.bottom
-
-                        if (itemTop < 0) {
-                            // Scroll up to make the entire item visible
-                            recyclerView.scrollBy(0, itemTop)
-                        } else if (itemBottom > recyclerViewHeight) {
-                            // Scroll down to make the entire item visible
-                            recyclerView.scrollBy(0, itemBottom - recyclerViewHeight)
-                        }
-                    }
-                }
-            }
-        }
     }
 
     companion object {

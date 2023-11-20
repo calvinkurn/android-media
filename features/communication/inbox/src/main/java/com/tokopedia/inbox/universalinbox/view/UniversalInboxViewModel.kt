@@ -17,7 +17,6 @@ import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetAllDri
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetInboxMenuAndWidgetMetaUseCase
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetProductRecommendationUseCase
 import com.tokopedia.inbox.universalinbox.util.Result
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.INBOX_ADS_REFRESH_KEY
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.INBOX_SCROLL_VALUE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
@@ -537,8 +536,7 @@ class UniversalInboxViewModel @Inject constructor(
             it.copy(
                 currentPosition = currentPos,
                 totalItem = totalItem,
-                shouldScroll = false,
-                toPosition = -1
+                shouldScroll = false
             )
         }
     }
@@ -548,17 +546,17 @@ class UniversalInboxViewModel @Inject constructor(
             it.copy(
                 currentPosition = -1,
                 totalItem = 0,
-                shouldScroll = false,
-                toPosition = -1
+                shouldScroll = false
             )
         }
     }
 
     private fun checkAutoScrollEligibility(): Boolean {
-        return abTestPlatform.getString(
-            INBOX_ADS_REFRESH_KEY,
-            ""
-        ) == INBOX_ADS_REFRESH_KEY
+//        return abTestPlatform.getString(
+//            INBOX_ADS_REFRESH_KEY,
+//            ""
+//        ) == INBOX_ADS_REFRESH_KEY
+        return true
     }
 
     private fun autoScrollRecommendation() {
@@ -568,18 +566,12 @@ class UniversalInboxViewModel @Inject constructor(
                 val currentPos = _autoScrollUiState.value.currentPosition
                 if (totalItem > currentPos + INBOX_SCROLL_VALUE) {
                     _autoScrollUiState.update {
-                        it.copy(
-                            shouldScroll = true,
-                            toPosition = currentPos + INBOX_SCROLL_VALUE
-                        )
+                        it.copy(shouldScroll = true)
                     }
                 } else {
                     loadProductRecommendation() // Load next page
                     _autoScrollUiState.update {
-                        it.copy(
-                            shouldScroll = false,
-                            toPosition = currentPos + INBOX_SCROLL_VALUE
-                        )
+                        it.copy(shouldScroll = false)
                     }
                 }
             } else {
@@ -588,8 +580,7 @@ class UniversalInboxViewModel @Inject constructor(
                     it.copy(
                         shouldScroll = false,
                         totalItem = 0,
-                        currentPosition = -1,
-                        toPosition = -1
+                        currentPosition = -1
                     )
                 }
             }
