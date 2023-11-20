@@ -11,6 +11,7 @@ import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.P
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created By : Muhammad Furqan on 14/03/23
@@ -35,38 +36,37 @@ class FeedProductButtonView(
         trackerData: FeedTrackerDataModel?,
         topAdsTrackerData: FeedTopAdsTrackerDataModel?,
         positionInFeed: Int
-    ) {
-        with(binding) {
-            bind(products, totalProducts)
+    ) = with(binding) {
 
-            icPlayProductSeeMore.setOnClickListener {
-                onClick(
-                    postId,
-                    author,
-                    postType,
-                    isFollowing,
-                    campaign,
-                    hasVoucher,
-                    products,
-                    trackerData,
-                    topAdsTrackerData,
-                    positionInFeed
-                )
-            }
-            tvPlayProductCount.setOnClickListener {
-                onClick(
-                    postId,
-                    author,
-                    postType,
-                    isFollowing,
-                    campaign,
-                    hasVoucher,
-                    products,
-                    trackerData,
-                    topAdsTrackerData,
-                    positionInFeed
-                )
-            }
+        bind(products, totalProducts)
+        bindProductIcon(hasVoucher, isContainsDiscountProduct(products)) {
+            onClick(
+                postId,
+                author,
+                postType,
+                isFollowing,
+                campaign,
+                hasVoucher,
+                products,
+                trackerData,
+                topAdsTrackerData,
+                positionInFeed
+            )
+        }
+
+        tvPlayProductCount.setOnClickListener {
+            onClick(
+                postId,
+                author,
+                postType,
+                isFollowing,
+                campaign,
+                hasVoucher,
+                products,
+                trackerData,
+                topAdsTrackerData,
+                positionInFeed
+            )
         }
     }
 
@@ -118,6 +118,24 @@ class FeedProductButtonView(
                 }
             }
         }
+    }
+
+    private fun bindProductIcon(hasVoucher: Boolean, hasDiscount: Boolean, onClick: () -> Unit) {
+        if (hasVoucher || hasDiscount) {
+            binding.icPlayProductSeeMore.hide()
+            binding.lottieProductSeeMore.show()
+            binding.lottieProductSeeMore.setAnimationFromUrl(binding.root.context.getString(contentcommonR.string.feed_product_icon_anim))
+            binding.lottieProductSeeMore.setOnClickListener { onClick() }
+        } else {
+            binding.icPlayProductSeeMore.show()
+            binding.lottieProductSeeMore.hide()
+            binding.icPlayProductSeeMore.setOnClickListener { onClick() }
+        }
+    }
+
+    private fun isContainsDiscountProduct(products: List<FeedCardProductModel>): Boolean {
+        val discountProduct = products.filter { it.isDiscount }
+        return discountProduct.isNotEmpty()
     }
 
     fun showClearView() {
