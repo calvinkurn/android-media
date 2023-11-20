@@ -9,6 +9,8 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_AC
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_PRODUCT_IMPRESSION_BOTTOMSHEET
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_ON_GOING_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_ON_GOING_IMPRESSION
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_WITHOUT_RECOMMENDATION
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_WITH_RECOMMENDATION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_BOTTOM_SHEET_CHECKBOX
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_BOTTOM_SHEET_CREATE_CAMPAIGN
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_BOTTOM_SHEET_PAYWALL
@@ -212,13 +214,18 @@ object CentralizedPromoTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun sendImpressionAovFilter() {
-        // TODO: Check for with/without recommendation
+    fun sendImpressionAovFilter(isSelected: Boolean) {
+        val eventLabel =
+            if (isSelected) {
+                EVENT_ACTION_WITH_RECOMMENDATION
+            } else {
+                EVENT_ACTION_WITHOUT_RECOMMENDATION
+            }
         val data = createMap(
             event = EVENT_NAME_VIEW_PG_IRIS,
             action = EVENT_IMPRESSION_FILTER_INCREASE_AVERAGE_ORDER_VALUE,
             category = EVENT_CATEGORY_ADS_AND_PROMO,
-            label = String.EMPTY,
+            label = eventLabel,
             trackerId = TRACKER_ID_IMPRESSION_INCREASE_AVERAGE_ORDER_VALUE
         ).completeEventInfo()
 

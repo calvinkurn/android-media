@@ -207,8 +207,8 @@ class CentralizedPromoFragment :
                         LayoutType.PROMO_CREATION
                     )
                 },
-                onAovFilterImpressed = {
-                    CentralizedPromoTracking.sendImpressionAovFilter()
+                onAovFilterImpressed = { isSelected ->
+                    CentralizedPromoTracking.sendImpressionAovFilter(isSelected)
                 }
             )
         }

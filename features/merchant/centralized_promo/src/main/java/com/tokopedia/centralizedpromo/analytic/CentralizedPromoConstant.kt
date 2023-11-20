@@ -33,6 +33,8 @@ object CentralizedPromoConstant {
 
     const val EVENT_IMPRESSION_FILTER_INCREASE_AVERAGE_ORDER_VALUE = "impression filter - increase average order value"
     const val EVENT_CLICK_FILTER_INCREASE_AVERAGE_ORDER_VALUE = "click increase average order value tab"
+    const val EVENT_ACTION_WITH_RECOMMENDATION = "with recommendation"
+    const val EVENT_ACTION_WITHOUT_RECOMMENDATION = "without recommendation"
     const val ID_FILTER_INCREASE_AVERAGE_ORDER_VALUE = "9"
     const val TRACKER_ID_IMPRESSION_INCREASE_AVERAGE_ORDER_VALUE = "48452"
     const val TRACKER_ID_CLICK_INCREASE_AVERAGE_ORDER_VALUE = "48453"

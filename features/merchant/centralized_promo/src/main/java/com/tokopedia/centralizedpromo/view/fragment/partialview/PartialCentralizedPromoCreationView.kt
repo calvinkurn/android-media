@@ -32,7 +32,7 @@ class PartialCentralizedPromoCreationView(
     coachMarkListener: CoachMarkListener,
     showCoachMark: Boolean,
     val onSelectedFilter: ((FilterPromoUiModel) -> Unit)? = null,
-    private val onAovFilterImpressed: () -> Unit
+    private val onAovFilterImpressed: (Boolean) -> Unit
 ) : BasePartialListView<PromoCreationListUiModel, CentralizedPromoAdapterTypeFactory, PromoCreationUiModel>(
     binding,
     adapterTypeFactory,
@@ -184,28 +184,32 @@ class PartialCentralizedPromoCreationView(
                     adapter.clearAllElements()
                 }
             }
+            val selectedTabIndex: Int
             if (selectedTab == null) {
                 filterItems[Int.ZERO].type = ChipsUnify.TYPE_SELECTED
                 selectedTab = dataFilter[Int.ZERO]
+                selectedTabIndex = Int.ZERO
                 CentralizedPromoTracking.sendClickFilter(selectedTab?.id.toIntOrZero().toString())
             } else {
-                filterItems[dataFilter.indexOf(selectedTab)].type = ChipsUnify.TYPE_SELECTED
+                selectedTabIndex = dataFilter.indexOf(selectedTab)
+                filterItems[selectedTabIndex].type = ChipsUnify.TYPE_SELECTED
             }
 
             filter.addItem(ArrayList(filterItems))
 
-            setupAovTracker(data)
+            setupAovTracker(data, selectedTabIndex)
         }
     }
 
-    private fun setupAovTracker(data: PromoCreationListUiModel) {
+    private fun setupAovTracker(data: PromoCreationListUiModel, selectedTabIndex: Int) {
         try {
             val aovIndex = data.filterItems.indexOfFirst { it.id == ID_FILTER_INCREASE_AVERAGE_ORDER_VALUE }
             if (aovIndex != RecyclerView.NO_POSITION) {
                 promoCreationBinding.filter.sortFilterItems.getChildAt(aovIndex)?.addOnImpressionListener(
                     data.aovFilterImpressHolder
                 ) {
-                    onAovFilterImpressed.invoke()
+                    val isSelected = aovIndex == selectedTabIndex
+                    onAovFilterImpressed.invoke(isSelected)
                 }
             }
         } catch (ignored: Exception) {

@@ -300,9 +300,9 @@ private fun LazyGridScope.BodySection(
                     promoCreationDataCast.filterItems,
                     selectedTabId,
                     promoCreationDataCast.aovFilterImpressionHolder,
-                    onAovFilterImpressed = {
+                    onAovFilterImpressed = { isSelected ->
                         promoCreationDataCast.aovFilterImpressionHolder.impressed = true
-                        CentralizedPromoTracking.sendImpressionAovFilter()
+                        CentralizedPromoTracking.sendImpressionAovFilter(isSelected)
                     }
                 ) {
                     onFilterClicked.invoke(it)
@@ -332,7 +332,7 @@ private fun LazyGridScope.FilterSection(
     filterItems: List<FilterPromoUiModel>,
     selectedTabId: String,
     aovFilterImpressionHolder: ImpressionHolder,
-    onAovFilterImpressed: () -> Unit,
+    onAovFilterImpressed: (Boolean) -> Unit,
     onFilterClicked: (Pair<String, String>) -> Unit
 ) = item(
     span = { GridItemSpan(2) }
@@ -351,7 +351,7 @@ private fun LazyGridScope.FilterSection(
 
     val state = LocalScreenStateComposition.current
 
-    trackAovImpression(state, filterItems, aovFilterImpressionHolder, onAovFilterImpressed)
+    trackAovImpression(state, selectedTabId, filterItems, aovFilterImpressionHolder, onAovFilterImpressed)
 
     NestSortFilter(
         items = result,
@@ -487,9 +487,10 @@ private fun LazyGridScope.OnGoingPromoSection(
 
 private fun trackAovImpression(
     state: ScreenState,
+    selectedTabId: String,
     filterItems: List<FilterPromoUiModel>,
     impressionHolder: ImpressionHolder,
-    onAovFilterImpressed: () -> Unit
+    onAovFilterImpressed: (Boolean) -> Unit
 ) {
     val shouldTrackImpressionIndex =
         filterItems.indexOfFirst { it.id == ID_FILTER_INCREASE_AVERAGE_ORDER_VALUE }
@@ -497,7 +498,9 @@ private fun trackAovImpression(
         val shouldTrackImpression =
             state.filterListState.layoutInfo.visibleItemsInfo.any { it.index == shouldTrackImpressionIndex } && !impressionHolder.impressed
         if (shouldTrackImpression) {
-            onAovFilterImpressed.invoke()
+            val isSelected =
+                filterItems.firstOrNull { it.id == ID_FILTER_INCREASE_AVERAGE_ORDER_VALUE }?.id == selectedTabId
+            onAovFilterImpressed.invoke(isSelected)
         }
     }
 }
