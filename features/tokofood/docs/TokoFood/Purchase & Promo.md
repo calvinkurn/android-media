@@ -26,7 +26,7 @@ title: "Purchase & Promo"
 
 
 
-| ![](../res/purchase_and_promo/purchase_page_above_the_fold.png)<br/> | ![](../res/purchase_and_promo/purchase_page_scrolled.png)<br/> | ![](../res/purchase_and_promo/purchase_promo_page.png)<br/> |
+| ![](../res/purchase_and_promo/purchase_page_above_the_fold.png)<br/> | ![](../res/purchase_and_promo/purchase_page_scrolled.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/tokofood/purchase_and_promo/purchase_promo_page.png)<br/> |
 |----------------------------------------------------------------------|----------------------------------------------------------------|-------------------------------------------------------------|
 | Purchase Page (Above the Fold)                                       | Purchase Page (Scrolled)                                       | Promo Page                                                  |
 
@@ -36,7 +36,7 @@ title: "Purchase & Promo"
 
 
 
-![](../res/purchase_and_promo/purchase_page.png)
+![](https://docs-android.tokopedia.net/images/docs/tokofood/purchase_and_promo/purchase_page.png)
 
 
 ### Promo Page
@@ -44,7 +44,7 @@ title: "Purchase & Promo"
 
 
 
-![](../res/purchase_and_promo/promo_page.png)
+![](https://docs-android.tokopedia.net/images/docs/tokofood/purchase_and_promo/promo_page.png)
 
 
 ## Use Case

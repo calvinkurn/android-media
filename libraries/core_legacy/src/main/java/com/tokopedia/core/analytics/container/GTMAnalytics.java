@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -46,7 +47,6 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.relic.track.NewRelicUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -335,9 +335,15 @@ public class GTMAnalytics extends ContextAnalytics {
 
     @Override
     public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
-        Bundle bundle = addWrapperValue(value);
-        bundle = addGclIdIfNeeded(eventName, bundle);
-        pushEventV5(eventName, bundle, context);
+        Observable.fromCallable(() -> {
+                Bundle bundle = addWrapperValue(value);
+                bundle = addGclIdIfNeeded(eventName, bundle);
+                pushEventV5(eventName, bundle, context);
+                return true;
+            })
+            .subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
+            .subscribe(getDefaultSubscriber());
     }
 
     @SuppressWarnings("unchecked")
@@ -824,7 +830,16 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void sendScreen(String screenName, Map<String, String> customDimension) {
+        Observable.fromCallable(() -> {
+                    internalSendScreen(screenName, customDimension);
+                    return true;
+                })
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(getDefaultSubscriber());
+    }
 
+    private void internalSendScreen(String screenName, Map<String, String> customDimension) {
         UserSessionInterface userSession = new UserSession(context);
         final String afUniqueId = !TextUtils.isEmpty(getAfUniqueId(context)) ? getAfUniqueId(context) : "none";
 
@@ -889,24 +904,6 @@ public class GTMAnalytics extends ContextAnalytics {
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());
-    }
-
-    @Override
-    public void sendGTMGeneralEvent(String event, String category, String action, String label,
-                                    String shopId, String shopType, String userId,
-                                    @Nullable Map<String, Object> customDimension) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(KEY_EVENT, event);
-        map.put(KEY_CATEGORY, category);
-        map.put(KEY_ACTION, action);
-        map.put(KEY_LABEL, label);
-        map.put(USER_ID, userId);
-        map.put(SHOP_TYPE, shopType);
-        map.put(SHOP_ID, shopId);
-        if (customDimension != null) {
-            map.putAll(customDimension);
-        }
-        pushGeneral(map);
     }
 
     private void logV5(Context context, String eventName, Bundle bundle) {
@@ -1063,6 +1060,7 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         //
         bundle.putString(KEY_EVENT, keyEvent);
+
         pushEventV5(keyEvent, wrapWithSessionIris(bundle), context);
     }
 
@@ -1167,7 +1165,6 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private boolean pushGeneralGtmV5InternalOrigin(Map<String, Object> params) {
-        pushGeneral(params);
 
         if (TextUtils.isEmpty((String) params.get(KEY_EVENT)))
             return false;
@@ -1204,14 +1201,19 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
                 bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
             }
-            publishNewRelic(eventName, bundle);
             FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
             fa.logEvent(eventName, bundle);
 
-            pushGeneralEcommerce(bundle);
-
             mappingToGA4(fa, eventName, bundle);
             logV5(context, eventName, bundle);
+
+            // https://tokopedia.atlassian.net/browse/AN-44955
+            addUtmHolder(bundle, eventName);
+            // https://tokopedia.atlassian.net/browse/AN-54858
+            addOsVersion(bundle, eventName);
+
+            pushGeneralEcommerce(bundle);
+
             trackEmbraceBreadcrumb(eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1450,29 +1452,6 @@ public class GTMAnalytics extends ContextAnalytics {
         return json;
     }
 
-    public void publishNewRelic(String eventName, Bundle bundle) {
-        Map<String, Object> map = bundleToMap(bundle);
-        for (Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry<String, Object> entry = it.next();
-            Object value = entry.getValue();
-            if (value != null & value instanceof String) {
-                String value2 = (String) value;
-                if (TextUtils.isEmpty(value2)) {
-                    it.remove();
-                }
-            }
-        }
-        if (GlobalConfig.isSellerApp()) {
-            NewRelicUtil.sendTrack(eventName, map);
-        }
-    }
-
-    private void pushGeneral(Map<String, Object> values) {
-        Map<String, Object> data = new HashMap<>(values);
-        // push Iris already launch in coroutine in background. No need to wrap this with Observable.
-        pushIris("", data);
-    }
-
     private void pushGeneralEcommerce(Bundle values) {
         Observable.just(values)
                 .subscribeOn(Schedulers.io())
@@ -1526,9 +1505,30 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!eventName.isEmpty()) {
                 values.put("event", eventName);
             }
-            if (values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
+            Object evtName = values.get("event");
+            if (evtName != null && !String.valueOf(evtName).equals("")) {
                 iris.saveEvent(values);
             }
+        }
+    }
+
+    private void addUtmHolder(Bundle bundle, String eventName) {
+        // https://tokopedia.atlassian.net/browse/AN-44955
+        if (FirebaseAnalytics.Event.ECOMMERCE_PURCHASE.equals(eventName)) {
+            bundle.putString(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
+            bundle.putString(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
+            bundle.putString(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
+        }
+    }
+
+    private void addOsVersion(Bundle bundle, String eventName) {
+        // https://tokopedia.atlassian.net/browse/AN-54858
+        String eventAction = bundle.getString(AppEventTracking.EVENT_ACTION);
+        if (FirebaseAnalytics.Event.ECOMMERCE_PURCHASE.equals(eventName) ||
+                FirebaseAnalytics.Event.ADD_TO_CART.equals(eventName) ||
+                "addToCart".equals(eventName) ||
+                "view product page".equals(eventAction)) {
+            bundle.putString("os_version", Build.VERSION.RELEASE);
         }
     }
 

@@ -33,9 +33,9 @@ Tokopedia wants to provide a seamless flow for buyers to give cashless tips to d
 
 ### UI Page
 
-![](../res/tippinggojek/Screenshot%202023-02-10%20at%2015.14.53.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticorder/tippinggojek/Screenshot%202023-02-10%20at%2015.14.53.png)
 
-![](../res/tippinggojek/3PL%20Failed%20Pickup%20-%20Lacak%20%282%29.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticorder/tippinggojek/3PL%20Failed%20Pickup%20-%20Lacak%20%282%29.png)
 
 ## Navigation
 

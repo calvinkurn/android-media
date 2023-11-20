@@ -4,10 +4,10 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.topads.edit.view.activity.EditFormAdActivity"
+            android:name=".view.activity.EditAdGroupActivity"
+            android:exported="false"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -27,10 +27,10 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".view.activity.SelectNegKeywordActivity"
+            android:exported="false"
             android:label="@string/topads_edit_add_negative_keyword"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -54,10 +54,10 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".view.activity.EditFormWithoutGroupActivity"
+            android:exported="false"
             android:label="@string/topads_common_title_product_ad_edit"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -71,4 +71,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

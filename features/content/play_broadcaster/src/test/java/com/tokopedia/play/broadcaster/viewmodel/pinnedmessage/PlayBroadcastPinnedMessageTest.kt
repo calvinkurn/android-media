@@ -1,13 +1,14 @@
 package com.tokopedia.play.broadcaster.viewmodel.pinnedmessage
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
-import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertEvent
@@ -58,7 +59,7 @@ class PlayBroadcastPinnedMessageTest {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo,
+            channelRepo = mockRepo
         )
 
         robot.use {
@@ -84,7 +85,7 @@ class PlayBroadcastPinnedMessageTest {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo,
+            channelRepo = mockRepo
         )
 
         robot.use {
@@ -105,7 +106,7 @@ class PlayBroadcastPinnedMessageTest {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo,
+            channelRepo = mockRepo
         )
 
         robot.use {
@@ -129,7 +130,7 @@ class PlayBroadcastPinnedMessageTest {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo,
+            channelRepo = mockRepo
         )
 
         robot.use {
@@ -157,7 +158,7 @@ class PlayBroadcastPinnedMessageTest {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo,
+            channelRepo = mockRepo
         )
 
         robot.use {
@@ -178,8 +179,16 @@ class PlayBroadcastPinnedMessageTest {
     fun `when edit pinned message, then status should be edit`() {
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo,
+            channelRepo = mockRepo
         )
+
+        val mockPinned = uiModelBuilder.buildPinnedMessageUiModel(
+            id = "1",
+            message = "message",
+            isActive = true
+        )
+
+        coEvery { mockRepo.getActivePinnedMessage(any()) } returns mockPinned
 
         robot.use {
             val state = robot.recordState {
@@ -199,8 +208,17 @@ class PlayBroadcastPinnedMessageTest {
     fun `when cancel edit pinned message, then status should be nothing`() {
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo,
+            channelRepo = mockRepo
         )
+
+        val mockPinned = uiModelBuilder.buildPinnedMessageUiModel(
+            id = "1",
+            message = "message",
+            isActive = true,
+            editStatus = PinnedMessageEditStatus.Editing
+        )
+
+        coEvery { mockRepo.getActivePinnedMessage(any()) } returns mockPinned
 
         robot.use {
             val stateList = robot.recordStateAsList {
@@ -229,7 +247,7 @@ class PlayBroadcastPinnedMessageTest {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo,
+            channelRepo = mockRepo
         )
 
         robot.use {
@@ -247,12 +265,15 @@ class PlayBroadcastPinnedMessageTest {
                 }
             }.first()
 
-            result?.assertEqualTo(pinnedProduct.copy(pinStatus = PinProductUiModel(
-                isPinned = !pinnedProduct.pinStatus.isPinned,
-                canPin = pinnedProduct.pinStatus.canPin,
-                isLoading = pinnedProduct.pinStatus.isLoading,
+            result?.assertEqualTo(
+                pinnedProduct.copy(
+                    pinStatus = PinProductUiModel(
+                        isPinned = !pinnedProduct.pinStatus.isPinned,
+                        canPin = pinnedProduct.pinStatus.canPin,
+                        isLoading = pinnedProduct.pinStatus.isLoading
+                    )
+                )
             )
-            ))
         }
     }
 
@@ -264,11 +285,11 @@ class PlayBroadcastPinnedMessageTest {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo,
+            channelRepo = mockRepo
         )
 
         robot.use {
-           robot.recordStateAsList {
+            robot.recordStateAsList {
                 getAccountConfiguration()
                 startLive()
                 getViewModel().submitAction(PlayBroadcastAction.ClickPinProduct(pinnedProduct))
@@ -295,6 +316,4 @@ class PlayBroadcastPinnedMessageTest {
             )
         }
     }
-
-
 }

@@ -36,6 +36,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import java.util.*
 
 object DynamicProductDetailTracking {
@@ -705,6 +706,39 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId.ifBlank { 0 }
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+        }
+
+        fun clickShareWidget(isAffiliate: Boolean, productId: String, campaignId: String, bundleId: String) {
+            val userType = if (isAffiliate) "affiliate" else "general"
+            trackShare(
+                eventLabel = "$userType - $productId - $campaignId - $bundleId",
+                event = UniversalSharebottomSheetTracker.VALUE_EVENT_CLICK,
+                eventCategory = UniversalSharebottomSheetTracker.VALUE_CATEGORY_PRODUCT_DETAIL_PAGE,
+                eventAction = UniversalSharebottomSheetTracker.VALUE_ACTION_CLICK_SHARE_WIDGET,
+                trackerId = ProductTrackingConstant.TrackerId.VALUE_TRACKER_ID_CLICK_SHARE_WIDGET
+            )
+        }
+
+        fun clickDirectChannel(channel: String, isAffiliate: Boolean, productId: String, campaignId: String, bundleId: String) {
+            val userType = if (isAffiliate) "affiliate" else "general"
+
+            trackShare(
+                eventLabel = "$channel - $userType - $productId - $campaignId - $bundleId",
+                event = UniversalSharebottomSheetTracker.VALUE_EVENT_CLICK,
+                eventCategory = UniversalSharebottomSheetTracker.VALUE_CATEGORY_PRODUCT_DETAIL_PAGE,
+                eventAction = UniversalSharebottomSheetTracker.VALUE_ACTION_CLICK_DIRECT_CHANNEL,
+                trackerId = ProductTrackingConstant.TrackerId.VALUE_TRACKER_ID_CLICK_DIRECT_CHANNEL
+            )
+        }
+
+        private fun trackShare(eventLabel: String, event: String, eventCategory: String, eventAction: String, trackerId: String) {
+            val data = TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel)
+            data.apply {
+                this[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = UniversalSharebottomSheetTracker.VALUE_BUSINESS_UNIT
+                this[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
+                this[ProductTrackingConstant.Tracking.KEY_TRACKER_ID] = trackerId
+            }
+            TrackApp.getInstance().gtm.sendGeneralEvent(data)
         }
 
         fun eventClickTradeInRibbon(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {

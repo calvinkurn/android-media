@@ -34,7 +34,11 @@ data class P2RatesEstimate(
 
     @SerializedName("shipmentPlus")
     @Expose
-    val shipmentPlus: ShipmentPlus? = null
+    val shipmentPlus: ShipmentPlus? = null,
+
+    @SerializedName("background")
+    @Expose
+    val background: String = ""
 )
 
 data class P2RatesEstimateData(
@@ -104,7 +108,15 @@ data class P2RatesEstimateData(
 
     @SerializedName("boBadge")
     @Expose
-    val boBadge: BoBadge = BoBadge()
+    val boBadge: BoBadge = BoBadge(),
+
+    @SerializedName("shipmentBody")
+    @Expose
+    val shipmentBody: List<ShipmentBody> = emptyList(),
+
+    @SerializedName("origin")
+    @Expose
+    val origin: String = ""
 )
 
 data class P2RatesError(
@@ -224,4 +236,14 @@ data class ShipmentPlus(
     @SerializedName("actionLink")
     @Expose
     val actionLink: String = ""
+)
+
+data class ShipmentBody(
+    @SerializedName("icon")
+    @Expose
+    val icon: String = "",
+
+    @SerializedName("text")
+    @Expose
+    val text: String = ""
 )

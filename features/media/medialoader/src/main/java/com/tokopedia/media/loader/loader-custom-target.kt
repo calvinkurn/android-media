@@ -54,7 +54,7 @@ fun String.getBitmapImageUrlAsFlow(
             Properties()
                 .apply(properties)
                 .setSource(url),
-            MediaBitmapEmptyTarget<Bitmap>(
+            MediaBitmapEmptyTarget(
                 onReady = {
                     trySend(it)
                 }

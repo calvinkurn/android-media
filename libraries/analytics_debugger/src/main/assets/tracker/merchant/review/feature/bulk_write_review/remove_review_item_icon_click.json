@@ -10,6 +10,7 @@
       "trackerId": "40316",
       "businessUnit": "product detail page",
       "currentSite": "tokopediamarketplace",
+      "hits_time": "\\d{1,}",
       "promotions": [
         {
           "creative_name": "null",

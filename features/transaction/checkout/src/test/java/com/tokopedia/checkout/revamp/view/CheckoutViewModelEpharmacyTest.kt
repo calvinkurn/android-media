@@ -64,7 +64,11 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                             groupShopData = listOf(
                                 GroupShopV2(
                                     products = listOf(
-                                        Product()
+                                        Product(
+                                            ethicalDrugs = EthicalDrugDataModel(
+                                                needPrescription = true
+                                            )
+                                        )
                                     )
                                 )
                             )
@@ -88,6 +92,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
 
         // Then
         coVerify { prescriptionIdsUseCase.setParams(any()).executeOnBackground() }
+        assertEquals(2, (viewModel.listData.value[5] as CheckoutOrderModel).prescriptionIds.size)
+        assertEquals(2, (viewModel.listData.value.epharmacy() as CheckoutEpharmacyModel).epharmacy.uploadedImageCount)
     }
 
     @Test
@@ -524,7 +530,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -613,7 +620,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -702,7 +710,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -812,7 +821,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -912,7 +922,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -1012,7 +1023,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -1155,7 +1167,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -1165,7 +1178,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             viewModel.listData.value.filterIsInstance(CheckoutOrderModel::class.java)[0].isError
         )
         assertEquals(
-            "Yaah, ada 0 barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain.",
+            "Yaah, ada 1 barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain.",
             viewModel.listData.value.filterIsInstance(CheckoutOrderModel::class.java)[0].errorTitle
         )
         assertEquals(
@@ -1325,7 +1338,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0", "0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -1675,7 +1689,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                     "6554235"
                 ),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0", "0", "0", "0", "0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -1879,7 +1894,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232", "6554235"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -2020,7 +2036,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232", "6554235"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -2151,7 +2168,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232", "6554235"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -2292,7 +2310,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232", "6554235"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -2433,7 +2452,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232", "6554235"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -2614,7 +2634,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )
@@ -2624,7 +2645,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             viewModel.listData.value.filterIsInstance(CheckoutOrderModel::class.java)[0].isError
         )
         assertEquals(
-            "Yaah, ada 0 barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain.",
+            "Yaah, ada 1 barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain.",
             viewModel.listData.value.filterIsInstance(CheckoutOrderModel::class.java)[0].errorTitle
         )
         assertEquals(
@@ -2890,7 +2911,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554231", "6554232"),
                 showImageUpload = true,
-                consultationFlow = true
+                consultationFlow = true,
+                cartIds = listOf("0", "0", "0", "0", "0", "0")
             ),
             viewModel.listData.value.epharmacy()?.epharmacy
         )

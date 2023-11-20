@@ -180,4 +180,6 @@ public interface LinkerConstants {
 
     String QUERY_INITIATOR = "?";
     String QUERY_PARAM_SEGREGATOR = "&";
+
+    String KEY_GA_ID = "gaid";
 }

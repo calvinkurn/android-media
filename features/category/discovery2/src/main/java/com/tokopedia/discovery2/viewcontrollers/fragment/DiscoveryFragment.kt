@@ -261,7 +261,10 @@ open class DiscoveryFragment :
     val trackingQueue: TrackingQueue by lazy {
         provideTrackingQueue()
     }
+
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
+    var onMerchantVoucherScrolledCallback: ((parentRecyclerView: RecyclerView) -> Unit)? = null
+
     open fun provideTrackingQueue(): TrackingQueue {
         return (context as DiscoveryActivity).trackingQueue
     }
@@ -423,6 +426,7 @@ open class DiscoveryFragment :
         }
     }
 
+    @SuppressLint("RestrictedApi")
     private fun initView(view: View) {
         mAnchorHeaderView = view.findViewById(R.id.header_comp_holder)
         globalError = view.findViewById(R.id.global_error)
@@ -475,6 +479,7 @@ open class DiscoveryFragment :
                     }
                 }
                 enableRefreshWhenFirstItemCompletelyVisible()
+                onMerchantVoucherScrolledCallback?.invoke(recyclerView)
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

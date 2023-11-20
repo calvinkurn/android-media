@@ -102,7 +102,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
 import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
@@ -1728,7 +1727,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         }
 
         override fun choosePayment(profile: OrderProfile, payment: OrderPayment) {
-            val currentGatewayCode = profile.payment.gatewayCode
+            val currentGatewayCode = payment.gatewayCode
             orderSummaryAnalytics.eventClickArrowToChangePaymentOption(currentGatewayCode, userSession.get().userId)
             val intent = Intent(context, PaymentListingActivity::class.java).apply {
                 putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, profile.address.addressId)
@@ -1746,16 +1745,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     PaymentListingActivity.EXTRA_PROMO_PARAM,
                     goCicilInstallmentRequest.promoParam
                 )
+                putExtra(
+                    PaymentListingActivity.EXTRA_CALLBACK_URL,
+                    payment.creditCard.additionalData.callbackUrl
+                )
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
 
-        override fun onCreditCardInstallmentDetailClicked(creditCard: OrderPaymentCreditCard) {
+        override fun onCreditCardInstallmentDetailClicked(payment: OrderPayment) {
             val orderTotal = viewModel.orderTotal.value
             if (orderTotal.buttonState != OccButtonState.LOADING) {
                 CreditCardInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(
                     this@OrderSummaryPageFragment,
-                    creditCard,
+                    payment,
                     viewModel.orderCart,
                     orderTotal.orderCost,
                     userSession.get().userId,

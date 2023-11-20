@@ -5,25 +5,26 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import com.scp.auth.GotoSdk;
+
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.TaskStackBuilder;
 import androidx.preference.PreferenceManager;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.newrelic.agent.android.FeatureFlag;
+import com.newrelic.agent.android.NewRelic;
 import com.scp.auth.common.utils.ScpRefreshHelper;
 import com.scp.auth.common.utils.ScpUtils;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
-import com.tokopedia.network.data.model.ScpTokenModel;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.app.common.MainApplication;
@@ -50,6 +51,7 @@ import com.tokopedia.fcmcommon.SendTokenToCMHandler;
 import com.tokopedia.fcmcommon.common.FcmCacheHandler;
 import com.tokopedia.fcmcommon.domain.SendTokenToCMUseCase;
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
+import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.fcmcommon.utils.FcmRemoteConfigUtils;
 import com.tokopedia.fcmcommon.utils.FcmTokenUtils;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
@@ -59,21 +61,20 @@ import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
-import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
-import com.tokopedia.loyalty.view.data.VoucherViewModel;
+import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.network.data.model.ScpTokenModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
 import com.tokopedia.notifications.worker.PushWorker;
-import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
-import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.GraphqlHelper;
@@ -92,7 +93,6 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
-import java.util.Objects;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,11 +100,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.TaskStackBuilder;
+import androidx.preference.PreferenceManager;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Callback;
-import rx.Observable;
 import timber.log.Timber;
 
 /**
@@ -114,11 +116,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdCoreRouter,
         AbstractionRouter,
         ApplinkRouter,
-        LoyaltyModuleRouter,
         NetworkRouter,
         TkpdAppsFlyerRouter,
-        LinkerRouter
-{
+        LinkerRouter {
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
@@ -147,6 +147,52 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initIris();
         performLibraryInitialisation();
         initResourceDownloadManager();
+        initNewRelicAndPushNotif();
+    }
+
+    private void initNewRelicAndPushNotif() {
+        WeaveInterface chkTmprApkWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                initializationNewRelic();
+                CMPushNotificationManager.getInstance()
+                        .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerRouterApplication.this), false);
+
+                syncFcmToken();
+                registerPushNotif();
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(chkTmprApkWeave,
+                RemoteConfigKey.ENABLE_SEQ4_ASYNC, ConsumerRouterApplication.this, true);
+    }
+
+    private void initializationNewRelic() {
+        boolean isEnableInitNrInAct = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
+        if (isEnableInitNrInAct) {
+            enableNetworkRequestNewRelic();
+            enableCrashReportingNewRelic();
+            NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(ConsumerRouterApplication.this);
+        }
+    }
+
+    protected void enableNetworkRequestNewRelic() {
+        NewRelic.enableFeature(FeatureFlag.NetworkRequests);
+    }
+
+    protected void enableCrashReportingNewRelic() {
+        NewRelic.enableFeature(FeatureFlag.CrashReporting);
+    }
+
+    private void syncFcmToken() {
+        SyncFcmTokenService.Companion.startService(this);
+    }
+
+    private void registerPushNotif() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            RegisterPushNotificationWorker.Companion.scheduleWorker(ConsumerRouterApplication.this.getApplicationContext());
+        }
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -406,17 +452,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
-        if (omsComponent == null) {
-            omsComponent = DaggerOmsComponent.builder()
-                    .baseAppComponent((ConsumerRouterApplication.this).getBaseAppComponent())
-                    .build();
-        }
-        return new PostVerifyCartWrapper(this, omsComponent.getPostVerifyCartUseCase())
-                .verifyPromo(requestParams);
-    }
-
-    @Override
     public boolean isSupportApplink(String appLink) {
         return false;
     }
@@ -444,13 +479,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getApplinkIntent(Context context, String applink) {
         return RouteManager.getIntent(context, applink);
-    }
-
-    @Override
-    public Observable<VoucherViewModel> checkTrainVoucher(String trainReservationId,
-                                                          String trainReservationCode,
-                                                          String galaCode) {
-        return Observable.just(new VoucherViewModel());
     }
 
     @Override
