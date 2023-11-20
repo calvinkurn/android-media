@@ -380,19 +380,11 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
 
     private fun isEpharmacy(shopInfo: ShopInfo): Boolean {
-        if (!shopInfo.isGoApotik) {
-            return false
-        }
-
         val hasPharmacyFulfilmentService = shopInfo.partnerInfo.any { partnerInfo ->
             partnerInfo.fsType == ID_FULFILLMENT_SERVICE_E_PHARMACY
         }
 
-        if (!hasPharmacyFulfilmentService) {
-            return false
-        }
-
-        return true
+        return hasPharmacyFulfilmentService || shopInfo.isGoApotik
     }
 
     private fun List<ShopOperationalHourWithStatus>.groupByShopOpenAndCloseTime(): Map<String, List<ShopOperationalHourWithStatus>> {

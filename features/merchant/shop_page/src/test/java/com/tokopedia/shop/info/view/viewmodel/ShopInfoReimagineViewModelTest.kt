@@ -352,7 +352,7 @@ class ShopInfoReimagineViewModelTest {
 
     //region Shop pharmacy
     @Test
-    fun `When receive isGoApotik = true from backend while fulfilment service type not GoApotik then showPharmacyLicenseBadge should be false`() {
+    fun `When receive isGoApotik = true from backend while fulfilment service type not GoApotik then showPharmacyLicenseBadge should be true`() {
         runBlockingTest {
             // Given
             val incorrectGoApotikFulfillmentServiceId = 3
@@ -388,6 +388,135 @@ class ShopInfoReimagineViewModelTest {
 
             // Then
             val actual = emittedValues.last()
+            assertEquals(true, actual.info.showPharmacyLicenseBadge)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When fulfilment service type is 2 and isGoApotik = true then showPharmacyLicenseBadge should be true`() {
+        runBlockingTest {
+            // Given
+            val fulfilmentServiceType = 2
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall(
+                response = ShopInfo(
+                    isGoApotik = true,
+                    partnerInfo = listOf(
+                        ShopInfo.PartnerInfoData(
+                            partnerName = "GoApotik",
+                            fsType = fulfilmentServiceType
+                        )
+                    )
+                )
+            )
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+            assertEquals(true, actual.info.showPharmacyLicenseBadge)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When fulfilment service type is 2 and isGoApotik = false then showPharmacyLicenseBadge should be true`() {
+        runBlockingTest {
+            // Given
+            val fulfilmentServiceType = 2
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall(
+                response = ShopInfo(
+                    isGoApotik = false,
+                    partnerInfo = listOf(
+                        ShopInfo.PartnerInfoData(
+                            partnerName = "GoApotik",
+                            fsType = fulfilmentServiceType
+                        )
+                    )
+                )
+            )
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
+            assertEquals(true, actual.info.showPharmacyLicenseBadge)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When fulfilment service type is not 2 and isGoApotik = false then showPharmacyLicenseBadge should be false`() {
+        runBlockingTest {
+            // Given
+            val incorrectFulfilmentServiceType = 3
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall(
+                response = ShopInfo(
+                    isGoApotik = false,
+                    partnerInfo = listOf(
+                        ShopInfo.PartnerInfoData(
+                            partnerName = "GoApotik",
+                            fsType = incorrectFulfilmentServiceType
+                        )
+                    )
+                )
+            )
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+            val actual = emittedValues.last()
             assertEquals(false, actual.info.showPharmacyLicenseBadge)
 
             job.cancel()
@@ -395,15 +524,47 @@ class ShopInfoReimagineViewModelTest {
     }
 
     @Test
-    fun `When shop is pharmacy should trigger nearest pharmacy and pharmacy info gql call`() {
-    }
-
-    @Test
     fun `When shop is not pharmacy should not trigger nearest pharmacy and pharmacy info gql call`() {
-    }
+        runBlockingTest {
+            // Given
+            val incorrectFulfilmentServiceType = 3
+            val emittedValues = arrayListOf<ShopInfoUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
 
-    @Test
-    fun `When shop is pharmacy and call to nearest pharmacy and pharmacy info gql call return success should update correct to ui state`() {
+            mockGetShopPageHeaderGqlCall()
+            mockGetShopRatingGqlCall()
+            mockGetShopReviewGqlCall()
+            mockGetShopInfoGqlCall(
+                response = ShopInfo(
+                    isGoApotik = false,
+                    partnerInfo = listOf(
+                        ShopInfo.PartnerInfoData(
+                            partnerName = "GoApotik",
+                            fsType = incorrectFulfilmentServiceType
+                        )
+                    )
+                )
+            )
+            mockGetShopNoteGqlCall()
+            mockGetShopOperationListGqlCall()
+            mockGetShopStatsRawDataGqlCall()
+            mockGetNearestPharmacyGqlCall()
+            mockGetPharmacyShopInfoGqlCall()
+            mockReportShopGqlCall()
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+
+            // Then
+
+            coVerify(exactly = 0) { getNearestEpharmacyWarehouseLocationUseCase.executeOnBackground() }
+            coVerify(exactly = 0) { getEpharmacyShopInfoUseCase.executeOnBackground() }
+
+            job.cancel()
+        }
     }
 
     //endregion
