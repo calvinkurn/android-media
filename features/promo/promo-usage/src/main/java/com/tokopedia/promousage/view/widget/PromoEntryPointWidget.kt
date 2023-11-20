@@ -683,7 +683,11 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             if (isExpanded) {
                 activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
                 activeViewSummaryLayout?.visibility = View.VISIBLE
-                activeViewDivider?.visibility = View.VISIBLE
+                if (enableNewInterface) {
+                    activeViewDivider?.visibility = View.GONE
+                } else {
+                    activeViewDivider?.visibility = View.VISIBLE
+                }
                 onSummaryExpandedListener.invoke()
             } else {
                 activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN)
@@ -700,7 +704,11 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                     } else {
                         activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
                         activeViewSummaryLayout?.visibility = View.VISIBLE
-                        activeViewDivider?.visibility = View.VISIBLE
+                        if (enableNewInterface) {
+                            activeViewDivider?.visibility = View.GONE
+                        } else {
+                            activeViewDivider?.visibility = View.VISIBLE
+                        }
                         onChevronExpandClickListener.invoke(true)
                         onSummaryExpandedListener.invoke()
                     }
@@ -866,7 +874,11 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         loadingView?.visibility = View.GONE
         if (summaries.isNotEmpty()) {
             activeViewSummaryLayout?.visibility = View.VISIBLE
-            activeViewDivider?.visibility = View.VISIBLE
+            if (enableNewInterface) {
+                activeViewDivider?.visibility = View.GONE
+            } else {
+                activeViewDivider?.visibility = View.VISIBLE
+            }
 
             activeViewSummaryLayout?.apply {
                 removeAllViews()
