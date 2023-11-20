@@ -395,4 +395,5 @@ object TokopediaImageUrl {
     const val OLP_BMGM_HEADER_ILLUSTRATION = "https://images.tokopedia.net/img/android/bmgm/OLP_Header.png"
     const val EVENT_SOFTBOOK_ENDED_BOTTOM_SHEET_IMG_URL = "https://images.tokopedia.net/img/event/event_checkout_softbook_ended_bottom_sheet_mini.png"
     const val CATALOG_IMAGE_ASSETS = "https://images.tokopedia.net/img/android/res/singleDpi/catalog_no_products_state_big.png"
+    const val RECHARGE_SUBHOME_TODO_WIDGET = "https://images.tokopedia.net/img/recharge_subhome_todo_widget.png"
 }

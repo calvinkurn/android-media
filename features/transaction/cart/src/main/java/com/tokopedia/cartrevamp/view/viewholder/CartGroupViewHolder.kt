@@ -489,6 +489,7 @@ class CartGroupViewHolder(
                             } else {
                                 iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
                             }
+                            iuTickerRightIcon.show()
                         } else {
                             iuTickerRightIcon.gone()
                         }
