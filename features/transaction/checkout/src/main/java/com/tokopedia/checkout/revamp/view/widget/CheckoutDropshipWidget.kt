@@ -47,7 +47,7 @@ class CheckoutDropshipWidget : ConstraintLayout {
 
     init {
         binding =
-                ItemCheckoutDropshipBinding.inflate(
+            ItemCheckoutDropshipBinding.inflate(
                 LayoutInflater.from(context),
                 this,
                 true
@@ -58,8 +58,8 @@ class CheckoutDropshipWidget : ConstraintLayout {
     private fun initView() {
         when (state) {
             State.GONE -> setViewGone()
-            State.DISABLED -> setViewDisabled()
-            State.INIT -> setViewInit()
+            State.DISABLED -> setViewInit(true)
+            State.INIT -> setViewInit(false)
             State.SELECTED -> setViewSelected()
         }
 
@@ -89,15 +89,15 @@ class CheckoutDropshipWidget : ConstraintLayout {
         }
     }
 
-    private fun setViewInit() {
+    private fun setViewInit(disabled: Boolean) {
         binding?.containerDropship?.visible()
-        initSwitch()
+        initSwitch(disabled)
         renderDefaultDropship()
     }
 
     private fun setViewSelected() {
         binding?.containerDropship?.visible()
-        initSwitch()
+        initSwitch(false)
         showDetailDropship()
     }
 
@@ -105,7 +105,6 @@ class CheckoutDropshipWidget : ConstraintLayout {
         if (state == State.SELECTED) actionListener?.showToasterErrorProtectionUsage()
         binding?.containerDropship?.visible()
         hideDetailDropship()
-        disableSwitch()
         renderDefaultDropship()
     }
 
@@ -133,25 +132,20 @@ class CheckoutDropshipWidget : ConstraintLayout {
         hideDetailDropship()
     }
 
-    private fun initSwitch() {
+    private fun initSwitch(disabled: Boolean) {
         binding?.switchDropship?.visible()
+        if (disabled) binding?.switchDropship?.isChecked = false
         binding?.switchDropship?.apply {
-            setOnCheckedChangeListener { _, isChecked ->
+            setOnCheckedChangeListener { compoundButton, isChecked ->
+                if (compoundButton.isPressed) {
+                    if (disabled) binding?.switchDropship?.isChecked = false
+                    actionListener?.onClickDropshipSwitch(isChecked)
+                }
+            }
+            /*setOnCheckedChangeListener { _, isChecked ->
+                if (disabled) binding?.switchDropship?.isEnabled = false
                 actionListener?.onClickDropshipSwitch(isChecked)
-                /*if (isChecked) validateShowingDetailDropship()
-                else hideDetailDropship()*/
-            }
-        }
-    }
-
-    private fun disableSwitch() {
-        binding?.switchDropship?.apply {
-            visible()
-            isChecked = false
-            setOnClickListener {
-                actionListener?.showToasterErrorProtectionUsage()
-                binding?.switchDropship?.isChecked = false
-            }
+            }*/
         }
     }
 
@@ -179,7 +173,7 @@ class CheckoutDropshipWidget : ConstraintLayout {
 
         val tncText = SpannableString(title).apply {
             setSpan(
-                    onDropshipClicked,
+                onDropshipClicked,
                 firstIndex,
                 lastIndex,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE

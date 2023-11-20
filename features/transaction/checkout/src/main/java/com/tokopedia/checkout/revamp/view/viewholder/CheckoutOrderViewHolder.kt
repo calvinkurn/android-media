@@ -338,7 +338,11 @@ class CheckoutOrderViewHolder(
                 binding.dropshipWidget.dropshipName?.editText?.setText(order.dropshiperName)
                 binding.dropshipWidget.dropshipPhone?.editText?.setText(order.dropshiperPhone)
             } else {
-                binding.dropshipWidget.state = CheckoutDropshipWidget.State.INIT
+                if (order.stateDropship != CheckoutDropshipWidget.State.GONE) {
+                    binding.dropshipWidget.state = order.stateDropship
+                } else {
+                    binding.dropshipWidget.state = CheckoutDropshipWidget.State.INIT
+                }
             }
         } else {
             binding.dropshipWidget.state = CheckoutDropshipWidget.State.GONE
