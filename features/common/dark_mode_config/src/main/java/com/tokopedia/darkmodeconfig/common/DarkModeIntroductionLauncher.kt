@@ -37,6 +37,7 @@ object DarkModeIntroductionLauncher : CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default
 
+    @JvmStatic
     fun withToaster(intent: Intent, view: View): DarkModeIntroductionLauncher {
         val showToaster = intent.getBooleanExtra(EXTRA_SHOW_TOASTER, false).orFalse()
         val isDarkMode = view.context.isDarkMode()
@@ -53,7 +54,9 @@ object DarkModeIntroductionLauncher : CoroutineScope {
      * 3. 3 days opened Tokopedia App, and
      * 4. Is logged in, and
      * 5. Never opened the introduction popup, and
-     * 6. Never opened the dark mode config page
+     * 6. Never opened the dark mode config page, and
+     * 7. Is enabled by remote config, and
+     * 8. Is not forced to light mode by remote config
      * */
     fun launch(context: Context, fm: FragmentManager, isLoggedIn: Boolean) {
         launch {
@@ -63,13 +66,15 @@ object DarkModeIntroductionLauncher : CoroutineScope {
             val isEligibleTimeRange = has3DaysOpenedApp(sharedPref)
             val neverOpenedPopup = !hasOpenedPopup(sharedPref)
             val neverOpenedConfigPage = hasOpenedConfigPage(sharedPref)
-            val isAllowedByRemoteConfig = isAllowedByRemoteConfig(context)
             val shouldShowPopup = isEligibleTimeRange && isLightModeApp && isDarkModeOS &&
-                isLoggedIn && neverOpenedPopup && neverOpenedConfigPage && isAllowedByRemoteConfig
+                isLoggedIn && neverOpenedPopup && neverOpenedConfigPage
             if (shouldShowPopup) {
-                markAsOpenedPopup(sharedPref)
-                withContext(Dispatchers.Main) {
-                    showPupUp(context, fm)
+                val isAllowedByRemoteConfig = isAllowedByRemoteConfig(context)
+                if (isAllowedByRemoteConfig) {
+                    markAsOpenedPopup(sharedPref)
+                    withContext(Dispatchers.Main) {
+                        showPupUp(context, fm)
+                    }
                 }
             }
         }

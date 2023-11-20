@@ -1369,7 +1369,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void showDarkModeIntroBottomSheet() {
-        DarkModeIntroductionLauncher.INSTANCE
+        DarkModeIntroductionLauncher
                 .withToaster(getIntent(), getWindow().getDecorView())
                 .launch(this, getSupportFragmentManager(), userSession.get().isLoggedIn());
     }

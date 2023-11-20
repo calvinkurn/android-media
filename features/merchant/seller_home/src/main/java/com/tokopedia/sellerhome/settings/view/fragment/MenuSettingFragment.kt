@@ -144,14 +144,12 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         OtherMenuAdapterTypeFactory(this)
 
     override fun createAdapterInstance(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> {
-        var isShowScreenRecorder = false
-        context?.let {
-            isShowScreenRecorder = FirebaseRemoteConfigImpl(it).getBoolean(
-                RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER,
-                false
-            )
-        }
-        return MenuSettingAdapter(context, this, isShowScreenRecorder, adapterTypeFactory)
+        return MenuSettingAdapter(
+            context,
+            FirebaseRemoteConfigImpl(context?.applicationContext),
+            this,
+            adapterTypeFactory
+        )
     }
 
     override fun onItemClicked(t: SettingUiModel?) {}

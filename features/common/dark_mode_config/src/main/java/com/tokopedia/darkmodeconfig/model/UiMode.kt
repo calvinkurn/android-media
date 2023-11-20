@@ -2,8 +2,7 @@ package com.tokopedia.darkmodeconfig.model
 
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
-//noinspection MissingResourceImportAlias
-import com.tokopedia.darkmodeconfig.R
+import com.tokopedia.darkmodeconfig.R as darkmodeconfigR
 
 /**
  * Created by @ilhamsuaib on 05/11/23.
@@ -20,8 +19,8 @@ sealed class UiMode(
 
     data class Light(override val isSelected: Boolean) : UiMode(
         AppCompatDelegate.MODE_NIGHT_NO,
-        R.string.dmc_light_mode_name,
-        R.string.dmc_light_mode_description,
+        darkmodeconfigR.string.dmc_light_mode_name,
+        darkmodeconfigR.string.dmc_light_mode_description,
         isSelected
     ) {
         override fun copyModel(isSelected: Boolean): UiMode {
@@ -31,8 +30,8 @@ sealed class UiMode(
 
     data class Dark(override val isSelected: Boolean) : UiMode(
         AppCompatDelegate.MODE_NIGHT_YES,
-        R.string.dmc_dark_mode_name,
-        R.string.dmc_dark_mode_description,
+        darkmodeconfigR.string.dmc_dark_mode_name,
+        darkmodeconfigR.string.dmc_dark_mode_description,
         isSelected
     ) {
         override fun copyModel(isSelected: Boolean): UiMode {
@@ -42,8 +41,8 @@ sealed class UiMode(
 
     data class FollowSystemSetting(override val isSelected: Boolean = false) : UiMode(
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-        R.string.dmc_follow_system_name,
-        R.string.dmc_follow_system_description,
+        darkmodeconfigR.string.dmc_follow_system_name,
+        darkmodeconfigR.string.dmc_follow_system_description,
         isSelected
     ) {
         override fun copyModel(isSelected: Boolean): UiMode {
