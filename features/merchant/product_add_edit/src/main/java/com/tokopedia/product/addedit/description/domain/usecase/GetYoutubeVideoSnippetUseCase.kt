@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class GetYoutubeVideoSnippetUseCase @Inject constructor(
     private val graphqlUseCase: MultiRequestGraphqlUseCase
-): UseCase<GetYoutubeVideoSnippetResponse>() {
+) : UseCase<GetYoutubeVideoSnippetResponse>() {
 
     companion object {
         const val SQUAD = "Squad"
@@ -53,13 +53,13 @@ class GetYoutubeVideoSnippetUseCase @Inject constructor(
             }"""
 
         fun createParams(
-            videoIds: List<String>,
+            videoIds: String,
             squad: String,
             useCase: String
         ): RequestParams = RequestParams.create().apply {
             putString(SQUAD, squad)
             putString(USECASE, useCase)
-            putObject(VIDEO_IDS, videoIds)
+            putString(VIDEO_IDS, videoIds)
         }
     }
 
@@ -83,6 +83,4 @@ class GetYoutubeVideoSnippetUseCase @Inject constructor(
             )
         }
     }
-
-
 }
