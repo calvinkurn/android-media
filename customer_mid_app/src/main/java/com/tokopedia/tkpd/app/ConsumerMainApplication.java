@@ -547,7 +547,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @NonNull
             @Override
             public String getActivityName() {
-                return AppUtil.INSTANCE.getCurrentActivityName();
+                return AppUtil.currentActivityName;
             }
 
             @NotNull

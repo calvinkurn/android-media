@@ -10,9 +10,13 @@ import java.lang.ref.WeakReference
  */
 object AppUtil {
 
+    @JvmField
     var currentActivityReference: WeakReference<Activity>? = null
+
+    @JvmField
     var currentActivityName = ""
 
+    @JvmStatic
     fun startActivityFromCurrentActivity(intent: Intent): Boolean {
         val reference = currentActivityReference
         if (reference != null) {
