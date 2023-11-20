@@ -12,7 +12,7 @@ object BCAFlazzResponseMapper {
                   status: Int, message: String, hasMorePendingBalance: Boolean, ackStatusOverride: Boolean = false): EmoneyInquiry {
         return EmoneyInquiry(
             attributesEmoneyInquiry = AttributesEmoneyInquiry(
-                buttonText = "Top Up Sekarang",
+                buttonText = "Top-Up Sekarang",
                 cardNumber = cardNo,
                 imageIssuer = imageUrl,
                 lastBalance = balance,

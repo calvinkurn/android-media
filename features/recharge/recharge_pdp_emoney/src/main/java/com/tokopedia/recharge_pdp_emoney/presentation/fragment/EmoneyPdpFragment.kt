@@ -348,7 +348,7 @@ open class EmoneyPdpFragment :
                     renderTickerNFCNotSupportedByGeneration(it.data)
                 }
                 is Fail -> {
-                    //TODO Check if Fail
+                    renderTickerGenerationCheckError()
                 }
             }
         }
@@ -707,6 +707,12 @@ open class EmoneyPdpFragment :
             hideTickerNotSupported()
             showProducts()
         }
+    }
+
+    private fun renderTickerGenerationCheckError() {
+        showTickerNotSupported()
+        showRecentNumberAndPromo()
+        binding.tickerNotSupported.setHtmlDescription(getString(com.tokopedia.recharge_pdp_emoney.R.string.recharge_pdp_emoney_nfc_check_gen)) //TODO Nunggu wording
     }
 
     private fun renderTickerNFCNotSupported() {

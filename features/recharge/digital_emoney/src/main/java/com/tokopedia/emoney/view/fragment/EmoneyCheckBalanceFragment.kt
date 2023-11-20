@@ -406,7 +406,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 eTollUpdateBalanceResultView.visibility = View.GONE
                 tapETollCardView.visibility = View.GONE
 
-                AlertDialog.Builder(it)
+               val alert =  AlertDialog.Builder(it)
                         .setMessage(it.resources.getString(R.string.emoney_nfc_please_activate_nfc_from_settings))
                         .setPositiveButton(it.resources.getString(R.string.emoney_nfc_activate)) { p0, p1 ->
                             emoneyAnalytics.onActivateNFCFromSetting()
@@ -415,7 +415,12 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                         .setNegativeButton(it.resources.getString(R.string.emoney_nfc_cancel)) { p0, p1 ->
                             emoneyAnalytics.onCancelActivateNFCFromSetting()
                             nfcDisabledView.visibility = View.VISIBLE
-                        }.show()
+                        }
+                alert.setOnCancelListener {
+                    emoneyAnalytics.onCancelActivateNFCFromSetting()
+                    nfcDisabledView.visibility = View.VISIBLE
+                }
+                alert.show()
             } else {
                 if (userSession.isLoggedIn) {
                     it.intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
