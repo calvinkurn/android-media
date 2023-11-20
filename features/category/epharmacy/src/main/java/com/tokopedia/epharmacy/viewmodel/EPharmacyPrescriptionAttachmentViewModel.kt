@@ -27,11 +27,9 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private val ePharmacyPrepareProductsGroupUseCase: EPharmacyPrepareProductsGroupUseCase,
     private val ePharmacyInitiateConsultationUseCase: EPharmacyInitiateConsultationUseCase,
     private val ePharmacyGetConsultationDetailsUseCase: EPharmacyGetConsultationDetailsUseCase,
+    private val remoteConfig: RemoteConfig,
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
 ) : BaseViewModel(dispatcherBackground) {
-
-    @Inject
-    lateinit var remoteConfig: RemoteConfig
 
     private val _productGroupLiveData = MutableLiveData<Result<EPharmacyDataModel>>()
     val productGroupLiveDataResponse: LiveData<Result<EPharmacyDataModel>> = _productGroupLiveData

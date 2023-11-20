@@ -158,7 +158,7 @@ object EPharmacyUtils {
         )
     }
 
-    fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse, redirectTickerText: String): EPharmacyDataModel {
+    fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse, redirectTickerText: String?): EPharmacyDataModel {
         val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
         if (data.detailData?.groupsData?.attachmentPageTickerText?.isNotBlank() == true) {
             listOfComponents.add(
