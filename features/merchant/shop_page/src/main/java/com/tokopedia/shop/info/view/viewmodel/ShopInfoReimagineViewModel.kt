@@ -164,7 +164,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                                 shopBadgeUrl = shopInfo.goldOS.badge,
                                 shopName = shopInfo.shopCore.name,
                                 shopDescription = shopInfo.shopCore.description,
-                                mainLocation = shopInfo.location,
+                                mainLocation = shopInfo.shippingLoc.cityName,
                                 operationalHours = shopOperationalHours.toFormattedOperationalHours(),
                                 shopJoinDate = shopInfo.createdInfo.shopCreated.toShopJoinDate(),
                                 totalProduct = shopInfo.activeProduct.toIntOrZero(),
@@ -222,7 +222,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 GQLGetShopInfoUseCase.FIELD_GOLD_OS,
                 GQLGetShopInfoUseCase.FIELD_GOLD,
                 GQLGetShopInfoUseCase.FIELD_ACTIVE_PRODUCT,
-                GQLGetShopInfoUseCase.FIELD_SHOP_STATS
+                GQLGetShopInfoUseCase.FIELD_SHOP_STATS,
+                GQLGetShopInfoUseCase.FIELD_OTHER_SHIPPING_LOCATION
             )
         )
         return getShopInfoUseCase.executeOnBackground()

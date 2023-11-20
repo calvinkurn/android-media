@@ -58,6 +58,9 @@ object GqlQueryConstant {
         "                isGoldBadge\n" +
         "                isOfficial\n" +
         "            }\n" +
+        "            shippingLoc {\n" +
+        "               cityName \n" +
+        "            }\n" +
         "            favoriteData{\n" +
         "                totalFavorite\n" +
         "                alreadyFavorited\n" +
