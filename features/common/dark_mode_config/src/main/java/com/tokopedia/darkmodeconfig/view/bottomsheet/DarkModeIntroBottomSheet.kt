@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.darkmodeconfig.common.DarkModeAnalytics
+import com.tokopedia.darkmodeconfig.common.Utils
 import com.tokopedia.darkmodeconfig.model.UiMode
 import com.tokopedia.darkmodeconfig.view.screen.DarkModeIntroScreen
 import com.tokopedia.kotlin.extensions.view.gone
@@ -91,10 +92,15 @@ internal class DarkModeIntroBottomSheet : BottomSheetUnify() {
     }
 
     private fun saveDarkModeState(mode: UiMode) {
-        val context = activity?.applicationContext ?: return
-        val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
+        val applicationContext = activity?.applicationContext ?: return
+        val editor = PreferenceManager.getDefaultSharedPreferences(applicationContext).edit()
+        val isDarkModeOs = applicationContext.isDarkMode()
         activity?.lifecycleScope?.launch(Dispatchers.Default) {
             editor.putInt(TkpdCache.Key.KEY_DARK_MODE_CONFIG_SCREEN_MODE, mode.screenMode)
+            editor.putBoolean(
+                TkpdCache.Key.KEY_DARK_MODE,
+                Utils.getIsDarkModeStatus(mode, isDarkModeOs)
+            )
             editor.apply()
         }
     }

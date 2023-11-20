@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.darkmodeconfig.R
 import com.tokopedia.darkmodeconfig.common.DarkModeAnalytics
 import com.tokopedia.darkmodeconfig.common.PrefKey
+import com.tokopedia.darkmodeconfig.common.Utils
 import com.tokopedia.darkmodeconfig.model.UiMode
 import com.tokopedia.darkmodeconfig.view.screen.DarkModeConfigScreen
 import com.tokopedia.header.compose.NestHeader
@@ -120,20 +121,16 @@ class DarkModeConfigActivity : BaseActivity() {
         DarkModeAnalytics.eventClickThemeSetting(mode, isDarkModeOS)
     }
 
-    private fun saveDarkModeState(option: UiMode) {
+    private fun saveDarkModeState(mode: UiMode) {
+        val isDarkModeOs = applicationContext.isDarkMode()
         lifecycleScope.launch(Dispatchers.Default) {
             val editor = sharedPref.edit()
-            editor.putInt(TkpdCache.Key.KEY_DARK_MODE_CONFIG_SCREEN_MODE, option.screenMode)
-            editor.putBoolean(TkpdCache.Key.KEY_DARK_MODE, getDarkModeStatus(option))
+            editor.putInt(TkpdCache.Key.KEY_DARK_MODE_CONFIG_SCREEN_MODE, mode.screenMode)
+            editor.putBoolean(
+                TkpdCache.Key.KEY_DARK_MODE,
+                Utils.getIsDarkModeStatus(mode, isDarkModeOs)
+            )
             editor.apply()
-        }
-    }
-
-    private fun getDarkModeStatus(mode: UiMode): Boolean {
-        return when (mode) {
-            is UiMode.Light -> false
-            is UiMode.Dark -> true
-            is UiMode.FollowSystemSetting -> applicationContext.isDarkMode()
         }
     }
 
