@@ -741,8 +741,10 @@ open class ReadReviewFragment :
         } else {
             getShopIdFromArguments()
         }
-        viewModel.setTopicFilter(selectedTopic ?: "", isProductReview)
-        loadData(defaultInitialPage)
+
+        val selectedTopic = selectedTopic ?: ""
+        if (selectedTopic.isNotEmpty()) viewModel.setTopicFilter(selectedTopic, isProductReview)
+        else loadData(defaultInitialPage)
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
@@ -936,25 +938,17 @@ open class ReadReviewFragment :
         reviewHeader?.apply {
             setRatingData(ratingAndTopics.rating)
             setListener(this@ReadReviewFragment)
+            setTopicExtraction(ratingAndTopics.keywords, selectedTopic, this@ReadReviewFragment)
             setAvailableFilters(
                 ratingAndTopics.topics,
-                manageAvailableFilters(ratingAndTopics),
+                ratingAndTopics.availableFilters,
                 this@ReadReviewFragment
             )
             getRecyclerView(view)?.show()
             setHighlightedTopics(ratingAndTopics.topics, this@ReadReviewFragment)
-            setAvailableTopics(ratingAndTopics.keywords, selectedTopic, this@ReadReviewFragment)
             setSeeAll(false)
             show()
         }
-    }
-
-    private fun manageAvailableFilters(
-        ratingAndTopics: ProductrevGetProductRatingAndTopic
-    ): AvailableFilters {
-        return if (ratingAndTopics.keywords.isNotEmpty()) {
-            ratingAndTopics.availableFilters.copy(topics = false)
-        } else ratingAndTopics.availableFilters
     }
 
     open fun onSuccessGetShopRatingAndTopic(shopRatingAndTopics: ProductrevGetShopRatingAndTopic) {

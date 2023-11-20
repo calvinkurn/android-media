@@ -64,6 +64,8 @@ class ReadReviewHeader @JvmOverloads constructor(
     private var isProductReview: Boolean = true
     private var topicFilterChipIndex: Int = 0
 
+    private var isTopicExtraction = false
+
     init {
         setupViews()
     }
@@ -155,7 +157,7 @@ class ReadReviewHeader @JvmOverloads constructor(
             }
             filter.add(ratingFilter)
         }
-        if (availableFilters.topics) {
+        if (availableFilters.topics && !isTopicExtraction) {
             val topicFilter = getSortFilterItem(context.getString(R.string.review_reading_filter_all_topics))
             setListenerAndChevronListener(topicFilter) { listener.onFilterWithTopicClicked(topics, getIndexOfSortFilter(topicFilter), isChipsActive(topicFilter.type)) }
             filter.add(topicFilter)
@@ -284,94 +286,20 @@ class ReadReviewHeader @JvmOverloads constructor(
         }
     }
 
-    @SuppressLint("RestrictedApi")
-    fun setAvailableTopics(
+    fun setTopicExtraction(
         keywords: List<Keyword>,
-        selectedTopic: String?,
+        preselectKeyword: String?,
         listener: ReadReviewFilterChipsListener
     ) {
         if (keywords.isEmpty()) return
         binding.readReviewHighlightedTopicLeft.gone()
         binding.readReviewHighlightedTopicRight.gone()
 
-        val chipGroup = binding.readReviewTopics
-        var lastClicked: ChipsUnify? = null
-        var selectedChip: ChipsUnify? = null
+        binding.readReviewExtractedTopic.listener = listener
+        binding.readReviewExtractedTopic.preselectKeyword = preselectKeyword
+        binding.readReviewExtractedTopic.keywords = keywords
 
-        keywords.forEachIndexed { index, keyword ->
-            val chip = ChipsUnify(context).apply {
-                chipText = "%s (%s)".format(keyword.text, keyword.count)
-                setOnClickListener {
-                    if (isSelected) {
-                        chipType = ChipsUnify.TYPE_NORMAL
-                        if(lastClicked == this) lastClicked = null
-                        listener.onFilterTopic("")
-                    } else {
-                        chipType = ChipsUnify.TYPE_SELECTED
-                        if(lastClicked != this){
-                            lastClicked?.deselect()
-                        }
-                        lastClicked = this
-                        listener.onFilterTopic(keyword.text)
-                    }
-                    isSelected = !isSelected
-                    listener.onClickTopicChip(keyword, index, isSelected)
-                }
-                if (selectedTopic == keyword.text) {
-                    performClick()
-                    selectedChip = this
-                }
-            }
-            chipGroup.addView(chip)
-            listener.onImpressTopicChip(keyword, index)
-        }
-
-        chipGroup.doOnPreDraw { group->
-            if(group as? ChipGroup == null) return@doOnPreDraw
-
-            val targetHeight = resources.getDimension(
-                unifycomponentsR.dimen.chip_medium_height
-            ) + group.paddingTop + group.paddingBottom
-            group.updateLayoutParams {
-                height = targetHeight.toInt()
-            }
-            var isExpanded = false
-            val finalSelectedChip = selectedChip
-            if (finalSelectedChip != null) {
-                val selectedChipRow = group.getRowIndex(finalSelectedChip)
-                if (selectedChipRow > 0) {
-                    chipGroup.updateLayoutParams {
-                        height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    }
-                    isExpanded = true
-                }
-            }
-            if(!isExpanded){
-                val lastChip = group.children.last()
-                val lastChipRow = group.getRowIndex(lastChip)
-
-                if(lastChipRow > 0){
-                    binding.readReviewTopicsExpanding.show()
-                    binding.readReviewTopicsExpanding.setOnClickListener {
-                        chipGroup.updateLayoutParams {
-                            height = ViewGroup.LayoutParams.WRAP_CONTENT
-                        }
-                        it.gone()
-                        listener.onClickLihatSemua()
-                    }
-                }
-            }
-
-        }
-
-        chipGroup.addOneTimeGlobalLayoutListener {
-            chipGroup.show()
-        }
-    }
-
-    private fun ChipsUnify.deselect(){
-        chipType = ChipsUnify.TYPE_NORMAL
-        isSelected = false
+        isTopicExtraction = true
     }
 
     fun updateFilter(selectedFilter: Set<ListItemUnify>, sortFilterBottomSheetType: SortFilterBottomSheetType, index: Int) {
