@@ -12,11 +12,9 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowQuestProgressBarViewBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HomeQuestProgressBarView @JvmOverloads constructor(
@@ -37,12 +35,8 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
         true
     )
 
-    private val defaultStrokeResId = if(context.isDarkMode()) {
-        unifyprinciplesR.color.Unify_NN100
-    } else {
-        R.color.tokopedianow_quest_progress_stroke_dms_color
-    }
-    private val defaultColorResId = unifyprinciplesR.color.Unify_BN600
+    private val defaultStrokeResId =  unifyprinciplesR.color.Unify_NN100_20
+    private val defaultColorResId = unifyprinciplesR.color.Unify_BN700
 
     private var progressAnimEnd = DEFAULT_PROGRESS
     private var progressItems = mutableListOf<HomeQuestProgressCircleView>()
@@ -53,14 +47,17 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
         uiModel: HomeQuestWidgetUiModel,
         listener: HomeQuestProgressBarListener?
     ) {
-        binding.root.addOneTimeGlobalLayoutListener {
-            val hasFinishedQuest = uiModel.questList
-                .firstOrNull { it.isFinished() } != null
-            setListener(listener)
-            setupView(uiModel)
+        binding.apply {
+            resetViewProgressBarWidth()
+            root.addOneTimeGlobalLayoutListener {
+                val hasFinishedQuest = uiModel.questList
+                    .firstOrNull { it.isFinished() } != null
+                setListener(listener)
+                setupView(uiModel)
 
-            if (hasFinishedQuest) {
-                startAnimation()
+                if (hasFinishedQuest) {
+                    startAnimation()
+                }
             }
         }
     }
@@ -98,10 +95,6 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
             val questCount = questList.count()
             val currentProgressPosition = uiModel.currentProgressPosition
             val itemSpacing = binding.viewBackground.width / (questCount - 1)
-
-            viewProgress.layoutParams = viewProgress.layoutParams.apply {
-                width = DEFAULT_PROGRESS.toInt()
-            }
 
             viewBackground.setBackgroundColor(ContextCompat.getColor(context, defaultStrokeResId))
 
@@ -228,6 +221,14 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
 
             animSet?.duration = ANIM_DURATION
             animSet?.start()
+        }
+    }
+
+    private fun resetViewProgressBarWidth() {
+        binding.apply {
+            viewProgress.layoutParams = viewProgress.layoutParams.apply {
+                width = DEFAULT_PROGRESS.toInt()
+            }
         }
     }
 
