@@ -259,7 +259,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
             tpgShopName.text = uiState.info.shopName
             tpgLicensedPharmacy.isVisible = hasPharmacyLicenseBadge
-            tpgShopUsp.text = uiState.info.shopUsp.joinToString(separator = " • ") { it }
+            val shopDynamicUsp = uiState.info.shopUsp.joinToString(separator = " • ") { it }
+            tpgShopUsp.text = MethodChecker.fromHtml(shopDynamicUsp)
             tpgShopUsp.isVisible = uiState.info.shopUsp.isNotEmpty()
         }
 
@@ -277,7 +278,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgShopInfoTotalProduct.text = uiState.info.totalProduct.splitByThousand()
         }
     }
-    
+
     private fun renderOperationalHours(operationalHours: Map<String, List<ShopOperationalHourWithStatus>>) {
         binding?.layoutOperationalHoursContainer?.removeAllViews()
 
@@ -289,9 +290,9 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                 val groupedDays = shopOpenCloseTimeWithStatus.joinToString(separator = ", ") {
                     it.day.dayName()
                 }
-                
+
                 val hour = shopOpenCloseTimeWithStatus.findShopOpenCloseTime()
-               
+
                 val text = "$groupedDays: $hour"
                 val operationalHourTypography = createOperationalHoursTypography(text)
                 binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
@@ -651,7 +652,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun ShopOperationalHourWithStatus.Day.dayName(): String {
-        return when(this) {
+        return when (this) {
             ShopOperationalHourWithStatus.Day.MONDAY -> context?.getString(R.string.shop_info_ops_hour_monday).orEmpty()
             ShopOperationalHourWithStatus.Day.TUESDAY -> context?.getString(R.string.shop_info_ops_hour_tuesday).orEmpty()
             ShopOperationalHourWithStatus.Day.WEDNESDAY -> context?.getString(R.string.shop_info_ops_hour_wednesday).orEmpty()
@@ -665,9 +666,9 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun List<ShopOperationalHourWithStatus>.findShopOpenCloseTime(): String {
         if (isEmpty()) return ""
-        
+
         val operationalHour = first()
-        
+
         return when (operationalHour.status) {
             ShopOperationalHourWithStatus.Status.OPEN -> {
                 context?.getString(
