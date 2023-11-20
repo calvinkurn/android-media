@@ -29,7 +29,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
-import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -50,7 +49,7 @@ import javax.inject.Inject
 class AddEditProductDescriptionViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatchers,
     private val resource: ResourceProvider,
-    private val getYoutubeVideoUseCase: GetYoutubeVideoSnippetUseCase, //GetYoutubeVideoDetailUseCase,
+    private val getYoutubeVideoUseCase: GetYoutubeVideoSnippetUseCase, // GetYoutubeVideoDetailUseCase,
     private val validateProductDescriptionUseCase: ValidateProductDescriptionUseCase
 ) : BaseViewModel(coroutineDispatcher.main) {
 
@@ -63,7 +62,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     private val _videoYoutubeNew = MutableLiveData<Result<GetYoutubeVideoSnippetResponse>>()
     val videoYoutube: LiveData<Result<GetYoutubeVideoSnippetResponse>> = _videoYoutubeNew
 
-    val hasDTStock = Transformations.map(productInputModel){
+    val hasDTStock = Transformations.map(productInputModel) {
         it.hasDTStock
     }
 
@@ -146,7 +145,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         return flow {
             getIdYoutubeUrl(url)?.let { youtubeId ->
                 getYoutubeVideoUseCase.params = GetYoutubeVideoSnippetUseCase.createParams(
-                    videoIds = listOf(youtubeId),
+                    videoIds = youtubeId,
                     squad = if (GlobalConfig.isSellerApp()) GetYoutubeVideoSnippetUseCase.ANDROID_SELLERAPP_VALUE else GetYoutubeVideoSnippetUseCase.ANDROID_CONSUMER_VALUE,
                     useCase = if (isAddMode) GetYoutubeVideoSnippetUseCase.PRODUCT_ADD_VALUE else GetYoutubeVideoSnippetUseCase.PRODUCT_EDIT_VALUE
                 )
