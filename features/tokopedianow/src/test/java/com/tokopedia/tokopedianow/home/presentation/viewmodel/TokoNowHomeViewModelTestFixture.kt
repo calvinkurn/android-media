@@ -715,6 +715,8 @@ abstract class TokoNowHomeViewModelTestFixture {
         coEvery {
             getHomeBannerUseCase.execute(any())
         } throws error
+    }
+
     protected fun onGetQuestWidgetAbTest_thenReturn(value: String) {
         coEvery {
             abTestPlatform.getString("now_experiment")
