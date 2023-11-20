@@ -18,4 +18,7 @@ sealed class UniversalInboxAction {
     // Recommendation Actions
     object RefreshRecommendation : UniversalInboxAction()
     object LoadNextPage : UniversalInboxAction()
+    data class SaveUserScrollState(val currentPos: Int, val totalItem: Int) : UniversalInboxAction()
+    object ResetUserScrollState : UniversalInboxAction()
+    object AutoScrollRecommendation : UniversalInboxAction()
 }

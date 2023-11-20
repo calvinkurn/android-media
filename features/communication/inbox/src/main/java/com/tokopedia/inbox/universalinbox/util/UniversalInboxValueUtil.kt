@@ -21,9 +21,11 @@ object UniversalInboxValueUtil {
     const val PAGE_NAME = "inbox"
 
     /**
-     * Rollence (for analytics only)
+     * Rollence
      */
-    const val VAR_B = "var_b"
+    const val VAR_B = "var_b" // for analytics only
+    const val INBOX_ADS_REFRESH_KEY = "inbox_ads_refresh"
+    const val INBOX_SCROLL_VALUE = 4
 
     /**
      * User Session

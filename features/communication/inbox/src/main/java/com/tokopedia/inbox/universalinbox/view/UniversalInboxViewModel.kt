@@ -17,7 +17,11 @@ import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetAllDri
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetInboxMenuAndWidgetMetaUseCase
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetProductRecommendationUseCase
 import com.tokopedia.inbox.universalinbox.util.Result
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.INBOX_ADS_REFRESH_KEY
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.INBOX_SCROLL_VALUE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
+import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
+import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxAutoScrollUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxCombineState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxErrorUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxMenuUiState
@@ -65,7 +69,8 @@ class UniversalInboxViewModel @Inject constructor(
     private val inboxMiscMapper: UniversalInboxMiscMapper,
     private val widgetMetaMapper: UniversalInboxWidgetMetaMapper,
     private val userSession: UserSessionInterface,
-    private val dispatcher: CoroutineDispatchers
+    private val dispatcher: CoroutineDispatchers,
+    private val abTestPlatform: UniversalInboxAbPlatform
 ) : BaseViewModel(dispatcher.main), DefaultLifecycleObserver {
 
     private val _actionFlow =
@@ -84,6 +89,9 @@ class UniversalInboxViewModel @Inject constructor(
         UniversalInboxProductRecommendationUiState()
     )
     val productRecommendationUiState = _productRecommendationState.asStateFlow()
+
+    private val _autoScrollUiState = MutableStateFlow(UniversalInboxAutoScrollUiState())
+    val autoScrollUiState = _autoScrollUiState.asStateFlow()
 
     private val _errorUiState = MutableSharedFlow<UniversalInboxErrorUiState>(
         extraBufferCapacity = 16
@@ -143,6 +151,15 @@ class UniversalInboxViewModel @Inject constructor(
                 }
                 is UniversalInboxAction.LoadNextPage -> {
                     loadProductRecommendation()
+                }
+                is UniversalInboxAction.SaveUserScrollState -> {
+                    saveUserScrollState(it.currentPos, it.totalItem)
+                }
+                is UniversalInboxAction.ResetUserScrollState -> {
+                    resetUserScrollState()
+                }
+                is UniversalInboxAction.AutoScrollRecommendation -> {
+                    autoScrollRecommendation()
                 }
 
                 // Widget process
@@ -264,7 +281,7 @@ class UniversalInboxViewModel @Inject constructor(
                     menuList = menuList,
                     miscList = miscList,
                     notificationCounter =
-                        counterResponse.inboxCounter.notifCenterWrapperUnread.notifUnread,
+                    counterResponse.inboxCounter.notifCenterWrapperUnread.notifUnread,
                     shouldTrackImpression = shouldTrackImpression
                 )
             }
@@ -313,6 +330,10 @@ class UniversalInboxViewModel @Inject constructor(
                     )
                 }
                 page++
+                val shouldScroll = _autoScrollUiState.value.shouldScroll
+                if (shouldScroll) {
+                    autoScrollRecommendation()
+                }
             }
             is Result.Error -> {
                 setLoadingRecommendation(false)
@@ -505,6 +526,71 @@ class UniversalInboxViewModel @Inject constructor(
                 } catch (throwable: Throwable) {
                     actionListener.onErrorRemoveWishlist(throwable, model.productId.toString())
                     showErrorMessage(Pair(throwable, ::removeWishlistV2.name))
+                }
+            }
+        }
+    }
+
+    private fun saveUserScrollState(currentPos: Int, totalItem: Int) {
+        // Save User Scroll State before come back to Inbox Page
+        _autoScrollUiState.update {
+            it.copy(
+                currentPosition = currentPos,
+                totalItem = totalItem,
+                shouldScroll = false,
+                toPosition = -1
+            )
+        }
+    }
+
+    private fun resetUserScrollState() {
+        _autoScrollUiState.update {
+            it.copy(
+                currentPosition = -1,
+                totalItem = 0,
+                shouldScroll = false,
+                toPosition = -1
+            )
+        }
+    }
+
+    private fun checkAutoScrollEligibility(): Boolean {
+        return abTestPlatform.getString(
+            INBOX_ADS_REFRESH_KEY,
+            ""
+        ) == INBOX_ADS_REFRESH_KEY
+    }
+
+    private fun autoScrollRecommendation() {
+        viewModelScope.launch {
+            if (checkAutoScrollEligibility()) {
+                val totalItem = _autoScrollUiState.value.totalItem
+                val currentPos = _autoScrollUiState.value.currentPosition
+                if (totalItem > currentPos + INBOX_SCROLL_VALUE) {
+                    _autoScrollUiState.update {
+                        it.copy(
+                            shouldScroll = true,
+                            toPosition = currentPos + INBOX_SCROLL_VALUE
+                        )
+                    }
+                } else {
+                    loadProductRecommendation() // Load next page
+                    _autoScrollUiState.update {
+                        it.copy(
+                            shouldScroll = false,
+                            toPosition = currentPos + INBOX_SCROLL_VALUE
+                        )
+                    }
+                }
+            } else {
+                // Reset, so it won't trigger anything
+                _autoScrollUiState.update {
+                    it.copy(
+                        shouldScroll = false,
+                        totalItem = 0,
+                        currentPosition = -1,
+                        toPosition = -1
+                    )
                 }
             }
         }
