@@ -8,7 +8,7 @@ sealed interface ShopInfoUiEvent {
 
     object GetShopInfo : ShopInfoUiEvent
     object TapIconViewAllShopReview : ShopInfoUiEvent
-    data class TapReviewImage(val productId: String) : ShopInfoUiEvent
+    data class TapReviewImage(val productId: String, val reviewImageIndex: Int) : ShopInfoUiEvent
     data class TapReviewImageViewAll(val productId: String) : ShopInfoUiEvent
     object TapCtaExpandShopPharmacyInfo : ShopInfoUiEvent
 

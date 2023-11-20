@@ -29,7 +29,7 @@ class ShopReviewView @JvmOverloads constructor(
         private const val DOT_INDICATOR_MARGIN_TOP = 16
     }
 
-    private var onReviewImageClick: (ShopReview.Review) -> Unit = {}
+    private var onReviewImageClick: (ShopReview.Review, Int) -> Unit = { _, _ -> }
     private var onReviewImageViewAllClick: (ShopReview.Review) -> Unit = {}
 
     fun renderReview(lifecycle: Lifecycle, fragment: Fragment, review: ShopReview) {
@@ -119,13 +119,15 @@ class ShopReviewView @JvmOverloads constructor(
     private fun createFragments(reviews: List<ShopReview.Review>): List<Fragment> {
         return reviews.map { review ->
             val fragment = ReviewViewPagerItemFragment.newInstance(review)
-            fragment.setOnReviewImageClick { onReviewImageClick(it) }
+            fragment.setOnReviewImageClick { review, reviewImageIndex ->
+                onReviewImageClick(review, reviewImageIndex)
+            }
             fragment.setOnReviewImageViewAllClick { onReviewImageViewAllClick(it) }
             fragment
         }
     }
 
-    fun setOnReviewImageClick(onReviewImageClick: (ShopReview.Review) -> Unit) {
+    fun setOnReviewImageClick(onReviewImageClick: (ShopReview.Review, Int) -> Unit) {
         this.onReviewImageClick = onReviewImageClick
     }
 

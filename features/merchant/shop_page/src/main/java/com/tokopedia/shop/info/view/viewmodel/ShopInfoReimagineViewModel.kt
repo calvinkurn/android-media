@@ -19,8 +19,8 @@ import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.common.util.DateTimeConstant
-import com.tokopedia.shop.info.domain.entity.ShopOperationalHourWithStatus
 import com.tokopedia.shop.info.domain.entity.ShopNote
+import com.tokopedia.shop.info.domain.entity.ShopOperationalHourWithStatus
 import com.tokopedia.shop.info.domain.entity.ShopPharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop.info.domain.usecase.GetEpharmacyShopInfoUseCase
@@ -67,6 +67,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
         const val SHOP_TOP_REVIEW_FILTER_BY_SELLER_SERVICE = "topic=pelayanan"
         const val PAGE_SOURCE = "shop_info_page"
         const val TWENTY_THREE_HOURS_AND_FIFTY_NINE_SECOND = 86399
+        const val MAX_SHOP_DYNAMIC_USP_TO_DISPLAY = 3
     }
 
     private val _uiState = MutableStateFlow(ShopInfoUiState())
@@ -88,7 +89,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
             is ShopInfoUiEvent.RetryGetShopInfo -> handleRetryGetShopInfo()
             is ShopInfoUiEvent.TapShopNote -> handleTapShopNote(event.shopNote)
             ShopInfoUiEvent.ReportShop -> handleReportShop()
-            is ShopInfoUiEvent.TapReviewImage -> handleTapReviewImage(event.productId)
+            is ShopInfoUiEvent.TapReviewImage -> handleTapReviewImage(event.productId, event.reviewImageIndex)
             is ShopInfoUiEvent.TapReviewImageViewAll -> handleTapReviewImageViewAll(event.productId)
         }
     }
@@ -227,13 +228,13 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return getShopInfoUseCase.executeOnBackground()
     }
 
-    private fun handleTapReviewImage(productId: String) {
-        val effect = ShopInfoUiEffect.RedirectToProductReviewPage(productId)
+    private fun handleTapReviewImage(productId: String, reviewImageIndex: Int) {
+        val effect = ShopInfoUiEffect.RedirectToProductReviewPage(productId, currentState.shopId, reviewImageIndex)
         _uiEffect.tryEmit(effect)
     }
 
     private fun handleTapReviewImageViewAll(productId: String) {
-        val effect = ShopInfoUiEffect.RedirectToProductReviewPage(productId)
+        val effect = ShopInfoUiEffect.RedirectToProductReviewGallery(productId, currentState.shopId)
         _uiEffect.tryEmit(effect)
     }
 
@@ -333,23 +334,22 @@ class ShopInfoReimagineViewModel @Inject constructor(
         }
     }
 
-
     private fun determineOperationalHours(
         unformattedOperationalHours: List<ShopOperationalHour>
     ): Map<String, List<ShopOperationalHourWithStatus>> {
         val formattedOperationalHours = mutableListOf<ShopOperationalHourWithStatus>()
         unformattedOperationalHours.forEach { operationalHour ->
             val day = ShopOperationalHourWithStatus.Day.values().firstOrNull { it.id == operationalHour.day } ?: ShopOperationalHourWithStatus.Day.UNDEFINED
-            
+
             val isShopOpenTwentyFourHours = isShopOpenTwentyFourHours(
                 operationalHour.startTime,
                 operationalHour.endTime
             )
             val isShopClosed = isShopClosed(operationalHour.startTime, operationalHour.endTime)
-            
+
             val startTime = operationalHour.startTime.hourAndMinuteOnly()
             val endTime = operationalHour.endTime.hourAndMinuteOnly()
-            
+
             val status = if (isShopOpenTwentyFourHours) {
                 ShopOperationalHourWithStatus(day, startTime, endTime, ShopOperationalHourWithStatus.Status.OPEN24HOURS)
             } else if (isShopClosed) {
@@ -374,25 +374,17 @@ class ShopInfoReimagineViewModel @Inject constructor(
         val shopAttributeList = shopBasicInfoListComponent.firstOrNull { it.name == "shop_attribute_list" }
         if (shopAttributeList == null) return emptyList()
 
-        val listText = shopAttributeList.data.listText
+        val listText = shopAttributeList.data.listText.take(MAX_SHOP_DYNAMIC_USP_TO_DISPLAY)
         val textHtmls = listText.map { it.textHtml }
         return textHtmls
     }
 
     private fun isEpharmacy(shopInfo: ShopInfo): Boolean {
-        if (!shopInfo.isGoApotik) {
-            return false
-        }
-
         val hasPharmacyFulfilmentService = shopInfo.partnerInfo.any { partnerInfo ->
             partnerInfo.fsType == ID_FULFILLMENT_SERVICE_E_PHARMACY
         }
 
-        if (!hasPharmacyFulfilmentService) {
-            return false
-        }
-
-        return true
+        return hasPharmacyFulfilmentService || shopInfo.isGoApotik
     }
 
     private fun List<ShopOperationalHourWithStatus>.groupByShopOpenAndCloseTime(): Map<String, List<ShopOperationalHourWithStatus>> {
@@ -401,7 +393,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
             openCloseTime
         }
     }
-    
+
     private fun String.hourAndMinuteOnly(): String {
         return toDate(DateTimeConstant.TIME_SECOND_PRECISION).formatTo(DateTimeConstant.TIME_MINUTE_PRECISION)
     }

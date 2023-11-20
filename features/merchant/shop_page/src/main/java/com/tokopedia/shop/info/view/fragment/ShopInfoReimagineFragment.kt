@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.extension.setHyperlinkText
@@ -215,7 +216,13 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             ShopInfoUiEffect.RedirectToLoginPage -> redirectToLoginPage()
             is ShopInfoUiEffect.RedirectToChatWebView -> redirectToChatWebView(effect.messageId)
             is ShopInfoUiEffect.RedirectToShopReviewPage -> redirectToShopReviewPage(effect.shopId)
-            is ShopInfoUiEffect.RedirectToProductReviewPage -> redirectToProductReviewPage(effect.productId)
+            is ShopInfoUiEffect.RedirectToProductReviewPage -> redirectToProductReviewPage(
+                effect.productId,
+                effect.reviewImageIndex,
+                effect.shopId
+            )
+
+            is ShopInfoUiEffect.RedirectToProductReviewGallery -> redirectToProductReviewGallery(effect.shopId, effect.productId)
         }
     }
 
@@ -253,13 +260,21 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun renderShopCoreInfo(uiState: ShopInfoUiState) {
         val hasUsp = uiState.info.shopUsp.isNotEmpty()
         val hasPharmacyLicenseBadge = uiState.info.showPharmacyLicenseBadge
+        val hasShopBadge = uiState.info.shopBadgeUrl.isNotEmpty()
 
         binding?.run {
             imgShop.loadImage(uiState.info.shopImageUrl)
-            imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
+            
+            imgShopBadge.isVisible = hasShopBadge
+            if (hasShopBadge) {
+                imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
+            }
+
             tpgShopName.text = uiState.info.shopName
             tpgLicensedPharmacy.isVisible = hasPharmacyLicenseBadge
-            tpgShopUsp.text = uiState.info.shopUsp.joinToString(separator = " • ") { it }
+
+            val shopDynamicUsp = uiState.info.shopUsp.joinToString(separator = " • ") { it }
+            tpgShopUsp.text = MethodChecker.fromHtml(shopDynamicUsp)
             tpgShopUsp.isVisible = uiState.info.shopUsp.isNotEmpty()
         }
 
@@ -277,7 +292,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgShopInfoTotalProduct.text = uiState.info.totalProduct.splitByThousand()
         }
     }
-    
+
     private fun renderOperationalHours(operationalHours: Map<String, List<ShopOperationalHourWithStatus>>) {
         binding?.layoutOperationalHoursContainer?.removeAllViews()
 
@@ -289,9 +304,9 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                 val groupedDays = shopOpenCloseTimeWithStatus.joinToString(separator = ", ") {
                     it.day.dayName()
                 }
-                
+
                 val hour = shopOpenCloseTimeWithStatus.findShopOpenCloseTime()
-               
+
                 val text = "$groupedDays: $hour"
                 val operationalHourTypography = createOperationalHoursTypography(text)
                 binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
@@ -312,7 +327,13 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             labelShopPharmacySiaNumber.isVisible = isPharmacy && expandPharmacyInfo
             labelShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
 
-            tpgCtaExpandPharmacyInfo.isVisible = isPharmacy && !expandPharmacyInfo
+            //Show CTA "Lihat Selengkapnya" when pharmacy info collapsed
+            if (isPharmacy && !expandPharmacyInfo) {
+                tpgCtaExpandPharmacyInfo.visible()
+            } else {
+                tpgCtaExpandPharmacyInfo.invisible()
+            }
+            
             tpgCtaViewPharmacyMap.isVisible = isPharmacy && expandPharmacyInfo && showCtaViewPharmacyLocation
             iconViewPharmacyLocation.isVisible = isPharmacy && expandPharmacyInfo && showCtaViewPharmacyLocation
 
@@ -446,8 +467,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         if (showReview) {
             binding?.shopReviewView?.renderReview(viewLifecycleOwner.lifecycle, this, review)
-            binding?.shopReviewView?.setOnReviewImageClick { buyerReview ->
-                viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(buyerReview.product.productId))
+            binding?.shopReviewView?.setOnReviewImageClick { review, reviewImageIndex ->
+                viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(review.product.productId, reviewImageIndex))
             }
             binding?.shopReviewView?.setOnReviewImageViewAllClick { buyerReview ->
                 viewModel.processEvent(ShopInfoUiEvent.TapReviewImageViewAll(buyerReview.product.productId))
@@ -579,7 +600,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         constraintSet.applyTo(binding?.constraintLayout)
     }
-
+    
     private fun redirectToGmaps(gmapsUrl: String) {
         if (!isAdded) return
         if (gmapsUrl.isEmpty()) return
@@ -613,7 +634,21 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         startActivityForResult(intent, REQUEST_CODE_REPORT_SHOP)
     }
 
-    private fun redirectToProductReviewPage(productId: String) {
+    private fun redirectToProductReviewPage(productId: String, mediaPosition: Int, shopId: String) {
+        ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+            context = context ?: return,
+            pageSource = ReviewMediaGalleryRouter.PageSource.SHOP_INFO_PAGE,
+            productID = productId,
+            shopID = shopId,
+            isProductReview = true,
+            isFromGallery = false,
+            mediaPosition = mediaPosition,
+            showSeeMore = false,
+            preloadedDetailedReviewMediaResult = null
+        ).run { startActivity(this) }
+    }
+
+    private fun redirectToProductReviewGallery(shopId: String, productId: String) {
         val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_REPUTATION, productId)
         RouteManager.route(context, appLink)
     }
@@ -651,7 +686,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun ShopOperationalHourWithStatus.Day.dayName(): String {
-        return when(this) {
+        return when (this) {
             ShopOperationalHourWithStatus.Day.MONDAY -> context?.getString(R.string.shop_info_ops_hour_monday).orEmpty()
             ShopOperationalHourWithStatus.Day.TUESDAY -> context?.getString(R.string.shop_info_ops_hour_tuesday).orEmpty()
             ShopOperationalHourWithStatus.Day.WEDNESDAY -> context?.getString(R.string.shop_info_ops_hour_wednesday).orEmpty()
@@ -665,9 +700,9 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     private fun List<ShopOperationalHourWithStatus>.findShopOpenCloseTime(): String {
         if (isEmpty()) return ""
-        
+
         val operationalHour = first()
-        
+
         return when (operationalHour.status) {
             ShopOperationalHourWithStatus.Status.OPEN -> {
                 context?.getString(
