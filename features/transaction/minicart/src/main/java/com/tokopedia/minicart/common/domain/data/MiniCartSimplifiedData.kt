@@ -6,7 +6,8 @@ data class MiniCartSimplifiedData(
     var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
     var miniCartItems: Map<MiniCartItemKey, MiniCartItem> = emptyMap(),
     var isShowMiniCartWidget: Boolean = false,
-    var shoppingSummaryBottomSheetData: ShoppingSummaryBottomSheetData = ShoppingSummaryBottomSheetData()
+    var shoppingSummaryBottomSheetData: ShoppingSummaryBottomSheetData = ShoppingSummaryBottomSheetData(),
+    var bmGmDataList: List<BmGmData> = emptyList()
 )
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemProduct(productId: String): MiniCartItem.MiniCartItemProduct? {
@@ -106,4 +107,8 @@ sealed class MiniCartItem {
 data class ShoppingSummaryBottomSheetData(
     var title: String = "",
     var items: List<Visitable<*>> = emptyList()
+)
+
+data class BmGmData(
+    val offerMessage: List<String> = emptyList()
 )

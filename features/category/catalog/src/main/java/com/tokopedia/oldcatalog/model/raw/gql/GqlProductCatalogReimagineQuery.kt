@@ -400,6 +400,35 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
             title
           }
         }
+        ... on CatalogCompInfoColumn {
+          section {
+            title
+          }
+          infoColumn {
+            name
+            row {
+              key
+              value
+            }
+          }
+          style {
+            isHidden
+            columnType
+          }
+        }
+        ... on CatalogCompVideo {
+          video {
+            url
+            type
+            thumbnail
+            author
+            title
+            videoId
+          }
+          style {
+            isHidden
+          }
+        }
         ... on CatalogCompCtaPrice {
           basicInfo {
             name

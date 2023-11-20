@@ -42,9 +42,9 @@ data class TopadsWidgetSummaryStatisticsModel(
                 val incomeFmt: String,
                 @SerializedName("month")
                 val month: Int,
-                @SerializedName("roas")
+                @SerializedName("direct_roas")
                 val roas: Int,
-                @SerializedName("roas_fmt")
+                @SerializedName("direct_roas_fmt")
                 val roasFmt: String,
                 @SerializedName("sold")
                 val sold: Int,
@@ -69,9 +69,9 @@ data class TopadsWidgetSummaryStatisticsModel(
                 val incomeSum: Int,
                 @SerializedName("last_update")
                 val lastUpdate: String,
-                @SerializedName("roas")
+                @SerializedName("direct_roas")
                 val roasSum: Int,
-                @SerializedName("roas_percent")
+                @SerializedName("direct_roas_percent")
                 val roasPercent: Int,
                 @SerializedName("spending_percent")
                 val spendingPercent: Int,

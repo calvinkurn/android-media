@@ -301,4 +301,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_PDP_PREFETCH = "android_pdp_enable_prefetch";
 
     public static final String LOAD_PRODUCT_IMAGE_ARCHIVAL_KEY = "android_load_product_image_archival_enabled";
+
+    public static final String ENABLE_WEBVIEW_BACK_PRESSED = "android_webview_enable_override_back_pressed";
+
+    public static final String ANDROID_MAIN_APP_ENABLE_DISCO_SHOP_OFFER_HERO_BRAND = "android_main_app_enable_disco_shop_offer_hero_brand";
 }
