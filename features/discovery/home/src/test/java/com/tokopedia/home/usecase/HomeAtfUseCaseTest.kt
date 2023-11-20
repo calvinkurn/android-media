@@ -15,7 +15,6 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
@@ -126,8 +125,6 @@ class HomeAtfUseCaseTest {
         assert(result1 != null && result1.status == AtfDataList.STATUS_SUCCESS && result1.isCache && result1.listAtfData.isNotEmpty())
         val result2 = result[2]
         assert(result2 != null && result2.status == AtfDataList.STATUS_ERROR && result2.isCache && result2.listAtfData.isNotEmpty())
-
-        backgroundScope.cancel()
     }
 
     @Test
