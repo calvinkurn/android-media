@@ -142,7 +142,7 @@ ext {
     unifyComponentsVersion = '1.2.47'
     unifyCoachMarkVersion = '1.2.23'
     unifyCalendarVersion = '1.2.3'
-    unifyBannerVersion = '1.0.6.2'
+    unifyBannerVersion = '1.0.9'
     unifyDialogVersion = '1.0.14.2'
     unifyLoaderDialogVersion = '1.0.4'
     unifyDatePickerVersion = '1.1.2'
