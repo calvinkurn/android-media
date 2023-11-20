@@ -265,21 +265,15 @@ class HomeRecommendationFragment :
                             }
 
                             is HomeRecommendationCardState.Loading -> {
-                                adapter.submitList(it.data.homeRecommendations) {
-                                    updateScrollEndlessListener(false)
-                                }
+                                adapter.submitList(it.data.homeRecommendations)
                             }
 
                             is HomeRecommendationCardState.EmptyData -> {
-                                adapter.submitList(it.data.homeRecommendations) {
-                                    updateScrollEndlessListener(false)
-                                }
+                                adapter.submitList(it.data.homeRecommendations)
                             }
 
                             is HomeRecommendationCardState.Fail -> {
-                                adapter.submitList(it.data.homeRecommendations) {
-                                    updateScrollEndlessListener(false)
-                                }
+                                adapter.submitList(it.data.homeRecommendations)
                             }
 
                             is HomeRecommendationCardState.FailNextPage -> {
@@ -622,16 +616,7 @@ class HomeRecommendationFragment :
     }
 
     override fun onRetryGetNextProductRecommendationData() {
-        val currentPage = endlessRecyclerViewScrollListener?.currentPage ?: homeRecomCurrentPage
-        viewModel.fetchNextHomeRecommendation(
-            tabName,
-            recomId,
-            DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
-            currentPage,
-            getLocationParamString(),
-            sourceType,
-            adapter.currentList.toList()
-        )
+        endlessRecyclerViewScrollListener?.loadMoreNextPage()
     }
 
     private fun initListeners() {
