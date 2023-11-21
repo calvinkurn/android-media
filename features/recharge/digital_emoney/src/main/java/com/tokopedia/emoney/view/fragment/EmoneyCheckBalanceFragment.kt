@@ -587,7 +587,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             showCommonMessageError()
         } catch (e: IOException) {
             showCommonMessageError()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             showCommonMessageError()
         }
     }

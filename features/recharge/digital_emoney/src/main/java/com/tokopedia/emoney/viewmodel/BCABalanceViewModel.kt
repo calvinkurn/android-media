@@ -1,7 +1,7 @@
 package com.tokopedia.emoney.viewmodel
 
+import android.annotation.SuppressLint
 import android.nfc.tech.IsoDep
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
-import java.io.IOException
+import timber.log.Timber
 import javax.inject.Inject
 
 class BCABalanceViewModel @Inject constructor(
@@ -61,7 +61,7 @@ class BCABalanceViewModel @Inject constructor(
                         isoDep.close()
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     }
-                } catch (e: IOException) {
+                } catch (e: Throwable) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
@@ -84,7 +84,7 @@ class BCABalanceViewModel @Inject constructor(
                         isoDep, dataBalance.cardNo, dataBalance.balance,
                         rawPublicKeyString, rawPrivateKeyString, GEN_ONE, "", ""
                     )
-                } catch (e: IOException) {
+                } catch (e: Throwable) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
@@ -94,6 +94,7 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
+    @SuppressLint("BinaryOperationInTimber")
     private fun getPendingBalanceProcess(
         isoDep: IsoDep,
         cardNumber: String,
@@ -119,7 +120,7 @@ class BCABalanceViewModel @Inject constructor(
 
             val encResult = bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
-            Log.d("BCALOGWKPendingBalance", result.toString())
+            Timber.d("BCALOGWKPendingBalance $result")
 
             if (result.status == BCAFlazzStatus.WRITE.status) {
                 getGenerateTrxIdProcess(
@@ -178,7 +179,7 @@ class BCABalanceViewModel @Inject constructor(
 
             val encResult = bcaFlazzUseCase.execute(paramGetGenerateTrxIdQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
-            Log.d("BCALOGWKTrxId", result.toString())
+            Timber.d("BCALOGWKTrxId $result")
 
             if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.transactionID.isNotEmpty()) {
                 processSDKBCADataSession1(
@@ -241,7 +242,7 @@ class BCABalanceViewModel @Inject constructor(
                         // set error if BCAdataSession_1 process error
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     }
-                } catch (e: IOException) {
+                } catch (e: Throwable) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
@@ -278,7 +279,7 @@ class BCABalanceViewModel @Inject constructor(
 
             val encResult = bcaFlazzUseCase.execute(paramGetSessionKeyQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
-            Log.d("BCALOGWKSessionKey", result.toString())
+            Timber.d("BCALOGWKSessionKey $result")
 
             if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isNotEmpty()) {
                 processSDKBCADataSession2(
@@ -334,7 +335,7 @@ class BCABalanceViewModel @Inject constructor(
                         // set error if BCAdataSession_2 process error
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     }
-                } catch (e: IOException) {
+                } catch (e: Throwable) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
@@ -387,7 +388,7 @@ class BCABalanceViewModel @Inject constructor(
                         // src:Top Up Flazz di mch online-sosialisasi merchant 1222
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     }
-                } catch (e: IOException) {
+                } catch (e: Throwable) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
@@ -425,7 +426,7 @@ class BCABalanceViewModel @Inject constructor(
 
             val encResult = bcaFlazzUseCase.execute(paramGetBetweenTopUpQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
-            Log.d("BCALOGWKTopUp", result.toString())
+            Timber.d("BCALOGWKTopUp $result")
 
             if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isNotEmpty()) {
                 processSDKBCATopUp2(
@@ -538,7 +539,7 @@ class BCABalanceViewModel @Inject constructor(
                         )
                     }
 
-                } catch (e: IOException) {
+                } catch (e: Throwable) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
@@ -570,7 +571,7 @@ class BCABalanceViewModel @Inject constructor(
 
             val encResult = bcaFlazzUseCase.execute(paramGetACKQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
-            Log.d("BCALOGWKSACK", result.toString())
+            Timber.d("BCALOGWKSACK $result")
 
             bcaInquiryMutable.postValue(
                 BCAFlazzResponseMapper.bcaMapper(
@@ -628,7 +629,7 @@ class BCABalanceViewModel @Inject constructor(
                     } else {
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     }
-                } catch (e: IOException) {
+                } catch (e: Throwable) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
@@ -664,7 +665,7 @@ class BCABalanceViewModel @Inject constructor(
 
             val encResult = bcaFlazzUseCase.execute(paramGetReversalQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
-            Log.d("BCALOGWKReversal", result.toString())
+            Timber.d("BCALOGWKReversal $result")
 
             if (result.status != BCAFlazzStatus.DONE.status) {
                 bcaInquiryMutable.postValue(
@@ -722,7 +723,7 @@ class BCABalanceViewModel @Inject constructor(
                             updatedBalance.balance
                         )
                     }
-                } catch (e: IOException) {
+                } catch (e: Throwable) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
