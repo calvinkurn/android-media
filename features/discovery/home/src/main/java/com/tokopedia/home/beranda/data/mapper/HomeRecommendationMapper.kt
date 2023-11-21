@@ -51,7 +51,9 @@ class HomeRecommendationMapper {
                     visitables.add(HomeRecommendationBannerTopAdsOldDataModel(position = index, bannerType = TYPE_BANNER_ADS))
                 }
                 TYPE_VERTICAL_BANNER_ADS -> {
-                    visitables.add(HomeRecommendationBannerTopAdsOldDataModel(position = index, bannerType = TYPE_VERTICAL_BANNER_ADS))
+                    if(recommendationProduct.layoutName != LAYOUT_NAME_LIST) {
+                        visitables.add(HomeRecommendationBannerTopAdsOldDataModel(position = index, bannerType = TYPE_VERTICAL_BANNER_ADS))
+                    }
                 }
             }
         }

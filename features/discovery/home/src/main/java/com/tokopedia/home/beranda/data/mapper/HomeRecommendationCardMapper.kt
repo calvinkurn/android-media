@@ -11,7 +11,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.LAYOUT_NAME_LIST
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -53,15 +53,17 @@ class HomeRecommendationCardMapper @Inject constructor(
                 }
 
                 TYPE_RECOM_CARD -> {
-                    (mapToEntityCardRecommendationCard(card) as? Visitable<HomeRecommendationTypeFactoryImpl>)?.let {
-                        homeRecommendationTypeFactoryImplList.add(
-                            it
-                        )
+                    if(getHomeRecommendationCard.layoutName != LAYOUT_NAME_LIST) {
+                        (mapToEntityCardRecommendationCard(card) as? Visitable<HomeRecommendationTypeFactoryImpl>)?.let {
+                            homeRecommendationTypeFactoryImplList.add(
+                                it
+                            )
+                        }
                     }
                 }
 
                 TYPE_BANNER_ADS -> {
-                    if (getHomeRecommendationCard.layoutName != HomeRecommendationUtil.LAYOUT_NAME_LIST) {
+                    if (getHomeRecommendationCard.layoutName != LAYOUT_NAME_LIST) {
                         val adsBannerItemResponse =
                             convertDataJsonToAdsBannerItem(card.dataStringJson)
 
@@ -82,19 +84,21 @@ class HomeRecommendationCardMapper @Inject constructor(
                 }
 
                 TYPE_VIDEO -> {
-                    val recommendationPlayWidgetResponse =
-                        convertDataJsonToRecommendationPlayWidget(
-                            card.dataStringJson
-                        )
-                    recommendationPlayWidgetResponse?.let {
-                        homeRecommendationTypeFactoryImplList.add(
-                            mapToHomeRecommendationPlayWidget(
-                                layoutCard = card.layout,
-                                layoutTracker = card.layoutTracker,
-                                playVideoWidgetResponse = it,
-                                recommendationType = card.recommendationType
+                    if (getHomeRecommendationCard.layoutName != LAYOUT_NAME_LIST) {
+                        val recommendationPlayWidgetResponse =
+                            convertDataJsonToRecommendationPlayWidget(
+                                card.dataStringJson
                             )
-                        )
+                        recommendationPlayWidgetResponse?.let {
+                            homeRecommendationTypeFactoryImplList.add(
+                                mapToHomeRecommendationPlayWidget(
+                                    layoutCard = card.layout,
+                                    layoutTracker = card.layoutTracker,
+                                    playVideoWidgetResponse = it,
+                                    recommendationType = card.recommendationType
+                                )
+                            )
+                        }
                     }
                 }
             }
