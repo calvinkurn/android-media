@@ -31,10 +31,11 @@ class ExpertReviewViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_experts_review
+
+        private const val keyYoutubeVideoId = "v"
     }
 
     private val binding by viewBinding<WidgetExpertsReviewBinding>()
-    private val keyYoutubeVideoId = "v"
 
     private var onceCreateCarousel = false
     override fun bind(element: ExpertReviewUiModel) {
