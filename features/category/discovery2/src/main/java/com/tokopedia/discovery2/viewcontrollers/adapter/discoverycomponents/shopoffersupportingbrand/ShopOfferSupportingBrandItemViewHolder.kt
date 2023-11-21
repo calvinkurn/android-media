@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand
 
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.View
@@ -118,6 +119,7 @@ class ShopOfferSupportingBrandItemViewHolder(
         shopName.text = name
     }
 
+    @SuppressLint("Range")
     private fun ItemDiscoveryShopOfferSupportingBrandLayoutBinding.setCardBackgroundColor(
         item: DataItem
     ) {
