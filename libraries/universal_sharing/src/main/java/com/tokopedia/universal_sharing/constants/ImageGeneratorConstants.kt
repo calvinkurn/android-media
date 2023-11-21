@@ -3,7 +3,7 @@ package com.tokopedia.universal_sharing.constants
 class ImageGeneratorConstants {
     object ImageGeneratorSourceId {
         const val PDP = "gFZoml"
-        const val AB_TEST_PDP = "wmVUzt"
+        const val PDP_WITH_PRICE_STRING = "RKdhUE"
         const val FS_TOKO = "tJHYeb"
         const val RILISAN_SPESIAL = "aaGBeS"
         const val MVC_PRODUCT = "ZmygOT"

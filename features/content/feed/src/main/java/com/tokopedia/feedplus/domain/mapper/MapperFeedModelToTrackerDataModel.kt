@@ -12,8 +12,13 @@ import com.tokopedia.feedplus.presentation.model.type.AuthorType
  */
 class MapperFeedModelToTrackerDataModel(
     val tabType: String,
-    val entryPoint: String
+    val entrySource: FeedEntrySource,
 ) {
+
+    data class FeedEntrySource(
+        val widgetId: String,
+        val entryPoint: String,
+    )
 
     companion object {
         private const val DEFAULT_CAMPAIGN_NO_STATUS = "no"
@@ -48,7 +53,7 @@ class MapperFeedModelToTrackerDataModel(
                         else -> it
                     }
                 },
-            entryPoint = entryPoint
+            entrySource = entrySource,
         )
 
     fun transformImageContentToTrackerModel(
@@ -77,7 +82,7 @@ class MapperFeedModelToTrackerDataModel(
                         else -> it
                     }
                 },
-            entryPoint = entryPoint
+            entrySource = entrySource,
         )
 
     fun transformLiveContentToTrackerModel(
@@ -106,7 +111,7 @@ class MapperFeedModelToTrackerDataModel(
                         else -> it
                     }
                 },
-            entryPoint = entryPoint
+            entrySource = entrySource,
         )
 
     fun transformProfileRecommendationToTrackerModel(
@@ -123,6 +128,6 @@ class MapperFeedModelToTrackerDataModel(
         contentScore = "",
         hasVoucher = false,
         campaignStatus = "",
-        entryPoint = entryPoint
+        entrySource = entrySource,
     )
 }

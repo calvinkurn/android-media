@@ -11,6 +11,8 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -79,9 +81,11 @@ import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalog.util.CatalogShareUtil
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
+import com.tokopedia.catalogcommon.bottomsheet.ColumnedInfoBottomSheet
 import com.tokopedia.catalogcommon.customview.CatalogToolbar
 import com.tokopedia.catalogcommon.listener.AccordionListener
 import com.tokopedia.catalogcommon.listener.BannerListener
+import com.tokopedia.catalogcommon.listener.ColumnedInfoListener
 import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.listener.TextDescriptionListener
@@ -90,6 +94,7 @@ import com.tokopedia.catalogcommon.listener.TrustMakerListener
 import com.tokopedia.catalogcommon.listener.VideoExpertListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
@@ -133,7 +138,7 @@ class CatalogDetailPageFragment :
     TopFeatureListener,
     DoubleBannerListener,
     ComparisonViewHolder.ComparisonItemListener,
-    CatalogDetailListener {
+    CatalogDetailListener, ColumnedInfoListener {
 
     companion object {
         private const val QUERY_CATALOG_ID = "catalog_id"
@@ -172,7 +177,8 @@ class CatalogDetailPageFragment :
                 videoExpertListener = this,
                 topFeatureListener = this,
                 doubleBannerListener = this,
-                comparisonItemListener = this
+                comparisonItemListener = this,
+                columnedInfoListener = this
             )
         )
     }
@@ -187,6 +193,10 @@ class CatalogDetailPageFragment :
 
     private val userSession: UserSession by lazy {
         UserSession(activity)
+    }
+
+    private val insetsController: WindowInsetsControllerCompat? by lazy {
+       activity?.window?.decorView?.let(ViewCompat::getWindowInsetsController)
     }
 
     private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
@@ -275,11 +285,14 @@ class CatalogDetailPageFragment :
         }
         val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo)
         val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
-        widgetAdapter.changeNavigationTabActive(tabPosition)
         if (anchorToPosition >= Int.ZERO) {
             when (tabPosition) {
                 Int.ZERO -> {
-                    smoothScroller.targetPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
+                    var newAnchorPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
+                    if (newAnchorPosition == -1){
+                        newAnchorPosition = anchorToPosition
+                    }
+                    smoothScroller.targetPosition = newAnchorPosition
                     layoutManager?.startSmoothScroll(smoothScroller)
                 }
                 (widgetAdapter.findNavigationCount().dec()) -> {
@@ -291,6 +304,7 @@ class CatalogDetailPageFragment :
                     layoutManager?.startSmoothScroll(smoothScroller)
                 }
             }
+            widgetAdapter.changeNavigationTabActive(tabPosition)
             Handler(Looper.getMainLooper()).postDelayed({
                 selectNavigationFromScroll = true
             }, NAVIGATION_SCROLL_DURATION)
@@ -423,6 +437,7 @@ class CatalogDetailPageFragment :
         )
         val colorFont = if (navigationProperties.isDarkMode) colorFontDark else colorFontLight
 
+        insetsController?.isAppearanceLightStatusBars = !navigationProperties.isDarkMode
         toolbarShadow.background =
             DrawableExtension.createGradientDrawable(colorTop = colorBgGradient)
         toolbar.setColors(colorFont)
@@ -451,6 +466,7 @@ class CatalogDetailPageFragment :
         }
         binding?.toolbarBg?.alpha = scrollProgress
         binding?.toolbar?.tpgTitle?.alpha = scrollProgress
+        binding?.statusBar?.alpha = scrollProgress
     }
 
     // Call this methods if you want to override the CTA & Price widget's theme
@@ -784,5 +800,12 @@ class CatalogDetailPageFragment :
     override fun changeComparison(selectedComparedCatalogId: String) {
         compareCatalogId = selectedComparedCatalogId
         viewModel.getProductCatalogComparisons(catalogId, compareCatalogId)
+    }
+
+    override fun onColumnedInfoSeeMoreClicked(
+        sectionTitle: String,
+        columnData: List<ColumnedInfoUiModel.ColumnData>
+    ) {
+        ColumnedInfoBottomSheet.show(childFragmentManager, sectionTitle, columnData)
     }
 }

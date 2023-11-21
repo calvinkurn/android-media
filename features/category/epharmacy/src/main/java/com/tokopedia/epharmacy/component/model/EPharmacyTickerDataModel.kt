@@ -9,7 +9,8 @@ data class EPharmacyTickerDataModel(
     val type: String = "",
     val tickerText: String?,
     val tickerLogo: String?,
-    val tickerBackground: String?
+    val tickerBackground: String?,
+    val tickerWebViewText: String? = ""
 ) :
     BaseEPharmacyDataModel {
 

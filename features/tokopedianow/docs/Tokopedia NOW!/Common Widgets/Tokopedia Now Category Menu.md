@@ -16,13 +16,13 @@
 
 <!--toc-->
 
-![image](../../res/tokopedia_now_category_menu.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_category_menu.png)
 
 ## **Description**
 
 A collection of category level 1 that appears in a row as a navigation menu for users with maximum 9 categories and 1 see all card (in total 10 cards).
 
-![image](../../res/tokopedia_now_category_menu_full.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_category_menu_full.png)
 
 ## **Requirements**
 

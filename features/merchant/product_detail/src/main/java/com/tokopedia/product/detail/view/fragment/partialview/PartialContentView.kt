@@ -16,6 +16,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.common_tradein.R as common_tradeinR
 import com.tokopedia.product.detail.common.R as productdetailcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Yehezkiel on 25/05/20
@@ -80,9 +81,8 @@ class PartialContentView(
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(binding.fabDetailPdp) {
-        if (!shouldShowWishlist) {
-            hide()
-        } else if (activeState != wishlisted) {
+        showWithCondition(shouldShowWishlist)
+        if (shouldShowWishlist && activeState != wishlisted) {
             activeState = wishlisted
         }
     }
@@ -90,6 +90,16 @@ class PartialContentView(
     fun renderFreeOngkir(freeOngkirUrl: String) = with(binding) {
         imgFreeOngkir.shouldShowWithAction(freeOngkirUrl.isNotEmpty()) {
             imgFreeOngkir.setImageUrl(freeOngkirUrl)
+        }
+    }
+
+    fun updateUniversalShareWidget(shouldShow: Boolean) = with(binding.universalShareWidget) {
+        if (shouldShow) {
+            listener.onUniversalShareWidget(this)
+            setColorShareIcon(unifyprinciplesR.color.Unify_NN700)
+            show()
+        } else {
+            hide()
         }
     }
 
