@@ -12,7 +12,7 @@ import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceControl
 import com.tokopedia.home_component_header.util.getHomeComponentHeaderType
 
 object DynamicChannelComponentMapper {
-    private const val LABEL_FULFILLMENT = "fulfillment"
+    const val LABEL_FULFILLMENT = "fulfillment"
     fun mapHomeChannelToComponent(
         channel: DynamicHomeChannel.Channels,
         verticalPosition: Int,

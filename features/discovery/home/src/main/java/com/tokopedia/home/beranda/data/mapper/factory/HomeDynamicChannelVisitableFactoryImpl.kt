@@ -6,6 +6,7 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.LABEL_FULFILLMENT
 import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToChannelGrid
 import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToTrackingAttributionModel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -785,7 +786,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
                         animateOnPress = CardUnify2.ANIMATE_NONE,
                         cardType = CardUnify2.TYPE_CLEAR,
                         productCardListType = ProductCardModel.ProductListType.BEST_SELLER,
-                        excludeShop = true
+                        excludeShop = true,
+                        excludeLabelGroup = listOf(LABEL_FULFILLMENT)
                     ),
                     channel.mapToTrackingAttributionModel(verticalPosition),
                     cardInteraction = CardUnify2.ANIMATE_NONE,
