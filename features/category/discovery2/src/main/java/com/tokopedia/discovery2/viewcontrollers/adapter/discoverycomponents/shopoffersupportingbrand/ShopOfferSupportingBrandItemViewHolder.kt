@@ -12,6 +12,7 @@ import com.tokopedia.discovery2.databinding.ItemDiscoveryShopOfferSupportingBran
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.view.binding.viewBinding
@@ -81,6 +82,11 @@ class ShopOfferSupportingBrandItemViewHolder(
         if (appLink.isNullOrBlank()) return
 
         container.setOnClickListener {
+            viewModel?.component?.run {
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                    ?.trackSupportingBrandClick(this, ACTION_TYPE_BANNER)
+            }
+
             RouteManager.route(itemView.context, appLink)
         }
     }
@@ -95,6 +101,11 @@ class ShopOfferSupportingBrandItemViewHolder(
         if (appLink.isNullOrBlank()) return
 
         setOnClickListener {
+            viewModel?.component?.run {
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                    ?.trackSupportingBrandClick(this, ACTION_TYPE_PRODUCT)
+            }
+
             RouteManager.route(itemView.context, appLink)
         }
     }
@@ -150,5 +161,7 @@ class ShopOfferSupportingBrandItemViewHolder(
         private const val SECOND_INDEX = 1
         private const val TEXT_LIGHT_MODE = "light"
         private const val TEXT_DARK_MODE = "dark"
+        private const val ACTION_TYPE_BANNER = "banner"
+        private const val ACTION_TYPE_PRODUCT = "product"
     }
 }

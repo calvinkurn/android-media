@@ -155,7 +155,7 @@ data class DataItem(
     @SerializedName("box_color", alternate = ["background_color", "header_color"])
     val boxColor: String? = "",
 
-    @SerializedName("font_color", alternate = ["text_color", "benefit_text_color"])
+    @SerializedName("font_color", alternate = ["text_color", "benefit_text_color", "text_color_mode"])
     val fontColor: String? = "",
 
     @SerializedName("variant")
@@ -576,6 +576,9 @@ data class DataItem(
 
     @SerializedName("cta_color")
     val ctaColor: String? = "",
+
+    @SerializedName("offer_id")
+    val offerId: String? = null,
 
     @SerializedName("offer_tiers")
     val offerTiers: List<OfferTier>? = null,

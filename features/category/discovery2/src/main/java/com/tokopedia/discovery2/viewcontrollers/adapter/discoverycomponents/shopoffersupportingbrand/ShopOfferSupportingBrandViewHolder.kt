@@ -4,6 +4,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.databinding.DiscoverySupportingBrandLayoutBinding
@@ -12,6 +13,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.CarouselProductCardItemDecorator
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.home_component.util.removeAllItemDecoration
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -79,11 +81,21 @@ class ShopOfferSupportingBrandViewHolder(
         binding?.apply {
             brands.observe(lifecycleOwner) { result ->
                 when (result) {
-                    is Success -> showWidget(result.data)
+                    is Success -> {
+                        trackImpression(result.data)
+                        showWidget(result.data)
+                    }
                     is Fail -> hideWidget()
                 }
             }
         }
+    }
+
+    private fun trackImpression(components: List<ComponentsItem>) {
+        if (components.find { it.name == ComponentNames.ShopOfferSupportingBrandItem.componentName } == null) return
+
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+            ?.trackSupportingBrandImpression(components)
     }
 
     private fun DiscoverySupportingBrandLayoutBinding.showWidget(items: ArrayList<ComponentsItem>) {
