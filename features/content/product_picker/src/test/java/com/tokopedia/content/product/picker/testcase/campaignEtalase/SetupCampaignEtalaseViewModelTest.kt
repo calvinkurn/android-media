@@ -4,6 +4,7 @@ import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
 import com.tokopedia.content.product.picker.robot.ContentProductPickerSellerViewModelRobot
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -21,6 +22,7 @@ internal class SetupCampaignEtalaseViewModelTest {
 
     private val testDispatcher = rule.dispatchers
     private val mockRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
+    private val mockCommonRepo: ProductPickerSellerCommonRepository = mockk(relaxed = true)
 
     /** Mock Response */
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
@@ -35,12 +37,13 @@ internal class SetupCampaignEtalaseViewModelTest {
     @Test
     fun `when user firstly create viewmodel, it will emit uiState with campaign and etalase list`() {
 
-        coEvery { mockRepo.getEtalaseList() } returns mockEtalaseList
-        coEvery { mockRepo.getCampaignList() } returns mockCampaignList
+        coEvery { mockCommonRepo.getEtalaseList() } returns mockEtalaseList
+        coEvery { mockCommonRepo.getCampaignList() } returns mockCampaignList
 
         val robot = ContentProductPickerSellerViewModelRobot(
             dispatchers = testDispatcher,
-            repo = mockRepo
+            repo = mockRepo,
+            commonRepo = mockCommonRepo,
         )
 
         robot.use {
@@ -54,12 +57,13 @@ internal class SetupCampaignEtalaseViewModelTest {
     @Test
     fun `when user firstly create viewmodel and theres an error when loading campaign and etalase list, it will emit uiState with empty campaign and etalase`() {
 
-        coEvery { mockRepo.getEtalaseList() } throws mockException
-        coEvery { mockRepo.getCampaignList() } throws mockException
+        coEvery { mockCommonRepo.getEtalaseList() } throws mockException
+        coEvery { mockCommonRepo.getCampaignList() } throws mockException
 
         val robot = ContentProductPickerSellerViewModelRobot(
             dispatchers = testDispatcher,
-            repo = mockRepo
+            repo = mockRepo,
+            commonRepo = mockCommonRepo,
         )
 
         robot.use {
