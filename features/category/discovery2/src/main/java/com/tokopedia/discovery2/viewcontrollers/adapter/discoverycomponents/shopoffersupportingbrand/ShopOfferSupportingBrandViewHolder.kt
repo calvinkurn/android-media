@@ -9,13 +9,14 @@ import com.tokopedia.discovery2.databinding.DiscoverySupportingBrandLayoutBindin
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.CarouselProductCardItemDecorator
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.home_component.util.removeAllItemDecoration
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopOfferSupportingBrandViewHolder(
@@ -38,11 +39,6 @@ class ShopOfferSupportingBrandViewHolder(
                 LinearLayoutManager.HORIZONTAL,
                 false
             )
-        }
-
-    private val userSession: UserSessionInterface
-        by lazy {
-            UserSession(fragment.context)
         }
 
     private var viewModel: ShopOfferSupportingBrandViewModel? = null
@@ -98,9 +94,19 @@ class ShopOfferSupportingBrandViewHolder(
     }
 
     private fun DiscoverySupportingBrandLayoutBinding.setupRecyclerView() {
+        supportingBrandAdapter.setHasStableIds(true)
         supportingBrandRV.apply {
             adapter = supportingBrandAdapter
             layoutManager = supportingBrandLayoutManager
         }
+        addItemDecorator()
+    }
+
+    private fun DiscoverySupportingBrandLayoutBinding.addItemDecorator() {
+        if (supportingBrandRV.itemDecorationCount.isMoreThanZero()) {
+            supportingBrandRV.removeAllItemDecoration()
+        }
+
+        supportingBrandRV.addItemDecoration(CarouselProductCardItemDecorator())
     }
 }
