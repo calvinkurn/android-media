@@ -537,20 +537,19 @@ class FeedPostVideoViewHolder(
         campaignView.startAnimation()
         mVideoPlayer?.toggleVideoVolume(listener.isMuted())
         mVideoPlayer?.resume()
-        productButtonView.playProductIconAnimation()
         listener.onWatchPostVideo(element, trackerModel)
         onScrolling(false)
+        productButtonView.playProductIconAnimation()
     }
 
     private fun onNotSelected() {
         mIsSelected = false
         mVideoPlayer?.pause()
         mVideoPlayer?.reset()
-        productButtonView.pauseProductIconAnimation()
         onScrolling(false)
-
         campaignView.resetView()
         hideClearView()
+        productButtonView.pauseProductIconAnimation()
     }
 
     override fun onViewRecycled() {

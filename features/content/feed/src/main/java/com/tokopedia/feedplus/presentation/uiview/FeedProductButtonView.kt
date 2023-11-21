@@ -12,6 +12,7 @@ import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_NINETY_NINE
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_ZERO
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -186,9 +187,11 @@ class FeedProductButtonView(
 
     fun playProductIconAnimation() {
         if (!animationOn) return
-        binding.lottieProductSeeMore.removeAnimatorListener(animatorListener)
-        binding.lottieProductSeeMore.addAnimatorListener(animatorListener)
-        binding.lottieProductSeeMore.playAnimation()
+        binding.root.addOneTimeGlobalLayoutListener {
+            binding.lottieProductSeeMore.removeAnimatorListener(animatorListener)
+            binding.lottieProductSeeMore.addAnimatorListener(animatorListener)
+            binding.lottieProductSeeMore.playAnimation()
+        }
     }
 
     fun pauseProductIconAnimation() {
