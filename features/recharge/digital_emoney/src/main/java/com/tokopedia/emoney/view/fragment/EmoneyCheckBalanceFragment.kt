@@ -53,6 +53,8 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import java.io.IOException
+import java.lang.reflect.InvocationTargetException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.text.SimpleDateFormat
@@ -547,10 +549,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun getRollenceBCA(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.BCA_ROLLENCE,
-            ""
-        ) == RollenceKey.BCA_ROLLENCE
+        return true
     }
 
     private fun showCommonMessageError() {
@@ -564,12 +563,20 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun initializeBCALibs(tag: Tag?) {
-        if (tag != null) {
-            bcaLibrary.myTag = tag
-            val isoDep = IsoDep.get(tag)
-            if (!isoDep.isConnected && isoDep != null) {
-                isoDep.connect()
+        try {
+            if (tag != null) {
+                bcaLibrary.myTag = tag
+                val isoDep = IsoDep.get(tag)
+                if (!isoDep.isConnected && isoDep != null) {
+                    isoDep.connect()
+                }
             }
+        } catch (e: InvocationTargetException) {
+            showCommonMessageError()
+        } catch (e: IOException) {
+            showCommonMessageError()
+        } catch (e: Exception) {
+            showCommonMessageError()
         }
     }
 
