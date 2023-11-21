@@ -19,6 +19,7 @@ object ApplinkConstInternalContent {
     const val INTERNAL_CONTENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CONTENT"
     const val INTERNAL_PLAY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY"
     const val INTERNAL_FEED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FEED"
+    const val INTERNAL_FEED_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FEED/detail/"
     const val INTERNAL_PLAY_BROADCASTER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_BROADCASTER"
     const val INTERNAL_PLAY_SHORTS = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_SHORTS"
     const val INTERNAL_AFFILIATE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_AFFILIATE"
@@ -64,6 +65,7 @@ object ApplinkConstInternalContent {
      */
     const val SOURCE_TYPE = "source_type"
     const val SOURCE_TYPE_HOME = "HOME"
+    const val ENTRY_POINT = "entrypoint"
 
     /**
      * Unified Feed
@@ -75,6 +77,7 @@ object ApplinkConstInternalContent {
     const val UF_EXTRA_FEED_TAB_NAME = "ARGS_FEED_TAB_NAME"
     const val UF_EXTRA_FEED_IS_JUST_LOGGED_IN = "FEED_IS_JUST_LOGGED_IN"
     const val UF_EXTRA_FEED_ENTRY_POINT = "ARGS_FEED_ENTRY_POINT"
+    const val UF_EXTRA_FEED_WIDGET_ID = "ARGS_FEED_WIDGET_ID"
 
     const val NAV_BUTTON_ENTRY_POINT = "Nav button"
 

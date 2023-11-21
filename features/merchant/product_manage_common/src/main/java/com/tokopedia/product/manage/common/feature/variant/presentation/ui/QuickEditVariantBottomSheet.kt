@@ -11,7 +11,6 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
-import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -31,7 +30,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<QuickEditVariantComponent> {
+abstract class QuickEditVariantBottomSheet : BottomSheetUnify(), HasComponent<QuickEditVariantComponent> {
 
     protected companion object {
         const val EXTRA_PRODUCT_ID = "extra_product_id"
@@ -49,7 +48,6 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTitle(getTitle())
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
     override fun onCreateView(
@@ -186,7 +184,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         }
 
         observe(viewModel.showErrorView) { showErrorView ->
-            if(showErrorView) {
+            if (showErrorView) {
                 expandBottomSheet()
                 binding?.errorViewContainer?.show()
             } else {

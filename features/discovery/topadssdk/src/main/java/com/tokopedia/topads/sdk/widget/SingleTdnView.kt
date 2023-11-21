@@ -51,10 +51,10 @@ class SingleTdnView : BaseCustomView {
 
     fun setTdnModel(
         topAdsImageViewModel: TopAdsImageViewModel,
-        onTdnBannerClicked: (applink: String) -> Unit,
+        onTdnBannerClicked: (imageData: TopAdsImageViewModel) -> Unit,
         cornerRadius: Int,
         onLoadFailed: () -> Unit,
-        onTdnBannerImpressed: () -> Unit
+        onTdnBannerImpressed: (imageData: TopAdsImageViewModel) -> Unit
     ) {
         tdnShimmer.layoutParams =
             ConstraintLayout.LayoutParams(
@@ -74,8 +74,8 @@ class SingleTdnView : BaseCustomView {
         imageData: TopAdsImageViewModel,
         cornerRadius: Int = Int.ZERO,
         onLoadFailed: () -> Unit,
-        onTdnBannerClicked: (applink: String) -> Unit,
-        onTdnBannerImpressed: () -> Unit
+        onTdnBannerClicked: (imageData: TopAdsImageViewModel) -> Unit,
+        onTdnBannerImpressed: (imageData: TopAdsImageViewModel) -> Unit
     ) {
         if (!imageData.imageUrl.isNullOrEmpty()) {
             val width = context.resources.displayMetrics.widthPixels
@@ -123,11 +123,11 @@ class SingleTdnView : BaseCustomView {
 
     private fun recordClick(
         imageData: TopAdsImageViewModel,
-        onTdnBannerClicked: (applink: String) -> Unit
+        onTdnBannerClicked: (imageData: TopAdsImageViewModel) -> Unit
     ) {
         tdnBanner.setOnClickListener {
             Timber.d("TDN Banner is clicked")
-            imageData.applink?.let { applink -> onTdnBannerClicked(applink) }
+            imageData.applink?.let { applink -> onTdnBannerClicked(imageData) }
             TopAdsUrlHitter(context).hitClickUrl(
                 this@SingleTdnView.javaClass.canonicalName,
                 imageData.adClickUrl,
@@ -140,7 +140,7 @@ class SingleTdnView : BaseCustomView {
 
     private fun recordImpression(
         imageData: TopAdsImageViewModel,
-        onTdnBannerImpressed: () -> Unit
+        onTdnBannerImpressed: (imageData: TopAdsImageViewModel) -> Unit
     ) {
         imageData.ImpressHolder?.let { ImpressHolder ->
             tdnBanner.addOnImpressionListener(ImpressHolder) {
@@ -151,7 +151,7 @@ class SingleTdnView : BaseCustomView {
                     "",
                     ""
                 )
-                onTdnBannerImpressed.invoke()
+                onTdnBannerImpressed.invoke(imageData)
             }
         }
     }
