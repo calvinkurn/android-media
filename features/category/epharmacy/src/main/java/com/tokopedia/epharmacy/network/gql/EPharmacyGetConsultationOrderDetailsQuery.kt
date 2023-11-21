@@ -86,6 +86,12 @@ object EPharmacyGetConsultationOrderDetailsQuery : GqlQueryInterface {
                     app_url
                     web_url
                   }
+                  help_button {
+                    label
+                    caption
+                    action_type
+                    app_url
+                  }
                 }
               }
             }
