@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -20,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -82,24 +84,34 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
     private fun renderReview(review: ShopReview.Review?) {
         review?.let {
-            binding?.imgAvatar?.loadImage(review.avatar)
-            binding?.tpgReviewerName?.text = review.reviewerName
-
-            val hasReviewerLabel = review.reviewerLabel.isNotEmpty()
-            if (hasReviewerLabel) {
-                binding?.tpgBullet?.visible()
-                binding?.tpgReviewerLabel?.text = review.reviewerLabel
-            }
-
+            renderReviewerInfo(review)
+            renderCompletedReview(Int.ZERO)
+            renderLikeCount(review.likeDislike.likeStatus, review.likeDislike.totalLike)
+            renderReviewImages(review.attachments)
+            
             if (isReviewTextAlreadyExpanded) {
                 binding?.tpgReviewText?.text = review.reviewText
             } else {
                 renderReviewText(review)
             }
+        }
+    }
 
-            renderCompletedReview(Int.ZERO)
-            renderLikeCount(review.likeDislike.likeStatus, review.likeDislike.totalLike)
-            renderReviewImages(review.attachments)
+    private fun renderReviewerInfo(review: ShopReview.Review) {
+        binding?.imgAvatar?.loadImage(review.avatar)
+        binding?.tpgReviewerName?.text = review.reviewerName
+
+        val hasReviewerLabel = review.reviewerLabel.isNotEmpty()
+        binding?.tpgBullet?.isVisible = hasReviewerLabel
+        
+        if (hasReviewerLabel) {
+            binding?.tpgReviewerLabel?.text = review.reviewerLabel
+        } 
+        
+        val hasUsefulReview = review.likeDislike.totalLike.isMoreThanZero()
+        
+        if (!hasUsefulReview) {
+            makeReviewerNameAndLabelCenteredVertically()
         }
     }
 
@@ -274,5 +286,21 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         tpgCtaViewAll.setOnClickListener { onReviewImageViewAllClick(review) }
 
         return reviewImageView
+    }
+
+    private fun makeReviewerNameAndLabelCenteredVertically() {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(binding?.constraintLayout)
+
+        constraintSet.connect(R.id.tpgReviewerName, ConstraintSet.TOP, R.id.imgAvatar, ConstraintSet.TOP)
+        constraintSet.connect(R.id.tpgReviewerName, ConstraintSet.BOTTOM, R.id.imgAvatar, ConstraintSet.BOTTOM)
+
+        constraintSet.connect(R.id.tpgBullet, ConstraintSet.TOP, R.id.imgAvatar, ConstraintSet.TOP)
+        constraintSet.connect(R.id.tpgBullet, ConstraintSet.BOTTOM, R.id.imgAvatar, ConstraintSet.BOTTOM)
+
+        constraintSet.connect(R.id.tpgReviewerLabel, ConstraintSet.TOP, R.id.imgAvatar, ConstraintSet.TOP)
+        constraintSet.connect(R.id.tpgReviewerLabel, ConstraintSet.BOTTOM, R.id.imgAvatar, ConstraintSet.BOTTOM)
+        
+        constraintSet.applyTo(binding?.constraintLayout)
     }
 }
