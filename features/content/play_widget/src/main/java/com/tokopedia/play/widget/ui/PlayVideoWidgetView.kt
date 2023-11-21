@@ -9,6 +9,7 @@ import android.widget.ImageView
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.BehindLiveWindowException
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
@@ -154,6 +155,10 @@ class PlayVideoWidgetView : CardUnify2 {
 
     fun setListener(listener: Listener?) {
         mListener = listener
+    }
+
+    fun resetPlaybackPosition() {
+        player.playbackPosition = Long.ZERO
     }
 
     fun stopVideo() {

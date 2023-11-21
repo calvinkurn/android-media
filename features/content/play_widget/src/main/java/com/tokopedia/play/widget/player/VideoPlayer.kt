@@ -19,6 +19,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.util.Util
+import com.tokopedia.kotlin.extensions.view.ZERO
 import kotlin.time.Duration
 
 /**
@@ -34,6 +35,8 @@ class VideoPlayer(private val context: Context) {
     private val timer by lazy {
         VideoPlayerTimer(player) { stop() }
     }
+
+    var playbackPosition: Long = 0
 
     init {
         exoPlayer.addListener(object : EventListener {
@@ -58,14 +61,17 @@ class VideoPlayer(private val context: Context) {
     fun start(config: Config = Config()) {
         setupTimer(config)
         exoPlayer.playWhenReady = true
+        exoPlayer.seekTo(playbackPosition)
     }
 
     fun pause() {
         exoPlayer.playWhenReady = false
+        playbackPosition = exoPlayer.currentPosition
     }
 
     fun stop() {
         exoPlayer.stop()
+        playbackPosition = Long.ZERO
     }
 
     fun release() {

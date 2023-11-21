@@ -33,7 +33,7 @@ class HomeRecommendationPlayWidgetViewHolder(
 
         binding.homeRecomPlayWidgetVideo.setListener(object : PlayVideoWidgetView.Listener {
             override fun onVideoFinishedPlaying(view: PlayVideoWidgetView) {
-                // no op
+                binding.homeRecomPlayWidgetVideo.resetPlaybackPosition()
             }
 
             override fun onVideoError(view: PlayVideoWidgetView, error: ExoPlaybackException) {
