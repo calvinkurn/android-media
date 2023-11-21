@@ -50,7 +50,7 @@ import javax.inject.Inject
 class AddEditProductDescriptionViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatchers,
     private val resource: ResourceProvider,
-    private val getYoutubeVideoUseCase: GetYoutubeVideoSnippetUseCase, // GetYoutubeVideoDetailUseCase,
+    private val getYoutubeVideoUseCase: GetYoutubeVideoSnippetUseCase,
     private val validateProductDescriptionUseCase: ValidateProductDescriptionUseCase
 ) : BaseViewModel(coroutineDispatcher.main) {
 

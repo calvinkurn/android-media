@@ -123,11 +123,6 @@ class VideoLinkTypeFactory : BaseAdapterTypeFactory() {
                 } catch (e: Throwable) {
                 }
 
-//                try {
-//                    if(imgThumbnail?.context?.isValidGlideContext() == true)
-//                        imgThumbnail?.urlSrc = imageUrl
-//                } catch (e: Throwable) { }
-
                 tvVideoTitle?.text = inputTitle
                 tvVideoSubtitle?.text = inputDescription
 
