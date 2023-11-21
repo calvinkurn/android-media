@@ -101,13 +101,13 @@ class ReadReviewTopics @JvmOverloads constructor(
     }
 
     private fun onClickChip(chip: Chip, position: Int) = with(chip) {
-        if (isSelected) {
+        if (view.isSelected) {
             unselect()
         } else {
             select()
             listener?.onFilterTopic(chip.keyword.text)
         }
-        listener?.onClickTopicChip(chip.keyword, position, isSelected)
+        listener?.onClickTopicChip(chip.keyword, position, view.isSelected)
     }
 
     private fun Chip.select() = with(view) {
