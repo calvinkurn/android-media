@@ -11,6 +11,7 @@ data class StoriesCreationConfiguration(
     val maxVideoDuration: Int,
     val imageSourceId: String,
     val videoSourceId: String,
+    val storiesApplinkTemplate: String,
     val maxStoriesConfig: MaxStoriesConfig,
 ) {
 
@@ -46,6 +47,7 @@ data class StoriesCreationConfiguration(
                 imageSourceId = "",
                 videoSourceId = "",
                 maxStoriesConfig = MaxStoriesConfig.Empty,
+                storiesApplinkTemplate = "",
             )
     }
 }

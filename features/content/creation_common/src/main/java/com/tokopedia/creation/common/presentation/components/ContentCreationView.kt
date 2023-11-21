@@ -1,9 +1,12 @@
 package com.tokopedia.creation.common.presentation.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -90,16 +93,19 @@ private fun ContentCreationSuccessView(
         modifier = Modifier
             .padding(bottom = 16.dp)
             .fillMaxWidth()
+            .animateContentSize()
     ) {
-        creationItemList.map {
-            ExpandableContentCreationItem(
-                isSelected = selectedItem?.type == it.type,
-                data = it,
-                onSelect = onSelectItem,
-                modifier = Modifier
-                    .padding(bottom = 16.dp)
-                    .fillMaxWidth()
-            )
+        LazyColumn {
+            items(creationItemList) {
+                ExpandableContentCreationItem(
+                    isSelected = selectedItem?.type == it.type,
+                    data = it,
+                    onSelect = onSelectItem,
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .fillMaxWidth()
+                )
+            }
         }
 
         NestButton(

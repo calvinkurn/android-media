@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -134,8 +135,7 @@ fun StoriesCreationScreen(
         )
 
         StoriesCreationMediaCover(
-            mediaFilePath = uiState.media.filePath,
-            mediaType = uiState.media.type,
+            media = uiState.media,
             onLoadMediaPreview = onLoadMediaPreview,
             modifier = Modifier.constrainAs(mediaCover) {
                 top.linkTo(headerDivider.bottom, 16.dp)
@@ -189,13 +189,15 @@ fun StoriesCreationScreen(
         NestButton(
             text = stringResource(id = R.string.stories_creation_upload),
             onClick = onClickUpload,
-            modifier = Modifier.constrainAs(uploadButton) {
-                bottom.linkTo(parent.bottom, 8.dp)
-                start.linkTo(parent.start, 16.dp)
-                end.linkTo(parent.end, 16.dp)
+            modifier = Modifier
+                .testTag(stringResource(R.string.stories_creation_upload_test_tag))
+                .constrainAs(uploadButton) {
+                    bottom.linkTo(parent.bottom, 8.dp)
+                    start.linkTo(parent.start, 16.dp)
+                    end.linkTo(parent.end, 16.dp)
 
-                width = Dimension.fillToConstraints
-            }
+                    width = Dimension.fillToConstraints
+                }
         )
     }
 }
@@ -239,8 +241,7 @@ private fun StoriesCreationHeader(
 
 @Composable
 private fun StoriesCreationMediaCover(
-    mediaFilePath: String,
-    mediaType: ContentMediaType,
+    media: StoriesMedia,
     onLoadMediaPreview: suspend (filePath: String) -> StoriesMediaCover,
     modifier: Modifier = Modifier,
 ) {
@@ -254,8 +255,8 @@ private fun StoriesCreationMediaCover(
         mutableStateOf(StoriesMediaCover.Loading)
     }
 
-    LaunchedEffect(mediaFilePath) {
-        storiesMediaCover = onLoadMediaPreview(mediaFilePath)
+    LaunchedEffect(media.filePath) {
+        storiesMediaCover = onLoadMediaPreview(media.filePath)
     }
 
     when (val mediaCover = storiesMediaCover) {
@@ -269,7 +270,7 @@ private fun StoriesCreationMediaCover(
             NestImage(
                 source = ImageSource.Remote(mediaCover.localFilePath),
                 modifier = storiesMediaPreviewModifier,
-                contentScale = if (mediaType.isImage && !isMediaRatioSame(mediaCover.localFilePath, RATIO_9_16)) {
+                contentScale = if (media.type.isImage && !isMediaRatioSame(mediaCover.localFilePath, RATIO_9_16)) {
                     ContentScale.Fit
                 } else {
                     ContentScale.Crop
@@ -298,6 +299,7 @@ private fun StoriesCreationAddProductSection(
 ) {
     ConstraintLayout(
         modifier = modifier
+            .testTag(stringResource(R.string.stories_creation_add_product_test_tag))
             .fillMaxWidth()
             .clickable(
                 interactionSource = MutableInteractionSource(),
