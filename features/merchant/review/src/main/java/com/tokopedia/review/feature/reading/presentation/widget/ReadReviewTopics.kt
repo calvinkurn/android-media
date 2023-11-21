@@ -43,7 +43,7 @@ class ReadReviewTopics @JvmOverloads constructor(
         root.show()
 
         keywords.forEachIndexed { index, keyword ->
-            val chip = keyword.toChip()
+            val chip = keyword.toChip(index)
             if (keyword.text == preselectKeyword) preselectChip = chip
             extractedTopicGroup.addView(chip.view)
             listener?.onImpressTopicChip(keyword, index)
@@ -92,21 +92,22 @@ class ReadReviewTopics @JvmOverloads constructor(
         binding.extractedTopicExpand.hide()
     }
 
-    private fun Keyword.toChip(): Chip {
+    private fun Keyword.toChip(position: Int): Chip {
         val chip = Chip(ChipsUnify(context), this).apply {
             view.chipText = "%s (%s)".format(text, count)
-            view.setOnClickListener { onClickChip(this) }
+            view.setOnClickListener { onClickChip(this, position) }
         }
         return chip
     }
 
-    private fun onClickChip(chip: Chip) = with(chip) {
+    private fun onClickChip(chip: Chip, position: Int) = with(chip) {
         if (isSelected) {
             unselect()
         } else {
             select()
             listener?.onFilterTopic(chip.keyword.text)
         }
+        listener?.onClickTopicChip(chip.keyword, position, isSelected)
     }
 
     private fun Chip.select() = with(view) {
