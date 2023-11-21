@@ -67,7 +67,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
         const val SHOP_TOP_REVIEW_SORT_BY_HELPFULNESS = "informative_score desc"
         const val SHOP_TOP_REVIEW_FILTER_BY_SELLER_SERVICE = "topic=pelayanan"
         const val PAGE_SOURCE = "shop_info_page"
-        const val TWENTY_THREE_HOURS_AND_FIFTY_NINE_SECOND = 86399
+        const val TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_IN_SECOND = 86340 //23 hour 59 minute and 0 second difference
+        const val TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_AND_FIFTY_NINE_SECOND_IN_SECOND = 86399 //23 hour 59 minute and 59 second difference
         const val MAX_SHOP_DYNAMIC_USP_TO_DISPLAY = 3
     }
 
@@ -414,8 +415,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
         val timeDifferenceMillis = end.time - start.time
         val timeDifferenceSecond = TimeUnit.MILLISECONDS.toSeconds(timeDifferenceMillis).toInt()
-
-        return timeDifferenceSecond == TWENTY_THREE_HOURS_AND_FIFTY_NINE_SECOND
+        
+        return timeDifferenceSecond == TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_IN_SECOND || timeDifferenceSecond == TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_AND_FIFTY_NINE_SECOND_IN_SECOND
     }
 
     private fun isShopClosed(startTime: String, endTime: String): Boolean {

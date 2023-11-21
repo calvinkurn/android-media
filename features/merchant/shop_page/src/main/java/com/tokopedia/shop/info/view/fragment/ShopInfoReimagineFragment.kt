@@ -80,6 +80,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         private const val APP_LINK_QUERY_STRING_REVIEW_SOURCE = "header"
         private const val REQUEST_CODE_REPORT_SHOP = 110
         private const val REQUEST_CODE_LOGIN = 100
+        private const val SEVEN_DAY = 7
 
         @JvmStatic
         fun newInstance(shopId: String): ShopInfoReimagineFragment {
@@ -304,21 +305,31 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun renderOperationalHours(operationalHours: Map<String, List<ShopOperationalHourWithStatus>>) {
         binding?.layoutOperationalHoursContainer?.removeAllViews()
 
-        if (operationalHours.isEmpty()) {
-            val operationalHourTypography = createOperationalHoursTypography("-")
-            binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
-        } else {
-            operationalHours.forEach { (_, shopOpenCloseTimeWithStatus) ->
-                val groupedDays = shopOpenCloseTimeWithStatus.joinToString(separator = ", ") {
-                    it.day.dayName()
-                }
-
-                val hour = shopOpenCloseTimeWithStatus.findShopOpenCloseTime()
-
-                val text = "$groupedDays: $hour"
+        when {
+            operationalHours.isEmpty() -> {
+                val operationalHourTypography = createOperationalHoursTypography("-")
+                binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
+            }
+            isOpen24HoursEveryday(operationalHours) -> {
+                val text = context?.getString(R.string.shop_info_ops_hour_open_24_hours).orEmpty()
                 val operationalHourTypography = createOperationalHoursTypography(text)
                 binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
             }
+            else -> renderShopOpenCloseTime(operationalHours)
+        }
+    }
+    
+    private fun renderShopOpenCloseTime(operationalHours: Map<String, List<ShopOperationalHourWithStatus>>) {
+        operationalHours.forEach { (_, shopOpenCloseTimeWithStatus) ->
+            val groupedDays = shopOpenCloseTimeWithStatus.joinToString(separator = ", ") {
+                it.day.dayName()
+            }
+
+            val hour = shopOpenCloseTimeWithStatus.findShopOpenCloseTime()
+
+            val text = "$groupedDays: $hour"
+            val operationalHourTypography = createOperationalHoursTypography(text)
+            binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
         }
     }
 
@@ -783,5 +794,22 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                 context?.getString(R.string.shop_info_ops_hour_open_twenty_four_hour).orEmpty()
             }
         }
+    }
+
+    private fun isOpen24HoursEveryday(operationalHours: Map<String, List<ShopOperationalHourWithStatus>>): Boolean {
+        if (operationalHours.isEmpty()) return false
+
+        val operationalHour = operationalHours.entries.firstOrNull()
+        if (operationalHour == null) return false
+
+        val (_, operationalHourStatus) = operationalHour
+
+        val status = operationalHourStatus.firstOrNull()?.status
+        if (status == null) return false
+
+        val isMondayToSundayHaveSameOperationalHour = operationalHourStatus.size == SEVEN_DAY
+        val isMondayToSundayOpen24Hours = status == ShopOperationalHourWithStatus.Status.OPEN24HOURS
+
+        return isMondayToSundayHaveSameOperationalHour && isMondayToSundayOpen24Hours
     }
 }
