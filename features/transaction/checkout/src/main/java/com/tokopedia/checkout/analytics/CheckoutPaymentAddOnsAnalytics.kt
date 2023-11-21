@@ -14,8 +14,7 @@ class CheckoutPaymentAddOnsAnalytics @Inject constructor(
         const val EVENT_IMPRESSION_CROSS_SELL_ICON = "impression cross sell icon"
         const val EVENT_CHECK_CROSS_SELL_ICON = "check cross sell icon"
         const val EVENT_UNCHECK_CROSS_SELL_ICON = "uncheck cross sell icon"
-        const val EVENT_CLICK_PAYMENT_METHOD_WITH_CROSS_SELL =
-            "click pilih metode pembayaran - cross sell"
+        const val EVENT_CLICK_PAYMENT_METHOD_WITH_CROSS_SELL = "click pilih metode pembayaran - cross sell"
 
         // Tracker ID
         const val EVENT_IMPRESSION_CROSS_SELL_ICON_TRACKER_ID = "17226"
@@ -103,7 +102,7 @@ class CheckoutPaymentAddOnsAnalytics @Inject constructor(
         for (crossSell in crossSellData) {
             val (categoryName, crossSellProductId) = crossSell
             val gtmData = getGtmData(
-                ConstantTransactionAnalytics.EventName.SELECT_CONTENT,
+                ConstantTransactionAnalytics.EventName.CLICK_DIGITAL,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 EVENT_CLICK_PAYMENT_METHOD_WITH_CROSS_SELL,
                 generateEventLabel(categoryName, crossSellProductId, productCatIds)
