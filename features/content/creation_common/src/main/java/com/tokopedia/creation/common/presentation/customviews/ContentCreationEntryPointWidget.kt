@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.util.AttributeSet
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -109,7 +108,9 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
                 iconId = IconUnify.VIDEO,
                 text = MethodChecker.fromHtml(stringResource(id = creationcommonR.string.content_creation_entry_point_desription))
                     .toAnnotatedString(),
-                buttonText = stringResource(id = creationcommonR.string.content_creation_entry_point_button_label)
+                buttonText = stringResource(id = creationcommonR.string.content_creation_entry_point_button_label),
+                iconColor = Color.Red, // TODO
+                textColor = Color.Blue // TODO
             ) {
                 analytics.clickContentCreationEndpointWidget(
                     viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
@@ -165,13 +166,17 @@ fun ContentCreationEntryPointComponent(
     iconId: Int,
     text: String,
     buttonText: String,
-    onClick: () -> Unit
+    iconColor: Color,
+    textColor: Color,
+    onClick: () -> Unit,
 ) {
     ContentCreationEntryPointComponent(
         iconId = iconId,
         text = AnnotatedString(text),
         buttonText = buttonText,
-        onClick = onClick
+        onClick = onClick,
+        iconColor = iconColor,
+        textColor = textColor,
     )
 }
 
@@ -180,40 +185,41 @@ fun ContentCreationEntryPointComponent(
     iconId: Int,
     text: AnnotatedString,
     buttonText: String,
-    onClick: () -> Unit
+    iconColor: Color,
+    textColor: Color,
+    onClick: () -> Unit,
 ) {
-    NestTheme {
-        Row(
+    Row(
+        modifier = Modifier
+            .padding(vertical = 8.dp, horizontal = 2.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .border(1.dp, Color(0x40AAB4C8), RoundedCornerShape(12.dp))
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        NestIcon(
+            iconId = iconId,
+            modifier = Modifier.size(24.dp),
+            colorLightEnable = iconColor,
+            colorNightEnable = iconColor,
+        )
+        NestTypography(
+            text = text,
+            textStyle = NestTheme.typography.display3.copy(
+                color = textColor
+            ),
             modifier = Modifier
-                .padding(vertical = 8.dp, horizontal = 2.dp)
+                .padding(start = 4.dp, end = 8.dp)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .background(NestTheme.colors.NN._0)
-                .border(1.dp, Color(0x40AAB4C8), RoundedCornerShape(12.dp))
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            NestIcon(
-                iconId = iconId,
-                modifier = Modifier.size(24.dp)
-            )
-            NestTypography(
-                text = text,
-                textStyle = NestTheme.typography.display3.copy(
-                    color = NestTheme.colors.NN._900
-                ),
-                modifier = Modifier
-                    .padding(start = 4.dp, end = 8.dp)
-                    .fillMaxWidth()
-                    .weight(1f)
-            )
-            NestButton(
-                text = buttonText,
-                onClick = onClick,
-                variant = ButtonVariant.FILLED,
-                size = ButtonSize.SMALL
-            )
-        }
+                .weight(1f)
+        )
+        NestButton(
+            text = buttonText,
+            onClick = onClick,
+            variant = ButtonVariant.FILLED,
+            size = ButtonSize.SMALL
+        )
     }
 }
 
@@ -223,7 +229,9 @@ fun ContentCreationEntryPointComponentLightPreview() {
     ContentCreationEntryPointComponent(
         iconId = IconUnify.VIDEO,
         text = "Promosikan produkmu dengan Live, Video, Foto & Story",
-        buttonText = "Buat Konten"
+        buttonText = "Buat Konten",
+        iconColor = Color.White,
+        textColor = Color.White
     ) {
     }
 }
@@ -234,7 +242,9 @@ fun ContentCreationEntryPointComponentDarkPreview() {
     ContentCreationEntryPointComponent(
         iconId = IconUnify.VIDEO,
         text = "Promosikan produkmu dengan Live, Video, Foto & Story",
-        buttonText = "Buat Konten"
+        buttonText = "Buat Konten",
+        iconColor = Color.White,
+        textColor = Color.White
     ) {
     }
 }
