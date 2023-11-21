@@ -1770,7 +1770,8 @@ object DynamicProductDetailTracking {
             lcaWarehouseId: String,
             campaignId: String,
             variantId: String,
-            offerId: String ->
+            offerId: String,
+            nearestWarehouseId: String ->
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
@@ -1842,7 +1843,8 @@ object DynamicProductDetailTracking {
                     lcaWarehouseId,
                     shopInfo?.shopCore?.ownerId,
                     campaignId,
-                    variantId
+                    variantId,
+                    "nearest_warehouse_id:$nearestWarehouseId"
                 )
         }
 
@@ -1866,7 +1868,8 @@ object DynamicProductDetailTracking {
             lcaWarehouseId: String,
             campaignId: String,
             variantId: String,
-            offerId: String
+            offerId: String,
+            nearestWarehouseId: String
         ) {
             productInfo?.let {
                 if (shopInfo?.isShopInfoNotEmpty() == true) {
@@ -1875,7 +1878,7 @@ object DynamicProductDetailTracking {
                         trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
                         isStockAvailable, boType, affiliateUniqueId, uuid, ratesEstimateData,
                         buyerDistrictId, sellerDistrictId, lcaWarehouseId, campaignId, variantId,
-                        offerId
+                        offerId, nearestWarehouseId
                     )
                     sendTrackingBundle(
                         ProductDetailViewsBundler.KEY,
