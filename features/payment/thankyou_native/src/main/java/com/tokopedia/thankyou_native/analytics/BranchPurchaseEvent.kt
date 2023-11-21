@@ -89,6 +89,7 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         product[LinkerConstants.PRICE] = productItem.price.toString()
         product[LinkerConstants.PRICE_IDR_TO_DOUBLE] = productItem.price.toString()
         product[LinkerConstants.QTY] = productItem.quantity.toString()
+        product[LinkerConstants.PRODUCT_BRAND] = productItem.productBrand
         product[LinkerConstants.CATEGORY] = getCategoryLevel1(productItem.category)
         return product
     }
