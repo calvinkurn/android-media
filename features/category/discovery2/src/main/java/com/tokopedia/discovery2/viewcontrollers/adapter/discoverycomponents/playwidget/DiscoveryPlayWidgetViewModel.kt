@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.play.DiscoPlayWidgetMapper
 import com.tokopedia.discovery2.data.play.DiscoPlayWidgetType
 import com.tokopedia.discovery2.usecase.HideSectionUseCase
@@ -84,11 +85,7 @@ class DiscoveryPlayWidgetViewModel(
     fun hitPlayWidgetService() {
         launchCatchError(block = {
             components.data?.firstOrNull()?.let { dataItem ->
-                playWidgetUIMutableLiveData.value = processPlayWidget(
-                    dataItem.playWidgetPlayID,
-                    dataItem.playWidgetTypeIsDynamicVideo,
-                    dataItem.playWidgetType
-                )
+                playWidgetUIMutableLiveData.value = processPlayWidget(dataItem)
             } ?: run {
                 hideIfPresentInSection()
             }
@@ -98,20 +95,20 @@ class DiscoveryPlayWidgetViewModel(
             })
     }
 
-    private suspend fun processPlayWidget(
-        widgetID: String?,
-        playWidgetTypeIsDynamicVideo: Boolean,
-        playWidgetType: String?
-    ): PlayWidgetState {
-        val type = when (DiscoPlayWidgetMapper.get(playWidgetType)) {
+    private suspend fun processPlayWidget(dataItem: DataItem): PlayWidgetState {
+        val type = when (DiscoPlayWidgetMapper.get(dataItem.playWidgetType)) {
             DiscoPlayWidgetType.DISCO_PAGE_V2 -> DiscoveryPageV2(
-                widgetID.orEmpty(),
-                playWidgetTypeIsDynamicVideo
+                dataItem.playWidgetPlayID.orEmpty(),
+                dataItem.playWidgetTypeIsDynamicVideo,
+                dataItem.productIds.orEmpty(),
+                dataItem.categoryIds.orEmpty()
             )
 
             else -> DiscoveryPage(
-                widgetID.orEmpty(),
-                playWidgetTypeIsDynamicVideo
+                dataItem.playWidgetPlayID.orEmpty(),
+                dataItem.playWidgetTypeIsDynamicVideo,
+                dataItem.productIds.orEmpty(),
+                dataItem.categoryIds.orEmpty()
             )
         }
 

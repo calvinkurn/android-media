@@ -38,7 +38,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
             PlayWidgetQueryParamBuilder.PARAM_AUTHOR_TYPE to widgetType.authorType,
             PlayWidgetQueryParamBuilder.PARAM_WIDGET_TYPE to widgetType.typeKey,
             PlayWidgetQueryParamBuilder.PARAM_CHANNEL_TAG to widgetType.channelTag,
-            PlayWidgetQueryParamBuilder.PARAM_IS_WIFI to isWifi,
+            PlayWidgetQueryParamBuilder.PARAM_IS_WIFI to isWifi
         )
 
         when (widgetType) {
@@ -51,12 +51,16 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
             }
             is WidgetType.DiscoveryPage -> {
                 param[PlayWidgetQueryParamBuilder.PARAM_IS_DYNAMIC_VIDEO] = widgetType.isDynamicVideo
+                param[PlayWidgetQueryParamBuilder.PARAM_CATEGORY_ID] = widgetType.categoryIdList
+                param[PlayWidgetQueryParamBuilder.PARAM_PRODUCT_ID] = widgetType.productIdList
             }
             is WidgetType.DiscoveryPageV2 -> {
                 param[PlayWidgetQueryParamBuilder.PARAM_IS_DYNAMIC_VIDEO] = widgetType.isDynamicVideo
+                param[PlayWidgetQueryParamBuilder.PARAM_CATEGORY_ID] = widgetType.categoryIdList
+                param[PlayWidgetQueryParamBuilder.PARAM_PRODUCT_ID] = widgetType.productIdList
             }
             else -> {
-                //do nothing with other widget type
+                // do nothing with other widget type
             }
         }
 
@@ -183,7 +187,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
         data class ShopPageExclusiveLaunch(
             val shopId: String,
-            override val campaignId: String = "",
+            override val campaignId: String = ""
         ) : WidgetType() {
             override val typeKey: String
                 get() = "SHOP_PAGE_EXCLUSIVE_LAUNCH"
@@ -221,7 +225,12 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 get() = "shop"
         }
 
-        data class DiscoveryPage(val widgetID: String, val isDynamicVideo: Boolean) : WidgetType() {
+        data class DiscoveryPage(
+            val widgetID: String,
+            val isDynamicVideo: Boolean,
+            val productIdList: String,
+            val categoryIdList: String
+        ) : WidgetType() {
             override val typeKey: String
                 get() = "DISCO_PAGE"
 
@@ -229,7 +238,12 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 get() = widgetID
         }
 
-        data class DiscoveryPageV2(val widgetID: String, val isDynamicVideo: Boolean) : WidgetType() {
+        data class DiscoveryPageV2(
+            val widgetID: String,
+            val isDynamicVideo: Boolean,
+            val productIdList: String,
+            val categoryIdList: String
+        ) : WidgetType() {
             override val typeKey: String
                 get() = "DISCO_PAGE_V2"
 
