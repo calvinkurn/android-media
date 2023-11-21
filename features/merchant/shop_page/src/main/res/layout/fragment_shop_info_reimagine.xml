@@ -619,7 +619,6 @@
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/layoutRating"
                 app:layout_constraintTop_toBottomOf="@+id/iconRating"
