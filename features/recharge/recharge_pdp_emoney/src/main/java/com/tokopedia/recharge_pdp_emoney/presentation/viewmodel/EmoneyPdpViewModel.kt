@@ -26,6 +26,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 
 /**
@@ -112,7 +113,9 @@ class EmoneyPdpViewModel @Inject constructor(
             val mappedBCAData = mapDigiPersoToBCAGenCheck(data)
             mutableBcaGenCheckerResult.postValue(Success(mappedBCAData))
         }){
-            mutableBcaGenCheckerResult.postValue(Fail(it))
+            if (it !is CancellationException) {
+                mutableBcaGenCheckerResult.postValue(Fail(it))
+            }
         }
     }
 

@@ -774,7 +774,7 @@ open class EmoneyPdpFragment :
                     override fun onDismiss() {}
                 })
             } else if (this::nfcAdapter.isInitialized && nfcAdapter != null) {
-                binding.emoneyPdpInputCardWidget.getNumber()?.let {
+                detailPassData.clientNumber?.let {
                     emoneyPdpViewModel.getBCAGenCheck(it)
                 }
             } else {
