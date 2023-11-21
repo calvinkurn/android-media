@@ -364,18 +364,13 @@ class PofViewModel @Inject constructor(
     }
 
     private fun updateQuantityEditorDataList(orderDetailId: Long, quantity: Int) {
+        val nonZeroProductQuantityCount = quantityEditorDataList.count {
+            it.orderDetailId != orderDetailId && it.quantity > Int.ZERO
+        }
         val minQuantity = if (quantity == Int.ZERO) {
-            if (quantityEditorDataList.count { it.orderDetailId != orderDetailId && it.quantity > Int.ZERO } > Int.ONE) {
-                Int.ZERO
-            } else {
-                Int.ONE
-            }
+            if (nonZeroProductQuantityCount > Int.ONE) Int.ZERO else Int.ONE
         } else {
-            if (quantityEditorDataList.count { it.orderDetailId != orderDetailId && it.quantity > Int.ZERO } > Int.ZERO) {
-                Int.ZERO
-            } else {
-                Int.ONE
-            }
+            if (nonZeroProductQuantityCount > Int.ZERO) Int.ZERO else Int.ONE
         }
         quantityEditorDataList = quantityEditorDataList.map { quantityEditorData ->
             if (quantityEditorData.orderDetailId == orderDetailId) {
