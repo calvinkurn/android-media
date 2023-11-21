@@ -89,7 +89,7 @@ object RollenceKey {
     const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
 
     // BCA Rollence
-    const val BCA_ROLLENCE = "flazz_rollout"
+    const val BCA_ROLLENCE = "android_flazzrollout"
 
     // Payment
     const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
