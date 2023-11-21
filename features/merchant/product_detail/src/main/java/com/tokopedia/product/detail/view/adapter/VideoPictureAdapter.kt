@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.adapter
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -24,8 +25,10 @@ class VideoPictureAdapter(
 
     val currentList: MutableList<MediaDataModel> = mutableListOf()
 
-    fun submitList(newList: List<MediaDataModel>) {
-        obtainPrefetchMedia(newList)
+    var prefetchResource: Drawable? = null
+
+    fun submitList(newList: List<MediaDataModel>, previouslyPrefetch: Boolean) {
+        if (previouslyPrefetch) attachPrefetchResource(newList)
 
         val diffCallback = VideoPictureDiffUtil(currentList.toMutableList(), newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
@@ -34,13 +37,8 @@ class VideoPictureAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    private fun obtainPrefetchMedia(newList: List<MediaDataModel>) {
-        val prefetchMedia = currentList.firstOrNull { it.isPrefetch }
-        if (prefetchMedia != null) {
-            newList.firstOrNull()?.apply {
-                this.prefetchResource = prefetchMedia.prefetchResource
-            }
-        }
+    private fun attachPrefetchResource(newList: List<MediaDataModel>) {
+        newList.firstOrNull()?.prefetchResource = prefetchResource
     }
 
     fun isPicture(position: Int): Boolean {
@@ -107,8 +105,8 @@ class VideoPictureDiffUtil(
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return oldList[oldItemPosition].urlOriginal == newList[newItemPosition].urlOriginal &&
-                oldList[oldItemPosition].url300 == newList[newItemPosition].url300 &&
-                oldList[oldItemPosition].type == newList[newItemPosition].type &&
-                oldList[oldItemPosition].urlThumbnail == newList[newItemPosition].urlThumbnail
+            oldList[oldItemPosition].url300 == newList[newItemPosition].url300 &&
+            oldList[oldItemPosition].type == newList[newItemPosition].type &&
+            oldList[oldItemPosition].urlThumbnail == newList[newItemPosition].urlThumbnail
     }
 }

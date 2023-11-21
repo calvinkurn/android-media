@@ -116,6 +116,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
@@ -155,9 +157,11 @@ import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -217,6 +221,7 @@ open class DiscoveryFragment :
     PermissionListener,
     MiniCartWidgetListener {
 
+    private var bmGmDataParam: BmGmDataParam? = null
     private var recyclerViewPaddingResetNeeded: Boolean = false
     private var thematicHeaderColor: String = ""
     private var navScrollListener: NavRecyclerViewScrollListener? = null
@@ -261,7 +266,10 @@ open class DiscoveryFragment :
     val trackingQueue: TrackingQueue by lazy {
         provideTrackingQueue()
     }
+
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
+    var onMerchantVoucherScrolledCallback: ((parentRecyclerView: RecyclerView) -> Unit)? = null
+
     open fun provideTrackingQueue(): TrackingQueue {
         return (context as DiscoveryActivity).trackingQueue
     }
@@ -476,6 +484,7 @@ open class DiscoveryFragment :
                     }
                 }
                 enableRefreshWhenFirstItemCompletelyVisible()
+                onMerchantVoucherScrolledCallback?.invoke(recyclerView)
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -903,10 +912,18 @@ open class DiscoveryFragment :
                             }
                         }
                     )
-                    analytics.trackEventProductATC(
-                        it.data.requestParams.requestingComponent,
-                        it.data.addToCartDataModel.data.cartId
-                    )
+                    if (bmGmDataParam != null) {
+                        analytics.trackEventProductBmGmATC(
+                            it.data.requestParams.requestingComponent,
+                            it.data.addToCartDataModel.data.cartId
+                        )
+                        getMiniCart(bmGmDataParam)
+                    } else {
+                        analytics.trackEventProductATC(
+                            it.data.requestParams.requestingComponent,
+                            it.data.addToCartDataModel.data.cartId
+                        )
+                    }
                 } else {
                     analytics.trackEventProductATCTokonow(
                         it.data.requestParams.requestingComponent,
@@ -922,6 +939,11 @@ open class DiscoveryFragment :
                 if (it.throwable is ResponseErrorException) {
                     showToaster(
                         message = it.throwable.message.orEmpty(),
+                        type = Toaster.TYPE_ERROR
+                    )
+                } else {
+                    showToaster(
+                        message = ErrorHandler.getErrorMessage(context, it.throwable),
                         type = Toaster.TYPE_ERROR
                     )
                 }
@@ -972,6 +994,8 @@ open class DiscoveryFragment :
                     ?.let { discoveryBaseViewModel ->
                         if (discoveryBaseViewModel is ProductCardCarouselViewModel) {
                             discoveryBaseViewModel.handleAtcFailed(position)
+                        } else if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
+                            discoveryBaseViewModel.changeTier(false)
                         }
                     }
             } else if (position >= 0) {
@@ -981,6 +1005,22 @@ open class DiscoveryFragment :
                     }
                 }
             }
+        }
+
+        discoveryViewModel.addToCartActionNonVariant.observe(viewLifecycleOwner) {
+            setBmGmDataParam(
+                requestingComponent = it.requestingComponent,
+                parentPosition = it.parentPosition
+            )
+        }
+
+        discoveryViewModel.bmGmDataList.observe(viewLifecycleOwner) { (parentPosition, bmGmDataList) ->
+            discoveryAdapter.getViewModelAtPosition(parentPosition)
+                ?.let { discoveryBaseViewModel ->
+                    if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
+                        discoveryBaseViewModel.changeTier(false, bmGmDataList)
+                    }
+                }
         }
 
         discoveryViewModel.getDiscoveryNavToolbarConfigLiveData().observe(viewLifecycleOwner) { config ->
@@ -1875,6 +1915,11 @@ open class DiscoveryFragment :
                 }
             }
         )
+        AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
+            if (bmGmDataParam != null && cartId.isNotBlankOrZero()) {
+                getMiniCart(bmGmDataParam)
+            }
+        }
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
@@ -2260,10 +2305,23 @@ open class DiscoveryFragment :
         }
     }
 
-    private fun getMiniCart() {
-        val shopId = listOf(userAddressData?.shop_id.orEmpty())
-        val warehouseId = userAddressData?.warehouse_id
-        discoveryViewModel.getMiniCart(shopId, warehouseId)
+    private fun getMiniCart(
+        bmGmDataParam: BmGmDataParam? = null
+    ) {
+        if (bmGmDataParam != null) {
+            val shopId = listOf(bmGmDataParam.shopId)
+            discoveryViewModel.getMiniCartBmGm(
+                shopId = shopId,
+                bmGmDataParam = bmGmDataParam
+            )
+        } else {
+            val shopId = listOf(userAddressData?.shop_id.orEmpty())
+            val warehouseId = userAddressData?.warehouse_id
+            discoveryViewModel.getMiniCartTokonow(
+                shopId = shopId,
+                warehouseId = warehouseId
+            )
+        }
     }
 
     fun addOrUpdateItemCart(discoATCRequestParams: DiscoATCRequestParams) {
@@ -2273,6 +2331,7 @@ open class DiscoveryFragment :
         discoveryViewModel.addProductToCart(
             discoATCRequestParams
         )
+
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
@@ -2340,18 +2399,62 @@ open class DiscoveryFragment :
         getDiscoveryAnalytics().trackScreenshotAccess(action, label, getUserID())
     }
 
-    fun openVariantBottomSheet(productId: String) {
+    fun openVariantBottomSheet(
+        productId: String,
+        requestingComponent: ComponentsItem?,
+        parentPosition: Int = RecyclerView.NO_POSITION
+    ) {
+        setBmGmDataParam(
+            requestingComponent = requestingComponent,
+            parentPosition = parentPosition
+        )
         context?.let {
-            AtcVariantHelper.goToAtcVariant(
-                it,
-                productId,
-                VariantPageSource.DISCOVERY_PAGESOURCE,
-                true,
-                userAddressData?.shop_id ?: "",
-                startActivitResult = { intent, reqCode ->
-                    startActivityForResult(intent, reqCode)
-                }
+            if (bmGmDataParam != null) {
+                AtcVariantHelper.goToAtcVariant(
+                    context = it,
+                    productId = productId,
+                    pageSource = VariantPageSource.DISCOVERY_PAGESOURCE,
+                    shopId = requestingComponent?.data?.firstOrNull()?.shopId.orEmpty(),
+                    startActivitResult = { intent, reqCode ->
+                        startActivityForResult(intent, reqCode)
+                    }
+                )
+            } else {
+                AtcVariantHelper.goToAtcVariant(
+                    it,
+                    productId,
+                    VariantPageSource.DISCOVERY_PAGESOURCE,
+                    true,
+                    userAddressData?.shop_id.orEmpty(),
+                    startActivitResult = { intent, reqCode ->
+                        startActivityForResult(intent, reqCode)
+                    }
+                )
+            }
+        }
+    }
+
+    private fun setBmGmDataParam(
+        requestingComponent: ComponentsItem?,
+        parentPosition: Int
+    ) {
+        /**
+         * Check while adding product to cart, the product has either warehouseTco or offerId.
+         * If yes then set bmGmDataParam, this variable can be used not only for non variant but also variant.
+         * Because in variant we don't get the data back warehouseTco and offerId after onActivityResult is executed.
+         */
+        val warehouseTco = requestingComponent?.properties?.warehouseTco
+        val offerId = requestingComponent?.properties?.header?.offerId
+        bmGmDataParam = if (warehouseTco != null && warehouseTco.isNotBlankOrZero() || offerId != null && offerId.isNotBlankOrZero()) {
+            BmGmDataParam(
+                shopId = requestingComponent.data?.firstOrNull()?.shopId.orEmpty(),
+                warehouseTco = warehouseTco.orEmpty(),
+                offerId = offerId.orEmpty(),
+
+                parentPosition = parentPosition
             )
+        } else {
+            null
         }
     }
 

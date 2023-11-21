@@ -45,10 +45,10 @@ For all templates, we will still use the same `ProductCardModel`. These are the 
 
 
 #### Product Card Grid
-![](../res/reimagine_grid.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/reimagine_grid.png)
 
 #### Product Card Grid Carousel
-![](../res/reimagine_grid_carousel.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/reimagine_grid_carousel.png)
 
 
 #### Image

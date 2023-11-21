@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
 import com.tokopedia.product.detail.databinding.ItemProductContentBinding
 import com.tokopedia.product.detail.view.fragment.partialview.PartialContentView
@@ -42,6 +41,7 @@ class ProductContentViewHolder(
 
         header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
         header.renderTradein(element.showTradeIn())
+        header.updateUniversalShareWidget(element.shouldShowShareWidget)
     }
 
     override fun bind(element: ProductContentDataModel?, payloads: MutableList<Any>) {
@@ -51,13 +51,15 @@ class ProductContentViewHolder(
         }
 
         when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_WISHLIST -> header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
-            ProductDetailConstant.PAYLOAD_TRADEIN_AND_BOE -> {
+            ProductContentDataModel.PAYLOAD_WISHLIST -> header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
+            ProductContentDataModel.PAYLOAD_TRADEIN_BOE_SHARE -> {
                 header.renderTradein(element.showTradeIn())
 
                 header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
                 // only triggered when get data from p2, will update with boe/bo imageurl from Restriction Engine p2
                 header.renderFreeOngkir(element.freeOngkirImgUrl)
+
+                header.updateUniversalShareWidget(element.shouldShowShareWidget)
             }
         }
         view.addOnImpressionListener(

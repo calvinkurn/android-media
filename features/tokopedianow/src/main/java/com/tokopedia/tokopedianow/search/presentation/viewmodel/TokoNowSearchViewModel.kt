@@ -14,11 +14,9 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
-import com.tokopedia.tokopedianow.search.domain.mapper.CategoryJumperMapper.createCategoryJumperDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addBroadMatchDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addSuggestionDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.updateSuggestionDataView
-import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactory
@@ -82,7 +80,6 @@ class TokoNowSearchViewModel @Inject constructor (
     private val addToCartBroadMatchTrackingMutableLiveData: SingleLiveEvent<Triple<Int, String, ProductCardCompactCarouselItemUiModel>> = SingleLiveEvent()
     private var responseCode: String = ""
     private var suggestionModel: AceSearchProductModel.Suggestion? = null
-    private var searchCategoryJumper: SearchCategoryJumperData? = null
     private var related: AceSearchProductModel.Related? = null
     private var recommendationCategoryId: String = ""
 
@@ -145,20 +142,9 @@ class TokoNowSearchViewModel @Inject constructor (
     override fun createFooterVisitableList(): List<Visitable<SearchTypeFactory>> {
         val broadMatchVisitableList = createBroadMatchVisitableList()
         return broadMatchVisitableList + if (serviceType == NOW_15M) {
-            listOf(
-                createCategoryJumperDataView(
-                    searchCategoryJumper = searchCategoryJumper,
-                    chooseAddressData = chooseAddressData
-                )
-            )
+            listOf()
         } else {
-            listOf(
-                createCategoryJumperDataView(
-                    searchCategoryJumper = searchCategoryJumper,
-                    chooseAddressData = chooseAddressData
-                ),
-                CTATokopediaNowHomeDataView(),
-            )
+            listOf(CTATokopediaNowHomeDataView())
         }
     }
 
@@ -181,7 +167,6 @@ class TokoNowSearchViewModel @Inject constructor (
         val searchProduct = searchModel.searchProduct
         responseCode = searchModel.getResponseCode()
         suggestionModel = searchModel.getSuggestion()
-        searchCategoryJumper = searchModel.searchCategoryJumper
         related = searchModel.getRelated()
 
         val searchProductHeader = searchProduct.header

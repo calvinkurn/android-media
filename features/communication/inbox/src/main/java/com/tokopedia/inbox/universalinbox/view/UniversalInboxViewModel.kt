@@ -263,7 +263,8 @@ class UniversalInboxViewModel @Inject constructor(
                     widgetMeta = widgetMeta,
                     menuList = menuList,
                     miscList = miscList,
-                    notificationCounter = counterResponse.notifCenterUnread.notifUnread,
+                    notificationCounter =
+                        counterResponse.inboxCounter.notifCenterWrapperUnread.notifUnread,
                     shouldTrackImpression = shouldTrackImpression
                 )
             }
