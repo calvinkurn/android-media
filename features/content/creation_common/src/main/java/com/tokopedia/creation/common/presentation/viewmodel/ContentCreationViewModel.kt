@@ -82,7 +82,9 @@ class ContentCreationViewModel @Inject constructor(
 
     fun getPerformanceDashboardApplink(): String =
         if (_creationConfig.value is Success) {
-            (_creationConfig.value as Success).data.statisticApplink
+            (_creationConfig.value as Success).data.statisticApplink.ifEmpty {
+                ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
+            }
         } else {
             ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
         }
