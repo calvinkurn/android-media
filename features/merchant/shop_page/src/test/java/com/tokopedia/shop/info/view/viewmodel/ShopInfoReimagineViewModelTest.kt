@@ -1,6 +1,7 @@
 package com.tokopedia.shop.info.view.viewmodel
 
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.common.data.model.ShopInfoPageTracker
 import com.tokopedia.shop.common.domain.GetMessageIdChatUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
@@ -78,6 +79,9 @@ class ShopInfoReimagineViewModelTest {
     @RelaxedMockK
     lateinit var getShopStatsRawDataUseCase: GetShopStatsRawDataUseCase
 
+    @RelaxedMockK
+    lateinit var tracker: ShopInfoPageTracker
+
     private lateinit var viewModel: ShopInfoReimagineViewModel
 
     private val shopId = "955452"
@@ -121,7 +125,8 @@ class ShopInfoReimagineViewModelTest {
             getShopPageHeaderLayoutUseCase,
             getEpharmacyShopInfoUseCase,
             getNearestEpharmacyWarehouseLocationUseCase,
-            getMessageIdChatUseCase
+            getMessageIdChatUseCase,
+            tracker
         )
     }
 
@@ -1369,6 +1374,97 @@ class ShopInfoReimagineViewModelTest {
             job.cancel()
         }
     }
+    //endregion
+
+    //region Tracker test
+    @Test
+    fun `When open shop info page, should call sendShopInfoOpenScreenImpression tracker`() {
+        runBlockingTest {
+            // Given
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+
+            // Then
+            coVerify { tracker.sendShopInfoOpenScreenImpression(shopId) }
+        }
+    }
+
+    @Test
+    fun `When click CTA expand pharmacy information, should call sendCtaExpandPharmacyInformationEvent tracker`() {
+        runBlockingTest {
+            // Given
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.TapCtaExpandShopPharmacyInfo)
+
+            // Then
+            coVerify { tracker.sendCtaExpandPharmacyInformationEvent(shopId) }
+        }
+    }
+
+    @Test
+    fun `When click CTA view pharmacy location information, should call sendCtaViewPharmacyLocationEvent tracker`() {
+        runBlockingTest {
+            // Given
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.TapCtaViewPharmacyLocation)
+
+            // Then
+            coVerify { tracker.sendCtaViewPharmacyLocationEvent(shopId) }
+        }
+    }
+
+    @Test
+    fun `When click icon view all shop review, should call sendCtaViewPharmacyLocationEvent tracker`() {
+        runBlockingTest {
+            // Given
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.TapIconViewAllShopReview)
+
+            // Then
+            coVerify { tracker.sendIconViewAllShopReviewEvent(shopId) }
+        }
+    }
+
+    @Test
+    fun `When swipe top review, should call sendTopReviewImpression tracker`() {
+        runBlockingTest {
+            // Given
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.SwipeReview(reviewIndex = 1))
+
+            // Then
+            coVerify { tracker.sendReviewImpression(reviewIndex = 1, shopId = shopId) }
+        }
+    }
+
+    @Test
+    fun `When click shop note, should call sendClickShopNoteEvent tracker`() {
+        runBlockingTest {
+            // Given
+            val shopNote = ShopNote(
+                id = "1",
+                title = "Syarat dan Ketentuan",
+                description = "Harap record video sebelum unboxing"
+            )
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote = shopNote))
+
+            // Then
+            coVerify { tracker.sendClickShopNoteEvent(shopNote = shopNote, shopId = shopId) }
+        }
+    }
+
     //endregion
 
     //region helper function

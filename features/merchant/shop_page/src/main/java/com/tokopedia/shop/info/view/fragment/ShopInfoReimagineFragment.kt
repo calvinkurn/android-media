@@ -319,7 +319,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                 val groupedDays = context?.getString(R.string.shop_info_ops_hour_monday_to_sunday).orEmpty()
                 val operationalHour = getOpenAndCloseTime(operationalHours) ?: return
                 val shopOpenCloseTime = context?.getString(R.string.shop_info_ops_hour_placeholder_open_range, operationalHour.startTime, operationalHour.endTime).orEmpty()
-                
+
                 val text = "$groupedDays: $shopOpenCloseTime"
                 val operationalHourTypography = createOperationalHoursTypography(text)
                 binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
@@ -327,7 +327,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             else -> renderShopOpenCloseTime(operationalHours)
         }
     }
-    
+
     private fun renderShopOpenCloseTime(operationalHours: Map<String, List<ShopOperationalHourWithStatus>>) {
         operationalHours.forEach { (_, shopOpenCloseTimeWithStatus) ->
             val groupedDays = shopOpenCloseTimeWithStatus.joinToString(separator = ", ") {
@@ -500,6 +500,9 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             }
             binding?.shopReviewView?.setOnReviewImageViewAllClick { buyerReview ->
                 viewModel.processEvent(ShopInfoUiEvent.TapReviewImageViewAll(buyerReview.product.productId))
+            }
+            binding?.shopReviewView?.setOnReviewSwiped { reviewIndex ->
+                viewModel.processEvent(ShopInfoUiEvent.SwipeReview(reviewIndex))
             }
         }
     }
