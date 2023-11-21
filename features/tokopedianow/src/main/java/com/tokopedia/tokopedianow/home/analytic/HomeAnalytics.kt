@@ -377,7 +377,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     }
 
     fun onImpressBannerPromo(channelModel: ChannelModel, channelGrid: ChannelGrid, warehouseId: String, position: Int) {
-        val ecommerceDataLayerBanner = ecommerceDataLayerBanner(
+        val ecommerceDataLayerBanner = ecommerceDataLayerSliderBanner(
             channelModel = channelModel,
             channelGrid = channelGrid,
             position = position,
@@ -2054,7 +2054,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putString(KEY_DIMENSION_82, channelModel.trackingAttributionModel.categoryId)
             putString(
                 KEY_ITEM_ID,
-                "0_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId
+                "0_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.categoryId
             )
             putString(KEY_ITEM_NAME, "/ - p$trackerPosition - slider banner - banner - ${channelModel.channelHeader.name}")
         }
@@ -2072,6 +2072,23 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putString(
                 KEY_ITEM_ID,
                 "0_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId
+            )
+            putString(KEY_ITEM_NAME, itemName)
+        }
+    }
+
+    private fun ecommerceDataLayerSliderBanner(
+        channelModel: ChannelModel,
+        channelGrid: ChannelGrid,
+        position: Int,
+        itemName: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(KEY_CREATIVE_NAME, channelGrid.attribution)
+            putString(KEY_CREATIVE_SLOT, position.getTrackerPosition().toString())
+            putString(
+                KEY_ITEM_ID,
+                "0_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.categoryId
             )
             putString(KEY_ITEM_NAME, itemName)
         }

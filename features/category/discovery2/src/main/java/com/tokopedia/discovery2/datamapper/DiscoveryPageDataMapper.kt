@@ -789,9 +789,17 @@ class DiscoveryPageDataMapper(
     private fun parseSectionComponent(component: ComponentsItem): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         listComponents.add(component)
-        component.getComponentsItem()?.let {
-            listComponents.addAll(getSectionComponentList(it, component.position + 1))
+
+        val componentsItem = component.getComponentsItem()
+
+        val shouldSupportFestive = componentsItem?.find { !it.isBackgroundPresent } == null
+
+        if (!shouldSupportFestive) {
+            componentsItem?.let {
+                listComponents.addAll(getSectionComponentList(it, component.position + 1))
+            }
         }
+
         return listComponents
     }
 

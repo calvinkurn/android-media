@@ -22,6 +22,7 @@ import com.tokopedia.search.result.product.seamlessinspirationcard.utils.isSmall
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class InspirationKeywordViewHolder(
     itemView: View,
@@ -43,7 +44,7 @@ class InspirationKeywordViewHolder(
         if (binding == null || element == null) return
 
         initCardView()
-        binding?.searchSeamlessInspirationTitle?.text = element.title
+        binding?.searchInspirationKeywordTitle?.text = element.title
         element.optionsItems.getItemOptionsOn(INDEX_IMPRESSION_KEYWORD_TO_BE_TRACK).doImpressedTracker()
         val viewType = changeViewListener.viewType
         initRecyclerView(element, viewType)
@@ -112,7 +113,7 @@ class InspirationKeywordViewHolder(
     private fun Context.getSpacingResource(): Int =
         this
             .resources
-            ?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+            ?.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_8)
             ?: 0
 
     private fun createLayoutManager(

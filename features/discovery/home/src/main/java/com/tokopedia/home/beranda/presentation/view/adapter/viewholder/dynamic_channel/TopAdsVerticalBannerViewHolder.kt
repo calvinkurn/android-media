@@ -54,7 +54,9 @@ class TopAdsVerticalBannerViewHolder constructor(
             binding?.root?.show()
             itemView.show()
             binding?.topadsBanner?.renderTdnBanner(tdnBannerList.first(), onTdnBannerClicked = {
-                if (it.isNotEmpty()) RouteManager.route(binding?.topadsBanner?.context, it)
+                if (!it.applink.isNullOrBlank()) {
+                    RouteManager.route(binding?.topadsBanner?.context, it.applink)
+                }
             })
             setChannelDivider(element.channel)
         } else {
