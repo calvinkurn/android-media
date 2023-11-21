@@ -49,8 +49,6 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.loaderdialog.LoaderDialog
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -154,7 +152,6 @@ import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.roundToInt
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -201,7 +198,6 @@ class WishlistCollectionDetailFragment :
     private var countRemovableAutomaticDelete = 0
     private var hitCountDeletion = false
     private val handler = Handler(Looper.getMainLooper())
-    private var userAddressData: LocalCacheModel? = null
     private var isOnProgressDeleteWishlist = false
     private val progressDeletionRunnable = Runnable {
         getDeleteWishlistProgress()
@@ -1112,12 +1108,6 @@ class WishlistCollectionDetailFragment :
         return (activity?.application as BaseMainApplication).baseAppComponent
     }
 
-    private fun fetchUserLatestAddressData() {
-        context?.let {
-            userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
-        }
-    }
-
     private fun prepareLayout() {
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(
@@ -1566,18 +1556,6 @@ class WishlistCollectionDetailFragment :
     }
 
     private fun getCollectionItems() {
-//        fetchUserLatestAddressData()
-//        userAddressData?.let { address ->
-//            paramGetCollectionItems.wishlistChosenAddress =
-//                GetWishlistCollectionItemsParams.WishlistChosenAddress(
-//                    districtId = address.district_id,
-//                    cityId = address.city_id,
-//                    latitude = address.lat,
-//                    longitude = address.long,
-//                    postalCode = address.postal_code,
-//                    addressId = address.address_id
-//                )
-//        }
         /*var inCollection = ""
         if (collectionId.isNotEmpty() && collectionId != "0") {
             inCollection = PARAM_INSIDE_COLLECTION
