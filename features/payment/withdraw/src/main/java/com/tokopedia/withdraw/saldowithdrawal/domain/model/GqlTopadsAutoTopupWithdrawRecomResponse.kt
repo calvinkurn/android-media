@@ -4,6 +4,12 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class GqlTopadsAutoTopupWithdrawRecomResponse(
+    @SerializedName("topAdsAutoTopupWithdrawalRecom")
+    @Expose
+    val topAdsAutoTopupWithdrawalRecom: TopAdsAutoTopupWithdrawalRecom = TopAdsAutoTopupWithdrawalRecom()
+)
+
+data class TopAdsAutoTopupWithdrawalRecom(
     @SerializedName("data")
     @Expose
     val data: TopadsAutoTopupWithdrawRecomData = TopadsAutoTopupWithdrawRecomData()

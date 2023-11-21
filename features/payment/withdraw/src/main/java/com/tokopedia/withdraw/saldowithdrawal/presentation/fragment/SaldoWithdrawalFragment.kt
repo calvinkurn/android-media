@@ -41,6 +41,7 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.activity.WithdrawActi
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.SaldoWithdrawalPagerAdapter
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.AutoTopAdsBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.JoinRPOnWithdrawalBottomSheet
+import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.AutoTopAdsBottomSheetListener
 import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalJoinRPCallback
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModel
@@ -65,6 +66,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
     lateinit var analytics: dagger.Lazy<WithdrawAnalytics>
 
     private lateinit var withdrawalRequest: WithdrawalRequest
+    private var originalWithdrawalAmount: Long = 0
 
     private var sellerSaldoBalance: Long = 0L
     private var buyerSaldoBalance: Long = 0L
@@ -388,6 +390,17 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                     }
                 }
             }
+            AUTO_TOPADS_RECOMMENDATION_CODE -> {
+                if (resultCode == AutoTopAdsBottomSheet.RECOMMENDED_WD) {
+                    val recommAmount = saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.second ?: 0
+                    withdrawalRequest = withdrawalRequest.copy(withdrawal = recommAmount)
+                    openUserVerificationScreen()
+                } else {
+                    // original WD
+                    withdrawalRequest = withdrawalRequest.copy(withdrawal = originalWithdrawalAmount)
+                    openUserVerificationScreen()
+                }
+            }
         }
     }
 
@@ -405,6 +418,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
 
     fun initiateBuyerWithdrawal(selectedBankAccount: BankAccount, withdrawalAmount: Long) {
         loadingLayout.visible()
+        originalWithdrawalAmount = withdrawalAmount
         withdrawalRequest = WithdrawalRequest(
                 userId = userSession.get().userId, email = userSession.get().email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
@@ -414,6 +428,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
 
     fun initiateSellerWithdrawal(selectedBankAccount: BankAccount, withdrawalAmount: Long) {
         loadingLayout.visible()
+        originalWithdrawalAmount = withdrawalAmount
         withdrawalRequest = WithdrawalRequest(
                 userId = userSession.get().userId, email = userSession.get().email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
@@ -438,18 +453,39 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
             }
             else -> {
                 if (saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.first == true) {
-                    val intent = Intent(context, AutoTopAdsBottomSheetActivity::class.java)
-                    context?.startActivity(intent)
-                    return
+                    val recommendedAmount = saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.second ?: 0
+                    context?.let {
+                        val intent = AutoTopAdsBottomSheetActivity.getInstance(
+                            it, withdrawalRequest.withdrawal, recommendedAmount
+                        )
+                        startActivityForResult(intent, AUTO_TOPADS_RECOMMENDATION_CODE)
+                        return
+                    }
                 }
+                if (shouldShowAutoTopAdsRecomDialog()) return
                 openUserVerificationScreen()
             }
         }
     }
 
+    private fun shouldShowAutoTopAdsRecomDialog(): Boolean {
+        if (saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.first == true) {
+            val recommendedAmount = saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.second ?: 0
+            context?.let {
+                val intent = AutoTopAdsBottomSheetActivity.getInstance(
+                    it, withdrawalRequest.withdrawal, recommendedAmount
+                )
+                startActivityForResult(intent, AUTO_TOPADS_RECOMMENDATION_CODE)
+                return true
+            }
+        }
+        return false
+    }
+
     override fun onWithdrawalAndJoinRekening(isJoinRP: Boolean) {
         withdrawalRequest.isJoinRekeningPremium = isJoinRP
         withdrawalRequest.showJoinRekeningWidget = !isJoinRP
+        if (shouldShowAutoTopAdsRecomDialog()) return
         openUserVerificationScreen()
     }
 
@@ -465,6 +501,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
             setPrimaryCTAClickListener {
                 analytics.get().eventClickContinueBtn()
                 validatePopUpAlertDialog.cancel()
+                if (shouldShowAutoTopAdsRecomDialog()) return@setPrimaryCTAClickListener
                 openUserVerificationScreen()
             }
             setSecondaryCTAClickListener {
@@ -535,6 +572,8 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
 
         const val MCL_STATUS_BLOCK1 = 700
         const val MCL_STATUS_BLOCK3 = 999
+
+        private const val AUTO_TOPADS_RECOMMENDATION_CODE = 666
 
         @JvmStatic
         fun getFragmentInstance(bundle: Bundle) = SaldoWithdrawalFragment().apply {

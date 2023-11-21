@@ -2,14 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingBottom="32dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAutoTopadsTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
-        android:text="Oops, kamu punya pembayaran Kredit Otomatis TopAds"
+        android:text="@string/swd_dialog_auto_topads_title"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_3"
         app:typographyWeight="bold"/>
@@ -19,8 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
-        android:layout_marginTop="12dp"
-        android:text="Supaya pembayaran TopAds kamu lancar, kami sarankan sisakan Saldo Penghasilan yang cukup."
+        android:layout_marginTop="16dp"
+        android:text="@string/swd_dialog_auto_topads_description"
         app:layout_constraintTop_toBottomOf="@id/tvAutoTopadsTitle"
         app:typographyType="paragraph_2"/>
 
@@ -28,6 +29,8 @@
         android:id="@+id/cardAutoTopads"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
         app:layout_constraintTop_toTopOf="@id/tvTotalWithdrawTitle"
         app:layout_constraintBottom_toBottomOf="@id/tvTotalWithdrawAmount"/>
     
@@ -47,10 +50,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:paddingTop="6dp"
         android:paddingStart="8dp"
-        android:text="Jumlah Penarikan"
+        android:text="@string/swd_dialog_auto_topads_original_amount_title"
         android:elevation="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvAutoTopadsDescription"
@@ -62,7 +65,6 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
         android:paddingBottom="6dp"
-        android:text="Rp 900.000"
         android:elevation="2dp"
         android:paddingStart="8dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,6 +85,7 @@
         android:layout_height="24dp"
         android:scaleX="-1"
         android:elevation="2dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/totalWithdrawBarrier"
         app:layout_constraintTop_toTopOf="@id/tvTotalWithdrawTitle"
         app:layout_constraintBottom_toBottomOf="@id/tvTotalWithdrawAmount"
@@ -92,8 +95,8 @@
         android:id="@+id/tvRekomendasiTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rekomendasi"
-        android:layout_marginStart="12dp"
+        android:text="@string/swd_dialog_auto_topads_recommended_amount_title"
+        android:layout_marginStart="8dp"
         android:elevation="2dp"
         android:paddingTop="6dp"
         app:layout_constraintStart_toEndOf="@id/icRightArrow"
@@ -105,13 +108,31 @@
         android:id="@+id/tvRekomendasiAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rp600.000"
         android:elevation="2dp"
         app:layout_constraintStart_toStartOf="@id/tvRekomendasiTitle"
         app:layout_constraintTop_toBottomOf="@id/tvRekomendasiTitle"
         app:typographyType="paragraph_2"
         app:typographyWeight="bold"/>
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnRecommendedWithdraw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/cardAutoTopads"
+        android:text="@string/swd_dialog_auto_topads_primary_button_text"/>
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnOriginalWithdraw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost"
+        android:layout_marginTop="7dp"
+        app:layout_constraintTop_toBottomOf="@id/btnRecommendedWithdraw"
+        android:text="@string/swd_dialog_auto_topads_secondary_button_text"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,7 +33,7 @@ class SaldoWithdrawalViewModel @Inject constructor(
 
     val validatePopUpWithdrawalMutableData = SingleLiveEvent<Result<ValidatePopUpWithdrawal>>()
 
-    val shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet = SingleLiveEvent<Pair<Boolean, Long>>()
+    val shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet = MutableLiveData<Pair<Boolean, Long>>()
 
     fun getValidatePopUpData(bankAccount: BankAccount, shopID: String, withdrawalAmount: Long) {
         launchCatchError(block = {
@@ -42,7 +42,7 @@ class SaldoWithdrawalViewModel @Inject constructor(
 
             when(val topadsAutoTopupRecomData = topadsAutoTopupRecom.await()) {
                 is Success -> {
-                    val recomAmount = topadsAutoTopupRecomData.data.data.recommendationValue
+                    val recomAmount = topadsAutoTopupRecomData.data.topAdsAutoTopupWithdrawalRecom.data.recommendationValue
                     val isWDAmountGreaterThanRecom = withdrawalAmount > recomAmount
                     shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.postValue(
                         Pair(isWDAmountGreaterThanRecom, recomAmount.toLong())
