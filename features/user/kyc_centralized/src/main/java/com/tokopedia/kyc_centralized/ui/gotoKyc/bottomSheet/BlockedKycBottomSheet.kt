@@ -105,7 +105,7 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
             ivBlocked.loadImageWithoutPlaceholder(getString(R.string.img_url_goto_kyc_blocked_multiple_account))
             tvTitle.text = getString(R.string.goto_kyc_blocked_title_multiple_account)
             tvDescription.text = getString(R.string.goto_kyc_blocked_subtitle_multiple_account)
-            btnPrimary.text = getString(R.string.goto_kyc_contact_tokopedia_care)
+            btnPrimary.text = getString(R.string.goto_kyc_see_term_condition)
         }
     }
 
