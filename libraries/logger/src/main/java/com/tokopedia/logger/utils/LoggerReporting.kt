@@ -35,7 +35,8 @@ class LoggerReporting {
         priority: Priority,
         tag: String,
         oriMessageMap: Map<String, String>,
-        userId: String
+        userId: String,
+        activityName: String
     ): Logger? {
         val timeStamp = System.currentTimeMillis()
         val priorityText = when (priority) {
@@ -43,7 +44,8 @@ class LoggerReporting {
             Priority.P2 -> P2
             else -> ""
         }
-        val tagMapKey = StringBuilder(priorityText).append(DELIMITER_TAG_MAPS).append(tag).toString()
+        val tagMapKey =
+            StringBuilder(priorityText).append(DELIMITER_TAG_MAPS).append(tag).toString()
 
         var priorityTag = -1
         tagMapsScalyr[tagMapKey]?.let {
@@ -59,7 +61,7 @@ class LoggerReporting {
         }
 
         if (priorityTag != -1) {
-            var processedMessage = getMessage(tag, timeStamp, priorityText, oriMessageMap, userId)
+            var processedMessage = getMessage(tag, timeStamp, priorityText, oriMessageMap, userId, activityName)
             processedMessage = if (processedMessage.length > Constants.MAX_BUFFER) {
                 processedMessage.substring(0, Constants.MAX_BUFFER)
             } else {
@@ -75,7 +77,14 @@ class LoggerReporting {
         return SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US).format(Date(timeStamp))
     }
 
-    private fun getMessage(tag: String, timeStamp: Long, priority: String, message: Map<String, String>, userId: String): String {
+    private fun getMessage(
+        tag: String,
+        timeStamp: Long,
+        priority: String,
+        message: Map<String, String>,
+        userId: String,
+        activityName: String
+    ): String {
         val mapMessage = mutableMapOf<String, String>()
         val p = when (priority) {
             P1 -> Constants.SEVERITY_HIGH
@@ -109,6 +118,7 @@ class LoggerReporting {
                 put("log_packageName", packageName.toString())
                 put("log_installer", installer.toString())
                 put("log_debug", debug.toString())
+                put("activityName", activityName)
                 for (item in message) {
                     val filterKey = getFilterKey(item.key)
                     if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
@@ -166,7 +176,8 @@ class LoggerReporting {
                         .append(tagSplit[1])
                         .toString()
                     val (newRelicKey, newRelicTable) = getNewRelicKeyAndTable(tagSplit)
-                    tagMapsNewRelic[tagKey] = NewRelicTag(getPriority(tagSplit[3]), newRelicKey, newRelicTable)
+                    tagMapsNewRelic[tagKey] =
+                        NewRelicTag(getPriority(tagSplit[3]), newRelicKey, newRelicTable)
                 }
             }
         }
@@ -199,7 +210,8 @@ class LoggerReporting {
             return
         }
         for (table in nrTables) {
-            val nrTableSplit = table.split(DELIMITER_TAG_MAPS.toRegex()).dropLastWhile { it.isEmpty() }
+            val nrTableSplit =
+                table.split(DELIMITER_TAG_MAPS.toRegex()).dropLastWhile { it.isEmpty() }
 
             if (nrTableSplit.size < SIZE_NR_TABLE_SPLIT || nrTableSplit.isEmpty()) {
                 continue
