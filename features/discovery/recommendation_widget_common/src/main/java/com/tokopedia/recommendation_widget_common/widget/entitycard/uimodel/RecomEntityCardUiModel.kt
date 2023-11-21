@@ -25,4 +25,24 @@ data class RecomEntityCardUiModel(
     override fun type(typeFactory: RecomEntityCardTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RecomEntityCardUiModel
+
+        if (id != other.id) return false
+        if (layoutCard != other.layoutCard) return false
+        if (imageUrl != other.imageUrl) return false
+        if (layoutItem != other.layoutItem) return false
+        if (categoryId != other.categoryId) return false
+        if (title != other.title) return false
+        if (subTitle != other.subTitle) return false
+        if (appLink != other.appLink) return false
+        if (backgroundColor != backgroundColor) return false
+        if (labelState != other.labelState) return false
+
+        return true
+    }
 }

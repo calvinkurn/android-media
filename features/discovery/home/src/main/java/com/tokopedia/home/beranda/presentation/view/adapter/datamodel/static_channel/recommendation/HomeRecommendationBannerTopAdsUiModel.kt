@@ -16,4 +16,15 @@ data class HomeRecommendationBannerTopAdsUiModel(
     override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as HomeRecommendationBannerTopAdsUiModel
+
+        if (topAdsImageViewModel != other.topAdsImageViewModel) return false
+
+        return true
+    }
 }

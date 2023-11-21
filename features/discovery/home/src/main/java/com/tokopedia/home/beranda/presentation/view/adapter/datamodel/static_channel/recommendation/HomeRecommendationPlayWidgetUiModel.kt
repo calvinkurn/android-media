@@ -14,6 +14,17 @@ data class HomeRecommendationPlayWidgetUiModel(
         return typeFactory.type(this)
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as HomeRecommendationPlayWidgetUiModel
+
+        if (playVideoWidgetUiModel != other.playVideoWidgetUiModel) return false
+
+        return true
+    }
+
     data class HomeRecommendationPlayVideoTrackerUiModel(
         val videoType: String,
         val partnerId: String,
