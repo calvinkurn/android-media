@@ -98,7 +98,7 @@ data class ProductsItem(
         @SerializedName("redirectURL")
         val redirectURL: String? = null,
 
-        @SerializedName("imageURL", alternate = ["image_url"])
+        @SerializedName("imageURL", alternate = ["image_url", "image_url_mobile"])
         val imageURL: String? = null,
 
         @SerializedName("name")

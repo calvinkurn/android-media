@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.data.Properties.Header.OfferTier
 import com.tokopedia.discovery2.data.contentCard.LandingPage
 import com.tokopedia.discovery2.data.contentCard.Product
 import com.tokopedia.discovery2.data.contentCard.TotalItem
@@ -163,7 +164,7 @@ data class DataItem(
     @SerializedName("color")
     val color: String? = "",
 
-    @SerializedName("button_text", alternate = ["cta_redirection_text"])
+    @SerializedName("button_text", alternate = ["cta_redirection_text", "cta_copywritying"])
     var buttonText: String? = "",
 
     @SerializedName("creative_name")
@@ -352,7 +353,7 @@ data class DataItem(
     @SerializedName("rating_average")
     var averageRating: String = "",
 
-    @SerializedName("shop_logo")
+    @SerializedName("shop_logo", alternate = ["shop_icon"])
     val shopLogo: String? = "",
 
     @SerializedName("official_store")
@@ -575,6 +576,9 @@ data class DataItem(
 
     @SerializedName("cta_color")
     val ctaColor: String? = "",
+
+    @SerializedName("offer_tiers")
+    val offerTiers: List<OfferTier>? = null,
 
     var shopAdsClickURL: String? = "",
 
