@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -114,8 +115,8 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
                 text = MethodChecker.fromHtml(stringResource(id = creationcommonR.string.content_creation_entry_point_desription))
                     .toAnnotatedString(),
                 buttonText = stringResource(id = creationcommonR.string.content_creation_entry_point_button_label),
-                iconColor = if (iconColor.value != Int.ZERO) Color(iconColor.value) else NestTheme.colors.NN._900,
-                textColor = if (textColor.value != Int.ZERO) Color(textColor.value) else NestTheme.colors.NN._900
+                iconColor = iconColor.value,
+                textColor = textColor.value
             ) {
                 analytics.clickContentCreationEndpointWidget(
                     viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
@@ -171,8 +172,8 @@ fun ContentCreationEntryPointComponent(
     iconId: Int,
     text: String,
     buttonText: String,
-    iconColor: Color,
-    textColor: Color,
+    iconColor: Int,
+    textColor: Int,
     onClick: () -> Unit
 ) {
     ContentCreationEntryPointComponent(
@@ -190,8 +191,8 @@ fun ContentCreationEntryPointComponent(
     iconId: Int,
     text: AnnotatedString,
     buttonText: String,
-    iconColor: Color,
-    textColor: Color,
+    iconColor: Int,
+    textColor: Int,
     onClick: () -> Unit
 ) {
     NestTheme(
@@ -209,13 +210,13 @@ fun ContentCreationEntryPointComponent(
             NestIcon(
                 iconId = iconId,
                 modifier = Modifier.size(24.dp),
-                colorLightEnable = iconColor,
-                colorNightEnable = iconColor
+                colorLightEnable = if (iconColor != Int.ZERO) Color(iconColor) else NestTheme.colors.NN._900,
+                colorNightEnable = if (iconColor != Int.ZERO) Color(iconColor) else NestTheme.colors.NN._900,
             )
             NestTypography(
                 text = text,
                 textStyle = NestTheme.typography.display3.copy(
-                    color = textColor
+                    color = if (textColor != Int.ZERO) Color(textColor) else NestTheme.colors.NN._900,
                 ),
                 modifier = Modifier
                     .padding(start = 4.dp, end = 8.dp)
@@ -239,8 +240,8 @@ fun ContentCreationEntryPointComponentLightPreview() {
         iconId = IconUnify.VIDEO,
         text = "Promosikan produkmu dengan Live, Video, Foto & Story",
         buttonText = "Buat Konten",
-        iconColor = Color.White,
-        textColor = Color.White
+        iconColor = Color.White.toArgb(),
+        textColor = Color.White.toArgb()
     ) {
     }
 }
@@ -252,8 +253,8 @@ fun ContentCreationEntryPointComponentDarkPreview() {
         iconId = IconUnify.VIDEO,
         text = "Promosikan produkmu dengan Live, Video, Foto & Story",
         buttonText = "Buat Konten",
-        iconColor = Color.White,
-        textColor = Color.White
+        iconColor = Color.White.toArgb(),
+        textColor = Color.White.toArgb()
     ) {
     }
 }
