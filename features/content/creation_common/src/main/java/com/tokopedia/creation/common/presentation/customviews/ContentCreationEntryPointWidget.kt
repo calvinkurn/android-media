@@ -194,7 +194,9 @@ fun ContentCreationEntryPointComponent(
     textColor: Color,
     onClick: () -> Unit
 ) {
-    NestTheme {
+    NestTheme(
+        isOverrideStatusBarColor = false
+    ) {
         Row(
             modifier = Modifier
                 .padding(vertical = 8.dp, horizontal = 2.dp)
