@@ -549,7 +549,10 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun getRollenceBCA(): Boolean {
-        return true
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.BCA_ROLLENCE,
+            ""
+        ) == RollenceKey.BCA_ROLLENCE
     }
 
     private fun showCommonMessageError() {
