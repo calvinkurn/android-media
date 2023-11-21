@@ -10,9 +10,9 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.promousage.domain.entity.PromoEntryPointSummaryItem
 import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
+import com.tokopedia.promousage.domain.entity.PromoEntryPointSummaryItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.promocheckout.common.R as promocheckoutcommonR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
@@ -48,8 +48,10 @@ class CheckoutPromoViewHolder(
     }
 
     private fun initPromoButton(enableNewInterface: Boolean) {
-        binding.btnCheckoutPromo.enableNewInterface = enableNewInterface
-        binding.btnCheckoutPromo.init()
+        if (binding.btnCheckoutPromo.enableNewInterface != enableNewInterface) {
+            binding.btnCheckoutPromo.enableNewInterface = enableNewInterface
+            binding.btnCheckoutPromo.init()
+        }
     }
 
     private fun processNewEntryPointInfo(model: CheckoutPromoModel) {
