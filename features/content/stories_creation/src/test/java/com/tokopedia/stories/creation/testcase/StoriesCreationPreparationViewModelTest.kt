@@ -1,5 +1,8 @@
 package com.tokopedia.stories.creation.testcase
 
+import com.tokopedia.content.test.util.assertEmpty
+import com.tokopedia.content.test.util.assertEqualTo
+import com.tokopedia.content.test.util.assertType
 import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.stories.creation.builder.AccountModelBuilder
@@ -8,9 +11,6 @@ import com.tokopedia.stories.creation.builder.ConfigurationModelBuilder
 import com.tokopedia.stories.creation.builder.ProductModelBuilder
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
 import com.tokopedia.stories.creation.robot.StoriesCreationViewModelRobot
-import com.tokopedia.stories.creation.util.assertEmpty
-import com.tokopedia.stories.creation.util.assertEqualTo
-import com.tokopedia.stories.creation.util.assertType
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction

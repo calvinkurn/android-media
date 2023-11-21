@@ -4,13 +4,13 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.util.device.ContentDeviceUtil
 import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
-import com.tokopedia.stories.creation.util.DeviceUtil
 import com.tokopedia.stories.creation.util.firstNotEmptyOrNull
 import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.R as storiescreationR
@@ -35,7 +35,7 @@ class MediaPickerForResult : ActivityResultContract<MediaPickerIntentData, Stori
             previewActionText(input.previewActionText)
         }
 
-        return if (GlobalConfig.DEBUG && DeviceUtil.isProbablyEmulator) {
+        return if (GlobalConfig.DEBUG && ContentDeviceUtil.isProbablyEmulator) {
             MediaPicker.intent(context, pickerParam)
         } else {
             MediaPicker.intentWithGalleryFirst(context, pickerParam)

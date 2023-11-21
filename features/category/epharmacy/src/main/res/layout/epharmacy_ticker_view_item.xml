@@ -12,9 +12,8 @@
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/divider"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="8dp"
         />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -26,7 +25,7 @@
         android:layout_marginBottom="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/ticker_text"
@@ -35,7 +34,7 @@
         app:layout_constraintStart_toEndOf="@id/ticker_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/divider"
         android:textColor="@color/Unify_NN950"
         app:typographyType="paragraph_3"
         android:layout_marginStart="16dp"
@@ -43,12 +42,25 @@
         />
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
         android:layout_width="0dp"
         android:layout_height="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="12dp"
         app:layout_constraintTop_toBottomOf="@id/ticker_icon"
+        />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/webViewTicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:closeButtonVisibility="visible"
+        app:tickerType="announcement"
+        app:descriptionText=""
+        android:visibility="gone"
+        tools:visibility="visible"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
