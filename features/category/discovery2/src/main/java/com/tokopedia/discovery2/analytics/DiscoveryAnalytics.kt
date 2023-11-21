@@ -259,7 +259,8 @@ open class DiscoveryAnalytics(
                 channelPositionInList,
                 widgetPosition,
                 isAutoPlay
-            )
+            ),
+            shouldSendSourceAsDestination = true
         )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
@@ -279,7 +280,8 @@ open class DiscoveryAnalytics(
         val map = createGeneralEvent(
             eventName = EVENT_CLICK_DISCOVERY,
             eventAction = CLICK_OTHER_CONTENT,
-            eventLabel = constructSeeOthersPlayEventLabel(dataItem, widgetPosition)
+            eventLabel = constructSeeOthersPlayEventLabel(dataItem, widgetPosition),
+            shouldSendSourceAsDestination = true
         )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
@@ -306,7 +308,8 @@ open class DiscoveryAnalytics(
                 channelPositionInList,
                 widgetPosition,
                 isAutoPlay
-            )
+            ),
+            shouldSendSourceAsDestination = true
         )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
@@ -325,7 +328,8 @@ open class DiscoveryAnalytics(
         val map = createGeneralEvent(
             eventName = EVENT_CLICK_DISCOVERY,
             eventAction = CLICK_VIEW_ALL,
-            eventLabel = constructSeeOthersPlayEventLabel(dataItem, widgetPosition)
+            eventLabel = constructSeeOthersPlayEventLabel(dataItem, widgetPosition),
+            shouldSendSourceAsDestination = true
         )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
@@ -447,7 +451,8 @@ open class DiscoveryAnalytics(
                 channelPositionInList,
                 widgetPosition,
                 isAutoPlay
-            )
+            ),
+            shouldSendSourceAsDestination = true
         )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
