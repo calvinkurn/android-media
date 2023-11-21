@@ -10,6 +10,7 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalCreatorsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
 import com.tokopedia.feedplus.presentation.util.findViewHolderByPositionInfo
 import com.tokopedia.feedplus.presentation.util.getChildValidPositionInfo
@@ -50,7 +51,8 @@ class FeedBrowseItemDecoration(
             is FeedBrowseTitleViewHolder -> outRect.itemOffsetsTitle()
             is FeedBrowseBannerViewHolder -> outRect.itemOffsetsBanner(parent, view, state)
             is ChipsViewHolder -> outRect.itemOffsetsChips(parent, view, state)
-            is FeedBrowseHorizontalChannelsViewHolder -> outRect.itemOffsetsHorizontalChannels()
+            is FeedBrowseHorizontalChannelsViewHolder,
+            is FeedBrowseHorizontalCreatorsViewHolder -> outRect.itemOffsetsHorizontalChannels()
             else -> outRect.itemOffsetsElse()
         }
 

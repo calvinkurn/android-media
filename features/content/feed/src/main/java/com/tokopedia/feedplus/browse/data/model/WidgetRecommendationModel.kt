@@ -14,4 +14,8 @@ internal sealed interface WidgetRecommendationModel {
     data class Channels(
         val channels: List<PlayWidgetChannelUiModel>,
     ) : WidgetRecommendationModel
+
+    data class Creators(
+        val creators: List<PlayWidgetChannelUiModel>
+    ) : WidgetRecommendationModel
 }

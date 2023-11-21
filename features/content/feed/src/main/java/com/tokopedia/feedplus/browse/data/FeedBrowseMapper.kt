@@ -47,6 +47,7 @@ class FeedBrowseMapper @Inject constructor() {
                         selectedMenuId = ""
                     )
                 } else if (item.type.startsWith("browse_widget_recommendation")) {
+                    // UGC or Creator widget also one of the widgets with item.type = 'browse_widget_recommendation:ugc_widget'
                     FeedBrowseSlotUiModel.InspirationBanner(
                         slotId = item.id,
                         title = item.title,

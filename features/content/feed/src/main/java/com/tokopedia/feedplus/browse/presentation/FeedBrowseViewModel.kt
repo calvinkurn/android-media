@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.browse.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.types.ResultState
@@ -128,6 +127,7 @@ internal class FeedBrowseViewModel @Inject constructor(
         when (model) {
             is FeedBrowseSlotUiModel.ChannelsWithMenus -> model.getAndUpdateData()
             is FeedBrowseSlotUiModel.InspirationBanner -> model.getAndUpdateData()
+            is FeedBrowseSlotUiModel.Creators -> model.getAndUpdateData()
         }
     }
 
@@ -186,6 +186,14 @@ internal class FeedBrowseViewModel @Inject constructor(
         if (response !is WidgetRecommendationModel.Banners) return
         updateWidget<FeedBrowseSlotUiModel.InspirationBanner>(slotId, ResultState.Success) {
             it.copy(bannerList = response.banners)
+        }
+    }
+
+    private suspend fun FeedBrowseSlotUiModel.Creators.getAndUpdateData() {
+        val response = repository.getWidgetRecommendation(identifier)
+        if (response !is WidgetRecommendationModel.Creators) return
+        updateWidget<FeedBrowseSlotUiModel.Creators>(slotId, ResultState.Success) {
+            it.copy(creatorList = FeedBrowseChannelListState.initSuccess(response.creators))
         }
     }
 

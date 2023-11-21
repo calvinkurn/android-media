@@ -27,6 +27,7 @@ import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBro
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalCreatorsViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
@@ -156,13 +157,30 @@ internal class FeedBrowseFragment @Inject constructor(
         }
     }
 
+    private val creatorListener = object : FeedBrowseHorizontalCreatorsViewHolder.Listener {
+        override fun onCreatorChannelCardClicked(
+            viewHolder: FeedBrowseHorizontalCreatorsViewHolder,
+            item: PlayWidgetChannelUiModel
+        ) {
+            router.route(context, item.appLink)
+        }
+
+        override fun onCreatorClicked(
+            viewHolder: FeedBrowseHorizontalCreatorsViewHolder,
+            item: PlayWidgetChannelUiModel
+        ) {
+            router.route(context, item.appLink)
+        }
+    }
+
     private val adapter by viewLifecycleBound(
         {
             FeedBrowseAdapter(
                 it.viewLifecycleOwner.lifecycleScope,
                 chipsListener,
                 bannerListener,
-                channelListener
+                channelListener,
+                creatorListener,
             )
         }
     )
