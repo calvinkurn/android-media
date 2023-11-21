@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -991,21 +992,21 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun showStoriesDurationCoachmark() {
-        with(binding.vStoriesPartner.tvStoriesTimestamp) {
-            context?.let {
-                if (mCoachMark == null) {
-                    mCoachMark = CoachMark2(it).apply {
-                        onDismissListener = {
-                            viewModel.submitAction(StoriesUiAction.HasSeenDurationCoachMark)
-                        }
+        context?.let {
+            if (mCoachMark == null) {
+                mCoachMark = CoachMark2(it).apply {
+                    onDismissListener = {
+                        viewModel.submitAction(StoriesUiAction.HasSeenDurationCoachMark)
                     }
                 }
+            }
 
-                if (mCoachMark?.isShowing != true) {
+            if (mCoachMark?.isShowing != true) {
+                binding.vStoriesPartner.tvStoriesTimestamp.doOnLayout { storiesTimestamp ->
                     mCoachMark?.showCoachMark(
                         arrayListOf(
                             CoachMark2Item(
-                                this,
+                                storiesTimestamp,
                                 getString(storiesR.string.story_manual_duration_coachmark_title),
                                 getString(storiesR.string.story_manual_duration_coachmark_subtitle),
                                 CoachMark2.POSITION_TOP
