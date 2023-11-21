@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +40,7 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPoin
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.nest.components.ButtonSize
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
@@ -59,6 +61,9 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
 ) : AbstractComposeView(context, attrs, defStyleAttr) {
 
     var onClickListener: () -> Unit = {}
+
+    val iconColor = mutableStateOf<Int>(Int.ZERO)
+    val textColor = mutableStateOf<Int>(Int.ZERO)
 
     private val component = createComponent()
     private val factory: ViewModelProvider.Factory = component.contentCreationFactory()
@@ -109,8 +114,8 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
                 text = MethodChecker.fromHtml(stringResource(id = creationcommonR.string.content_creation_entry_point_desription))
                     .toAnnotatedString(),
                 buttonText = stringResource(id = creationcommonR.string.content_creation_entry_point_button_label),
-                iconColor = Color.Red, // TODO
-                textColor = Color.Blue // TODO
+                iconColor = if (iconColor.value != Int.ZERO) Color(iconColor.value) else NestTheme.colors.NN._900,
+                textColor = if (textColor.value != Int.ZERO) Color(textColor.value) else NestTheme.colors.NN._900
             ) {
                 analytics.clickContentCreationEndpointWidget(
                     viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
