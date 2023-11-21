@@ -169,6 +169,15 @@ data class DataItem(
     @SerializedName("creative_name")
     var creativeName: String? = "",
 
+    @SerializedName("inventory_id")
+    var inventoryId: String? = "",
+
+    @SerializedName("ads_count")
+    var adsCount: Int? = 0,
+
+    @SerializedName("dimension_id")
+    var dimensionId: String? = "",
+
     @SerializedName("title", alternate = ["title_copywriting"])
     var title: String? = "",
 

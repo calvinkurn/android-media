@@ -34,7 +34,7 @@ open class BaseDiscoveryAnalytics(
     open fun trackBrandRecommendationImpression(items: List<ComponentsItem>, componentPosition: Int, componentID: String) {}
     open fun trackBrandRecommendationClick(banner: DataItem, bannerPosition: Int, compID: String) {}
     open fun trackBannerClick(banner: DataItem, bannerPosition: Int, userID: String?) {}
-    open fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {}
+    open fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String, itemPosition: Int) {}
     open fun trackPlayWidgetImpression(componentsItem: ComponentsItem, userID: String?, channelId: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
     open fun trackPlayWidgetClick(componentsItem: ComponentsItem, userID: String?, channelId: String, destinationURL: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
     open fun trackPlayWidgetBannerClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int) {}
@@ -42,7 +42,7 @@ open class BaseDiscoveryAnalytics(
     open fun trackPlayWidgetOverLayClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
     open fun trackPlayWidgetOverLayImpression(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
     open fun trackPlayWidgetReminderClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, channelId: String, isRemindMe: Boolean) {}
-    open fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {}
+    open fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String, itemPosition: Int) {}
     open fun trackClickVideo(videoUrl: String, videoName: String, videoPlayedTime: String) {}
     open fun trackBackClick() {}
     open fun trackShareClick() {}
@@ -117,6 +117,8 @@ open class BaseDiscoveryAnalytics(
     open fun trackScreenshotAccess(eventAction: String = "", eventLabel: String = "", userID: String?) {}
     open fun trackEventProductATCTokonow(componentsItems: ComponentsItem, cartId: String) {}
     open fun trackEventProductATC(componentsItems: ComponentsItem, cartID: String) {}
+    open fun trackEventProductBmGmATC(componentsItems: ComponentsItem, cartID: String) {}
+    open fun trackEventProductBmGmClickSeeMore(componentsItems: ComponentsItem) {}
     open fun trackMerchantVoucherMultipleImpression(
         components: ComponentsItem,
         userID: String?,
