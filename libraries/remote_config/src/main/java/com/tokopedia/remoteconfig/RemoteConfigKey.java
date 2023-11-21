@@ -27,6 +27,7 @@ public class RemoteConfigKey {
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
     public static final String ENABLE_MINI_CONSULTATION_PAGE = "android_main_app_enable_mini_consultation";
+    public static final String REDIRECT_EPHARMACY_WEB_VIEW_VERSION_LOW = "android_main_app_redirect_epharmacy_webview_version_low";
     public static final String DISABLE_CATALOG_LIBRARY_PAGE = "android_main_app_disable_catalog_library";
 
 

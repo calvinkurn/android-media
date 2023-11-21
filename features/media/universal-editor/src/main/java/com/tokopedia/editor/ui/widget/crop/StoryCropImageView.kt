@@ -119,8 +119,11 @@ open class StoryCropImageView : CropImageView {
 
             val rotateBitmap = Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, false)
 
-            val cropX = ((mCurrentImageRect.left * -1) / mCurrentScale).toInt()
-            val cropY = ((mCurrentImageRect.top * -1) / mCurrentScale).toInt()
+            val normalizePosX = mCurrentImageRect.left - mCropRect.left
+            val cropX = ((normalizePosX * -1) / mCurrentScale).toInt()
+
+            val normalizePosY = mCurrentImageRect.top - mCropRect.top
+            val cropY = ((normalizePosY * -1) / mCurrentScale).toInt()
 
             val sourceWidth = cropWidthSize / mCurrentScale
             val sourceHeight = cropHeightSize / mCurrentScale
