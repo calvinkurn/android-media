@@ -315,6 +315,15 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                 val operationalHourTypography = createOperationalHoursTypography(text)
                 binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
             }
+            isOpenWithSameOpenAndCloseTimeEveryday(operationalHours) -> {
+                val groupedDays = context?.getString(R.string.shop_info_ops_hour_monday_to_sunday).orEmpty()
+                val operationalHour = getOpenAndCloseTime(operationalHours) ?: return
+                val shopOpenCloseTime = context?.getString(R.string.shop_info_ops_hour_placeholder_open_range, operationalHour.startTime, operationalHour.endTime).orEmpty()
+                
+                val text = "$groupedDays: $shopOpenCloseTime"
+                val operationalHourTypography = createOperationalHoursTypography(text)
+                binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
+            }
             else -> renderShopOpenCloseTime(operationalHours)
         }
     }
@@ -811,5 +820,35 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         val isMondayToSundayOpen24Hours = status == ShopOperationalHourWithStatus.Status.OPEN24HOURS
 
         return isMondayToSundayHaveSameOperationalHour && isMondayToSundayOpen24Hours
+    }
+
+    private fun isOpenWithSameOpenAndCloseTimeEveryday(operationalHours: Map<String, List<ShopOperationalHourWithStatus>>): Boolean {
+        if (operationalHours.isEmpty()) return false
+
+        val operationalHour = operationalHours.entries.firstOrNull()
+        if (operationalHour == null) return false
+
+        val (_, operationalHourStatus) = operationalHour
+
+        val status = operationalHourStatus.firstOrNull()?.status
+        if (status == null) return false
+
+        val isMondayToSundayHaveSameOperationalHour = operationalHourStatus.size == SEVEN_DAY
+        val isMondayToSundayOpenAtSameTime = status == ShopOperationalHourWithStatus.Status.OPEN
+
+        return isMondayToSundayHaveSameOperationalHour && isMondayToSundayOpenAtSameTime
+    }
+
+    private fun getOpenAndCloseTime(
+        operationalHours: Map<String, List<ShopOperationalHourWithStatus>>
+    ): ShopOperationalHourWithStatus? {
+        if (operationalHours.isEmpty()) return null
+
+        val operationalHour = operationalHours.entries.firstOrNull()
+        if (operationalHour == null) return null
+
+        val (_, operationalHourStatus) = operationalHour
+
+        return operationalHourStatus.firstOrNull()
     }
 }
