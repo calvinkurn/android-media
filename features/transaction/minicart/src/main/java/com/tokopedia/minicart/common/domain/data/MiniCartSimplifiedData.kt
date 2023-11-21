@@ -1,13 +1,15 @@
 package com.tokopedia.minicart.common.domain.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 
 data class MiniCartSimplifiedData(
     var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
     var miniCartItems: Map<MiniCartItemKey, MiniCartItem> = emptyMap(),
     var isShowMiniCartWidget: Boolean = false,
     var shoppingSummaryBottomSheetData: ShoppingSummaryBottomSheetData = ShoppingSummaryBottomSheetData(),
-    var bmGmDataList: List<BmGmData> = emptyList()
+    var bmGmDataList: List<BmGmData> = emptyList(),
+    var bmgmData: BmgmMiniCartDataUiModel = BmgmMiniCartDataUiModel()
 )
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemProduct(productId: String): MiniCartItem.MiniCartItemProduct? {

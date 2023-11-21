@@ -2,6 +2,7 @@ package com.tokopedia.minicart.common.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.minicart.bmgm.domain.mapper.BmgmMiniCartDataMapper
 import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.BmGmData
@@ -20,7 +21,9 @@ import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
 import kotlin.math.min
 
-class MiniCartSimplifiedMapper @Inject constructor() {
+class MiniCartSimplifiedMapper @Inject constructor(
+    private val bmgmMapper: BmgmMiniCartDataMapper
+) {
 
     fun mapMiniCartSimplifiedData(miniCartData: MiniCartData): MiniCartSimplifiedData {
         return MiniCartSimplifiedData().apply {
@@ -29,6 +32,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
             miniCartWidgetData = mapMiniCartWidgetData(miniCartData)
             shoppingSummaryBottomSheetData = mapShoppingSummaryData(miniCartData)
             bmGmDataList = mapBmGmData(miniCartData)
+            bmgmData = bmgmMapper.mapToUiModel(miniCartData)
         }
     }
 
