@@ -1447,6 +1447,26 @@ class ShopInfoReimagineViewModelTest {
     }
 
     @Test
+    fun `When swipe to previously seen reviewer, should not call sendTopReviewImpression tracker for the second time`() {
+        runBlockingTest {
+            // Given
+            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+
+            // When
+            viewModel.processEvent(ShopInfoUiEvent.SwipeReview(reviewIndex = 1))
+            viewModel.processEvent(ShopInfoUiEvent.SwipeReview(reviewIndex = 2))
+            viewModel.processEvent(ShopInfoUiEvent.SwipeReview(reviewIndex = 1))
+            viewModel.processEvent(ShopInfoUiEvent.SwipeReview(reviewIndex = 1))
+            viewModel.processEvent(ShopInfoUiEvent.SwipeReview(reviewIndex = 1))
+            viewModel.processEvent(ShopInfoUiEvent.SwipeReview(reviewIndex = 1))
+
+            // Then
+            coVerify(exactly = 1) { tracker.sendReviewImpression(reviewIndex = 1, shopId = shopId) }
+            coVerify { tracker.sendReviewImpression(reviewIndex = 2, shopId = shopId) }
+        }
+    }
+
+    @Test
     fun `When click shop note, should call sendClickShopNoteEvent tracker`() {
         runBlockingTest {
             // Given

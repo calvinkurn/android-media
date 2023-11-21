@@ -83,6 +83,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val currentState: ShopInfoUiState
         get() = _uiState.value
 
+    private val impressedReviewIndex = mutableSetOf<Int>()
+
     fun processEvent(event: ShopInfoUiEvent) {
         when (event) {
             is ShopInfoUiEvent.Setup -> handleSetup(event.shopId, event.districtId, event.cityId)
@@ -254,7 +256,12 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
 
     private fun handleSwipeReview(reviewIndex: Int) {
-        tracker.sendReviewImpression(reviewIndex, currentState.shopId)
+        val isReviewAlreadyImpressed = reviewIndex in impressedReviewIndex
+
+        if (!isReviewAlreadyImpressed) {
+            impressedReviewIndex.add(reviewIndex)
+            tracker.sendReviewImpression(reviewIndex, currentState.shopId)
+        }
     }
 
     private suspend fun getShopNotes(shopId: String): List<ShopNoteModel> {
