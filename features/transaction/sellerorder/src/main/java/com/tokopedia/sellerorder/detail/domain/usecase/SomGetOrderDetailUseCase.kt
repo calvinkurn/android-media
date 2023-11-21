@@ -266,10 +266,12 @@ class SomGetOrderDetailUseCase @Inject constructor(
                           type
                           image_url
                           metadata {
+                            info_link
                             add_on_note {
                               from
                               notes
                               to
+                              tips
                             }
                           }
                           create_time
@@ -304,10 +306,12 @@ class SomGetOrderDetailUseCase @Inject constructor(
                         type
                         image_url
                         metadata {
+                          info_link
                           add_on_note {
                             from
                             notes
                             to
+                            tips
                           }
                         }
                         create_time
@@ -356,12 +360,14 @@ class SomGetOrderDetailUseCase @Inject constructor(
                           type
                           image_url
                           metadata {
+                            info_link
                             add_on_note {
                               is_custom_note
                               from
                               to
                               notes
                               short_notes
+                              tips
                             }
                           }
                           create_time
@@ -390,10 +396,12 @@ class SomGetOrderDetailUseCase @Inject constructor(
                       type
                       image_url
                       metadata {
+                        info_link
                         add_on_note {
                           from
                           notes
                           to
+                          tips
                         }
                       }
                       create_time

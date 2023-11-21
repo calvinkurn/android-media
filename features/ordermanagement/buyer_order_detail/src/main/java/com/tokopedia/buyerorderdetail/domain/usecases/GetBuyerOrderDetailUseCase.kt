@@ -305,11 +305,13 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                         type
                         image_url
                         metadata {
+                          info_link
                           add_on_note {
                             from
                             to
                             notes
                             short_notes
+                            tips
                           }
                         }
                         create_time
@@ -377,11 +379,13 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                             type
                             image_url
                             metadata {
+                              info_link
                               add_on_note {
                                 from
                                 to
                                 notes
                                 short_notes
+                                tips
                               }
                             }
                             create_time
@@ -454,12 +458,14 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                           type
                           image_url
                           metadata {
+                            info_link
                             add_on_note {
                               is_custom_note
                               from
                               to
                               notes
                               short_notes
+                              tips
                             }
                           }
                         }
@@ -487,11 +493,13 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       type
                       image_url
                       metadata {
+                        info_link
                         add_on_note {
                           from
                           to
                           notes
                           short_notes
+                          tips
                         }
                       }
                     }
