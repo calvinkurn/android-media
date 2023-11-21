@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.listener.DataEndLessScrollListener
+import com.tokopedia.saldodetails.commom.utils.NavToolbarExt
 import com.tokopedia.saldodetails.commom.utils.SalesTransaction
 import com.tokopedia.saldodetails.commom.utils.TransactionType
 import com.tokopedia.saldodetails.commom.utils.TransactionTypeMapper
@@ -24,6 +26,7 @@ import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.viewmodel.
 import com.tokopedia.saldodetails.transactionDetailPages.penjualan.SaldoSalesDetailActivity
 import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.SaldoWithdrawalDetailActivity
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.saldo_fragment_transaction_list.*
 import javax.inject.Inject
 
@@ -92,6 +95,13 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
         endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
         transactionRecyclerView.addOnScrollListener(endlessRecyclerViewScrollListener!!)
         endlessRecyclerViewScrollListener?.resetState()
+
+        transactionRecyclerView.post {
+            context?.let {
+                transactionRecyclerView.layoutParams.height = getScreenHeight() - NavToolbarExt.getToolbarHeight(it) - NavToolbarExt.getStatusbarHeight(it) - 160.toPx()
+                transactionRecyclerView.requestLayout()
+            }
+        }
     }
 
     private fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {

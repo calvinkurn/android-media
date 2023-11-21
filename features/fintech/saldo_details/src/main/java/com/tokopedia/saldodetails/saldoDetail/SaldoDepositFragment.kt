@@ -13,6 +13,8 @@ import android.view.animation.Animation
 import android.view.animation.Transformation
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
+import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
@@ -24,6 +26,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -134,7 +138,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private val saldoCoachMarkController: SaldoCoachMarkController by lazy {
         SaldoCoachMarkController(requireContext()) {
-            binding?.spAppBarLayout?.setExpanded(true)
+//            binding?.spAppBarLayout?.setExpanded(true)
         }
     }
 
@@ -197,12 +201,12 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private fun prepareSaldoCoachMark() {
         if (activity is SaldoDepositActivity) {
             saldoCoachMarkController.startCoachMark()
-            binding?.spAppBarLayout?.addOnOffsetChangedListener(AppBarLayout
-                .OnOffsetChangedListener { _, _ ->
-                    saldoCoachMarkController.updateCoachMarkOnScroll(
-                        expandLayout
-                    )
-                })
+//            binding?.spAppBarLayout?.addOnOffsetChangedListener(AppBarLayout
+//                .OnOffsetChangedListener { _, _ ->
+//                    saldoCoachMarkController.updateCoachMarkOnScroll(
+//                        expandLayout
+//                    )
+//                })
         }
     }
 
@@ -446,6 +450,30 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 }
             }
         }
+
+        binding?.parentScrollView?.setOnScrollChangeListener(object: NestedScrollView.OnScrollChangeListener {
+            override fun onScrollChange(
+                v: NestedScrollView,
+                scrollX: Int,
+                scrollY: Int,
+                oldScrollX: Int,
+                oldScrollY: Int
+            ) {
+                if (scrollY == 0) {
+                    (activity as SaldoDepositActivity).saldoToolbar.apply {
+                        transparentMode = true
+                        headerView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
+                        navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
+                    }
+                } else {
+                    (activity as SaldoDepositActivity).saldoToolbar.apply {
+                        transparentMode = false
+                        headerView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
+                        navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
+                    }
+                }
+            }
+        })
     }
 
     private fun expand(v: View) {
