@@ -10,7 +10,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemListViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationPlayWidgetViewHolder
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.RecomEntityCardViewHolder
 import com.tokopedia.home.R as homeR
 
@@ -72,7 +71,9 @@ class HomeFeedItemDecoration : RecyclerView.ItemDecoration() {
 
     private fun hasInternalPadding(parent: RecyclerView, viewPosition: Int): Boolean {
         val adapter = parent.adapter
-        return when(adapter?.getItemViewType(viewPosition)) {
+        return if (viewPosition < 0 || viewPosition > (adapter?.itemCount ?: 0) - 1) {
+            false
+        } else when(adapter?.getItemViewType(viewPosition)) {
             HomeRecommendationItemGridViewHolder.LAYOUT,
             HomeRecommendationItemListViewHolder.LAYOUT,
             RecomEntityCardViewHolder.LAYOUT,
