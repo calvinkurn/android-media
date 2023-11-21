@@ -58,7 +58,6 @@
             android:id="@+id/carousel_flash_sale"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_goneMarginTop="@dimen/home_component_padding_top_default"
             android:translationY="@dimen/home_flash_sale_top_margin"
             android:paddingBottom="@dimen/home_flash_sale_bottom_margin"
             app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
