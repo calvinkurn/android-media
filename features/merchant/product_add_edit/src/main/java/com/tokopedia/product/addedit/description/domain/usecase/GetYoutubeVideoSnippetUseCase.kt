@@ -14,53 +14,48 @@ class GetYoutubeVideoSnippetUseCase @Inject constructor(
 ) : UseCase<GetYoutubeVideoSnippetResponse>() {
 
     companion object {
-//        const val SQUAD = "Squad"
-//        const val USECASE = "Usecase"
-        const val VIDEO_IDS = "VideoIDs"
-        const val SOURCE = "Source"
+        const val VIDEO_IDS = "videoId"
+        const val SOURCE = "source"
         const val PRODUCT_ADD_VALUE = "product_add"
         const val PRODUCT_EDIT_VALUE = "product_edit"
         const val ANDROID_CONSUMER_VALUE = "android consumer"
         const val ANDROID_SELLERAPP_VALUE = "android sellerapp"
 
-        const val QUERY = """
-            query getYoutubeVideoSnippet(${'$'}videoId: [String], ${'$'}source: SourceType!) {
-              GetYoutubeVideoSnippet(req: {VideoIDs: ${'$'}videoId, Source: ${'$'}source}) {
-                Items {
-                  ID
-                  Snippet {
-                    Title
-                    Description
-                    Thumbnails {
-                      Default {
-                        URL
-                        Width
-                        Height
-                      }
-                    }
-                    PublishedAt
-                    ChannelTitle
-                  }
-                  ContentDetails {
-                    Dimension
-                    Definition
-                    LicensedContent
-                    Projection
-                    ContentRating {
-                      YtRating
-                    }
-                  }
-                }
-              }
-            }"""
+        const val QUERY = "query getYoutubeVideoSnippet(\$videoId: [String], \$source: SourceType!) {\n" +
+            "GetYoutubeVideoSnippet(req: {VideoIDs: \$videoId, Source: \$source}) {\n" +
+            "   Items {" +
+            "       ID" +
+            "       Snippet {" +
+            "           Title" +
+            "           Description" +
+            "           Thumbnails {" +
+            "               Default {" +
+            "                   URL" +
+            "                   Width" +
+            "                   Height" +
+            "               }" +
+            "           }" +
+            "           PublishedAt" +
+            "           ChannelTitle" +
+            "       }" +
+            "       ContentDetails {" +
+            "           Dimension" +
+            "           Definition" +
+            "           LicensedContent" +
+            "           Projection" +
+            "           ContentRating {" +
+            "               YtRating" +
+            "           }" +
+            "       }" +
+            "   }" +
+            "}" +
+            "}"
 
         fun createParams(
             videoIds: String,
             source: SourceTypeRequestParam
         ): RequestParams = RequestParams.create().apply {
             putObject(SOURCE, source)
-//            putString(SQUAD, squad)
-//            putString(USECASE, useCase)
             putString(VIDEO_IDS, videoIds)
         }
     }
