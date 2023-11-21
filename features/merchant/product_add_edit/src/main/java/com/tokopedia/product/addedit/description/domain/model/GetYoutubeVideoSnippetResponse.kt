@@ -43,7 +43,7 @@ data class GetYoutubeVideoSnippetResponse(
         )
 
         data class Default(
-            @SerializedName("Url")
+            @SerializedName("URL")
             @Expose
             val url: String = "",
             @SerializedName("Width")
@@ -53,7 +53,5 @@ data class GetYoutubeVideoSnippetResponse(
             @Expose
             val height: Int = 0
         )
-
     }
-
 }

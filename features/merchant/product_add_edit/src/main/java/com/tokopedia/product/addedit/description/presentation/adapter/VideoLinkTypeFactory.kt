@@ -92,11 +92,11 @@ class VideoLinkTypeFactory : BaseAdapterTypeFactory() {
             }
 
             loadLayout(
-                element.inputUrl,
-                element.inputImage,
-                element.inputTitle,
-                element.inputDescription,
-                element.errorMessage
+                inputUrl = element.inputUrl,
+                imageUrl = element.inputImage,
+                inputTitle = element.inputTitle,
+                inputDescription = element.inputDescription,
+                errorMessage = element.errorMessage
             )
 
             textFieldUrl?.textAreaIconClose?.setOnClickListener {
