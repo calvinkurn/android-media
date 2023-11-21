@@ -10,10 +10,12 @@ import com.tokopedia.tokopoints.notification.model.popupnotif.PopupNotif
 import com.tokopedia.tokopoints.notification.model.popupnotif.PopupNotifResponse
 import com.tokopedia.tokopoints.notification.model.popupnotif.Tokopoints
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity
+import com.tokopedia.tokopoints.view.model.ResultStatusEntity
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter
 import com.tokopedia.tokopoints.view.model.homeresponse.RecommendationWrapper
 import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
 import com.tokopedia.tokopoints.view.model.homeresponse.TokopointSuccess
+import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
 import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
@@ -21,6 +23,7 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSe
 import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerListResponse
 import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardsTickerList
 import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.TickerListItem
+import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSection
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.model.usersaving.TokopointsUserSaving
@@ -76,25 +79,94 @@ class TokoPointsHomeViewModelTest {
         val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
             every { onChanged(any()) } just Runs
         }
-        val data = mockk<TokopediaRewardTopSection>()
-        val tokenData = mockk<LuckyEggEntity> {
-            every { resultStatus.code } returns CommonConstant.CouponRedemptionCode.SUCCESS
-        }
+
+        val tokenData = LuckyEggEntity(resultStatus = ResultStatusEntity(code = 200))
+        val tokopediaRewardTopSectionResponse = TokopediaRewardTopSection(
+            title = "Reward", isShowSavingPage = true
+        )
+        val tokopointsSectionResponse = TokopointsSection(
+            sectionContent = mutableListOf(SectionContent(sectionTitle = "Section"))
+        )
+        val userSavingResponse = UserSavingResponse(
+            tokopointsUserSaving = TokopointsUserSaving(
+                userSavingInfo = UserSavingInfo(title = "User Saving")
+            )
+        )
+        val rewardTickerListResponse = RewardTickerListResponse(
+            rewardsTickerList = RewardsTickerList(
+                tickerList = listOf(TickerListItem(id = 1))
+            )
+        )
+        val popupNotifResponse = PopupNotifResponse(
+            tokopoints = Tokopoints(
+                popupNotif = PopupNotif(title = "Popup Notif")
+            )
+        )
+
+        val recomendationItem = RecommendationItem(productId = 151)
+        val recommendationWrapperList = listOf(
+            RecommendationWrapper(
+                recomendationItem = recomendationItem,
+                recomData = createProductModel(recomendationItem)
+            )
+        )
+        val recommendationWidgetResponse = RecommendationWidget(
+            title = "Recom Title",
+            recommendationItemList = listOf(recomendationItem),
+            seeMoreAppLink = "tokopedia://tokopoints"
+        )
+        val requestParams = RequestParams()
+
         coEvery { repository.getTokoPointDetailData() } returns mockk {
             every { getData<RewardResponse>(RewardResponse::class.java) } returns mockk {
-                every { tokopediaRewardTopSection } returns data
+                every { tokopediaRewardTopSection } returns tokopediaRewardTopSectionResponse
             }
             every { getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java) } returns mockk {
-                every { sectionContent } returns TokopointsSection()
+                every { sectionContent } returns tokopointsSectionResponse
             }
             every { getData<TokenDetailOuter>(TokenDetailOuter::class.java) } returns mockk {
                 every { tokenDetail } returns tokenData
             }
         }
+
+        coEvery { repository.getUserSavingData() } returns mockk {
+            every { getData<UserSavingResponse>(UserSavingResponse::class.java) } returns userSavingResponse
+        }
+
+        coEvery { repository.getUserStatusMatchingData() } returns mockk {
+            every { getData<RewardTickerListResponse>(RewardTickerListResponse::class.java) } returns rewardTickerListResponse
+        }
+
+        coEvery { popupNotifUsecase.getPopupNotif(any()) } returns mockk {
+            every { getData<PopupNotifResponse>(PopupNotifResponse::class.java) } returns popupNotifResponse
+        }
+
+        coEvery { recomUsecase.getRequestParams(any(), any()) } returns requestParams
+        coEvery { recomUsecase.getData(requestParams) } returns listOf(recommendationWidgetResponse)
+        coEvery { recomUsecase.mapper.recommWidgetToListOfVisitables(recommendationWidgetResponse) } returns recommendationWrapperList
+
         viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
         viewModel.getTokoPointDetail()
+
+        val recomData = RewardsRecommendation(recommendationWrapperList, "Recom Title", "tokopedia://tokopoints")
+
+        val expectedLiveDataValue = Success(
+            TokopointSuccess(
+                TopSectionResponse(
+                    tokopediaRewardTopSectionResponse,
+                    userSavingResponse.tokopointsUserSaving,
+                    rewardTickerListResponse,
+                    popupNotifResponse.tokopoints
+                ),
+                tokopointsSectionResponse.sectionContent,
+                recomData
+            )
+        )
+
+//        viewModel.tokopointDetailLiveData
+//            .verifyValueEquals()
         verify(ordering = Ordering.ORDERED) {
-            tokopointObserver.onChanged(ofType(Loading::class as KClass<Loading<TokopointSuccess>>))
+            tokopointObserver.onChanged(expectedLiveDataValue)
         }
     }
 
@@ -322,6 +394,19 @@ class TokoPointsHomeViewModelTest {
             val actualTokopointDetailEntity = viewModel.getPopNotifData().await()
 
             assertEquals(popUpNotifResponse, actualTokopointDetailEntity)
+        }
+    }
+
+    @Test
+    fun `given getPopUpNotif throws exception when getPopNotifData should catch exception and return default response`() {
+        runTest {
+            val defaultPopUpNotifResponse = PopupNotifResponse()
+
+            coEvery { popupNotifUsecase.getPopupNotif(any()) } throws NullPointerException()
+
+            val actualTokopointDetailEntity = viewModel.getPopNotifData().await()
+
+            assertEquals(defaultPopUpNotifResponse, actualTokopointDetailEntity)
         }
     }
 
