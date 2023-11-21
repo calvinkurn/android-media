@@ -88,6 +88,9 @@ object RollenceKey {
     // DG SBM Transition
     const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
 
+    // BCA Rollence
+    const val BCA_ROLLENCE = "android_flazzrollout"
+
     // Payment
     const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
     const val THANKYOU_PAGE_WIDGET_VARIANT = "TYP_Exp_PG_DG"
