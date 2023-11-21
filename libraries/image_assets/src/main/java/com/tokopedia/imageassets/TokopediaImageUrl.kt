@@ -37,7 +37,7 @@ object TokopediaImageUrl {
     const val SUCCESS_IMAGE_PATH = "https://images.tokopedia.net/img/android/res/singleDpi/gopay_kyc_upload_success.png"
     const val FAILED_IMAGE_PATH = "https://images.tokopedia.net/img/android/res/singleDpi/gopay_kyc_upload_failed.png"
     const val CARD_ICON_URL = "https://images.tokopedia.net/img/toppay/product/marketplace.png"
-    const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
+    const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/now/OFOC-WA-02.jpg"
     const val URL_IMAGE_DIALOG_REFERRAL = "https://images.tokopedia.net/img/tokonow/referral/surprise gift.png"
     const val BG_QUEST_TITLE = "https://images.tokopedia.net/img/android/tokonow/bg_quest_title.png"
     const val IMG_SHARING_EDUCATION = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_sharing_education.png"
