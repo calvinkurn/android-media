@@ -22,6 +22,7 @@ import com.tokopedia.shop.common.util.DateTimeConstant
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopOperationalHourWithStatus
 import com.tokopedia.shop.info.domain.entity.ShopPharmacyInfo
+import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop.info.domain.usecase.GetEpharmacyShopInfoUseCase
 import com.tokopedia.shop.info.domain.usecase.GetNearestEpharmacyWarehouseLocationUseCase
@@ -66,7 +67,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
         const val SHOP_TOP_REVIEW_SORT_BY_HELPFULNESS = "informative_score desc"
         const val SHOP_TOP_REVIEW_FILTER_BY_SELLER_SERVICE = "topic=pelayanan"
         const val PAGE_SOURCE = "shop_info_page"
-        const val TWENTY_THREE_HOURS_AND_FIFTY_NINE_SECOND = 86399
+        const val TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_IN_SECOND = 86340 //23 hour 59 minute and 0 second difference
+        const val TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_AND_FIFTY_NINE_SECOND_IN_SECOND = 86399 //23 hour 59 minute and 59 second difference
         const val MAX_SHOP_DYNAMIC_USP_TO_DISPLAY = 3
     }
 
@@ -89,7 +91,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
             is ShopInfoUiEvent.RetryGetShopInfo -> handleRetryGetShopInfo()
             is ShopInfoUiEvent.TapShopNote -> handleTapShopNote(event.shopNote)
             ShopInfoUiEvent.ReportShop -> handleReportShop()
-            is ShopInfoUiEvent.TapReviewImage -> handleTapReviewImage(event.productId, event.reviewImageIndex)
+            is ShopInfoUiEvent.TapReviewImage -> handleTapReviewImage(event.review, event.reviewImageIndex)
             is ShopInfoUiEvent.TapReviewImageViewAll -> handleTapReviewImageViewAll(event.productId)
         }
     }
@@ -229,13 +231,17 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return getShopInfoUseCase.executeOnBackground()
     }
 
-    private fun handleTapReviewImage(productId: String, reviewImageIndex: Int) {
-        val effect = ShopInfoUiEffect.RedirectToProductReviewPage(productId, currentState.shopId, reviewImageIndex)
+    private fun handleTapReviewImage(review: ShopReview.Review, reviewImageIndex: Int) {
+        val effect = ShopInfoUiEffect.RedirectToProductReviewPage(
+            review,
+            currentState.shopId,
+            reviewImageIndex
+        )
         _uiEffect.tryEmit(effect)
     }
 
     private fun handleTapReviewImageViewAll(productId: String) {
-        val effect = ShopInfoUiEffect.RedirectToProductReviewGallery(productId, currentState.shopId)
+        val effect = ShopInfoUiEffect.RedirectToProductReviewGallery(productId)
         _uiEffect.tryEmit(effect)
     }
 
@@ -409,8 +415,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
         val timeDifferenceMillis = end.time - start.time
         val timeDifferenceSecond = TimeUnit.MILLISECONDS.toSeconds(timeDifferenceMillis).toInt()
-
-        return timeDifferenceSecond == TWENTY_THREE_HOURS_AND_FIFTY_NINE_SECOND
+        
+        return timeDifferenceSecond == TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_IN_SECOND || timeDifferenceSecond == TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_AND_FIFTY_NINE_SECOND_IN_SECOND
     }
 
     private fun isShopClosed(startTime: String, endTime: String): Boolean {

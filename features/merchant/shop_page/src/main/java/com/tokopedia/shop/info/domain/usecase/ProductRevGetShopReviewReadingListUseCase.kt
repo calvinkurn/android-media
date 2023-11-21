@@ -52,6 +52,12 @@ class ProductRevGetShopReviewReadingListUseCase @Inject constructor(
         totalLike
         likeStatus
       }
+      badRatingReasonFmt
+      state {
+        isReportable
+        isAutoReply
+        isAnonymous
+      }
       reviewerName
       reviewerLabel
       reviewerID

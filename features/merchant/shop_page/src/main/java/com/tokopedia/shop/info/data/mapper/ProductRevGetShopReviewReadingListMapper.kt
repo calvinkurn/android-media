@@ -10,18 +10,33 @@ class ProductRevGetShopReviewReadingListMapper @Inject constructor() {
             totalReviews = response.productrevGetShopReviewReadingList.totalReviews,
             reviews = response.productrevGetShopReviewReadingList.list.map { review ->
                 ShopReview.Review(
-                    review.rating,
-                    review.reviewTime,
-                    review.reviewText,
-                    review.reviewerName,
-                    review.reviewerLabel,
-                    ShopReview.Review.LikeDislike(
+                    reviewId = review.reviewID,
+                    rating = review.rating,
+                    reviewTime = review.reviewTime,
+                    reviewText = review.reviewText,
+                    reviewerId = review.reviewerID,
+                    reviewerName = review.reviewerName,
+                    reviewerLabel = review.reviewerLabel,
+                    likeDislike = ShopReview.Review.LikeDislike(
                         totalLike = review.likeDislike.totalLike,
                         likeStatus = review.likeDislike.likeStatus
                     ),
-                    review.avatar,
-                    review.toAttachments(),
-                    ShopReview.Review.Product(review.product.productID, review.product.productName)
+                    avatar = review.avatar,
+                    attachments = review.toAttachments(),
+                    product = ShopReview.Review.Product(
+                        productId = review.product.productID,
+                        productName = review.product.productName,
+                        productVariant = ShopReview.Review.Product.ProductVariant(
+                            variantId = review.product.productVariant.variantId,
+                            variantName = review.product.productVariant.variantName
+                        )
+                    ),
+                    badRatingReasonFmt = review.badRatingReasonFmt,
+                    state = ShopReview.Review.State(
+                        isReportable = review.state.isReportable,
+                        isAutoReply = review.state.isAutoReply,
+                        isAnonymous = review.state.isAnonymous
+                    )
                 )
             }
         )

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout 
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/constraintLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -60,6 +61,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        tools:visibility="gone"
+        android:visibility="visible"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="@+id/tpgReviewerName"
         app:layout_constraintTop_toBottomOf="@+id/tpgReviewerName"
@@ -70,11 +73,15 @@
         android:id="@+id/tpgBulletReview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
         android:text="@string/shop_page_dot_character"
+        tools:visibility="gone"
+        android:visibility="gone"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toEndOf="@+id/tpgCompletedReview"
         app:layout_constraintTop_toTopOf="@+id/tpgCompletedReview"
+        app:layout_constraintBottom_toBottomOf="@id/tpgCompletedReview"
         app:typographyType="display_3"
         app:typographyWeight="bold" />
 
@@ -82,7 +89,6 @@
         android:id="@+id/tpgReviewLikeCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
         tools:text="123 terbantu"
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_NN600"
