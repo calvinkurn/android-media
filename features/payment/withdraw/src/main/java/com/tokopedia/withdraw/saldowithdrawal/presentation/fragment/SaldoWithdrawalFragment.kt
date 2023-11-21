@@ -25,6 +25,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_ENABLE_AUTO_TOPADS_WD_RECOMMENDATION
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -473,7 +475,8 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
     }
 
     private fun shouldShowAutoTopAdsRecomDialog(): Boolean {
-        if (saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.first == true) {
+        val enableRemoteConfig = FirebaseRemoteConfigImpl(context).getBoolean(ANDROID_ENABLE_AUTO_TOPADS_WD_RECOMMENDATION, true)
+        if (saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.first == true && enableRemoteConfig) {
             val recommendedAmount = saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.second ?: 0
             context?.let {
                 val intent = AutoTopAdsBottomSheetActivity.getInstance(
