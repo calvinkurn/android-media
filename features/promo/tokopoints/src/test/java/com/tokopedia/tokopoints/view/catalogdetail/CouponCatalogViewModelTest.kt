@@ -76,9 +76,9 @@ class CouponCatalogViewModelTest {
             every { id } returns 1
         }
         val dummyCouponData = ArrayList<CouponDetailEntity>()
-        val couponDetailEntity = CouponDetailEntity(code = "200",cta = "cta" ,title = "title" , description = "description")
+        val couponDetailEntity = CouponDetailEntity(code = "200", cta = "cta", title = "title", description = "description")
         dummyCouponData.add(couponDetailEntity)
-        val data = RedeemCouponEntity(coupons=dummyCouponData,redeemMessage = "claim success")
+        val data = RedeemCouponEntity(coupons = dummyCouponData, redeemMessage = "claim success")
         coEvery { repository.startSaveCoupon(1) } returns mockk {
             every { hachikoRedeem } returns data
         }
@@ -91,7 +91,7 @@ class CouponCatalogViewModelTest {
         assert(result.cta == data.coupons?.get(0)?.cta)
         assert(result.title == data.coupons?.get(0)?.title)
         assert(result.description == data.coupons?.get(0)?.description)
-        assert(result.redeemMessage ==  data.redeemMessage)
+        assert(result.redeemMessage == data.redeemMessage)
     }
 
     @Test
@@ -209,10 +209,10 @@ class CouponCatalogViewModelTest {
         }
 
         coEvery { repository.startSaveCoupon(1) } throws mockk<CatalogGqlError> {
-            every { messageErrorException } returns  mockk{
+            every { messageErrorException } returns mockk {
                 every { message } returns "message"
             }
-            every { developerMessage } returns  "title|message|300"
+            every { developerMessage } returns "title|message|300"
         }
         viewModel.startSaveCouponLiveData.observeForever(observer)
         viewModel.startSaveCoupon(item)
@@ -247,9 +247,9 @@ class CouponCatalogViewModelTest {
         }
         val code = "uniqueCatalogCode"
         val catalogData = mockk<CatalogsValueEntity>()
-        coEvery { repository.getcatalogDetail(code) } returns mockk{
-            every { getData<CatalogDetailOuter>(CatalogDetailOuter::class.java) } returns  mockk{
-                every {  detail } returns catalogData
+        coEvery { repository.getcatalogDetail(code) } returns mockk {
+            every { getData<CatalogDetailOuter>(CatalogDetailOuter::class.java) } returns mockk {
+                every { detail } returns catalogData
             }
             every { getData<TokoPointDetailEntity>(TokoPointDetailEntity::class.java) } returns null
         }
@@ -267,23 +267,23 @@ class CouponCatalogViewModelTest {
 
     @Test
     fun `get Catalog Detail catalog Detail suucess and point query success`() {
-        val catalogObserver = mockk<Observer<Resources<CatalogsValueEntity>>>{
+        val catalogObserver = mockk<Observer<Resources<CatalogsValueEntity>>> {
             every { onChanged(any()) } just Runs
         }
         val codeData = "uniqueCatalogCode"
         val rewardString = "rewardStr"
         val catalogData = mockk<CatalogsValueEntity>()
-        coEvery { repository.getcatalogDetail(codeData) } returns mockk{
-            every { getData<CatalogDetailOuter>(CatalogDetailOuter::class.java) } returns  mockk{
-                every {  detail } returns catalogData
+        coEvery { repository.getcatalogDetail(codeData) } returns mockk {
+            every { getData<CatalogDetailOuter>(CatalogDetailOuter::class.java) } returns mockk {
+                every { detail } returns catalogData
             }
-            every { getData<TokoPointDetailEntity>(TokoPointDetailEntity::class.java) } returns mockk{
-                every { tokoPoints } returns mockk{
-                    every {  resultStatus } returns mockk{
-                        every { code  } returns CommonConstant.CouponRedemptionCode.SUCCESS
+            every { getData<TokoPointDetailEntity>(TokoPointDetailEntity::class.java) } returns mockk {
+                every { tokoPoints } returns mockk {
+                    every { resultStatus } returns mockk {
+                        every { code } returns CommonConstant.CouponRedemptionCode.SUCCESS
                     }
-                    every { status } returns mockk{
-                        every { points } returns mockk{
+                    every { status } returns mockk {
+                        every { points } returns mockk {
                             every { rewardStr } returns rewardString
                         }
                     }
@@ -303,13 +303,31 @@ class CouponCatalogViewModelTest {
     }
 
     @Test
+    fun `given getData returns null when getCatalogDetail should not update catalogDetailLiveData value`() {
+        val catalogObserver = mockk<Observer<Resources<CatalogsValueEntity>>> {
+            every { onChanged(any()) } just Runs
+        }
+        val codeData = "uniqueCatalogCode"
+        coEvery { repository.getcatalogDetail(codeData) } returns mockk {
+            every { getData<CatalogDetailOuter>(CatalogDetailOuter::class.java) } returns null
+        }
+
+        viewModel.catalogDetailLiveData.observeForever(catalogObserver)
+        viewModel.getCatalogDetail(codeData)
+
+        verify(ordering = Ordering.ORDERED) {
+            catalogObserver.onChanged(ofType(Loading::class as KClass<Loading<CatalogsValueEntity>>))
+        }
+    }
+
+    @Test
     fun `get Catalog Detail error`() {
-        val catalogObserver = mockk<Observer<Resources<CatalogsValueEntity>>>{
+        val catalogObserver = mockk<Observer<Resources<CatalogsValueEntity>>> {
             every { onChanged(any()) } just Runs
         }
         val codeData = "uniqueCatalogCode"
         val errorMessage = "rewardStr"
-        coEvery { repository.getcatalogDetail(codeData) } throws mockk<Exception>{
+        coEvery { repository.getcatalogDetail(codeData) } throws mockk<Exception> {
             every { this@mockk.localizedMessage } returns errorMessage
         }
 
@@ -332,7 +350,7 @@ class CouponCatalogViewModelTest {
         val dummyData = CatalogStatusBase(catalogs = listCatalog)
         coEvery { repository.fetchLatestStatus(any()) } returns mockk {
             every { catalogStatus } returns dummyData
-            }
+        }
 
         viewModel.latestStatusLiveData.observeForever(observer)
         viewModel.fetchLatestStatus(listOf())
@@ -350,7 +368,6 @@ class CouponCatalogViewModelTest {
         viewModel.fetchLatestStatus(listOf())
 
         verify(exactly = 0) { observer.onChanged(any()) }
-
     }
 
     @Test
@@ -370,7 +387,6 @@ class CouponCatalogViewModelTest {
         assert(result.data.id == id)
         assert(result.data.pointStr == pointStr)
         assert(result.data.title == title)
-
     }
 
     @Test
@@ -389,7 +405,6 @@ class CouponCatalogViewModelTest {
         viewModel.startSendGift(id, title, pointStr, banner)
 
         verify(exactly = 0) { observer.onChanged(any()) }
-
     }
 
     @Test
@@ -399,18 +414,33 @@ class CouponCatalogViewModelTest {
         val title = "title"
         val pointStr = "pointerString"
         val banner = "banner"
-        coEvery { repository.startSendGift(id) } throws mockk<MessageErrorException>{
+        coEvery { repository.startSendGift(id) } throws mockk<MessageErrorException> {
             every { message } returns "title|message"
         }
         viewModel.sendGiftPageLiveData.observeForever(observer)
         viewModel.startSendGift(id, title, pointStr, banner)
 
-        verify(exactly = 1) { observer.onChanged(ofType(ValidationError::class as KClass<ValidationError<SendGiftPage,PreValidateError>>)) }
+        verify(exactly = 1) { observer.onChanged(ofType(ValidationError::class as KClass<ValidationError<SendGiftPage, PreValidateError>>)) }
 
-        val result = (viewModel.sendGiftPageLiveData.value as ValidationError<*,*>).data as PreValidateError
+        val result = (viewModel.sendGiftPageLiveData.value as ValidationError<*, *>).data as PreValidateError
         assert(result.message == "message")
         assert(result.title == "title")
+    }
 
+    @Test
+    fun `given error message null when startSendGift should set sendGiftPageLiveData with first error message`() {
+        val observer = mockk<Observer<Resources<SendGiftPage>>>()
+        val id = 1
+        val title = "title"
+        val pointStr = "pointerString"
+        val banner = "banner"
+        coEvery { repository.startSendGift(id) } throws mockk<MessageErrorException> {
+            every { message } returns null
+        }
+        viewModel.sendGiftPageLiveData.observeForever(observer)
+        viewModel.startSendGift(id, title, pointStr, banner)
+
+        verify(exactly = 1) { observer.onChanged(ofType(ValidationError::class as KClass<ValidationError<SendGiftPage, PreValidateError>>)) }
     }
 
     @Test
