@@ -13,11 +13,13 @@ import android.widget.ImageView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.officialstore.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.design.R as designR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 
 class OfficialCategoriesTab(context: Context,
@@ -180,7 +182,7 @@ class OfficialCategoriesTab(context: Context,
                         setTextColor(
                             MethodChecker.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_PN600
+                                unifyprinciplesR.color.Unify_PN600
                             )
                         )
                         setWeight(Typography.BOLD)
@@ -195,7 +197,7 @@ class OfficialCategoriesTab(context: Context,
                         setTextColor(
                             MethodChecker.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+                                unifyprinciplesR.color.Unify_NN950_96
                             )
                         )
                         setWeight(Typography.REGULAR)
@@ -211,7 +213,7 @@ class OfficialCategoriesTab(context: Context,
                         setTextColor(
                             MethodChecker.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_PN600
+                                unifyprinciplesR.color.Unify_PN600
                             )
                         )
                         setWeight(Typography.BOLD)
@@ -233,11 +235,9 @@ class OfficialCategoriesTab(context: Context,
             val tab_category_container =
                 view?.findViewById<FrameLayout>(R.id.tab_category_container)
 
-            ImageHandler.loadImage(
-                context,
-                image_view_category_icon,
+            image_view_category_icon?.loadImageWithError(
                 categoriesItemTab[position].inactiveIconUrl,
-                com.tokopedia.design.R.drawable.ic_loading_image
+                error = designR.drawable.ic_loading_image
             )
             text_view_category_title?.text = categoriesItemTab[position].title
         }
