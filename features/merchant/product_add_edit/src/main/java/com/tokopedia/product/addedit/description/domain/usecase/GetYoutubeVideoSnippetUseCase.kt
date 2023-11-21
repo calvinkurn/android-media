@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.description.domain.model.GetYoutubeVideoSnippetResponse
+import com.tokopedia.product.addedit.description.domain.model.SourceTypeRequestParam
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -13,9 +14,10 @@ class GetYoutubeVideoSnippetUseCase @Inject constructor(
 ) : UseCase<GetYoutubeVideoSnippetResponse>() {
 
     companion object {
-        const val SQUAD = "Squad"
-        const val USECASE = "Usecase"
+//        const val SQUAD = "Squad"
+//        const val USECASE = "Usecase"
         const val VIDEO_IDS = "VideoIDs"
+        const val SOURCE = "Source"
         const val PRODUCT_ADD_VALUE = "product_add"
         const val PRODUCT_EDIT_VALUE = "product_edit"
         const val ANDROID_CONSUMER_VALUE = "android consumer"
@@ -54,11 +56,11 @@ class GetYoutubeVideoSnippetUseCase @Inject constructor(
 
         fun createParams(
             videoIds: String,
-            squad: String,
-            useCase: String
+            source: SourceTypeRequestParam
         ): RequestParams = RequestParams.create().apply {
-            putString(SQUAD, squad)
-            putString(USECASE, useCase)
+            putObject(SOURCE, source)
+//            putString(SQUAD, squad)
+//            putString(USECASE, useCase)
             putString(VIDEO_IDS, videoIds)
         }
     }

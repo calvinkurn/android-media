@@ -17,6 +17,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.YOU
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.domain.model.GetYoutubeVideoSnippetResponse
+import com.tokopedia.product.addedit.description.domain.model.SourceTypeRequestParam
 import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoSnippetUseCase
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.ENABLED_HAMPERS_CATEGORY_ID
@@ -146,8 +147,10 @@ class AddEditProductDescriptionViewModel @Inject constructor(
             getIdYoutubeUrl(url)?.let { youtubeId ->
                 getYoutubeVideoUseCase.params = GetYoutubeVideoSnippetUseCase.createParams(
                     videoIds = youtubeId,
-                    squad = if (GlobalConfig.isSellerApp()) GetYoutubeVideoSnippetUseCase.ANDROID_SELLERAPP_VALUE else GetYoutubeVideoSnippetUseCase.ANDROID_CONSUMER_VALUE,
-                    useCase = if (isAddMode) GetYoutubeVideoSnippetUseCase.PRODUCT_ADD_VALUE else GetYoutubeVideoSnippetUseCase.PRODUCT_EDIT_VALUE
+                    source = SourceTypeRequestParam(
+                        squad = if (GlobalConfig.isSellerApp()) GetYoutubeVideoSnippetUseCase.ANDROID_SELLERAPP_VALUE else GetYoutubeVideoSnippetUseCase.ANDROID_CONSUMER_VALUE,
+                        usecase = if (isAddMode) GetYoutubeVideoSnippetUseCase.PRODUCT_ADD_VALUE else GetYoutubeVideoSnippetUseCase.PRODUCT_EDIT_VALUE
+                    )
                 )
             }
             emit(Success(getYoutubeVideoUseCase.executeOnBackground()))
