@@ -61,7 +61,7 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
     private fun initListener() {
         binding?.btnPrimary?.setOnClickListener {
             if (isBlockedMultipleAccount) {
-                goToTokopediaCare()
+                goToWebview()
             } else {
                 dismiss()
             }
@@ -81,7 +81,7 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
         finishWithResultCancelled()
     }
 
-    private fun goToTokopediaCare() {
+    private fun goToWebview() {
         GotoKycAnalytics.sendClickOnButtonTokopediaCareBlockingMultipleAccountPageEvent(projectId)
         RouteManager.route(
             context,
