@@ -85,12 +85,12 @@ abstract class BaseComponentCallback<Event : BaseComponentEvent>(
         return viewModel.getP2ShipmentPlusByProductId()?.text.orEmpty()
     }
 
-    protected fun createCommonTracker(componentTracker: ComponentTrackDataModel): CommonTracker? {
+    protected fun ComponentTrackDataModel.asCommonTracker(): CommonTracker? {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return null
         return CommonTracker(
             productInfo = productInfo,
             userId = viewModel.userId,
-            componentTracker = componentTracker
+            componentTracker = this
         )
     }
 }
