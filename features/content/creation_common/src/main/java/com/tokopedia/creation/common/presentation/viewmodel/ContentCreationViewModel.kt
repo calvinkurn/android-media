@@ -68,6 +68,11 @@ class ContentCreationViewModel @Inject constructor(
                     }
                 }
 
+                if (selectedCreationType.value == null) {
+                    _selectedCreationType.value =
+                        formattedCreationConfig.creationItems.firstOrNull()
+                }
+
                 _creationConfig.value = Success(formattedCreationConfig)
             } catch (t: Throwable) {
                 _creationConfig.value = Fail(t)
