@@ -9,6 +9,16 @@ import java.util.*
 class BCALibrary {
 
     var myTag: Tag? = null
+    var isSuccessInit: Boolean = false
+    init {
+        isSuccessInit = try {
+            System.loadLibrary("bcabridgelibrary")
+            true
+        } catch (e: Throwable) {
+            false
+        }
+
+    }
 
     external fun C_BCAVersionDll(): JNIResult
 
@@ -90,11 +100,5 @@ class BCALibrary {
             return ""
         }
         return RAPDU
-    }
-
-    companion object {
-        init {
-            System.loadLibrary("bcabridgelibrary")
-        }
     }
 }

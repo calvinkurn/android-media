@@ -172,19 +172,28 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         } else if(CardUtils.isBrizziCard(intent)) {
             processBrizzi(intent)
         } else {
-            initializeBCALibs(tag)
-            val bcaIsMyCard = bcaLibrary.C_BCAIsMyCard()
-            val dataBalance = bcaLibrary.C_BCACheckBalance()
-            val isoDep = IsoDep.get(tag)
-            if(bcaIsMyCard.strLogRsp.startsWith(GEN_2_CARD) && dataBalance.cardNo.isNotEmpty() &&
-                getRollenceBCA()) {
-                showLoading(getOperatorName(issuerActive))
-                bcaBalanceViewModel.processBCATagBalance(isoDep, MID, TID, bRawPublicKey,
-                    bRawPrivateKey, getCurrentBCAFlazzTimeStamp(), ATD)
-            } else if(bcaIsMyCard.strLogRsp.startsWith(GEN_1_CARD) && dataBalance.cardNo.isNotEmpty() &&
-                getRollenceBCA()){
-                showLoading(getOperatorName(issuerActive))
-                bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, bRawPublicKey, bRawPrivateKey)
+            if (bcaLibrary.isSuccessInit && getRollenceBCA()) {
+                initializeBCALibs(tag)
+                val bcaIsMyCard = bcaLibrary.C_BCAIsMyCard()
+                val dataBalance = bcaLibrary.C_BCACheckBalance()
+                val isoDep = IsoDep.get(tag)
+                if(bcaIsMyCard.strLogRsp.startsWith(GEN_2_CARD) && dataBalance.cardNo.isNotEmpty() && getRollenceBCA()) {
+                    showLoading(getOperatorName(issuerActive))
+                    bcaBalanceViewModel.processBCATagBalance(isoDep, MID, TID, bRawPublicKey,
+                        bRawPrivateKey, getCurrentBCAFlazzTimeStamp(), ATD)
+                } else if(bcaIsMyCard.strLogRsp.startsWith(GEN_1_CARD) && dataBalance.cardNo.isNotEmpty() && getRollenceBCA()) {
+                    showLoading(getOperatorName(issuerActive))
+                    bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, bRawPublicKey, bRawPrivateKey)
+                 } else {
+                    context?.let { context ->
+                        showError(
+                            context.resources.getString(com.tokopedia.emoney.R.string.emoney_nfc_card_isnot_supported),
+                            context.resources.getString(com.tokopedia.emoney.R.string.emoney_nfc_not_supported),
+                            context.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_card_is_not_supported),
+                            false
+                        )
+                    }
+                }
             } else {
                 context?.let { context ->
                     showError(
