@@ -1,7 +1,7 @@
-package com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.finish
+package com.tokopedia.analytics.performance.perf.performanceTracing.strategy.parser.finish
 
 import android.view.View
-import com.tokopedia.analytics.performance.perf.performanceTracing.config.ViewInfo
+import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.ViewInfo
 
 class FullRecyclerViewPageFinishParserStrategy : FinishParserStrategyConfig<View> {
     override fun isLayoutFinished(rootView: View, views: List<ViewInfo>): Boolean {

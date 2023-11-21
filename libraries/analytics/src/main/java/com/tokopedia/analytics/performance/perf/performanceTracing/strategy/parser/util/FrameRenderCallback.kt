@@ -1,4 +1,4 @@
-package com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.util
+package com.tokopedia.analytics.performance.perf.performanceTracing.strategy.parser.util
 
 import android.view.Choreographer
 

@@ -1,4 +1,4 @@
-package com.tokopedia.analytics.performance.perf.performanceTracing
+package com.tokopedia.analytics.performance.perf.performanceTracing.data
 
 data class PerformanceTraceData(
     val traceName: String = "",

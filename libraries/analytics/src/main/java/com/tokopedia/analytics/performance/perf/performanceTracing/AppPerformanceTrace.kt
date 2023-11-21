@@ -8,8 +8,15 @@ import android.util.Log
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.AppPerformanceConfigRepository
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.PagePerformanceConfig
-import com.tokopedia.analytics.performance.perf.performanceTracing.config.TraceType
+import com.tokopedia.analytics.performance.perf.performanceTracing.data.DevState
+import com.tokopedia.analytics.performance.perf.performanceTracing.data.PerformanceTraceData
+import com.tokopedia.analytics.performance.perf.performanceTracing.data.State
 import com.tokopedia.analytics.performance.perf.performanceTracing.repository.AppPerformanceRepository
+import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.PerfParsingType
+import com.tokopedia.analytics.performance.perf.performanceTracing.trace.Error
+import com.tokopedia.analytics.performance.perf.performanceTracing.trace.PerformanceTrace
+import com.tokopedia.analytics.performance.perf.performanceTracing.trace.Success
+import com.tokopedia.analytics.performance.perf.performanceTracing.trace.XMLPagePerformanceTrace
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
@@ -20,7 +27,6 @@ class AppPerformanceTrace {
 
         private var performanceTrace: PerformanceTrace? = null
         private var performanceConfigRepository: AppPerformanceConfigRepository? = null
-        private var isPerformanceTraceEnabled = true
 
         var currentAppPerformanceTraceData: PerformanceTraceData? = null
         var currentAppPerformanceDevState: DevState = DevState(
@@ -30,7 +36,7 @@ class AppPerformanceTrace {
             loadableComponentFlow.tryEmit(loadableComponent)
         }
 
-        fun getTraceConfig(activityName: String): PagePerformanceConfig? {
+        fun getTraceConfig(activityName: String): PagePerformanceConfig<out PerfParsingType>? {
             if (performanceConfigRepository == null) {
                 Log.d("AppPerformanceTrace", "Error: Config not defined.")
             }
@@ -55,35 +61,27 @@ class AppPerformanceTrace {
                             activityName = activity.javaClass.simpleName,
                             state = State.PERF_MEASURING
                         )
-                        when (traceConfig.traceType) {
-                            TraceType.XML -> {
-                                performanceTrace = PagePerformanceTrace(
+                        when (val type = traceConfig.parsingType) {
+                            is PerfParsingType.XML -> {
+                                val strategy = type.parsingStrategy
+                                performanceTrace = XMLPagePerformanceTrace(
                                     activity = activity,
                                     onPerformanceTraceError = { result ->
-                                        Log.d("AppPerformanceTrace", "onPerformanceTraceError: $result")
-                                        currentAppPerformanceDevState = DevState(
-                                            activityName = activity.javaClass.simpleName,
-                                            state = State.PERF_ENABLED
-                                        )
-                                        performanceTrace = null
+                                        cancelPerformanceTracing(result, activity)
                                     },
                                     onPerformanceTraceFinished = { result ->
-                                        Log.d("AppPerformanceTrace", "onPerformanceTraceFinished: ${result.data.timeToInitialLoad} ms")
-                                        Log.d("AppPerformanceTrace", result.data.toString())
-                                        currentAppPerformanceTraceData = result.data
-                                        performanceTrace = null
-                                        onPerformanceTraceFinished.invoke()
-                                        currentAppPerformanceDevState = DevState(
-                                            activityName = activity.javaClass.simpleName,
-                                            state = State.PERF_ENABLED
-                                        )
+                                        finishPerformanceTracing(result, activity)
                                     },
                                     performanceRepository = AppPerformanceRepository(traceConfig.traceName),
-                                    loadableComponentFlow = loadableComponentFlow
+                                    loadableComponentFlow = loadableComponentFlow,
+                                    parsingStrategy = strategy
                                 ).apply {
                                     setTraceId(activityName)
                                     startMonitoring()
                                 }
+                            }
+                            else -> {
+                                Log.d("AppPerformanceTrace", "Parsing not supported")
                             }
                         }
                     } else {
@@ -127,6 +125,27 @@ class AppPerformanceTrace {
                     performanceTrace?.stopMonitoring(
                         Error("Activity destroyed")
                     )
+                }
+
+                private fun cancelPerformanceTracing(result: Error, activity: Activity) {
+                    Log.d("AppPerformanceTrace", "onPerformanceTraceError: $result")
+                    currentAppPerformanceDevState = DevState(
+                        activityName = activity.javaClass.simpleName,
+                        state = State.PERF_ENABLED
+                    )
+                    performanceTrace = null
+                }
+
+                private fun finishPerformanceTracing(result: Success<PerformanceTraceData>, activity: Activity) {
+                    Log.d("AppPerformanceTrace", "onPerformanceTraceFinished: ${result.data.timeToInitialLoad} ms")
+                    Log.d("AppPerformanceTrace", result.data.toString())
+                    currentAppPerformanceTraceData = result.data
+                    performanceTrace = null
+                    currentAppPerformanceDevState = DevState(
+                        activityName = activity.javaClass.simpleName,
+                        state = State.PERF_ENABLED
+                    )
+                    onPerformanceTraceFinished.invoke()
                 }
 
                 private fun stopOngoingActivityPerformanceTrace(activityName: String) {

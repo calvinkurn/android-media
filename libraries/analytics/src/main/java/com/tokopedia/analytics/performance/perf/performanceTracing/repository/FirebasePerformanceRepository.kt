@@ -1,10 +1,9 @@
 package com.tokopedia.analytics.performance.perf.performanceTracing.repository
 
-import android.util.Log
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
-import com.tokopedia.analytics.performance.perf.performanceTracing.BlocksModel
-import com.tokopedia.analytics.performance.perf.performanceTracing.PerformanceTraceData
+import com.tokopedia.analytics.performance.perf.performanceTracing.data.BlocksModel
+import com.tokopedia.analytics.performance.perf.performanceTracing.data.PerformanceTraceData
 
 class AppPerformanceRepository(
     val name: String

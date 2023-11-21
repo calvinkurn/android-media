@@ -1,4 +1,6 @@
-package com.tokopedia.analytics.performance.perf.performanceTracing
+package com.tokopedia.analytics.performance.perf.performanceTracing.trace
+
+import com.tokopedia.analytics.performance.perf.performanceTracing.data.PerformanceTraceData
 
 interface PerformanceTrace {
     fun traceId(): String

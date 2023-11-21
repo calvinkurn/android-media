@@ -1,7 +1,7 @@
-package com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser.start
+package com.tokopedia.analytics.performance.perf.performanceTracing.strategy.parser.start
 
 import android.view.View
-import com.tokopedia.analytics.performance.perf.performanceTracing.config.ViewInfo
+import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.ViewInfo
 
 class FullRecyclerViewPageStartParser : StartParserStrategyConfig<View> {
     override fun isLayoutReady(rootView: View, views: List<ViewInfo>): Boolean {

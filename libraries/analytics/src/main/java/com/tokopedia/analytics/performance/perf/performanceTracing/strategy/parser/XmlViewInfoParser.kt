@@ -1,11 +1,11 @@
-package com.tokopedia.analytics.performance.perf.performanceTracing.config.strategy.parser
+package com.tokopedia.analytics.performance.perf.performanceTracing.strategy.parser
 
 import android.graphics.Rect
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.analytics.performance.perf.performanceTracing.config.ViewInfo
+import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.ViewInfo
 
 class XmlViewInfoParser() : ViewInfoParser<View> {
     override fun parse(view: View, depth: Int): List<ViewInfo> {

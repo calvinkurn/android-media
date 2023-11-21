@@ -1,7 +1,9 @@
 package com.tokopedia.analytics.performance.perf.performanceTracing.config
 
-data class PagePerformanceConfig(
+import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.PerfParsingType
+
+data class PagePerformanceConfig<T : PerfParsingType>(
     val traceName: String,
     val activityName: String,
-    val traceType: TraceType
+    val parsingType: T
 )

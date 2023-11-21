@@ -12,9 +12,9 @@ import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
 import com.tokopedia.analytics.R
 import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace
-import com.tokopedia.analytics.performance.perf.performanceTracing.DevState
-import com.tokopedia.analytics.performance.perf.performanceTracing.PerformanceTraceData
-import com.tokopedia.analytics.performance.perf.performanceTracing.State
+import com.tokopedia.analytics.performance.perf.performanceTracing.data.DevState
+import com.tokopedia.analytics.performance.perf.performanceTracing.data.PerformanceTraceData
+import com.tokopedia.analytics.performance.perf.performanceTracing.data.State
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
