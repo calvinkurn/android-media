@@ -158,7 +158,7 @@ object EPharmacyUtils {
         )
     }
 
-    fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse): EPharmacyDataModel {
+    fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse, redirectTickerText: String?): EPharmacyDataModel {
         val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
         if (data.detailData?.groupsData?.attachmentPageTickerText?.isNotBlank() == true) {
             listOfComponents.add(
@@ -167,7 +167,8 @@ object EPharmacyUtils {
                     TICKER_COMPONENT,
                     data.detailData?.groupsData?.attachmentPageTickerText,
                     data.detailData?.groupsData?.attachmentPageTickerLogoUrl,
-                    EPHARMACY_TICKER_BACKGROUND
+                    EPHARMACY_TICKER_BACKGROUND,
+                    redirectTickerText
                 )
             )
         }

@@ -42,6 +42,7 @@ class StoriesCreationUiMapper @Inject constructor(
             maxVideoDuration = TimeUnit.SECONDS.toMillis(config.maxVideoDuration).toInt(),
             imageSourceId = config.imageSourceId,
             videoSourceId = config.videoSourceId,
+            storiesApplinkTemplate = config.storyApplink,
             maxStoriesConfig = StoriesCreationConfiguration.MaxStoriesConfig(
                 isLimitReached = config.maxStoryBottomSheetConfig.isLimitReached,
                 imageUrl = config.maxStoryBottomSheetConfig.imageUrl,

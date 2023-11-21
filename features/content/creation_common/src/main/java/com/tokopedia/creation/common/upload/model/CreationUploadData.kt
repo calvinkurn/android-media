@@ -200,6 +200,9 @@ sealed interface CreationUploadData {
 
         @SerializedName(KEY_VIDEO_SOURCE_ID)
         val videoSourceId: String,
+
+        @SerializedName(KEY_APPLINK)
+        val applink: String,
     ) : CreationUploadData {
 
         val firstMediaUri: String
@@ -228,6 +231,7 @@ sealed interface CreationUploadData {
                         mediaTypeList = mediaTypeList,
                         imageSourceId = imageSourceId,
                         videoSourceId = videoSourceId,
+                        applink = applink,
                     )
                 )
             )
@@ -251,6 +255,7 @@ sealed interface CreationUploadData {
         private const val KEY_IMAGE_SOURCE_ID = "image_source_id"
         private const val KEY_VIDEO_SOURCE_ID = "video_source_id"
         private const val KEY_DRAFT_ID = "draftId"
+        private const val KEY_APPLINK = "applink"
 
         fun parseFromJson(json: String, gson: Gson): CreationUploadData {
             val uploadDataEntity = gson.fromJson<CreationUploadQueueEntity>(
@@ -328,6 +333,7 @@ sealed interface CreationUploadData {
                         mediaTypeList = storiesEntity.mediaTypeList,
                         imageSourceId = storiesEntity.imageSourceId,
                         videoSourceId = storiesEntity.videoSourceId,
+                        applink = storiesEntity.applink,
                     )
                 }
                 else -> throw UnknownUploadTypeException()
@@ -388,6 +394,7 @@ sealed interface CreationUploadData {
             authorType: String,
             imageSourceId: String,
             videoSourceId: String,
+            applink: String,
         ): CreationUploadData {
             return Stories(
                 queueId = 0,
@@ -403,6 +410,7 @@ sealed interface CreationUploadData {
                 authorType = authorType,
                 imageSourceId = imageSourceId,
                 videoSourceId = videoSourceId,
+                applink = applink,
             )
         }
     }

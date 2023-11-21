@@ -356,6 +356,6 @@ class RechargeHomepageAnalytics {
     companion object {
         const val ACTION_IMPRESSION = "impression"
         const val ACTION_CLICK = "click"
+        const val ACTION_CLOSE = "close"
     }
-
 }

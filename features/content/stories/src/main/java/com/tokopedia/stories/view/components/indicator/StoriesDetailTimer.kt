@@ -95,7 +95,8 @@ private fun StoriesTimerAnimationDisabled(
 
     LaunchedEffect(timerInfo, currentTime.value, isTimerRunning.value) {
         when (timerInfo.event) {
-            StoriesDetailItemUiEvent.PAUSE, StoriesDetailItemUiEvent.BUFFERING -> isTimerRunning.value = false
+            StoriesDetailItemUiEvent.PAUSE,
+            StoriesDetailItemUiEvent.BUFFERING -> isTimerRunning.value = false
             StoriesDetailItemUiEvent.RESUME -> {
                 isTimerRunning.value = true
                 if (currentTime.value < timerInfo.story.duration && isTimerRunning.value) {

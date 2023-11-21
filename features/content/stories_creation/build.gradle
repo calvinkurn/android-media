@@ -102,6 +102,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation projectOrAar(rootProject.ext.features.contentTest)
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 
@@ -119,6 +120,8 @@ dependencies {
     }
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.composeDependencies.composeUiTest
+    debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 
     //For Ui test
     androidTestImplementation rootProject.ext.unifyDependencies.sortFilter

@@ -111,4 +111,12 @@ data class CartItemHolderData(
         const val BUNDLING_ITEM_HEADER = 1
         const val BUNDLING_ITEM_FOOTER = 2
     }
+
+    fun getSwipeLayoutBundlingId(): String {
+        return "$cartId|$bundleId"
+    }
+
+    fun getSwipeLayoutId(): String {
+        return cartId
+    }
 }
