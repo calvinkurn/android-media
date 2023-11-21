@@ -32,7 +32,7 @@ data class TopAdsDeletedAdsResponse(
             val statTotalGrossProfit: String,
             @SerializedName("stat_total_impression")
             val statTotalImpression: String,
-            @SerializedName("stat_total_roas")
+            @SerializedName("stat_direct_roas")
             val statTotalRoas: String,
             @SerializedName("stat_total_sold")
             val statTotalSold: String,

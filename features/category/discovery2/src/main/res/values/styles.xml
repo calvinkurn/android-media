@@ -50,4 +50,9 @@
         <item name="android:layout_width">@dimen/dp_0</item>
         <item name="android:layout_height">@dimen/dp_0</item>
     </style>
+
+    <style name="circleImageDisplay">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">49%</item>
+    </style>
 </resources>
