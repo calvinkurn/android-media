@@ -7,7 +7,6 @@ import android.view.animation.AnimationUtils
 import android.widget.TextSwitcher
 import com.tokopedia.promousage.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Hansen Putra on 07/08/23
