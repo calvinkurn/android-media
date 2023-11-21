@@ -99,7 +99,9 @@ class ShopInfoPageTracker @Inject constructor(private val userSession: UserSessi
     fun sendClickShopNoteEvent(shopNote: ShopNote, shopId: String) {
         val shopNoteId = shopNote.id
         val templateId = 0
-        val eventLabel = "$shopNoteId - $templateId" Tracker.Builder()
+        val eventLabel = "$shopNoteId - $templateId" 
+        
+        Tracker.Builder()
             .setEvent("clickPG")
             .setEventAction("shop info - click shop notes")
             .setEventCategory("shop page - buyer")
