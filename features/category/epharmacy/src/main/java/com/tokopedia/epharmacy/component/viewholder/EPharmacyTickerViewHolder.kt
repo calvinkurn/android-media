@@ -69,8 +69,9 @@ class EPharmacyTickerViewHolder(
         webViewTicker.setHtmlDescription(data.tickerWebViewText.orEmpty())
         webViewTicker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                if (linkUrl.toString().isNotBlank()) {
-                    ePharmacyListener?.redirect(linkUrl.toString())
+                val url = linkUrl.toString()
+                if (url.isNotBlank()) {
+                    ePharmacyListener?.redirect(url)
                 }
             }
 
