@@ -39,6 +39,7 @@ class EPharmacyTickerViewHolder(
     }
 
     private fun renderWebViewTicker(data: EPharmacyTickerDataModel) {
+        if (data.tickerWebViewText.isNullOrBlank()) return
         getWebViewVersion().let { version ->
             if (errorWebViewCondition(version)) {
                 showWebViewTicker(data)
@@ -65,12 +66,12 @@ class EPharmacyTickerViewHolder(
     }
 
     private fun showWebViewTicker(data: EPharmacyTickerDataModel) {
-        if (data.tickerWebViewText.isNullOrBlank()) return
-
-        webViewTicker.setHtmlDescription(data.tickerWebViewText)
+        webViewTicker.setHtmlDescription(data.tickerWebViewText.orEmpty())
         webViewTicker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                ePharmacyListener?.redirect(linkUrl.toString())
+                if (linkUrl.toString().isNotBlank()) {
+                    ePharmacyListener?.redirect(linkUrl.toString())
+                }
             }
 
             override fun onDismiss() {}
