@@ -1,7 +1,7 @@
 package com.tokopedia.creation.common.presentation.components
 
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -60,6 +60,7 @@ private fun buildDescriptionAnnotatedString(
 ): AnnotatedString =
     buildAnnotatedString {
         append(stringResource(descriptionTextId))
+        append(" ")
         withStyle(
             SpanStyle(
                 color = NestTheme.colors.GN._500,
@@ -109,6 +110,7 @@ fun ExpandableContentCreationItem(
             .clip(RoundedCornerShape(12.dp))
             .border(1.dp, NestTheme.colors.NN._200, RoundedCornerShape(12.dp))
             .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
+            .animateContentSize()
     ) {
         Row(
             modifier = Modifier
@@ -159,7 +161,7 @@ fun ExpandableContentCreationItem(
             )
         }
 
-        AnimatedVisibility(visible = isSelected) {
+        if (isSelected) {
             Column(
                 modifier = Modifier
                     .padding(top = 4.dp, bottom = 8.dp)

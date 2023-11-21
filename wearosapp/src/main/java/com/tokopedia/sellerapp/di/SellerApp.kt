@@ -24,49 +24,56 @@ class SellerApp : Application() {
         remoteConfig = FirebaseRemoteConfigImpl(this@SellerApp)
     }
     private fun initLogManager() {
-        init(this@SellerApp, object : LoggerProxy {
-            val encryptor: AESEncryptorECB = AESEncryptorECB()
-            val secretKey: SecretKey =
-                encryptor.generateKey(ENCRYPTION_KEY)
-            val encryptorRSA: com.tokopedia.encryption.security.RSA =
-                com.tokopedia.encryption.security.RSA()
-            val privateKeyRSA: RSAPrivateKey =
-                encryptorRSA.stringToPrivateKey(RSAKeys.PRIVATE_RSA_KEY_STR)
-            override val decrypt: ((String) -> String)
-                get() = { s: String? -> encryptor.decrypt(s?:"", secretKey) }
-            override val encrypt: ((String) -> String)
-                get() = { s: String? -> encryptor.encrypt(s?:"", secretKey) }
-            override val decryptNrKey: ((String) -> String)
-                get() = { s: String? ->
-                    encryptorRSA.decrypt(
-                        s?:"",
-                        privateKeyRSA,
-                        com.tokopedia.encryption.utils.Constants.RSA_OAEP_ALGORITHM
-                    )
-                }
-            override val versionName: String
-                get() = BuildConfig.VERSION_NAME
-            override val versionCode: Int
-                get() = BuildConfig.VERSION_CODE
-            override val scalyrToken: String
-                get() = com.tokopedia.keys.Keys.AUTH_SCALYR_API_KEY
-            override val newRelicToken: String
-                get() = com.tokopedia.keys.Keys.AUTH_NEW_RELIC_API_KEY
-            override val newRelicUserId: String
-                get() = com.tokopedia.keys.Keys.AUTH_NEW_RELIC_USER_ID
-            override val isDebug: Boolean
-                get() = false
-            override val userId: String
-                get() = "-"
-            override val parserScalyr: String
-                get() = "android-seller-app-p%s"
-            override val scalyrConfig: String
-                get() = remoteConfig?.getString(REMOTE_CONFIG_SCALYR_KEY_LOG)?:""
-            override val newRelicConfig: String
-                get() = remoteConfig?.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG)?:""
-            override val embraceConfig: String
-                get() = remoteConfig?.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG)?:""
-        })
+        init(
+            this@SellerApp,
+            object : LoggerProxy {
+                val encryptor: AESEncryptorECB = AESEncryptorECB()
+                val secretKey: SecretKey =
+                    encryptor.generateKey(ENCRYPTION_KEY)
+                val encryptorRSA: com.tokopedia.encryption.security.RSA =
+                    com.tokopedia.encryption.security.RSA()
+                val privateKeyRSA: RSAPrivateKey =
+                    encryptorRSA.stringToPrivateKey(RSAKeys.PRIVATE_RSA_KEY_STR)
+                override val decrypt: ((String) -> String)
+                    get() = { s: String? -> encryptor.decrypt(s ?: "", secretKey) }
+                override val encrypt: ((String) -> String)
+                    get() = { s: String? -> encryptor.encrypt(s ?: "", secretKey) }
+                override val decryptNrKey: ((String) -> String)
+                    get() = { s: String? ->
+                        encryptorRSA.decrypt(
+                            s ?: "",
+                            privateKeyRSA,
+                            com.tokopedia.encryption.utils.Constants.RSA_OAEP_ALGORITHM
+                        )
+                    }
+                override val versionName: String
+                    get() = BuildConfig.VERSION_NAME
+                override val versionCode: Int
+                    get() = BuildConfig.VERSION_CODE
+
+                override val activityName: String
+                    get() = ""
+
+                override val scalyrToken: String
+                    get() = com.tokopedia.keys.Keys.AUTH_SCALYR_API_KEY
+                override val newRelicToken: String
+                    get() = com.tokopedia.keys.Keys.AUTH_NEW_RELIC_API_KEY
+                override val newRelicUserId: String
+                    get() = com.tokopedia.keys.Keys.AUTH_NEW_RELIC_USER_ID
+                override val isDebug: Boolean
+                    get() = false
+                override val userId: String
+                    get() = "-"
+                override val parserScalyr: String
+                    get() = "android-seller-app-p%s"
+                override val scalyrConfig: String
+                    get() = remoteConfig?.getString(REMOTE_CONFIG_SCALYR_KEY_LOG) ?: ""
+                override val newRelicConfig: String
+                    get() = remoteConfig?.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG) ?: ""
+                override val embraceConfig: String
+                    get() = remoteConfig?.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG) ?: ""
+            }
+        )
     }
 
     companion object {
@@ -93,6 +100,5 @@ class SellerApp : Application() {
                 104.toChar()
             )
         )
-
     }
 }

@@ -23,4 +23,8 @@ object StoriesCreationInjector {
 
         return component!!
     }
+
+    fun set(component: StoriesCreationComponent) {
+        this.component = component
+    }
 }

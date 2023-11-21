@@ -282,6 +282,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.contentAnalytic)
     implementation projectOrAar(rootProject.ext.features.creationCommon)
+    implementation projectOrAar(rootProject.ext.features.contentProductPicker)
     implementation projectOrAar(rootProject.ext.features.filter)
 
     implementation projectOrAar(rootProject.ext.features.additional_check)
@@ -421,6 +422,13 @@ dependencies {
     implementation (rootProject.ext.tkpdLibDependencies.ucrop) {
         exclude group: 'com.android.support'
     }
+
+    // Requirement to DF product_detail
+    implementation projectOrAar(rootProject.ext.features.playWidget)
+    implementation projectOrAar(rootProject.ext.features.productShare)
+    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
+    implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
+    implementation projectOrAar(rootProject.ext.features.referral)
 }
 
 apply plugin: 'com.google.gms.google-services'

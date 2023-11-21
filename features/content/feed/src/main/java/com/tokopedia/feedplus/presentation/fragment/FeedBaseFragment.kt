@@ -33,6 +33,7 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPoin
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.model.CreationUploadType
@@ -256,7 +257,8 @@ class FeedBaseFragment :
         DaggerFeedMainComponent.factory()
             .build(
                 activityContext = requireContext(),
-                appComponent = (requireActivity().application as BaseMainApplication).baseAppComponent
+                appComponent = (requireActivity().application as BaseMainApplication).baseAppComponent,
+                creationUploaderComponent = CreationUploaderComponentProvider.get(requireContext())
             ).inject(this)
     }
 
@@ -510,14 +512,14 @@ class FeedBaseFragment :
                         is CreationUploadResult.Success -> {
                             binding.uploadView.hide()
 
-                            when (uploadResult.data.uploadType) {
-                                CreationUploadType.Post -> {
+                            when (val uploadData = uploadResult.data) {
+                                is CreationUploadData.Post -> {
                                     showNormalToaster(
                                         getString(R.string.feed_upload_content_success),
                                         duration = Toaster.LENGTH_LONG
                                     )
                                 }
-                                CreationUploadType.Shorts -> {
+                                is CreationUploadData.Shorts -> {
                                     showNormalToaster(
                                         getString(R.string.feed_upload_content_success),
                                         duration = Toaster.LENGTH_LONG,
@@ -532,6 +534,19 @@ class FeedBaseFragment :
                                                 requireContext(),
                                                 ApplinkConst.PLAY_DETAIL,
                                                 uploadResult.data.creationId
+                                            )
+                                        }
+                                    )
+                                }
+                                is CreationUploadData.Stories -> {
+                                    showNormalToaster(
+                                        getString(R.string.feed_upload_story_success),
+                                        duration = Toaster.LENGTH_LONG,
+                                        actionText = getString(R.string.feed_upload_shorts_see_video),
+                                        actionListener = {
+                                            router.route(
+                                                requireContext(),
+                                                uploadData.applink
                                             )
                                         }
                                     )

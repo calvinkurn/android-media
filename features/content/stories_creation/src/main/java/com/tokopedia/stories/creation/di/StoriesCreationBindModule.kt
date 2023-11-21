@@ -24,10 +24,6 @@ import dagger.Module
 @Module
 abstract class StoriesCreationBindModule {
 
-    @Binds
-    @StoriesCreationScope
-    abstract fun bindStoriesCreationRepository(repository: StoriesCreationRepositoryImpl): StoriesCreationRepository
-
     /** Analytic */
     @Binds
     @StoriesCreationScope
@@ -46,6 +42,10 @@ abstract class StoriesCreationBindModule {
     abstract fun bindStoriesCreationAnalyticSender(storiesCreationAnalyticSender: StoriesCreationAnalyticSenderImpl): StoriesCreationAnalyticSender
 
     /** Repository */
+    @Binds
+    @StoriesCreationScope
+    abstract fun bindStoriesCreationRepository(repository: StoriesCreationRepositoryImpl): StoriesCreationRepository
+
     @Binds
     @StoriesCreationScope
     abstract fun bindStoriesCreationProductRepository(storiesCreationProductRepository: StoriesCreationProductRepositoryImpl): ContentProductPickerSellerRepository

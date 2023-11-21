@@ -5,6 +5,7 @@
     <application>
         <activity android:name=".view.activity.StoriesCreationActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

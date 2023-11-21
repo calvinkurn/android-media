@@ -38,6 +38,7 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_PEOPLE
 import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_GAMIFICATION
 import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_TOKOPOINTS
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FRONT_FUNNEL
+import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_PDP
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_TALK
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOCHAT
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOFOOD
@@ -178,7 +179,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkMA(ApplinkConst.FEED_CREATION_PRODUCT_SEARCH, DF_FEED_CONTENT_CREATION)
 
         assertEqualDeepLinkMA(ApplinkConst.MediaEditor.MEDIA_EDITOR, DF_FEED_CONTENT_CREATION)
-
     }
 
     @Test
@@ -201,7 +201,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
     fun `MA df_merchant_product_ar`() {
         assertEqualDeepLinkMA(PRODUCT_AR, DF_MERCHANT_PRODUCT_AR)
     }
-
 
     @Test
     fun `MA df_merchant_seller`() {
@@ -311,7 +310,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkMA(SETTING_BANK, DF_USER_SETTINGS)
     }
 
-
     @Test
     fun `SA df_seller_front_funnel`() {
         assertEqualDeepLinkSA("sellerapp://seller-persona", DF_SELLER_FRONT_FUNNEL)
@@ -337,8 +335,18 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `SA df_talk`() {
-        assertEqualDeepLinkSA("tokopedia://product/2506450520/talk?shop_id=3318861&is_variant_selected=true&available_variants=true",
-            DF_SELLER_TALK)
+        assertEqualDeepLinkSA(
+            "tokopedia://product/2506450520/talk?shop_id=3318861&is_variant_selected=true&available_variants=true",
+            DF_SELLER_TALK
+        )
     }
 
+    @Test
+    fun `SA df_pdp`() {
+        assertEqualDeepLinkSA("tokopedia://product/2506450520", DF_SELLER_PDP)
+        assertEqualDeepLinkSA("tokopedia://product/2506450520/?aff_unique_id=12345", DF_SELLER_PDP)
+        assertEqualDeepLinkSA("tokopedia://product/2506450520/?warehouse_id=12345", DF_SELLER_PDP)
+        assertEqualDeepLinkSA("tokopedia://product-edu/1", DF_SELLER_PDP)
+        assertEqualDeepLinkSA("tokopedia://post-atc/2506450520", DF_SELLER_PDP)
+    }
 }

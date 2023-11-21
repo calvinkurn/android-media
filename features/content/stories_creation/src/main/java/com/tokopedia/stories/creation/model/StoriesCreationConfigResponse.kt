@@ -32,6 +32,9 @@ data class StoriesCreationConfigResponse(
 
     @SerializedName("video_source_id")
     val videoSourceId: String = "",
+
+    @SerializedName("story_applink")
+    val storyApplink: String = "",
 ) {
 
     data class MaxStoryBottomSheetConfig(
