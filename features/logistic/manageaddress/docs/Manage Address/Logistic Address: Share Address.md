@@ -40,23 +40,23 @@ This project add one new tab *Dari Teman* in manage address page which contains 
 
 Entry point go to share address page is same with manage address, for details entry point see [here](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2034631638/Source+Param+Manage+Address+Entry+Point)
 
-![](../res/shareaddress/navigation_one.png)
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/shareaddress/navigation_one.png)
 Flow request address, from tab *Dari Teman* and click section view *Minta alamat ke teman kamu*
 
-![](../res/shareaddress/navigation_two.png)
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/shareaddress/navigation_two.png)
 Flow to direct share address, user can click share icon on the top right
 
-![](../res/shareaddress/navigation_three.png)  
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/shareaddress/navigation_three.png)  
 Flow share address, from notification if any other users request address
 
-![](../res/shareaddress/navigation_four.png)  
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/shareaddress/navigation_four.png)  
 Flow when received address from others user from notification or can seen in tab *Dari Teman,* and the user can save or delete addresses
 
-![](../res/shareaddress/navigation_five.png)
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/shareaddress/navigation_five.png)
 
 ## Flow Diagram
 
-![](../res/shareaddress/share_address_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/shareaddress/share_address_drawio.png)
 
 ## How-to
 

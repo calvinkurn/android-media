@@ -35,17 +35,17 @@ Remove Shop Single Location
 
 Tokopedia facilitates seller to set up courier with a feature called `Shipping Editor`.
 
-![](../res/shippingeditor/loc_shipping_editor.png)
+![](https://docs-android.tokopedia.net/images/docs/editshipping/shippingeditor/loc_shipping_editor.png)
 
 ## Navigation
 
 - Shipping editor page can be accessed with this app link `tokopedia-android-internal://marketplace/shop-settings-shipping`
 
-![](../res/shippingeditor/navigation.png)
+![](https://docs-android.tokopedia.net/images/docs/editshipping/shippingeditor/navigation.png)
 
 ## Flow Diagram
 
-![](../res/shippingeditor/flow_diagram.png)
+![](https://docs-android.tokopedia.net/images/docs/editshipping/shippingeditor/flow_diagram.png)
 
 ## Tech Stack
 

@@ -9,29 +9,31 @@ import java.lang.ref.WeakReference
 class AppActivityLifecycleCallback : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        //noop
+        // noop
     }
 
     override fun onActivityStarted(activity: Activity) {
         // technically this should be in onResume but it is effectively the same to have it here, plus
         // it allows us to use currentActivityReference_ in session initialization code
         AppUtil.currentActivityReference = WeakReference<Activity>(activity)
+
+        AppUtil.currentActivityName = activity.javaClass.simpleName
     }
 
     override fun onActivityResumed(activity: Activity) {
-        //noop
+        // noop
     }
 
     override fun onActivityPaused(activity: Activity) {
-        //noop
+        // noop
     }
 
     override fun onActivityStopped(activity: Activity) {
-        //noop
+        // noop
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-        //noop
+        // noop
     }
 
     override fun onActivityDestroyed(activity: Activity) {
@@ -43,5 +45,4 @@ class AppActivityLifecycleCallback : Application.ActivityLifecycleCallbacks {
     fun getCurrentActivity(): Activity? {
         return AppUtil.currentActivityReference?.get()
     }
-
 }

@@ -71,7 +71,8 @@ internal object MediaListenerBuilder {
                 ?.shouldAbleToExposeResponseHeader(context)
 
             if (properties.shouldTrackNetwork && shouldAbleToExposeResponseHeader == true) {
-                val headers = NetworkResponseManager.header(properties.data.toString())
+                val networkResponseManager = NetworkResponseManager.instance(context)
+                val headers = networkResponseManager.header(properties.data.toString())
 
                 properties.setNetworkResponse?.header(
                     headers, // get all header responses
@@ -79,7 +80,7 @@ internal object MediaListenerBuilder {
                 )
 
                 if (properties.isForceClearHeaderCache) {
-                    NetworkResponseManager.forceResetCache()
+                    networkResponseManager.forceResetCache()
                 }
             }
         }

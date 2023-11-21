@@ -327,6 +327,8 @@ import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
+import com.tokopedia.universal_sharing.view.customview.ShareWidgetCallback
+import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -641,7 +643,6 @@ open class DynamicProductDetailFragment :
         navToolbar = view.findViewById(R.id.pdp_navtoolbar)
         setupToolbarState()
         navAbTestCondition({ initToolbarMainApp() }, { initToolbarSellerApp() })
-
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
         screenshotDetector = context?.let {
             SharingUtil.createAndStartScreenShotDetector(
@@ -2272,7 +2273,8 @@ open class DynamicProductDetailFragment :
     }
 
     override fun shouldShowWishlist(): Boolean {
-        return !viewModel.isShopOwner()
+        val isPrefetch = viewModel.getDynamicProductInfoP1?.cacheState?.isPrefetch == true
+        return !viewModel.isShopOwner() && !isPrefetch
     }
 
     override fun onMainImageClicked(
@@ -2691,7 +2693,8 @@ open class DynamicProductDetailFragment :
                     RecommendationCarouselTracking.sendEventAtcClick(
                         it.data,
                         viewModel.userId,
-                        it.data.minOrder.coerceAtLeast(DEFAULT_QTY_1)
+                        it.data.minOrder.coerceAtLeast(DEFAULT_QTY_1),
+                        anchorProductId = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
                     )
                 }
             }, {})
@@ -3511,10 +3514,16 @@ open class DynamicProductDetailFragment :
             // prevent interaction loading state for several component
             val submitInitialList = viewModel.getDynamicProductInfoP1?.cacheState?.cacheFirstThenCloud == false
             if (submitInitialList) {
-                submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
+                submitInitialList(
+                    pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty(),
+                    viewModel.getDynamicProductInfoP1?.cacheState
+                )
             }
         } else {
-            submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
+            submitInitialList(
+                pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty(),
+                viewModel.getDynamicProductInfoP1?.cacheState
+            )
         }
     }
 
@@ -5938,6 +5947,76 @@ open class DynamicProductDetailFragment :
                 isRemindMe = isRemindMe
             )
         )
+    }
+
+    private val universalShareWidgetCallback
+        get() = object : ShareWidgetCallback {
+            override fun onShowNormalBottomSheet() {
+                val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+                shareProduct(productInfo)
+            }
+
+            override fun onClickShareWidget(
+                id: String,
+                channel: String,
+                isAffiliate: Boolean,
+                isDirectChannel: Boolean
+            ) {
+                val campaignId = campaignId.ifEmpty { Int.ZERO.toString() }
+                if (isDirectChannel) {
+                    DynamicProductDetailTracking.Click.clickDirectChannel(
+                        channel,
+                        isAffiliate,
+                        id,
+                        campaignId,
+                        Int.ZERO.toString()
+                    )
+                } else {
+                    DynamicProductDetailTracking.Click.clickShareWidget(
+                        isAffiliate,
+                        id,
+                        campaignId,
+                        Int.ZERO.toString()
+                    )
+                }
+            }
+        }
+
+    override fun onUniversalShareWidget(widget: UniversalShareWidget) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        val productData = generateProductShareData(
+            productInfo = productInfo,
+            userId = viewModel.userId,
+            shopUrl = viewModel.getShopInfo().shopCore.url,
+            bundleId = Int.ZERO.toString()
+        )
+        val personalizedCampaignModel = generatePersonalizedData(
+            product = productInfo,
+            productP2 = viewModel.p2Data.value
+        )
+        val imageGenerator = generateImageGeneratorData(
+            product = productInfo,
+            bebasOngkir = viewModel.getBebasOngkirDataByProductId()
+        ).apply {
+            productImageUrl = SharingUtil.transformOgImageURL(
+                context = context,
+                imageURL = productInfo.data.getProductImageUrl().orEmpty()
+            )
+        }
+        val affiliateInput = generateAffiliateShareData(
+            productInfo = productInfo,
+            shopInfo = viewModel.p2Data.value?.shopInfo,
+            variantData = viewModel.variantData
+        )
+        shareProductInstance?.setWhatsappShareWidget(
+            shareWidget = widget,
+            productData = productData,
+            personalizedCampaignModel = personalizedCampaignModel,
+            affiliateInput = affiliateInput,
+            imageGeneratorParamModel = imageGenerator
+        )
+
+        widget.setShareWidgetCallback(shareWidgetCallback = universalShareWidgetCallback)
     }
 
     override fun onImpressProductDetailNavigation(labels: List<String>) {

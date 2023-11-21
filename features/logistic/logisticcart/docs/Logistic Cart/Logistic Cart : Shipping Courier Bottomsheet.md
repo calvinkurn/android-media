@@ -37,11 +37,11 @@ So we need to maintain two different bottomsheets when there are changes. theref
 This bottomsheet is used to select courier on the checkout and occ page  
 
 
-![](../res/shippingcourierbottomsheet/project_description.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingcourierbottomsheet/project_description.png)
 
 ## Flow Diagram
 
-![](../res/shippingcourierbottomsheet/shipping_courier_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingcourierbottomsheet/shipping_courier_drawio.png)
 
 ## How-to
 

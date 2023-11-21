@@ -13,6 +13,8 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -41,8 +43,12 @@ import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.ImageGeneratorShareWidgetParam
+import com.tokopedia.universal_sharing.view.model.LinkShareWidgetProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.ShareWidgetParam
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
@@ -431,7 +437,11 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 
     private fun generateOgTitle(productData: ProductData): String {
-        return "${productData.productName} - ${productData.priceText}"
+        return if (productData.hasMaskingPrice) {
+            "${productData.productName}"
+        } else {
+            "${productData.productName} - ${productData.priceText}"
+        }
     }
 
     private fun generateOgDescription(productData: ProductData): String {
@@ -489,7 +499,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 }
                 getImageFromMedia(true)
                 setupAffiliate(affiliateInput, this)
-                setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP)
+                setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.PDP_WITH_PRICE_STRING)
                 if (!personalizedCampaignModel.isThematicCampaign && !(personalizedCampaignModel.startTime == 0L && personalizedCampaignModel.endTime == 0L)) {
                     setPersonalizedCampaign(personalizedCampaignModel)
                 }
@@ -546,6 +556,53 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         }
     }
 
+    fun setWhatsappShareWidget(
+        shareWidget: UniversalShareWidget,
+        productData: ProductData,
+        personalizedCampaignModel: PersonalizedCampaignModel,
+        affiliateInput: AffiliateInput,
+        imageGeneratorParamModel: PdpParamModel
+    ) {
+        var imageGenerator = imageGeneratorParamModel
+        var personalizedMessage = ""
+        var shareMessage = ""
+        if (personalizedCampaignModel.isPersonalizedCampaignActive()) {
+            imageGenerator = imageGenerator.copy(
+                campaignName = personalizedCampaignModel.getCampaignName(),
+                campaignInfo = personalizedCampaignModel.getPersonalizedImage(),
+                hasRibbon = true
+            )
+            personalizedMessage = personalizedCampaignModel.getPersonalizedMessage()
+        }
+
+        if (personalizedMessage.isEmpty()) {
+            shareMessage = if (personalizedCampaignModel.isThematicCampaign && personalizedCampaignModel.discountPercentage != 0F) {
+                productData.getTextDescriptionDisc(
+                    activity,
+                    "%s",
+                    personalizedCampaignModel.discountPercentage
+                )
+            } else {
+                productData.getTextDescriptionNonDisc(
+                    activity,
+                    "%s"
+                )
+            }
+        } else {
+            shareMessage = "$personalizedMessage %s"
+        }
+        shareWidget.setData(
+            shareWidgetParam = ShareWidgetParam(
+                linkProperties = generateLinkProperties(productData, shareMessage),
+                affiliateInput = affiliateInput,
+                imageGenerator = ImageGeneratorShareWidgetParam(
+                    ImageGeneratorConstants.ImageGeneratorSourceId.PDP_WITH_PRICE_STRING,
+                    imageGenerator
+                )
+            )
+        )
+    }
+
     private fun setupAffiliate(
         affiliateInput: AffiliateInput,
         universalShareBottomSheet: UniversalShareBottomSheet
@@ -560,6 +617,21 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         override fun permissionAction(action: String, label: String) {
             onClickAccessPhotoMediaAndFiles(productData.userId, productData.productId, label)
         }
+    }
+
+    fun generateLinkProperties(productData: ProductData, message: String): LinkShareWidgetProperties {
+        return LinkShareWidgetProperties(
+            page = "PDP",
+            message = message,
+            deeplink = UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, productData.productId),
+            id = productData.productId,
+            desktopUrl = productData.productUrl.toString(),
+            linkerType = LinkerData.PRODUCT_TYPE,
+            userId = productData.userId,
+            ogTitle = generateOgTitle(productData),
+            ogDescription = generateOgDescription(productData),
+            ogImageUrl = productData.productImageUrl ?: ""
+        )
     }
 }
 

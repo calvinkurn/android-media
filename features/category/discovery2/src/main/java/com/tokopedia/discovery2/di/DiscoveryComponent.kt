@@ -10,6 +10,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.expl
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.flashsaletoko.FlashSaleTokoTabViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
@@ -56,5 +58,7 @@ interface DiscoveryComponent {
     fun inject(explicitWidgetViewModel: ExplicitWidgetViewModel)
     fun inject(flashSaleTokoTabViewModel: FlashSaleTokoTabViewModel)
     fun inject(viewAllCarouselViewModel: ViewAllCarouselViewModel)
+    fun inject(merchantVoucherGridViewModel: MerchantVoucherGridViewModel)
+    fun inject(merchantVoucherGridItemViewModel: MerchantVoucherGridItemViewModel)
     fun provideSubComponent(): UIWidgetComponent
 }
