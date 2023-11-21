@@ -16,7 +16,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.home_component.util.ImageHandler
+import com.tokopedia.home_component.util.ImageLoaderStateListener
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -106,13 +106,13 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         festiveForeground.loadImageWithoutPlaceholder(
             imageUrl,
-            listener = object : ImageHandler.ImageLoaderStateListener {
-                override fun successLoad(view: ImageView?) {
+            listener = object : ImageLoaderStateListener {
+                override fun successLoad(view: ImageView) {
                     festiveForeground.minimumHeight = 0
                 }
 
-                override fun failedLoad(view: ImageView?) {
-                    view?.hide()
+                override fun failedLoad(view: ImageView) {
+                    view.hide()
                 }
             }
         )
@@ -123,13 +123,13 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         festiveBackground.loadImageWithoutPlaceholder(
             imageUrl,
-            listener = object : ImageHandler.ImageLoaderStateListener {
-                override fun successLoad(view: ImageView?) {
+            listener = object : ImageLoaderStateListener {
+                override fun successLoad(view: ImageView) {
                     festiveBackground.minimumHeight = 0
                 }
 
-                override fun failedLoad(view: ImageView?) {
-                    view?.hide()
+                override fun failedLoad(view: ImageView) {
+                    view.hide()
                 }
             }
         )

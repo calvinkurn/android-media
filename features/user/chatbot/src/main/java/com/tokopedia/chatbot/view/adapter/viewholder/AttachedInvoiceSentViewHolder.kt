@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
@@ -18,7 +17,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifycomponents.Label
 

@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.common.GalleryType;
 import com.tokopedia.imagepicker.common.R;
 import com.tokopedia.imagepicker.common.model.AlbumItem;
