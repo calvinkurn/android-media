@@ -53,7 +53,7 @@ class HomeRecommendationCardMapper @Inject constructor(
                 }
 
                 TYPE_RECOM_CARD -> {
-                    if(getHomeRecommendationCard.layoutName != LAYOUT_NAME_LIST) {
+                    if (getHomeRecommendationCard.layoutName != LAYOUT_NAME_LIST) {
                         (mapToEntityCardRecommendationCard(card) as? Visitable<HomeRecommendationTypeFactoryImpl>)?.let {
                             homeRecommendationTypeFactoryImplList.add(
                                 it
@@ -275,7 +275,5 @@ class HomeRecommendationCardMapper @Inject constructor(
         private const val TYPE_BANNER_ADS = "banner_ads"
         private const val TYPE_RECOM_CARD = "recom_card"
         private const val TYPE_VIDEO = "video"
-
-        const val TYPE_VERTICAL_BANNER_ADS = "banner_ads_vertical"
     }
 }
