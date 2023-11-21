@@ -107,7 +107,7 @@ open class ProductViewHolder(
             setupAddonsBinding()
             partialProductAddonViewHolder =
                 partialItemBuyerOrderDetailAddonsBinding?.let {
-                    PartialProductAddonViewHolder(listener, it)
+                    PartialProductAddonViewHolder(listener, it, navigator)
                 }
             partialProductAddonViewHolder?.bindViews(addonsListUiModel)
         } else {

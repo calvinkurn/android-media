@@ -4,10 +4,14 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.PartialItemOwocAddonsBinding
 import com.tokopedia.buyerorderdetail.presentation.model.OwocAddonsListUiModel
 
-class OwocAddonsViewHolder(itemView: View) : AbstractViewHolder<OwocAddonsListUiModel>(itemView) {
+class OwocAddonsViewHolder(
+    itemView: View,
+    private val navigator: BuyerOrderDetailNavigator?
+) : AbstractViewHolder<OwocAddonsListUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -22,7 +26,7 @@ class OwocAddonsViewHolder(itemView: View) : AbstractViewHolder<OwocAddonsListUi
     override fun bind(element: OwocAddonsListUiModel?) {
         if (element == null) return
         owocPartialProductAddonViewHolder =
-            OwocPartialProductAddonViewHolder(partialItemOwocAddonsBinding)
+            OwocPartialProductAddonViewHolder(partialItemOwocAddonsBinding, navigator)
         owocPartialProductAddonViewHolder?.bindViews(element)
     }
 

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailAddonsListBinding
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -20,7 +21,10 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
-class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.AddonItemUiModel>) :
+class AddonsItemAdapter(
+    private val addonsItemList: List<AddonsListUiModel.AddonItemUiModel>,
+    private val navigator: BuyerOrderDetailNavigator?
+) :
     RecyclerView.Adapter<AddonsItemAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -49,6 +53,15 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
                 setupDividerAddon()
                 setDataViews(item)
                 setupAddNoteViews(item)
+                setupInfoLink(item.infoLink)
+            }
+        }
+
+        private fun ItemBuyerOrderDetailAddonsListBinding.setupInfoLink(infoLink: String) {
+            icBomDetailAddonsInfo.showIfWithBlock(infoLink.isNotEmpty()) {
+                setOnClickListener {
+                    navigator?.openAppLink(infoLink, false)
+                }
             }
         }
 
@@ -59,7 +72,7 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
         private fun ItemBuyerOrderDetailAddonsListBinding.setupAddNoteViews(item: AddonsListUiModel.AddonItemUiModel) {
             setupToMetadata(item.toStr)
             setupFromMetadata(item.fromStr)
-            setupMessageMetadata(item.message)
+            setupMessageMetadata(item.message, item.tips)
         }
 
         private fun ItemBuyerOrderDetailAddonsListBinding.setDataViews(item: AddonsListUiModel.AddonItemUiModel) {
@@ -111,15 +124,39 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
             }
         }
 
-        private fun ItemBuyerOrderDetailAddonsListBinding.setupMessageMetadata(message: String) {
-            if (message.isBlank()) {
+        private fun ItemBuyerOrderDetailAddonsListBinding.setupMessageMetadata(
+            message: String,
+            tips: String
+        ) {
+            if (tips.isBlank() && message.isBlank()) {
                 tvBomDetailAddonsMessageValue.hide()
                 tvBomDetailAddonsReadMoreMessage.hide()
-            } else {
-                tvBomDetailAddonsMessageValue.run {
-                    show()
-                    initCollapseAddonMessage(message)
-                }
+                return
+            }
+
+            if (message.isNotBlank()) {
+                renderNotes(message)
+                return
+            }
+
+            if (tips.isNotBlank()) {
+                renderTips(tips)
+                return
+            }
+        }
+
+        private fun ItemBuyerOrderDetailAddonsListBinding.renderNotes(notes: String) {
+            tvBomDetailAddonsMessageValue.run {
+                show()
+                initCollapseAddonMessage(notes)
+            }
+        }
+
+        private fun ItemBuyerOrderDetailAddonsListBinding.renderTips(notes: String) {
+            tvBomDetailAddonsReadMoreMessage.hide()
+            tvBomDetailAddonsMessageValue.run {
+                show()
+                text = HtmlLinkHelper(context, notes).spannedString
             }
         }
 

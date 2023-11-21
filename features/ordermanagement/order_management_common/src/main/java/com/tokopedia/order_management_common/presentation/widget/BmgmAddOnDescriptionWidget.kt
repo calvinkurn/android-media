@@ -324,7 +324,11 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
         }
     }
 
-    fun setDescription(description: String, expanded: Boolean) {
+    fun setDescription(
+        description: String,
+        expanded: Boolean,
+        disableExpandable: Boolean = false
+    ) {
         this@BmgmAddOnDescriptionWidget.description = description
         with(binding.tvAddOnDescription) {
             animatorSet.cancel()
@@ -333,15 +337,24 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
                 binding.containerAddOnDescriptionSeeMore.maxHeight = Int.ZERO
             } else {
                 show()
-                viewTreeObserver.removeOnPreDrawListener(descriptionOnPreDrawListener)
-                viewTreeObserver.addOnPreDrawListener(descriptionOnPreDrawListener)
-                setDescriptionText(expanded)
-                updateDescriptionMaxLines(expanded)
-                val layoutParamsCopy = layoutParams
-                layoutParamsCopy.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                layoutParams = layoutParamsCopy
+                if (disableExpandable) {
+                    binding.tvAddOnDescription.text =
+                        HtmlLinkHelper(context, description).spannedString
+                } else {
+                    renderExpandableDescription(expanded)
+                }
             }
         }
+    }
+
+    private fun renderExpandableDescription(expanded: Boolean) {
+        viewTreeObserver.removeOnPreDrawListener(descriptionOnPreDrawListener)
+        viewTreeObserver.addOnPreDrawListener(descriptionOnPreDrawListener)
+        setDescriptionText(expanded)
+        updateDescriptionMaxLines(expanded)
+        val layoutParamsCopy = layoutParams
+        layoutParamsCopy.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        layoutParams = layoutParamsCopy
     }
 
     fun expand() {

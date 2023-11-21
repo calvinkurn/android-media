@@ -1101,6 +1101,10 @@ open class BuyerOrderDetailFragment :
         viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
     }
 
+    override fun onAddOnsInfoLinkClicked(infoLink: String) {
+        navigator.openAppLink(infoLink, false)
+    }
+
     override fun onAddOnsExpand(addOnsIdentifier: String, isExpand: Boolean) {
         viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
     }

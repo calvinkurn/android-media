@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.PartialItemBuyerOrderDetailAddonsBinding
 import com.tokopedia.buyerorderdetail.presentation.adapter.AddonsItemAdapter
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
@@ -10,7 +11,8 @@ import com.tokopedia.kotlin.extensions.view.show
 
 class PartialProductAddonViewHolder(
     private val listener: PartialProductItemViewHolder.ProductViewListener,
-    private val partialItemBuyerOrderDetailAddonsBinding: PartialItemBuyerOrderDetailAddonsBinding
+    private val partialItemBuyerOrderDetailAddonsBinding: PartialItemBuyerOrderDetailAddonsBinding,
+    private val navigator: BuyerOrderDetailNavigator
 ) {
 
     fun bindViews(element: AddonsListUiModel) {
@@ -71,7 +73,7 @@ class PartialProductAddonViewHolder(
     private fun setupAddonList(element: AddonsListUiModel) {
         partialItemBuyerOrderDetailAddonsBinding.run {
             rvAddonsList.layoutManager = LinearLayoutManager(root.context)
-            rvAddonsList.adapter = AddonsItemAdapter(element.addonsItemList)
+            rvAddonsList.adapter = AddonsItemAdapter(element.addonsItemList, navigator)
         }
     }
 }

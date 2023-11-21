@@ -562,15 +562,18 @@ data class GetBuyerOrderDetailResponse(
                         data class Metadata(
                             @SerializedName("add_on_note")
                             @Expose
-                            val addonNote: AddonNote = AddonNote()
+                            val addonNote: AddonNote = AddonNote(),
+                            @SerializedName("info_link")
+                            @Expose
+                            val infoLink: String = ""
                         ) {
                             data class AddonNote(
                                 @SerializedName("notes")
                                 @Expose
                                 val notes: String = "",
-                                @SerializedName("short_notes")
+                                @SerializedName("tips")
                                 @Expose
-                                val shortNotes: String = "",
+                                val tips: String = "",
                                 @SerializedName("to")
                                 @Expose
                                 val to: String = "",

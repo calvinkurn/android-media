@@ -130,7 +130,9 @@ object ProductListUiStateMapper {
                         toStr = it.toStr,
                         fromStr = it.fromStr,
                         message = it.message,
-                        providedByShopItself = it.providedByShopItself
+                        providedByShopItself = it.providedByShopItself,
+                        infoLink = it.infoLink,
+                        tips = it.tips
                     )
                 }.orEmpty()
             ),
@@ -803,6 +805,7 @@ object ProductListUiStateMapper {
                 totalPriceText = addonInfo.orderLevel?.totalPriceStr.orEmpty(),
                 addonsItemList = addonInfo.orderLevel?.addons?.map {
                     val addonNote = it.metadata?.addonNote
+                    val infoLink = it.metadata?.infoLink
                     AddonsListUiModel.AddonItemUiModel(
                         priceText = it.priceStr,
                         addOnsName = it.name,
@@ -813,7 +816,9 @@ object ProductListUiStateMapper {
                         toStr = addonNote?.to.orEmpty(),
                         fromStr = addonNote?.from.orEmpty(),
                         message = addonNote?.notes.orEmpty(),
-                        providedByShopItself = false
+                        providedByShopItself = false,
+                        infoLink = infoLink.orEmpty(),
+                        tips = addonNote?.tips.orEmpty()
                     )
                 }.orEmpty()
             ).also {
@@ -1015,6 +1020,7 @@ object ProductListUiStateMapper {
                     addonsTitle = addOnLabel,
                     addonItemList = it.addons?.map { addon ->
                         val addOnNote = addon.metadata?.addOnNote
+                        val addOnInfoLink = addon.metadata?.infoLink
                         com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel(
                             priceText = addon.priceStr,
                             quantity = addon.quantity,
@@ -1026,10 +1032,12 @@ object ProductListUiStateMapper {
                             fromStr = addOnNote?.from.orEmpty(),
                             message = addOnNote?.notes.orEmpty(),
                             noteCopyable = false,
-                            providedByShopItself = true
+                            providedByShopItself = true,
+                            infoLink = addOnInfoLink.orEmpty(),
+                            tips = addOnNote?.tips.orEmpty()
                         )
                     }.orEmpty()
-                ).also {addOnSummaryUiModel ->
+                ).also { addOnSummaryUiModel ->
                     addOnSummaryUiModel.isExpand = !addOnsExpandableState.contains(addOnIdentifier)
                 }
             },
@@ -1128,6 +1136,7 @@ object ProductListUiStateMapper {
             totalPriceText = addonSummary?.totalPriceStr.orEmpty(),
             addonsItemList = addonSummary?.addons?.map {
                 val addonNote = it.metadata?.addOnNote
+                val infoLink = it.metadata?.infoLink
                 AddonsListUiModel.AddonItemUiModel(
                     priceText = it.priceStr,
                     addOnsName = it.name,
@@ -1138,7 +1147,9 @@ object ProductListUiStateMapper {
                     toStr = addonNote?.to.orEmpty(),
                     fromStr = addonNote?.from.orEmpty(),
                     message = addonNote?.notes.orEmpty(),
-                    providedByShopItself = true
+                    providedByShopItself = true,
+                    infoLink = infoLink.orEmpty(),
+                    tips = addonNote?.tips.orEmpty()
                 )
             }.orEmpty()
         ).also {

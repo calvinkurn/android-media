@@ -444,6 +444,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                         }
                       }
                       addon_summary {
+                        total_price_str
                         addons {
                           id
                           name

@@ -27,6 +27,8 @@ data class AddonsListUiModel(
         val toStr: String,
         val fromStr: String,
         val message: String,
-        val providedByShopItself: Boolean
+        val providedByShopItself: Boolean,
+        val infoLink: String,
+        val tips: String
     )
 }

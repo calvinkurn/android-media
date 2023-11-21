@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewStub
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.PartialItemOwocAddonsBinding
 import com.tokopedia.buyerorderdetail.presentation.model.OwocAddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
@@ -12,7 +13,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 
 class OwocProductViewHolder(
-    itemView: View?
+    itemView: View?,
+    private val navigator: BuyerOrderDetailNavigator?
 ) : AbstractViewHolder<OwocProductListUiModel.ProductUiModel>(itemView) {
 
     companion object {
@@ -86,7 +88,12 @@ class OwocProductViewHolder(
             if (addonsViewStub is ViewStub) addonsViewStub.inflate() else addonsViewStub.show()
             setupAddonsBinding()
             owocPartialProductAddonViewHolder =
-                partialItemOwocAddonsBinding?.let { OwocPartialProductAddonViewHolder(it) }
+                partialItemOwocAddonsBinding?.let {
+                    OwocPartialProductAddonViewHolder(
+                        it,
+                        navigator
+                    )
+                }
             owocPartialProductAddonViewHolder?.bindViews(owocAddonsListUiModel)
         } else {
             addonsViewStub.hide()

@@ -312,7 +312,9 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                     toStr = String.EMPTY,
                     fromStr = String.EMPTY,
                     message = String.EMPTY,
-                    providedByShopItself = false
+                    providedByShopItself = false,
+                    infoLink = "todo",
+                    tips = "todo"
                 )
             }.orEmpty()
         )

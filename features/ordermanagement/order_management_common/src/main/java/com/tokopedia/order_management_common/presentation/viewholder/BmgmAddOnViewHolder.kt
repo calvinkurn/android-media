@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
 import com.tokopedia.order_management_common.databinding.ItemBmgmDetailAddOnBinding
@@ -60,6 +61,17 @@ class BmgmAddOnViewHolder(
             setupAddOnDescriptions(
                 addOnUiModel
             )
+            setupInfoLink(
+                addOnUiModel.infoLink
+            )
+        }
+    }
+
+    private fun ItemBmgmDetailAddOnBinding.setupInfoLink(infoLink: String) {
+        icBomDetailBmgmAddonsInfo.showIfWithBlock(infoLink.isNotEmpty()) {
+            setOnClickListener {
+                listener.onAddOnsInfoLinkClicked(infoLink)
+            }
         }
     }
 
@@ -86,13 +98,21 @@ class BmgmAddOnViewHolder(
     private fun ItemBmgmDetailAddOnBinding.setupAddOnDescriptions(
         addonItemUiModel: AddOnSummaryUiModel.AddonItemUiModel
     ) {
+        val description =
+            if (addonItemUiModel.message.isNotEmpty()) addonItemUiModel.message.stripLastDot()
+            else if (addonItemUiModel.tips.isNotEmpty()) addonItemUiModel.tips
+            else ""
+
+        val disableTruncate = addonItemUiModel.tips.isNotEmpty()
+
         layoutAddOnDescription.run {
             setIsCopyable(copyable = addonItemUiModel.noteCopyable)
             setReceiverName(addonItemUiModel.toStr)
             setSenderName(addonItemUiModel.fromStr)
             setDescription(
-                addonItemUiModel.message.stripLastDot(),
-                addonItemUiModel.descriptionExpanded
+                description,
+                addonItemUiModel.descriptionExpanded,
+                disableTruncate
             )
             setMarginBottomAddonDescWidget()
             listener = this@BmgmAddOnViewHolder
@@ -110,5 +130,6 @@ class BmgmAddOnViewHolder(
     interface Listener {
         fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence)
         fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)
+        fun onAddOnsInfoLinkClicked(infoLink: String)
     }
 }
