@@ -34,6 +34,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.content.common.comment.ContentCommentFactory
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
@@ -201,9 +202,6 @@ class FeedFragment :
     lateinit var feedFollowRecommendationAnalytics: FeedFollowRecommendationAnalytics
 
     @Inject
-    lateinit var fragmentFactory: FragmentFactory
-
-    @Inject
     lateinit var dispatchers: CoroutineDispatchers
 
     @Inject
@@ -211,6 +209,9 @@ class FeedFragment :
 
     @Inject
     lateinit var router: Router
+
+    @Inject
+    lateinit var commentFactory: ContentCommentFactory.Creator
 
     private val feedMainViewModel: FeedMainViewModel by viewModels(
         ownerProducer = {
@@ -449,8 +450,19 @@ class FeedFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
+
+        childFragmentManager.fragmentFactory = object : FragmentFactory() {
+            override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
+                return when (className) {
+                    ContentCommentBottomSheet::class.java.name -> ContentCommentBottomSheet(commentFactory, router)
+                    else -> super.instantiate(classLoader, className)
+                }
+            }
+        }
+
         super.onCreate(savedInstanceState)
-        childFragmentManager.fragmentFactory = fragmentFactory
+
         childFragmentManager.addFragmentOnAttachListener(::onAttachChildFragment)
 
         arguments?.let {
@@ -544,6 +556,7 @@ class FeedFragment :
         dismissFeedMenuBottomSheet()
         dismissAtcVariantBottomSheet()
         dismissShareBottomSheet()
+        dismissCommentBottomSheet()
         super.onDestroyView()
         _binding = null
 
@@ -2079,6 +2092,10 @@ class FeedFragment :
 
     private fun dismissShareBottomSheet() {
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
+    }
+
+    private fun dismissCommentBottomSheet() {
+        ContentCommentBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).dismiss()
     }
 
     private fun updateBottomActionView(position: Int) {

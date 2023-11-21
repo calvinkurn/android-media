@@ -15,7 +15,7 @@ import com.tokopedia.discovery2.databinding.ItemMerchantVoucherCarouselLayoutBin
 import com.tokopedia.discovery2.viewcontrollers.fragment.NotchEdgeTreatment
 import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @SuppressLint("RestrictedApi")
@@ -127,7 +127,7 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
             }
         }
 
-        ImageUtils.loadImage(binding.cardBackground, item.backgroundImageUrl.orEmpty())
+        binding.cardBackground.loadImage(item.backgroundImageUrl.orEmpty())
     }
 
     companion object {
