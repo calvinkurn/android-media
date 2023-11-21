@@ -42,10 +42,11 @@ class ReadReviewTopics @JvmOverloads constructor(
         if (keywords.isEmpty()) return
         root.show()
 
-        keywords.forEach { keyword ->
+        keywords.forEachIndexed { index, keyword ->
             val chip = keyword.toChip()
             if (keyword.text == preselectKeyword) preselectChip = chip
             extractedTopicGroup.addView(chip.view)
+            listener?.onImpressTopicChip(keyword, index)
         }
 
         registerBehavior()
@@ -56,11 +57,15 @@ class ReadReviewTopics @JvmOverloads constructor(
         val chipGroup = binding.extractedTopicGroup
         chipGroup.addOneTimeGlobalLayoutListener {
             val preselectChip = preselectChip
-            if (preselectChip == null) determineExpandButton(chipGroup)
-            else {
+            if (preselectChip == null) {
+                determineExpandButton(chipGroup)
+            } else {
                 val preselectChipRowIndex = chipGroup.getRowIndex(preselectChip.view)
-                if (preselectChipRowIndex > 0) chipGroup.expand()
-                else determineExpandButton(chipGroup)
+                if (preselectChipRowIndex > 0) {
+                    chipGroup.expand()
+                } else {
+                    determineExpandButton(chipGroup)
+                }
                 preselectChip.select()
             }
         }
@@ -78,6 +83,7 @@ class ReadReviewTopics @JvmOverloads constructor(
         expandButton.show()
         expandButton.setOnClickListener {
             binding.extractedTopicGroup.expand()
+            listener?.onClickLihatSemua()
         }
     }
 
@@ -95,7 +101,9 @@ class ReadReviewTopics @JvmOverloads constructor(
     }
 
     private fun onClickChip(chip: Chip) = with(chip) {
-        if (isSelected) unselect() else {
+        if (isSelected) {
+            unselect()
+        } else {
             select()
             listener?.onFilterTopic(chip.keyword.text)
         }
