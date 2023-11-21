@@ -17,6 +17,8 @@ sealed interface ShopInfoUiEvent {
     data class TapReviewImageViewAll(val productId: String) : ShopInfoUiEvent
     object TapCtaExpandShopPharmacyInfo : ShopInfoUiEvent
 
+    data class SwipeReview(val reviewIndex: Int) : ShopInfoUiEvent
+
     object TapCtaViewPharmacyLocation : ShopInfoUiEvent
     data class TapShopNote(val shopNote: ShopNote) : ShopInfoUiEvent
     object RetryGetShopInfo : ShopInfoUiEvent

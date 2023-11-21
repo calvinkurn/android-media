@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.shop.common.data.model.ShopInfoPageTracker
 import com.tokopedia.shop.common.domain.GetMessageIdChatUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
@@ -56,7 +57,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val getShopPageHeaderLayoutUseCase: GetShopPageHeaderLayoutUseCase,
     private val getEpharmacyShopInfoUseCase: GetEpharmacyShopInfoUseCase,
     private val getNearestEpharmacyWarehouseLocationUseCase: GetNearestEpharmacyWarehouseLocationUseCase,
-    private val getMessageIdChatUseCase: GetMessageIdChatUseCase
+    private val getMessageIdChatUseCase: GetMessageIdChatUseCase,
+    private val tracker: ShopInfoPageTracker
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     companion object {
@@ -67,8 +69,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
         const val SHOP_TOP_REVIEW_SORT_BY_HELPFULNESS = "informative_score desc"
         const val SHOP_TOP_REVIEW_FILTER_BY_SELLER_SERVICE = "topic=pelayanan"
         const val PAGE_SOURCE = "shop_info_page"
-        const val TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_IN_SECOND = 86340 //23 hour 59 minute and 0 second difference
-        const val TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_AND_FIFTY_NINE_SECOND_IN_SECOND = 86399 //23 hour 59 minute and 59 second difference
+        const val TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_IN_SECOND = 86340 // 23 hour 59 minute and 0 second difference
+        const val TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_AND_FIFTY_NINE_SECOND_IN_SECOND = 86399 // 23 hour 59 minute and 59 second difference
         const val MAX_SHOP_DYNAMIC_USP_TO_DISPLAY = 3
     }
 
@@ -80,6 +82,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private val currentState: ShopInfoUiState
         get() = _uiState.value
+
+    private val impressedReviewIndex = mutableSetOf<Int>()
 
     fun processEvent(event: ShopInfoUiEvent) {
         when (event) {
@@ -93,10 +97,12 @@ class ShopInfoReimagineViewModel @Inject constructor(
             ShopInfoUiEvent.ReportShop -> handleReportShop()
             is ShopInfoUiEvent.TapReviewImage -> handleTapReviewImage(event.review, event.reviewImageIndex)
             is ShopInfoUiEvent.TapReviewImageViewAll -> handleTapReviewImageViewAll(event.productId)
+            is ShopInfoUiEvent.SwipeReview -> handleSwipeReview(event.reviewIndex)
         }
     }
 
     private fun handleSetup(shopId: String, districtId: String, cityId: String) {
+        tracker.sendShopInfoOpenScreenImpression(shopId)
         _uiState.update {
             it.copy(
                 shopId = shopId,
@@ -189,6 +195,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
 
     private fun handleCtaExpandShopPharmacyInfo() {
+        tracker.sendCtaExpandPharmacyInformationEvent(currentState.shopId)
         _uiState.update {
             it.copy(pharmacy = it.pharmacy.copy(expandPharmacyInfo = true))
         }
@@ -196,6 +203,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     @SuppressLint("PII Data Exposure")
     private fun handleCtaViewPharmacyLocation() {
+        tracker.sendCtaViewPharmacyLocationEvent(currentState.shopId)
         val effect = ShopInfoUiEffect.RedirectToGmaps(currentState.pharmacy.nearestPickupAddressGmapsUrl)
         _uiEffect.tryEmit(effect)
     }
@@ -205,11 +213,13 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
 
     private fun handleViewAllReviewClick() {
+        tracker.sendIconViewAllShopReviewEvent(currentState.shopId)
         val effect = ShopInfoUiEffect.RedirectToShopReviewPage(currentState.shopId)
         _uiEffect.tryEmit(effect)
     }
 
     private fun handleTapShopNote(shopNote: ShopNote) {
+        tracker.sendClickShopNoteEvent(shopNote, currentState.shopId)
         val effect = ShopInfoUiEffect.ShowShopNoteDetailBottomSheet(shopNote)
         _uiEffect.tryEmit(effect)
     }
@@ -243,6 +253,15 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private fun handleTapReviewImageViewAll(productId: String) {
         val effect = ShopInfoUiEffect.RedirectToProductReviewGallery(productId)
         _uiEffect.tryEmit(effect)
+    }
+
+    private fun handleSwipeReview(reviewIndex: Int) {
+        val isReviewAlreadyImpressed = reviewIndex in impressedReviewIndex
+
+        if (!isReviewAlreadyImpressed) {
+            impressedReviewIndex.add(reviewIndex)
+            tracker.sendReviewImpression(reviewIndex, currentState.shopId)
+        }
     }
 
     private suspend fun getShopNotes(shopId: String): List<ShopNoteModel> {
@@ -415,7 +434,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
         val timeDifferenceMillis = end.time - start.time
         val timeDifferenceSecond = TimeUnit.MILLISECONDS.toSeconds(timeDifferenceMillis).toInt()
-        
+
         return timeDifferenceSecond == TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_IN_SECOND || timeDifferenceSecond == TWENTY_THREE_HOURS_FIFTY_NINE_MINUTE_AND_FIFTY_NINE_SECOND_IN_SECOND
     }
 

@@ -31,6 +31,7 @@ class ShopReviewView @JvmOverloads constructor(
 
     private var onReviewImageClick: (ShopReview.Review, Int) -> Unit = { _, _ -> }
     private var onReviewImageViewAllClick: (ShopReview.Review) -> Unit = {}
+    private var onReviewSwiped: (Int) -> Unit = {}
 
     fun renderReview(lifecycle: Lifecycle, fragment: Fragment, review: ShopReview) {
         removeAllViews()
@@ -73,6 +74,8 @@ class ShopReviewView @JvmOverloads constructor(
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+
+                onReviewSwiped(position)
 
                 tabIndicator?.showTabIndicatorWithLifecycle(
                     tabIndicatorCount = reviewCount,
@@ -133,6 +136,10 @@ class ShopReviewView @JvmOverloads constructor(
 
     fun setOnReviewImageViewAllClick(onReviewImageViewAllClick: (ShopReview.Review) -> Unit) {
         this.onReviewImageViewAllClick = onReviewImageViewAllClick
+    }
+
+    fun setOnReviewSwiped(onReviewSwiped: (Int) -> Unit) {
+        this.onReviewSwiped = onReviewSwiped
     }
 
     private class ReviewViewPagerAdapter(
