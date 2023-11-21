@@ -62,8 +62,8 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
 
     var onClickListener: () -> Unit = {}
 
-    val iconColor = mutableStateOf<Int>(Int.ZERO)
-    val textColor = mutableStateOf<Int>(Int.ZERO)
+    val iconColor = mutableStateOf(Int.ZERO)
+    val textColor = mutableStateOf(Int.ZERO)
 
     private val component = createComponent()
     private val factory: ViewModelProvider.Factory = component.contentCreationFactory()
@@ -173,7 +173,7 @@ fun ContentCreationEntryPointComponent(
     buttonText: String,
     iconColor: Color,
     textColor: Color,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     ContentCreationEntryPointComponent(
         iconId = iconId,
@@ -181,7 +181,7 @@ fun ContentCreationEntryPointComponent(
         buttonText = buttonText,
         onClick = onClick,
         iconColor = iconColor,
-        textColor = textColor,
+        textColor = textColor
     )
 }
 
@@ -192,7 +192,7 @@ fun ContentCreationEntryPointComponent(
     buttonText: String,
     iconColor: Color,
     textColor: Color,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -207,7 +207,7 @@ fun ContentCreationEntryPointComponent(
             iconId = iconId,
             modifier = Modifier.size(24.dp),
             colorLightEnable = iconColor,
-            colorNightEnable = iconColor,
+            colorNightEnable = iconColor
         )
         NestTypography(
             text = text,
