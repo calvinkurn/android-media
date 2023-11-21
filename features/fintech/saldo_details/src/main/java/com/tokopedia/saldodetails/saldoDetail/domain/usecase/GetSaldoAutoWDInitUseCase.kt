@@ -11,12 +11,27 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class GetSaldoAutoWDInitUseCase @Inject constructor(
-    @Named(GqlQueryModule.QUERY_AUTO_WD_INIT)
-    val autoWDInitQuery: String,
     val gqlUseCaseWrapper: GqlUseCaseWrapper
 ) {
 
     suspend operator fun invoke(): GqlAutoWDInitResponse {
-        return gqlUseCaseWrapper.getResponse(GqlAutoWDInitResponse::class.java, autoWDInitQuery, HashMap())
+        return gqlUseCaseWrapper.getResponse(GqlAutoWDInitResponse::class.java, QUERY, HashMap())
+    }
+
+    companion object {
+        private const val QUERY = """
+            query RichieAutoWDInit {
+              RichieAutoWDInit {
+                code
+                message
+                data{
+                  is_eligible
+                  status
+                  schedule_wording
+                  redirect_link
+                }
+              }
+            }
+        """
     }
 }

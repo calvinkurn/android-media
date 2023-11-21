@@ -10,6 +10,7 @@ import com.tokopedia.saldodetails.commom.utils.Resources
 import com.tokopedia.saldodetails.commom.utils.Success
 import com.tokopedia.saldodetails.saldoDetail.domain.data.*
 import com.tokopedia.saldodetails.saldoDetail.domain.usecase.*
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -97,6 +98,8 @@ class SaldoDetailViewModel @Inject constructor(
                 val response = getSaldoAutoWDInitUseCase()
                 _gqlAutoWDInitLiveData.postValue(Success(response))
             }
-        }, onError = {})
+        }, onError = {
+            _gqlAutoWDInitLiveData.postValue(ErrorMessage(it.toString()))
+        })
     }
 }
