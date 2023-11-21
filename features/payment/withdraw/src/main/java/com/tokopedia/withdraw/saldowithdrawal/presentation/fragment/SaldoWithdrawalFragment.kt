@@ -391,12 +391,14 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                 }
             }
             AUTO_TOPADS_RECOMMENDATION_CODE -> {
+                val recommAmount = saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.second ?: 0
                 if (resultCode == AutoTopAdsBottomSheet.RECOMMENDED_WD) {
-                    val recommAmount = saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.second ?: 0
                     withdrawalRequest = withdrawalRequest.copy(withdrawal = recommAmount)
+                    analytics.get().eventClickAutoTopAdsRecommendationWithdrawal(recommAmount, originalWithdrawalAmount)
                     openUserVerificationScreen()
                 } else if (resultCode == AutoTopAdsBottomSheet.ORIGINAL_WD) {
                     withdrawalRequest = withdrawalRequest.copy(withdrawal = originalWithdrawalAmount)
+                    analytics.get().eventClickAutoTopAdsOriginalWithdrawal(recommAmount, originalWithdrawalAmount)
                     openUserVerificationScreen()
                 }
             }
