@@ -212,7 +212,8 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                     goToTransparentActivityToReVerify()
                 }
                 else -> {
-                    val activityResult = if (status == KycStatus.VERIFIED.code.toString() && callback.isNotEmpty()) {
+                    val activityResult = if ((status == KycStatus.VERIFIED.code.toString() ||
+                            status == KycStatus.PENDING.code.toString()) && callback.isNotEmpty()) {
                         KYCConstant.ActivityResult.LAUNCH_CALLBACK
                     } else {
                         Activity.RESULT_OK
@@ -325,11 +326,24 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                         HtmlCompat.FROM_HTML_MODE_COMPACT
                     )
                 }
-            btnPrimary.text = if (sourcePage.isEmpty()) {
-                getString(R.string.goto_kyc_back_to_source)
-            } else {
-                getString(R.string.goto_kyc_back_with_source, sourcePage)
-            }
+            btnPrimary.text =
+                when {
+                    callback.isNotEmpty() -> {
+                        if (sourcePage.isEmpty()) {
+                            getString(R.string.goto_kyc_next_to_callback)
+                        } else {
+                            getString(R.string.goto_kyc_next_to_callback_with_source, sourcePage)
+                        }
+                    }
+                    else -> {
+                        if (sourcePage.isEmpty()) {
+                            getString(R.string.goto_kyc_back_to_source)
+                        } else {
+                            getString(R.string.goto_kyc_back_with_source, sourcePage)
+                        }
+                    }
+                }
+
             btnSecondary.text = getString(R.string.goto_kyc_status_pending_refresh_status)
             btnSecondary.show()
 

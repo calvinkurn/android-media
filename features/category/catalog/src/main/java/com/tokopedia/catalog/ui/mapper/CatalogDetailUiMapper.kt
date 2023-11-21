@@ -14,6 +14,7 @@ import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
+import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
@@ -24,6 +25,7 @@ import com.tokopedia.catalogcommon.uimodel.SupportFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
+import com.tokopedia.catalogcommon.uimodel.VideoUiModel
 import com.tokopedia.catalogcommon.util.colorMapping
 import com.tokopedia.catalogcommon.util.getColorDarkMode
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
@@ -45,7 +47,9 @@ class CatalogDetailUiMapper @Inject constructor(
         private const val LAYOUT_VERSION_4_VALUE = 4
         private const val COMPARISON_COUNT = 2
         private const val TOP_COMPARISON_SPEC_COUNT = 5
+        private const val COLUMN_INFO_SPEC_COUNT = 5
         private const val INVALID_CATALOG_ID = "0"
+        private const val FALLBACK_COLUMN_TYPE = "title_value_on_2"
     }
 
     fun mapToWidgetVisitables(
@@ -69,6 +73,8 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> it.mapToSupportFeature(remoteModel)
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
                 WidgetTypes.CATALOG_COMPARISON.type -> it.mapToComparison(isDarkMode)
+                WidgetTypes.CATALOG_VIDEO.type -> it.mapToVideo(isDarkMode)
+                WidgetTypes.CATALOG_COLUMN_INFO.type -> it.mapToColumnInfo(isDarkMode)
                 else -> {
                     BlankUiModel()
                 }
@@ -462,7 +468,9 @@ class CatalogDetailUiMapper @Inject constructor(
                                 isSpecCategoryTitle = false,
                                 specTitle = if (isFirstData) rowItem.key else "",
                                 specValue = rowItem.value.ifEmpty { "-" },
-                                specTextTitleColor = getTextColor(isDarkMode, lightModeColor = unifycomponentsR.color.Unify_NN600, darkModeColor = catalogcommonR.color.dms_static_Unify_NN600_light),
+                                specTextTitleColor = getTextColor(isDarkMode,
+                                    lightModeColor = catalogR.color.catalog_dms_light_color_text_description,
+                                    darkModeColor = catalogR.color.catalog_dms_dark_color_text_description),
                                 isDarkMode = isDarkMode
                             )
                             comparisonSpecs.add(insertedItem)
@@ -486,11 +494,65 @@ class CatalogDetailUiMapper @Inject constructor(
         }
     }
 
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToVideo(
+        darkMode: Boolean
+    ): VideoUiModel {
+        return VideoUiModel(
+            content = data?.video.orEmpty().map {
+                VideoUiModel.ItemVideoUiModel(
+                    thumbnailUrl = it.thumbnail,
+                    title = it.title,
+                    author = it.author,
+                    videoLink = it.url,
+                    textTitleColor = getTextColor(darkMode),
+                    textSubTitleColor = getTextColor(darkMode)
+                )
+            }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToColumnInfo(
+        darkMode: Boolean
+    ): BaseCatalogUiModel {
+        val columnType = data?.style?.columnType.orEmpty()
+        val infoColumn = data?.infoColumn.orEmpty()
+        val flattenDataRows = data?.infoColumn
+            .orEmpty()
+            .flatMap { it.row }
+        return if (columnType != FALLBACK_COLUMN_TYPE || infoColumn.isEmpty()) {
+            BlankUiModel()
+        } else {
+            ColumnedInfoUiModel(
+                sectionTitle = data?.section?.title.orEmpty(),
+                hasMoreData = flattenDataRows.size > COLUMN_INFO_SPEC_COUNT,
+                widgetContent = ColumnedInfoUiModel.ColumnData(
+                    rowData = flattenDataRows
+                        .take(COLUMN_INFO_SPEC_COUNT)
+                        .map {
+                            Pair(it.key, it.value)
+                        },
+                    rowColor = getColumnInfoTextColor(darkMode)
+                ),
+                fullContent = data?.infoColumn
+                    .orEmpty()
+                    .map {
+                        ColumnedInfoUiModel.ColumnData(
+                            title = it.name,
+                            rowData = it.row.map { row ->
+                                Pair(row.key, row.value)
+                            },
+                            rowColor = getColumnInfoTextColor(darkMode)
+                        )
+                    }
+            )
+        }
+    }
+
     private fun getTextColor(darkMode: Boolean): Int {
         val textColorRes = if (darkMode) {
-            unifycomponentsR.color.Unify_Static_White
+            catalogR.color.catalog_dms_dark_color_text_common
         } else {
-            unifycomponentsR.color.Unify_Static_Black
+            catalogR.color.catalog_dms_light_color_text_common
         }
         return MethodChecker.getColor(context, textColorRes)
     }
@@ -506,9 +568,9 @@ class CatalogDetailUiMapper @Inject constructor(
 
     private fun getTextColorTrustmaker(darkMode: Boolean): Int {
         val textColorRes = if (darkMode) {
-            unifycomponentsR.color.Unify_Static_White
+            catalogR.color.catalog_dms_dark_color_text_common
         } else {
-            catalogcommonR.color.dms_static_Unify_NN600_light
+            catalogR.color.catalog_dms_light_color_text_common
         }
         return MethodChecker.getColor(context, textColorRes)
     }
@@ -521,6 +583,25 @@ class CatalogDetailUiMapper @Inject constructor(
         }
         return MethodChecker.getColor(context, textColorRes)
     }
+
+    private fun getColumnInfoTextColor(darkMode: Boolean) = Pair(
+        MethodChecker.getColor(
+            context,
+            if (darkMode) {
+                catalogR.color.catalog_dms_dark_color_text_description
+            } else {
+                catalogR.color.catalog_dms_light_color_text_description
+            }
+        ),
+        MethodChecker.getColor(
+            context,
+            if (darkMode) {
+                catalogR.color.catalog_dms_column_info_value_color_dark
+            } else {
+                catalogR.color.catalog_dms_column_info_value_color_light
+            }
+        )
+    )
 
     fun isUsingAboveV4Layout(version: Int): Boolean {
         return version >= LAYOUT_VERSION_4_VALUE

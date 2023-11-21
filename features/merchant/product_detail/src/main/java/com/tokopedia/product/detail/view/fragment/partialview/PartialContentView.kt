@@ -81,9 +81,8 @@ class PartialContentView(
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(binding.fabDetailPdp) {
-        if (!shouldShowWishlist) {
-            hide()
-        } else if (activeState != wishlisted) {
+        showWithCondition(shouldShowWishlist)
+        if (shouldShowWishlist && activeState != wishlisted) {
             activeState = wishlisted
         }
     }

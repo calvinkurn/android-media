@@ -13,8 +13,6 @@ import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterD
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordCardView
-import com.tokopedia.search.result.product.seamlessinspirationcard.utils.InspirationSeamlessMapper
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
@@ -36,11 +34,37 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
     private val getInspirationCarouselChipsUseCase: Lazy<UseCase<InspirationCarouselChipsProductModel>>,
     private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
-    private val viewUpdater: ViewUpdater
+    private val viewUpdater: ViewUpdater,
 ) : InspirationCarouselPresenter,
     ApplinkOpener by ApplinkOpenerDelegate {
 
+    private var inspirationCarouselSeamlessDataViewList = mutableMapOf<Int, List<Visitable<*>>>()
     private var inspirationCarouselDataViewList = mutableListOf<InspirationCarouselDataView>()
+
+    fun setInspirationCarouselSeamlessDataViewList(
+        inspirationCarouselSeamlessDataViewList: Map<Int, List<Visitable<*>>>,
+    ) {
+        this.inspirationCarouselSeamlessDataViewList =
+            inspirationCarouselSeamlessDataViewList.toMutableMap()
+    }
+
+    fun processInspirationCarouselSeamlessPosition(
+        totalProductItem: Int,
+        action: (Int, List<Visitable<*>>) -> Unit,
+    ) {
+        if (inspirationCarouselSeamlessDataViewList.isEmpty()) return
+
+        val iterator = inspirationCarouselSeamlessDataViewList.iterator()
+        while (iterator.hasNext()) {
+            val data = iterator.next()
+            val position = data.key
+
+            if (position <= totalProductItem) {
+                action(position, data.value)
+                iterator.remove()
+            }
+        }
+    }
 
     fun setInspirationCarouselDataViewList(
         inspirationCarouselDataViewList: List<InspirationCarouselDataView>
@@ -49,7 +73,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     }
 
     fun processInspirationCarouselPosition(
-        productList: List<Visitable<*>>,
+        totalProductItem: Int,
         externalReference: String,
         action: (Int, List<Visitable<*>>) -> Unit,
     ) {
@@ -64,7 +88,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                 continue
             }
 
-            if (data.position <= productList.size && shouldShowInspirationCarousel(data.layout)) {
+            if (data.position <= totalProductItem && shouldShowInspirationCarousel(data.layout)) {
                 val inspirationCarouselVisitableList =
                     constructInspirationCarouselVisitableList(data, externalReference)
 
@@ -120,9 +144,6 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         data.isListAtcLayout() ->
             inspirationListAtcPresenterDelegate.convertInspirationCarouselToInspirationListAtc(data)
 
-        data.isSeamlessLayout() ->
-            convertInspirationCarouselToSeamlessInspiration(data, externalReference)
-
         else ->
             listOf(data)
     }
@@ -139,12 +160,9 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     private fun InspirationCarouselDataView.isListAtcLayout() =
         layout == LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC
 
-    private fun InspirationCarouselDataView.isSeamlessLayout() =
-        layout == LAYOUT_INSPIRATION_KEYWORD_SEAMLESS
-
     private fun convertInspirationCarouselToInspirationProductBundle(
         data: InspirationCarouselDataView,
-        externalReference: String
+        externalReference: String,
     ): List<Visitable<*>> {
         return listOf(
             data.convertToInspirationProductBundleDataView(
@@ -154,7 +172,9 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         )
     }
 
-    private fun convertInspirationCarouselToInspirationCarouselVideo(data: InspirationCarouselDataView): List<Visitable<*>> {
+    private fun convertInspirationCarouselToInspirationCarouselVideo(
+        data: InspirationCarouselDataView
+    ): List<Visitable<*>> {
         return listOf(InspirationCarouselVideoDataView(data))
     }
 
@@ -176,20 +196,6 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         return broadMatchVisitableList
     }
 
-    private fun convertInspirationCarouselToSeamlessInspiration(
-        data: InspirationCarouselDataView,
-        externalReference: String
-    ): List<Visitable<*>> {
-        val inspirationKeywordVisitableList = mutableListOf<Visitable<*>>()
-        val (inspirationKeyboard, inspirationProduct, isOneOrMoreItemIsEmptyImage) =
-            InspirationSeamlessMapper.convertToInspirationList(data.options, externalReference)
-        inspirationKeywordVisitableList.add(
-            InspirationKeywordCardView.create(data.title, inspirationKeyboard, isOneOrMoreItemIsEmptyImage)
-        )
-        inspirationKeywordVisitableList.addAll(inspirationProduct)
-        return inspirationKeywordVisitableList
-    }
-
     companion object {
         private val showInspirationCarouselLayout = listOf(
             LAYOUT_INSPIRATION_CAROUSEL_INFO,
@@ -200,7 +206,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
             LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
             LAYOUT_INSPIRATION_CAROUSEL_VIDEO,
-            LAYOUT_INSPIRATION_KEYWORD_SEAMLESS
+            LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS,
         )
     }
 
