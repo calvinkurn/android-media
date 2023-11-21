@@ -68,7 +68,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     companion object {
         const val REQUEST_WITHDRAW_CODE = 3333
-        const val REQUEST_RESET_AUTO_WD_STATUS = 3334
         const val SALDODETAIL_FINTECH_PLT = "saldodetailfintech_plt"
         const val SALDODETAIL_FINTECH_PLT_PREPARE_METRICS = "saldodetailfintech_plt_prepare_metrics"
         const val SALDODETAIL_FINTECH_PLT_NETWORK_METRICS = "saldodetailfintech_plt_network_metrics"
@@ -137,9 +136,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private lateinit var saldoDetailViewModel: SaldoDetailViewModel
 
     private val saldoCoachMarkController: SaldoCoachMarkController by lazy {
-        SaldoCoachMarkController(requireContext()) {
-//            binding?.spAppBarLayout?.setExpanded(true)
-        }
+        SaldoCoachMarkController(requireContext()) { }
     }
 
 
@@ -201,12 +198,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private fun prepareSaldoCoachMark() {
         if (activity is SaldoDepositActivity) {
             saldoCoachMarkController.startCoachMark()
-//            binding?.spAppBarLayout?.addOnOffsetChangedListener(AppBarLayout
-//                .OnOffsetChangedListener { _, _ ->
-//                    saldoCoachMarkController.updateCoachMarkOnScroll(
-//                        expandLayout
-//                    )
-//                })
         }
     }
 
@@ -334,7 +325,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 saldoTicker.text = autoWDInitData.data.scheduleWording
                 saldoTickerGroup.setAllOnClickListener {
                     val intent = RouteManager.getIntent(context, autoWDInitData.data.redirectLink)
-                    startActivityForResult(intent, REQUEST_RESET_AUTO_WD_STATUS)
+                    startActivity(intent)
                 }
             }
         }
@@ -461,12 +452,14 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             ) {
                 if (scrollY == 0) {
                     (activity as SaldoDepositActivity).saldoToolbar.apply {
+                        if (transparentMode) return
                         transparentMode = true
                         headerView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
                         navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
                     }
                 } else {
                     (activity as SaldoDepositActivity).saldoToolbar.apply {
+                        if (!transparentMode) return
                         transparentMode = false
                         headerView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
                         navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))

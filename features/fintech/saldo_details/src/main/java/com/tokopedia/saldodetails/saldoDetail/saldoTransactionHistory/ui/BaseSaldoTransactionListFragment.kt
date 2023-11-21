@@ -98,7 +98,8 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
 
         transactionRecyclerView.post {
             context?.let {
-                transactionRecyclerView.layoutParams.height = getScreenHeight() - NavToolbarExt.getToolbarHeight(it) - NavToolbarExt.getStatusbarHeight(it) - 160.toPx()
+                transactionRecyclerView.layoutParams.height =
+                    getScreenHeight() - NavToolbarExt.getToolbarHeight(it) - NavToolbarExt.getStatusbarHeight(it) - RECYCLERVIEW_HEIGHT_OFFSET.toPx()
                 transactionRecyclerView.requestLayout()
             }
         }
@@ -194,6 +195,8 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
 
     companion object {
         const val PARAM_TRANSACTION_TYPE = "PARAM_TRANSACTION_TYPE"
+
+        private const val RECYCLERVIEW_HEIGHT_OFFSET = 160
 
         fun getInstance(transactionTitleStr: String): BaseSaldoTransactionListFragment {
             return BaseSaldoTransactionListFragment().apply {

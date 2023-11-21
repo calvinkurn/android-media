@@ -64,8 +64,14 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
                 finish()
             }
         }
+    }
 
-        executeParamAction(intent)
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        intent?.let {
+            executeParamAction(it)
+        }
     }
 
     private fun initInjector() {
