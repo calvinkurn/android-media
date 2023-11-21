@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingHorizontal="16dp"
     android:paddingVertical="12dp"
-    tools:viewBindingIgnore="true">
+    tools:viewBindingIgnore="true"
+    android:id="@+id/container">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/headerShopImage"
@@ -51,7 +52,6 @@
         android:maxLines="1"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toBottomOf="@id/headerShopImage"
-        app:layout_constraintEnd_toStartOf="@id/merchantVoucher"
         app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toEndOf="@id/shop_badge"
         app:layout_constraintTop_toTopOf="@id/headerShopImage"
@@ -66,17 +66,16 @@
         android:layout_marginStart="8dp"
         app:labelType="highlight_light_green"
         app:layout_constraintBottom_toBottomOf="@id/headerShopImage"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/shop_name"
         app:layout_constraintTop_toTopOf="@id/headerShopImage"
         tools:labelTitle="Cashback Rp10 rb" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shopads_desc"
+        android:id="@+id/shop_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Mainan dengan kualitas produk dan harga terbaik, hanya di Mama Sing!"
+        tools:text="Mainan dengan kualitas produk dan harga terbaik, hanya di Mama Sing!"
         app:layout_constraintTop_toBottomOf="@id/headerShopImage"
         app:typographyType="display_3" />
 
@@ -88,7 +87,7 @@
         android:layout_marginTop="12dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
-        app:layout_constraintTop_toBottomOf="@id/shopads_desc"
+        app:layout_constraintTop_toBottomOf="@id/shop_desc"
         tools:cardUseCompatPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -9,7 +9,8 @@
     tools:layout_height="@dimen/sdk_dp_300"
     android:paddingHorizontal="16dp"
     android:paddingVertical="12dp"
-    tools:viewBindingIgnore="true">
+    tools:viewBindingIgnore="true"
+    android:id="@+id/container">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/headerShopImage"
@@ -75,7 +76,7 @@
         android:layout_marginTop="4dp"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shopAds_desc"
+        android:id="@+id/shop_desc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:text="Mainan dengan kualitas produk dan harga terbaik, hanya di Mama Sing!"

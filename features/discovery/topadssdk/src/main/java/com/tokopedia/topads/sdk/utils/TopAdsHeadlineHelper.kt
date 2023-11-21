@@ -1,6 +1,8 @@
 package com.tokopedia.topads.sdk.utils
 
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_1
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_10
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_11
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_2
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
@@ -44,6 +46,16 @@ class TopAdsHeadlineHelper  @Inject constructor() {
                         return@breaker
                     }
                     LAYOUT_1 -> {
+                        val list = arrayListOf<CpmData>()
+                        list.add(cpmData)
+                        process(index, list, true)
+                    }
+                    LAYOUT_10 -> {
+                        val list = arrayListOf<CpmData>()
+                        list.add(cpmData)
+                        process(index, list, true)
+                    }
+                    LAYOUT_11 -> {
                         val list = arrayListOf<CpmData>()
                         list.add(cpmData)
                         process(index, list, true)
