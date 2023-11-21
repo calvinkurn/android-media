@@ -1006,9 +1006,17 @@ class OrderSummaryPageViewModel @Inject constructor(
     }
 
     private fun clearAllPromoFromLastRequest() {
+        val isCartCheckoutRevamp = orderPromo.value.isCartCheckoutRevamp
+        val isPromoRevamp = orderPromo.value.isPromoRevamp
+        val enableNewInterface = orderPromo.value.enableNewInterface
         validateUsePromoRevampUiModel = null
         lastValidateUsePromoRequest = promoProcessor.clearAllPromoFromLastRequest(lastValidateUsePromoRequest)
-        orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            isCartCheckoutRevamp = isCartCheckoutRevamp,
+            isPromoRevamp = isPromoRevamp,
+            enableNewInterface = enableNewInterface
+        )
     }
 
     private fun updatePromoState(lastApply: LastApplyUiModel, oldLastApply: LastApplyUiModel? = null) {
