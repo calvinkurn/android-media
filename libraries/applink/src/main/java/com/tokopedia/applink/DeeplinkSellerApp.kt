@@ -8,10 +8,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PATH_SELLER_PARTIAL_ORDER_FULFILLMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.model.DLP
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.DeeplinkMapperPromo
@@ -123,6 +125,11 @@ object DeeplinkSellerApp {
         "seller-search" to mutableListOf(
             DLP.goTo { context, _, _, _ ->
                 SellerSearchDeeplinkMapper.getInternalApplinkSellerSearch(context)
+            }
+        ),
+        "seller" to mutableListOf(
+            DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
+                DeeplinkMapperOrder.getRegisteredNavigationSellerPartialOrderFulfillment(uri)
             }
         ),
         "setting" to mutableListOf(
