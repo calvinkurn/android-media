@@ -885,17 +885,20 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateComparisonBpcDataModel(data: RecommendationWidget) {
+    fun updateComparisonBpcDataModel(data: RecommendationWidget, anchorProductId: String) {
         updateData(data.pageName) {
+            val source = RecommendationWidgetSource.PDP(
+                anchorProductId = anchorProductId
+            )
             mapOfData[data.pageName] = PdpRecommendationWidgetDataModel(
                 recommendationWidgetModel = RecommendationWidgetModel(
                     widget = data,
                     metadata = RecommendationWidgetMetadata(
-                        pageSource = RecommendationWidgetSource.PDP.xSourceValue,
+                        pageSource = source.xSourceValue,
                         pageName = data.pageName
                     ),
                     trackingModel = RecommendationWidgetTrackingModel(
-                        androidPageName = RecommendationWidgetSource.PDP.trackingValue
+                        androidPageName = source.eventCategory
                     )
                 )
             )

@@ -676,7 +676,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         cacheState: CacheState,
         isCampaign: Boolean
     ): ProductDetailDataModel {
-        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(components)
+        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(components, this.basicInfo.productID)
             .filterNot {
                 if (cacheState.isFromCache) {
                     getIgnoreComponentTypeInCache().contains(it.type())

@@ -124,7 +124,7 @@ object DynamicProductDetailMapper {
      * except info type
      * If data already complete at P1 call, assign the value here.
      */
-    fun mapIntoVisitable(data: List<Component>): MutableList<DynamicPdpDataModel> {
+    fun mapIntoVisitable(data: List<Component>, productId: String): MutableList<DynamicPdpDataModel> {
         val listOfComponent: MutableList<DynamicPdpDataModel> = mutableListOf()
         var firstAPlusMedia = true
         data.forEachIndexed { index, component ->
@@ -161,6 +161,7 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.PRODUCT_LIST -> {
                     val productList = mapToProductList(
                         component = component,
+                        productId = productId,
                         index = index
                     )
 
@@ -376,7 +377,7 @@ object DynamicProductDetailMapper {
         return listOfComponent
     }
 
-    private fun mapToProductList(component: Component, index: Int): DynamicPdpDataModel {
+    private fun mapToProductList(component: Component, productId: String, index: Int): DynamicPdpDataModel {
         val data = component.componentData.firstOrNull() ?: ComponentData()
 
         return when (component.componentName) {
@@ -399,7 +400,7 @@ object DynamicProductDetailMapper {
             else -> {
                 if (component.componentName.startsWith(RECOM_VERTICAL)) {
                     PdpRecommendationWidgetDataModel(
-                        recommendationWidgetModel = mapPdpRecommendationWidgetModel(component)
+                        recommendationWidgetModel = mapPdpRecommendationWidgetModel(component, productId)
                     )
                 } else {
                     ProductRecommendationDataModel(
@@ -1035,15 +1036,18 @@ object DynamicProductDetailMapper {
         )
     }
 
-    private fun mapPdpRecommendationWidgetModel(component: Component): RecommendationWidgetModel {
+    private fun mapPdpRecommendationWidgetModel(component: Component, productId: String): RecommendationWidgetModel {
         val data = component.componentData.firstOrNull()
         val thematicIds = if (data?.thematicId.isNullOrBlank()) {
             emptyList()
         } else {
             listOf(data?.thematicId.orEmpty())
         }
+        val source = RecommendationWidgetSource.PDP(
+            anchorProductId = productId
+        )
         val metadata = RecommendationWidgetMetadata(
-            pageSource = RecommendationWidgetSource.PDP.xSourceValue,
+            pageSource = source.eventCategory,
             pageName = component.componentName,
             pageType = component.type,
             queryParam = data?.queryParam.orEmpty(),

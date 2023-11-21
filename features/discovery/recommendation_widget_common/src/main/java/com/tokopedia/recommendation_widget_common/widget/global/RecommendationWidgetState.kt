@@ -69,6 +69,7 @@ data class RecommendationWidgetState(
                 metadata = model.metadata,
                 trackingModel = model.trackingModel,
                 recommendationWidget = widget,
+                source = model.source,
                 listener = model.listener,
             )
         } else {
