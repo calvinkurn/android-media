@@ -4,6 +4,10 @@ import androidx.fragment.app.FragmentManager
 
 interface MiniCartNewWidgetListener : MiniCartWidgetListener {
 
+    fun overridePrimaryButtonAction(): Boolean {
+        return false
+    }
+
     fun onChevronClickListener() {
         /* no-op */
     }

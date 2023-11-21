@@ -13,12 +13,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheet
@@ -87,6 +90,8 @@ class MiniCartNewWidget @JvmOverloads constructor(
         lifecycleOwner: LifecycleOwner,
         listener: MiniCartNewWidgetListener
     ) {
+        findViewTreeLifecycleOwner()
+        findViewTreeViewModelStoreOwner()
         this.config = config
         initializeView(config)
         initializeListener(listener)
@@ -354,6 +359,7 @@ class MiniCartNewWidget @JvmOverloads constructor(
         binding?.miniCartTotalAmount?.apply {
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
             setAmount("Rp-")
+            setAmountSuffix("")
             val overridePrimaryButtonWording = config.overridePrimaryButtonWording
             if (overridePrimaryButtonWording.isNullOrBlank()) {
                 val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
@@ -376,6 +382,7 @@ class MiniCartNewWidget @JvmOverloads constructor(
         binding?.miniCartTotalAmount?.apply {
             setLabelTitle("")
             setAmount("")
+            setAmountSuffix("")
             val overridePrimaryButtonWording = config.overridePrimaryButtonWording
             if (overridePrimaryButtonWording.isNullOrBlank()) {
                 val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
@@ -413,6 +420,12 @@ class MiniCartNewWidget @JvmOverloads constructor(
         binding?.miniCartTotalAmount?.apply {
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false).removeDecimalSuffix())
+            if (config.showOriginalTotalPrice && miniCartSimplifiedData.miniCartWidgetData.totalProductOriginalPrice > 0) {
+                val originalPriceStr = String.format(CROSSED_TEXT_FORMAT, CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductOriginalPrice, false).removeDecimalSuffix())
+                setAmountSuffix(originalPriceStr.parseAsHtml())
+            } else {
+                setAmountSuffix("")
+            }
             val overridePrimaryButtonWording = config.overridePrimaryButtonWording
             if (overridePrimaryButtonWording.isNullOrBlank()) {
                 val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
@@ -506,13 +519,26 @@ class MiniCartNewWidget @JvmOverloads constructor(
 
     companion object {
         private const val MINICART_PAGE_SOURCE = "minicart - tokonow"
+
+        private const val CROSSED_TEXT_FORMAT = "<del>%s</del>"
     }
 
     data class MiniCartNewWidgetConfig(
-        val showTopShadow: Boolean = true,
-        val showChevron: Boolean = true,
-        val overridePrimaryButtonAction: Boolean = false,
-        val overridePrimaryButtonWording: String? = null,
+        val showTopShadow: Boolean = true, // config
+        val showChevron: Boolean = true, // config
+        val showOriginalTotalPrice: Boolean = false, // ?
+        val overridePrimaryButtonAction: Boolean = false, // config
+        val overridePrimaryButtonWording: String? = null, // ui model
         val additionalButton: Drawable? = null
     )
+
+    sealed interface MiniCartIntent {
+        data class Fetch(
+            val id: String = ""
+        ) : MiniCartIntent
+
+        data class Set(
+            val data: MiniCartSimplifiedData = MiniCartSimplifiedData()
+        ) : MiniCartIntent
+    }
 }

@@ -28,6 +28,7 @@ class TestMiniCartActivity : AppCompatActivity() {
                 MiniCartNewWidget.MiniCartNewWidgetConfig(
                     showTopShadow = false,
                     showChevron = true,
+                    showOriginalTotalPrice = true,
                     overridePrimaryButtonWording = "apa ini",
                     additionalButton = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500))
                 ),

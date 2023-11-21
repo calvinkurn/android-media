@@ -37,6 +37,7 @@ fun Map<MiniCartItemKey, MiniCartItem>.mapProductsWithProductId(): Map<String, M
 data class MiniCartWidgetData(
     var totalProductCount: Int = 0,
     var totalProductPrice: Double = 0.0,
+    var totalProductOriginalPrice: Double = 0.0,
     var totalProductError: Int = 0,
     var containsOnlyUnavailableItems: Boolean = false,
     var unavailableItemsCount: Int = 0,
