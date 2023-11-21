@@ -1,5 +1,8 @@
 package com.tokopedia.feedplus.presentation.uiview
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
+import android.os.CountDownTimer
 import com.tokopedia.content.common.databinding.ViewProductSeeMoreBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
@@ -11,6 +14,7 @@ import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.P
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.content.common.R as contentcommonR
 
 /**
@@ -20,9 +24,30 @@ class FeedProductButtonView(
     private val binding: ViewProductSeeMoreBinding,
     private val listener: FeedListener
 ) {
-
+    private val context = binding.root.context
     private var products: List<FeedCardProductModel> = emptyList()
     private var totalProducts: Int = 0
+
+    private var animationOn = false
+    private val animationAssets = context.getString(contentcommonR.string.feed_product_icon_anim)
+    private val animationTimerDelay by lazyThreadSafetyNone {
+        object: CountDownTimer(PRODUCT_ICON_ANIM_REPEAT_DELAY, DELAY_MILLIS) {
+            override fun onTick(millisUntilFinished: Long) {}
+            override fun onFinish() {
+                binding.lottieProductSeeMore.playAnimation()
+            }
+        }
+    }
+    private val animatorListener by lazyThreadSafetyNone {
+        object : AnimatorListener {
+            override fun onAnimationStart(p0: Animator) {}
+            override fun onAnimationEnd(p0: Animator) {
+                animationTimerDelay.start()
+            }
+            override fun onAnimationCancel(p0: Animator) {}
+            override fun onAnimationRepeat(p0: Animator) {}
+        }
+    }
 
     fun bindData(
         postId: String,
@@ -131,15 +156,18 @@ class FeedProductButtonView(
         hasDiscount: Boolean,
         onClick: () -> Unit,
     ) = with(binding) {
-        if (enableProductIconAnim && (hasVoucher || hasDiscount)) {
+        animationOn = enableProductIconAnim && (hasVoucher || hasDiscount)
+        if (animationOn) {
+            binding.lottieProductSeeMore.apply {
+                setAnimationFromUrl(animationAssets)
+                repeatCount = PRODUCT_ICON_ANIM_REPEAT_COUNT
+            }
+            lottieProductSeeMore.setOnClickListener { onClick() }
             icPlayProductSeeMore.hide()
             lottieProductSeeMore.show()
-            lottieProductSeeMore.setAnimationFromUrl(root.context.getString(contentcommonR.string.feed_product_icon_anim))
-            lottieProductSeeMore.setOnClickListener { onClick() }
         } else {
             icPlayProductSeeMore.show()
             lottieProductSeeMore.hide()
-            icPlayProductSeeMore.setOnClickListener { onClick() }
         }
     }
 
@@ -156,7 +184,23 @@ class FeedProductButtonView(
         bind(this.products, totalProducts)
     }
 
+    fun playProductIconAnimation() {
+        if (!animationOn) return
+        binding.lottieProductSeeMore.removeAnimatorListener(animatorListener)
+        binding.lottieProductSeeMore.addAnimatorListener(animatorListener)
+        binding.lottieProductSeeMore.playAnimation()
+    }
+
+    fun pauseProductIconAnimation() {
+        if (!animationOn) return
+        animationTimerDelay.cancel()
+        binding.lottieProductSeeMore.pauseAnimation()
+    }
+
     companion object {
         private const val NINETY_NINE_PLUS = "99+"
+        private const val PRODUCT_ICON_ANIM_REPEAT_COUNT = 2
+        private const val PRODUCT_ICON_ANIM_REPEAT_DELAY = 10000L
+        private const val DELAY_MILLIS = 1000L
     }
 }

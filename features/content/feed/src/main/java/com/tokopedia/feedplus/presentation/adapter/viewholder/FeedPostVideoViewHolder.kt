@@ -537,6 +537,7 @@ class FeedPostVideoViewHolder(
         campaignView.startAnimation()
         mVideoPlayer?.toggleVideoVolume(listener.isMuted())
         mVideoPlayer?.resume()
+        productButtonView.playProductIconAnimation()
         listener.onWatchPostVideo(element, trackerModel)
         onScrolling(false)
     }
@@ -545,6 +546,7 @@ class FeedPostVideoViewHolder(
         mIsSelected = false
         mVideoPlayer?.pause()
         mVideoPlayer?.reset()
+        productButtonView.pauseProductIconAnimation()
         onScrolling(false)
 
         campaignView.resetView()
