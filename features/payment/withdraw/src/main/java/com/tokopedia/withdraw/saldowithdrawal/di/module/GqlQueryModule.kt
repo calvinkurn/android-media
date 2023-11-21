@@ -48,10 +48,5 @@ class GqlQueryModule {
     fun provideJoinRekeingPremiumTncQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.swd_query_join_reke_prem_tnc)
 
-
-    @Provides
-    @Named(GQL_TOPADS_AUTO_TOPUP_WITHDRAW_RECOM)
-    fun provideTopadsAutoTopupWithdrawRecomQuery(@ApplicationContext context: Context): String =
-        GraphqlHelper.loadRawString(context.resources, R.raw.swd_query_topads_auto_topup_withdraw_recom)
 }
 

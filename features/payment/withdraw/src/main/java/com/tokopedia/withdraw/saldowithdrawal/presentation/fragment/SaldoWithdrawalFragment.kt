@@ -395,8 +395,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                     val recommAmount = saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.second ?: 0
                     withdrawalRequest = withdrawalRequest.copy(withdrawal = recommAmount)
                     openUserVerificationScreen()
-                } else {
-                    // original WD
+                } else if (resultCode == AutoTopAdsBottomSheet.ORIGINAL_WD) {
                     withdrawalRequest = withdrawalRequest.copy(withdrawal = originalWithdrawalAmount)
                     openUserVerificationScreen()
                 }
