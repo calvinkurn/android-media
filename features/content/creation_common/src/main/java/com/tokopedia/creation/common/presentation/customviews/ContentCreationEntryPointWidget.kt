@@ -194,37 +194,39 @@ fun ContentCreationEntryPointComponent(
     textColor: Color,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 2.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .border(1.dp, Color(0x40AAB4C8), RoundedCornerShape(12.dp))
-            .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        NestIcon(
-            iconId = iconId,
-            modifier = Modifier.size(24.dp),
-            colorLightEnable = iconColor,
-            colorNightEnable = iconColor
-        )
-        NestTypography(
-            text = text,
-            textStyle = NestTheme.typography.display3.copy(
-                color = textColor
-            ),
+    NestTheme {
+        Row(
             modifier = Modifier
-                .padding(start = 4.dp, end = 8.dp)
+                .padding(vertical = 8.dp, horizontal = 2.dp)
                 .fillMaxWidth()
-                .weight(1f)
-        )
-        NestButton(
-            text = buttonText,
-            onClick = onClick,
-            variant = ButtonVariant.FILLED,
-            size = ButtonSize.SMALL
-        )
+                .clip(RoundedCornerShape(12.dp))
+                .border(1.dp, Color(0x40AAB4C8), RoundedCornerShape(12.dp))
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            NestIcon(
+                iconId = iconId,
+                modifier = Modifier.size(24.dp),
+                colorLightEnable = iconColor,
+                colorNightEnable = iconColor
+            )
+            NestTypography(
+                text = text,
+                textStyle = NestTheme.typography.display3.copy(
+                    color = textColor
+                ),
+                modifier = Modifier
+                    .padding(start = 4.dp, end = 8.dp)
+                    .fillMaxWidth()
+                    .weight(1f)
+            )
+            NestButton(
+                text = buttonText,
+                onClick = onClick,
+                variant = ButtonVariant.FILLED,
+                size = ButtonSize.SMALL
+            )
+        }
     }
 }
 
