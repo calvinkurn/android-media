@@ -761,6 +761,7 @@ open class EmoneyPdpFragment :
             showRecentNumberAndPromo()
         } else if (emoneyPdpViewModel.selectedOperatorIsBCA() && !binding.emoneyPdpInputCardWidget.isShownError
             && binding.emoneyPdpInputCardWidget.getNumber().isNotEmpty()) {
+
             if (this::nfcAdapter.isInitialized && !nfcAdapter.isEnabled) {
                 showTickerNotSupported()
                 showRecentNumberAndPromo()
@@ -773,7 +774,7 @@ open class EmoneyPdpFragment :
                     override fun onDismiss() {}
                 })
             } else if (this::nfcAdapter.isInitialized && nfcAdapter != null) {
-                detailPassData.clientNumber?.let {
+                binding.emoneyPdpInputCardWidget.getNumber()?.let {
                     emoneyPdpViewModel.getBCAGenCheck(it)
                 }
             } else {
