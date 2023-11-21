@@ -4,6 +4,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.databinding.DiscoverySupportingBrandLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
@@ -46,6 +47,7 @@ class ShopOfferSupportingBrandViewHolder(
     init {
         binding?.setupRecyclerView()
     }
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as? ShopOfferSupportingBrandViewModel
 
@@ -85,12 +87,14 @@ class ShopOfferSupportingBrandViewHolder(
     }
 
     private fun DiscoverySupportingBrandLayoutBinding.showWidget(items: ArrayList<ComponentsItem>) {
+        localLoad.hide()
         supportingBrandRV.show()
         supportingBrandAdapter.setDataList(items)
     }
 
     private fun DiscoverySupportingBrandLayoutBinding.hideWidget() {
         supportingBrandRV.hide()
+        showLocalLoad()
     }
 
     private fun DiscoverySupportingBrandLayoutBinding.setupRecyclerView() {
@@ -108,5 +112,30 @@ class ShopOfferSupportingBrandViewHolder(
         }
 
         supportingBrandRV.addItemDecoration(CarouselProductCardItemDecorator())
+    }
+
+    private fun DiscoverySupportingBrandLayoutBinding.showLocalLoad() {
+        localLoad.run {
+            title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
+            description?.text =
+                context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
+
+            refreshBtn?.setOnClickListener {
+                progressState = !progressState
+                reloadComponent()
+            }
+
+            show()
+        }
+        supportingBrandRV.hide()
+    }
+
+    private fun DiscoverySupportingBrandLayoutBinding.reloadComponent() {
+        supportingBrandRV.show()
+        localLoad.hide()
+        viewModel?.apply {
+            resetComponent()
+            loadFirstPageBrand()
+        }
     }
 }

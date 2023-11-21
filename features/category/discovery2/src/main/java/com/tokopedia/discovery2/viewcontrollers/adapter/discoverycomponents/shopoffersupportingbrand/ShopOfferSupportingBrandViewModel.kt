@@ -66,6 +66,13 @@ class ShopOfferSupportingBrandViewModel(
         )
     }
 
+    fun resetComponent() {
+        component.apply {
+            noOfPagesLoaded = 0
+            pageLoadedCounter = 1
+        }
+    }
+
     private fun setSupportingBrandList() {
         val components = component.getComponentsItem()
 
