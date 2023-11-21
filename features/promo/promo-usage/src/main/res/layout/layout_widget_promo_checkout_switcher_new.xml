@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp">
+            android:paddingVertical="10dp">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_error_promo_checkout"
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp">
+            android:paddingVertical="10dp">
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/loader_promo_start"
