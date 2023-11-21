@@ -50,4 +50,7 @@
     <dimen name="product_card_custom_banner_width">150dp</dimen>
     <dimen name="product_card_custom_banner_margin">-6dp</dimen>
     <dimen name="product_card_custom_banner_image_margin_top">18dp</dimen>
+    <dimen name="product_card_width_bayar_sekaligus_todo_widget">120dp</dimen>
+
+    <dimen name="todo_widget_autopay">219dp</dimen>
 </resources>

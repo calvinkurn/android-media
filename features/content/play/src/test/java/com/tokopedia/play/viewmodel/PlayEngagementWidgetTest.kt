@@ -3,10 +3,20 @@ package com.tokopedia.play.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.play.model.*
+import com.tokopedia.play.model.PlayChannelDataModelBuilder
+import com.tokopedia.play.model.PlayChannelInfoModelBuilder
+import com.tokopedia.play.model.PlaySocketResponseBuilder
+import com.tokopedia.play.model.PlayVideoModelBuilder
+import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
-import com.tokopedia.play.util.*
+import com.tokopedia.play.util.assertEmpty
+import com.tokopedia.play.util.assertEqualTo
+import com.tokopedia.play.util.assertFalse
+import com.tokopedia.play.util.assertInstanceOf
+import com.tokopedia.play.util.assertTrue
+import com.tokopedia.play.util.assertType
+import com.tokopedia.play.util.millisFromNow
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
@@ -65,6 +75,10 @@ class PlayEngagementWidgetTest {
             socketResponseBuilder.buildChannelInteractiveResponse(isExist = true)
         )
     )
+
+    private val voucherFlow = MutableStateFlow<WebSocketAction>(
+        WebSocketAction.NewMessage(WebSocketResponse())
+    )
     private val vouchers = PlayMerchantVoucherSocketResponse.generateResponse(
         isPrivate = false
     )
@@ -73,6 +87,9 @@ class PlayEngagementWidgetTest {
         vouchers,
         WebSocketResponse::class.java
     )
+
+
+    private val mockChannelStatus = uiModelBuilder.buildChannelStatus(waitingDuration = 5000)
 
     init {
         every { mockRemoteConfig.getBoolean(any(), any()) } returns true
@@ -99,7 +116,9 @@ class PlayEngagementWidgetTest {
 
     @Test
     fun `voucher only - exist`() {
-        every { socket.listenAsFlow() } returns socketFlow
+        every { socket.listenAsFlow() } returns voucherFlow
+
+        coEvery { repo.getChannelStatus(any()) } returns mockChannelStatus
 
         createPlayViewModelRobot(
             repo = repo,
@@ -111,7 +130,7 @@ class PlayEngagementWidgetTest {
             it.focusPage(mockChannelData)
 
             val state = it.recordState {
-                socketFlow.emit(WebSocketAction.NewMessage(mockVoucherSocketResponse))
+                voucherFlow.emit(WebSocketAction.NewMessage(mockVoucherSocketResponse))
             }
             state.engagement.data.first().assertType<EngagementUiModel.Promo> { }
             state.engagement.data.size.assertEqualTo(1)
@@ -150,7 +169,9 @@ class PlayEngagementWidgetTest {
             )
         )
 
-        every { socket.listenAsFlow() } returns socketFlow
+        every { socket.listenAsFlow() } returns voucherFlow
+
+        coEvery { repo.getChannelStatus(any()) } returns mockChannelStatus
 
         createPlayViewModelRobot(
             repo = repo,
@@ -165,9 +186,7 @@ class PlayEngagementWidgetTest {
             state.engagement.data.assertEmpty()
             state.engagement.shouldShow.assertFalse()
 
-            val state2 = it.recordState {
-                socketFlow.emit(WebSocketAction.NewMessage(mockVoucherSocketResponse))
-            }
+            val state2 = it.recordState { voucherFlow.emit(WebSocketAction.NewMessage(mockVoucherSocketResponse)) }
             state2.engagement.data.first().assertType<EngagementUiModel.Promo> { }
             state2.engagement.data.size.assertEqualTo(1)
             state2.engagement.shouldShow.assertTrue()
@@ -198,6 +217,8 @@ class PlayEngagementWidgetTest {
     @Test
     fun `voucher clicked - open shop coupon sheet then close show widget`() {
         every { socket.listenAsFlow() } returns socketFlow
+
+        coEvery { repo.getChannelStatus(any()) } returns mockChannelStatus
 
         createPlayViewModelRobot(
             repo = repo,
@@ -245,6 +266,7 @@ class PlayEngagementWidgetTest {
                 200L.millisFromNow()
             )
         )
+        coEvery { repo.getChannelStatus(any()) } returns mockChannelStatus
 
         createPlayViewModelRobot(
             repo = repo,
@@ -274,6 +296,8 @@ class PlayEngagementWidgetTest {
                 200L.millisFromNow()
             )
         )
+
+        coEvery { repo.getChannelStatus(any()) } returns mockChannelStatus
 
         createPlayViewModelRobot(
             repo = repo,
@@ -351,6 +375,8 @@ class PlayEngagementWidgetTest {
             )
         )
 
+        coEvery { repo.getChannelStatus(any()) } returns mockChannelStatus
+
         createPlayViewModelRobot(
             repo = repo,
             dispatchers = testDispatcher,
@@ -363,12 +389,14 @@ class PlayEngagementWidgetTest {
             val state = it.recordState {
                 socketFlow.emit(WebSocketAction.NewMessage(mockVoucherSocketResponse))
             }
+
             state.interactive.game.assertInstanceOf<GameUiModel.Giveaway>()
             state.engagement.data.first().assertType<EngagementUiModel.Game> { dt ->
                 dt.game.assertType<GameUiModel.Giveaway> { }
             }
             state.engagement.data.last().assertType<EngagementUiModel.Promo> { }
             state.engagement.shouldShow.assertTrue()
+
         }
     }
 }

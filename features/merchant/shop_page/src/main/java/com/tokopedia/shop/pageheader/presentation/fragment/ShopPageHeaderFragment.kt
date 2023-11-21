@@ -151,6 +151,7 @@ import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
+import com.tokopedia.shop.common.util.ShopUtilExt.clearHtmlTag
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
@@ -1148,7 +1149,13 @@ class ShopPageHeaderFragment :
     private fun getShopShareAndOperationalHourStatusData() {
         shopHeaderViewModel?.getShopShareAndOperationalHourStatusData(
             shopId,
-            shopDomain ?: "",
+            shopDomain.orEmpty(),
+            page = START_PAGE,
+            itemPerPage = ShopUtil.getProductPerPage(context),
+            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
+            keyword = "",
+            etalaseId = "",
+            widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             isRefresh
         )
     }
@@ -1453,12 +1460,6 @@ class ShopPageHeaderFragment :
         shopHeaderViewModel?.getNewShopPageTabData(
             shopId = shopId,
             shopDomain = shopDomain.orEmpty(),
-            page = START_PAGE,
-            itemPerPage = ShopUtil.getProductPerPage(context),
-            shopProductFilterParameter = initialProductFilterParameter
-                ?: ShopProductFilterParameter(),
-            keyword = "",
-            etalaseId = "",
             isRefresh = isRefresh,
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
@@ -2175,9 +2176,6 @@ class ShopPageHeaderFragment :
                         shopRef,
                         shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     ).apply {
-                        shopHeaderViewModel?.productListData?.let {
-                            setInitialProductListData(it)
-                        }
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
                         setHomeTabLottieUrl(it.lottieUrl)
@@ -2194,9 +2192,6 @@ class ShopPageHeaderFragment :
                         shopRef = shopRef,
                         isEnableDirectPurchase = shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     )
-                    shopHeaderViewModel?.productListData?.let {
-                        shopPageProductFragment.setInitialProductListData(it)
-                    }
                     shopPageProductFragment
                 }
 
@@ -2303,9 +2298,6 @@ class ShopPageHeaderFragment :
                 shopRef,
                 shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
             ).apply {
-                shopHeaderViewModel?.productListData?.let {
-                    setInitialProductListData(it)
-                }
                 shopHeaderViewModel?.homeWidgetLayoutData?.let {
                     setListWidgetLayoutData(it)
                 }
@@ -3397,8 +3389,8 @@ class ShopPageHeaderFragment :
                             } else {
                                 ShopPageParamModel.ShopInfoName.FREE_TEXT.infoNameValue
                             }
-                        shopInfoValue = textValueComponentUiModel.text[Int.ZERO].textHtml
-                        shopInfoLabel = textValueComponentUiModel.text[Int.ONE].textHtml
+                        shopInfoValue = textValueComponentUiModel.text.getOrNull(Int.ZERO)?.textHtml.orEmpty().clearHtmlTag()
+                        shopInfoLabel = textValueComponentUiModel.text.getOrNull(Int.ONE)?.textHtml.orEmpty().clearHtmlTag()
                     }
 
                     ShopPageParamModel.ShopInfoType.IMAGE_ONLY.typeName -> {

@@ -14,10 +14,6 @@ class NewRelicInteractionActCall(
     private val userSession: UserSessionInterface?
 ) : Application.ActivityLifecycleCallbacks, CoroutineScope {
 
-    companion object {
-        private const val ATTRIBUTE_ACTIVITY = "activityName"
-    }
-
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default
 
@@ -26,9 +22,7 @@ class NewRelicInteractionActCall(
     }
 
     override fun onActivityStarted(activity: Activity) {}
-    override fun onActivityResumed(activity: Activity) {
-        setNewRelicAttribute(activity)
-    }
+    override fun onActivityResumed(activity: Activity) {}
 
     override fun onActivityPaused(activity: Activity) {}
     override fun onActivityStopped(activity: Activity) {}
@@ -46,10 +40,5 @@ class NewRelicInteractionActCall(
         NewRelic.setUserId(userSession?.userId.orEmpty())
         NewRelic.startInteraction(activity.localClassName)
         NewRelic.setInteractionName(activity.localClassName)
-        setNewRelicAttribute(activity)
-    }
-
-    private fun setNewRelicAttribute(activity: Activity) {
-        NewRelic.setAttribute(ATTRIBUTE_ACTIVITY, activity.javaClass.simpleName)
     }
 }

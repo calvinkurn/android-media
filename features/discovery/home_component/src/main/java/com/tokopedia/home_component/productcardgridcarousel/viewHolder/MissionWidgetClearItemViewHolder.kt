@@ -59,6 +59,7 @@ class MissionWidgetClearItemViewHolder(
 
     override fun bind(element: CarouselMissionWidgetDataModel) {
         setupListeners(element)
+        setLayoutParams(element)
         renderImage(element.data.imageURL)
         renderText(element)
     }
@@ -73,6 +74,15 @@ class MissionWidgetClearItemViewHolder(
                 missionWidgetComponentListener.onMissionImpressed(element, element.cardPosition)
             }
         }
+    }
+
+    private fun setLayoutParams(element: CarouselMissionWidgetDataModel) {
+        val titleLayoutParams = binding?.titleMissionWidget?.layoutParams
+        val subtitleLayoutParams = binding?.subtitleMissionWidget?.layoutParams
+        titleLayoutParams?.height = element.titleHeight
+        subtitleLayoutParams?.height = element.subtitleHeight
+        binding?.titleMissionWidget?.layoutParams = titleLayoutParams
+        binding?.subtitleMissionWidget?.layoutParams = subtitleLayoutParams
     }
 
     private fun renderImage(imageUrl: String) {

@@ -23,10 +23,10 @@ labels:
 
 This is a feature that contains the buyer's address list. There are functions for searching, setting main address, deleting address, and there are entry points for adding/editing address.
 
-![](../res/mainaddress/project_description_one.png)  
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/mainaddress/project_description_one.png)  
 Since share address release and if eligible this page will have 2 tabs (main address & from friend). For detail about share address feature can see [here](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2034631325/Logistic+Address+Share+Address).
 
-![](../res/mainaddress/project_description_two.png)
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/mainaddress/project_description_two.png)
 
 ## Navigation
 
@@ -34,7 +34,7 @@ There are several entry points to show address list, for details entry point see
 
 ## Flow Diagram
 
-![](../res/mainaddress/main_address_drawio.png)## How-to
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/mainaddress/main_address_drawio.png)## How-to
 
 Go to main address page you can call `ApplinkConstInternalLogistic.MANAGE_ADDRESS` 
 

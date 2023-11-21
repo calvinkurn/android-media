@@ -31,12 +31,12 @@ Product manage list is module for product manage feature. This module consists o
 
 | **Seller App** | **Main App** |
 | --- | --- |
-| ![](res/Screenshot_1677659415.png)<br/> | ![](res/Screenshot_1677660081.png)<br/> |
-| ![](res/Screenshot_1677659432.png)<br/> | ❌ Not Support in Main App |
-| ![](res/Screenshot_1677659442.png)<br/> | ![](res/Screenshot_1677659442.png)<br/> |
-| ![](res/Screenshot_1677659448.png)<br/> | ![](res/Screenshot_1677659448.png)<br/> |
-| ![](res/Screenshot_1677659453.png)<br/> | ![](res/Screenshot_1677660074.png)<br/> |
-| ![](res/Screenshot_1677659423.png)<br/> | ![](res/Screenshot_1677659423.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Screenshot_1677659415.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Screenshot_1677660081.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Screenshot_1677659432.png)<br/> | ❌ Not Support in Main App |
+| ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Screenshot_1677659442.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Screenshot_1677659442.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Screenshot_1677659448.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Screenshot_1677659448.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Screenshot_1677659453.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Screenshot_1677660074.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Screenshot_1677659423.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Screenshot_1677659423.png)<br/> |
 
 ## Navigation
 
@@ -44,7 +44,7 @@ Product manage list is module for product manage feature. This module consists o
 
 | **Seller App** | **Main App** |
 | --- | --- |
-| ![](res/Navigation%20MPP%20SA.gif)<br/> | ![](res/Navigation%20MPP%20MA.gif)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Navigation%20MPP%20SA.gif)<br/> | ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Navigation%20MPP%20MA.gif)<br/> |
 
 <!--left header table-->
 | Applink Development<br/> | Main Page:<br/>`tokopedia-android-internal://marketplace/product-manage-list`<br/>`tokopedia-android-internal://marketplace/product-manage-list?search=[value]`<br/>`tokopedia-android-internal://marketplace/product-manage-list?filter=[id_filter]`<br/>Stock Reminder:<br/>`tokopedia-android-internal://marketplace/stock-reminder/{productId}/{title}/{isVariant}` |
@@ -59,10 +59,10 @@ Product manage list is module for product manage feature. This module consists o
 
 | **Name** | **Icon** | **Hierarchy** | **Jira Task** | **Read Field in GQL** |
 | --- | --- | --- | --- | --- |
-| Notify me OOS | ![](res/System%20Icon.png)<br/> | 1 | <https://tokopedia.atlassian.net/jira/software/c/projects/AN/issues/AN-40460> | `haveNotifyMeOOS` |
-| OOS | ![](res/OOS%20Icon.png)<br/> | 2 | <https://tokopedia.atlassian.net/jira/software/c/projects/AN/issues/AN-35814> | `suspendLevel` || `isEmptyStock && status` |
-| Stock Below min Threshold Stock Alert | ![](res/Dibawah%20Pengingat%20Stok.png)<br/> | 3 | <https://tokopedia.atlassian.net/jira/software/c/projects/AN/issues/AN-35813> | `stockAlertActive` |
-| Stock Alert On | ![](res/bell_filled.png)<br/> | 4 | <https://tokopedia.atlassian.net/jira/software/c/projects/AN/issues/AN-35813> | `hasStockAlert` |
+| Notify me OOS | ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/System%20Icon.png)<br/> | 1 | <https://tokopedia.atlassian.net/jira/software/c/projects/AN/issues/AN-40460> | `haveNotifyMeOOS` |
+| OOS | ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/OOS%20Icon.png)<br/> | 2 | <https://tokopedia.atlassian.net/jira/software/c/projects/AN/issues/AN-35814> | `suspendLevel` || `isEmptyStock && status` |
+| Stock Below min Threshold Stock Alert | ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/Dibawah%20Pengingat%20Stok.png)<br/> | 3 | <https://tokopedia.atlassian.net/jira/software/c/projects/AN/issues/AN-35813> | `stockAlertActive` |
+| Stock Alert On | ![](https://docs-android.tokopedia.net/images/docs/product_manage_list/bell_filled.png)<br/> | 4 | <https://tokopedia.atlassian.net/jira/software/c/projects/AN/issues/AN-35813> | `hasStockAlert` |
 
 - **Icon Identifier in Item Product List**
 

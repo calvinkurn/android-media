@@ -3,17 +3,16 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicOneLinerBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.renderHtmlBold
 
 class DynamicOneLinerViewHolder(
     view: View,
@@ -52,12 +51,7 @@ class DynamicOneLinerViewHolder(
 
         val title = data.text
         dynamicOneLinerTitle.showIfWithBlock(title.isNotEmpty()) {
-            val context = context
-            text = if (context == null) {
-                title.parseAsHtml()
-            } else {
-                title.renderHtmlBold(context)
-            }
+            text = title.parseAsHtmlLink(context = context, replaceNewLine = false)
         }
 
         val iconUrl = data.icon

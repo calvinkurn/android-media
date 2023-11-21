@@ -17,10 +17,12 @@ import com.tokopedia.digital_product_detail.di.DaggerDigitalPDPComponent
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPPulsaFragment
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
+import com.tokopedia.digital_product_detail.presentation.monitoring.DigitalPDPPulsaPerformanceCallback
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil.DEFAULT_MENU_ID_TELCO
 import com.tokopedia.digital_product_detail.presentation.utils.setupOrderListIcon
 import com.tokopedia.header.HeaderUnify
 import java.lang.ref.WeakReference
+import javax.inject.Inject
 
 /**
  * @author by firmanda on 04/01/22
@@ -31,15 +33,18 @@ import java.lang.ref.WeakReference
 
 class DigitalPDPPulsaActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComponent> {
 
+    @Inject
+    lateinit var performanceMonitoring: DigitalPDPPulsaPerformanceCallback
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        getDaggerComponent().inject(this)
+        startPageMonitoring()
         super.onCreate(savedInstanceState)
         setupAppBar()
     }
 
     override fun getComponent(): DigitalPDPComponent {
-        return DaggerDigitalPDPComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
+        return getDaggerComponent()
     }
 
     override fun getNewFragment(): Fragment {
@@ -75,5 +80,16 @@ class DigitalPDPPulsaActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComp
 
     private fun setupAppBar() {
         (toolbar as HeaderUnify).transparentMode = true
+    }
+
+    private fun getDaggerComponent(): DigitalPDPComponent =
+        DaggerDigitalPDPComponent
+            .builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
+
+    private fun startPageMonitoring() {
+        performanceMonitoring.startPerformanceMonitoring()
+        performanceMonitoring.startPreparePagePerformanceMonitoring()
     }
 }
