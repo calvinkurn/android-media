@@ -25,7 +25,7 @@ class ContentCreationRemoteConfigManager @Inject constructor(private val remoteC
     private fun getConfigData(): ContentCreationRemoteConfigModel = try {
         val rawString = remoteConfig.getString(APP_CONTENT_CREATION_STORIES_CONFIG)
         Gson().fromJson(rawString, ContentCreationRemoteConfigModel::class.java)
-    } catch (t: Throwable) {
+    } catch (_: Throwable) {
         ContentCreationRemoteConfigModel()
     }
 
