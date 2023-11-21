@@ -8,7 +8,7 @@
         android:id="@+id/cl_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_rounded_gray_corner"
+        android:background="@drawable/bg_cc_search_bar"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
