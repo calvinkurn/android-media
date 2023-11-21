@@ -468,7 +468,7 @@ open class DiscoveryAnalytics(
         val videoType = if (item.video.isLive) "live" else "vod"
 
         return "$sourceIdentifier - $videoType - ${item.partner.id} - ${item.channelId} - " +
-            "$channelPositionInList - ${widgetPosition + 1} - $isAutoPlay - ${item.recommendationType}"
+            "$channelPositionInList - ${widgetPosition + 1} - is autoplay $isAutoPlay - ${item.recommendationType}"
     }
 
     private fun getPlayComponentName(widgetType: String?, mobileBanner: String?): String {
