@@ -30,7 +30,7 @@ class FeedProductButtonView(
     private var totalProducts: Int = 0
 
     private var animationOn = false
-    private val animationAssets = context.getString(contentcommonR.string.feed_product_icon_anim)
+    private val animationAssets = context.getString(contentcommonR.string.feed_anim_product_icon)
     private val animationTimerDelay by lazyThreadSafetyNone {
         object: CountDownTimer(PRODUCT_ICON_ANIM_REPEAT_DELAY, DELAY_MILLIS) {
             override fun onTick(millisUntilFinished: Long) {}
