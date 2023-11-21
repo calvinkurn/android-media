@@ -464,7 +464,7 @@ class WithdrawAnalytics @Inject constructor(
         private const val EVENT_ACTION_CLICK_REKENING_BANNER = "click widget rekening premium"
         private const val EVENT_ACTION_BACK_FROM_WITHDRAWAL = "click back from penarikan saldo rekening premium"
         private const val EVENT_ACTION_CLICK_RECOMMENDED_AMOUNT_WD = "click - tarik sesuai rekomendasi"
-        private const val EVENT_ACTION_CLICK_ORIGINAL_AMOUNT_WD = "\"click - tetap lanjut tarik"
+        private const val EVENT_ACTION_CLICK_ORIGINAL_AMOUNT_WD = "click - tetap lanjut tarik"
 
         private const val EVENT_ACTION_OPEN_DISABLE_ACCOUNT_INFO = "view hanya bisa tarik saldo ke rekprem"
         private const val EVENT_ACTION_CLICK_WITHDRAWAL_ALL = "click tarik semua"

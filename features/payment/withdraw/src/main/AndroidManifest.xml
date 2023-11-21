@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name=".saldowithdrawal.presentation.activity.AutoTopAdsBottomSheetActivity"
-            android:screenOrientation="portrait"
+            android:configChanges="orientation"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent"
             android:label="@string/swd_activity_auto_topads_bottomsheet"
             android:exported="false" />

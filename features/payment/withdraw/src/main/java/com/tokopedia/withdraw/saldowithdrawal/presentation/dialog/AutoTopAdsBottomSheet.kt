@@ -4,7 +4,6 @@ import android.os.Bundle
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.withdraw.databinding.SwdDialogAutoTopadsBottomsheetBinding
-import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.AutoTopAdsBottomSheetListener
 
 class AutoTopAdsBottomSheet: BottomSheetUnify() {
 

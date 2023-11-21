@@ -41,7 +41,6 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.activity.WithdrawActi
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.SaldoWithdrawalPagerAdapter
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.AutoTopAdsBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.JoinRPOnWithdrawalBottomSheet
-import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.AutoTopAdsBottomSheetListener
 import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalJoinRPCallback
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModel
@@ -391,17 +390,21 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                 }
             }
             AUTO_TOPADS_RECOMMENDATION_CODE -> {
-                val recommAmount = saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.second ?: 0
-                if (resultCode == AutoTopAdsBottomSheet.RECOMMENDED_WD) {
-                    withdrawalRequest = withdrawalRequest.copy(withdrawal = recommAmount)
-                    analytics.get().eventClickAutoTopAdsRecommendationWithdrawal(recommAmount, originalWithdrawalAmount)
-                    openUserVerificationScreen()
-                } else if (resultCode == AutoTopAdsBottomSheet.ORIGINAL_WD) {
-                    withdrawalRequest = withdrawalRequest.copy(withdrawal = originalWithdrawalAmount)
-                    analytics.get().eventClickAutoTopAdsOriginalWithdrawal(recommAmount, originalWithdrawalAmount)
-                    openUserVerificationScreen()
-                }
+                processAutoTopadsRecommRequestCode(resultCode)
             }
+        }
+    }
+
+    private fun processAutoTopadsRecommRequestCode(resultCode: Int) {
+        val recommAmount = saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.second ?: 0
+        if (resultCode == AutoTopAdsBottomSheet.RECOMMENDED_WD) {
+            withdrawalRequest = withdrawalRequest.copy(withdrawal = recommAmount)
+            analytics.get().eventClickAutoTopAdsRecommendationWithdrawal(recommAmount, originalWithdrawalAmount)
+            openUserVerificationScreen()
+        } else if (resultCode == AutoTopAdsBottomSheet.ORIGINAL_WD) {
+            withdrawalRequest = withdrawalRequest.copy(withdrawal = originalWithdrawalAmount)
+            analytics.get().eventClickAutoTopAdsOriginalWithdrawal(recommAmount, originalWithdrawalAmount)
+            openUserVerificationScreen()
         }
     }
 

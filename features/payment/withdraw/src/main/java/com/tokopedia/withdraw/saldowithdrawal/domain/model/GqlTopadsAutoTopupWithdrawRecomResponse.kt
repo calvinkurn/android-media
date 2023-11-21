@@ -22,5 +22,5 @@ data class TopadsAutoTopupWithdrawRecomData(
 
     @SerializedName("recommendation_value")
     @Expose
-    val recommendationValue: Float = 0f
+    val recommendationValue: Double = 0.0
 )
