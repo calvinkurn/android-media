@@ -13,9 +13,6 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.banner.Banner
 import com.tokopedia.banner.BannerView
@@ -27,7 +24,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.getBitmapImageUrl
-import com.tokopedia.banner.R as RB
+import com.tokopedia.banner.R as bannerR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.abstraction.R as abstractionR
 
 /**
  * @author by furqan on 13/09/2019
@@ -47,11 +46,11 @@ class BannerViewDynamicBackground @JvmOverloads constructor(context: Context, at
         view.findViewById<View>(R.id.overlay_round).background = MethodChecker.getDrawable(
                 view.context, R.drawable.background_banner_image_mask)
         bannerRoot = view.findViewById(R.id.banner_root)
-        bannerRecyclerView = view.findViewById(RB.id.banner_recyclerview)
-        bannerIndicator = view.findViewById(RB.id.banner_indicator_container)
+        bannerRecyclerView = view.findViewById(bannerR.id.banner_recyclerview)
+        bannerIndicator = view.findViewById(bannerR.id.banner_indicator_container)
         imgBannerBackground = view.findViewById(R.id.img_banner_background)
         cardBannerView = view.findViewById(R.id.card_banner_view)
-        bannerSeeAll = view.findViewById(RB.id.banner_see_all)
+        bannerSeeAll = view.findViewById(bannerR.id.banner_see_all)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (::cardBannerView.isInitialized) {
@@ -79,7 +78,7 @@ class BannerViewDynamicBackground @JvmOverloads constructor(context: Context, at
     }
 
     override fun buildView() {
-        bannerSeeAll.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500));
+        bannerSeeAll.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500));
         bannerSeeAll.typeface = Typeface.DEFAULT
         super.buildView()
         bannerRoot.visibility = View.VISIBLE
@@ -88,9 +87,9 @@ class BannerViewDynamicBackground @JvmOverloads constructor(context: Context, at
         if (bannerRecyclerView.itemDecorationCount == 0) {
             bannerRecyclerView.addItemDecoration(
                     BannerDynamicViewDecorator(
-                            context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16),
+                            context.resources.getDimensionPixelSize(abstractionR.dimen.dp_16),
                             context.resources.getDimensionPixelSize(R.dimen.dp_2),
-                            context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16),
+                            context.resources.getDimensionPixelSize(abstractionR.dimen.dp_16),
                             context.resources.getDimensionPixelSize(R.dimen.dp_2))
             )
         }

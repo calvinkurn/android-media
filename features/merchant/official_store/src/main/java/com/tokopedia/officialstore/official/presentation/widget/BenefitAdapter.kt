@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.Benefit
+import com.tokopedia.design.R as designR
 
 class BenefitAdapter(private val context: Context, var benefitList: List<Benefit> = ArrayList()) :
         RecyclerView.Adapter<BenefitAdapter.BenefitViewHolder>() {
@@ -28,11 +29,9 @@ class BenefitAdapter(private val context: Context, var benefitList: List<Benefit
 
     override fun onBindViewHolder(holder: BenefitViewHolder, position: Int) {
         val item = benefitList[position]
-        ImageHandler.loadImage(
-                context,
-                holder.imageView,
-                item.iconUrl,
-                com.tokopedia.design.R.drawable.ic_loading_image
+        holder.imageView?.loadImageWithError(
+            item.iconUrl,
+            error = designR.drawable.ic_loading_image
         )
 
         holder.textView?.text = item.label

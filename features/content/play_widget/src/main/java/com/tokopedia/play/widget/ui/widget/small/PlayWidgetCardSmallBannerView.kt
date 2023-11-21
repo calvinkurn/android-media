@@ -5,11 +5,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
+import com.tokopedia.play_common.view.ImageLoaderStateListener
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifyprinciples.Typography
 
@@ -38,14 +37,14 @@ class PlayWidgetCardSmallBannerView : FrameLayout {
 
     private var mListener: Listener? = null
 
-    private val bannerListener: ImageHandler.ImageLoaderStateListener
+    private val bannerListener: ImageLoaderStateListener
 
     init {
         val view = View.inflate(context, R.layout.view_play_widget_card_small_banner, this)
         ivBanner = view.findViewById(R.id.iv_banner)
         tvFallback = view.findViewById(R.id.tv_fallback)
 
-        bannerListener = object : ImageHandler.ImageLoaderStateListener {
+        bannerListener = object : ImageLoaderStateListener {
 
             override fun successLoad() {
                 ivBanner.visibility = View.VISIBLE

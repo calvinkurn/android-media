@@ -12,7 +12,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
@@ -29,9 +28,11 @@ import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumAdapte
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
 import com.tokopedia.play.widget.ui.widget.medium.model.PlayWidgetOverlayUiModel
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
+import com.tokopedia.play_common.view.ImageLoaderStateListener
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.setGradientBackground
 import kotlin.math.abs
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 
 /**
@@ -174,7 +175,7 @@ class PlayWidgetMediumView : FrameLayout, IPlayWidgetView {
 
     private var mLastOverlayImageUrl: String? = null
 
-    private val spacing16 by lazy { resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toDp().toInt() }
+    private val spacing16 by lazy { resources.getDimension(unifyprinciplesR.dimen.spacing_lvl4).toDp().toInt() }
 
     private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
 
@@ -326,8 +327,8 @@ class PlayWidgetMediumView : FrameLayout, IPlayWidgetView {
                 && (data.gradientColors.isNotEmpty() || data.backgroundUrl.isNotBlank())
     }
 
-    private fun overlayImageHandler(data: PlayWidgetBackgroundUiModel): ImageHandler.ImageLoaderStateListener {
-        return object : ImageHandler.ImageLoaderStateListener {
+    private fun overlayImageHandler(data: PlayWidgetBackgroundUiModel): ImageLoaderStateListener {
+        return object : ImageLoaderStateListener {
             override fun successLoad() {
                 configureBackgroundOverlay(data)
             }

@@ -1,12 +1,10 @@
 package com.tokopedia.topads.common.view
 
 import android.content.Context
-import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
