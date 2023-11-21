@@ -22,6 +22,14 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
     private var callback: (position: Int, isVideo: Boolean) -> Unit = { _, _ -> }
     private var data = listOf<EditorUiModel>()
 
+    private fun playVideoPlayer(index: Int) {
+        editorAdapter?.playVideo(index)
+    }
+
+    private fun stopVideoPlayer(index: Int) {
+        editorAdapter?.stopVideo(index)
+    }
+
     fun setAdapter(listData: List<EditorUiModel>) {
         data = listData
 
@@ -35,8 +43,7 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
                 position: Int,
                 positionOffset: Float,
                 positionOffsetPixels: Int
-            ) {
-            }
+            ) {}
 
             override fun onPageSelected(position: Int) {
                 stopVideoPlayer(previousVideoIndex)
@@ -56,14 +63,6 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
                 it.playVideo(INITIAL_VIEW_PAGER_INDEX)
             }
         }
-    }
-
-    fun playVideoPlayer(index: Int) {
-        editorAdapter?.playVideo(index)
-    }
-
-    fun stopVideoPlayer(index: Int) {
-        editorAdapter?.stopVideo(index)
     }
 
     fun updateImage(
@@ -118,25 +117,48 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
         this.callback = callback
     }
 
-    fun releaseImage() {
+    fun releaseImageVideo() {
         getActiveIndexList().forEach {
-            val layout = findViewWithTag<RelativeLayout>(viewPagerTag(it))
-            layout?.findViewById<ImageView>(R.id.img_main_preview)?.let {
-                it.clearImage()
+            if (editorAdapter?.isVideo(it) == true) {
+                // release video
+                stopVideoPlayer(it)
+            } else {
+                // release image
+                val layout = findViewWithTag<RelativeLayout>(viewPagerTag(it))
+                layout?.findViewById<ImageView>(R.id.img_main_preview)?.let { view ->
+                    view.clearImage()
+                }
             }
         }
     }
 
-    fun reloadImage() {
+    fun reloadImageVideo() {
         adapter?.let {
             getActiveIndexList().forEach {
-                val layout = findViewWithTag<RelativeLayout>(viewPagerTag(it))
-                layout?.findViewById<ImageView>(R.id.img_main_preview)?.loadImage(
-                    data[it].getImageUrl()
-                ) {
-                    setCacheStrategy(EditorFragment.CACHE_STRATEGY)
-                    useCache(EditorFragment.IS_USING_CACHE)
+                if (editorAdapter?.isVideo(it) == true) {
+                    // reload video
+                    editorAdapter?.reInitPlayer(it)
+                    if (it == currentItem) {
+                        playVideoPlayer(it)
+                    }
+                } else {
+                    // reload image
+                    val layout = findViewWithTag<RelativeLayout>(viewPagerTag(it))
+                    layout?.findViewById<ImageView>(R.id.img_main_preview)?.loadImage(
+                        data[it].getImageUrl()
+                    ) {
+                        setCacheStrategy(EditorFragment.CACHE_STRATEGY)
+                        useCache(EditorFragment.IS_USING_CACHE)
+                    }
                 }
+            }
+        }
+    }
+
+    fun clearPlayer() {
+        getActiveIndexList().forEach {
+            if (editorAdapter?.isVideo(it) == true) {
+                editorAdapter?.releasePlayer(it)
             }
         }
     }
@@ -150,7 +172,11 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
     }
 
     private fun getActiveIndexList(): List<Int> {
-        val indexList = mutableListOf(currentItem, currentItem + 1)
+        val indexList = mutableListOf(currentItem)
+
+        if (currentItem < (adapter?.count ?: FALLBACK_FAILED_COUNT) - 1) {
+            indexList.add(currentItem + 1)
+        }
 
         if (currentItem > 0) {
             indexList.add(0, currentItem - 1)
@@ -161,5 +187,6 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
 
     companion object {
         private const val INITIAL_VIEW_PAGER_INDEX = 0
+        private const val FALLBACK_FAILED_COUNT = 999
     }
 }

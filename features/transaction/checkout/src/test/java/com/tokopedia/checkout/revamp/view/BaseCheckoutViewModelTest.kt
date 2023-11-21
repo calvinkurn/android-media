@@ -158,6 +158,7 @@ open class BaseCheckoutViewModelTest {
                 saveShipmentStateGqlUseCase,
                 changeShippingAddressGqlUseCase,
                 releaseBookingUseCase,
+                helper,
                 dispatchers
             ),
             CheckoutLogisticProcessor(

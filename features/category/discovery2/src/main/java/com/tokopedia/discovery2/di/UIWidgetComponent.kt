@@ -40,6 +40,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sect
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcardinfinite.ShopCardInfiniteViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewModel
@@ -92,4 +93,5 @@ interface UIWidgetComponent {
     fun inject(viewAllCarouselViewModel: ViewAllCarouselViewModel)
     fun inject(merchantVoucherGridViewModel: MerchantVoucherGridViewModel)
     fun inject(merchantVoucherGridItemViewModel: MerchantVoucherGridItemViewModel)
+    fun inject(shopOfferHeroBrandViewModel: ShopOfferHeroBrandViewModel)
 }

@@ -40,6 +40,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -87,10 +88,9 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
         PostAtcParams()
     )
 
-    override var binding: PostAtcBottomSheetBinding? = null
-        private set
-    override var footer: ViewPostAtcFooterBinding? = null
-        private set
+    override var binding by autoClearedNullable<PostAtcBottomSheetBinding>()
+
+    override var footer by autoClearedNullable<ViewPostAtcFooterBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
@@ -172,9 +172,9 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             adapter.replaceComponents(it.data)
             updateFooter()
         }, fail = {
-            showError(it)
-            logException(it)
-        })
+                showError(it)
+                logException(it)
+            })
         PostAtcTracking.impressionPostAtcBottomSheet(
             trackingQueue,
             userSession.userId,

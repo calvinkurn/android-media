@@ -872,7 +872,7 @@ class DiscoveryViewModelTest {
         val shopIds: ArrayList<String> = arrayListOf("1", "2")
         every { userSessionInterface.isLoggedIn } returns true
 
-        viewModel.getMiniCart(shopIds, "2")
+        viewModel.getMiniCartTokonow(shopIds, "2")
 
         verify { getMiniCartListSimplifiedUseCase.setParams(any(), any()) }
     }
