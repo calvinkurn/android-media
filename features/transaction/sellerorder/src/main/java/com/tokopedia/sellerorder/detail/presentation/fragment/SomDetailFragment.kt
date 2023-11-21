@@ -1187,6 +1187,10 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
         somDetailTransparencyFeeBottomSheet.show(childFragmentManager)
     }
 
+    override fun onAddOnsInfoLinkClicked(infoLink: String) {
+        SomNavigator.openAppLink(context, infoLink)
+    }
+
     override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
         expandCollapseAddOn(addOnsIdentifier, isExpand)
     }

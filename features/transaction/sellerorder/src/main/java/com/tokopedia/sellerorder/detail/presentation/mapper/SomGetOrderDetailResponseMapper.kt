@@ -51,6 +51,7 @@ object SomGetOrderDetailResponseMapper {
                                 addonsTitle = addOnLabel,
                                 addonItemList = addOnSummary.addons.map { addon ->
                                     val addOnNote = addon.metadata?.addOnNote
+                                    val infoLink = addon.metadata?.infoLink
                                     com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel(
                                         priceText = addon.priceStr,
                                         quantity = addon.quantity,
@@ -62,7 +63,9 @@ object SomGetOrderDetailResponseMapper {
                                         fromStr = addOnNote?.from.orEmpty(),
                                         message = addOnNote?.notes.orEmpty(),
                                         noteCopyable = true,
-                                        providedByShopItself = true
+                                        providedByShopItself = true,
+                                        infoLink = infoLink.orEmpty(),
+                                        tips = addOnNote?.tips.orEmpty()
                                     )
                                 }
                             ).also {
@@ -171,6 +174,7 @@ object SomGetOrderDetailResponseMapper {
                             addonsTitle = addOnLabel,
                             addonItemList = addOnSummary.addons.map { addon ->
                                 val addOnNote = addon.metadata?.addOnNote
+                                val infoLink = addon.metadata?.infoLink
                                 com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel(
                                     priceText = addon.priceStr,
                                     quantity = addon.quantity,
@@ -182,7 +186,9 @@ object SomGetOrderDetailResponseMapper {
                                     fromStr = addOnNote?.from.orEmpty(),
                                     message = addOnNote?.notes.orEmpty(),
                                     noteCopyable = true,
-                                    providedByShopItself = true
+                                    providedByShopItself = true,
+                                    infoLink = infoLink.orEmpty(),
+                                    tips = addOnNote?.tips.orEmpty()
                                 )
                             }
                         ).also {
@@ -208,6 +214,7 @@ object SomGetOrderDetailResponseMapper {
                         addonsTitle = "",
                         addonItemList = addOnSummary.addons.map { addon ->
                             val addOnNote = addon.metadata?.addOnNote
+                            val infoLink = addon.metadata?.infoLink
                             com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel(
                                 priceText = addon.priceStr,
                                 quantity = addon.quantity,
@@ -219,7 +226,9 @@ object SomGetOrderDetailResponseMapper {
                                 fromStr = addOnNote?.from.orEmpty(),
                                 message = addOnNote?.notes.orEmpty(),
                                 noteCopyable = true,
-                                providedByShopItself = true
+                                providedByShopItself = true,
+                                infoLink = infoLink.orEmpty(),
+                                tips = addOnNote?.tips.orEmpty()
                             )
                         }
                     ).also {
