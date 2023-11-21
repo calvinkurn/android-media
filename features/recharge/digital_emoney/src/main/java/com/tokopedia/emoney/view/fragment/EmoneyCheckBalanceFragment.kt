@@ -523,15 +523,27 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun getMId(): String {
-        return getString(com.tokopedia.keys.R.string.mjhfihkid)
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            getString(com.tokopedia.keys.R.string.mifjskshd)
+        } else {
+            getString(com.tokopedia.keys.R.string.mjhfihkid)
+        }
     }
 
     private fun getTId(): String {
-        return getString(com.tokopedia.keys.R.string.tijfbnnid)
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            getString(com.tokopedia.keys.R.string.tikanshfd)
+        } else {
+            getString(com.tokopedia.keys.R.string.tijfbnnid)
+        }
     }
 
     private fun getATD(): String {
-        return getString(com.tokopedia.keys.R.string.aokfokotd)
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            getString(com.tokopedia.keys.R.string.ainfhfjsd)
+        } else {
+            getString(com.tokopedia.keys.R.string.aokfokotd)
+        }
     }
 
     private fun getRollenceBCA(): Boolean {
