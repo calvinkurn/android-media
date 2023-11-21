@@ -43,19 +43,35 @@ class ShopOfferSupportingBrandItemViewHolder(
         }
     }
 
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        if (lifecycleOwner == null) return
+
+        viewModel?.getComponentData()?.removeObservers(lifecycleOwner)
+    }
+
     private fun renderSupportingBrand(item: DataItem) {
         binding?.run {
             setCardBackgroundColor(item)
             loadShopInfo(item.shopLogo, item.shopName)
-
-            firstProductImage.loadProductImage(item.products?.first()?.imageURL)
-            secondProductImage.loadProductImage(item.products?.get(SECOND_INDEX)?.imageURL)
-
             setTextColor(item.fontColor)
 
             ctaText.text = item.buttonText
-
             offerTier.text = item.offerTiers?.firstOrNull()?.tierWording.orEmpty()
+
+            firstProductImage.run {
+                val product = item.products?.first()
+
+                loadProductImage(product?.imageURL)
+                handleClickAction(product?.redirectAppLink)
+            }
+
+            secondProductImage.run {
+                val product = item.products?.get(SECOND_INDEX)
+
+                loadProductImage(product?.imageURL)
+                handleClickAction(product?.redirectAppLink)
+            }
 
             handleClickAction(item.applinks)
         }
@@ -69,11 +85,17 @@ class ShopOfferSupportingBrandItemViewHolder(
         }
     }
 
-    private fun ImageUnify.loadProductImage(
-        imageUrl: String?
-    ) {
+    private fun ImageUnify.loadProductImage(imageUrl: String?) {
         imageUrl?.let {
             loadImage(it)
+        }
+    }
+
+    private fun ImageUnify.handleClickAction(appLink: String?) {
+        if (appLink.isNullOrBlank()) return
+
+        setOnClickListener {
+            RouteManager.route(itemView.context, appLink)
         }
     }
 

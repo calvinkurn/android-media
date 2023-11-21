@@ -107,7 +107,7 @@ data class ProductsItem(
         @SerializedName("id")
         val id: String? = null,
 
-        @SerializedName("redirectAppLink")
+        @SerializedName("redirectAppLink", alternate = ["applink"])
         val redirectAppLink: String? = null,
 
         @SerializedName("category")

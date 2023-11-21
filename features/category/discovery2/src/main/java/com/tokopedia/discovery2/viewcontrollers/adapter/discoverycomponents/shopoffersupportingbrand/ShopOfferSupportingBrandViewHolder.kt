@@ -21,7 +21,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopOfferSupportingBrandViewHolder(
     itemView: View,
     val fragment: Fragment
-): AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private val binding: DiscoverySupportingBrandLayoutBinding?
         by viewBinding()
@@ -66,6 +66,13 @@ class ShopOfferSupportingBrandViewHolder(
         viewModel?.run {
             observeBrandList(lifecycleOwner)
         }
+    }
+
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        if (lifecycleOwner == null) return
+
+        viewModel?.observeBrandList(lifecycleOwner)
     }
 
     private fun ShopOfferSupportingBrandViewModel.observeBrandList(
