@@ -318,7 +318,7 @@ class HomeRecommendationFragment :
         recyclerView?.layoutManager = staggeredGridLayoutManager
         (recyclerView?.layoutManager as? StaggeredGridLayoutManager?)?.gapStrategy =
             StaggeredGridLayoutManager.GAP_HANDLING_NONE
-        recyclerView?.addItemDecoration(HomeFeedItemDecoration(4f.toDpInt()))
+        recyclerView?.addItemDecoration(HomeFeedItemDecoration())
         recyclerView?.adapter = adapter
         parentPool?.setMaxRecycledViews(
             LAYOUT,
