@@ -281,7 +281,7 @@
     <string name="shop_info_ops_hour_saturday">Sabtu</string>
     <string name="shop_info_ops_hour_sunday">Minggu</string>
     <string name="shop_info_ops_hour_open_24_hours">Senin-Minggu: 24 jam</string>
-    <string name="shop_info_ops_hour_open_twenty_four_hour">Buka 24 Jam</string>
+    <string name="shop_info_ops_hour_open_twenty_four_hour">24 Jam</string>
     <string name="shop_info_ops_hour_closed">Libur</string>
     <string name="shop_info_ops_hour_placeholder_open_range">%s-%s WIB</string>
     
