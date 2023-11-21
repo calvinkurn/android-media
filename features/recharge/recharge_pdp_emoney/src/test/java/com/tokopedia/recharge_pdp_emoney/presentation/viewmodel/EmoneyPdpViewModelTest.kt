@@ -16,6 +16,7 @@ import com.tokopedia.common_digital.common.presentation.model.DigiPersoRecommend
 import com.tokopedia.common_digital.common.presentation.model.DigitalDppoConsent
 import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.recharge_pdp_emoney.presentation.domain.GetBCAGenCheckerUseCase
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -55,6 +56,9 @@ class EmoneyPdpViewModelTest {
     @RelaxedMockK
     lateinit var getDppoConsentUseCase: GetDppoConsentUseCase
 
+    @RelaxedMockK
+    lateinit var getBCAGenCheckerUseCase: GetBCAGenCheckerUseCase
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
@@ -62,7 +66,8 @@ class EmoneyPdpViewModelTest {
             userSession,
             rechargeCatalogPrefixUseCase,
             rechargeCatalogProductInputUseCase,
-            getDppoConsentUseCase
+            getDppoConsentUseCase,
+            getBCAGenCheckerUseCase
         )
     }
 
