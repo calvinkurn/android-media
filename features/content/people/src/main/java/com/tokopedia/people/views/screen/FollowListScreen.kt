@@ -4,6 +4,8 @@ import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -47,7 +49,13 @@ internal fun FollowListScreen(
                         onItemClicked = {}
                     )
                 }
-                else -> {}
+                is PeopleUiModel.UserUiModel -> {
+                    UserFollowListItemRow(
+                        it,
+                        onFollowClicked = {},
+                        onItemClicked = {}
+                    )
+                }
             }
         }
     }
@@ -101,6 +109,60 @@ private fun ShopFollowListItemRow(
     }
 }
 
+@Composable
+private fun UserFollowListItemRow(
+    item: PeopleUiModel.UserUiModel,
+    onFollowClicked: (Boolean) -> Unit,
+    onItemClicked: (PeopleUiModel.UserUiModel) -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .clickable { onItemClicked(item) }
+            .wrapContentHeight()
+            .fillMaxWidth()
+            .padding(16.dp, 8.dp)
+    ) {
+        NestImage(
+            source = ImageSource.Remote(item.photoUrl),
+            Modifier
+                .requiredSize(48.dp)
+                .clip(CircleShape)
+        )
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .weight(1f)
+        ) {
+            NestTypography(
+                text = item.name,
+                textStyle = NestTheme.typography.heading5.copy(
+                    color = NestTheme.colors.NN._950
+                ),
+                maxLines = 1
+            )
+
+            if (item.username.isNotBlank()) {
+                NestTypography(
+                    text = item.username,
+                    textStyle = NestTheme.typography.body3.copy(
+                        color = NestTheme.colors.NN._600
+                    )
+                )
+            }
+        }
+
+        if (item.isMySelf) return
+        NestButton(
+            text = if (item.isFollowed) "Following" else "Follow",
+            variant = if (item.isFollowed) ButtonVariant.GHOST_ALTERNATE else ButtonVariant.FILLED,
+            size = ButtonSize.MICRO,
+            onClick = { onFollowClicked(item.isFollowed) }
+        )
+    }
+}
+
 @Preview(name = "Light Mode", uiMode = UI_MODE_NIGHT_NO)
 @Preview(name = "Dark Mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
@@ -128,18 +190,57 @@ private fun ShopFollowListItemRowPreview() {
 @Preview(name = "Light Mode", uiMode = UI_MODE_NIGHT_NO)
 @Preview(name = "Dark Mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
+private fun UserFollowListItemRowPreview() {
+    NestTheme {
+        Row(
+            Modifier.background(NestTheme.colors.NN._0)
+        ) {
+            UserFollowListItemRow(
+                item = PeopleUiModel.UserUiModel(
+                    id = "1",
+                    encryptedId = "1",
+                    photoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2oqJCpfJ9aoT_gZXlShxCAJ1wJX0YQS8X-g&usqp=CAU",
+                    name = "PS Enterprise",
+                    username = "@psenterprise",
+                    isFollowed = true,
+                    appLink = "",
+                    isMySelf = false
+                ),
+                onFollowClicked = {},
+                onItemClicked = {}
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", uiMode = UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Mode", uiMode = UI_MODE_NIGHT_YES)
+@Composable
 private fun FollowListScreenPreview() {
     NestTheme {
         FollowListScreen(
             List(6) {
-                PeopleUiModel.ShopUiModel(
-                    id = "$it",
-                    logoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2oqJCpfJ9aoT_gZXlShxCAJ1wJX0YQS8X-g&usqp=CAU",
-                    badgeUrl = "a",
-                    name = "PS Enterprise $it",
-                    isFollowed = true,
-                    appLink = ""
-                )
+                if (it % 2 == 0) {
+                    PeopleUiModel.ShopUiModel(
+                        id = "$it",
+                        logoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2oqJCpfJ9aoT_gZXlShxCAJ1wJX0YQS8X-g&usqp=CAU",
+                        badgeUrl = "a",
+                        name = "PS Enterprise $it",
+                        isFollowed = true,
+                        appLink = ""
+                    )
+                } else {
+                    PeopleUiModel.UserUiModel(
+                        id = "$it",
+                        encryptedId = "$it",
+                        photoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2oqJCpfJ9aoT_gZXlShxCAJ1wJX0YQS8X-g&usqp=CAU",
+                        name = "PS Enterprise $it",
+                        username = "@psenterprise",
+                        isFollowed = true,
+                        appLink = "",
+                        isMySelf = false
+                    )
+                }
             }.toPersistentList(),
             Modifier.background(NestTheme.colors.NN._0)
         )
