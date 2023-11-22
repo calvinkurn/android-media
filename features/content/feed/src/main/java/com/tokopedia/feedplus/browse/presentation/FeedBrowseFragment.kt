@@ -171,6 +171,10 @@ internal class FeedBrowseFragment @Inject constructor(
         ) {
             router.route(context, item.appLink)
         }
+
+        override fun onRetry(viewHolder: FeedBrowseHorizontalCreatorsViewHolder, slotId: String) {
+            viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(slotId, WidgetMenuModel.Empty))
+        }
     }
 
     private val adapter by viewLifecycleBound(

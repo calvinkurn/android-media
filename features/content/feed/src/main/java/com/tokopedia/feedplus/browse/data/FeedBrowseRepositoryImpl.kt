@@ -137,8 +137,8 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         )
     )
 
-    private fun mockCreators() = WidgetRecommendationModel.Creators(
-        creators = List(5) { index ->
+    private fun mockCreators() = WidgetRecommendationModel.Channels(
+        channels = List(5) { index ->
             PlayWidgetChannelUiModel(
                 channelId = "$index",
                 title = "",

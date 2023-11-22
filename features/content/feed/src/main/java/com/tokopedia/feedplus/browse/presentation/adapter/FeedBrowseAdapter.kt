@@ -72,7 +72,7 @@ internal class FeedBrowseAdapter(
                 FeedBrowseTitleViewHolder.create(parent)
             }
             TYPE_HORIZONTAL_CREATORS -> {
-                FeedBrowseHorizontalCreatorsViewHolder.create(parent, creatorListener)
+                FeedBrowseHorizontalCreatorsViewHolder.create(parent, creatorListener, scope)
             }
             else -> error("ViewType $viewType is not supported")
         }
@@ -168,7 +168,7 @@ internal class FeedBrowseAdapter(
                     index
                 )
                 is FeedBrowseSlotUiModel.InspirationBanner -> item.model.mapToItems(index)
-                is FeedBrowseSlotUiModel.Creators -> item.model.mapToItems(index)
+                is FeedBrowseSlotUiModel.Creators -> item.model.mapToItems(item.result, index)
             }
         }
     }
@@ -225,6 +225,7 @@ internal class FeedBrowseAdapter(
     }
 
     private fun FeedBrowseSlotUiModel.Creators.mapToItems(
+        state: ResultState,
         position: Int
     ): List<FeedBrowseItemListModel> {
         val slotInfo = getSlotInfo(position)
