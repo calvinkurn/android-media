@@ -17,6 +17,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.ShopAdsWithSingleProductModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -33,6 +34,10 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
     private var merchantVoucher: Label? = null
     private var shopSlogan: Typography? = null
     private var productCardGridView: ProductCardGridView? = null
+
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(context)
+    }
 
     constructor(context: Context) : super(context) {
         init()
@@ -75,10 +80,13 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
     }
     
     private fun setProductWidget(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel) {
-        shopAdsWithSingleProductModel.listItem?.let {
-            val productModel = getProductCardViewModel(it, shopAdsWithSingleProductModel.hasAddToCartButton)
+        shopAdsWithSingleProductModel.listItem?.let { product ->
+            val productModel = getProductCardViewModel(product, shopAdsWithSingleProductModel.hasAddToCartButton)
             productCardGridView?.applyCarousel()
             productCardGridView?.setProductModel(productModel)
+            productCardGridView?.setOnClickListener {
+                topAdsUrlHitter.hitClickUrl(ShopAdsSingleItemHorizontalLayout::class.java.simpleName, product.imageProduct.imageClickUrl, String.EMPTY, String.EMPTY, String.EMPTY)
+            }
         }
     }
 

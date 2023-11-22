@@ -15,7 +15,9 @@ import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.ShopAdsWithSingleProductModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -35,6 +37,11 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
     private var productPrice: Typography? = null
     private var productSlashedPrice: Typography? = null
     private var productDiscountPercent: Typography? = null
+    private var productCard: CardUnify2? = null
+
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(context)
+    }
 
     constructor(context: Context) : super(context) {
         init()
@@ -69,6 +76,7 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
         setProductPrice(shopAdsWithSingleProductModel.listItem)
         setProductSlashedPrice(shopAdsWithSingleProductModel.listItem)
         setProductDiscount(shopAdsWithSingleProductModel.listItem)
+        setProductClick(shopAdsWithSingleProductModel.listItem)
     }
 
     private fun initViews() {
@@ -81,6 +89,7 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
         productName = findViewById(R.id.product_title)
         productPrice = findViewById(R.id.product_price)
         productDiscountPercent = findViewById(R.id.product_discount)
+        productCard = findViewById(R.id.cardViewProduct)
     }
 
     private fun setProductImage(product: Product?) {
@@ -113,7 +122,15 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
     private fun setProductDiscount(product: Product?){
         product?.let {
             if(it.campaign.discountPercentage != 0){
-                productDiscountPercent?.text = it.campaign.discountPercentage.toString()
+                productDiscountPercent?.text = "${it.campaign.discountPercentage}%"
+            }
+        }
+    }
+
+    private fun setProductClick(product: Product?){
+        product?.let {product ->
+            productCard?.setOnClickListener {
+                topAdsUrlHitter.hitClickUrl(ShopAdsSingleItemVerticalLayout::class.java.simpleName, product.imageProduct.imageClickUrl , String.EMPTY, String.EMPTY, String.EMPTY)
             }
         }
     }
