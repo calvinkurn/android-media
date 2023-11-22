@@ -14,12 +14,14 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_EVENT_ACTION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_EVENT_CATEGORY
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_EVENT_LABEL
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_INDEX
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_IS_LOGIN
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_ITEM_CATEGORY
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_ITEM_ID
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_ITEM_LIST
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_ITEM_NAME
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_PRICE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_PROMOTIONS
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_SCREEN_NAME
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_TRACKER_ID
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_USER_ID
 import com.tokopedia.catalog.domain.model.CatalogProductItem
@@ -124,6 +126,24 @@ object CatalogReimagineDetailAnalytics {
             put(KEY_TRACKER_ID, trackerId)
             put(KEY_BUSINESS_UNIT, BUSINESS_UNITS)
             put(KEY_CURRENT_SITE, CURRENT_SITE)
+        }.also {
+            getTracker().sendGeneralEvent(it)
+        }
+    }
+
+    fun sendEventOpenScreen(
+        screenName: String,
+        trackerId: String = "",
+        userId: String = ""
+    ) {
+        HashMap<String, Any>().apply {
+            put(KEY_EVENT, CatalogTrackerConstant.EVENT_OPEN_SCREEN)
+            put(KEY_TRACKER_ID, trackerId)
+            put(KEY_BUSINESS_UNIT, BUSINESS_UNITS)
+            put(KEY_CURRENT_SITE, CURRENT_SITE)
+            put(KEY_IS_LOGIN, userId.isNotEmpty().toString())
+            put(KEY_SCREEN_NAME, screenName)
+            put(KEY_USER_ID, userId)
         }.also {
             getTracker().sendGeneralEvent(it)
         }

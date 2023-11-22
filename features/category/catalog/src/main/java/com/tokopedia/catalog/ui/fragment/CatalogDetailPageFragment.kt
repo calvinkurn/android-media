@@ -54,6 +54,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_TRUSTMAKER_I
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_CLICK_PG
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_ITEM
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_PG_IRIS
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.SCREEN_NAME_CATALOG_DETAIL_PAGE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CHANGE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_BUTTON_CHOOSE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_FAQ
@@ -75,6 +76,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TOP_FEATURE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TRUSTMAKER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_VIDEO
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_OPEN_PAGE_CATALOG_DETAIL
 import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.activity.CatalogComparisonDetailActivity
@@ -259,6 +261,7 @@ class CatalogDetailPageFragment :
             viewModel.getProductCatalog(catalogId, "")
             viewModel.refreshNotification()
         }
+        sendOpenPageTracker()
     }
 
     override fun onNavBackClicked() {
@@ -544,6 +547,14 @@ class CatalogDetailPageFragment :
     private fun goToLoginPage() {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         startActivityForResult(intent, LOGIN_REQUEST_CODE)
+    }
+
+    private fun sendOpenPageTracker() {
+        CatalogReimagineDetailAnalytics.sendEventOpenScreen(
+            screenName = "$SCREEN_NAME_CATALOG_DETAIL_PAGE - $catalogId",
+            trackerId = TRACKER_ID_OPEN_PAGE_CATALOG_DETAIL,
+            userId = userSession.userId
+        )
     }
 
     override fun onHeroBannerImpression(

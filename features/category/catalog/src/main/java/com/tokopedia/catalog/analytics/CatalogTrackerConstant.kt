@@ -25,12 +25,15 @@ object CatalogTrackerConstant {
     const val KEY_PROMOTIONS = "promotions"
     const val KEY_CREATIVE_NAME = "creative_name"
     const val KEY_CREATIVE_SLOT = "creative_slot"
+    const val KEY_IS_LOGIN = "isLoggedInStatus"
+    const val KEY_SCREEN_NAME = "screenName"
 
     const val EVENT_VIEW_ITEM = "view_item"
     const val EVENT_VIEW_PG_IRIS = "viewPGIris"
     const val EVENT_VIEW_CLICK_PG = "clickPG"
     const val EVENT_NAME_PRODUCT_CLICK = "productClick"
     const val EVENT_NAME_PRODUCT_VIEW = "productView"
+    const val EVENT_OPEN_SCREEN = "openScreen"
 
     const val EVENT_ACTION_IMPRESSION_HERO_IMAGE = "impress hero image"
     const val EVENT_ACTION_IMPRESSION_TRUSTMAKER = "impress trustmaker"
@@ -73,6 +76,10 @@ object CatalogTrackerConstant {
     const val EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST = "catalog page reimagined - product list"
     const val EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_COMPARISON = "catalog page reimagined - comparison page"
 
+    const val SCREEN_NAME_CATALOG_DETAIL_PAGE = "Browse Catalog - Reimagined Main Page"
+    const val SCREEN_NAME_CATALOG_PRODUCT_LIST_PAGE = "Browse Catalog - Reimagined Product List"
+    const val SCREEN_NAME_CATALOG_COMPARISON_PAGE = "Browse Catalog - Reimagined Comparison Page"
+
     const val TRACKER_ID_IMPRESSION_HERO_BANNER = "46964"
     const val TRACKER_ID_IMPRESSION_TRUSTMAKER = "46966"
     const val TRACKER_ID_IMPRESSION_TOP_FEATURE = "46968"
@@ -105,6 +112,10 @@ object CatalogTrackerConstant {
     const val TRACKER_ID_SEARCH_COMPARISON = "47978"
     const val TRACKER_ID_CLICK_COMPARE_COMPARISON = "47979"
     const val TRACKER_ID_IMPRESSION_COMPARISON_DETAIL = "47980"
+
+    const val TRACKER_ID_OPEN_PAGE_CATALOG_DETAIL = "48753"
+    const val TRACKER_ID_OPEN_PAGE_CATALOG_PRODUCT_LIST = "48754"
+    const val TRACKER_ID_OPEN_PAGE_CATALOG_COMPARISON = "48752"
 
     const val BUSINESS_UNITS = "Physical Goods"
     const val CURRENT_SITE = "tokopediamarketplace"
