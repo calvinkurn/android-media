@@ -190,10 +190,10 @@ internal class FeedBrowseViewModel @Inject constructor(
     }
 
     private suspend fun FeedBrowseSlotUiModel.Creators.getAndUpdateData() {
-        val response = repository.getWidgetRecommendation(identifier)
-        if (response !is WidgetRecommendationModel.Creators) return
+        val mappedResult = repository.getWidgetRecommendation(identifier)
+        if (mappedResult !is WidgetRecommendationModel.Creators) return
         updateWidget<FeedBrowseSlotUiModel.Creators>(slotId, ResultState.Success) {
-            it.copy(creatorList = FeedBrowseChannelListState.initSuccess(response.creators))
+            it.copy(creatorList = FeedBrowseChannelListState.initSuccess(mappedResult.creators))
         }
     }
 
