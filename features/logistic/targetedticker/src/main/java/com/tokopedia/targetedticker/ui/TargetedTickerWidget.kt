@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import androidx.lifecycle.findViewTreeLifecycleOwner
+
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -53,10 +55,9 @@ class TargetedTickerWidget : FrameLayout {
     }
 
     private fun observeTickerState() {
-        lifecycleOwner = ViewTreeLifecycleOwner.get(this)
+        findViewTreeLifecycleOwner()?.let { treeLifecycleOwner ->
 
-        lifecycleOwner?.let {
-            viewModel?.tickerState?.observe(it) { tickerResult ->
+            viewModel?.tickerState?.observe(treeLifecycleOwner) { tickerResult ->
                 when (tickerResult) {
                     is Success -> {
                         val data = onSubmitSuccessListener(tickerResult.data)
@@ -110,7 +111,11 @@ class TargetedTickerWidget : FrameLayout {
         setupView(attributeSet)
     }
 
-    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(context, attributeSet, defStyleAttr) {
+    constructor(
+        context: Context,
+        attributeSet: AttributeSet,
+        defStyleAttr: Int
+    ) : super(context, attributeSet, defStyleAttr) {
         setupView(attributeSet)
     }
 

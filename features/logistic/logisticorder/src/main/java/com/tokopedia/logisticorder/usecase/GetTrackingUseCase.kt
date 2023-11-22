@@ -14,7 +14,6 @@ class GetTrackingUseCase @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<GetTrackingParam, GetLogisticTrackingResponse>(dispatcher.io) {
 
-    override fun graphqlQuery() = getTrackingPage
 
     override suspend fun execute(getTrackingParam: GetTrackingParam): GetLogisticTrackingResponse {
         return gql.request(graphqlQuery(), getTrackingParam)
@@ -36,8 +35,8 @@ class GetTrackingUseCase @Inject constructor(
         )
     }
 
-    companion object {
-        val getTrackingPage = """
+
+    override fun graphqlQuery() = """
         query logistic_tracking (${'$'}input: MpLogisticTrackingInputParams!) {
           logistic_tracking(input: ${'$'}input) {
             message_error
@@ -127,5 +126,4 @@ class GetTrackingUseCase @Inject constructor(
         }
 
         """.trimIndent()
-    }
 }
