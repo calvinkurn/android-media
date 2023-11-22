@@ -98,6 +98,7 @@ class BCALibrary {
             result = isoDep.transceive(cmdAPDU)
             RAPDU = bytes2Hexchar(result)
         } catch (e: IOException) {
+            Timber.d(e)
             return ""
         } catch (e: Throwable) {
             Timber.d(e)

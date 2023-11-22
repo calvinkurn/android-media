@@ -1,6 +1,5 @@
 package com.tokopedia.emoney.viewmodel
 
-import android.annotation.SuppressLint
 import android.nfc.tech.IsoDep
 import androidx.lifecycle.LiveData
 import com.google.gson.Gson
