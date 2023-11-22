@@ -63,7 +63,10 @@ object CatalogTrackerConstant {
     const val EVENT_CLICK_COMPARE_ON_COMPARISON = "click bandingkan on comparison"
     const val EVENT_IMPRESSION_COMPARISON_DETAIL = "impress catalog comparison"
     const val EVENT_CLICK_CHANGE_COMPARISON_DETAIL = "click change catalog"
+    const val EVENT_IMPRESSION_VIDEO_WIDGET = "impression video widget"
+    const val EVENT_IMPRESSION_VIDEO_BANNER_WIDGET = "video banner impression"
 
+    const val EVENT_CATEGORY_CATALOG_PAGE = "catalog page"
     const val EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE = "catalog page reimagined - main page"
     const val EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST = "catalog page reimagined - product list"
     const val EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_COMPARISON = "catalog page reimagined - comparison page"
@@ -90,6 +93,7 @@ object CatalogTrackerConstant {
     const val TRACKER_ID_CLICK_CATALOG_PRODUCT_LIST = "46992"
     const val TRACKER_ID_CLICK_ADD_TO_CART_CATALOG_PRODUCT_LIST = "46993"
     const val TRACKER_ID_IMPRESSION_PRODUCT = "46994"
+    const val TRACKER_ID_IMPRESSION_VIDEO = "30119"
 
     const val TRACKER_ID_CLICK_SEE_MORE_COMPARISON = "47977"
     const val TRACKER_ID_IMPRESSION_COMPARISON = "47715"

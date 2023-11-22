@@ -16,7 +16,6 @@ import com.tokopedia.catalogcommon.databinding.ItemVideoBinding
 import com.tokopedia.catalogcommon.databinding.WidgetVideoBinding
 import com.tokopedia.catalogcommon.listener.VideoListener
 import com.tokopedia.catalogcommon.uimodel.VideoUiModel
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
@@ -59,11 +58,10 @@ class VideoViewHolder(
                     }
                     addItem(view.clLayout)
                 }
-
             }
             activeIndex = Int.ZERO
 
-            listener?.onVideoImpression(element.content.subList(Int.ZERO,Int.ONE))
+            listener?.onVideoImpression(element.content)
             onceCreateCarousel = true
         }
     }
@@ -90,7 +88,6 @@ class VideoViewHolder(
         element: VideoUiModel.ItemVideoUiModel,
         view: ItemVideoBinding
     ) {
-
         view.lnPlay.setBackgroundResource(element.styleIconPlay.background)
         view.ivPlay.setImage(
             newDarkDisable = ContextCompat.getColor(
