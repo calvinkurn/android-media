@@ -14,7 +14,9 @@ class PlainHeaderViewHolder(itemView: View?) : AbstractViewHolder<PlainHeaderUiM
 
     override fun bind(element: PlainHeaderUiModel?) {
         element?.let {
-            setupHeader(element.header.getStringValue(itemView.context))
+            val title =
+                element.title?.takeIf { it.isNotBlank() } ?: element.header?.getStringValue(itemView.context)
+            setupHeader(title.orEmpty())
         }
     }
 
