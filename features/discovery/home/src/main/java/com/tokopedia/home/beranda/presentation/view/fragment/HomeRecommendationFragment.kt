@@ -179,6 +179,7 @@ class HomeRecommendationFragment :
         super.onViewCreated(view, savedInstanceState)
         setupArgs()
         fetchHomeRecommendationRollence()
+        handlingNestedRecyclerView()
         setupRecyclerView()
         loadFirstPageData()
         initListeners()
@@ -317,6 +318,21 @@ class HomeRecommendationFragment :
     }
 
     private fun setupRecyclerView() {
+        recyclerView?.layoutManager = staggeredGridLayoutManager
+        (recyclerView?.layoutManager as? StaggeredGridLayoutManager?)?.gapStrategy =
+            StaggeredGridLayoutManager.GAP_HANDLING_NONE
+        recyclerView?.addItemDecoration(HomeFeedItemDecoration())
+        recyclerView?.adapter = adapter
+        parentPool?.setMaxRecycledViews(
+            LAYOUT,
+            MAX_RECYCLED_VIEWS
+        )
+        recyclerView?.setRecycledViewPool(parentPool)
+        createEndlessRecyclerViewListener()
+        endlessRecyclerViewScrollListener?.let { recyclerView?.addOnScrollListener(it) }
+    }
+
+    private fun handlingNestedRecyclerView() {
         val mScrollTouchListener: RecyclerView.OnItemTouchListener = object :
             RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
@@ -354,19 +370,6 @@ class HomeRecommendationFragment :
         }
 
         recyclerView?.addOnItemTouchListener(mScrollTouchListener)
-
-        recyclerView?.layoutManager = staggeredGridLayoutManager
-        (recyclerView?.layoutManager as? StaggeredGridLayoutManager?)?.gapStrategy =
-            StaggeredGridLayoutManager.GAP_HANDLING_NONE
-        recyclerView?.addItemDecoration(HomeFeedItemDecoration())
-        recyclerView?.adapter = adapter
-        parentPool?.setMaxRecycledViews(
-            LAYOUT,
-            MAX_RECYCLED_VIEWS
-        )
-        recyclerView?.setRecycledViewPool(parentPool)
-        createEndlessRecyclerViewListener()
-        endlessRecyclerViewScrollListener?.let { recyclerView?.addOnScrollListener(it) }
     }
 
     fun setListener(
