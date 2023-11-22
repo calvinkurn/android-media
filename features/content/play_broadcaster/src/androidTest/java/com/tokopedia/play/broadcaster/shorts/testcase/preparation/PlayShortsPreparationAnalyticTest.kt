@@ -7,6 +7,7 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
@@ -43,6 +44,7 @@ class PlayShortsPreparationAnalyticTest {
     private val mockProductTagRepo: ProductTagRepository = mockk(relaxed = true)
     private val mockUgcOnboardingRepo: UGCOnboardingRepository = mockk(relaxed = true)
     private val mockContentProductPickerSGCRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
+    private val mockContentProductPickerSGCCommonRepo: ProductPickerSellerCommonRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
 
@@ -59,8 +61,8 @@ class PlayShortsPreparationAnalyticTest {
         coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
         coEvery { mockAccountManager.isAllowChangeAccount(any()) } returns true
         coEvery { mockShortsRepo.getShortsConfiguration(any(), any()) } returns mockShortsConfig
-        coEvery { mockContentProductPickerSGCRepo.getEtalaseList() } returns emptyList()
-        coEvery { mockContentProductPickerSGCRepo.getCampaignList() } returns emptyList()
+        coEvery { mockContentProductPickerSGCCommonRepo.getEtalaseList() } returns emptyList()
+        coEvery { mockContentProductPickerSGCCommonRepo.getCampaignList() } returns emptyList()
         coEvery { mockContentProductPickerSGCRepo.getProductsInEtalase(any(), any(), any(), any()) } returns mockEtalaseProducts
         coEvery { mockContentProductPickerSGCRepo.setProductTags(any(), any()) } returns Unit
         coEvery { mockContentProductPickerSGCRepo.getProductTagSummarySection(any()) } returns mockProductTagSection
@@ -76,6 +78,7 @@ class PlayShortsPreparationAnalyticTest {
                         mockProductTagRepo = mockProductTagRepo,
                         mockUgcOnboardingRepo = mockUgcOnboardingRepo,
                         mockContentProductPickerSGCRepo = mockContentProductPickerSGCRepo,
+                        mockContentProductPickerSGCCommonRepo = mockContentProductPickerSGCCommonRepo,
                         mockAccountManager = mockAccountManager,
                         mockUserSession = mockUserSession,
                         mockRouter = mockk(relaxed = true),
