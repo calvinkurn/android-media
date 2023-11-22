@@ -33,6 +33,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.minicart.databinding.WidgetMiniCartV2Binding
+import com.tokopedia.minicart.v2.domain.GetMiniCartParam
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Toaster
@@ -252,11 +253,7 @@ class MiniCartV2Widget @JvmOverloads constructor(
             analytics.eventClickBuyThenGetBottomSheetError(miniCartCheckoutData.outOfService.description, isOCCFlow)
         } else {
             // Reload data
-            if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-                viewModel?.getLatestWidgetState()
-            } else if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
-                viewModel?.getCartList()
-            }
+            miniCartWidgetListener?.onFailedToGoToCheckoutPage()
 
             // Show toaster error if have no out of service data
             val ctaText = context.getString(R.string.mini_cart_cta_ok)
@@ -511,16 +508,16 @@ class MiniCartV2Widget @JvmOverloads constructor(
     * Function to trigger update mini cart data
     * This will trigger view model to fetch latest data from backend and update the UI
     * */
-    fun updateData(shopIds: List<String>) {
+    fun refresh(param: GetMiniCartParam) {
         setTotalAmountLoading(true)
-        viewModel?.getLatestWidgetState(shopIds)
+        viewModel?.getLatestWidgetState(param)
     }
 
     /*
     * Function to trigger update mini cart data
     * This will trigger widget to update the UI with provided data
     * */
-    fun updateData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+    fun refresh(miniCartSimplifiedData: MiniCartSimplifiedData) {
         setTotalAmountLoading(true)
         viewModel?.setMiniCartABTestData(miniCartSimplifiedData.miniCartWidgetData.isOCCFlow, miniCartSimplifiedData.miniCartWidgetData.buttonBuyWording)
         viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)

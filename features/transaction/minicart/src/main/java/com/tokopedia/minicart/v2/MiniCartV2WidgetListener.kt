@@ -9,13 +9,19 @@ interface MiniCartV2WidgetListener : MiniCartWidgetListener {
         /* no-op */
     }
 
-    fun getFragmentManager(): FragmentManager?
+    fun getFragmentManager(): FragmentManager? {
+        return null
+    }
 
     fun onPrimaryButtonClickListener() {
         /* no-op */
     }
 
     fun onAdditionalButtonClickListener() {
+        /* no-op */
+    }
+
+    fun onFailedToGoToCheckoutPage() {
         /* no-op */
     }
 }

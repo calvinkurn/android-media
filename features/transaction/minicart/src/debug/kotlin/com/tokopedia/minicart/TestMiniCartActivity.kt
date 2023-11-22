@@ -11,8 +11,10 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.cartlist.MiniCartListNewBottomSheet
 import com.tokopedia.minicart.cartlist.MiniCartListNewBottomSheetListener
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.v2.MiniCartV2Widget
 import com.tokopedia.minicart.v2.MiniCartV2WidgetListener
+import com.tokopedia.minicart.v2.domain.GetMiniCartParam
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TestMiniCartActivity : AppCompatActivity() {
@@ -40,7 +42,7 @@ class TestMiniCartActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         findViewById<MiniCartV2Widget>(R.id.test_mini_cart).apply {
-            updateData(listOf("480552"))
+            updateData(GetMiniCartParam(listOf("480552"), MiniCartSource.MiniCartBottomSheet.value))
         }
     }
 
@@ -78,7 +80,7 @@ class TestMiniCartActivity : AppCompatActivity() {
     private fun getMiniCartListNewBottomSheetListener(): MiniCartListNewBottomSheetListener {
         return object : MiniCartListNewBottomSheetListener {
             override fun onMiniCartListBottomSheetDismissed() {
-                findViewById<MiniCartV2Widget>(R.id.test_mini_cart).updateData(listOf("480552"))
+                findViewById<MiniCartV2Widget>(R.id.test_mini_cart).updateData(GetMiniCartParam(listOf("480552"), MiniCartSource.MiniCartBottomSheet.value))
             }
 
             override fun onRetryOpenMiniCartListBottomSheet() {
