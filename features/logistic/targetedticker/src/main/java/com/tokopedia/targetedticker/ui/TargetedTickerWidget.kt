@@ -6,11 +6,9 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import androidx.lifecycle.findViewTreeLifecycleOwner
-
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -39,7 +37,7 @@ class TargetedTickerWidget : FrameLayout {
     private var onSubmitSuccessListener: (TickerModel) -> TickerModel = { item -> item }
     private var onSubmitErrorListener: (Throwable) -> TickerModel? = { item -> null }
 
-    private val binding = WidgetTargetedTickerBinding.inflate(LayoutInflater.from(context)).also { addView(it.root) }
+    private val binding = WidgetTargetedTickerBinding.inflate(LayoutInflater.from(context), this).also { addView(it.root) }
 
     private val viewModel: TargetedTickerViewModel? by lazy {
         findViewTreeViewModelStoreOwner()?.let { viewModelOwner ->
