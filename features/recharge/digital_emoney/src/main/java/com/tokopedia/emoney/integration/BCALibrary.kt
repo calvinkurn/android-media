@@ -3,6 +3,7 @@ package com.tokopedia.emoney.integration
 import android.nfc.Tag
 import android.nfc.tech.IsoDep
 import com.tokopedia.emoney.integration.data.JNIResult
+import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
@@ -15,6 +16,7 @@ class BCALibrary {
             System.loadLibrary("bcabridgelibrary")
             true
         } catch (e: Throwable) {
+            Timber.d(e)
             false
         }
 
@@ -96,7 +98,8 @@ class BCALibrary {
             result = isoDep.transceive(cmdAPDU)
             RAPDU = bytes2Hexchar(result)
         } catch (e: IOException) {
-            e.printStackTrace()
+            return ""
+        } catch (e: Throwable) {
             return ""
         }
         return RAPDU

@@ -27,6 +27,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.jetbrains.annotations.NotNull
 import java.text.SimpleDateFormat
 import java.util.Date
+import com.tokopedia.common_electronic_money.R as common_electronic_moneyR
 
 /**
  * Created by Rizky on 15/05/18.
@@ -55,6 +56,7 @@ class ETollCardInfoView @JvmOverloads constructor(
     private val tickerExtraPendingBalance: Ticker
     private val viewAdditionalBalance: LinearLayout
     private val tgAdditionalBalance: Typography
+    @Suppress("LateinitUsage")
     private lateinit var listener: OnClickCardInfoListener
 
     val cardNumber: String
@@ -145,7 +147,7 @@ class ETollCardInfoView @JvmOverloads constructor(
         val pendingBalanceCurrency = CurrencyFormatUtil
             .convertPriceValueToIdrFormat(pendingBalance, true)
         tgAdditionalBalance.text = Html.fromHtml(
-            context.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_bca_additional_balance_view,
+            context.getString(common_electronic_moneyR.string.emoney_nfc_bca_additional_balance_view,
             pendingBalanceCurrency))
     }
 

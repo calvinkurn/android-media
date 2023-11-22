@@ -63,6 +63,7 @@ class BCABalanceViewModel @Inject constructor(
                     }
                 } catch (e: Throwable) {
                     isoDep.close()
+                    Timber.d(e)
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             }
@@ -86,6 +87,7 @@ class BCABalanceViewModel @Inject constructor(
                     )
                 } catch (e: Throwable) {
                     isoDep.close()
+                    Timber.d(e)
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             }
@@ -94,7 +96,6 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    @SuppressLint("BinaryOperationInTimber")
     private fun getPendingBalanceProcess(
         isoDep: IsoDep,
         cardNumber: String,
@@ -244,6 +245,7 @@ class BCABalanceViewModel @Inject constructor(
                     }
                 } catch (e: Throwable) {
                     isoDep.close()
+                    Timber.d(e)
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             }
@@ -337,6 +339,7 @@ class BCABalanceViewModel @Inject constructor(
                     }
                 } catch (e: Throwable) {
                     isoDep.close()
+                    Timber.d(e)
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             }
@@ -390,6 +393,7 @@ class BCABalanceViewModel @Inject constructor(
                     }
                 } catch (e: Throwable) {
                     isoDep.close()
+                    Timber.d(e)
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             }
@@ -541,6 +545,7 @@ class BCABalanceViewModel @Inject constructor(
 
                 } catch (e: Throwable) {
                     isoDep.close()
+                    Timber.d(e)
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             }
@@ -631,6 +636,7 @@ class BCABalanceViewModel @Inject constructor(
                     }
                 } catch (e: Throwable) {
                     isoDep.close()
+                    Timber.d(e)
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             }
@@ -725,6 +731,7 @@ class BCABalanceViewModel @Inject constructor(
                     }
                 } catch (e: Throwable) {
                     isoDep.close()
+                    Timber.d(e)
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             }

@@ -92,6 +92,7 @@ import com.tokopedia.common_digital.R as common_digitalR
 import com.tokopedia.globalerror.R as globalerrorR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.recharge_pdp_emoney.R as recharge_pdp_emoneyR
 
 /**
  * @author by jessica on 29/03/21
@@ -143,6 +144,7 @@ open class EmoneyPdpFragment :
         FirebaseRemoteConfigImpl(context)
     }
 
+    @Suppress("LateinitUsage")
     private lateinit var nfcAdapter: NfcAdapter
 
     override fun getScreenName(): String = ""
@@ -751,7 +753,7 @@ open class EmoneyPdpFragment :
     private fun renderTickerGenerationCheckError() {
         showTickerNotSupported()
         showRecentNumberAndPromo()
-        binding.tickerNotSupported.setHtmlDescription(getString(com.tokopedia.recharge_pdp_emoney.R.string.recharge_pdp_emoney_nfc_check_gen)) //TODO Nunggu wording
+        binding.tickerNotSupported.setHtmlDescription(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_check_gen))
     }
 
     private fun renderTickerNFCNotSupported() {
@@ -765,7 +767,7 @@ open class EmoneyPdpFragment :
             if (this::nfcAdapter.isInitialized && !nfcAdapter.isEnabled) {
                 showTickerNotSupported()
                 showRecentNumberAndPromo()
-                binding.tickerNotSupported.setHtmlDescription(getString(com.tokopedia.recharge_pdp_emoney.R.string.recharge_pdp_emoney_nfc_is_not_active))
+                binding.tickerNotSupported.setHtmlDescription(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_is_not_active))
                 binding.tickerNotSupported.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         navigateToNFCSettings()
@@ -780,7 +782,7 @@ open class EmoneyPdpFragment :
             } else {
                 showTickerNotSupported()
                 showRecentNumberAndPromo()
-                binding.tickerNotSupported.setHtmlDescription(getString(com.tokopedia.recharge_pdp_emoney.R.string.recharge_pdp_emoney_nfc_not_supported))
+                binding.tickerNotSupported.setHtmlDescription(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_not_supported))
             }
         } else {
             hideTickerNotSupported()
