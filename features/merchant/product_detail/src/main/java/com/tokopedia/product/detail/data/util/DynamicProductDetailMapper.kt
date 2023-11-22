@@ -1059,7 +1059,11 @@ object DynamicProductDetailMapper {
             eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_PDP,
             listPageName = RecommendationCarouselTrackingConst.List.PDP
         )
-        return RecommendationWidgetModel(metadata = metadata, trackingModel = trackingModel)
+        return RecommendationWidgetModel(
+            metadata = metadata,
+            trackingModel = trackingModel,
+            source = source,
+        )
     }
 
     private fun mapToSocialProof(component: Component): ProductMiniSocialProofDataModel? {
