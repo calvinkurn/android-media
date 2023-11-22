@@ -165,7 +165,15 @@ class OrderSummaryPageViewModelTestHelper {
 
     val shipment = OrderProfileShipment(serviceId = "1")
 
-    val payment = OrderProfilePayment(gatewayCode = "payment")
+    val payment = OrderProfilePayment(
+        gatewayCode = "payment",
+        metadata = """
+        {
+            "gateway_code": "payment",
+            "express_checkout_param" : {}
+        }
+        """.trimIndent()
+    )
 
     val preference = OrderProfile(address = address, shipment = shipment, payment = payment)
 

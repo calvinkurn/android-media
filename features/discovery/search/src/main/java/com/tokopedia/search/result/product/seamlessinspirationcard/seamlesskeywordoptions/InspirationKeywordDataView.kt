@@ -12,7 +12,6 @@ data class InspirationKeywordDataView(
     val imageKeyword: String = "",
     val url: String = "",
     val applink: String = "",
-    val isAppendTitleInTokopedia: Boolean = false,
     val dimension90: String = "",
     val componentId: String = "",
     val trackingOption: Int = 0,
@@ -31,7 +30,7 @@ data class InspirationKeywordDataView(
     companion object {
 
         fun create(
-            option: InspirationCarouselDataView.Option
+            option: InspirationCarouselDataView.Option,
         ) = InspirationKeywordDataView(
             keyword = option.title,
             imageKeyword = option.bannerImageUrl,

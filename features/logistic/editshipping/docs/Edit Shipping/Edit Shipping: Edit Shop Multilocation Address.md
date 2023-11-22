@@ -47,7 +47,7 @@ Revamp shipping editor to be a place to set up (activate-deactivate) courier onl
 
 MA/SA -> pengaturan toko -> Tambah dan ubah lokasi toko -> edit lokasi
 
-![](../res/editshopmultilocation/navigation.png) 
+![](https://docs-android.tokopedia.net/images/docs/editshipping/editshopmultilocation/navigation.png) 
 
 ## How-to
 

@@ -80,8 +80,20 @@ object ShopPageConstant {
         const val PAGE_NAME_SHOP_COMPARISON_WIDGET = "shop_comparison"
     }
 
+    object ShopTabActiveStatus {
+        const val ACTIVE = 1
+        const val INACTIVE = 0
+    }
+
+    /**
+     * This is the constant for shop page performance improvement history
+     */
+    @Suppress("unused")
     object ShopPageFeatureImprovementType {
-        const val V3_IMPROVEMENT = "V3"      // Faster shop header using more slimmer P1 network call
-        const val V4_REIMAGINED = "V4"       // Shop Page Reimagined
+        const val V3_IMPROVEMENT            = "V3"      // Faster shop header using more slimmer P1 network call
+        const val V4_REIMAGINED             = "V4"       // Shop Page Reimagined
+        const val V4_WITH_OPTIMIZED_P1      = "V4.1"       // Shop Page Reimagined with more optimized P1
+        const val V4_2      = "V4.2"                    // Shop Page Reimagined with more optimized P1 by removeing getShopProduct on P1
+        const val V4_3      = "V4.3"                    // Shop Page Reimagined with more optimized P1 by caching GetShopPageHeaderLayoutUseCase
     }
 }

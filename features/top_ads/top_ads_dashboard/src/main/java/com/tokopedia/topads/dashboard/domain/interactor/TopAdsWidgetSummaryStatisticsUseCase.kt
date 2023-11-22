@@ -24,13 +24,13 @@ private const val query = """
         sold
         income
         cost
-        roas
+        direct_roas
         click_fmt
         impression_fmt
         sold_fmt
         income_fmt
         cost_fmt
-        roas_fmt
+        direct_roas_fmt
       }
       summary {
         last_update
@@ -39,13 +39,13 @@ private const val query = """
         total_sold_sum
         income_sum
         spending_sum
-        roas
+        direct_roas
         click_percent
         impression_percent
         total_sold_percent
         income_percent
         spending_percent
-        roas_percent
+        direct_roas_percent
       }
     }
     

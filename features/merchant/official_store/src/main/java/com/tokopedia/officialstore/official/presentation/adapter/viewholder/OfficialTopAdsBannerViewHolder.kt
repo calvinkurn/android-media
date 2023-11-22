@@ -32,7 +32,9 @@ class OfficialTopAdsBannerViewHolder(private val view: View) : AbstractViewHolde
             binding?.topadsTdnBanner?.show()
             binding?.topadsBannerTitle?.text = element.title
             binding?.topadsBanner?.renderTdnBanner(tdnBannerList.first(), 8.toPx(), onTdnBannerClicked = {
-                if (it.isNotEmpty()) RouteManager.route(view.context, it)
+                if (!it.applink.isNullOrBlank()) {
+                    RouteManager.route(view.context, it.applink)
+                }
             })
         } else {
             binding?.topadsTdnBanner?.hide()

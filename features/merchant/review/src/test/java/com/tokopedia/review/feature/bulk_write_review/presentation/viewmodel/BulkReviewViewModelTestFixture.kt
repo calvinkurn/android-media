@@ -58,6 +58,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -121,26 +122,28 @@ abstract class BulkReviewViewModelTestFixture {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        viewModel = BulkReviewViewModel(
-            coroutineDispatchers = rule.dispatchers,
-            getFormUseCase = getFormUseCase,
-            getBadRatingCategoryUseCase = getBadRatingCategoryUseCase,
-            uploaderUseCase = uploaderUseCase,
-            submitUseCase = submitUseCase,
-            bulkReviewProductInfoUiStateMapper = BulkReviewProductInfoUiStateMapper(),
-            bulkReviewRatingUiStateMapper = BulkReviewRatingUiStateMapper(),
-            bulkReviewBadRatingCategoryUiStateMapper = BulkReviewBadRatingCategoryUiStateMapper(),
-            bulkReviewTextAreaUiStateMapper = BulkReviewTextAreaUiStateMapper(),
-            bulkReviewMediaPickerUiStateMapper = BulkReviewMediaPickerUiStateMapper(),
-            bulkReviewMiniActionsUiStateMapper = BulkReviewMiniActionsUiStateMapper(),
-            bulkReviewVisitableMapper = BulkReviewVisitableMapper(),
-            bulkReviewStickyButtonMapper = BulkReviewStickyButtonMapper(),
-            bulkReviewPageUiStateMapper = BulkReviewPageUiStateMapper(userSession),
-            bulkReviewBadRatingCategoryMapper = BulkReviewBadRatingCategoryMapper(),
-            bulkReviewSubmissionParamsMapper = BulkReviewSubmissionParamsMapper(),
-            gson = gson,
-            userSession = userSession,
-            bulkWriteReviewTracker = bulkWriteReviewTracker
+        viewModel = spyk(
+            BulkReviewViewModel(
+                coroutineDispatchers = rule.dispatchers,
+                getFormUseCase = getFormUseCase,
+                getBadRatingCategoryUseCase = getBadRatingCategoryUseCase,
+                uploaderUseCase = uploaderUseCase,
+                submitUseCase = submitUseCase,
+                bulkReviewProductInfoUiStateMapper = BulkReviewProductInfoUiStateMapper(),
+                bulkReviewRatingUiStateMapper = BulkReviewRatingUiStateMapper(),
+                bulkReviewBadRatingCategoryUiStateMapper = BulkReviewBadRatingCategoryUiStateMapper(),
+                bulkReviewTextAreaUiStateMapper = BulkReviewTextAreaUiStateMapper(),
+                bulkReviewMediaPickerUiStateMapper = BulkReviewMediaPickerUiStateMapper(),
+                bulkReviewMiniActionsUiStateMapper = BulkReviewMiniActionsUiStateMapper(),
+                bulkReviewVisitableMapper = BulkReviewVisitableMapper(),
+                bulkReviewStickyButtonMapper = BulkReviewStickyButtonMapper(),
+                bulkReviewPageUiStateMapper = BulkReviewPageUiStateMapper(userSession),
+                bulkReviewBadRatingCategoryMapper = BulkReviewBadRatingCategoryMapper(),
+                bulkReviewSubmissionParamsMapper = BulkReviewSubmissionParamsMapper(),
+                gson = gson,
+                userSession = userSession,
+                bulkWriteReviewTracker = bulkWriteReviewTracker
+            )
         )
 
         every { userSession.userId } returns SAMPLE_USER_ID
