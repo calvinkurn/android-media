@@ -42,7 +42,7 @@ class TestMiniCartActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         findViewById<MiniCartV2Widget>(R.id.test_mini_cart).apply {
-            updateData(GetMiniCartParam(listOf("480552"), MiniCartSource.MiniCartBottomSheet.value))
+            refresh(GetMiniCartParam(listOf("480552"), MiniCartSource.MiniCartBottomSheet.value))
         }
     }
 
@@ -80,7 +80,7 @@ class TestMiniCartActivity : AppCompatActivity() {
     private fun getMiniCartListNewBottomSheetListener(): MiniCartListNewBottomSheetListener {
         return object : MiniCartListNewBottomSheetListener {
             override fun onMiniCartListBottomSheetDismissed() {
-                findViewById<MiniCartV2Widget>(R.id.test_mini_cart).updateData(GetMiniCartParam(listOf("480552"), MiniCartSource.MiniCartBottomSheet.value))
+                findViewById<MiniCartV2Widget>(R.id.test_mini_cart).refresh(GetMiniCartParam(listOf("480552"), MiniCartSource.MiniCartBottomSheet.value))
             }
 
             override fun onRetryOpenMiniCartListBottomSheet() {

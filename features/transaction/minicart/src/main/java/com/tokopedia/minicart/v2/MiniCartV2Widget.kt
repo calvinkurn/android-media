@@ -64,6 +64,7 @@ class MiniCartV2Widget @JvmOverloads constructor(
 
     private var config: MiniCartV2WidgetConfig = MiniCartV2WidgetConfig()
     private var miniCartWidgetListener: MiniCartV2WidgetListener? = null
+
     private var progressDialog: AlertDialog? = null
 
     private var viewModel: MiniCartV2ViewModel? = null
@@ -182,19 +183,17 @@ class MiniCartV2Widget @JvmOverloads constructor(
     }
 
     private fun sendEventClickBuy() {
-        val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
         val products = viewModel?.miniCartSimplifiedData?.value?.miniCartItems?.values?.toList()
             ?: emptyList()
         val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
-        analytics.eventClickBuy(pageName, products, isOCCFlow)
+        analytics.eventClickBuy(config.page, products, isOCCFlow)
     }
 
     private fun onSuccessGoToCheckout(context: Context) {
         val intent = if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         } else {
-            val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
-            val pageSource = when (pageName) {
+            val pageSource = when (config.page) {
                 MiniCartAnalytics.Page.HOME_PAGE -> "$MINICART_PAGE_SOURCE - homepage"
                 MiniCartAnalytics.Page.SEARCH_PAGE -> "$MINICART_PAGE_SOURCE - search result"
                 MiniCartAnalytics.Page.CATEGORY_PAGE -> "$MINICART_PAGE_SOURCE category page"
@@ -523,6 +522,10 @@ class MiniCartV2Widget @JvmOverloads constructor(
         viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)
     }
 
+    fun showLoading() {
+        setTotalAmountLoading(true)
+    }
+
     companion object {
         private const val MINICART_PAGE_SOURCE = "minicart - tokonow"
 
@@ -530,21 +533,12 @@ class MiniCartV2Widget @JvmOverloads constructor(
     }
 
     data class MiniCartV2WidgetConfig(
-        val showTopShadow: Boolean = true, // config
-        val showChevron: Boolean = true, // config
-        val showOriginalTotalPrice: Boolean = false, // ?
-        val overridePrimaryButtonAction: Boolean = false, // config
-        val overridePrimaryButtonWording: String? = null, // ui model
-        val additionalButton: Drawable? = null
+        val showTopShadow: Boolean = true,
+        val showChevron: Boolean = true,
+        val showOriginalTotalPrice: Boolean = false,
+        val overridePrimaryButtonAction: Boolean = false,
+        val overridePrimaryButtonWording: String? = null,
+        val additionalButton: Drawable? = null,
+        val page: MiniCartAnalytics.Page = MiniCartAnalytics.Page.HOME_PAGE
     )
-
-    sealed interface MiniCartIntent {
-        data class Fetch(
-            val id: String = ""
-        ) : MiniCartIntent
-
-        data class Set(
-            val data: MiniCartSimplifiedData = MiniCartSimplifiedData()
-        ) : MiniCartIntent
-    }
 }
