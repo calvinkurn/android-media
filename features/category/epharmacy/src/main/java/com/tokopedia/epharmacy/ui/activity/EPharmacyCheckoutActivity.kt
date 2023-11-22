@@ -12,9 +12,10 @@ import com.tokopedia.epharmacy.ui.fragment.EPharmacyCheckoutFragment
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -29,13 +30,24 @@ class EPharmacyCheckoutActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    @Inject
-    lateinit var remoteConfig: RemoteConfig
-
     override fun onCreate(savedInstanceState: Bundle?) {
         ePharmacyComponent.inject(this)
         super.onCreate(savedInstanceState)
-        setPageTitle()
+        setupToolbar()
+    }
+
+    private fun setupToolbar() {
+        findViewById<HeaderUnify>(R.id.e_pharmacy_header).apply {
+            setSupportActionBar(toolbar)
+            setNavigationOnClickListener {
+                sendClickBackEvent("$enablerId - $groupId - $tokoConsultationId")
+            }
+            supportActionBar?.let {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                supportActionBar?.setDisplayShowTitleEnabled(true)
+            }
+            setPageTitle()
+        }
     }
 
     private fun setPageTitle() {
@@ -72,4 +84,17 @@ class EPharmacyCheckoutActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
             (applicationContext as BaseMainApplication)
                 .baseAppComponent
         ).build()
+
+    private fun sendClickBackEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("clickGroceries")
+            .setEventAction("click back")
+            .setEventCategory("epharmacy chat dokter checkout page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45890")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
 }

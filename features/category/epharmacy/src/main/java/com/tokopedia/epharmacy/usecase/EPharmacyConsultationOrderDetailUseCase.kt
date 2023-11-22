@@ -7,6 +7,8 @@ import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailInfoDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailPaymentDataModel
 import com.tokopedia.epharmacy.network.gql.EPharmacyGetConsultationOrderDetailsQuery
 import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
+import com.tokopedia.epharmacy.network.response.OrderButtonData
+import com.tokopedia.epharmacy.network.response.OrderTrackingData
 import com.tokopedia.epharmacy.utils.ORDER_HEADER_COMPONENT
 import com.tokopedia.epharmacy.utils.ORDER_INFO_COMPONENT
 import com.tokopedia.epharmacy.utils.ORDER_PAYMENT_COMPONENT
@@ -18,7 +20,7 @@ class EPharmacyConsultationOrderDetailUseCase @Inject constructor(graphqlReposit
     GraphqlUseCase<EPharmacyOrderDetailResponse>(graphqlRepository) {
 
     fun getEPharmacyOrderDetail(
-        onSuccess: (EPharmacyDataModel, EPharmacyOrderDetailResponse.OrderButtonData?) -> Unit,
+        onSuccess: (EPharmacyDataModel, OrderButtonData?) -> Unit,
         onError: (Throwable) -> Unit,
         tConsultationId: Long,
         orderUUId: String,
@@ -30,7 +32,10 @@ class EPharmacyConsultationOrderDetailUseCase @Inject constructor(graphqlReposit
             this.setRequestParams(createRequestParams(tConsultationId, orderUUId, waitingInvoice))
             this.execute(
                 { result ->
-                    onSuccess(mapResponseToOrderDetail(result.getConsultationOrderDetail?.ePharmacyOrderData), result.getConsultationOrderDetail?.ePharmacyOrderData?.orderButtonData)
+                    onSuccess(
+                        mapResponseToOrderDetail(result.getConsultationOrderDetail?.ePharmacyOrderData),
+                        mapResponseToOrderButton(result.getConsultationOrderDetail?.ePharmacyOrderData)
+                    )
                 },
                 { error ->
                     onError(error)
@@ -79,6 +84,21 @@ class EPharmacyConsultationOrderDetailUseCase @Inject constructor(graphqlReposit
             )
         )
         return EPharmacyDataModel(listOfComponents)
+    }
+
+    private fun mapResponseToOrderButton(orderData: EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderData?): OrderButtonData {
+        return OrderButtonData(
+            orderData?.cta,
+            orderData?.triDots,
+            OrderTrackingData(
+                orderData?.consultationSource?.enablerName,
+                orderData?.groupId,
+                orderData?.consultationData?.tokoConsultationId,
+                orderData?.orderId,
+                orderData?.orderStatus,
+                orderData?.ticker?.message
+            )
+        )
     }
 
     private fun createRequestParams(tConsultationId: Long, orderUUId: String, waitingInvoice: Boolean): Map<String, Any> {

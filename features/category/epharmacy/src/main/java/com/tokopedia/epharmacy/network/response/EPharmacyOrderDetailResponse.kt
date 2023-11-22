@@ -10,44 +10,12 @@ data class EPharmacyOrderDetailResponse(
     @Expose
     val getConsultationOrderDetail: GetConsultationOrderDetail?
 ) {
-    data class OrderButtonData(
-        val cta: List<GetConsultationOrderDetail.EPharmacyOrderButtonModel?>?,
-        val triDots: List<GetConsultationOrderDetail.EPharmacyOrderButtonModel?>?
-    ) {
-        companion object {
-            private const val STRING_BUTTON_TYPE_ALTERNATE = "alternate"
-            private const val STRING_BUTTON_TYPE_MAIN = "main"
-            private const val STRING_BUTTON_TYPE_TRANSACTION = "transaction"
-
-            private const val STRING_BUTTON_VARIANT_FILLED = "filled"
-            private const val STRING_BUTTON_VARIANT_GHOST = "ghost"
-            private const val STRING_BUTTON_VARIANT_TEXT_ONLY = "text_only"
-
-            fun mapButtonType(typeString: String?): Int {
-                return when (typeString) {
-                    STRING_BUTTON_TYPE_ALTERNATE -> UnifyButton.Type.ALTERNATE
-                    STRING_BUTTON_TYPE_MAIN -> UnifyButton.Type.MAIN
-                    STRING_BUTTON_TYPE_TRANSACTION -> UnifyButton.Type.TRANSACTION
-                    else -> UnifyButton.Type.MAIN
-                }
-            }
-
-            fun mapButtonVariant(variantString: String?): Int {
-                return when (variantString) {
-                    STRING_BUTTON_VARIANT_FILLED -> UnifyButton.Variant.FILLED
-                    STRING_BUTTON_VARIANT_GHOST -> UnifyButton.Variant.GHOST
-                    STRING_BUTTON_VARIANT_TEXT_ONLY -> UnifyButton.Variant.TEXT_ONLY
-                    else -> UnifyButton.Variant.FILLED
-                }
-            }
-        }
-    }
-
     data class GetConsultationOrderDetail(
         @SerializedName("data")
         @Expose
         val ePharmacyOrderData: EPharmacyOrderData?
     ) {
+
         data class EPharmacyOrderButtonModel(
             @SerializedName("action_type")
             @Expose
@@ -76,6 +44,9 @@ data class EPharmacyOrderDetailResponse(
             @SerializedName("consultation_source")
             @Expose
             val consultationSource: ConsultationSource?,
+            @SerializedName("group_id")
+            @Expose
+            val groupId: String?,
             @SerializedName("invoice_number")
             @Expose
             val invoiceNumber: String?,
@@ -84,7 +55,7 @@ data class EPharmacyOrderDetailResponse(
             val invoiceUrl: String?,
             @SerializedName("order_id")
             @Expose
-            val orderId: Long?,
+            val orderId: String?,
             @SerializedName("order_status")
             @Expose
             val orderStatus: String?,
@@ -129,9 +100,6 @@ data class EPharmacyOrderDetailResponse(
             val helpButton: EPharmacyOrderButtonModel?
 
         ) {
-
-            val orderButtonData: OrderButtonData
-                get() = OrderButtonData(cta, triDots)
 
             data class ConsultationSource(
                 @SerializedName("enabler_logo_url")
@@ -193,5 +161,56 @@ data class EPharmacyOrderDetailResponse(
                 val typeInt: Int?
             )
         }
+    }
+}
+
+class OrderButtonData(
+    val cta: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>?,
+    val triDots: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>?,
+    val orderTrackingData: OrderTrackingData?
+) {
+    companion object {
+        private const val STRING_BUTTON_TYPE_ALTERNATE = "alternate"
+        private const val STRING_BUTTON_TYPE_MAIN = "main"
+        private const val STRING_BUTTON_TYPE_TRANSACTION = "transaction"
+
+        private const val STRING_BUTTON_VARIANT_FILLED = "filled"
+        private const val STRING_BUTTON_VARIANT_GHOST = "ghost"
+        private const val STRING_BUTTON_VARIANT_TEXT_ONLY = "text_only"
+
+        fun mapButtonType(typeString: String?): Int {
+            return when (typeString) {
+                STRING_BUTTON_TYPE_ALTERNATE -> UnifyButton.Type.ALTERNATE
+                STRING_BUTTON_TYPE_MAIN -> UnifyButton.Type.MAIN
+                STRING_BUTTON_TYPE_TRANSACTION -> UnifyButton.Type.TRANSACTION
+                else -> UnifyButton.Type.MAIN
+            }
+        }
+
+        fun mapButtonVariant(variantString: String?): Int {
+            return when (variantString) {
+                STRING_BUTTON_VARIANT_FILLED -> UnifyButton.Variant.FILLED
+                STRING_BUTTON_VARIANT_GHOST -> UnifyButton.Variant.GHOST
+                STRING_BUTTON_VARIANT_TEXT_ONLY -> UnifyButton.Variant.TEXT_ONLY
+                else -> UnifyButton.Variant.FILLED
+            }
+        }
+    }
+}
+
+class OrderTrackingData(
+    private val enablerName: String?,
+    private val ePharmacyGroupId: String?,
+    private val tConsultationId: String?,
+    private val orderId: String?,
+    private val orderStatus: String?,
+    private val tickerMessage: String?
+) {
+    override fun toString(): String {
+        val label = "$enablerName - $ePharmacyGroupId - $tConsultationId - $orderId - $orderStatus"
+        if (!tickerMessage.isNullOrBlank()) {
+            return "$label - $tickerMessage"
+        }
+        return label
     }
 }

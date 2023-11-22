@@ -28,7 +28,31 @@ interface EPharmacyListener {
 
     fun onEndAnimation(adapterPosition: Int, modelKey: String?) {}
 
-    fun onToast(toasterType: Int, message: String) {}
+    /**
+     * Quantity Editor
+     */
 
-    fun onQuantityChanged(changeInValue: Double) {}
+    fun onQuantityChanged(
+        changeInValue: Double,
+        productId: String?,
+        enablerName: String?,
+        tConsultationId: String?,
+        groupId: String?
+    ) {}
+
+    fun onEditorQuantityToast(
+        toasterType: Int,
+        message: String,
+        enablerName: String?,
+        tConsultationId: String?,
+        groupId: String?
+    ) {}
+
+    /**
+     * Consultation Order Detail
+     */
+
+    fun onHelpButtonClicked(appUrl: String?) {}
+
+    fun onLihatInvoiceClicked(appUrl: String?) {}
 }

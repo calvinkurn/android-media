@@ -21,6 +21,8 @@ import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.databinding.EpharmacyOrderDetailFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
+import com.tokopedia.epharmacy.network.response.OrderButtonData
+import com.tokopedia.epharmacy.network.response.OrderTrackingData
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.EPHARMACY_ORDER_DETAIL_PAGE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_VERTICAL_ID
@@ -55,6 +57,8 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     private var tConsultationId = 0L
     private var waitingInvoice = false
     private var verticalId = String.EMPTY
+
+    private var orderTrackingData: OrderTrackingData? = null
 
     private var binding by autoClearedNullable<EpharmacyOrderDetailFragmentBinding>()
 
@@ -170,16 +174,17 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     private fun observeButtonData() {
         ePharmacyOrderDetailViewModel?.ePharmacyButtonData?.observe(viewLifecycleOwner) {
             renderButtons(it)
+            orderTrackingData = it.orderTrackingData
         }
     }
 
-    private fun renderButtons(buttonData: EPharmacyOrderDetailResponse.OrderButtonData?) {
+    private fun renderButtons(buttonData: OrderButtonData?) {
         buttonData?.cta?.firstOrNull()?.let { primaryButtonData ->
             ePharmacyActionButton?.show()
             ePharmacyPrimaryButton?.apply {
                 text = primaryButtonData.label
-                buttonVariant = EPharmacyOrderDetailResponse.OrderButtonData.mapButtonVariant(primaryButtonData.variantColor)
-                buttonType = EPharmacyOrderDetailResponse.OrderButtonData.mapButtonType(primaryButtonData.type)
+                buttonVariant = OrderButtonData.mapButtonVariant(primaryButtonData.variantColor)
+                buttonType = OrderButtonData.mapButtonType(primaryButtonData.type)
                 setOnClickListener {
                     onPrimaryButtonClick(primaryButtonData.appUrl)
                 }
@@ -188,20 +193,20 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
         } ?: ePharmacyPrimaryButton?.hide()
 
         buttonData?.triDots?.let { secondaryButtonData ->
-            if(secondaryButtonData.isEmpty()){
+            if (secondaryButtonData.isEmpty()) {
                 ePharmacySecondaryButton?.hide()
-            }else {
+            } else {
                 ePharmacySecondaryButton?.show()
                 ePharmacySecondaryButton?.setOnClickListener {
                     onSecondaryButtonClick(secondaryButtonData)
                 }
             }
-
         } ?: ePharmacySecondaryButton?.hide()
     }
 
     private fun onPrimaryButtonClick(appUrl: String?) {
         redirectionAppLink(appUrl)
+        sendViewChatDokterOrderDetailPageEvent(orderTrackingData.toString())
     }
 
     private fun onSecondaryButtonClick(secondaryButtonData: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>) {
@@ -264,6 +269,18 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
         }
     }
 
+    override fun onHelpButtonClicked(appUrl: String?) {
+        super.onHelpButtonClicked(appUrl)
+        RouteManager.route(context, appUrl)
+        sendClickPusatBantuanEvent(orderTrackingData.toString())
+    }
+
+    override fun onLihatInvoiceClicked(appUrl: String?) {
+        super.onLihatInvoiceClicked(appUrl)
+        RouteManager.route(context, appUrl)
+        sendClickLihatInvoiceEvent(orderTrackingData.toString())
+    }
+
     override fun getScreenName() = EPHARMACY_ORDER_DETAIL_PAGE
 
     override fun initInjector() = getComponent(EPharmacyComponent::class.java).inject(this)
@@ -275,19 +292,6 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             fragment.arguments = bundle
             return fragment
         }
-    }
-
-    fun sendViewChatDokterOrderDetailPageEvent(eventLabel: String) {
-        Tracker.Builder()
-            .setEvent("viewGroceriesIris")
-            .setEventAction("view chat dokter order detail page")
-            .setEventCategory("epharmacy chat dokter order detail page")
-            .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45879")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
-            .build()
-            .send()
     }
 
     fun sendClickMainCtaEvent(eventLabel: String) {
@@ -310,6 +314,32 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             .setEventCategory("epharmacy prescription image webview")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "45882")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    fun sendViewChatDokterOrderDetailPageEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("viewGroceriesIris")
+            .setEventAction("view chat dokter order detail page")
+            .setEventCategory("epharmacy chat dokter order detail page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45879")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    fun sendClickLihatInvoiceEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("clickGroceries")
+            .setEventAction("click lihat invoice")
+            .setEventCategory("epharmacy chat dokter order detail page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45881")
             .setBusinessUnit("Physical Goods")
             .setCurrentSite("tokopediamarketplace")
             .build()

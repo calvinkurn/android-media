@@ -2,13 +2,14 @@ package com.tokopedia.epharmacy.component.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.epharmacy.R
+import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailPaymentDataModel
 import com.tokopedia.unifyprinciples.Typography
 
 class EPharmacyOrderDetailPaymentViewHolder(
-    val view: View
+    val view: View,
+    private val ePharmacyListener: EPharmacyListener?
 ) : AbstractViewHolder<EPharmacyOrderDetailPaymentDataModel>(view) {
 
     private val paymentModeValue = view.findViewById<Typography>(R.id.payment_mode_value)
@@ -30,7 +31,7 @@ class EPharmacyOrderDetailPaymentViewHolder(
         helpCaption.text = data.helpButton?.caption
         helpView.setOnClickListener {
             if (data.helpButton?.appUrl.orEmpty().isNotBlank()) {
-                RouteManager.route(view.context, data.helpButton?.appUrl)
+                ePharmacyListener?.onHelpButtonClicked(data.helpButton?.appUrl)
             }
         }
     }

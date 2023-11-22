@@ -255,7 +255,10 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun onSuccessCartCheckout(result: Success<EPharmacyCartGeneralCheckoutResponse>) {
         when (result.data.checkout?.checkoutData?.success) {
-            EPharmacyCartGeneralCheckoutResponse.ERROR -> showToast(TYPE_ERROR, result.data.checkout?.checkoutData?.message.orEmpty())
+            EPharmacyCartGeneralCheckoutResponse.ERROR -> {
+                sendViewCheckoutErrorEvent("$enablerName - $groupId - $tConsultationId")
+                showToast(TYPE_ERROR, result.data.checkout?.checkoutData?.message.orEmpty())
+            }
             EPharmacyCartGeneralCheckoutResponse.SUCCESS -> successCheckout(result.data.checkout?.checkoutData?.cartGeneralResponse)
         }
     }
@@ -322,13 +325,13 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
             .send()
     }
 
-    fun sendClickBackEvent(eventLabel: String) {
+    private fun sendViewCheckoutErrorEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("clickGroceries")
-            .setEventAction("click back")
+            .setEvent("viewGroceriesIris")
+            .setEventAction("view checkout error")
             .setEventCategory("epharmacy chat dokter checkout page")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45890")
+            .setCustomProperty("trackerId", "45870")
             .setBusinessUnit("Physical Goods")
             .setCurrentSite("tokopediamarketplace")
             .build()

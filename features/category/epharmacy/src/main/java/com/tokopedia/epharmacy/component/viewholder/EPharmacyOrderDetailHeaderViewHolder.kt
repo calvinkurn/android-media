@@ -5,8 +5,8 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.epharmacy.R
+import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailHeaderDataModel
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.iconunify.IconUnify
@@ -19,7 +19,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 
 class EPharmacyOrderDetailHeaderViewHolder(
-    val view: View
+    val view: View,
+    private val ePharmacyListener: EPharmacyListener?
 ) : AbstractViewHolder<EPharmacyOrderDetailHeaderDataModel>(view) {
 
     private val title = view.findViewById<Typography>(R.id.ep_order_status_description)
@@ -42,7 +43,7 @@ class EPharmacyOrderDetailHeaderViewHolder(
 
     override fun bind(data: EPharmacyOrderDetailHeaderDataModel) {
         setUpTicker(data.title, data.tickerMessage, data.tickerType.orZero())
-        setUpInvoiceData(data.invoiceNumber,data.paymentDate)
+        setUpInvoiceData(data.invoiceNumber, data.paymentDate)
         setUpInvoiceClipBoard(data.invoiceNumber)
         setUpInvoiceLink(data.invoiceLink)
         setUpValidity(data.validUntil)
@@ -56,7 +57,8 @@ class EPharmacyOrderDetailHeaderViewHolder(
                 setPrimaryClip(
                     ClipData.newPlainText(
                         CLIPBOARD_TAG,
-                        invoiceNumber)
+                        invoiceNumber
+                    )
                 )
             }
         }
@@ -64,42 +66,40 @@ class EPharmacyOrderDetailHeaderViewHolder(
 
     private fun setUpInvoiceLink(invoiceLink: String?) {
         lihatInvoice.setOnClickListener {
-            RouteManager.route(view.context, invoiceLink)
         }
     }
 
     private fun setUpInvoiceData(invoiceTitle: String?, paymentDate: String?) {
         invoiceNumberText.text = invoiceTitle
         purchaseDateValue.displayTextOrHide(paymentDate.orEmpty())
-        if(paymentDate?.isNotBlank().orFalse()){
+        if (paymentDate?.isNotBlank().orFalse()) {
             purchaseDate.show()
         }
     }
 
     private fun setUpValidity(validUntil: String?) {
         validUntilValue.displayTextOrHide(validUntil.orEmpty())
-        if(validUntil?.isNotBlank().orFalse()){
+        if (validUntil?.isNotBlank().orFalse()) {
             this.validUntil.show()
         }
     }
 
     private fun setUpChatStartDate(chatStartDate: String?) {
         chatStartDateValue.displayTextOrHide(chatStartDate.orEmpty())
-        if(chatStartDate?.isNotBlank().orFalse()){
+        if (chatStartDate?.isNotBlank().orFalse()) {
             this.chatStartDate.show()
         }
     }
 
     private fun setUpTicker(title: String?, tickerMessage: String?, tickerType: Int) {
         this.title.text = title
-        if(tickerMessage?.isNotBlank().orFalse()){
+        if (tickerMessage?.isNotBlank().orFalse()) {
             ticker.show()
             ticker.setHtmlDescription(tickerMessage.orEmpty())
             ticker.tickerType = tickerType
-        }else {
+        } else {
             ticker.hide()
         }
-
     }
 
     private fun setupIndicatorColor(indicatorColor: String) {
