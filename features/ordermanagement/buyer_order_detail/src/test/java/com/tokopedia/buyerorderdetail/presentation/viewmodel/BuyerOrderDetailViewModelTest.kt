@@ -504,38 +504,6 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     fun `given bmgmResponse and bundlingResponse, when getProducts then should return list of products when UI state is Showing`() =
         runCollectingUiState { buyerDetailUiState ->
 
-            val bmgmDetailsResponse =
-                ProductBmgmSectionUiModel(
-                    bmgmId = "1:3:0",
-                    bmgmName = "offers - Beli2DiskonDiskon30%",
-                    totalPrice = 400000.00,
-                    totalPriceText = "Rp400.000",
-                    totalPriceReductionInfoText = "Rp100.000",
-                    bmgmIconUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2A.jpg",
-                    bmgmItemList = listOf(
-                        ProductBmgmSectionUiModel.ProductUiModel(
-                            orderId = "556574",
-                            orderDetailId = "2150865420",
-                            productName = "Power Bank Original - Pink",
-                            thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
-                            price = 75000.00,
-                            productPriceText = "Rp 75.000",
-                            quantity = 2,
-                            productNote = "ukurannya 43 ya"
-                        ),
-                        ProductBmgmSectionUiModel.ProductUiModel(
-                            orderId = "556575",
-                            orderDetailId = "2150865421",
-                            productName = "Power Bank Original - Blue",
-                            thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
-                            price = 85000.00,
-                            productPriceText = "Rp 85.000",
-                            quantity = 2,
-                            productNote = "ukurannya 44 ya"
-                        )
-                    )
-                )
-
             val bundlingDetailsResponse =
                 ProductListUiModel.ProductBundlingUiModel(
                     bundleName = "bundling - Beli2DiskonDiskon30%",
@@ -699,6 +667,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                     assertEquals(
                         productUiModel.productNote,
                         actualBmgmUiModel.bmgmItemList[index].productNote
+                    )
+                    assertEquals(
+                        productUiModel.addOnSummaryUiModel?.isExpand,
+                        true
                     )
                 }
             }
@@ -1239,6 +1211,61 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 viewModel.impressBmgmProduct(this)
 
                 verify(inverse = true) { BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton("987654321") }
+            }
+        }
+    }
+
+    @Test
+    fun `expandCollapseAddOn should remove or add correct data`() {
+        runCollectingUiState { buyerDetailUiState ->
+
+            //Given 1 card product list with 1 add on, 2 BMGM with 2 add on each
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productBmgmList } returns listOf(bmgmDetailsResponse)
+                    every { data.productList } returns listOf(product)
+                }
+
+            createSuccessGetBuyerOrderDetailDataResult()
+
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                getBuyerOrderDetailData()
+
+                //default expand is true
+                assertIsExpand(buyerDetailUiState, true)
+
+                //collapse all
+                viewModel.expandCollapseAddOn("1", false)
+                viewModel.expandCollapseAddOn("2", false)
+                viewModel.expandCollapseAddOn("3", false)
+                viewModel.expandCollapseAddOn("3", true)
+
+                assertEquals(getExpandCollapseState().size, 2)
+                assertTrue(getExpandCollapseState().contains("1"))
+                assertTrue(getExpandCollapseState().contains("2"))
+            }
+        }
+    }
+
+    private fun assertIsExpand(
+        buyerDetailUiState: List<BuyerOrderDetailUiState>,
+        expectedIsExpand: Boolean
+    ) {
+        val productList =
+            buyerDetailUiState.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                .last().productListUiState.data.productList
+
+        productList.forEach {
+            assertEquals(it.addonsListUiModel?.isExpand == true, expectedIsExpand)
+        }
+
+        val bmgm =
+            buyerDetailUiState.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                .last().productListUiState.data.productBmgmList
+
+        bmgm.forEach {
+            it.bmgmItemList.forEach {
+                assertEquals(it.addOnSummaryUiModel?.isExpand == true, expectedIsExpand)
             }
         }
     }

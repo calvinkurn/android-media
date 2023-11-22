@@ -23,6 +23,7 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMa
 import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
@@ -30,6 +31,9 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel.ProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Success
@@ -115,7 +119,14 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         totalPrice = "500000",
         totalPriceText = "Rp500.000",
         isProcessing = false,
-        productUrl = ""
+        productUrl = "",
+        addonsListUiModel = AddonsListUiModel(
+            addOnIdentifier = "1",
+            totalPriceText = "",
+            addonsLogoUrl = "",
+            addonsTitle = "",
+            addonsItemList = listOf()
+        )
     )
 
     val atcExpectedParams = arrayListOf(
@@ -130,6 +141,52 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             warehouseId = "0"
         )
     )
+
+    val bmgmDetailsResponse =
+        ProductBmgmSectionUiModel(
+            bmgmId = "1:3:0",
+            bmgmName = "offers - Beli2DiskonDiskon30%",
+            totalPrice = 400000.00,
+            totalPriceText = "Rp400.000",
+            totalPriceReductionInfoText = "Rp100.000",
+            bmgmIconUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2A.jpg",
+            bmgmItemList = listOf(
+                ProductUiModel(
+                    orderId = "556574",
+                    orderDetailId = "2150865420",
+                    productName = "Power Bank Original - Pink",
+                    thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                    price = 75000.00,
+                    productPriceText = "Rp 75.000",
+                    quantity = 2,
+                    productNote = "ukurannya 43 ya",
+                    addOnSummaryUiModel = AddOnSummaryUiModel(
+                        addOnIdentifier = "2",
+                        totalPriceText = "",
+                        addonsLogoUrl = "",
+                        addonsTitle = "",
+                        addonItemList = listOf()
+                    )
+                ),
+                ProductUiModel(
+                    orderId = "556575",
+                    orderDetailId = "2150865421",
+                    productName = "Power Bank Original - Blue",
+                    thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                    price = 85000.00,
+                    productPriceText = "Rp 85.000",
+                    quantity = 2,
+                    productNote = "ukurannya 44 ya",
+                    addOnSummaryUiModel = AddOnSummaryUiModel(
+                        addOnIdentifier = "3",
+                        totalPriceText = "",
+                        addonsLogoUrl = "",
+                        addonsTitle = "",
+                        addonItemList = listOf()
+                    )
+                )
+            )
+        )
 
     val additionalEpharmacyData =
         GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData(
@@ -306,7 +363,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     any<GetInsuranceDetailRequestState>(),
                     any<Map<String, AddToCartSingleRequestState>>(),
                     any<Boolean>(),
-                    any<Boolean>()
+                    any<Boolean>(),
+                    any<List<String>>()
                 )
             } returns showingState
             every {
@@ -374,6 +432,13 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         return BuyerOrderDetailViewModel::class.java.getDeclaredField("productListCollapsed").run {
             isAccessible = true
             !((get(viewModel) as MutableStateFlow<*>).value as Boolean)
+        }
+    }
+
+    fun getExpandCollapseState(): List<String> {
+        return BuyerOrderDetailViewModel::class.java.getDeclaredField("addOnsExpandableState").run {
+            isAccessible = true
+            (get(viewModel) as List<String>)
         }
     }
 
