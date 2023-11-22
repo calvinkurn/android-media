@@ -11,6 +11,7 @@ import com.tokopedia.picker.common.EXTRA_PICKER_PARAM
 import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.ImageRatioType
+import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.R
@@ -77,6 +78,8 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
                                 ImageRatioType.RATIO_2_1 -> autoCrop2to1()
                                 else -> {}
                             }
+
+                            setCustomCtaText(fromEditorJson.getCustomCtaText() ?: "Upload")
                         }
                     }
                 }
@@ -136,12 +139,16 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
 
     private fun initConfig() {
         val gson = GsonBuilder().setPrettyPrinting().create()
-        val pickerConfigJson = gson.toJson(PickerParam().apply { })
+        val pickerConfigJson = gson.toJson(PickerParam().apply {
+            pageSource(PageSource.Play)
+            pageType(PageType.GALLERY)
+        })
         val editorConfigJson = gson.toJson(
             EditorParam().apply {
                 withRemoveBackground()
                 withWatermark()
                 autoCrop1to1()
+                setCustomCtaText("Upload")
             }
         )
 
