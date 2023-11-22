@@ -65,6 +65,10 @@ class ReadReviewViewModel @Inject constructor(
     val ratingAndTopic: LiveData<Result<ProductrevGetProductRatingAndTopic>>
         get() = _ratingAndTopics
 
+    private val _topicExtraction = MutableLiveData<Result<ProductrevGetProductRatingAndTopic>>()
+    val topicExtraction: LiveData<Result<ProductrevGetProductRatingAndTopic>>
+        get() = _topicExtraction
+
     private val _shopRatingAndTopics = MediatorLiveData<Result<ProductrevGetShopRatingAndTopic>>()
     val shopRatingAndTopic: LiveData<Result<ProductrevGetShopRatingAndTopic>>
         get() = _shopRatingAndTopics
@@ -294,6 +298,7 @@ class ReadReviewViewModel @Inject constructor(
                 this.filter.topic = mapTopicFilterToFilterType(selectedFilters, isProductReview)
             }
         }
+        updateTopicExtraction()
         resetPage(isProductReview)
     }
 
@@ -318,6 +323,7 @@ class ReadReviewViewModel @Inject constructor(
         } else {
             this.filter.withMedia = getFilterWithMediaParam()
         }
+        updateTopicExtraction()
         resetPage(isProductReview)
     }
 
@@ -396,6 +402,22 @@ class ReadReviewViewModel @Inject constructor(
             _ratingAndTopics.postValue(Success(data.productrevGetProductRatingAndTopics))
         }) {
             _ratingAndTopics.postValue(Fail(it))
+        }
+    }
+
+    fun updateTopicExtraction(){
+        launchCatchError(block = {
+            filter.topic = null
+            val filterBy = filter.getSelectedParam()
+            getProductRatingAndTopicsUseCase.setParams(
+                productId.value ?: "",
+                "filter",
+                filterBy
+            )
+            val data = getProductRatingAndTopicsUseCase.executeOnBackground()
+            _topicExtraction.postValue(Success(data.productrevGetProductRatingAndTopics))
+        }) {
+            _topicExtraction.postValue(Fail(it))
         }
     }
 

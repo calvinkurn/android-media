@@ -41,7 +41,6 @@ import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
-import com.tokopedia.review.feature.reading.data.AvailableFilters
 import com.tokopedia.review.feature.reading.data.Keyword
 import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReview
@@ -602,6 +601,7 @@ open class ReadReviewFragment :
             ReadReviewTracking.trackOnShopReviewClearFilter(viewModel.getShopId())
         }
         viewModel.clearFilters()
+        viewModel.updateTopicExtraction()
         viewModel.setSort(SortTypeConstants.LATEST_COPY, isProductReview)
         viewModel.getSelectedRatingFilter()
         if (isProductReview) {
@@ -728,6 +728,7 @@ open class ReadReviewFragment :
         observeProductReviews()
         observeShopReviews()
         observeToggleLikeReview()
+        observeTopicExtraction()
     }
 
     override fun loadInitialData() {
@@ -887,6 +888,19 @@ open class ReadReviewFragment :
                 is Fail -> onFailGetRatingAndTopic(it.throwable)
             }
         })
+    }
+
+    private fun observeTopicExtraction(){
+        viewModel.topicExtraction.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> onSuccessUpdateTopicExtraction(it.data)
+                is Fail -> onFailGetRatingAndTopic(it.throwable)
+            }
+        }
+    }
+
+    private fun onSuccessUpdateTopicExtraction(data: ProductrevGetProductRatingAndTopic){
+        reviewHeader?.setTopicExtraction(data.keywords, null, this)
     }
 
     private fun observeProductReviews() {

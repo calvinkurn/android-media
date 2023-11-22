@@ -41,6 +41,7 @@ class ReadReviewTopics @JvmOverloads constructor(
     private fun apply(keywords: List<Keyword>) = with(binding) {
         if (keywords.isEmpty()) return
         root.show()
+        extractedTopicGroup.removeAllViews()
 
         keywords.forEachIndexed { index, keyword ->
             val chip = keyword.toChip(index)
@@ -48,7 +49,6 @@ class ReadReviewTopics @JvmOverloads constructor(
             extractedTopicGroup.addView(chip.view)
             listener?.onImpressTopicChip(keyword, index)
         }
-
         registerBehavior()
     }
 
@@ -73,9 +73,12 @@ class ReadReviewTopics @JvmOverloads constructor(
 
     @SuppressLint("RestrictedApi")
     private fun determineExpandButton(chipGroup: ChipGroup) {
-        val lastChip = chipGroup.children.last()
-        val lastChipRowIndex = chipGroup.getRowIndex(lastChip)
-        if (lastChipRowIndex > 0) showExpandButton()
+        if (chipGroup.layoutParams.height == WRAP_CONTENT) binding.extractedTopicExpand.hide()
+        else {
+            val lastChip = chipGroup.children.last()
+            val lastChipRowIndex = chipGroup.getRowIndex(lastChip)
+            if (lastChipRowIndex > 0) showExpandButton()
+        }
     }
 
     private fun showExpandButton() {

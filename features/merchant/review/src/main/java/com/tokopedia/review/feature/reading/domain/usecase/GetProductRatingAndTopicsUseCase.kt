@@ -12,10 +12,12 @@ class GetProductRatingAndTopicsUseCase @Inject constructor(graphqlRepository: Gr
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
+        const val PARAM_PAGE_SOURCE = "pageSource"
+        const val PARAM_FILTER_BY = "filterBy"
         const val GET_PRODUCT_RATING_USE_CASE_CLASS_NAME = "ProductRatingQuery"
         const val GET_PRODUCT_RATING_QUERY = """
-            query productrevGetProductRatingAndTopics(${'$'}productID: String!) {
-              productrevGetProductRatingAndTopics(productID: ${'$'}productID) {
+            query productrevGetProductRatingAndTopics(${'$'}productID: String!, ${'$'}pageSource: String!, ${'$'}filterBy: String!) {
+              productrevGetProductRatingAndTopics(productID: ${'$'}productID, pageSource: ${'$'}pageSource, filterBy: ${'$'}filterBy) {
                 rating {
                   positivePercentageFmt
                   ratingScore
@@ -62,8 +64,10 @@ class GetProductRatingAndTopicsUseCase @Inject constructor(graphqlRepository: Gr
 
     private val requestParams = RequestParams.create()
 
-    fun setParams(productId: String) {
+    fun setParams(productId: String, pageSource: String = "", filterBy: String = "") {
         requestParams.putString(PARAM_PRODUCT_ID, productId)
+        requestParams.putString(PARAM_PAGE_SOURCE, pageSource)
+        requestParams.putString(PARAM_FILTER_BY, filterBy)
         setRequestParams(requestParams.parameters)
     }
 }

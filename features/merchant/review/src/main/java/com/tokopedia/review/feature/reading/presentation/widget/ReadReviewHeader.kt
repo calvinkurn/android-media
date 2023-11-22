@@ -102,12 +102,13 @@ class ReadReviewHeader @JvmOverloads constructor(
 
     fun hideRatingContainer() {
         binding.containerReviewRating.gone()
-//        binding.readReviewFilterDivider.gone()
+        binding.readReviewExtractedTopic.gone()
     }
 
     fun showRatingContainer() {
         binding.containerReviewRating.visible()
         binding.readReviewFilterDivider.visible()
+        binding.readReviewExtractedTopic.visible()
     }
 
     private fun showRatingContainerBorderLine() {
