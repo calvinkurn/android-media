@@ -47,16 +47,21 @@ class BCABalanceViewModel @Inject constructor(
         ATD: String,
     ) {
         val bcaMTId = BCAFlazzResponseMapper.bcaMTId(merchantId, terminalId)
-        bcaLibrary.C_BCASetConfig(bcaMTId)
+        val setConfigResult = bcaLibrary.C_BCASetConfig(bcaMTId)
         if (isoDep != null) {
             run {
                 try {
-                    val dataBalance = checkLatestBalance()
-                    if (dataBalance.isSuccess == SUCCESS_JNI) {
-                        getPendingBalanceProcess(
-                            isoDep, dataBalance.cardNo, dataBalance.balance,
-                            rawPublicKeyString, rawPrivateKeyString, GEN_TWO, strCurrDateTime, ATD
-                        )
+                    if (setConfigResult.isSuccess == SUCCESS_JNI) {
+                        val dataBalance = checkLatestBalance()
+                        if (dataBalance.isSuccess == SUCCESS_JNI) {
+                            getPendingBalanceProcess(
+                                isoDep, dataBalance.cardNo, dataBalance.balance,
+                                rawPublicKeyString, rawPrivateKeyString, GEN_TWO, strCurrDateTime, ATD
+                            )
+                        } else {
+                            isoDep.close()
+                            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                        }
                     } else {
                         isoDep.close()
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
