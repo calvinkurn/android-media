@@ -64,7 +64,7 @@ object RecommendationCarouselTracking {
         recomItem: RecommendationItem,
         userId: String,
         quantity: Int,
-        androidPageName: String = "product detail page", // remove default value after recommendation carousel widget migration
+        androidPageName: String = RecommendationWidgetSource.PDP().eventCategory, // remove default value after recommendation carousel widget migration
         anchorProductId: String
     ) {
         val bundle = Bundle().apply {
