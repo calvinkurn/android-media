@@ -25,6 +25,8 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SCROLLING_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_VIDEO_PRODUCT_ICON_ANIM_PAUSE
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_VIDEO_PRODUCT_ICON_ANIM_RESUME
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.customview.FeedPlayerControl
@@ -264,6 +266,8 @@ class FeedPostVideoViewHolder(
                 addAll(payloads)
                 if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
                 if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(scrollingPayload)
+                if (feedPayloads.payloads.contains(FEED_VIDEO_PRODUCT_ICON_ANIM_PAUSE)) add(FEED_VIDEO_PRODUCT_ICON_ANIM_PAUSE)
+                if (feedPayloads.payloads.contains(FEED_VIDEO_PRODUCT_ICON_ANIM_RESUME)) add(FEED_VIDEO_PRODUCT_ICON_ANIM_RESUME)
             }
             bind(item.data as FeedCardVideoContentModel, newPayloads)
         }
@@ -308,6 +312,14 @@ class FeedPostVideoViewHolder(
 
             if (payloads.contains(FEED_POST_DONE_SCROLL)) {
                 onScrolling(false)
+            }
+
+            if (payloads.contains(FEED_VIDEO_PRODUCT_ICON_ANIM_PAUSE)) {
+                onNotSelected()
+            }
+
+            if (payloads.contains(FEED_VIDEO_PRODUCT_ICON_ANIM_RESUME)) {
+                onSelected(element)
             }
 
             payloads.forEach { payload ->
