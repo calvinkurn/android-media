@@ -68,7 +68,7 @@ class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: L
                     RenderEffect.createBlurEffect(
                         DEFAULT_NEW_RADIUS,
                         DEFAULT_NEW_RADIUS,
-                        Shader.TileMode.REPEAT
+                        Shader.TileMode.CLAMP
                     )
                 )
             } else {
