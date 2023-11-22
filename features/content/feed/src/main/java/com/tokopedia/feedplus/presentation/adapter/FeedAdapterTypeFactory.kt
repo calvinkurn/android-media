@@ -70,7 +70,8 @@ class FeedAdapterTypeFactory(
                 ),
                 parentToBeDisabled,
                 feedListener,
-                trackerMapper
+                trackerMapper,
+                lifecycleOwner
             )
             FeedPostVideoViewHolder.LAYOUT -> FeedPostVideoViewHolder(
                 ItemFeedPostVideoBinding.inflate(

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewParent
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -52,7 +53,8 @@ class FeedPostImageViewHolder(
     private val binding: ItemFeedPostBinding,
     parentToBeDisabled: ViewParent?,
     private val listener: FeedListener,
-    private val trackerMapper: MapperFeedModelToTrackerDataModel
+    private val trackerMapper: MapperFeedModelToTrackerDataModel,
+    private val lifecycleOwner: LifecycleOwner,
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
     private val alphaAnimator = FeedPostAlphaAnimator(object : FeedPostAlphaAnimator.Listener {
@@ -541,7 +543,7 @@ class FeedPostImageViewHolder(
 
     private fun bindImagesContent(media: List<FeedMediaModel>) {
         with(binding) {
-            adapter = FeedPostImageAdapter(media.map { it.mediaUrl })
+            adapter = FeedPostImageAdapter(media.map { it.mediaUrl }, lifecycleOwner)
             rvFeedPostImageContent.adapter = adapter
         }
     }
