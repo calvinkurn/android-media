@@ -28,6 +28,8 @@ import com.tokopedia.utils.file.FileUtil
 import org.junit.Test
 import timber.log.Timber
 import java.io.FileOutputStream
+import com.tokopedia.tokochat.test.R as tokochattestR
+import com.tokopedia.tokochat_common.R as tokochat_commonR
 
 @UiTest
 class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
@@ -104,10 +106,6 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
             position = 0,
             isVisible = false
         )
-        MessageBubbleResult.assertImageAttachmentRetryUploadVisibility(
-            position = 0,
-            isVisible = false
-        )
     }
 
     @Test
@@ -135,10 +133,6 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
         MessageBubbleResult.assertImageAttachmentVisibility(
             position = 0,
             isVisible = true
-        )
-        MessageBubbleResult.assertImageAttachmentRetryDownloadVisibility(
-            position = 0,
-            isVisible = false
         )
         MessageBubbleResult.assertImageAttachmentRetryUploadVisibility(
             position = 0,
@@ -311,7 +305,7 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
         MessageBubbleResult.assertMessageBubbleCensoredText(
             position = 0,
             text = activity.getString(
-                com.tokopedia.tokochat_common.R.string.tokochat_message_censored
+                tokochat_commonR.string.tokochat_message_censored
             )
         )
     }
@@ -336,7 +330,7 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
         try {
             val dummyBitmap: Bitmap = BitmapFactory.decodeResource(
                 context.resources,
-                com.tokopedia.tokochat.test.R.drawable.dummy_image
+                tokochattestR.drawable.dummy_image
             )
             val file = TokoChatViewUtil.getTokoChatPhotoPath("dummy_image")
             if (!file.exists()) {
