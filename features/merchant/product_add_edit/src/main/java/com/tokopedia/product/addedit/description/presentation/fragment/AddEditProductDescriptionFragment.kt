@@ -82,7 +82,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
@@ -593,18 +592,21 @@ class AddEditProductDescriptionFragment :
                 is Success -> {
                     val resultData = result.data.getYoutubeVideoSnippet.items
                     if (resultData.size.isMoreThanZero()) {
-                        val id = result.data.getYoutubeVideoSnippet.items[0].id
-                        if (id.isEmpty()) {
-                            displayErrorOnSelectedVideo(youtubeAdapterPosition)
-                        } else {
-                            stopNetworkRequestPerformanceMonitoring()
-                            startRenderPerformanceMonitoring()
-                            setDataOnSelectedVideo(resultData[0], youtubeAdapterPosition)
-                        }
+                        stopNetworkRequestPerformanceMonitoring()
+                        startRenderPerformanceMonitoring()
+                        setDataOnSelectedVideo(resultData[0], youtubeAdapterPosition)
+                    } else {
+                        displayErrorOnSelectedVideo(
+                            position = youtubeAdapterPosition,
+                            errMessage = result.data.getYoutubeVideoSnippet.error.messages
+                        )
                     }
                 }
                 is Fail -> {
-                    displayErrorOnSelectedVideo(youtubeAdapterPosition)
+                    displayErrorOnSelectedVideo(
+                        position = youtubeAdapterPosition,
+                        errMessage = getString(R.string.error_video_not_valid)
+                    )
                     AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
                 }
             }
@@ -625,12 +627,12 @@ class AddEditProductDescriptionFragment :
         }
     }
 
-    private fun displayErrorOnSelectedVideo(position: Int) {
+    private fun displayErrorOnSelectedVideo(position: Int, errMessage: String) {
         adapter.data.getOrNull(position)?.apply {
             inputTitle = ""
             inputDescription = ""
             inputImage = ""
-            errorMessage = if (inputUrl.isBlank()) "" else getString(R.string.error_video_not_valid)
+            errorMessage = if (inputUrl.isBlank()) "" else errMessage
         }
     }
 

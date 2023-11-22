@@ -12,7 +12,10 @@ data class GetYoutubeVideoSnippetResponse(
     data class GetYoutubeVideoSnippet(
         @SerializedName("Items")
         @Expose
-        val items: List<Items> = listOf()
+        val items: List<Items> = listOf(),
+        @SerializedName("Error")
+        @Expose
+        val error: Error = Error()
     ) {
 
         data class Items(
@@ -52,6 +55,18 @@ data class GetYoutubeVideoSnippetResponse(
             @SerializedName("Height")
             @Expose
             val height: Int = 0
+        )
+
+        data class Error(
+            @SerializedName("messages")
+            @Expose
+            val messages: String = "",
+            @SerializedName("reason")
+            @Expose
+            val reason: List<String> = listOf(),
+            @SerializedName("errorCode")
+            @Expose
+            val errorCode: String = ""
         )
     }
 }

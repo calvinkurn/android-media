@@ -48,6 +48,11 @@ class GetYoutubeVideoSnippetUseCase @Inject constructor(
             "           }" +
             "       }" +
             "   }" +
+            "   Error {" +
+            "       messages" +
+            "       reason" +
+            "       errorCode" +
+            "   }" +
             "}" +
             "}"
 
