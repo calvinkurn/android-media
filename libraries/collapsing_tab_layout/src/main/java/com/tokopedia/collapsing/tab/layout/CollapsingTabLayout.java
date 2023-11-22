@@ -170,7 +170,6 @@ public class CollapsingTabLayout extends TabLayout {
             }
         });
         tabHeightCollapseAnimator.setDuration(DEFAULT_ANIMATION_DURATION);
-        //tabHeightCollapseAnimator.setStartDelay(TAB_AUTO_SCROLL_DELAY_DURATION);
     }
 
     private boolean isFullyCollapsed(float fraction) {
@@ -184,22 +183,11 @@ public class CollapsingTabLayout extends TabLayout {
         }
     }
 
-//    public void snapCollapsingTab() {
-//        if (tabHeightCollapseAnimator.getAnimatedFraction() < 0.5) {
-//            startTabHeightExpandAnimation();
-//        } else {
-//            startTabHeightCollapseAnimation();
-//        }
-//    }
-
     public void snapCollapsingTab() {
-        if (tabHeightCollapseAnimator.isRunning()) {
-            // If the collapse animation is running, cancel it and snap to the current fraction
-            tabHeightCollapseAnimator.cancel();
-            adjustTabCollapseFraction(lastTabCollapseFraction);
+        if (tabHeightCollapseAnimator.getAnimatedFraction() < 0.5) {
+            startTabHeightExpandAnimation();
         } else {
-            // Otherwise, snap to the nearest collapse fraction
-            adjustTabCollapseFraction(Math.round(lastTabCollapseFraction));
+            startTabHeightCollapseAnimation();
         }
     }
 
@@ -348,26 +336,13 @@ public class CollapsingTabLayout extends TabLayout {
         return (float) dy / MAX_TAB_COLLAPSE_SCROLL_RANGE;
     }
 
-//    private void adjustTabCollapseFraction(float tabCollapseFraction) {
-//        if (tabHeightCollapseAnimator.isRunning() || tabHeightCollapseAnimator.isStarted()) {
-//            tabHeightCollapseAnimator.cancel();
-//        }
-//
-//        setCurrentFraction(tabHeightCollapseAnimator, tabCollapseFraction);
-//        lastTabCollapseFraction = tabCollapseFraction;
-//    }
-
     private void adjustTabCollapseFraction(float tabCollapseFraction) {
-        // Ensure that the animator is not running or started before canceling
         if (tabHeightCollapseAnimator.isRunning() || tabHeightCollapseAnimator.isStarted()) {
             tabHeightCollapseAnimator.cancel();
         }
 
-        // Set the target fraction for the animator
-        tabHeightCollapseAnimator.setFloatValues(lastTabCollapseFraction, tabCollapseFraction);
-
-        // Start the animator
-        tabHeightCollapseAnimator.start();
+        setCurrentFraction(tabHeightCollapseAnimator, tabCollapseFraction);
+        lastTabCollapseFraction = tabCollapseFraction;
     }
 
     private View getTabView(Context context, int position, TabLayout.Tab tab, boolean cardInteraction) {

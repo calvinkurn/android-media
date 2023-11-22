@@ -8,7 +8,7 @@ import com.tokopedia.device.info.DeviceScreenInfo
  */
 object DynamicChannelTabletConfiguration {
 
-    private const val SPAN_COUNT_2x2_NORMAL = 2
+    const val SPAN_COUNT_2x2_NORMAL = 2
     private const val SPAN_COUNT_2x2_TABLET = 4
     private const val SPAN_SPACING_2x2_TABLET = 20
     private const val SPAN_SPACING_2x2_NORMAL = 10

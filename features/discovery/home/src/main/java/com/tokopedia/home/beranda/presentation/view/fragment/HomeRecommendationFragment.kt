@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -24,7 +25,6 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
-import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
@@ -130,6 +130,8 @@ class HomeRecommendationFragment :
     private var component: BerandaComponent? = null
     private var coachmarkLocalCache: CoachMarkLocalCache? = null
     private var homeRecomCurrentPage = 1
+
+    private var startY = 0.0F
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -315,6 +317,44 @@ class HomeRecommendationFragment :
     }
 
     private fun setupRecyclerView() {
+        val mScrollTouchListener: RecyclerView.OnItemTouchListener = object :
+            RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                when (e.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        startY = e.y
+                    }
+
+                    MotionEvent.ACTION_MOVE -> {
+                        val currentY = e.y
+                        val deltaY = currentY - startY
+
+                        // case 1: position > 0, then scroll to down disable recyclerview parent
+                        // case 2: position == 0, then scroll up / down, enable recyclerview parent
+                        if (isScrolledToTop()) {
+                            // Check if deltaY is negative, indicating upward movement
+                            if (deltaY < 0) {
+                                rv.parent.requestDisallowInterceptTouchEvent(true)
+                            } else {
+                                rv.parent.requestDisallowInterceptTouchEvent(false)
+                            }
+                        } else {
+                            rv.parent.requestDisallowInterceptTouchEvent(true)
+                        }
+
+                        // Update startY for the next event
+                        startY = currentY
+                    }
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+        }
+
+        recyclerView?.addOnItemTouchListener(mScrollTouchListener)
+
         recyclerView?.layoutManager = staggeredGridLayoutManager
         (recyclerView?.layoutManager as? StaggeredGridLayoutManager?)?.gapStrategy =
             StaggeredGridLayoutManager.GAP_HANDLING_NONE
@@ -627,6 +667,7 @@ class HomeRecommendationFragment :
                 if (!userVisibleHint) {
                     return
                 }
+
                 homeEggListener?.hideEggOnScroll()
                 if (homeTabFeedListener != null) {
                     homeTabFeedListener?.onFeedContentScrolled(dy, totalScrollY)
@@ -829,6 +870,15 @@ class HomeRecommendationFragment :
         } else {
             view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(msgError, it) }
         }
+    }
+
+    private fun isScrolledToTop(): Boolean {
+        val layoutManager = recyclerView?.layoutManager as? StaggeredGridLayoutManager
+        val spanCount =
+            layoutManager?.spanCount ?: DynamicChannelTabletConfiguration.SPAN_COUNT_2x2_NORMAL
+        val firstVisibleItemPositions = IntArray(spanCount)
+        return layoutManager?.findFirstVisibleItemPositions(firstVisibleItemPositions)
+            ?.firstOrNull() == 0
     }
 
     companion object {
