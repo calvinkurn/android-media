@@ -109,8 +109,6 @@ class HomeRecommendationCardMapper @Inject constructor(
         )
     }
 
-    //recommendationType = kosong gak ada result
-    //cat_id di item_name -> recommendation card for you, harusnya categoryId
     private fun mapToHomeRecommendationPlayWidget(
         layoutCard: String,
         layoutTracker: String,
