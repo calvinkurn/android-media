@@ -74,7 +74,8 @@ class ProductPickerTestActivity : AppCompatActivity() {
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
             .productPickerTestModule(
                 ProductPickerTestModule(
-                    mockRepository = ProductPickerTestActivityProvider.mockRepository
+                    mockRepository = ProductPickerTestActivityProvider.mockRepository,
+                    mockCommonRepository = ProductPickerTestActivityProvider.mockCommonRepository,
                 )
             )
             .build()

@@ -3,6 +3,7 @@ package com.tokopedia.stories.creation.provider
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import io.mockk.mockk
 
@@ -27,4 +28,6 @@ object ProductPickerTestActivityProvider {
     var maxProduct: Int = 30
 
     var mockRepository: ContentProductPickerSellerRepository = mockk(relaxed = true)
+
+    var mockCommonRepository: ProductPickerSellerCommonRepository = mockk(relaxed = true)
 }
