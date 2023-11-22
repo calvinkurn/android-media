@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
+import com.tokopedia.media.editor.data.repository.EditorImageCompressionRepository
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.picker.common.utils.isImageFormat
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -24,7 +26,8 @@ class EditorViewModel @Inject constructor(
     private val saveImageRepository: SaveImageRepository,
     private val userSession: UserSessionInterface,
     private val bitmapCreationRepository: BitmapCreationRepository,
-    private val coroutineDispatchers: CoroutineDispatchers
+    private val coroutineDispatchers: CoroutineDispatchers,
+    private val imageCompressor: EditorImageCompressionRepository,
 ) : ViewModel() {
 
     private var _editStateList = mutableMapOf<String, EditorUiModel>()
@@ -41,6 +44,9 @@ class EditorViewModel @Inject constructor(
 
     private var _isVideoStop = MutableLiveData<Boolean>()
     val isVideoStop: LiveData<Boolean> = _isVideoStop
+
+    private var _isCompressed = MutableLiveData<Boolean>()
+    val isCompressed: LiveData<Boolean> = _isCompressed
 
     fun setEditorParam(data: EditorParam) {
         _editorParam.postValue(data)
@@ -180,6 +186,33 @@ class EditorViewModel @Inject constructor(
                 height = imageHeight
             )
         )
+    }
+
+    suspend fun compressImage(editorParam: EditorParam) {
+        val newMap = mutableMapOf<String, EditorUiModel>()
+        val (compressWidth, compressHeight, compressQuality) = editorParam.getCompressConfig()
+
+        _editStateList.toList().forEach { (keyPath, _) ->
+            val newKey = if (isImageFormat(keyPath)) {
+                imageCompressor.compress(
+                    keyPath,
+                    maxWidth = compressWidth,
+                    maxHeight = compressHeight,
+                    quality = compressQuality,
+                    isSkipAble = true
+                )
+            } else {
+                keyPath
+            }
+
+            newMap[newKey] = EditorUiModel(newKey)
+        }
+
+        _editStateList.clear()
+        _editStateList = newMap
+        withContext(coroutineDispatchers.main){
+            _isCompressed.value = true
+        }
     }
 
     private fun updateEditedItem(originalUrl: String) {

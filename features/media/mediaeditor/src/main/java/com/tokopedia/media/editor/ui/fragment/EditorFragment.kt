@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -39,6 +40,11 @@ import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.tokopedia.media.editor.R as mediaeditorR
 
@@ -96,9 +102,7 @@ class EditorFragment @Inject constructor(
         viewBinding?.btnRedo?.setOnClickListener {
             forwardState()
         }
-    }
 
-    private fun startAutoCrop() {
         loader = LoaderDialog(requireContext()).apply {
             setLoadingText("")
             customView = View.inflate(
@@ -108,7 +112,9 @@ class EditorFragment @Inject constructor(
             ) as LinearLayout
             show()
         }
+    }
 
+    private fun startAutoCrop() {
         autoCropStartTime = System.nanoTime()
         iterateCrop(viewModel.editStateList.values.toList(), 0)
     }
@@ -179,6 +185,7 @@ class EditorFragment @Inject constructor(
     }
 
     override fun initObserver() {
+        observeCompressProcess()
         observeEditorParam()
         observeUpdateIndex()
         observeEditorResult()
@@ -376,31 +383,44 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            // show/hide add logo base on rollence
-            if (!viewModel.isShopAvailable()) {
-                it.editorToolsList().apply {
-                    val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
-                    remove(removeIndex)
-                }
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.compressImage(it)
             }
+        }
+    }
 
-            // show/hide add text base on rollence
-            if (!featureToggleManager.isAddTextEnable()) {
-                it.editorToolsList().apply {
-                    val removeIndex = find { toolId -> toolId == EditorToolType.ADD_TEXT }
-                    remove(removeIndex)
-                }
-            }
+    private fun observeCompressProcess() {
+        viewModel.isCompressed.observe(this) { compressDone ->
+            if (compressDone) {
+                viewModel.editorParam.value?.let {
+                    // show/hide add logo base on rollence
+                    if (!viewModel.isShopAvailable()) {
+                        it.editorToolsList().apply {
+                            val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
+                            remove(removeIndex)
+                        }
+                    }
 
-            editorToolComponent.setupView(it.editorToolsList())
-            thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
+                    // show/hide add text base on rollence
+                    if (!featureToggleManager.isAddTextEnable()) {
+                        it.editorToolsList().apply {
+                            val removeIndex = find { toolId -> toolId == EditorToolType.ADD_TEXT }
+                            remove(removeIndex)
+                        }
+                    }
 
-            if (it.autoCropRatio() != null) {
-                startAutoCrop()
-            } else {
-                viewBinding?.viewPager?.apply {
-                    setAdapter(viewModel.editStateList.values.toList())
-                    setPagerPageChangeListener(this)
+                    editorToolComponent.setupView(it.editorToolsList())
+                    thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
+
+                    if (it.autoCropRatio() != null) {
+                        startAutoCrop()
+                    } else {
+                        viewBinding?.viewPager?.apply {
+                            setAdapter(viewModel.editStateList.values.toList())
+                            setPagerPageChangeListener(this)
+                        }
+                        loader?.dismiss()
+                    }
                 }
             }
         }
