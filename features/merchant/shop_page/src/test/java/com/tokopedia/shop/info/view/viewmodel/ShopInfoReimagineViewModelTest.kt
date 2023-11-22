@@ -616,8 +616,9 @@ class ShopInfoReimagineViewModelTest {
             mockGetShopNoteGqlCall()
 
             // Mock the data to simulate following condition:
-            // Mon, Tue, Wed, Sat, Sund: Open,
-            // Thu: Open 24 Hours,
+            // Mon, Tue, Sat, Sun: Open
+            // Wed: Open 24 Hours (00:00:00 - 23:59:00)
+            // Thu: Open 24 Hours (00:00:00 - 23:59:59)
             // Fri: Closed
 
             val response = ShopOperationalHoursListResponse(
@@ -625,7 +626,7 @@ class ShopInfoReimagineViewModelTest {
                     data = listOf(
                         ShopOperationalHour(day = 1, startTime = "08:00:00", endTime = "17:00:00"),
                         ShopOperationalHour(day = 2, startTime = "08:00:00", endTime = "17:00:00"),
-                        ShopOperationalHour(day = 3, startTime = "08:00:00", endTime = "17:00:00"),
+                        ShopOperationalHour(day = 3, startTime = "00:00:00", endTime = "23:59:00"),
                         ShopOperationalHour(day = 4, startTime = "00:00:00", endTime = "23:59:59"),
                         ShopOperationalHour(day = 5, startTime = "00:00:00", endTime = "00:00:00"),
                         ShopOperationalHour(day = 6, startTime = "10:00:00", endTime = "15:00:00"),
@@ -659,15 +660,15 @@ class ShopInfoReimagineViewModelTest {
                             "08:00",
                             "17:00",
                             ShopOperationalHourWithStatus.Status.OPEN
-                        ),
-                        ShopOperationalHourWithStatus(
-                            ShopOperationalHourWithStatus.Day.WEDNESDAY,
-                            "08:00",
-                            "17:00",
-                            ShopOperationalHourWithStatus.Status.OPEN
                         )
                     ),
                     "00:00:23:59" to listOf(
+                        ShopOperationalHourWithStatus(
+                            ShopOperationalHourWithStatus.Day.WEDNESDAY,
+                            "00:00",
+                            "23:59",
+                            ShopOperationalHourWithStatus.Status.OPEN24HOURS
+                        ),
                         ShopOperationalHourWithStatus(
                             ShopOperationalHourWithStatus.Day.THURSDAY,
                             "00:00",
