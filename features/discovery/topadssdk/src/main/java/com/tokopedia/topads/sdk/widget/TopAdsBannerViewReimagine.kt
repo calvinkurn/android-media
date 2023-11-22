@@ -215,7 +215,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             list?.hide()
             shopAdsWithSingleProductHorizontal.show()
             shopAdsWithSingleProductVertical.hide()
-            shopAdsWithSingleProductHorizontal.setShopProductModel(getSingleAdsProductModel(cpmData, appLink, adsClickUrl, hasAddProductToCartButton))
+            shopAdsWithSingleProductHorizontal.setShopProductModel(getSingleAdsProductModel(cpmData, appLink, adsClickUrl, topAdsBannerViewClickListener, hasAddProductToCartButton))
         } else if(cpmData?.cpm?.layout == TopAdsConstants.LAYOUT_11){
             topAdsCarousel.hide()
             shopDetail?.hide()
@@ -225,7 +225,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             list?.hide()
             shopAdsWithSingleProductHorizontal.hide()
             shopAdsWithSingleProductVertical.show()
-            shopAdsWithSingleProductVertical.setShopProductModel(getSingleAdsProductModel(cpmData, appLink, adsClickUrl, hasAddProductToCartButton))
+            shopAdsWithSingleProductVertical.setShopProductModel(getSingleAdsProductModel(cpmData, appLink, adsClickUrl, topAdsBannerViewClickListener, hasAddProductToCartButton))
         }
     }
 
@@ -233,6 +233,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
         cpmData: CpmData,
         appLink: String,
         adsClickUrl: String,
+        topAdsBannerClickListener: TopAdsBannerClickListener?,
         hasAddProductToCartButton: Boolean,
     ): ShopAdsWithSingleProductModel {
         return ShopAdsWithSingleProductModel(
@@ -250,6 +251,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             adsClickUrl = adsClickUrl,
             hasAddToCartButton = hasAddProductToCartButton,
             variant = cpmData.cpm.layout,
+            topAdsBannerClickListener = topAdsBannerClickListener,
+            cpmData = cpmData
         )
     }
 

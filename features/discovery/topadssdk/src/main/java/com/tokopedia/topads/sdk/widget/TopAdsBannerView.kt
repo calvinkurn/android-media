@@ -312,7 +312,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             list?.hide()
             shopAdsWithSingleProductHorizontal.show()
             shopAdsWithSingleProductVertical.hide()
-            shopAdsWithSingleProductHorizontal.setShopProductModel(getSingleAdsProductModel(cpmData, appLink, adsClickUrl, hasAddProductToCartButton))
+            shopAdsWithSingleProductHorizontal.setShopProductModel(getSingleAdsProductModel(cpmData, appLink, adsClickUrl, topAdsBannerViewClickListener, hasAddProductToCartButton))
         } else if(cpmData?.cpm?.layout == LAYOUT_11){
             topAdsCarousel.hide()
             shopDetail?.hide()
@@ -322,7 +322,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             list?.hide()
             shopAdsWithSingleProductHorizontal.hide()
             shopAdsWithSingleProductVertical.show()
-            shopAdsWithSingleProductVertical.setShopProductModel(getSingleAdsProductModel(cpmData, appLink, adsClickUrl, hasAddProductToCartButton))
+            shopAdsWithSingleProductVertical.setShopProductModel(getSingleAdsProductModel(cpmData, appLink, adsClickUrl, topAdsBannerViewClickListener, hasAddProductToCartButton))
         }
     }
 
@@ -445,6 +445,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         cpmData: CpmData,
         appLink: String,
         adsClickUrl: String,
+        topAdsBannerClickListener: TopAdsBannerClickListener?,
         hasAddProductToCartButton: Boolean,
     ): ShopAdsWithSingleProductModel {
         return ShopAdsWithSingleProductModel(
@@ -462,6 +463,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             adsClickUrl = adsClickUrl,
             hasAddToCartButton = hasAddProductToCartButton,
             variant = cpmData.cpm.layout,
+            topAdsBannerClickListener = topAdsBannerClickListener,
+            cpmData = cpmData
         )
 
     }
@@ -822,7 +825,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     protected open fun isEligible(cpmData: CpmData?) =
             cpmData != null
                     && cpmData.cpm.cpmShop != null
-                    && (cpmData.cpm.cpmShop.products.size > 1 || showProductShimmer)
+                    && (cpmData.cpm.cpmShop.products.size > 0 || showProductShimmer)
 
     protected open fun activityIsFinishing(context: Context): Boolean {
         return if (context is Activity) {

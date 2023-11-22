@@ -85,7 +85,14 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
             productCardGridView?.applyCarousel()
             productCardGridView?.setProductModel(productModel)
             productCardGridView?.setOnClickListener {
-                topAdsUrlHitter.hitClickUrl(ShopAdsSingleItemHorizontalLayout::class.java.simpleName, product.imageProduct.imageClickUrl, String.EMPTY, String.EMPTY, String.EMPTY)
+                shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(Int.ZERO, shopAdsWithSingleProductModel.shopApplink, shopAdsWithSingleProductModel.cpmData)
+                topAdsUrlHitter.hitClickUrl(
+                    ShopAdsSingleItemVerticalLayout::class.java.simpleName,
+                    shopAdsWithSingleProductModel.adsClickUrl,
+                    String.EMPTY,
+                    String.EMPTY,
+                    String.EMPTY
+                )
             }
         }
     }

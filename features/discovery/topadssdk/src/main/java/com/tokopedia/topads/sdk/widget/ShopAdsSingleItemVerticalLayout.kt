@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.strikethrough
@@ -76,7 +77,7 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
         setProductPrice(shopAdsWithSingleProductModel.listItem)
         setProductSlashedPrice(shopAdsWithSingleProductModel.listItem)
         setProductDiscount(shopAdsWithSingleProductModel.listItem)
-        setProductClick(shopAdsWithSingleProductModel.listItem)
+        setProductClick(shopAdsWithSingleProductModel)
     }
 
     private fun initViews() {
@@ -98,40 +99,47 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
         }
     }
 
-    private fun setProductTitle(product: Product?){
+    private fun setProductTitle(product: Product?) {
         product?.let {
             productName?.text = MethodChecker.fromHtml(it.name).toString()
         }
     }
 
-    private fun setProductPrice(product: Product?){
+    private fun setProductPrice(product: Product?) {
         product?.let {
             productPrice?.text = product.priceFormat
         }
     }
 
-    private fun setProductSlashedPrice(product: Product?){
+    private fun setProductSlashedPrice(product: Product?) {
         product?.let {
-            if(!it.campaign.originalPrice.isNullOrEmpty()){
+            if (!it.campaign.originalPrice.isNullOrEmpty()) {
                 productSlashedPrice?.text = it.campaign.originalPrice
             }
             productSlashedPrice?.strikethrough()
         }
     }
 
-    private fun setProductDiscount(product: Product?){
+    private fun setProductDiscount(product: Product?) {
         product?.let {
-            if(it.campaign.discountPercentage != 0){
+            if (it.campaign.discountPercentage != 0) {
                 productDiscountPercent?.text = "${it.campaign.discountPercentage}%"
             }
         }
     }
 
-    private fun setProductClick(product: Product?){
-        product?.let {product ->
-            productCard?.setOnClickListener {
-                topAdsUrlHitter.hitClickUrl(ShopAdsSingleItemVerticalLayout::class.java.simpleName, product.imageProduct.imageClickUrl , String.EMPTY, String.EMPTY, String.EMPTY)
-            }
+    private fun setProductClick(
+        shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel
+    ) {
+        productCard?.setOnClickListener {
+            shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(Int.ZERO, shopAdsWithSingleProductModel.shopApplink, shopAdsWithSingleProductModel.cpmData)
+            topAdsUrlHitter.hitClickUrl(
+                ShopAdsSingleItemVerticalLayout::class.java.simpleName,
+                shopAdsWithSingleProductModel.adsClickUrl,
+                String.EMPTY,
+                String.EMPTY,
+                String.EMPTY
+            )
         }
     }
 
