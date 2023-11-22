@@ -17,7 +17,7 @@ object ContentDateConverter {
     const val HOUR = "jam"
     const val MINUTE = "menit"
     const val MINUTE_CONCISE = "mnt"
-    const val BELOW_1_MINUTE_CONCISE = "<1 mnt"
+    const val BELOW_1_MINUTE_CONCISE = "<1 $MINUTE_CONCISE"
     private const val DEFAULT_WORDING = "Beberapa detik yang lalu"
 
     data class DateTime(
