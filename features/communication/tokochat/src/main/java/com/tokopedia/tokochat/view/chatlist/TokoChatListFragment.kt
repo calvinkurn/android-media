@@ -67,7 +67,6 @@ class TokoChatListFragment @Inject constructor(
 
     private fun initChatListData() {
         toggleRecyclerViewLayout(true)
-        addInitialShimmering()
         viewModel.processAction(TokoChatListAction.RefreshPage)
     }
 
@@ -119,6 +118,12 @@ class TokoChatListFragment @Inject constructor(
     override fun initObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                observeTrackerUiState()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 observeChatListUiState()
             }
         }
@@ -141,22 +146,19 @@ class TokoChatListFragment @Inject constructor(
 
     private suspend fun observeChatListUiState() {
         viewModel.chatListUiState.collectLatest {
-            if (it.errorMessage != null) {
-                showErrorLayout()
-            } else {
-                if (it.trackerData != null) {
-                    tokoChatAnalytics.viewDriverChatList(
-                        listChatPair = it.trackerData,
-                        role = TokoChatAnalyticsConstants.BUYER
-                    )
-                }
-                if (it.page > 0) { // 0 means haven't load anything
-                    setChatListData(it.chatItemList, it.page == 1)
-                }
-                endlessRecyclerViewScrollListener?.setHasNextPage(it.hasNextPage)
-                removeLoader()
-            }
             toggleSwipeRefreshState(false)
+            if (!it.isLoading) {
+                when {
+                    (it.errorMessage != null) -> showErrorLayout()
+                    (it.page > 0) -> { // 0 means haven't load anything
+                        setChatListData(it.chatItemList, it.page == 1)
+                        endlessRecyclerViewScrollListener?.setHasNextPage(it.hasNextPage)
+                        removeLoader()
+                    }
+                }
+            } else {
+                addInitialShimmering()
+            }
         }
     }
 
@@ -180,6 +182,15 @@ class TokoChatListFragment @Inject constructor(
                     it.error.second
                 )
             }
+        }
+    }
+
+    private suspend fun observeTrackerUiState() {
+        viewModel.chatListTrackerUiState.collectLatest {
+            tokoChatAnalytics.viewDriverChatList(
+                listChatPair = it,
+                role = TokoChatAnalyticsConstants.BUYER
+            )
         }
     }
 

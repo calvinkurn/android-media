@@ -115,8 +115,8 @@ class TokoChatConsentBottomSheet : BottomSheetUnify() {
 
     private fun dismissAndLoadTokoChatData() {
         needConsent = false
-        this.dismiss()
         submitAction?.invoke()
+        this.dismiss()
     }
 
     fun setConsentListener(

@@ -1,6 +1,5 @@
 package com.tokopedia.tokochat.domain.usecase
 
-import androidx.lifecycle.asFlow
 import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.channel.GetChannelRequest
@@ -8,6 +7,7 @@ import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.tokochat.config.util.TokoChatResult
+import com.tokopedia.tokochat.config.util.asFlowResult
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class TokoChatListUseCase @Inject constructor(
@@ -24,34 +23,22 @@ class TokoChatListUseCase @Inject constructor(
     private var lastTimeStamp: Long = 0
 
     fun fetchAllCachedChannels(
-        channelTypes: List<ChannelType>,
-        defaultBatchSize: Int
+        channelTypes: List<ChannelType>
     ): Flow<TokoChatResult<List<ConversationsChannel>>> {
         return flow {
             lastTimeStamp = 0 // reset
             val conversationRepository = repository.getConversationRepository()
             if (conversationRepository != null) {
-                emit(TokoChatResult.Loading)
                 try {
-                    // Get Local Data
-                    val channels = conversationRepository.getAllCachedChannels(channelTypes)
-                    var batchSize = defaultBatchSize
-                    channels.asFlow().map {
-                        TokoChatResult.Success(it)
-                    }.collect {
-                        if (it.data.size > batchSize) {
-                            batchSize = it.data.size
-                        }
-                        this.emit(it) // Emit data from remote
-                    }
-
-                    // Get Remote Data
-                    emitAll(fetchAllRemoteChannels(channelTypes, batchSize))
+                    emitAll(
+                        conversationRepository.getAllCachedChannels(channelTypes)
+                            .asFlowResult()
+                    )
                 } catch (throwable: Throwable) {
                     emit(TokoChatResult.Error(throwable))
                 }
             } else {
-                emit((TokoChatResult.Error(Throwable(ERROR_CONVERSATION_NULL))))
+                emit(TokoChatResult.Error(Throwable(ERROR_CONVERSATION_NULL)))
             }
         }
     }
@@ -72,17 +59,20 @@ class TokoChatListUseCase @Inject constructor(
                     timestamp = getLastTimeStamp(),
                     batchSize = batchSize
                 ),
-                onSuccess = onSuccessFetchAllChannel(),
+                onSuccess = onSuccessFetchAllChannel(this),
                 onError = onErrorFetchAllChannel(this)
             )
             awaitClose { channel.close() }
         }
     }
 
-    private fun onSuccessFetchAllChannel(): (List<ConversationsChannel>) -> Unit {
+    private fun onSuccessFetchAllChannel(
+        scope: ProducerScope<TokoChatResult<List<ConversationsChannel>>>
+    ): (List<ConversationsChannel>) -> Unit {
         return { list ->
             // Set to -1 to mark as no more data
             lastTimeStamp = list.lastOrNull()?.createdAt ?: -1
+            scope.trySend(TokoChatResult.Success(list))
         }
     }
 

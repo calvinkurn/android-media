@@ -21,7 +21,7 @@ class TokoChatStateChatListTest : BaseTokoChatListTest() {
     @Test
     fun should_show_empty_state() {
         // Given
-        ApiResponseStub.channelListResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().channelListResponse = ApiResponseModelStub(
             200,
             "channel_list/success_get_empty_channel_list.json"
         )
@@ -40,7 +40,7 @@ class TokoChatStateChatListTest : BaseTokoChatListTest() {
     fun should_show_error_network_state() {
         // Given
         (networkUtil as TokoChatNetworkUtilStub).isNetworkAvailable = false
-        ApiResponseStub.channelListResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().channelListResponse = ApiResponseModelStub(
             403,
             "channel_list/success_get_empty_channel_list.json"
         )
@@ -59,7 +59,7 @@ class TokoChatStateChatListTest : BaseTokoChatListTest() {
     @Test
     fun should_show_error_general_state() {
         // Given
-        ApiResponseStub.channelListResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().channelListResponse = ApiResponseModelStub(
             403,
             "channel_list/success_get_empty_channel_list.json"
         )
@@ -77,7 +77,7 @@ class TokoChatStateChatListTest : BaseTokoChatListTest() {
     @Test
     fun should_go_to_home() {
         // Given
-        ApiResponseStub.channelListResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().channelListResponse = ApiResponseModelStub(
             403,
             "channel_list/success_get_empty_channel_list.json"
         )

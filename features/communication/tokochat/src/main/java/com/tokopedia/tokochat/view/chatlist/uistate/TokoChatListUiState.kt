@@ -6,8 +6,6 @@ data class TokoChatListUiState(
     val chatItemList: List<TokoChatListItemUiModel> = listOf(),
     val isLoading: Boolean = false,
     val page: Int = 0,
-    val hasNextPage: Boolean = false,
-    val errorMessage: String? = null,
-    val trackerData: Map<String, Int>? = null,
-    val localListLoaded: Boolean = false
+    val hasNextPage: Boolean = true,
+    val errorMessage: String? = null
 )

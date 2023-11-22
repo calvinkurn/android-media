@@ -195,12 +195,13 @@ open class TokoChatFragment @Inject constructor(
         askTokoChatConsent()
         setupLifeCycleObserver()
         setupListeners()
-        observeGroupBooking()
     }
 
     override fun onResume() {
         super.onResume()
-        updateReplySectionView()
+        if (readModeStartsAt != 0L || expiresAt != 0L) {
+            updateReplySectionView()
+        }
     }
 
     override fun onFragmentBackPressed(): Boolean {
@@ -300,10 +301,8 @@ open class TokoChatFragment @Inject constructor(
                 var isFinished = false
                 viewModel.isTkpdOrderStatus.collectLatest { status ->
                     if (!isFinished) {
-                        status?.let {
-                            isFinished = it
-                            initGroupBooking() // Success or fail, init group booking
-                        }
+                        isFinished = status
+                        initGroupBooking() // Success or fail, init group booking
                     }
                 }
             }
@@ -426,6 +425,7 @@ open class TokoChatFragment @Inject constructor(
         observeError()
         observeUserConsent()
         observeTkpdOrderId()
+        observeGroupBooking()
     }
 
     private fun observeError() {
@@ -525,7 +525,7 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun getComposedMessage(message: String? = null): String {
-        return if (message != null && message.isNotEmpty()) {
+        return if (!message.isNullOrEmpty()) {
             message
         } else {
             getComposeMessageArea()?.getComposedText() ?: ""
@@ -833,27 +833,9 @@ open class TokoChatFragment @Inject constructor(
     private fun observeLiveChannel() {
         viewModel.getLiveChannel(viewModel.channelId)?.observe(viewLifecycleOwner) {
             it?.let { channel ->
-                // Show bottom sheet if channel expires
                 expiresAt = channel.expiresAt
-                if (isChannelExpired()) {
-                    showUnavailableBottomSheet()
-                } else {
-                    // Check if channel is read only
-                    val readModeLong = channel.readModeStartsAt ?: 0
-                    if (readModeLong != 0L) {
-                        readModeStartsAt = readModeLong
-                    }
-                    if (channel.readOnly || isChannelReadOnly()) {
-                        // Hide reply component
-                        setupReplySection(
-                            false,
-                            getString(tokochat_commonR.string.tokochat_message_closed_chat)
-                        )
-                    } else {
-                        // Show reply component
-                        setupReplySection(true)
-                    }
-                }
+                readModeStartsAt = channel.readModeStartsAt ?: 0
+                updateReplySectionView()
             }
         }
     }
@@ -922,7 +904,7 @@ open class TokoChatFragment @Inject constructor(
             }
 
             callMenu.run {
-                val isCallIconDisabled = isOrderStateOngoing(getOrderState())
+                val isCallIconDisabled = !isOrderStateOngoing(getOrderState())
                 val isCallHidden = getOrderState().isBlank()
 
                 when {
@@ -1609,7 +1591,7 @@ open class TokoChatFragment @Inject constructor(
         )
     }
 
-    protected fun isConnectedToNetwork(): Boolean {
+    private fun isConnectedToNetwork(): Boolean {
         return if (context != null) {
             networkUtil.isNetworkAvailable(requireContext())
         } else {

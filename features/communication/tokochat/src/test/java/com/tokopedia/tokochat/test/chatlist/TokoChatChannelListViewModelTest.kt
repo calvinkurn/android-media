@@ -11,8 +11,10 @@ import com.tokopedia.tokochat.util.TokoChatValueUtil
 import com.tokopedia.tokochat.view.chatlist.TokoChatListAction
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -26,25 +28,18 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             val dummyChannelList = getDummyConversationChannelList()
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flow {
                 emit(TokoChatResult.Loading)
                 delay(10)
-                emit(TokoChatResult.Success(dummyChannelList))
+                emit(TokoChatResult.Success(dummyChannelList)) // Mock data from fetch local
+                emit(TokoChatResult.Success(dummyChannelList)) // Mock data from fetch remote
             }
 
             every {
                 abTestPlatform.getString(any(), any())
             } returns TokoChatValueUtil.ROLLENCE_LOGISTIC_CHAT
-
-            every {
-                chatListUseCase.fetchAllRemoteChannels(
-                    channelTypes = any(),
-                    batchSize = any()
-                )
-            } returns flow { }
 
             viewModel.chatListUiState.test {
                 // When
@@ -56,18 +51,14 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
                 assertEquals(initialValue.page, 0)
                 assertEquals(initialValue.chatItemList.size, 0)
                 assertEquals(initialValue.errorMessage, null)
-                assertEquals(initialValue.hasNextPage, false)
-                assertEquals(initialValue.trackerData, null)
-                assertEquals(initialValue.localListLoaded, false)
+                assertEquals(initialValue.hasNextPage, true)
                 assertEquals(initialValue.isLoading, false)
 
                 val localLoadingValue = awaitItem()
                 assertEquals(localLoadingValue.page, 0)
                 assertEquals(localLoadingValue.chatItemList.size, 0)
                 assertEquals(localLoadingValue.errorMessage, null)
-                assertEquals(localLoadingValue.hasNextPage, false)
-                assertEquals(localLoadingValue.trackerData, null)
-                assertEquals(localLoadingValue.localListLoaded, false)
+                assertEquals(localLoadingValue.hasNextPage, true)
                 assertEquals(localLoadingValue.isLoading, true)
 
                 val updatedValue = awaitItem()
@@ -75,8 +66,6 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
                 assertEquals(updatedValue.chatItemList.size, 1)
                 assertEquals(updatedValue.errorMessage, null)
                 assertEquals(updatedValue.hasNextPage, true)
-                assertEquals(updatedValue.trackerData?.size, 2)
-                assertEquals(updatedValue.localListLoaded, true)
                 assertEquals(updatedValue.isLoading, false)
 
                 cancelAndConsumeRemainingEvents()
@@ -90,8 +79,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             // Given
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flow {
                 emit(TokoChatResult.Loading)
@@ -108,14 +96,18 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
                     channelTypes = any(),
                     batchSize = any()
                 )
-            } returns flow { }
+            } returns flow {
+                emit(TokoChatResult.Loading)
+                delay(10)
+                emit(TokoChatResult.Success(listOf()))
+            }
 
             viewModel.chatListUiState.test {
                 // When
                 viewModel.setupViewModelObserver()
                 viewModel.processAction(TokoChatListAction.RefreshPage)
 
-                skipItems(2) // initial & loading
+                skipItems(3) // initial, loading, page increment
 
                 // Then
                 val updatedValue = awaitItem()
@@ -123,8 +115,6 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
                 assertEquals(updatedValue.chatItemList.size, 0)
                 assertEquals(updatedValue.errorMessage, null)
                 assertEquals(updatedValue.hasNextPage, false)
-                assertEquals(updatedValue.trackerData?.size, 0)
-                assertEquals(updatedValue.localListLoaded, true)
                 assertEquals(updatedValue.isLoading, false)
 
                 cancelAndConsumeRemainingEvents()
@@ -142,25 +132,18 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             }
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flow {
                 emit(TokoChatResult.Loading)
                 delay(10)
-                emit(TokoChatResult.Success(largeChatData))
+                emit(TokoChatResult.Success(largeChatData)) // Mock data from fetch local
+                emit(TokoChatResult.Success(largeChatData)) // Mock data from fetch remote
             }
 
             every {
                 abTestPlatform.getString(any(), any())
             } returns TokoChatValueUtil.ROLLENCE_LOGISTIC_CHAT
-
-            every {
-                chatListUseCase.fetchAllRemoteChannels(
-                    channelTypes = any(),
-                    batchSize = any()
-                )
-            } returns flow { }
 
             viewModel.chatListUiState.test {
                 // When
@@ -184,8 +167,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             // Given
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flow {
                 emit(TokoChatResult.Loading)
@@ -226,8 +208,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             // Given
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flow {
                 emit(TokoChatResult.Loading)
@@ -270,8 +251,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             // Given
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } throws throwableDummy
 
@@ -290,14 +270,122 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
     }
 
     @Test
-    fun `load next page, get chat list data`() {
+    fun `observe and collect channels, but previous job is not null`() {
+        runTest {
+            // Given
+            every {
+                chatListUseCase.fetchAllCachedChannels(
+                    channelTypes = any()
+                )
+            } returns flowOf()
+
+            viewModel.chatListUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(TokoChatListAction.RefreshPage)
+                viewModel.processAction(TokoChatListAction.RefreshPage)
+
+                verify(exactly = 2) {
+                    chatListUseCase.fetchAllCachedChannels(any())
+                }
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `load next page, get chat list data tracker`() {
         runTest {
             // Given
             val dummyChannelList = getDummyConversationChannelList()
             every {
                 chatListUseCase.fetchAllCachedChannels(
+                    channelTypes = any()
+                )
+            } returns flow { }
+
+            every {
+                chatListUseCase.fetchAllRemoteChannels(
                     channelTypes = any(),
-                    defaultBatchSize = any()
+                    batchSize = any()
+                )
+            } returns flow {
+                emit(TokoChatResult.Loading)
+                delay(10)
+                emit(TokoChatResult.Success(dummyChannelList))
+            }
+
+            every {
+                abTestPlatform.getString(any(), any())
+            } returns TokoChatValueUtil.ROLLENCE_LOGISTIC_CHAT
+
+            viewModel.chatListTrackerUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(TokoChatListAction.RefreshPage)
+                viewModel.processAction(TokoChatListAction.LoadNextPage)
+
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(1, updatedValue.size)
+                assertEquals(1, updatedValue["tokofood"])
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `load next page not first page, get not more than one chat list data tracker`() {
+        runTest {
+            // Given
+            val dummyChannelList = getDummyConversationChannelList()
+            every {
+                chatListUseCase.fetchAllCachedChannels(
+                    channelTypes = any()
+                )
+            } returns flow { }
+
+            every {
+                chatListUseCase.fetchAllRemoteChannels(
+                    channelTypes = any(),
+                    batchSize = any()
+                )
+            } returns flow {
+                emit(TokoChatResult.Loading)
+                delay(10)
+                emit(TokoChatResult.Success(dummyChannelList))
+            }
+
+            every {
+                abTestPlatform.getString(any(), any())
+            } returns TokoChatValueUtil.ROLLENCE_LOGISTIC_CHAT
+
+            viewModel.chatListTrackerUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(TokoChatListAction.RefreshPage)
+                viewModel.processAction(TokoChatListAction.LoadNextPage)
+                viewModel.processAction(TokoChatListAction.LoadNextPage)
+
+                // Then
+                verify(exactly = 2) {
+                    chatListUseCase.fetchAllRemoteChannels(any(), any())
+                }
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `load next page, get chat list data and page increased`() {
+        runTest {
+            // Given
+            val dummyChannelList = getDummyConversationChannelList()
+            every {
+                chatListUseCase.fetchAllCachedChannels(
+                    channelTypes = any()
                 )
             } returns flow {
                 emit(TokoChatResult.Loading)

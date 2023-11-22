@@ -81,7 +81,7 @@ open class BuyerOrderDetailTypeFactory(
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     protected val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool,
-    private val courierButtonListener: CourierButtonListener
+    protected val courierButtonListener: CourierButtonListener
 ) : BaseAdapterTypeFactory(),
     ScpRewardsMedalTouchPointWidgetTypeFactory,
     BuyMoreGetMoreTypeFactory {
