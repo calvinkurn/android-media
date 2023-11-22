@@ -16,6 +16,7 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifyprinciples.Typography
+import timber.log.Timber
 
 class VideoLinkTypeFactory : BaseAdapterTypeFactory() {
     private var listener: VideoLinkListener? = null
@@ -121,6 +122,7 @@ class VideoLinkTypeFactory : BaseAdapterTypeFactory() {
                         imgThumbnail?.setImageUrl(imageUrl)
                     }
                 } catch (e: Throwable) {
+                    Timber.e(e)
                 }
 
                 tvVideoTitle?.text = inputTitle
