@@ -280,7 +280,6 @@ class StoriesUnitTest {
             }
 
             state.first.storiesMainData.groupItems[selectedGroup].detail.assertEqualTo(StoriesDetail())
-            println("JOE LOG ${state.second}")
             state.second.last().assertEqualTo(StoriesUiEvent.EmptyDetailPage)
         }
     }
