@@ -4,7 +4,7 @@
     <application>
         <activity
             android:name=".saldoDetail.SaldoDepositActivity"
-            android:label="@string/saldo_detail_title_activity_people_deposit"
+            android:label="@string/saldo_tokopedia_title"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"

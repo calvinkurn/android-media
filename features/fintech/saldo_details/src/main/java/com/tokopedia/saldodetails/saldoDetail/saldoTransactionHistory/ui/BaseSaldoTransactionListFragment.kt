@@ -96,6 +96,10 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
         transactionRecyclerView.addOnScrollListener(endlessRecyclerViewScrollListener!!)
         endlessRecyclerViewScrollListener?.resetState()
 
+        setupRecyclerViewHeight()
+    }
+
+    private fun setupRecyclerViewHeight() {
         transactionRecyclerView.post {
             context?.let {
                 transactionRecyclerView.layoutParams.height =
@@ -196,7 +200,7 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
     companion object {
         const val PARAM_TRANSACTION_TYPE = "PARAM_TRANSACTION_TYPE"
 
-        private const val RECYCLERVIEW_HEIGHT_OFFSET = 160
+        private const val RECYCLERVIEW_HEIGHT_OFFSET = 150
 
         fun getInstance(transactionTitleStr: String): BaseSaldoTransactionListFragment {
             return BaseSaldoTransactionListFragment().apply {
