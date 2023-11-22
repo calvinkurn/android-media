@@ -67,8 +67,10 @@ class FeedProductButtonView(
         positionInFeed: Int,
         contentType: FeedContentType
     ) = with(binding) {
+        val hasDiscount = isContainsDiscountProduct(products)
+
         bind(products, totalProducts)
-        bindProductIcon(contentType, hasVoucher, isContainsDiscountProduct(products))
+        bindProductIcon(contentType, hasVoucher, hasDiscount)
 
         binding.root.setOnClickListener {
             onClick(
@@ -157,8 +159,7 @@ class FeedProductButtonView(
     }
 
     private fun isContainsDiscountProduct(products: List<FeedCardProductModel>): Boolean {
-        val discountProduct = products.filter { it.isDiscount }
-        return discountProduct.isNotEmpty()
+        return products.any { it.isDiscount }
     }
 
     fun showClearView() {
