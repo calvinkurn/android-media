@@ -188,10 +188,13 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             isOverrideTheme,
             shopHeaderConfig?.patternColorType.orEmpty()
         )
-        setSgcPlaySection(listWidgetShopData)
+        setSgcPlaySection(listWidgetShopData, shopHeaderConfig)
     }
 
-    fun setSgcPlaySection(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
+    fun setSgcPlaySection(
+        listWidgetShopData: List<ShopPageHeaderWidgetUiModel>,
+        shopHeaderConfig: ShopPageHeaderLayoutUiModel.Config?,
+    ) {
         val shopSgcPlayData = getShopSgcPlayData(listWidgetShopData)
         val modelComponent =
             shopSgcPlayData?.componentPages?.filterIsInstance<ShopPageHeaderPlayWidgetButtonComponentUiModel>()
@@ -211,6 +214,14 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                     modelComponent,
                     shopSgcPlayData,
                 )
+            }
+            shopHeaderConfig?.let {
+                widgetPlayRootContainer?.iconColor?.value = it.colorSchema.getColorIntValue(
+                    ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR
+                ).orZero()
+                widgetPlayRootContainer?.textColor?.value = it.colorSchema.getColorIntValue(
+                    ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+                ).orZero()
             }
             widgetPlayRootContainer?.fetchConfig()
 

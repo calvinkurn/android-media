@@ -57,6 +57,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     ): View? {
         isDragable = true
         isHideable = true
+        isSkipCollapseState = true
         bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
 
         val composeView = ComposeView(requireContext()).apply {

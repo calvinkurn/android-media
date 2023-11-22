@@ -86,18 +86,22 @@ fun ExpandableContentCreationItem(
             descriptionTextId = R.string.content_creation_live_description_text,
             clickTextId = R.string.content_creation_live_description_click_label
         )
+
         ContentCreationTypeEnum.POST -> buildDescriptionAnnotatedString(
             descriptionTextId = R.string.content_creation_post_description_text,
             clickTextId = R.string.content_creation_post_description_click_label
         )
+
         ContentCreationTypeEnum.SHORT -> buildDescriptionAnnotatedString(
             descriptionTextId = R.string.content_creation_short_description_text,
             clickTextId = R.string.content_creation_short_description_click_label
         )
+
         ContentCreationTypeEnum.STORY -> buildDescriptionAnnotatedString(
             descriptionTextId = R.string.content_creation_story_description_text,
             clickTextId = R.string.content_creation_story_description_click_label
         )
+
         else -> AnnotatedString("")
     }
 

@@ -499,7 +499,12 @@ class StoriesDetailFragment @Inject constructor(
                 setContent {
                     StoriesDetailTimer(
                         timerInfo = timerState,
-                    ) { if (isEligiblePage) viewModelAction(NextDetail) }
+                    ) {
+                        if (isEligiblePage) {
+                            mCoachMark?.dismissCoachMark()
+                            viewModelAction(NextDetail)
+                        }
+                    }
                 }
             }
         }
@@ -579,6 +584,7 @@ class StoriesDetailFragment @Inject constructor(
 
                 TouchEventStories.NEXT_PREV -> {
                     trackTapPreviousDetail()
+                    mCoachMark?.dismissCoachMark()
                     viewModelAction(PreviousDetail)
                 }
 
@@ -599,6 +605,7 @@ class StoriesDetailFragment @Inject constructor(
 
                 TouchEventStories.NEXT_PREV -> {
                     trackTapNextDetail()
+                    mCoachMark?.dismissCoachMark()
                     viewModelAction(NextDetail)
                 }
 
@@ -764,13 +771,15 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
-        show()
-        type = errorType
-        setAction { onClick() }
-        setCloseAction { activity?.finish() }
-        translationZ = if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
-    }
+    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) =
+        with(binding.vStoriesError) {
+            show()
+            type = errorType
+            setAction { onClick() }
+            setCloseAction { activity?.finish() }
+            translationZ =
+                if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
+        }
 
     private fun hideError() = binding.vStoriesError.gone()
 
