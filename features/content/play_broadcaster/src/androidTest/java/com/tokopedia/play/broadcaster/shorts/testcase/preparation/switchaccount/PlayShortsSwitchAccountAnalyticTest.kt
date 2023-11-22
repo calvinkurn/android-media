@@ -71,6 +71,7 @@ class PlayShortsSwitchAccountAnalyticTest {
                         mockAccountManager = mockAccountManager,
                         mockContentProductPickerSGCRepo = mockContentProductPickerSGCRepo,
                         mockUserSession = mockUserSession,
+                        mockContentProductPickerSGCCommonRepo = mockk(relaxed = true),
                         mockRouter = mockk(relaxed = true),
                         mockIdleManager = mockk(relaxed = true),
                         mockDataStore = mockk(relaxed = true),

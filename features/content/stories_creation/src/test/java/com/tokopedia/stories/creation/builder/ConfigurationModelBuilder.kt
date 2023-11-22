@@ -16,6 +16,7 @@ class ConfigurationModelBuilder {
         imageSourceId: String = "asdf",
         videoSourceId: String = "asdf",
         maxStoriesConfig: StoriesCreationConfiguration.MaxStoriesConfig = StoriesCreationConfiguration.MaxStoriesConfig.Empty,
+        storiesApplinkTemplate: String = "tokopedia://stories/shop/123"
     ) = StoriesCreationConfiguration(
         storiesId = storiesId,
         maxProductTag = maxProductTag,
@@ -24,6 +25,7 @@ class ConfigurationModelBuilder {
         maxVideoDuration = maxVideoDuration,
         imageSourceId = imageSourceId,
         videoSourceId = videoSourceId,
-        maxStoriesConfig = maxStoriesConfig
+        maxStoriesConfig = maxStoriesConfig,
+        storiesApplinkTemplate = storiesApplinkTemplate,
     )
 }

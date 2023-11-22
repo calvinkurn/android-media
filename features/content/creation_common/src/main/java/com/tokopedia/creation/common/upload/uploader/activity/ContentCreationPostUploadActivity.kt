@@ -9,6 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
+import com.tokopedia.creation.common.upload.model.CreationUploadType
 import com.tokopedia.creation.common.upload.uploader.dialog.PlayInstallMainAppDialog
 import com.tokopedia.kotlin.extensions.view.isAppInstalled
 import javax.inject.Inject
@@ -16,10 +17,14 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on February 20, 2023
  */
-class PlayShortsPostUploadActivity : BaseActivity() {
+class ContentCreationPostUploadActivity : BaseActivity() {
 
     @Inject
     lateinit var playShortsUploadAnalytic: PlayShortsUploadAnalytic
+
+    private val uploadType: CreationUploadType by lazy {
+        CreationUploadType.mapFromValue(intent.getStringExtra(EXTRA_UPLOAD_TYPE).orEmpty())
+    }
 
     private val playInstallMainAppDialog by lazy(LazyThreadSafetyMode.NONE) {
         PlayInstallMainAppDialog()
@@ -45,11 +50,16 @@ class PlayShortsPostUploadActivity : BaseActivity() {
     }
 
     private fun hitAnalytic() {
-        val channelId = intent.getStringExtra(EXTRA_CHANNEL_ID).orEmpty()
-        val authorId = intent.getStringExtra(EXTRA_AUTHOR_ID).orEmpty()
-        val authorType = intent.getStringExtra(EXTRA_AUTHOR_TYPE).orEmpty()
+        when (uploadType) {
+            CreationUploadType.Shorts -> {
+                val channelId = intent.getStringExtra(EXTRA_CHANNEL_ID).orEmpty()
+                val authorId = intent.getStringExtra(EXTRA_AUTHOR_ID).orEmpty()
+                val authorType = intent.getStringExtra(EXTRA_AUTHOR_TYPE).orEmpty()
 
-        playShortsUploadAnalytic.clickRedirectToChannelRoom(authorId, authorType, channelId)
+                playShortsUploadAnalytic.clickRedirectToChannelRoom(authorId, authorType, channelId)
+            }
+            else -> {}
+        }
     }
 
     private fun redirectToPlayRoom() {
@@ -79,6 +89,7 @@ class PlayShortsPostUploadActivity : BaseActivity() {
         private const val EXTRA_CHANNEL_ID = "channel_id"
         private const val EXTRA_AUTHOR_ID = "author_id"
         private const val EXTRA_AUTHOR_TYPE = "author_type"
+        private const val EXTRA_UPLOAD_TYPE = "upload_type"
         private const val EXTRA_APP_LINK = "app_link"
 
         fun getIntent(
@@ -86,12 +97,14 @@ class PlayShortsPostUploadActivity : BaseActivity() {
             channelId: String,
             authorId: String,
             authorType: String,
+            uploadType: String,
             appLink: String,
         ): Intent {
-            return Intent(context, PlayShortsPostUploadActivity::class.java).apply {
+            return Intent(context, ContentCreationPostUploadActivity::class.java).apply {
                 putExtra(EXTRA_CHANNEL_ID, channelId)
                 putExtra(EXTRA_AUTHOR_ID, authorId)
                 putExtra(EXTRA_AUTHOR_TYPE, authorType)
+                putExtra(EXTRA_UPLOAD_TYPE, uploadType)
                 putExtra(EXTRA_APP_LINK, appLink)
             }
         }

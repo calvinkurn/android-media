@@ -29,14 +29,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.findFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
 import com.tokopedia.creation.common.di.ContentCreationComponent
-import com.tokopedia.creation.common.di.ContentCreationModule
-import com.tokopedia.creation.common.di.DaggerContentCreationComponent
+import com.tokopedia.creation.common.di.ContentCreationInjector
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
 import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
+import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -88,6 +87,8 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
                 is ContentCreationBottomSheet -> {
                     childFragment.widgetSource = widgetSource
                     childFragment.shouldShowPerformanceAction = true
+                    childFragment.analytics = analytics
+                    childFragment.creationConfig = viewModel?.creationConfigData ?: ContentCreationConfigModel.Empty
                     creationBottomSheetListener?.let {
                         childFragment.listener = it
                     }
@@ -127,10 +128,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
                 getFragmentManager()?.let { fm ->
                     ContentCreationBottomSheet
                         .getFragment(fm, context.classLoader)
-                        .show(
-                            fm,
-                            creationConfig = creationConfig.data
-                        )
+                        .show(fm)
                 }
             }
         }
@@ -140,11 +138,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
         viewModel?.fetchConfig(widgetSource)
     }
 
-    private fun createComponent(): ContentCreationComponent =
-        DaggerContentCreationComponent.builder()
-            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
-            .contentCreationModule(ContentCreationModule(context))
-            .build()
+    private fun createComponent(): ContentCreationComponent = ContentCreationInjector.get(context)
 
     private fun getFragmentManager(): FragmentManager? =
         try {
