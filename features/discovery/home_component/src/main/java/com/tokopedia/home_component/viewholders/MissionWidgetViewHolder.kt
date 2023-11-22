@@ -19,10 +19,8 @@ import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
 import com.tokopedia.home_component.widget.common.carousel.CommonCarouselDiffUtilCallback
 import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactory
 import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactoryImpl
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -36,8 +34,6 @@ class MissionWidgetViewHolder(
 
     companion object {
         val LAYOUT = home_componentR.layout.global_component_mission_widget
-        private const val PADDING_BOTTOM_CARD = 13
-        private const val PADDING_BOTTOM_CLEAR = 4
     }
 
     private var binding: GlobalComponentMissionWidgetBinding? by viewBinding()
@@ -74,27 +70,15 @@ class MissionWidgetViewHolder(
         binding?.homeComponentMissionWidgetRcv?.adapter = adapter
     }
 
-    private fun setupPadding(element: MissionWidgetListDataModel) {
-        val paddingBottom = if(element.type == MissionWidgetListDataModel.Type.CLEAR)
-            PADDING_BOTTOM_CLEAR
-        else PADDING_BOTTOM_CARD
-        binding?.containerMissionWidgetItem?.setPadding(
-            Int.ZERO,
-            Int.ZERO,
-            Int.ZERO,
-            paddingBottom.toPx()
-        )
-    }
-
     private fun valuateRecyclerViewDecoration(type: MissionWidgetListDataModel.Type) {
         if (binding?.homeComponentMissionWidgetRcv?.itemDecorationCount == 0) {
             val itemDecoration = if(type == MissionWidgetListDataModel.Type.CLEAR)
                 MissionWidgetClearItemDecoration()
             else MissionWidgetCardItemDecoration()
-            val translationY = if(type == MissionWidgetListDataModel.Type.CLEAR) 0
-            else itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_component_card_compat_padding_translation_y)
+            val translationY = if(type == MissionWidgetListDataModel.Type.CLEAR) 0f
+            else itemView.context.resources.getDimension(home_componentR.dimen.home_component_card_compat_padding_translation_y)
             binding?.homeComponentMissionWidgetRcv?.addItemDecoration(itemDecoration)
-            binding?.homeComponentMissionWidgetRcv?.translationY = translationY.toFloat()
+            binding?.homeComponentMissionWidgetRcv?.translationY = translationY
         }
     }
 
@@ -137,7 +121,6 @@ class MissionWidgetViewHolder(
             }
             setHeaderComponent(element = element)
             setChannelDivider(element)
-            setupPadding(element)
             when (element.status) {
                 MissionWidgetListDataModel.STATUS_LOADING -> {
                     binding?.homeComponentHeaderView?.gone()

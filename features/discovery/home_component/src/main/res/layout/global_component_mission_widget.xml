@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="188dp"
@@ -68,7 +68,7 @@
             app:unify_local_load_title="@string/home_default_error_title"
             app:unify_local_load_description="@string/home_default_error_desc"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="gone"/>
 
     </LinearLayout>
 
