@@ -138,15 +138,11 @@ class PlayVideoWidgetView : CardUnify2 {
         binding.totalWatchView.setTotalWatch(model.totalView)
         binding.imgCover.loadImage(model.coverUrl) {
             listener(
-                onSuccess = { _, _ -> binding.imgCover.scaleType = ImageView.ScaleType.CENTER_CROP },
-                onError = { _ ->
+                onSuccess = { _, _ ->
                     binding.imgCover.run {
-                        layoutParams.height = COVER_ERROR_HEIGHT.toPx()
-                        layoutParams.width = COVER_ERROR_WIDTH.toPx()
                         scaleType = ImageView.ScaleType.CENTER_CROP
-                        requestLayout()
                     }
-                }
+                },
             )
         }
         binding.tvTitle.text = model.title
