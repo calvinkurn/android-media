@@ -17,6 +17,7 @@ import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetAllDri
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetInboxMenuAndWidgetMetaUseCase
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetProductRecommendationUseCase
 import com.tokopedia.inbox.universalinbox.util.Result
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.INBOX_ADS_REFRESH_KEY
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.INBOX_SCROLL_VALUE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
@@ -552,11 +553,10 @@ class UniversalInboxViewModel @Inject constructor(
     }
 
     private fun checkAutoScrollEligibility(): Boolean {
-//        return abTestPlatform.getString(
-//            INBOX_ADS_REFRESH_KEY,
-//            ""
-//        ) == INBOX_ADS_REFRESH_KEY
-        return true
+        return abTestPlatform.getString(
+            INBOX_ADS_REFRESH_KEY,
+            ""
+        ) == INBOX_ADS_REFRESH_KEY
     }
 
     private fun autoScrollRecommendation() {
@@ -576,13 +576,7 @@ class UniversalInboxViewModel @Inject constructor(
                 }
             } else {
                 // Reset, so it won't trigger anything
-                _autoScrollUiState.update {
-                    it.copy(
-                        shouldScroll = false,
-                        totalItem = 0,
-                        currentPosition = -1
-                    )
-                }
+                resetUserScrollState()
             }
         }
     }
