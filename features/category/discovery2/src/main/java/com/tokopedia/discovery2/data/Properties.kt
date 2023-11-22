@@ -120,4 +120,40 @@ data class Properties(
     @SerializedName("ribbon")
     val ribbon: Ribbon? = null,
 
-    )
+    @SerializedName("foreground_image_url")
+    val foregroundImageUrl: String? = null,
+
+    @SerializedName("header")
+    val header: Header? = null,
+
+    @SerializedName("warehouse_tco")
+    val warehouseTco: String? = null
+) {
+    data class Header(
+        @SerializedName("applink")
+        val applink: String? = null,
+        @SerializedName("offer_id")
+        val offerId: String? = null,
+        @SerializedName("offer_name")
+        val offerName: String? = null,
+        @SerializedName("offer_tiers")
+        val offerTiers: List<OfferTier>? = null,
+        @SerializedName("shop_badge")
+        val shopBadge: String? = null,
+        @SerializedName("shop_icon")
+        val shopIcon: String? = null,
+        @SerializedName("shop_id")
+        val shopId: String? = null,
+        @SerializedName("shop_name")
+        val shopName: String? = null,
+        @SerializedName("url")
+        val url: String? = null
+    ) {
+        data class OfferTier(
+            @SerializedName("tier_level")
+            val tierLevel: Int? = null,
+            @SerializedName("tier_wording")
+            val tierWording: String? = null
+        )
+    }
+}

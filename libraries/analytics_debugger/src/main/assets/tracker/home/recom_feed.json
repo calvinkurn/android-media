@@ -28,7 +28,8 @@
       "event": "view_item",
       "eventAction": "impression on banner inside recommendation tab",
       "sessionIris": ".*",
-      "eventLabel": ".*"
+      "eventLabel": ".*",
+      "hits_time": ".*"
     },
     {
       "promotions": [{
@@ -88,7 +89,8 @@
         "item_variant": ".*",
         "item_category": ".*"
       }],
-      "eventLabel": ".*"
+      "eventLabel": ".*",
+      "hits_time": ".*"
     }
   ]
 }

@@ -27,7 +27,7 @@ labels:
 
 ## Overview
 
-![](res/Screen%20Shot%202023-05-09%20at%2009.17.16.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_settings/Screen%20Shot%202023-05-09%20at%2009.17.16.png)
 
 Shop Settings module consists of several packages:
 
@@ -50,27 +50,27 @@ Shop Settings module consists of several packages:
 			1. Description: You can use this feature to open/ close your shop
 			2. Applink: `tokopedia-android-internal://marketplace/shop-settings-edit-schedule` 
 			
-			![](res/Screen%20Shot%202023-05-17%20at%2014.47.23.png)
+			![](https://docs-android.tokopedia.net/images/docs/shop_settings/Screen%20Shot%202023-05-17%20at%2014.47.23.png)
 		2. ShopSettingsInfoActivity
 		
 		
 			1. Description: You can use this feature to open/ close your shop
 			2. Applink: `tokopedia-android-internal://marketplace/shop-settings-info` 
 			
-			![](res/Screen%20Shot%202023-05-17%20at%2014.55.46.png)
+			![](https://docs-android.tokopedia.net/images/docs/shop_settings/Screen%20Shot%202023-05-17%20at%2014.55.46.png)
 		3. `ShopSettingsOperationalHoursActivity`
 		
 		
 			1. Description: You can use this feature to configure your shop operational hours
 			2. Applink: `tokopedia-android-internal://marketplace/shop-settings-operational-hours` 
 			
-			![](res/Screen%20Shot%202023-05-17%20at%2014.57.31.png)
+			![](https://docs-android.tokopedia.net/images/docs/shop_settings/Screen%20Shot%202023-05-17%20at%2014.57.31.png)
 		4. ShopSettingsSetOperationalHoursActivity
 		
 		
 			1. Description: You can use this feature to configure your shop operational hours 
 			
-			![](res/Screen%20Shot%202023-05-17%20at%2015.52.53.png)
+			![](https://docs-android.tokopedia.net/images/docs/shop_settings/Screen%20Shot%202023-05-17%20at%2015.52.53.png)
 3. common: Contains some common UI (CustomView, menu bottom sheet & utils)
 4. etalase: 
 
@@ -79,7 +79,7 @@ Shop Settings module consists of several packages:
 	2. Applink:`tokopedia-android-internal://marketplace/shop-settings-etalase/add`
 	3. Screenshot: 
 	
-	![](res/Screen%20Shot%202023-05-09%20at%2010.30.06-20230509-033010.png)
+	![](https://docs-android.tokopedia.net/images/docs/shop_settings/Screen%20Shot%202023-05-09%20at%2010.30.06-20230509-033010.png)
 5. notes: 
 
 
@@ -94,7 +94,7 @@ Shop Settings module consists of several packages:
 		5. `updateShopNote` [Shop Note Mutation](/wiki/spaces/MC/pages/1253411537/Shop+Note+Mutation)
 	3. Applink:`tokopedia-android-internal://marketplace/shop-settings-notes` 
 	
-	![](res/Screen%20Shot%202023-05-17%20at%2014.20.42.png)
+	![](https://docs-android.tokopedia.net/images/docs/shop_settings/Screen%20Shot%202023-05-17%20at%2014.20.42.png)
 6. setting: 
 
 
@@ -105,7 +105,7 @@ Shop Settings module consists of several packages:
 		1. `tokopedia-android-internal://marketplace/shop-page-setting`
 		2. `tokopedia-android-internal://marketplace/shop-page/{shop_id}/settings`
 		
-		![](res/Screen%20Shot%202023-05-17%20at%2014.26.11.png)
+		![](https://docs-android.tokopedia.net/images/docs/shop_settings/Screen%20Shot%202023-05-17%20at%2014.26.11.png)
 
 
 

@@ -44,9 +44,6 @@
         app:typographyWeight="reguler"
         app:typographyType="paragraph_3"
         android:layout_marginTop="4dp"
-        android:maxLines="4"
-        android:ellipsize="end"
-        android:maxLength="215"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -12,6 +12,7 @@ import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.listener.MediaListenerBuilder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
+import com.tokopedia.media.loader.utils.FeatureToggleManager
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.media.loader.utils.mediaLoad
@@ -35,6 +36,9 @@ object MediaLoaderTarget {
     private fun loadImageTarget(context: Context, properties: Properties): GlideRequest<Bitmap>? {
         if (properties.data.toString().isEmpty()) return null
         if (properties.data !is String) return null
+
+        // instance the feature toggle instance
+        properties.featureToggle = FeatureToggleManager.instance()
 
         // startTimeRequest will use for performance tracking
         val startTimeRequest = System.currentTimeMillis()

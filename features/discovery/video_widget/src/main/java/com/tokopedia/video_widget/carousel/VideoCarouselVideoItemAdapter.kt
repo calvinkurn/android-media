@@ -11,6 +11,7 @@ class VideoCarouselVideoItemAdapter(
 ) : ListAdapter<VideoCarouselDataView.VideoItem, VideoCarouselVideoItemViewHolder>(diffCallback) {
     private var listener: VideoCarouselItemListener? = null
     private var isWifiConnected = false
+    private var isSneakPeekEnabled = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoCarouselVideoItemViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -26,12 +27,20 @@ class VideoCarouselVideoItemAdapter(
     }
 
     override fun onBindViewHolder(holder: VideoCarouselVideoItemViewHolder, position: Int) {
-        holder.bind(getItem(position), isWifiConnected)
+        val isRenderPlayButton = isWifiConnected || isSneakPeekEnabled
+        holder.bind(getItem(position), isRenderPlayButton)
         listener?.onVideoCarouselItemImpressed(getItem(position))
     }
 
     fun onWifiConnectionChange(isWifiConnected: Boolean) {
         this.isWifiConnected = isWifiConnected
+        if(itemCount > 0) {
+            notifyItemRangeChanged(0, itemCount)
+        }
+    }
+
+    fun setSneakPeakLayout(isSneakPeekEnabled: Boolean) {
+        this.isSneakPeekEnabled = isSneakPeekEnabled
         if(itemCount > 0) {
             notifyItemRangeChanged(0, itemCount)
         }

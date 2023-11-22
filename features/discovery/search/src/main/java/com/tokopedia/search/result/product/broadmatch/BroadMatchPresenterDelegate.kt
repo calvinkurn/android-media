@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.ClassNameProvider
-import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
 import com.tokopedia.search.result.product.localsearch.EMPTY_LOCAL_SEARCH_RESPONSE_CODE
 import com.tokopedia.search.result.product.pagination.Pagination
@@ -57,16 +56,9 @@ class BroadMatchPresenterDelegate @Inject constructor(
         val visitableList = mutableListOf<Visitable<*>>()
 
         suggestionPresenter.appendSuggestion(visitableList)
-        appendBroadMatch(visitableList)
+        relatedDataView?.let { visitableList.addAll(it.broadMatchDataViewList) }
 
         return visitableList
-    }
-
-    private fun appendBroadMatch(list: MutableList<Visitable<*>>) {
-        relatedDataView?.let {
-            list.addAll(it.broadMatchDataViewList)
-            relatedDataView = null
-        }
     }
 
     fun processBroadMatchInEmptyLocalSearch(
@@ -83,75 +75,65 @@ class BroadMatchPresenterDelegate @Inject constructor(
             && hasBroadMatch()
 
     fun processBroadMatch(
+        totalProductItem: Int,
         responseCode: String,
-        productList: List<Visitable<*>>,
-        visitableList: List<Visitable<*>>,
         action: (Int, List<Visitable<*>>) -> Unit,
     ) {
         try {
             if (!isShowBroadMatch(responseCode)) return
 
-            val broadMatchPosition = relatedDataView?.position ?: -1
             if (isLastPositionBroadMatch)
-                processBroadMatchAtBottom(visitableList, action)
+                processBroadMatchAtBottom(action)
             else if (isFirstPositionBroadMatch)
-                processBroadMatchAtTop(productList, visitableList, action)
+                processBroadMatchAtTop(action)
             else if (broadMatchPosition > 1)
-                processBroadMatchAtPosition(productList, action, visitableList, broadMatchPosition)
+                processBroadMatchAtPosition(totalProductItem, action)
         } catch (exception: Throwable) {
             Timber.w(exception)
         }
     }
 
-    fun processBroadMatchAtBottom(
-        visitableList: List<Visitable<*>>,
-        action: (Int, List<Visitable<*>>) -> Unit,
-    ) {
+    fun processBroadMatchAtBottom(action: (Int, List<Visitable<*>>) -> Unit) {
         if (pagination.isLastPage()) {
             val broadMatchVisitableList = createBroadMatchToVisitableList()
             action(
-                visitableList.size,
+                broadMatchPosition,
                 VerticalSeparatorMapper.addVerticalSeparator(
                     broadMatchVisitableList,
                     addBottomSeparator = false
                 )
             )
+            relatedDataView = null
         }
     }
 
-    fun processBroadMatchAtTop(
-        productList: List<Visitable<*>>,
-        visitableList: List<Visitable<*>>,
-        action: (Int, List<Visitable<*>>) -> Unit,
-    ) {
+    fun processBroadMatchAtTop(action: (Int, List<Visitable<*>>) -> Unit) {
         val broadMatchVisitableList = createBroadMatchToVisitableList()
 
         action(
-            visitableList.indexOf(productList[0]),
+            broadMatchPosition,
             VerticalSeparatorMapper.addVerticalSeparator(
                 broadMatchVisitableList,
                 addTopSeparator = false
             )
         )
+        relatedDataView = null
     }
 
     private fun processBroadMatchAtPosition(
-        productList: List<Visitable<*>>,
+        totalProductItem: Int,
         action: (Int, List<Visitable<*>>) -> Unit,
-        visitableList: List<Visitable<*>>,
-        broadMatchPosition: Int,
     ) {
-        if (productList.size < broadMatchPosition) return
+        if (totalProductItem < broadMatchPosition) return
 
         val broadMatchVisitableList = createBroadMatchToVisitableList()
 
-        val productItemAtBroadMatchPosition = productList[broadMatchPosition - 1]
-        val broadMatchIndex = visitableList.indexOf(productItemAtBroadMatchPosition) + 1
-
         action(
-            broadMatchIndex,
+            broadMatchPosition,
             VerticalSeparatorMapper.addVerticalSeparator(broadMatchVisitableList)
         )
+
+        relatedDataView = null
     }
 
     override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
