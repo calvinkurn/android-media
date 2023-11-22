@@ -16,7 +16,7 @@ import dagger.Provides
  * Created By : Muhammad Furqan on 15/09/23
  */
 @Module(includes = [ContentCreationViewModelModule::class])
-class ContentCreationModule {
+object ContentCreationModule {
 
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface =
