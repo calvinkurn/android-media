@@ -32,7 +32,7 @@ class FeedProductButtonView(
     private var animationOn = false
     private val animationAssets = context.getString(contentcommonR.string.feed_anim_product_icon)
     private val animationTimerDelay by lazyThreadSafetyNone {
-        object: CountDownTimer(PRODUCT_ICON_ANIM_REPEAT_DELAY, DELAY_MILLIS) {
+        object : CountDownTimer(PRODUCT_ICON_ANIM_REPEAT_DELAY, DELAY_MILLIS) {
             override fun onTick(millisUntilFinished: Long) {}
             override fun onFinish() {
                 binding.lottieProductSeeMore.playAnimation()
@@ -45,6 +45,7 @@ class FeedProductButtonView(
             override fun onAnimationEnd(p0: Animator) {
                 animationTimerDelay.start()
             }
+
             override fun onAnimationCancel(p0: Animator) {}
             override fun onAnimationRepeat(p0: Animator) {}
         }
@@ -66,26 +67,9 @@ class FeedProductButtonView(
     ) = with(binding) {
 
         bind(products, totalProducts)
-        bindProductIcon(
-            enableProductIconAnim,
-            hasVoucher,
-            isContainsDiscountProduct(products)
-        ) {
-            onClick(
-                postId,
-                author,
-                postType,
-                isFollowing,
-                campaign,
-                hasVoucher,
-                products,
-                trackerData,
-                topAdsTrackerData,
-                positionInFeed
-            )
-        }
+        bindProductIcon(enableProductIconAnim, hasVoucher, isContainsDiscountProduct(products))
 
-        tvPlayProductCount.setOnClickListener {
+        binding.root.setOnClickListener {
             onClick(
                 postId,
                 author,
@@ -155,7 +139,6 @@ class FeedProductButtonView(
         enableProductIconAnim: Boolean,
         hasVoucher: Boolean,
         hasDiscount: Boolean,
-        onClick: () -> Unit,
     ) = with(binding) {
         animationOn = enableProductIconAnim && (hasVoucher || hasDiscount)
         if (animationOn) {
@@ -163,12 +146,12 @@ class FeedProductButtonView(
                 setAnimationFromUrl(animationAssets)
                 repeatCount = PRODUCT_ICON_ANIM_REPEAT_COUNT
             }
-            lottieProductSeeMore.setOnClickListener { onClick() }
-            icPlayProductSeeMore.hide()
-            lottieProductSeeMore.show()
+            showIconProductAnimation()
+            lottieProductSeeMore.setFailureListener {
+                showIconProduct()
+            }
         } else {
-            icPlayProductSeeMore.show()
-            lottieProductSeeMore.hide()
+            showIconProduct()
         }
     }
 
@@ -197,7 +180,17 @@ class FeedProductButtonView(
     fun pauseProductIconAnimation() {
         if (!animationOn) return
         animationTimerDelay.cancel()
-        binding.lottieProductSeeMore.pauseAnimation()
+        binding.lottieProductSeeMore.cancelAnimation()
+    }
+
+    private fun showIconProductAnimation() = with(binding) {
+        icPlayProductSeeMore.hide()
+        lottieProductSeeMore.show()
+    }
+
+    private fun showIconProduct() = with(binding) {
+        icPlayProductSeeMore.show()
+        lottieProductSeeMore.hide()
     }
 
     companion object {
