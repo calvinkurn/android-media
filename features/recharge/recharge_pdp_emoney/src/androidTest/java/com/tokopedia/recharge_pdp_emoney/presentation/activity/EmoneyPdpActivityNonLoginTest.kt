@@ -105,10 +105,10 @@ class EmoneyPdpActivityNonLoginTest {
 
         Espresso.onView(withId(R.id.emoneyHeaderViewCtaButton)).perform(click())
         Thread.sleep(1000)
-        Espresso.onView(withId(R.id.emoneyHeaderViewCardNumber)).check(matches(withText("8768567891012345")))
+        Espresso.onView(withId(R.id.emoneyHeaderViewCardNumber)).check(matches(withText("8768 5678 9101 2345")))
         Espresso.onView(withId(R.id.emoneyHeaderViewCardBalance)).check(matches(withText("Rp130.000")))
 
-        Espresso.onView(withText("8768 5678 9101 2345")).check(matches(isDisplayed()))
+        Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2345"), withId(com.tokopedia.unifycomponents.R.id.text_field_input))).check(matches(isDisplayed()))
     }
 
     private fun clickPromoTabAndSalinPromo() {
@@ -156,7 +156,7 @@ class EmoneyPdpActivityNonLoginTest {
         Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
         Thread.sleep(2000)
 
-        Espresso.onView(withId(R.id.emoneyHeaderViewCardNumber)).check(matches(withText("8768567891012345")))
+        Espresso.onView(withId(R.id.emoneyHeaderViewCardNumber)).check(matches(withText("8768 5678 9101 2345")))
         Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2344"), withId(com.tokopedia.unifycomponents.R.id.text_field_input))).check(matches(isDisplayed()))
         Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).check(matches(isDisplayed()))
         Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).perform(click())

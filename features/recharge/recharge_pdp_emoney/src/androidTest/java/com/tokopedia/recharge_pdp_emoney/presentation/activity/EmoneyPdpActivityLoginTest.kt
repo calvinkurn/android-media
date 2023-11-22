@@ -31,6 +31,7 @@ import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment.Companion.EMONEY_PDP_PREFERENCES_NAME
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpResponseConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.CoreMatchers.not
@@ -108,11 +109,12 @@ class EmoneyPdpActivityLoginTest {
 
     private fun validateTicker() {
         Espresso.onView(withId(R.id.emoneyPdpTicker)).check(matches(isDisplayed()))
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.ticker_description)).check(matches(isDisplayed()))
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.ticker_description)).check(matches(withText("this is dummy ticker Action Text")))
+        Espresso.onView(
+            CommonMatcher.firstView(withId(com.tokopedia.unifycomponents.R.id.ticker_description))).check(matches(isDisplayed()))
+        Espresso.onView(CommonMatcher.firstView(withId(com.tokopedia.unifycomponents.R.id.ticker_description))).check(matches(withText("this is dummy ticker Action Text")))
 
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.ticker_close_icon)).check(matches(isDisplayed()))
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.ticker_close_icon)).perform(click())
+        Espresso.onView(CommonMatcher.firstView(withId(com.tokopedia.unifycomponents.R.id.ticker_close_icon))).check(matches(isDisplayed()))
+        Espresso.onView(CommonMatcher.firstView(withId(com.tokopedia.unifycomponents.R.id.ticker_close_icon))).perform(click())
         Thread.sleep(1000)
         Espresso.onView(withId(R.id.emoneyPdpTicker)).check(matches(not(isDisplayed())))
     }
@@ -132,9 +134,9 @@ class EmoneyPdpActivityLoginTest {
         Espresso.onView(withId(R.id.emoneyHeaderViewCtaButton)).perform(click())
         Thread.sleep(2000)
 
-        Espresso.onView(AllOf.allOf(withText("8768567891012344"), withId(R.id.emoneyHeaderViewCardNumber))).check(matches(isDisplayed()))
+        Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2344"), withId(R.id.emoneyHeaderViewCardNumber))).check(matches(isDisplayed()))
         Espresso.onView(AllOf.allOf(withText("Rp 65.000"), withId(R.id.emoneyHeaderViewCardBalance))).check(matches(isDisplayed()))
-        Espresso.onView(withText("8768 5678 9101 2344")).check(matches(isDisplayed()))
+        Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2344"), withId(com.tokopedia.unifycomponents.R.id.text_field_input))).check(matches(isDisplayed()))
     }
 
     private fun clickCameraIconOnInputView() {
