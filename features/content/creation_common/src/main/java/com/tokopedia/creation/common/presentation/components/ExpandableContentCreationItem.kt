@@ -147,16 +147,15 @@ fun ExpandableContentCreationItem(
             AndroidView(
                 modifier = Modifier.wrapContentHeight(),
                 factory = {
-                    RadioButtonUnify(it).apply {
-                        setOnCheckedChangeListener { _, isChecked ->
-                            if (!isSelected && isChecked) {
-                                onSelect(data)
-                            }
-                        }
-                    }
+                    RadioButtonUnify(it)
                 },
                 update = {
                     it.isChecked = isSelected
+                    it.setOnCheckedChangeListener { _, isChecked ->
+                        if (!isSelected && isChecked) {
+                            onSelect(data)
+                        }
+                    }
                 }
             )
         }
