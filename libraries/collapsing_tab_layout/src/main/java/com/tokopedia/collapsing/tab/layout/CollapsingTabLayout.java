@@ -184,15 +184,30 @@ public class CollapsingTabLayout extends TabLayout {
         }
     }
 
+//    public void snapCollapsingTab() {
+//        if (tabHeightCollapseAnimator.getAnimatedFraction() < 0.5) {
+//            startTabHeightExpandAnimation();
+//        } else {
+//            startTabHeightCollapseAnimation();
+//        }
+//    }
+
     public void snapCollapsingTab() {
-        if (tabHeightCollapseAnimator.getAnimatedFraction() < 0.5) {
-            startTabHeightExpandAnimation();
+        if (tabHeightCollapseAnimator.isRunning()) {
+            // If the collapse animation is running, cancel it and snap to the current fraction
+            tabHeightCollapseAnimator.cancel();
+            adjustTabCollapseFraction(lastTabCollapseFraction);
         } else {
-            startTabHeightCollapseAnimation();
+            // Otherwise, snap to the nearest collapse fraction
+            adjustTabCollapseFraction(Math.round(lastTabCollapseFraction));
         }
     }
 
     private void startTabHeightExpandAnimation() {
+        if (tabHeightCollapseAnimator.isRunning() || tabHeightCollapseAnimator.isStarted()) {
+            tabHeightCollapseAnimator.cancel();
+        }
+
         if (tabHeightCollapseAnimator.getAnimatedFraction() > 0 && !tabHeightCollapseAnimator.isStarted()) {
             tabHeightCollapseAnimator.reverse();
             lastTabCollapseFraction = 0;
@@ -200,6 +215,10 @@ public class CollapsingTabLayout extends TabLayout {
     }
 
     private void startTabHeightCollapseAnimation() {
+        if (tabHeightCollapseAnimator.isRunning() || tabHeightCollapseAnimator.isStarted()) {
+            tabHeightCollapseAnimator.cancel();
+        }
+
         if (tabHeightCollapseAnimator.getAnimatedFraction() < 1 && !tabHeightCollapseAnimator.isStarted()) {
             tabHeightCollapseAnimator.start();
             lastTabCollapseFraction = 1;
@@ -222,7 +241,7 @@ public class CollapsingTabLayout extends TabLayout {
         }
         setScrollEnabled(true);
         int scrollTargetX = ((ViewGroup) getChildAt(0)).getChildAt(getSelectedTabPosition()).getLeft() - leftmostItemPadding;
-        Animator animator = ObjectAnimator.ofInt(this, "scrollX",  scrollTargetX).setDuration(DEFAULT_ANIMATION_DURATION);
+        Animator animator = ObjectAnimator.ofInt(this, "scrollX", scrollTargetX).setDuration(DEFAULT_ANIMATION_DURATION);
         animator.addListener(
                 new AnimatorListenerAdapter() {
                     @Override
@@ -244,7 +263,7 @@ public class CollapsingTabLayout extends TabLayout {
         hideAllTabIndicator();
 
         View lastSelectedTabIndicator = findViewByIdFromTab(getTabAt(lastTabSelectedPosition), R.id.tabIndicator);
-        if(lastTabSelectedPosition != NONE && lastSelectedTabIndicator != null) {
+        if (lastTabSelectedPosition != NONE && lastSelectedTabIndicator != null) {
             lastSelectedTabIndicator.setVisibility(View.VISIBLE);
         }
 
@@ -300,7 +319,6 @@ public class CollapsingTabLayout extends TabLayout {
     }
 
     public void adjustTabCollapseOnScrolled(int dy, int totalScrollY) {
-
         if (dy == 0) {
             return;
         }
@@ -330,23 +348,37 @@ public class CollapsingTabLayout extends TabLayout {
         return (float) dy / MAX_TAB_COLLAPSE_SCROLL_RANGE;
     }
 
+//    private void adjustTabCollapseFraction(float tabCollapseFraction) {
+//        if (tabHeightCollapseAnimator.isRunning() || tabHeightCollapseAnimator.isStarted()) {
+//            tabHeightCollapseAnimator.cancel();
+//        }
+//
+//        setCurrentFraction(tabHeightCollapseAnimator, tabCollapseFraction);
+//        lastTabCollapseFraction = tabCollapseFraction;
+//    }
+
     private void adjustTabCollapseFraction(float tabCollapseFraction) {
-        if (tabHeightCollapseAnimator.isRunning()) {
+        // Ensure that the animator is not running or started before canceling
+        if (tabHeightCollapseAnimator.isRunning() || tabHeightCollapseAnimator.isStarted()) {
             tabHeightCollapseAnimator.cancel();
         }
-        setCurrentFraction(tabHeightCollapseAnimator, tabCollapseFraction);
-        lastTabCollapseFraction = tabCollapseFraction;
+
+        // Set the target fraction for the animator
+        tabHeightCollapseAnimator.setFloatValues(lastTabCollapseFraction, tabCollapseFraction);
+
+        // Start the animator
+        tabHeightCollapseAnimator.start();
     }
 
     private View getTabView(Context context, int position, TabLayout.Tab tab, boolean cardInteraction) {
         View rootView = LayoutInflater.from(context).inflate(R.layout.tab_home_feed_layout, null);
         CardUnify2 card = rootView.findViewById(R.id.card_tab);
-        if(cardInteraction){
+        if (cardInteraction) {
             card.setAnimateOnPress(CardUnify2.Companion.getANIMATE_OVERLAY_BOUNCE());
         } else {
             card.setAnimateOnPress(CardUnify2.Companion.getANIMATE_OVERLAY());
         }
-        card.setRadius((int)(TAB_CORNER_RADIUS * Resources.getSystem().getDisplayMetrics().density));
+        card.setRadius((int) (TAB_CORNER_RADIUS * Resources.getSystem().getDisplayMetrics().density));
         card.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
