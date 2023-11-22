@@ -401,7 +401,7 @@ data class DataItem(
     val image: String = "",
 
     @SerializedName("lottie_image")
-    val lottieImage: String = "",
+    val lottieImage: String? = null,
 
     @SerializedName("tracking_fields")
     val trackingFields: TrackingFields? = null,
@@ -560,6 +560,9 @@ data class DataItem(
 
     @SerializedName("cta_color")
     val ctaColor: String? = "",
+
+    @SerializedName("tab_index")
+    val tabIndex: List<Int>? = null,
 
     var shopAdsClickURL: String? = "",
 
