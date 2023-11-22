@@ -2,10 +2,14 @@ package com.tokopedia.stories.view.activity
 
 import android.content.res.Resources
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
@@ -18,7 +22,10 @@ import com.tokopedia.stories.view.utils.ARGS_SOURCE_ID
 import com.tokopedia.stories.view.utils.KEY_ARGS
 import com.tokopedia.stories.view.utils.KEY_CONFIG_ENABLE_STORIES_ROOM
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
+import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
+import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.stories.R as storiesR
 
@@ -53,12 +60,15 @@ class StoriesActivity : BaseActivity() {
             )
         }
 
+    private val viewModel by viewModels<StoriesViewModel> { viewModelFactory.create(storiesArgs) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initFragmentFactory()
         super.onCreate(savedInstanceState)
         getData()
         setupViews()
+        observeEvent()
     }
 
     override fun getTheme(): Resources.Theme {
@@ -91,6 +101,9 @@ class StoriesActivity : BaseActivity() {
         _binding = ActivityStoriesBinding.inflate(layoutInflater)
         setContentView(binding.root)
         if (isEnableStoriesRoom()) {
+            binding.vStoriesOnboarding.root.setOnClickListener {
+                binding.vStoriesOnboarding.root.gone()
+            }
             openFragment()
         }
         else finish()
@@ -121,6 +134,17 @@ class StoriesActivity : BaseActivity() {
             classLoader = classLoader,
             bundle = bundle ?: Bundle(),
         )
+    }
+
+    private fun observeEvent() {
+        lifecycleScope.launchWhenCreated {
+            viewModel.storiesEvent.collectLatest { event ->
+                when (event) {
+                    is StoriesUiEvent.OnboardShown -> binding.vStoriesOnboarding.root.showWithCondition(event.needToShow)
+                    else -> {}
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
