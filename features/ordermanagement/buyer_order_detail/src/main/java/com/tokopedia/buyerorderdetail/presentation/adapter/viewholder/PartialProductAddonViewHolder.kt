@@ -9,6 +9,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.util.rotateBackIcon
 import com.tokopedia.order_management_common.util.rotateIcon
 
@@ -43,7 +44,12 @@ class PartialProductAddonViewHolder(
                 isExpand = element.isExpand,
                 totalPriceFmt = element.totalPriceText
             )
+            setupAddOnSummaryIcon(element.addonsLogoUrl)
         }
+    }
+
+    private fun PartialItemBuyerOrderDetailAddonsBinding.setupAddOnSummaryIcon(icon: String) {
+        icBomDetailAddonsIcon.loadImage(icon)
     }
 
     private fun PartialItemBuyerOrderDetailAddonsBinding.setupChevronExpandable(
