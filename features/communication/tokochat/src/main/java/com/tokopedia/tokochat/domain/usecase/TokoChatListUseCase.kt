@@ -70,8 +70,9 @@ class TokoChatListUseCase @Inject constructor(
         scope: ProducerScope<TokoChatResult<List<ConversationsChannel>>>
     ): (List<ConversationsChannel>) -> Unit {
         return { list ->
-            // Set to -1 to mark as no more data
-            lastTimeStamp = list.lastOrNull()?.createdAt ?: -1
+            list.lastOrNull()?.createdAt?.let {
+                lastTimeStamp = it
+            }
             scope.trySend(TokoChatResult.Success(list))
         }
     }
