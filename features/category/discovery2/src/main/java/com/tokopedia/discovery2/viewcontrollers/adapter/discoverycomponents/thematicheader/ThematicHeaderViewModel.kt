@@ -14,8 +14,9 @@ class ThematicHeaderViewModel(
     val position: Int
 ) : DiscoveryBaseViewModel() {
     companion object {
-        private const val FIRST_DATA_POSITION = 1
         private const val THEMATIC_HEADER_MIN_SIZE = 1
+
+        const val FIRST_DATA_POSITION = 1
     }
 
     private val _thematicData: MutableLiveData<Pair<Int, DataItem?>> = MutableLiveData()
@@ -28,10 +29,11 @@ class ThematicHeaderViewModel(
     }
 
     private fun loadThematicHeaderData() {
-        if (component.data?.size.orZero() == THEMATIC_HEADER_MIN_SIZE) {
+        val dataItems = component.data
+        if (dataItems != null && dataItems.size.orZero() == THEMATIC_HEADER_MIN_SIZE) {
             _thematicData.value = Pair(
                 FIRST_DATA_POSITION,
-                component.data?.firstOrNull()
+                dataItems.first()
             )
         }
     }
