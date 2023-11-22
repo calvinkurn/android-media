@@ -48,7 +48,7 @@ class SaldoWithdrawalViewModel @Inject constructor(
                         val isWDAmountGreaterThanRecom = withdrawalAmount > recomAmount
                         val isAutoTopadsActive = topadsAutoTopupRecomData.data.topAdsAutoTopupWithdrawalRecom.data.autoTopUpStatus > Int.ZERO
                         shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.postValue(
-                            Pair(isWDAmountGreaterThanRecom || isAutoTopadsActive, recomAmount.toLong())
+                            Pair(isWDAmountGreaterThanRecom && isAutoTopadsActive, recomAmount.toLong())
                         )
                     }
 
