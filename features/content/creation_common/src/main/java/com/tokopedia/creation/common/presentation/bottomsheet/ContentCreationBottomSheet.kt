@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
 import com.tokopedia.creation.common.di.ContentCreationComponent
+import com.tokopedia.creation.common.di.ContentCreationInjector
 import com.tokopedia.creation.common.di.ContentCreationModule
 import com.tokopedia.creation.common.di.DaggerContentCreationComponent
 import com.tokopedia.creation.common.presentation.components.ContentCreationView
@@ -132,11 +133,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         if (!isAdded) show(fragmentManager, TAG)
     }
 
-    private fun createComponent(): ContentCreationComponent =
-        DaggerContentCreationComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .contentCreationModule(ContentCreationModule(requireContext()))
-            .build()
+    private fun createComponent(): ContentCreationComponent = ContentCreationInjector.get(requireContext())
 
     interface ContentCreationBottomSheetListener {
         fun onCreationItemSelected(data: ContentCreationItemModel)

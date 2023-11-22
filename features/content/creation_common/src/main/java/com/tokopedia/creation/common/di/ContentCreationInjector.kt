@@ -9,9 +9,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 object ContentCreationInjector {
 
     fun get(context: Context): ContentCreationComponent {
-        return DaggerContentCreationComponent.builder()
-            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
-            .contentCreationModule(ContentCreationModule(context))
-            .build()
+        return DaggerContentCreationComponent.factory().create(
+            baseAppComponent = (context.applicationContext as BaseMainApplication).baseAppComponent,
+            context = context
+        )
     }
 }
