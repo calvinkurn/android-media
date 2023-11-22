@@ -13,6 +13,10 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.usecase'
+}
+
 project.ext {
     artifactId = 'usecase'
     groupId = 'com.tokopedia.usecase'
