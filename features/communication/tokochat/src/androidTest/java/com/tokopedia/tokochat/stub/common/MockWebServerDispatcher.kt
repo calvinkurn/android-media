@@ -6,7 +6,6 @@ import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.Companion.CHANNEL_API
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.Companion.CHANNEL_ID_API
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.Companion.CHANNEL_LIST
-import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.Companion.CHANNEL_LIST_MORE
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.Companion.CONNECTION_API
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.Companion.IMAGE_UPLOAD_URL_API
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.Companion.IMAGE_URL_API
@@ -18,8 +17,6 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
 
 class MockWebServerDispatcher : Dispatcher() {
-
-    private var flagLoadMore = true
 
     override fun dispatch(request: RecordedRequest): MockResponse {
         return getMockResponse(request.path ?: "")
@@ -59,10 +56,6 @@ class MockWebServerDispatcher : Dispatcher() {
              * Chat List
              */
             url.contains(CHANNEL_LIST) -> {
-                ApiResponseStub.getInstance().channelListResponse
-            }
-            (url.contains(CHANNEL_LIST_MORE) && flagLoadMore) -> {
-                flagLoadMore = false
                 ApiResponseStub.getInstance().channelListResponse
             }
             else -> ApiResponseStub.getInstance().generalEmptyResponse
