@@ -1,6 +1,5 @@
 package com.tokopedia.catalog.analytics
 
-
 import android.os.Bundle
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.BUSINESS_UNITS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.CURRENT_SITE
@@ -15,12 +14,10 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_EVENT_ACTION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_EVENT_CATEGORY
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_EVENT_LABEL
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_INDEX
-import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_ITEM_BRAND
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_ITEM_CATEGORY
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_ITEM_ID
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_ITEM_LIST
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_ITEM_NAME
-import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_ITEM_VARIANT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_PRICE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_PROMOTIONS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_TRACKER_ID
@@ -39,11 +36,34 @@ object CatalogReimagineDetailAnalytics {
     }
 
     fun sendEventImpressionList(
-        event: String, category: String,
-        action: String, labels: String, trackerId: String = "", userId: String,
+        event: String,
+        category: String,
+        action: String,
+        labels: String,
+        trackerId: String = "",
+        userId: String,
         promotion: List<HashMap<String, String>>
     ) {
+        sendEventImpressionListGeneral(
+            event,
+            category,
+            action,
+            getCatalogEventLabel(labels),
+            trackerId,
+            userId,
+            promotion
+        )
+    }
 
+    fun sendEventImpressionListGeneral(
+        event: String,
+        category: String,
+        action: String,
+        labels: String,
+        trackerId: String = "",
+        userId: String,
+        promotion: List<HashMap<String, String>>
+    ) {
         val bundle = Bundle()
         val promotionBundle = arrayListOf<Bundle>()
         for (item in promotion) {
@@ -71,7 +91,7 @@ object CatalogReimagineDetailAnalytics {
         bundle.putString(KEY_EVENT, event)
         bundle.putString(KEY_EVENT_CATEGORY, category)
         bundle.putString(KEY_EVENT_ACTION, action)
-        bundle.putString(KEY_EVENT_LABEL, getCatalogEventLabel(labels))
+        bundle.putString(KEY_EVENT_LABEL, labels)
         bundle.putString(KEY_TRACKER_ID, trackerId)
         bundle.putString(
             KEY_BUSINESS_UNIT,
@@ -87,12 +107,14 @@ object CatalogReimagineDetailAnalytics {
             promotionBundle
         )
         getTracker().sendEnhanceEcommerceEvent(event, bundle)
-
     }
 
     fun sendEvent(
-        event: String, category: String,
-        action: String, labels: String, trackerId: String = ""
+        event: String,
+        category: String,
+        action: String,
+        labels: String,
+        trackerId: String = ""
     ) {
         HashMap<String, Any>().apply {
             put(KEY_EVENT, event)
@@ -106,7 +128,6 @@ object CatalogReimagineDetailAnalytics {
             getTracker().sendGeneralEvent(it)
         }
     }
-
 
     fun sendEventAtc(
         event: String,

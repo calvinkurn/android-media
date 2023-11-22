@@ -43,6 +43,8 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CATEGORY_CAT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_CHANGE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_SEE_MORE_COMPARISON
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COLUMN_INFO_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_VIDEO_BANNER_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_VIDEO_WIDGET
@@ -61,6 +63,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_V
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_ONE_BY_ONE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_THREE_BY_FOUR
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_COLUMN_INFO
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_DOUBLE_BANNER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_EXPERT_REVIEW
@@ -643,7 +646,7 @@ class CatalogDetailPageFragment :
             promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_IMPRESSION_VIDEO_BANNER_WIDGET
             list.add(promotions)
         }
-        CatalogReimagineDetailAnalytics.sendEventImpressionList(
+        CatalogReimagineDetailAnalytics.sendEventImpressionListGeneral(
             event = EVENT_VIEW_ITEM,
             action = EVENT_IMPRESSION_VIDEO_WIDGET,
             category = EVENT_CATEGORY_CATALOG_PAGE,
@@ -840,5 +843,29 @@ class CatalogDetailPageFragment :
         columnData: List<ColumnedInfoUiModel.ColumnData>
     ) {
         ColumnedInfoBottomSheet.show(childFragmentManager, sectionTitle, columnData)
+    }
+
+    override fun onColumnedInfoImpression(columnedInfoUiModel: ColumnedInfoUiModel) {
+        val catalogDetail = viewModel.catalogDetailDataModel.value as? Success<CatalogDetailUiModel>
+        val catalogTitle = catalogDetail?.data?.navigationProperties?.title.orEmpty()
+        val list = arrayListOf<HashMap<String, String>>()
+        columnedInfoUiModel.widgetContent.rowData.forEachIndexed { index, _ ->
+            val promotions = hashMapOf<String, String>()
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = catalogTitle
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
+            promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
+            promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET
+            list.add(promotions)
+        }
+
+        CatalogReimagineDetailAnalytics.sendEventImpressionListGeneral(
+            event = EVENT_VIEW_ITEM,
+            action = EVENT_IMPRESSION_COLUMN_INFO_WIDGET,
+            category = EVENT_CATEGORY_CATALOG_PAGE,
+            labels = "$catalogTitle - $catalogId",
+            trackerId = TRACKER_ID_IMPRESSION_COLUMN_INFO,
+            userId = userSession.userId,
+            promotion = list
+        )
     }
 }
