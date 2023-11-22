@@ -28,7 +28,7 @@ data class TopAdsSellerGroupPerformanceResponse(
             val impressionGrowth: Int = 0,
             @SerializedName("percent_impression_growth")
             val percentImpressionGrowth: Int = 0,
-            @SerializedName("percent_roas_growth")
+            @SerializedName("percent_direct_roas_growth")
             val percentRoasGrowth: Int = 0,
             @SerializedName("percent_total_sold_growth")
             val percentTotalSoldGrowth: Int = 0,

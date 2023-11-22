@@ -19,7 +19,8 @@
       "eventAction": "impression on category widget banner",
       "sessionIris": ".*",
       "eventLabel": ".*",
-      "channelId": ".*"
+      "channelId": ".*",
+      "hits_time": ".*"
     },
     {
       "businessUnit": "home & browse",

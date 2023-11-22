@@ -63,7 +63,8 @@
       "channelId": ".*",
       "sessionIris": ".*",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "hits_time": ".*"
     },
     {
       "event": "select_content",

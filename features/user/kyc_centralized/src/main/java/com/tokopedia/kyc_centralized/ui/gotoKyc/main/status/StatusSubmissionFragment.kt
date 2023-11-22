@@ -33,6 +33,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -211,7 +212,8 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                     goToTransparentActivityToReVerify()
                 }
                 else -> {
-                    val activityResult = if (status == KycStatus.VERIFIED.code.toString() && callback.isNotEmpty()) {
+                    val activityResult = if ((status == KycStatus.VERIFIED.code.toString() ||
+                            status == KycStatus.PENDING.code.toString()) && callback.isNotEmpty()) {
                         KYCConstant.ActivityResult.LAUNCH_CALLBACK
                     } else {
                         Activity.RESULT_OK
@@ -324,11 +326,24 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                         HtmlCompat.FROM_HTML_MODE_COMPACT
                     )
                 }
-            btnPrimary.text = if (sourcePage.isEmpty()) {
-                getString(R.string.goto_kyc_back_to_source)
-            } else {
-                getString(R.string.goto_kyc_back_with_source, sourcePage)
-            }
+            btnPrimary.text =
+                when {
+                    callback.isNotEmpty() -> {
+                        if (sourcePage.isEmpty()) {
+                            getString(R.string.goto_kyc_next_to_callback)
+                        } else {
+                            getString(R.string.goto_kyc_next_to_callback_with_source, sourcePage)
+                        }
+                    }
+                    else -> {
+                        if (sourcePage.isEmpty()) {
+                            getString(R.string.goto_kyc_back_to_source)
+                        } else {
+                            getString(R.string.goto_kyc_back_with_source, sourcePage)
+                        }
+                    }
+                }
+
             btnSecondary.text = getString(R.string.goto_kyc_status_pending_refresh_status)
             btnSecondary.show()
 
@@ -356,10 +371,11 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     }
 
     private fun goToTokopediaCare() {
+        val articleId = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) ARTICLE_ID_STAGING else ARTICLE_ID_PRODUCTION
         RouteManager.route(
             context,
             ApplinkConstInternalGlobal.WEBVIEW,
-            TokopediaUrl.getInstance().WEB.plus(PATH_TOKOPEDIA_CARE)
+            TokopediaUrl.getInstance().WEB.plus(PATH_TOKOPEDIA_CARE).plus(articleId).plus(PARAM_TOKOPEDIA_CARE)
         )
     }
 
@@ -387,7 +403,10 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        private const val PATH_TOKOPEDIA_CARE = "help/article/a-3881?nref='goto-kyc'"
+        private const val ARTICLE_ID_STAGING = "2443"
+        private const val ARTICLE_ID_PRODUCTION = "3881"
+        private const val PARAM_TOKOPEDIA_CARE = "?nref='goto-kyc'"
+        private const val PATH_TOKOPEDIA_CARE = "help/article/a-"
         private const val TAG_BOTTOM_SHEET_DETAIL_BENEFIT = "tag bottom sheet detail benefit"
     }
 }

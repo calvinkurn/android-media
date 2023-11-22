@@ -61,7 +61,8 @@
       }],
       "eventLabel": "",
       "channelId": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "hits_time": ".*"
     },
     {
       "eventCategory": "homepage",
@@ -103,7 +104,8 @@
       "eventAction": "impression on banner dynamic channel left carousel",
       "sessionIris": ".*",
       "eventLabel": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "hits_time": ".*"
     },
     {
       "businessUnit": "home & browse",

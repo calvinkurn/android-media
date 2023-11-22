@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -30,17 +31,23 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
         private const val VALUE_ACTION_CLICK_CHANNEL = "click - sharing channel"
         private const val VALUE_ACTION_VIEW_PRODUCT_LIST = "view on share product list sheet"
         private const val VALUE_ACTION_CLICK_CLOSE_SHARE_PRODUCT_LIST = "click - close share product list sheet"
+        private const val VALUE_ACTION_VIEW_SHARE_WIDGET = "impression - new share button"
+        const val VALUE_ACTION_CLICK_SHARE_WIDGET = "click - new share button"
+        const val VALUE_ACTION_CLICK_DIRECT_CHANNEL = "click - direct sharing channel"
 
         private const val VALUE_CATEGORY_THANKYOU = "share - thank you page"
+        const val VALUE_CATEGORY_PRODUCT_DETAIL_PAGE = "product detail page"
 
         private const val VALUE_EVENT_VIEW = "view_item"
-        private const val VALUE_EVENT_CLICK = "clickCommunication"
-        private const val VALUE_EVENT_VIEW_COMMUNICATION = "viewCommunicationIris"
+        const val VALUE_EVENT_CLICK = "clickCommunication"
+        const val VALUE_EVENT_VIEW_COMMUNICATION = "viewCommunicationIris"
         private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
-        private const val VALUE_BUSINESS_UNIT = "sharingexperience"
+        const val VALUE_BUSINESS_UNIT = "sharingexperience"
 
         private const val VALUE_TRACKER_ID_VIEW_AFFILIATE = "36616"
         private const val VALUE_TRACKER_ID_CLICK_AFFILIATE = "36617"
+        private const val VALUE_TRACKER_ID_VIEW_SHARE_WIDGET = "48000"
+
         private const val VALUE_TRACKER_ID_45899 = "45899"
         private const val VALUE_TRACKER_ID_45898 = "45898"
         private const val VALUE_TRACKER_ID_45900 = "45900"
@@ -239,5 +246,21 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
             this[EVENT_CURRENT_SITE] = VALUE_CURRENT_SITE
             this[EVENT_USER_ID] = userSession.userId
         }
+    }
+
+    fun viewShareWidget(shareIconId: String, productId: String) {
+        val buttonType = if (shareIconId == UniversalShareWidget.EMPTY_ATTRS) {
+            "share button"
+        } else {
+            shareIconId
+        }
+        trackShare(
+            eventLabel = "$buttonType - $productId",
+            event = VALUE_EVENT_VIEW_COMMUNICATION,
+            eventCategory = VALUE_CATEGORY_PRODUCT_DETAIL_PAGE,
+            eventAction = VALUE_ACTION_VIEW_SHARE_WIDGET,
+            trackerId = VALUE_TRACKER_ID_VIEW_SHARE_WIDGET,
+            currentSite = VALUE_CURRENT_SITE
+        )
     }
 }

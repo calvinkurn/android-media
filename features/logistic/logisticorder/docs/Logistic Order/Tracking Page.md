@@ -51,7 +51,7 @@ product, we will solve buyer pain points where the buyer does not need to meet t
 
 ### UI Page
 
-![](../res/trackingpage/3.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticorder/trackingpage/3.png)
 
 ## Navigation
 
@@ -60,7 +60,7 @@ product, we will solve buyer pain points where the buyer does not need to meet t
 
 one example of entry point of tracking page is Detail Pesanan with click in Lacak Button
 
-![](../res/trackingpage/Screenshot_1680145248.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticorder/trackingpage/Screenshot_1680145248.png)
 
 ## Tech Stack
 

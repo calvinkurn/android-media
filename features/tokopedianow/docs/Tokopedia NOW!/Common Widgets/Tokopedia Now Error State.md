@@ -1,4 +1,4 @@
-![image](../../res/tokopedia_now_error_state.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_error_state.png)
 
 <!--left header table-->
 | **Type Factory** | `TokoNowServerErrorTypeFactory` |
