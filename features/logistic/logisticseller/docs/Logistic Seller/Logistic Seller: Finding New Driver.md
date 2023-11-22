@@ -39,16 +39,16 @@ Create a new *Cari Driver Baru* bottomsheet for the seller to finding new driver
 
 Entry point to show bottomsheet from three dots option on SOM Detail
 
-![](../res/findingnewdriver/Screen%20Shot%202022-12-13%20at%2008.36.39.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticseller/findingnewdriver/Screen%20Shot%202022-12-13%20at%2008.36.39.png)
 
   
 if the request finding new driver is successful it will display a success dialog
 
-![](../res/findingnewdriver/Screen%20Shot%202022-12-13%20at%2008.37.44.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticseller/findingnewdriver/Screen%20Shot%202022-12-13%20at%2008.37.44.png)
 
 but if the request is failed it will display a failed dialog
 
-![](../res/findingnewdriver/Screen%20Shot%202022-12-13%20at%2008.38.15.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticseller/findingnewdriver/Screen%20Shot%202022-12-13%20at%2008.38.15.png)
 
 ## How-to
 

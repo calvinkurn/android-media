@@ -17,7 +17,7 @@ class InspirationWidgetPresenterDelegate @Inject constructor() {
     }
 
     fun processInspirationWidgetPosition(
-        productList: List<Visitable<*>>,
+        totalProductItem: Int,
         action: (Int, InspirationWidgetVisitable) -> Unit,
     ) {
         if (inspirationWidgetVisitable.isEmpty()) return
@@ -32,7 +32,7 @@ class InspirationWidgetPresenterDelegate @Inject constructor() {
             }
 
             val widgetPosition = data.data.position
-            if (widgetPosition <= productList.size) {
+            if (widgetPosition <= totalProductItem) {
                 try {
                     action(widgetPosition, data)
 

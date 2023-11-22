@@ -3,7 +3,6 @@ package com.tokopedia.loyalty.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.loyalty.di.qualifier.DigitalQualifier;
 import com.tokopedia.loyalty.di.qualifier.LoyaltyModuleQualifier;
 import com.tokopedia.loyalty.di.qualifier.PromoQualifier;
@@ -12,19 +11,14 @@ import com.tokopedia.loyalty.di.qualifier.TokopointQualifier;
 import com.tokopedia.loyalty.di.qualifier.TxPaymentQualifier;
 import com.tokopedia.loyalty.domain.apiservice.DigitalApi;
 import com.tokopedia.loyalty.domain.apiservice.DigitalHmacAuthInterceptor;
-import com.tokopedia.loyalty.domain.apiservice.PromoApi;
 import com.tokopedia.loyalty.domain.apiservice.RetrofitFactory;
 import com.tokopedia.loyalty.domain.apiservice.TXPaymentVoucherApi;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointApi;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointAuthInterceptor;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointGqlApi;
-import com.tokopedia.loyalty.domain.repository.IPromoRepository;
-import com.tokopedia.loyalty.domain.repository.IPromoResponseMapper;
 import com.tokopedia.loyalty.domain.repository.ITokoPointDBService;
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
 import com.tokopedia.loyalty.domain.repository.ITokoPointResponseMapper;
-import com.tokopedia.loyalty.domain.repository.PromoRepository;
-import com.tokopedia.loyalty.domain.repository.PromoResponseMapper;
 import com.tokopedia.loyalty.domain.repository.TokoPointRepository;
 import com.tokopedia.loyalty.domain.repository.TokoPointResponseMapper;
 import com.tokopedia.network.NetworkRouter;
@@ -33,6 +27,7 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
@@ -49,11 +44,6 @@ public class ServiceApiModule {
     @Provides
     ITokoPointResponseMapper provideITokoPointResponseMapper() {
         return new TokoPointResponseMapper();
-    }
-
-    @Provides
-    IPromoResponseMapper provideIPromoResponseMapper() {
-        return new PromoResponseMapper();
     }
 
     @Provides
@@ -162,11 +152,6 @@ public class ServiceApiModule {
     }
 
     @Provides
-    PromoApi providePromoApi(@PromoQualifier Retrofit retrofit){
-        return retrofit.create(PromoApi.class);
-    }
-
-    @Provides
     TXPaymentVoucherApi provideTxPaymentVoucherApi(@TxPaymentQualifier Retrofit retrofit){
         return retrofit.create(TXPaymentVoucherApi.class);
     }
@@ -194,11 +179,5 @@ public class ServiceApiModule {
     @Provides
     TokoPointApi provideTokopointApi(@TokopointQualifier Retrofit retrofit){
         return retrofit.create(TokoPointApi.class);
-    }
-
-    @Provides
-    IPromoRepository provideIPromoRepository(PromoApi promoApi,
-                                             IPromoResponseMapper iPromoResponseMapper) {
-        return new PromoRepository(promoApi, iPromoResponseMapper);
     }
 }

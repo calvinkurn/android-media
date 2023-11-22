@@ -203,7 +203,7 @@ class RechargeCCFragment :
         rechargeCCViewModel.getDppoConsent(categoryId.toIntOrZero())
 
         binding?.ccWidgetClientNumber?.run {
-            setInputFieldType(InputFieldType.CreditCard)
+            setInputFieldType(InputFieldType.CreditCard, isGoogleWalletAutofillEnabled())
             setInputFieldStaticLabel(context.getString(R.string.cc_label_input_number))
             setInputFieldListener(this@RechargeCCFragment)
             setFilterChipListener(this@RechargeCCFragment)
@@ -219,7 +219,7 @@ class RechargeCCFragment :
     override fun onAttachFragment(childFragment: Fragment) {
         if (childFragment is RechargeCCRecommendationFragment) {
             childFragment.setListener(this)
-        } else if(childFragment is RechargeCCPromoFragment) {
+        } else if (childFragment is RechargeCCPromoFragment) {
             childFragment.setListener(this)
         }
     }
@@ -1035,6 +1035,13 @@ class RechargeCCFragment :
 
     private fun isEnablePromoRecomSection(): Boolean {
         return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_CC_PROMO_RECOM, true)
+    }
+
+    private fun isGoogleWalletAutofillEnabled(): Boolean {
+        return remoteConfig.getBoolean(
+            RemoteConfigKey.ANDROID_CREDIT_CARD_ENABLE_AUTOFILL_GOOGLE_WALLET,
+            true
+        )
     }
 
     private fun Menu.hideConsentIcon() {

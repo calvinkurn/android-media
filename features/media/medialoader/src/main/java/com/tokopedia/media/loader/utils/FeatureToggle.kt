@@ -48,11 +48,13 @@ class FeatureToggleManager : FeatureToggle {
         private const val EXPOSE_RESPONSE_HEADER = "android_media_loader_expose_header"
         private const val WEBP_SUPPORT = "android_webp"
 
-        private var toggle: FeatureToggle? = null
+        @Volatile private var toggle: FeatureToggle? = null
 
         fun instance(): FeatureToggle {
-            return toggle ?: FeatureToggleManager().also {
-                toggle = it
+            return synchronized(this) {
+                toggle ?: FeatureToggleManager().also {
+                    toggle = it
+                }
             }
         }
     }

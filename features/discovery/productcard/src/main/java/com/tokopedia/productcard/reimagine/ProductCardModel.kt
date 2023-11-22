@@ -33,6 +33,9 @@ data class ProductCardModel(
     fun ribbon(): LabelGroup? =
         labelGroup(LABEL_REIMAGINE_RIBBON)?.takeIf { it.hasTitle() }
 
+    fun labelProductOffer(): LabelGroup? =
+        labelGroup(LABEL_REIMAGINE_PRODUCT_OFFER)?.takeIf(LabelGroup::hasTitle)
+
     fun hasRibbon() = ribbon() != null
 
     private fun labelGroup(position: String) = labelGroupList.find { it.position == position }

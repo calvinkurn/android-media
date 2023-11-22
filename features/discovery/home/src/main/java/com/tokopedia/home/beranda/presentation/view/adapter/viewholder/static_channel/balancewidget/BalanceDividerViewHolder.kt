@@ -24,9 +24,9 @@ class BalanceDividerViewHolder(
 
     override fun bind(model: BalanceAtf2DividerModel?, listener: HomeCategoryListener?) {
         if ((itemView.context.isDarkMode() && homeThematicUtil.isDefault()) || homeThematicUtil.isDarkMode()) {
-            binding?.dividerBalance?.setBackgroundColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN100))
+            binding?.dividerBalance?.setBackgroundColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN100, itemView.context))
         } else {
-            binding?.dividerBalance?.setBackgroundColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN50))
+            binding?.dividerBalance?.setBackgroundColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN50, itemView.context))
         }
     }
 

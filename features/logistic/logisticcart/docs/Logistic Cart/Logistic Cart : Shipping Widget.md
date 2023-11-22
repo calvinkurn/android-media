@@ -39,30 +39,30 @@ This custom view has functionality to select shipping `duration` and `courier` w
 
 - No pinpoints yet
 
-![](../res/shippingwidget/no_pinpoint.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingwidget/no_pinpoint.png)
 - Not selected delivery yet
 
-![](../res/shippingwidget/no_selected_delivery.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingwidget/no_selected_delivery.png)
 
 - Product from tokonow
 
-![](../res/shippingwidget/tokonow.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingwidget/tokonow.png)
 
 - Use Bebas Ongkir
 
-![](../res/shippingwidget/bebas_ongkir.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingwidget/bebas_ongkir.png)
 
 - Use delivery arrived 4 hours (Dilayani Tokopedia)
 
-![](../res/shippingwidget/dilayani_tokopedia.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingwidget/dilayani_tokopedia.png)
 
 - Normal Shipping
 
-![](../res/shippingwidget/normal_shipping.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingwidget/normal_shipping.png)
 
 ## Flow Diagram
 
-![](../res/shippingwidget/shipping_widget_checkout_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingwidget/shipping_widget_checkout_drawio.png)
 
 ## How-to
 

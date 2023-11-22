@@ -7,10 +7,6 @@ interface ChatListContract {
     interface TabFragment {
         fun notifyViewCreated()
         fun loadNotificationCounter()
-        fun increaseUserNotificationCounter()
-        fun increaseSellerNotificationCounter()
-        fun decreaseUserNotificationCounter()
-        fun decreaseSellerNotificationCounter()
         fun showSearchOnBoardingTooltip()
         fun closeSearchTooltip()
     }

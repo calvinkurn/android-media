@@ -83,7 +83,6 @@ class CheckoutOrderViewHolder(
         binding.shippingWidget.hideTradeInShippingInfo()
 
         if (order.isError) {
-            // todo custom error wording
             binding.shippingWidget.renderErrorCourierState(
                 ShippingWidgetUiModel(
                     currentAddress = RecipientAddressModel(),
@@ -122,7 +121,6 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
                 binding.shippingWidget.showContainerShippingExperience()
-                // todo selly
                 binding.shippingWidget.renderScheduleDeliveryWidget(
                     ShippingWidgetUiModel(
                         // Bebas ongkir & NOW Shipment
@@ -155,7 +153,6 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
                 binding.shippingWidget.showContainerShippingExperience()
-                // todo now
                 binding.shippingWidget.renderSingleShippingCourier(
                     ShippingWidgetUiModel(
                         // Bebas ongkir & NOW Shipment
