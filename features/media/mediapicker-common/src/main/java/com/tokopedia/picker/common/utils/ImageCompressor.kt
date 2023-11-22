@@ -32,7 +32,10 @@ object ImageCompressor {
     fun compress(
         context: Context,
         imagePath: String,
-        subDirectory: String? = null
+        subDirectory: String? = null,
+        maxWidth: Float = MAX_WIDTH,
+        maxHeight: Float = MAX_HEIGHT,
+        quality: Int = QUALITY
     ): Uri? {
         val file = File(imagePath)
         val fileAsUri = Uri.fromFile(file)
@@ -43,10 +46,10 @@ object ImageCompressor {
             context,
             fileAsUri,
             compressFormat,
-            MAX_WIDTH,
-            MAX_HEIGHT,
+            maxWidth,
+            maxHeight,
             useMaxScale,
-            QUALITY,
+            quality,
             MIN_WIDTH,
             MIN_HEIGHT,
             subDirectory

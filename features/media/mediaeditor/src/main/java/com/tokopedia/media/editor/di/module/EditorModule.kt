@@ -9,6 +9,7 @@ import com.tokopedia.media.editor.data.repository.*
 import com.tokopedia.media.editor.data.FeatureToggleManager
 import com.tokopedia.media.editor.data.FeatureToggleManagerImpl
 import com.tokopedia.picker.common.cache.*
+import com.tokopedia.picker.common.utils.ImageCompressor
 import dagger.Binds
 import dagger.Module
 
@@ -116,4 +117,10 @@ abstract class EditorModule {
     internal abstract fun provideFeatureToggleManager(
         featureToggleManager: FeatureToggleManagerImpl
     ): FeatureToggleManager
+
+    @Binds
+    @ActivityScope
+    internal abstract fun provideEditorImageCompressor(
+        imageCompressor: EditorImageCompressionRepositoryImpl
+    ): EditorImageCompressionRepository
 }
