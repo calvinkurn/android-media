@@ -70,10 +70,10 @@ class GetProductListUseCase(
                 GoodsFilterInput(FILTER_ID_KEYWORD, listOf(filter.fkeyword)),
             ).apply {
                 if (filter.fcategory != Int.ZERO) {
-                    GoodsFilterInput(FILTER_ID_CATEGORY, listOf(filter.fcategory.toString()))
+                    add(GoodsFilterInput(FILTER_ID_CATEGORY, listOf(filter.fcategory.toString())))
                 }
                 if (filter.fmenu?.isNotEmpty() == true) {
-                    GoodsFilterInput(FILTER_ID_MENU, listOf(filter.fmenu.orEmpty()))
+                    add(GoodsFilterInput(FILTER_ID_MENU, listOf(filter.fmenu.orEmpty())))
                 }
             }
         }
