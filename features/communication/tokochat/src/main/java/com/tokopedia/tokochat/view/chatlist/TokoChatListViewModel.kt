@@ -1,6 +1,5 @@
 package com.tokopedia.tokochat.view.chatlist
 
-import android.content.Intent
 import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.channel.ConversationsChannel
@@ -64,9 +63,6 @@ class TokoChatListViewModel @Inject constructor(
     private fun Flow<TokoChatListAction>.process() {
         onEach {
             when (it) {
-                is TokoChatListAction.NavigateWithIntent -> {
-                    navigateWithIntent(it.intent)
-                }
                 is TokoChatListAction.NavigateToPage -> {
                     navigateToPage(it.applink)
                 }
@@ -196,24 +192,10 @@ class TokoChatListViewModel @Inject constructor(
         }
     }
 
-    private fun navigateWithIntent(intent: Intent) {
-        viewModelScope.launch {
-            _navigationUiState.emit(
-                TokoChatListNavigationUiState(
-                    intent = intent,
-                    applink = ""
-                )
-            )
-        }
-    }
-
     private fun navigateToPage(applink: String) {
         viewModelScope.launch {
             _navigationUiState.emit(
-                TokoChatListNavigationUiState(
-                    intent = null,
-                    applink = applink
-                )
+                TokoChatListNavigationUiState(applink = applink)
             )
         }
     }

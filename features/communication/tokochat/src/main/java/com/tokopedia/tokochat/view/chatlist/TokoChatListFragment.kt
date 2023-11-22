@@ -162,14 +162,9 @@ class TokoChatListFragment @Inject constructor(
 
     private suspend fun observeNavigationUiState() {
         viewModel.navigationUiState.collectLatest {
-            when {
-                (it.intent != null) -> {
-                    startActivity(it.intent)
-                }
-                (it.applink.isNotBlank() && context != null) -> {
-                    val intent = RouteManager.getIntent(context, it.applink)
-                    startActivity(intent)
-                }
+            if (it.applink.isNotBlank() && context != null) {
+                val intent = RouteManager.getIntent(context, it.applink)
+                startActivity(intent)
             }
         }
     }
