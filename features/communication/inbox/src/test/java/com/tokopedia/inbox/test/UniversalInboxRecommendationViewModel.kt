@@ -4,17 +4,20 @@ package com.tokopedia.inbox.test
 import app.cash.turbine.test
 import com.tokopedia.inbox.base.UniversalInboxViewModelTestFixture
 import com.tokopedia.inbox.universalinbox.util.Result
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.INBOX_ADS_REFRESH_KEY
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxAction
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxProductRecommendationUiState
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import io.mockk.coEvery
+import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
+import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture() {
@@ -276,6 +279,150 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 viewModel.processAction(UniversalInboxAction.LoadNextPage)
                 // Then update state
                 assertLoadingState(awaitItem())
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `auto scroll recommendation, update state to true `() {
+        runTest {
+            // Given
+            val dummyCurrentPos = 1
+            val dummyTotalItem = 10
+            every {
+                abTestPlatform.getString(any(), any())
+            } returns INBOX_ADS_REFRESH_KEY
+
+            viewModel.autoScrollUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(
+                    UniversalInboxAction.SaveUserScrollState(dummyCurrentPos, dummyTotalItem)
+                )
+                viewModel.processAction(
+                    UniversalInboxAction.AutoScrollRecommendation
+                )
+
+                skipItems(2) // initial & save state value
+
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(true, updatedValue.shouldScroll)
+                assertEquals(dummyCurrentPos, updatedValue.currentPosition)
+                assertEquals(dummyTotalItem, updatedValue.totalItem)
+            }
+        }
+    }
+
+    @Test
+    fun `auto scroll recommendation more than total item, update state to false `() {
+        runTest {
+            // Given
+            val dummyCurrentPos = 8
+            val dummyTotalItem = 10
+            every {
+                abTestPlatform.getString(any(), any())
+            } returns INBOX_ADS_REFRESH_KEY
+
+            viewModel.autoScrollUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(
+                    UniversalInboxAction.SaveUserScrollState(dummyCurrentPos, dummyTotalItem)
+                )
+                viewModel.processAction(
+                    UniversalInboxAction.AutoScrollRecommendation
+                )
+
+                skipItems(1) // initial
+
+                // Then
+                val updatedValue = awaitItem() // same as save state value
+                assertEquals(false, updatedValue.shouldScroll)
+                assertEquals(dummyCurrentPos, updatedValue.currentPosition)
+                assertEquals(dummyTotalItem, updatedValue.totalItem)
+            }
+        }
+    }
+
+    @Test
+    fun `auto scroll recommendation with rollence off, reset state `() {
+        runTest {
+            // Given
+            val dummyCurrentPos = 1
+            val dummyTotalItem = 10
+            every {
+                abTestPlatform.getString(any(), any())
+            } returns ""
+
+            viewModel.autoScrollUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(
+                    UniversalInboxAction.SaveUserScrollState(dummyCurrentPos, dummyTotalItem)
+                )
+                viewModel.processAction(
+                    UniversalInboxAction.AutoScrollRecommendation
+                )
+
+                skipItems(2) // initial & save state value
+
+                // Then
+                val value = awaitItem()
+                assertEquals(false, value.shouldScroll)
+                assertEquals(-1, value.currentPosition)
+                assertEquals(0, value.totalItem)
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `save user scroll state, update auto scroll ui state`() {
+        runTest {
+            // Given
+            val dummyCurrentPos = 1
+            val dummyTotalItem = 10
+            viewModel.autoScrollUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(
+                    UniversalInboxAction.SaveUserScrollState(dummyCurrentPos, dummyTotalItem)
+                )
+
+                // Then
+                val initialValue = awaitItem()
+                assertEquals(false, initialValue.shouldScroll)
+                assertEquals(-1, initialValue.currentPosition)
+                assertEquals(0, initialValue.totalItem)
+
+                val updatedValue = awaitItem()
+                assertEquals(false, updatedValue.shouldScroll)
+                assertEquals(dummyCurrentPos, updatedValue.currentPosition)
+                assertEquals(dummyTotalItem, updatedValue.totalItem)
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `reset user scroll state, auto scroll ui state reset`() {
+        runTest {
+            // Given
+            viewModel.autoScrollUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(UniversalInboxAction.ResetUserScrollState)
+
+                // Then
+                val initialValue = awaitItem()
+                assertEquals(false, initialValue.shouldScroll)
+                assertEquals(-1, initialValue.currentPosition)
+                assertEquals(0, initialValue.totalItem)
 
                 cancelAndConsumeRemainingEvents()
             }
