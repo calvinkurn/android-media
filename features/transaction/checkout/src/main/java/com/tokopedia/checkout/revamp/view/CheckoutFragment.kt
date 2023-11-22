@@ -1930,6 +1930,7 @@ class CheckoutFragment :
                 ChosenAddress(
                     ChosenAddress.MODE_ADDRESS,
                     locationDataModel.addrId,
+                    locationDataModel.city,
                     locationDataModel.district,
                     locationDataModel.postalCode,
                     if (locationDataModel.latitude.isNotEmpty() &&
@@ -1939,6 +1940,8 @@ class CheckoutFragment :
                     } else {
                         ""
                     },
+                    locationDataModel.latitude,
+                    locationDataModel.longitude,
                     ChosenAddressTokonow(
                         lca.shop_id,
                         lca.warehouse_id,
@@ -1951,6 +1954,7 @@ class CheckoutFragment :
                 ChosenAddress(
                     ChosenAddress.MODE_ADDRESS,
                     recipientAddressModel.id,
+                    recipientAddressModel.cityId,
                     recipientAddressModel.destinationDistrictId,
                     recipientAddressModel.postalCode,
                     if (recipientAddressModel.latitude.isNotEmpty() &&
@@ -1960,6 +1964,8 @@ class CheckoutFragment :
                     } else {
                         ""
                     },
+                    recipientAddressModel.latitude,
+                    recipientAddressModel.longitude,
                     ChosenAddressTokonow(
                         lca.shop_id,
                         lca.warehouse_id,
