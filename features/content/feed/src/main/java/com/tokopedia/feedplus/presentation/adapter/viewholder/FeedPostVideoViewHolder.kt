@@ -266,8 +266,6 @@ class FeedPostVideoViewHolder(
                 addAll(payloads)
                 if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
                 if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(scrollingPayload)
-                if (feedPayloads.payloads.contains(FEED_VIDEO_PRODUCT_ICON_ANIM_PAUSE)) add(FEED_VIDEO_PRODUCT_ICON_ANIM_PAUSE)
-                if (feedPayloads.payloads.contains(FEED_VIDEO_PRODUCT_ICON_ANIM_RESUME)) add(FEED_VIDEO_PRODUCT_ICON_ANIM_RESUME)
             }
             bind(item.data as FeedCardVideoContentModel, newPayloads)
         }
