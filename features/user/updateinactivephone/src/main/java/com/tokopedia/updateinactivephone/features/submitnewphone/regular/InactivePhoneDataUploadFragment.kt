@@ -82,6 +82,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
                 when (it) {
                     is Success -> {
                         if (it.data.validation.isSuccess) {
+                            hideLoading()
                             goToVerification(viewBinding?.textPhoneNumber?.text.orEmpty())
                         } else {
                             hideLoading()
