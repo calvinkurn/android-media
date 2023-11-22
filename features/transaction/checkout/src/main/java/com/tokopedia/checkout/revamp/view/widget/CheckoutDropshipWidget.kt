@@ -124,6 +124,7 @@ class CheckoutDropshipWidget : ConstraintLayout {
     private fun showDetailDropship() {
         binding?.tfDropshipName?.apply {
             visible()
+            isInputError = false
             editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -153,6 +154,7 @@ class CheckoutDropshipWidget : ConstraintLayout {
         }
         binding?.tfDropshipPhone?.apply {
             visible()
+            isInputError = false
             editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -162,9 +164,7 @@ class CheckoutDropshipWidget : ConstraintLayout {
                     if (text?.toString()?.isEmpty() == true) {
                         binding?.tfDropshipPhone?.isInputError = true
                         binding?.tfDropshipPhone?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_empty))
-                    } else if (text?.toString()?.isNotEmpty() == true &&
-                        !matcher.matches()
-                    ) {
+                    } else if (text?.toString()?.isNotEmpty() == true && !matcher.matches()) {
                         binding?.tfDropshipPhone?.isInputError = true
                         binding?.tfDropshipPhone?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_invalid))
                     } else if (text?.toString()?.isNotEmpty() == true &&
@@ -186,6 +186,10 @@ class CheckoutDropshipWidget : ConstraintLayout {
 
                 override fun afterTextChanged(p0: Editable?) {}
             })
+
+            editText.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) editText.requestFocus()
+            }
         }
     }
 
@@ -268,7 +272,7 @@ class CheckoutDropshipWidget : ConstraintLayout {
     companion object {
         private const val DROPSHIPPER_MIN_NAME_LENGTH = 3
         private const val DROPSHIPPER_MAX_NAME_LENGTH = 100
-        private const val DROPSHIPPER_MIN_PHONE_LENGTH = 6
+        private const val DROPSHIPPER_MIN_PHONE_LENGTH = 8
         private const val DROPSHIPPER_MAX_PHONE_LENGTH = 20
         private const val PHONE_NUMBER_REGEX_PATTERN = "\\d+"
     }

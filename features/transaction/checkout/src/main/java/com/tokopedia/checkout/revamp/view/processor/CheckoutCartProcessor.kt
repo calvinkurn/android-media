@@ -15,8 +15,6 @@ import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressRequest
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
-import com.tokopedia.checkout.revamp.utils.CheckoutConsts.KEY_DROPSHIP_NAME
-import com.tokopedia.checkout.revamp.utils.CheckoutConsts.KEY_DROPSHIP_PHONE
 import com.tokopedia.checkout.revamp.view.firstOrNullInstanceOf
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
@@ -384,18 +382,17 @@ class CheckoutCartProcessor @Inject constructor(
         }
     }
 
-    fun validateDropship(listData: List<CheckoutItem>): Pair<Int, List<Pair<String, Boolean>>> {
+    fun validateDropship(listData: List<CheckoutItem>): Int {
         listData.filterIsInstance<CheckoutOrderModel>().forEachIndexed { index, it ->
             if (it.useDropship) {
-                val listOfDropship = arrayListOf<Pair<String, Boolean>>()
-                if (it.dropshipName.isEmpty() || !it.isDropshipNameValid) {
-                    listOfDropship.add(Pair(KEY_DROPSHIP_NAME, false))
-                } else if (it.dropshipPhone.isEmpty() && !it.isDropshipPhoneValid) {
-                    listOfDropship.add(Pair(KEY_DROPSHIP_PHONE, false))
+                if (it.dropshipName.isEmpty() || it.dropshipPhone.isEmpty() ||
+                    !it.isDropshipNameValid || !it.isDropshipPhoneValid
+                ) {
+                    return index
                 }
             }
         }
-        return Pair(-1, emptyList())
+        return -1
     }
 }
 
