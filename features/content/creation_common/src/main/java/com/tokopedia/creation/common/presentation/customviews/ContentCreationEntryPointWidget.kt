@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.AbstractComposeView
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
@@ -203,7 +204,11 @@ fun ContentCreationEntryPointComponent(
                 .padding(vertical = 8.dp, horizontal = 2.dp)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .border(1.dp, Color(0x40AAB4C8), RoundedCornerShape(12.dp))
+                .border(
+                    1.dp,
+                    colorResource(id = creationcommonR.color.dms_static_creation_entry_point_border),
+                    RoundedCornerShape(12.dp)
+                )
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
