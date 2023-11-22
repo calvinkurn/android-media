@@ -8,6 +8,7 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
@@ -19,6 +20,7 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.productcard.ATCNonVariantListener
@@ -99,15 +101,23 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             }
             masterProductCardGridView?.setAddToCartNonVariantClickListener(this)
             masterProductCardGridView?.setAddToCartOnClickListener {
-                handleATC(
-                    masterProductCardItemViewModel?.getProductDataItem()?.minQuantity ?: 1,
-                    masterProductCardItemViewModel?.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
-                )
+                if (checkForVariantProductCard(masterProductCardItemViewModel?.getProductDataItem()?.parentProductId)) {
+                    openVariantSheet()
+                } else {
+                    handleATC(
+                        masterProductCardItemViewModel?.getProductDataItem()?.minQuantity ?: 1,
+                        masterProductCardItemViewModel?.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
+                    )
+                }
             }
         }
         productCardView.setOnClickListener {
             handleUIClick(it)
         }
+    }
+
+    private fun checkForVariantProductCard(parentProductId: String?): Boolean {
+        return parentProductId != null && parentProductId.toLongOrZero()>0
     }
 
     private fun showNotificationReminderPrompt() {
@@ -124,14 +134,12 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun openVariantSheet() {
-        masterProductCardItemViewModel?.components?.let {
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATCTokonow(
-                it,
-                ""
-            )
-        }
         masterProductCardItemViewModel?.getProductDataItem()?.let { dataItem ->
-            (fragment as DiscoveryFragment).openVariantBottomSheet(dataItem.productId ?: "")
+            (fragment as DiscoveryFragment).openVariantBottomSheet(
+                productId = dataItem.productId.orEmpty(),
+                parentPosition = masterProductCardItemViewModel?.getParentPositionForCarousel() ?: RecyclerView.NO_POSITION,
+                requestingComponent = masterProductCardItemViewModel?.components
+            )
         }
     }
 
@@ -215,7 +223,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private fun populateData(productCardModel: ProductCardModel) {
         if (productCardName == ComponentNames.ProductCardCarouselItem.componentName ||
             productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
-            productCardName == ComponentNames.ProductCardCarouselItemList.componentName
+            productCardName == ComponentNames.ProductCardCarouselItemList.componentName ||
+            productCardName == ComponentNames.ShopOfferHeroBrandProductItem.componentName
         ) {
             masterProductCardGridView?.let {
                 productCardView.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
