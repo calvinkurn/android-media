@@ -8,6 +8,9 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.AddonsItemAdapter
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.order_management_common.util.rotateBackIcon
+import com.tokopedia.order_management_common.util.rotateIcon
 
 class PartialProductAddonViewHolder(
     private val listener: PartialProductItemViewHolder.ProductViewListener,
@@ -26,46 +29,49 @@ class PartialProductAddonViewHolder(
             tvBomDetailAddonsTotalPriceValue.text = element.totalPriceText
             tvBomDetailAddonsTotalPriceLabel.text =
                 root.context.getString(R.string.order_addons_total_price_label, element.addonsTitle)
-            tvBomDetailAddonsTotalPrice.text = "(${element.totalPriceText})"
 
             root.setOnClickListener {
-                if (element.isExpand) {
-                    collapseView()
-                } else {
-                    expandView()
-                }
                 element.isExpand = !element.isExpand
                 listener.onAddOnsExpand(element.addOnIdentifier, element.isExpand)
+                setupChevronExpandable(
+                    element.isExpand,
+                    element.totalPriceText
+                )
             }
 
-            if (element.isExpand) {
-                expandView()
-            } else {
-                collapseView()
-            }
+            setupChevronExpandable(
+                isExpand = element.isExpand,
+                totalPriceFmt = element.totalPriceText
+            )
         }
     }
 
-    private fun expandView() = with(partialItemBuyerOrderDetailAddonsBinding) {
+    private fun PartialItemBuyerOrderDetailAddonsBinding.setupChevronExpandable(
+        isExpand: Boolean,
+        totalPriceFmt: String
+    ) {
+        if (isExpand) {
+            expandView()
+        } else {
+            collapseView(totalPriceFmt)
+        }
+    }
+
+    private fun PartialItemBuyerOrderDetailAddonsBinding.expandView() {
         tvBomDetailAddonsTotalPrice.hide()
         rvAddonsList.show()
 
-        icBomDetailAddonsIconArrowDown.run {
-            animate().rotation(0F).duration = 250
-        }
-
+        icBomDetailAddonsIconArrowDown.rotateBackIcon()
         tvBomDetailAddonsTotalPriceLabel.show()
         tvBomDetailAddonsTotalPriceValue.show()
     }
 
-    private fun collapseView() = with(partialItemBuyerOrderDetailAddonsBinding) {
-        tvBomDetailAddonsTotalPrice.show()
-        rvAddonsList.hide()
-
-        icBomDetailAddonsIconArrowDown.run {
-            animate().rotation(180F).duration = 250
+    private fun PartialItemBuyerOrderDetailAddonsBinding.collapseView(totalPriceFmt: String) {
+        tvBomDetailAddonsTotalPrice.showIfWithBlock(totalPriceFmt.isNotEmpty()) {
+            text = totalPriceFmt
         }
-
+        rvAddonsList.hide()
+        icBomDetailAddonsIconArrowDown.rotateIcon()
         tvBomDetailAddonsTotalPriceLabel.hide()
         tvBomDetailAddonsTotalPriceValue.hide()
     }

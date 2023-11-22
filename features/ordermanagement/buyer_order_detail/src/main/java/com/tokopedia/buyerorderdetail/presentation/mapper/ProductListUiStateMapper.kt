@@ -29,6 +29,7 @@ object ProductListUiStateMapper {
 
     private const val MAX_PRODUCT_WHEN_COLLAPSED = 1
     private const val MAX_UNFULFILLED_PRODUCT_WHEN_COLLAPSED = 0
+    private const val ORDER_LEVEL_KEY = "ORDER_LEVEL_KEY"
 
     fun map(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
@@ -796,7 +797,9 @@ object ProductListUiStateMapper {
         remainingSlot: Int,
         addOnsExpandableState: List<String>
     ): Pair<Int, AddonsListUiModel?> {
-        val addOnsIdentifier = "ordertodo"
+        //Order level doesnt really have unique identifier, assign with normal string will be okay
+        //Because there is only one add ons card in one order.
+        val addOnsIdentifier = ORDER_LEVEL_KEY
         val mappedAddOn = addonInfo?.let { addonInfo ->
             AddonsListUiModel(
                 addOnIdentifier = addOnsIdentifier,

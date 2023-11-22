@@ -313,8 +313,9 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                     fromStr = String.EMPTY,
                     message = String.EMPTY,
                     providedByShopItself = false,
-                    infoLink = "todo",
-                    tips = "todo"
+                    //OWOC doesn't has metadata, so we ignore this
+                    infoLink = "",
+                    tips = ""
                 )
             }.orEmpty()
         )
