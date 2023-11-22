@@ -99,6 +99,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -137,6 +138,8 @@ open class TokoChatFragment @Inject constructor(
 
     private val unavailableBottomSheet = TokoChatGeneralUnavailableBottomSheet()
     private val consentBottomSheet = TokoChatConsentBottomSheet()
+
+    private var groupBookingJob: Job? = null
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(
         reminderTickerListener = this,
@@ -199,7 +202,9 @@ open class TokoChatFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        updateReplySectionView()
+        groupBookingJob?.let {
+            updateReplySectionView()
+        }
     }
 
     override fun onFragmentBackPressed(): Boolean {
@@ -1032,7 +1037,7 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun observeGroupBooking() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        groupBookingJob = viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.groupBookingUiState.collectLatest {
                     if (it.error == null) {

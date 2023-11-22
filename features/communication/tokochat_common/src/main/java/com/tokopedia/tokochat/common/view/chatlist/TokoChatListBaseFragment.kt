@@ -83,6 +83,10 @@ abstract class TokoChatListBaseFragment<viewBinding : ViewBinding> : BaseDaggerF
         return endlessRecyclerViewScrollListener?.getLoadingStatus() == true
     }
 
+    protected fun changeLoadMoreStatus(status: Boolean) {
+        endlessRecyclerViewScrollListener?.changeLoadingStatus(status)
+    }
+
     protected fun showGlobalErrorLayout(onActionClick: () -> Unit) {
         val errorType = getErrorType()
         baseBinding?.tokochatIncludeGlobalError?.tokochatGlobalError?.setType(errorType)

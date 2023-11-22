@@ -52,6 +52,7 @@ class TokoChatListViewModel @Inject constructor(
     val navigationUiState = _navigationUiState.asSharedFlow()
 
     private var chatListJob: Job? = null
+    private var hasFetchFirstPageLocal = false
 
     fun setupViewModelObserver() {
         _actionFlow.process()
@@ -85,16 +86,15 @@ class TokoChatListViewModel @Inject constructor(
     }
 
     private fun observeChatListItemFlow() {
-        // Cancel existing job first
+        // Cancel existing job first & mark has not load local first page
         val previousJob = chatListJob
         previousJob?.cancel()
-
+        hasFetchFirstPageLocal = false
         chatListJob = viewModelScope.launch(dispatcher.io) {
             try {
                 previousJob?.join() // Wait until previous job finished
                 chatListUseCase.fetchAllCachedChannels(
-                    listOf(ChannelType.GroupBooking),
-                    BATCH_LIMIT
+                    listOf(ChannelType.GroupBooking)
                 ).collectLatest { result ->
                     when (result) {
                         is TokoChatResult.Success -> {
@@ -120,18 +120,20 @@ class TokoChatListViewModel @Inject constructor(
     }
 
     private fun onSuccessGetChatItemList(channelList: List<ConversationsChannel>) {
-        val filteredChannelList = filterExpiredChannel(channelList)
-        val chatItemList = mapper.mapToListChat(filteredChannelList)
-        // This is first load from local DB
-        // Load the first page from remote
-        loadNextPageChatList(channelList.size)
-        _chatListUiState.update {
-            it.copy(
-                isLoading = false,
-                chatItemList = it.chatItemList + chatItemList,
-                errorMessage = null,
-                hasNextPage = (it.chatItemList.size < chatItemList.size)
-            )
+        if (!hasFetchFirstPageLocal) {
+            // If first time load from local, fetch newest data from remote
+            loadNextPageChatList(channelList.size)
+            hasFetchFirstPageLocal = true
+        } else {
+            val filteredChannelList = filterExpiredChannel(channelList)
+            val chatItemList = mapper.mapToListChat(filteredChannelList)
+            _chatListUiState.update {
+                it.copy(
+                    isLoading = false,
+                    chatItemList = chatItemList,
+                    errorMessage = null
+                )
+            }
         }
     }
 
@@ -147,7 +149,10 @@ class TokoChatListViewModel @Inject constructor(
                 ).collectLatest { result ->
                     if (result is TokoChatResult.Error) {
                         _chatListUiState.update {
-                            it.copy(errorMessage = result.throwable.message)
+                            it.copy(
+                                errorMessage = result.throwable.message,
+                                isLoading = false
+                            )
                         }
                     } else if (result is TokoChatResult.Success) {
                         // Track if first page
@@ -156,6 +161,15 @@ class TokoChatListViewModel @Inject constructor(
                                 filterExpiredChannel(result.data)
                             )
                             _chatListTrackerUiState.emit(trackerData)
+                        }
+
+                        // Set hasNextPage based on remote data
+                        _chatListUiState.update { currentState ->
+                            val hasNextPage = result.data.isNotEmpty()
+                            currentState.copy(
+                                hasNextPage = hasNextPage,
+                                isLoading = hasNextPage // The isLoading flag is set to false when hasNextPage is false, loading should be stopped when there's no next page
+                            )
                         }
                     }
                 }
@@ -188,7 +202,7 @@ class TokoChatListViewModel @Inject constructor(
                 isLoading = false,
                 chatItemList = listOf(),
                 page = 0,
-                hasNextPage = false,
+                hasNextPage = true,
                 errorMessage = null
             )
         }
