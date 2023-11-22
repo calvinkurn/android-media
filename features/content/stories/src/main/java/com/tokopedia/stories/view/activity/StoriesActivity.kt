@@ -101,8 +101,8 @@ class StoriesActivity : BaseActivity() {
         _binding = ActivityStoriesBinding.inflate(layoutInflater)
         setContentView(binding.root)
         if (isEnableStoriesRoom()) {
-            binding.vStoriesOnboarding.root.setOnClickListener {
-                binding.vStoriesOnboarding.root.gone()
+            binding.vStoriesOnboarding.setOnClickListener {
+                binding.vStoriesOnboarding.gone()
             }
             openFragment()
         }
@@ -140,7 +140,7 @@ class StoriesActivity : BaseActivity() {
         lifecycleScope.launchWhenCreated {
             viewModel.storiesEvent.collectLatest { event ->
                 when (event) {
-                    is StoriesUiEvent.OnboardShown -> binding.vStoriesOnboarding.root.showWithCondition(event.needToShow)
+                    is StoriesUiEvent.OnboardShown -> binding.vStoriesOnboarding.showWithCondition(event.needToShow)
                     else -> {}
                 }
             }
