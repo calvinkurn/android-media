@@ -1,7 +1,5 @@
 package com.tokopedia.topads.sdk.domain.model
 
-import com.tokopedia.topads.sdk.base.adapter.Item
-
 data class ShopAdsWithSingleProductModel(
     var isOfficial: Boolean = false,
     var isPMPro: Boolean = false,

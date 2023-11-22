@@ -249,7 +249,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             shopApplink = appLink,
             adsClickUrl = adsClickUrl,
             hasAddToCartButton = hasAddProductToCartButton,
-            variant = cpmData.cpm.layout
+            variant = cpmData.cpm.layout,
         )
     }
 

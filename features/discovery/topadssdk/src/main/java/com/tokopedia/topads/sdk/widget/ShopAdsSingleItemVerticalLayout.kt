@@ -5,12 +5,15 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.topads.sdk.R
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.ShopAdsWithSingleProductModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
@@ -18,6 +21,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.shopwidget.R as shopwidgetR
 import com.tokopedia.gm.common.R as gmcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopAdsSingleItemVerticalLayout : BaseCustomView {
 
@@ -27,6 +31,10 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
     private var bodyContainer: ConstraintLayout? = null
     private var merchantVoucher: Label? = null
     private var shopSlogan: Typography? = null
+    private var productName: Typography? = null
+    private var productPrice: Typography? = null
+    private var productSlashedPrice: Typography? = null
+    private var productDiscountPercent: Typography? = null
 
     constructor(context: Context) : super(context) {
         init()
@@ -56,6 +64,11 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
         setShopImage(shopAdsWithSingleProductModel.shopImageUrl)
         setShopVoucher(shopAdsWithSingleProductModel.merchantVouchers)
         setSlogan(shopAdsWithSingleProductModel.slogan)
+        setProductImage(shopAdsWithSingleProductModel.listItem)
+        setProductTitle(shopAdsWithSingleProductModel.listItem)
+        setProductPrice(shopAdsWithSingleProductModel.listItem)
+        setProductSlashedPrice(shopAdsWithSingleProductModel.listItem)
+        setProductDiscount(shopAdsWithSingleProductModel.listItem)
     }
 
     private fun initViews() {
@@ -65,6 +78,44 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
         merchantVoucher = findViewById(R.id.merchantVoucher)
         shopSlogan = findViewById(R.id.shop_desc)
         productImage = findViewById(R.id.product_image)
+        productName = findViewById(R.id.product_title)
+        productPrice = findViewById(R.id.product_price)
+        productDiscountPercent = findViewById(R.id.product_discount)
+    }
+
+    private fun setProductImage(product: Product?) {
+        product?.let {
+            productImage?.loadImage(it.imageProduct.imageUrl)
+        }
+    }
+
+    private fun setProductTitle(product: Product?){
+        product?.let {
+            productName?.text = MethodChecker.fromHtml(it.name).toString()
+        }
+    }
+
+    private fun setProductPrice(product: Product?){
+        product?.let {
+            productPrice?.text = product.priceFormat
+        }
+    }
+
+    private fun setProductSlashedPrice(product: Product?){
+        product?.let {
+            if(!it.campaign.originalPrice.isNullOrEmpty()){
+                productSlashedPrice?.text = it.campaign.originalPrice
+            }
+            productSlashedPrice?.strikethrough()
+        }
+    }
+
+    private fun setProductDiscount(product: Product?){
+        product?.let {
+            if(it.campaign.discountPercentage != 0){
+                productDiscountPercent?.text = it.campaign.discountPercentage.toString()
+            }
+        }
     }
 
     private fun setSlogan(slogan: String) {
@@ -83,14 +134,14 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
     }
 
     private fun getBackgroundColor(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel): Int {
-        if (shopAdsWithSingleProductModel.isOfficial) {
-            return R.drawable.purple_gradient
+        return if (shopAdsWithSingleProductModel.isOfficial) {
+            unifyprinciplesR.color.Unify_PN50
         } else if (shopAdsWithSingleProductModel.isPMPro) {
-            return R.drawable.blue_one_gradient
+            unifyprinciplesR.color.Unify_GN50
         } else if (shopAdsWithSingleProductModel.isPowerMerchant) {
-            return R.drawable.green_gradient
+            unifyprinciplesR.color.Unify_GN50
         } else {
-            return R.drawable.blue_two_gradient
+            unifyprinciplesR.color.Unify_NN50
         }
     }
 

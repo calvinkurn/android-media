@@ -23,6 +23,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.gm.common.R as gmcommonR
 import com.tokopedia.shopwidget.R as shopwidgetR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
 
@@ -97,14 +98,14 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
     }
 
     private fun getBackgroundColor(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel): Int {
-        if (shopAdsWithSingleProductModel.isOfficial) {
-            return R.drawable.purple_gradient
+        return if (shopAdsWithSingleProductModel.isOfficial) {
+            unifyprinciplesR.color.Unify_PN50
         } else if (shopAdsWithSingleProductModel.isPMPro) {
-            return R.drawable.blue_one_gradient
+            unifyprinciplesR.color.Unify_GN50
         } else if (shopAdsWithSingleProductModel.isPowerMerchant) {
-            return R.drawable.green_gradient
+            unifyprinciplesR.color.Unify_GN50
         } else {
-            return R.drawable.blue_two_gradient
+            unifyprinciplesR.color.Unify_NN50
         }
     }
 
