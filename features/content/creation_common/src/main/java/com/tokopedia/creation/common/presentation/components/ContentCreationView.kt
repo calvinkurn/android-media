@@ -46,7 +46,9 @@ fun ContentCreationView(
     onNextClicked: () -> Unit,
     onRetryClicked: () -> Unit
 ) {
-    NestTheme {
+    NestTheme(
+        isOverrideStatusBarColor = false
+    ) {
         when (creationConfig) {
             is Success -> {
                 LaunchedEffect(Unit) {
