@@ -388,7 +388,7 @@ class FeedPostVideoViewHolder(
             trackerData = trackerDataModel,
             positionInFeed = absoluteAdapterPosition,
             topAdsTrackerData = null,
-            enableProductIconAnim = true,
+            contentType = data.contentType
         )
     }
 

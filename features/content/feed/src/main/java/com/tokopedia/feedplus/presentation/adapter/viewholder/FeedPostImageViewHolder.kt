@@ -522,7 +522,7 @@ class FeedPostImageViewHolder(
             trackerData = trackerDataModel,
             positionInFeed = absoluteAdapterPosition,
             topAdsTrackerData = topAdsTrackerDataModel,
-            enableProductIconAnim = false,
+            contentType = model.contentType
         )
         updateProductTagText(model)
     }

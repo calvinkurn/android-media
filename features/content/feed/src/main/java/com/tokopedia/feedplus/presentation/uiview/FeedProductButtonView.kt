@@ -10,6 +10,8 @@ import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.type.FeedContentType
+import com.tokopedia.feedplus.presentation.model.type.isPlayContent
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_NINETY_NINE
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -63,11 +65,10 @@ class FeedProductButtonView(
         trackerData: FeedTrackerDataModel?,
         topAdsTrackerData: FeedTopAdsTrackerDataModel?,
         positionInFeed: Int,
-        enableProductIconAnim: Boolean
+        contentType: FeedContentType
     ) = with(binding) {
-
         bind(products, totalProducts)
-        bindProductIcon(enableProductIconAnim, hasVoucher, isContainsDiscountProduct(products))
+        bindProductIcon(contentType, hasVoucher, isContainsDiscountProduct(products))
 
         binding.root.setOnClickListener {
             onClick(
@@ -136,11 +137,11 @@ class FeedProductButtonView(
     }
 
     private fun bindProductIcon(
-        enableProductIconAnim: Boolean,
+        contentType: FeedContentType,
         hasVoucher: Boolean,
-        hasDiscount: Boolean,
+        hasDiscount: Boolean
     ) = with(binding) {
-        animationOn = enableProductIconAnim && (hasVoucher || hasDiscount)
+        animationOn = contentType.isPlayContent() && (hasVoucher || hasDiscount)
         if (animationOn) {
             binding.lottieProductSeeMore.apply {
                 setAnimationFromUrl(animationAssets)
