@@ -32,10 +32,14 @@ class TestMiniCartActivity : AppCompatActivity() {
                     overridePrimaryButtonWording = "apa ini",
                     additionalButton = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500))
                 ),
-                this@TestMiniCartActivity,
-                this@TestMiniCartActivity,
                 getMiniCartNewWidgetListener()
             )
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        findViewById<MiniCartNewWidget>(R.id.test_mini_cart).apply {
             updateData(listOf("480552"))
         }
     }

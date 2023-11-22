@@ -84,18 +84,26 @@ class MiniCartNewWidget @JvmOverloads constructor(
         }
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (viewModel != null) return
+        val lifecycleOwner = findViewTreeLifecycleOwner() ?: return
+        val viewModelStoreOwner = findViewTreeViewModelStoreOwner() ?: return
+        initializeViewModel(viewModelStoreOwner, lifecycleOwner)
+    }
+
     fun initialize(
         config: MiniCartNewWidgetConfig,
-        viewModelStoreOwner: ViewModelStoreOwner,
-        lifecycleOwner: LifecycleOwner,
         listener: MiniCartNewWidgetListener
     ) {
-        findViewTreeLifecycleOwner()
-        findViewTreeViewModelStoreOwner()
         this.config = config
         initializeView(config)
         initializeListener(listener)
-        initializeViewModel(viewModelStoreOwner, lifecycleOwner)
+        val lifecycleOwner = findViewTreeLifecycleOwner()
+        val viewModelStoreOwner = findViewTreeViewModelStoreOwner()
+        if (viewModel == null && viewModelStoreOwner != null && lifecycleOwner != null) {
+            initializeViewModel(viewModelStoreOwner, lifecycleOwner)
+        }
     }
 
     private fun initializeView(config: MiniCartNewWidgetConfig) {
