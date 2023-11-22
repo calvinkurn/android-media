@@ -8,7 +8,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -27,7 +26,7 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
             val result = viewModel.getMemberLeft()
 
             // Then
-            Assert.assertEquals(memberLeftLiveDataDummy, result)
+            assertEquals(memberLeftLiveDataDummy, result)
         }
     }
 
@@ -43,7 +42,7 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
             viewModel.getMemberLeft()
 
             // Then
-            Assert.assertEquals(
+            assertEquals(
                 throwableDummy,
                 viewModel.error.observeAwaitValue()?.first
             )
@@ -62,7 +61,7 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
             val result = viewModel.getUserId()
 
             // Then
-            Assert.assertEquals(USER_ID_DUMMY, result)
+            assertEquals(USER_ID_DUMMY, result)
         }
     }
 
@@ -79,7 +78,7 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
             val result = viewModel.getMemberLeft()?.value
 
             // Then
-            Assert.assertEquals(null, result)
+            assertEquals(null, result)
         }
     }
 
