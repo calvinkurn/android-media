@@ -1840,7 +1840,7 @@ class CheckoutViewModel @Inject constructor(
                 return@launch
             }
 
-            val indexDropship = cartProcessor.validateDropship(listData.value)
+            val (indexDropship, listOfDropship) = cartProcessor.validateDropship(listData.value)
             if (indexDropship > -1) {
                 commonToaster.emit(
                     CheckoutPageToaster(
@@ -2576,6 +2576,22 @@ class CheckoutViewModel @Inject constructor(
                 listData.value = checkoutItems
             }
         }
+    }
+
+    fun setDropshipName(name: String, position: Int) {
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
+        val newOrder = checkoutOrderModel.copy(dropshipName = name)
+        checkoutItems[position] = newOrder
+        listData.value = checkoutItems
+    }
+
+    fun setDropshipPhone(phone: String, position: Int) {
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
+        val newOrder = checkoutOrderModel.copy(dropshipPhone = phone)
+        checkoutItems[position] = newOrder
+        listData.value = checkoutItems
     }
 
     fun getOrderProducts(cartStringGroup: String): List<CheckoutProductModel> {

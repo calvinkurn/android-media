@@ -151,4 +151,8 @@ interface CheckoutAdapterListener {
     fun checkLatestProtectionOptIn(cartStringGroup: String): Boolean
 
     fun onCheckChangedDropship(isChecked: Boolean, position: Int)
+
+    fun setDropshipName(name: String, bindingAdapterPosition: Int)
+
+    fun setDropshipPhone(phone: String, bindingAdapterPosition: Int)
 }

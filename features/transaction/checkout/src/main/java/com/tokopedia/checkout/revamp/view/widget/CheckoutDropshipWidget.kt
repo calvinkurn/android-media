@@ -1,9 +1,11 @@
 package com.tokopedia.checkout.revamp.view.widget
 
 import android.content.Context
+import android.text.Editable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
+import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.AttributeSet
@@ -11,12 +13,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.addTextChangedListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.databinding.ItemCheckoutDropshipBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifyprinciples.Typography
+import java.util.regex.Pattern
 import com.tokopedia.checkout.R as checkoutR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -31,7 +35,7 @@ class CheckoutDropshipWidget : ConstraintLayout {
 
     private var binding: ItemCheckoutDropshipBinding? = null
     private var actionListener: DropshipWidgetListener? = null
-    var cartStringGroup: String = ""
+    private val phoneNumberRegexPattern: Pattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN)
 
     val dropshipName: TextFieldUnify2?
         get() = binding?.tfDropshipName
@@ -75,6 +79,10 @@ class CheckoutDropshipWidget : ConstraintLayout {
         fun showToasterErrorProtectionUsage()
 
         fun onClickDropshipSwitch(isChecked: Boolean)
+
+        fun setDropshipName(name: String)
+
+        fun setDropshipPhone(phone: String)
     }
 
     fun setupListener(dropshipListener: DropshipWidgetListener) {
@@ -114,8 +122,71 @@ class CheckoutDropshipWidget : ConstraintLayout {
     }
 
     private fun showDetailDropship() {
-        binding?.tfDropshipName?.visible()
-        binding?.tfDropshipPhone?.visible()
+        binding?.tfDropshipName?.apply {
+            visible()
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    if (text?.toString()?.isEmpty() == true) {
+                        binding?.tfDropshipName?.isInputError = true
+                        binding?.tfDropshipName?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_empty))
+                    } else if (text?.toString()?.isNotEmpty() == true &&
+                        text.length < DROPSHIPPER_MIN_NAME_LENGTH
+                    ) {
+                        binding?.tfDropshipName?.isInputError = true
+                        binding?.tfDropshipName?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_min_length))
+                    } else if (text?.toString()?.isNotEmpty() == true &&
+                        text.length > DROPSHIPPER_MAX_NAME_LENGTH
+                    ) {
+                        binding?.tfDropshipName?.isInputError = true
+                        binding?.tfDropshipName?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_max_length))
+                    } else {
+                        binding?.tfDropshipName?.isInputError = false
+                        binding?.tfDropshipName?.setMessage("")
+                        actionListener?.setDropshipName(text.toString())
+                    }
+                }
+
+                override fun afterTextChanged(p0: Editable?) {}
+            })
+        }
+        binding?.tfDropshipPhone?.apply {
+            visible()
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    val matcher = phoneNumberRegexPattern.matcher(text)
+
+                    if (text?.toString()?.isEmpty() == true) {
+                        binding?.tfDropshipPhone?.isInputError = true
+                        binding?.tfDropshipPhone?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_empty))
+                    } else if (text?.toString()?.isNotEmpty() == true &&
+                        !matcher.matches()
+                    ) {
+                        binding?.tfDropshipPhone?.isInputError = true
+                        binding?.tfDropshipPhone?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_invalid))
+                    } else if (text?.toString()?.isNotEmpty() == true &&
+                        text.length < DROPSHIPPER_MIN_PHONE_LENGTH
+                    ) {
+                        binding?.tfDropshipPhone?.isInputError = true
+                        binding?.tfDropshipPhone?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_min_length))
+                    } else if (text?.toString()?.isNotEmpty() == true &&
+                        text.length > DROPSHIPPER_MAX_PHONE_LENGTH
+                    ) {
+                        binding?.tfDropshipPhone?.isInputError = true
+                        binding?.tfDropshipPhone?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_max_length))
+                    } else {
+                        binding?.tfDropshipPhone?.isInputError = false
+                        binding?.tfDropshipPhone?.setMessage("")
+                        actionListener?.setDropshipPhone(text.toString())
+                    }
+                }
+
+                override fun afterTextChanged(p0: Editable?) {}
+            })
+        }
     }
 
     private fun validateShowingDetailDropship() {
@@ -192,5 +263,13 @@ class CheckoutDropshipWidget : ConstraintLayout {
         DISABLED(0), // show dropship widget, but show toaster onclick
         INIT(1), // show init dropship widget
         SELECTED(2) // show dropship name & phone
+    }
+
+    companion object {
+        private const val DROPSHIPPER_MIN_NAME_LENGTH = 3
+        private const val DROPSHIPPER_MAX_NAME_LENGTH = 100
+        private const val DROPSHIPPER_MIN_PHONE_LENGTH = 6
+        private const val DROPSHIPPER_MAX_PHONE_LENGTH = 20
+        private const val PHONE_NUMBER_REGEX_PATTERN = "\\d+"
     }
 }

@@ -2604,9 +2604,10 @@ class CheckoutFragment :
 
     override fun showDropshipInfoBottomSheet() {
         val bottomSheetDropshipBinding =
-                BottomSheetDropshipBinding.inflate(LayoutInflater.from(context))
+            BottomSheetDropshipBinding.inflate(LayoutInflater.from(context))
         val bottomSheetUnify = BottomSheetUnify()
-        bottomSheetUnify.setTitle(getString(R.string.dropship_bottomsheet_title, )
+        bottomSheetUnify.setTitle(
+            getString(R.string.dropship_bottomsheet_title)
         )
         bottomSheetUnify.showCloseIcon = false
         bottomSheetUnify.showKnob = true
@@ -2624,5 +2625,13 @@ class CheckoutFragment :
 
     override fun onCheckChangedDropship(isChecked: Boolean, position: Int) {
         viewModel.setDropshipSwitch(isChecked, position)
+    }
+
+    override fun setDropshipName(name: String, position: Int) {
+        viewModel.setDropshipName(name, position)
+    }
+
+    override fun setDropshipPhone(phone: String, position: Int) {
+        viewModel.setDropshipPhone(phone, position)
     }
 }

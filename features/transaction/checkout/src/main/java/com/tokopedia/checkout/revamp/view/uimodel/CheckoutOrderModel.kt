@@ -58,8 +58,10 @@ data class CheckoutOrderModel(
     var useDropship: Boolean = false,
     var isDropshipperDisabled: Boolean = false,
     var stateDropship: CheckoutDropshipWidget.State = CheckoutDropshipWidget.State.GONE,
-    var dropshiperName: String = "",
-    var dropshiperPhone: String = "",
+    var dropshipName: String = "",
+    var dropshipPhone: String = "",
+    var isDropshipNameValid: Boolean = false,
+    var isDropshipPhoneValid: Boolean = false,
 
     val isInsurance: Boolean = false,
     val isSaveStateFlag: Boolean = false,

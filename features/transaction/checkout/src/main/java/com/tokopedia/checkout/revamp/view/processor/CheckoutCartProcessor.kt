@@ -15,6 +15,8 @@ import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressRequest
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.revamp.utils.CheckoutConsts.KEY_DROPSHIP_NAME
+import com.tokopedia.checkout.revamp.utils.CheckoutConsts.KEY_DROPSHIP_PHONE
 import com.tokopedia.checkout.revamp.view.firstOrNullInstanceOf
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
@@ -38,46 +40,46 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class CheckoutCartProcessor @Inject constructor(
-        private val getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase,
-        private val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
-        private val changeShippingAddressGqlUseCase: Lazy<ChangeShippingAddressGqlUseCase>,
-        private val releaseBookingUseCase: Lazy<ReleaseBookingUseCase>,
-        private val dispatchers: CoroutineDispatchers
+    private val getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase,
+    private val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
+    private val changeShippingAddressGqlUseCase: Lazy<ChangeShippingAddressGqlUseCase>,
+    private val releaseBookingUseCase: Lazy<ReleaseBookingUseCase>,
+    private val dispatchers: CoroutineDispatchers
 ) {
 
     suspend fun hitSAF(
-            isOneClickShipment: Boolean,
-            isTradeIn: Boolean,
-            isTradeInDropOff: Boolean,
-            skipUpdateOnboardingState: Boolean,
-            cornerId: String?,
-            deviceId: String?,
-            checkoutLeasingId: String?,
-            isPlusSelected: Boolean,
-            isReloadData: Boolean,
-            isReloadAfterPriceChangeHigher: Boolean
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isTradeInDropOff: Boolean,
+        skipUpdateOnboardingState: Boolean,
+        cornerId: String?,
+        deviceId: String?,
+        checkoutLeasingId: String?,
+        isPlusSelected: Boolean,
+        isReloadData: Boolean,
+        isReloadAfterPriceChangeHigher: Boolean
     ): CheckoutPageState {
         return withContext(dispatchers.io) {
             try {
                 val cartShipmentAddressFormData = getShipmentAddressFormV4UseCase(
-                        ShipmentAddressFormRequest(
-                                isOneClickShipment,
-                                isTradeIn,
-                                skipUpdateOnboardingState,
-                                cornerId,
-                                deviceId,
-                                checkoutLeasingId,
-                                isPlusSelected,
-                                true
-                        )
-                )
-                validateShipmentAddressFormData(
-                        cartShipmentAddressFormData,
-                        isReloadData,
-                        isReloadAfterPriceChangeHigher,
+                    ShipmentAddressFormRequest(
                         isOneClickShipment,
                         isTradeIn,
-                        isTradeInDropOff
+                        skipUpdateOnboardingState,
+                        cornerId,
+                        deviceId,
+                        checkoutLeasingId,
+                        isPlusSelected,
+                        true
+                    )
+                )
+                validateShipmentAddressFormData(
+                    cartShipmentAddressFormData,
+                    isReloadData,
+                    isReloadAfterPriceChangeHigher,
+                    isOneClickShipment,
+                    isTradeIn,
+                    isTradeInDropOff
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -87,61 +89,61 @@ class CheckoutCartProcessor @Inject constructor(
     }
 
     private fun validateShipmentAddressFormData(
-            cartShipmentAddressFormData: CartShipmentAddressFormData,
-            isReloadData: Boolean,
-            isReloadAfterPriceChangeHigher: Boolean,
-            isOneClickShipment: Boolean,
-            isTradeIn: Boolean,
-            isTradeInDropOff: Boolean
+        cartShipmentAddressFormData: CartShipmentAddressFormData,
+        isReloadData: Boolean,
+        isReloadAfterPriceChangeHigher: Boolean,
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isTradeInDropOff: Boolean
     ): CheckoutPageState {
         if (cartShipmentAddressFormData.isError) {
             if (cartShipmentAddressFormData.isOpenPrerequisiteSite) {
                 return CheckoutPageState.CacheExpired(cartShipmentAddressFormData.errorMessage)
             } else {
                 CheckoutLogger.logOnErrorLoadCheckoutPage(
-                        MessageErrorException(
-                                cartShipmentAddressFormData.errorMessage
-                        ),
-                        isOneClickShipment,
-                        isTradeIn,
-                        isTradeInDropOff
+                    MessageErrorException(
+                        cartShipmentAddressFormData.errorMessage
+                    ),
+                    isOneClickShipment,
+                    isTradeIn,
+                    isTradeInDropOff
                 )
                 return CheckoutPageState.Error(
-                        MessageErrorException(
-                                cartShipmentAddressFormData.errorMessage
-                        )
+                    MessageErrorException(
+                        cartShipmentAddressFormData.errorMessage
+                    )
                 )
             }
         } else {
             val groupAddressList = cartShipmentAddressFormData.groupAddress
             val userAddress = groupAddressList.firstOrNull()?.userAddress
             return validateRenderCheckoutPage(
-                    cartShipmentAddressFormData,
-                    userAddress,
-                    isOneClickShipment,
-                    isTradeIn,
-                    isTradeInDropOff
+                cartShipmentAddressFormData,
+                userAddress,
+                isOneClickShipment,
+                isTradeIn,
+                isTradeInDropOff
             )
         }
     }
 
     private fun validateRenderCheckoutPage(
-            cartShipmentAddressFormData: CartShipmentAddressFormData,
-            userAddress: UserAddress?,
-            isOneClickShipment: Boolean,
-            isTradeIn: Boolean,
-            isTradeInDropOff: Boolean
+        cartShipmentAddressFormData: CartShipmentAddressFormData,
+        userAddress: UserAddress?,
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isTradeInDropOff: Boolean
     ): CheckoutPageState {
         when (cartShipmentAddressFormData.errorCode) {
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS -> {
                 return CheckoutPageState.NoAddress(
-                        cartShipmentAddressFormData
+                    cartShipmentAddressFormData
                 )
             }
 
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST -> {
                 return CheckoutPageState.NoMatchedAddress(
-                        userAddress?.state ?: 0
+                    userAddress?.state ?: 0
                 )
             }
 
@@ -155,27 +157,27 @@ class CheckoutCartProcessor @Inject constructor(
 
             else -> {
                 val exception = MessageErrorException(
-                        "unhandled error code ${cartShipmentAddressFormData.errorCode}"
+                    "unhandled error code ${cartShipmentAddressFormData.errorCode}"
                 )
                 CheckoutLogger.logOnErrorLoadCheckoutPage(
-                        exception,
-                        isOneClickShipment,
-                        isTradeIn,
-                        isTradeInDropOff
+                    exception,
+                    isOneClickShipment,
+                    isTradeIn,
+                    isTradeInDropOff
                 )
                 return CheckoutPageState.Error(
-                        exception
+                    exception
                 )
             }
         }
     }
 
     suspend fun changeShippingAddress(
-            items: List<CheckoutItem>,
-            newRecipientAddressModel: RecipientAddressModel?,
-            chosenAddressModel: ChosenAddressModel?,
-            isOneClickShipment: Boolean,
-            isTradeInDropOff: Boolean
+        items: List<CheckoutItem>,
+        newRecipientAddressModel: RecipientAddressModel?,
+        chosenAddressModel: ChosenAddressModel?,
+        isOneClickShipment: Boolean,
+        isTradeInDropOff: Boolean
     ): ChangeAddressResult {
         return withContext(dispatchers.io) {
             val dataChangeAddressRequests: MutableList<DataChangeAddressRequest> = ArrayList()
@@ -190,7 +192,7 @@ class CheckoutCartProcessor @Inject constructor(
                         if (newRecipientAddressModel != null) {
                             if (isTradeInDropOff) {
                                 dataChangeAddressRequest.addressId =
-                                        newRecipientAddressModel.locationDataModel.addrId
+                                    newRecipientAddressModel.locationDataModel.addrId
                                 dataChangeAddressRequest.isIndomaret = true
                             } else {
                                 dataChangeAddressRequest.addressId = newRecipientAddressModel.id
@@ -199,7 +201,7 @@ class CheckoutCartProcessor @Inject constructor(
                         }
                         if (chosenAddressModel != null) {
                             dataChangeAddressRequest.addressId =
-                                    chosenAddressModel.addressId.toString()
+                                chosenAddressModel.addressId.toString()
                         }
                         dataChangeAddressRequests.add(dataChangeAddressRequest)
                     }
@@ -210,34 +212,34 @@ class CheckoutCartProcessor @Inject constructor(
             params[ChangeShippingAddressGqlUseCase.PARAM_ONE_CLICK_SHIPMENT] = isOneClickShipment
             val requestParam = RequestParams.create()
             requestParam.putObject(
-                    ChangeShippingAddressGqlUseCase.CHANGE_SHIPPING_ADDRESS_PARAMS,
-                    params
+                ChangeShippingAddressGqlUseCase.CHANGE_SHIPPING_ADDRESS_PARAMS,
+                params
             )
             try {
                 val setShippingAddressData = changeShippingAddressGqlUseCase.get().invoke(
-                        ChangeShippingAddressRequest(
-                                dataChangeAddressRequests,
-                                isOneClickShipment
-                        )
+                    ChangeShippingAddressRequest(
+                        dataChangeAddressRequests,
+                        isOneClickShipment
+                    )
                 )
                 if (setShippingAddressData.isSuccess) {
                     return@withContext ChangeAddressResult(
-                            isSuccess = true,
-                            toasterMessage = (
-                                    setShippingAddressData.messages.firstOrNull()
-                                            ?: ""
-                                    ).ifEmpty { "Alamat berhasil diganti" }
+                        isSuccess = true,
+                        toasterMessage = (
+                            setShippingAddressData.messages.firstOrNull()
+                                ?: ""
+                            ).ifEmpty { "Alamat berhasil diganti" }
                     )
                 } else {
                     return@withContext ChangeAddressResult(
-                            isSuccess = false,
-                            toasterMessage = if (setShippingAddressData.messages.isEmpty()) {
-                                "Alamat gagal diganti"
-                            } else {
-                                setShippingAddressData.messages.joinToString(
-                                        " "
-                                )
-                            }
+                        isSuccess = false,
+                        toasterMessage = if (setShippingAddressData.messages.isEmpty()) {
+                            "Alamat gagal diganti"
+                        } else {
+                            setShippingAddressData.messages.joinToString(
+                                " "
+                            )
+                        }
                     )
                 }
             } catch (t: Throwable) {
@@ -248,16 +250,16 @@ class CheckoutCartProcessor @Inject constructor(
     }
 
     suspend fun processSaveShipmentState(
-            shipmentCartItemModel: CheckoutOrderModel,
-            recipientAddressModel: RecipientAddressModel
+        shipmentCartItemModel: CheckoutOrderModel,
+        recipientAddressModel: RecipientAddressModel
     ) {
         withContext(dispatchers.io) {
             try {
                 val params =
-                        generateSaveShipmentStateRequestSingleAddress(
-                                listOf(shipmentCartItemModel),
-                                recipientAddressModel
-                        )
+                    generateSaveShipmentStateRequestSingleAddress(
+                        listOf(shipmentCartItemModel),
+                        recipientAddressModel
+                    )
                 if (params.requestDataList.first().shopProductDataList.isNotEmpty()) {
                     saveShipmentStateGqlUseCase(params)
                 }
@@ -268,14 +270,14 @@ class CheckoutCartProcessor @Inject constructor(
     }
 
     suspend fun processSaveShipmentState(
-            listData: List<CheckoutItem>,
-            recipientAddressModel: RecipientAddressModel
+        listData: List<CheckoutItem>,
+        recipientAddressModel: RecipientAddressModel
     ) {
         withContext(dispatchers.io) {
             try {
                 val params = generateSaveShipmentStateRequestSingleAddress(
-                        listData.filterIsInstance(CheckoutOrderModel::class.java),
-                        recipientAddressModel
+                    listData.filterIsInstance(CheckoutOrderModel::class.java),
+                    recipientAddressModel
                 )
                 if (params.requestDataList.first().shopProductDataList.isNotEmpty()) {
                     saveShipmentStateGqlUseCase(params)
@@ -287,13 +289,13 @@ class CheckoutCartProcessor @Inject constructor(
     }
 
     private fun generateSaveShipmentStateRequestSingleAddress(
-            shipmentCartItemModels: List<CheckoutOrderModel>,
-            recipientAddressModel: RecipientAddressModel
+        shipmentCartItemModels: List<CheckoutOrderModel>,
+        recipientAddressModel: RecipientAddressModel
     ): SaveShipmentStateRequest {
         val shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData> =
-                ArrayList()
+            ArrayList()
         val shipmentStateRequestDataList: MutableList<ShipmentStateRequestData> =
-                ArrayList()
+            ArrayList()
         for (shipmentCartItemModel in shipmentCartItemModels) {
             setSaveShipmentStateData(shipmentCartItemModel, shipmentStateShopProductDataList)
         }
@@ -305,8 +307,8 @@ class CheckoutCartProcessor @Inject constructor(
     }
 
     private fun setSaveShipmentStateData(
-            shipmentCartItemModel: CheckoutOrderModel,
-            shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData>
+        shipmentCartItemModel: CheckoutOrderModel,
+        shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData>
     ) {
         var courierData: CourierItemData? = shipmentCartItemModel.shipment.courierItemData
         // todo handle trade in
@@ -320,7 +322,7 @@ class CheckoutCartProcessor @Inject constructor(
 //        courierData = shipmentCartItemModel.shipment.courierItemData
         if (courierData != null) {
             val shipmentStateProductDataList: MutableList<ShipmentStateProductData> =
-                    ArrayList()
+                ArrayList()
             for (cartItemModel in shipmentCartItemModel.products) {
                 val shipmentStateProductData = ShipmentStateProductData()
                 shipmentStateProductData.shopId = cartItemModel.shopId.toLongOrZero()
@@ -335,26 +337,26 @@ class CheckoutCartProcessor @Inject constructor(
             val ratesFeature = ShipmentDataRequestConverter.generateRatesFeature(courierData)
             val shipmentStateShippingInfoData = ShipmentStateShippingInfoData()
             shipmentStateShippingInfoData.shippingId =
-                    courierData.selectedShipper.shipperId.toLong()
+                courierData.selectedShipper.shipperId.toLong()
             shipmentStateShippingInfoData.spId =
-                    courierData.selectedShipper.shipperProductId.toLong()
+                courierData.selectedShipper.shipperProductId.toLong()
             shipmentStateShippingInfoData.ratesFeature = ratesFeature
             val shipmentStateShopProductData = ShipmentStateShopProductData()
             shipmentStateShopProductData.cartStringGroup = shipmentCartItemModel.cartStringGroup
             shipmentStateShopProductData.shopId = shipmentCartItemModel.shopId
             shipmentStateShopProductData.finsurance =
-                    if (shipmentCartItemModel.shipment.insurance.isCheckInsurance) {
-                        1
-                    } else {
-                        0
-                    }
+                if (shipmentCartItemModel.shipment.insurance.isCheckInsurance) {
+                    1
+                } else {
+                    0
+                }
             shipmentStateShopProductData.isPreorder =
-                    if (shipmentCartItemModel.isProductIsPreorder) 1 else 0
+                if (shipmentCartItemModel.isProductIsPreorder) 1 else 0
             shipmentStateShopProductData.warehouseId = shipmentCartItemModel.fulfillmentId
             shipmentStateShopProductData.shippingInfoData = shipmentStateShippingInfoData
             shipmentStateShopProductData.productDataList = shipmentStateProductDataList
             shipmentStateShopProductData.validationMetadata =
-                    shipmentCartItemModel.validationMetadata
+                shipmentCartItemModel.validationMetadata
             shipmentStateShopProductDataList.add(shipmentStateShopProductData)
         }
     }
@@ -363,7 +365,7 @@ class CheckoutCartProcessor @Inject constructor(
     fun releaseBooking(listData: List<CheckoutItem>) {
         // As deals product is using OCS, the shipment should only contain 1 product
         val productId =
-                listData.firstOrNullInstanceOf(CheckoutProductModel::class.java)?.productId ?: 0
+            listData.firstOrNullInstanceOf(CheckoutProductModel::class.java)?.productId ?: 0
         if (productId != 0L) {
             GlobalScope.launch(dispatchers.io) {
                 try {
@@ -375,20 +377,23 @@ class CheckoutCartProcessor @Inject constructor(
         }
     }
 
-    fun validateDropship(listData: List<CheckoutItem>): Int {
+    fun validateDropship(listData: List<CheckoutItem>): Pair<Int, List<Pair<String, Boolean>>> {
         listData.filterIsInstance<CheckoutOrderModel>().forEachIndexed { index, it ->
             if (it.useDropship) {
-                if (it.dropshiperName.isEmpty() || it.dropshiperPhone.isEmpty()) {
-                    return index
+                val listOfDropship = arrayListOf<Pair<String, Boolean>>()
+                if (it.dropshipName.isEmpty() || !it.isDropshipNameValid) {
+                    listOfDropship.add(Pair(KEY_DROPSHIP_NAME, false))
+                } else if (it.dropshipPhone.isEmpty() && !it.isDropshipPhoneValid) {
+                    listOfDropship.add(Pair(KEY_DROPSHIP_PHONE, false))
                 }
             }
         }
-        return -1
+        return Pair(-1, emptyList())
     }
 }
 
 data class ChangeAddressResult(
-        val isSuccess: Boolean,
-        val toasterMessage: String = "",
-        val throwable: Throwable? = null
+    val isSuccess: Boolean,
+    val toasterMessage: String = "",
+    val throwable: Throwable? = null
 )

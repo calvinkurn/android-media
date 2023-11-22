@@ -335,8 +335,8 @@ class CheckoutOrderViewHolder(
         if (order.isEnableDropship) {
             if (order.useDropship) {
                 binding.dropshipWidget.state = CheckoutDropshipWidget.State.SELECTED
-                binding.dropshipWidget.dropshipName?.editText?.setText(order.dropshiperName)
-                binding.dropshipWidget.dropshipPhone?.editText?.setText(order.dropshiperPhone)
+                binding.dropshipWidget.dropshipName?.editText?.setText(order.dropshipName)
+                binding.dropshipWidget.dropshipPhone?.editText?.setText(order.dropshipPhone)
             } else {
                 if (order.stateDropship != CheckoutDropshipWidget.State.GONE) {
                     binding.dropshipWidget.state = order.stateDropship
@@ -434,5 +434,13 @@ class CheckoutOrderViewHolder(
 
     override fun onClickDropshipSwitch(isChecked: Boolean) {
         listener.onCheckChangedDropship(isChecked, bindingAdapterPosition)
+    }
+
+    override fun setDropshipName(name: String) {
+        listener.setDropshipName(name, bindingAdapterPosition)
+    }
+
+    override fun setDropshipPhone(phone: String) {
+        listener.setDropshipPhone(phone, bindingAdapterPosition)
     }
 }
