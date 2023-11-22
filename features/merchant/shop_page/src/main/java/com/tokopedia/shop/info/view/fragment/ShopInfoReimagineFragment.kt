@@ -307,7 +307,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         when {
             operationalHours.isEmpty() -> {
-                val operationalHourTypography = createOperationalHoursTypography("-")
+                val text = context?.getString(R.string.shop_info_ops_hour_open_twenty_four_hour).orEmpty()
+                val operationalHourTypography = createOperationalHoursTypography(text)
                 binding?.layoutOperationalHoursContainer?.addView(operationalHourTypography)
             }
             isOpen24HoursEveryday(operationalHours) -> {
