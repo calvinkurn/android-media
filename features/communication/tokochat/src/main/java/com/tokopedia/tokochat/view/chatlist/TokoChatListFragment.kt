@@ -67,6 +67,7 @@ class TokoChatListFragment @Inject constructor(
 
     private fun initChatListData() {
         toggleRecyclerViewLayout(true)
+        addInitialShimmering()
         viewModel.processAction(TokoChatListAction.RefreshPage)
     }
 
@@ -156,8 +157,6 @@ class TokoChatListFragment @Inject constructor(
                         removeLoader()
                     }
                 }
-            } else {
-                addInitialShimmering()
             }
         }
     }
@@ -215,7 +214,7 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onLoadMore() {
-        if (adapter.getLoaderPosition() >= 0) {
+        if (adapter.getLoaderPosition() < 0) {
             val loaderUiModel = TokoChatListLoaderUiModel()
             adapter.addItem(loaderUiModel)
             baseBinding?.tokochatListRv?.post {
