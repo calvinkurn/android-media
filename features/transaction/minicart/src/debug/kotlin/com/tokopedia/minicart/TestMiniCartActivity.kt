@@ -11,8 +11,8 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.cartlist.MiniCartListNewBottomSheet
 import com.tokopedia.minicart.cartlist.MiniCartListNewBottomSheetListener
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.widget.MiniCartNewWidget
-import com.tokopedia.minicart.common.widget.MiniCartNewWidgetListener
+import com.tokopedia.minicart.v2.MiniCartV2Widget
+import com.tokopedia.minicart.v2.MiniCartV2WidgetListener
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TestMiniCartActivity : AppCompatActivity() {
@@ -23,29 +23,29 @@ class TestMiniCartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_mini_cart)
 
-        findViewById<MiniCartNewWidget>(R.id.test_mini_cart).apply {
+        findViewById<MiniCartV2Widget>(R.id.test_mini_cart).apply {
             initialize(
-                MiniCartNewWidget.MiniCartNewWidgetConfig(
+                MiniCartV2Widget.MiniCartV2WidgetConfig(
                     showTopShadow = false,
                     showChevron = true,
                     showOriginalTotalPrice = true,
                     overridePrimaryButtonWording = "apa ini",
                     additionalButton = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500))
                 ),
-                getMiniCartNewWidgetListener()
+                getMiniCartV2WidgetListener()
             )
         }
     }
 
     override fun onStart() {
         super.onStart()
-        findViewById<MiniCartNewWidget>(R.id.test_mini_cart).apply {
+        findViewById<MiniCartV2Widget>(R.id.test_mini_cart).apply {
             updateData(listOf("480552"))
         }
     }
 
-    private fun getMiniCartNewWidgetListener(): MiniCartNewWidgetListener {
-        return object : MiniCartNewWidgetListener {
+    private fun getMiniCartV2WidgetListener(): MiniCartV2WidgetListener {
+        return object : MiniCartV2WidgetListener {
             override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
                 Log.i("qwertyuiop", miniCartSimplifiedData.toString())
                 miniCartData = miniCartSimplifiedData
@@ -78,7 +78,7 @@ class TestMiniCartActivity : AppCompatActivity() {
     private fun getMiniCartListNewBottomSheetListener(): MiniCartListNewBottomSheetListener {
         return object : MiniCartListNewBottomSheetListener {
             override fun onMiniCartListBottomSheetDismissed() {
-                findViewById<MiniCartNewWidget>(R.id.test_mini_cart).updateData(listOf("480552"))
+                findViewById<MiniCartV2Widget>(R.id.test_mini_cart).updateData(listOf("480552"))
             }
 
             override fun onRetryOpenMiniCartListBottomSheet() {

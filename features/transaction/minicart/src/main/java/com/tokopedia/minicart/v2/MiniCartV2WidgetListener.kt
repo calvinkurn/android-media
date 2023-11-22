@@ -1,8 +1,9 @@
-package com.tokopedia.minicart.common.widget
+package com.tokopedia.minicart.v2
 
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 
-interface MiniCartNewWidgetListener : MiniCartWidgetListener {
+interface MiniCartV2WidgetListener : MiniCartWidgetListener {
 
     fun onChevronClickListener() {
         /* no-op */

@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.minicart.cartlist.MiniCartListNewBottomSheet
 import com.tokopedia.minicart.common.simplified.MiniCartSimplifiedWidget
-import com.tokopedia.minicart.common.widget.MiniCartNewWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.general.MiniCartGeneralWidget
+import com.tokopedia.minicart.v2.MiniCartV2Widget
 import dagger.Component
 
 @ActivityScope
@@ -15,6 +15,6 @@ interface MiniCartWidgetComponent {
     fun inject(miniCartWidget: MiniCartWidget)
     fun inject(miniCartGeneralWidget: MiniCartGeneralWidget)
     fun inject(miniCartSimplifiedWidget: MiniCartSimplifiedWidget)
-    fun inject(miniCartNewWidget: MiniCartNewWidget)
+    fun inject(miniCartV2Widget: MiniCartV2Widget)
     fun inject(miniCartListNewBottomSheet: MiniCartListNewBottomSheet)
 }

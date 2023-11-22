@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.common.widget
+package com.tokopedia.minicart.v2
 
 import android.app.Activity
 import android.app.Application
@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
@@ -29,11 +30,11 @@ import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomShee
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
-import com.tokopedia.minicart.databinding.WidgetMiniCartNewBinding
+import com.tokopedia.minicart.databinding.WidgetMiniCartV2Binding
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -43,11 +44,11 @@ import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.globalerror.R as globalerrorR
 
-class MiniCartNewWidget @JvmOverloads constructor(
+class MiniCartV2Widget @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr) {
+) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -58,17 +59,17 @@ class MiniCartNewWidget @JvmOverloads constructor(
     @Inject
     lateinit var globalErrorBottomSheet: GlobalErrorBottomSheet
 
-    var binding: WidgetMiniCartNewBinding? = null
+    var binding: WidgetMiniCartV2Binding? = null
 
-    private var config: MiniCartNewWidgetConfig = MiniCartNewWidgetConfig()
-    private var miniCartWidgetListener: MiniCartNewWidgetListener? = null
+    private var config: MiniCartV2WidgetConfig = MiniCartV2WidgetConfig()
+    private var miniCartWidgetListener: MiniCartV2WidgetListener? = null
     private var progressDialog: AlertDialog? = null
 
-    private var viewModel: MiniCartViewModel? = null
+    private var viewModel: MiniCartV2ViewModel? = null
 
     init {
-        binding = WidgetMiniCartNewBinding.inflate(LayoutInflater.from(context), this, true)
-        binding?.miniCartContainer?.setOnClickListener {
+        binding = WidgetMiniCartV2Binding.inflate(LayoutInflater.from(context), this)
+        setOnClickListener {
             // prevent click event from passing through
         }
         val application = (context as? Activity)?.application
@@ -93,8 +94,8 @@ class MiniCartNewWidget @JvmOverloads constructor(
     }
 
     fun initialize(
-        config: MiniCartNewWidgetConfig,
-        listener: MiniCartNewWidgetListener
+        config: MiniCartV2WidgetConfig,
+        listener: MiniCartV2WidgetListener
     ) {
         this.config = config
         initializeView(config)
@@ -106,7 +107,7 @@ class MiniCartNewWidget @JvmOverloads constructor(
         }
     }
 
-    private fun initializeView(config: MiniCartNewWidgetConfig) {
+    private fun initializeView(config: MiniCartV2WidgetConfig) {
         binding?.miniCartTotalAmount?.apply {
             topContentView.visibility = if (config.showTopShadow) View.VISIBLE else View.GONE
             amountCtaView.setOnClickListener {
@@ -136,12 +137,12 @@ class MiniCartNewWidget @JvmOverloads constructor(
         }
     }
 
-    private fun initializeListener(listener: MiniCartNewWidgetListener) {
+    private fun initializeListener(listener: MiniCartV2WidgetListener) {
         miniCartWidgetListener = listener
     }
 
     private fun initializeViewModel(owner: ViewModelStoreOwner, lifecycleOwner: LifecycleOwner) {
-        viewModel = ViewModelProvider(owner, viewModelFactory)[MiniCartViewModel::class.java]
+        viewModel = ViewModelProvider(owner, viewModelFactory)[MiniCartV2ViewModel::class.java]
         viewModel?.initializeGlobalState()
         observeGlobalEvent(lifecycleOwner)
         observeMiniCartWidgetUiModel(lifecycleOwner)
@@ -531,7 +532,7 @@ class MiniCartNewWidget @JvmOverloads constructor(
         private const val CROSSED_TEXT_FORMAT = "<del>%s</del>"
     }
 
-    data class MiniCartNewWidgetConfig(
+    data class MiniCartV2WidgetConfig(
         val showTopShadow: Boolean = true, // config
         val showChevron: Boolean = true, // config
         val showOriginalTotalPrice: Boolean = false, // ?

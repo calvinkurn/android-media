@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:background="@color/Unify_RN100" />
 
-        <com.tokopedia.minicart.common.widget.MiniCartNewWidget
+        <com.tokopedia.minicart.v2.MiniCartV2Widget
             android:id="@+id/test_mini_cart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
