@@ -29,7 +29,7 @@ open class TokoChatRoomUseCase @Inject constructor(
         )
     }
 
-    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?>? {
+    open fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?>? {
         return repository.getConversationRepository()?.getLiveChannel(channelId)
     }
 
