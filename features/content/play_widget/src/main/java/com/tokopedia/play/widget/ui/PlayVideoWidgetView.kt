@@ -9,6 +9,7 @@ import android.widget.ImageView
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.BehindLiveWindowException
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -18,6 +19,7 @@ import com.tokopedia.play.widget.databinding.ViewPlayVideoWidgetBinding
 import com.tokopedia.play.widget.player.VideoPlayer
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.toPx
 
 /**
  * Created by kenny.hadisaputra on 19/10/23
@@ -136,7 +138,15 @@ class PlayVideoWidgetView : CardUnify2 {
         binding.totalWatchView.setTotalWatch(model.totalView)
         binding.imgCover.loadImage(model.coverUrl) {
             listener(
-                onSuccess = { _, _ -> binding.imgCover.scaleType = ImageView.ScaleType.CENTER_CROP }
+                onSuccess = { _, _ -> binding.imgCover.scaleType = ImageView.ScaleType.CENTER_CROP },
+                onError = { _ ->
+                    binding.imgCover.run {
+                        layoutParams.height = COVER_ERROR_HEIGHT.toPx()
+                        layoutParams.width = COVER_ERROR_WIDTH.toPx()
+                        scaleType = ImageView.ScaleType.CENTER_CROP
+                        requestLayout()
+                    }
+                }
             )
         }
         binding.tvTitle.text = model.title
@@ -144,6 +154,9 @@ class PlayVideoWidgetView : CardUnify2 {
         binding.imgBadge.showWithCondition(model.badgeUrl.isNotBlank())
         binding.imgBadge.loadImage(model.badgeUrl)
         binding.tvPartnerName.text = model.partnerName
+        binding.llPartnerCredibility.setOnClickListener {
+            RouteManager.route(context, model.shopAppLink)
+        }
         binding.tvLiveBadge.root.showWithCondition(model.isLive)
 
         bindPlayer(model)
@@ -216,6 +229,11 @@ class PlayVideoWidgetView : CardUnify2 {
                 return FollowWidth
             }
         }
+    }
+
+    companion object {
+        const val COVER_ERROR_HEIGHT = 132
+        const val COVER_ERROR_WIDTH = 132
     }
 
     interface Listener {

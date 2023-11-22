@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.domain.gql.recommendationcard
 
+
 import com.google.gson.annotations.SerializedName
 
 data class PlayVideoWidgetResponse(
@@ -29,6 +30,8 @@ data class PlayVideoWidgetResponse(
     val product: Product = Product(),
     @SerializedName("promo")
     val promo: Promo = Promo(),
+    @SerializedName("recommendationType")
+    val recommendationType: String = "",
     @SerializedName("share")
     val share: Share = Share(),
     @SerializedName("stats")
@@ -58,14 +61,14 @@ data class PlayVideoWidgetResponse(
         val activeMediaID: Int = 0,
         @SerializedName("autoPlay")
         val autoPlay: Boolean = false,
+        @SerializedName("isLive")
+        val isLive: Boolean = false,
         @SerializedName("coverURL")
         val coverURL: String = "",
         @SerializedName("endTime")
         val endTime: String = "",
         @SerializedName("groupID")
         val groupID: String = "0",
-        @SerializedName("isLive")
-        val isLive: Boolean = false,
         @SerializedName("pinnedMessage")
         val pinnedMessage: PinnedMessage = PinnedMessage(),
         @SerializedName("startTime")
@@ -80,6 +83,13 @@ data class PlayVideoWidgetResponse(
         val type: Type = Type()
     ) {
         class PinnedMessage
+
+        data class Timestamp(
+            @SerializedName("createdAt")
+            val createdAt: String = "",
+            @SerializedName("publishedAt")
+            val publishedAt: String = ""
+        )
     }
 
     data class Category(
@@ -120,6 +130,25 @@ data class PlayVideoWidgetResponse(
         )
     }
 
+    data class Product(
+        @SerializedName("productAttributes")
+        val productAttributes: List<ProductAttribute> = listOf(),
+        @SerializedName("totalProduct")
+        val totalProduct: Int = 0
+    ) {
+        data class ProductAttribute(
+            @SerializedName("discountPercentage")
+            val discountPercentage: Int = 0,
+            @SerializedName("productID")
+            val productID: Long = 0
+        )
+    }
+
+    data class Promo(
+        @SerializedName("state")
+        val state: State = State()
+    )
+
     data class Share(
         @SerializedName("metaTitle")
         val metaTitle: String = "",
@@ -129,17 +158,12 @@ data class PlayVideoWidgetResponse(
         val text: String = ""
     )
 
-    data class Product(
-        @SerializedName("productAttributes")
-        val productAttributes: List<ProductAttribute> = listOf(),
-        @SerializedName("totalProduct")
-        val totalProduct: Int = 0
-    ) {
-        data class ProductAttribute(
-            @SerializedName("productID")
-            val productID: Long = 0
-        )
-    }
+    data class State(
+        @SerializedName("description")
+        val description: String = "",
+        @SerializedName("id")
+        val id: String = "0"
+    )
 
     data class Stats(
         @SerializedName("commentFmt")
@@ -154,13 +178,6 @@ data class PlayVideoWidgetResponse(
         val viewFmt: String = ""
     )
 
-    data class Promo(
-        @SerializedName("state")
-        val state: State = State()
-    ) {
-        class State
-    }
-
     data class Status(
         @SerializedName("id")
         val id: String = "0",
@@ -174,11 +191,4 @@ data class Type(
     val id: String = "0",
     @SerializedName("text")
     val text: String = ""
-)
-
-data class Timestamp(
-    @SerializedName("createdAt")
-    val createdAt: String = "",
-    @SerializedName("publishedAt")
-    val publishedAt: String = ""
 )

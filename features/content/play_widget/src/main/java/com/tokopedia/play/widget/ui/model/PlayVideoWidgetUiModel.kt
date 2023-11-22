@@ -16,7 +16,8 @@ data class PlayVideoWidgetUiModel(
     val badgeUrl: String = "",
     val isLive: Boolean = false,
     val isAutoPlay: Boolean = false,
-    val duration: Duration = Duration.INFINITE
+    val duration: Duration = Duration.INFINITE,
+    val shopAppLink: String = ""
 ) {
     companion object {
         val Empty = PlayVideoWidgetUiModel(

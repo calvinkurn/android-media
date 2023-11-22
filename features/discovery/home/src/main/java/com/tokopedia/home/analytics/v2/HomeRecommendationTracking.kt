@@ -408,7 +408,6 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                         Promotion.ITEM_NAME,
                         ITEM_NAME_FOR_YOU_VIDEO_FORMAT.format(
                             itemPosition,
-                            RECOMMENDATION_CARD_FOR_YOU,
                             playWidgetTrackerModel.categoryId,
                             playWidgetTrackerModel.layoutCard,
                             playWidgetTrackerModel.layoutItem,
@@ -437,7 +436,6 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
         val itemName = ITEM_NAME_FOR_YOU_VIDEO_FORMAT.format(
             itemPosition,
-            RECOMMENDATION_CARD_FOR_YOU,
             playWidgetTrackerModel.categoryId,
             playWidgetTrackerModel.layoutCard,
             playWidgetTrackerModel.layoutItem,

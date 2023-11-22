@@ -94,8 +94,7 @@ class HomeRecommendationCardMapper @Inject constructor(
                                 mapToHomeRecommendationPlayWidget(
                                     layoutCard = card.layout,
                                     layoutTracker = card.layoutTracker,
-                                    playVideoWidgetResponse = it,
-                                    recommendationType = card.recommendationType
+                                    playVideoWidgetResponse = it
                                 )
                             )
                         }
@@ -110,10 +109,11 @@ class HomeRecommendationCardMapper @Inject constructor(
         )
     }
 
+    //recommendationType = kosong gak ada result
+    //cat_id di item_name -> recommendation card for you, harusnya categoryId
     private fun mapToHomeRecommendationPlayWidget(
         layoutCard: String,
         layoutTracker: String,
-        recommendationType: String,
         playVideoWidgetResponse: PlayVideoWidgetResponse
     ): HomeRecommendationPlayWidgetUiModel {
         return HomeRecommendationPlayWidgetUiModel(
@@ -128,13 +128,14 @@ class HomeRecommendationCardMapper @Inject constructor(
                 videoUrl = playVideoWidgetResponse.medias.firstOrNull()?.mediaURL.orEmpty(),
                 badgeUrl = playVideoWidgetResponse.author.badge,
                 isLive = playVideoWidgetResponse.basic.isLive,
-                isAutoPlay = playVideoWidgetResponse.basic.autoPlay
+                isAutoPlay = playVideoWidgetResponse.basic.autoPlay,
+                shopAppLink = playVideoWidgetResponse.author.appLink
             ),
             playVideoTrackerUiModel = HomeRecommendationPlayWidgetUiModel.HomeRecommendationPlayVideoTrackerUiModel(
                 videoType = playVideoWidgetResponse.basic.type.text,
                 partnerId = playVideoWidgetResponse.author.id,
                 playChannelId = playVideoWidgetResponse.contentOriginID,
-                recommendationType = recommendationType,
+                recommendationType = playVideoWidgetResponse.recommendationType,
                 layoutCard = layoutCard,
                 layoutItem = layoutTracker,
                 categoryId = (playVideoWidgetResponse.category.dominantL3.firstOrNull() ?: "").toString()
