@@ -32,7 +32,7 @@ class FeedProductButtonView(
     private var animationOn = false
     private val animationAssets = context.getString(contentcommonR.string.feed_anim_product_icon)
     private val animationTimerDelay by lazyThreadSafetyNone {
-        object : CountDownTimer(PRODUCT_ICON_ANIM_REPEAT_DELAY, DELAY_MILLIS) {
+        object : CountDownTimer(PRODUCT_ICON_ANIM_REPEAT_DELAY, PRODUCT_ICON_COUNT_DOWN_INTERVAL) {
             override fun onTick(millisUntilFinished: Long) {}
             override fun onFinish() {
                 binding.lottieProductSeeMore.playAnimation()
@@ -197,6 +197,6 @@ class FeedProductButtonView(
         private const val NINETY_NINE_PLUS = "99+"
         private const val PRODUCT_ICON_ANIM_REPEAT_COUNT = 2
         private const val PRODUCT_ICON_ANIM_REPEAT_DELAY = 10000L
-        private const val DELAY_MILLIS = 1000L
+        private const val PRODUCT_ICON_COUNT_DOWN_INTERVAL = 1000L
     }
 }
