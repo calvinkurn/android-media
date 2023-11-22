@@ -690,12 +690,6 @@ class UniversalInboxFragment @Inject constructor(
         if (position.isNotEmpty()) {
             intent.putExtra(PDP_EXTRA_UPDATED_POSITION, position[Int.ZERO])
         }
-        viewModel.processAction(
-            UniversalInboxAction.SaveUserScrollState(
-                currentPos = getUserCurrentProductRecommendationPosition(),
-                totalItem = adapter.itemCount
-            )
-        )
         viewModel.processAction(UniversalInboxAction.NavigateWithIntent(intent))
     }
 

@@ -18,7 +18,6 @@ import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetInboxM
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetProductRecommendationUseCase
 import com.tokopedia.inbox.universalinbox.util.Result
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.INBOX_ADS_REFRESH_KEY
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.INBOX_SCROLL_VALUE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxAutoScrollUiState
@@ -151,9 +150,6 @@ class UniversalInboxViewModel @Inject constructor(
                 }
                 is UniversalInboxAction.LoadNextPage -> {
                     loadProductRecommendation()
-                }
-                is UniversalInboxAction.SaveUserScrollState -> {
-                    saveUserScrollState(it.currentPos, it.totalItem)
                 }
                 is UniversalInboxAction.ResetUserScrollState -> {
                     resetUserScrollState()
@@ -320,20 +316,17 @@ class UniversalInboxViewModel @Inject constructor(
     ) {
         when (result) {
             is Result.Success -> {
+                val productRecommendation = result.data.recommendationItemList.map { item ->
+                    UniversalInboxRecommendationUiModel(item)
+                }
                 _productRecommendationState.update {
                     it.copy(
                         isLoading = false,
                         title = result.data.title,
-                        productRecommendation = result.data.recommendationItemList.map { item ->
-                            UniversalInboxRecommendationUiModel(item)
-                        }
+                        productRecommendation = productRecommendation
                     )
                 }
                 page++
-                val shouldScroll = _autoScrollUiState.value.shouldScroll
-                if (shouldScroll) {
-                    autoScrollRecommendation()
-                }
             }
             is Result.Error -> {
                 setLoadingRecommendation(false)
@@ -531,24 +524,9 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    private fun saveUserScrollState(currentPos: Int, totalItem: Int) {
-        // Save User Scroll State before come back to Inbox Page
-        _autoScrollUiState.update {
-            it.copy(
-                currentPosition = currentPos,
-                totalItem = totalItem,
-                shouldScroll = false
-            )
-        }
-    }
-
     private fun resetUserScrollState() {
         _autoScrollUiState.update {
-            it.copy(
-                currentPosition = -1,
-                totalItem = 0,
-                shouldScroll = false
-            )
+            it.copy(shouldScroll = false)
         }
     }
 
@@ -562,17 +540,8 @@ class UniversalInboxViewModel @Inject constructor(
     private fun autoScrollRecommendation() {
         viewModelScope.launch {
             if (checkAutoScrollEligibility()) {
-                val totalItem = _autoScrollUiState.value.totalItem
-                val currentPos = _autoScrollUiState.value.currentPosition
-                if (totalItem > currentPos + INBOX_SCROLL_VALUE) {
-                    _autoScrollUiState.update {
-                        it.copy(shouldScroll = true)
-                    }
-                } else {
-                    loadProductRecommendation() // Load next page
-                    _autoScrollUiState.update {
-                        it.copy(shouldScroll = false)
-                    }
+                _autoScrollUiState.update {
+                    it.copy(shouldScroll = true)
                 }
             } else {
                 // Reset, so it won't trigger anything

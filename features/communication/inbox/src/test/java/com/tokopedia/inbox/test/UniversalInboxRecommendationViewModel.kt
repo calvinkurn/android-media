@@ -289,8 +289,6 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
     fun `auto scroll recommendation, update state to true `() {
         runTest {
             // Given
-            val dummyCurrentPos = 1
-            val dummyTotalItem = 10
             every {
                 abTestPlatform.getString(any(), any())
             } returns INBOX_ADS_REFRESH_KEY
@@ -299,60 +297,22 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 // When
                 viewModel.setupViewModelObserver()
                 viewModel.processAction(
-                    UniversalInboxAction.SaveUserScrollState(dummyCurrentPos, dummyTotalItem)
-                )
-                viewModel.processAction(
                     UniversalInboxAction.AutoScrollRecommendation
                 )
 
-                skipItems(2) // initial & save state value
+                skipItems(1) // initial state value
 
                 // Then
                 val updatedValue = awaitItem()
                 assertEquals(true, updatedValue.shouldScroll)
-                assertEquals(dummyCurrentPos, updatedValue.currentPosition)
-                assertEquals(dummyTotalItem, updatedValue.totalItem)
             }
         }
     }
 
     @Test
-    fun `auto scroll recommendation more than total item, update state to false `() {
+    fun `auto scroll recommendation with rollence off, reset state`() {
         runTest {
             // Given
-            val dummyCurrentPos = 8
-            val dummyTotalItem = 10
-            every {
-                abTestPlatform.getString(any(), any())
-            } returns INBOX_ADS_REFRESH_KEY
-
-            viewModel.autoScrollUiState.test {
-                // When
-                viewModel.setupViewModelObserver()
-                viewModel.processAction(
-                    UniversalInboxAction.SaveUserScrollState(dummyCurrentPos, dummyTotalItem)
-                )
-                viewModel.processAction(
-                    UniversalInboxAction.AutoScrollRecommendation
-                )
-
-                skipItems(1) // initial
-
-                // Then
-                val updatedValue = awaitItem() // same as save state value
-                assertEquals(false, updatedValue.shouldScroll)
-                assertEquals(dummyCurrentPos, updatedValue.currentPosition)
-                assertEquals(dummyTotalItem, updatedValue.totalItem)
-            }
-        }
-    }
-
-    @Test
-    fun `auto scroll recommendation with rollence off, reset state `() {
-        runTest {
-            // Given
-            val dummyCurrentPos = 1
-            val dummyTotalItem = 10
             every {
                 abTestPlatform.getString(any(), any())
             } returns ""
@@ -361,50 +321,12 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 // When
                 viewModel.setupViewModelObserver()
                 viewModel.processAction(
-                    UniversalInboxAction.SaveUserScrollState(dummyCurrentPos, dummyTotalItem)
-                )
-                viewModel.processAction(
                     UniversalInboxAction.AutoScrollRecommendation
                 )
-
-                skipItems(2) // initial & save state value
 
                 // Then
                 val value = awaitItem()
                 assertEquals(false, value.shouldScroll)
-                assertEquals(-1, value.currentPosition)
-                assertEquals(0, value.totalItem)
-
-                cancelAndConsumeRemainingEvents()
-            }
-        }
-    }
-
-    @Test
-    fun `save user scroll state, update auto scroll ui state`() {
-        runTest {
-            // Given
-            val dummyCurrentPos = 1
-            val dummyTotalItem = 10
-            viewModel.autoScrollUiState.test {
-                // When
-                viewModel.setupViewModelObserver()
-                viewModel.processAction(
-                    UniversalInboxAction.SaveUserScrollState(dummyCurrentPos, dummyTotalItem)
-                )
-
-                // Then
-                val initialValue = awaitItem()
-                assertEquals(false, initialValue.shouldScroll)
-                assertEquals(-1, initialValue.currentPosition)
-                assertEquals(0, initialValue.totalItem)
-
-                val updatedValue = awaitItem()
-                assertEquals(false, updatedValue.shouldScroll)
-                assertEquals(dummyCurrentPos, updatedValue.currentPosition)
-                assertEquals(dummyTotalItem, updatedValue.totalItem)
-
-                cancelAndConsumeRemainingEvents()
             }
         }
     }
@@ -421,10 +343,6 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 // Then
                 val initialValue = awaitItem()
                 assertEquals(false, initialValue.shouldScroll)
-                assertEquals(-1, initialValue.currentPosition)
-                assertEquals(0, initialValue.totalItem)
-
-                cancelAndConsumeRemainingEvents()
             }
         }
     }
