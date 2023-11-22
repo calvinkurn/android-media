@@ -35,22 +35,39 @@ class SaldoWithdrawalViewModel @Inject constructor(
 
     val shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet = MutableLiveData<Pair<Boolean, Long>>()
 
-    fun getValidatePopUpData(bankAccount: BankAccount, shopID: String, withdrawalAmount: Long) {
+    fun getValidatePopUpData(bankAccount: BankAccount, shopID: String, withdrawalAmount: Long, isSeller: Boolean) {
         launchCatchError(block = {
             val popUp = async { validatePopUpUseCase.getValidatePopUpData(bankAccount) }
-            val topadsAutoTopupRecom = async { topadsAutoTopupWithdrawRecomUseCase(shopID) }
 
-            when(val topadsAutoTopupRecomData = topadsAutoTopupRecom.await()) {
-                is Success -> {
-                    val recomAmount = topadsAutoTopupRecomData.data.topAdsAutoTopupWithdrawalRecom.data.recommendationValue
-                    val isWDAmountGreaterThanRecom = withdrawalAmount > recomAmount
-                    shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.postValue(
-                        Pair(isWDAmountGreaterThanRecom, recomAmount.toLong())
+            if (isSeller) {
+                val topadsAutoTopupRecom = async { topadsAutoTopupWithdrawRecomUseCase(shopID) }
+                when (val topadsAutoTopupRecomData = topadsAutoTopupRecom.await()) {
+                    is Success -> {
+                        val recomAmount =
+                            topadsAutoTopupRecomData.data.topAdsAutoTopupWithdrawalRecom.data.recommendationValue
+                        val isWDAmountGreaterThanRecom = withdrawalAmount > recomAmount
+                        val isAutoTopadsActive = topadsAutoTopupRecomData.data.topAdsAutoTopupWithdrawalRecom.data.autoTopUpStatus > Int.ZERO
+                        shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.postValue(
+                            Pair(isWDAmountGreaterThanRecom || isAutoTopadsActive, recomAmount.toLong())
+                        )
+                    }
+
+                    is Fail -> {
+                        shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.postValue(
+                            Pair(
+                                false,
+                                Long.ZERO
+                            )
+                        )
+                    }
+                }
+            } else {
+                shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.postValue(
+                    Pair(
+                        false,
+                        Long.ZERO
                     )
-                }
-                is Fail -> {
-                    shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.postValue(Pair(false, Long.ZERO))
-                }
+                )
             }
 
             when (val popUpData = popUp.await()) {

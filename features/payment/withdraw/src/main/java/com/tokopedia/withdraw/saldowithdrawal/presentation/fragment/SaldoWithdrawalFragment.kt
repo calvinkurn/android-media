@@ -429,7 +429,12 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                 userId = userSession.get().userId, email = userSession.get().email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
                 isSellerWithdrawal = false, programName = getProgramName(), isJoinRekeningPremium = false)
-        saldoWithdrawalViewModel.getValidatePopUpData(selectedBankAccount, userSession.get().shopId, withdrawalAmount)
+        saldoWithdrawalViewModel.getValidatePopUpData(
+            selectedBankAccount,
+            userSession.get().shopId,
+            withdrawalAmount,
+            false,
+        )
     }
 
     fun initiateSellerWithdrawal(selectedBankAccount: BankAccount, withdrawalAmount: Long) {
@@ -439,7 +444,12 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                 userId = userSession.get().userId, email = userSession.get().email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
                 isSellerWithdrawal = true, programName = getProgramName(), isJoinRekeningPremium = false)
-        saldoWithdrawalViewModel.getValidatePopUpData(selectedBankAccount, userSession.get().shopId, withdrawalAmount)
+        saldoWithdrawalViewModel.getValidatePopUpData(
+            selectedBankAccount,
+            userSession.get().shopId,
+            withdrawalAmount,
+            true
+        )
     }
 
     private fun checkAndCreateValidatePopup(validatePopUpWithdrawal: ValidatePopUpWithdrawal) {
@@ -458,16 +468,6 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                 }
             }
             else -> {
-                if (saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.first == true) {
-                    val recommendedAmount = saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.value?.second ?: 0
-                    context?.let {
-                        val intent = AutoTopAdsBottomSheetActivity.getInstance(
-                            it, withdrawalRequest.withdrawal, recommendedAmount
-                        )
-                        startActivityForResult(intent, AUTO_TOPADS_RECOMMENDATION_CODE)
-                        return
-                    }
-                }
                 if (shouldShowAutoTopAdsRecomDialog()) return
                 openUserVerificationScreen()
             }

@@ -51,22 +51,22 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
         android:layout_marginTop="16dp"
-        android:paddingTop="6dp"
-        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingStart="12dp"
         android:text="@string/swd_dialog_auto_topads_original_amount_title"
         android:elevation="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvAutoTopadsDescription"
-        app:typographyType="paragraph_2"/>
+        app:typographyType="paragraph_3"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTotalWithdrawAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
-        android:paddingBottom="6dp"
+        android:paddingBottom="8dp"
         android:elevation="2dp"
-        android:paddingStart="8dp"
+        android:paddingStart="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTotalWithdrawTitle"
         app:typographyType="paragraph_2"/>
@@ -98,10 +98,10 @@
         android:text="@string/swd_dialog_auto_topads_recommended_amount_title"
         android:layout_marginStart="8dp"
         android:elevation="2dp"
-        android:paddingTop="6dp"
+        android:paddingTop="8dp"
         app:layout_constraintStart_toEndOf="@id/icRightArrow"
         app:layout_constraintTop_toTopOf="@id/tvTotalWithdrawTitle"
-        app:typographyType="paragraph_2"
+        app:typographyType="paragraph_3"
         app:typographyWeight="bold"/>
 
     <com.tokopedia.unifyprinciples.Typography
