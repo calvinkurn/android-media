@@ -41,6 +41,8 @@ import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
+import com.tokopedia.review.feature.reading.data.AvailableFilters
+import com.tokopedia.review.feature.reading.data.Keyword
 import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.data.ProductReviewDetail
@@ -438,10 +440,38 @@ open class ReadReviewFragment :
         }
     }
 
-    override fun onFilterTopic(keywords: List<String>) {
+    override fun onFilterTopic(keyword: String) {
         clearAllData()
         showListOnlyLoading()
-        viewModel.setTopicFilter(keywords, isProductReview)
+        viewModel.setTopicFilter(keyword, isProductReview)
+    }
+
+    override fun onClickTopicChip(keyword: Keyword, position: Int, isActive: Boolean) {
+        ReadReviewTracking.trackOnClickChipTopicExtraction(
+            productId = viewModel.getProductId(),
+            position = position,
+            keyword = keyword,
+            isActive = isActive,
+            userId = viewModel.userId,
+            trackingQueue = trackingQueue
+        )
+    }
+
+    override fun onImpressTopicChip(keyword: Keyword, position: Int) {
+        ReadReviewTracking.trackOnImpressChipTopicExtraction(
+            productId = viewModel.getProductId(),
+            position = position,
+            keyword = keyword,
+            userId = viewModel.userId,
+            trackingQueue = trackingQueue
+        )
+    }
+
+    override fun onClickLihatSemua() {
+        ReadReviewTracking.onClickLihatSemuaTopicExtraction(
+            productId = viewModel.getProductId(),
+            userId = viewModel.userId
+        )
     }
 
     override fun onFilterWithRatingClicked(index: Int, isActive: Boolean) {
@@ -711,7 +741,10 @@ open class ReadReviewFragment :
         } else {
             getShopIdFromArguments()
         }
-        loadData(defaultInitialPage)
+
+        val selectedTopic = selectedTopic ?: ""
+        if (selectedTopic.isNotEmpty()) viewModel.setTopicFilter(selectedTopic, isProductReview)
+        else loadData(defaultInitialPage)
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
@@ -905,6 +938,7 @@ open class ReadReviewFragment :
         reviewHeader?.apply {
             setRatingData(ratingAndTopics.rating)
             setListener(this@ReadReviewFragment)
+            setTopicExtraction(ratingAndTopics.keywords, selectedTopic, this@ReadReviewFragment)
             setAvailableFilters(
                 ratingAndTopics.topics,
                 ratingAndTopics.availableFilters,
@@ -912,7 +946,6 @@ open class ReadReviewFragment :
             )
             getRecyclerView(view)?.show()
             setHighlightedTopics(ratingAndTopics.topics, this@ReadReviewFragment)
-            setAvailableTopics(ratingAndTopics.keywords, selectedTopic, this@ReadReviewFragment)
             setSeeAll(false)
             show()
         }

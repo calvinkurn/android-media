@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/extracted_topic_group"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chip_medium_height"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
+        app:chipSpacing="8dp" />
+
+    <LinearLayout
+        android:id="@+id/extracted_topic_expand"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/extracted_topic_expand"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="paragraph_3" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:icon_name="CHEVRON_DOWN" />
+
+    </LinearLayout>
+
+</LinearLayout>

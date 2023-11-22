@@ -38,7 +38,8 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
     }
 
     init {
-        binding.root.layoutManager = ReviewMediaThumbnailLayoutManager(context)
+//        binding.root.layoutManager = ReviewMediaThumbnailLayoutManager(context)
+        binding.root.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
     fun setData(data: ReviewMediaThumbnailUiModel) {

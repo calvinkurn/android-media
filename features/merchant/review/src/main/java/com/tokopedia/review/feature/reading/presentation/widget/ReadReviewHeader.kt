@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reading.presentation.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
@@ -9,7 +10,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
+import com.google.android.material.chip.ChipGroup
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -60,7 +64,7 @@ class ReadReviewHeader @JvmOverloads constructor(
     private var isProductReview: Boolean = true
     private var topicFilterChipIndex: Int = 0
 
-    private val selectedTopics = mutableSetOf<String>()
+    private var isTopicExtraction = false
 
     init {
         setupViews()
@@ -153,7 +157,7 @@ class ReadReviewHeader @JvmOverloads constructor(
             }
             filter.add(ratingFilter)
         }
-        if (availableFilters.topics) {
+        if (availableFilters.topics && !isTopicExtraction) {
             val topicFilter = getSortFilterItem(context.getString(R.string.review_reading_filter_all_topics))
             setListenerAndChevronListener(topicFilter) { listener.onFilterWithTopicClicked(topics, getIndexOfSortFilter(topicFilter), isChipsActive(topicFilter.type)) }
             filter.add(topicFilter)
@@ -282,53 +286,20 @@ class ReadReviewHeader @JvmOverloads constructor(
         }
     }
 
-    fun setAvailableTopics(
+    fun setTopicExtraction(
         keywords: List<Keyword>,
-        selectedTopic: String?,
+        preselectKeyword: String?,
         listener: ReadReviewFilterChipsListener
     ) {
         if (keywords.isEmpty()) return
         binding.readReviewHighlightedTopicLeft.gone()
         binding.readReviewHighlightedTopicRight.gone()
-        val chipGroup = binding.readReviewTopics
-        keywords.forEach { keyword ->
-            val chip = ChipsUnify(context).apply {
-                chipText = "%s (%s)".format(keyword.text, keyword.count)
-                setOnClickListener {
-                    if (isSelected) {
-                        chipType = ChipsUnify.TYPE_NORMAL
-                        selectedTopics.remove(keyword.text)
-                    } else {
-                        chipType = ChipsUnify.TYPE_SELECTED
-                        selectedTopics.add(keyword.text)
-                    }
-                    isSelected = !isSelected
-                    listener.onFilterTopic(selectedTopics.toList())
-                }
-                if (selectedTopic == keyword.text) {
-                    chipType = ChipsUnify.TYPE_SELECTED
-                    selectedTopics.add(keyword.text)
-                }
-            }
-            chipGroup.addView(chip)
-        }
 
-        chipGroup.addOneTimeGlobalLayoutListener {
-            val targetHeight =
-                resources.getDimension(unifycomponentsR.dimen.chip_medium_height) + chipGroup.paddingTop + chipGroup.paddingBottom
-            if (chipGroup.height > targetHeight) {
-                chipGroup.updateLayoutParams {
-                    height = targetHeight.toInt()
-                }
-                binding.readReviewTopicsExpanding.show()
-                binding.readReviewTopicsExpanding.setOnClickListener {
-                    chipGroup.updateLayoutParams {
-                        height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    }
-                    it.gone()
-                }
-            }
-        }
+        binding.readReviewExtractedTopic.listener = listener
+        binding.readReviewExtractedTopic.preselectKeyword = preselectKeyword
+        binding.readReviewExtractedTopic.keywords = keywords
+
+        isTopicExtraction = true
     }
 
     fun updateFilter(selectedFilter: Set<ListItemUnify>, sortFilterBottomSheetType: SortFilterBottomSheetType, index: Int) {

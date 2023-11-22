@@ -298,11 +298,11 @@ class ReadReviewViewModel @Inject constructor(
     }
 
     fun setTopicFilter(
-        keywords: List<String>,
+        keyword: String,
         isProductReview: Boolean
     ) {
-        this.filter.topic = if (keywords.isEmpty()) null
-        else FilterType.FilterTopic(keywords.joinToString(","))
+        this.filter.topic = if (keyword.isEmpty()) null
+        else FilterType.FilterTopic(keyword)
         resetPage(isProductReview)
     }
 
