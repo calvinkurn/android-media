@@ -186,10 +186,6 @@ class CheckoutDropshipWidget : ConstraintLayout {
 
                 override fun afterTextChanged(p0: Editable?) {}
             })
-
-            editText.setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) editText.requestFocus()
-            }
         }
     }
 
