@@ -54,16 +54,20 @@ class ProductReviewViewHolder(
         RatingKeywordAdapter(callback = callback, pdpListener = listener).also(::setupRvKeyword)
     }
 
+    private val keywordLayoutManager by lazyThreadSafetyNone {
+        LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+    }
+
     private fun setupRvKeyword(ratingKeywordAdapter: RatingKeywordAdapter) {
         binding.rvKeyword.apply {
             adapter = ratingKeywordAdapter
-            layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = keywordLayoutManager
             addItemDecoration(ItemSpaceDecorator(space = KEYWORD_ITEM_SPACING))
-            optimizeNestRecyclerView()
+            optimizeNestedRecyclerView()
         }
     }
 
-    private fun RecyclerView.optimizeNestRecyclerView() {
+    private fun RecyclerView.optimizeNestedRecyclerView() {
         setRecycledViewPool(listener.getParentRecyclerViewPool())
         setHasFixedSize(true)
     }
