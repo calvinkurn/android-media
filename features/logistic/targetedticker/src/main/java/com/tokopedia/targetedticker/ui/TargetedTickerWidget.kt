@@ -37,7 +37,7 @@ class TargetedTickerWidget : FrameLayout {
     private var onSubmitSuccessListener: (TickerModel) -> TickerModel = { item -> item }
     private var onSubmitErrorListener: (Throwable) -> TickerModel? = { item -> null }
 
-    private val binding = WidgetTargetedTickerBinding.inflate(LayoutInflater.from(context), this).also { addView(it.root) }
+    private val binding = WidgetTargetedTickerBinding.inflate(LayoutInflater.from(context)).also { addView(it.root) }
 
     private val viewModel: TargetedTickerViewModel? by lazy {
         findViewTreeViewModelStoreOwner()?.let { viewModelOwner ->
@@ -53,6 +53,7 @@ class TargetedTickerWidget : FrameLayout {
     }
 
     private fun observeTickerState() {
+
         findViewTreeLifecycleOwner()?.let { treeLifecycleOwner ->
 
             viewModel?.tickerState?.observe(treeLifecycleOwner) { tickerResult ->
