@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.cart.domain.model.cartlist.AddCartToWishlistData
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -236,7 +237,7 @@ class AddCartToWishlistTest : BaseCartTest() {
         )
         val wishlistParam = WishlistV2Params(
             source = "cart",
-            wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
+            wishlistChosenAddress = ChosenAddress(
                 districtId = districtId,
                 cityId = cityId,
                 latitude = lat,
@@ -276,7 +277,7 @@ class AddCartToWishlistTest : BaseCartTest() {
         )
         val wishlistParam = WishlistV2Params(
             source = "cart",
-            wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
+            wishlistChosenAddress = ChosenAddress(
                 districtId = districtId,
                 cityId = cityId,
                 latitude = lat,
@@ -321,7 +322,7 @@ class AddCartToWishlistTest : BaseCartTest() {
         )
         val wishlistParam = WishlistV2Params(
             source = "cart",
-            wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
+            wishlistChosenAddress = ChosenAddress(
                 districtId = districtId,
                 cityId = cityId,
                 latitude = lat,
@@ -365,7 +366,7 @@ class AddCartToWishlistTest : BaseCartTest() {
         )
         val wishlistParam = WishlistV2Params(
             source = "cart",
-            wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
+            wishlistChosenAddress = ChosenAddress(
                 districtId = districtId,
                 cityId = cityId,
                 latitude = lat,
@@ -408,7 +409,7 @@ class AddCartToWishlistTest : BaseCartTest() {
         )
         val wishlistParam = WishlistV2Params(
             source = "cart",
-            wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
+            wishlistChosenAddress = ChosenAddress(
                 districtId = districtId,
                 cityId = cityId,
                 latitude = lat,
@@ -448,7 +449,7 @@ class AddCartToWishlistTest : BaseCartTest() {
         )
         val wishlistParam = WishlistV2Params(
             source = "cart",
-            wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
+            wishlistChosenAddress = ChosenAddress(
                 districtId = districtId,
                 cityId = cityId,
                 latitude = lat,
