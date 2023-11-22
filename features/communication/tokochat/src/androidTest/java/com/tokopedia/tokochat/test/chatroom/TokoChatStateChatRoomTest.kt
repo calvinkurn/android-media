@@ -10,15 +10,10 @@ import org.junit.Test
 @UiTest
 class TokoChatStateChatRoomTest : BaseTokoChatRoomTest() {
 
-    override fun resetDatabase() {
-        super.resetDatabase()
-        resetChannelDetailDatabase()
-    }
-
     @Test
     fun should_show_global_error_when_fail_get_channel_id() {
         // Given
-        ApiResponseStub.channelIdResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().channelIdResponse = ApiResponseModelStub(
             400,
             "channel_id/fail_get_channel_id_invalid_channel.json"
         )
@@ -43,7 +38,7 @@ class TokoChatStateChatRoomTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_unavailable_bottom_sheet() {
         // Given
-        ApiResponseStub.channelIdResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().channelIdResponse = ApiResponseModelStub(
             400,
             "channel_id/fail_get_channel_id_chat_closed.json"
         )
@@ -62,7 +57,7 @@ class TokoChatStateChatRoomTest : BaseTokoChatRoomTest() {
 
         // When
         launchChatRoomActivity()
-        Thread.sleep(7000) // Wait 7s
+        Thread.sleep(3000) // Wait for bottomsheet
 
         // Then
         StateResult.assertGlobalErrorNoConnectionBottomSheet()
@@ -71,7 +66,7 @@ class TokoChatStateChatRoomTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_read_only_chatroom() {
         // Given
-        ApiResponseStub.channelDetailsResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().channelDetailsResponse = ApiResponseModelStub(
             200,
             "channel_details/success_get_channel_details_read_only.json"
         )

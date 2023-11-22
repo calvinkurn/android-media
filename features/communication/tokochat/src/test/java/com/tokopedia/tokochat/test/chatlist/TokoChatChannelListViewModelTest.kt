@@ -28,8 +28,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             val dummyChannelList = getDummyConversationChannelList()
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flow {
                 emit(TokoChatResult.Loading)
@@ -86,8 +85,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             // Given
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flow {
                 emit(TokoChatResult.Loading)
@@ -136,8 +134,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             }
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flow {
                 emit(TokoChatResult.Loading)
@@ -178,8 +175,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             // Given
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flow {
                 emit(TokoChatResult.Loading)
@@ -220,8 +216,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             // Given
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flow {
                 emit(TokoChatResult.Loading)
@@ -264,8 +259,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             // Given
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } throws throwableDummy
 
@@ -289,8 +283,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             // Given
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flowOf()
 
@@ -301,7 +294,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
                 viewModel.processAction(TokoChatListAction.RefreshPage)
 
                 verify(exactly = 2) {
-                    chatListUseCase.fetchAllCachedChannels(any(), any())
+                    chatListUseCase.fetchAllCachedChannels(any())
                 }
 
                 cancelAndConsumeRemainingEvents()
@@ -316,8 +309,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             val dummyChannelList = getDummyConversationChannelList()
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flow { }
 
@@ -359,8 +351,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             val dummyChannelList = getDummyConversationChannelList()
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flow { }
 
@@ -402,8 +393,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             val dummyChannelList = getDummyConversationChannelList()
             every {
                 chatListUseCase.fetchAllCachedChannels(
-                    channelTypes = any(),
-                    defaultBatchSize = any()
+                    channelTypes = any()
                 )
             } returns flow {
                 emit(TokoChatResult.Loading)

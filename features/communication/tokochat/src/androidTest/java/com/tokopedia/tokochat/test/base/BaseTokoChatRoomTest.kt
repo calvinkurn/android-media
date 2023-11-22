@@ -1,6 +1,10 @@
 package com.tokopedia.tokochat.test.base
 
 import android.content.Intent
+import com.gojek.conversations.ConversationsRepository
+import com.gojek.conversations.babble.network.data.OrderChatType
+import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
+import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
@@ -15,8 +19,6 @@ import com.tokopedia.tokochat.view.chatroom.TokoChatActivity
 import com.tokopedia.tokochat.view.chatroom.TokoChatFragment
 import com.tokopedia.usercomponents.userconsent.common.UserConsentComponentProvider
 import com.tokopedia.usercomponents.userconsent.di.UserConsentComponent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import com.tokopedia.tokochat_common.R as tokochat_commonR
@@ -32,6 +34,32 @@ abstract class BaseTokoChatRoomTest : BaseTokoChatTest() {
     override fun before() {
         super.before()
         enableAttachmentMenu()
+        prepareDatabase()
+    }
+
+    // Need to prepare before class,
+    // in case the database is not ready after been deleted from other test class
+    private fun prepareDatabase() {
+        ConversationsRepository.instance!!.initGroupBookingChat(
+            GOJEK_ORDER_ID_DUMMY,
+            TokoChatCommonValueUtil.TOKOFOOD_SERVICE_TYPE,
+            object : ConversationsGroupBookingListener {
+                override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
+                    if (!idlingResourcePrepareDb.isIdleNow) {
+                        idlingResourcePrepareDb.decrement()
+                    }
+                }
+                override fun onGroupBookingChannelCreationStarted() {
+                    idlingResourcePrepareDb.increment()
+                }
+                override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
+                    if (!idlingResourcePrepareDb.isIdleNow) {
+                        idlingResourcePrepareDb.decrement()
+                    }
+                }
+            },
+            OrderChatType.Unknown
+        )
     }
 
     override fun setupDaggerComponent() {
@@ -58,17 +86,6 @@ abstract class BaseTokoChatRoomTest : BaseTokoChatTest() {
             TokoChatFragment.TOKOCHAT_ATTACHMENT_MENU,
             "true"
         )
-    }
-
-    protected fun resetChannelDetailDatabase() {
-        runBlocking(Dispatchers.Main) {
-            try {
-                idlingResourceDatabaseChannel.increment()
-                database.channelDao().deleteChannelById(CHANNEL_ID_DUMMY)
-            } finally {
-                idlingResourceDatabaseChannel.decrement()
-            }
-        }
     }
 
     protected fun launchChatRoomActivity(

@@ -59,7 +59,7 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_image_attachment() {
         // Given
-        ApiResponseStub.chatHistoryResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().chatHistoryResponse = ApiResponseModelStub(
             200,
             "chat_history/success_get_chat_history_image_ext.json"
         )
@@ -113,7 +113,7 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_dummy_image_attachment_when_user_fail_upload_image() {
         // Given
-        ApiResponseStub.imageAttachmentUploadResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().imageAttachmentUploadResponse = ApiResponseModelStub(
             200,
             "image_attachment/fail_upload_image_attachment.json"
         )
@@ -150,8 +150,8 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
     fun should_show_broken_image_attachment_when_user_fail_download_image() {
         // Given
         FileUtil.deleteFolder(TokoChatViewUtil.getTokopediaTokoChatCacheDirectory().absolutePath)
-        ApiResponseStub.imageAttachmentDownloadResponse = ApiResponseModelStub(404, "")
-        ApiResponseStub.chatHistoryResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().imageAttachmentDownloadResponse = ApiResponseModelStub(404, "")
+        ApiResponseStub.getInstance().chatHistoryResponse = ApiResponseModelStub(
             200,
             "chat_history/success_get_chat_history_image_ext.json"
         )
@@ -178,7 +178,7 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_not_supported_attachment_voice_notes() {
         // Given
-        ApiResponseStub.chatHistoryResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().chatHistoryResponse = ApiResponseModelStub(
             200,
             "chat_history/success_get_chat_history_voice_notes_ext.json"
         )
@@ -202,7 +202,7 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_not_supported_attachment_general() {
         // Given
-        ApiResponseStub.chatHistoryResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().chatHistoryResponse = ApiResponseModelStub(
             200,
             "chat_history/success_get_chat_history_sticker_ext.json"
         )
@@ -240,7 +240,7 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_long_message_bubble_message_when_text_too_long() {
         // Given
-        ApiResponseStub.chatHistoryResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().chatHistoryResponse = ApiResponseModelStub(
             200,
             "chat_history/success_get_chat_history_long_message.json"
         )
@@ -257,7 +257,7 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_long_message_bottom_sheet() {
         // Given
-        ApiResponseStub.chatHistoryResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().chatHistoryResponse = ApiResponseModelStub(
             200,
             "chat_history/success_get_chat_history_long_message.json"
         )
@@ -274,7 +274,7 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_admin_message_as_ticker() {
         // Given
-        ApiResponseStub.chatHistoryResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().chatHistoryResponse = ApiResponseModelStub(
             200,
             "chat_history/success_get_chat_history_system.json"
         )
@@ -295,7 +295,7 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_censored_message_when_users_send_blocked_words() {
         // Given
-        ApiResponseStub.chatHistoryResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().chatHistoryResponse = ApiResponseModelStub(
             200,
             "chat_history/success_get_chat_history_censored.json"
         )
@@ -319,7 +319,7 @@ class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_bottomsheet_guide_chat_when_users_click_show_censored() {
         // Given
-        ApiResponseStub.chatHistoryResponse = ApiResponseModelStub(
+        ApiResponseStub.getInstance().chatHistoryResponse = ApiResponseModelStub(
             200,
             "chat_history/success_get_chat_history_censored.json"
         )
