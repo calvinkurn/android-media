@@ -99,7 +99,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -138,8 +137,6 @@ open class TokoChatFragment @Inject constructor(
 
     private val unavailableBottomSheet = TokoChatGeneralUnavailableBottomSheet()
     private val consentBottomSheet = TokoChatConsentBottomSheet()
-
-    private var groupBookingJob: Job? = null
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(
         reminderTickerListener = this,
@@ -202,7 +199,7 @@ open class TokoChatFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        groupBookingJob?.let {
+        if (readModeStartsAt != 0L || expiresAt != 0L) {
             updateReplySectionView()
         }
     }
@@ -528,7 +525,7 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun getComposedMessage(message: String? = null): String {
-        return if (message != null && message.isNotEmpty()) {
+        return if (!message.isNullOrEmpty()) {
             message
         } else {
             getComposeMessageArea()?.getComposedText() ?: ""
@@ -836,27 +833,9 @@ open class TokoChatFragment @Inject constructor(
     private fun observeLiveChannel() {
         viewModel.getLiveChannel(viewModel.channelId)?.observe(viewLifecycleOwner) {
             it?.let { channel ->
-                // Show bottom sheet if channel expires
                 expiresAt = channel.expiresAt
-                if (isChannelExpired()) {
-                    showUnavailableBottomSheet()
-                } else {
-                    // Check if channel is read only
-                    val readModeLong = channel.readModeStartsAt ?: 0
-                    if (readModeLong != 0L) {
-                        readModeStartsAt = readModeLong
-                    }
-                    if (channel.readOnly || isChannelReadOnly()) {
-                        // Hide reply component
-                        setupReplySection(
-                            false,
-                            getString(tokochat_commonR.string.tokochat_message_closed_chat)
-                        )
-                    } else {
-                        // Show reply component
-                        setupReplySection(true)
-                    }
-                }
+                readModeStartsAt = channel.readModeStartsAt ?: 0
+                updateReplySectionView()
             }
         }
     }
@@ -1037,7 +1016,7 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun observeGroupBooking() {
-        groupBookingJob = viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.groupBookingUiState.collectLatest {
                     if (it.error == null) {
