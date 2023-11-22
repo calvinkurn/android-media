@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="120dp"
     android:layout_height="275dp"
-    android:background="@color/Unify_NN0"
     tools:layout_margin="16dp">
 
     <com.tokopedia.play_common.view.RoundedFrameLayout
