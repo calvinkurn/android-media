@@ -1,5 +1,6 @@
 package com.tokopedia.people.views.uimodel
 
+import androidx.compose.runtime.Immutable
 import com.tokopedia.library.baseadapter.BaseItem
 
 /**
@@ -7,15 +8,17 @@ import com.tokopedia.library.baseadapter.BaseItem
  */
 sealed class PeopleUiModel : BaseItem() {
 
+    @Immutable
     data class ShopUiModel(
         val id: String,
         val logoUrl: String,
         val badgeUrl: String,
         val name: String,
         val isFollowed: Boolean,
-        val appLink: String,
-    ): PeopleUiModel()
+        val appLink: String
+    ) : PeopleUiModel()
 
+    @Immutable
     data class UserUiModel(
         val id: String,
         val encryptedId: String,
@@ -24,6 +27,6 @@ sealed class PeopleUiModel : BaseItem() {
         val username: String,
         val isFollowed: Boolean,
         val isMySelf: Boolean,
-        val appLink: String,
-    ): PeopleUiModel()
+        val appLink: String
+    ) : PeopleUiModel()
 }
