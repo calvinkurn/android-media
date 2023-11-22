@@ -119,7 +119,7 @@
                 android:paddingTop="4dp"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tpgLicensedPharmacy"
+                app:layout_constraintStart_toStartOf="@+id/tpgShopName"
                 app:layout_constraintTop_toBottomOf="@+id/tpgLicensedPharmacy"
                 app:typographyType="paragraph_3"
                 tools:text="Produk Terjamin Original | 30 Hari | Pengembalian | Bisa Virtual Fitting" />
