@@ -20,7 +20,7 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/service_type"
+        android:id="@+id/lblTitleItemOfService"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/detail_product_header"
@@ -34,7 +34,7 @@
         android:id="@+id/service_provider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/service_type"
+        app:layout_constraintTop_toBottomOf="@id/lblTitleItemOfService"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="8dp"
         app:typographyType="body_2"
@@ -81,14 +81,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="right"
-        app:constraint_referenced_ids="duration,fee,service_provider,service_type"
+        app:constraint_referenced_ids="duration,fee,service_provider,lblTitleItemOfService"
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/service_type_value"
+        android:id="@+id/lblValueItemOfService"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/service_type"
+        app:layout_constraintTop_toTopOf="@id/lblTitleItemOfService"
         app:layout_constraintStart_toEndOf="@id/barrier"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="32dp"

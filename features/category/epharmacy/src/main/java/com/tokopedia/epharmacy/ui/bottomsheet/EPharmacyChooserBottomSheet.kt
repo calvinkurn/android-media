@@ -220,7 +220,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
             context?.let {
                 binding?.chooserMiniConsultation?.noteLl?.show()
                 context?.let {
-                    binding?.chooserMiniConsultation?.noteText?.text = EPharmacyUtils.getTextFromHtml(note)
+                    binding?.chooserMiniConsultation?.lblClosingSoon?.text = EPharmacyUtils.getTextFromHtml(note)
                 }
             }
         }

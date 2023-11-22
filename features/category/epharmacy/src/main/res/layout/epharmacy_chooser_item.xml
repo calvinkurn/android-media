@@ -172,7 +172,7 @@
                 />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/note_text"
+                android:id="@+id/lblClosingSoon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"

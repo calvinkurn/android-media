@@ -41,6 +41,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.epharmacy.R as epharmacyR
 
 class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
 
@@ -135,7 +136,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                         context?.resources?.let { res ->
                             showToast(
                                 Toaster.TYPE_NORMAL,
-                                res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_success)
+                                res.getString(epharmacyR.string.epharmacy_reminder_success)
                             )
                         }
                     } else {
@@ -143,7 +144,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                             if (it.data.data?.error.isNullOrBlank()) {
                                 showToast(Toaster.TYPE_ERROR, it.data.data?.error.orEmpty())
                             } else {
-                                showToast(Toaster.TYPE_ERROR, context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail).orEmpty())
+                                showToast(Toaster.TYPE_ERROR, context?.resources?.getString(epharmacyR.string.epharmacy_reminder_fail).orEmpty())
                             }
                         }
                     }
@@ -152,11 +153,11 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                     when (it.throwable) {
                         is UnknownHostException, is SocketTimeoutException -> showToast(
                             Toaster.TYPE_ERROR,
-                            context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_internet_error).orEmpty()
+                            context?.resources?.getString(epharmacyR.string.epharmacy_internet_error).orEmpty()
                         )
                         else -> showToast(
                             Toaster.TYPE_ERROR,
-                            context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail).orEmpty()
+                            context?.resources?.getString(epharmacyR.string.epharmacy_reminder_fail).orEmpty()
                         )
                     }
                 }
@@ -169,9 +170,9 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
         binding?.let {
             with(it) {
                 epharmacyGlobalError.errorIllustration.loadImageFitCenter(REMINDER_ILLUSTRATION_IMAGE)
-                epharmacyGlobalError.errorTitle.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_title)
+                epharmacyGlobalError.errorTitle.text = getString(epharmacyR.string.epharmacy_reminder_title)
                 epharmacyGlobalError.errorDescription.text = getMessageString()
-                epharmacyGlobalError.errorAction.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_button_text)
+                epharmacyGlobalError.errorAction.text = getString(epharmacyR.string.epharmacy_reminder_button_text)
                 epharmacyGlobalError.errorAction.show()
                 epharmacyGlobalError.setActionClickListener {
                     requestParams()?.let { it1 ->
@@ -183,12 +184,10 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                         )
                     }
                 }
-                epharmacyGlobalError.errorSecondaryAction.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_back_text)
+                epharmacyGlobalError.errorSecondaryAction.text = getString(epharmacyR.string.epharmacy_reminder_back_text)
                 epharmacyGlobalError.errorSecondaryAction.show()
                 epharmacyGlobalError.setSecondaryActionClickListener {
-                    //activity?.finish()
-                    // TODO REMOVE
-                    RouteManager.route(context,"tokopedia://epharmacy/chat-loading?epharmacy_toko_consultation_id=123")
+                    activity?.finish()
                 }
             }
         }
@@ -199,9 +198,9 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
         val closeTimeLocal: Date? = EPharmacyUtils.formatDateToLocal(dateString = arguments?.getString(CLOSE_TIME).orEmpty())
         return getString(
             if (isOutsideWorkingHours) {
-                com.tokopedia.epharmacy.R.string.epharmacy_reminder_description_outside
+                epharmacyR.string.epharmacy_reminder_description_outside
             } else {
-                com.tokopedia.epharmacy.R.string.epharmacy_reminder_description
+                epharmacyR.string.epharmacy_reminder_description
             },
             EPharmacyUtils.getTimeFromDate(openTimeLocal),
             EPharmacyUtils.getTimeFromDate(closeTimeLocal)
@@ -223,7 +222,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
             )
         } else {
             context?.resources?.let { res ->
-                showToast(Toaster.TYPE_ERROR, res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail))
+                showToast(Toaster.TYPE_ERROR, res.getString(epharmacyR.string.epharmacy_reminder_fail))
             }
             return null
         }

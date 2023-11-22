@@ -65,7 +65,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val chatDokterUploadIcon = view.findViewById<ImageUnify>(R.id.upload_icon)
     private val topView = view.findViewById<View>(R.id.transparent_view_top)
     private val bottomView = view.findViewById<View>(R.id.transparent_view_bottom)
-    private val ticker = view.findViewById<Ticker>(R.id.ticker)
+    private val ticker = view.findViewById<Ticker>(R.id.lblChangingProductWarning)
     private val divisionSingleProduct = view.findViewById<View>(R.id.division_single_card)
     private val quantityEditorLayout = view.findViewById<ConstraintLayout>(R.id.quantity_editor_layout)
     private val initialProductQuantity = view.findViewById<Typography>(R.id.initial_product_quantity)

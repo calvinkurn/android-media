@@ -2,8 +2,6 @@ package com.tokopedia.common_epharmacy.network.response
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.kotlin.extensions.view.ifNull
-import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 

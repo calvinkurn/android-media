@@ -169,14 +169,14 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun setTitle(title: String?) {
         if (!title.isNullOrBlank()) {
-            binding?.titleChatDokter?.text = title
+            binding?.lblChatDoctor?.text = title
         }
     }
 
     private fun setCartInfo(cart: EPATCData.BusinessDataList.BusinessData.CartGroup.Cart?) {
         binding?.epharmacyCheckoutDetailView?.apply {
             detailProductHeader.hide()
-            serviceTypeValue.text = cart?.customResponse?.serviceType
+            lblValueItemOfService.text = cart?.customResponse?.serviceType
             serviceProviderValue.text = cart?.customResponse?.enablerName
             durationValue.text = cart?.customResponse?.durationMinutes
         }
@@ -184,8 +184,8 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun setSummaryInfo(summary: EPCheckoutSummary?) {
         binding?.apply {
-            subtotalText.text = summary?.businessBreakDown?.firstOrNull()?.product?.title
-            subtotalValue.text = summary?.businessBreakDown?.firstOrNull()?.totalBillFmt
+            lblSubtotalBill.text = summary?.businessBreakDown?.firstOrNull()?.product?.title
+            lblSubtotalBillValue.text = summary?.businessBreakDown?.firstOrNull()?.totalBillFmt
             epharmacyCheckoutDetailView.feeValue.text = summary?.businessBreakDown?.firstOrNull()?.totalBillFmt
         }
     }
