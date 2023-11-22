@@ -15,7 +15,7 @@ interface RecommendationVerticalTracking {
 
     fun sendEventItemClick(item: RecommendationItem)
 
-    fun sendEventSeeMoreClick(item: RecommendationItem)
+    fun sendEventSeeMoreClick()
 
 
     object Factory {

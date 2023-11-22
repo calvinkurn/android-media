@@ -6,6 +6,7 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.PRODUCT_VIEW
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.SELECT_CONTENT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_HOME
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CLICK_SEE_MORE_WIDGET
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CURRENCY_CODE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CURRENT_SITE_MP
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DEFAULT_VALUE
@@ -32,6 +33,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
@@ -47,7 +49,6 @@ class RecommendationVerticalTrackingPDP(
     companion object {
         private const val EVENT_ACTION_IMPRESSION = "impression - product recommendation pdp recom"
         private const val EVENT_ACTION_CLICK = "click - product recommendation pdp recom"
-        private const val EVENT_ACTION_CLICK_CTA = "click - see more comparison"
         private const val TRACKER_ID_IMPRESSION = "7889"
         private const val TRACKER_ID_CLICK = "7890"
         private const val TRACKER_ID_CLICK_CTA = "7891"
@@ -127,13 +128,13 @@ class RecommendationVerticalTrackingPDP(
         )
     }
 
-    override fun sendEventSeeMoreClick(item: RecommendationItem) {
+    override fun sendEventSeeMoreClick() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
-                EVENT, RecommendationTrackingConstants.Tracking.CLICK_HOMEPAGE,
-                EVENT_ACTION, EVENT_ACTION_CLICK_CTA,
+                EVENT, RecommendationTrackingConstants.Tracking.CLICK_PDP,
+                EVENT_ACTION, CLICK_SEE_MORE_WIDGET.format(widget.pageName),
                 EVENT_CATEGORY, source.eventCategory,
-                EVENT_LABEL, "${widget.title} - $DEFAULT_VALUE - ${widget.layoutType}",
+                EVENT_LABEL, "${widget.title} - ${widget.pageName} - ${widget.layoutType}",
                 TRACKER_ID, TRACKER_ID_CLICK_CTA,
                 BUSINESS_UNIT, BUSINESS_UNIT_HOME,
                 CURRENT_SITE, CURRENT_SITE_MP
