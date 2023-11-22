@@ -42,7 +42,7 @@ class ProductReviewViewHolder(
 
     companion object {
         private const val MAX_LINES_REVIEW_DESCRIPTION = 3
-        private val KEYWORD_ITEM_SPACING = 8.toPx()
+        private val KEYWORD_ITEM_SPACING = 4.toPx()
         val LAYOUT = R.layout.item_dynamic_review
     }
 
