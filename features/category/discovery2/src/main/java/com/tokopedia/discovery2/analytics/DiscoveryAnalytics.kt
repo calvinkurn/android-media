@@ -400,14 +400,14 @@ open class DiscoveryAnalytics(
     }
 
 //    https://mynakama.tokopedia.com/datatracker/requestdetail/view/1559
-    override fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {
+    override fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String, itemPosition: Int) {
         val list = ArrayList<Map<String, Any>>()
         list.add(
             mapOf(
                 KEY_ID to "${adID}_$shopId",
                 KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $TDN_BANNER_COMPONENT",
                 KEY_CREATIVE to (componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING),
-                KEY_POSITION to "1"
+                KEY_POSITION to itemPosition.toString()
             )
         )
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -432,14 +432,14 @@ open class DiscoveryAnalytics(
     }
 
 //    https://mynakama.tokopedia.com/datatracker/requestdetail/view/1559
-    override fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {
+    override fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String, itemPosition: Int) {
         val list = ArrayList<Map<String, Any>>()
         list.add(
             mapOf(
                 KEY_ID to "${adID}_$shopId",
                 KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $TDN_BANNER_COMPONENT",
                 KEY_CREATIVE to (componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING),
-                KEY_POSITION to "1"
+                KEY_POSITION to itemPosition.toString()
             )
         )
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
