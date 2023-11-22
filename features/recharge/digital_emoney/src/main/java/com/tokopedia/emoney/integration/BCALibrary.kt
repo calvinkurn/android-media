@@ -100,6 +100,7 @@ class BCALibrary {
         } catch (e: IOException) {
             return ""
         } catch (e: Throwable) {
+            Timber.d(e)
             return ""
         }
         return RAPDU
