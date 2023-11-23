@@ -877,13 +877,7 @@ class HomeRecommendationFragment :
 
     private fun isScrolledToTop(): Boolean {
         val layoutManager = recyclerView?.layoutManager as? StaggeredGridLayoutManager
-        val spanCount = layoutManager?.spanCount
-            ?: DynamicChannelTabletConfiguration.getSpanCountForHomeRecommendationAdapter(
-                recyclerView?.context
-            )
-        val firstVisibleItemPositions = IntArray(spanCount)
-        return layoutManager?.findFirstVisibleItemPositions(firstVisibleItemPositions)
-            ?.firstOrNull() == 0
+        return layoutManager?.findFirstVisibleItemPositions(null)?.firstOrNull() == 0
     }
 
     companion object {
