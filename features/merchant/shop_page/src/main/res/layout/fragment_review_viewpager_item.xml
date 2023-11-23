@@ -101,7 +101,6 @@
     <LinearLayout
         android:id="@+id/layoutImagesContainer"
         android:layout_width="0dp"
-        android:visibility="gone"
         tools:visibility="visible"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
