@@ -670,6 +670,12 @@ object DeeplinkMainApp {
             }
         ),
         "people" to mutableListOf(
+            DLP.matchPattern("{user_id}/following") { deeplink: String ->
+                DeeplinkMapperContent.getProfileDeeplink(deeplink)
+            },
+            DLP.matchPattern("{user_id}/followers") { deeplink: String ->
+                DeeplinkMapperContent.getProfileDeeplink(deeplink)
+            },
             DLP.matchPattern("{user_id}") { deeplink: String ->
                 DeeplinkMapperContent.getProfileDeeplink(deeplink)
             },

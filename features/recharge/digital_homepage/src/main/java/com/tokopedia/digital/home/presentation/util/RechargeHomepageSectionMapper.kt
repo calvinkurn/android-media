@@ -26,6 +26,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageSingleBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSwipeBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageThreeIconsModel
+import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageTrustMarkModel
 import com.tokopedia.digital.home.model.RechargeHomepageVideoHighlightModel
 import com.tokopedia.digital.home.model.RechargeProductCardCustomBannerModel
@@ -104,13 +105,23 @@ object RechargeHomepageSectionMapper {
         return sections.toList()
     }
 
+    fun updateSectionList(oldData: List<RechargeHomepageSections.Section>,
+                          newData: RechargeHomepageSections.Section): List<RechargeHomepageSections.Section> {
+        val sections = oldData.toMutableList()
+        val index = sections.indexOfFirst { it.id == newData.id}
+        sections.removeAt(index)
+        sections.add(index, newData)
+        return sections.toList()
+    }
+
     fun mapInitialHomepageSections(sections: List<RechargeHomepageSectionSkeleton.Item>): List<RechargeHomepageSections.Section> {
         val sectionsList = mutableListOf<RechargeHomepageSections.Section>()
         for (section in sections) {
             sectionsList.add(
                 RechargeHomepageSections.Section(
                     section.id,
-                    template = section.template
+                    template = section.template,
+                    name = section.name
                 )
             )
             if (section.template == RechargeHomepageViewModel.SECTION_TOP_BANNER ||
@@ -146,7 +157,8 @@ object RechargeHomepageSectionMapper {
                             ReminderWidgetModel(
                                 id = id,
                                 data = ReminderWidget(id),
-                                source = ReminderEnum.RECHARGE
+                                source = ReminderEnum.RECHARGE,
+                                name = it.name
                             )
                         } else {
                             getReminderWidgetModel(it)
@@ -210,6 +222,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_MY_BILLS_WIDGET -> RechargeHomepageMyBillsWidgetModel(it)
                     SECTION_MY_BILLS_ENTRYPOINT_WIDGET -> RechargeHomepageMyBillsEntryPointModel(it)
                     SECTION_MY_BILLS_TRIPLE_ENTRYPOINT_WIDGET -> RechargeHomepageMyBillsTripleEntryPointsModel(it, isTripleEntryPointLoaded)
+                    SECTION_TODO_WIDGET -> RechargeHomepageTodoWidgetModel(it)
                     else -> null
                 }
             }
@@ -220,6 +233,7 @@ object RechargeHomepageSectionMapper {
         section.items.firstOrNull()?.run {
             return ReminderWidgetModel(
                 id = section.id,
+                name = section.name,
                 data = ReminderWidget(
                     section.id,
                     listOf(
@@ -268,7 +282,9 @@ object RechargeHomepageSectionMapper {
                 ),
                 channelGrids = section.items.take(imageCount).map { item ->
                     ChannelGrid(item.id, imageUrl = item.mediaUrl, applink = item.applink)
-                })
+                },
+                name = section.name
+            )
         )
     }
 

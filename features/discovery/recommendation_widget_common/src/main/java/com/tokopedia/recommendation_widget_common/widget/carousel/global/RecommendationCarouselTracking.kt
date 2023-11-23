@@ -64,7 +64,8 @@ object RecommendationCarouselTracking {
         recomItem: RecommendationItem,
         userId: String,
         quantity: Int,
-        androidPageName: String = RecommendationWidgetSource.PDP.trackingValue // remove default value after recommendation carousel widget migration
+        androidPageName: String = RecommendationWidgetSource.PDP.trackingValue, // remove default value after recommendation carousel widget migration
+        anchorProductId: String
     ) {
         val bundle = Bundle().apply {
             putString(EVENT, RecommendationTrackingConstants.Action.ADD_TO_CART)
@@ -83,7 +84,7 @@ object RecommendationCarouselTracking {
                 recomItem.recommendationType,
                 if (recomItem.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
                 recomItem.type.convertToWidgetType(),
-                recomItem.anchorProductId
+                anchorProductId
             )
 
             putString(ITEM_LIST, itemList)

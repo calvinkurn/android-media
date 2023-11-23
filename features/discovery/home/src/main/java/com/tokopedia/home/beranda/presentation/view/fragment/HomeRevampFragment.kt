@@ -818,6 +818,7 @@ open class HomeRevampFragment :
                 super.onScrolled(recyclerView, dx, dy)
                 scrollPositionY = recyclerView.computeVerticalScrollOffset()
                 updateThematicVerticalPosition()
+                setHomeBottomNavBasedOnScrolling()
                 evaluateHomeComponentOnScroll(recyclerView)
             }
         })
@@ -1552,7 +1553,7 @@ open class HomeRevampFragment :
         if (!this::homePrefController.isInitialized) {
             initInjectorHome()
         }
-        layoutManager = AccurateOffsetLinearLayoutManager(context, adapter)
+        context?.let { layoutManager = AccurateOffsetLinearLayoutManager(it, adapter) }
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
         bannerCarouselCallback = BannerComponentCallback(context, this)

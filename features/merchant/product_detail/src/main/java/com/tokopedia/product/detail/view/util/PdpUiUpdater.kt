@@ -678,6 +678,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 )
                 shouldShowTradein = if (productTradeinMap == null) false else eligibleTradein
                 this.freeOngkirImgUrl = freeOngkirImgUrl
+                shouldShowShareWidget = true
             }
         }
 

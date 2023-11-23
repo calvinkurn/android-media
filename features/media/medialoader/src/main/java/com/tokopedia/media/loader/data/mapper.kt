@@ -1,9 +1,11 @@
 package com.tokopedia.media.loader.data
 
-fun List<Header>.getFailureType(): FailureType? {
-    val key = "x-tkp-media-failure"
+fun failureTypeKey(): String {
+    return "x-tkp-media-failure"
+}
 
-    val header = find { it.key() == key } ?: return null
+fun List<Header>.getFailureType(): FailureType? {
+    val header = find { it.key() == failureTypeKey() } ?: return null
     if (header.values.isEmpty()) return null
 
     val values = header.firstValue()

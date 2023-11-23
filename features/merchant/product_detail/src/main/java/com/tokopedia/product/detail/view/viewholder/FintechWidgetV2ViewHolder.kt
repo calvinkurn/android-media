@@ -53,6 +53,7 @@ class FintechWidgetV2ViewHolder(val view: View, val  listener: DynamicProductDet
     override fun removeWidget() {
         if (listener.getProductInfo()?.isProductVariant() == true) {
             itemView.setLayoutHeight(0)
+            itemView.requestLayout()
         } else {
             listener.removeComponent(ProductDetailConstant.FINTECH_WIDGET_V2_NAME)
         }
@@ -60,6 +61,7 @@ class FintechWidgetV2ViewHolder(val view: View, val  listener: DynamicProductDet
 
     override fun showWidget() {
         itemView.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+        itemView.requestLayout()
     }
 
     override fun fintechChipClicked(

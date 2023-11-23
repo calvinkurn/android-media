@@ -51,7 +51,7 @@ object GotoKycAnalytics {
     private const val ACTION_CLICK_GET_READY_FIRST = "click on button siap siap dulu"
     private const val ACTION_CLICK_AURORA_READY = "click on button ok aurora confirmation"
     private const val ACTION_CLICK_AURORA_LATER = "click on button later aurora confirmation"
-    private const val ACTION_CLICK_BUTTON_TOKOPEDIA_CARE = "click on button tokopedia care"
+    private const val ACTION_CLICK_BUTTON_CTA = "click on cta button"
     private const val ACTION_VIEW_MANUAL_FOTO_QUESTION = "view on manual foto question"
     private const val ACTION_VIEW_STATUS_PAGE = "view on kyc status page"
     private const val ACTION_VIEW_DOB_PAGE = "view on kyc dob page"
@@ -963,7 +963,7 @@ object GotoKycAnalytics {
     fun sendClickOnButtonTokopediaCareBlockingMultipleAccountPageEvent (projectId: String) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_ACCOUNT)
-            .setEventAction(ACTION_CLICK_BUTTON_TOKOPEDIA_CARE)
+            .setEventAction(ACTION_CLICK_BUTTON_CTA)
             .setEventCategory(CATEGORY_BLOCKING_PAGE_MULTIPLE_ACCOUNT)
             .setEventLabel(projectId)
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_48014)

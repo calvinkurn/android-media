@@ -1,5 +1,5 @@
 
-![image](../../res/home_no_address_state.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/home_no_address_state.png)
 
 
 <!--left header table-->

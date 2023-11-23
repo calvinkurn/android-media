@@ -36,6 +36,7 @@ internal class ProductCardRenderer(
     private val slashedPriceInlineText by view.lazyView<Typography?>(R.id.productCardSlashedPriceInline)
     private val discountInlineText by view.lazyView<Typography?>(R.id.productCardDiscountInline)
     private val benefitLabel by view.lazyView<Typography?>(R.id.productCardLabelBenefit)
+    private val bmsmLabel by view.lazyView<Typography?>(R.id.productCardLabelBMSM)
     private val credibilitySection by view.lazyView<LinearLayout?>(R.id.productCardCredibility)
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
     private val freeShippingImage by view.lazyView<ImageView?>(R.id.productCardFreeShipping)
@@ -49,6 +50,7 @@ internal class ProductCardRenderer(
         renderSlashedPrice(productCardModel)
         renderDiscountPercentage(productCardModel)
         renderLabelBenefit(productCardModel)
+        renderLabelProductOffer(productCardModel)
         renderCredibilitySection(productCardModel)
         renderShopSection(productCardModel)
         renderFreeShipping(productCardModel)
@@ -163,6 +165,17 @@ internal class ProductCardRenderer(
         val labelBenefit = productCardModel.labelBenefit()
         benefitLabel?.shouldShowWithAction(labelBenefit != null) {
             it.initLabelGroupLabel(labelBenefit)
+        }
+    }
+
+    private fun renderLabelProductOffer(productCardModel: ProductCardModel) {
+        val labelProductOffer = productCardModel.labelProductOffer()
+        val hasLabelBenefit = productCardModel.labelBenefit() != null
+        val showLabelProductOffer =
+            labelProductOffer != null && (!hasLabelBenefit || type != GridCarousel)
+
+        bmsmLabel?.shouldShowWithAction(showLabelProductOffer) {
+            it.text = labelProductOffer?.title ?: ""
         }
     }
 
