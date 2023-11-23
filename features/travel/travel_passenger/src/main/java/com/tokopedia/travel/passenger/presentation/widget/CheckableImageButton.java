@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.design.text;
+package com.tokopedia.travel.passenger.presentation.widget;
 
 import android.content.Context;
 import android.os.Parcel;

@@ -41,15 +41,6 @@
         <item name="android:textColor">@drawable/color_state_disable_text</item>
     </style>
 
-    <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/Unify_N700_32</item>
-        <item name="android:lineSpacingExtra">@dimen/sp_5</item>
-    </style>
-
-    <style name="successTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/Unify_G400</item>
-    </style>
-
     <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

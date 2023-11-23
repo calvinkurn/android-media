@@ -34,7 +34,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.widget.TextViewCompat
 import com.google.android.material.internal.CheckableImageButton
 import com.tokopedia.travel.passenger.R
-import com.tokopedia.design.R as D
 import java.util.*
 
 class TkpdHintTextInputLayout : LinearLayout {
@@ -102,12 +101,6 @@ class TkpdHintTextInputLayout : LinearLayout {
         init()
     }
 
-    @TargetApi(21)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-        apply(attrs, defStyleAttr)
-        init()
-    }
-
     @SuppressLint("RestrictedApi", "ResourceType")
     private fun apply(attrs: AttributeSet?, defStyleAttr: Int) {
         val a = TintTypedArray.obtainStyledAttributes(context, attrs, R.styleable.TkpdHintTextInputLayout, defStyleAttr, com.google.android.material.R.style.Widget_Design_TextInputLayout)
@@ -142,10 +135,10 @@ class TkpdHintTextInputLayout : LinearLayout {
         mErrorEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_errorEnabled, false)
         mErrorTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_errorTextAppearance, 0)
         mHelperEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_helperEnabled, false)
-        mHelperTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_helperTextAppearance, D.style.helperTextAppearance)
+        mHelperTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_helperTextAppearance, R.style.helperTextAppearance)
         mHelperText = a.getText(R.styleable.TkpdHintTextInputLayout_helper)
         isSuccessShown = a.getBoolean(R.styleable.TkpdHintTextInputLayout_successEnabled, false)
-        mSuccessTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_successTextAppearance, D.style.successTextAppearance)
+        mSuccessTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_successTextAppearance, R.style.successTextAppearance)
         mCounterEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_counterEnabled, false)
         mCounterMaxLength = a.getInt(R.styleable.TkpdHintTextInputLayout_counterMaxLength, INVALID_MAX_LENGTH)
         mCounterTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_counterTextAppearance, 0)
@@ -488,13 +481,6 @@ class TkpdHintTextInputLayout : LinearLayout {
         updatePasswordToggleView()
     }
 
-    fun setPasswordVisibilityToggleEnabled(enabled: Boolean) {
-        if (mPasswordToggleEnabled != enabled) {
-            mPasswordToggleEnabled = enabled
-            setUIPasswordToogle()
-        }
-    }
-
     @SuppressLint("RestrictedApi")
     private fun updatePasswordToggleView() {
         if (mEditText == null) {
@@ -504,7 +490,7 @@ class TkpdHintTextInputLayout : LinearLayout {
         if (shouldShowPasswordIcon()) {
             if (mPasswordToggleView == null) {
                 mPasswordToggleView = LayoutInflater.from(context)
-                        .inflate(D.layout.design_text_input_password_icon,
+                        .inflate(R.layout.design_text_input_password_icon,
                                 mFrameLayout, false) as CheckableImageButton
                 mPasswordToggleView?.setImageDrawable(mPasswordToggleDrawable)
                 mPasswordToggleView?.contentDescription = mPasswordToggleContentDesc

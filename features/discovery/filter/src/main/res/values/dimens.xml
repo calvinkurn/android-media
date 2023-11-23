@@ -26,4 +26,5 @@
     <dimen name="text_size_l_medium">16sp</dimen>
     <dimen name="fontvs">12sp</dimen>
     <dimen name="dp_18">18dp</dimen>
+    <dimen name="seek_bar_button_size">30dp</dimen>
 </resources>

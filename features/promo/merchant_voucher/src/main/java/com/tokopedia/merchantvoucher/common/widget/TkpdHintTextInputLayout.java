@@ -1,6 +1,5 @@
-package com.tokopedia.design.text;
+package com.tokopedia.merchantvoucher.common.widget;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -12,15 +11,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Parcelable;
-import androidx.annotation.Nullable;
-import androidx.annotation.StyleRes;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.widget.TextViewCompat;
-import androidx.appcompat.widget.AppCompatDrawableManager;
-import androidx.appcompat.widget.TintTypedArray;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -33,8 +26,15 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.design.R;
-import com.tokopedia.design.text.watcher.AfterTextWatcher;
+import androidx.annotation.Nullable;
+import androidx.annotation.StyleRes;
+import androidx.appcompat.widget.AppCompatDrawableManager;
+import androidx.appcompat.widget.TintTypedArray;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.widget.TextViewCompat;
+
+import com.tokopedia.merchantvoucher.R;
 
 import java.util.Locale;
 
@@ -95,6 +95,17 @@ public class TkpdHintTextInputLayout extends LinearLayout {
     private int mPrefixLength;
     private String prefixString;
 
+    public abstract class AfterTextWatcher implements TextWatcher {
+        @Override
+        public final void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        @Override
+        public final void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+        @Override
+        public abstract void afterTextChanged(Editable s);
+    }
+
     public TkpdHintTextInputLayout(Context context) {
         super(context);
         apply(null, 0);
@@ -109,13 +120,6 @@ public class TkpdHintTextInputLayout extends LinearLayout {
 
     public TkpdHintTextInputLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        apply(attrs, defStyleAttr);
-        init();
-    }
-
-    @TargetApi(21)
-    public TkpdHintTextInputLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
         apply(attrs, defStyleAttr);
         init();
     }

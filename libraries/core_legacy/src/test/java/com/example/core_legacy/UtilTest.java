@@ -4,7 +4,6 @@ package com.example.core_legacy;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.util.PriceUtil;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
 
 import org.junit.Test;
 
@@ -54,7 +53,7 @@ public class UtilTest {
         price = "Rp 100.000,889";
         assertFalse("this has to be good", "100000".equals(PriceUtil.from(price)));
 
-        price = CurrencyFormatHelper.removeCurrencyPrefix(price);
+        price = PriceUtil.removeCurrencyPrefix(price);
 //        NumberFormat.getCurrencyInstance(new Locale("in", "ID")).format(price);
 //        new DecimalFormat("#").format(Double.valueOf(price));
         try {

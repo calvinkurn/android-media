@@ -1,4 +1,4 @@
-package com.tokopedia.design.text;
+package com.tokopedia.filter.newdynamicfilter.adapter.viewholder.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -16,10 +16,9 @@ import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.price.DynamicBackgroundSeekBar;
-import com.tokopedia.design.utils.StringUtils;
+import com.tokopedia.filter.R;
 
 /**
  * Created by henrypriyono on 8/14/17.
@@ -106,7 +105,7 @@ public class RangeInputView extends BaseCustomView {
 
     private void init() {
         final View view = inflate(getContext(), R.layout.widget_decimal_range_input_view, this);
-        seekBarButtonSize = getResources().getDimensionPixelSize(R.dimen.dp_30);
+        seekBarButtonSize = getResources().getDimensionPixelSize(R.dimen.seek_bar_button_size);
         view.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
