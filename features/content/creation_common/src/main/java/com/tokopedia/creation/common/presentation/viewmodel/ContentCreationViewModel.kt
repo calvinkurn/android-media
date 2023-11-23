@@ -49,6 +49,17 @@ class ContentCreationViewModel @Inject constructor(
     val selectedItemTitle: String
         get() = selectedCreationType.value?.title.orEmpty()
 
+    val creationConfigData: ContentCreationConfigModel
+        get() {
+            val creationConfig = _creationConfig.value
+
+            return if (creationConfig is Success) {
+                creationConfig.data
+            } else {
+                ContentCreationConfigModel.Empty
+            }
+        }
+
     fun selectCreationItem(item: ContentCreationItemModel) {
         _selectedCreationType.value = item
     }

@@ -4,7 +4,6 @@
   "query": [
     {
       "businessUnit": "content",
-      "clientId": ".*",
       "eventCategory": "unified feed",
       "currentSite": "tokopediamarketplace",
       "event": "clickContent",
@@ -16,19 +15,6 @@
     },
     {
       "businessUnit": "content",
-      "clientId": ".*",
-      "eventCategory": "unified feed",
-      "currentSite": "tokopediamarketplace",
-      "event": "clickContent",
-      "userId": ".*",
-      "eventAction": "click - analytics dashboard entry point",
-      "sessionIris": ".*",
-      "eventLabel": ".* - .*",
-      "trackerId": "47550"
-    },
-    {
-      "businessUnit": "content",
-      "clientId": ".*",
       "eventCategory": "unified feed",
       "currentSite": "tokopediamarketplace",
       "event": "viewContentIris",

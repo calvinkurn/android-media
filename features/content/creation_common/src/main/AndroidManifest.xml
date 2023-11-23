@@ -3,7 +3,7 @@
     package="com.tokopedia.creation.common">
 
     <application>
-        <activity android:name=".upload.uploader.activity.PlayShortsPostUploadActivity"/>
+        <activity android:name=".upload.uploader.activity.ContentCreationPostUploadActivity"/>
 
         <receiver
             android:name=".upload.uploader.receiver.CreationUploadReceiver"

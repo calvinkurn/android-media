@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.creation.common.upload.di.common.CreationUploadCommonModule
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
-import com.tokopedia.creation.common.upload.uploader.activity.PlayShortsPostUploadActivity
+import com.tokopedia.creation.common.upload.uploader.activity.ContentCreationPostUploadActivity
 import com.tokopedia.creation.common.upload.uploader.receiver.CreationUploadReceiver
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.videouploader.di.VideoUploaderModule
@@ -28,7 +28,7 @@ interface CreationUploaderComponent {
 
     fun inject(receiver: CreationUploadReceiver)
 
-    fun inject(activity: PlayShortsPostUploadActivity)
+    fun inject(activity: ContentCreationPostUploadActivity)
 
     fun playShortsUploadAnalytic(): PlayShortsUploadAnalytic
 

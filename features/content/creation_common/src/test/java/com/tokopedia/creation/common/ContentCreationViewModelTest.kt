@@ -1,4 +1,4 @@
-package com.tokopedia.creation.common.presentation.viewmodel
+package com.tokopedia.creation.common
 
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.creation.common.domain.ContentCreationConfigUseCase
@@ -10,6 +10,7 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationMediaModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
+import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -78,7 +79,9 @@ class ContentCreationViewModelTest {
         val successCreationData = creationData as Success
         assert(successCreationData.data == creationConfigModel)
         assert(viewModel.authorType == ContentCreationAuthorEnum.SHOP)
-        assert(viewModel.selectedItemTitle == "")
+        assert(
+            viewModel.selectedItemTitle == (creationConfigModel.creationItems.firstOrNull()?.title)
+        )
     }
 
     @Test

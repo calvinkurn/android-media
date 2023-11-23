@@ -27,6 +27,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.reduceDragSensitivity
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
+import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
 import com.tokopedia.creation.common.consts.ContentCreationConsts
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
@@ -93,6 +94,10 @@ class FeedBaseFragment :
 
     @Inject
     lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
+
+    @Inject
+    lateinit var contentCreationAnalytics: ContentCreationAnalytics
+
     private val feedMainViewModel: FeedMainViewModel by viewModels {
         FeedMainViewModel.provideFactory(viewModelAssistedFactory, activeTabSource)
     }
@@ -191,6 +196,7 @@ class FeedBaseFragment :
                     fragment.widgetSource = ContentCreationEntryPointSource.Feed
                     fragment.listener = this
                     fragment.shouldShowPerformanceAction = false
+                    fragment.analytics = contentCreationAnalytics
                 }
             }
         }

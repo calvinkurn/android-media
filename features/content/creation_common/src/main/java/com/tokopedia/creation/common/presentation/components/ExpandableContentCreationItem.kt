@@ -138,7 +138,7 @@ fun ExpandableContentCreationItem(
                 text = data.title,
                 textStyle = NestTheme.typography.display2.copy(
                     fontWeight = FontWeight.Bold,
-                    color = NestTheme.colors.NN._900
+                    color = NestTheme.colors.NN._950,
                 ),
                 maxLines = 1,
                 modifier = Modifier.weight(1f)
@@ -147,16 +147,15 @@ fun ExpandableContentCreationItem(
             AndroidView(
                 modifier = Modifier.wrapContentHeight(),
                 factory = {
-                    RadioButtonUnify(it).apply {
-                        setOnCheckedChangeListener { _, isChecked ->
-                            if (!isSelected && isChecked) {
-                                onSelect(data)
-                            }
-                        }
-                    }
+                    RadioButtonUnify(it)
                 },
                 update = {
                     it.isChecked = isSelected
+                    it.setOnCheckedChangeListener { _, isChecked ->
+                        if (!isSelected && isChecked) {
+                            onSelect(data)
+                        }
+                    }
                 }
             )
         }

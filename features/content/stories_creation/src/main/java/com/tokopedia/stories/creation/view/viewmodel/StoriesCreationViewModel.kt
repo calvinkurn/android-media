@@ -91,7 +91,7 @@ class StoriesCreationViewModel @Inject constructor(
                 )
             }
 
-            if (config.maxStoriesConfig.isLimitReached) {
+            if (config.maxStoriesConfig.isMaxStoryReached) {
                 _uiEvent.emit(StoriesCreationUiEvent.ShowTooManyStoriesReminder)
             } else {
                 _uiEvent.emit(StoriesCreationUiEvent.OpenMediaPicker)

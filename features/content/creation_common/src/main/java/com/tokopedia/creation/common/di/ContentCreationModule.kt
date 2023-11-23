@@ -16,7 +16,7 @@ import dagger.Provides
  * Created By : Muhammad Furqan on 15/09/23
  */
 @Module(includes = [ContentCreationViewModelModule::class])
-class ContentCreationModule(private val activityContext: Context) {
+object ContentCreationModule {
 
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface =
@@ -36,5 +36,5 @@ class ContentCreationModule(private val activityContext: Context) {
     )
 
     @Provides
-    fun provideFirebaseRemoteConfig(): RemoteConfig = FirebaseRemoteConfigImpl(activityContext)
+    fun provideFirebaseRemoteConfig(context: Context): RemoteConfig = FirebaseRemoteConfigImpl(context)
 }

@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
 import com.tokopedia.creation.common.di.ContentCreationComponent
+import com.tokopedia.creation.common.di.ContentCreationInjector
 import com.tokopedia.creation.common.di.ContentCreationModule
 import com.tokopedia.creation.common.di.DaggerContentCreationComponent
 import com.tokopedia.creation.common.presentation.components.ContentCreationView
@@ -35,13 +36,10 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         createComponent().contentCreationFactory()
     }
 
-    @StringRes
-    private var title: Int = R.string.content_creation_bottom_sheet_title
-
     var shouldShowPerformanceAction: Boolean = false
     var listener: ContentCreationBottomSheetListener? = null
     var analytics: ContentCreationAnalytics? = null
-    private var creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
+    var creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
 
     var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
 
@@ -104,7 +102,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
     private fun renderHeaderView() {
         context?.let {
-            setTitle(it.getString(title))
+            setTitle(it.getString(R.string.content_creation_bottom_sheet_title))
 
             if (shouldShowPerformanceAction) {
                 setAction(it.getString(R.string.content_creation_bottom_sheet_performance_action)) { _ ->
@@ -123,26 +121,11 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun show(
-        fragmentManager: FragmentManager,
-        @StringRes title: Int? = null,
-        showPerformanceAction: Boolean = false,
-        creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty,
-    ) {
-        title?.let {
-            this.title = it
-        }
-        this.shouldShowPerformanceAction = showPerformanceAction
-        this.creationConfig = creationConfig
-
+    fun show(fragmentManager: FragmentManager) {
         if (!isAdded) show(fragmentManager, TAG)
     }
 
-    private fun createComponent(): ContentCreationComponent =
-        DaggerContentCreationComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .contentCreationModule(ContentCreationModule(requireContext()))
-            .build()
+    private fun createComponent(): ContentCreationComponent = ContentCreationInjector.get(requireContext())
 
     interface ContentCreationBottomSheetListener {
         fun onCreationItemSelected(data: ContentCreationItemModel)
