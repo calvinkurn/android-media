@@ -6,6 +6,7 @@ sealed interface RecommendationWidgetSource {
 
     class PDP(
         val anchorProductId: String = "",
+        val trackingMap: Map<String, Any> = emptyMap()
     ) : RecommendationWidgetSource {
         override val xSourceValue: String
             get() = "pdp"

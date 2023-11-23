@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirType
 import com.tokopedia.product.detail.common.data.model.pdplayout.Component
@@ -35,6 +36,7 @@ import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -124,7 +126,7 @@ object DynamicProductDetailMapper {
      * except info type
      * If data already complete at P1 call, assign the value here.
      */
-    fun mapIntoVisitable(data: List<Component>, productId: String): MutableList<DynamicPdpDataModel> {
+    fun mapIntoVisitable(data: List<Component>, dynamicProductInfoP1: DynamicProductInfoP1): MutableList<DynamicPdpDataModel> {
         val listOfComponent: MutableList<DynamicPdpDataModel> = mutableListOf()
         var firstAPlusMedia = true
         data.forEachIndexed { index, component ->
@@ -161,7 +163,7 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.PRODUCT_LIST -> {
                     val productList = mapToProductList(
                         component = component,
-                        productId = productId,
+                        dynamicProductInfoP1 = dynamicProductInfoP1,
                         index = index
                     )
 
@@ -377,7 +379,11 @@ object DynamicProductDetailMapper {
         return listOfComponent
     }
 
-    private fun mapToProductList(component: Component, productId: String, index: Int): DynamicPdpDataModel {
+    private fun mapToProductList(
+        component: Component,
+        dynamicProductInfoP1: DynamicProductInfoP1,
+        index: Int
+    ): DynamicPdpDataModel {
         val data = component.componentData.firstOrNull() ?: ComponentData()
 
         return when (component.componentName) {
@@ -400,7 +406,7 @@ object DynamicProductDetailMapper {
             else -> {
                 if (component.componentName.startsWith(RECOM_VERTICAL)) {
                     PdpRecommendationWidgetDataModel(
-                        recommendationWidgetModel = mapPdpRecommendationWidgetModel(component, productId)
+                        recommendationWidgetModel = mapPdpRecommendationWidgetModel(component, dynamicProductInfoP1, index)
                     )
                 } else {
                     ProductRecommendationDataModel(
@@ -1036,7 +1042,11 @@ object DynamicProductDetailMapper {
         )
     }
 
-    private fun mapPdpRecommendationWidgetModel(component: Component, productId: String): RecommendationWidgetModel {
+    private fun mapPdpRecommendationWidgetModel(
+        component: Component,
+        dynamicProductInfoP1: DynamicProductInfoP1,
+        index: Int
+    ): RecommendationWidgetModel {
         val data = component.componentData.firstOrNull()
         val thematicIds = if (data?.thematicId.isNullOrBlank()) {
             emptyList()
@@ -1044,7 +1054,19 @@ object DynamicProductDetailMapper {
             listOf(data?.thematicId.orEmpty())
         }
         val source = RecommendationWidgetSource.PDP(
-            anchorProductId = productId
+            anchorProductId = dynamicProductInfoP1.basic.productID,
+            trackingMap = TrackingUtil.getComponentTracker(
+                productInfo = dynamicProductInfoP1,
+                componentTrackDataModel = ComponentTrackDataModel(
+                    component.type,
+                    component.componentName,
+                    index
+                ),
+                elementName = String.format(
+                    ProductTrackingConstant.Action.CLICK_SEE_MORE_WIDGET,
+                    component.componentName
+                )
+            )
         )
         val metadata = RecommendationWidgetMetadata(
             pageSource = source.eventCategory,

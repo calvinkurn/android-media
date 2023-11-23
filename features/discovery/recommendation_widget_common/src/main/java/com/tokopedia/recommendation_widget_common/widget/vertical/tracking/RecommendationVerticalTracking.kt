@@ -22,10 +22,11 @@ interface RecommendationVerticalTracking {
         fun create(
             widget: RecommendationWidget,
             source: RecommendationWidgetSource?,
+            userId: String,
         ): RecommendationVerticalTracking? {
             return when (source) {
                 is RecommendationWidgetSource.PDP ->
-                    RecommendationVerticalTrackingPDP.Factory.create(widget, source)
+                    RecommendationVerticalTrackingPDP.Factory.create(widget, source, userId)
                 else -> null
             }
         }

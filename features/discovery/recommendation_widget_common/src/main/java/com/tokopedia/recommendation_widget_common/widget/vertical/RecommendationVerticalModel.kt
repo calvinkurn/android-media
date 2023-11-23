@@ -18,7 +18,7 @@ data class RecommendationVerticalModel(
 ) : RecommendationVisitable by visitable {
 
     val widgetTracking: RecommendationVerticalTracking? =
-        RecommendationVerticalTracking.Factory.create(widget, source)
+        RecommendationVerticalTracking.Factory.create(widget, source, userId)
     override fun type(typeFactory: RecommendationTypeFactory?): Int =
         typeFactory?.type(this) ?: 0
 
@@ -30,8 +30,9 @@ data class RecommendationVerticalModel(
             recommendationWidget: RecommendationWidget,
             source: RecommendationWidgetSource?,
             listener: RecommendationWidgetListener?,
+            userId: String
         ): RecommendationVerticalModel = RecommendationVerticalModel(
-            visitable = RecommendationVisitable.create(metadata, trackingModel),
+            visitable = RecommendationVisitable.create(metadata, trackingModel, userId),
             widget = recommendationWidget,
             source = source,
             listener = listener,

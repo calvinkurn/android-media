@@ -40,18 +40,19 @@ import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.track.constant.TrackerConstant.BUSINESS_UNIT
 import com.tokopedia.track.constant.TrackerConstant.CURRENT_SITE
+import com.tokopedia.track.constant.TrackerConstant.USERID
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class RecommendationVerticalTrackingPDP(
     private val widget: RecommendationWidget,
     private val source: RecommendationWidgetSource.PDP,
+    private val userId: String
 ): RecommendationVerticalTracking {
     companion object {
         private const val EVENT_ACTION_IMPRESSION = "impression - product recommendation pdp recom"
         private const val EVENT_ACTION_CLICK = "click - product recommendation pdp recom"
         private const val TRACKER_ID_IMPRESSION = "7889"
         private const val TRACKER_ID_CLICK = "7890"
-        private const val TRACKER_ID_CLICK_CTA = "7891"
         private const val IMPRESSION_CLICK_DIMENSION_40_FORMAT =
             "/${RecommendationCarouselTrackingConst.List.PRODUCT} - %s - rekomendasi untuk anda - %s%s - %s - %s"
     }
@@ -77,12 +78,13 @@ class RecommendationVerticalTrackingPDP(
             BUSINESS_UNIT to BUSINESS_UNIT_HOME,
             CURRENT_SITE to CURRENT_SITE_MP,
             ITEM_LIST to list,
+            USERID to userId,
             ECOMMERCE to mapOf(
                 CURRENCY_CODE to IDR,
                 IMPRESSIONS to arrayListOf(mapOf(
                     LIST to list,
                     DIMENSION_56 to item.warehouseId.toString(),
-                    KEY_INDEX to item.position + 1,
+                    KEY_INDEX to (item.position + 1).toString(),
                     ITEM_BRAND to VALUE_NONE_OTHER,
                     ITEM_CATEGORY to item.categoryBreadcrumbs,
                     ITEM_ID to item.productId,
@@ -116,7 +118,7 @@ class RecommendationVerticalTrackingPDP(
                 putParcelableArrayList(ITEMS, arrayListOf(bundle {
                     putString(DIMENSION_40, list)
                     putString(DIMENSION_56, item.warehouseId.toString())
-                    putInt(KEY_INDEX, item.position + 1)
+                    putString(KEY_INDEX, (item.position + 1).toString())
                     putString(ITEM_BRAND, VALUE_NONE_OTHER)
                     putString(ITEM_CATEGORY, item.categoryBreadcrumbs)
                     putString(ITEM_ID, item.productId.toString())
@@ -129,23 +131,22 @@ class RecommendationVerticalTrackingPDP(
     }
 
     override fun sendEventSeeMoreClick() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            DataLayer.mapOf(
-                EVENT, RecommendationTrackingConstants.Tracking.CLICK_PDP,
-                EVENT_ACTION, CLICK_SEE_MORE_WIDGET.format(widget.pageName),
-                EVENT_CATEGORY, source.eventCategory,
-                EVENT_LABEL, "${widget.title} - ${widget.pageName} - ${widget.layoutType}",
-                TRACKER_ID, TRACKER_ID_CLICK_CTA,
-                BUSINESS_UNIT, BUSINESS_UNIT_HOME,
-                CURRENT_SITE, CURRENT_SITE_MP
-            )
-        )
+        val map = DataLayer.mapOf(
+            EVENT, RecommendationTrackingConstants.Tracking.CLICK_PDP,
+            EVENT_ACTION, CLICK_SEE_MORE_WIDGET.format(widget.pageName),
+            EVENT_CATEGORY, source.eventCategory,
+            EVENT_LABEL, "${widget.title} - ${widget.pageName} - ${widget.layoutType}",
+            BUSINESS_UNIT, BUSINESS_UNIT_HOME,
+            CURRENT_SITE, CURRENT_SITE_MP
+        ) + source.trackingMap
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     object Factory {
         fun create(
             widget: RecommendationWidget,
-            source: RecommendationWidgetSource.PDP
-        ): RecommendationVerticalTracking = RecommendationVerticalTrackingPDP(widget, source)
+            source: RecommendationWidgetSource.PDP,
+            userId: String
+        ): RecommendationVerticalTracking = RecommendationVerticalTrackingPDP(widget, source, userId)
     }
 }
