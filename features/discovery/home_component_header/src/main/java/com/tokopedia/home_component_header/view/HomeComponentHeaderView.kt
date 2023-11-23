@@ -38,10 +38,10 @@ class HomeComponentHeaderView : FrameLayout {
     }
 
     private fun initHeaderWithAttrs(attrs: AttributeSet?) {
-        val attributes: TypedArray = context.obtainStyledAttributes(attrs, home_component_headerR.styleable.HomeChannelHeaderView)
+        val attributes: TypedArray = context.obtainStyledAttributes(attrs, home_component_headerR.styleable.HomeComponentHeaderView)
         try {
-            headerColorMode = attributes.getInt(home_component_headerR.styleable.HomeChannelHeaderView_color_mode, COLOR_MODE_NORMAL)
-            headerCtaMode = attributes.getInt(home_component_headerR.styleable.HomeChannelHeaderView_cta_mode, CTA_MODE_SEE_ALL)
+            headerColorMode = attributes.getInt(home_component_headerR.styleable.HomeComponentHeaderView_color_mode, COLOR_MODE_NORMAL)
+            headerCtaMode = attributes.getInt(home_component_headerR.styleable.HomeComponentHeaderView_cta_mode, CTA_MODE_SEE_ALL)
         } finally {
             attributes.recycle()
         }

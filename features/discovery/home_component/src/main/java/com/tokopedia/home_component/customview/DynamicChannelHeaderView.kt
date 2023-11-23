@@ -19,7 +19,7 @@ import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 import com.tokopedia.home_component_header.R as home_component_headerR
 
-@Deprecated("Please use com.tokopedia.home_component_header.view.HomeChannelHeaderView")
+@Deprecated("Please use com.tokopedia.home_component_header.view.HomeComponentHeaderView")
 class DynamicChannelHeaderView : FrameLayout {
     private var headerContainer: ConstraintLayout? = null
     private var txtTitle: Typography? = null
@@ -39,16 +39,16 @@ class DynamicChannelHeaderView : FrameLayout {
     }
 
     private fun initHeaderWithAttrs(attrs: AttributeSet?) {
-            val attributes: TypedArray = context.obtainStyledAttributes(attrs, home_component_headerR.styleable.HomeChannelHeaderView)
+            val attributes: TypedArray = context.obtainStyledAttributes(attrs, home_component_headerR.styleable.HomeComponentHeaderView)
         try {
-            headerColorMode = attributes.getInt(home_component_headerR.styleable.HomeChannelHeaderView_color_mode, COLOR_MODE_NORMAL)
-            headerCtaMode = attributes.getInt(home_component_headerR.styleable.HomeChannelHeaderView_cta_mode, CTA_MODE_SEE_ALL)
+            headerColorMode = attributes.getInt(home_component_headerR.styleable.HomeComponentHeaderView_color_mode, COLOR_MODE_NORMAL)
+            headerCtaMode = attributes.getInt(home_component_headerR.styleable.HomeComponentHeaderView_cta_mode, CTA_MODE_SEE_ALL)
         } finally {
             attributes.recycle()
         }
     }
 
-    @Deprecated("Please use com.tokopedia.home_component_header.view.HomeChannelHeaderView.bind()")
+    @Deprecated("Please use com.tokopedia.home_component_header.view.HomeComponentHeaderView.bind()")
     fun setChannel(
         channelModel: ChannelModel,
         listener: HeaderListener,
