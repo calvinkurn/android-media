@@ -113,6 +113,21 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
                 }
             }
 
+            productContainer?.setOnClickListener{
+                shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(
+                    Int.ZERO,
+                    product.applinks,
+                    shopAdsWithSingleProductModel.cpmData
+                )
+                topAdsUrlHitter.hitClickUrl(
+                    ShopAdsSingleItemVerticalLayout::class.java.simpleName,
+                    shopAdsWithSingleProductModel.adsClickUrl,
+                    String.EMPTY,
+                    String.EMPTY,
+                    String.EMPTY
+                )
+            }
+
             bodyContainer?.setOnClickListener {
                 shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(
                     Int.ZERO,

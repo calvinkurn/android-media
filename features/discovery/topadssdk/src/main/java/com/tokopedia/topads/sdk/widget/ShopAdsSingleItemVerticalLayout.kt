@@ -80,6 +80,7 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
         setProductDiscount(shopAdsWithSingleProductModel.listItem)
         setShopClick(shopAdsWithSingleProductModel)
         setImpression(shopAdsWithSingleProductModel)
+        setProductClick(shopAdsWithSingleProductModel)
     }
 
     private fun initViews() {
@@ -143,6 +144,25 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
                 String.EMPTY,
                 String.EMPTY
             )
+        }
+    }
+
+    private fun setProductClick(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel) {
+        shopAdsWithSingleProductModel.listItem?.let { product ->
+            productCard?.setOnClickListener {
+                shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(
+                    Int.ZERO,
+                    product.applinks,
+                    shopAdsWithSingleProductModel.cpmData
+                )
+                topAdsUrlHitter.hitClickUrl(
+                    ShopAdsSingleItemVerticalLayout::class.java.simpleName,
+                    shopAdsWithSingleProductModel.adsClickUrl,
+                    String.EMPTY,
+                    String.EMPTY,
+                    String.EMPTY
+                )
+            }
         }
     }
 
