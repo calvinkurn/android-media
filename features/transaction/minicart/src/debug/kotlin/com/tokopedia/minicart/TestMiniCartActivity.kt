@@ -8,8 +8,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.minicart.cartlist.MiniCartListNewBottomSheet
-import com.tokopedia.minicart.cartlist.MiniCartListNewBottomSheetListener
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.v2.MiniCartV2Widget
@@ -57,34 +55,10 @@ class TestMiniCartActivity : AppCompatActivity() {
                 Toast.makeText(this@TestMiniCartActivity, "testing", Toast.LENGTH_SHORT)
                     .show()
                 //                        ShoppingSummaryBottomSheet().show(miniCartData.shoppingSummaryBottomSheetData, this@TestMiniCartActivity.supportFragmentManager, this@TestMiniCartActivity)
-                showMiniCartListNewBottomSheet()
             }
 
             override fun getFragmentManager(): FragmentManager? {
                 return this@TestMiniCartActivity.supportFragmentManager
-            }
-        }
-    }
-
-    private fun showMiniCartListNewBottomSheet() {
-        MiniCartListNewBottomSheet().show(
-            this@TestMiniCartActivity,
-            this@TestMiniCartActivity.supportFragmentManager,
-            this@TestMiniCartActivity,
-            this@TestMiniCartActivity,
-            null,
-            getMiniCartListNewBottomSheetListener()
-        )
-    }
-
-    private fun getMiniCartListNewBottomSheetListener(): MiniCartListNewBottomSheetListener {
-        return object : MiniCartListNewBottomSheetListener {
-            override fun onMiniCartListBottomSheetDismissed() {
-                findViewById<MiniCartV2Widget>(R.id.test_mini_cart).refresh(GetMiniCartParam(listOf("480552"), MiniCartSource.MiniCartBottomSheet.value))
-            }
-
-            override fun onRetryOpenMiniCartListBottomSheet() {
-                showMiniCartListNewBottomSheet()
             }
         }
     }
