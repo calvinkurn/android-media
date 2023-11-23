@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeLifecycleOwner
@@ -25,7 +26,7 @@ import javax.inject.Inject
 /**
  * Created by irpan on 09/10/23.
  */
-class TargetedTickerWidget : FrameLayout {
+class TargetedTickerWidget : LinearLayout {
 
     var ticker: Ticker? = null
 
@@ -37,7 +38,8 @@ class TargetedTickerWidget : FrameLayout {
     private var onSubmitSuccessListener: (TickerModel) -> TickerModel = { item -> item }
     private var onSubmitErrorListener: (Throwable) -> TickerModel? = { item -> null }
 
-    private val binding = WidgetTargetedTickerBinding.inflate(LayoutInflater.from(context)).also { addView(it.root) }
+    //    private val binding = WidgetTargetedTickerBinding.inflate(LayoutInflater.from(context)).also { addView(it.root) }
+    private val binding = WidgetTargetedTickerBinding.inflate(LayoutInflater.from(context), this)
 
     private val viewModel: TargetedTickerViewModel? by lazy {
         findViewTreeViewModelStoreOwner()?.let { viewModelOwner ->
