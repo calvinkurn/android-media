@@ -45,7 +45,9 @@ class PlayWidgetQueryParamBuilder {
                 }
                 is PlayWidgetUseCase.WidgetType.DiscoveryPage, is PlayWidgetUseCase.WidgetType.DiscoveryPageV2 -> {
                     appendLine(",")
-                    appendLine("${'$'}$PARAM_IS_DYNAMIC_VIDEO: Boolean")
+                    appendLine("${'$'}$PARAM_IS_DYNAMIC_VIDEO: Boolean,")
+                    appendLine("${'$'}$PARAM_PRODUCT_ID: String,")
+                    appendLine("${'$'}$PARAM_CATEGORY_ID: String")
                 }
                 else -> {
                     // do nothing with other widget type
@@ -76,7 +78,9 @@ class PlayWidgetQueryParamBuilder {
                 }
                 is PlayWidgetUseCase.WidgetType.DiscoveryPage, is PlayWidgetUseCase.WidgetType.DiscoveryPageV2 -> {
                     appendLine(",")
-                    appendLine("$PARAM_IS_DYNAMIC_VIDEO: ${'$'}$PARAM_IS_DYNAMIC_VIDEO")
+                    appendLine("$PARAM_IS_DYNAMIC_VIDEO: ${'$'}$PARAM_IS_DYNAMIC_VIDEO,")
+                    appendLine("$PARAM_PRODUCT_ID: ${'$'}$PARAM_PRODUCT_ID,")
+                    appendLine("$PARAM_CATEGORY_ID: ${'$'}$PARAM_CATEGORY_ID")
                 }
                 else -> {
                     // do nothing with other widget type
