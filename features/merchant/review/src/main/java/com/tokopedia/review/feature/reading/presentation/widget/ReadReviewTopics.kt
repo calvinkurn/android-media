@@ -31,6 +31,7 @@ class ReadReviewTopics @JvmOverloads constructor(
 
     private var preselectChip: Chip? = null
     private var selectedChip: Chip? = null
+    private var isExpanded = false
 
     private val binding = WidgetReadReviewExtractedTopicBinding.inflate(
         LayoutInflater.from(context),
@@ -39,8 +40,11 @@ class ReadReviewTopics @JvmOverloads constructor(
     )
 
     private fun apply(keywords: List<Keyword>) = with(binding) {
-        if (keywords.isEmpty()) return
-        root.show()
+        if (keywords.isEmpty()) {
+            hideAll()
+            return
+        }
+        finish()
         extractedTopicGroup.removeAllViews()
 
         keywords.forEachIndexed { index, keyword ->
@@ -93,6 +97,7 @@ class ReadReviewTopics @JvmOverloads constructor(
     private fun ChipGroup.expand() {
         setLayoutHeight(WRAP_CONTENT)
         binding.extractedTopicExpand.hide()
+        isExpanded = true
     }
 
     private fun Keyword.toChip(position: Int): Chip {
@@ -139,4 +144,27 @@ class ReadReviewTopics @JvmOverloads constructor(
         val view: ChipsUnify,
         val keyword: Keyword
     )
+
+    fun loading() = with(binding) {
+        extractedTopicMain.hide()
+        if (isExpanded) {
+            extractedTopicShimmerExpand.show()
+            extractedTopicShimmerCollapse.hide()
+        } else {
+            extractedTopicShimmerExpand.hide()
+            extractedTopicShimmerCollapse.show()
+        }
+    }
+
+    private fun finish() = with(binding) {
+        extractedTopicMain.show()
+        extractedTopicShimmerExpand.hide()
+        extractedTopicShimmerCollapse.hide()
+    }
+
+    private fun hideAll() = with(binding){
+        extractedTopicMain.hide()
+        extractedTopicShimmerExpand.hide()
+        extractedTopicShimmerCollapse.hide()
+    }
 }

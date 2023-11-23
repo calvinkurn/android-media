@@ -54,7 +54,7 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
     }
 
     fun setRecycledViewPool(recycledViewPool: RecyclerView.RecycledViewPool) {
-        (binding.root.layoutManager as? LinearLayoutManager)?.recycleChildrenOnDetach = true
+        (binding.root.layoutManager as? LinearLayoutManager)?.recycleChildrenOnDetach = false
         binding.root.setRecycledViewPool(recycledViewPool)
     }
 

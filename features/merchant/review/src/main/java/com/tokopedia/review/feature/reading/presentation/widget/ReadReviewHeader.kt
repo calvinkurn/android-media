@@ -363,4 +363,8 @@ class ReadReviewHeader @JvmOverloads constructor(
     fun getReviewRatingContainer(): ConstraintLayout {
         return binding.containerReviewRating
     }
+
+    fun loadingTopicExtraction(){
+        if(isTopicExtraction) binding.readReviewExtractedTopic.loading()
+    }
 }

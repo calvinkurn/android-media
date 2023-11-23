@@ -404,6 +404,7 @@ open class ReadReviewFragment :
         viewModel.setFilterWithMedia(isActive, isProductReview)
         reviewHeader?.updateFilterWithMedia()
         showListOnlyLoading()
+        updateTopicExtraction()
     }
 
     override fun onFilterWithTopicClicked(
@@ -533,6 +534,7 @@ open class ReadReviewFragment :
         viewModel.setFilter(selectedFilter, filterType, isProductReview)
         showListOnlyLoading()
         reviewHeader?.updateFilter(selectedFilter, filterType, index)
+        updateTopicExtraction()
     }
 
     override fun onSortSubmitted(selectedSort: ListItemUnify) {
@@ -594,6 +596,7 @@ open class ReadReviewFragment :
     }
 
     override fun onClearFiltersClicked() {
+        showListOnlyLoading()
         clearAllData()
         if (isProductReview) {
             ReadReviewTracking.trackOnClearFilter(viewModel.getProductId())
@@ -601,8 +604,7 @@ open class ReadReviewFragment :
             ReadReviewTracking.trackOnShopReviewClearFilter(viewModel.getShopId())
         }
         viewModel.clearFilters()
-        viewModel.updateTopicExtraction()
-        viewModel.setSort(SortTypeConstants.LATEST_COPY, isProductReview)
+        viewModel.setSort(SortTypeConstants.MOST_HELPFUL_COPY, isProductReview)
         viewModel.getSelectedRatingFilter()
         if (isProductReview) {
             with(getRatingAndTopics()) {
@@ -613,6 +615,7 @@ open class ReadReviewFragment :
                 reviewHeader?.setAvailableFilters(topics, availableFilters, this@ReadReviewFragment)
             }
         }
+        updateTopicExtraction()
     }
 
     override fun onAttachedImagesClicked(
@@ -837,6 +840,11 @@ open class ReadReviewFragment :
             )
             startActivity(intent)
         }
+    }
+
+    private fun updateTopicExtraction(){
+        reviewHeader?.loadingTopicExtraction()
+        viewModel.updateTopicExtraction()
     }
 
     private fun getProductIdFromArguments() {

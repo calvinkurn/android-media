@@ -92,6 +92,7 @@ class ReadReviewViewModel @Inject constructor(
     private var shopId: MutableLiveData<String> = MutableLiveData()
     private var sort: String = SortTypeConstants.MOST_HELPFUL_PARAM
     private var filter: SelectedFilters = SelectedFilters()
+    private var isTopicExtraction: Boolean = false
 
     init {
         _ratingAndTopics.addSource(productId) {
@@ -298,7 +299,6 @@ class ReadReviewViewModel @Inject constructor(
                 this.filter.topic = mapTopicFilterToFilterType(selectedFilters, isProductReview)
             }
         }
-        updateTopicExtraction()
         resetPage(isProductReview)
     }
 
@@ -323,7 +323,6 @@ class ReadReviewViewModel @Inject constructor(
         } else {
             this.filter.withMedia = getFilterWithMediaParam()
         }
-        updateTopicExtraction()
         resetPage(isProductReview)
     }
 
@@ -399,13 +398,15 @@ class ReadReviewViewModel @Inject constructor(
         launchCatchError(block = {
             getProductRatingAndTopicsUseCase.setParams(productId)
             val data = getProductRatingAndTopicsUseCase.executeOnBackground()
+            isTopicExtraction = data.productrevGetProductRatingAndTopics.keywords.isNotEmpty()
             _ratingAndTopics.postValue(Success(data.productrevGetProductRatingAndTopics))
         }) {
             _ratingAndTopics.postValue(Fail(it))
         }
     }
 
-    fun updateTopicExtraction(){
+    fun updateTopicExtraction() {
+        if (!isTopicExtraction) return
         launchCatchError(block = {
             filter.topic = null
             val filterBy = filter.getSelectedParam()
