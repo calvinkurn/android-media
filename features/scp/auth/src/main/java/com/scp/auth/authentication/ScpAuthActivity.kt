@@ -129,6 +129,7 @@ class ScpAuthActivity : BaseActivity() {
             }
             onProgressiveSignupSuccess.observe(this@ScpAuthActivity) {
                 if (it.isNotEmpty()) {
+                    AuthAnalyticsMapper.trackProgressiveSignupSuccess()
                     onProgressiveSignupSuccess(it)
                 } else {
                     showGenericErrorBottomSheet()
@@ -226,12 +227,14 @@ class ScpAuthActivity : BaseActivity() {
                 }
 
                 override fun onUserNotRegistered(credential: UserCredential, activity: Activity?) {
+                    // track click signup
                     gotoRegisterInitial(credential)
                 }
 
                 override fun onProgressiveSignupFlow(accountDetails: GeneralAccountDetails) {
                     if (ScpUtils.isProgressiveSignupEnabled()) {
                         GotoSdk.LSDKINSTANCE?.closeScreenAndExit()
+                        // track click signup tracker row 2
                         viewModel.register(accountDetails)
                     } else {
                         val credential = if (accountDetails.phoneNumber.isNotEmpty()) {

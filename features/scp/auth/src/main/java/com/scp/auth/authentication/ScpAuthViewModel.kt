@@ -64,6 +64,7 @@ class ScpAuthViewModel @Inject constructor(
                 )
                 when (val resp = registerV2AndSaveSessionUseCase(params)) {
                     is Success -> {
+                        AuthAnalyticsMapper.trackProgressiveSignupSuccess()
                         ScpUtils.saveTokens(resp.data.accessToken, resp.data.refreshToken)
                         getUserInfoAndSaveSessionUseCase(Unit)
                         _onProgressiveSignupSuccess.postValue(account.fullname)
@@ -73,6 +74,7 @@ class ScpAuthViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
+                AuthAnalyticsMapper.trackProgressiveSignupFailed(e.message ?: "")
                 _onProgressiveSignupSuccess.postValue("")
             } finally {
                 _showFullScreenLoading.postValue(false)
