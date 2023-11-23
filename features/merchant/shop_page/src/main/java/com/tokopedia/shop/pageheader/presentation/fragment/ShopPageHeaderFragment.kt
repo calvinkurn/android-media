@@ -2746,8 +2746,8 @@ class ShopPageHeaderFragment :
         )
     }
 
-    override fun getContentCreationListener(): ContentCreationBottomSheet.ContentCreationBottomSheetListener =
-        object : ContentCreationBottomSheet.ContentCreationBottomSheetListener {
+    override fun getContentCreationListener(): ContentCreationBottomSheet.Listener =
+        object : ContentCreationBottomSheet.Listener {
             override fun onCreationItemSelected(data: ContentCreationItemModel) {}
 
             override fun onCreationNextClicked(data: ContentCreationItemModel) {

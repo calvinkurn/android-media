@@ -32,7 +32,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     }
 
     var shouldShowPerformanceAction: Boolean = false
-    var listener: ContentCreationBottomSheetListener? = null
+    var listener: Listener? = null
     var analytics: ContentCreationAnalytics? = null
     var creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
 
@@ -122,7 +122,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
     private fun createComponent(): ContentCreationComponent = ContentCreationInjector.get(requireContext())
 
-    interface ContentCreationBottomSheetListener {
+    interface Listener {
         fun onCreationItemSelected(data: ContentCreationItemModel)
         fun onCreationNextClicked(data: ContentCreationItemModel)
     }

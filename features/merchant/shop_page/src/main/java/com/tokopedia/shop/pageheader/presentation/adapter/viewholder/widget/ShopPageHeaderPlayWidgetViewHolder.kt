@@ -34,7 +34,7 @@ class ShopPageHeaderPlayWidgetViewHolder(
             shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel
         )
 
-        fun getContentCreationListener(): ContentCreationBottomSheet.ContentCreationBottomSheetListener
+        fun getContentCreationListener(): ContentCreationBottomSheet.Listener
     }
 
     private val viewBinding: LayoutShopHeaderPlayWidgetBinding? by viewBinding()

@@ -80,7 +80,7 @@ import com.tokopedia.creation.common.R as creationcommonR
  */
 class FeedBaseFragment :
     BaseDaggerFragment(),
-    ContentCreationBottomSheet.ContentCreationBottomSheetListener,
+    ContentCreationBottomSheet.Listener,
     FragmentListener {
 
     private var _binding: FragmentFeedBaseBinding? = null
