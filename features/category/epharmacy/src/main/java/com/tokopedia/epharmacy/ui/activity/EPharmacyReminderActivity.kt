@@ -67,6 +67,7 @@ class EPharmacyReminderActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
         ).build()
 
     companion object {
+        const val REMINDER_IS_CLOSING_HOURS = "isClosingHour"
         const val REMINDER_OPEN_TIME_KEY = "openTime"
         const val REMINDER_CLOSE_TIME_KEY = "closeTime"
         const val REMINDER_TYPE_KEY = "reminderType"

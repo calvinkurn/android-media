@@ -22,7 +22,6 @@ import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactoryImpl
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAttachmentDetailDiffUtil
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.databinding.EpharmacyQuantityChangeFragmentBinding
@@ -49,6 +48,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.totalamount.TotalAmount
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography.Companion.BOLD
 import com.tokopedia.usecase.coroutines.Fail
@@ -64,20 +64,22 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     private var ePharmacyRecyclerView: RecyclerView? = null
     private var ePharmacyGlobalError: GlobalError? = null
     private var qCTotalAmount: TotalAmount? = null
+
     private var tConsultationId = 0L
     private var totalAmount = 0.0
+
+    @JvmField
     @Inject
-    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+    var viewModelFactory: ViewModelProvider.Factory? = null
+
+    private val ePharmacyPrescriptionAttachmentViewModel by lazy {
+        viewModelFactory?.let {
+            ViewModelProvider(this, it)[EPharmacyPrescriptionAttachmentViewModel::class.java]
+        }
+    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-    private val ePharmacyPrescriptionAttachmentViewModel: EPharmacyPrescriptionAttachmentViewModel by lazy(
-        LazyThreadSafetyMode.NONE
-    ) {
-        val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider[EPharmacyPrescriptionAttachmentViewModel::class.java]
-    }
 
     private var ePharmacyAttachmentUiUpdater: EPharmacyAttachmentUiUpdater = EPharmacyAttachmentUiUpdater(
         linkedMapOf()
@@ -144,7 +146,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
 
     private fun getData() {
         addShimmer()
-        ePharmacyPrescriptionAttachmentViewModel.getPrepareProductGroup(EPHARMACY_PPG_QTY_CHANGE, makeRequestParams())
+        ePharmacyPrescriptionAttachmentViewModel?.getPrepareProductGroup(EPHARMACY_PPG_QTY_CHANGE, makeRequestParams())
     }
 
     private fun makeRequestParams(): MutableMap<String, Any?> {
@@ -175,7 +177,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     }
 
     private fun observerEPharmacyDetail() {
-        ePharmacyPrescriptionAttachmentViewModel.productGroupLiveDataResponse.observe(viewLifecycleOwner) {
+        ePharmacyPrescriptionAttachmentViewModel?.productGroupLiveDataResponse?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     onSuccessGroupData(it)
@@ -188,7 +190,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     }
 
     private fun observerEPharmacyButtonData() {
-        ePharmacyPrescriptionAttachmentViewModel.buttonLiveData.observe(viewLifecycleOwner) { papSecondaryCTA ->
+        ePharmacyPrescriptionAttachmentViewModel?.buttonLiveData?.observe(viewLifecycleOwner) { papSecondaryCTA ->
             papSecondaryCTA?.let { cta ->
                 qCTotalAmount?.amountCtaView?.text = cta.title
                 when (cta.state) {
@@ -208,11 +210,12 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     }
 
     private fun onDoneButtonClick() {
-        ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart(ePharmacyAttachmentUiUpdater)
+        ePharmacyPrescriptionAttachmentViewModel?.updateEPharmacyCart(ePharmacyAttachmentUiUpdater)
+        sendClickPerbaharuiPesananOnQuantityChangeBottomsheetEvent("")
     }
 
     private fun observerUpdateEPharmacyCart() {
-        ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart.observe(viewLifecycleOwner) { updateEPharmacyCart ->
+        ePharmacyPrescriptionAttachmentViewModel?.updateEPharmacyCart?.observe(viewLifecycleOwner) { updateEPharmacyCart ->
             if (updateEPharmacyCart) {
                 onSuccessUpdateEPharmacyCart()
             } else {
@@ -225,7 +228,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     }
 
     private fun observerConsultationDetails() {
-        ePharmacyPrescriptionAttachmentViewModel.consultationDetails.observe(viewLifecycleOwner) { consultationDetails ->
+        ePharmacyPrescriptionAttachmentViewModel?.consultationDetails?.observe(viewLifecycleOwner) { consultationDetails ->
             when (consultationDetails) {
                 is Success -> {
                     consultationDetails.data.epharmacyConsultationDetailsData?.consultationData?.prescription?.firstOrNull()?.documentUrl?.let { url ->
@@ -259,8 +262,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     }
 
     private fun observerPrescriptionError() {
-        ePharmacyPrescriptionAttachmentViewModel.uploadError.observe(viewLifecycleOwner) { error ->
-
+        ePharmacyPrescriptionAttachmentViewModel?.uploadError?.observe(viewLifecycleOwner) { error ->
         }
     }
 
@@ -315,40 +317,30 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
         val model = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel)
         redirectAttachmentCTA(
             model.enablerName,
-            model.chooserLogo,
             model.epharmacyGroupId,
             model.prescriptionCTA,
-            model.tokoConsultationId,
-            model.consultationData,
-            model.price,
-            model.operatingSchedule,
-            model.note
+            model.tokoConsultationId
         )
         EPharmacyMiniConsultationAnalytics.clickAttachPrescriptionButton(
             model.prescriptionCTA?.title.orEmpty(),
-            ePharmacyPrescriptionAttachmentViewModel.getEnablers().toString(),
+            ePharmacyPrescriptionAttachmentViewModel?.getEnablers().toString(),
             adapterPosition.toString(),
-            ePharmacyPrescriptionAttachmentViewModel.getShopIds(model.epharmacyGroupId).size.toString(),
-            ePharmacyPrescriptionAttachmentViewModel.getShopIds(model.epharmacyGroupId).toString(),
+            ePharmacyPrescriptionAttachmentViewModel?.getShopIds(model.epharmacyGroupId)?.size.toString(),
+            ePharmacyPrescriptionAttachmentViewModel?.getShopIds(model.epharmacyGroupId).toString(),
             model.epharmacyGroupId
         )
     }
 
     private fun redirectAttachmentCTA(
         enablerName: String?,
-        chooserLogo: String?,
         groupId: String?,
         prescriptionCTA: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionCTA?,
-        tokoConsultationId: String?,
-        consultationData: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData?,
-        price: String?,
-        operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?,
-        note: String?
+        tokoConsultationId: String?
     ) {
         when (prescriptionCTA?.actionType) {
             PrescriptionActionType.REDIRECT_PRESCRIPTION.type -> {
                 tokoConsultationId?.let {
-                    ePharmacyPrescriptionAttachmentViewModel.getConsultationDetails(it)
+                    ePharmacyPrescriptionAttachmentViewModel?.getConsultationDetails(it)
                 }
             }
             PrescriptionActionType.REDIRECT_CHECK_PRESCRIPTION.type -> {
@@ -369,19 +361,35 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
         }
     }
 
-    override fun onToast(toasterType: Int, message: String) {
-        super.onToast(toasterType, message)
+    override fun onEditorQuantityToast(
+        toasterType: Int,
+        message: String,
+        enablerName: String?,
+        tConsultationId: String?,
+        groupId: String?
+    ) {
         showToast(toasterType, message)
+        sendViewErrorToasterOnQuantityChangeBottomsheetEvent("$enablerName - $tConsultationId - $groupId")
     }
 
-    override fun onQuantityChanged(changeInValue: Double) {
-        super.onQuantityChanged(changeInValue)
+    override fun onQuantityChanged(
+        changeInValue: Double,
+        productId: String?,
+        enablerName: String?,
+        tConsultationId: String?,
+        groupId: String?
+    ) {
         totalAmount += changeInValue
         qCTotalAmount?.setAmount(EPharmacyUtils.getTotalAmountFmt(totalAmount))
+        if (changeInValue > 0) {
+            sendClickAddQuantityOnChangeQuantityBottomsheetEvent("$enablerName - $tConsultationId - $groupId - $productId")
+        } else {
+            sendClickRemoveQuantityOnChangeQuantityBottomsheetEvent("$enablerName - $tConsultationId - $groupId - $productId")
+        }
     }
 
     private fun calculateTotalAmount(): Double {
-       return ePharmacyAttachmentUiUpdater.getTotalAmount()
+        return ePharmacyAttachmentUiUpdater.getTotalAmount()
     }
 
     override fun getScreenName(): String = CategoryKeys.EPHARMACY_QUANTITY_CHANGE_BS
@@ -400,5 +408,57 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
                 }
             }
         }
+    }
+
+    private fun sendClickPerbaharuiPesananOnQuantityChangeBottomsheetEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("clickGroceries")
+            .setEventAction("click perbaharui pesanan on quantity change bottomsheet")
+            .setEventCategory("epharmacy attach prescription page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45877")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    fun sendViewErrorToasterOnQuantityChangeBottomsheetEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("viewGroceriesIris")
+            .setEventAction("view error toaster on quantity change bottomsheet")
+            .setEventCategory("epharmacy attach prescription page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45878")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    fun sendClickAddQuantityOnChangeQuantityBottomsheetEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("clickGroceries")
+            .setEventAction("click add quantity on change quantity bottomsheet")
+            .setEventCategory("epharmacy attach prescription page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45875")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    fun sendClickRemoveQuantityOnChangeQuantityBottomsheetEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("clickGroceries")
+            .setEventAction("click remove quantity on change quantity bottomsheet")
+            .setEventCategory("epharmacy attach prescription page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45876")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
     }
 }

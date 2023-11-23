@@ -5,7 +5,6 @@ import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsG
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup as EGroup
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo as EProductInfo
 
@@ -42,26 +41,50 @@ object EPharmacyMapper {
             group.consultationData,
             false,
             group.prescriptionCTA,
-            getSubProductsModel(info),
+            getSubProductsModel(
+                info,
+                group.consultationSource?.enablerName,
+                group.consultationData?.tokoConsultationId,
+                group.epharmacyGroupId
+            ),
             isLastIndex(group.shopInfo, shopIndex),
             (isLastIndex(group.shopInfo, shopIndex) && isLastGroup).not(),
             isAccordionEnable = getIsProductExpanded(source)
-            )
+        )
     }
 
     private fun getIsProductExpanded(source: String?): Boolean {
         return source == EPHARMACY_PPG_QTY_CHANGE
     }
 
-    private fun getSubProductsModel(shopInfo: EProductInfo?): List<BaseEPharmacyDataModel> {
-        return getProductVisitablesWithoutFirst(shopInfo)
+    private fun getSubProductsModel(
+        shopInfo: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?,
+        enablerName: String?,
+        tConsultationId: String?,
+        eGroupId: String?
+    ): List<BaseEPharmacyDataModel> {
+        return getProductVisitablesWithoutFirst(shopInfo, enablerName, tConsultationId, eGroupId)
     }
 
-    private fun getProductVisitablesWithoutFirst(shopInfo: EProductInfo?): List<BaseEPharmacyDataModel> {
+    private fun getProductVisitablesWithoutFirst(
+        shopInfo: EProductInfo?,
+        enablerName: String?,
+        tConsultationId: String?,
+        eGroupId: String?
+    ): List<BaseEPharmacyDataModel> {
         val productSubList = arrayListOf<EPharmacyAccordionProductDataModel>()
         shopInfo?.products?.forEachIndexed { index, product ->
             if (index != 0) {
-                productSubList.add(EPharmacyAccordionProductDataModel("${PRODUCT_COMPONENT}_${product?.productId}", PRODUCT_COMPONENT, product))
+                productSubList.add(
+                    EPharmacyAccordionProductDataModel(
+                        "${PRODUCT_COMPONENT}_${product?.productId}",
+                        PRODUCT_COMPONENT,
+                        product,
+                        enablerName,
+                        tConsultationId,
+                        eGroupId
+                    )
+                )
             }
         }
         return productSubList
@@ -85,7 +108,6 @@ object EPharmacyMapper {
     private fun getProductModel(info: EGroup.ProductsInfo?): EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product? {
         return info?.products?.firstOrNull()
     }
-
 
     private fun getUniqueModelName(ePharmacyGroupId: String?, index: Int): String {
         return "${ePharmacyGroupId}_$index"

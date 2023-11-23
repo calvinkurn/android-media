@@ -74,15 +74,24 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
         quantityChangedEditor.setValue(dataModel?.product?.qtyComparison?.currentQty.orZero())
         quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
             if (newValue == MIN_VALUE_OF_PRODUCT_EDITOR || newValue == dataModel?.product?.qtyComparison?.recommendedQty) {
-                ePharmacyListener?.onToast(
+                ePharmacyListener?.onEditorQuantityToast(
                     Toaster.TYPE_ERROR,
                     itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached)
-                        .orEmpty()
+                        .orEmpty(),
+                    dataModel?.enablerName,
+                    dataModel?.tConsultationId,
+                    dataModel?.groupId
                 )
             }
             dataModel?.product?.qtyComparison?.currentQty = newValue
             val changeInTotal = reCalculateSubTotal()
-            ePharmacyListener?.onQuantityChanged(changeInTotal)
+            ePharmacyListener?.onQuantityChanged(
+                changeInTotal,
+                dataModel?.product?.productId.toString(),
+                dataModel?.enablerName,
+                dataModel?.tConsultationId,
+                dataModel?.groupId
+            )
         }
     }
 

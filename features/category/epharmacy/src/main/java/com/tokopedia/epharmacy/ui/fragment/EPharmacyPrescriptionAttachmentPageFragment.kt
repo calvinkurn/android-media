@@ -542,11 +542,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         updateUi()
     }
 
-    override fun onToast(toasterType: Int, message: String) {
-        super.onToast(toasterType, message)
-        showToast(toasterType, message)
-    }
-
     private fun redirectAttachmentCTA(
         enablerName: String?,
         chooserLogo: String?,

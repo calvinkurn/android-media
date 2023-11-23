@@ -65,7 +65,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val chatDokterUploadIcon = view.findViewById<ImageUnify>(R.id.upload_icon)
     private val topView = view.findViewById<View>(R.id.transparent_view_top)
     private val bottomView = view.findViewById<View>(R.id.transparent_view_bottom)
-    private val ticker = view.findViewById<Ticker>(R.id.ticker)
+    private val ticker = view.findViewById<Ticker>(R.id.lblChangingProductWarning)
     private val divisionSingleProduct = view.findViewById<View>(R.id.division_single_card)
     private val quantityEditorLayout = view.findViewById<ConstraintLayout>(R.id.quantity_editor_layout)
     private val initialProductQuantity = view.findViewById<Typography>(R.id.initial_product_quantity)
@@ -159,15 +159,24 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         quantityChangedEditor.setValue(dataModel?.product?.qtyComparison?.currentQty.orZero())
         quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
             if (newValue == MIN_VALUE_OF_PRODUCT_EDITOR || newValue == dataModel?.product?.qtyComparison?.recommendedQty) {
-                ePharmacyListener?.onToast(
+                ePharmacyListener?.onEditorQuantityToast(
                     Toaster.TYPE_ERROR,
                     itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached)
-                        .orEmpty()
+                        .orEmpty(),
+                    dataModel?.enablerName,
+                    dataModel?.tokoConsultationId,
+                    dataModel?.epharmacyGroupId
                 )
             }
             dataModel?.product?.qtyComparison?.currentQty = newValue
             val changeInTotal = reCalculateSubTotal()
-            ePharmacyListener?.onQuantityChanged(changeInTotal)
+            ePharmacyListener?.onQuantityChanged(
+                changeInTotal,
+                dataModel?.product?.productId.toString(),
+                dataModel?.enablerName,
+                dataModel?.tokoConsultationId,
+                dataModel?.epharmacyGroupId
+            )
         }
     }
 

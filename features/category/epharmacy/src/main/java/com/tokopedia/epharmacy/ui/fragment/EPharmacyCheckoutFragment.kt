@@ -169,14 +169,14 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun setTitle(title: String?) {
         if (!title.isNullOrBlank()) {
-            binding?.titleChatDokter?.text = title
+            binding?.lblChatDoctor?.text = title
         }
     }
 
     private fun setCartInfo(cart: EPATCData.BusinessDataList.BusinessData.CartGroup.Cart?) {
         binding?.epharmacyCheckoutDetailView?.apply {
             detailProductHeader.hide()
-            serviceTypeValue.text = cart?.customResponse?.serviceType
+            lblValueItemOfService.text = cart?.customResponse?.serviceType
             serviceProviderValue.text = cart?.customResponse?.enablerName
             durationValue.text = cart?.customResponse?.durationMinutes
         }
@@ -184,8 +184,8 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun setSummaryInfo(summary: EPCheckoutSummary?) {
         binding?.apply {
-            subtotalText.text = summary?.businessBreakDown?.firstOrNull()?.product?.title
-            subtotalValue.text = summary?.businessBreakDown?.firstOrNull()?.totalBillFmt
+            lblSubtotalBill.text = summary?.businessBreakDown?.firstOrNull()?.product?.title
+            lblSubtotalBillValue.text = summary?.businessBreakDown?.firstOrNull()?.totalBillFmt
             epharmacyCheckoutDetailView.feeValue.text = summary?.businessBreakDown?.firstOrNull()?.totalBillFmt
         }
     }
@@ -255,7 +255,10 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun onSuccessCartCheckout(result: Success<EPharmacyCartGeneralCheckoutResponse>) {
         when (result.data.checkout?.checkoutData?.success) {
-            EPharmacyCartGeneralCheckoutResponse.ERROR -> showToast(TYPE_ERROR, result.data.checkout?.checkoutData?.message.orEmpty())
+            EPharmacyCartGeneralCheckoutResponse.ERROR -> {
+                sendViewCheckoutErrorEvent("$enablerName - $groupId - $tConsultationId")
+                showToast(TYPE_ERROR, result.data.checkout?.checkoutData?.message.orEmpty())
+            }
             EPharmacyCartGeneralCheckoutResponse.SUCCESS -> successCheckout(result.data.checkout?.checkoutData?.cartGeneralResponse)
         }
     }
@@ -322,13 +325,13 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
             .send()
     }
 
-    fun sendClickBackEvent(eventLabel: String) {
+    private fun sendViewCheckoutErrorEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("clickGroceries")
-            .setEventAction("click back")
+            .setEvent("viewGroceriesIris")
+            .setEventAction("view checkout error")
             .setEventCategory("epharmacy chat dokter checkout page")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45890")
+            .setCustomProperty("trackerId", "45870")
             .setBusinessUnit("Physical Goods")
             .setCurrentSite("tokopediamarketplace")
             .build()

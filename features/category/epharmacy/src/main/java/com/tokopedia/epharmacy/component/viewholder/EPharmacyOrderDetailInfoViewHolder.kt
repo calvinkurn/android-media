@@ -14,7 +14,7 @@ class EPharmacyOrderDetailInfoViewHolder(
 ) : AbstractViewHolder<EPharmacyOrderDetailInfoDataModel>(view) {
 
     private val detailProductHeader = view.findViewById<Typography>(R.id.detail_product_header)
-    private val serviceTypeValue = view.findViewById<Typography>(R.id.service_type_value)
+    private val serviceTypeValue = view.findViewById<Typography>(R.id.lblValueItemOfService)
     private val providerName = view.findViewById<Typography>(R.id.service_provider_value)
     private val durationValue = view.findViewById<Typography>(R.id.duration_value)
     private val feesValue = view.findViewById<Typography>(R.id.fee_value)
