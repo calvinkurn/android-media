@@ -319,12 +319,22 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 autoWDInitData.data.scheduleWording.isNotEmpty()
             ) {
                 saldoTicker.text = autoWDInitData.data.scheduleWording
-                saldoTickerGroup.setAllOnClickListener {
-                    val intent = RouteManager.getIntent(context, autoWDInitData.data.redirectLink)
-                    startActivity(intent)
+                saldoTicker.setOnClickListener {
+                    onSaldoTickerClick(autoWDInitData.data.redirectLink)
+                }
+                saldoTickerIcon.setOnClickListener {
+                    onSaldoTickerClick(autoWDInitData.data.redirectLink)
+                }
+                saldoTickerBackground.setOnClickListener {
+                    onSaldoTickerClick(autoWDInitData.data.redirectLink)
                 }
             }
         }
+    }
+
+    private fun onSaldoTickerClick(applink: String) {
+        val intent = RouteManager.getIntent(context, applink)
+        startActivity(intent)
     }
 
     private fun onUserSaldoBalanceLoaded(saldo: Saldo) {
@@ -724,18 +734,19 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                     )).spannedString
             }
 
-            saldoHoldGroup.setAllOnClickListener {
-                saldoDetailsAnalytics.sendClickPaymentEvents(SaldoDetailsConstants.Action.SALDO_HOLD_STATUS_CLICK)
-                val intent = Intent(context, SaldoHoldInfoActivity::class.java)
-                startActivity(intent)
+            saldoHold.setOnClickListener {
+                onSaldoHoldClick()
+            }
+            saldoHoldIcon.setOnClickListener {
+                onSaldoHoldClick()
             }
         }
     }
 
-    private fun Group.setAllOnClickListener(listener: (View) -> Unit) {
-        referencedIds.forEach { id ->
-            binding?.root?.findViewById<View>(id)?.setOnClickListener(listener)
-        }
+    private fun onSaldoHoldClick() {
+        saldoDetailsAnalytics.sendClickPaymentEvents(SaldoDetailsConstants.Action.SALDO_HOLD_STATUS_CLICK)
+        val intent = Intent(context, SaldoHoldInfoActivity::class.java)
+        startActivity(intent)
     }
 
     private fun hideSaldoPrioritasFragment() {

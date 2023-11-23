@@ -1,15 +1,22 @@
 package com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui
 
+import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
@@ -18,6 +25,7 @@ import com.tokopedia.saldodetails.commom.utils.NavToolbarExt
 import com.tokopedia.saldodetails.commom.utils.SalesTransaction
 import com.tokopedia.saldodetails.commom.utils.TransactionType
 import com.tokopedia.saldodetails.commom.utils.TransactionTypeMapper
+import com.tokopedia.saldodetails.saldoDetail.SaldoDepositActivity
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.adapter.SaldoTransactionAdapter
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.DepositHistoryList
@@ -102,8 +110,12 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
     private fun setupRecyclerViewHeight() {
         transactionRecyclerView.post {
             context?.let {
-                transactionRecyclerView.layoutParams.height =
-                    getScreenHeight() - NavToolbarExt.getToolbarHeight(it) - NavToolbarExt.getStatusbarHeight(it) - RECYCLERVIEW_HEIGHT_OFFSET.toPx()
+                val activityHeight = activity?.window?.decorView?.measuredHeight ?: 0
+                val cardTopArr = IntArray(2)
+                activity?.window?.decorView?.findViewById<LinearLayout>(R.id.merchant_status_ll)?.getLocationOnScreen(cardTopArr)
+                val rvTopArr = IntArray(2)
+                transactionRecyclerView.getLocationOnScreen(rvTopArr)
+                transactionRecyclerView.layoutParams.height = activityHeight - HEADER_HEIGHT.toPx() - NavToolbarExt.getStatusbarHeight(it) - RECYCLERVIEW_HEIGHT_OFFSET.toPx()
                 transactionRecyclerView.requestLayout()
             }
         }
@@ -200,7 +212,8 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
     companion object {
         const val PARAM_TRANSACTION_TYPE = "PARAM_TRANSACTION_TYPE"
 
-        private const val RECYCLERVIEW_HEIGHT_OFFSET = 150
+        private const val RECYCLERVIEW_HEIGHT_OFFSET = 207
+        private const val HEADER_HEIGHT = 64
 
         fun getInstance(transactionTitleStr: String): BaseSaldoTransactionListFragment {
             return BaseSaldoTransactionListFragment().apply {
