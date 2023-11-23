@@ -36,7 +36,7 @@ object ImageCompressor {
         maxWidth: Float = MAX_WIDTH,
         maxHeight: Float = MAX_HEIGHT,
         quality: Int = QUALITY,
-        isSkipAble: Boolean = false
+        shouldSkipProcess: Boolean = false
     ): Uri? {
         val file = File(imagePath)
         val fileAsUri = Uri.fromFile(file)
@@ -54,7 +54,7 @@ object ImageCompressor {
             MIN_WIDTH,
             MIN_HEIGHT,
             subDirectory,
-            isSkipAble
+            shouldSkipProcess
         )
     }
 
@@ -69,7 +69,7 @@ object ImageCompressor {
         minWidth: Int,
         minHeight: Int,
         customSubDirectory: String?,
-        isSkipAble: Boolean
+        shouldSkipProcess: Boolean
     ): Uri? {
         val bmOptions = decodeBitmapFromUri(context, imageUri)
 
@@ -117,10 +117,8 @@ object ImageCompressor {
         )
 
         // if image is below limit & skip-able is enable then return original image path
-        if (isSkipAble) {
-            if (bmOptions.outWidth == newBitmapWidth && bmOptions.outHeight == newBitmapHeight) {
-                return imageUri
-            }
+        if (shouldSkipProcess && (bmOptions.outWidth == newBitmapWidth && bmOptions.outHeight == newBitmapHeight)) {
+            return imageUri
         }
 
         val finalWidth = finalWidth(newBitmapWidth.toFloat(), scaleUpFactor)

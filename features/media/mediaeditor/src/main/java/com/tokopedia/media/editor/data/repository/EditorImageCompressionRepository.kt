@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 interface EditorImageCompressionRepository {
     suspend fun compress(paths: List<String>): List<String>
-    suspend fun compress(path: String, maxWidth: Float, maxHeight: Float, quality: Int, isSkipAble: Boolean): String
+    suspend fun compress(path: String, maxWidth: Float, maxHeight: Float, quality: Int, shouldSkipProcess: Boolean): String
 }
 
 class EditorImageCompressionRepositoryImpl @Inject constructor(
@@ -32,7 +32,7 @@ class EditorImageCompressionRepositoryImpl @Inject constructor(
         maxWidth: Float,
         maxHeight: Float,
         quality: Int,
-        isSkipAble: Boolean
+        shouldSkipProcess: Boolean
     ): String {
         return if (File(path).exists()) {
             ImageCompressor.compress(
@@ -42,7 +42,7 @@ class EditorImageCompressionRepositoryImpl @Inject constructor(
                 maxHeight = maxHeight,
                 quality = quality,
                 subDirectory = getEditorSaveFolderSubPath(),
-                isSkipAble = isSkipAble
+                shouldSkipProcess = shouldSkipProcess
             ).toString()
         } else {
             ""

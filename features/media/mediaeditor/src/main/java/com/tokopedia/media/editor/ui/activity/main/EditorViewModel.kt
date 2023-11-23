@@ -195,7 +195,7 @@ class EditorViewModel @Inject constructor(
                     maxWidth = compressWidth,
                     maxHeight = compressHeight,
                     quality = compressQuality,
-                    isSkipAble = true
+                    shouldSkipProcess = true
                 )
             } else {
                 keyPath
