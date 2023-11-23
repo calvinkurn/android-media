@@ -148,6 +148,7 @@ class ProductNotificationCardUnify(
             thumbnailLabel?.show()
             thumbnailLabel?.unlockFeature = true
             thumbnailLabel?.setLabelType(product.label.color.toIntOrZero())
+            thumbnailLabel?.setLabel(product.label.title)
         } else {
             thumbnailLabel?.hide()
         }
