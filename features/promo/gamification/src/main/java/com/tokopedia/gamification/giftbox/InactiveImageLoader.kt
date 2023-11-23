@@ -2,7 +2,7 @@ package com.tokopedia.gamification.giftbox
 
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.gamification.taptap.data.entiity.TokenAsset
-import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.media.loader.loadImage
 import java.util.concurrent.atomic.AtomicInteger
 
 class InactiveImageLoader {
@@ -30,16 +30,24 @@ class InactiveImageLoader {
 
 
         if (!imageUrls.isNullOrEmpty()) {
-            ImageUtils.loadImage(imageInactive, imageUrls.first(), imageLoaded = {
-                sendCallback()
-            })
+            imageInactive.loadImage(imageUrls.first()) {
+                this.listener(
+                    onSuccess = { _, _ ->
+                        sendCallback()
+                    }
+                )
+            }
         }
 
 
         if (!bgUrl.isNullOrEmpty()) {
-            ImageUtils.loadImage(imageInactiveBg, bgUrl, imageLoaded = {
-                sendCallback()
-            })
+            imageInactiveBg.loadImage(bgUrl) {
+                this.listener(
+                    onSuccess = { _, _ ->
+                        sendCallback()
+                    }
+                )
+            }
         }
     }
 }

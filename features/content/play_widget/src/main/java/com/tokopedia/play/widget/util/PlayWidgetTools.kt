@@ -2,6 +2,7 @@ package com.tokopedia.play.widget.util
 
 import android.net.Uri
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.ENTRY_POINT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.SOURCE_TYPE
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.SOURCE_TYPE_HOME
 import com.tokopedia.play.widget.data.PlayWidget
@@ -120,9 +121,7 @@ class PlayWidgetTools @Inject constructor(
 
     fun isAppLinkSourceFromHome(appLink: String): Boolean {
         val uri = Uri.parse(appLink)
-
-        return uri.host == ApplinkConstInternalContent.HOST_PLAY &&
-            uri.getQueryParameter(SOURCE_TYPE) == SOURCE_TYPE_HOME
+        return uri.getQueryParameter(SOURCE_TYPE) == SOURCE_TYPE_HOME || uri.getQueryParameter(ENTRY_POINT).equals(SOURCE_TYPE_HOME, ignoreCase = true)
     }
 
     fun reconstructAppLink(appLink: String, queryMap: Map<String, String>): String {

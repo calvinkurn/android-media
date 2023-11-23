@@ -32,6 +32,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.createTestCoroutineScope
 import kotlinx.coroutines.test.pauseDispatcher
 import kotlinx.coroutines.test.runCurrent
 import org.junit.After
@@ -160,9 +161,8 @@ abstract class MultipleFragmentsViewModelTestFixture {
 
     protected fun collectFromSharedFlow(whenAction: () -> Unit,
                                         then: (Int?) -> Unit) {
-        val testCoroutineScope = TestCoroutineScope().apply {
-            pauseDispatcher()
-        }
+
+        val testCoroutineScope = createTestCoroutineScope()
         var actualUiModelState: Int? = null
         val job = testCoroutineScope.launch {
             viewModel.cartDataValidationFlow.collect {

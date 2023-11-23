@@ -1,0 +1,5 @@
+package com.tokopedia.wishlist.collection.view.fragment
+
+import com.tokopedia.wishlist.collection.view.bottomsheet.listener.ActionListenerFromCollectionPage
+
+interface IWishlistCollectionFragment : ActionListenerFromCollectionPage

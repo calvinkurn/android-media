@@ -128,7 +128,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
     private val _shopRecom = MutableStateFlow(ShopRecomUiModel())
     private val _profileTab = MutableStateFlow<ProfileTabState>(ProfileTabState.Unknown)
-    private val _feedPostsContent = MutableStateFlow(UserFeedPostsUiModel())
+    private val _feedPostsContent = MutableStateFlow(UserFeedPostsUiModel.Empty)
     private val _videoPostContent = MutableStateFlow(UserPlayVideoUiModel.Empty)
     private val _reviewContent = MutableStateFlow(UserReviewUiModel.Empty)
     private val _isLoading = MutableStateFlow(false)
@@ -718,7 +718,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileType.update { profileType }
 
         if (isBlocking) {
-            _feedPostsContent.value = UserFeedPostsUiModel()
+            clearContentStateAfterBlock()
             viewModelScope.launch {
                 _uiEvent.emit(
                     UserProfileUiEvent.BlockingUserState(
@@ -855,10 +855,14 @@ class UserProfileViewModel @AssistedInject constructor(
         return selectedLikeDislike
     }
 
+    private fun clearContentStateAfterBlock() {
+        _feedPostsContent.value = UserFeedPostsUiModel.Empty
+        _videoPostContent.value = UserPlayVideoUiModel.Empty
+        _reviewContent.value = UserReviewUiModel.Empty
+        _profileTab.value = ProfileTabState.Unknown
+    }
+
     companion object {
-        const val UGC_ONBOARDING_OPEN_FROM_LIVE = 1
-        const val UGC_ONBOARDING_OPEN_FROM_POST = 2
-        const val UGC_ONBOARDING_OPEN_FROM_SHORTS = 3
         private const val FOLLOW_TYPE_SHOP = 2
         private const val FOLLOW_TYPE_BUYER = 3
         private const val DEFAULT_LIMIT = 10

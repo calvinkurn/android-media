@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.model
 
+import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProductFreeOngkir
 import com.tokopedia.search.result.domain.model.SearchProductV5
 
@@ -17,5 +18,11 @@ data class FreeOngkirDataView(
 
         fun create(freeShipping: SearchProductV5.Data.FreeShipping) =
             FreeOngkirDataView(true, freeShipping.url)
+
+        fun create(freeOngkir: SearchProductModel.InspirationCarouselProductFreeOngkir) =
+            FreeOngkirDataView(
+                freeOngkir.isActive,
+                freeOngkir.imageUrl,
+            )
     }
 }

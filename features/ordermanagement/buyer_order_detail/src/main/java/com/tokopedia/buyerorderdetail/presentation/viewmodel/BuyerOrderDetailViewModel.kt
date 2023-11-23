@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderStatusCode
 import com.tokopedia.buyerorderdetail.common.extension.combine
@@ -51,6 +53,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -90,6 +93,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     private var getBuyerOrderDetailDataJob: Job? = null
+    private var warrantyClaimButtonImpressed = false
 
     private val _finishOrderResult = MutableLiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>()
     val finishOrderResult: LiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>
@@ -367,6 +371,26 @@ class BuyerOrderDetailViewModel @Inject constructor(
         scpRewardsMedalTouchPointWidgetUiState.value = ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden
     }
 
+    fun impressProduct(product: ProductListUiModel.ProductUiModel) {
+        if (
+            product.button.key == BuyerOrderDetailActionButtonKey.WARRANTY_CLAIM &&
+            !warrantyClaimButtonImpressed
+        ) {
+            warrantyClaimButtonImpressed = true
+            BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton(product.orderId)
+        }
+    }
+
+    fun impressBmgmProduct(product: ProductBmgmSectionUiModel.ProductUiModel) {
+        if (
+            product.button?.key == BuyerOrderDetailActionButtonKey.WARRANTY_CLAIM &&
+            !warrantyClaimButtonImpressed
+        ) {
+            warrantyClaimButtonImpressed = true
+            BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton(product.orderId)
+        }
+    }
+
     // https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2158935800/How+to+create+one+time+event+in+PDP
     fun changeOneTimeMethod(event: OrderOneTimeEvent) {
         when (event) {
@@ -454,7 +478,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             getBuyerOrderDetailDataRequestState,
             productListUiState.value,
             singleAtcRequestStates,
-            collapseProductList
+            collapseProductList,
+            warrantyClaimButtonImpressed
         )
     }
 

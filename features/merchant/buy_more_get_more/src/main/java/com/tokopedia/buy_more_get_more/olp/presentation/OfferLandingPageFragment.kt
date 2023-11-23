@@ -224,13 +224,13 @@ class OfferLandingPageFragment :
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
             when (offerInfoForBuyer.responseHeader.status) {
                 Status.SUCCESS -> {
-                    setupHeader(offerInfoForBuyer)
                     viewModel.processEvent(OlpEvent.SetWarehouseIds(offerInfoForBuyer.nearestWarehouseIds))
                     viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.offerings.firstOrNull()?.shopData))
                     viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
                     viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
                     viewModel.processEvent(OlpEvent.SetEndDate(offerInfoForBuyer.offerings.firstOrNull()?.endDate.orEmpty()))
                     viewModel.processEvent(OlpEvent.SetOfferTypeId(offerInfoForBuyer.offerings.firstOrNull()?.offerTypeId.orZero()))
+                    setupHeader(offerInfoForBuyer)
                     setupTncBottomSheet()
                     fetchMiniCart()
                     setMiniCartOnOfferEnd(offerInfoForBuyer)
