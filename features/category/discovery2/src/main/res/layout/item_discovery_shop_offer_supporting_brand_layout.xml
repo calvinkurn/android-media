@@ -117,8 +117,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/seeAllIcon"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:background="@drawable/circular_see_product"
         android:padding="1dp"
         app:layout_constraintBottom_toBottomOf="@id/ctaText"
