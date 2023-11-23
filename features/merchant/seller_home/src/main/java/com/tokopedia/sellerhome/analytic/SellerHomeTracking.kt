@@ -841,7 +841,7 @@ object SellerHomeTracking {
         reward: MilestoneItemRewardUiModel,
         position: Int
     ) {
-        val state = when (reward.rewardDetailUiModel?.rewardStatus) {
+        val state = when (reward.questStatus) {
             MilestoneItemRewardUiModel.QuestStatus.REWARD_CLAIMED -> TrackingConstant.CLAIMED
             MilestoneItemRewardUiModel.QuestStatus.QUEST_FINISH -> TrackingConstant.FINISHED
             else -> TrackingConstant.NOT_STARTED_OR_ONGOING
@@ -861,7 +861,7 @@ object SellerHomeTracking {
         reward: MilestoneItemRewardUiModel,
         position: Int
     ) {
-        val state = when (reward.rewardDetailUiModel?.rewardStatus) {
+        val state = when (reward.questStatus) {
             MilestoneItemRewardUiModel.QuestStatus.REWARD_CLAIMED -> TrackingConstant.CLAIMED
             MilestoneItemRewardUiModel.QuestStatus.QUEST_FINISH -> TrackingConstant.FINISHED
             else -> TrackingConstant.NOT_STARTED_OR_ONGOING

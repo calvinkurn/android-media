@@ -83,10 +83,7 @@ class MilestoneMapper @Inject constructor(
         if (finishCard.isEmpty() && it.reward.isHaveReward) {
             val rewardCard = mapGetMilestoneReward(
                 it,
-                mapGetRewardDetail(
-                    rewardDetailResponse,
-                    it.questStatus
-                )
+                mapGetRewardDetail(rewardDetailResponse)
             )
             allMissions.add(Int.ZERO, rewardCard)
         }
@@ -185,6 +182,7 @@ class MilestoneMapper @Inject constructor(
             buttonStatus = rewardData.button.buttonStatus,
             buttonVariant = rewardData.button.buttonStyleType,
             buttonApplink = rewardData.button.applink,
+            questStatus = data.questStatus,
             animationUrl = getRewardAnimationUrl(rewardData.rewardImage, data.questStatus),
             rewardDetailUiModel = rewardDetailUiModel
         )
@@ -224,8 +222,7 @@ class MilestoneMapper @Inject constructor(
     }
 
     private fun mapGetRewardDetail(
-        rewardDetailResponse: GetRewardDetailByIdResponse?,
-        questStatus: Int
+        rewardDetailResponse: GetRewardDetailByIdResponse?
     ): RewardDetailUiModel? {
         return rewardDetailResponse?.data?.result?.let {
             RewardDetailUiModel(
@@ -235,8 +232,7 @@ class MilestoneMapper @Inject constructor(
                 benefitList = it.benefitList.map { benefit ->
                     RewardDetailBenefit(benefit.benefitName, benefit.benefitValue)
                 },
-                rewardImage = it.rewardImage,
-                rewardStatus = questStatus
+                rewardImage = it.rewardImage
             )
         }
     }

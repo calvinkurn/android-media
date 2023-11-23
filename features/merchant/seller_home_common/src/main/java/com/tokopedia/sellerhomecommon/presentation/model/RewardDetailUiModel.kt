@@ -9,8 +9,7 @@ data class RewardDetailUiModel(
     val rewardTitle: String,
     val rewardSubtitle: String,
     val benefitList: List<RewardDetailBenefit>,
-    val rewardImage: String,
-    val rewardStatus: Int
+    val rewardImage: String
 ) : Parcelable
 
 @Parcelize
