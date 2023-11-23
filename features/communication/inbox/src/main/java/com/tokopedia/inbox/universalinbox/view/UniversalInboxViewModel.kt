@@ -126,10 +126,10 @@ class UniversalInboxViewModel @Inject constructor(
             when (it) {
                 // Navigation process
                 is UniversalInboxAction.NavigateWithIntent -> {
-                    navigateWithIntent(it.intent)
+                    navigateWithIntent(it.intent, it.requestType)
                 }
                 is UniversalInboxAction.NavigateToPage -> {
-                    navigateToPage(it.applink)
+                    navigateToPage(it.applink, it.requestType)
                 }
 
                 // General process
@@ -404,21 +404,23 @@ class UniversalInboxViewModel @Inject constructor(
         observeDriverChannelFlow()
     }
 
-    private fun navigateWithIntent(intent: Intent) {
+    private fun navigateWithIntent(intent: Intent, requestType: UniversalInboxRequestType) {
         viewModelScope.launch {
             _inboxNavigationState.emit(
                 UniversalInboxNavigationUiState(
-                    intent = intent
+                    intent = intent,
+                    requestType = requestType
                 )
             )
         }
     }
 
-    private fun navigateToPage(applink: String) {
+    private fun navigateToPage(applink: String, requestType: UniversalInboxRequestType) {
         viewModelScope.launch {
             _inboxNavigationState.emit(
                 UniversalInboxNavigationUiState(
-                    applink = applink
+                    applink = applink,
+                    requestType = requestType
                 )
             )
         }

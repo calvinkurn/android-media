@@ -9,8 +9,14 @@ sealed interface UniversalInboxAction {
     object RefreshCounter : UniversalInboxAction
 
     // Navigation Actions
-    data class NavigateWithIntent(val intent: Intent) : UniversalInboxAction
-    data class NavigateToPage(val applink: String) : UniversalInboxAction
+    data class NavigateWithIntent(
+        val intent: Intent,
+        val requestType: UniversalInboxRequestType
+    ) : UniversalInboxAction
+    data class NavigateToPage(
+        val applink: String,
+        val requestType: UniversalInboxRequestType
+    ) : UniversalInboxAction
 
     // Widget Actions
     object RefreshDriverWidget : UniversalInboxAction
@@ -20,4 +26,9 @@ sealed interface UniversalInboxAction {
     object LoadNextPage : UniversalInboxAction
     object ResetUserScrollState : UniversalInboxAction
     object AutoScrollRecommendation : UniversalInboxAction
+}
+
+enum class UniversalInboxRequestType {
+    REQUEST_GENERAL,
+    REQUEST_WITH_PRODUCT_RECOMMENDATION
 }

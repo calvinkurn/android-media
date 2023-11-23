@@ -290,13 +290,21 @@ class UniversalInboxFragment @Inject constructor(
 
     private suspend fun observeInboxNavigation() {
         viewModel.inboxNavigationUiState.collectLatest {
+            val resultLauncher = when (it.requestType) {
+                UniversalInboxRequestType.REQUEST_GENERAL -> {
+                    inboxMenuResultLauncher
+                }
+                UniversalInboxRequestType.REQUEST_WITH_PRODUCT_RECOMMENDATION -> {
+                    inboxProductRecommendationResultLauncher
+                }
+            }
             when {
                 (it.intent != null) -> {
-                    inboxMenuResultLauncher.launch(it.intent)
+                    resultLauncher.launch(it.intent)
                 }
                 (it.applink.isNotBlank() && context != null) -> {
                     val intent = RouteManager.getIntent(context, it.applink)
-                    inboxMenuResultLauncher.launch(intent)
+                    resultLauncher.launch(intent)
                 }
             }
         }
@@ -529,7 +537,12 @@ class UniversalInboxFragment @Inject constructor(
                 )
             }
         }
-        viewModel.processAction(UniversalInboxAction.NavigateToPage(item.applink))
+        viewModel.processAction(
+            UniversalInboxAction.NavigateToPage(
+                item.applink,
+                UniversalInboxRequestType.REQUEST_GENERAL
+            )
+        )
     }
 
     override fun onRefreshWidgetMeta() {
@@ -617,7 +630,12 @@ class UniversalInboxFragment @Inject constructor(
             }
             else -> Unit // no-op
         }
-        viewModel.processAction(UniversalInboxAction.NavigateToPage(item.applink))
+        viewModel.processAction(
+            UniversalInboxAction.NavigateToPage(
+                item.applink,
+                UniversalInboxRequestType.REQUEST_GENERAL
+            )
+        )
     }
 
     override fun onNotificationIconClicked(counter: String) {
@@ -627,7 +645,12 @@ class UniversalInboxFragment @Inject constructor(
             shopId = getShopIdTracker(userSession),
             notifCenterCounter = counter
         )
-        viewModel.processAction(UniversalInboxAction.NavigateToPage(ApplinkConst.NOTIFICATION))
+        viewModel.processAction(
+            UniversalInboxAction.NavigateToPage(
+                ApplinkConst.NOTIFICATION,
+                UniversalInboxRequestType.REQUEST_GENERAL
+            )
+        )
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -690,7 +713,12 @@ class UniversalInboxFragment @Inject constructor(
         if (position.isNotEmpty()) {
             intent.putExtra(PDP_EXTRA_UPDATED_POSITION, position[Int.ZERO])
         }
-        viewModel.processAction(UniversalInboxAction.NavigateWithIntent(intent))
+        viewModel.processAction(
+            UniversalInboxAction.NavigateWithIntent(
+                intent,
+                UniversalInboxRequestType.REQUEST_WITH_PRODUCT_RECOMMENDATION
+            )
+        )
     }
 
     private fun onClickTopAds(item: RecommendationItem) {
@@ -825,6 +853,12 @@ class UniversalInboxFragment @Inject constructor(
      * Result launcher section
      */
     private val inboxMenuResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        viewModel.processAction(UniversalInboxAction.RefreshCounter)
+    }
+
+    private val inboxProductRecommendationResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
         viewModel.processAction(UniversalInboxAction.RefreshCounter)
