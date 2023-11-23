@@ -95,6 +95,11 @@ class PofBottomSheet : BottomSheetUnify(),
         init(savedInstanceState)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        activity?.finish()
+    }
+
     private fun setupBottomSheet() {
         setCloseClickListener { viewModel.onEvent(UiEvent.OnClickDismissPofBottomSheet) }
         isCancelable = false
@@ -177,10 +182,7 @@ class PofBottomSheet : BottomSheetUnify(),
     }
 
     private fun onCloseBottomSheet(result: Int) {
-        setOnDismissListener {
-            activity?.setResult(result)
-            activity?.finish()
-        }
+        activity?.setResult(result)
         dismiss()
     }
 
