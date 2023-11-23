@@ -367,12 +367,17 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             labelShopPharmacyPharmacistName.isVisible = isPharmacy && expandPharmacyInfo
             labelShopPharmacySiaNumber.isVisible = isPharmacy && expandPharmacyInfo
             labelShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
-
-            // Show CTA "Lihat Selengkapnya" when pharmacy info collapsed
-            if (isPharmacy && !expandPharmacyInfo) {
-                tpgCtaExpandPharmacyInfo.visible()
-            } else {
-                tpgCtaExpandPharmacyInfo.invisible()
+            
+            if (isPharmacy) {
+                if (expandPharmacyInfo) {
+                    //If pharmacy info expanded, then hide CTA "Selengkapnya"
+                    tpgCtaExpandPharmacyInfo.invisible()
+                } else {
+                    //By default, show CTA "Selengkapnya"
+                    tpgCtaExpandPharmacyInfo.visible()
+                }
+            }  else {
+                tpgCtaExpandPharmacyInfo.gone()
             }
 
             tpgCtaViewPharmacyMap.isVisible = isPharmacy && expandPharmacyInfo && showCtaViewPharmacyLocation
