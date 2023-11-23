@@ -23,10 +23,11 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="tokopedia-internal-app"
-                    android:host="media"
-                    android:path="/uploader"/>
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_global"
+                    android:path="@string/path_media_uploader" />
             </intent-filter>
 
         </activity>

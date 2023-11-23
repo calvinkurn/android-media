@@ -71,13 +71,18 @@ class EditorFragment @Inject constructor(
     }
 
     override fun onPause() {
-        viewBinding?.viewPager?.releaseImage()
+        viewBinding?.viewPager?.releaseImageVideo()
         super.onPause()
     }
 
     override fun onResume() {
-        viewBinding?.viewPager?.reloadImage()
+        viewBinding?.viewPager?.reloadImageVideo()
         super.onResume()
+    }
+
+    override fun onDestroyView() {
+        viewBinding?.viewPager?.clearPlayer()
+        super.onDestroyView()
     }
 
     override fun onCreateView(
@@ -188,7 +193,6 @@ class EditorFragment @Inject constructor(
         observeCompressProcess()
         observeEditorParam()
         observeUpdateIndex()
-        observeEditorResult()
     }
 
     private fun imageCrop(bitmap: Bitmap, originalPath: String) {
@@ -450,20 +454,6 @@ class EditorFragment @Inject constructor(
                     overlayImageUrl = editorUiModel.getOverlayLogoValue()?.overlayLogoUrl ?: "",
                     overlaySecondaryImageUrl = editorUiModel.getOverlayTextValue()?.textImagePath ?: ""
                 )
-            }
-        }
-    }
-
-    // need to stop all video when editor trigger finish
-    private fun observeEditorResult() {
-        viewModel.isVideoStop.observe(viewLifecycleOwner) {
-            if (it) {
-                viewBinding?.viewPager?.let {
-                    val totalItem = it.adapter?.count ?: -1
-                    for (i in 0 until totalItem) {
-                        it.stopVideoPlayer(i)
-                    }
-                }
             }
         }
     }

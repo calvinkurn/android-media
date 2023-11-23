@@ -140,11 +140,13 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
     private fun initConfig() {
         val gson = GsonBuilder().setPrettyPrinting().create()
         val pickerConfigJson = gson.toJson(PickerParam().apply {
+            withEditor()
             pageSource(PageSource.Play)
             pageType(PageType.GALLERY)
         })
         val editorConfigJson = gson.toJson(
             EditorParam().apply {
+                setCustomCtaText("Upload")
                 withRemoveBackground()
                 withWatermark()
                 autoCrop1to1()
