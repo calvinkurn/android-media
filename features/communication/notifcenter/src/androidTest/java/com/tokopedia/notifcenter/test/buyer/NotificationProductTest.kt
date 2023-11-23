@@ -177,4 +177,20 @@ class NotificationProductTest : BaseNotificationTest() {
             assertIntentData(Uri.parse("tokopedia://product/2148833237?extParam=whid=341734&src=notifcenter"))
         }
     }
+
+    @Test
+    fun should_show_notification_label() {
+        // Given
+        gqlResponseStub.notificationDetailResponse.filePath =
+            "detail/notifcenter_detail_v3_product_label.json"
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject { }
+
+        // When
+        launchActivity()
+
+        // Then
+        detailResult {
+            assertLabel(2, "Stock Habis")
+        }
+    }
 }
