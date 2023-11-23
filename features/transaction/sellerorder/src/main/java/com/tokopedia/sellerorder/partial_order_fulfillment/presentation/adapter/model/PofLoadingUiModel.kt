@@ -8,7 +8,7 @@ object PofLoadingUiModel : PofVisitable {
     }
 
     override fun areItemsTheSame(other: PofVisitable): Boolean {
-        return this == other
+        return other is PofLoadingUiModel
     }
 
     override fun areContentsTheSame(other: PofVisitable): Boolean {

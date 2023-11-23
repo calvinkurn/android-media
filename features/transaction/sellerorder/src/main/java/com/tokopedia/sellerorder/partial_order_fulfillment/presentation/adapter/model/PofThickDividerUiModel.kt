@@ -8,10 +8,10 @@ object PofThickDividerUiModel : PofVisitable {
     }
 
     override fun areItemsTheSame(other: PofVisitable): Boolean {
-        return false
+        return other is PofThickDividerUiModel
     }
 
     override fun areContentsTheSame(other: PofVisitable): Boolean {
-        return false
+        return true
     }
 }

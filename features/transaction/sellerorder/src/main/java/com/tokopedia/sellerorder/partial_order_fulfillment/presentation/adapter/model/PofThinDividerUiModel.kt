@@ -14,10 +14,10 @@ data class PofThinDividerUiModel(
     }
 
     override fun areItemsTheSame(other: PofVisitable): Boolean {
-        return false
+        return other is PofThinDividerUiModel
     }
 
     override fun areContentsTheSame(other: PofVisitable): Boolean {
-        return false
+        return this == other
     }
 }
