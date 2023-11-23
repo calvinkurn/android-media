@@ -190,7 +190,6 @@ class EditorFragment @Inject constructor(
     }
 
     override fun initObserver() {
-        observeCompressProcess()
         observeEditorParam()
         observeUpdateIndex()
     }
@@ -387,46 +386,37 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.compressImage(it)
-            }
-        }
-    }
+            viewModel.compressImage(it) { // on compress done
+                thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
 
-    private fun observeCompressProcess() {
-        viewModel.isCompressed.observe(this) { compressDone ->
-            if (compressDone) {
-                viewModel.editorParam.value?.let {
-                    // show/hide add logo base on rollence
-                    if (!viewModel.isShopAvailable()) {
-                        it.editorToolsList().apply {
-                            val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
-                            remove(removeIndex)
-                        }
+                if (it.autoCropRatio() != null) {
+                    startAutoCrop()
+                } else {
+                    viewBinding?.viewPager?.apply {
+                        setAdapter(viewModel.editStateList.values.toList())
+                        setPagerPageChangeListener(this)
                     }
-
-                    // show/hide add text base on rollence
-                    if (!featureToggleManager.isAddTextEnable()) {
-                        it.editorToolsList().apply {
-                            val removeIndex = find { toolId -> toolId == EditorToolType.ADD_TEXT }
-                            remove(removeIndex)
-                        }
-                    }
-
-                    editorToolComponent.setupView(it.editorToolsList())
-                    thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
-
-                    if (it.autoCropRatio() != null) {
-                        startAutoCrop()
-                    } else {
-                        viewBinding?.viewPager?.apply {
-                            setAdapter(viewModel.editStateList.values.toList())
-                            setPagerPageChangeListener(this)
-                        }
-                        loader?.dismiss()
-                    }
+                    loader?.dismiss()
                 }
             }
+
+            // show/hide add logo base on rollence
+            if (!viewModel.isShopAvailable()) {
+                it.editorToolsList().apply {
+                    val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
+                    remove(removeIndex)
+                }
+            }
+
+            // show/hide add text base on rollence
+            if (!featureToggleManager.isAddTextEnable()) {
+                it.editorToolsList().apply {
+                    val removeIndex = find { toolId -> toolId == EditorToolType.ADD_TEXT }
+                    remove(removeIndex)
+                }
+            }
+
+            editorToolComponent.setupView(it.editorToolsList())
         }
     }
 

@@ -120,7 +120,7 @@ abstract class EditorModule {
 
     @Binds
     @ActivityScope
-    internal abstract fun provideEditorImageCompressor(
+    internal abstract fun provideEditorImageCompressionRepository(
         imageCompressor: EditorImageCompressionRepositoryImpl
     ): EditorImageCompressionRepository
 }

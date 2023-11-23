@@ -377,7 +377,7 @@ class EditorViewModelTest {
 
 
     @Test
-    fun `should compress image above 3000 x 3000`() = runTest {
+    fun `should compress image above 3000 x 3000`() {
         // Given
         val editorParam = EditorParam()
         val expectedCompressedPath = "compressedPath"
@@ -406,7 +406,7 @@ class EditorViewModelTest {
     }
 
     @Test
-    fun `should skip compress image`() = runTest {
+    fun `should skip compress image`() {
         // Given
         val editorParam = EditorParam()
 

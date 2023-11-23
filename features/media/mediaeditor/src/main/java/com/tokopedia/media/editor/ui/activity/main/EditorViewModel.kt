@@ -27,7 +27,7 @@ class EditorViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val bitmapCreationRepository: BitmapCreationRepository,
     private val coroutineDispatchers: CoroutineDispatchers,
-    private val imageCompressor: EditorImageCompressionRepository,
+    private val imageCompressionRepository: EditorImageCompressionRepository,
 ) : ViewModel() {
 
     private var _editStateList = mutableMapOf<String, EditorUiModel>()
@@ -41,9 +41,6 @@ class EditorViewModel @Inject constructor(
 
     private var _editorResult = MutableLiveData<List<String?>>()
     val editorResult: LiveData<List<String?>> = _editorResult
-
-    private var _isCompressed = MutableLiveData<Boolean>()
-    val isCompressed: LiveData<Boolean> = _isCompressed
 
     fun setEditorParam(data: EditorParam) {
         _editorParam.postValue(data)
@@ -184,30 +181,30 @@ class EditorViewModel @Inject constructor(
         )
     }
 
-    suspend fun compressImage(editorParam: EditorParam) {
-        val newMap = mutableMapOf<String, EditorUiModel>()
-        val (compressWidth, compressHeight, compressQuality) = editorParam.getCompressConfig()
+    fun compressImage(editorParam: EditorParam, onFinish: () -> Unit) {
+        viewModelScope.launch {
+            val newMap = mutableMapOf<String, EditorUiModel>()
+            val (compressWidth, compressHeight, compressQuality) = editorParam.getCompressConfig()
 
-        _editStateList.toList().forEach { (keyPath, _) ->
-            val newKey = if (isImageFormat(keyPath)) {
-                imageCompressor.compress(
-                    keyPath,
-                    maxWidth = compressWidth,
-                    maxHeight = compressHeight,
-                    quality = compressQuality,
-                    shouldSkipProcess = true
-                )
-            } else {
-                keyPath
+            _editStateList.toList().forEach { (keyPath, _) ->
+                val newKey = if (isImageFormat(keyPath)) {
+                    imageCompressionRepository.compress(
+                        path = keyPath,
+                        maxWidth = compressWidth,
+                        maxHeight = compressHeight,
+                        quality = compressQuality,
+                        shouldSkipProcess = true
+                    )
+                } else {
+                    keyPath
+                }
+
+                newMap[newKey] = EditorUiModel(newKey)
             }
 
-            newMap[newKey] = EditorUiModel(newKey)
-        }
-
-        _editStateList.clear()
-        _editStateList = newMap
-        withContext(coroutineDispatchers.main){
-            _isCompressed.value = true
+            _editStateList.clear()
+            _editStateList = newMap
+            onFinish()
         }
     }
 

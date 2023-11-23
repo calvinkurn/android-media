@@ -43,9 +43,9 @@ class EditorImageCompressionRepositoryImpl @Inject constructor(
                 quality = quality,
                 subDirectory = getEditorSaveFolderSubPath(),
                 shouldSkipProcess = shouldSkipProcess
-            ).toString()
+            )?.path ?: path
         } else {
-            ""
+            path
         }
     }
 
