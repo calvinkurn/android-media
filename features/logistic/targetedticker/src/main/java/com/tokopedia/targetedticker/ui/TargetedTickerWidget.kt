@@ -33,12 +33,9 @@ class TargetedTickerWidget : LinearLayout {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private var lifecycleOwner: LifecycleOwner? = null
-
     private var onSubmitSuccessListener: (TickerModel) -> TickerModel = { item -> item }
     private var onSubmitErrorListener: (Throwable) -> TickerModel? = { item -> null }
 
-    //    private val binding = WidgetTargetedTickerBinding.inflate(LayoutInflater.from(context)).also { addView(it.root) }
     private val binding = WidgetTargetedTickerBinding.inflate(LayoutInflater.from(context), this)
 
     private val viewModel: TargetedTickerViewModel? by lazy {
@@ -162,10 +159,6 @@ class TargetedTickerWidget : LinearLayout {
 
     fun setTickerShape(tickerShape: Int) {
         ticker?.tickerShape = tickerShape
-    }
-
-    fun onDestroy() {
-        lifecycleOwner = null
     }
 
     /**
