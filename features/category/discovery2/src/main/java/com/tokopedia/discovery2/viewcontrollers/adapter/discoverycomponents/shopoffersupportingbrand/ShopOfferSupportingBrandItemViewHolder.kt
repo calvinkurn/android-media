@@ -16,6 +16,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.ColorMode
+import com.tokopedia.unifyprinciples.modeAware
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -129,34 +131,28 @@ class ShopOfferSupportingBrandItemViewHolder(
     }
 
     private fun ItemDiscoveryShopOfferSupportingBrandLayoutBinding.setTextColor(mode: String?) {
-        if (mode == TEXT_LIGHT_MODE) {
-            shopName.setTextColor(
-                MethodChecker.getColor(
-                    itemView.context,
-                    unifyprinciplesR.color.Unify_NN600
-                )
-            )
-            offerTier.setTextColor(
-                MethodChecker.getColor(
-                    itemView.context,
-                    unifyprinciplesR.color.Unify_NN950
-                )
-            )
-            ctaText.setTextColor(
-                MethodChecker.getColor(
-                    itemView.context,
-                    unifyprinciplesR.color.Unify_NN950
-                )
-            )
-        } else if (mode == TEXT_DARK_MODE) {
-            val color = MethodChecker.getColor(
-                itemView.context,
-                unifyprinciplesR.color.Unify_NN0
-            )
-            shopName.setTextColor(color)
-            offerTier.setTextColor(color)
-            ctaText.setTextColor(color)
+        val colorMode = when (mode) {
+            TEXT_LIGHT_MODE -> ColorMode.LIGHT_MODE
+            TEXT_DARK_MODE -> ColorMode.DARK_MODE
+            else -> ColorMode.DEFAULT
         }
+
+        val context = itemView.context.modeAware(colorMode)
+
+        val textColorWithOpacity = MethodChecker.getColor(
+            context,
+            unifyprinciplesR.color.Unify_NN950_68
+        )
+
+        shopName.setTextColor(textColorWithOpacity)
+
+        val textColor = MethodChecker.getColor(
+            context,
+            unifyprinciplesR.color.Unify_NN950
+        )
+
+        offerTier.setTextColor(textColor)
+        ctaText.setTextColor(textColor)
     }
 
     companion object {
