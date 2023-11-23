@@ -26,7 +26,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-
 class ShopOfferSupportingBrandItemViewHolder(
     itemView: View,
     val fragment: Fragment
@@ -64,7 +63,6 @@ class ShopOfferSupportingBrandItemViewHolder(
         binding?.run {
             setCardBackgroundColor(item)
             loadShopInfo(item.shopLogo, item.shopName)
-            setTextColor(item.fontColor)
 
             ctaText.text = item.buttonText
             offerTier.text = item.offerTiers?.firstOrNull()?.tierWording.orEmpty()
@@ -85,6 +83,7 @@ class ShopOfferSupportingBrandItemViewHolder(
 
             item.fontColor?.let {
                 renderSeeMoreButton(it)
+                setTextColor(it)
             }
 
             handleClickAction(item.applinks)
@@ -117,8 +116,8 @@ class ShopOfferSupportingBrandItemViewHolder(
 
     private fun getColorModeContext(mode: String): Context {
         val colorMode = when (mode) {
-            TEXT_LIGHT_MODE -> ColorMode.LIGHT_MODE
-            TEXT_DARK_MODE -> ColorMode.DARK_MODE
+            TEXT_LIGHT_MODE -> ColorMode.DARK_MODE
+            TEXT_DARK_MODE -> ColorMode.LIGHT_MODE
             else -> ColorMode.DEFAULT
         }
 
@@ -190,14 +189,8 @@ class ShopOfferSupportingBrandItemViewHolder(
         )
     }
 
-    private fun ItemDiscoveryShopOfferSupportingBrandLayoutBinding.setTextColor(mode: String?) {
-        val colorMode = when (mode) {
-            TEXT_LIGHT_MODE -> ColorMode.LIGHT_MODE
-            TEXT_DARK_MODE -> ColorMode.DARK_MODE
-            else -> ColorMode.DEFAULT
-        }
-
-        val context = itemView.context.modeAware(colorMode) ?: itemView.context
+    private fun ItemDiscoveryShopOfferSupportingBrandLayoutBinding.setTextColor(mode: String) {
+        val context = getColorModeContext(mode)
 
         val textColorWithOpacity = MethodChecker.getColor(
             context,
