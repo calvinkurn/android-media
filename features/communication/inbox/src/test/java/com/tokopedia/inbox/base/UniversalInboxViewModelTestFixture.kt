@@ -15,6 +15,7 @@ import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetInboxM
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetProductRecommendationUseCase
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProviderImpl
+import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
@@ -61,6 +62,9 @@ abstract class UniversalInboxViewModelTestFixture {
     @RelaxedMockK
     protected lateinit var userSession: UserSessionInterface
 
+    @RelaxedMockK
+    protected lateinit var abTestPlatform: UniversalInboxAbPlatform
+
     private lateinit var context: Context
     private lateinit var resourceProvider: UniversalInboxResourceProvider
     protected lateinit var inboxMenuMapper: UniversalInboxMenuMapper
@@ -98,7 +102,7 @@ abstract class UniversalInboxViewModelTestFixture {
         context = mockk()
         resourceProvider = UniversalInboxResourceProviderImpl(context)
         inboxMenuMapper = spyk(UniversalInboxMenuMapper(resourceProvider))
-        inboxWidgetMetaMapper = spyk(UniversalInboxWidgetMetaMapper())
+        inboxWidgetMetaMapper = spyk(UniversalInboxWidgetMetaMapper(abTestPlatform))
     }
 
     private fun earlyMock() {
