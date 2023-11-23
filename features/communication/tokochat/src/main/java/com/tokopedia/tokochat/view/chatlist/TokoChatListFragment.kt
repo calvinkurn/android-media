@@ -119,25 +119,18 @@ class TokoChatListFragment @Inject constructor(
     override fun initObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                observeTrackerUiState()
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                observeChatListUiState()
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                observeNavigationUiState()
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                observeErrorUiState()
+                launch {
+                    observeTrackerUiState()
+                }
+                launch {
+                    observeChatListUiState()
+                }
+                launch {
+                    observeNavigationUiState()
+                }
+                launch {
+                    observeErrorUiState()
+                }
             }
         }
 
