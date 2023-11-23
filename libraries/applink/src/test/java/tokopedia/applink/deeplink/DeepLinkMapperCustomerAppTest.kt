@@ -1302,15 +1302,35 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check hotel order appLink then should return tokopedia internal hotel order in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://order/unified?filter=hotel"
-        assertEqualsDeepLinkMapper(ApplinkConst.HOTEL_ORDER, expectedDeepLink)
+    fun `check appLink hotel then should return tokopedia internal hotel dashboard in customerapp`() {
+        assertEqualsDeepLinkMapper(ApplinkConst.HOTEL, ApplinkConstInternalTravel.DASHBOARD_HOTEL)
     }
 
     @Test
-    fun `check hotel appLink then should return tokopedia internal hotel in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://hotel"
-        assertEqualsDeepLinkMapper(ApplinkConst.HOTEL, expectedDeepLink)
+    fun `check appLink hotel dashboard then should return tokopedia internal hotel dashboard in customerapp`() {
+        assertEqualsDeepLinkMapper(ApplinkConst.HOTEL_DASHBOARD, ApplinkConstInternalTravel.DASHBOARD_HOTEL)
+    }
+
+    @Test
+    fun `check appLink hotel SRP then should return tokopedia internal hotel SRP in customerapp`() {
+        assertEqualsDeepLinkMapper(ApplinkConst.HOTEL_SRP, ApplinkConstInternalTravel.HOTEL_SRP)
+    }
+
+    @Test
+    fun `check appLink hotel detail then should return tokopedia internal hotel detail in customerapp`() {
+        assertEqualsDeepLinkMapper(ApplinkConst.HOTEL_DETAIL, ApplinkConstInternalTravel.HOTEL_DETAIL)
+    }
+
+    @Test
+    fun `check appLink hotel detail with additional segment then should return tokopedia internal hotel detail with additional segment in customerapp`() {
+        val deeplink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://hotel/detail/hotel-bali"
+        val expectedDeeplink = "${DeeplinkConstant.SCHEME_INTERNAL}://hotel/detail/hotel-bali"
+        assertEqualsDeepLinkMapper(deeplink, expectedDeeplink)
+    }
+
+    @Test
+    fun `check hotel order appLink then should return tokopedia internal hotel order in customerapp`() {
+        assertEqualsDeepLinkMapper(ApplinkConst.HOTEL_ORDER, ApplinkConstInternalOrder.UNIFY_ORDER_HOTEL)
     }
 
     @Test
