@@ -10,6 +10,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.home_component_header.model.ChannelHeader as HomeComponentHeader
 
 object DynamicChannelComponentMapper {
+    const val LABEL_FULFILLMENT = "fulfillment"
     fun mapHomeChannelToComponent(
         channel: DynamicHomeChannel.Channels,
         verticalPosition: Int,
@@ -201,67 +202,88 @@ object DynamicChannelComponentMapper {
         grid.mapToChannelGrid(index)
     }
 
-    fun DynamicHomeChannel.Grid.mapToChannelGrid(index: Int) = ChannelGrid(
-        id = id,
-        warehouseId = warehouseId,
-        minOrder = minOrder,
-        price = price,
-        imageUrl = imageUrl,
-        name = name,
-        applink = applink,
-        url = url,
-        discount = discount,
-        slashedPrice = slashedPrice,
-        label = label,
-        soldPercentage = soldPercentage,
-        attribution = attribution,
-        impression = impression,
-        cashback = cashback,
-        productClickUrl = productClickUrl,
-        isTopads = isTopads,
-        productViewCountFormatted = productViewCountFormatted,
-        isOutOfStock = isOutOfStock,
-        isFreeOngkirActive = freeOngkir.isActive,
-        freeOngkirImageUrl = freeOngkir.imageUrl,
-        shop = ChannelShop(
-            id = shop.shopId,
-            shopLocation = shop.city,
-            shopName = shop.name,
-            shopProfileUrl = shop.imageUrl,
-            shopUrl = shop.url,
-            shopApplink = shop.applink,
-        ),
-        labelGroup = labelGroup.map { label ->
-            LabelGroup(
-                title = label.title,
-                position = label.position,
-                type = label.type,
-                url = label.imageUrl
-            )
-        },
-        hasBuyButton = hasBuyButton,
-        rating = rating,
-        ratingFloat = ratingFloat,
-        countReview = countReview,
-        backColor = backColor,
-        benefit = ChannelBenefit(
-            benefit.type,
-            benefit.value
-        ),
-        textColor = textColor,
-        recommendationType = recommendationType,
-        campaignCode = campaignCode,
-        shopId = shop.shopId,
-        badges = badges.map { badge ->
-            ChannelGridBadges(
-                title = badge.title,
-                imageUrl = badge.imageUrl
-            )
-        },
-        expiredTime = expiredTime,
-        categoryBreadcrumbs = categoryBreadcrumbs,
-        position = index
-    )
+    fun DynamicHomeChannel.Grid.mapToChannelGrid(
+        index: Int,
+        useDtAsShopBadge: Boolean = false,
+    ): ChannelGrid {
+        val shopBadges = if(useDtAsShopBadge && badges.isEmpty()) {
+            val label = labelGroup.getLabelGroupFulfillment()
+            if(label != null) {
+                listOf(
+                    ChannelGridBadges(
+                        title = label.title,
+                        imageUrl = label.url
+                    )
+                )
+            } else {
+                emptyList()
+            }
+        } else {
+            badges.map { badge ->
+                ChannelGridBadges(
+                    title = badge.title,
+                    imageUrl = badge.imageUrl
+                )
+            }
+        }
+
+        return ChannelGrid(
+            id = id,
+            warehouseId = warehouseId,
+            minOrder = minOrder,
+            price = price,
+            imageUrl = imageUrl,
+            name = name,
+            applink = applink,
+            url = url,
+            discount = discount,
+            slashedPrice = slashedPrice,
+            label = label,
+            soldPercentage = soldPercentage,
+            attribution = attribution,
+            impression = impression,
+            cashback = cashback,
+            productClickUrl = productClickUrl,
+            isTopads = isTopads,
+            productViewCountFormatted = productViewCountFormatted,
+            isOutOfStock = isOutOfStock,
+            isFreeOngkirActive = freeOngkir.isActive,
+            freeOngkirImageUrl = freeOngkir.imageUrl,
+            shop = ChannelShop(
+                id = shop.shopId,
+                shopLocation = shop.city,
+                shopName = shop.name,
+                shopProfileUrl = shop.imageUrl,
+                shopUrl = shop.url,
+                shopApplink = shop.applink,
+            ),
+            labelGroup = labelGroup.map { label ->
+                LabelGroup(
+                    title = label.title,
+                    position = label.position,
+                    type = label.type,
+                    url = label.imageUrl
+                )
+            },
+            hasBuyButton = hasBuyButton,
+            rating = rating,
+            ratingFloat = ratingFloat,
+            countReview = countReview,
+            backColor = backColor,
+            benefit = ChannelBenefit(
+                benefit.type,
+                benefit.value
+            ),
+            textColor = textColor,
+            recommendationType = recommendationType,
+            campaignCode = campaignCode,
+            shopId = shop.shopId,
+            badges = shopBadges,
+            expiredTime = expiredTime,
+            categoryBreadcrumbs = categoryBreadcrumbs,
+            position = index
+        )
+    }
 
     fun DynamicHomeChannel.Channels.mapToChannelConfig() = ChannelConfig(
         layout = layout,
@@ -368,4 +390,14 @@ object DynamicChannelComponentMapper {
         categoryBreadcrumbs = categoryBreadcrumbs,
         position = index
     )
+
+    private fun Array<com.tokopedia.home.beranda.domain.model.LabelGroup>.getLabelGroupFulfillment(): LabelGroup? {
+        val label = this.firstOrNull { it.position == LABEL_FULFILLMENT } ?: return null
+        return LabelGroup(
+            title = label.title,
+            position = label.position,
+            type = label.type,
+            url = label.imageUrl
+        )
+    }
 }

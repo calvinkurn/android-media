@@ -849,11 +849,7 @@ data class SearchProductModel(
             @SerializedName("options")
             @Expose
             val inspirationCarouselOptions: List<InspirationCarouselOption> = listOf()
-    ) {
-
-        fun isCarouselSeamless() =
-            layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
-    }
+    )
 
     data class InspirationCarouselOption(
             @SerializedName("title")

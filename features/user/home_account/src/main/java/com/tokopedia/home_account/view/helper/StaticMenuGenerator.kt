@@ -58,7 +58,8 @@ class StaticMenuGenerator @Inject constructor(val context: Context, val abTestPl
         accountPref: AccountPreference,
         permissionChecker: PermissionChecker,
         showDarkModeToggle: Boolean,
-        showScreenRecorder: Boolean
+        showScreenRecorder: Boolean,
+        isExpanded: Boolean = false
     ): SettingDataView {
         val listSetting = mutableListOf(
             CommonDataView(
@@ -137,7 +138,7 @@ class StaticMenuGenerator @Inject constructor(val context: Context, val abTestPl
                 )
             )
         }
-        return SettingDataView(context.getString(R.string.menu_account_section_title_app_setting), listSetting, showArrowDown = true)
+        return SettingDataView(context.getString(R.string.menu_account_section_title_app_setting), listSetting, showArrowDown = true, isExpanded = isExpanded)
     }
 
     fun generateAboutTokopediaSettingMenu(): SettingDataView {
