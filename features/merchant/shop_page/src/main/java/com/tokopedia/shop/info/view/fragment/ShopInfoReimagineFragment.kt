@@ -476,7 +476,9 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         binding?.layoutRatingBarContainer?.isVisible = showRating
         binding?.layoutRatingBarContainer?.setOnClickListener {
             viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
-        } if (showRating) {
+        }
+
+        if (showRating) {
             renderRatingList(rating.detail)
         }
     }
