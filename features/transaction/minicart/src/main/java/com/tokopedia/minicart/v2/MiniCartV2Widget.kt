@@ -449,6 +449,7 @@ class MiniCartV2Widget @JvmOverloads constructor(
         binding?.imageChevronUnavailable?.gone()
     }
 
+    // cannot use viewmodel due to race condition issue in total amount unify
     private fun setTotalAmountLoading(isLoading: Boolean) {
         if (isLoading) {
             if (binding?.miniCartTotalAmount?.isTotalAmountLoading == false) {
