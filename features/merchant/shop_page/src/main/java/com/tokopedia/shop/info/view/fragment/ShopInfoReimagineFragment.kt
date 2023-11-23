@@ -172,11 +172,23 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgCtaViewPharmacyMap.setOnClickListener {
                 viewModel.processEvent(ShopInfoUiEvent.TapCtaViewPharmacyLocation)
             }
-            iconChevronReview.setOnClickListener {
-                viewModel.processEvent(ShopInfoUiEvent.TapIconViewAllShopReview)
-            }
             globalError.setActionClickListener {
                 viewModel.processEvent(ShopInfoUiEvent.RetryGetShopInfo)
+            }
+            iconChevronReview.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
+            }
+            tpgSectionTitleBuyerReview.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
+            }
+            iconRating.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
+            }
+            tpgShopRating.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
+            }
+            tpgRatingAndReviewText.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
             }
         }
     }
@@ -454,12 +466,17 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         val showRating = rating.totalRating.isMoreThanZero()
 
         binding?.layoutRating?.isVisible = rating.positivePercentageFmt.isNotEmpty()
+        binding?.layoutRating?.setOnClickListener {
+            viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
+        }
+
         val satisfactionPercentage = rating.positivePercentageFmt.digitsOnly().toInt()
         binding?.tpgBuyerSatisfactionPercentage?.text = getString(R.string.shop_info_placeholder_discount_percentage, satisfactionPercentage)
 
         binding?.layoutRatingBarContainer?.isVisible = showRating
-
-        if (showRating) {
+        binding?.layoutRatingBarContainer?.setOnClickListener {
+            viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
+        } if (showRating) {
             renderRatingList(rating.detail)
         }
     }
