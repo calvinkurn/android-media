@@ -91,8 +91,9 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         product[LinkerConstants.PRICE_IDR_TO_DOUBLE] = productItem.price.toString()
         product[LinkerConstants.QTY] = productItem.quantity.toString()
         if(TextUtils.isEmpty(productItem.productBrand) ||
-            productItem.productBrand.equalsIgnoreCase(NONE_OTHER_IDENTIFIER) ) {
-            product[LinkerConstants.PRODUCT_BRAND] = storeName
+            productItem.productBrand == NONE_OTHER_IDENTIFIER
+        ) {
+            product[LinkerConstants.PRODUCT_BRAND] = storeName ?: ""
         }else{
             product[LinkerConstants.PRODUCT_BRAND] = productItem.productBrand
         }
