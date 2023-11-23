@@ -8,7 +8,6 @@ data class MiniCartSimplifiedData(
     var miniCartItems: Map<MiniCartItemKey, MiniCartItem> = emptyMap(),
     var isShowMiniCartWidget: Boolean = false,
     var shoppingSummaryBottomSheetData: ShoppingSummaryBottomSheetData = ShoppingSummaryBottomSheetData(),
-    var bmGmDataList: List<BmGmData> = emptyList(),
     var bmgmData: BmgmMiniCartDataUiModel = BmgmMiniCartDataUiModel()
 )
 

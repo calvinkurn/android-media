@@ -14,7 +14,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shop
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandComponentExtension.addReload
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.TierData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.minicart.common.domain.data.BmGmData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.unifycomponents.toPx
@@ -25,7 +24,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 class ShopOfferHeroBrandViewModel(
@@ -131,7 +129,8 @@ class ShopOfferHeroBrandViewModel(
                         _productList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))
                     }
                 )
-            }, onError = { throwable ->
+            },
+            onError = { throwable ->
                 component.noOfPagesLoaded = 1
                 component.verticalProductFailState = true
                 component.shouldRefreshComponent = null
@@ -152,8 +151,8 @@ class ShopOfferHeroBrandViewModel(
                 handleErrorPagination()
             }
         }, onError = {
-            handleErrorPagination()
-        })
+                handleErrorPagination()
+            })
     }
 
     fun resetComponent() {
@@ -168,7 +167,7 @@ class ShopOfferHeroBrandViewModel(
         return if (hasNextPage()) {
             productList.addLoadMore(component)
             productList
-        }  else {
+        } else {
             productList
         }
     }
@@ -190,13 +189,12 @@ class ShopOfferHeroBrandViewModel(
 
     fun changeTier(
         isShimmerShown: Boolean,
-        bmGmDataList: List<BmGmData> = emptyList()
+        offerMessages: List<String> = emptyList()
     ) {
         if (!hasHeader()) return
 
-        val offerMessages = bmGmDataList.filter { it.offerMessage.isNotEmpty() }.map { it.offerMessage }.firstOrNull()
         _tierChange.value = TierData(
-            isProgressBarShown = isShimmerShown || !offerMessages.isNullOrEmpty(),
+            isProgressBarShown = isShimmerShown || offerMessages.isNotEmpty(),
             isShimmerShown = isShimmerShown,
             offerMessages = offerMessages
         )

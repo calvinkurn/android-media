@@ -1,11 +1,9 @@
 package com.tokopedia.minicart.common.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.minicart.bmgm.domain.mapper.BmgmMiniCartDataMapper
 import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
-import com.tokopedia.minicart.common.domain.data.BmGmData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
@@ -16,7 +14,6 @@ import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSumm
 import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummaryProductUiModel
 import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummarySeparatorUiModel
 import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummaryTotalTransactionUiModel
-import com.tokopedia.purchase_platform.common.feature.bmgm.data.response.BmGmCartDetailInfo.Companion.CART_DETAIL_TYPE
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
 import kotlin.math.min
@@ -31,7 +28,6 @@ class MiniCartSimplifiedMapper @Inject constructor(
             isShowMiniCartWidget = miniCartItems.isNotEmpty()
             miniCartWidgetData = mapMiniCartWidgetData(miniCartData)
             shoppingSummaryBottomSheetData = mapShoppingSummaryData(miniCartData)
-            bmGmDataList = mapBmGmData(miniCartData)
             bmgmData = bmgmMapper.mapToUiModel(miniCartData)
         }
     }
@@ -241,17 +237,5 @@ class MiniCartSimplifiedMapper @Inject constructor(
             title = miniCartData.data.simplifiedShoppingSummary.text,
             items = shoppingSummaryItems
         )
-    }
-
-    private fun mapBmGmData(miniCartData: MiniCartData): List<BmGmData> {
-        return miniCartData.data.availableSection.availableGroup.map { group ->
-            val detail = group.cartDetails.firstOrNull { detail ->
-                val cartDetailInfo = detail.cartDetailInfo
-                cartDetailInfo.cartDetailType.equals(CART_DETAIL_TYPE, true) && cartDetailInfo.bmgmData.offerId != Long.ZERO
-            }
-            BmGmData(
-                offerMessage = detail?.cartDetailInfo?.bmgmData?.offerMessage.orEmpty()
-            )
-        }
     }
 }
