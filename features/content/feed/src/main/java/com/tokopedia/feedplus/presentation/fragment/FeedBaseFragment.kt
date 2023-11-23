@@ -314,7 +314,6 @@ class FeedBaseFragment :
             }
 
             ContentCreationTypeEnum.STORY -> {
-                /* TODO : Add Analytics, if any */
                 openAppLink.launch(data.applink)
             }
 
