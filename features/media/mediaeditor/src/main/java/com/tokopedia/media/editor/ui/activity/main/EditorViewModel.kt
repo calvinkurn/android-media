@@ -39,9 +39,6 @@ class EditorViewModel @Inject constructor(
     private var _editorResult = MutableLiveData<List<String?>>()
     val editorResult: LiveData<List<String?>> = _editorResult
 
-    private var _isVideoStop = MutableLiveData<Boolean>()
-    val isVideoStop: LiveData<Boolean> = _isVideoStop
-
     fun setEditorParam(data: EditorParam) {
         _editorParam.postValue(data)
     }
@@ -110,7 +107,6 @@ class EditorViewModel @Inject constructor(
     fun finishPage(
         dataList: List<EditorUiModel>
     ) {
-        _isVideoStop.value = true
         viewModelScope.launch(coroutineDispatchers.io) {
             val filteredData = dataList.map {
                 if (it.isImageEdited()) {

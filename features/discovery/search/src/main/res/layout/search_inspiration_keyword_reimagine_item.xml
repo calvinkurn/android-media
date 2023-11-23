@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/searchInspirationKeywordReimagineContainer"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:layout_marginTop="8dp"
+    android:background="@drawable/search_background_inspiration_keyword_reimagine"
+    android:foreground="?attr/selectableItemBackground">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/searchInspirationKeywordReimagineIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="6dp"
+        android:src="@drawable/ic_product_navigation_search_grayscale_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/searchInspirationKeywordReimagineImage"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/searchInspirationKeywordBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="searchInspirationKeywordReimagineIcon
+        ,searchInspirationKeywordReimagineImage" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/searchInspirationKeywordReimagineKeyword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="6dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN950_96"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/searchInspirationKeywordBarrier"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
+        tools:text="Product Name Product Name Product Name Product Name Product Name Product Name Product Name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

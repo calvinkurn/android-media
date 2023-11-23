@@ -5,6 +5,7 @@ import android.view.View
 import android.webkit.WebView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.epharmacy.R
+import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.component.model.EPharmacyTickerDataModel
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.epharmacy.utils.WEB_VIEW_MIN_VERSION_SUPPORT_CONSULTATION
@@ -16,12 +17,14 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.epharmacy.R as epharmacyR
 
 class EPharmacyTickerViewHolder(
-    val view: View
+    val view: View,
+    val ePharmacyListener: EPharmacyListener?
 ) : AbstractViewHolder<EPharmacyTickerDataModel>(view) {
+
     companion object {
         val LAYOUT = R.layout.epharmacy_ticker_view_item
     }
@@ -32,13 +35,13 @@ class EPharmacyTickerViewHolder(
         view.findViewById<ImageUnify>(R.id.ticker_icon).loadImage(data.tickerLogo)
         view.findViewById<ImageUnify>(R.id.ticker_background_image).loadImageWithoutPlaceholder(data.tickerBackground)
         view.findViewById<Typography>(R.id.ticker_text).text = data.tickerText?.parseAsHtml()
-        renderWebViewTicker()
+        renderWebViewTicker(data)
     }
 
-    private fun renderWebViewTicker() {
+    private fun renderWebViewTicker(data: EPharmacyTickerDataModel) {
         getWebViewVersion().let { version ->
             if (errorWebViewCondition(version)) {
-                showWebViewTicker()
+                showWebViewTicker(data)
             }
         }
     }
@@ -61,9 +64,17 @@ class EPharmacyTickerViewHolder(
         return version.split(".").firstOrNull().toIntOrZero() < WEB_VIEW_MIN_VERSION_SUPPORT_CONSULTATION
     }
 
-    private fun showWebViewTicker() {
-        val tickerText = itemView.context.resources?.getString(epharmacyR.string.epharmacy_webview_ticker).orEmpty()
-        webViewTicker.setHtmlDescription(tickerText)
+    private fun showWebViewTicker(data: EPharmacyTickerDataModel) {
+        if (data.tickerWebViewText.isNullOrBlank()) return
+
+        webViewTicker.setHtmlDescription(data.tickerWebViewText)
+        webViewTicker.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                ePharmacyListener?.redirect(linkUrl.toString())
+            }
+
+            override fun onDismiss() {}
+        })
         webViewTicker.show()
     }
 }

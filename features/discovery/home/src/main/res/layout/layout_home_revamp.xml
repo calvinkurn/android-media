@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:tag="floating_egg"
-            app:draggable="true"
+            app:draggable="false"
             app:margin_bottom="@dimen/new_margin_sm" />
 
     </FrameLayout>
