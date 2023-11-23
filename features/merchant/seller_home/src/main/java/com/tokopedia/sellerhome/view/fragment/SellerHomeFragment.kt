@@ -42,6 +42,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
@@ -170,7 +171,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -179,10 +179,9 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.globalerror.R as globalerrorR
 import com.tokopedia.sellerhomecommon.R as sellerhomecommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 2020-01-14
@@ -192,7 +191,6 @@ import com.tokopedia.sellerhomecommon.R as sellerhomecommonR
 class SellerHomeFragment :
     BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
     WidgetListener,
-    CoroutineScope,
     SellerHomeFragmentListener {
 
     companion object {
@@ -306,9 +304,6 @@ class SellerHomeFragment :
             null
         }
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
-
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
 
     override fun initInjector() {
@@ -364,7 +359,7 @@ class SellerHomeFragment :
         observeShopStateInfo()
         showSellerHomeToaster()
 
-        context?.let { UpdateShopActiveWorker.execute(it) }
+        context?.let { UpdateShopActiveWorker.execute(it.applicationContext) }
     }
 
     override fun onPause() {
@@ -1566,18 +1561,17 @@ class SellerHomeFragment :
     }
 
     private fun showPersonaToaster() {
-        view?.run {
-            post {
-                val message = context.getString(R.string.sah_activate_persona_entry_point_info)
-                val cta = context.getString(R.string.saldo_btn_oke)
-                Toaster.build(
-                    rootView,
-                    message,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    cta
-                ).show()
-            }
+        val view = activity?.window?.decorView ?: return
+        view.post {
+            val message = view.context.getString(R.string.sah_activate_persona_entry_point_info)
+            val cta = view.context.getString(R.string.saldo_btn_oke)
+            Toaster.build(
+                view,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                cta
+            ).show()
         }
     }
 
@@ -2937,19 +2931,19 @@ class SellerHomeFragment :
 
     @SuppressLint("DeprecatedMethod")
     private fun showSellerHomeToaster() {
-        binding?.run {
-            recyclerView.post {
-                val data = getSellerHomeDataFromArguments()
-                val message = data?.toasterMessage
-                if (!message.isNullOrBlank()) {
-                    Toaster.build(
-                        this.root,
-                        message,
-                        Toaster.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        data.toasterCta
-                    ).show()
-                }
+        val view = activity?.window?.decorView ?: return
+        view.post {
+            val data = getSellerHomeDataFromArguments()
+            val message = data?.toasterMessage
+            if (!message.isNullOrBlank()) {
+                Toaster.toasterCustomBottomHeight = view.context.dpToPx(88).toInt()
+                Toaster.build(
+                    view,
+                    message,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    data.toasterCta
+                ).show()
             }
         }
     }

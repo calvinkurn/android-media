@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.view.activity
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
@@ -52,7 +51,6 @@ import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitorin
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
-import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
@@ -81,8 +79,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     SomListLoadTimeMonitoringActivity, HasComponent<HomeDashboardComponent> {
 
     companion object {
-        @JvmStatic
-        fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
 
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
         private const val BOTTOM_NAV_ENTER_ANIM_DURATION = 4f
@@ -110,7 +106,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     private val sellerReviewHelper by lazy { createReviewHelper(applicationContext) }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
+    private val homeViewModel by lazy { viewModelProvider[SellerHomeActivityViewModel::class.java] }
     private val sellerHomeRouter by lazy { applicationContext as? SellerHomeRouter }
 
     private val menu = mutableListOf<BottomMenu>()
@@ -126,7 +122,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private var statusBarCallback: StatusBarCallback? = null
-    private var sellerHomeFragmentChangeCallback: FragmentChangeCallback? = null
     private var otherMenuFragmentChangeCallback: FragmentChangeCallback? = null
     private var binding: ActivitySahSellerHomeBinding? = null
     private val wearSharedPreference: SharedPreferences by lazy {
@@ -233,8 +228,10 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         navigator?.cleanupNavigator()
+        navigator = null
+        binding = null
+        super.onDestroy()
     }
 
     override fun menuClicked(position: Int, id: Int): Boolean {
@@ -282,10 +279,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
-    }
-
-    fun attachSellerHomeFragmentChangeCallback(callback: FragmentChangeCallback) {
-        sellerHomeFragmentChangeCallback = callback
     }
 
     fun attachOtherMenuFragmentChangeCallback(callback: FragmentChangeCallback) {
@@ -467,7 +460,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun setCurrentFragmentType(@FragmentType pageType: Int) {
-        sellerHomeFragmentChangeCallback?.setCurrentFragmentType(pageType)
         otherMenuFragmentChangeCallback?.setCurrentFragmentType(pageType)
     }
 
@@ -757,4 +749,5 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         )
         DFInstaller.installOnBackground(this.application, moduleNameList, "Seller Home")
     }
+
 }
