@@ -1136,7 +1136,7 @@ class ShopInfoReimagineViewModelTest {
     }
 
     @Test
-    fun `When TapIconViewAllShopReview event triggered, UI should receive RedirectToShopReviewPage effect`() {
+    fun `When tap shop rating event triggered, UI should receive RedirectToShopReviewPage effect`() {
         runBlockingTest {
             // Given
             val emittedEffects = arrayListOf<ShopInfoUiEffect>()
@@ -1159,7 +1159,7 @@ class ShopInfoReimagineViewModelTest {
             viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
             viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
             viewModel.processEvent(
-                ShopInfoUiEvent.TapIconViewAllShopReview
+                ShopInfoUiEvent.TapShopRating
             )
 
             // Then
@@ -1178,7 +1178,7 @@ class ShopInfoReimagineViewModelTest {
                 title = "Syarat dan ketentuan pengiriman",
                 description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
             )
-            val selectedNoteId = "122"
+
             val emittedEffects = arrayListOf<ShopInfoUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedEffects)
@@ -1426,10 +1426,10 @@ class ShopInfoReimagineViewModelTest {
             viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.TapIconViewAllShopReview)
+            viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
 
             // Then
-            coVerify { tracker.sendIconViewAllShopReviewEvent(shopId) }
+            coVerify { tracker.sendTapShopRatingEvent(shopId) }
         }
     }
 

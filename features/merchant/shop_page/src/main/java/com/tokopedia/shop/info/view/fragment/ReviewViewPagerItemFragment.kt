@@ -21,11 +21,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.FragmentReviewViewpagerItemBinding
@@ -85,8 +83,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
     private fun renderReview(review: ShopReview.Review?) {
         review?.let {
             renderReviewerInfo(review)
-            renderCompletedReview(Int.ZERO)
-            renderLikeCount(review.likeDislike.likeStatus, review.likeDislike.totalLike)
+            renderLikeCount(review.likeDislike.totalLike)
             renderReviewImages(review.attachments)
             
             if (isReviewTextAlreadyExpanded) {
@@ -187,22 +184,10 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         reviewTextView.movementMethod = LinkMovementMethod.getInstance()
         reviewTextView.text = spannableString
     }
-    private fun renderCompletedReview(completedReviewCount: Int) {
-        val showCompletedReview = completedReviewCount.isMoreThanZero()
-
-        if (showCompletedReview) {
-            binding?.tpgCompletedReview?.text =
-                getString(R.string.shop_info_placeholder_complete_review, completedReviewCount)
-        }
-    }
-
-    private fun renderLikeCount(completedReviewCount: Int, totalLike: Int) {
+    private fun renderLikeCount(totalLike: Int) {
         val showTotalLike = totalLike.isMoreThanZero()
-        val showCompletedReview = completedReviewCount.isMoreThanZero()
-        val showBullet = showCompletedReview && showTotalLike
 
         binding?.tpgReviewLikeCount?.isVisible = showTotalLike
-        binding?.tpgBulletReview?.isVisible = showBullet
 
         if (showTotalLike) {
             binding?.tpgReviewLikeCount?.text =

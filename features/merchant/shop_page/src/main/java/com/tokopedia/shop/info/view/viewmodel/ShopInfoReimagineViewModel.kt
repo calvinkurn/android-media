@@ -91,7 +91,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
             is ShopInfoUiEvent.GetShopInfo -> handleGetShopInfo()
             ShopInfoUiEvent.TapCtaExpandShopPharmacyInfo -> handleCtaExpandShopPharmacyInfo()
             ShopInfoUiEvent.TapCtaViewPharmacyLocation -> handleCtaViewPharmacyLocation()
-            ShopInfoUiEvent.TapIconViewAllShopReview -> handleViewAllReviewClick()
+            ShopInfoUiEvent.TapShopRating -> handleTapShopRating()
             is ShopInfoUiEvent.RetryGetShopInfo -> handleRetryGetShopInfo()
             is ShopInfoUiEvent.TapShopNote -> handleTapShopNote(event.shopNote)
             ShopInfoUiEvent.ReportShop -> handleReportShop()
@@ -212,8 +212,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
         handleGetShopInfo()
     }
 
-    private fun handleViewAllReviewClick() {
-        tracker.sendIconViewAllShopReviewEvent(currentState.shopId)
+    private fun handleTapShopRating() {
+        tracker.sendTapShopRatingEvent(currentState.shopId)
         val effect = ShopInfoUiEffect.RedirectToShopReviewPage(currentState.shopId)
         _uiEffect.tryEmit(effect)
     }

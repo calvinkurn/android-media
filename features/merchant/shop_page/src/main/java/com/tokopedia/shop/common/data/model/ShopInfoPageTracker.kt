@@ -78,7 +78,7 @@ class ShopInfoPageTracker @Inject constructor(private val userSession: UserSessi
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/4388
     // Tracker ID: 48702
-    fun sendIconViewAllShopReviewEvent(shopId: String) {
+    fun sendTapShopRatingEvent(shopId: String) {
         Tracker.Builder()
             .setEvent(ShopPageTrackingConstant.CLICK_PG)
             .setEventAction(ShopPageTrackingConstant.EventAction.CLICK_ICON_SHOP_REVIEW)

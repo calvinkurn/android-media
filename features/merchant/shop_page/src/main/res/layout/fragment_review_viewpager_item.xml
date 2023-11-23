@@ -7,15 +7,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgAvatar"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        app:unify_image_type="circle"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_type="circle" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgReviewerName"
@@ -42,74 +43,53 @@
         app:typographyType="display_3"
         app:typographyWeight="bold"
         android:text="@string/shop_page_dot_character" />
-    
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgReviewerLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="@color/Unify_TN600"
         app:layout_constraintEnd_toEndOf="parent"
-        android:maxLines="1"
-        android:ellipsize="end"
         app:layout_constraintStart_toEndOf="@+id/tpgBullet"
         app:layout_constraintTop_toTopOf="@+id/imgAvatar"
         app:typographyType="display_3"
         tools:text="Juara Ulasan Handphone" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgCompletedReview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        tools:visibility="gone"
-        android:visibility="visible"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toStartOf="@+id/tpgReviewerName"
-        app:layout_constraintTop_toBottomOf="@+id/tpgReviewerName"
-        app:typographyType="display_3"
-        tools:text="6 ulasan lengkap" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgBulletReview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="2dp"
-        android:paddingEnd="2dp"
-        android:text="@string/shop_page_dot_character"
-        tools:visibility="gone"
-        android:visibility="gone"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toEndOf="@+id/tpgCompletedReview"
-        app:layout_constraintTop_toTopOf="@+id/tpgCompletedReview"
-        app:layout_constraintBottom_toBottomOf="@id/tpgCompletedReview"
-        app:typographyType="display_3"
-        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgReviewLikeCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="123 terbantu"
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toEndOf="@+id/tpgBulletReview"
+        app:layout_constraintStart_toStartOf="@+id/tpgReviewerName"
         app:layout_constraintTop_toBottomOf="@+id/tpgReviewerName"
-        app:typographyType="display_3" />
+        app:typographyType="display_3"
+        tools:text="123 terbantu" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/imgAvatar"
-        android:background="@color/Unify_NN50" />
+        android:layout_marginEnd="16dp"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgAvatar" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgReviewText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -121,15 +101,19 @@
     <LinearLayout
         android:id="@+id/layoutImagesContainer"
         android:layout_width="0dp"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tpgReviewText"
-        tools:layout_height="16dp"/>
+        tools:layout_height="16dp" />
 
     
 </androidx.constraintlayout.widget.ConstraintLayout>

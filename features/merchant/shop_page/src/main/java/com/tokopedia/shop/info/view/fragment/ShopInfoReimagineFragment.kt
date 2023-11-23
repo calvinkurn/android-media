@@ -172,11 +172,23 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgCtaViewPharmacyMap.setOnClickListener {
                 viewModel.processEvent(ShopInfoUiEvent.TapCtaViewPharmacyLocation)
             }
-            iconChevronReview.setOnClickListener {
-                viewModel.processEvent(ShopInfoUiEvent.TapIconViewAllShopReview)
-            }
             globalError.setActionClickListener {
                 viewModel.processEvent(ShopInfoUiEvent.RetryGetShopInfo)
+            }
+            iconChevronReview.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
+            }
+            tpgSectionTitleBuyerReview.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
+            }
+            iconRating.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
+            }
+            tpgShopRating.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
+            }
+            tpgRatingAndReviewText.setOnClickListener {
+                viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
             }
         }
     }
@@ -267,7 +279,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun renderShopCoreInfo(uiState: ShopInfoUiState) {
-        val hasUsp = uiState.info.shopUsp.isNotEmpty()
         val hasPharmacyLicenseBadge = uiState.info.showPharmacyLicenseBadge
         val hasShopBadge = uiState.info.shopBadgeUrl.isNotEmpty()
 
@@ -286,11 +297,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgShopUsp.text = MethodChecker.fromHtml(shopDynamicUsp)
             tpgShopUsp.isVisible = uiState.info.shopUsp.isNotEmpty()
         }
-
-        val shopNameOnly = !hasUsp && !hasPharmacyLicenseBadge
-        if (shopNameOnly) {
-            makeShopNameCenteredVertically()
-        }
+        
     }
 
     private fun renderShopInfo(uiState: ShopInfoUiState) {
@@ -355,12 +362,17 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             labelShopPharmacyPharmacistName.isVisible = isPharmacy && expandPharmacyInfo
             labelShopPharmacySiaNumber.isVisible = isPharmacy && expandPharmacyInfo
             labelShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
-
-            // Show CTA "Lihat Selengkapnya" when pharmacy info collapsed
-            if (isPharmacy && !expandPharmacyInfo) {
-                tpgCtaExpandPharmacyInfo.visible()
-            } else {
-                tpgCtaExpandPharmacyInfo.invisible()
+            
+            if (isPharmacy) {
+                if (expandPharmacyInfo) {
+                    //If pharmacy info expanded, then hide CTA "Selengkapnya"
+                    tpgCtaExpandPharmacyInfo.invisible()
+                } else {
+                    //By default, show CTA "Selengkapnya"
+                    tpgCtaExpandPharmacyInfo.visible()
+                }
+            }  else {
+                tpgCtaExpandPharmacyInfo.gone()
             }
 
             tpgCtaViewPharmacyMap.isVisible = isPharmacy && expandPharmacyInfo && showCtaViewPharmacyLocation
@@ -454,10 +466,17 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         val showRating = rating.totalRating.isMoreThanZero()
 
         binding?.layoutRating?.isVisible = rating.positivePercentageFmt.isNotEmpty()
+        binding?.layoutRating?.setOnClickListener {
+            viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
+        }
+
         val satisfactionPercentage = rating.positivePercentageFmt.digitsOnly().toInt()
         binding?.tpgBuyerSatisfactionPercentage?.text = getString(R.string.shop_info_placeholder_discount_percentage, satisfactionPercentage)
 
         binding?.layoutRatingBarContainer?.isVisible = showRating
+        binding?.layoutRatingBarContainer?.setOnClickListener {
+            viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
+        }
 
         if (showRating) {
             renderRatingList(rating.detail)
@@ -619,20 +638,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             binding?.loaderReportShop?.gone()
         }
     }
-
-    private fun makeShopNameCenteredVertically() {
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(binding?.constraintLayout)
-
-        constraintSet.connect(R.id.tpgShopName, ConstraintSet.TOP, R.id.imgShop, ConstraintSet.TOP)
-        constraintSet.connect(R.id.tpgShopName, ConstraintSet.BOTTOM, R.id.imgShop, ConstraintSet.BOTTOM)
-
-        constraintSet.connect(R.id.imgShopBadge, ConstraintSet.TOP, R.id.imgShop, ConstraintSet.TOP)
-        constraintSet.connect(R.id.imgShopBadge, ConstraintSet.BOTTOM, R.id.imgShop, ConstraintSet.BOTTOM)
-
-        constraintSet.applyTo(binding?.constraintLayout)
-    }
-
+    
     private fun redirectToGmaps(gmapsUrl: String) {
         if (!isAdded) return
         if (gmapsUrl.isEmpty()) return

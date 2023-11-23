@@ -26,7 +26,7 @@ class ShopReviewView @JvmOverloads constructor(
     }
 
     companion object {
-        private const val DOT_INDICATOR_MARGIN_TOP = 16
+        private const val DOT_INDICATOR_VERTICAL_MARGIN = 16
     }
 
     private var onReviewImageClick: (ShopReview.Review, Int) -> Unit = { _, _ -> }
@@ -99,7 +99,9 @@ class ShopReviewView @JvmOverloads constructor(
 
     private fun createViewpager(): ViewPager2 {
         return ViewPager2(context).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            val params = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            params.bottomMargin = DOT_INDICATOR_VERTICAL_MARGIN.toPx()
+            layoutParams = params
         }
     }
 
@@ -109,7 +111,7 @@ class ShopReviewView @JvmOverloads constructor(
                 LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT
             )
-            params.topMargin = DOT_INDICATOR_MARGIN_TOP.toPx()
+            params.bottomMargin = DOT_INDICATOR_VERTICAL_MARGIN.toPx()
             layoutParams = params
 
             orientation = HORIZONTAL
