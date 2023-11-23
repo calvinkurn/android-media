@@ -4,21 +4,24 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.ShopAdsWithSingleProductModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -28,12 +31,18 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
 
-    private var productShopBadge: ImageUnify? = null
+    private var shopBadge: ImageUnify? = null
     private var shopImage: ImageUnify? = null
+    private var productImage: ImageUnify? = null
     private var bodyContainer: ConstraintLayout? = null
     private var merchantVoucher: Label? = null
     private var shopSlogan: Typography? = null
-    private var productCardGridView: ProductCardGridView? = null
+    private var productTitle: Typography? = null
+    private var productDiscountPrice: Typography? = null
+    private var productSlashedPrice: Typography? = null
+    private var productDiscountPercent: Typography? = null
+    private var productContainer: CardUnify2? = null
+    private var productDiscountGroup: Group? = null
 
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context)
@@ -71,21 +80,37 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
     }
 
     private fun initViews() {
-        productShopBadge = findViewById(R.id.shop_badge)
+        shopBadge = findViewById(R.id.shop_badge)
         shopImage = findViewById(R.id.headerShopImage)
+        productImage = findViewById(R.id.product_image)
         bodyContainer = findViewById(R.id.container)
         merchantVoucher = findViewById(R.id.merchantVoucher)
         shopSlogan = findViewById(R.id.shop_desc)
-        productCardGridView = findViewById(R.id.product_item)
+        productTitle = findViewById(R.id.product_title)
+        productDiscountPrice = findViewById(R.id.discounted_price)
+        productSlashedPrice = findViewById(R.id.original_price)
+        productContainer = findViewById(R.id.product_container)
+        productDiscountPercent = findViewById(R.id.textRibbon)
+        productDiscountGroup = findViewById(R.id.discount_percent_group)
     }
-    
+
     private fun setProductWidget(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel) {
         shopAdsWithSingleProductModel.listItem?.let { product ->
-            val productModel = getProductCardViewModel(product, shopAdsWithSingleProductModel.hasAddToCartButton)
-            productCardGridView?.applyCarousel()
-            productCardGridView?.setProductModel(productModel)
-            productCardGridView?.setOnClickListener {
-                shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(Int.ZERO, shopAdsWithSingleProductModel.shopApplink, shopAdsWithSingleProductModel.cpmData)
+            val productModel =
+                getProductCardViewModel(product, shopAdsWithSingleProductModel.hasAddToCartButton)
+            productImage?.loadImage(productModel.productImageUrl)
+            productTitle?.text = MethodChecker.fromHtml(productModel.productName).toString()
+            productDiscountPrice?.text = productModel.formattedPrice
+            productSlashedPrice?.text = productModel.slashedPrice
+            productSlashedPrice?.strikethrough()
+            setDiscountPercent(productModel)
+
+            bodyContainer?.setOnClickListener {
+                shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(
+                    Int.ZERO,
+                    shopAdsWithSingleProductModel.shopApplink,
+                    shopAdsWithSingleProductModel.cpmData
+                )
                 topAdsUrlHitter.hitClickUrl(
                     ShopAdsSingleItemVerticalLayout::class.java.simpleName,
                     shopAdsWithSingleProductModel.adsClickUrl,
@@ -95,6 +120,11 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
                 )
             }
         }
+    }
+
+    private fun setDiscountPercent(productModel: ProductCardModel) {
+        productDiscountPercent?.text = productModel.discountPercentage
+        productDiscountGroup?.showWithCondition(productModel.discountPercentage.isNotEmpty())
     }
 
     private fun setSlogan(slogan: String) {
@@ -110,6 +140,7 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
         val colorCode = getBackgroundColor(shopAdsWithSingleProductModel)
         bodyContainer?.background =
             ContextCompat.getDrawable(context, colorCode)
+        merchantVoucher?.setLabelType(if (shopAdsWithSingleProductModel.isPMPro || shopAdsWithSingleProductModel.isPowerMerchant) Label.GENERAL_GREEN else Label.HIGHLIGHT_LIGHT_GREEN)
     }
 
     private fun getBackgroundColor(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel): Int {
@@ -136,11 +167,11 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
 
     private fun loadBadge(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel) {
         val isImageShopBadgeVisible = getIsImageShopBadgeVisible(shopAdsWithSingleProductModel)
-        productShopBadge?.shouldShowWithAction(isImageShopBadgeVisible) {
+        shopBadge?.shouldShowWithAction(isImageShopBadgeVisible) {
             when {
-                shopAdsWithSingleProductModel.isOfficial -> productShopBadge?.loadImage(R.drawable.ic_official_store)
-                shopAdsWithSingleProductModel.isPMPro -> productShopBadge?.loadImage(shopwidgetR.drawable.shopwidget_ic_pm_pro)
-                shopAdsWithSingleProductModel.isPowerMerchant -> productShopBadge?.loadImage(
+                shopAdsWithSingleProductModel.isOfficial -> shopBadge?.loadImage(R.drawable.ic_official_store)
+                shopAdsWithSingleProductModel.isPMPro -> shopBadge?.loadImage(shopwidgetR.drawable.shopwidget_ic_pm_pro)
+                shopAdsWithSingleProductModel.isPowerMerchant -> shopBadge?.loadImage(
                     gmcommonR.drawable.ic_power_merchant
                 )
             }
@@ -152,6 +183,7 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
             || shopAdsWithSingleProductModel.isPMPro
             || shopAdsWithSingleProductModel.isPowerMerchant
     }
+
     private fun getProductCardViewModel(
         product: Product,
         hasAddToCartButton: Boolean

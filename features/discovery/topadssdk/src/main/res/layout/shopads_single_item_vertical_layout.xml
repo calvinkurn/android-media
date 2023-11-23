@@ -116,7 +116,7 @@
                 tools:text="Pig PU Doll Squishy Jumbo Babi Pink Lucu Empuk Berkualitas Import" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/product_price"
+                android:id="@+id/discounted_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
@@ -130,7 +130,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/product_image"/>
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/product_discount"
+                android:id="@+id/original_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
@@ -139,7 +139,7 @@
                 app:typographyType="display_3"
                 tools:text="Rp80.000"
                 android:textColor="@color/Unify_NN400"
-                app:layout_constraintStart_toEndOf="@id/product_price"
+                app:layout_constraintStart_toEndOf="@id/discounted_price"
                 app:layout_constraintTop_toBottomOf="@id/product_title"
                 app:layout_constraintBottom_toBottomOf="@id/product_image" />
 
@@ -153,7 +153,7 @@
                 app:typographyType="display_2"
                 tools:text="10%"
                 android:textColor="@color/Unify_RN500"
-                app:layout_constraintStart_toEndOf="@id/product_discount"
+                app:layout_constraintStart_toEndOf="@id/original_price"
                 app:layout_constraintTop_toBottomOf="@id/product_title"
                 app:layout_constraintBottom_toBottomOf="@id/product_image" />
 

@@ -28,14 +28,14 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopAdsSingleItemVerticalLayout : BaseCustomView {
 
-    private var productShopBadge: ImageUnify? = null
+    private var shopBadge: ImageUnify? = null
     private var productImage: ImageUnify? = null
     private var shopImage: ImageUnify? = null
     private var bodyContainer: ConstraintLayout? = null
     private var merchantVoucher: Label? = null
     private var shopSlogan: Typography? = null
     private var productName: Typography? = null
-    private var productPrice: Typography? = null
+    private var productDiscountedPrice: Typography? = null
     private var productSlashedPrice: Typography? = null
     private var productDiscountPercent: Typography? = null
     private var productCard: CardUnify2? = null
@@ -77,19 +77,20 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
         setProductPrice(shopAdsWithSingleProductModel.listItem)
         setProductSlashedPrice(shopAdsWithSingleProductModel.listItem)
         setProductDiscount(shopAdsWithSingleProductModel.listItem)
-        setProductClick(shopAdsWithSingleProductModel)
+        setShopClick(shopAdsWithSingleProductModel)
     }
 
     private fun initViews() {
-        productShopBadge = findViewById(R.id.shop_badge)
+        shopBadge = findViewById(R.id.shop_badge)
         shopImage = findViewById(R.id.headerShopImage)
         bodyContainer = findViewById(R.id.container)
         merchantVoucher = findViewById(R.id.merchantVoucher)
         shopSlogan = findViewById(R.id.shop_desc)
         productImage = findViewById(R.id.product_image)
         productName = findViewById(R.id.product_title)
-        productPrice = findViewById(R.id.product_price)
-        productDiscountPercent = findViewById(R.id.product_discount)
+        productDiscountedPrice = findViewById(R.id.discounted_price)
+        productSlashedPrice = findViewById(R.id.original_price)
+        productDiscountPercent = findViewById(R.id.discount_percent)
         productCard = findViewById(R.id.cardViewProduct)
     }
 
@@ -107,7 +108,7 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
 
     private fun setProductPrice(product: Product?) {
         product?.let {
-            productPrice?.text = product.priceFormat
+            productDiscountedPrice?.text = product.priceFormat
         }
     }
 
@@ -128,10 +129,10 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
         }
     }
 
-    private fun setProductClick(
+    private fun setShopClick(
         shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel
     ) {
-        productCard?.setOnClickListener {
+        bodyContainer?.setOnClickListener {
             shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(Int.ZERO, shopAdsWithSingleProductModel.shopApplink, shopAdsWithSingleProductModel.cpmData)
             topAdsUrlHitter.hitClickUrl(
                 ShopAdsSingleItemVerticalLayout::class.java.simpleName,
@@ -156,6 +157,7 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
         val colorCode = getBackgroundColor(shopAdsWithSingleProductModel)
         bodyContainer?.background =
             ContextCompat.getDrawable(context, colorCode)
+        merchantVoucher?.setLabelType(if (shopAdsWithSingleProductModel.isPMPro || shopAdsWithSingleProductModel.isPowerMerchant) Label.GENERAL_GREEN else Label.HIGHLIGHT_LIGHT_GREEN)
     }
 
     private fun getBackgroundColor(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel): Int {
@@ -182,11 +184,11 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
 
     private fun loadBadge(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel) {
         val isImageShopBadgeVisible = getIsImageShopBadgeVisible(shopAdsWithSingleProductModel)
-        productShopBadge?.shouldShowWithAction(isImageShopBadgeVisible) {
+        shopBadge?.shouldShowWithAction(isImageShopBadgeVisible) {
             when {
-                shopAdsWithSingleProductModel.isOfficial -> productShopBadge?.loadImage(R.drawable.ic_official_store)
-                shopAdsWithSingleProductModel.isPMPro -> productShopBadge?.loadImage(shopwidgetR.drawable.shopwidget_ic_pm_pro)
-                shopAdsWithSingleProductModel.isPowerMerchant -> productShopBadge?.loadImage(
+                shopAdsWithSingleProductModel.isOfficial -> shopBadge?.loadImage(R.drawable.ic_official_store)
+                shopAdsWithSingleProductModel.isPMPro -> shopBadge?.loadImage(shopwidgetR.drawable.shopwidget_ic_pm_pro)
+                shopAdsWithSingleProductModel.isPowerMerchant -> shopBadge?.loadImage(
                     gmcommonR.drawable.ic_power_merchant
                 )
             }
