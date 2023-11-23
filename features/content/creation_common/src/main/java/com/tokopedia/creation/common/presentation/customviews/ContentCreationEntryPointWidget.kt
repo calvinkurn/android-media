@@ -127,7 +127,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
 
                 getFragmentManager()?.let { fm ->
                     ContentCreationBottomSheet
-                        .getFragment(fm, context.classLoader)
+                        .getOrCreateFragment(fm, context.classLoader)
                         .show(
                             fm,
                             creationConfig = creationConfig.data

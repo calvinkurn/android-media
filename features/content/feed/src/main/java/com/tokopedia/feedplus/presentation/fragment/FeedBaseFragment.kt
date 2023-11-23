@@ -760,7 +760,7 @@ class FeedBaseFragment :
 
     private fun onCreatePostClicked() {
         ContentCreationBottomSheet
-            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .getOrCreateFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)
     }
 

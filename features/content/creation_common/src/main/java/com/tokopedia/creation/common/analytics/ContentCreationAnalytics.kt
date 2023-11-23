@@ -1,16 +1,16 @@
 package com.tokopedia.creation.common.analytics
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Value
 import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.constant.TrackerConstant
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import com.tokopedia.content.analytic.Event
-import com.tokopedia.content.analytic.BusinessUnit
-import com.tokopedia.content.analytic.CurrentSite
-import com.tokopedia.content.analytic.EventCategory
-import com.tokopedia.content.analytic.Value
 
 /**
  * Created By : Muhammad Furqan on 27/10/23
@@ -127,21 +127,21 @@ class ContentCreationAnalytics @Inject constructor(
         when (authorEnum) {
             ContentCreationAuthorEnum.USER -> Value.user
             ContentCreationAuthorEnum.SHOP -> Value.seller
-            ContentCreationAuthorEnum.NONE -> Value.empty
+            ContentCreationAuthorEnum.NONE -> ""
         }
 
     private fun getPartnerId(authorEnum: ContentCreationAuthorEnum) =
         when (authorEnum) {
             ContentCreationAuthorEnum.USER -> userId
             ContentCreationAuthorEnum.SHOP -> shopId
-            ContentCreationAuthorEnum.NONE -> Value.empty
+            ContentCreationAuthorEnum.NONE -> ""
         }
 
     private fun getEventCategory(widgetSource: ContentCreationEntryPointSource) =
         when (widgetSource) {
             ContentCreationEntryPointSource.Shop -> VALUE_CATEGORY_SHOP
             ContentCreationEntryPointSource.Feed -> EventCategory.unifiedFeed
-            else -> Value.empty
+            else -> ""
         }
 
     private object Action {

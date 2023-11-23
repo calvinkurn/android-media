@@ -8,7 +8,7 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
@@ -31,8 +31,9 @@ import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
  */
 class ContentCreationBottomSheet : BottomSheetUnify() {
 
-    private var factory: ViewModelProvider.Factory? = null
-    private var viewModel: ContentCreationViewModel? = null
+    private val viewModel: ContentCreationViewModel by viewModels {
+        createComponent().contentCreationFactory()
+    }
 
     @StringRes
     private var title: Int = R.string.content_creation_bottom_sheet_title
@@ -43,15 +44,6 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     private var creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
 
     var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        activity?.let {
-            factory = createComponent().contentCreationFactory()
-            viewModel = ViewModelProvider(it, factory!!)[ContentCreationViewModel::class.java]
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -160,7 +152,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     companion object {
         private const val TAG = "ContentCreationBottomSheet"
 
-        fun getFragment(
+        fun getOrCreateFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): ContentCreationBottomSheet {
@@ -171,5 +163,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                 ContentCreationBottomSheet::class.java.name
             ) as ContentCreationBottomSheet
         }
+
+
     }
 }
