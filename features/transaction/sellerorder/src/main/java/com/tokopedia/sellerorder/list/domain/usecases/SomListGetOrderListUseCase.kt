@@ -126,6 +126,10 @@ class SomListGetOrderListUseCase @Inject constructor(
                       }
                     }
                   }
+                  bulk_action {
+                    selectable
+                    message
+                  }
                   have_product_bundle
                   bundle_detail {
                     total_product

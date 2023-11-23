@@ -112,7 +112,7 @@ open class SomListOrderViewHolder(
                     if (oldItem.statusIndicatorColor != newItem.statusIndicatorColor || multiSelectEnableChanged) {
                         setupStatusIndicator(newItem)
                     }
-                    if (oldItem.isChecked != newItem.isChecked || oldItem.cancelRequest != newItem.cancelRequest || multiSelectEnableChanged) {
+                    if (oldItem.isChecked != newItem.isChecked || oldItem.cancelRequest != newItem.cancelRequest || oldItem.isBulkSelectable != newItem.isBulkSelectable || multiSelectEnableChanged) {
                         setupCheckBox(newItem)
                     }
                     if (oldItem.status != newItem.status) {
@@ -370,8 +370,8 @@ open class SomListOrderViewHolder(
             checkBoxSomListMultiSelect.skipAnimation()
             checkBoxSomListMultiSelect.setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
-                    if (element.cancelRequest != Int.ZERO && element.cancelRequestStatus != Int.ZERO) {
-                        listener.onCheckBoxClickedWhenDisabled()
+                    if (getIsMultiSelectEnabled(element)) {
+                        listener.onCheckBoxClickedWhenDisabled(element.bulkMessage)
                         true
                     } else {
                         element.isChecked = !checkBoxSomListMultiSelect.isChecked
@@ -430,8 +430,8 @@ open class SomListOrderViewHolder(
     }
 
     protected fun touchCheckBox(element: SomListOrderUiModel) {
-        if (element.cancelRequest != Int.ZERO && element.cancelRequestStatus != Int.ZERO) {
-            listener.onCheckBoxClickedWhenDisabled()
+        if (getIsMultiSelectEnabled(element)) {
+            listener.onCheckBoxClickedWhenDisabled(element.bulkMessage)
         } else {
             binding?.checkBoxSomListMultiSelect?.run {
                 isChecked = !isChecked
@@ -488,6 +488,11 @@ open class SomListOrderViewHolder(
         return element.cancelRequest != Int.ZERO && element.cancelRequestStatus == Int.ZERO
     }
 
+    private fun getIsMultiSelectEnabled(element: SomListOrderUiModel): Boolean {
+        val isCancelRequest = element.cancelRequest != Int.ZERO && element.cancelRequestStatus != Int.ZERO
+        return isCancelRequest || element.isBulkSelectable
+    }
+
     private val SomListOrderUiModel.Button.isRequestOrConfirmPickup: Boolean
         get() {
             return this.key in requestAndConfirmPickupKeys
@@ -495,7 +500,7 @@ open class SomListOrderViewHolder(
 
     interface SomListOrderItemListener {
         fun onCheckChanged()
-        fun onCheckBoxClickedWhenDisabled()
+        fun onCheckBoxClickedWhenDisabled(message: String?)
         fun onOrderClicked(order: SomListOrderUiModel)
         fun onTrackButtonClicked(url: String)
         fun onConfirmShippingButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
