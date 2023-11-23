@@ -1,13 +1,17 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.databinding.ItemDiscoveryShopOfferSupportingBrandLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
@@ -19,7 +23,9 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.modeAware
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+
 
 class ShopOfferSupportingBrandItemViewHolder(
     itemView: View,
@@ -77,8 +83,62 @@ class ShopOfferSupportingBrandItemViewHolder(
                 handleClickAction(product?.redirectAppLink)
             }
 
+            item.fontColor?.let {
+                renderSeeMoreButton(it)
+            }
+
             handleClickAction(item.applinks)
         }
+    }
+
+    private fun ItemDiscoveryShopOfferSupportingBrandLayoutBinding.renderSeeMoreButton(
+        mode: String
+    ) {
+        seeAllIcon.apply {
+            setImageDrawable(getSeeMoreIcon(mode))
+            background = getSeeMoreBackground(mode)
+        }
+    }
+
+    private fun getSeeMoreBackground(mode: String): Drawable? {
+        val drawable = ContextCompat.getDrawable(
+            itemView.context,
+            R.drawable.circular_see_product
+        )
+
+        drawable?.setTint(
+            ContextCompat.getColor(
+                getColorModeContext(mode),
+                unifyprinciplesR.color.Unify_NN950_68
+            )
+        )
+        return drawable
+    }
+
+    private fun getColorModeContext(mode: String): Context {
+        val colorMode = when (mode) {
+            TEXT_LIGHT_MODE -> ColorMode.LIGHT_MODE
+            TEXT_DARK_MODE -> ColorMode.DARK_MODE
+            else -> ColorMode.DEFAULT
+        }
+
+        return itemView.context.modeAware(colorMode) ?: itemView.context
+    }
+
+    private fun getSeeMoreIcon(mode: String): Drawable? {
+        val drawable = ContextCompat.getDrawable(
+            itemView.context,
+            unifycomponentsR.drawable.iconunify_chevron_right
+        )
+
+        drawable?.setTint(
+            ContextCompat.getColor(
+                getColorModeContext(mode),
+                unifyprinciplesR.color.Unify_NN950
+            )
+        )
+
+        return drawable
     }
 
     private fun ItemDiscoveryShopOfferSupportingBrandLayoutBinding.handleClickAction(appLink: String?) {
@@ -137,7 +197,7 @@ class ShopOfferSupportingBrandItemViewHolder(
             else -> ColorMode.DEFAULT
         }
 
-        val context = itemView.context.modeAware(colorMode)
+        val context = itemView.context.modeAware(colorMode) ?: itemView.context
 
         val textColorWithOpacity = MethodChecker.getColor(
             context,
