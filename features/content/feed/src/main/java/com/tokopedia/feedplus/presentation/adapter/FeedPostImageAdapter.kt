@@ -1,9 +1,5 @@
 package com.tokopedia.feedplus.presentation.adapter
 
-import android.graphics.Bitmap
-import android.graphics.RenderEffect
-import android.graphics.Shader
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -57,35 +53,13 @@ class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: L
                         .submit()
                         .get()
                 }
-                blurImage(bitmap)
+                imageBlurUtil.blurredView(src = bitmap, view = binding.bgImgFeedPost, repeatCount = 8)
+                binding.bgImgFeedPost.alpha = BG_ALPHA
             }
-        }
-
-        private suspend fun blurImage(bitmap: Bitmap) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                binding.bgImgFeedPost.setImageBitmap(bitmap)
-                binding.bgImgFeedPost.setRenderEffect(
-                    RenderEffect.createBlurEffect(
-                        DEFAULT_NEW_RADIUS,
-                        DEFAULT_NEW_RADIUS,
-                        Shader.TileMode.CLAMP
-                    )
-                )
-            } else {
-                var resultBlur: Bitmap = bitmap
-                    for (i in 1..8) {
-                        resultBlur = imageBlurUtil.blurImage(resultBlur, radius = DEFAULT_OLD_RADIUS)
-                    }
-                binding.bgImgFeedPost.setImageBitmap(resultBlur)
-            }
-            binding.imgFeedPost.setImageBitmap(bitmap)
-            binding.bgImgFeedPost.alpha = BG_ALPHA
         }
 
         companion object {
             private const val BG_ALPHA = 0.8f
-            private const val DEFAULT_OLD_RADIUS = 25f
-            private const val DEFAULT_NEW_RADIUS = DEFAULT_OLD_RADIUS * 8
         }
     }
 }
