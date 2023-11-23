@@ -35,6 +35,7 @@ import com.tokopedia.shop.info.view.model.ShopInfoUiState
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -425,7 +426,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
 
     private fun String.toShopJoinDate(): String {
-        return toDate(DateTimeConstant.DATE_TIME_DAY_PRECISION).formatTo(DateTimeConstant.DATE_TIME_YEAR_PRECISION)
+        return toDate(DateUtil.YYYY_MM_DD).formatTo(DateUtil.DEFAULT_VIEW_FORMAT)
     }
 
     private fun isShopOpenTwentyFourHours(startTime: String, endTime: String): Boolean {
