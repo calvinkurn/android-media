@@ -55,6 +55,7 @@ class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: L
                 }
                 imageBlurUtil.blurredView(src = bitmap, view = binding.bgImgFeedPost, repeatCount = 8)
                 binding.bgImgFeedPost.alpha = BG_ALPHA
+                binding.imgFeedPost.setImageBitmap(bitmap)
             }
         }
 

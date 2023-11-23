@@ -55,6 +55,7 @@ class ImageBlurUtil(context: Context) : Closeable {
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val newRadius = radius * repeatCount
+            view.setImageBitmap(src)
             view.setRenderEffect(
                 RenderEffect.createBlurEffect(
                     newRadius,
