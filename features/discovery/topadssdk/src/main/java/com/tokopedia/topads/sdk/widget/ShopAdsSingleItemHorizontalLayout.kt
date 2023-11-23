@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.strikethrough
@@ -104,6 +105,13 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
             productSlashedPrice?.text = productModel.slashedPrice
             productSlashedPrice?.strikethrough()
             setDiscountPercent(productModel)
+
+            shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
+                productContainer?.addOnImpressionListener(impressHolder){
+                    shopAdsWithSingleProductModel.impressionListener?.onImpressionProductAdsItem(Int.ZERO, shopAdsWithSingleProductModel.listItem, shopAdsWithSingleProductModel.cpmData)
+                    shopAdsWithSingleProductModel.impressionListener?.onImpressionHeadlineAdsItem(Int.ZERO, shopAdsWithSingleProductModel.cpmData)
+                }
+            }
 
             bodyContainer?.setOnClickListener {
                 shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(

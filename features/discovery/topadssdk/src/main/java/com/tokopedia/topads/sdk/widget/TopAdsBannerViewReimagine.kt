@@ -252,7 +252,9 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             hasAddToCartButton = hasAddProductToCartButton,
             variant = cpmData.cpm.layout,
             topAdsBannerClickListener = topAdsBannerClickListener,
-            cpmData = cpmData
+            impressionListener = impressionListener,
+            cpmData = cpmData,
+            impressHolder = cpmData.cpm.cpmShop.imageShop
         )
     }
 

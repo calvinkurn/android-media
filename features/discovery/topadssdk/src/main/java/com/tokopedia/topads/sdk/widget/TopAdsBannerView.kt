@@ -464,7 +464,9 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             hasAddToCartButton = hasAddProductToCartButton,
             variant = cpmData.cpm.layout,
             topAdsBannerClickListener = topAdsBannerClickListener,
-            cpmData = cpmData
+            impressionListener = impressionListener,
+            cpmData = cpmData,
+            impressHolder = cpmData.cpm.cpmShop.imageShop
         )
 
     }

@@ -1,6 +1,8 @@
 package com.tokopedia.topads.sdk.domain.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 
 data class ShopAdsWithSingleProductModel(
     var isOfficial: Boolean = false,
@@ -18,5 +20,7 @@ data class ShopAdsWithSingleProductModel(
     val adsClickUrl: String,
     val hasAddToCartButton: Boolean,
     val topAdsBannerClickListener: TopAdsBannerClickListener?,
+    val impressionListener: TopAdsItemImpressionListener?,
     val cpmData: CpmData,
+    val impressHolder: ImpressHolder? = null,
 )

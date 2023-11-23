@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.strikethrough
@@ -78,6 +79,7 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
         setProductSlashedPrice(shopAdsWithSingleProductModel.listItem)
         setProductDiscount(shopAdsWithSingleProductModel.listItem)
         setShopClick(shopAdsWithSingleProductModel)
+        setImpression(shopAdsWithSingleProductModel)
     }
 
     private fun initViews() {
@@ -146,6 +148,15 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
 
     private fun setSlogan(slogan: String) {
         shopSlogan?.text = slogan
+    }
+
+    private fun setImpression(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel) {
+        shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
+            productCard?.addOnImpressionListener(impressHolder){
+                shopAdsWithSingleProductModel.impressionListener?.onImpressionProductAdsItem(Int.ZERO, shopAdsWithSingleProductModel.listItem, shopAdsWithSingleProductModel.cpmData)
+                shopAdsWithSingleProductModel.impressionListener?.onImpressionHeadlineAdsItem(Int.ZERO, shopAdsWithSingleProductModel.cpmData)
+            }
+        }
     }
 
     private fun setShopVoucher(vouchers: MutableList<String>) {
