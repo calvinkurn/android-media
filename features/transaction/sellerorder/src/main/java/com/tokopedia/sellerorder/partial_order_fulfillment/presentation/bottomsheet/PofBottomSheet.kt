@@ -177,8 +177,11 @@ class PofBottomSheet : BottomSheetUnify(),
     }
 
     private fun onCloseBottomSheet(result: Int) {
-        activity?.setResult(result)
-        activity?.finish()
+        setOnDismissListener {
+            activity?.setResult(result)
+            activity?.finish()
+        }
+        dismiss()
     }
 
     private fun updateResetButton(show: Boolean) {
