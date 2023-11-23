@@ -660,6 +660,6 @@ class MiniCartWidget @JvmOverloads constructor(
     companion object {
         private const val COACH_MARK_TAG = "coachmark_tokonow"
 
-        const val MINICART_PAGE_SOURCE = "minicart - tokonow"
+        private const val MINICART_PAGE_SOURCE = "minicart - tokonow"
     }
 }
