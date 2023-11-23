@@ -4,22 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
 import com.tokopedia.creation.common.di.ContentCreationComponent
 import com.tokopedia.creation.common.di.ContentCreationInjector
-import com.tokopedia.creation.common.di.ContentCreationModule
-import com.tokopedia.creation.common.di.DaggerContentCreationComponent
 import com.tokopedia.creation.common.presentation.components.ContentCreationView
-import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
 import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
@@ -57,27 +52,27 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val selectedCreation =
-                    viewModel?.selectedCreationType?.collectAsStateWithLifecycle()
-                val creationList = viewModel?.creationConfig?.collectAsStateWithLifecycle()
+                    viewModel.selectedCreationType.collectAsStateWithLifecycle()
+                val creationList = viewModel.creationConfig.collectAsStateWithLifecycle()
 
                 ContentCreationView(
-                    creationConfig = creationList?.value,
-                    selectedItem = selectedCreation?.value,
+                    creationConfig = creationList.value,
+                    selectedItem = selectedCreation.value,
                     onImpressBottomSheet = {
                         analytics?.eventImpressionContentCreationBottomSheet(
-                            viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
+                            viewModel.authorType,
                             widgetSource
                         )
                     },
                     onSelectItem = {
-                        viewModel?.selectCreationItem(it)
+                        viewModel.selectCreationItem(it)
                         listener?.onCreationItemSelected(it)
                     },
                     onNextClicked = {
-                        selectedCreation?.value?.let {
+                        selectedCreation.value?.let {
                             analytics?.eventClickNextButton(
-                                viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
-                                viewModel?.selectedItemTitle.orEmpty(),
+                                viewModel.authorType,
+                                viewModel.selectedItemTitle,
                                 widgetSource
                             )
                             listener?.onCreationNextClicked(it)
@@ -85,7 +80,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                         }
                     },
                     onRetryClicked = {
-                        viewModel?.fetchConfig(widgetSource)
+                        viewModel.fetchConfig(widgetSource)
                     }
                 )
             }
@@ -107,17 +102,17 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
             if (shouldShowPerformanceAction) {
                 setAction(it.getString(R.string.content_creation_bottom_sheet_performance_action)) { _ ->
                     analytics?.eventClickPerformanceDashboard(
-                        viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
+                        viewModel.authorType,
                         widgetSource
                     )
                     RouteManager.route(
                         it,
-                        viewModel?.getPerformanceDashboardApplink()
+                        viewModel.getPerformanceDashboardApplink()
                     )
                 }
             }
 
-            viewModel?.fetchConfig(widgetSource, creationConfig)
+            viewModel.fetchConfig(widgetSource, creationConfig)
         }
     }
 
@@ -146,7 +141,5 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                 ContentCreationBottomSheet::class.java.name
             ) as ContentCreationBottomSheet
         }
-
-
     }
 }
