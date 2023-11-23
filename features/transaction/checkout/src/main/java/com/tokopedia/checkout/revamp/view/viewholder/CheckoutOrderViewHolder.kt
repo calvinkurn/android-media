@@ -9,6 +9,10 @@ import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companion.DROPSHIPPER_MAX_NAME_LENGTH
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companion.DROPSHIPPER_MAX_PHONE_LENGTH
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companion.DROPSHIPPER_MIN_NAME_LENGTH
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companion.DROPSHIPPER_MIN_PHONE_LENGTH
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -327,8 +331,7 @@ class CheckoutOrderViewHolder(
 
     private fun renderDropshipWidget(order: CheckoutOrderModel) {
         binding.dropshipWidget.setupListener(this)
-        // binding.dropshipWidget.cartStringGroup = order.cartStringGroup
-        binding.dropshipWidget.state = order.stateDropship
+        println("++ order.isDropshipperDisabled = ${order.isDropshipperDisabled}, isAllowDropshipper = ${order.shipment.courierItemData?.isAllowDropshiper}}")
         if (order.isEnableDropship) {
             if (order.useDropship) {
                 binding.dropshipWidget.state = CheckoutDropshipWidget.State.SELECTED
@@ -434,10 +437,15 @@ class CheckoutOrderViewHolder(
     }
 
     override fun setDropshipName(name: String) {
-        listener.setDropshipName(name, bindingAdapterPosition)
+        order?.isDropshipNameValid = name.isNotEmpty() && name.length > DROPSHIPPER_MIN_NAME_LENGTH &&
+            name.length < DROPSHIPPER_MAX_NAME_LENGTH
+        order?.dropshipName = name
     }
 
     override fun setDropshipPhone(phone: String) {
-        listener.setDropshipPhone(phone, bindingAdapterPosition)
+        val isPhoneValid = phone.isNotEmpty() && phone.length > DROPSHIPPER_MIN_PHONE_LENGTH &&
+            phone.length < DROPSHIPPER_MAX_PHONE_LENGTH
+        order?.dropshipPhone = phone
+        if (isPhoneValid) listener.setDropshipPhoneIsValid(phone, bindingAdapterPosition)
     }
 }

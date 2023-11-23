@@ -382,11 +382,14 @@ class CheckoutCartProcessor @Inject constructor(
         }
     }
 
-    fun validateDropship(listData: List<CheckoutItem>): Int {
-        listData.filterIsInstance<CheckoutOrderModel>().forEachIndexed { index, it ->
-            if (it.useDropship) {
-                if (it.dropshipName.isEmpty() || it.dropshipPhone.isEmpty() ||
-                    !it.isDropshipNameValid || !it.isDropshipPhoneValid
+    fun validateDropship(checkoutItems: List<CheckoutItem>): Int {
+        for ((index, checkoutOrderModel) in checkoutItems.withIndex()) {
+            if (checkoutOrderModel is CheckoutOrderModel) {
+                if (checkoutOrderModel.useDropship && (
+                    checkoutOrderModel.dropshipName.isEmpty() ||
+                        checkoutOrderModel.dropshipPhone.isEmpty() || !checkoutOrderModel.isDropshipNameValid ||
+                        !checkoutOrderModel.isDropshipPhoneValid
+                    )
                 ) {
                     return index
                 }

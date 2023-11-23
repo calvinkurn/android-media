@@ -2570,7 +2570,7 @@ class CheckoutViewModel @Inject constructor(
         } else {
             if (!isChecked) {
                 val newOrder = checkoutOrderModel.copy(
-                    stateDropship = CheckoutDropshipWidget.State.DISABLED,
+                    stateDropship = CheckoutDropshipWidget.State.INIT,
                     useDropship = false
                 )
                 checkoutItems[position] = newOrder
@@ -2595,6 +2595,22 @@ class CheckoutViewModel @Inject constructor(
         val checkoutItems = listData.value.toMutableList()
         val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
         val newOrder = checkoutOrderModel.copy(dropshipPhone = phone, isDropshipPhoneValid = true)
+        checkoutItems[position] = newOrder
+        listData.value = checkoutItems
+    }
+
+    fun setDropshipNameIsValid(name: String, position: Int) {
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
+        val newOrder = checkoutOrderModel.copy(isDropshipNameValid = true, dropshipName = name)
+        checkoutItems[position] = newOrder
+        listData.value = checkoutItems
+    }
+
+    fun setDropshipPhoneIsValid(phone: String, position: Int) {
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
+        val newOrder = checkoutOrderModel.copy(isDropshipPhoneValid = true, dropshipPhone = phone)
         checkoutItems[position] = newOrder
         listData.value = checkoutItems
     }

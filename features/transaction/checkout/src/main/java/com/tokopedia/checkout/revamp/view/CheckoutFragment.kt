@@ -2634,4 +2634,12 @@ class CheckoutFragment :
     override fun setDropshipPhone(phone: String, position: Int) {
         viewModel.setDropshipPhone(phone, position)
     }
+
+    override fun setDropshipNameIsValid(name: String, bindingAdapterPosition: Int) {
+        viewModel.setDropshipNameIsValid(name, bindingAdapterPosition)
+    }
+
+    override fun setDropshipPhoneIsValid(phone: String, bindingAdapterPosition: Int) {
+        viewModel.setDropshipPhoneIsValid(phone, bindingAdapterPosition)
+    }
 }
