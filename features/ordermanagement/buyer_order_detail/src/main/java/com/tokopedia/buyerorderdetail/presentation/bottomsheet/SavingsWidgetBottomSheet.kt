@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.buyerorderdetail.databinding.BuyerOrderDetailSavingWidgetBottomSheetBinding
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailSavingWidgetDetailBinding
 import com.tokopedia.buyerorderdetail.domain.models.PlusComponent
+import com.tokopedia.buyerorderdetail.domain.models.PlusTotal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -85,7 +86,7 @@ class SavingsWidgetBottomSheet : BottomSheetUnify() {
             component?.plusFooter?.plusFooterTotal?.footerValue.orEmpty().isNotEmpty()
         ) {
             val bindItem = ItemBuyerOrderDetailSavingWidgetDetailBinding.inflate(layoutInflater)
-            val plusFooter = component!!.plusFooter.plusFooterTotal
+            val plusFooter = component?.plusFooter?.plusFooterTotal ?: PlusTotal()
 
             bindItem.dividerSavingWidgetBs.show()
             bindItem.imgSavingWidgetPlus.hide()
