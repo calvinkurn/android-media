@@ -664,7 +664,7 @@ class DetailEditorFragment @Inject constructor(
                     }
 
                     val url = data.removeBackgroundUrl ?: data.originalUrl
-                    val uri = Uri.parse(url)
+                    val uri = Uri.fromFile(File(url))
 
                     if (data.isToolCrop()) {
                         rotateComponent.container().hide()
