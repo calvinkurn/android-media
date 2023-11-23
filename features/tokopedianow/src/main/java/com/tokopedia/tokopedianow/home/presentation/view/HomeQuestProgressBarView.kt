@@ -68,7 +68,7 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
         val selectedItemIndex = progressItems.indexOf(selectedItemView)
         if (animSet?.isRunning == true || progressItems.isEmpty() || index == selectedItemIndex) return
 
-        val selectedColorResId = unifyprinciplesR.color.Unify_NN0
+        val selectedColorResId = R.color.tokopedianow_quest_selected_circle_dms_color
         val currentItemView = progressItems[index]
         val isSelected = currentItemView.isSelected
 
