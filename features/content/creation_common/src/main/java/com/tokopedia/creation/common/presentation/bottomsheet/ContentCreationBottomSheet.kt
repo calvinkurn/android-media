@@ -66,7 +66,6 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                     },
                     onSelectItem = {
                         viewModel.selectCreationItem(it)
-                        listener?.onCreationItemSelected(it)
                     },
                     onNextClicked = {
                         selectedCreation.value?.let {
@@ -123,7 +122,6 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     private fun createComponent(): ContentCreationComponent = ContentCreationInjector.get(requireContext())
 
     interface Listener {
-        fun onCreationItemSelected(data: ContentCreationItemModel)
         fun onCreationNextClicked(data: ContentCreationItemModel)
     }
 

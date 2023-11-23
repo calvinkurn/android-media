@@ -270,10 +270,6 @@ class FeedBaseFragment :
 
     override fun getScreenName(): String = "Feed Fragment"
 
-    override fun onCreationItemSelected(data: ContentCreationItemModel) {
-        /* TODO : Add Analytics, if any */
-    }
-
     override fun onCreationNextClicked(data: ContentCreationItemModel) {
         when (data.type) {
             ContentCreationTypeEnum.LIVE -> {

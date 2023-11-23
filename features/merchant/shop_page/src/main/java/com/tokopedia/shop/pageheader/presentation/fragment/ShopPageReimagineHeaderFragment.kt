@@ -481,7 +481,6 @@ class ShopPageReimagineHeaderFragment :
 
     override fun getContentCreationListener(): ContentCreationBottomSheet.Listener =
         object : ContentCreationBottomSheet.Listener {
-            override fun onCreationItemSelected(data: ContentCreationItemModel) {}
 
             override fun onCreationNextClicked(data: ContentCreationItemModel) {
                 when (data.type) {
