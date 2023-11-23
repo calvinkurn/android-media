@@ -45,7 +45,7 @@ class TestMiniCartActivity : AppCompatActivity() {
     }
 
     private fun getMiniCartV2WidgetListener(): MiniCartV2WidgetListener {
-        return object : MiniCartV2WidgetListener {
+        return object : MiniCartV2WidgetListener() {
             override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
                 Log.i("qwertyuiop", miniCartSimplifiedData.toString())
                 miniCartData = miniCartSimplifiedData

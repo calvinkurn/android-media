@@ -153,6 +153,9 @@ class MiniCartV2Widget @JvmOverloads constructor(
     private fun observeGlobalEvent(lifecycleOwner: LifecycleOwner) {
         viewModel?.globalEvent?.observe(lifecycleOwner) {
             when (it.state) {
+                GlobalEvent.STATE_FAILED_LOAD_MINI_CART_WIDGET -> {
+                    miniCartWidgetListener?.onFailedToLoadMiniCartWidget()
+                }
                 GlobalEvent.STATE_SUCCESS_TO_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
                         context?.let { context ->
@@ -362,7 +365,7 @@ class MiniCartV2Widget @JvmOverloads constructor(
 
     private fun renderEmptyWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         binding?.miniCartTotalAmount?.apply {
-            setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
+            setLabelTitle(miniCartSimplifiedData.miniCartWidgetData.headlineWording.ifBlank { context.getString(R.string.mini_cart_widget_label_total_price) })
             setAmount("Rp-")
             setAmountSuffix("")
             val overridePrimaryButtonWording = config.overridePrimaryButtonWording
@@ -423,7 +426,7 @@ class MiniCartV2Widget @JvmOverloads constructor(
 
     private fun renderAvailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         binding?.miniCartTotalAmount?.apply {
-            setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
+            setLabelTitle(miniCartSimplifiedData.miniCartWidgetData.headlineWording)
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false).removeDecimalSuffix())
             if (config.showOriginalTotalPrice && miniCartSimplifiedData.miniCartWidgetData.totalProductOriginalPrice > 0) {
                 val originalPriceStr = String.format(CROSSED_TEXT_FORMAT, CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductOriginalPrice, false).removeDecimalSuffix())

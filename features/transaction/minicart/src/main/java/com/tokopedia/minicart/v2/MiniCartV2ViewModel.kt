@@ -12,12 +12,13 @@ import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartABTestData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.GlobalEvent
+import com.tokopedia.minicart.common.widget.GlobalEvent.Companion.OBSERVER_MINI_CART_WIDGET
+import com.tokopedia.minicart.common.widget.GlobalEvent.Companion.STATE_FAILED_LOAD_MINI_CART_WIDGET
 import com.tokopedia.minicart.v2.domain.GetMiniCartParam
 import com.tokopedia.minicart.v2.domain.GetMiniCartWidgetUseCase
 import kotlinx.coroutines.launch
@@ -29,11 +30,6 @@ internal class MiniCartV2ViewModel @Inject constructor(
     private val updateCartUseCase: UpdateCartUseCase,
     private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase
 ) : BaseViewModel(executorDispatchers.main) {
-
-    // Global Data
-    private val _currentPage = MutableLiveData<MiniCartAnalytics.Page>()
-    val currentPage: LiveData<MiniCartAnalytics.Page>
-        get() = _currentPage
 
     private val _miniCartABTestData = MutableLiveData<MiniCartABTestData>()
     val miniCartABTestData: LiveData<MiniCartABTestData>
@@ -47,9 +43,6 @@ internal class MiniCartV2ViewModel @Inject constructor(
     private val _miniCartSimplifiedData = MutableLiveData<MiniCartSimplifiedData>()
     val miniCartSimplifiedData: LiveData<MiniCartSimplifiedData>
         get() = _miniCartSimplifiedData
-
-    // Setter & Getter
-    // Some of setter & getter here added to reduce complexity (due to nullability) so we can increase unit test coverage
 
     fun initializeGlobalState() {
         _globalEvent.value = GlobalEvent()
@@ -81,12 +74,14 @@ internal class MiniCartV2ViewModel @Inject constructor(
                     buttonBuyWording = data.miniCartWidgetData.buttonBuyWording
                 )
                 _miniCartSimplifiedData.value = data
+                _globalEvent.value = GlobalEvent()
             } catch (t: Throwable) {
                 if (miniCartSimplifiedData.value != null) {
                     _miniCartSimplifiedData.value = miniCartSimplifiedData.value
                 } else {
                     _miniCartSimplifiedData.value = MiniCartSimplifiedData()
                 }
+                _globalEvent.value = GlobalEvent(OBSERVER_MINI_CART_WIDGET, STATE_FAILED_LOAD_MINI_CART_WIDGET)
             }
         }
     }

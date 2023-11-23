@@ -3,25 +3,29 @@ package com.tokopedia.minicart.v2
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 
-interface MiniCartV2WidgetListener : MiniCartWidgetListener {
+abstract class MiniCartV2WidgetListener : MiniCartWidgetListener {
 
-    fun onChevronClickListener() {
+    open fun onFailedToLoadMiniCartWidget() {
         /* no-op */
     }
 
-    fun getFragmentManager(): FragmentManager? {
+    open fun onChevronClickListener() {
+        /* no-op */
+    }
+
+    open fun getFragmentManager(): FragmentManager? {
         return null
     }
 
-    fun onPrimaryButtonClickListener() {
+    open fun onPrimaryButtonClickListener() {
         /* no-op */
     }
 
-    fun onAdditionalButtonClickListener() {
+    open fun onAdditionalButtonClickListener() {
         /* no-op */
     }
 
-    fun onFailedToGoToCheckoutPage() {
+    open fun onFailedToGoToCheckoutPage() {
         /* no-op */
     }
 }
