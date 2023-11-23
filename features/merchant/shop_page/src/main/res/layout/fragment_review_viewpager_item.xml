@@ -59,45 +59,17 @@
         app:typographyType="display_3"
         tools:text="Juara Ulasan Handphone" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgCompletedReview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        tools:visibility="gone"
-        android:visibility="visible"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toStartOf="@+id/tpgReviewerName"
-        app:layout_constraintTop_toBottomOf="@+id/tpgReviewerName"
-        app:typographyType="display_3"
-        tools:text="6 ulasan lengkap" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgBulletReview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="2dp"
-        android:paddingEnd="2dp"
-        android:text="@string/shop_page_dot_character"
-        tools:visibility="gone"
-        android:visibility="gone"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toEndOf="@+id/tpgCompletedReview"
-        app:layout_constraintTop_toTopOf="@+id/tpgCompletedReview"
-        app:layout_constraintBottom_toBottomOf="@id/tpgCompletedReview"
-        app:typographyType="display_3"
-        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgReviewLikeCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="123 terbantu"
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toEndOf="@+id/tpgBulletReview"
+        app:layout_constraintStart_toStartOf="@+id/tpgReviewerName"
         app:layout_constraintTop_toBottomOf="@+id/tpgReviewerName"
-        app:typographyType="display_3" />
+        app:typographyType="display_3"
+        tools:text="123 terbantu" />
 
     <View
         android:id="@+id/divider"

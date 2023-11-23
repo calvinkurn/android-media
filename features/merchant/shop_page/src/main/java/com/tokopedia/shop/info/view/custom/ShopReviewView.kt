@@ -99,7 +99,9 @@ class ShopReviewView @JvmOverloads constructor(
 
     private fun createViewpager(): ViewPager2 {
         return ViewPager2(context).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            val params = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            params.bottomMargin = DOT_INDICATOR_VERTICAL_MARGIN.toPx()
+            layoutParams = params
         }
     }
 
@@ -109,7 +111,6 @@ class ShopReviewView @JvmOverloads constructor(
                 LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT
             )
-            params.topMargin = DOT_INDICATOR_VERTICAL_MARGIN.toPx()
             params.bottomMargin = DOT_INDICATOR_VERTICAL_MARGIN.toPx()
             layoutParams = params
 
