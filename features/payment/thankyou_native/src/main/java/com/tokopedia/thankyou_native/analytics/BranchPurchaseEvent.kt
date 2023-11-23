@@ -69,7 +69,7 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         shopOrder.purchaseItemList.forEach { purchaseItem ->
             if (isItemPartOfRevenue(purchaseItem)) {
                 revenue += purchaseItem.totalPrice
-                paymentData.setProduct(getPurchasedItemBranch(purchaseItem), shopOrder.storeName)
+                paymentData.setProduct(getPurchasedItemBranch(purchaseItem, shopOrder.storeName))
             }
         }
         paymentData.setRevenue(revenue.toString())
