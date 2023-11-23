@@ -9,8 +9,7 @@
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="4dp"
     android:background="@drawable/discovery_bg_rounded_white"
-    android:paddingHorizontal="8dp"
-    android:paddingVertical="6dp">
+    android:padding="8dp">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/shopLogo"
@@ -120,10 +119,10 @@
         android:id="@+id/seeAllIcon"
         android:layout_width="14dp"
         android:layout_height="14dp"
+        android:background="@drawable/circular_see_product"
         android:padding="1dp"
         app:layout_constraintBottom_toBottomOf="@id/ctaText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/ctaText"
-        android:background="@drawable/circular_see_product" />
+        app:layout_constraintTop_toTopOf="@id/ctaText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
