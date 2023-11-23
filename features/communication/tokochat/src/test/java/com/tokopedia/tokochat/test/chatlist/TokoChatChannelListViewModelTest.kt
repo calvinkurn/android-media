@@ -1,6 +1,5 @@
 package com.tokopedia.tokochat.test.chatlist
 
-import android.content.Intent
 import app.cash.turbine.test
 import com.gojek.conversations.babble.network.data.ChannelMetaData
 import com.gojek.conversations.babble.network.data.OrderInfo
@@ -10,7 +9,6 @@ import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.util.TokoChatValueUtil
 import com.tokopedia.tokochat.view.chatlist.TokoChatListAction
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
@@ -456,24 +454,6 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
     }
 
     @Test
-    fun `navigate with intent, go to page with intent`() {
-        runTest {
-            // Given
-            val dummyIntent = mockk<Intent>(relaxed = true)
-            viewModel.navigationUiState.test {
-                // When
-                viewModel.setupViewModelObserver()
-                viewModel.processAction(TokoChatListAction.NavigateWithIntent(dummyIntent))
-
-                // Then
-                val updatedValue = awaitItem()
-                assertEquals(updatedValue.intent, dummyIntent)
-                assertEquals(updatedValue.applink, "")
-            }
-        }
-    }
-
-    @Test
     fun `navigate with applink, go to page with applink`() {
         runTest {
             // Given
@@ -485,7 +465,6 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
 
                 // Then
                 val updatedValue = awaitItem()
-                assertEquals(updatedValue.intent, null)
                 assertEquals(updatedValue.applink, dummyApplink)
             }
         }
