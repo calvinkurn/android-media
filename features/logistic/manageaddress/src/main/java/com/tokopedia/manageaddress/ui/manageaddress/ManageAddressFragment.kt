@@ -232,7 +232,6 @@ class ManageAddressFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         bottomSheetLainnya = null
-        binding?.tickerManageAddress?.onDestroy()
     }
 
     private fun openSoftKeyboard() {
