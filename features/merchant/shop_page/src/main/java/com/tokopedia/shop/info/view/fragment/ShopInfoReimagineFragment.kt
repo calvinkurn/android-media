@@ -279,7 +279,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
 
     private fun renderShopCoreInfo(uiState: ShopInfoUiState) {
-        val hasUsp = uiState.info.shopUsp.isNotEmpty()
         val hasPharmacyLicenseBadge = uiState.info.showPharmacyLicenseBadge
         val hasShopBadge = uiState.info.shopBadgeUrl.isNotEmpty()
 
@@ -298,11 +297,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgShopUsp.text = MethodChecker.fromHtml(shopDynamicUsp)
             tpgShopUsp.isVisible = uiState.info.shopUsp.isNotEmpty()
         }
-
-        val shopNameOnly = !hasUsp && !hasPharmacyLicenseBadge
-        if (shopNameOnly) {
-            makeShopNameCenteredVertically()
-        }
+        
     }
 
     private fun renderShopInfo(uiState: ShopInfoUiState) {
@@ -643,20 +638,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             binding?.loaderReportShop?.gone()
         }
     }
-
-    private fun makeShopNameCenteredVertically() {
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(binding?.constraintLayout)
-
-        constraintSet.connect(R.id.tpgShopName, ConstraintSet.TOP, R.id.imgShop, ConstraintSet.TOP)
-        constraintSet.connect(R.id.tpgShopName, ConstraintSet.BOTTOM, R.id.imgShop, ConstraintSet.BOTTOM)
-
-        constraintSet.connect(R.id.imgShopBadge, ConstraintSet.TOP, R.id.imgShop, ConstraintSet.TOP)
-        constraintSet.connect(R.id.imgShopBadge, ConstraintSet.BOTTOM, R.id.imgShop, ConstraintSet.BOTTOM)
-
-        constraintSet.applyTo(binding?.constraintLayout)
-    }
-
+    
     private fun redirectToGmaps(gmapsUrl: String) {
         if (!isAdded) return
         if (gmapsUrl.isEmpty()) return

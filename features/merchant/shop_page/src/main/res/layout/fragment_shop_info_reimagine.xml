@@ -65,29 +65,39 @@
                 app:layout_constraintTop_toTopOf="parent">
 
             </RelativeLayout>
-            
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/imgShopBadge"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="12dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tpgShopName"
-                app:layout_constraintStart_toEndOf="@+id/imgShop"
-                app:layout_constraintTop_toTopOf="@+id/tpgShopName" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgShopName"
+
+            <LinearLayout
+                android:id="@+id/layoutShopNameAndBadge"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                app:layout_goneMarginStart="12dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imgShopBadge"
-                app:layout_constraintTop_toTopOf="@+id/imgShop"
-                app:typographyType="display_1"
-                app:typographyWeight="bold"
-                tools:text="Kimia Farma Maju Jaya" />
+                app:layout_constraintStart_toEndOf="@+id/imgShop"
+                app:layout_constraintTop_toTopOf="@id/imgShop">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/imgShopBadge"
+                    android:layout_width="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_height="16dp" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tpgShopName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@+id/imgShopBadge"
+                    app:layout_constraintTop_toTopOf="@+id/imgShop"
+                    app:layout_goneMarginStart="12dp"
+                    app:typographyType="display_1"
+                    app:typographyWeight="bold"
+                    tools:text="Kimia Farma Maju Jaya" />
+
+            </LinearLayout>
+
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgLicensedPharmacy"
@@ -101,8 +111,8 @@
                 android:textColor="@color/Unify_BN500"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tpgShopName"
-                app:layout_constraintTop_toBottomOf="@+id/tpgShopName"
+                app:layout_constraintStart_toStartOf="@+id/layoutShopNameAndBadge"
+                app:layout_constraintTop_toBottomOf="@+id/layoutShopNameAndBadge"
                 app:typographyType="display_3"
                 app:typographyWeight="bold"
                 tools:visibility="visible" />
@@ -119,7 +129,7 @@
                 android:paddingTop="4dp"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tpgShopName"
+                app:layout_constraintStart_toStartOf="@+id/layoutShopNameAndBadge"
                 app:layout_constraintTop_toBottomOf="@+id/tpgLicensedPharmacy"
                 app:typographyType="paragraph_3"
                 tools:text="Produk Terjamin Original | 30 Hari | Pengembalian | Bisa Virtual Fitting" />
