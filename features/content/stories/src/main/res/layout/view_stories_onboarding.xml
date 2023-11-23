@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_NN1000_68"
-    android:translationZ="@dimen/content_common_space_12">
+    android:translationZ="@dimen/content_common_space_12"
+    android:layout_marginTop="24dp">
 
     <include
         android:id="@+id/layout_timer"
@@ -13,15 +14,16 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_onboard_close"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="CLOSE"
         app:layout_constraintBottom_toBottomOf="@+id/loader_circle_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/loader_circle_1" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_circle_1"
