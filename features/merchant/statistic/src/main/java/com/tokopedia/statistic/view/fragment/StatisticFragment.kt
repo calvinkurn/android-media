@@ -638,7 +638,17 @@ class StatisticFragment :
         rejectedOrderRateCoachMark.show()
     }
 
-    override fun sendMilestoneRewardActionClickedListener(reward: MilestoneItemRewardUiModel) {
+    override fun sendMilestoneRewardImpressionEvent(
+        reward: MilestoneItemRewardUiModel,
+        position: Int
+    ) {
+        // NO-OP
+    }
+
+    override fun sendMilestoneRewardActionClickedListener(
+        reward: MilestoneItemRewardUiModel,
+        position: Int
+    ) {
         // NO-OP
     }
 

@@ -4,6 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadAsGif
@@ -23,6 +25,7 @@ class MilestoneRewardViewHolder(
 
     companion object {
         private const val GIF_EXT = ".gif"
+
         @LayoutRes
         val LAYOUT = R.layout.shc_item_mission_reward_milestone_widget
     }
@@ -36,6 +39,7 @@ class MilestoneRewardViewHolder(
         }
         setupAnimation(element.animationUrl)
         setupCtaButton(element)
+        setupRewardImpressionListener(element)
     }
 
     private fun setupAnimation(animationUrl: String) {
@@ -79,7 +83,7 @@ class MilestoneRewardViewHolder(
                         )
                     )
                     setOnClickListener {
-                        listener.onRewardActionClick(element)
+                        listener.onRewardActionClick(element, absoluteAdapterPosition.plus(Int.ONE))
                     }
                 }
                 MilestoneItemRewardUiModel.ButtonStatus.DISABLED -> {
@@ -115,7 +119,7 @@ class MilestoneRewardViewHolder(
                     visible()
                     isEnabled = true
                     setOnClickListener {
-                        listener.onRewardActionClick(element)
+                        listener.onRewardActionClick(element, absoluteAdapterPosition.plus(Int.ONE))
                     }
                 }
                 MilestoneItemRewardUiModel.ButtonStatus.DISABLED -> {
@@ -127,4 +131,14 @@ class MilestoneRewardViewHolder(
         }
     }
 
+    private fun setupRewardImpressionListener(element: MilestoneItemRewardUiModel) {
+        binding?.root?.addOnImpressionListener(element.impressHolder) {
+            listener.onRewardImpressionListener(
+                element,
+                absoluteAdapterPosition.plus(
+                    Int.ONE
+                )
+            )
+        }
+    }
 }

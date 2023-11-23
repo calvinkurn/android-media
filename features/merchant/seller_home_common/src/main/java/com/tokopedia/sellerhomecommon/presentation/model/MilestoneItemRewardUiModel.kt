@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.presentation.adapter.factory.MilestoneAdapterTypeFactory
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -12,7 +13,8 @@ data class MilestoneItemRewardUiModel(
     val buttonStatus: Int,
     val buttonApplink: String,
     val animationUrl: String,
-    val rewardDetailUiModel: RewardDetailUiModel?
+    val rewardDetailUiModel: RewardDetailUiModel?,
+    val impressHolder: ImpressHolder = ImpressHolder()
 ) : Visitable<MilestoneAdapterTypeFactory> {
 
     object ButtonStatus {

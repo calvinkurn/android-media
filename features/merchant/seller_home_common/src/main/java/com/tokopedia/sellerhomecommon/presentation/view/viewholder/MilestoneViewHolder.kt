@@ -96,8 +96,12 @@ class MilestoneViewHolder(
         listener.sendMilestoneMissionImpressionEvent(mission, position)
     }
 
-    override fun onRewardActionClick(reward: MilestoneItemRewardUiModel) {
-        listener.sendMilestoneRewardActionClickedListener(reward)
+    override fun onRewardActionClick(reward: MilestoneItemRewardUiModel, position: Int) {
+        listener.sendMilestoneRewardActionClickedListener(reward, position)
+    }
+
+    override fun onRewardImpressionListener(reward: MilestoneItemRewardUiModel, position: Int) {
+        listener.sendMilestoneRewardImpressionEvent(reward, position)
     }
 
     private fun initViewBinding() {
@@ -105,7 +109,6 @@ class MilestoneViewHolder(
             binding = ShcMilestoneWidgetBinding.bind(itemView)
 
             binding?.let {
-
                 val loadingStateViewStub = it.stubShcMilestoneLoading.inflate()
                 loadingStateBinding = ShcMilestoneWidgetLoadingBinding.bind(loadingStateViewStub)
 
@@ -145,8 +148,8 @@ class MilestoneViewHolder(
             showCloseWidgetButton(element)
             setupLastUpdatedInfo(element)
 
-            horLineShcMilestoneBtm.isVisible = luvShcMilestone.isVisible
-                    || tvShcMilestoneCta.isVisible
+            horLineShcMilestoneBtm.isVisible = luvShcMilestone.isVisible ||
+                tvShcMilestoneCta.isVisible
 
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendMilestoneWidgetImpressionEvent(element)
@@ -217,10 +220,14 @@ class MilestoneViewHolder(
     private fun hideProgressWithAnimation() {
         successStateBinding?.run {
             val animation = ScaleAnimation(
-                ANIMATION_SCALE_1, ANIMATION_SCALE_0,
-                ANIMATION_SCALE_1, ANIMATION_SCALE_1,
-                Animation.RELATIVE_TO_SELF, ANIMATION_SCALE_0,
-                Animation.RELATIVE_TO_SELF, ANIMATION_SCALE_1
+                ANIMATION_SCALE_1,
+                ANIMATION_SCALE_0,
+                ANIMATION_SCALE_1,
+                ANIMATION_SCALE_1,
+                Animation.RELATIVE_TO_SELF,
+                ANIMATION_SCALE_0,
+                Animation.RELATIVE_TO_SELF,
+                ANIMATION_SCALE_1
             ).apply {
                 fillAfter = true
                 duration = ANIMATION_PROGRESS_DURATION
@@ -240,10 +247,14 @@ class MilestoneViewHolder(
     private fun showProgressWithAnimation() {
         successStateBinding?.run {
             val animation = ScaleAnimation(
-                ANIMATION_SCALE_0, ANIMATION_SCALE_1,
-                ANIMATION_SCALE_1, ANIMATION_SCALE_1,
-                Animation.RELATIVE_TO_SELF, ANIMATION_SCALE_0,
-                Animation.RELATIVE_TO_SELF, ANIMATION_SCALE_1
+                ANIMATION_SCALE_0,
+                ANIMATION_SCALE_1,
+                ANIMATION_SCALE_1,
+                ANIMATION_SCALE_1,
+                Animation.RELATIVE_TO_SELF,
+                ANIMATION_SCALE_0,
+                Animation.RELATIVE_TO_SELF,
+                ANIMATION_SCALE_1
             ).apply {
                 fillAfter = true
                 duration = ANIMATION_PROGRESS_DURATION
@@ -384,7 +395,9 @@ class MilestoneViewHolder(
         successStateBinding?.run {
             val mission = element.data ?: return
             rvShcMissionMilestone.layoutManager = object : LinearLayoutManager(
-                root.context, HORIZONTAL, false
+                root.context,
+                HORIZONTAL,
+                false
             ) {
                 override fun canScrollVertically(): Boolean = false
             }
@@ -395,7 +408,7 @@ class MilestoneViewHolder(
                     mission.milestoneMissions.size.minus(LAST_ONE)
                 )
             } catch (e: IndexOutOfBoundsException) {
-                //do nothing
+                // do nothing
             }
             rvShcMissionMilestone.addItemDecoration(
                 MilestoneMissionItemDecoration(root.context.dpToPx(MARGIN_IN_DP).toInt())
@@ -475,8 +488,13 @@ class MilestoneViewHolder(
         fun sendMilestoneWidgetMinimizeClickEvent() {}
 
         fun sendMilestoneRewardActionClickedListener(
-            reward: MilestoneItemRewardUiModel
+            reward: MilestoneItemRewardUiModel,
+            position: Int
         )
 
+        fun sendMilestoneRewardImpressionEvent(
+            reward: MilestoneItemRewardUiModel,
+            position: Int
+        )
     }
 }

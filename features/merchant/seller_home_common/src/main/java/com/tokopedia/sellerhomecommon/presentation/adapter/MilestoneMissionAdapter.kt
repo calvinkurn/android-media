@@ -22,7 +22,7 @@ class MilestoneMissionAdapter(
     interface Listener {
         fun onMissionActionClick(mission: BaseMilestoneMissionUiModel, position: Int)
         fun onMissionImpressionListener(mission: BaseMilestoneMissionUiModel, position: Int)
-        fun onRewardActionClick(reward: MilestoneItemRewardUiModel)
+        fun onRewardActionClick(reward: MilestoneItemRewardUiModel, position: Int)
+        fun onRewardImpressionListener(reward: MilestoneItemRewardUiModel, position: Int)
     }
-
 }

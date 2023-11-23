@@ -652,7 +652,17 @@ class SellerHomeFragment :
         SellerHomeTracking.sendMilestoneMissionCtaClickEvent(mission, missionPosition)
     }
 
-    override fun sendMilestoneRewardActionClickedListener(reward: MilestoneItemRewardUiModel) {
+    override fun sendMilestoneRewardImpressionEvent(
+        reward: MilestoneItemRewardUiModel,
+        position: Int
+    ) {
+        SellerHomeTracking.sendMilestoneRewardImpressionEvent(reward, position)
+    }
+
+    override fun sendMilestoneRewardActionClickedListener(
+        reward: MilestoneItemRewardUiModel,
+        position: Int
+    ) {
         activity?.let {
             if (reward.buttonApplink.isBlank()) {
                 reward.rewardDetailUiModel?.let { uiModel ->
@@ -663,6 +673,7 @@ class SellerHomeFragment :
                 it.startActivityForResult(intent, REQ_CODE_MILESTONE_WIDGET)
             }
         }
+        SellerHomeTracking.sendMilestoneRewardClickEvent(reward, position)
     }
 
     override fun sendPostListImpressionEvent(element: PostListWidgetUiModel) {
