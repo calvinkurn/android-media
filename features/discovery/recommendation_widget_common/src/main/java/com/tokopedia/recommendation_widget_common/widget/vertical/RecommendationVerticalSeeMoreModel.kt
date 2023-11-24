@@ -1,11 +1,13 @@
 package com.tokopedia.recommendation_widget_common.widget.vertical
 
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.vertical.tracking.RecommendationVerticalTracking
 
 data class RecommendationVerticalSeeMoreModel(
     val appLink: String = "",
     val recomWidget: RecommendationWidget,
-    val componentName: String = ""
+    val componentName: String = "",
+    val widgetTracking: RecommendationVerticalTracking?,
 ) : RecommendationVerticalVisitable {
     override fun type(typeFactory: RecommendationVerticalTypeFactory): Int {
         return typeFactory.type(this)

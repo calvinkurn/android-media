@@ -29,10 +29,13 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapp
 import com.tokopedia.buyerorderdetail.presentation.mapper.PGRecommendationWidgetUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.PaymentInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.SavingsWidgetUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ScpRewardsMedalTouchPointWidgetMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ShipmentInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
+import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEvent
+import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEventUiState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
@@ -46,6 +49,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.PGRecommendationWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.PaymentInfoUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -153,11 +157,13 @@ class BuyerOrderDetailViewModel @Inject constructor(
     ).toStateFlow(OrderInsuranceUiState.Loading)
     private val epharmacyInfoUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapEpharmacyInfoUiState
-    ).catch { t ->
-        // There is a case that additional_info returning null from backend, so make this default yet
-        // it will be hide in the section
-        emit(EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel()))
-    }.toStateFlow(EpharmacyInfoUiState.Loading)
+    ).toStateFlow(EpharmacyInfoUiState.Loading)
+    private val savingsWidgetUiState = buyerOrderDetailDataRequestState.mapLatest(
+        ::mapSavingsWidgetUiState
+    ).toStateFlow(SavingsWidgetUiState.Hide)
+
+    private val _oneTimeMethod = MutableStateFlow(OrderOneTimeEventUiState())
+    val oneTimeMethodState: StateFlow<OrderOneTimeEventUiState> = _oneTimeMethod
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState,
@@ -170,6 +176,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
         orderInsuranceUiState,
         epharmacyInfoUiState,
         scpRewardsMedalTouchPointWidgetUiState,
+        savingsWidgetUiState,
         ::mapBuyerOrderDetailUiState
     ).toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
 
@@ -405,6 +412,25 @@ class BuyerOrderDetailViewModel @Inject constructor(
         }
     }
 
+    // https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2158935800/How+to+create+one+time+event+in+PDP
+    fun changeOneTimeMethod(event: OrderOneTimeEvent) {
+        when (event) {
+            is OrderOneTimeEvent.ImpressSavingsWidget -> {
+                if (_oneTimeMethod.value.impressSavingsWidget) return
+                _oneTimeMethod.update {
+                    it.copy(
+                        event = event,
+                        impressSavingsWidget = true
+                    )
+                }
+            }
+
+            OrderOneTimeEvent.Empty -> {
+                //noop
+            }
+        }
+    }
+
     private fun <T> Flow<T>.toStateFlow(initialValue: T) = stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
@@ -442,10 +468,26 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private fun mapEpharmacyInfoUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): EpharmacyInfoUiState {
-        return EpharmacyInfoUiStateMapper.map(
-            getBuyerOrderDetailDataRequestState,
-            epharmacyInfoUiState.value
-        )
+        return try {
+            EpharmacyInfoUiStateMapper.map(
+                getBuyerOrderDetailDataRequestState,
+                epharmacyInfoUiState.value
+            )
+        } catch (e:Throwable) {
+            EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel())
+        }
+    }
+
+    private fun mapSavingsWidgetUiState(
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
+    ): SavingsWidgetUiState {
+        return try {
+            SavingsWidgetUiStateMapper.map(
+                getBuyerOrderDetailDataRequestState
+            )
+        } catch (e: Throwable) {
+            SavingsWidgetUiState.Hide
+        }
     }
 
     private fun mapProductListUiState(
@@ -510,7 +552,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
         orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
         orderInsuranceUiState: OrderInsuranceUiState,
         epharmacyInfoUiState: EpharmacyInfoUiState,
-        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState
+        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState,
+        savingsWidgetUiState: SavingsWidgetUiState
     ): BuyerOrderDetailUiState {
         return BuyerOrderDetailUiStateMapper.map(
             actionButtonsUiState,
@@ -522,7 +565,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             orderResolutionTicketStatusUiState,
             orderInsuranceUiState,
             epharmacyInfoUiState,
-            scpRewardsMedalTouchPointWidgetUiState
+            scpRewardsMedalTouchPointWidgetUiState,
+            savingsWidgetUiState
         )
     }
 

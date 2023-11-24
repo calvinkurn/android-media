@@ -398,4 +398,5 @@ object TokopediaImageUrl {
     const val CATALOG_IMAGE_ASSETS = "https://images.tokopedia.net/img/android/res/singleDpi/catalog_no_products_state_big.png"
     const val RECHARGE_SUBHOME_TODO_WIDGET = "https://images.tokopedia.net/img/recharge_subhome_todo_widget.png"
     const val IMG_DISCO_SHOP_OFFER_BRAND_SEE_MORE_BUY_MORE = "https://images.tokopedia.net/img/discovery/icons/shop_offer_hero_brand:buy_more_save_more.png"
+    const val DARK_MODE_INTRO_ANIMATION = "https://images.tokopedia.net/img/android/darkmode/android_animation_dark_mode_introduction.gif"
 }

@@ -632,20 +632,21 @@ open class TokoChatFragment @Inject constructor(
         observe(viewModel.chatRoomTicker) {
             when (it) {
                 is Success -> {
-                    val ticker = TokoChatReminderTickerUiModel(
-                        it.data.tokochatRoomTicker.message,
-                        it.data.tokochatRoomTicker.tickerType
-                    )
-                    mapper.setFirstTicker(ticker)
+                    if (it.data.tokochatRoomTicker.enable) {
+                        val ticker = TokoChatReminderTickerUiModel(
+                            it.data.tokochatRoomTicker.message,
+                            it.data.tokochatRoomTicker.tickerType
+                        )
+                        mapper.setFirstTicker(ticker)
 
-                    // If the ticker is not in list, manually add ticker
-                    if (adapter.getItems().getOrNull(adapter.itemCount - Int.ONE)
-                        !is TokoChatReminderTickerUiModel
-                    ) {
-                        adapter.addItem(adapter.itemCount, ticker)
-                        adapter.notifyItemInserted(adapter.itemCount)
+                        // If the ticker is not in list, manually add ticker
+                        if (adapter.getItems().getOrNull(adapter.itemCount - Int.ONE)
+                                !is TokoChatReminderTickerUiModel
+                        ) {
+                            adapter.addItem(adapter.itemCount, ticker)
+                            adapter.notifyItemInserted(adapter.itemCount)
+                        }
                     }
-
                     addBubbleTicker()
                 }
                 is Fail -> {

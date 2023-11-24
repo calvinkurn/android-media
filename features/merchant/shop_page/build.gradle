@@ -29,7 +29,7 @@ android {
         viewBinding true
         buildConfig true
     }
-
+    
     sourceSets {
         main {
             res {
@@ -100,6 +100,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.accordion
     implementation rootProject.ext.unifyDependencies.viewAllCard
+    implementation rootProject.ext.unifyDependencies.header
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -158,7 +159,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
     implementation projectOrAar(rootProject.ext.features.storiesWidget)
-
+    implementation projectOrAar(rootProject.ext.features.reviewCommon)
+    
     // UI Test
     androidTestImplementation projectOrAar(rootProject.ext.features.shopShowcase)
     androidTestImplementation projectOrAar(rootProject.ext.features.feedShop)

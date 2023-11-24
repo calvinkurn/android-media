@@ -40,13 +40,13 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttonSearch!!.setOnClickListener { _ ->
-            if (TextUtils.isEmpty(searchInputView.searchText)) {
+            if (TextUtils.isEmpty(searchText)) {
                 presenter!!.reloadData()
             } else {
-                presenter!!.search(searchInputView.searchText)
+                presenter!!.search(searchText)
             }
         }
-        searchInputView.setSearchHint("Cari")
+        searchInputView.searchBarPlaceholder = "Cari"
     }
 
     override fun onDestroyView() {
@@ -112,7 +112,7 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
     }
 
     override fun onSwipeRefresh() {
-        searchInputView.searchTextView.setText("")
+        searchInputView.searchBarTextField.setText("")
         super.onSwipeRefresh()
     }
 
