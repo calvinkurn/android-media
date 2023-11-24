@@ -125,7 +125,7 @@
         <activity
             android:name=".partial_order_fulfillment.presentation.activity.PofActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Translucent"
+            android:theme="@style/Theme.AppCompat.DayNight.Translucent"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
