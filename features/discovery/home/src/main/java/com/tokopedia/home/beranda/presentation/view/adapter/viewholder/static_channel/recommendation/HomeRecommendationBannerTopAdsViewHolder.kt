@@ -32,14 +32,17 @@ class HomeRecommendationBannerTopAdsViewHolder(
     }
 
     private val binding: ItemHomeBannerTopadsLayoutBinding? by viewBinding()
+    private var item: HomeRecommendationBannerTopAdsUiModel? = null
 
     override fun bind(element: HomeRecommendationBannerTopAdsUiModel) {
+        this.item = item
         setImageTopAdsNewQuery(element)
-        setBannerTopAdsClickListener(element)
+        setBannerTopAdsClickListener()
     }
 
     override fun bindPayload(newItem: HomeRecommendationBannerTopAdsUiModel?) {
         newItem?.let {
+            this.item = it
             setImageTopAdsNewQuery(it)
         }
     }
@@ -94,19 +97,19 @@ class HomeRecommendationBannerTopAdsViewHolder(
         )
     }
 
-    private fun setBannerTopAdsClickListener(
-        element: HomeRecommendationBannerTopAdsUiModel
-    ) {
-        binding?.homeRecomTopadsImageView?.setOnClickListener {
-            TopAdsUrlHitter(itemView.context).hitClickUrl(
-                this::class.java.simpleName,
-                element.topAdsImageViewModel?.adClickUrl,
-                "",
-                "",
-                element.topAdsImageViewModel?.imageUrl,
-                HOME_RECOM_TAB_BANNER
-            )
-            homeRecommendationListener.onBannerTopAdsClick(element, bindingAdapterPosition)
+    private fun setBannerTopAdsClickListener() {
+        item?.let { element ->
+            binding?.homeRecomTopadsImageView?.setOnClickListener {
+                TopAdsUrlHitter(itemView.context).hitClickUrl(
+                    this::class.java.simpleName,
+                    element.topAdsImageViewModel?.adClickUrl,
+                    "",
+                    "",
+                    element.topAdsImageViewModel?.imageUrl,
+                    HOME_RECOM_TAB_BANNER
+                )
+                homeRecommendationListener.onBannerTopAdsClick(element, bindingAdapterPosition)
+            }
         }
     }
 
