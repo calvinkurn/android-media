@@ -35,7 +35,8 @@ data class PromoCreationUiModel(
     val headerText: String,
     val bottomText: String,
     val hasPerformanceButton: Boolean,
-    val hideCheckBox: Boolean
+    val hideCheckBox: Boolean,
+    val currentTimeMillis: Long
 ) : Parcelable, BaseUiListItemModel<CentralizedPromoAdapterTypeFactory> {
     companion object {
         const val PAGE_ID_SHOP_COUPON = "65"

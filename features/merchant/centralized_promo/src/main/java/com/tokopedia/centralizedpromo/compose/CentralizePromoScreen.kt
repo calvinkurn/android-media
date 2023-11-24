@@ -409,7 +409,7 @@ private fun LazyGridScope.PromoCreationSection(
     coachMarkListener: (String) -> Modifier
 ) = items(
     items = list,
-    key = { it.pageId + it.title },
+    key = { it.pageId + it.title + it.currentTimeMillis },
     contentType = { PROMO_CREATION }
 ) { data ->
 
@@ -423,7 +423,10 @@ private fun LazyGridScope.PromoCreationSection(
         modifier = Modifier
             .padding(top = 12.dp)
             .addImpression(
-                uniqueIdentifier = data.pageId + data.title,
+                // We append currentTimeMillis in uniqueId as we need to track promo card impression each time a filter tab is clicked
+                // With this identifier, we could differentiate between promo cards that has been hit before and after filter tab changes
+                // Without currentTimeMillis, whenever we change filter tab, we couldn't track new promo cards with same id+title that was impressed before
+                uniqueIdentifier = data.pageId + data.title + data.currentTimeMillis,
                 impressionState = data.impressHolderCompose,
                 state = state.lazyGridState,
                 onItemViewed = {
