@@ -177,7 +177,8 @@ data class CheckoutOrderModel(
         get() = finalCheckoutProducts.find { !it.isError && it.ethicalDrugDataModel.needPrescription } != null
 
     val isEnableDropship: Boolean
-        get() = !isDropshipperDisabled && shipment.courierItemData?.isAllowDropshiper == true
+        get() = !isDropshipperDisabled && shipment.courierItemData?.isAllowDropshiper == true &&
+            shipment.courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()
 }
 
 @Parcelize
