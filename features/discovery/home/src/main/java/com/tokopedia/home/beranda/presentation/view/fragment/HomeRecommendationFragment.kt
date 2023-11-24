@@ -132,6 +132,7 @@ class HomeRecommendationFragment :
     private var homeRecomCurrentPage = 1
 
     private var startY = 0.0F
+    private var startX = 0.0F
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -322,30 +323,34 @@ class HomeRecommendationFragment :
                 when (e.action) {
                     MotionEvent.ACTION_DOWN -> {
                         startY = e.y
+                        startX = e.x
                     }
 
                     MotionEvent.ACTION_MOVE -> {
                         val currentY = e.y
+                        val currentX = e.x
                         val deltaY = currentY - startY
+                        val deltaX = currentX - startX
 
                         // case 1: position > 0, then scroll to down disable recyclerview parent
                         // case 2: position == 0, then scroll up / down, enable recyclerview parent
-                        if (isScrolledToTop()) {
-                            // Check if deltaY is negative, indicating upward movement (scroll up -> down)
-                            if (deltaY < 0) {
-                                // Disallowing the parent ViewGroup to intercept touch events
-                                rv.parent.requestDisallowInterceptTouchEvent(true)
+                        // Check if deltaY is more than deltaX will be scrolling to vertical
+                        if (Math.abs(deltaY) > Math.abs(deltaX)) {
+                            if (isScrolledToTop()) {
+                                // Check if deltaY is negative, indicating scroll to down
+                                if (deltaY < 0) {
+                                    rv.parent.requestDisallowInterceptTouchEvent(true)
+                                } else {
+                                    rv.parent.requestDisallowInterceptTouchEvent(false)
+                                }
                             } else {
-                                // Allowing the parent ViewGroup to intercept touch events
-                                rv.parent.requestDisallowInterceptTouchEvent(false)
+                                rv.parent.requestDisallowInterceptTouchEvent(true)
                             }
-                        } else {
-                            // Disallowing the parent ViewGroup to intercept touch events
-                            rv.parent.requestDisallowInterceptTouchEvent(true)
                         }
 
                         // Update startY for the next event
                         startY = currentY
+                        startX = currentX
                     }
                 }
                 return false
