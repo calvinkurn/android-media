@@ -187,6 +187,11 @@ object DeeplinkMainApp {
                 DeeplinkMapperCategory.getRegisteredNavigationCategory(deeplink)
             }
         ),
+        "catalog-product-list" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationCatalogProductList(deeplink)
+            }
+        ),
         "category" to mutableListOf(
             DLP.startsWith("tradein") { deeplink: String ->
                 DeeplinkMapperCategory.getRegisteredTradeinNavigation(deeplink)
@@ -671,6 +676,12 @@ object DeeplinkMainApp {
             }
         ),
         "people" to mutableListOf(
+            DLP.matchPattern("{user_id}/following") { deeplink: String ->
+                DeeplinkMapperContent.getProfileDeeplink(deeplink)
+            },
+            DLP.matchPattern("{user_id}/followers") { deeplink: String ->
+                DeeplinkMapperContent.getProfileDeeplink(deeplink)
+            },
             DLP.matchPattern("{user_id}") { deeplink: String ->
                 DeeplinkMapperContent.getProfileDeeplink(deeplink)
             },

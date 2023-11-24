@@ -169,6 +169,15 @@ data class DataItem(
     @SerializedName("creative_name")
     var creativeName: String? = "",
 
+    @SerializedName("inventory_id")
+    var inventoryId: String? = "",
+
+    @SerializedName("ads_count")
+    var adsCount: Int? = 0,
+
+    @SerializedName("dimension_id")
+    var dimensionId: String? = "",
+
     @SerializedName("title", alternate = ["title_copywriting"])
     var title: String? = "",
 
@@ -415,6 +424,21 @@ data class DataItem(
     @SerializedName("play_id")
     var playWidgetPlayID: String? = null,
 
+    @SerializedName("widget_type")
+    var playWidgetType: String? = null,
+
+    @SerializedName("product_ids")
+    var productIds: String? = null,
+
+    @SerializedName("category_ids")
+    var categoryIds: String? = null,
+
+    @SerializedName("mobile_banner")
+    var mobileBanner: String? = null,
+
+    @SerializedName("is_dynamic_video")
+    var playWidgetTypeIsDynamicVideo: Boolean = false,
+
     @SerializedName("campaign_code")
     var campaignCode: String? = null,
 
@@ -548,6 +572,9 @@ data class DataItem(
 
     @field:SerializedName("inactive_icon_image_url")
     val inactiveIconImageUrl: String? = null,
+
+    @SerializedName("cta_color")
+    val ctaColor: String? = "",
 
     var shopAdsClickURL: String? = "",
 

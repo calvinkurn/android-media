@@ -7,6 +7,7 @@ import com.tokopedia.inbox.R
 import com.tokopedia.inbox.databinding.UniversalInboxTopadsBannerItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.EIGHT_DP
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.utils.view.binding.viewBinding
@@ -46,8 +47,8 @@ class UniversalInboxTopAdsBannerViewHolder constructor(
         binding?.inboxTopadsBanner?.setTdnResponseListener(tdnBannerResponseListener)
     }
 
-    private fun onTdnBannerClicked(applink: String) {
-        topAdsClickListener.onTopAdsImageViewClicked(applink)
+    private fun onTdnBannerClicked(bannerData: TopAdsImageViewModel) {
+        topAdsClickListener.onTopAdsImageViewClicked(bannerData.applink)
     }
 
     companion object {

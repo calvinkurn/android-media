@@ -22,7 +22,7 @@ class ChatActionSelectionBubbleUiModel constructor(
     var quickReplies: List<QuickReplyUiModel> = ArrayList(),
     source: String = "",
     var status: Int = RENDER_TO_UI_BASED_ON_STATUS,
-    var isTypingBlocked: Boolean = false
+    var isTypingBlocked: Boolean? = false
 ) :
     BaseChatUiModel(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message, source),
     Visitable<ChatbotTypeFactory> {

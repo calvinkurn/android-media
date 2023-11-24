@@ -29,7 +29,7 @@ labels:
 
 The write review page (single & bulk) has multiple entry points. To unify the entry points to the write review page, a 5-star rating widget has been developed. This widget can be utilized across various entry points, providing a consistent user experience.
 
-![](res/Screen Shot 2023-06-06 at 14.37.23.png)
+![](https://docs-android.tokopedia.net/images/docs/review_common/Screen Shot 2023-06-06 at 14.37.23.png)
 
 
 

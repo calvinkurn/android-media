@@ -6,14 +6,16 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class DiscoveryTDNBannerViewModel(application: Application,val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class DiscoveryTDNBannerViewModel(
+    application: Application,
+    val components: ComponentsItem,
+    val position: Int
+) : DiscoveryBaseViewModel() {
 
-    private val _componentsItemLD: MutableLiveData<ComponentsItem> = MutableLiveData<ComponentsItem>()
-
-    val componentLiveData:LiveData<ComponentsItem> = _componentsItemLD
+    private val componentMutableLiveData : MutableLiveData<ComponentsItem> = MutableLiveData<ComponentsItem>()
+    val componentLiveData:LiveData<ComponentsItem> = componentMutableLiveData
 
     init {
-        _componentsItemLD.value = components
+        componentMutableLiveData.value = components
     }
-
 }

@@ -1,4 +1,4 @@
-![image](../../res/tokopedia_now_repurchase_widget.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_repurchase_widget.png)
 
 <!--left header table-->
 | **Type Factory** | `TokoNowRepurchaseTypeFactory` |

@@ -9,7 +9,8 @@ data class TextDescriptionUiModel(
     override var widgetBackgroundColor: Int? = null,
     override var widgetTextColor: Int? = null,
     val item: ItemTextDescriptionUiModel,
-    val isDarkMode: Boolean
+    val isDarkMode: Boolean,
+    val layoutVersion: Int = 4
 ): BaseCatalogUiModel(idWidget, widgetType, widgetName, widgetBackgroundColor, widgetTextColor) {
 
     data class ItemTextDescriptionUiModel(

@@ -14,10 +14,10 @@ import com.tokopedia.additional_check.di.DaggerAdditionalCheckComponents
 import com.tokopedia.additional_check.internal.TwoFactorTracker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.utils.image.ImageUtils
 import javax.inject.Inject
 
 class LinkAccountReminderActivity: BaseActivity() {
@@ -45,7 +45,7 @@ class LinkAccountReminderActivity: BaseActivity() {
         try {
             val contentView = View.inflate(this, com.tokopedia.additional_check.R.layout.bottom_sheet_link_account_reminder, null)
             val imgView = contentView.findViewById<ImageUnify>(R.id.link_account_bs_reminder_image)
-            ImageUtils.loadImageWithoutPlaceholderAndError(imgView, LINK_ACC_MAIN_IMG)
+            imgView.loadImageWithoutPlaceholderAndError(LINK_ACC_MAIN_IMG)
             val bottomSheetUnify = BottomSheetUnify().apply {
                 val btn = contentView.findViewById<UnifyButton>(R.id.link_account_bs_reminder_primary_btn)
                 btn.setOnClickListener {

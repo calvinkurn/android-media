@@ -1,6 +1,6 @@
-![image](../../res/tokopedia_now_product_recommendation.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_recommendation.png)
 
-![image](../../res/tokopedia_now_product_recommendation_without_atc.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_product_recommendation_without_atc.png)
 
 <!--left header table-->
 | **Type Factory** | `TokoNowRecommendationCarouselTypeFactory` |
