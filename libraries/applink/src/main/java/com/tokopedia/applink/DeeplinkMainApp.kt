@@ -186,6 +186,11 @@ object DeeplinkMainApp {
                 DeeplinkMapperCategory.getRegisteredNavigationCategory(deeplink)
             }
         ),
+        "catalog-product-list" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationCatalogProductList(deeplink)
+            }
+        ),
         "category" to mutableListOf(
             DLP.startsWith("tradein") { deeplink: String ->
                 DeeplinkMapperCategory.getRegisteredTradeinNavigation(deeplink)
@@ -1220,7 +1225,10 @@ object DeeplinkMainApp {
             DLP.matchPattern(
                 "shop/{shop_id}",
                 DeeplinkMapperContent::getRegisteredNavigation
-            )
+            ),
+            DLP.matchPattern("creation") { deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            }
         ),
         "talk" to mutableListOf(
             DLP.goTo { deeplink: String ->

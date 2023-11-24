@@ -10,6 +10,8 @@ object RollenceKey {
     const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "shareIconShopAff"
     const val AB_TEST_SHOP_RE_IMAGINED = "shop_page_reimagined"
 
+    const val AB_TEST_GRADUAL_ROLLOUT_KEY_SHOP_INFO_REIMAGINED = "an_shop_info_revamp"
+
     // home rollence section
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
@@ -23,11 +25,6 @@ object RollenceKey {
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL = "control_variant"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_EXP = "experiment_variant"
     // end of home rollence section
-
-    // home component rollence section
-    const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_EXP = "btf_revamp_header"
-    const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT = "header_variant"
-    // end of home component rollence section
 
     // navigation rollence section
     const val ME_PAGE_EXP = "GlobalMenuRV"

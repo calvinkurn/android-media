@@ -134,7 +134,7 @@ public interface ApplinkConst {
     String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
     String DISCOVERY_CATALOG = "tokopedia://catalog";
 
-    String DISCOVERY_CATALOG_PRODUCT_LIST = "tokopedia://catalog/product_list";
+    String DISCOVERY_CATALOG_PRODUCT_LIST = "tokopedia://catalog-product-list";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
     String WISHLIST = "tokopedia://wishlist";
     String NEW_WISHLIST = "tokopedia://new-wishlist";
@@ -878,5 +878,17 @@ public interface ApplinkConst {
 
     interface AppNotifSetting {
         String DEVICE_APP_NOTIF_SETTINGS_PAGE = "";
+    }
+
+    interface Stories {
+
+        String STORIES_VIEWER_ARG_SOURCE = "source";
+        String STORIES_VIEWER_ARG_SOURCE_ID = "source_id";
+        String STORIES_VIEWER_TYPE_SHOP = "shop";
+        String STORIES_VIEWER_TYPE_USER = "user";
+        String STORIES_VIEWER_SOURCE_SHARELINK = "sharelink";
+
+        String STORIES_VIEWER = "tokopedia://stories/{stories_type}/{author_id}";
+        String STORIES_CREATION = "tokopedia://stories/creation";
     }
 }

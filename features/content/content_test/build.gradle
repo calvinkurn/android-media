@@ -15,6 +15,10 @@ android {
 }
 
 dependencies {
+    // Unit Test Dependency
+    implementation rootProject.ext.testDependencies.assertJCore
+
+    // Instrumentation Test Dependency
     implementation rootProject.ext.testDependencies.androidxTest
     implementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 

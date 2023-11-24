@@ -21,11 +21,12 @@ class CategoryWidgetV2SpacingItemDecoration(private val spacing: Int) : Recycler
 
         if(position % 2 == 1) {
             outRect.top = spacing/2
+            outRect.bottom = 0
         } else {
             outRect.top = 0
+            outRect.bottom = spacing/2
         }
 
-        outRect.bottom = spacing/2
         outRect.right = spacing/2
     }
 }
