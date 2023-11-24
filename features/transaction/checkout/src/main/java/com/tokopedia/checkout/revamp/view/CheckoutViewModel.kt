@@ -2462,12 +2462,12 @@ class CheckoutViewModel @Inject constructor(
         if (indexOrder > 0) {
             val order = checkoutItems[indexOrder] as CheckoutOrderModel
             val newStateDropship: CheckoutDropshipWidget.State
-            if (checked && order.shipment.courierItemData?.isSelected == true) {
+            if (checked && order.shipment.courierItemData?.isSelected == true && order.useDropship) {
                 newStateDropship = CheckoutDropshipWidget.State.DISABLED
                 viewModelScope.launch(dispatchers.immediate) {
                     commonToaster.emit(
                         CheckoutPageToaster(
-                            Toaster.TYPE_ERROR,
+                            Toaster.TYPE_NORMAL,
                             "Fitur dropshipper tidak dapat digunakan ketika menggunakan layanan tambahan"
                         )
                     )
