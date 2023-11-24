@@ -3206,7 +3206,10 @@ open class DynamicProductDetailFragment :
                     if (enableComparisonWidget) {
                         when (it.data.layoutType) {
                             RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
-                                pdpUiUpdater?.updateComparisonBpcDataModel(it.data)
+                                pdpUiUpdater?.updateComparisonBpcDataModel(
+                                    it.data,
+                                    viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
+                                )
                                 updateUi()
                             }
                             RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {

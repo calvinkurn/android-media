@@ -1,7 +1,6 @@
 package com.tokopedia.notifcenter.test.buyer
 
 import com.tokopedia.notifcenter.stub.common.getNewExpiredTime
-import com.tokopedia.notifcenter.stub.data.response.GqlResponseStub
 import com.tokopedia.notifcenter.test.base.BaseNotificationTest
 import com.tokopedia.notifcenter.test.robot.detailResult
 import com.tokopedia.notifcenter.test.robot.generalRobot
@@ -11,9 +10,9 @@ class NotificationBannerTest : BaseNotificationTest() {
     @Test
     fun should_show_expired_date() {
         // Given
-        GqlResponseStub.notificationDetailResponse.filePath =
+        gqlResponseStub.notificationDetailResponse.filePath =
             "detail/notifcenter_detail_v3_banner_only.json"
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             for (i in 0 until it.notifcenterDetail.newList.size) {
                 it.notifcenterDetail.newList.forEach { item ->
                     item.expireTimeUnix = getNewExpiredTime(THREE_DAYS)
@@ -45,9 +44,9 @@ class NotificationBannerTest : BaseNotificationTest() {
     @Test
     fun should_not_show_countdown() {
         // Given
-        GqlResponseStub.notificationDetailResponse.filePath =
+        gqlResponseStub.notificationDetailResponse.filePath =
             "detail/notifcenter_detail_v3_banner_only.json"
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             for (i in 0 until it.notifcenterDetail.newList.size) {
                 it.notifcenterDetail.newList.forEach { item ->
                     item.expireTimeUnix = getNewExpiredTime(THREE_HOURS)

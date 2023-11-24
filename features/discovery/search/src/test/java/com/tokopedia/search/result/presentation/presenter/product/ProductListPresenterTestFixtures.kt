@@ -30,6 +30,8 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegat
 import com.tokopedia.search.result.product.broadmatch.BroadMatchView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
+import com.tokopedia.search.result.product.deduplication.Deduplication
+import com.tokopedia.search.result.product.deduplication.DeduplicationView
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenterDelegate
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterView
 import com.tokopedia.search.result.product.filter.dynamicfilter.MutableDynamicFilterModelProviderDelegate
@@ -152,7 +154,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val inspirationProductSeamlessView =
         mockk<InspirationProductView>(relaxed = true)
     protected val reimagineRollence = mockk<ReimagineRollence>(relaxed = true)
-
+    protected val deduplicationView = mockk<DeduplicationView>(relaxed = true)
     private val dynamicFilterModel = MutableDynamicFilterModelProviderDelegate()
     private val pagination = PaginationImpl()
     private val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
@@ -177,6 +179,7 @@ internal open class ProductListPresenterTestFixtures {
     @Before
     open fun setUp() {
         val responseCodeImpl = ResponseCodeImpl()
+        val deduplication = Deduplication(deduplicationView)
         val sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
             viewUpdater,
             requestParamsGenerator,
@@ -217,6 +220,7 @@ internal open class ProductListPresenterTestFixtures {
             { getInspirationCarouselChipsProductsUseCase },
             chooseAddressPresenterDelegate,
             viewUpdater,
+            deduplication,
         )
 
         val adsLowOrganic = AdsLowOrganic(
@@ -302,6 +306,7 @@ internal open class ProductListPresenterTestFixtures {
             inspirationProductPresenterDelegate,
             reimagineRollence,
             lastClickedProductIdProvider,
+            deduplication,
         )
         productListPresenter.attachView(productListView)
     }

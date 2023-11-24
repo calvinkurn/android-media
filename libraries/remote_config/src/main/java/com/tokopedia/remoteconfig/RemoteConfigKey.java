@@ -205,7 +205,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_SHOP_HOME_NPL_WIDGET = "android_enable_shop_home_npl_widget";
 
     public static final String ENABLE_SHOP_PAGE_REIMAGINED = "android_enable_shop_page_re_imagined";
-
+    
     public static final String ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC = "android_enable_old_seller_mvc_routing_to_new_seller_mvc";
 
     public static final String ENABLE_CURSOR_EMBRACE_LOGGING = "android_newrelic_cursor_out_of_bound";
@@ -300,6 +300,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_PDP_PREFETCH = "android_pdp_enable_prefetch";
 
     public static final String LOAD_PRODUCT_IMAGE_ARCHIVAL_KEY = "android_load_product_image_archival_enabled";
+
+    public static final String ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST = "android_set_catalog_product_list_improvement";
 
     public static final String ENABLE_WEBVIEW_BACK_PRESSED = "android_webview_enable_override_back_pressed";
 

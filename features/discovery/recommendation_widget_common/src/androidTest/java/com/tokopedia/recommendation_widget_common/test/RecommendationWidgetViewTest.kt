@@ -66,7 +66,7 @@ class RecommendationWidgetViewTest {
             .data
             .mappingToRecommendationModel()
 
-        return RecommendationWidgetState().from(model, widgetList)
+        return RecommendationWidgetState().from(model, widgetList, "")
     }
 
     private fun openTestActivity(
