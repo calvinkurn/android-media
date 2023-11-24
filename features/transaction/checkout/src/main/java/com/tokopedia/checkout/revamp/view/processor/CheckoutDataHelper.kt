@@ -22,7 +22,7 @@ class CheckoutDataHelper @Inject constructor() {
 
     fun getAllProductCategoryIds(listData: List<CheckoutItem>): List<Long> {
         return listData.mapNotNull { checkoutItem ->
-            if (checkoutItem is CheckoutProductModel) {
+            if (checkoutItem is CheckoutProductModel && !checkoutItem.isError) {
                 checkoutItem.productCatId
             } else {
                 null
