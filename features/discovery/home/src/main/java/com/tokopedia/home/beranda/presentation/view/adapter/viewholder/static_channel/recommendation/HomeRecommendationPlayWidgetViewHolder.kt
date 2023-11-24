@@ -52,7 +52,6 @@ class HomeRecommendationPlayWidgetViewHolder(
         newItem?.let {
             bindHomeRecomPlayWidgetVideo(it)
             setOnPlayVideoImpressionListener(it)
-            setHomePlayWidgetVideoClick(it)
         }
     }
 
@@ -62,6 +61,10 @@ class HomeRecommendationPlayWidgetViewHolder(
 
     private fun setHomePlayWidgetVideoClick(element: HomeRecommendationPlayWidgetUiModel) {
         binding.homeRecomPlayWidgetVideo.setOnClickListener {
+            listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
+        }
+
+        itemView.setOnClickListener {
             listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
         }
     }

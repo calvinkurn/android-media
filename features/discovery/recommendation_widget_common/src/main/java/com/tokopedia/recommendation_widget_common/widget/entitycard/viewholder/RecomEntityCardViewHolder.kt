@@ -86,10 +86,6 @@ class RecomEntityCardViewHolder(
             if (item?.labelState?.iconUrl != labelState.iconUrl) {
                 setLabelIcon(labelState.iconUrl)
             }
-            if (item != this) {
-                setOnCardImpressionListener(this)
-                setOnCardClickListener(this)
-            }
         }
     }
 
