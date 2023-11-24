@@ -11,5 +11,7 @@ data class OrderCart(
     var kero: OrderKero = OrderKero(),
     var addOnWordingData: AddOnWordingData = AddOnWordingData(),
     var cartData: String = "",
-    var summaryAddOnsProduct: List<SummaryAddOnProductDataModel> = mutableListOf()
+    var summaryAddOnsProduct: List<SummaryAddOnProductDataModel> = mutableListOf(),
+    // o2o
+    var groupMetadata: String = ""
 )
