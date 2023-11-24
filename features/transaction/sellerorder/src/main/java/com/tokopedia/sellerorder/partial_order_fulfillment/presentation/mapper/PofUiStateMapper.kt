@@ -6,7 +6,6 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.orderextension.presentation.model.StringRes
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestEstimateResponse
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse
@@ -33,6 +32,7 @@ import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.Po
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.UiEvent
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.UiState
 import javax.inject.Inject
+import com.tokopedia.sellerorder.R as sellerorderR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class PofUiStateMapper @Inject constructor() {
@@ -111,8 +111,8 @@ class PofUiStateMapper @Inject constructor() {
 
     private fun mapTitle(pofStatus: Int): StringRes {
         return when(pofStatus) {
-            STATUS_INITIAL -> StringRes(R.string.som_pof_title_request)
-            else -> StringRes(R.string.som_pof_title_result)
+            STATUS_INITIAL -> StringRes(sellerorderR.string.som_pof_title_request)
+            else -> StringRes(sellerorderR.string.som_pof_title_result)
         }
     }
 
@@ -133,11 +133,11 @@ class PofUiStateMapper @Inject constructor() {
     private fun mapFooterOnInitialLoadError(): PofFooterUiState {
         return PofFooterUiState.InitialLoadError(
             priceEstimationData = PofFooterUiState.PriceEstimationData(
-                title = StringRes(R.string.som_pof_footer_title_no_counter),
-                price = StringRes(R.string.som_pof_footer_price_no_value)
+                title = StringRes(sellerorderR.string.som_pof_footer_title_no_counter),
+                price = StringRes(sellerorderR.string.som_pof_footer_price_no_value)
             ),
             buttonData = PofFooterUiState.SendPofButtonData(
-                buttonText = StringRes(R.string.som_pof_footer_button_text_confirm_no_counter),
+                buttonText = StringRes(sellerorderR.string.som_pof_footer_button_text_confirm_no_counter),
                 show = true,
                 isButtonLoading = false,
                 isButtonEnabled = false
@@ -258,10 +258,10 @@ class PofUiStateMapper @Inject constructor() {
                 items = mutableListOf<PofVisitable>().apply {
                     includePriceBreakdowns(pofEstimateRequestState.data.partialOrderFulfillmentRequestEstimate?.pofSummary)
                     includeThinDivider(
-                        marginStart = R.dimen.som_pof_divider_margin_start_bottom_sheet_summary,
-                        marginEnd = R.dimen.som_pof_divider_margin_end_bottom_sheet_summary,
-                        marginTop = R.dimen.som_pof_divider_margin_top_bottom_sheet_summary,
-                        marginBottom = R.dimen.som_pof_divider_margin_bottom_bottom_sheet_summary
+                        marginStart = sellerorderR.dimen.som_pof_divider_margin_start_bottom_sheet_summary,
+                        marginEnd = sellerorderR.dimen.som_pof_divider_margin_end_bottom_sheet_summary,
+                        marginTop = sellerorderR.dimen.som_pof_divider_margin_top_bottom_sheet_summary,
+                        marginBottom = sellerorderR.dimen.som_pof_divider_margin_bottom_bottom_sheet_summary
                     )
                     includePriceBreakdownTotal(pofEstimateRequestState.data.partialOrderFulfillmentRequestEstimate?.pofFinalEstimation)
                     includeSummaryDescription(pofEstimateRequestState.data.partialOrderFulfillmentRequestEstimate?.pofFinalEstimation?.tooltip.orEmpty())
@@ -282,7 +282,7 @@ class PofUiStateMapper @Inject constructor() {
     private fun mapFooterOnLoading(): PofFooterUiState.Loading {
         return PofFooterUiState.Loading(
             buttonData = PofFooterUiState.SendPofButtonData(
-                buttonText = StringRes(R.string.som_pof_footer_button_text_confirm_no_counter),
+                buttonText = StringRes(sellerorderR.string.som_pof_footer_button_text_confirm_no_counter),
                 show = true,
                 isButtonLoading = false,
                 isButtonEnabled = false
@@ -298,19 +298,19 @@ class PofUiStateMapper @Inject constructor() {
         return PofFooterUiState.ErrorReFetch(
             priceEstimationData = PofFooterUiState.PriceEstimationData(
                 title = StringRes(
-                    R.string.som_pof_footer_title_with_counter,
+                    sellerorderR.string.som_pof_footer_title_with_counter,
                     listOf(requestedQuantity, originalQuantity)
                 ),
-                price = StringRes(R.string.som_pof_footer_price_reload),
+                price = StringRes(sellerorderR.string.som_pof_footer_price_reload),
                 showIcon = true,
                 icon = IconUnify.RELOAD,
                 iconEventData = UiEvent.OnClickRetryFetchPofEstimate,
-                iconSize = R.dimen.som_pof_footer_icon_size_reload,
+                iconSize = sellerorderR.dimen.som_pof_footer_icon_size_reload,
                 iconWrapped = true,
             ),
             buttonData = PofFooterUiState.SendPofButtonData(
                 buttonText = StringRes(
-                    R.string.som_pof_footer_button_text_confirm_with_counter,
+                    sellerorderR.string.som_pof_footer_button_text_confirm_with_counter,
                     listOf(requestedQuantity)
                 ),
                 show = true,
@@ -327,7 +327,7 @@ class PofUiStateMapper @Inject constructor() {
         return PofFooterUiState.ReFetch(
             buttonData = PofFooterUiState.SendPofButtonData(
                 buttonText = StringRes(
-                    R.string.som_pof_footer_button_text_confirm_with_counter,
+                    sellerorderR.string.som_pof_footer_button_text_confirm_with_counter,
                     listOf(requestedQuantity)
                 ),
                 show = true,
@@ -351,11 +351,11 @@ class PofUiStateMapper @Inject constructor() {
             PofFooterUiState.ShowingPofRequestData(
                 priceEstimationData = PofFooterUiState.PriceEstimationData(
                     title = StringRes(
-                        R.string.som_pof_footer_title_with_counter,
+                        sellerorderR.string.som_pof_footer_title_with_counter,
                         listOf(requestedQuantity, originalQuantity)
                     ),
                     price = StringRes(
-                        R.string.som_pof_footer_price_with_value,
+                        sellerorderR.string.som_pof_footer_price_with_value,
                         listOf(data?.pofFinalEstimation?.valueString.orEmpty())
                     ),
                     showIcon = true,
@@ -364,7 +364,7 @@ class PofUiStateMapper @Inject constructor() {
                 ),
                 buttonData = PofFooterUiState.SendPofButtonData(
                     buttonText = StringRes(
-                        R.string.som_pof_footer_button_text_confirm_with_counter,
+                        sellerorderR.string.som_pof_footer_button_text_confirm_with_counter,
                         listOf(requestedQuantity)
                     ),
                     show = true,
@@ -384,11 +384,11 @@ class PofUiStateMapper @Inject constructor() {
             PofFooterUiState.ShowingPofResultData(
                 priceEstimationData = PofFooterUiState.PriceEstimationData(
                     title = StringRes(
-                        R.string.som_pof_footer_title_with_counter,
+                        sellerorderR.string.som_pof_footer_title_with_counter,
                         listOf(requestedQuantity, originalQuantity)
                     ),
                     price = StringRes(
-                        R.string.som_pof_footer_price_with_value,
+                        sellerorderR.string.som_pof_footer_price_with_value,
                         listOf(data?.pofFinalEstimation?.valueString.orEmpty())
                     ),
                     showIcon = true,
@@ -413,8 +413,8 @@ class PofUiStateMapper @Inject constructor() {
         add(
             PofDescriptionUiModel(
                 text = when (pofStatus) {
-                    STATUS_INITIAL -> StringRes(R.string.som_pof_description_initial)
-                    else -> StringRes(R.string.som_pof_description_waiting_response)
+                    STATUS_INITIAL -> StringRes(sellerorderR.string.som_pof_description_initial)
+                    else -> StringRes(sellerorderR.string.som_pof_description_waiting_response)
                 },
                 onClickEventData = UiEvent.OnClickDescriptionLearnMore
             )
@@ -424,8 +424,8 @@ class PofUiStateMapper @Inject constructor() {
     private fun MutableList<PofVisitable>.includeProductListHeader() {
         add(
             PofProductListHeaderUiModel(
-                textLeft = StringRes(R.string.som_pof_product_list_header_left_label),
-                textRight = StringRes(R.string.som_pof_product_list_header_right_label)
+                textLeft = StringRes(sellerorderR.string.som_pof_product_list_header_left_label),
+                textRight = StringRes(sellerorderR.string.som_pof_product_list_header_right_label)
             )
         )
     }
@@ -436,7 +436,7 @@ class PofUiStateMapper @Inject constructor() {
         add(
             PofFullyFulfilledProductListHeaderUiModel(
                 text = StringRes(
-                    R.string.som_pof_product_list_header_fully_fulfilled_label,
+                    sellerorderR.string.som_pof_product_list_header_fully_fulfilled_label,
                     listOf(fullyFulfilledProductCount)
                 )
             )
@@ -444,10 +444,10 @@ class PofUiStateMapper @Inject constructor() {
     }
 
     private fun MutableList<PofVisitable>.includeThinDivider(
-        @DimenRes marginStart: Int = R.dimen.som_pof_divider_margin_edge_to_edge,
-        @DimenRes marginEnd: Int = R.dimen.som_pof_divider_margin_edge_to_edge,
-        @DimenRes marginTop: Int = R.dimen.som_pof_divider_margin_edge_to_edge,
-        @DimenRes marginBottom: Int = R.dimen.som_pof_divider_margin_edge_to_edge,
+        @DimenRes marginStart: Int = sellerorderR.dimen.som_pof_divider_margin_edge_to_edge,
+        @DimenRes marginEnd: Int = sellerorderR.dimen.som_pof_divider_margin_edge_to_edge,
+        @DimenRes marginTop: Int = sellerorderR.dimen.som_pof_divider_margin_edge_to_edge,
+        @DimenRes marginBottom: Int = sellerorderR.dimen.som_pof_divider_margin_edge_to_edge,
     ) {
         add(PofThinDividerUiModel(marginStart, marginEnd, marginTop, marginBottom))
     }
@@ -564,7 +564,7 @@ class PofUiStateMapper @Inject constructor() {
                         color = if (value.startsWith("-")) {
                             unifyprinciplesR.color.Unify_RN500
                         } else {
-                            unifyprinciplesR.color.Unify_N700_96
+                            sellerorderR.color._dms_som_pof_price_breakdown_normal
                         }
                     )
                 )
