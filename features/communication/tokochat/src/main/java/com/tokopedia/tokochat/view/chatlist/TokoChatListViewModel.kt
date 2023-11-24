@@ -188,7 +188,7 @@ class TokoChatListViewModel @Inject constructor(
         channelList: List<ConversationsChannel>
     ): List<ConversationsChannel> {
         return channelList.filter {
-            it.expiresAt > System.currentTimeMillis()
+            it.expiresAt > System.currentTimeMillis() || it.expiresAt == 0L // Expires At should not be 0, If 0 then SDK initialize the chat and the data is still being fetch
         }
     }
 

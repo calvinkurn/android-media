@@ -61,7 +61,6 @@ class TokoChatListFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initChatListData()
         initListeners()
     }
 
@@ -131,6 +130,7 @@ class TokoChatListFragment @Inject constructor(
                 launch {
                     observeErrorUiState()
                 }
+                initChatListData() // reset page data from remote
             }
         }
 
