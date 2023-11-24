@@ -174,7 +174,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private void registerInAppReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(INAPP_UPDATE);
-        filter.addAction(SUCCESS_REGISTER_TOSTER);
         LocalBroadcastManager.getInstance(this).registerReceiver(inappReceiver, filter);
     }
 
