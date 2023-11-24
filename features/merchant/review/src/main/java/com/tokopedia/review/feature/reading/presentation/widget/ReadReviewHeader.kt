@@ -1,23 +1,16 @@
 package com.tokopedia.review.feature.reading.presentation.widget
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
-import androidx.core.view.doOnPreDraw
-import androidx.core.view.updateLayoutParams
-import com.google.android.material.chip.ChipGroup
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -41,7 +34,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.toPx
 import timber.log.Timber
-import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReadReviewHeader @JvmOverloads constructor(
     context: Context,
@@ -227,7 +220,7 @@ class ReadReviewHeader @JvmOverloads constructor(
                 Pair(
                     selectedFilter.firstOrNull()?.listTitleText
                         ?: context.getString(R.string.review_reading_filter_all_ratings),
-                    getIconUnifyDrawable(context, IconUnify.STAR_FILLED, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300))
+                    getIconUnifyDrawable(context, IconUnify.STAR_FILLED, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_YN300))
                 )
             }
         }
@@ -364,7 +357,7 @@ class ReadReviewHeader @JvmOverloads constructor(
         return binding.containerReviewRating
     }
 
-    fun loadingTopicExtraction(){
-        if(isTopicExtraction) binding.readReviewExtractedTopic.loading()
+    fun loadingTopicExtraction() {
+        if (isTopicExtraction) binding.readReviewExtractedTopic.loading()
     }
 }
