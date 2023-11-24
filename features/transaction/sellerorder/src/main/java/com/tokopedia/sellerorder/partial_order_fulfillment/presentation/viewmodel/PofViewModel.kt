@@ -125,7 +125,14 @@ class PofViewModel @Inject constructor(
     }
 
     private fun onClickDismissPofBottomSheet() {
-        viewModelScope.launch { _uiEffect.emit(UiEffect.FinishActivity(Activity.RESULT_CANCELED)) }
+        viewModelScope.launch {
+            val payload = if (sendPofRequestState is RequestState.Error) {
+                UiEffect.FinishActivity(Activity.RESULT_OK)
+            } else {
+                UiEffect.FinishActivity(Activity.RESULT_CANCELED)
+            }
+            _uiEffect.emit(payload)
+        }
     }
 
     private fun onClickDismissSummaryBottomSheet() {
