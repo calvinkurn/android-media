@@ -381,22 +381,6 @@ class CheckoutCartProcessor @Inject constructor(
             }
         }
     }
-
-    fun validateDropship(checkoutItems: List<CheckoutItem>): Int {
-        for ((index, checkoutOrderModel) in checkoutItems.withIndex()) {
-            if (checkoutOrderModel is CheckoutOrderModel) {
-                if (checkoutOrderModel.useDropship && (
-                    checkoutOrderModel.dropshipName.isEmpty() ||
-                        checkoutOrderModel.dropshipPhone.isEmpty() || !checkoutOrderModel.isDropshipNameValid ||
-                        !checkoutOrderModel.isDropshipPhoneValid
-                    )
-                ) {
-                    return index
-                }
-            }
-        }
-        return -1
-    }
 }
 
 data class ChangeAddressResult(

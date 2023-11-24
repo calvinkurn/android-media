@@ -331,10 +331,13 @@ class CheckoutOrderViewHolder(
 
     private fun renderDropshipWidget(order: CheckoutOrderModel) {
         binding.dropshipWidget.setupListener(this)
-        println("++ order.isDropshipperDisabled = ${order.isDropshipperDisabled}, isAllowDropshipper = ${order.shipment.courierItemData?.isAllowDropshiper}}")
         if (order.isEnableDropship) {
             if (order.useDropship) {
-                binding.dropshipWidget.state = CheckoutDropshipWidget.State.SELECTED
+                if (order.stateDropship == CheckoutDropshipWidget.State.ERROR) {
+                    binding.dropshipWidget.state = order.stateDropship
+                } else {
+                    binding.dropshipWidget.state = CheckoutDropshipWidget.State.SELECTED
+                }
                 binding.dropshipWidget.dropshipName?.editText?.setText(order.dropshipName)
                 binding.dropshipWidget.dropshipPhone?.editText?.setText(order.dropshipPhone)
             } else {
@@ -443,9 +446,8 @@ class CheckoutOrderViewHolder(
     }
 
     override fun setDropshipPhone(phone: String) {
-        val isPhoneValid = phone.isNotEmpty() && phone.length > DROPSHIPPER_MIN_PHONE_LENGTH &&
+        order?.isDropshipPhoneValid = phone.isNotEmpty() && phone.length > DROPSHIPPER_MIN_PHONE_LENGTH &&
             phone.length < DROPSHIPPER_MAX_PHONE_LENGTH
         order?.dropshipPhone = phone
-        if (isPhoneValid) listener.setDropshipPhoneIsValid(phone, bindingAdapterPosition)
     }
 }

@@ -1845,17 +1845,31 @@ class CheckoutViewModel @Inject constructor(
                 return@launch
             }
 
-            val indexDropship = cartProcessor.validateDropship(listData.value)
-            if (indexDropship > -1) {
-                commonToaster.emit(
-                    CheckoutPageToaster(
-                        Toaster.TYPE_NORMAL,
-                        "Pastikan Anda telah melengkapi informasi tambahan."
-                    )
-                )
-                pageState.value = CheckoutPageState.Normal
-                pageState.value = CheckoutPageState.ScrollTo(indexDropship)
-                return@launch
+            // scroll to index dropship if any dropship still error
+            val itemList = listData.value.toMutableList()
+            for ((index, checkoutOrderModel) in itemList.withIndex()) {
+                if (checkoutOrderModel is CheckoutOrderModel) {
+                    if (checkoutOrderModel.useDropship && (
+                        checkoutOrderModel.dropshipName.isEmpty() ||
+                            checkoutOrderModel.dropshipPhone.isEmpty() || !checkoutOrderModel.isDropshipNameValid ||
+                            !checkoutOrderModel.isDropshipPhoneValid
+                        )
+                    ) {
+                        itemList[index] = checkoutOrderModel.copy(
+                            stateDropship = CheckoutDropshipWidget.State.ERROR
+                        )
+                        listData.value = itemList
+                        commonToaster.emit(
+                            CheckoutPageToaster(
+                                Toaster.TYPE_NORMAL,
+                                "Pastikan Anda telah melengkapi informasi tambahan."
+                            )
+                        )
+                        pageState.value = CheckoutPageState.Normal
+                        pageState.value = CheckoutPageState.ScrollTo(index)
+                        return@launch
+                    }
+                }
             }
 
             val validateUsePromoRevampUiModel = promoProcessor.finalValidateUse(

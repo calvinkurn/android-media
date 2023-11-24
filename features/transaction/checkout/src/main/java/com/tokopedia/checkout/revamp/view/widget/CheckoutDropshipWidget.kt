@@ -13,6 +13,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -44,6 +46,8 @@ class CheckoutDropshipWidget : ConstraintLayout {
     private val phoneNumberRegexPattern: Pattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN)
     private var delayDropshipNameTypingJob: Job? = null
     private var delayDropshipPhoneTypingJob: Job? = null
+    private var textWatcherName: TextWatcher? = null
+    private var textWatcherPhone: TextWatcher? = null
 
     val dropshipName: TextFieldUnify2?
         get() = binding?.tfDropshipName
@@ -73,6 +77,7 @@ class CheckoutDropshipWidget : ConstraintLayout {
             State.DISABLED -> setViewInit(true)
             State.INIT -> setViewInit(false)
             State.SELECTED -> setViewSelected()
+            State.ERROR -> setViewError()
         }
 
         invalidate()
@@ -114,14 +119,13 @@ class CheckoutDropshipWidget : ConstraintLayout {
     private fun setViewSelected() {
         binding?.containerDropship?.visible()
         initSwitch(false)
-        showDetailDropship()
+        showDetailDropship(false)
     }
 
-    private fun setViewDisabled() {
-        if (state == State.SELECTED) actionListener?.showToasterErrorProtectionUsage()
+    private fun setViewError() {
         binding?.containerDropship?.visible()
-        hideDetailDropship()
-        renderDefaultDropship()
+        initSwitch(false)
+        showDetailDropship(true)
     }
 
     private fun hideDetailDropship() {
@@ -129,14 +133,62 @@ class CheckoutDropshipWidget : ConstraintLayout {
         binding?.tfDropshipPhone?.gone()
     }
 
-    private fun showDetailDropship() {
-        binding?.tfDropshipName?.apply {
+    private fun showDetailDropship(isError: Boolean) {
+        val tfName = binding?.tfDropshipName
+        val tfPhone = binding?.tfDropshipPhone
+        if (isError) {
+            if (tfName?.editText?.text?.isEmpty() == true) {
+                tfName.isInputError = true
+                tfName.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_empty))
+            } else if (tfName?.editText?.text?.isNotEmpty() == true && (
+                tfName.editText.text?.length
+                    ?: 0
+                ) < DROPSHIPPER_MIN_NAME_LENGTH
+            ) {
+                tfName.isInputError = true
+                tfName.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_min_length))
+            } else if (tfName?.editText?.text?.isNotEmpty() == true && (
+                tfName.editText.text?.length
+                    ?: 0
+                ) > DROPSHIPPER_MAX_NAME_LENGTH
+            ) {
+                tfName.isInputError = true
+                tfName.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_max_length))
+            }
+
+            if (tfPhone?.editText?.text?.isEmpty() == true) {
+                tfPhone.isInputError = true
+                tfPhone.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_empty))
+            } else if (tfPhone?.editText?.text?.isNotEmpty() == true && (
+                tfPhone.editText.text?.length
+                    ?: 0
+                ) < DROPSHIPPER_MIN_PHONE_LENGTH
+            ) {
+                tfPhone.isInputError = true
+                tfPhone.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_min_length))
+            } else if (tfPhone?.editText?.text?.isNotEmpty() == true && (
+                tfPhone.editText.text?.length
+                    ?: 0
+                ) > DROPSHIPPER_MIN_PHONE_LENGTH
+            ) {
+                tfPhone.isInputError = true
+                tfPhone.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_max_length))
+            }
+        }
+        tfName?.apply {
             visible()
             isInputError = false
             editText.imeOptions = EditorInfo.IME_ACTION_DONE
-            editText.isFocusableInTouchMode = true
             editText.inputType = InputType.TYPE_CLASS_TEXT
-            editText.addTextChangedListener(object : TextWatcher {
+            editText.onFocusChangeListener = OnFocusChangeListener { _, focused ->
+                if (!focused) {
+                    hideKeyboard(editText)
+                }
+            }
+            if (textWatcherName != null) {
+                editText.removeTextChangedListener(textWatcherName)
+            }
+            textWatcherName = object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -147,33 +199,41 @@ class CheckoutDropshipWidget : ConstraintLayout {
                         delayDropshipNameTypingJob = GlobalScope.launch(Dispatchers.Main) {
                             delay(DROPSHIP_CHANGE_DELAY)
 
-                            if (text?.toString()?.isNotEmpty() == true &&
-                                text.length < DROPSHIPPER_MIN_NAME_LENGTH
-                            ) {
-                                binding?.tfDropshipName?.isInputError = true
-                                binding?.tfDropshipName?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_min_length))
-                            } else if (text?.toString()?.isNotEmpty() == true &&
-                                text.length > DROPSHIPPER_MAX_NAME_LENGTH
-                            ) {
-                                binding?.tfDropshipName?.isInputError = true
-                                binding?.tfDropshipName?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_max_length))
+                            if (text.toString().isNotEmpty() && text.length < DROPSHIPPER_MIN_NAME_LENGTH) {
+                                tfName.isInputError = true
+                                tfName.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_min_length))
+                            } else if (text.toString().isNotEmpty() && text.length > DROPSHIPPER_MAX_NAME_LENGTH) {
+                                tfName.isInputError = true
+                                tfName.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_max_length))
+                            } else if (text.isEmpty()) {
+                                tfName.isInputError = true
+                                tfName.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_empty))
                             } else {
-                                binding?.tfDropshipName?.isInputError = false
-                                binding?.tfDropshipName?.setMessage("")
-                                actionListener?.setDropshipName(text.toString())
+                                tfName.isInputError = false
+                                tfName.setMessage("")
                             }
                         }
+                        actionListener?.setDropshipName(text.toString())
                     }
                 }
-            })
+            }
+            editText.addTextChangedListener(textWatcherName)
         }
-        binding?.tfDropshipPhone?.apply {
+
+        tfPhone?.apply {
             visible()
             isInputError = false
             editText.imeOptions = EditorInfo.IME_ACTION_DONE
-            editText.isFocusableInTouchMode = true
             editText.inputType = InputType.TYPE_CLASS_PHONE
-            editText.addTextChangedListener(object : TextWatcher {
+            editText.onFocusChangeListener = OnFocusChangeListener { _, focused ->
+                if (!focused) {
+                    hideKeyboard(editText)
+                }
+            }
+            if (textWatcherPhone != null) {
+                editText.removeTextChangedListener(textWatcherPhone)
+            }
+            textWatcherPhone = object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -186,31 +246,28 @@ class CheckoutDropshipWidget : ConstraintLayout {
                         delayDropshipPhoneTypingJob = GlobalScope.launch(Dispatchers.Main) {
                             delay(DROPSHIP_CHANGE_DELAY)
 
-                            if (text?.toString()?.isNotEmpty() == true && !matcher.matches()) {
-                                binding?.tfDropshipPhone?.isInputError = true
-                                binding?.tfDropshipPhone?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_invalid))
-                                actionListener?.setDropshipPhone(text.toString())
-                            } else if (text?.toString()?.isNotEmpty() == true &&
-                                text.length < DROPSHIPPER_MIN_PHONE_LENGTH
+                            if (text.toString().isNotEmpty() && !matcher.matches()) {
+                                tfPhone.isInputError = true
+                                tfPhone.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_invalid))
+                            } else if (text.toString().isNotEmpty() && text.length < DROPSHIPPER_MIN_PHONE_LENGTH
                             ) {
-                                binding?.tfDropshipPhone?.isInputError = true
-                                binding?.tfDropshipPhone?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_min_length))
-                                actionListener?.setDropshipPhone(text.toString())
+                                tfPhone.isInputError = true
+                                tfPhone.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_min_length))
                             } else if (text?.toString()?.isNotEmpty() == true &&
                                 text.length > DROPSHIPPER_MAX_PHONE_LENGTH
                             ) {
                                 binding?.tfDropshipPhone?.isInputError = true
                                 binding?.tfDropshipPhone?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_max_length))
-                                actionListener?.setDropshipPhone(text.toString())
                             } else {
                                 binding?.tfDropshipPhone?.isInputError = false
                                 binding?.tfDropshipPhone?.setMessage("")
-                                actionListener?.setDropshipPhone(text.toString())
                             }
+                            actionListener?.setDropshipPhone(text.toString())
                         }
                     }
                 }
-            })
+            }
+            editText.addTextChangedListener(textWatcherPhone)
         }
     }
 
@@ -219,7 +276,7 @@ class CheckoutDropshipWidget : ConstraintLayout {
             binding?.switchDropship?.isChecked = false
             actionListener?.showToasterErrorProtectionUsage()
         } else {
-            showDetailDropship()
+            showDetailDropship(false)
         }
     }
 
@@ -284,9 +341,17 @@ class CheckoutDropshipWidget : ConstraintLayout {
         }
     }
 
+    private fun hideKeyboard(editText: AutoCompleteTextView) {
+        val input =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        input.hideSoftInputFromWindow(editText.windowToken, 0)
+    }
+
     override fun onDetachedFromWindow() {
         delayDropshipNameTypingJob?.cancel()
         delayDropshipPhoneTypingJob?.cancel()
+        textWatcherName = null
+        textWatcherPhone = null
         super.onDetachedFromWindow()
     }
 
@@ -294,7 +359,8 @@ class CheckoutDropshipWidget : ConstraintLayout {
         GONE(-1), // totally gone
         DISABLED(0), // show dropship widget, but show toaster onclick
         INIT(1), // show init dropship widget
-        SELECTED(2) // show dropship name & phone
+        SELECTED(2), // show dropship name & phone
+        ERROR(3) // show input error
     }
 
     companion object {
