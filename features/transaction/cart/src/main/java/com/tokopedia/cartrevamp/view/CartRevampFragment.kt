@@ -347,6 +347,8 @@ class CartRevampFragment :
     }
     private val swipeToDeleteOnBoardingFlow: MutableSharedFlow<Boolean> = MutableSharedFlow()
 
+    private var enablePromoEntryPointNewInterface: Boolean = false
+
     companion object {
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
@@ -2981,10 +2983,10 @@ class CartRevampFragment :
     }
 
     private fun observeEntryPointInfo() {
-        val enableNewInterface = PromoEntryPointImprovementRollenceManager(
-                RemoteConfigInstance.getInstance().abTestPlatform
-            ).enableNewInterface()
-        initPromoButton(enableNewInterface)
+        enablePromoEntryPointNewInterface = PromoEntryPointImprovementRollenceManager(
+            RemoteConfigInstance.getInstance().abTestPlatform
+        ).enableNewInterface()
+        initPromoButton(enablePromoEntryPointNewInterface)
         viewModel.entryPointInfoEvent.observe(viewLifecycleOwner) { data ->
             when (data) {
                 is EntryPointInfoEvent.Loading -> {
@@ -2992,7 +2994,7 @@ class CartRevampFragment :
                 }
 
                 is EntryPointInfoEvent.InactiveNew -> {
-                    if (data.isNoItemSelected && enableNewInterface) {
+                    if (data.isNoItemSelected && enablePromoEntryPointNewInterface) {
                         val message = getString(R.string.promo_desc_no_selected_item)
                         val iconUrl = PromoEntryPointInfo.ICON_URL_ENTRY_POINT_NO_ITEM_SELECTED_NEW
                         binding?.promoCheckoutBtnCart?.showActiveNew(
@@ -3069,7 +3071,7 @@ class CartRevampFragment :
                 }
 
                 is EntryPointInfoEvent.Inactive -> {
-                    if (data.isNoItemSelected && enableNewInterface) {
+                    if (data.isNoItemSelected && enablePromoEntryPointNewInterface) {
                         val message = getString(R.string.promo_desc_no_selected_item)
                         binding?.promoCheckoutBtnCart?.showActive(
                             wording = message,
@@ -4776,7 +4778,11 @@ class CartRevampFragment :
             layoutGlobalError.gone()
             rlContent.show()
             bottomLayout.show()
-            bottomLayoutShadow.show()
+            if (enablePromoEntryPointNewInterface) {
+                bottomLayoutShadow.gone()
+            } else {
+                bottomLayoutShadow.show()
+            }
             llPromoCheckout.show()
             llPromoCheckout.post {
                 if (initialPromoButtonPosition == 0f) {
