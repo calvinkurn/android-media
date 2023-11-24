@@ -5,7 +5,6 @@ import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 
 private const val E_GOLD_CATEGORY_NAME = "egold"
-private const val DG_CATEGORY_NAME = "tm"
 private const val DONATION_CATEGORY_NAME = "donation"
 
 data class CheckoutCrossSellGroupModel(

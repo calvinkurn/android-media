@@ -21,12 +21,12 @@ class CheckoutDataHelper @Inject constructor() {
     }
 
     fun getAllProductCategoryIds(listData: List<CheckoutItem>): List<Long> {
-        val productCatIds = arrayListOf<Long>()
-        for (checkoutItem in listData) {
+        return listData.mapNotNull { checkoutItem ->
             if (checkoutItem is CheckoutProductModel) {
-                productCatIds.add(checkoutItem.productCatId)
+                checkoutItem.productCatId
+            } else {
+                null
             }
         }
-        return productCatIds
     }
 }
