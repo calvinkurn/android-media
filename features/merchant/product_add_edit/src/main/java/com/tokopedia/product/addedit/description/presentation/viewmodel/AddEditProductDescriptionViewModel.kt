@@ -8,6 +8,7 @@ import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FULL_YOUTUBE_URL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_YOUTUBE_VIDEO_ID
@@ -15,6 +16,9 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.YOU
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.YOUTU_BE_URL
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.description.domain.model.GetYoutubeVideoSnippetResponse
+import com.tokopedia.product.addedit.description.domain.model.SourceTypeRequestParam
+import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoSnippetUseCase
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.ENABLED_HAMPERS_CATEGORY_ID
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.INPUT_DEBOUNCE
@@ -26,7 +30,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
-import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -47,7 +50,7 @@ import javax.inject.Inject
 class AddEditProductDescriptionViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatchers,
     private val resource: ResourceProvider,
-    private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
+    private val getYoutubeVideoUseCase: GetYoutubeVideoSnippetUseCase,
     private val validateProductDescriptionUseCase: ValidateProductDescriptionUseCase
 ) : BaseViewModel(coroutineDispatcher.main) {
 
@@ -57,10 +60,10 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     private var _descriptionValidationMessage = MutableLiveData<String>()
     val descriptionValidationMessage: LiveData<String> get() = _descriptionValidationMessage
 
-    private val _videoYoutubeNew = MutableLiveData<Result<YoutubeVideoDetailModel>>()
-    val videoYoutube: LiveData<Result<YoutubeVideoDetailModel>> = _videoYoutubeNew
+    private val _videoYoutubeNew = MutableLiveData<Result<GetYoutubeVideoSnippetResponse>>()
+    val videoYoutube: LiveData<Result<GetYoutubeVideoSnippetResponse>> = _videoYoutubeNew
 
-    val hasDTStock = Transformations.map(productInputModel){
+    val hasDTStock = Transformations.map(productInputModel) {
         it.hasDTStock
     }
 
@@ -139,12 +142,18 @@ class AddEditProductDescriptionViewModel @Inject constructor(
             }
     }
 
-    private fun getYoutubeVideo(url: String): Flow<Result<YoutubeVideoDetailModel>> {
+    private fun getYoutubeVideo(url: String): Flow<Result<GetYoutubeVideoSnippetResponse>> {
         return flow {
             getIdYoutubeUrl(url)?.let { youtubeId ->
-                getYoutubeVideoUseCase.setVideoId(youtubeId)
+                getYoutubeVideoUseCase.params = GetYoutubeVideoSnippetUseCase.createParams(
+                    videoIds = youtubeId,
+                    source = SourceTypeRequestParam(
+                        squad = if (GlobalConfig.isSellerApp()) GetYoutubeVideoSnippetUseCase.ANDROID_SELLERAPP_VALUE else GetYoutubeVideoSnippetUseCase.ANDROID_CONSUMER_VALUE,
+                        usecase = if (isAddMode) GetYoutubeVideoSnippetUseCase.PRODUCT_ADD_VALUE else GetYoutubeVideoSnippetUseCase.PRODUCT_EDIT_VALUE
+                    )
+                )
             }
-            emit(Success(convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())))
+            emit(Success(getYoutubeVideoUseCase.executeOnBackground()))
         }
     }
 

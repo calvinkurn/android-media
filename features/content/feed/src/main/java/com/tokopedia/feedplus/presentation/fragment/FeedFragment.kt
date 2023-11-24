@@ -29,10 +29,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_WIDGET_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_WIDGET_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.content.common.comment.ContentCommentFactory
 import com.tokopedia.content.common.comment.PageSource
@@ -194,7 +194,7 @@ class FeedFragment :
     @Inject
     lateinit var feedFactory: FeedAnalytics.Factory
 
-    private var feedAnalytics : FeedAnalytics? = null
+    private var feedAnalytics: FeedAnalytics? = null
 
     @Inject
     lateinit var commentAnalytics: ContentCommentAnalytics.Creator
@@ -227,7 +227,7 @@ class FeedFragment :
 
     private val feedMvcAnalytics = FeedMVCAnalytics()
 
-    private val feedEntrySource : MapperFeedModelToTrackerDataModel.FeedEntrySource by lazyThreadSafetyNone {
+    private val feedEntrySource: MapperFeedModelToTrackerDataModel.FeedEntrySource by lazyThreadSafetyNone {
         val widgetId = arguments?.getString(UF_EXTRA_FEED_WIDGET_ID).ifNullOrBlank { ENTRY_POINT_DEFAULT }
         val source = arguments?.getString(ARGUMENT_ENTRY_POINT).ifNullOrBlank { ENTRY_POINT_DEFAULT }
         val entryPoint = arguments?.getString(UF_EXTRA_FEED_ENTRY_POINT).ifNullOrBlank { source }
@@ -235,7 +235,7 @@ class FeedFragment :
         MapperFeedModelToTrackerDataModel.FeedEntrySource(widgetId = widgetId, entryPoint = entryPoint)
     }
 
-    private val tabType : String get() {
+    private val tabType: String get() {
         isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
         return if (isCdp) FeedBaseFragment.TAB_TYPE_CDP else data?.type.orEmpty()
     }
@@ -352,7 +352,7 @@ class FeedFragment :
                 feedAnalytics?.eventSwipeUpDownContent(
                     trackerModelMapper.tabType,
                     feedEntrySource.entryPoint,
-                    feedEntrySource.widgetId,
+                    feedEntrySource.widgetId
                 )
 
                 val position = getCurrentPosition()
@@ -524,7 +524,7 @@ class FeedFragment :
                 } else {
                     arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME)
                 },
-                entryPoint = feedEntrySource.entryPoint,
+                entryPoint = feedEntrySource.entryPoint
             )
         }
 
@@ -1424,7 +1424,7 @@ class FeedFragment :
                     currentTrackerData?.let { data ->
                         feedAnalytics?.eventClickBuyButton(
                             trackerData = data,
-                            productInfo = it.data,
+                            productInfo = it.data
                         )
                     }
 
@@ -1524,7 +1524,10 @@ class FeedFragment :
         val item = adapter.currentList[currentIndex]?.data ?: return
 
         when (item) {
-            is FeedCardVideoContentModel -> pauseVideo(item.id)
+            is FeedCardVideoContentModel -> {
+                pauseVideo(item.id)
+                adapter.pauseVideoProductIconAnimation(currentIndex)
+            }
             is FeedCardLivePreviewContentModel -> pauseVideo(item.id)
             is FeedFollowRecommendationModel -> adapter.pauseFollowRecommendationVideo(currentIndex)
             else -> {}
@@ -1537,7 +1540,10 @@ class FeedFragment :
         val item = adapter.currentList[currentIndex]?.data ?: return
 
         when (item) {
-            is FeedCardVideoContentModel -> resumeVideo(item.id)
+            is FeedCardVideoContentModel -> {
+                resumeVideo(item.id)
+                adapter.resumeVideoProductIconAnimation(currentIndex)
+            }
             is FeedCardLivePreviewContentModel -> resumeVideo(item.id)
             is FeedFollowRecommendationModel -> adapter.resumeFollowRecommendationVideo(currentIndex)
             else -> {}
