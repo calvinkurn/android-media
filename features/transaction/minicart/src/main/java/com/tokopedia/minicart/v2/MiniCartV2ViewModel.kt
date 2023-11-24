@@ -16,11 +16,12 @@ import com.tokopedia.minicart.common.domain.data.MiniCartABTestData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.widget.GlobalEvent
-import com.tokopedia.minicart.common.widget.GlobalEvent.Companion.OBSERVER_MINI_CART_WIDGET
-import com.tokopedia.minicart.common.widget.GlobalEvent.Companion.STATE_FAILED_LOAD_MINI_CART_WIDGET
 import com.tokopedia.minicart.v2.domain.GetMiniCartParam
 import com.tokopedia.minicart.v2.domain.GetMiniCartWidgetUseCase
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,18 +36,16 @@ internal class MiniCartV2ViewModel @Inject constructor(
     val miniCartABTestData: LiveData<MiniCartABTestData>
         get() = _miniCartABTestData
 
-    // Widget DATA
-    private val _globalEvent = MutableLiveData<GlobalEvent>()
-    val globalEvent: LiveData<GlobalEvent>
-        get() = _globalEvent
+    private val _globalEvent = MutableSharedFlow<MiniCartV2GlobalEvent>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val globalEvent: SharedFlow<MiniCartV2GlobalEvent>
+        get() = _globalEvent.asSharedFlow()
 
     private val _miniCartSimplifiedData = MutableLiveData<MiniCartSimplifiedData>()
     val miniCartSimplifiedData: LiveData<MiniCartSimplifiedData>
         get() = _miniCartSimplifiedData
-
-    fun initializeGlobalState() {
-        _globalEvent.value = GlobalEvent()
-    }
 
     fun updateMiniCartSimplifiedData(miniCartSimplifiedData: MiniCartSimplifiedData) {
         _miniCartSimplifiedData.value = miniCartSimplifiedData
@@ -74,27 +73,26 @@ internal class MiniCartV2ViewModel @Inject constructor(
                     buttonBuyWording = data.miniCartWidgetData.buttonBuyWording
                 )
                 _miniCartSimplifiedData.value = data
-                _globalEvent.value = GlobalEvent()
             } catch (t: Throwable) {
                 if (miniCartSimplifiedData.value != null) {
                     _miniCartSimplifiedData.value = miniCartSimplifiedData.value
                 } else {
                     _miniCartSimplifiedData.value = MiniCartSimplifiedData()
                 }
-                _globalEvent.value = GlobalEvent(OBSERVER_MINI_CART_WIDGET, STATE_FAILED_LOAD_MINI_CART_WIDGET)
+                _globalEvent.tryEmit(MiniCartV2GlobalEvent.FailToLoadMiniCart(t))
             }
         }
     }
 
-    fun goToCheckout(observer: Int) {
+    fun goToCheckout() {
         if (miniCartABTestData.value?.isOCCFlow == true) {
-            addToCartForCheckout(observer)
+            addToCartForCheckout()
         } else {
-            updateCartForCheckout(observer)
+            updateCartForCheckout()
         }
     }
 
-    private fun updateCartForCheckout(observer: Int) {
+    private fun updateCartForCheckout() {
         val updateCartRequests = mutableListOf<UpdateCartRequest>()
         val allMiniCartItem = getMiniCartItems()
         allMiniCartItem.forEach {
@@ -126,42 +124,35 @@ internal class MiniCartV2ViewModel @Inject constructor(
         updateCartUseCase.setParams(updateCartRequests)
         updateCartUseCase.execute(
             onSuccess = {
-                onSuccessUpdateCartForCheckout(it, observer)
+                onSuccessUpdateCartForCheckout(it)
             },
             onError = {
-                onErrorUpdateCartForCheckout(observer, it)
+                onErrorUpdateCartForCheckout(it)
             }
         )
     }
 
-    private fun onSuccessUpdateCartForCheckout(updateCartV2Data: UpdateCartV2Data, observer: Int) {
+    private fun onSuccessUpdateCartForCheckout(updateCartV2Data: UpdateCartV2Data) {
         if (updateCartV2Data.data.status) {
-            _globalEvent.value = GlobalEvent(
-                observer = observer,
-                state = GlobalEvent.STATE_SUCCESS_TO_CHECKOUT
-            )
+            _globalEvent.tryEmit(MiniCartV2GlobalEvent.SuccessGoToCheckout)
         } else {
-            _globalEvent.value = GlobalEvent(
-                observer = observer,
-                state = GlobalEvent.STATE_FAILED_TO_CHECKOUT,
-                data = MiniCartCheckoutData(
-                    errorMessage = updateCartV2Data.data.error,
-                    outOfService = updateCartV2Data.data.outOfService,
-                    toasterAction = updateCartV2Data.data.toasterAction
+            _globalEvent.tryEmit(
+                MiniCartV2GlobalEvent.FailGoToCheckout(
+                    data = MiniCartCheckoutData(
+                        errorMessage = updateCartV2Data.data.error,
+                        outOfService = updateCartV2Data.data.outOfService,
+                        toasterAction = updateCartV2Data.data.toasterAction
+                    )
                 )
             )
         }
     }
 
-    private fun onErrorUpdateCartForCheckout(observer: Int, throwable: Throwable) {
-        _globalEvent.value = GlobalEvent(
-            observer = observer,
-            state = GlobalEvent.STATE_FAILED_TO_CHECKOUT,
-            throwable = throwable
-        )
+    private fun onErrorUpdateCartForCheckout(throwable: Throwable) {
+        _globalEvent.tryEmit(MiniCartV2GlobalEvent.FailGoToCheckout(throwable = throwable))
     }
 
-    private fun addToCartForCheckout(observer: Int) {
+    private fun addToCartForCheckout() {
         val addToCartParams = mutableListOf<AddToCartOccMultiCartParam>()
         getMiniCartItems().forEach { miniCartItem ->
             if (miniCartItem is MiniCartItem.MiniCartItemProduct && !miniCartItem.isError) {
@@ -186,41 +177,33 @@ internal class MiniCartV2ViewModel @Inject constructor(
 
         addToCartOccMultiUseCase.execute(
             onSuccess = {
-                onSuccessAddToCartForCheckout(it, observer)
+                onSuccessAddToCartForCheckout(it)
             },
             onError = {
-                onErrorAddToCartForCheckout(it, observer)
+                onErrorAddToCartForCheckout(it)
             }
         )
     }
 
     private fun onSuccessAddToCartForCheckout(
-        addToCartOccMultiDataModel: AddToCartOccMultiDataModel,
-        observer: Int
+        addToCartOccMultiDataModel: AddToCartOccMultiDataModel
     ) {
         if (!addToCartOccMultiDataModel.isStatusError()) {
-            _globalEvent.value = GlobalEvent(
-                observer = observer,
-                state = GlobalEvent.STATE_SUCCESS_TO_CHECKOUT
-            )
+            _globalEvent.tryEmit(MiniCartV2GlobalEvent.SuccessGoToCheckout)
         } else {
-            _globalEvent.value = GlobalEvent(
-                observer = observer,
-                state = GlobalEvent.STATE_FAILED_TO_CHECKOUT,
-                data = MiniCartCheckoutData(
-                    errorMessage = addToCartOccMultiDataModel.getAtcErrorMessage() ?: "",
-                    outOfService = addToCartOccMultiDataModel.data.outOfService,
-                    toasterAction = addToCartOccMultiDataModel.data.toasterAction
+            _globalEvent.tryEmit(
+                MiniCartV2GlobalEvent.FailGoToCheckout(
+                    data = MiniCartCheckoutData(
+                        errorMessage = addToCartOccMultiDataModel.getAtcErrorMessage() ?: "",
+                        outOfService = addToCartOccMultiDataModel.data.outOfService,
+                        toasterAction = addToCartOccMultiDataModel.data.toasterAction
+                    )
                 )
             )
         }
     }
 
-    private fun onErrorAddToCartForCheckout(throwable: Throwable, observer: Int) {
-        _globalEvent.value = GlobalEvent(
-            observer = observer,
-            state = GlobalEvent.STATE_FAILED_TO_CHECKOUT,
-            throwable = throwable
-        )
+    private fun onErrorAddToCartForCheckout(throwable: Throwable) {
+        _globalEvent.tryEmit(MiniCartV2GlobalEvent.FailGoToCheckout(throwable = throwable))
     }
 }

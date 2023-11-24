@@ -60,6 +60,11 @@ class TestMiniCartActivity : AppCompatActivity() {
             override fun getFragmentManager(): FragmentManager? {
                 return this@TestMiniCartActivity.supportFragmentManager
             }
+
+            override fun onFailedToLoadMiniCartWidget() {
+                Toast.makeText(this@TestMiniCartActivity, "fail load", Toast.LENGTH_SHORT).show()
+                super.onFailedToLoadMiniCartWidget()
+            }
         }
     }
 }
