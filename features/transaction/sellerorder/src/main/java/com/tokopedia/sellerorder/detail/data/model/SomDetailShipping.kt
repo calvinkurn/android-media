@@ -1,11 +1,13 @@
 package com.tokopedia.sellerorder.detail.data.model
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 
 /**
  * Created by fwidjaja on 2019-10-04.
  */
 data class SomDetailShipping(
+    val shippingTitle: String = String.EMPTY,
     val shippingName: String = "",
     val receiverName: String = "",
     val receiverPhone: String = "",
