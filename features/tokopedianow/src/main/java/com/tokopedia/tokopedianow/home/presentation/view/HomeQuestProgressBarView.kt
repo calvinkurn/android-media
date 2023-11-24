@@ -16,7 +16,6 @@ import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowQuestProgressBar
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HomeQuestProgressBarView @JvmOverloads constructor(
     context: Context,
@@ -162,7 +161,7 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
         val isProgressLastQuest = currentProgressPosition == questCount
         progressAnimEnd = if(index == questCount && isProgressLastQuest) {
             val offset = context.resources.getDimensionPixelSize(
-                R.dimen.tokopedianow_quest_card_star_offset
+                R.dimen.tokopedianow_quest_star_offset
             )
             view.x - offset
         } else {
@@ -200,7 +199,7 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
                 STAR_SCALE_UP
             )
             val lottieXOffset = context.resources.getDimensionPixelSize(
-                unifyprinciplesR.dimen.unify_space_8
+                R.dimen.tokopedianow_quest_lottie_offset
             )
 
             lottieStar.setAnimationFromUrl(TokopediaImageUrl.TOKOPEDIANOW_LOTTIE_QUEST_STAR)
