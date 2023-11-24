@@ -36,7 +36,7 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
         true
     )
 
-    private val defaultStrokeResId =  R.color.tokopedianow_quest_circle_border_dms_color
+    private val defaultBorderResId =  R.drawable.tokopedianow_quest_circle_border_default
     private val defaultColorResId = R.color.tokopedianow_quest_progress_dms_color
 
     private var progressAnimEnd = DEFAULT_PROGRESS
@@ -69,13 +69,14 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
         if (animSet?.isRunning == true || progressItems.isEmpty() || index == selectedItemIndex) return
 
         val selectedColorResId = R.color.tokopedianow_quest_selected_circle_dms_color
+        val selectedBorderResId = R.drawable.tokopedianow_quest_circle_border_selected
         val currentItemView = progressItems[index]
         val isSelected = currentItemView.isSelected
 
-        val strokeColorId = if (isSelected) {
-            defaultStrokeResId
+        val borderDrawableId = if (isSelected) {
+            defaultBorderResId
         } else {
-            selectedColorResId
+            selectedBorderResId
         }
 
         val imageColorId = if (isSelected) {
@@ -84,7 +85,7 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
             selectedColorResId
         }
 
-        currentItemView.setColor(strokeColorId, imageColorId)
+        currentItemView.setColor(borderDrawableId, imageColorId)
         currentItemView.isSelected = !isSelected
 
         resetProgresItem(selectedItemView)
@@ -96,8 +97,9 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
             val questCount = questList.count()
             val currentProgressPosition = uiModel.currentProgressPosition
             val itemSpacing = binding.viewBackground.width / (questCount - 1)
+            val viewBackgroundResId = R.color.tokopedianow_quest_circle_border_dms_color
 
-            viewBackground.setBackgroundColor(ContextCompat.getColor(context, defaultStrokeResId))
+            viewBackground.setBackgroundColor(ContextCompat.getColor(context, viewBackgroundResId))
 
             for (i in 0 until questCount) {
                 val view = if (progressItems.getOrNull(i) == null) {
@@ -160,7 +162,7 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
         val isProgressLastQuest = currentProgressPosition == questCount
         progressAnimEnd = if(index == questCount && isProgressLastQuest) {
             val offset = context.resources.getDimensionPixelSize(
-                unifyprinciplesR.dimen.unify_space_12
+                R.dimen.tokopedianow_quest_card_star_offset
             )
             view.x - offset
         } else {
@@ -170,7 +172,7 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
 
     private fun resetProgresItem(view: HomeQuestProgressCircleView?) {
         view?.apply {
-            setColor(defaultStrokeResId, defaultColorResId)
+            setColor(defaultBorderResId, defaultColorResId)
             isSelected = false
         }
     }
