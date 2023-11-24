@@ -353,7 +353,7 @@ data class DataItem(
     @SerializedName("rating_average")
     var averageRating: String = "",
 
-    @SerializedName("shop_logo", alternate = ["shop_icon"])
+    @SerializedName("shop_logo")
     val shopLogo: String? = "",
 
     @SerializedName("official_store")
