@@ -30,7 +30,7 @@ object TokoChatCommonValueUtil {
             TOKOFOOD_SERVICE_TYPE -> SOURCE_TOKOFOOD
             GOSEND_INSTANT_SERVICE_TYPE -> SOURCE_GOSEND_INSTANT
             GOSEND_SAMEDAY_SERVICE_TYPE -> SOURCE_GOSEND_SAMEDAY
-            else -> ""
+            else -> SOURCE_GOSEND_INSTANT
         }
     }
 
@@ -39,7 +39,7 @@ object TokoChatCommonValueUtil {
             TOKOFOOD_SERVICE_TYPE -> IC_TOKOFOOD_SOURCE
             GOSEND_INSTANT_SERVICE_TYPE -> IC_SHOPPING_LOGISTIC_SOURCE
             GOSEND_SAMEDAY_SERVICE_TYPE -> IC_SHOPPING_LOGISTIC_SOURCE
-            else -> ""
+            else -> IC_SHOPPING_LOGISTIC_SOURCE
         }
     }
 
@@ -52,7 +52,7 @@ object TokoChatCommonValueUtil {
             SOURCE_TOKOFOOD -> IC_TOKOFOOD_SOURCE
             SOURCE_GOSEND_INSTANT -> IC_SHOPPING_LOGISTIC_SOURCE
             SOURCE_GOSEND_SAMEDAY -> IC_SHOPPING_LOGISTIC_SOURCE
-            else -> ""
+            else -> IC_SHOPPING_LOGISTIC_SOURCE
         }
     }
 
@@ -61,7 +61,7 @@ object TokoChatCommonValueUtil {
             SOURCE_TOKOFOOD -> SOURCE_TOKOFOOD
             SOURCE_GOSEND_INSTANT -> SOURCE_LOGISTIC
             SOURCE_GOSEND_SAMEDAY -> SOURCE_LOGISTIC
-            else -> ""
+            else -> SOURCE_LOGISTIC
         }
     }
 
