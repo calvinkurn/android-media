@@ -66,8 +66,5 @@ data class GroupShop(
     @SerializedName("rates_validation_flow")
     val ratesValidationFlow: Boolean = false,
     @SerializedName("subtotal_add_ons")
-    val listSubtotalAddOns: List<SubtotalAddOn> = emptyList(),
-    // new O2O
-    @SerializedName("group_metadata")
-    val groupMetadata: String = ""
+    val listSubtotalAddOns: List<SubtotalAddOn> = emptyList()
 )

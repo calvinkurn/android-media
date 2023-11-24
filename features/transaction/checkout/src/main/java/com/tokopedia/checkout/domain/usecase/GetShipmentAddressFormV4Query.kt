@@ -88,7 +88,6 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                   }
                   group_type
                   ui_group_type
-                  group_metadata
                   group_information {
                       name
                       badge_url

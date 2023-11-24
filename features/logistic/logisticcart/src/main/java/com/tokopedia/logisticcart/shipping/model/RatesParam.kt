@@ -50,10 +50,7 @@ data class RatesParam(
     // new owoc
     val group_type: Int = 0,
 
-    var shopShipments: List<ShopShipment> = listOf(),
-
-    // O2O
-    var groupMetadata: String = ""
+    var shopShipments: List<ShopShipment> = listOf()
 ) {
 
     private constructor(builder: Builder) : this(
@@ -88,8 +85,7 @@ data class RatesParam(
         occ = builder.occ,
         warehouse_id = builder.warehouseId,
         group_type = builder.groupType,
-        shopShipments = builder.shopShipments,
-        groupMetadata = builder.groupMetadata
+        shopShipments = builder.shopShipments
     )
 
     @Deprecated("please use RatesV3Param or RatesV3ApiParam")
@@ -214,8 +210,7 @@ data class RatesParam(
             is_fulfillment = is_fulfillment,
             bo_metadata = bo_metadata,
             warehouse_id = warehouse_id,
-            group_type = group_type,
-            group_metadata = groupMetadata
+            group_type = group_type
         )
     }
 
@@ -281,8 +276,6 @@ data class RatesParam(
             private set
         var groupType: Int = shipping.groupType
             private set
-        var groupMetadata: String = ""
-            private set
 
         fun isCorner(isCorner: Boolean) = apply { this.isCorner = if (isCorner) 1 else 0 }
 
@@ -299,8 +292,6 @@ data class RatesParam(
         fun cartData(cartData: String) = apply { this.cartData = cartData }
 
         fun warehouseId(warehouseId: String) = apply { this.warehouseId = warehouseId }
-
-        fun groupMetadata(groupMetadata: String) = apply { this.groupMetadata = groupMetadata }
 
         fun build() = RatesParam(this)
     }

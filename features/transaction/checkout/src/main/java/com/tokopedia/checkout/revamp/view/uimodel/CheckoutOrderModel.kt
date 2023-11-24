@@ -153,10 +153,7 @@ data class CheckoutOrderModel(
     val groupInfoDescriptionBadgeUrl: String = "",
 
     // add ons subtotal
-    var subtotalAddOnMap: HashMap<Int, String> = hashMapOf(),
-
-    // O2O
-    val groupMetadata: String = ""
+    var subtotalAddOnMap: HashMap<Int, String> = hashMapOf()
 ) : CheckoutItem {
 
     val isCustomPinpointError: Boolean

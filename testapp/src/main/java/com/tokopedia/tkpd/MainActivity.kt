@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.user.session.UserSession

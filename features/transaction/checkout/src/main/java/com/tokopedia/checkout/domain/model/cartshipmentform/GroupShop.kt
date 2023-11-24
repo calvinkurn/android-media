@@ -49,10 +49,7 @@ data class GroupShop(
     val groupInfoDescription: String = "",
     val groupInfoDescriptionBadgeUrl: String = "",
 
-    var listSubtotalAddOn: List<ShipmentSubtotalAddOnData> = emptyList(),
-
-    // new O2O
-    val groupMetadata: String = ""
+    var listSubtotalAddOn: List<ShipmentSubtotalAddOnData> = emptyList()
 ) : Parcelable {
 
     companion object {
