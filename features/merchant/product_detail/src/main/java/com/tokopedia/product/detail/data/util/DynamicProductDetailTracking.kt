@@ -1844,7 +1844,7 @@ object DynamicProductDetailTracking {
                     shopInfo?.shopCore?.ownerId,
                     campaignId,
                     variantId,
-                    "nearest_warehouse_id:$nearestWarehouseId"
+                    "nearest_warehouse_id:$nearestWarehouseId;"
                 )
         }
 
