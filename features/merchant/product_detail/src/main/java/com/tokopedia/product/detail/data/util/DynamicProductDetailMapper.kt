@@ -798,7 +798,7 @@ object DynamicProductDetailMapper {
             MethodChecker.fromHtml(productInfo.getProductName).toString(),
             productInfo.data.price.currency,
             productInfo.basic.url,
-            isProductHasMaskingPrice(productInfo.data.price.priceFmt),
+            productInfo.data.price.isPriceMasked,
             shopUrl,
             productInfo.basic.shopName,
             productInfo.basic.productID,
@@ -806,10 +806,6 @@ object DynamicProductDetailMapper {
             campaignId = zeroIfEmpty(productInfo.data.campaign.campaignID),
             bundleId = zeroIfEmpty(bundleId)
         )
-    }
-
-    private fun isProductHasMaskingPrice(finalPrice: String): Boolean {
-        return finalPrice.contains("?")
     }
 
     fun generatePersonalizedData(product: DynamicProductInfoP1, productP2: ProductInfoP2UiData?): PersonalizedCampaignModel {

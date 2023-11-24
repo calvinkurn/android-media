@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -206,20 +205,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         dataP1?.let {
             updateData(ProductDetailConstant.PRODUCT_CONTENT, loadInitialData) {
                 basicContentMap?.run {
-                    data = ProductContentMainData(
-                        campaign = it.data.campaign,
-                        thematicCampaign = it.data.thematicCampaign,
-                        cashbackPercentage = it.data.isCashback.percentage,
-                        price = it.data.price,
-                        stockWording = it.data.stock.stockWording,
-                        isVariant = it.data.variant.isVariant,
-                        productName = it.data.name,
-                        isProductActive = it.basic.isActive()
-                    ).apply {
-                        price = price.updatePriceFmt()
-                        campaign.processMaskingPrice(price = price)
-                    }
-
+                    data = it.createProductContentData()
                     shouldShowCampaign = ongoingCampaignData == null
                     isWishlisted = it.data.isWishlist
                 }
@@ -227,23 +213,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.ONGOING_CAMPAIGN, loadInitialData) {
                 ongoingCampaignData?.apply {
-                    data = ProductContentMainData(
-                        campaign = it.data.campaign,
-                        thematicCampaign = it.data.thematicCampaign,
-                        cashbackPercentage = it.data.isCashback.percentage,
-                        price = it.data.price,
-                        stockWording = it.data.stock.stockWording,
-                        isVariant = it.data.variant.isVariant,
-                        productName = it.data.name,
-                        isProductActive = it.basic.isActive()
-                    ).apply {
-                        campaign.slashPriceFmt = price.slashPriceFmt.ifNullOrBlank {
-                            campaign.discountedPrice.getCurrencyFormatted()
-                        }
-                        campaign.priceFmt = price.priceFmt.ifNullOrBlank {
-                            campaign.originalPrice.getCurrencyFormatted()
-                        }
-                    }
+                    data = it.createOngoingCampaignData()
                 }
             }
 
@@ -305,6 +275,24 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 verticalRecommendationItems.clear()
             }
         }
+    }
+
+
+    private fun DynamicProductInfoP1.createProductContentData() = createContentMainData()
+    private fun DynamicProductInfoP1.createOngoingCampaignData() = createContentMainData()
+
+    private fun DynamicProductInfoP1.createContentMainData() = ProductContentMainData(
+        campaign = data.campaign,
+        thematicCampaign = data.thematicCampaign,
+        cashbackPercentage = data.isCashback.percentage,
+        price = data.price,
+        stockWording = data.stock.stockWording,
+        isVariant = data.variant.isVariant,
+        productName = data.name,
+        isProductActive = basic.isActive()
+    ).apply {
+        price = price.updatePriceFmt()
+        campaign.processMaskingPrice(price)
     }
 
     fun updateInitialMedia(
