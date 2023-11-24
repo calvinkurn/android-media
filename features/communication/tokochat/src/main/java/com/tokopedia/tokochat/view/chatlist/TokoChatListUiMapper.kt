@@ -3,7 +3,7 @@ package com.tokopedia.tokochat.view.chatlist
 import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.getSource
-import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.isChatLogistic
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.isChatTokofood
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat.util.TokoChatValueUtil.isTokoChatLogisticEnabled
 import com.tokopedia.tokochat.util.toggle.TokoChatAbPlatform
@@ -16,10 +16,11 @@ class TokoChatListUiMapper@Inject constructor(
     fun mapToListChat(listChannel: List<ConversationsChannel>): List<TokoChatListItemUiModel> {
         val rawResult = listChannel.mapNotNull {
             val serviceType = it.metadata?.orderInfo?.serviceType ?: 0
-            if (isChatLogistic(serviceType) || isTokoChatLogisticEnabled(abTestPlatform)) {
+            // Check if service type is Tokofood or rollence logistic is on
+            if (isChatTokofood(serviceType) || isTokoChatLogisticEnabled(abTestPlatform)) {
                 mapToChatListItem(it)
             } else {
-                // Skip chat list item when service type is logistic & rollence is off
+                // Skip chat list item when service type is not tokofood && rollence off
                 null
             }
         }
@@ -48,7 +49,7 @@ class TokoChatListUiMapper@Inject constructor(
         val result = HashMap<String, Int>()
         channelList.forEach {
             val serviceType = it.metadata?.orderInfo?.serviceType ?: 0
-            if (isChatLogistic(serviceType) || isTokoChatLogisticEnabled(abTestPlatform)) {
+            if (isChatTokofood(serviceType) || isTokoChatLogisticEnabled(abTestPlatform)) {
                 val serviceTypeName = getSource(
                     it.metadata?.orderInfo?.serviceType ?: Int.ZERO
                 )

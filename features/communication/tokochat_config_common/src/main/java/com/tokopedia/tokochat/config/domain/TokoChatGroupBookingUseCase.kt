@@ -50,9 +50,10 @@ open class TokoChatGroupBookingUseCase @Inject constructor(
 
     fun getServiceType(source: String): TokoChatServiceType {
         return when (source) {
+            SOURCE_TOKOFOOD -> TokoChatServiceType.TOKOFOOD
             SOURCE_GOSEND_INSTANT -> TokoChatServiceType.GOSEND_INSTANT
             SOURCE_GOSEND_SAMEDAY -> TokoChatServiceType.GOSEND_SAMEDAY
-            else -> TokoChatServiceType.TOKOFOOD // default tokofood
+            else -> TokoChatServiceType.GOSEND_INSTANT // default logistic
         }
     }
 
@@ -110,5 +111,6 @@ open class TokoChatGroupBookingUseCase @Inject constructor(
 
         const val SOURCE_GOSEND_INSTANT = "gosend_instant"
         const val SOURCE_GOSEND_SAMEDAY = "gosend_sameday"
+        const val SOURCE_TOKOFOOD = "tokofood"
     }
 }

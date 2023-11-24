@@ -43,9 +43,8 @@ object TokoChatCommonValueUtil {
         }
     }
 
-    fun isChatLogistic(serviceType: Int): Boolean {
-        return serviceType != GOSEND_INSTANT_SERVICE_TYPE &&
-            serviceType != GOSEND_SAMEDAY_SERVICE_TYPE
+    fun isChatTokofood(serviceType: Int): Boolean {
+        return serviceType == TOKOFOOD_SERVICE_TYPE
     }
 
     fun getSourceIcon(source: String): String {
