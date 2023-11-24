@@ -1,0 +1,137 @@
+package com.tokopedia.product.detail.view.widget
+
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import com.tokopedia.nest.components.ButtonSize
+import com.tokopedia.nest.components.ButtonVariant
+import com.tokopedia.nest.components.NestButton
+import com.tokopedia.nest.principles.NestTypography
+import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
+import com.tokopedia.product.detail.common.data.model.pdplayout.Price
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+
+/**
+ * @author by astidhiyaa on 23/11/23
+ */
+@Composable
+fun MediaBottomNav(
+    //parse data here. should we use our own data class
+    product: ComponentData,
+    onAtcClicked: () -> Unit = {}
+) {
+    NestTheme(darkTheme = true) {
+        ConstraintLayout(
+            modifier = Modifier.padding(
+                start = 16.dp,
+                top = 8.dp,
+                bottom = 8.dp,
+                end = 16.dp
+            )
+        ) {
+            /*
+                use it after design is final.
+                val (title, ogPrice, discountedPrice, discountFmt, atcBtn) = createRefs()
+             */
+            val (title, ogPrice, slashedPrice, discountTag, atcBtn) = createRefs()
+            NestTypography(
+                text = product.title,
+                maxLines = 1,
+                textStyle = NestTheme.typography.small.copy(
+                    color = colorResource(id = unifyprinciplesR.color.Unify_NN600)
+                ),
+                modifier = Modifier.constrainAs(title) {
+                    width = Dimension.wrapContent
+                    height = Dimension.wrapContent
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(atcBtn.start, 8.dp)
+                })
+
+            //Final Price
+            NestTypography(
+                text = product.price.priceFmt,
+                maxLines = 1,
+                textStyle = NestTheme.typography.heading5.copy(
+                    color = colorResource(id = unifyprinciplesR.color.Unify_NN0)
+                ),
+                modifier = Modifier
+                    .heightIn(0.dp, 208.dp)
+                    .constrainAs(ogPrice) {
+                        width = Dimension.wrapContent
+                        height = Dimension.wrapContent
+                        start.linkTo(title.start)
+                        top.linkTo(title.bottom, 4.dp)
+                    })
+
+            //Slashed price [if there's a discount]
+            NestTypography(
+                text = product.price.slashPriceFmt,
+                maxLines = 1,
+                textStyle = NestTheme.typography.small.copy(
+                    color = colorResource(id = unifyprinciplesR.color.Unify_NN400),
+                    textDecoration = TextDecoration.LineThrough
+                ),
+                modifier = Modifier
+                    .constrainAs(slashedPrice) {
+                        width = Dimension.wrapContent
+                        height = Dimension.wrapContent
+                        start.linkTo(ogPrice.end, 4.dp)
+                        bottom.linkTo(ogPrice.bottom)
+                        top.linkTo(ogPrice.top)
+                    })
+
+            //Discount percentage if any
+            NestTypography(
+                text = product.price.discPercentage,
+                maxLines = 1,
+                textStyle = NestTheme.typography.small.copy(
+                    color = colorResource(id = unifyprinciplesR.color.Unify_RN500),
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier
+                    .constrainAs(discountTag) {
+                        width = Dimension.wrapContent
+                        height = Dimension.wrapContent
+                        start.linkTo(slashedPrice.end, 2.dp)
+                        bottom.linkTo(slashedPrice.bottom)
+                        top.linkTo(slashedPrice.top)
+                        end.linkTo(atcBtn.start, 8.dp)
+                    })
+
+            NestButton(
+                text = "+ Keranjang",
+                onClick = onAtcClicked,
+                variant = ButtonVariant.GHOST_INVERTED,
+                size = ButtonSize.SMALL,
+                modifier = Modifier
+                    .constrainAs(atcBtn) {
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    })
+
+        }
+    }
+}
+
+
+@Preview
+@Composable
+fun MediaBottomNavPreview() {
+    MediaBottomNav(
+        product = ComponentData(
+            title = "Mie goreng",
+            price = Price(priceFmt = "Rp.10.000", slashPriceFmt = "Rp.99", discPercentage = "99%")
+        )
+    ) { }
+}
