@@ -152,11 +152,7 @@ interface CheckoutAdapterListener {
 
     fun onCheckChangedDropship(isChecked: Boolean, position: Int)
 
-    fun setDropshipName(name: String, bindingAdapterPosition: Int)
+    fun setValidationDropshipName(name: String, isValid: Boolean, position: Int)
 
-    fun setDropshipPhone(phone: String, bindingAdapterPosition: Int)
-
-    fun setDropshipNameIsValid(name: String, bindingAdapterPosition: Int)
-
-    fun setDropshipPhoneIsValid(phone: String, bindingAdapterPosition: Int)
+    fun setValidationDropshipPhone(phone: String, isValid: Boolean, position: Int)
 }

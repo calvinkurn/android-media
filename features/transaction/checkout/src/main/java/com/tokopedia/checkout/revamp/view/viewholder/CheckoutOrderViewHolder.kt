@@ -440,14 +440,18 @@ class CheckoutOrderViewHolder(
     }
 
     override fun setDropshipName(name: String) {
-        order?.isDropshipNameValid = name.isNotEmpty() && name.length > DROPSHIPPER_MIN_NAME_LENGTH &&
+        val isNameValid = name.isNotEmpty() && name.length > DROPSHIPPER_MIN_NAME_LENGTH &&
             name.length < DROPSHIPPER_MAX_NAME_LENGTH
+        order?.isDropshipNameValid = isNameValid
         order?.dropshipName = name
+        listener.setValidationDropshipName(name, isNameValid, bindingAdapterPosition)
     }
 
     override fun setDropshipPhone(phone: String) {
-        order?.isDropshipPhoneValid = phone.isNotEmpty() && phone.length > DROPSHIPPER_MIN_PHONE_LENGTH &&
+        val isPhoneValid = phone.isNotEmpty() && phone.length > DROPSHIPPER_MIN_PHONE_LENGTH &&
             phone.length < DROPSHIPPER_MAX_PHONE_LENGTH
+        order?.isDropshipPhoneValid = isPhoneValid
         order?.dropshipPhone = phone
+        listener.setValidationDropshipPhone(phone, isPhoneValid, bindingAdapterPosition)
     }
 }

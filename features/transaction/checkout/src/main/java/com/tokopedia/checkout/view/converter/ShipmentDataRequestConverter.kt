@@ -112,8 +112,8 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                     shippingInfo = shippingInfoCheckoutRequest,
                     dropship = Dropship(
                         isDropship = 0,
-                        name = "",
-                        telpNo = ""
+                        name = shipmentCartItemModel.dropshipName,
+                        telpNo = shipmentCartItemModel.dropshipPhone
                     ),
                     checkoutGiftingOrderLevel = mapAddOnsProduct(shipmentCartItemModel.addOnsOrderLevelModel, AddOnProductDataModel()),
                     orderMetadata = mapOrderMetadata(shipmentCartItemModel, selectedShipper, promoRequests),

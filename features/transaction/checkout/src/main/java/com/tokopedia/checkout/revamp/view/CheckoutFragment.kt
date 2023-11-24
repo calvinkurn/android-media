@@ -2627,19 +2627,11 @@ class CheckoutFragment :
         viewModel.setDropshipSwitch(isChecked, position)
     }
 
-    override fun setDropshipName(name: String, position: Int) {
-        viewModel.setDropshipName(name, position)
+    override fun setValidationDropshipName(name: String, isValid: Boolean, position: Int) {
+        viewModel.setValidationDropshipName(name, isValid, position)
     }
 
-    override fun setDropshipPhone(phone: String, position: Int) {
-        viewModel.setDropshipPhone(phone, position)
-    }
-
-    override fun setDropshipNameIsValid(name: String, bindingAdapterPosition: Int) {
-        viewModel.setDropshipNameIsValid(name, bindingAdapterPosition)
-    }
-
-    override fun setDropshipPhoneIsValid(phone: String, bindingAdapterPosition: Int) {
-        viewModel.setDropshipPhoneIsValid(phone, bindingAdapterPosition)
+    override fun setValidationDropshipPhone(phone: String, isValid: Boolean, position: Int) {
+        viewModel.setValidationDropshipPhone(phone, isValid, position)
     }
 }

@@ -203,16 +203,16 @@ class CheckoutDropshipWidget : ConstraintLayout {
                         delayDropshipNameTypingJob = GlobalScope.launch(Dispatchers.Main) {
                             delay(DROPSHIP_CHANGE_DELAY)
 
-                            if (text.toString().isNotEmpty() && text.length < DROPSHIPPER_MIN_NAME_LENGTH) {
+                            if (text.isNotEmpty() && text.length < DROPSHIPPER_MIN_NAME_LENGTH) {
                                 tfName.isInputError = true
                                 tfName.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_min_length))
-                            } else if (text.toString().isNotEmpty() && text.length > DROPSHIPPER_MAX_NAME_LENGTH) {
+                            } else if (text.isNotEmpty() && text.length > DROPSHIPPER_MAX_NAME_LENGTH) {
                                 tfName.isInputError = true
                                 tfName.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_max_length))
                             } else if (text.isEmpty()) {
                                 tfName.isInputError = true
                                 tfName.setMessage(context.getString(checkoutR.string.message_error_dropshipper_name_empty))
-                            } else {
+                            } else if (text.isNotEmpty() && text.length in (DROPSHIPPER_MIN_NAME_LENGTH + 1) until DROPSHIPPER_MAX_NAME_LENGTH) {
                                 tfName.isInputError = false
                                 tfName.setMessage("")
                             }
@@ -248,21 +248,23 @@ class CheckoutDropshipWidget : ConstraintLayout {
                         delayDropshipPhoneTypingJob = GlobalScope.launch(Dispatchers.Main) {
                             delay(DROPSHIP_CHANGE_DELAY)
 
-                            if (text.toString().isNotEmpty() && !matcher.matches()) {
+                            if (text.isNotEmpty() && !matcher.matches()) {
                                 tfPhone.isInputError = true
                                 tfPhone.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_invalid))
-                            } else if (text.toString().isNotEmpty() && text.length < DROPSHIPPER_MIN_PHONE_LENGTH
+                            } else if (text.isNotEmpty() && text.length < DROPSHIPPER_MIN_PHONE_LENGTH
                             ) {
                                 tfPhone.isInputError = true
                                 tfPhone.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_min_length))
-                            } else if (text?.toString()?.isNotEmpty() == true &&
-                                text.length > DROPSHIPPER_MAX_PHONE_LENGTH
+                            } else if (text.isNotEmpty() && text.length > DROPSHIPPER_MAX_PHONE_LENGTH
                             ) {
-                                binding?.tfDropshipPhone?.isInputError = true
-                                binding?.tfDropshipPhone?.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_max_length))
-                            } else {
-                                binding?.tfDropshipPhone?.isInputError = false
-                                binding?.tfDropshipPhone?.setMessage("")
+                                tfPhone.isInputError = true
+                                tfPhone.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_max_length))
+                            } else if (text.isEmpty()) {
+                                tfPhone.isInputError = true
+                                tfPhone.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_empty))
+                            } else if (text.isNotEmpty() && text.length in (DROPSHIPPER_MIN_PHONE_LENGTH + 1) until DROPSHIPPER_MAX_PHONE_LENGTH) {
+                                tfPhone.isInputError = false
+                                tfPhone.setMessage("")
                             }
                             actionListener?.setDropshipPhone(text.toString())
                         }

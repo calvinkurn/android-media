@@ -1845,7 +1845,7 @@ class CheckoutViewModel @Inject constructor(
                 return@launch
             }
 
-            // scroll to index dropship if any dropship still error
+            // validate dropship
             val itemList = listData.value.toMutableList()
             for ((index, checkoutOrderModel) in itemList.withIndex()) {
                 if (checkoutOrderModel is CheckoutOrderModel) {
@@ -2597,36 +2597,18 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    fun setDropshipName(name: String, position: Int) {
+    fun setValidationDropshipName(name: String, isValid: Boolean, position: Int) {
         val checkoutItems = listData.value.toMutableList()
         val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
-        val newOrder = checkoutOrderModel.copy(dropshipName = name, isDropshipNameValid = true)
-        checkoutItems[position] = newOrder
-        listData.value = checkoutItems
+        checkoutOrderModel.isDropshipNameValid = isValid
+        checkoutOrderModel.dropshipName = name
     }
 
-    fun setDropshipPhone(phone: String, position: Int) {
+    fun setValidationDropshipPhone(phone: String, isValid: Boolean, position: Int) {
         val checkoutItems = listData.value.toMutableList()
         val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
-        val newOrder = checkoutOrderModel.copy(dropshipPhone = phone, isDropshipPhoneValid = true)
-        checkoutItems[position] = newOrder
-        listData.value = checkoutItems
-    }
-
-    fun setDropshipNameIsValid(name: String, position: Int) {
-        val checkoutItems = listData.value.toMutableList()
-        val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
-        val newOrder = checkoutOrderModel.copy(isDropshipNameValid = true, dropshipName = name)
-        checkoutItems[position] = newOrder
-        listData.value = checkoutItems
-    }
-
-    fun setDropshipPhoneIsValid(phone: String, position: Int) {
-        val checkoutItems = listData.value.toMutableList()
-        val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
-        val newOrder = checkoutOrderModel.copy(isDropshipPhoneValid = true, dropshipPhone = phone)
-        checkoutItems[position] = newOrder
-        listData.value = checkoutItems
+        checkoutOrderModel.isDropshipPhoneValid = isValid
+        checkoutOrderModel.dropshipPhone = phone
     }
 
     fun getOrderProducts(cartStringGroup: String): List<CheckoutProductModel> {
