@@ -247,7 +247,8 @@ class ShipmentMapper @Inject constructor() {
                     groupInfoName = it.groupInformation.name,
                     groupInfoBadgeUrl = it.groupInformation.badgeUrl,
                     groupInfoDescription = it.groupInformation.description,
-                    groupInfoDescriptionBadgeUrl = it.groupInformation.descriptionBadgeUrl
+                    groupInfoDescriptionBadgeUrl = it.groupInformation.descriptionBadgeUrl,
+                    groupMetadata = it.groupMetadata
                 ).apply {
                     isError =
                         it.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()

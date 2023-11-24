@@ -65,6 +65,10 @@ class ReadReviewViewModel @Inject constructor(
     val ratingAndTopic: LiveData<Result<ProductrevGetProductRatingAndTopic>>
         get() = _ratingAndTopics
 
+    private val _topicExtraction = MutableLiveData<Result<ProductrevGetProductRatingAndTopic>>()
+    val topicExtraction: LiveData<Result<ProductrevGetProductRatingAndTopic>>
+        get() = _topicExtraction
+
     private val _shopRatingAndTopics = MediatorLiveData<Result<ProductrevGetShopRatingAndTopic>>()
     val shopRatingAndTopic: LiveData<Result<ProductrevGetShopRatingAndTopic>>
         get() = _shopRatingAndTopics
@@ -88,6 +92,7 @@ class ReadReviewViewModel @Inject constructor(
     private var shopId: MutableLiveData<String> = MutableLiveData()
     private var sort: String = SortTypeConstants.MOST_HELPFUL_PARAM
     private var filter: SelectedFilters = SelectedFilters()
+    private var isTopicExtraction: Boolean = false
 
     init {
         _ratingAndTopics.addSource(productId) {
@@ -297,6 +302,15 @@ class ReadReviewViewModel @Inject constructor(
         resetPage(isProductReview)
     }
 
+    fun setTopicFilter(
+        keyword: String,
+        isProductReview: Boolean
+    ) {
+        this.filter.topic = if (keyword.isEmpty()) null
+        else FilterType.FilterTopic(keyword)
+        resetPage(isProductReview)
+    }
+
     fun setFilterFromHighlightedTopic(topic: String, isProductReview: Boolean) {
         val topicsMap = getTopicsMap(isProductReview)
         this.filter.topic = FilterType.FilterTopic(topicsMap[topic] ?: "")
@@ -384,9 +398,27 @@ class ReadReviewViewModel @Inject constructor(
         launchCatchError(block = {
             getProductRatingAndTopicsUseCase.setParams(productId)
             val data = getProductRatingAndTopicsUseCase.executeOnBackground()
+            isTopicExtraction = data.productrevGetProductRatingAndTopics.keywords.isNotEmpty()
             _ratingAndTopics.postValue(Success(data.productrevGetProductRatingAndTopics))
         }) {
             _ratingAndTopics.postValue(Fail(it))
+        }
+    }
+
+    fun updateTopicExtraction() {
+        if (!isTopicExtraction) return
+        launchCatchError(block = {
+            filter.topic = null
+            val filterBy = filter.getSelectedParam()
+            getProductRatingAndTopicsUseCase.setParams(
+                productId.value ?: "",
+                "filter",
+                filterBy
+            )
+            val data = getProductRatingAndTopicsUseCase.executeOnBackground()
+            _topicExtraction.postValue(Success(data.productrevGetProductRatingAndTopics))
+        }) {
+            _topicExtraction.postValue(Fail(it))
         }
     }
 

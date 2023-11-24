@@ -489,7 +489,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             ConversationsChannel(
                 "", "", "", "dummyName2", "", 0,
                 null, null, members = listOf(), false,
-                0L, expiresAt = 0L, 0L,
+                0L, expiresAt = 1L, 0L,
                 lastRead = mapOf(), 0L,
                 metadata = ChannelMetaData(
                     orderInfo = OrderInfo(
