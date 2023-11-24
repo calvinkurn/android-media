@@ -71,7 +71,7 @@ class StickyTabNavigationViewHolder(
             catalogTabsUnify.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     listener?.onNavigateWidget(
-                        element?.content?.get(tab?.position.orZero())?.anchorTo.orEmpty(),
+                        element?.content?.getOrNull(tab?.position.orZero())?.anchorTo.orEmpty(),
                         tab?.position.orZero(),
                         element?.content?.getOrNull(tab?.position.orZero())?.title.orEmpty()
                     )

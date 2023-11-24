@@ -37,7 +37,7 @@ object TokopediaImageUrl {
     const val SUCCESS_IMAGE_PATH = "https://images.tokopedia.net/img/android/res/singleDpi/gopay_kyc_upload_success.png"
     const val FAILED_IMAGE_PATH = "https://images.tokopedia.net/img/android/res/singleDpi/gopay_kyc_upload_failed.png"
     const val CARD_ICON_URL = "https://images.tokopedia.net/img/toppay/product/marketplace.png"
-    const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
+    const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/now/OFOC-WA-02.jpg"
     const val URL_IMAGE_DIALOG_REFERRAL = "https://images.tokopedia.net/img/tokonow/referral/surprise gift.png"
     const val BG_QUEST_TITLE = "https://images.tokopedia.net/img/android/tokonow/bg_quest_title.png"
     const val IMG_SHARING_EDUCATION = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_sharing_education.png"
@@ -395,4 +395,7 @@ object TokopediaImageUrl {
     const val OLP_BMGM_HEADER_ILLUSTRATION = "https://images.tokopedia.net/img/android/bmgm/OLP_Header.png"
     const val EVENT_SOFTBOOK_ENDED_BOTTOM_SHEET_IMG_URL = "https://images.tokopedia.net/img/event/event_checkout_softbook_ended_bottom_sheet_mini.png"
     const val CATALOG_IMAGE_ASSETS = "https://images.tokopedia.net/img/android/res/singleDpi/catalog_no_products_state_big.png"
+    const val RECHARGE_SUBHOME_TODO_WIDGET = "https://images.tokopedia.net/img/recharge_subhome_todo_widget.png"
+    const val IMG_DISCO_SHOP_OFFER_BRAND_SEE_MORE_BUY_MORE = "https://images.tokopedia.net/img/discovery/icons/shop_offer_hero_brand:buy_more_save_more.png"
+    const val DARK_MODE_INTRO_ANIMATION = "https://images.tokopedia.net/img/android/darkmode/android_animation_dark_mode_introduction.gif"
 }

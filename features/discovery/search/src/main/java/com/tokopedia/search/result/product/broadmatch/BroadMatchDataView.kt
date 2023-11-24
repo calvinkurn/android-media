@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelated
 import com.tokopedia.search.result.domain.model.SearchProductV5
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.deduplication.Deduplication
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.separator.VerticalSeparable
@@ -94,14 +95,16 @@ data class BroadMatchDataView(
             carousel: InspirationCarouselDataView,
             externalReference: String,
             addTopSeparator: Boolean,
+            deduplication: Deduplication,
         ): List<BroadMatchDataView> {
             val options = carousel.options
-            return options.mapIndexed { index, option ->
+            return options.mapIndexedNotNull { index, option ->
                 create(
                     option,
                     carousel.type,
                     externalReference,
                     determineCarouselSeparator(index, addTopSeparator, options.lastIndex),
+                    deduplication,
                 )
             }
         }
@@ -111,25 +114,32 @@ data class BroadMatchDataView(
             type: String,
             externalReference: String,
             verticalSeparator: VerticalSeparator,
-        ) = BroadMatchDataView(
-            keyword = option.title,
-            subtitle = option.subtitle,
-            iconSubtitle = option.iconSubtitle,
-            applink = option.applink,
-            carouselOptionType = CarouselOptionType.of(type, option),
-            broadMatchItemDataViewList = option.product.mapIndexed { index, product ->
-                BroadMatchItemDataView.create(
-                    product,
-                    type,
-                    option,
-                    index,
-                    externalReference,
-                )
-            },
-            trackingOption = option.trackingOption,
-            cardButton = BroadMatchCardButton.create(option.cardButton),
-            verticalSeparator = verticalSeparator,
-        )
+            deduplication: Deduplication,
+        ): BroadMatchDataView? {
+            val productList = deduplication.removeDuplicate(option.product)
+
+            if (!deduplication.isCarouselWithinThreshold(option, productList)) return null
+
+            return BroadMatchDataView(
+                keyword = option.title,
+                subtitle = option.subtitle,
+                iconSubtitle = option.iconSubtitle,
+                applink = option.applink,
+                carouselOptionType = CarouselOptionType.of(type, option),
+                broadMatchItemDataViewList = productList.mapIndexed { index, product ->
+                    BroadMatchItemDataView.create(
+                        product,
+                        type,
+                        option,
+                        index,
+                        externalReference,
+                    )
+                },
+                trackingOption = option.trackingOption,
+                cardButton = BroadMatchCardButton.create(option.cardButton),
+                verticalSeparator = verticalSeparator,
+            )
+        }
 
         private fun determineCarouselSeparator(
             index: Int,

@@ -1,39 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_play_product_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_play_product_count"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:paddingStart="@dimen/unify_space_4"
-            android:paddingTop="@dimen/spacing_lvl1"
-            android:paddingEnd="@dimen/unify_space_4"
-            android:paddingBottom="@dimen/spacing_lvl1"
-            android:text="@string/content_zero"
-            android:textAlignment="center"
-            android:textColor="@color/Unify_Static_White"
-            android:translationZ="@dimen/content_common_space_1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:typographyType="small"
-            app:typographyWeight="bold"
-            tools:text="123" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_play_product_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:background="@drawable/bg_play_product_count"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:paddingVertical="2dp"
+        android:paddingHorizontal="4dp"
+        android:text="@string/content_zero"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_Static_White"
+        android:translationZ="1dp"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="123" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ic_play_product_see_more"
-            android:layout_width="@dimen/content_common_space_40"
-            android:layout_height="@dimen/content_common_space_40"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:srcCompat="@drawable/ic_product_more" />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ic_play_product_see_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_product_more" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_product_see_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+</FrameLayout>

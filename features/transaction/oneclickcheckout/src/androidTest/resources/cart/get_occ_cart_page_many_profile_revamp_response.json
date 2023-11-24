@@ -905,7 +905,7 @@
                 "pin": false
               },
               "wallet_amount": 0,
-              "metadata": "",
+              "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"MANDIRIVA\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"\",\"issuer\":\"\",\"card_token\":\"\",\"card_type\":\"\",\"total_saved_card\":\"\",\"installment_term\":\"0\",\"expiry\":\"\",\"bank_code\":\"\"},\"express_checkout_url\":\"https://pay-staging.tokopedia.com/v2/api/payment/MANDIRIVA\",\"high_risk_flag\":\"\",\"description\":\"Mandiri Virtual Account\",\"image\":\"https://images.tokopedia.net/img/toppay/payment-logo/icon-mandiri.png\",\"signature\":\"a\",\"customer_name\":\"a\",\"customer_email\":\"a@a.com\",\"user_id\":0}",
               "mdr": 0,
               "credit_card": {
                 "number_of_cards": {

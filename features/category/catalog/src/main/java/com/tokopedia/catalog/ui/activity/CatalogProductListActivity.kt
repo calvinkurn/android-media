@@ -3,18 +3,23 @@ package com.tokopedia.catalog.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogProductListFragment
+import com.tokopedia.catalog.ui.fragment.CatalogProductListImprovementFragment
 import com.tokopedia.core.analytics.AppScreen
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST
 
 class CatalogProductListActivity : BaseSimpleActivity() {
     private var catalogId: String = ""
     private var catalogTitle: String = ""
     private var productSortingStatus: String = ""
     private var catalogUrl: String = ""
+
+    var remoteConfig: FirebaseRemoteConfigImpl? = null
 
     companion object {
         private const val CATALOG_DETAIL_TAG = "CATALOG_DETAIL_TAG"
@@ -46,9 +51,10 @@ class CatalogProductListActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_catalog_product_list)
-        catalogId = if (intent.hasExtra(EXTRA_CATALOG_ID))
+        remoteConfig = FirebaseRemoteConfigImpl(this)
+        catalogId = if (intent.hasExtra(EXTRA_CATALOG_ID)) {
             intent.getStringExtra(EXTRA_CATALOG_ID) ?: ""
-        else {
+        } else {
             intent.data?.getQueryParameter(QUERY_CATALOG_ID).orEmpty()
         }
 
@@ -58,20 +64,29 @@ class CatalogProductListActivity : BaseSimpleActivity() {
         productSortingStatus =
             intent?.data?.getQueryParameter(QUERY_PRODUCT_SORTING_STATUS).toString()
         prepareView(savedInstanceState == null)
-
     }
 
     private fun prepareView(savedInstanceIsNull: Boolean) {
         if (savedInstanceIsNull) {
+            val fragment = if (remoteConfig?.getBoolean(ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST).orFalse()) {
+                CatalogProductListImprovementFragment.newInstance(
+                    catalogId,
+                    catalogTitle,
+                    productSortingStatus,
+                    catalogUrl
+                )
+            } else {
+                CatalogProductListFragment.newInstance(
+                    catalogId,
+                    catalogTitle,
+                    productSortingStatus,
+                    catalogUrl
+                )
+            }
             supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.catalog_product_list_parent_view,
-                    CatalogProductListFragment.newInstance(
-                        catalogId,
-                        catalogTitle,
-                        productSortingStatus,
-                        catalogUrl
-                    ),
+                    fragment,
                     CatalogProductListFragment.CATALOG_PRODUCT_LIST_PAGE_FRAGMENT_TAG
                 )
                 .commit()

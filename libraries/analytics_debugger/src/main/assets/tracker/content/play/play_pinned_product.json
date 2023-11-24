@@ -1,6 +1,6 @@
 {
   "readme": "Play - Pinned Product",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "event": "view_item_list",

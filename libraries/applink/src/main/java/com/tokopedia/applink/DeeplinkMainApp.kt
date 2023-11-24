@@ -36,7 +36,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
@@ -185,6 +184,11 @@ object DeeplinkMainApp {
         "catalog-library" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperCategory.getRegisteredNavigationCategory(deeplink)
+            }
+        ),
+        "catalog-product-list" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationCatalogProductList(deeplink)
             }
         ),
         "category" to mutableListOf(
@@ -671,6 +675,12 @@ object DeeplinkMainApp {
             }
         ),
         "people" to mutableListOf(
+            DLP.matchPattern("{user_id}/following") { deeplink: String ->
+                DeeplinkMapperContent.getProfileDeeplink(deeplink)
+            },
+            DLP.matchPattern("{user_id}/followers") { deeplink: String ->
+                DeeplinkMapperContent.getProfileDeeplink(deeplink)
+            },
             DLP.matchPattern("{user_id}") { deeplink: String ->
                 DeeplinkMapperContent.getProfileDeeplink(deeplink)
             },
@@ -815,10 +825,7 @@ object DeeplinkMainApp {
                 ApplinkConstInternalCategory.getDiscoveryDeeplink(ApplinkConst.DISCOVERY_DEALS)
             },
             DLP.matchPattern("{slug}") { _, _, _, idList ->
-                UriUtil.buildUri(
-                    ApplinkConstInternalPromo.PROMO_DETAIL,
-                    idList?.getOrNull(0)
-                )
+                ApplinkConstInternalCategory.getDiscoveryDeeplink(ApplinkConst.DISCOVERY_DEALS)
             }
         ),
         "promoNative" to mutableListOf(

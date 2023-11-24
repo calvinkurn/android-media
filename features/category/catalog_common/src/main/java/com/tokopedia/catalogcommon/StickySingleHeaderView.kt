@@ -6,12 +6,12 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setMargin
 import kotlin.math.roundToInt
 
 /**
@@ -19,6 +19,11 @@ import kotlin.math.roundToInt
  * https://github.com/TellH/RecyclerStickyHeaderView
  */
 class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
+
+    companion object {
+        private const val TOP_SPACING_STICKY_HEADER = 75
+    }
+
     private var hasInit = false
     private var mHeaderContainer: FrameLayout? = null
     private var mRecyclerView: RecyclerView? = null
@@ -29,17 +34,10 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private var refreshSticky = false
     private var recyclerViewPaddingTop = 0
     private var currentScroll = 0
-    private val headerContainerHeight = 162
 
     constructor(context: Context) : super(context) {}
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
-
-    val containerHeight: Int
-        get() {
-            mHeaderContainer!!.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-            return headerContainerHeight
-        }
 
     interface OnStickySingleHeaderAdapter {
         val stickyHeaderPosition: Int
@@ -61,10 +59,6 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
             ?: throw RuntimeException("RecyclerView should be the first child view.")
         mRecyclerView = view
 
-        if (mRecyclerView == null) {
-            return
-        }
-
         recyclerViewPaddingTop = mRecyclerView?.paddingTop ?: 0
         mHeaderContainer = FrameLayout(context)
         mHeaderContainer?.let {
@@ -72,13 +66,13 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
             it.clipToPadding = false
             it.clipChildren = false
             val newLayoutParam = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            newLayoutParam.setMargins(0,130,0,0)
+            newLayoutParam.setMargins(Int.ZERO, TOP_SPACING_STICKY_HEADER.dpToPx(resources.displayMetrics), Int.ZERO, Int.ZERO)
             it.layoutParams = newLayoutParam
             it.setPadding(
-                convertPixelsToDp(16, context),
-                0,
-                mRecyclerView?.paddingRight ?: 0,
-                0
+                Int.ZERO,
+                Int.ZERO,
+                mRecyclerView?.paddingRight.orZero(),
+                Int.ZERO
             )
             it.visibility = View.GONE
             addView(mHeaderContainer)
@@ -104,11 +98,6 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
             }
         }
         mRecyclerView?.addOnScrollListener(onScrollListener)
-    }
-
-    private fun convertPixelsToDp(px: Int, context: Context): Int {
-        val result = px.toFloat() / (context.getResources().getDisplayMetrics().densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT.toFloat())
-        return result.roundToInt()
     }
 
     private fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
