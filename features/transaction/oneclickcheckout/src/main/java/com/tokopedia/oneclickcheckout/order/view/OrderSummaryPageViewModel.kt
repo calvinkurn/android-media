@@ -135,6 +135,7 @@ class OrderSummaryPageViewModel @Inject constructor(
     private var hasSentViewOspEe = false
 
     var isCartCheckoutRevamp: Boolean = false
+    var usePromoEntryPointNewInterface: Boolean = false
 
     fun getShopId(): String {
         return orderCart.shop.shopId
@@ -187,7 +188,8 @@ class OrderSummaryPageViewModel @Inject constructor(
             lastValidateUsePromoRequest = null
             orderPromo.value = result.orderPromo.copy(
                 isCartCheckoutRevamp = isCartCheckoutRevamp,
-                isPromoRevamp = isPromoRevamp
+                isPromoRevamp = isPromoRevamp,
+                enableNewInterface = usePromoEntryPointNewInterface
             )
             when {
                 result.globalEvent != null -> {
@@ -1016,9 +1018,17 @@ class OrderSummaryPageViewModel @Inject constructor(
     }
 
     private fun clearAllPromoFromLastRequest() {
+        val isCartCheckoutRevamp = orderPromo.value.isCartCheckoutRevamp
+        val isPromoRevamp = orderPromo.value.isPromoRevamp
+        val enableNewInterface = orderPromo.value.enableNewInterface
         validateUsePromoRevampUiModel = null
         lastValidateUsePromoRequest = promoProcessor.clearAllPromoFromLastRequest(lastValidateUsePromoRequest)
-        orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            isCartCheckoutRevamp = isCartCheckoutRevamp,
+            isPromoRevamp = isPromoRevamp,
+            enableNewInterface = enableNewInterface
+        )
     }
 
     private fun updatePromoState(lastApply: LastApplyUiModel, oldLastApply: LastApplyUiModel? = null) {

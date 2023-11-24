@@ -55,6 +55,8 @@ object RollenceKey {
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
     const val CART_CHECKOUT_REVAMP = "cartcheckout_revamp"
     const val CART_CHECKOUT_NEW = "cart_checkout_new"
+    const val PROMO_ENTRY_POINT_IMPROVEMENT = "promowidget_cartco"
+    const val PROMO_ENTRY_POINT_NEW = "new_promowidget"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"

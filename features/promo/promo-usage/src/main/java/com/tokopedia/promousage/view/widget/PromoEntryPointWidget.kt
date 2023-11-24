@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.common.view.widget
+package com.tokopedia.promousage.view.widget
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.ViewSwitcher
+import androidx.annotation.LayoutRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.children
@@ -15,8 +16,8 @@ import androidx.core.view.updateLayoutParams
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
-import com.tokopedia.promocheckout.common.R
-import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
+import com.tokopedia.promousage.R
+import com.tokopedia.promousage.domain.entity.PromoEntryPointSummaryItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -31,8 +32,13 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
+    @LayoutRes
     private fun getLayout(): Int {
-        return R.layout.layout_widget_promo_checkout_switcher
+        return if (enableNewInterface) {
+            R.layout.layout_widget_promo_checkout_switcher_new
+        } else {
+            R.layout.layout_widget_promo_checkout_switcher
+        }
     }
 
     private var loadingView: View? = null
@@ -63,14 +69,29 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     private var errorViewTitle: Typography? = null
     private var errorViewRightIcon: IconUnify? = null
 
-    private var isRounded: Boolean = false
+    private val isRounded: Boolean
+    var enableNewInterface: Boolean = false
 
     init {
+        val styledAttributes =
+            context.obtainStyledAttributes(attrs, R.styleable.PromoEntryPointWidget)
+        try {
+            isRounded =
+                styledAttributes.getBoolean(R.styleable.PromoEntryPointWidget_rounded, false)
+        } finally {
+            styledAttributes.recycle()
+        }
         inflate(context, getLayout(), this)
-        setupViews(attrs)
+        setupViews()
     }
 
-    private fun setupViews(attrs: AttributeSet?) {
+    fun init() {
+        removeAllViews()
+        inflate(context, getLayout(), this)
+        setupViews()
+    }
+
+    private fun setupViews() {
         loadingView = findViewById(R.id.loader_promo_checkout)
         loaderStart = findViewById(R.id.loader_promo_start)
         loaderCenter = findViewById(R.id.loader_promo_center)
@@ -109,8 +130,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             View.GONE
         inActiveView?.findViewById<ImageUnify>(R.id.frame_promo_checkout_header_confetti)?.visibility =
             View.GONE
-
-        setupViewBackgrounds(attrs)
+        setupViewBackgrounds()
 
         // workaround issue wrap content
         activeViewSummaryLayout?.visibility = View.GONE
@@ -119,13 +139,38 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewDescWording?.visibility = View.GONE
     }
 
-    private fun setupViewBackgrounds(attrs: AttributeSet?) {
-        val styledAttributes =
-            context.obtainStyledAttributes(attrs, R.styleable.PromoEntryPointWidget)
-        try {
-            isRounded =
-                styledAttributes.getBoolean(R.styleable.PromoEntryPointWidget_rounded, false)
-            if (isRounded) {
+    private fun setupViewBackgrounds() {
+        if (isRounded) {
+            if (enableNewInterface) {
+                loadingView?.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_active_teal_rounded_new,
+                    null
+                )
+                activeViewFrame?.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_active_teal_rounded_new,
+                    null
+                )
+                val inActiveBackground = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_inactive_grey_rounded_new,
+                    null
+                )
+                inActiveViewFrame?.background = inActiveBackground
+                errorView?.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_error_yellow_rounded_new,
+                    null
+                )
+
+                activeViewRightIcon?.updateLayoutParams<MarginLayoutParams> {
+                    marginEnd = 16.dpToPx(context.resources.displayMetrics)
+                }
+                findViewById<View>(R.id.ic_error_promo_checkout)?.updateLayoutParams<MarginLayoutParams> {
+                    marginEnd = 0
+                }
+            } else {
                 loadingView?.background = ResourcesCompat.getDrawable(
                     resources,
                     R.drawable.background_promo_checkout_active_teal_rounded,
@@ -153,6 +198,36 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 }
                 findViewById<View>(R.id.ic_error_promo_checkout)?.updateLayoutParams<MarginLayoutParams> {
                     marginEnd = 0
+                }
+            }
+        } else {
+            if (enableNewInterface) {
+                loadingView?.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_teal_new,
+                    null
+                )
+                activeViewFrame?.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_teal_new,
+                    null
+                )
+                inActiveViewFrame?.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_grey,
+                    null
+                )
+                errorView?.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_yellow_new,
+                    null
+                )
+
+                activeViewRightIcon?.updateLayoutParams<MarginLayoutParams> {
+                    marginEnd = 28.dpToPx(context.resources.displayMetrics)
+                }
+                findViewById<View>(R.id.ic_error_promo_checkout)?.updateLayoutParams<MarginLayoutParams> {
+                    marginEnd = 12.dpToPx(context.resources.displayMetrics)
                 }
             } else {
                 val loadingBackground = ResourcesCompat.getDrawable(
@@ -199,13 +274,17 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                     R.drawable.background_promo_checkout_teal,
                     null
                 )
-                (errorBackground as? GradientDrawable)?.setColor(
-                    ResourcesCompat.getColor(
-                        resources,
-                        unifyprinciplesR.color.Unify_YN50,
-                        null
+                val errorDrawable = errorBackground as? GradientDrawable
+                errorDrawable?.apply {
+                    mutate()
+                    setColor(
+                        ResourcesCompat.getColor(
+                            resources,
+                            unifyprinciplesR.color.Unify_YN50,
+                            null
+                        )
                     )
-                )
+                }
                 errorView?.background = errorBackground
 
                 activeViewRightIcon?.updateLayoutParams<MarginLayoutParams> {
@@ -215,8 +294,6 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                     marginEnd = 12.dpToPx(context.resources.displayMetrics)
                 }
             }
-        } finally {
-            styledAttributes.recycle()
         }
     }
 
@@ -312,6 +389,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         inActiveViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
         inActiveViewWording?.children?.forEach {
             if (it is Typography) {
+                it.setWeight(Typography.REGULAR)
                 it.setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
             }
         }
@@ -345,6 +423,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             inActiveViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             inActiveViewWording?.children?.forEach {
                 if (it is Typography) {
+                    it.setWeight(Typography.REGULAR)
                     it.setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
                 }
             }
@@ -363,6 +442,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             inActiveViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             inActiveViewWording?.children?.forEach {
                 if (it is Typography) {
+                    it.setWeight(Typography.REGULAR)
                     it.setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
                 }
             }
@@ -388,7 +468,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     fun showActiveNew(
         leftImageUrl: String,
         wording: String,
-        rightIcon: Int,
+        rightIcon: Int? = null,
         animate: Boolean = false,
         animateWording: Boolean = false,
         onClickListener: () -> Unit = {}
@@ -400,10 +480,24 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewDescWording?.visibility = View.GONE
         activeViewLeftImage?.visibility = View.VISIBLE
         activeViewRightIcon?.visibility = View.VISIBLE
+        activeViewWording?.children?.forEach {
+            if (it is Typography) {
+                if (enableNewInterface) {
+                    it.setWeight(Typography.BOLD)
+                } else {
+                    it.setWeight(Typography.REGULAR)
+                }
+            }
+        }
         activeViewWording?.visibility = View.VISIBLE
         if (animate && switcherView?.visibility == View.VISIBLE) {
             activeViewLeftImage?.setImageUrl(leftImageUrl)
-            activeViewRightIcon?.setImage(rightIcon)
+            if (rightIcon != null) {
+                activeViewRightIcon?.setImage(rightIcon)
+                activeViewRightIcon?.visibility = View.VISIBLE
+            } else {
+                activeViewRightIcon?.visibility = View.GONE
+            }
             if (switcherView?.displayedChild != 0) {
                 // only trigger view switch animation if currently showing different view
                 activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
@@ -419,7 +513,12 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             switcherView?.reset()
             activeViewLeftImage?.setImageUrl(leftImageUrl)
             activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
-            activeViewRightIcon?.setImage(rightIcon)
+            if (rightIcon != null) {
+                activeViewRightIcon?.setImage(rightIcon)
+                activeViewRightIcon?.visibility = View.VISIBLE
+            } else {
+                activeViewRightIcon?.visibility = View.GONE
+            }
             switcherView?.displayedChild = 0
             switcherView?.visibility = View.VISIBLE
             errorView?.visibility = View.GONE
@@ -451,13 +550,27 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         onChevronExpandClickListener: (isExpanded: Boolean) -> Unit = {},
         onSummaryExpandedListener: () -> Unit = {}
     ) {
-        activeViewConfettiFrame?.visibility = View.VISIBLE
+        if (enableNewInterface) {
+            activeViewConfettiFrame?.visibility = View.GONE
+            activeViewFrame?.visibility = View.VISIBLE
+        } else {
+            activeViewConfettiFrame?.visibility = View.VISIBLE
+        }
         activeViewSummaryLayout?.visibility = View.GONE
         activeViewDivider?.visibility = View.GONE
         activeViewTitleWording?.visibility = View.GONE
         activeViewDescWording?.visibility = View.GONE
         activeViewLeftImage?.visibility = View.VISIBLE
         activeViewRightIcon?.visibility = View.VISIBLE
+        activeViewWording?.children?.forEach {
+            if (it is Typography) {
+                if (enableNewInterface) {
+                    it.setWeight(Typography.BOLD)
+                } else {
+                    it.setWeight(Typography.REGULAR)
+                }
+            }
+        }
         activeViewWording?.visibility = View.VISIBLE
         if (switcherView?.visibility == View.VISIBLE || loadingView?.visibility == View.VISIBLE) {
             switcherView?.visibility = View.VISIBLE
@@ -570,7 +683,11 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             if (isExpanded) {
                 activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
                 activeViewSummaryLayout?.visibility = View.VISIBLE
-                activeViewDivider?.visibility = View.VISIBLE
+                if (enableNewInterface) {
+                    activeViewDivider?.visibility = View.GONE
+                } else {
+                    activeViewDivider?.visibility = View.VISIBLE
+                }
                 onSummaryExpandedListener.invoke()
             } else {
                 activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN)
@@ -587,7 +704,11 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                     } else {
                         activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
                         activeViewSummaryLayout?.visibility = View.VISIBLE
-                        activeViewDivider?.visibility = View.VISIBLE
+                        if (enableNewInterface) {
+                            activeViewDivider?.visibility = View.GONE
+                        } else {
+                            activeViewDivider?.visibility = View.VISIBLE
+                        }
                         onChevronExpandClickListener.invoke(true)
                         onSummaryExpandedListener.invoke()
                     }
@@ -609,9 +730,10 @@ class PromoEntryPointWidget @JvmOverloads constructor(
      */
     fun showActive(
         wording: String,
-        rightIcon: Int,
+        rightIcon: Int? = null,
         onClickListener: () -> Unit = {}
     ) {
+        activeViewFrame?.visibility = View.VISIBLE
         activeViewConfettiFrame?.visibility = View.GONE
         activeViewSummaryLayout?.visibility = View.GONE
         activeViewDivider?.visibility = View.GONE
@@ -622,8 +744,22 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewWording?.visibility = View.VISIBLE
         switcherView?.reset()
         activeViewLeftImage?.setImageUrl(PROMO_COUPON_ICON)
+        activeViewWording?.children?.forEach {
+            if (it is Typography) {
+                if (enableNewInterface) {
+                    it.setWeight(Typography.BOLD)
+                } else {
+                    it.setWeight(Typography.REGULAR)
+                }
+            }
+        }
         activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
-        activeViewRightIcon?.setImage(rightIcon)
+        if (rightIcon != null) {
+            activeViewRightIcon?.setImage(rightIcon)
+            activeViewRightIcon?.visibility = View.VISIBLE
+        } else {
+            activeViewRightIcon?.visibility = View.GONE
+        }
         switcherView?.displayedChild = 0
         switcherView?.visibility = View.VISIBLE
         errorView?.visibility = View.GONE
@@ -665,6 +801,15 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewDivider?.visibility = View.GONE
         activeViewLeftImage?.visibility = View.VISIBLE
         activeViewRightIcon?.visibility = View.VISIBLE
+        activeViewWording?.children?.forEach {
+            if (it is Typography) {
+                if (enableNewInterface) {
+                    it.setWeight(Typography.BOLD)
+                } else {
+                    it.setWeight(Typography.REGULAR)
+                }
+            }
+        }
         activeViewWording?.visibility = View.VISIBLE
         activeViewTitleWording?.visibility = View.GONE
         activeViewDescWording?.visibility = View.GONE
@@ -702,13 +847,25 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         onClickListener: () -> Unit = {}
     ) {
         switcherView?.reset()
-        activeViewConfettiFrame?.visibility = if (showConfetti) View.VISIBLE else View.GONE
+        if (enableNewInterface) {
+            activeViewConfettiFrame?.visibility = View.GONE
+            activeViewFrame?.visibility = View.VISIBLE
+        } else {
+            activeViewConfettiFrame?.visibility = if (showConfetti) View.VISIBLE else View.GONE
+        }
         activeViewLeftImage?.setImageUrl(CHECKMARK_APPLIED_ICON)
         activeViewTitleWording?.text = HtmlLinkHelper(context, title).spannedString
         activeViewDescWording?.text = HtmlLinkHelper(context, desc).spannedString
         activeViewWording?.visibility = View.GONE
         activeViewLeftImage?.visibility = View.VISIBLE
         activeViewRightIcon?.visibility = View.VISIBLE
+        activeViewTitleWording?.setWeight(
+            if (enableNewInterface) {
+                Typography.BOLD
+            } else {
+                Typography.REGULAR
+            }
+        )
         activeViewTitleWording?.visibility = View.VISIBLE
         activeViewDescWording?.visibility = View.VISIBLE
         activeViewRightIcon?.visibility = View.VISIBLE
@@ -719,7 +876,11 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         loadingView?.visibility = View.GONE
         if (summaries.isNotEmpty()) {
             activeViewSummaryLayout?.visibility = View.VISIBLE
-            activeViewDivider?.visibility = View.VISIBLE
+            if (enableNewInterface) {
+                activeViewDivider?.visibility = View.GONE
+            } else {
+                activeViewDivider?.visibility = View.VISIBLE
+            }
 
             activeViewSummaryLayout?.apply {
                 removeAllViews()
