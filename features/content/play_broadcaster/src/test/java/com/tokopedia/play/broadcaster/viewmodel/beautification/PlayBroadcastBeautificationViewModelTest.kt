@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.viewmodel.beautification
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.content.product.picker.seller.util.PriceFormatUtil
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -75,6 +76,8 @@ class PlayBroadcastBeautificationViewModelTest {
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
     private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
 
+    private val productUiMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(PriceFormatUtil())
+
     @Before
     fun setUp() {
         coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
@@ -105,7 +108,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -128,7 +131,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -162,7 +165,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -187,7 +190,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -216,7 +219,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -244,7 +247,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -272,7 +275,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -299,7 +302,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -324,7 +327,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -348,7 +351,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -393,7 +396,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -431,7 +434,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -467,7 +470,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -493,7 +496,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -525,7 +528,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -559,7 +562,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -606,7 +609,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -640,7 +643,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -664,7 +667,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
@@ -691,7 +694,7 @@ class PlayBroadcastBeautificationViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastMapper = mockPlayBroadcastMapper,
             remoteConfig = mockRemoteConfig,
         )
