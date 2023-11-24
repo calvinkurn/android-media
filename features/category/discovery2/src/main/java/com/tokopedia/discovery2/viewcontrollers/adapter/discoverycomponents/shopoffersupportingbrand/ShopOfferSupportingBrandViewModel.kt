@@ -25,7 +25,6 @@ class ShopOfferSupportingBrandViewModel(
 ) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val layout: ArrayList<ComponentsItem> = arrayListOf()
-    private var isLoading = true
 
     private val _brands: MutableLiveData<Result<ArrayList<ComponentsItem>>> = MutableLiveData()
 
@@ -36,7 +35,8 @@ class ShopOfferSupportingBrandViewModel(
     @Inject
     var useCase: SupportingBrandUseCase? = null
 
-    init {
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
         layout.addShimmer()
     }
 
@@ -55,13 +55,13 @@ class ShopOfferSupportingBrandViewModel(
 
                 if (isFirstLoad == true) {
                     setSupportingBrandList()
+                } else {
+                    _brands.value = Fail(Throwable(EMPTY_DATA_MESSAGE))
                 }
-                isLoading = false
             },
             onError = {
                 Timber.e(it)
                 _brands.value = Fail(it)
-                isLoading = false
             }
         )
     }
@@ -80,7 +80,7 @@ class ShopOfferSupportingBrandViewModel(
             layout.addBrandList(components)
             _brands.value = Success(ArrayList(layout))
         } else {
-            _brands.value = Fail(Throwable("Empty Data"))
+            _brands.value = Fail(Throwable(EMPTY_DATA_MESSAGE))
         }
     }
 
@@ -98,5 +98,9 @@ class ShopOfferSupportingBrandViewModel(
     private fun ArrayList<ComponentsItem>.addBrandList(brandList: List<ComponentsItem>) {
         clear()
         addAll(brandList)
+    }
+
+    companion object {
+        private const val EMPTY_DATA_MESSAGE = "Empty Data"
     }
 }
