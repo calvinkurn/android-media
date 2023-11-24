@@ -202,4 +202,6 @@ open class BaseDiscoveryAnalytics(
     open fun trackCouponImpression(properties: List<CouponTrackingProperties>) {}
     open fun trackCouponClickEvent(properties: CouponTrackingProperties) {}
     open fun trackCouponCTAClickEvent(properties: CouponTrackingProperties) {}
+    open fun trackSupportingBrandImpression(components: List<ComponentsItem>) {}
+    open fun trackSupportingBrandClick(component: ComponentsItem, actionType: String) {}
 }

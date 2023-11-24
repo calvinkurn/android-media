@@ -21,7 +21,13 @@ class MerchantVoucherGQLRepository @Inject constructor() : BaseRepository(), Mer
     ): Pair<ArrayList<ComponentsItem>, String?> {
         val response = (getGQLData(
             GQL_COMPONENT,
-            DataResponse::class.java, Utils.getComponentsGQLParams(componentId, pageEndPoint, Utils.getQueryString(queryParamterMap)), GQL_COMPONENT_QUERY_NAME
+            DataResponse::class.java,
+            Utils.getComponentsGQLParams(
+                componentId,
+                pageEndPoint,
+                Utils.getQueryString(queryParamterMap)
+            ),
+            GQL_COMPONENT_QUERY_NAME
         ) as DataResponse)
 
         val componentData = response.data.component?.data

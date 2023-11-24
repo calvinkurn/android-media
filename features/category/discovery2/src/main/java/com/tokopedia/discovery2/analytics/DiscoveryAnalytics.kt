@@ -153,6 +153,86 @@ open class DiscoveryAnalytics(
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
+    override fun trackSupportingBrandImpression(components: List<ComponentsItem>) {
+        if (components.isEmpty()) return
+
+        val map = createGeneralEvent(
+            eventName = EVENT_PROMO_VIEW,
+            eventAction = EVENT_ACTION_SUPPORTING_BRAND_IMPRESSION,
+            eventLabel = COMPONENT_SUPPORTING_BRAND,
+            shouldSendSourceAsDestination = true
+        )
+        val list = ArrayList<Map<String, Any>>()
+        for ((index, component) in components.withIndex()) {
+            component.data?.firstOrNull()?.let { banner ->
+                list.add(
+                    mapOf(
+                        KEY_ID to "${banner.offerId}_${banner.shopId}",
+                        KEY_NAME to banner.gtmItemName
+                            ?.replace("#POSITION", (getParentPosition(component) + 1).toString())
+                            ?.replace("#MEGA_TAB_VALUE", banner.tabName.orEmpty()).toString(),
+                        KEY_CREATIVE to component.creativeName.orEmpty(),
+                        KEY_POSITION to index + 1
+                    )
+                )
+            }
+        }
+
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+            EVENT_PROMO_VIEW to mapOf(
+                KEY_PROMOTIONS to list
+            )
+        )
+
+        map[TRACKER_ID] = TRACKER_ID_SUPPORTING_BRAND_IMPRESSION
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[KEY_E_COMMERCE] = eCommerce
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[KEY_EVENT_CATEGORY] = VALUE_DISCOVERY_PAGE
+        map[USER_ID] = userSession.userId ?: EMPTY_STRING
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    override fun trackSupportingBrandClick(component: ComponentsItem, actionType: String) {
+        val map = createGeneralEvent(
+            eventName = EVENT_PROMO_CLICK,
+            eventAction = EVENT_ACTION_SUPPORTING_BRAND_CLICK,
+            eventLabel = "$COMPONENT_SUPPORTING_BRAND - $actionType",
+            shouldSendSourceAsDestination = true
+        )
+
+        val list = ArrayList<Map<String, Any>>()
+        component.data?.firstOrNull()?.let { banner ->
+            list.add(
+                mapOf(
+                    KEY_ID to "${banner.offerId}_${banner.shopId}",
+                    KEY_NAME to banner.gtmItemName
+                        ?.replace("#POSITION", (getParentPosition(component) + 1).toString())
+                        ?.replace("#MEGA_TAB_VALUE", banner.tabName.orEmpty()).toString(),
+                    KEY_CREATIVE to component.creativeName.orEmpty(),
+                    KEY_POSITION to component.position + 1
+                )
+            )
+        }
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+            EVENT_PROMO_CLICK to mapOf(
+                KEY_PROMOTIONS to list
+            )
+        )
+
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[KEY_EVENT_CATEGORY] = VALUE_DISCOVERY_PAGE
+        map[TRACKER_ID] = TRACKER_ID_SUPPORTING_BRAND_CLICK
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[USER_ID] = userSession.userId ?: EMPTY_STRING
+        map[KEY_E_COMMERCE] = eCommerce
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
     override fun trackBrandRecommendationImpression(items: List<ComponentsItem>, componentPosition: Int, componentID: String) {
         if (items.isNotEmpty()) {
             items.forEachIndexed { index, brandItem ->
