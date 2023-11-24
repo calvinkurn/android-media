@@ -18,7 +18,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="paragraph_3"
-            tools:text="Saya menyetujui Syarat &amp; Ketentuan dan Kebijakan Privasi untuk:" />
+            tools:text="Saya menyetujui Syarat &amp; Ketentuan dan Pemberitahuan Privasi untuk:" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerPurposes"

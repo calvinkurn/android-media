@@ -73,7 +73,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
         private const val LOGOUT_BUTTON_NAME = "Logout"
         private const val TERM_CONDITION_BUTTON_NAME = "Syarat dan Ketentuan"
-        private const val PRIVACY_POLICY_BUTTON_NAME = "Kebijakan Privasi"
+        private const val PRIVACY_POLICY_BUTTON_NAME = "Pemberitahuan Privasi"
         private const val EXTRA_SCREEN_SHOOT_TRIGGER = "extra_screen_shoot_trigger"
         private const val EXTRA_TOASTER_MESSAGE = "extra_toaster_message"
         private const val EXTRA_SHOW_SETTING_BOTTOM_SHEET = "extra_show_settings"
