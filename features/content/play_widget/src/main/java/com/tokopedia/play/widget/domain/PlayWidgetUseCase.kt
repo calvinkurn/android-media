@@ -38,7 +38,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
             PlayWidgetQueryParamBuilder.PARAM_AUTHOR_TYPE to widgetType.authorType,
             PlayWidgetQueryParamBuilder.PARAM_WIDGET_TYPE to widgetType.typeKey,
             PlayWidgetQueryParamBuilder.PARAM_CHANNEL_TAG to widgetType.channelTag,
-            PlayWidgetQueryParamBuilder.PARAM_IS_WIFI to isWifi
+            PlayWidgetQueryParamBuilder.PARAM_IS_WIFI to isWifi,
         )
 
         when (widgetType) {
@@ -187,7 +187,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
         data class ShopPageExclusiveLaunch(
             val shopId: String,
-            override val campaignId: String = ""
+            override val campaignId: String = "",
         ) : WidgetType() {
             override val typeKey: String
                 get() = "SHOP_PAGE_EXCLUSIVE_LAUNCH"

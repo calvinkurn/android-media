@@ -61,20 +61,20 @@ class PlayWidgetQueryParamBuilder {
             appendLine("playGetWidgetV2(")
             appendLine("req: {")
 
-            appendLine("$PARAM_WIDGET_TYPE:${'$'}$PARAM_WIDGET_TYPE,")
-            appendLine("$PARAM_AUTHOR_ID: ${'$'}$PARAM_AUTHOR_ID,")
-            appendLine("$PARAM_AUTHOR_TYPE: ${'$'}$PARAM_AUTHOR_TYPE,")
-            append("$PARAM_IS_WIFI: ${'$'}$PARAM_IS_WIFI")
+            appendLine("${PARAM_WIDGET_TYPE}:${'$'}${PARAM_WIDGET_TYPE},")
+            appendLine("${PARAM_AUTHOR_ID}: ${'$'}${PARAM_AUTHOR_ID},")
+            appendLine("${PARAM_AUTHOR_TYPE}: ${'$'}${PARAM_AUTHOR_TYPE},")
+            append("${PARAM_IS_WIFI}: ${'$'}${PARAM_IS_WIFI}")
 
             when (widgetType) {
                 is PlayWidgetUseCase.WidgetType.PDPWidget -> {
                     appendLine(",")
-                    appendLine("$PARAM_PRODUCT_ID: ${'$'}$PARAM_PRODUCT_ID,")
-                    appendLine("$PARAM_CATEGORY_ID: ${'$'}$PARAM_CATEGORY_ID")
+                    appendLine("${PARAM_PRODUCT_ID}: ${'$'}${PARAM_PRODUCT_ID},")
+                    appendLine("${PARAM_CATEGORY_ID}: ${'$'}${PARAM_CATEGORY_ID}")
                 }
                 is PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch -> {
                     appendLine(",")
-                    appendLine("$PARAM_CAMPAIGN_ID: ${'$'}$PARAM_CAMPAIGN_ID")
+                    appendLine("${PARAM_CAMPAIGN_ID}: ${'$'}${PARAM_CAMPAIGN_ID}")
                 }
                 is PlayWidgetUseCase.WidgetType.DiscoveryPage, is PlayWidgetUseCase.WidgetType.DiscoveryPageV2 -> {
                     appendLine(",")
