@@ -347,6 +347,7 @@ class CheckoutOrderViewHolder(
                     binding.dropshipWidget.state = CheckoutDropshipWidget.State.INIT
                 }
             }
+            listener.onSendImpressionDropshipWidgetAnalytics()
         } else {
             binding.dropshipWidget.state = CheckoutDropshipWidget.State.GONE
         }

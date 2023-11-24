@@ -2603,6 +2603,7 @@ class CheckoutFragment :
     }
 
     override fun showDropshipInfoBottomSheet() {
+        checkoutAnalyticsCourierSelection.eventClickInfoDropshipWidget()
         val bottomSheetDropshipBinding =
             BottomSheetDropshipBinding.inflate(LayoutInflater.from(context))
         val bottomSheetUnify = BottomSheetUnify()
@@ -2624,6 +2625,7 @@ class CheckoutFragment :
     }
 
     override fun onCheckChangedDropship(isChecked: Boolean, position: Int) {
+        checkoutAnalyticsCourierSelection.eventClickToggleDropshipWidget(isChecked)
         viewModel.setDropshipSwitch(isChecked, position)
     }
 
@@ -2633,5 +2635,9 @@ class CheckoutFragment :
 
     override fun setValidationDropshipPhone(phone: String, isValid: Boolean, position: Int) {
         viewModel.setValidationDropshipPhone(phone, isValid, position)
+    }
+
+    override fun onSendImpressionDropshipWidgetAnalytics() {
+        checkoutAnalyticsCourierSelection.eventViewDropshipWidget()
     }
 }

@@ -423,6 +423,12 @@ object ConstantTransactionAnalytics {
         const val CLICK_SNK_BMGM = "click snk bmgm"
         const val CLICK_BMGM_RECOMMENDATION = "click bmgm recommendation"
         const val IMPRESSION_BMGM_RECOMMENDATION = "impression bmgm recommendation"
+
+        // dropship
+        const val IMPRESSION_DROPSHIP_WIDGET = "impression dropship widget"
+        const val CLICK_INFO_DROPSHIP_WIDGET = "click info dropship widget"
+        const val CLICK_TOGGLE_DROPSHIP_WIDGET = "click toggle dropship widget"
+        const val CLICK_PILIH_PEMBAYARAN_WITH_DROPSHIP_ENABLED = "click pilih pembayaran with dropship enabled"
     }
 
     object EventLabel {
@@ -479,6 +485,10 @@ object ConstantTransactionAnalytics {
         // Cart Checkout Revamp
         const val NOTE_SIMPAN = "simpan"
         const val NOTE_EDIT = "edit"
+
+        // dropship
+        const val TOGGLE_ON = "toggle on"
+        const val TOGGLE_OFF = "toggle off"
     }
 
     object ExtraKey {
@@ -582,5 +592,11 @@ object ConstantTransactionAnalytics {
         const val CLICK_SNK_BMGM = "46781"
         const val CLICK_BMGM_RECOMMENDATION = "47209"
         const val VIEW_BMGM_RECOMMENDATION = "47208"
+
+        // dropship
+        const val IMPRESSION_DROPSHIP_WIDGET = "48774"
+        const val CLICK_INFO_DROPSHIP_WIDGET = "48775"
+        const val CLICK_TOGGLE_DROPSHIP_WIDGET = "48776"
+        const val CLICK_PILIH_PEMBAYARAN_WITH_DROPSHIP_ENABLED = "48777"
     }
 }

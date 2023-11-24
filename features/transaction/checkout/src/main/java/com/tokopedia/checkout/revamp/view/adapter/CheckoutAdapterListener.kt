@@ -155,4 +155,6 @@ interface CheckoutAdapterListener {
     fun setValidationDropshipName(name: String, isValid: Boolean, position: Int)
 
     fun setValidationDropshipPhone(phone: String, isValid: Boolean, position: Int)
+
+    fun onSendImpressionDropshipWidgetAnalytics()
 }

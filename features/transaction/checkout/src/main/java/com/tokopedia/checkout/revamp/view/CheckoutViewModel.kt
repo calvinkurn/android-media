@@ -1846,6 +1846,7 @@ class CheckoutViewModel @Inject constructor(
             }
 
             // validate dropship
+            var checkoutWithDropship = false
             val itemList = listData.value.toMutableList()
             for ((index, checkoutOrderModel) in itemList.withIndex()) {
                 if (checkoutOrderModel is CheckoutOrderModel) {
@@ -1868,9 +1869,16 @@ class CheckoutViewModel @Inject constructor(
                         pageState.value = CheckoutPageState.Normal
                         pageState.value = CheckoutPageState.ScrollTo(index)
                         return@launch
+                    } else if (checkoutOrderModel.useDropship && checkoutOrderModel.dropshipName.isNotEmpty() &&
+                        checkoutOrderModel.dropshipPhone.isNotEmpty() && checkoutOrderModel.isDropshipNameValid &&
+                        checkoutOrderModel.isDropshipPhoneValid
+                    ) {
+                        checkoutWithDropship = true
                     }
                 }
             }
+
+            if (checkoutWithDropship) mTrackerShipment.eventClickPilihPembayaranWithDropshipEnabled()
 
             val validateUsePromoRevampUiModel = promoProcessor.finalValidateUse(
                 promoProcessor.generateValidateUsePromoRequest(
