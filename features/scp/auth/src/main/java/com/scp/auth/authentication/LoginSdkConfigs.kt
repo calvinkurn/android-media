@@ -41,7 +41,7 @@ class LoginSdkConfigs(val context: Context) : LSdkConfig {
         return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
             LSdkEnvironment.DEV
         } else {
-            LSdkEnvironment.ALPHA
+            LSdkEnvironment.PROD
         }
     }
 }
