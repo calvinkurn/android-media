@@ -33,14 +33,14 @@ The single review form is a page built using a BottomSheet and placed in a trans
 
 
 
-| ![](res/review good rating.png)<br/> | ![](res/bad rating.png)<br/> | ![](res/review good rating with attachment.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/review/review good rating.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/review/bad rating.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/review/review good rating with attachment.png)<br/> |
 | --- | --- | --- |
 
 # Flowchart
 
-![](res/Single review form.drawio (1).png)
+![](https://docs-android.tokopedia.net/images/docs/review/Single review form.drawio (1).png)
 
-![](res/Submit review flow.drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/review/Submit review flow.drawio.png)
 
 # Navigation
 

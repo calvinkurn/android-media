@@ -82,6 +82,6 @@ data class WithoutGroupDataItem(
 	@field:SerializedName("stat_avg_click")
 	val statAvgClick: String = "",
 
-	@field:SerializedName("stat_total_roas")
+	@field:SerializedName("stat_direct_roas")
 	val statTotalRoas: String = ""
 ) : Parcelable

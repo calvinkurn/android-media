@@ -24,7 +24,7 @@ When user wants to use Same Day/Instant Courier, they need to provide the addres
 
 Example can be seen in features/transaction/checkout/src/main/java/com/tokopedia/checkout/view/ShipmentFragment.java (`navigateToPinpointActivity`)
 
-![](../res/addpinpointonexistingaddress/background.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticaddaddress/addpinpointonexistingaddress/background.png)
 
 ## How-to
 

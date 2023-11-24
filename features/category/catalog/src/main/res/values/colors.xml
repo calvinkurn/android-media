@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="catalog_dms_floating_background">#B32E3137</color>
+    <color name="catalog_dms_column_info_value_color_light">#212121</color>
+    <color name="catalog_dms_column_info_value_color_dark">#F5F6FF</color>
     <color name="catalog_dms_dark_color">#AAB4C8</color>
     <color name="catalog_dms_light_color">#FFFFFF</color>
     <color name="catalog_dms_dark_color_banner">#F5F6FF</color>
@@ -17,4 +19,6 @@
     <color name="catalog_dms_light_color_accordion_arrow">#2E3137</color>
     <color name="catalog_dms_dark_color_support_feature">#F5F6FF</color>
     <color name="catalog_dms_light_color_support_feature">#212121</color>
+    <color name="catalog_dms_dark_color_text_common">#F5F6FF</color>
+    <color name="catalog_dms_light_color_text_common">#212121</color>
 </resources>

@@ -52,6 +52,7 @@ data class Voucher(
     val isParent: Boolean = false,
     val labelVoucher: LabelVoucher = LabelVoucher(),
     val isEditable: Boolean = false,
+    val isStoppable: Boolean = false,
     val subsidyDetail: SubsidyDetail = SubsidyDetail(),
     val galadrielVoucherId: Long = 0
 ) : Parcelable {

@@ -27,29 +27,29 @@ There are millions of products and shops available in Tokopedia. Search feature 
 ### Project Description
 Search Result Page is a page to show list of products or shops based on the keyword input from the user. It may also contains Top Ads and some product recommendations. Users can use some filters to narrow down the search result. List of Products and Shops shown are separated with tab.
 
-![image](res/product_tab_description.png)
+![image](https://docs-android.tokopedia.net/images/docs/search/product_tab_description.png)
 
-![image](res/shop_tab_description.png)
+![image](https://docs-android.tokopedia.net/images/docs/search/shop_tab_description.png)
 
 ## Diagram
 
 ### Search Result Page
 Search Result Page is an activity with tabs: tab Product and tab Shop. Each tab is a Fragment within the ViewPager and the Search Bar is a component from NavToolbar.
 
-![image](res/srp_diagram.png)
+![image](https://docs-android.tokopedia.net/images/docs/search/srp_diagram.png)
 
 ### Search Result - Product Tab
 Search Result Product consists of Product Cards together with other component or sub features, such as Top Ads, Broad Match, Inspiration Carousels, Inspiration Widgets, Banner, etc. This is the class diagram between Search Result Product Fragment, Presenter, and any of its components:
 
-![image](res/product_diagram.png)
+![image](https://docs-android.tokopedia.net/images/docs/search/product_diagram.png)
 
 ### Search Result - Shop Tab
 Search Result Shop consists of Shop Cards with other component or sub features, such as Top Ads Headline and Suggestion. However, unlike Product tab, all the logic for its main features and sub features are inside the ViewModel, because Shop tab is still relatively simple compared to Product tab.
 
-![image](res/shop_diagram.png)
+![image](https://docs-android.tokopedia.net/images/docs/search/shop_diagram.png)
 
 ## Navigation
-![image](res/navigation.png)
+![image](https://docs-android.tokopedia.net/images/docs/search/navigation.png)
 
 ## How To
 

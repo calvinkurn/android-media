@@ -8,17 +8,20 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 interface RecommendationVisitable : Visitable<RecommendationTypeFactory> {
     val metadata: RecommendationWidgetMetadata
     val trackingModel: RecommendationWidgetTrackingModel
-
+    val userId: String
     companion object {
         fun create(
             metadata: RecommendationWidgetMetadata = RecommendationWidgetMetadata(),
             trackingModel: RecommendationWidgetTrackingModel = RecommendationWidgetTrackingModel(),
+            userId: String = ""
         ): RecommendationVisitable {
             return object : RecommendationVisitable {
                 override val metadata: RecommendationWidgetMetadata
                     get() = metadata
                 override val trackingModel: RecommendationWidgetTrackingModel
                     get() = trackingModel
+                override val userId: String
+                    get() = userId
 
                 override fun type(typeFactory: RecommendationTypeFactory?): Int {
                     return 0

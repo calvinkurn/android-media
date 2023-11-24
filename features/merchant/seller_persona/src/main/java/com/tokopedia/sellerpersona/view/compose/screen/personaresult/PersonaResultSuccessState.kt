@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -124,9 +125,14 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
                         .tag(ComposeTag.Result.LBL_STATUS)
                 )
             }
-            NestSwitch(defaultIsChecked = data.isSwitchChecked) {
-                onEvent(ResultUiEvent.OnSwitchCheckChanged(it))
-            }
+            NestSwitch(
+                isChecked = data.isSwitchChecked,
+                modifier = Modifier.wrapContentSize(),
+                isEnabled = true,
+                onCheckedChanged = {
+                    onEvent(ResultUiEvent.OnSwitchCheckChanged(it))
+                }
+            )
         }
         NestTypography(
             text = stringResource(R.string.sp_persona_activation_content_description),

@@ -38,6 +38,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -141,7 +142,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.net.URLEncoder
@@ -1927,7 +1927,7 @@ class AddEditProductPreviewFragment :
     private fun showAdminNotEligibleView() {
         adminRevampGlobalError?.run {
             val permissionGroup = SellerHomePermissionGroup.PRODUCT
-            ImageUtils.loadImage(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
+            errorIllustration.loadImage(AdminPermissionUrl.ERROR_ILLUSTRATION)
             errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)
             errorDescription.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_desc, permissionGroup)
             errorAction.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_action)
