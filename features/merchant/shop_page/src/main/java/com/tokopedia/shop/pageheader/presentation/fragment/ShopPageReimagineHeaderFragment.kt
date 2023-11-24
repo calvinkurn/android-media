@@ -479,9 +479,8 @@ class ShopPageReimagineHeaderFragment :
         outState.putBoolean(SAVED_IS_CONFETTI_ALREADY_SHOWN, isConfettiAlreadyShown)
     }
 
-    override fun getContentCreationListener(): ContentCreationBottomSheet.ContentCreationBottomSheetListener =
-        object : ContentCreationBottomSheet.ContentCreationBottomSheetListener {
-            override fun onCreationItemSelected(data: ContentCreationItemModel) {}
+    override fun getContentCreationListener(): ContentCreationBottomSheet.Listener =
+        object : ContentCreationBottomSheet.Listener {
 
             override fun onCreationNextClicked(data: ContentCreationItemModel) {
                 when (data.type) {

@@ -80,7 +80,7 @@ import com.tokopedia.creation.common.R as creationcommonR
  */
 class FeedBaseFragment :
     BaseDaggerFragment(),
-    ContentCreationBottomSheet.ContentCreationBottomSheetListener,
+    ContentCreationBottomSheet.Listener,
     FragmentListener {
 
     private var _binding: FragmentFeedBaseBinding? = null
@@ -270,10 +270,6 @@ class FeedBaseFragment :
 
     override fun getScreenName(): String = "Feed Fragment"
 
-    override fun onCreationItemSelected(data: ContentCreationItemModel) {
-        /* TODO : Add Analytics, if any */
-    }
-
     override fun onCreationNextClicked(data: ContentCreationItemModel) {
         when (data.type) {
             ContentCreationTypeEnum.LIVE -> {
@@ -318,7 +314,6 @@ class FeedBaseFragment :
             }
 
             ContentCreationTypeEnum.STORY -> {
-                /* TODO : Add Analytics, if any */
                 openAppLink.launch(data.applink)
             }
 
@@ -766,7 +761,7 @@ class FeedBaseFragment :
 
     private fun onCreatePostClicked() {
         ContentCreationBottomSheet
-            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .getOrCreateFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)
     }
 

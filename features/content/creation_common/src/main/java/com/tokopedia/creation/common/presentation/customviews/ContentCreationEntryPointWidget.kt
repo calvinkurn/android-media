@@ -71,7 +71,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
     private val analytics: ContentCreationAnalytics = component.contentCreationAnalytics()
 
     private var viewModel: ContentCreationViewModel? = null
-    var creationBottomSheetListener: ContentCreationBottomSheet.ContentCreationBottomSheetListener? =
+    var creationBottomSheetListener: ContentCreationBottomSheet.Listener? =
         null
     var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
 
@@ -128,7 +128,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
 
                 getFragmentManager()?.let { fm ->
                     ContentCreationBottomSheet
-                        .getFragment(fm, context.classLoader)
+                        .getOrCreateFragment(fm, context.classLoader)
                         .show(fm)
                 }
             }
