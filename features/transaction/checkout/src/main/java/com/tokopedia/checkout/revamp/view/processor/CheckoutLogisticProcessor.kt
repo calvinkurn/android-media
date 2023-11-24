@@ -286,6 +286,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             .promoCode(pslCode)
             .cartData(cartDataForRates)
             .warehouseId(orderModel.fulfillmentId.toString())
+            .groupMetadata(orderModel.groupMetadata)
         if (useMvc) {
             ratesParamBuilder.mvc(generateRatesMvcParam(orderModel.cartStringGroup, promo))
         }
