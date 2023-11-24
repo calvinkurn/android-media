@@ -521,7 +521,6 @@ class MiniCartV2Widget @JvmOverloads constructor(
     * This will trigger widget to update the UI with provided data
     * */
     fun refresh(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        setTotalAmountLoading(true)
         viewModel?.setMiniCartABTestData(miniCartSimplifiedData.miniCartWidgetData.isOCCFlow, miniCartSimplifiedData.miniCartWidgetData.buttonBuyWording)
         viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)
     }
