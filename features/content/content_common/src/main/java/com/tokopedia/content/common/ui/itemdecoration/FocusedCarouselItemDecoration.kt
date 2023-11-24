@@ -21,7 +21,7 @@ abstract class FocusedCarouselItemDecoration(
     context: Context
 ) : RecyclerView.ItemDecoration() {
 
-    protected val offset6 = context.resources.getDimensionPixelOffset(contentcommonR.dimen.content_common_space_6)
+    abstract val horizontalOffset: Int
     protected open val roundedOffset = context.resources.getDimensionPixelOffset(contentcommonR.dimen.content_common_space_12)
 
     private val distanceBeforeScale = context.resources.getDimension(
@@ -37,8 +37,8 @@ abstract class FocusedCarouselItemDecoration(
         color = overlayColor
     }
 
-    fun getHorizontalOffset(): Int {
-        return 2 * offset6
+    fun getTotalHorizontalOffset(): Int {
+        return 2 * horizontalOffset
     }
     override fun getItemOffsets(
         outRect: Rect,
@@ -46,8 +46,8 @@ abstract class FocusedCarouselItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        outRect.left = offset6
-        outRect.right = offset6
+        outRect.left = horizontalOffset
+        outRect.right = horizontalOffset
     }
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {

@@ -42,7 +42,7 @@ class RechargeHomepageProductCardsViewHolder(itemView: View, val listener: Recha
                 viewRechargeHomeProductCardsContainer.hide()
                 viewRechargeHomeProductCardsShimmering.root.show()
 
-                listener.loadRechargeSectionData(element.visitableId())
+                listener.loadRechargeSectionData(element.visitableId(), element.section.name)
             }
         }
     }

@@ -146,7 +146,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
@@ -973,6 +972,9 @@ open class HomeAccountUserFragment :
         if (accountPref.isShowCoachmark()) {
             setCoachMark()
         }
+        if (shouldScrollToSafeMode()) {
+            scrollToSafeMode()
+        }
     }
 
     private fun setCoachMark() {
@@ -1188,7 +1190,8 @@ open class HomeAccountUserFragment :
                 accountPref,
                 permissionChecker,
                 isShowDarkModeToggle,
-                isShowScreenRecorder
+                isShowScreenRecorder,
+                isExpanded = shouldScrollToSafeMode()
             ),
             addSeparator = true
         )
@@ -1611,6 +1614,19 @@ open class HomeAccountUserFragment :
         adapter?.notifyItemChanged(POSITION_3)
     }
 
+    private fun shouldScrollToSafeMode(): Boolean {
+        return arguments?.containsKey(AccountConstants.PARAM_SCROLL_TO) ?: false &&
+            arguments?.getString(AccountConstants.PARAM_SCROLL_TO, "") == AccountConstants.SCROLL_TO_SAFEMODE
+    }
+
+    private fun scrollToSafeMode() {
+        lifecycleScope.launch {
+            // add delay to make sure the items are fully loaded
+            delay(1000)
+            binding?.homeAccountUserFragmentRv?.smoothScrollToPosition(POSITION_3)
+        }
+    }
+
     private fun updateSafeModeSwitch(isEnable: Boolean) {
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID }?.isChecked =
             isEnable
@@ -1793,7 +1809,7 @@ open class HomeAccountUserFragment :
                 addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
             val bottomSheet = BottomSheetUnify()
 
-            ImageUtils.loadImage(iconAddName, getString(R.string.add_name_url_icon))
+            iconAddName.loadImage(getString(R.string.add_name_url_icon))
             iconAddName.setOnClickListener {
                 gotoChangeName(profile)
                 bottomSheet.dismiss()

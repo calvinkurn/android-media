@@ -59,7 +59,7 @@ class TopAdsGroupPerformanceUseCase @Inject constructor(
                  click_growth
                  percent_impression_growth
                  percent_total_sold_growth
-                 percent_roas_growth
+                 percent_direct_roas_growth
                  impression
                  top_slot_impression
                  generalised_insight_category

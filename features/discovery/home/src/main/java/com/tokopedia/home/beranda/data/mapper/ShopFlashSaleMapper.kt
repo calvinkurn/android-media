@@ -42,7 +42,7 @@ object ShopFlashSaleMapper {
             ),
             tabList = channel.grids.mapIndexed { index, grid ->
                 ShopFlashSaleTabDataModel(
-                    grid.mapToChannelGrid(index),
+                    grid.mapToChannelGrid(index, useDtAsShopBadge = true),
                     channel.mapToTrackingAttributionModel(verticalPosition),
                     index == 0
                 )
