@@ -3,7 +3,7 @@
     <item android:gravity="top">
         <shape>
             <size android:height="1dp" />
-            <solid android:color="@color/dividerunify_background" />
+            <solid android:color="@color/_dms_som_pof_footer_background" />
         </shape>
     </item>
 </layer-list>
