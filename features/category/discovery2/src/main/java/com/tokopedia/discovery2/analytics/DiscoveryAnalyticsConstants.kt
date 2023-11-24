@@ -295,3 +295,7 @@ const val ITEMS = "items"
 
 const val TRACKER_ID_BMGM_ATC = "48399"
 const val TRACKER_ID_BMGM_CLICK_SEE_MORE= "48397"
+
+const val PLAY_BANNER_TYPE = "play_widget_banner"
+const val PLAY_CHANNEL_V2_TYPE = "play_widget_channel_v2"
+const val PLAY_CHANNEL_TYPE = "play_widget_channel"
