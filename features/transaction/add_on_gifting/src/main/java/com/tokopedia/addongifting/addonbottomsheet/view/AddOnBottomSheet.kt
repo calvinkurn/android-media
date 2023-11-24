@@ -46,6 +46,7 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.google.android.material.R as materialR
 
 class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
 
@@ -338,7 +339,7 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
 
     override fun onStart() {
         super.onStart()
-        val touchOutsideView = dialog?.window?.decorView?.findViewById<View>(com.google.android.material.R.id.touch_outside)
+        val touchOutsideView = dialog?.window?.decorView?.findViewById<View>(materialR.id.touch_outside)
         touchOutsideView?.setOnClickListener {
             viewModel.validateCloseAction()
         }

@@ -96,6 +96,9 @@ object TrackingUtil {
         return mapEvent as HashMap<String, Any>?
     }
 
+    fun generateLayoutValue(productInfo: DynamicProductInfoP1?) =
+        "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
+
     fun getTradeInString(isTradein: Boolean, isDiagnosed: Boolean): String {
         return if (isTradein && isDiagnosed) {
             ProductTrackingConstant.Tracking.TRADEIN_TRUE_DIAGNOSTIC
@@ -175,17 +178,24 @@ object TrackingUtil {
         componentTrackDataModel: ComponentTrackDataModel?,
         elementName: String
     ) {
-        mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productInfo?.basic?.productID
-            ?: ""
-        mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
+        val map = mapEvent + getComponentTracker(productInfo, componentTrackDataModel, elementName)
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
 
-        if (componentTrackDataModel != null) {
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:$elementName;cpos:${componentTrackDataModel.adapterPosition};"
-        } else {
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = ""
-        }
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    fun getComponentTracker(
+        productInfo: DynamicProductInfoP1?,
+        componentTrackDataModel: ComponentTrackDataModel?,
+        elementName: String
+    ): Map<String, Any> {
+        return mapOf(
+            ProductTrackingConstant.Tracking.KEY_PRODUCT_ID to productInfo?.basic?.productID.orEmpty(),
+            ProductTrackingConstant.Tracking.KEY_LAYOUT to "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
+            ProductTrackingConstant.Tracking.KEY_COMPONENT to if (componentTrackDataModel != null) {
+                 "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:$elementName;cpos:${componentTrackDataModel.adapterPosition};"
+            } else {
+                ""
+            }
+        )
     }
 
     fun addClickEvent(

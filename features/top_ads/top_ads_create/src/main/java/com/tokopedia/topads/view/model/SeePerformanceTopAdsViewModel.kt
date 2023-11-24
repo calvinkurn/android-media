@@ -17,13 +17,12 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsU
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.common.domain.model.TopAdsGetProductManage
 import com.tokopedia.topads.common.domain.model.TopAdsGetShopInfo
-import com.tokopedia.topads.common.domain.usecase.GetTopadsDashboardGroups
+import com.tokopedia.topads.common.domain.query.GetTopadsDashboardGroupsV3
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetAutoAdsUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetProductManageUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetShopInfoV1UseCase
-import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetTotalAdsAndKeywordsUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -55,8 +54,6 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
     lateinit var topAdsGetGroupInfoUseCase: GraphqlUseCase<TopAdsGroupsResponse>
     @Inject
     lateinit var topAdsProductActionUseCase: TopAdsProductActionUseCase
-    @Inject
-    lateinit var whiteListedUserUseCase: GetWhiteListedUserUseCase
 
     private val _topAdsDeposits: MutableLiveData<Result<Deposit>> = MutableLiveData()
     val topAdsDeposits: LiveData<Result<Deposit>> = _topAdsDeposits
@@ -181,7 +178,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
             )
         )
         topAdsGetGroupInfoUseCase.setTypeClass(TopAdsGroupsResponse::class.java)
-        topAdsGetGroupInfoUseCase.setGraphqlQuery(GetTopadsDashboardGroups())
+        topAdsGetGroupInfoUseCase.setGraphqlQuery(GetTopadsDashboardGroupsV3)
         launchCatchError(block = {
             val response = withContext(dispatchers.io) {
                 topAdsGetGroupInfoUseCase.executeOnBackground()

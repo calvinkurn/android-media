@@ -1,10 +1,12 @@
 package com.tokopedia.autocompletecomponent.suggestion.doubleline
 
 import android.graphics.Typeface
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.StyleSpan
+import android.text.style.TypefaceSpan
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -14,12 +16,13 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteDoubleLineItemBinding
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
+import com.tokopedia.autocompletecomponent.util.getBoldStyle
 import com.tokopedia.autocompletecomponent.util.safeSetSpan
-import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
@@ -79,8 +82,6 @@ class SuggestionDoubleLineViewHolder(
     }
 
     private fun bindTextTitle(item: SuggestionDoubleLineDataDataView) {
-        val doubleLineTitle = binding?.doubleLineTitle ?: return
-        layoutStrategy.bindTitle(doubleLineTitle)
         when {
             item.data.isBoldAllText() -> {
                 bindAllBoldTextTitle(item.data)
@@ -131,7 +132,7 @@ class SuggestionDoubleLineViewHolder(
 
     private fun highlightTitleBeforeKeyword(highlightedTitle: SpannableString) {
         highlightedTitle.safeSetSpan(
-            StyleSpan(Typeface.BOLD),
+            getBoldStyle(itemView.context),
             0,
             searchQueryStartIndexInKeyword,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -143,7 +144,7 @@ class SuggestionDoubleLineViewHolder(
         val highlightAfterKeywordEndIndex = highlightedTitle.length
 
         highlightedTitle.safeSetSpan(
-            StyleSpan(Typeface.BOLD),
+            getBoldStyle(itemView.context),
             highlightAfterKeywordStartIndex,
             highlightAfterKeywordEndIndex,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE

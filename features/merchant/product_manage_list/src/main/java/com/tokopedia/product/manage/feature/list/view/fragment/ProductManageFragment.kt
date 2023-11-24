@@ -468,6 +468,9 @@ open class ProductManageFragment :
         get() = binding?.layoutFragmentProductManage?.checkBoxSelectAll
     private val btnMultiEdit: CardView?
         get() = binding?.layoutFragmentProductManage?.btnMultiEdit
+
+    private val btnChangeAll: UnifyButton?
+        get() = binding?.layoutFragmentProductManage?.btnChangeAll
     private val recyclerView: RecyclerView?
         get() = binding?.layoutFragmentProductManage?.recyclerView
     private val progressBar: LoaderUnify?
@@ -1238,7 +1241,7 @@ open class ProductManageFragment :
             ProductManageTracking.eventMultipleSelect()
         }
 
-        btnMultiEdit?.setOnClickListener {
+        btnChangeAll?.setOnClickListener {
             multiEditBottomSheet?.show(viewModel.shopStatus.value?.isOnModerationMode().orFalse())
             ProductManageTracking.eventBulkSettings()
         }

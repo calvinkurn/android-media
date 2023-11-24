@@ -52,7 +52,8 @@ private val nonFilterParameterKeyList = setOf(
     SearchApiConst.DEVICE,
     SearchApiConst.PAGE_SOURCE,
     SearchApiConst.SHOW_ADULT,
-    SearchApiConst.MANUAL_FILTER
+    SearchApiConst.MANUAL_FILTER,
+    SearchApiConst.DISABLE_AUTO_FILTER_SORT,
 )
 private val postProcessingFilter = mapOf(
     SearchApiConst.IS_FULFILLMENT to "true",

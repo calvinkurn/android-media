@@ -2,8 +2,32 @@ package com.tokopedia.statistic.di.module
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.sellerhomecommon.domain.mapper.*
-import com.tokopedia.sellerhomecommon.domain.usecase.*
+import com.tokopedia.sellerhomecommon.domain.mapper.AnnouncementMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.BarChartMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.CardMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.CarouselMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.LayoutMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.LineGraphMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.MultiComponentMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.MultiLineGraphMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.PieChartMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.ProgressMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.TableMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.TickerMapper
+import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiComponentDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTickerUseCase
 import com.tokopedia.statistic.di.StatisticScope
 import dagger.Module
 import dagger.Provides
@@ -121,6 +145,16 @@ class StatisticUseCaseModule {
             dispatchers: CoroutineDispatchers
     ): GetAnnouncementDataUseCase {
         return GetAnnouncementDataUseCase(gqlRepository, mapper, dispatchers)
+    }
+
+    @StatisticScope
+    @Provides
+    fun provideGetMultiComponentDataUseCase(
+        gqlRepository: GraphqlRepository,
+        mapper: MultiComponentMapper,
+        dispatchers: CoroutineDispatchers
+    ): GetMultiComponentDataUseCase {
+        return GetMultiComponentDataUseCase(gqlRepository, mapper, dispatchers)
     }
 
     @StatisticScope

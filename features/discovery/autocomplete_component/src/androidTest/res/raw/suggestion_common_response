@@ -58,7 +58,8 @@
               "label_type": "",
               "tracking": {
                 "code": ""
-              }
+              },
+              "tracking_option": 3
             },
             {
               "template": "list_single_line",
@@ -154,7 +155,8 @@
               "label_type": "",
               "tracking": {
                 "code": ""
-              }
+              },
+              "tracking_option": 2
             },
             {
               "template": "list_double_line",
@@ -172,7 +174,8 @@
               "label_type": "",
               "tracking": {
                 "code": ""
-              }
+              },
+              "tracking_option": 2
             },
             {
               "template": "list_double_line_without_image",
@@ -190,7 +193,8 @@
               "label_type": "",
               "tracking": {
                 "code": ""
-              }
+              },
+              "tracking_option": 2
             },
             {
               "template": "list_double_line_without_image",
@@ -208,7 +212,8 @@
               "label_type": "",
               "tracking": {
                 "code": ""
-              }
+              },
+              "tracking_option": 2
             },
             {
               "template": "top_shop_widget",
@@ -226,7 +231,8 @@
               "label_type": "",
               "tracking": {
                 "code": ""
-              }
+              },
+              "tracking_option": 2
             },
             {
               "template": "header",
@@ -266,6 +272,7 @@
               "tracking": {
                 "code": ""
               },
+              "tracking_option": 2,
               "discount_percentage": "",
               "original_price": "",
               "child_items": [

@@ -11,6 +11,7 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -67,6 +68,13 @@ class PartialProductItemViewHolder(
         setupTotalPrice(element.totalPriceText)
         setupInsurance(element.insurance)
         setupShareButton(element.productUrl)
+        setupWarrantyButtonImpressListener(element)
+    }
+
+    private fun setupWarrantyButtonImpressListener(element: ProductListUiModel.ProductUiModel) {
+        itemView?.addOnImpressionListener(element.impressHolder) {
+            listener.onProductImpressed(element)
+        }
     }
 
     private fun setupShareButton(productUrl: String?) {
@@ -100,6 +108,8 @@ class PartialProductItemViewHolder(
         if (oldItem.isPof != newItem.isPof) {
             setupCardProductAlpha(newItem.isPof)
         }
+
+        setupWarrantyButtonImpressListener(element)
 
         container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
     }
@@ -183,11 +193,17 @@ class PartialProductItemViewHolder(
         when (element.button.key) {
             BuyerOrderDetailActionButtonKey.BUY_AGAIN -> addToCart()
             BuyerOrderDetailActionButtonKey.SEE_SIMILAR_PRODUCTS -> seeSimilarProducts()
+            BuyerOrderDetailActionButtonKey.WARRANTY_CLAIM -> goToWarrantyClaim()
         }
     }
 
     private fun addToCart() {
         listener.onBuyAgainButtonClicked(element)
+    }
+
+    private fun goToWarrantyClaim() {
+        navigator.openAppLink(element.button.url, true)
+        BuyerOrderDetailTracker.eventClickWarrantyClaim(element.orderId)
     }
 
     private fun seeSimilarProducts() {
@@ -212,6 +228,7 @@ class PartialProductItemViewHolder(
 
     interface ProductViewListener {
         fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel)
+        fun onProductImpressed(product: ProductListUiModel.ProductUiModel)
     }
 
     interface ShareProductBottomSheetListener {

@@ -2,6 +2,7 @@ package com.tokopedia.scp_rewards.detail.domain
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.scp_rewards.common.utils.API_VERSION_PARAM
 import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
 import javax.inject.Inject
 
@@ -23,13 +24,14 @@ class MedalDetailUseCase @Inject constructor() : GraphqlUseCase<MedalDetailRespo
     private fun getRequestParams(medaliSlug: String, sourceName: String, pageName: String) = mapOf(
         PAGE_NAME_KEY to pageName,
         MEDALI_SLUG_KEY to medaliSlug,
-        SOURCE_NAME_KEY to sourceName
+        SOURCE_NAME_KEY to sourceName,
+        API_VERSION_PARAM to "2.0.0"
     )
 }
 
 private const val SCP_REWARDS_MEDAL_DETAIL_QUERY = """
-    query scpRewardsMedaliDetailPage(${'$'}pageName:String, ${'$'}medaliSlug:String, ${'$'}sourceName:String) {
-      scpRewardsMedaliDetailPage(input:{pageName:${'$'}pageName, medaliSlug:${'$'}medaliSlug, sourceName:${'$'}sourceName}) {
+    query scpRewardsMedaliDetailPage(${'$'}apiVersion: String!,${'$'}pageName:String, ${'$'}medaliSlug:String, ${'$'}sourceName:String) {
+      scpRewardsMedaliDetailPage(input:{apiVersion:${'$'}apiVersion,pageName:${'$'}pageName, medaliSlug:${'$'}medaliSlug, sourceName:${'$'}sourceName}) {
         resultStatus {
           code
           status
@@ -77,6 +79,15 @@ private const val SCP_REWARDS_MEDAL_DETAIL_QUERY = """
             isActive
             status
             statusDescription
+          }
+          section {
+            id
+            layout
+            medaliSectionTitle {
+              content
+            }
+            backgroundColor
+            jsonParameter
           }
           benefitButton {
             unifiedStyle

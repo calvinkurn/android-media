@@ -27,7 +27,6 @@ import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
 import com.tokopedia.home_account.domain.usecase.OfferInterruptUseCase
 import com.tokopedia.home_account.domain.usecase.SaveAttributeOnLocalUseCase
 import com.tokopedia.home_account.domain.usecase.UpdateSafeModeUseCase
-import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
 import com.tokopedia.home_account.view.mapper.ProfileWithDataStoreMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
@@ -39,7 +38,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.ocl.OclPreference
-import com.tokopedia.sessioncommon.data.ocl.OclStatus
 import com.tokopedia.sessioncommon.domain.usecase.GetOclStatusUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -70,7 +68,6 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
     private val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
     private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
-    private val getPhoneUseCase: GetUserProfile,
     private val userProfileSafeModeUseCase: GetSafeModeUseCase,
     private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
     private val tokopediaPlusUseCase: TokopediaPlusUseCase,
@@ -119,9 +116,6 @@ class HomeAccountUserViewModel @Inject constructor(
     val balanceAndPoint: LiveData<ResultBalanceAndPoint<WalletappGetAccountBalance>>
         get() = _balanceAndPoint
 
-    private val _phoneNo = MutableLiveData<String>()
-    val phoneNo: LiveData<String> get() = _phoneNo
-
     private val _safeModeStatus = MutableLiveData<Boolean>()
     val safeModeStatus: LiveData<Boolean> get() = _safeModeStatus
 
@@ -133,9 +127,9 @@ class HomeAccountUserViewModel @Inject constructor(
     val tokopediaPlusData: LiveData<Result<TokopediaPlusDataModel>>
         get() = _tokopediaPlusData
 
-    private val _getOclStatus = MutableLiveData<OclStatus>()
-    val getOclStatus: LiveData<OclStatus>
-        get() = _getOclStatus
+    private val _isOclEligible = MutableLiveData<Boolean>()
+    val isOclEligible: LiveData<Boolean>
+        get() = _isOclEligible
 
     fun refreshUserProfile() {
         launch {
@@ -143,20 +137,6 @@ class HomeAccountUserViewModel @Inject constructor(
                 userProfileAndSaveSessionUseCase(Unit)
             } catch (ignored: Exception) {}
         }
-    }
-
-    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
-    fun refreshPhoneNo() {
-        launchCatchError(block = {
-            val profile = getPhoneUseCase(Unit)
-            val phone = profile.profileInfo.phone
-            if (phone.isNotEmpty()) {
-                userSession.phoneNumber = phone
-                _phoneNo.value = phone
-            }
-        }, onError = {
-                _phoneNo.value = ""
-            })
     }
 
     fun getFingerprintStatus() {
@@ -176,9 +156,13 @@ class HomeAccountUserViewModel @Inject constructor(
         launch {
             try {
                 val result = getOclStatusUseCase(oclPreference.getToken())
-                _getOclStatus.value = result
+                _isOclEligible.value = result.isShowing
             } catch (ignored: Exception) { }
         }
+    }
+
+    fun setOneTapStatus(isEligible: Boolean) {
+        _isOclEligible.value = isEligible
     }
 
     fun setSafeMode(isActive: Boolean) {

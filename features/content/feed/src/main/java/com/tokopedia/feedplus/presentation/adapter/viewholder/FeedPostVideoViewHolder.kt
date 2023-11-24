@@ -25,6 +25,8 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SCROLLING_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_VIDEO_PRODUCT_ICON_ANIM_PAUSE
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_VIDEO_PRODUCT_ICON_ANIM_RESUME
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.customview.FeedPlayerControl
@@ -95,8 +97,6 @@ class FeedPostVideoViewHolder(
         binding.feedCommentButton.root,
         binding.menuButton,
         binding.shareButton,
-        binding.productTagButton.root,
-        binding.productTagView.root,
         binding.overlayTop.root,
         binding.overlayBottom.root,
         binding.overlayRight.root,
@@ -312,6 +312,14 @@ class FeedPostVideoViewHolder(
                 onScrolling(false)
             }
 
+            if (payloads.contains(FEED_VIDEO_PRODUCT_ICON_ANIM_PAUSE)) {
+                onNotSelected()
+            }
+
+            if (payloads.contains(FEED_VIDEO_PRODUCT_ICON_ANIM_RESUME)) {
+                onSelected(element)
+            }
+
             payloads.forEach { payload ->
                 if (payload is FeedViewHolderPayloads) {
                     bind(
@@ -389,7 +397,8 @@ class FeedPostVideoViewHolder(
             totalProducts = data.totalProducts,
             trackerData = trackerDataModel,
             positionInFeed = absoluteAdapterPosition,
-            topAdsTrackerData = null
+            topAdsTrackerData = null,
+            contentType = data.contentType
         )
     }
 
@@ -536,9 +545,11 @@ class FeedPostVideoViewHolder(
         )
         campaignView.resetView()
         campaignView.startAnimation()
+        mVideoPlayer?.toggleVideoVolume(listener.isMuted())
         mVideoPlayer?.resume()
         listener.onWatchPostVideo(element, trackerModel)
         onScrolling(false)
+        productButtonView.playProductIconAnimation()
     }
 
     private fun onNotSelected() {
@@ -546,9 +557,9 @@ class FeedPostVideoViewHolder(
         mVideoPlayer?.pause()
         mVideoPlayer?.reset()
         onScrolling(false)
-
         campaignView.resetView()
         hideClearView()
+        productButtonView.pauseProductIconAnimation()
     }
 
     override fun onViewRecycled() {

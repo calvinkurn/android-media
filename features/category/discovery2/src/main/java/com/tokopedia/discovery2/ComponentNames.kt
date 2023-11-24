@@ -132,5 +132,20 @@ enum class ComponentNames(val componentName: String) {
 
     ContentCard("content_card"),
     ContentCardItem("content_card_item"),
-    ProductHighlight("product_highlight")
+    ProductHighlight("product_highlight"),
+
+    // Product Card Column List
+    ProductCardColumnList(
+        componentName = "product_card_column_list"
+    ),
+
+    FlashSaleTokoTab("tabs_flash_sale_toko"),
+
+    ViewAllCardCarousel("view_all_card_carousel"),
+  
+    MerchantVoucherGrid("merchant_voucher_grid_infinite"),
+    MerchantVoucherGridItem("merchant_voucher_grid_infinite_item"),
+    
+    ShopOfferHeroBrand("shop_offer_hero_brand"),
+    ShopOfferHeroBrandProductItem("shop_offer_hero_brand_product_item")
 }

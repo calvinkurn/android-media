@@ -6,23 +6,19 @@ import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
-import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
-import com.tokopedia.logisticCommon.data.constant.AddressConstant.ANA_REVAMP_FEATURE_ID
-import com.tokopedia.logisticCommon.data.constant.AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetStateChosenAddressUseCase
+import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressFromAddressUseCase
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.TickerDataProvider
-import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.domain.response.DefaultPeopleAddressData
 import com.tokopedia.manageaddress.domain.response.DeletePeopleAddressData
@@ -65,6 +61,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -81,13 +78,13 @@ class ManageAddressViewModelTest {
     private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase = mockk(relaxed = true)
     private val setDefaultPeopleAddressUseCase =
         mockk<SetDefaultPeopleAddressUseCase>(relaxed = true)
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase = mockk(relaxed = true)
     private val getUserConsentCollection: GetConsentCollectionUseCase = mockk(relaxed = true)
-    private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
+    private val setStateChosenAddressFromAddressUseCase: SetStateChosenAddressFromAddressUseCase =
+        mockk(relaxed = true)
+    private val getStateChosenAddressUseCase: GetStateChosenAddressUseCase = mockk(relaxed = true)
+
     private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
     private val chosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
-    private val eligibleForAddressFeatureObserver: Observer<Result<EligibleForAddressFeatureModel>> =
-        mockk(relaxed = true)
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase =
         mockk(relaxed = true)
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase =
@@ -117,19 +114,16 @@ class ManageAddressViewModelTest {
             getPeopleAddressUseCase,
             deletePeopleAddressUseCase,
             setDefaultPeopleAddressUseCase,
-            chooseAddressRepo,
             chooseAddressMapper,
-            eligibleForAddressUseCase,
             validateShareAddressAsReceiverUseCase,
             validateShareAddressAsSenderUseCase,
             tickerUseCase,
-            getUserConsentCollection
+            getUserConsentCollection,
+            setStateChosenAddressFromAddressUseCase,
+            getStateChosenAddressUseCase
         )
         manageAddressViewModel.getChosenAddress.observeForever(chosenAddressObserver)
         manageAddressViewModel.setChosenAddress.observeForever(chosenAddressObserver)
-        manageAddressViewModel.eligibleForAddressFeature.observeForever(
-            eligibleForAddressFeatureObserver
-        )
         manageAddressViewModel.setDefault.observeForever(observerManageAddressState)
         manageAddressViewModel.addressList.observeForever(observerManageAddressStateAddressList)
         manageAddressViewModel.resultRemovedAddress.observeForever(observerResultRemovedAddress)
@@ -355,8 +349,7 @@ class ManageAddressViewModelTest {
     @Test
     fun `Get Chosen Address Success`() {
         coEvery {
-            chooseAddressRepo.getStateChosenAddress(
-                any(),
+            getStateChosenAddressUseCase(
                 any()
             )
         } returns GetStateChosenAddressQglResponse()
@@ -367,8 +360,7 @@ class ManageAddressViewModelTest {
     @Test
     fun `Get Chosen Address Fail`() {
         coEvery {
-            chooseAddressRepo.getStateChosenAddress(
-                any(),
+            getStateChosenAddressUseCase(
                 any()
             )
         } throws Throwable("test error")
@@ -379,7 +371,7 @@ class ManageAddressViewModelTest {
     @Test
     fun `Set Chosen Address Success`() {
         val model = RecipientAddressModel()
-        coEvery { chooseAddressRepo.setStateChosenAddressFromAddress(any()) } returns SetStateChosenAddressQqlResponse()
+        coEvery { setStateChosenAddressFromAddressUseCase(any()) } returns SetStateChosenAddressQqlResponse()
         manageAddressViewModel.setStateChosenAddress(model)
         verify { chosenAddressObserver.onChanged(match { it is Success }) }
     }
@@ -387,57 +379,9 @@ class ManageAddressViewModelTest {
     @Test
     fun `Set Chosen Address Fail`() {
         val model = RecipientAddressModel()
-        coEvery { chooseAddressRepo.setStateChosenAddressFromAddress(any()) } throws Throwable("test error")
+        coEvery { setStateChosenAddressFromAddressUseCase(any()) } throws Throwable("test error")
         manageAddressViewModel.setStateChosenAddress(model)
         verify { chosenAddressObserver.onChanged(match { it is Fail }) }
-    }
-
-    @Test
-    fun `Get Eligible For Revamp Ana Success`() {
-        onCheckEligibility_thenReturn(ANA_REVAMP_FEATURE_ID)
-        manageAddressViewModel.checkUserEligibilityForAnaRevamp()
-        verify { eligibleForAddressFeatureObserver.onChanged(match { it is Success }) }
-    }
-
-    @Test
-    fun `Get Eligible For Revamp Ana Fail`() {
-        onCheckEligibility_thenThrow(ANA_REVAMP_FEATURE_ID)
-        manageAddressViewModel.checkUserEligibilityForAnaRevamp()
-        verify { eligibleForAddressFeatureObserver.onChanged(match { it is Fail }) }
-    }
-
-    @Test
-    fun `Get Eligible For Revamp Edit Address Success`() {
-        onCheckEligibility_thenReturn(EDIT_ADDRESS_REVAMP_FEATURE_ID)
-        val data = RecipientAddressModel()
-        manageAddressViewModel.checkUserEligibilityForEditAddressRevamp(data)
-        verify { eligibleForAddressFeatureObserver.onChanged(match { it is Success }) }
-    }
-
-    @Test
-    fun `Get Eligible For Revamp Edit Address Fail`() {
-        onCheckEligibility_thenThrow(EDIT_ADDRESS_REVAMP_FEATURE_ID)
-        val data = RecipientAddressModel()
-        manageAddressViewModel.checkUserEligibilityForEditAddressRevamp(data)
-        verify { eligibleForAddressFeatureObserver.onChanged(match { it is Fail }) }
-    }
-
-    private fun onCheckEligibility_thenReturn(featureId: Int) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), featureId)
-        } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData) -> Unit>().invoke(
-                KeroAddrIsEligibleForAddressFeatureData()
-            )
-        }
-    }
-
-    private fun onCheckEligibility_thenThrow(featureId: Int) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), featureId)
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(Throwable())
-        }
     }
 
     @Test
@@ -664,6 +608,18 @@ class ManageAddressViewModelTest {
         assertEquals(manageAddressViewModel.source, source)
         assertEquals(manageAddressViewModel.receiverUserId, ruid)
         assertEquals(manageAddressViewModel.senderUserId, suid)
+        assertFalse(manageAddressViewModel.isFromMoneyIn)
+    }
+
+    @Test
+    fun `verify when setupDataFromArgument is incorrect`() {
+        // When
+        manageAddressViewModel.setupDataFromArgument(null)
+
+        // Then
+        assertEquals("", manageAddressViewModel.source)
+        assertNull(manageAddressViewModel.senderUserId)
+        assertNull(manageAddressViewModel.receiverUserId)
         assertFalse(manageAddressViewModel.isFromMoneyIn)
     }
 

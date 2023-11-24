@@ -38,7 +38,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -92,8 +92,6 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FIRST_MOVED
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FULL_FLOW
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LATITUDE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LONGITUDE
@@ -144,7 +142,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.net.URLEncoder
@@ -1132,6 +1129,7 @@ class AddEditProductPreviewFragment :
                         moveToImagePicker()
                     }
                 }
+
                 is Fail -> {
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                     AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
@@ -1818,20 +1816,12 @@ class AddEditProductPreviewFragment :
 
     private fun moveToLocationPicker() {
         activity?.let {
-            if (PinpointRolloutHelper.eligibleForRevamp(it, false)) {
-                val bundle = Bundle().apply {
-                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
-                }
-                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
-                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
-                    startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
-                }
-            } else {
-                RouteManager.getIntent(it, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                    putExtra(EXTRA_IS_FULL_FLOW, false)
-                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                    startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
-                }
+            val bundle = Bundle().apply {
+                putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+            }
+            RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
+                putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
             }
         }
     }
@@ -1937,7 +1927,7 @@ class AddEditProductPreviewFragment :
     private fun showAdminNotEligibleView() {
         adminRevampGlobalError?.run {
             val permissionGroup = SellerHomePermissionGroup.PRODUCT
-            ImageUtils.loadImage(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
+            errorIllustration.loadImage(AdminPermissionUrl.ERROR_ILLUSTRATION)
             errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)
             errorDescription.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_desc, permissionGroup)
             errorAction.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_action)
@@ -2051,7 +2041,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun checkDownloadPermission() {
-        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.P) {
+        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
             viewModel.productInputModel.value?.let { productInputModel ->
                 productInputModel.isDuplicate = true
                 startProductAddService(productInputModel)

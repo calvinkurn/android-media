@@ -218,11 +218,13 @@
     <string name="goto_kyc_status_pending_hours">%s jam</string>
     <string name="goto_kyc_status_pending_minutes">%s menit</string>
     <string name="goto_kyc_status_pending_seconds">%s detik</string>
-    <string name="goto_kyc_status_pending_button">Balik ke %s</string>
     <string name="goto_kyc_status_pending_refresh_status">Cek Status Verifikasi</string>
     <string name="goto_kyc_status_verified_title">Hore, dokumenmu berhasil terverifikasi!</string>
     <string name="goto_kyc_status_verified_subtitle">Tenang, data yang kamu berikan akan dijaga kerahasiannya dan disimpan di sistem kami.</string>
+    <string name="goto_kyc_back_with_source">Balik ke %s</string>
     <string name="goto_kyc_back_to_source">Balik</string>
+    <string name="goto_kyc_next_to_callback">Lanjut</string>
+    <string name="goto_kyc_next_to_callback_with_source">Lanjut ke %s</string>
     <string name="goto_kyc_status_blacklisted_title">Yaah, dokumen kamu nggak sesuai Syarat &amp; Ketentuan</string>
     <string name="goto_kyc_status_blacklisted_subtitle">Untuk informasi lebih lanjut, coba hubungi Tokopedia Care ya.</string>
     <string name="goto_kyc_status_blacklisted_button">Kontak Tokopedia Care</string>
@@ -271,6 +273,7 @@
     <string name="goto_kyc_confirm_KTP_name">Oke, Pakai e-KTP Ini</string>
     <string name="goto_kyc_question_ktp_issue">Bukan e-KTP kamu? Hubungi Tokopedia Care</string>
     <string name="goto_kyc_contact_tokopedia_care">Hubungi Tokopedia Care</string>
+    <string name="goto_kyc_see_term_condition">Lihat Syarat &amp; Ketentuan</string>
     <string name="goto_kyc_dob_challenge_title">Konfirmasi pakai tanggal lahirmu</string>
     <string name="goto_kyc_dob_challenge_subtitle">Karena udah terdaftar di GoPay Plus, kamu tinggal konfirmasi tanggal lahirmu sesuai e-KTP.</string>
     <string name="goto_kyc_dob_challenge_choose_dob">Pilih tanggal lahir</string>
@@ -297,8 +300,15 @@
     <string name="goto_kyc_awaiting_approval_button">Oke, Siap!</string>
     <string name="goto_kyc_try_again">Coba Lagi</string>
     <string name="goto_kyc_direct_to_setting">Ke Pengaturan</string>
-    <string name="goto_kyc_internet_issue">Koneksi internetmu terganggu!</string>
+    <string name="goto_kyc_internet_issue_title">Koneksi internetmu terganggu!</string>
+    <string name="goto_kyc_internet_issue_description">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
     <string name="goto_kyc_failed_load_data_title">Oops, gagal memuat data</string>
     <string name="goto_kyc_failed_load_data_subtitle">Datanya gagal dimuat jadi belum bisa lanjut proses verifikasi. Coba lagi, ya.</string>
+    <string name="goto_kyc_blocked_title_general">Verifikasi diri belum bisa dilanjutin</string>
+    <string name="goto_kyc_blocked_subtitle_general">Proses verifikasi kamu berkendala. Untuk informasi lebih lanjut, coba hubungin tim Tokopedia Care, ya.</string>
+    <string name="goto_kyc_blocked_title_multiple_account">Oops, sudah ada akun lain yang verifikasi data pakai nomor HP-mu</string>
+    <string name="goto_kyc_blocked_subtitle_multiple_account">Untuk lanjut, kamu perlu hubungin Tokopedia Care untuk konfirmasi identitas.</string>
+    <string name="goto_kyc_maybe_later">Nanti Aja</string>
+    <string name="goto_kyc_oke">Oke</string>
 
 </resources>

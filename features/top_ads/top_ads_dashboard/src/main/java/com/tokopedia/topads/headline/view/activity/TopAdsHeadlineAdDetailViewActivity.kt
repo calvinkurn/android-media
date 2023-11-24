@@ -45,6 +45,7 @@ import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTracker
 import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsBaseDetailActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
@@ -243,6 +244,7 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(),
                     ?: Int.ZERO)
                 entryPointHeadlineGroup?.show()
                 entryPointHeadlineGroup?.binding?.widgetCTAButton?.setOnClickListener {
+                    RecommendationTracker.clickLihatSelengkapnyaIklanToko()
                     val bundle = Bundle()
                     bundle.putString(RecommendationConstants.AD_GROUP_TYPE_KEY, RecommendationConstants.HEADLINE_KEY)
                     bundle.putString(RecommendationConstants.AD_GROUP_NAME_KEY, groupName)

@@ -1,6 +1,7 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
@@ -44,10 +45,18 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     private var projectId = ""
     private var source = ""
+    private var callback = ""
     private var isAccountLinked = false
     private var isReload = false
+    private var isLaunchCallback = false
+    private var isLaunchTokoKyc = false
+    private var isLaunchBlockedKyc = false
+    private var isBlockedMultipleAccount = false
 
     private var dismissDialogWithDataListener: (Boolean) -> Unit = {}
+    private var dismissDialogLaunchCallBackListener: (Unit) -> Unit = {}
+    private var dismissDialogLaunchTokoKycListener: (Unit) -> Unit = {}
+    private var dismissDialogLaunchBlockedKycListener: (Boolean) -> Unit = {}
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
@@ -59,6 +68,23 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             }
             KYCConstant.ActivityResult.RELOAD -> {
                 isReload = true
+                dismiss()
+            }
+            KYCConstant.ActivityResult.LAUNCH_CALLBACK -> {
+                isLaunchCallback = true
+                dismiss()
+            }
+            KYCConstant.ActivityResult.LAUNCH_TOKO_KYC -> {
+                isLaunchTokoKyc = true
+                dismiss()
+            }
+            KYCConstant.ActivityResult.BLOCKED_KYC -> {
+                isLaunchBlockedKyc = true
+                isBlockedMultipleAccount =
+                    result.data?.getBooleanExtra(
+                        KYCConstant.PARAM_BLOCKED_IS_MULTIPLE_ACCOUNT,
+                        false
+                    ) == true
                 dismiss()
             }
         }
@@ -74,7 +100,8 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         if (isGranted) {
             val parameter = GotoKycMainParam(
                 projectId = projectId,
-                sourcePage = source
+                sourcePage = source,
+                callback = callback
             )
             gotoCaptureKycDocuments(parameter)
         } else {
@@ -92,6 +119,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             projectId = it.getString(PROJECT_ID).orEmpty()
             source = it.getString(SOURCE).orEmpty()
             isAccountLinked = it.getBoolean(ACCOUNT_LINKED)
+            callback = it.getString(CALLBACK).orEmpty()
         }
     }
 
@@ -151,7 +179,8 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
                     } else {
                         val parameter = GotoKycMainParam(
                             projectId = projectId,
-                            sourcePage = source
+                            sourcePage = source,
+                            callback = callback
                         )
                         gotoCaptureKycDocuments(parameter)
                     }
@@ -159,7 +188,8 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             } else {
                 val parameter = GotoKycMainParam(
                     projectId = projectId,
-                    sourcePage = source
+                    sourcePage = source,
+                    callback = callback
                 )
                 gotoBridgingAccountLinking(parameter)
             }
@@ -182,6 +212,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun setUpViewKtp() {
         binding?.layoutKtp?.apply {
             imgItemOnboard.loadImageWithoutPlaceholder(
@@ -250,7 +281,20 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        dismissDialogWithDataListener(isReload)
+        when {
+            isLaunchTokoKyc -> {
+                dismissDialogLaunchTokoKycListener(Unit)
+            }
+            isLaunchCallback -> {
+                dismissDialogLaunchCallBackListener(Unit)
+            }
+            isLaunchBlockedKyc -> {
+                dismissDialogLaunchBlockedKycListener(isBlockedMultipleAccount)
+            }
+            else -> {
+                dismissDialogWithDataListener(isReload)
+            }
+        }
 
         GotoKycAnalytics.sendClickOnButtonCloseOnboardingBottomSheet(
             projectId = projectId,
@@ -258,22 +302,36 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         )
     }
 
+    fun setOnLaunchBlockedKycListener(isLaunchBlockedKyc: (Boolean) -> Unit) {
+        dismissDialogLaunchBlockedKycListener = isLaunchBlockedKyc
+    }
+
+    fun setOnLaunchTokoKycListener(isLaunchTokoKyc: (Unit) -> Unit) {
+        dismissDialogLaunchTokoKycListener = isLaunchTokoKyc
+    }
+
     fun setOnDismissWithDataListener(isReload: (Boolean) -> Unit) {
         dismissDialogWithDataListener = isReload
+    }
+
+    fun setOnLaunchCallbackListener(isLaunchCallback: (Unit) -> Unit) {
+        dismissDialogLaunchCallBackListener = isLaunchCallback
     }
 
     companion object {
         private const val PROJECT_ID = "project_id"
         private const val SOURCE = "source"
+        private const val CALLBACK = "callBack"
         private const val ACCOUNT_LINKED = "account_linked"
         private const val PACKAGE = "package"
 
-        fun newInstance(projectId: String, source: String = "", isAccountLinked: Boolean) =
+        fun newInstance(projectId: String, source: String = "", isAccountLinked: Boolean, callback: String) =
             OnboardNonProgressiveBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(PROJECT_ID, projectId)
                     putString(SOURCE, source)
                     putBoolean(ACCOUNT_LINKED, isAccountLinked)
+                    putString(CALLBACK, callback)
                 }
             }
     }

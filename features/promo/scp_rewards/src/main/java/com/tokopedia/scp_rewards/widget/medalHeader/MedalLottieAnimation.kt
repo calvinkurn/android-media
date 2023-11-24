@@ -6,19 +6,16 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.OvershootInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.scale
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.scp_rewards.R
-import com.tokopedia.scp_rewards.common.utils.downloadImage
 import com.tokopedia.scp_rewards.databinding.WidgetMedalLottieAnimationBinding
-import com.tokopedia.scp_rewards_common.EASE_IN_OUT
-import com.tokopedia.scp_rewards_common.OVER_SHOOT
-import com.tokopedia.scp_rewards_common.animateView
-import com.tokopedia.scp_rewards_common.loadLottieFromUrl
-import com.tokopedia.scp_rewards_common.propertyValueHolder
+import com.tokopedia.scp_rewards_common.constants.EASE_IN_OUT
+import com.tokopedia.scp_rewards_common.constants.OVER_SHOOT
+import com.tokopedia.scp_rewards_common.utils.animateView
+import com.tokopedia.scp_rewards_common.utils.downloadImage
+import com.tokopedia.scp_rewards_common.utils.loadLottieFromUrl
+import com.tokopedia.scp_rewards_common.utils.propertyValueHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -229,8 +226,8 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
         }
         animateView(
             arrayOf(
-                propertyValueHolder(View.SCALE_X, from, to),
-                propertyValueHolder(View.SCALE_Y, from, to)
+                propertyValueHolder(SCALE_X, from, to),
+                propertyValueHolder(SCALE_Y, from, to)
             ),
             DURATION,
             interpolatorType

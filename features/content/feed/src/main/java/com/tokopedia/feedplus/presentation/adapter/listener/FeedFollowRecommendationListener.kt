@@ -7,6 +7,8 @@ import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
  */
 interface FeedFollowRecommendationListener {
 
+    fun isMuted(): Boolean
+
     fun onImpressProfile(
         profile: FeedFollowRecommendationModel.Profile
     )
@@ -14,7 +16,7 @@ interface FeedFollowRecommendationListener {
     fun onClickFollow(
         profile: FeedFollowRecommendationModel.Profile
     )
-    
+
     fun onCloseProfileRecommendation(
         profile: FeedFollowRecommendationModel.Profile
     )

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="16dp">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="16dp" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_checkout_pay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:contentDescription="@string/content_desc_tv_select_payment_method"
+        android:text="@string/label_choose_payment" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_checkout_terms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="Saya menyetujui Syarat &amp; Ketentuan Asuransi &amp; Proteksi." />
+
+</LinearLayout>

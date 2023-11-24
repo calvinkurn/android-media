@@ -59,15 +59,17 @@ import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofEstimateRefund
 import com.tokopedia.buyerorderdetail.presentation.coachmark.CoachMarkManager
 import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDialog
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.EstimateInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
+import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEvent
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundSummaryUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
 import com.tokopedia.buyerorderdetail.presentation.scroller.BuyerOrderDetailRecyclerViewScroller
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
@@ -85,6 +87,10 @@ import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
@@ -95,7 +101,6 @@ import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder.ScpR
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsCelebrationWidgetAnalytics
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.AnalyticsData
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterModel
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -133,7 +138,8 @@ open class BuyerOrderDetailFragment :
     PofRefundInfoViewHolder.Listener,
     PartialProductItemViewHolder.ShareProductBottomSheetListener,
     ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
-    OwocInfoViewHolder.Listener {
+    OwocInfoViewHolder.Listener,
+    BmgmSectionViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -193,9 +199,11 @@ open class BuyerOrderDetailFragment :
             this,
             this,
             this,
+            this,
             navigator,
             this,
-            this
+            this,
+            recyclerViewSharedPool
         )
     }
     protected open val adapter: BuyerOrderDetailAdapter by lazy {
@@ -210,6 +218,8 @@ open class BuyerOrderDetailFragment :
     private val remoteConfig: FirebaseRemoteConfigImpl by lazy {
         FirebaseRemoteConfigImpl(context)
     }
+
+    protected val recyclerViewSharedPool = RecyclerView.RecycledViewPool()
 
     protected val digitalRecommendationData: DigitalRecommendationData
         get() = DigitalRecommendationData(
@@ -297,6 +307,7 @@ open class BuyerOrderDetailFragment :
         observeAddSingleToCart()
         observeAddMultipleToCart()
         observeMedalTouchPoint()
+        observeOneTimeEvent()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -335,6 +346,10 @@ open class BuyerOrderDetailFragment :
         val productCopy = product.copy(isProcessing = true)
         viewModel.addSingleToCart(productCopy)
         trackBuyAgainProduct()
+    }
+
+    override fun onProductImpressed(product: ProductListUiModel.ProductUiModel) {
+        viewModel.impressProduct(product)
     }
 
     override fun onPurchaseAgainButtonClicked(uiModel: ProductListUiModel.ProductUiModel) {
@@ -412,6 +427,7 @@ open class BuyerOrderDetailFragment :
         if (rvBuyerOrderDetail?.adapter != adapter) {
             rvBuyerOrderDetail?.adapter = adapter
         }
+        recyclerViewSharedPool.setMaxRecycledViews(BmgmAddOnViewHolder.RES_LAYOUT, BmgmAddOnViewHolder.MAX_RECYCLED_VIEWS)
     }
 
     private fun setupStickyActionButtons() {
@@ -486,11 +502,29 @@ open class BuyerOrderDetailFragment :
         }
     }
 
+    private fun observeOneTimeEvent() {
+        collectLatestWhenResumed(viewModel.oneTimeMethodState) {
+            when (it.event) {
+                is OrderOneTimeEvent.ImpressSavingsWidget -> {
+                    BuyerOrderDetailTracker.SavingsWidget.impressSavingsWidget(
+                        orderId = it.event.orderId,
+                        isPlus = it.event.isPlus,
+                        isMixPromo = it.event.isMixPromo
+                    )
+                }
+
+                else -> {
+                    //no op
+                }
+            }
+        }
+    }
+
     private fun observeMedalTouchPoint() {
         scpMedalTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
-            when (it.result) {
-                is com.tokopedia.scp_rewards_touchpoints.common.Success<*> -> {
-                    val data = ((it.result as com.tokopedia.scp_rewards_touchpoints.common.Success<*>).data as ScpRewardsMedalTouchPointResponse)
+            when (val result = it.result) {
+                is com.tokopedia.scp_rewards_touchpoints.common.Success -> {
+                    val data = result.data
                     if (data.scpRewardsMedaliTouchpointOrder.isShown) {
                         view?.let { view ->
                             if (!it.initialLoad) {
@@ -552,6 +586,7 @@ open class BuyerOrderDetailFragment :
         updateToolbarMenu(uiState)
         updateContent(uiState)
         updateStickyButtons(uiState)
+        updateSavingsWidget(uiState)
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stopLoadTimeMonitoring()
     }
@@ -594,6 +629,45 @@ open class BuyerOrderDetailFragment :
     private fun updateStickyButtons(uiState: BuyerOrderDetailUiState.HasData) {
         stickyActionButton?.setupActionButtons(
             actionButtonsUiModel = uiState.actionButtonsUiState.data
+        )
+    }
+
+    private fun updateSavingsWidget(uiState: BuyerOrderDetailUiState.HasData) {
+        when (uiState.savingsWidgetUiState) {
+            is SavingsWidgetUiState.Success -> {
+                onSuccessGetSavingWidget(uiState)
+            }
+            is SavingsWidgetUiState.Error -> {
+                stickyActionButton?.hideSavingWidget()
+            }
+            is SavingsWidgetUiState.Hide -> {
+                stickyActionButton?.hideSavingWidget()
+            }
+            else -> {
+                //noop
+            }
+        }
+    }
+
+    private fun onSuccessGetSavingWidget(uiState: BuyerOrderDetailUiState.HasData) {
+        val savingWidgetData = (uiState.savingsWidgetUiState as?
+                SavingsWidgetUiState.Success)?.data
+
+        if (savingWidgetData == null) {
+            stickyActionButton?.hideSavingWidget()
+            return
+        }
+
+        viewModel.changeOneTimeMethod(
+            OrderOneTimeEvent.ImpressSavingsWidget(
+                orderId = viewModel.getOrderId(),
+                isPlus = savingWidgetData.isPlus,
+                isMixPromo = savingWidgetData.plusTicker.rightText.isNotEmpty()
+            )
+        )
+
+        stickyActionButton?.setupSavingWidget(
+            savingWidgetData
         )
     }
 
@@ -682,6 +756,7 @@ open class BuyerOrderDetailFragment :
         }
         toolbarMenuAnimator?.transitionToEmpty()
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
+        stickyActionButton?.hideSavingWidget()
         stopLoadTimeMonitoring()
     }
 
@@ -697,6 +772,7 @@ open class BuyerOrderDetailFragment :
         updateToolbarMenu(uiState)
         updateContent(uiState)
         updateStickyButtons(uiState)
+        updateSavingsWidget(uiState)
     }
 
     private fun GlobalError.showMessageExceptionError(
@@ -965,9 +1041,9 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onClickWidgetListener(appLink: String) {
-        val data = ((scpMedalTouchPointViewModel.medalTouchPointData.value?.result as? com.tokopedia.scp_rewards_touchpoints.common.Success<*>)?.data as ScpRewardsMedalTouchPointResponse)
+        val data = (scpMedalTouchPointViewModel.medalTouchPointData.value?.result as? com.tokopedia.scp_rewards_touchpoints.common.Success)?.data
         ScpRewardsCelebrationWidgetAnalytics.clickCelebrationWidget(
-            badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString(),
+            badgeId = data?.scpRewardsMedaliTouchpointOrder?.medaliTouchpointOrder?.medaliID?.orZero().toString(),
             orderId = viewModel.getOrderId(),
             pagePath = BUYER_ORDER_DETAIL_PAGE,
             pageType = BUYER_ORDER_DETAIL_PAGE
@@ -1047,5 +1123,46 @@ open class BuyerOrderDetailFragment :
             this@BuyerOrderDetailFragment
         )
         BuyerOrderDetailTracker.eventImpressionShareBottomSheet(element.orderId, element.productId, element.orderStatusId, userSession.userId)
+    }
+
+    override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        if (uiModel.orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
+            navigator.goToProductSnapshotPage(uiModel.orderId, uiModel.orderDetailId)
+            BuyerOrderDetailTracker.eventClickProduct(uiModel.orderStatusId, uiModel.orderId)
+        } else {
+            showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
+        }
+    }
+
+    override fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        val productUiModel = ProductListUiStateMapper.mapToProductListProductUiModel(uiModel)
+        onBuyAgainButtonClicked(productUiModel)
+    }
+
+    override fun onBmgmItemSeeSimilarProducts(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        navigator.openAppLink(uiModel.button?.url.orEmpty(), false)
+        BuyerOrderDetailTracker.eventClickSimilarProduct(
+            uiModel.orderStatusId,
+            uiModel.orderId
+        )
+    }
+
+    override fun onBmgmItemWarrantyClaim(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        navigator.openAppLink(uiModel.button?.url.orEmpty(), true)
+        BuyerOrderDetailTracker.eventClickWarrantyClaim(uiModel.orderId)
+    }
+
+    override fun onBmgmItemImpressed(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        viewModel.impressBmgmProduct(uiModel)
+    }
+
+    override fun onCopyAddOnDescription(label: String, description: CharSequence) {
+        // no op for bmgm add on because there is no function copy
+    }
+
+    private fun showToaster(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
     }
 }

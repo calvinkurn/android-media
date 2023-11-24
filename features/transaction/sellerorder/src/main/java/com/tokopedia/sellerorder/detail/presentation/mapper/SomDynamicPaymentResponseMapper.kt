@@ -6,6 +6,7 @@ import com.tokopedia.sellerorder.detail.data.model.SomDetailPayments
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
 import com.tokopedia.sellerorder.detail.presentation.model.MVCUsageUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.PofDataUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.SomDetailIncomeUiModel
 
 object SomDynamicPaymentResponseMapper {
     fun mapResponseToPaymentsUiModel(
@@ -39,6 +40,15 @@ object SomDynamicPaymentResponseMapper {
             pricingData = pricingList
         )
         return SomDetailData(dataPayments, SomConsts.DETAIL_PAYMENT_TYPE)
+    }
+
+    fun mapResponseToDetailIncomeUiModel(
+        response: SomDynamicPriceResponse.GetSomDynamicPrice?
+    ): SomDetailData? {
+        return response?.incomeDetailLabel?.let {
+            val somDetailIncomeUiModel = SomDetailIncomeUiModel(label = it)
+            SomDetailData(somDetailIncomeUiModel, SomConsts.DETAIL_INCOME_TYPE)
+        }
     }
 
     fun mapResponseToMerchantVoucherUsageUiModel(

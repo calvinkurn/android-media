@@ -19,14 +19,14 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationNavAnalytic
 import com.tokopedia.notifcenter.di.NotificationActivityComponentFactory
 import com.tokopedia.notifcenter.di.NotificationComponent
+import com.tokopedia.notifcenter.util.NotifCenterConfig
+import com.tokopedia.notifcenter.util.cache.NotifCenterCacheState
+import com.tokopedia.notifcenter.util.getRoleName
 import com.tokopedia.notifcenter.view.NotificationFragment
 import com.tokopedia.notifcenter.view.NotificationViewModel
 import com.tokopedia.notifcenter.view.buyer.bottomsheet.NotifCenterAccountSwitcherBottomSheet
 import com.tokopedia.notifcenter.view.buyer.customview.NotifCenterNavigationHeader
 import com.tokopedia.notifcenter.view.listener.NotificationFragmentContainer
-import com.tokopedia.notifcenter.util.NotifCenterConfig
-import com.tokopedia.notifcenter.util.cache.NotifCenterCacheState
-import com.tokopedia.notifcenter.util.getRoleName
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
@@ -37,6 +37,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * How to go to this page
@@ -243,6 +244,7 @@ open class NotificationActivity :
     private fun updateToolbarIcon() {
         val icon = IconBuilder()
         icon.addIcon(IconList.ID_CART) { }
+        icon.addIcon(IconList.ID_NAV_GLOBAL) { }
         toolbar?.setIcon(icon)
         toolbar?.setBadgeCounter(IconList.ID_CART, NotifCenterConfig.notifications.totalCart)
     }
@@ -296,7 +298,7 @@ open class NotificationActivity :
     private fun setupBackground() {
         val whiteColor = ContextCompat.getColor(
             this,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background
+            unifyprinciplesR.color.Unify_Background
         )
         window.decorView.setBackgroundColor(whiteColor)
     }
@@ -308,7 +310,7 @@ open class NotificationActivity :
             }
             window.statusBarColor = ContextCompat.getColor(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_Background
+                unifyprinciplesR.color.Unify_Background
             )
         }
     }

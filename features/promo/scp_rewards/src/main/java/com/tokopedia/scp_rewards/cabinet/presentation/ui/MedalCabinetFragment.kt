@@ -30,8 +30,8 @@ import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_COD
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
-import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.databinding.FragmentMedalCabinetLayoutBinding
+import com.tokopedia.scp_rewards_common.utils.launchLink
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
 import com.tokopedia.scp_rewards_widgets.medal.BannerData
 import com.tokopedia.scp_rewards_widgets.medal.MedalCallbackListener
@@ -148,7 +148,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                             medalItem.progression.toString()
                         )
                     }
-                    requireContext().launchLink(
+                    context?.launchLink(
                         appLink = medalItem.cta?.appLink,
                         webLink = medalItem.cta?.deepLink
                     )
@@ -164,7 +164,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                             MedalCabinetAnalyticsImpl.sendClickLockedMedalSectionCtaEvent(medalItem.cta?.text.orEmpty())
                         }
                     }
-                    requireContext().launchLink(
+                    context?.launchLink(
                         appLink = medalData.cta?.appLink,
                         webLink = medalData.cta?.deepLink
                     )
@@ -207,7 +207,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
 
                 override fun onBannerClick(bannerData: BannerData?, position: Int?) {
                     MedalCabinetAnalyticsImpl.sendClickBannerEvent(bannerData?.creativeName.orEmpty(), position.toString())
-                    requireContext().launchLink(
+                    context?.launchLink(
                         appLink = bannerData?.appLink,
                         webLink = bannerData?.webLink
                     )
@@ -231,8 +231,8 @@ class MedalCabinetFragment : BaseDaggerFragment() {
 
     private fun setWhiteStatusBar() {
         (activity as AppCompatActivity?)?.apply {
-            window?.statusBarColor = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0)
-            binding.toolbar.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+            window?.statusBarColor = ContextCompat.getColor(this, unifyprinciplesR.color.Unify_NN0)
+            binding.toolbar.setBackgroundColor(ContextCompat.getColor(this, unifyprinciplesR.color.Unify_NN0))
             setToolbarBackButtonTint(unifyprinciplesR.color.Unify_NN900)
 
             windowInsetsController?.isAppearanceLightStatusBars = true
@@ -243,7 +243,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
         (activity as AppCompatActivity?)?.apply {
             activity?.window?.statusBarColor = Color.TRANSPARENT
             binding.toolbar.setBackgroundColor(Color.TRANSPARENT)
-            setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            setToolbarBackButtonTint(unifyprinciplesR.color.Unify_NN0)
 
             windowInsetsController?.isAppearanceLightStatusBars = false
         }

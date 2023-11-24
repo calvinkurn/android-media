@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_checkout_header_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pengiriman"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:visibility="gone" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_checkout_header_address"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
+        app:icon_name="LOCATION_FILLED"
+        app:layout_constraintBottom_toBottomOf="@id/tv_checkout_header_address_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_checkout_header_address_name" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_checkout_header_address_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ic_checkout_header_address"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Apartemen Sudirman" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

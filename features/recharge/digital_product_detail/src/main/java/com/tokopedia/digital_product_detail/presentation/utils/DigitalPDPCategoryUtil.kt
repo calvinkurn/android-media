@@ -7,6 +7,9 @@ import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 
 object DigitalPDPCategoryUtil {
+
+    private val indosatOperatorIds: List<String> = listOf("2", "16", "17", "114", "237", "3020")
+
     fun getCategoryName(categoryId: Int): String {
         return when (categoryId) {
             TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA
@@ -24,6 +27,10 @@ object DigitalPDPCategoryUtil {
             GeneralOperatorType.OPERATOR_NON_TAGLIS -> GeneralComponentName.OPERATOR_NON_TAGLIS
             else -> ""
         }
+    }
+
+    fun isOperatorIndosat(operatorId: String): Boolean {
+        return indosatOperatorIds.contains(operatorId)
     }
 
     const val DEFAULT_MENU_ID_TELCO = "2"

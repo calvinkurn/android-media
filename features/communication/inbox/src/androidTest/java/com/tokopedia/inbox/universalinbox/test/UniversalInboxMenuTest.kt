@@ -2,13 +2,8 @@ package com.tokopedia.inbox.universalinbox.test
 
 import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.test.base.BaseUniversalInboxTest
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertMenuCounter
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertMenuCounterGone
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertNotificationCounter
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertNotificationCounterGone
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertSellerChatMenu
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertShopInfo
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertShopInfoGone
+import com.tokopedia.inbox.universalinbox.test.robot.generalRobot
+import com.tokopedia.inbox.universalinbox.test.robot.menuResult
 import com.tokopedia.inbox.universalinbox.test.robot.menuRobot
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
@@ -22,8 +17,10 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         launchActivity()
 
         // Then
-        assertSellerChatMenu(position = 2)
-        assertShopInfo(position = 2)
+        menuResult {
+            assertSellerChatMenu(position = 2)
+            assertShopInfo(position = 2)
+        }
     }
 
     @Test
@@ -35,8 +32,10 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         launchActivity()
 
         // Then
-        assertSellerChatMenu(position = 1)
-        assertShopInfoGone(position = 1)
+        menuResult {
+            assertSellerChatMenu(position = 1)
+            assertShopInfoGone(position = 1)
+        }
     }
 
     @Test
@@ -50,7 +49,9 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         launchActivity()
 
         // Then
-        assertMenuCounter(position = 1, counterText = "5")
+        menuResult {
+            assertMenuCounter(position = 1, counterText = "5")
+        }
     }
 
     @Test
@@ -64,7 +65,9 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         launchActivity()
 
         // Then
-        assertMenuCounter(position = 1, counterText = "99+")
+        menuResult {
+            assertMenuCounter(position = 1, counterText = "99+")
+        }
     }
 
     @Test
@@ -78,49 +81,57 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         launchActivity()
 
         // Then
-        assertMenuCounterGone(position = 2)
+        menuResult {
+            assertMenuCounterGone(position = 2)
+        }
     }
 
     @Test
     fun should_show_notification_and_counter() {
         // Given
         GqlResponseStub.counterResponse.editAndGetResponseObject {
-            it.allCounter.notifCenterUnread.notifUnread = "5"
+            it.allCounter.inboxCounter.notifCenterWrapperUnread.notifUnread = "5"
         }
 
         // When
         launchActivity()
 
         // Then
-        assertNotificationCounter("5")
+        menuResult {
+            assertNotificationCounter("5")
+        }
     }
 
     @Test
     fun should_show_notification_and_max_counter() {
         // Given
         GqlResponseStub.counterResponse.editAndGetResponseObject {
-            it.allCounter.notifCenterUnread.notifUnread = "100"
+            it.allCounter.inboxCounter.notifCenterWrapperUnread.notifUnread = "100"
         }
 
         // When
         launchActivity()
 
         // Then
-        assertNotificationCounter("99+")
+        menuResult {
+            assertNotificationCounter("99+")
+        }
     }
 
     @Test
     fun should_not_show_notification_counter() {
         // Given
         GqlResponseStub.counterResponse.editAndGetResponseObject {
-            it.allCounter.notifCenterUnread.notifUnread = "0"
+            it.allCounter.inboxCounter.notifCenterWrapperUnread.notifUnread = "0"
         }
 
         // When
         launchActivity()
 
         // Then
-        assertNotificationCounterGone()
+        menuResult {
+            assertNotificationCounterGone()
+        }
     }
 
     @Test
@@ -129,47 +140,71 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         launchActivity()
 
         // Then
-        assertNotificationCounterGone()
+        menuResult {
+            assertNotificationCounterGone()
+        }
 
         // Given
         GqlResponseStub.counterResponse.editAndGetResponseObject {
-            it.allCounter.notifCenterUnread.notifUnread = "1"
+            it.allCounter.inboxCounter.notifCenterWrapperUnread.notifUnread = "1"
         }
 
         // When
+        generalRobot {
+            scrollToPosition(0)
+        }
         menuRobot {
             swipeDown()
         }
-        Thread.sleep(1000)
 
         // Then
-        assertNotificationCounter("1")
+        menuResult {
+            assertNotificationCounter("1")
+        }
     }
 
     @Test
     fun should_show_pull_to_refresh_and_remove_counter() {
         // Given
         GqlResponseStub.counterResponse.editAndGetResponseObject {
-            it.allCounter.notifCenterUnread.notifUnread = "1"
+            it.allCounter.inboxCounter.notifCenterWrapperUnread.notifUnread = "1"
         }
 
         // When
         launchActivity()
 
         // Then
-        assertNotificationCounter("1")
+        menuResult {
+            assertNotificationCounter("1")
+        }
 
         // Given
         GqlResponseStub.counterResponse.editAndGetResponseObject {
-            it.allCounter.notifCenterUnread.notifUnread = "0"
+            it.allCounter.inboxCounter.notifCenterWrapperUnread.notifUnread = "0"
         }
 
         // When
+        generalRobot {
+            scrollToPosition(0)
+        }
         menuRobot {
             swipeDown()
         }
 
         // Then
-        assertNotificationCounterGone()
+        menuResult {
+            assertNotificationCounterGone()
+        }
+    }
+
+    @Test
+    fun should_show_label_when_menu_has_label() {
+        // When
+        launchActivity()
+
+        // Then
+        menuResult {
+            assertLabelMenu(position = 5)
+        }
     }
 }

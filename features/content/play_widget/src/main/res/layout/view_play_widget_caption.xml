@@ -7,6 +7,6 @@
     android:layout_height="wrap_content"
     android:maxLines="2"
     android:textColor="@color/Unify_Static_White"
-    app:typographyType="paragraph_2"
+    app:typographyType="paragraph_3"
     tools:text="Sepatu nyaman untuk lari dari kenyataan hidup"
     />

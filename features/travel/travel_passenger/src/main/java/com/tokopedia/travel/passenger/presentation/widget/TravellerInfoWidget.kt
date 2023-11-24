@@ -2,44 +2,42 @@ package com.tokopedia.travel.passenger.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.travel.passenger.R
+import com.tokopedia.travel.passenger.databinding.LayoutWidgetTravellerInfoBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.layout_widget_traveller_info.view.*
 
 /**
  * @author by jessica on 2019-09-13
  */
 
 class TravellerInfoWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        BaseCustomView(context, attrs, defStyleAttr) {
+    BaseCustomView(context, attrs, defStyleAttr) {
 
     private var listener: TravellerInfoWidgetListener? = null
     var phoneNum: String = ""
     var phoneCode: Int = 0
     var phoneCountry: String = ""
 
-    init {
-        View.inflate(context, R.layout.layout_widget_traveller_info, this)
-    }
+    private val binding = LayoutWidgetTravellerInfoBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun setContactName(name: String) {
-        tv_travel_contact_name.text = name
+        binding.tvTravelContactName.text = name
     }
 
     fun setContactEmail(email: String) {
-        tv_travel_contact_email.text = email
+        binding.tvTravelContactEmail.text = email
     }
 
     fun setContactPhoneNum(phoneNum: String) {
         this.phoneNum = phoneNum
-        tv_travel_contact_phone_number.text = phoneNum
+        binding.tvTravelContactPhoneNumber.text = phoneNum
     }
 
     fun setContactPhoneNum(phoneCode: Int, phoneNum: String) {
         this.phoneNum = phoneNum
         this.phoneCode = phoneCode
-        tv_travel_contact_phone_number.text = "+${phoneCode} ${phoneNum}"
+        binding.tvTravelContactPhoneNumber.text = "+$phoneCode $phoneNum"
     }
 
     fun setContactPhoneCountry(phoneCountry: String) {
@@ -48,25 +46,25 @@ class TravellerInfoWidget @JvmOverloads constructor(context: Context, attrs: Att
 
     fun getContactPhoneCountry(): String = if (phoneCountry.isNotEmpty()) phoneCountry else "ID"
 
-    fun getContactName(): String = tv_travel_contact_name.text.toString().trim()
+    fun getContactName(): String = binding.tvTravelContactName.text.toString().trim()
 
-    fun getContactEmail(): String = tv_travel_contact_email.text.toString().trim()
+    fun getContactEmail(): String = binding.tvTravelContactEmail.text.toString().trim()
 
     fun getContactPhoneNum(): String = phoneNum
 
     fun getContactPhoneCode(): Int = phoneCode
 
     fun showLoadingBar() {
-        loading_bar.visibility = View.VISIBLE
+        binding.loadingBar.visibility = View.VISIBLE
     }
 
     fun hideLoadingBar() {
-        loading_bar.visibility = View.GONE
+        binding.loadingBar.visibility = View.GONE
     }
 
     fun setListener(listener: TravellerInfoWidgetListener) {
         this.listener = listener
-        user_contact_info.setOnClickListener { listener.onClickEdit() }
+        binding.userContactInfo.setOnClickListener { listener.onClickEdit() }
     }
 
     interface TravellerInfoWidgetListener {

@@ -14,11 +14,9 @@ data class UniversalInboxAllCounterResponse(
     @SerializedName("inbox")
     var othersUnread: UniversalInboxOthersCounterResponse = UniversalInboxOthersCounterResponse(),
 
-    @SerializedName("notifcenter_unread")
-    var notifCenterUnread: UniversalInboxNotifCenterCounterResponse = UniversalInboxNotifCenterCounterResponse()
-) {
-    var driverCounter: Int = Int.ZERO
-}
+    @SerializedName("inbox_counter")
+    var inboxCounter: UniversalInboxNotifCenterCounterWrapperResponse = UniversalInboxNotifCenterCounterWrapperResponse()
+)
 
 data class UniversalInboxChatCounterResponse(
     @SerializedName("unreadsUser")
@@ -39,7 +37,13 @@ data class UniversalInboxOthersCounterResponse(
     var reviewUnread: Int = Int.ZERO
 )
 
+data class UniversalInboxNotifCenterCounterWrapperResponse(
+    @SerializedName("all")
+    var notifCenterWrapperUnread: UniversalInboxNotifCenterCounterResponse =
+        UniversalInboxNotifCenterCounterResponse()
+)
+
 data class UniversalInboxNotifCenterCounterResponse(
-    @SerializedName("notif_unread")
+    @SerializedName("notifcenter_int")
     var notifUnread: String = ""
 )

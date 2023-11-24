@@ -227,7 +227,7 @@ class FeedXProduct(
     @SerializedName("cashbackFmt")
     val cashbackFmt: String = "",
     @SerializedName("isStockAvailable")
-    val isAvailable: Boolean = false,
+    val isAvailable: Boolean = false
 )
 
 class FeedXProductAffiliate(
@@ -356,9 +356,7 @@ class FeedXAuthor(
     @SerializedName("appLink")
     val applink: String = "",
     @SerializedName("encryptedUserID")
-    val encryptedUserId: String = "",
-    @SerializedName("isLive")
-    val isLive: Boolean = false
+    val encryptedUserId: String = ""
 )
 
 class FeedXScore(

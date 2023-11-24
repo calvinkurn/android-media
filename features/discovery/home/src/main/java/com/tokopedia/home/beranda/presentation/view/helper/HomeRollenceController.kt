@@ -1,7 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
-import android.content.Context
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 
@@ -9,27 +7,86 @@ import com.tokopedia.remoteconfig.RollenceKey
  * Created by frenzel on 09/05/22.
  */
 object HomeRollenceController {
-    var rollenceAtfValue: String = ""
-    private const val CONTROL_REVAMP_ATF = ""
+    private const val EMPTY_VALUE = ""
 
-    fun fetchAtfRollenceValue(context: Context) {
-        rollenceAtfValue = try {
-            val rollenceAtf = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_ATF)
-            if (DeviceScreenInfo.isTablet(context) || rollenceAtf != RollenceKey.HOME_COMPONENT_ATF_2) {
-                CONTROL_REVAMP_ATF
-            } else {
-                rollenceAtf
-            }
+    var rollenceAtfValue: String = ""
+    var rollenceLoadTime: String = ""
+    var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
+    var iconJumperValue: String = RollenceKey.ICON_JUMPER_DEFAULT
+
+    fun fetchHomeRollenceValue() {
+        fetchAtfRollenceValue()
+        fetchLoadTimeRollenceValue()
+        fetchAtfCacheRollenceValue()
+    }
+
+    @JvmStatic
+    fun fetchIconJumperValue() {
+        iconJumperValue = try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.ICON_JUMPER,
+                RollenceKey.ICON_JUMPER_DEFAULT
+            )
         } catch (_: Exception) {
-            CONTROL_REVAMP_ATF
+            RollenceKey.ICON_JUMPER_DEFAULT
         }
     }
 
-    private fun getAtfRollenceValue(): String {
-        return rollenceAtfValue
+    private fun fetchAtfRollenceValue() {
+        rollenceAtfValue = try {
+            val rollenceAtf = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_ATF)
+            if (rollenceAtf == RollenceKey.HOME_COMPONENT_ATF_3) {
+                rollenceAtf
+            } else {
+                RollenceKey.HOME_COMPONENT_ATF_2
+            }
+        } catch (_: Exception) {
+            EMPTY_VALUE
+        }
     }
 
-    fun isUsingAtf2Variant(): Boolean {
-        return getAtfRollenceValue() == RollenceKey.HOME_COMPONENT_ATF_2
+    private fun fetchLoadTimeRollenceValue() {
+        rollenceLoadTime = try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.HOME_LOAD_TIME_KEY,
+                RollenceKey.HOME_LOAD_TIME_CONTROL
+            )
+        } catch (_: Exception) {
+            EMPTY_VALUE
+        }
+    }
+
+    private fun fetchAtfCacheRollenceValue() {
+        // set the default value to exp variant so that users that are not included
+        // in the experiment still get the new caching mechanism
+        rollenceLoadAtfCache = try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_KEY,
+                RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
+            )
+        } catch (_: Exception) {
+            RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
+        }
+    }
+
+    fun isLoadAtfFromCache(): Boolean {
+        return rollenceLoadAtfCache == RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
+    }
+
+    fun isUsingAtf3Variant(forceAtf3: Boolean): Boolean {
+        return forceAtf3 || rollenceAtfValue == RollenceKey.HOME_COMPONENT_ATF_3
+    }
+
+    fun getAtfRollence(forceAtf3: Boolean): String {
+        return if (forceAtf3) {
+            RollenceKey.HOME_COMPONENT_ATF_3
+        } else {
+            rollenceAtfValue
+        }
+    }
+
+    @JvmStatic
+    fun isIconJumper(): Boolean {
+        return iconJumperValue == RollenceKey.ICON_JUMPER_EXP
     }
 }

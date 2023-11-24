@@ -44,6 +44,9 @@ data class SaveAddressDataModel(
         return latitude.isValidPinpoint() && longitude.isValidPinpoint()
     }
 
+    val hasDistrictAndCityName: Boolean
+        get() = districtName.isNotBlank() && cityName.isNotBlank()
+
     private fun String.isValidPinpoint(): Boolean {
         return this.isNotBlank() && this != EMPTY_COORDINATE
     }

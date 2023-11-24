@@ -66,8 +66,6 @@ internal object MediaLoaderApi {
             GlideApp
                 .with(context)
                 .asGif()
-                .transform(properties)
-                .commonOptions(properties)
                 .load(source)
                 .delayInto(imageView, properties)
         }

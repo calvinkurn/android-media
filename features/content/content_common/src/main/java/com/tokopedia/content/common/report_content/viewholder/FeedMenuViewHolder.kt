@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.databinding.ItemFeedThreeDotsMenuBinding
-import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -18,12 +18,12 @@ class FeedMenuViewHolder(
     private val listener: Listener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: FeedMenuItem) {
+    fun bind(item: ContentMenuItem) {
         binding.apply {
             val context = itemView.context
 
             tvName.text = context.getString(item.name)
-            val textColorInt = if (item.type == FeedMenuIdentifier.Report) {
+            val textColorInt = if (item.type == ContentMenuIdentifier.Report) {
                 unifyR.color.Unify_RN500
             } else {
                 unifyR.color.Unify_NN950
@@ -36,7 +36,7 @@ class FeedMenuViewHolder(
             )
 
             val iconColorInt = when (item.type) {
-                FeedMenuIdentifier.Report, FeedMenuIdentifier.Delete -> {
+                ContentMenuIdentifier.Report, ContentMenuIdentifier.Delete -> {
                     unifyR.color.Unify_RN500
                 }
                 else -> {
@@ -76,6 +76,6 @@ class FeedMenuViewHolder(
     }
 
     interface Listener {
-        fun onClick(item: FeedMenuItem)
+        fun onClick(item: ContentMenuItem)
     }
 }

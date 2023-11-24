@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.robot
 
-import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
@@ -20,7 +19,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.util.TestDoubleModelBuilder
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
@@ -40,7 +39,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.yield

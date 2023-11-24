@@ -114,7 +114,7 @@
     <string name="up_input_username_info">Username hanya bisa diubah 1 kali</string>
 
     <!--UGC-->
-    <string name="ugc_onboarding_accept_tnc_privacy_policy">Kebijakan Privasi</string>
+    <string name="ugc_onboarding_accept_tnc_privacy_policy">Pemberitahuan Privasi</string>
     <string name="ugc_onboarding_accept_tnc_terms">Syarat &amp; Ketentuan</string>
     <string name="ugc_onboarding_privacy_policy_link">https://www.tokopedia.com/privacy</string>
     <string name="ugc_onboarding_tnc_link">https://www.tokopedia.com/help/article/syarat-dan-ketentuan-feed-user-profil</string>
@@ -127,7 +127,7 @@
     <string name="ugc_complete_onboarding_tnc_title">Pastikan postinganmu nanti sesuai ketentuan berikut:</string>
     <string name="ugc_onboarding_tnc_1">Hanya posting pengalaman belanja di Tokopedia</string>
     <string name="ugc_onboarding_tnc_2">Tidak memposting foto/video yang ada unsur SARA &amp; dewasa (alkohol, rokok, kondom, dll)</string>
-    <string name="ugc_onboarding_accept_tnc">Saya telah membaca Kebijakan Privasi dan setuju dengan Syarat &amp; Ketentuan</string>
+    <string name="ugc_onboarding_accept_tnc">Saya telah membaca Pemberitahuan Privasi dan setuju dengan Syarat &amp; Ketentuan</string>
     <string name="ugc_onboarding_continue">Lanjut</string>
     <string name="ugc_account_non_active" tools:ignore="UnusedResources">Akun dinonaktifkan</string>
     <string name="ugc_warning_both_account_banned_title">Semua akun kamu melanggar\nketentuan Tokopedia</string>
@@ -433,5 +433,9 @@ produk eksklusif ini.</string>
     <!-- Product List Bottom Sheet-->
     <string name="feed_product_add_to_cart">+ Keranjang</string>
     <string name="feed_product_buy">Beli</string>
+
     <string description="Title of the side sheet&apos;s accessibility pane that is spoken by TalkBack when the side sheet appears on screen. [CHAR_LIMIT=NONE]" name="side_sheet_accessibility_pane_title">Side Sheet</string>
+
+    <string name="content_follow">Follow</string>
+    <string name="content_section_timer_title">Berakhir dalam</string>
 </resources>

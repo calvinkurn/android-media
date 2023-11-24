@@ -32,6 +32,7 @@ class IconBuilder(val builderFlags: IconBuilderFlag = IconBuilderFlag()) {
             IconList.ID_BILL -> listIcon.add(IconList.BillGlobalIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
             IconList.ID_LIST_TRANSACTION -> listIcon.add(IconList.ListTransactionIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
             IconList.ID_NOTEBOOK -> listIcon.add(IconList.NotebookIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_SETTING -> listIcon.add(IconList.SettingIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
             //lottiee
             IconList.ID_NAV_LOTTIE_WISHLIST -> listIcon.add(IconList.LottieWishlistIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
 

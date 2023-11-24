@@ -44,6 +44,9 @@ class FeedXHomeUseCase @Inject constructor(
                   cursor
                   hasNext
                 }
+                metadata {
+                 entrypoint
+                }
               }
             }
 
@@ -340,7 +343,6 @@ class FeedXHomeUseCase @Inject constructor(
               webLink
               appLink
               encryptedUserID
-              isLive
             }
             
             fragment FeedXProduct on FeedXProduct {
@@ -381,7 +383,8 @@ class FeedXHomeUseCase @Inject constructor(
         source: String,
         cursor: String = "",
         limit: Int = 0,
-        detailId: String = ""
+        detailId: String = "",
+        entryPoint: String = "",
     ): Map<String, Any> {
         val whId = addressHelper.getChosenAddress().tokonow.warehouseId
         val params = mutableMapOf(
@@ -393,20 +396,24 @@ class FeedXHomeUseCase @Inject constructor(
         if (detailId.isNotEmpty()) {
             params[PARAMS_SOURCE_ID] = detailId
         }
+        if (entryPoint.isNotEmpty()) {
+            params[PARAMS_ENTRY_POINT] = entryPoint
+        }
 
         return mapOf(PARAMS_REQUEST to params)
     }
 
     fun createPostDetailParams(postId: String): Map<String, Any> {
-        return createParamsWithId(postId, SOURCE_DETAIL)
+        return createParamsWithId(postId, SOURCE_DETAIL, "")
     }
 
-    fun createParamsWithId(sourceId: String, source: String?): Map<String, Any> {
+    fun createParamsWithId(sourceId: String, source: String?, entryPoint: String): Map<String, Any> {
         return createParams(
             source = source ?: SOURCE_DETAIL,
             cursor = "",
             limit = LIMIT_DETAIL,
-            detailId = sourceId
+            detailId = sourceId,
+            entryPoint = entryPoint,
         )
     }
 
@@ -418,6 +425,7 @@ class FeedXHomeUseCase @Inject constructor(
         private const val PARAMS_CURSOR = "cursor"
         private const val PARAMS_LIMIT = "limit"
         private const val PARAMS_WH_ID = "warehouseID"
+        private const val PARAMS_ENTRY_POINT = "entrypoint"
 
         private const val SOURCE_DETAIL = "detail-immersive"
         const val SOURCE_BROWSE = "browse"

@@ -13,8 +13,11 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 object DeeplinkMapperUser {
 
     const val KEY_ROLLENCE_PROFILE_MANAGEMENT_M2 = "M2_Profile_Mgmt"
-    const val ROLLENCE_GOTO_KYC = "goto_kyc_apps"
+    const val ROLLENCE_GOTO_KYC_MA = "goto_kyc_apps"
+    const val ROLLENCE_GOTO_KYC_SA = "goto_kyc_sellerapp"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
+    const val ROLLENCE_GOTO_LOGIN = "scp_goto_login_and"
+    const val ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE = "android_fundinvest"
 
     fun getRegisteredNavigationUser(deeplink: String): String {
         return when {
@@ -31,9 +34,28 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
             deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
+            deeplink == ApplinkConst.LOGIN -> getLoginApplink()
+            deeplink == ApplinkConst.REGISTER_INIT -> getRegisterApplink()
+            deeplink == ApplinkConst.REGISTER -> getRegisterApplink()
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             deeplink.startsWith(ApplinkConst.GOTO_KYC_WEBVIEW) -> ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
             else -> deeplink
+        }
+    }
+
+    private fun getRegisterApplink(): String {
+        return if (isGotoLoginEnabled() && GlobalConfig.isSellerApp().not()) {
+            ApplinkConstInternalUserPlatform.SCP_LOGIN
+        } else {
+            ApplinkConstInternalUserPlatform.INIT_REGISTER
+        }
+    }
+
+    private fun getLoginApplink(): String {
+        return if (isGotoLoginEnabled() && GlobalConfig.isSellerApp().not()) {
+            ApplinkConstInternalUserPlatform.SCP_LOGIN
+        } else {
+            ApplinkConstInternalUserPlatform.LOGIN
         }
     }
 
@@ -45,6 +67,13 @@ object DeeplinkMapperUser {
         }
     }
 
+    fun isGotoLoginEnabled(): Boolean {
+        return RemoteConfigInstance.getInstance()
+            .abTestPlatform
+            .getString(ROLLENCE_GOTO_LOGIN)
+            .isNotEmpty()
+    }
+
     fun isProfileManagementM2Activated(): Boolean {
         return RemoteConfigInstance.getInstance()
             .abTestPlatform
@@ -53,18 +82,24 @@ object DeeplinkMapperUser {
     }
 
     private fun getApplinkGotoKyc(deeplink: String): String {
-        return if (isRollenceGotoKycActivated() && !GlobalConfig.isSellerApp()) {
-            deeplink.replace("${ApplinkConst.APPLINK_CUSTOMER_SCHEME}://", "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/")
+        return if (isRollenceGotoKycActivated()) {
+            deeplink.replace("${ApplinkConst.APPLINK_CUSTOMER_SCHEME}://goto-kyc", "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/goto-kyc")
         } else {
             ApplinkConstInternalUserPlatform.KYC_INFO_BASE + "?" + deeplink.substringAfter("?")
         }
     }
 
-    private fun isRollenceGotoKycActivated(): Boolean {
+    fun isRollenceGotoKycActivated(): Boolean {
+        val rollenceKey = if (GlobalConfig.isSellerApp()) {
+            ROLLENCE_GOTO_KYC_SA
+        } else {
+            ROLLENCE_GOTO_KYC_MA
+        }
+
         val rollence = getAbTestPlatform()
-            .getFilteredKeyByKeyName(ROLLENCE_GOTO_KYC)
+            .getFilteredKeyByKeyName(rollenceKey)
         return if (rollence.isNotEmpty()) {
-            getAbTestPlatform().getString(ROLLENCE_GOTO_KYC).isNotEmpty()
+            getAbTestPlatform().getString(rollenceKey).isNotEmpty()
         } else {
             true
         }
@@ -78,7 +113,7 @@ object DeeplinkMapperUser {
         }
     }
 
-    private fun isRollencePrivacyCenterActivated(): Boolean {
+    fun isRollencePrivacyCenterActivated(): Boolean {
         return getAbTestPlatform()
             .getString(ROLLENCE_PRIVACY_CENTER)
             .isNotEmpty()
@@ -88,6 +123,19 @@ object DeeplinkMapperUser {
         return deeplink.replace(
             DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH,
             ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER+"/")
+    }
+
+    fun isGotoLoginDisabled(): Boolean {
+        return RemoteConfigInstance.getInstance()
+            .abTestPlatform
+            .getString(ROLLENCE_GOTO_LOGIN)
+            .isEmpty()
+    }
+
+    fun isFundsAndInvestmentComposeActivated(): Boolean {
+        return getAbTestPlatform()
+            .getString(ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE)
+            .isNotEmpty()
     }
 
     private fun getAbTestPlatform(): AbTestPlatform =

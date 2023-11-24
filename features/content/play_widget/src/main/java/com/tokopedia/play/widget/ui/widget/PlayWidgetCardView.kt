@@ -3,7 +3,9 @@ package com.tokopedia.play.widget.ui.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.ImageView
 import android.widget.LinearLayout
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.databinding.ViewPlayWidgetCardChannelBinding
 import com.tokopedia.play.widget.ui.custom.PlayLiveBadgeView
 import com.tokopedia.play.widget.ui.custom.PlayTotalWatchBadgeView
@@ -32,7 +34,12 @@ class PlayWidgetCardView : RoundedConstraintLayout {
     }
 
     fun setData(data: PlayWidgetChannelUiModel) {
-        binding.viewPlayWidgetThumbnail.setImageUrl(data.video.coverUrl)
+        binding.viewPlayWidgetThumbnail.scaleType = ImageView.ScaleType.CENTER
+        binding.viewPlayWidgetThumbnail.loadImage(data.video.coverUrl) {
+            listener(
+                onSuccess = { _, _ -> binding.viewPlayWidgetThumbnail.scaleType = ImageView.ScaleType.CENTER_CROP }
+            )
+        }
 
         if (data.channelType == PlayWidgetChannelType.Live) {
             addLiveBadgeView()
@@ -53,9 +60,9 @@ class PlayWidgetCardView : RoundedConstraintLayout {
 
     private fun addTotalWatchView(formattedNumber: String) {
         with(binding.viewPlayWidgetChildContainer) {
+            totalWatchView.setTotalWatch(formattedNumber)
             val index = indexOfChild(totalWatchView)
             if (index == -1) {
-                totalWatchView.setTotalWatch(formattedNumber)
                 addView(totalWatchView)
             }
         }

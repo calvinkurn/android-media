@@ -36,7 +36,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
@@ -169,6 +168,9 @@ object DeeplinkMainApp {
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(c, d)
             }
         ),
+        "buymoresavemore" to mutableListOf(
+            DLP.goTo(DeeplinkMapperMerchant::getRegisteredNavigationForOfferLandingPage)
+        ),
         "cart" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace(deeplink)
@@ -182,6 +184,11 @@ object DeeplinkMainApp {
         "catalog-library" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperCategory.getRegisteredNavigationCategory(deeplink)
+            }
+        ),
+        "catalog-product-list" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationCatalogProductList(deeplink)
             }
         ),
         "category" to mutableListOf(
@@ -467,8 +474,8 @@ object DeeplinkMainApp {
             DLP.startsWith("qr") { _: String ->
                 ApplinkConstInternalUserPlatform.QR_LOGIN
             },
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.LOGIN
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "marketplace" to mutableListOf(
@@ -668,6 +675,12 @@ object DeeplinkMainApp {
             }
         ),
         "people" to mutableListOf(
+            DLP.matchPattern("{user_id}/following") { deeplink: String ->
+                DeeplinkMapperContent.getProfileDeeplink(deeplink)
+            },
+            DLP.matchPattern("{user_id}/followers") { deeplink: String ->
+                DeeplinkMapperContent.getProfileDeeplink(deeplink)
+            },
             DLP.matchPattern("{user_id}") { deeplink: String ->
                 DeeplinkMapperContent.getProfileDeeplink(deeplink)
             },
@@ -812,10 +825,7 @@ object DeeplinkMainApp {
                 ApplinkConstInternalCategory.getDiscoveryDeeplink(ApplinkConst.DISCOVERY_DEALS)
             },
             DLP.matchPattern("{slug}") { _, _, _, idList ->
-                UriUtil.buildUri(
-                    ApplinkConstInternalPromo.PROMO_DETAIL,
-                    idList?.getOrNull(0)
-                )
+                ApplinkConstInternalCategory.getDiscoveryDeeplink(ApplinkConst.DISCOVERY_DEALS)
             }
         ),
         "promoNative" to mutableListOf(
@@ -829,13 +839,13 @@ object DeeplinkMainApp {
             }
         ),
         "register-init" to mutableListOf(
-            DLP.goTo { _: String ->
-                ApplinkConstInternalUserPlatform.INIT_REGISTER
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "registration" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.INIT_REGISTER
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "rekomendasi" to mutableListOf(
@@ -1193,7 +1203,7 @@ object DeeplinkMainApp {
         ),
         "shop-penalty" to mutableListOf(
             DLP.matchPattern("") { context, _, _, _ ->
-                ShopScoreDeepLinkMapper.getInternalApplinkPenalty(context)
+                ApplinkConstInternalMarketplace.SHOP_PENALTY
             }
         ),
         "shop-penalty-detail" to mutableListOf(
@@ -1210,6 +1220,12 @@ object DeeplinkMainApp {
             DLP.startsWith("order") { deeplink: String ->
                 DeeplinkMapperOrder.getSnapshotOrderInternalAppLink(deeplink)
             }
+        ),
+        "stories" to mutableListOf(
+            DLP.matchPattern(
+                "shop/{shop_id}",
+                DeeplinkMapperContent::getRegisteredNavigation
+            )
         ),
         "talk" to mutableListOf(
             DLP.goTo { deeplink: String ->
@@ -1261,6 +1277,11 @@ object DeeplinkMainApp {
         "travelentertainment" to mutableListOf(
             DLP.goTo { context: Context, deeplink: String ->
                 DeeplinkMapperDigital.getRegisteredNavigationDigital(context, deeplink)
+            }
+        ),
+        "universal-editor" to mutableListOf(
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR
             }
         ),
         "universal-page" to mutableListOf(

@@ -10,7 +10,9 @@ data class ProductRecommendationVerticalPlaceholderDataModel(
     private val type: String = String.EMPTY,
     private val name: String = String.EMPTY,
     override val impressHolder: ImpressHolder = ImpressHolder(),
-    var recomWidgetData: RecommendationWidget? = null
+    var recomWidgetData: RecommendationWidget? = null,
+    val queryParam: String,
+    val thematicId: String
 ) : DynamicPdpDataModel {
 
     override fun type(): String = type

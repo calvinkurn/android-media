@@ -2,4 +2,6 @@
     <string name="lihat_semua">Lihat Semua</string>
 
     <string name="content_desc_header_cta">Header CTA Button</string>
+    <string name="content_desc_icon_subtitle">Icon subtitle</string>
+
 </resources>

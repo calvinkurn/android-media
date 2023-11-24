@@ -18,6 +18,7 @@
     <string name="path_tokopedia_now_search" translatable="false">/search</string>
     <string name="path_tokopedia_now_old_category" translatable="false">/category</string>
     <string name="path_tokopedia_now_category_main" translatable="false">/category/l1</string>
+    <string name="path_tokopedia_now_category_l2" translatable="false">/category/l2</string>
     <string name="path_tokopedia_now_repurchase_page" translatable="false">/repurchase-page</string>
     <string name="path_tokopedia_now_category_filter" translatable="false">/category-filter</string>
     <string name="path_tokopedia_now_educational_info" translatable="false">/educational-info</string>

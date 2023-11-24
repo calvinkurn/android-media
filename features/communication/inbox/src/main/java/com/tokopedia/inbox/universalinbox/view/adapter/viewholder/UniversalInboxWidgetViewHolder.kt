@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
 
 import android.view.View
-import com.tokopedia.adapterdelegate.BaseViewHolder
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.inbox.databinding.UniversalInboxWidgetItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxWidgetListener
@@ -15,7 +15,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class UniversalInboxWidgetViewHolder(
     itemView: View,
     private val listener: UniversalInboxWidgetListener
-): BaseViewHolder(itemView) {
+) : RecyclerView.ViewHolder(itemView) {
 
     private val binding: UniversalInboxWidgetItemBinding? by viewBinding()
 

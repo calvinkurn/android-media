@@ -7,13 +7,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
-import com.tokopedia.search.result.product.inspirationwidget.card.SmallGridInspirationCardViewHolder
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordViewHolder
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.GridInspirationProductItemViewHolder
+import com.tokopedia.search.utils.isFullSpan
 
 class ProductListAdapter(
     private val typeFactory: ProductListTypeFactory,
@@ -40,19 +36,8 @@ class ProductListAdapter(
 
     private fun setFullSpanForStaggeredGrid(holder: AbstractViewHolder<*>, viewType: Int) {
         val layoutParams = holder.itemView.layoutParams
-        if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-            layoutParams.isFullSpan = isStaggeredGridFullSpan(viewType)
-        }
-    }
-
-    private fun isStaggeredGridFullSpan(viewType: Int): Boolean {
-        return viewType != SmallGridProductItemViewHolder.LAYOUT
-                && viewType != SmallGridProductItemViewHolder.LAYOUT_WITH_VIEW_STUB
-                && viewType != RecommendationItemViewHolder.LAYOUT
-                && viewType != SmallGridInspirationCardViewHolder.LAYOUT
-                && viewType != InspirationKeywordViewHolder.LAYOUT
-                && viewType != GridInspirationProductItemViewHolder.LAYOUT
-                && viewType != GridInspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB
+        if (layoutParams is StaggeredGridLayoutManager.LayoutParams)
+            layoutParams.isFullSpan = isFullSpan(viewType)
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int, payloads: List<Any>) {

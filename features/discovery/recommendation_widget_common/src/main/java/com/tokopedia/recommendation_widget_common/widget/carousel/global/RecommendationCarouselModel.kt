@@ -5,6 +5,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.tracking.RecommendationCarouselWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationVisitable
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
@@ -16,6 +17,7 @@ data class RecommendationCarouselModel(
     val visitable: RecommendationVisitable,
     val widget: RecommendationWidget,
     val source: RecommendationWidgetSource?,
+    val listener: RecommendationWidgetListener?,
 ) : RecommendationVisitable by visitable {
 
     val widgetTracking: RecommendationCarouselWidgetTracking? =
@@ -41,10 +43,13 @@ data class RecommendationCarouselModel(
             trackingModel: RecommendationWidgetTrackingModel,
             widget: RecommendationWidget,
             source: RecommendationWidgetSource?,
+            listener: RecommendationWidgetListener?,
+            userId: String
         ) = RecommendationCarouselModel(
-            visitable = RecommendationVisitable.create(metadata, trackingModel),
+            visitable = RecommendationVisitable.create(metadata, trackingModel, userId),
             widget = widget,
             source = source,
+            listener = listener,
         )
     }
 }

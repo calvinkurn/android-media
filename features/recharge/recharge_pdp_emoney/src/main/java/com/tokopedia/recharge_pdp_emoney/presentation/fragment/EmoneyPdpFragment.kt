@@ -25,8 +25,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
@@ -39,6 +42,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.globalerror.GlobalError
@@ -81,6 +85,10 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 import kotlin.math.abs
+import com.tokopedia.common_digital.R as common_digitalR
+import com.tokopedia.globalerror.R as globalerrorR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by jessica on 29/03/21
@@ -111,6 +119,9 @@ open class EmoneyPdpFragment :
     lateinit var rechargeAnalytics: RechargeAnalytics
 
     @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
+
+    @Inject
     lateinit var userSession: UserSessionInterface
 
     private var emoneyCardNumber = ""
@@ -121,6 +132,9 @@ open class EmoneyPdpFragment :
 
     private val coachMark by lazy { CoachMark2(requireContext()) }
     private val coachMarks = arrayListOf<CoachMark2Item>()
+    private var categoryName = ""
+    private var loyaltyStatus = ""
+    private var isAlreadyTrackImpressionMultiButton: Boolean = false
 
     val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
@@ -203,9 +217,12 @@ open class EmoneyPdpFragment :
                 binding.emoneyGlobalError.hide()
                 when (it) {
                     is Success -> {
+                        categoryName = it.data.catalog.label
+                        loyaltyStatus = it.data.userPerso.loyaltyStatus
                         trackEventViewPdp(it.data.catalog.label)
                         renderRecommendationsAndPromoList(it.data.recommendations, it.data.promos)
                         renderTicker(EmoneyPdpMapper.mapTopUpBillsTickersToTickersData(it.data.tickers))
+                        topUpBillsViewModel.multiCheckoutButtons  = it.data.multiCheckoutButtons
                     }
                     is Fail -> {
                         renderFullPageError(it.throwable)
@@ -317,10 +334,22 @@ open class EmoneyPdpFragment :
             }
         )
 
+        addToCartViewModel.addToCartMultiCheckoutResult.observe(
+            viewLifecycleOwner
+        ) { data ->
+            context?.let { context ->
+                trackOnClickMultiCheckout(data)
+                RouteManager.route(context, data.redirectUrl)
+            }
+            binding.emoneyFullPageLoadingLayout.hide()
+            binding.emoneyBuyWidget.onBuyButtonMultiCheckoutLoading(false)
+        }
+
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner) {
             renderErrorMessage(MessageErrorException(it.title))
             binding.emoneyFullPageLoadingLayout.hide()
             binding.emoneyBuyWidget.onBuyButtonLoading(false)
+            binding.emoneyBuyWidget.onBuyButtonMultiCheckoutLoading(false)
         }
 
         emoneyPdpViewModel.dppoConsent.observe(viewLifecycleOwner) {
@@ -331,6 +360,16 @@ open class EmoneyPdpFragment :
                 is Fail -> {}
             }
         }
+    }
+
+    private fun trackOnClickMultiCheckout(data: DigitalAtcTrackingModel) {
+        commonMultiCheckoutAnalytics.onClickMultiCheckout(
+            categoryName,
+            getIssuerName(issuerId),
+            data.channelId,
+            userSession.userId,
+            multiCheckoutButtonPromotionTracker(topUpBillsViewModel.multiCheckoutButtons)
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -559,7 +598,7 @@ open class EmoneyPdpFragment :
         if ((error.message ?: "").contains(EmoneyPdpViewModel.ERROR_GRPC_TIMEOUT, true)) {
             errorThrowable = MessageErrorException(
                 getString(
-                    com.tokopedia.common_digital.R.string.digital_common_grpc_toaster
+                    common_digitalR.string.digital_common_grpc_toaster
                 )
             )
         }
@@ -578,7 +617,7 @@ open class EmoneyPdpFragment :
             renderErrorMessage(throwable)
             binding.emoneyPdpShimmeringLayout.root.hide()
         })
-        binding.emoneyGlobalError.findViewById<GlobalError>(com.tokopedia.globalerror.R.id.globalerror_view)
+        binding.emoneyGlobalError.findViewById<GlobalError>(globalerrorR.id.globalerror_view)
             ?.apply {
                 gravity = Gravity.CENTER
             }
@@ -669,6 +708,7 @@ open class EmoneyPdpFragment :
         issuerId = prefix.key
         binding.emoneyPdpProductWidget.showShimmering()
         binding.emoneyBuyWidgetLayout.hide()
+        binding.emoneyBuyWidget.hideCoachMark()
         emoneyPdpViewModel.getProductFromOperator(detailPassData.menuId.toIntSafely(), prefix.key)
     }
 
@@ -694,10 +734,11 @@ open class EmoneyPdpFragment :
         }
         binding.emoneyPdpViewPager.show()
         binding.emoneyPdpProductWidget.showPaddingBottom(
-            context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6)
+            context?.resources?.getDimensionPixelOffset(unifycomponentsR.dimen.spacing_lvl6)
                 ?: 0
         )
         binding.emoneyBuyWidgetLayout.hide()
+        binding.emoneyBuyWidget.hideCoachMark()
     }
 
     override fun onClickProduct(product: CatalogProduct, position: Int) {
@@ -717,17 +758,27 @@ open class EmoneyPdpFragment :
 
         binding.emoneyBuyWidgetLayout.show()
         binding.emoneyBuyWidget.setVisibilityLayout(true)
+        binding.emoneyBuyWidget.showMulticheckoutButtonSupport(topUpBillsViewModel.multiCheckoutButtons)
         binding.emoneyBuyWidgetLayout.invalidate()
         binding.emoneyPdpProductWidget.showPaddingBottom(
             kotlin.math.max(
-                context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.unify_space_64)
+                context?.resources?.getDimensionPixelOffset(unifycomponentsR.dimen.unify_space_64)
                     ?: 0,
                 binding.emoneyBuyWidgetLayout.measuredHeight
             ) + (
-                context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6)
+                context?.resources?.getDimensionPixelOffset(unifycomponentsR.dimen.spacing_lvl6)
                     ?: 0
                 )
         )
+
+        if (!isAlreadyTrackImpressionMultiButton) {
+            isAlreadyTrackImpressionMultiButton = true
+            commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                categoryName,
+                multiCheckoutButtonImpressTrackerButtonType(topUpBillsViewModel.multiCheckoutButtons),
+                userSession.userId
+            )
+        }
     }
 
     override fun onClickSeeDetailProduct(product: CatalogProduct) {
@@ -749,6 +800,22 @@ open class EmoneyPdpFragment :
                 categoryIdFromPDP = detailPassData.categoryId
             )
         )
+    }
+
+    override fun onClickMultiCheckoutButton() {
+        binding.emoneyBuyWidget.onBuyButtonMultiCheckoutLoading(true)
+        addToCartViewModel.setAtcMultiCheckoutParam()
+        proceedAddToCart(
+            emoneyPdpViewModel.generateCheckoutPassData(
+                (requireActivity() as EmoneyPdpActivity).promoCode,
+                binding.emoneyPdpInputCardWidget.getNumber(),
+                categoryIdFromPDP = detailPassData.categoryId
+            )
+        )
+    }
+
+    override fun onCloseCoachMark() {
+        commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(categoryName, loyaltyStatus)
     }
 
     private fun proceedAddToCart(digitalCheckoutData: DigitalCheckoutPassData) {
@@ -883,7 +950,7 @@ open class EmoneyPdpFragment :
                 val iconUnify = getIconUnifyDrawable(
                     ctx,
                     IconUnify.INFORMATION,
-                    ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                    ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN900)
                 )
                 iconUnify?.toBitmap()?.let {
                     getItem(0).setOnMenuItemClickListener {
@@ -905,7 +972,7 @@ open class EmoneyPdpFragment :
             val iconUnify = getIconUnifyDrawable(
                 ctx,
                 IconUnify.MENU_KEBAB_VERTICAL,
-                ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN900)
             )
             iconUnify?.toBitmap()?.let {
                 getItem(1).setOnMenuItemClickListener {

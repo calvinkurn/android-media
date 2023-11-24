@@ -2,23 +2,28 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.os.Handler
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE
 import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ViewmodelSliderBannerBinding
 import com.tokopedia.shop.databinding.WidgetSliderBannerItemBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by rizqiaryansa on 2020-02-25.
@@ -33,6 +38,7 @@ class ShopHomeSliderBannerViewHolder(
         @LayoutRes
         val LAYOUT_RES = R.layout.viewmodel_slider_banner
         const val DURATION_SLIDER_BANNER = 5000L
+        private val SHOP_RE_IMAGINE_MARGIN = 4f.dpToPx()
     }
     private val viewBinding: ViewmodelSliderBannerBinding? by viewBinding()
     private var viewBindingSliderBannerItem: WidgetSliderBannerItemBinding? = null
@@ -72,6 +78,7 @@ class ShopHomeSliderBannerViewHolder(
         img?.onUrlLoaded = {
             performanceMonitoring.stopTrace()
         }
+        img?.cornerRadius = 4f.dpToPx().toInt()
     }
 
     init {
@@ -139,6 +146,53 @@ class ShopHomeSliderBannerViewHolder(
                 }
             }
         }
+        configColorTheme(shopHomeDisplayWidgetUiModel)
+        setShopReimaginedContainerMargin()
+    }
+    private fun setShopReimaginedContainerMargin() {
+        carouselShopPage?.let {
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
+        }
+    }
+
+    private fun configColorTheme(element: ShopHomeDisplayWidgetUiModel) {
+        if (element.isFestivity) {
+            configFestivity()
+        } else {
+            if (element.header.isOverrideTheme) {
+                setReimaginedColorConfig(element.header.colorSchema)
+            } else {
+                setDefaultColorConfig()
+            }
+        }
+    }
+
+    private fun configFestivity() {
+        val festivityTextColor = MethodChecker.getColor(
+            itemView.context,
+            unifyprinciplesR.color.Unify_Static_White
+        )
+        textViewTitle?.setTextColor(festivityTextColor)
+    }
+
+    private fun setReimaginedColorConfig(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(
+            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+        )
+        setHeaderColor(titleColor)
+    }
+
+    private fun setDefaultColorConfig() {
+        val titleColor = MethodChecker.getColor(
+            itemView.context,
+            unifyprinciplesR.color.Unify_NN950_96
+        )
+        setHeaderColor(titleColor)
+    }
+
+    private fun setHeaderColor(titleColor: Int) {
+        textViewTitle?.setTextColor(titleColor)
     }
 
     fun pauseTimer() {

@@ -68,19 +68,31 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
     }
 
     override fun openFilterPage(searchParameter: Map<String, Any>?) {
-        if (searchParameter == null) return
-        if (!isBottomSheetFilterEnabled) return
+        if (searchParameter == null || !isBottomSheetFilterEnabled) return
 
         isBottomSheetFilterEnabled = false
-
         view.sendTrackingOpenFilterPage()
         view.openBottomSheetFilter(dynamicFilterModel, this)
 
+        getDynamicFilter(searchParameter)
+    }
+
+    override fun openSortPage(searchParameter: Map<String, Any>?) {
+        if (searchParameter == null || !isBottomSheetFilterEnabled) return
+
+        isBottomSheetFilterEnabled = false
+        view.openBottomSheetSort(dynamicFilterModel, this)
+
+        getDynamicFilter(searchParameter)
+    }
+
+    private fun getDynamicFilter(searchParameter: Map<String, Any>) {
         if (dynamicFilterModel == null) {
-            val getDynamicFilterRequestParams = requestParamsGenerator.createRequestDynamicFilterParams(
-                searchParameter,
-                chooseAddressDelegate.getChooseAddressParams(),
-            )
+            val getDynamicFilterRequestParams =
+                requestParamsGenerator.createRequestDynamicFilterParams(
+                    searchParameter,
+                    chooseAddressDelegate.getChooseAddressParams(),
+                )
             getDynamicFilterUseCase.get().execute(
                 getDynamicFilterRequestParams,
                 createGetDynamicFilterModelSubscriber()

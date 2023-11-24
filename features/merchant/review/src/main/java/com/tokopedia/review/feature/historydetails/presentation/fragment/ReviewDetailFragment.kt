@@ -60,7 +60,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ReviewDetailFragment : BaseDaggerFragment(),
-    HasComponent<ReviewDetailComponent>, OnBackPressedListener, ReviewScoreClickListener,
+    HasComponent<ReviewDetailComponent>,
+    ReviewScoreClickListener,
     ReviewPerformanceMonitoringContract {
 
     companion object {
@@ -204,7 +205,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         goToImagePreview(productID, position, reviewMediaThumbnailUiModel)
     }
 
-    override fun onBackPressed() {
+    override fun onFragmentBackPressed(): Boolean {
         (viewModel.reviewDetails.value as? Success)?.let {
             ReviewDetailTracking.eventClickBack(
                 it.data.product.productId,
@@ -216,6 +217,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         intentResult.putExtra(ReviewCommonConstants.REVIEW_EDITED, viewModel.isReviewEdited())
         activity?.setResult(Activity.RESULT_OK, intentResult)
         activity?.finish()
+        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

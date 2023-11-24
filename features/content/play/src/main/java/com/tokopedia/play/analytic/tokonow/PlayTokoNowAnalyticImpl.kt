@@ -27,7 +27,8 @@ import javax.inject.Inject
  */
 class PlayTokoNowAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val trackingQueue: TrackingQueue
+    private val trackingQueue: TrackingQueue,
+    private val dimensionTrackingHelper: PlayDimensionTrackingHelper,
 ) : PlayTokoNowAnalytic {
 
     private val userId: String
@@ -174,11 +175,20 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 "ecommerce" to hashMapOf(
                     "click" to hashMapOf(
                         "actionField" to hashMapOf("list" to "/groupchat - bottom sheet now"),
-                        "products" to listOf(convertProductToHashMapWithList(product, position + 1, "bottom sheet"))
+                        "products" to listOf(
+                            convertProductToHashMapWithList(
+                                product = product,
+                                position = position + 1,
+                                sourceFrom = "bottom sheet",
+                                dimension90 = dimensionTrackingHelper.getDimension90()
+                            )
+                        )
                     )
                 )
             ),
-            generateBaseTracking()
+            generateBaseTracking(
+                trackerId = "32247"
+            )
         )
     }
 
@@ -194,7 +204,14 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 "ecommerce" to hashMapOf(
                     "click" to hashMapOf(
                         "actionField" to hashMapOf("list" to "/groupchat - featured product"),
-                        "products" to listOf(convertProductToHashMapWithList(featuredProduct, position, "featured product"))
+                        "products" to listOf(
+                            convertProductToHashMapWithList(
+                                product = featuredProduct,
+                                position = position,
+                                sourceFrom = "featured product",
+                                dimension90 = dimensionTrackingHelper.getDimension90()
+                            )
+                        )
                     )
                 )
             ),
@@ -208,7 +225,8 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 KEY_PRODUCT_ID to featuredProduct.id,
                 KEY_PRODUCT_NAME to featuredProduct.title,
                 KEY_PRODUCT_URL to featuredProduct.applink.toString(),
-                KEY_CHANNEL to channelName
+                KEY_CHANNEL to channelName,
+                Key.trackerId to "32245"
             )
         )
     }
@@ -220,7 +238,14 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
 
         val items = arrayListOf<Bundle>().apply {
             products.forEach {
-                add(productsToBundle(it.key.product, it.value, "bottom sheet"))
+                add(
+                    productsToBundle(
+                        product = it.key.product,
+                        position = it.value,
+                        sourceFrom = "bottom sheet",
+                        dimension90 = dimensionTrackingHelper.getDimension90()
+                    )
+                )
             }
         }
 
@@ -235,6 +260,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             putString(Key.businessUnit, BusinessUnit.play)
             putParcelableArrayList("items", items)
             putString(KEY_ITEM_LIST, "/groupchat - bottom sheet")
+            putString(Key.trackerId, "32246")
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -260,7 +286,14 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                     "currencyCode" to "IDR",
                     "impressions" to mutableListOf<HashMap<String, Any>>().apply {
                         products.forEach {
-                            add(convertProductToHashMapWithList(it.first, it.second + 1, "featured product"))
+                            add(
+                                convertProductToHashMapWithList(
+                                    product = it.first,
+                                    position = it.second + 1,
+                                    sourceFrom = "featured product",
+                                    dimension90 = dimensionTrackingHelper.getDimension90()
+                                )
+                            )
                         }
                     }
                 )
@@ -269,7 +302,8 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 Key.currentSite to CurrentSite.tokopediaMarketplace,
                 Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
                 Key.userId to userId,
-                Key.businessUnit to BusinessUnit.play
+                Key.businessUnit to BusinessUnit.play,
+                Key.trackerId to "32244"
             )
         )
     }
@@ -291,11 +325,20 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet"))
+                        "products" to listOf(
+                            convertProductAndShopToHashMapWithList(
+                                product = product,
+                                shopInfo = shopInfo,
+                                dimension39 = "/groupchat - bottom sheet",
+                                dimension90 = dimensionTrackingHelper.getDimension90()
+                            )
+                        )
                     )
                 )
             ),
-            generateBaseTracking()
+            generateBaseTracking(
+                trackerId = "32249"
+            )
         )
     }
 
@@ -316,11 +359,20 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet"))
+                        "products" to listOf(
+                            convertProductAndShopToHashMapWithList(
+                                product = product,
+                                shopInfo = shopInfo,
+                                dimension39 = "/groupchat - bottom sheet",
+                                dimension90 = dimensionTrackingHelper.getDimension90(),
+                            )
+                        )
                     )
                 )
             ),
-            generateBaseTracking()
+            generateBaseTracking(
+                trackerId = "32248"
+            )
         )
     }
 
@@ -337,16 +389,22 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    private fun generateBaseTracking(): HashMap<String, Any> {
+    private fun generateBaseTracking(trackerId: String): HashMap<String, Any> {
         return hashMapOf(
             Key.businessUnit to BusinessUnit.play,
             Key.currentSite to CurrentSite.tokopediaMarketplace,
             Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
-            Key.userId to userId
+            Key.userId to userId,
+            Key.trackerId to trackerId
         )
     }
 
-    private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): HashMap<String, Any> {
+    private fun convertProductToHashMapWithList(
+        product: PlayProductUiModel.Product,
+        position: Int,
+        sourceFrom: String,
+        dimension90: String,
+    ): HashMap<String, Any> {
         val dimension115 = buildString {
             append("pinned.${product.isPinned}, ")
             append("ribbon.${product.label.rankType}")
@@ -364,11 +422,17 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             "variant" to "",
             "list" to "/groupchat - $sourceFrom",
             "position" to position,
-            "dimension115" to dimension115
+            "dimension90" to dimension90,
+            "dimension115" to dimension115,
         )
     }
 
-    private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfo, dimension39: String = ""): HashMap<String, Any> {
+    private fun convertProductAndShopToHashMapWithList(
+        product: PlayProductUiModel.Product,
+        shopInfo: PlayPartnerInfo,
+        dimension39: String,
+        dimension90: String,
+    ): HashMap<String, Any> {
         val dimension115 = buildString {
             append("pinned.${product.isPinned}, ")
             append("ribbon.${product.label.rankType}")
@@ -390,11 +454,17 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             "shop_id" to shopInfo.id,
             "shop_name" to shopInfo.name,
             "shop_type" to shopInfo.type.value,
-            "dimension115" to dimension115
+            "dimension90" to dimension90,
+            "dimension115" to dimension115,
         )
     }
 
-    private fun productsToBundle(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): Bundle =
+    private fun productsToBundle(
+        product: PlayProductUiModel.Product,
+        position: Int,
+        sourceFrom: String,
+        dimension90: String,
+    ): Bundle =
         Bundle().apply {
             putString("item_name", product.title)
             putString("item_id", product.id)
@@ -409,6 +479,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             putString("item_category", "")
             putString("item_variant", "")
             putString("dimension40", "/groupchat - $sourceFrom")
+            putString("dimension90", dimension90)
             putInt("index", position)
         }
 

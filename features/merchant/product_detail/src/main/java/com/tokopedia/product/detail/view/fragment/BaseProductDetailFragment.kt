@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
@@ -35,6 +36,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     companion object {
         private const val INSTANT_SMOOTH_SCROLL_MILLISECONDS_PER_INCH = 0.1f
+        private const val DEFAULT_BLOCK_LIMIT = 5
     }
 
     var productAdapter: ProductDetailAdapter? = null
@@ -71,6 +73,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DynamicProductDetailFragmentBinding.inflate(inflater, container, false)
+        getProductDetailActivity()?.getBlocksPerformanceMonitoring()?.addViewPerformanceBlocks(binding?.pdpNavtoolbar)
         return binding?.root
     }
 
@@ -85,8 +88,9 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         observeData()
     }
 
-    fun submitInitialList(visitables: List<DynamicPdpDataModel>) {
+    fun submitInitialList(visitables: List<DynamicPdpDataModel>, cacheState: CacheState?) {
         hideSwipeLoading()
+        recordPerformanceTrace(visitables, true, cacheState)
 
         rvPdp?.post {
             productAdapter?.submitList(visitables)
@@ -95,8 +99,45 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     fun submitList(visitables: List<DynamicPdpDataModel>) {
         rvPdp?.post {
+            recordPerformanceTrace(visitables, false)
             productAdapter?.submitList(visitables)
         }
+    }
+
+    private fun recordPerformanceTrace(
+        visitables: List<DynamicPdpDataModel>,
+        intialList: Boolean,
+        cacheState: CacheState? = null
+    ) {
+        var position = 0
+        (getRecyclerView()?.layoutManager as? CenterLayoutManager)?.let { layoutManager ->
+            val lastVisibleItemPosition = IntArray(layoutManager.getSpanCount())
+            layoutManager.findLastVisibleItemPositions(lastVisibleItemPosition)
+            var lastVisibleItemPositionSpan1 = 0
+            if (lastVisibleItemPosition.size >= 1) {
+                lastVisibleItemPositionSpan1 = lastVisibleItemPosition[1]
+            }
+            position = lastVisibleItemPositionSpan1
+        }
+        var visitablesForPerf = visitables
+        if (!intialList && position >= 0) {
+            visitablesForPerf = visitablesForPerf.take(
+                position
+            )
+        }
+        val blockIdentifier = if (cacheState?.isFromCache == true) {
+            ProductDetailActivity.P1_CACHE_KEY
+        } else if (cacheState?.isPrefetch == true) {
+            ProductDetailActivity.P1_PREFETCH_KEY
+        } else {
+            ProductDetailActivity.P1_NETWORK_KEY
+        }
+
+        getProductDetailActivity()?.getBlocksPerformanceMonitoring()?.setBlock(
+            visitablesForPerf,
+            blockIdentifier,
+            DEFAULT_BLOCK_LIMIT
+        )
     }
 
     fun showLoading() {
@@ -207,7 +248,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             addItemDecoration(RecommendationItemDecoration())
         }
         rvPdp = rv
-        showLoading()
     }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {

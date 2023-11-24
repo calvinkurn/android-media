@@ -18,7 +18,7 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.device.info.model.AdditionalInfoModel;
+import com.tokopedia.device.info.model.AdditionalDeviceInfo;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.network.authentication.AuthConstant;
 import com.tokopedia.network.authentication.AuthHelper;
@@ -154,16 +154,35 @@ public class TkpdWebView extends WebView {
                     AuthHelper.Companion.getMD5Hash(hash + "+" + userSession.getUserId())
             );
 
-            addAdditionalInfoHeader(header);
+            addAdditionalInfoHeader(header, userSession.getUserId());
 
             loadUrl(urlToLoad, header);
         }
     }
 
-    private void addAdditionalInfoHeader(Map<String, String> header) {
-        if (remoteConfig.getBoolean(RemoteConfigKey.FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER, true)) {
-            byte[] additionalInfoJson = AdditionalInfoModel.Companion
-                    .generateJson(getContext().getApplicationContext())
+    private void addAdditionalInfoHeader(Map<String, String> header, String userId) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER, true) && !GlobalConfig.isSellerApp()) {
+            boolean isEnableGetWidevineId = remoteConfig.getBoolean(
+                    RemoteConfigKey.ANDROID_ENABLE_GENERATE_WIDEVINE_ID,
+                    true
+            );
+            boolean isEnableGetWidevineIdSuspend = remoteConfig.getBoolean(
+                    RemoteConfigKey.ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND,
+                    true
+            );
+            String whitelistDisableWidevineId = remoteConfig.getString(
+                    RemoteConfigKey.ANDROID_WHITELIST_DISABLE_GENERATE_WIDEVINE_ID,
+                    ""
+            );
+
+            byte[] additionalInfoJson = AdditionalDeviceInfo.INSTANCE
+                    .generateJson(
+                            getContext().getApplicationContext(),
+                            isEnableGetWidevineId,
+                            isEnableGetWidevineIdSuspend,
+                            whitelistDisableWidevineId,
+                            userId
+                    )
                     .getBytes(StandardCharsets.UTF_8);
 
             String additionalInfoBase64 = Base64.encodeToString(additionalInfoJson, Base64.DEFAULT).replace("\n", "").replace("\r", "").trim();

@@ -1,9 +1,9 @@
 package com.tokopedia.mediauploader.video.data.repository
 
+import com.tokopedia.mediauploader.analytics.UploaderLogger
 import com.tokopedia.mediauploader.common.compressor.data.Configuration
 import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
-import com.tokopedia.mediauploader.common.logger.logCompressionError
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.video.data.entity.VideoInfo
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
@@ -98,7 +98,10 @@ class VideoCompressionRepositoryImpl @Inject constructor(
 
                 return compressedPath
             } else {
-                logCompressionError(cache, compression.failureMessage)
+                UploaderLogger.compressionError(
+                    cache,
+                    compression.failureMessage.orEmpty()
+                )
 
                 return originalPath
             }

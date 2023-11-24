@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.stories.widget.StoriesWidgetLayout
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatStateItem
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
@@ -47,6 +48,7 @@ class ChatItemListViewHolder constructor(
 
     private val userName: Typography = itemView.findViewById(R.id.user_name)
     private val thumbnail: ImageView = itemView.findViewById(R.id.thumbnail)
+    private val storiesBorder: StoriesWidgetLayout = itemView.findViewById(R.id.stories_border)
     private val message: TextView = itemView.findViewById(R.id.message)
     private val unreadCounter: Typography = itemView.findViewById(R.id.unread_counter)
     private val time: Typography = itemView.findViewById(R.id.time)
@@ -127,6 +129,7 @@ class ChatItemListViewHolder constructor(
 
     private fun bindProfilePicture(chat: ItemChatListPojo) {
         thumbnail.loadImageCircle(chat.thumbnail)
+        listener.getStoriesWidgetManager()?.manage(storiesBorder, chat.id)
     }
 
     private fun bindPin(chat: ItemChatListPojo) {

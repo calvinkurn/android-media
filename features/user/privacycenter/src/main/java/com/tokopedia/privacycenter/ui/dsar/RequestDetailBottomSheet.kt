@@ -64,12 +64,17 @@ object RequestDetailBottomSheet {
         val match = requestDetails.find { it.contains(DsarConstants.TRANSACTION_HISTORY_PREFIX) }
         if (match?.isNotEmpty() == true) {
             val splitTransaction = match.split("_")
-            val startDate = splitTransaction[2].toDate(DateUtil.YYYYMMDD)
-            val endDate = splitTransaction[3].toDate(DateUtil.YYYYMMDD)
-            val dateString = "${startDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)} - ${endDate.toString(
-                DateUtil.DEFAULT_VIEW_FORMAT
-            )}"
-            finalText += "${DsarConstants.TRANSACTION_LABEL}$dateString${DsarConstants.HTML_NEW_LINE}"
+            if (splitTransaction.size >= 3) {
+                val splitDate = splitTransaction[2].split("-")
+                if (splitDate.size >= 2) {
+                    val startDate = splitDate[0].toDate(DateUtil.YYYYMMDD)
+                    val endDate = splitDate[1].toDate(DateUtil.YYYYMMDD)
+                    val dateString = "${startDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)} - ${endDate.toString(
+                        DateUtil.DEFAULT_VIEW_FORMAT
+                    )}"
+                    finalText += "${DsarConstants.TRANSACTION_LABEL}$dateString${DsarConstants.HTML_NEW_LINE}"
+                }
+            }
         }
         return finalText
     }

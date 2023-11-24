@@ -1,7 +1,5 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.animation.LayoutTransition
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -14,6 +12,7 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.ProductBundlingItemAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.itemdecoration.ProductBundlingItemDecoration
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -40,6 +39,7 @@ class ProductBundlingViewHolder(
     private var bundlingNameText: Typography? = null
     private var bundlingIconImage: ImageUnify? = null
     private var bundlingItemRecyclerView: RecyclerView? = null
+    private var bundlingPriceText: Typography? = null
 
     init {
         bindViews()
@@ -49,6 +49,7 @@ class ProductBundlingViewHolder(
     override fun bind(element: ProductListUiModel.ProductBundlingUiModel) {
         setupBundleHeader(element.bundleName, element.bundleIconUrl)
         setupBundleItems(element.bundleItemList)
+        setupBundleTotalPrice(element.totalPriceText)
     }
 
     override fun bind(
@@ -66,6 +67,9 @@ class ProductBundlingViewHolder(
                     if (oldItem.bundleItemList != newItem.bundleItemList) {
                         setupBundleItems(newItem.bundleItemList)
                     }
+                    if (oldItem.totalPriceText != newItem.totalPriceText) {
+                        setupBundleTotalPrice(newItem.totalPriceText)
+                    }
                     containerLayout?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
                 }
@@ -80,6 +84,15 @@ class ProductBundlingViewHolder(
         } else {
             showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
         }
+    }
+
+    override fun onBundleWarrantyClaim(uiModel: ProductListUiModel.ProductUiModel) {
+        navigator.openAppLink(uiModel.button.url, true)
+        BuyerOrderDetailTracker.eventClickWarrantyClaim(uiModel.orderId)
+    }
+
+    override fun onImpressed(uiModel: ProductListUiModel.ProductUiModel) {
+        listener.onProductImpressed(uiModel)
     }
 
     override fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductUiModel) {
@@ -99,6 +112,7 @@ class ProductBundlingViewHolder(
             bundlingNameText = findViewById(R.id.tv_bom_detail_bundling_name)
             bundlingIconImage = findViewById(R.id.iv_bom_detail_bundling_icon)
             bundlingItemRecyclerView = findViewById(R.id.rv_bom_detail_bundling)
+            bundlingPriceText = findViewById(R.id.tv_bom_detail_bundling_price_value)
         }
     }
 
@@ -108,6 +122,10 @@ class ProductBundlingViewHolder(
             adapter = bundleItemAdapter
             bundleItemDecoration?.let { addItemDecoration(it) }
         }
+    }
+
+    private fun setupBundleTotalPrice(price: String) {
+        bundlingPriceText?.text = price
     }
 
     private fun setupBundleHeader(bundleName: String, bundleIconUrl: String) {
@@ -127,5 +145,6 @@ class ProductBundlingViewHolder(
 
     interface Listener {
         fun onPurchaseAgainButtonClicked(uiModel: ProductListUiModel.ProductUiModel)
+        fun onProductImpressed(product: ProductListUiModel.ProductUiModel)
     }
 }

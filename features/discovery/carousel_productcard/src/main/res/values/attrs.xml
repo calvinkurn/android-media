@@ -5,8 +5,8 @@
     </declare-styleable>
 
     <declare-styleable name="CarouselPagingProductCardView">
-        <attr name="itemPerPage" format="integer" />
         <attr name="showPagingIndicator" format="boolean" />
         <attr name="pagingPaddingHorizontal" format="dimension" />
+        <attr name="itemWidthPercentage" format="float" />
     </declare-styleable>
 </resources>

@@ -7,6 +7,7 @@ data class RecommendationWidgetModel(
     val trackingModel: RecommendationWidgetTrackingModel = RecommendationWidgetTrackingModel(),
     val miniCart: RecommendationWidgetMiniCart = RecommendationWidgetMiniCart(),
     val source: RecommendationWidgetSource? = null,
+    val listener: RecommendationWidgetListener? = null,
 
     // TEMPORARY, Ignore this for non-PDP
     val widget: RecommendationWidget? = null,

@@ -36,33 +36,35 @@ class MissionWidgetComponentCallback(
         } else {
             MissionWidgetTracking.sendMissionWidgetClicked(element, horizontalPosition, homeCategoryListener.userId)
         }
-        homeCategoryListener.onDynamicChannelClicked(element.appLink)
+        homeCategoryListener.onDynamicChannelClicked(element.data.appLink)
     }
 
     override fun onMissionImpressed(
         element: CarouselMissionWidgetDataModel,
         horizontalPosition: Int
     ) {
-        if (element.isProduct()) {
-            homeCategoryListener.getTrackingQueueObj()?.putEETracking(
-                MissionWidgetTracking.getMissionWidgetProductView(
-                    element,
-                    horizontalPosition,
-                    homeCategoryListener.userId
-                ) as HashMap<String, Any>
-            )
-        } else {
-            homeCategoryListener.getTrackingQueueObj()?.putEETracking(
-                MissionWidgetTracking.getMissionWidgetView(
-                    element,
-                    horizontalPosition,
-                    homeCategoryListener.userId
-                ) as HashMap<String, Any>
-            )
+        if(!element.isCache) {
+            if (element.isProduct()) {
+                homeCategoryListener.getTrackingQueueObj()?.putEETracking(
+                    MissionWidgetTracking.getMissionWidgetProductView(
+                        element,
+                        horizontalPosition,
+                        homeCategoryListener.userId
+                    ) as HashMap<String, Any>
+                )
+            } else {
+                homeCategoryListener.getTrackingQueueObj()?.putEETracking(
+                    MissionWidgetTracking.getMissionWidgetView(
+                        element,
+                        horizontalPosition,
+                        homeCategoryListener.userId
+                    ) as HashMap<String, Any>
+                )
+            }
         }
     }
 
     private fun CarouselMissionWidgetDataModel.isProduct(): Boolean {
-        return this.productID.isNotBlank() && this.productID != ZERO_PRODUCT_ID
+        return this.data.productID.isNotBlank() && this.data.productID != ZERO_PRODUCT_ID
     }
 }

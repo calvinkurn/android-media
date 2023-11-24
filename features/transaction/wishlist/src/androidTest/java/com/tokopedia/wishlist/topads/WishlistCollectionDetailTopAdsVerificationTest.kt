@@ -1,8 +1,12 @@
 package com.tokopedia.wishlist.topads
 
 import android.Manifest
+import android.app.Activity
+import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
@@ -12,12 +16,12 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.runWishlistCollectionDetailBot
-import com.tokopedia.wishlist.util.WishlistIdlingResource
+import com.tokopedia.wishlist.detail.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.adapter
 import com.tokopedia.wishlist.util.setupRemoteConfig
-import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
-import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2RecommendationCarouselViewHolder
-import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity
+import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter
+import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistRecommendationCarouselViewHolder
+import com.tokopedia.wishlist.detail.view.activity.WishlistCollectionDetailActivity
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -51,6 +55,7 @@ class WishlistCollectionDetailTopAdsVerificationTest {
 
     @Before
     fun setup() {
+        Intents.init()
         IdlingRegistry.getInstance().register(WishlistIdlingResource.countingIdlingResource)
     }
 
@@ -58,12 +63,13 @@ class WishlistCollectionDetailTopAdsVerificationTest {
     fun cleanup() {
         topAdsAssertion.after()
         IdlingRegistry.getInstance().unregister(WishlistIdlingResource.countingIdlingResource)
+        Intents.release()
     }
 
     @Test
     fun testWishlistCollectionDetailTopAds() {
         runWishlistCollectionDetailBot {
-            loading()
+            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
             val wishlistRecyclerView =
                 activityRule.activity.findViewById<RecyclerView>(R.id.rv_wishlist_collection_detail)
             val wishlistItemCount = wishlistRecyclerView?.adapter?.itemCount ?: 0
@@ -74,15 +80,19 @@ class WishlistCollectionDetailTopAdsVerificationTest {
                     )
                 ) {
                     val recommendationItems = wishlistRecyclerView
-                        .adapter<WishlistV2Adapter>()
+                        .adapter<WishlistAdapter>()
                         .getRecommendationDataAtIndex(wishlistIndex)
                         .recommendationProductCardModelData
 
+                    // limit scroll & click because last item is always pending
                     for (recommendationIndex in recommendationItems.indices) {
-                        scrollRecommendationRecyclerViewToIndex(recommendationIndex)
-                        if (recommendationItems[recommendationIndex].isTopAds) {
-                            topAdsCount++
-                            clickRecommendationRecyclerViewItem(recommendationIndex)
+                        if (recommendationIndex < 5) {
+                            loading(1000)
+                            scrollRecommendationRecyclerViewToIndex(recommendationIndex)
+                            if (recommendationItems[recommendationIndex].isTopAds && recommendationIndex < 4) {
+                                topAdsCount++
+                                clickRecommendationRecyclerViewItem(recommendationIndex)
+                            }
                         }
                     }
                 }
@@ -94,6 +104,6 @@ class WishlistCollectionDetailTopAdsVerificationTest {
     }
 
     private fun isRecommendationCarousel(viewHolder: RecyclerView.ViewHolder?): Boolean {
-        return viewHolder is WishlistV2RecommendationCarouselViewHolder
+        return viewHolder is WishlistRecommendationCarouselViewHolder
     }
 }

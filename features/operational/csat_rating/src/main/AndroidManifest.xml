@@ -6,7 +6,6 @@
         <activity
             android:name=".activity.BaseProvideRatingActivity"
             android:label="@string/cu_surey_layana"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3.Launcher" />
+            android:screenOrientation="portrait"/>
     </application>
 </manifest>

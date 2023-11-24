@@ -373,16 +373,6 @@ class FollowerFollowingViewModelTest {
     }
 
     @Test
-    fun `when developer set username from everywhere, the username value should be same`() {
-        val expectedResult = "username"
-        robot.start {
-            viewModel.username = expectedResult
-
-            viewModel.username equalTo expectedResult
-        }
-    }
-
-    @Test
     fun `whenever get followers triggered, and it success, then there will be a value for total follow`() {
         val expectedValue = FollowListUiModel.FollowCount("10", "10")
         coEvery { repo.getMyFollowers(any(), any(), any()) } returns FollowerListModelBuilder().build(followCount = expectedValue)

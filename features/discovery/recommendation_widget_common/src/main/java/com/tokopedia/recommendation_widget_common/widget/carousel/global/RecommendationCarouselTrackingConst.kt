@@ -18,12 +18,13 @@ object RecommendationCarouselTrackingConst {
         const val ADJUST_QTY_PDP_RECOM_WITH_ATC = "click pdp recom with atc - adjust quantity"
         const val DELETE_PDP_RECOM_WITH_ATC = "click pdp recom with atc - delete"
         const val CLICK_PDP_RECOM_SEE_ALL = "click pdp recom with atc - lihat semua"
+        const val CLICK_BMGM_RECOM_SEE_ALL = "click lihat semua bmgm"
     }
 
     object List {
         const val REKOMENDASI_UNTUK_ANDA = "rekomendasi untuk anda"
         const val INBOX = "inbox"
-        const val PDP = "product detail"
+        const val PDP = "product"
         const val PRODUCT = "product"
     }
 
@@ -32,6 +33,7 @@ object RecommendationCarouselTrackingConst {
         const val CLICK_RECOMMENDATION_ITEM_PDP_ATC = "43019"
         const val ATC_RECOMMENDATION_ITEM_PDP_ATC = "43020"
         const val SEE_ALL_RECOMMENDATION_PDP_ATC = "43021"
+        const val SEE_ALL_RECOMMENDATION_PDP_ATC_BMGM = "46751"
         const val DELETE_RECOMMENDATION_ITEM_PDP_ATC = "43022"
         const val ADJUST_QTY_ITEM_PDP_ATC = "43024"
     }

@@ -1,13 +1,11 @@
 package com.tokopedia.topads.common.domain.usecase
 
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.topads.common.data.raw.TOP_ADS_PRODUCT_GQL
 import com.tokopedia.topads.common.data.response.OptionV3
 import com.tokopedia.topads.common.data.response.TopAdsProductResponse
+import com.tokopedia.topads.common.domain.query.GetTopadsProductV3
 import javax.inject.Inject
 
-@GqlQuery("TopAdsProductGql", TOP_ADS_PRODUCT_GQL)
 class TopAdsGetProductUseCase @Inject constructor() : GraphqlUseCase<TopAdsProductResponse>() {
 
     companion object {
@@ -21,7 +19,7 @@ class TopAdsGetProductUseCase @Inject constructor() : GraphqlUseCase<TopAdsProdu
     ) {
         setRequestParams(mapOf(PRODUCT_ID_KEY to productId, OPTIONS_KEY to OptionV3(false)))
         setTypeClass(TopAdsProductResponse::class.java)
-        setGraphqlQuery(TopAdsProductGql.GQL_QUERY)
+        setGraphqlQuery(GetTopadsProductV3)
         execute({
             success.invoke(it)
         }, { throwable ->

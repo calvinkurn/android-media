@@ -10,6 +10,7 @@ import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
+import com.tokopedia.search.result.product.deduplication.Deduplication
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
@@ -36,11 +37,58 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
     private val getInspirationCarouselChipsUseCase: Lazy<UseCase<InspirationCarouselChipsProductModel>>,
     private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
-    private val viewUpdater: ViewUpdater
+    private val viewUpdater: ViewUpdater,
+    private val deduplication: Deduplication,
 ) : InspirationCarouselPresenter,
     ApplinkOpener by ApplinkOpenerDelegate {
 
+    private var inspirationCarouselSeamlessDataViewList = mutableListOf<InspirationCarouselDataView>()
     private var inspirationCarouselDataViewList = mutableListOf<InspirationCarouselDataView>()
+
+    fun setInspirationCarouselSeamlessDataViewList(
+        inspirationCarouselSeamlessDataViewList: List<InspirationCarouselDataView>,
+    ) {
+        this.inspirationCarouselSeamlessDataViewList =
+            inspirationCarouselSeamlessDataViewList.toMutableList()
+    }
+
+    fun processInspirationCarouselSeamlessPosition(
+        totalProductItem: Int,
+        externalReference: String,
+        keyword: String,
+        action: (Int, List<Visitable<*>>) -> Unit,
+    ) {
+        if (inspirationCarouselSeamlessDataViewList.isEmpty()) return
+
+        val iterator = inspirationCarouselSeamlessDataViewList.iterator()
+        while (iterator.hasNext()) {
+            val data = iterator.next()
+
+            if (data.position <= totalProductItem) {
+                val inspirationKeywordVisitableList = mutableListOf<Visitable<*>>()
+                val (inspirationKeyboard, inspirationProduct, isOneOrMoreItemIsEmptyImage) =
+                    InspirationSeamlessMapper.convertToInspirationList(
+                        data.options,
+                        externalReference,
+                        deduplication,
+                    )
+                inspirationKeywordVisitableList.add(
+                    InspirationKeywordCardView.create(
+                        data.title,
+                        inspirationKeyboard,
+                        isOneOrMoreItemIsEmptyImage,
+                        data.type,
+                        keyword,
+                    )
+                )
+                inspirationKeywordVisitableList.addAll(inspirationProduct)
+
+                action(data.position, inspirationKeywordVisitableList)
+
+                iterator.remove()
+            }
+        }
+    }
 
     fun setInspirationCarouselDataViewList(
         inspirationCarouselDataViewList: List<InspirationCarouselDataView>
@@ -49,7 +97,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     }
 
     fun processInspirationCarouselPosition(
-        productList: List<Visitable<*>>,
+        totalProductItem: Int,
         externalReference: String,
         action: (Int, List<Visitable<*>>) -> Unit,
     ) {
@@ -64,11 +112,11 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                 continue
             }
 
-            if (data.position <= productList.size && shouldShowInspirationCarousel(data.layout)) {
+            if (data.position <= totalProductItem && shouldShowInspirationCarousel(data.layout)) {
                 val inspirationCarouselVisitableList =
                     constructInspirationCarouselVisitableList(data, externalReference)
 
-                action(data.position, inspirationCarouselVisitableList)
+                inspirationCarouselVisitableList?.let { action(data.position, it) }
 
                 inspirationCarouselViewModelIterator.remove()
             }
@@ -120,31 +168,16 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         data.isListAtcLayout() ->
             inspirationListAtcPresenterDelegate.convertInspirationCarouselToInspirationListAtc(data)
 
-        data.isSeamlessLayout() ->
-            convertInspirationCarouselToSeamlessInspiration(data, externalReference)
+        data.isChipsLayout() ->
+            convertInspirationCarouselToChipsCarousel(data)
 
         else ->
             listOf(data)
     }
 
-    private fun InspirationCarouselDataView.isDynamicProductLayout() =
-        layout == LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
-
-    private fun InspirationCarouselDataView.isVideoLayout() =
-        layout == LAYOUT_INSPIRATION_CAROUSEL_VIDEO
-
-    private fun InspirationCarouselDataView.isBundleLayout() =
-        layout == LAYOUT_INSPIRATION_CAROUSEL_BUNDLE
-
-    private fun InspirationCarouselDataView.isListAtcLayout() =
-        layout == LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC
-
-    private fun InspirationCarouselDataView.isSeamlessLayout() =
-        layout == LAYOUT_INSPIRATION_KEYWORD_SEAMLESS
-
     private fun convertInspirationCarouselToInspirationProductBundle(
         data: InspirationCarouselDataView,
-        externalReference: String
+        externalReference: String,
     ): List<Visitable<*>> {
         return listOf(
             data.convertToInspirationProductBundleDataView(
@@ -154,14 +187,16 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         )
     }
 
-    private fun convertInspirationCarouselToInspirationCarouselVideo(data: InspirationCarouselDataView): List<Visitable<*>> {
+    private fun convertInspirationCarouselToInspirationCarouselVideo(
+        data: InspirationCarouselDataView
+    ): List<Visitable<*>> {
         return listOf(InspirationCarouselVideoDataView(data))
     }
 
     private fun convertInspirationCarouselToBroadMatch(
         data: InspirationCarouselDataView,
         externalReference: String,
-    ): List<Visitable<*>> {
+    ): List<Visitable<*>>? {
         val broadMatchVisitableList = mutableListOf<Visitable<*>>()
 
         val hasTitle = data.title.isNotEmpty()
@@ -169,38 +204,31 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         if (hasTitle)
             broadMatchVisitableList.add(SuggestionDataView.create(data))
 
-        broadMatchVisitableList.addAll(
-            BroadMatchDataView.createList(data, externalReference, !hasTitle)
-        )
+        val optionList =
+            BroadMatchDataView.createList(data, externalReference, !hasTitle, deduplication)
+
+        if (optionList.isEmpty()) return null
+
+        broadMatchVisitableList.addAll(optionList)
 
         return broadMatchVisitableList
     }
 
-    private fun convertInspirationCarouselToSeamlessInspiration(
-        data: InspirationCarouselDataView,
-        externalReference: String
-    ): List<Visitable<*>> {
-        val inspirationKeywordVisitableList = mutableListOf<Visitable<*>>()
-        val (inspirationKeyboard, inspirationProduct, isOneOrMoreItemIsEmptyImage) =
-            InspirationSeamlessMapper.convertToInspirationList(data.options, externalReference)
-        inspirationKeywordVisitableList.add(
-            InspirationKeywordCardView.create(data.title, inspirationKeyboard, isOneOrMoreItemIsEmptyImage)
-        )
-        inspirationKeywordVisitableList.addAll(inspirationProduct)
-        return inspirationKeywordVisitableList
-    }
+    private fun convertInspirationCarouselToChipsCarousel(
+        data: InspirationCarouselDataView
+    ): List<InspirationCarouselDataView>? {
+        val firstOption = data.options.firstOrNull() ?: return null
+        val productList = deduplication.removeDuplicate(firstOption.product)
 
-    companion object {
-        private val showInspirationCarouselLayout = listOf(
-            LAYOUT_INSPIRATION_CAROUSEL_INFO,
-            LAYOUT_INSPIRATION_CAROUSEL_LIST,
-            LAYOUT_INSPIRATION_CAROUSEL_GRID,
-            LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
-            LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
-            LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
-            LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
-            LAYOUT_INSPIRATION_CAROUSEL_VIDEO,
-            LAYOUT_INSPIRATION_KEYWORD_SEAMLESS
+        if (!deduplication.isCarouselWithinThreshold(firstOption, productList)) return null
+
+        return listOf(
+            data.copy(
+                options = data.options.mapIndexed { index, option ->
+                    if (index == 0) option.copy(product = productList)
+                    else option
+                }
+            )
         )
     }
 
@@ -372,5 +400,19 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                 it.url
             )
         }
+    }
+
+    companion object {
+        private val showInspirationCarouselLayout = listOf(
+            LAYOUT_INSPIRATION_CAROUSEL_INFO,
+            LAYOUT_INSPIRATION_CAROUSEL_LIST,
+            LAYOUT_INSPIRATION_CAROUSEL_GRID,
+            LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
+            LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
+            LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
+            LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
+            LAYOUT_INSPIRATION_CAROUSEL_VIDEO,
+            LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
+        )
     }
 }

@@ -7,8 +7,6 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.*
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.*
-import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampItemDataModel
-import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampItemViewHolder
 
 /**
  * @author by yoasfs on 09/06/20
@@ -53,20 +51,8 @@ open class CommonCarouselProductCardTypeFactoryImpl(
         return SpecialReleaseItemViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: CarouselMissionWidgetDataModel): Int {
-        return MissionWidgetItemViewHolder.LAYOUT
-    }
-
     override fun type(dataModel: CarouselBannerCardDataModel): Int {
         return CarouselBannerItemViewHolder.LAYOUT
-    }
-
-    override fun type(dataModel: CarouselTodoWidgetDataModel): Int {
-        return TodoWidgetItemViewHolder.LAYOUT
-    }
-
-    override fun type(dataModel: SpecialReleaseRevampItemDataModel): Int {
-        return SpecialReleaseRevampItemViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
@@ -95,17 +81,8 @@ open class CommonCarouselProductCardTypeFactoryImpl(
             SpecialReleaseItemViewHolder.LAYOUT -> {
                 SpecialReleaseItemViewHolder(view, channels, cardInteraction)
             }
-            MissionWidgetItemViewHolder.LAYOUT -> {
-                MissionWidgetItemViewHolder(view, cardInteraction)
-            }
             CarouselBannerItemViewHolder.LAYOUT -> {
                 CarouselBannerItemViewHolder(view, cardInteraction)
-            }
-            TodoWidgetItemViewHolder.LAYOUT -> {
-                TodoWidgetItemViewHolder(view)
-            }
-            SpecialReleaseRevampItemViewHolder.LAYOUT -> {
-                SpecialReleaseRevampItemViewHolder(view)
             }
             else -> {
                 super.createViewHolder(view, viewType)

@@ -31,7 +31,9 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
 
     init {
         binding = ViewBarChartBinding.inflate(
-            LayoutInflater.from(context), this, true
+            LayoutInflater.from(context),
+            this,
+            true
         ).apply {
             val xAxisRenderer = EllipsizedXAxisRenderer(
                 barChart.viewPortHandler,

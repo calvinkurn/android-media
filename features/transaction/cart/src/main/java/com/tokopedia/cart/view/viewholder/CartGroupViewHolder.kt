@@ -14,6 +14,7 @@ import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
@@ -46,6 +47,12 @@ class CartGroupViewHolder(
     }
 
     fun bindData(cartGroupHolderData: CartGroupHolderData) {
+        itemView.addOnImpressionListener(cartGroupHolderData, onView = {
+            if (!cartGroupHolderData.isError && cartGroupHolderData.isCollapsed) {
+                actionListener.onAvailableCartItemImpression(cartGroupHolderData.productUiModelList)
+            }
+        })
+
         renderGroupName(cartGroupHolderData)
         renderGroupBadge(cartGroupHolderData)
         renderIconPin(cartGroupHolderData)

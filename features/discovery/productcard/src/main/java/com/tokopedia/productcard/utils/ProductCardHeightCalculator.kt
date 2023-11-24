@@ -2,8 +2,10 @@
 package com.tokopedia.productcard.utils
 
 import android.content.Context
+import androidx.annotation.DimenRes
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -36,6 +38,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
 
             val contentMarginTop =
                 productCardModel.layoutStrategy.getGridViewContentMarginTop(context, productCardModel)
+            val contentMarginBottom = 4.toDp()
             val contentHeight = productCardModel.getContentHeightGrid(context)
             val buttonSimilarProductHeight = productCardModel.getButtonSimilarProductHeight(context)
             val buttonPrimaryWishlistHeight = productCardModel.getButtonPrimaryWishlistHeight(context)
@@ -51,7 +54,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
                 contentHeight +
                 buttonSimilarProductHeight +
                 buttonPrimaryWishlistHeight +
-                commonFooterHeight
+                commonFooterHeight +
+                contentMarginBottom
             )
         }
 
@@ -130,7 +134,8 @@ private fun ProductCardModel.getContentHeightGrid(context: Context): Int {
     val productNameSectionHeight = getProductNameSectionHeight(context)
     val categoryCostPerUnitHeight = getCategoryCostPerUnitHeight(context)
     val priceSectionHeight = getPriceSectionHeight(context)
-    val promoSectionHeight = getPromoSectionHeight(context)
+    val discountSectionHeight = getDiscountSectionHeight(context)
+    val labelPriceHeight = getLabelPriceHeight(context)
     val shopInfoSectionHeight = getShopInfoSectionHeight(context)
     val credibilitySectionHeight = getCredibilitySectionHeight(context)
     val shopRatingSectionHeight = getShopRatingSectionHeight(context)
@@ -143,7 +148,8 @@ private fun ProductCardModel.getContentHeightGrid(context: Context): Int {
             productNameSectionHeight +
             categoryCostPerUnitHeight +
             priceSectionHeight +
-            promoSectionHeight +
+            discountSectionHeight +
+            labelPriceHeight +
             shopInfoSectionHeight +
             credibilitySectionHeight +
             shopRatingSectionHeight +
@@ -158,7 +164,8 @@ private fun ProductCardModel.getContentHeightList(context: Context): Int {
     val productNameSectionHeight = getProductNameSectionHeight(context)
     val categoryCostPerUnitHeight = getCategoryCostPerUnitHeight(context)
     val priceSectionHeight = getPriceSectionHeight(context)
-    val promoSectionHeight = getPromoSectionHeight(context)
+    val discountSectionHeight = getDiscountSectionHeight(context)
+    val labelPriceHeight = getLabelPriceHeight(context)
     val shopInfoSectionHeight = getShopInfoSectionHeight(context)
     val credibilitySectionHeight = getCredibilitySectionHeight(context)
     val shopRatingSectionHeight = getShopRatingSectionHeight(context)
@@ -170,7 +177,8 @@ private fun ProductCardModel.getContentHeightList(context: Context): Int {
             pdpViewCountHeight+
             productNameSectionHeight +
             categoryCostPerUnitHeight +
-            max(priceSectionHeight, promoSectionHeight) +
+            max(priceSectionHeight, discountSectionHeight) +
+            labelPriceHeight +
             shopInfoSectionHeight +
             credibilitySectionHeight +
             shopRatingSectionHeight +
@@ -245,25 +253,21 @@ private fun ProductCardModel.getPriceSectionHeight(context: Context): Int {
     else 0
 }
 
-private fun ProductCardModel.getPromoSectionHeight(context: Context): Int {
-    val labelPrice = getLabelPrice()
+private fun ProductCardModel.getDiscountSectionHeight(context: Context): Int {
+    return if (slashedPrice.isNotEmpty() || discountPercentage.isNotEmpty()) {
+        val slashedPriceHeight = context.getPixel(R.dimen.product_card_text_view_slashed_price_height)
 
-    var labelDiscountMarginTop = 0
-    var labelDiscountHeight = 0
-    var labelPriceMarginTop = 0
-    var labelPriceHeight = 0
+        return slashedPriceHeight + 2.toPx()
+    } else 0
+}
 
-    if (isShowDiscountOrSlashPrice()) {
-        labelDiscountMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_label_discount_margin_top)
-        labelDiscountHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_label_discount_height)
-    }
+private fun ProductCardModel.getLabelPriceHeight(context: Context): Int {
+    return if (getLabelPrice()?.title?.isNotEmpty() == true) {
+        val labelPriceMarginTop = context.getPixel(R.dimen.product_card_label_price_margin_top)
+        val labelPriceHeight = context.getPixel(R.dimen.product_card_label_price_height)
 
-    if (labelPrice != null && labelPrice.title.isNotEmpty() && isShowLabelPrice()) {
-        labelPriceMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_label_price_margin_top)
-        labelPriceHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_label_price_height)
-    }
-
-    return max(labelDiscountMarginTop + labelDiscountHeight, labelPriceMarginTop + labelPriceHeight)
+        return labelPriceMarginTop + labelPriceHeight
+    } else 0
 }
 
 private fun ProductCardModel.getShopInfoSectionHeight(context: Context): Int {
@@ -516,7 +520,7 @@ private fun ProductCardModel.getButtonSimilarProductHeight(context: Context): In
 
 private fun ProductCardModel.getButtonPrimaryWishlistHeight(context: Context): Int {
     return if (willShowPrimaryButtonWishlist()) {
-        val buttonPrimaryWishlistMarginTop = context.resources.getDimensionPixelOffset(R.dimen.product_card_button_primary_margin)
+        val buttonPrimaryWishlistMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_button_primary_margin)
         val buttonPrimaryWishlistHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_primary_height)
 
         buttonPrimaryWishlistMarginTop + buttonPrimaryWishlistHeight
@@ -527,10 +531,12 @@ private fun ProductCardModel.getButtonPrimaryWishlistHeight(context: Context): I
 
 private fun ProductCardModel.getButtonSeeOtherProductHeight(context: Context): Int {
     return if (willShowButtonSeeOtherProduct()) {
-        val buttonSeeOtherProductMarginTop = context.resources.getDimensionPixelOffset(R.dimen.product_card_button_see_other_product_margin_top)
+        val buttonSeeOtherProductMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_button_see_other_product_margin_top)
         val buttonSeeOtherProductHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_see_other_product_height)
 
         buttonSeeOtherProductMarginTop + buttonSeeOtherProductHeight
     }
     else 0
 }
+
+private fun Context.getPixel(@DimenRes id: Int): Int = resources.getDimensionPixelSize(id)

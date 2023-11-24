@@ -4,9 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.remoteconfig.ConfigUpdate;
+import com.google.firebase.remoteconfig.ConfigUpdateListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigException;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.tokopedia.config.GlobalConfig;
 
@@ -47,11 +52,11 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
             if (isDebug()) {
                 Map<String, ?> map = sharedPrefs.getAll();
                 String key = "";
-                for (Map.Entry<String,?> entry : map.entrySet())
+                for (Map.Entry<String, ?> entry : map.entrySet())
                     key = entry.getKey();
-                    if (key.startsWith(prefix)){
-                        set.add(key);
-                    }
+                if (key.startsWith(prefix)) {
+                    set.add(key);
+                }
             }
             return set;
         }
@@ -172,6 +177,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public void fetch(@Nullable final Listener listener) {
         try {
             if (firebaseRemoteConfig != null) {
+                setRealtimeUpdate();
                 firebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_default);
                 FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                         .setMinimumFetchIntervalInSeconds(CONFIG_CACHE_EXPIRATION)
@@ -190,7 +196,33 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
                         });
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            FirebaseCrashlytics.getInstance().recordException(e);
         }
+    }
+
+    private void setRealtimeUpdate() {
+        try {
+            if (firebaseRemoteConfig != null) {
+                firebaseRemoteConfig.addOnConfigUpdateListener(getConfigRealtimeUpdateListener());
+            }
+        } catch (Exception e) {
+            FirebaseCrashlytics.getInstance().recordException(e);
+        }
+    }
+
+    private ConfigUpdateListener getConfigRealtimeUpdateListener() {
+        return new ConfigUpdateListener() {
+            @Override
+            public void onUpdate(@NonNull ConfigUpdate configUpdate) {
+                firebaseRemoteConfig.activate().addOnFailureListener(e -> {
+                    FirebaseCrashlytics.getInstance().recordException(e);
+                });
+            }
+
+            @Override
+            public void onError(FirebaseRemoteConfigException error) {
+                FirebaseCrashlytics.getInstance().recordException(error);
+            }
+        };
     }
 }

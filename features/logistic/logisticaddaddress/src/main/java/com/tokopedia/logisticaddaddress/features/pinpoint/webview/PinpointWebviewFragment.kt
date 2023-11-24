@@ -22,8 +22,8 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_LONG
 import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_TRACKER
 import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_TRACKER_LABEL
 import com.tokopedia.logisticaddaddress.di.pinpointwebview.DaggerPinpointWebviewComponent
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.analytics.LogisticAddAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.analytics.LogisticEditAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.AddAddressPinpointTracker
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.EditAddressPinpointTracker
 import com.tokopedia.logisticaddaddress.utils.ParcelableHelper.parcelable
@@ -110,15 +110,19 @@ class PinpointWebviewFragment : BaseSessionWebViewFragment() {
                         it.longitude
                     )
                 }
+
                 is PinpointWebviewState.AddressDetailResult.Fail -> {
                     showErrorToaster(it.message)
                 }
+
                 is PinpointWebviewState.SendTracker.AddAddress -> {
                     sendAddAddressTracker(it.tracker, it.label)
                 }
+
                 is PinpointWebviewState.SendTracker.EditAddress -> {
                     sendEditAddressTracker(it.tracker)
                 }
+
                 is PinpointWebviewState.FinishActivity -> {
                     finishActivity()
                 }
@@ -157,78 +161,100 @@ class PinpointWebviewFragment : BaseSessionWebViewFragment() {
     private fun sendAddAddressTracker(tracker: AddAddressPinpointTracker, label: String?) {
         when (tracker) {
             AddAddressPinpointTracker.ClickFieldCariLokasi -> {
-                AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                LogisticAddAddressAnalytics.onClickFieldCariLokasi(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickDropdownSuggestion -> {
-                AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
+                LogisticAddAddressAnalytics.onClickDropdownSuggestion(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickGunakanLokasiSaatIniSearch -> {
-                AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+                LogisticAddAddressAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickAllowLocationSearch -> {
-                AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
+                LogisticAddAddressAnalytics.onClickAllowLocationSearch(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickDontAllowLocationSearch -> {
-                AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
+                LogisticAddAddressAnalytics.onClickDontAllowLocationSearch(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickAktifkanLayananLokasiSearch -> {
-                AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
+                LogisticAddAddressAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickXOnBlockGpsSearch -> {
-                AddNewAddressRevampAnalytics.onClickXOnBlockGpsSearch(userSession.userId)
+                LogisticAddAddressAnalytics.onClickXOnBlockGpsSearch(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickBackArrowSearch -> {
-                AddNewAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+                LogisticAddAddressAnalytics.onClickBackArrowSearch(userSession.userId)
             }
+
             AddAddressPinpointTracker.ImpressBottomSheetAlamatTidakTerdeteksi -> {
-                AddNewAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(userSession.userId)
+                LogisticAddAddressAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickIsiAlamatManualUndetectedLocation -> {
-                AddNewAddressRevampAnalytics.onClickIsiAlamatManualUndetectedLocation(userSession.userId)
+                LogisticAddAddressAnalytics.onClickIsiAlamatManualUndetectedLocation(userSession.userId)
             }
+
             AddAddressPinpointTracker.ImpressBottomSheetOutOfIndo -> {
-                AddNewAddressRevampAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
+                LogisticAddAddressAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickIsiAlamatOutOfIndo -> {
-                AddNewAddressRevampAnalytics.onClickIsiAlamatOutOfIndo(userSession.userId)
+                LogisticAddAddressAnalytics.onClickIsiAlamatOutOfIndo(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickCariUlangAlamat -> {
-                AddNewAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
+                LogisticAddAddressAnalytics.onClickCariUlangAlamat(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickGunakanLokasiSaatIniPinpoint -> {
-                AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
+                LogisticAddAddressAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickAllowLocationPinpoint -> {
-                AddNewAddressRevampAnalytics.onClickAllowLocationPinpoint(userSession.userId)
+                LogisticAddAddressAnalytics.onClickAllowLocationPinpoint(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickDontAllowLocationPinpoint -> {
-                AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
+                LogisticAddAddressAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickAktifkanLayananLokasiPinpoint -> {
-                AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiPinpoint(userSession.userId)
+                LogisticAddAddressAnalytics.onClickAktifkanLayananLokasiPinpoint(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickXOnBlockGpsPinpoint -> {
-                AddNewAddressRevampAnalytics.onClickXOnBlockGpsPinpoint(userSession.userId)
+                LogisticAddAddressAnalytics.onClickXOnBlockGpsPinpoint(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickIconQuestion -> {
-                AddNewAddressRevampAnalytics.onClickIconQuestion(userSession.userId)
+                LogisticAddAddressAnalytics.onClickIconQuestion(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickPilihLokasiPositive -> {
-                AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId)
+                LogisticAddAddressAnalytics.onClickPilihLokasiPositive(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickPilihLokasiNegative -> {
                 label?.run {
-                    AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(
+                    LogisticAddAddressAnalytics.onClickPilihLokasiNegative(
                         userSession.userId,
                         this
                     )
                 }
             }
+
             AddAddressPinpointTracker.ViewToasterPinpointTidakSesuai -> {
-                AddNewAddressRevampAnalytics.onViewToasterPinpointTidakSesuai(userSession.userId)
+                LogisticAddAddressAnalytics.onViewToasterPinpointTidakSesuai(userSession.userId)
             }
+
             AddAddressPinpointTracker.ClickBackArrowPinpoint -> {
-                AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
+                LogisticAddAddressAnalytics.onClickBackArrowPinpoint(userSession.userId)
             }
         }
     }
@@ -236,34 +262,43 @@ class PinpointWebviewFragment : BaseSessionWebViewFragment() {
     private fun sendEditAddressTracker(tracker: EditAddressPinpointTracker) {
         when (tracker) {
             EditAddressPinpointTracker.ClickGunakanLokasiSaatIniPinpoint -> {
-                EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
+                LogisticEditAddressAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
             }
+
             EditAddressPinpointTracker.ClickCariUlangAlamat -> {
-                EditAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
+                LogisticEditAddressAnalytics.onClickCariUlangAlamat(userSession.userId)
             }
+
             EditAddressPinpointTracker.ClickPilihLokasiIni -> {
-                EditAddressRevampAnalytics.onClickPilihLokasiIni(userSession.userId)
+                LogisticEditAddressAnalytics.onClickPilihLokasiIni(userSession.userId)
             }
+
             EditAddressPinpointTracker.ImpressBottomSheetOutOfIndo -> {
-                EditAddressRevampAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
+                LogisticEditAddressAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
             }
+
             EditAddressPinpointTracker.ImpressBottomSheetAlamatTidakTerdeteksi -> {
-                EditAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(userSession.userId)
+                LogisticEditAddressAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(userSession.userId)
             }
+
             EditAddressPinpointTracker.ClickFieldCariLokasi -> {
-                EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                LogisticEditAddressAnalytics.onClickFieldCariLokasi(userSession.userId)
             }
+
             EditAddressPinpointTracker.ClickDropdownSuggestion -> {
-                EditAddressRevampAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
+                LogisticEditAddressAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
             }
+
             EditAddressPinpointTracker.ClickGunakanLokasiSaatIniSearch -> {
-                EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+                LogisticEditAddressAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
             }
+
             EditAddressPinpointTracker.ClickBackArrowSearch -> {
-                EditAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+                LogisticEditAddressAnalytics.onClickBackArrowSearch(userSession.userId)
             }
+
             EditAddressPinpointTracker.ClickBackArrowPinpoint -> {
-                EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
+                LogisticEditAddressAnalytics.onClickBackPinpoint(userSession.userId)
             }
         }
     }

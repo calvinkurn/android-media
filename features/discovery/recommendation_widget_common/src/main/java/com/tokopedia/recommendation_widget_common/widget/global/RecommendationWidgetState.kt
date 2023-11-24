@@ -26,9 +26,10 @@ data class RecommendationWidgetState(
     fun from(
         model: RecommendationWidgetModel,
         widget: List<RecommendationWidget>,
+        userId: String,
     ): RecommendationWidgetState = copy(
         widgetMap = widgetMap + mapOf(
-            model.id to widget.map { recommendationVisitable(model, it) }
+            model.id to recommendationVisitableList(widget, model, userId)
         ),
         miniCartShopId = firstShopId(widget),
         miniCartSource = model.miniCart.miniCartSource,
@@ -45,21 +46,36 @@ data class RecommendationWidgetState(
             .filter(RecommendationItem::isUseQuantityEditor)
             .map(RecommendationItem::shopId)
 
+    private fun recommendationVisitableList(
+        widget: List<RecommendationWidget>,
+        model: RecommendationWidgetModel,
+        userId: String,
+    ): List<RecommendationVisitable> {
+        return if (widget.all { it.recommendationItemList.isEmpty() }) emptyList()
+        else widget.map { recommendationVisitable(model, it, userId) }
+    }
+
     private fun recommendationVisitable(
         model: RecommendationWidgetModel,
         widget: RecommendationWidget,
+        userId: String,
     ): RecommendationVisitable =
         if (widget.layoutType == TYPE_COMPARISON_BPC_WIDGET) {
             RecommendationComparisonBpcModel.from(
                 metadata = model.metadata,
                 trackingModel = model.trackingModel,
                 recommendationWidget = widget,
+                listener = model.listener,
+                userId = userId
             )
         } else if (widget.layoutType == TYPE_LIMIT_VERTICAL) {
             RecommendationVerticalModel.from(
                 metadata = model.metadata,
                 trackingModel = model.trackingModel,
                 recommendationWidget = widget,
+                source = model.source,
+                listener = model.listener,
+                userId = userId
             )
         } else {
             RecommendationCarouselModel.from(
@@ -67,6 +83,8 @@ data class RecommendationWidgetState(
                 trackingModel = model.trackingModel,
                 widget = widget,
                 source = model.source,
+                listener = model.listener,
+                userId = userId
             )
         }
 

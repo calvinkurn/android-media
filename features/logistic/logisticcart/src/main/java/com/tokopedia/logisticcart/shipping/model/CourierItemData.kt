@@ -61,6 +61,7 @@ data class CourierItemData(
     var merchantVoucherProductModel: MerchantVoucherProductModel? = null,
     var preOrderModel: PreOrderModel? = null,
     var freeShippingChosenCourierTitle: String = "",
+    var freeShippingChosenImage: String = "",
     var isHideChangeCourierCard: Boolean = false,
     var durationCardDescription: String = "",
     var freeShippingMetadata: String = "",

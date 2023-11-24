@@ -1,22 +1,31 @@
 package com.tokopedia.homecredit.view.fragment
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresPermission
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraOptions
+import com.otaliastudios.cameraview.CameraUtils
+import com.otaliastudios.cameraview.FileCallback
 import com.otaliastudios.cameraview.PictureResult
+import com.otaliastudios.cameraview.controls.Flash
+import com.otaliastudios.cameraview.engine.CameraEngine
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
@@ -25,15 +34,22 @@ import com.tokopedia.homecredit.databinding.FragmentHomeCreditV2Binding
 import com.tokopedia.homecredit.di.component.HomeCreditComponent
 import com.tokopedia.homecredit.domain.model.CameraDetail
 import com.tokopedia.homecredit.domain.model.ImageDetail
+import com.tokopedia.homecredit.domain.usecase.HomeCreditUseCase
+import com.tokopedia.homecredit.utils.BitmapCropping
+import com.tokopedia.homecredit.utils.BitmapProcessingListener
 import com.tokopedia.homecredit.viewModel.HomeCreditViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
+import java.io.ByteArrayOutputStream
+import java.io.File
 import javax.inject.Inject
 
 class HomeCreditCameraV2Fragment(
@@ -47,6 +63,8 @@ class HomeCreditCameraV2Fragment(
     private var mCaptureNativeSize: Size? = null
     private var loaderDialog: LoaderDialog? = null
     private var finalCameraResultFilePath: String? = null
+    private var bitmapCropping: BitmapCropping? = null
+    private var originalBitmap: Bitmap? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -68,7 +86,12 @@ class HomeCreditCameraV2Fragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeViewModel()
+        context?.let { context ->
+            binding?.camera?.let { cameraView ->
+                bitmapCropping = BitmapCropping(context, cameraView)
+            }
+        }
+
         setupViews()
         initCameraListener()
     }
@@ -111,13 +134,48 @@ class HomeCreditCameraV2Fragment(
         }
 
         setCutout(cameraDetail.cameraCutout)
+        setupOverlayConstraint(cameraDetail.type)
     }
 
-    private fun setCutout(@DrawableRes res: Int) {
-        context?.let {
-            binding?.cameraCutout?.setImageDrawable(
-                ContextCompat.getDrawable(it, res)
-            )
+    private fun setCutout(@DrawableRes res: Int?) {
+        context?.let { context ->
+            binding?.cameraCutoutSelfie?.shouldShowWithAction(res != null) {
+                res?.let {
+                    binding?.cameraCutoutSelfie?.setImageDrawable(
+                        ContextCompat.getDrawable(context, res)
+                    )
+                }
+            }
+
+            binding?.cameraCutoutKtp?.setBackgroundResource(R.drawable.cutout_ktp)
+        }
+    }
+
+    @SuppressLint("PII Data Exposure")
+    private fun setupOverlayConstraint(type: String) {
+        if (type == ApplinkConstInternalFintech.TYPE_KTP) {
+            binding?.cameraConstraintLayout?.let {
+                val constraintSet = ConstraintSet()
+                constraintSet.clone(it)
+                constraintSet.connect(
+                    binding?.cameraOverlayTop?.id ?: 0,
+                    ConstraintSet.BOTTOM,
+                    binding?.cameraCutoutKtp?.id ?: 0,
+                    ConstraintSet.TOP
+                )
+                constraintSet.connect(
+                    binding?.cameraOverlayBottom?.id ?: 0,
+                    ConstraintSet.TOP,
+                    binding?.cameraCutoutKtp?.id ?: 0,
+                    ConstraintSet.BOTTOM
+                )
+                constraintSet.applyTo(it)
+            }
+            binding?.cameraOverlayTop
+        } else {
+            binding?.cameraCutoutKtp?.hide()
+            binding?.cameraOverlayLeft?.hide()
+            binding?.cameraOverlayRight?.hide()
         }
     }
 
@@ -126,6 +184,8 @@ class HomeCreditCameraV2Fragment(
             binding?.camera?.clearCameraListeners()
             cameraListener?.let { binding?.camera?.addCameraListener(it) }
             binding?.camera?.facing = cameraDetail.cameraFacing
+            binding?.camera?.flash = Flash.OFF
+            binding?.camera?.useDeviceOrientation = false
             binding?.camera?.open()
         } catch (e: Throwable) {
             Timber.e(e)
@@ -155,14 +215,63 @@ class HomeCreditCameraV2Fragment(
                 isCameraOpen = false
             }
 
+            @SuppressLint("PII Data Exposure")
             override fun onPictureTaken(result: PictureResult) {
-                try {
-                    generateImage(result.data)
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
+                processPictureTaken(result)
             }
         }
+    }
+
+    private fun processPictureTaken(result: PictureResult) {
+        try {
+            result.toBitmap { bitmap ->
+                originalBitmap = bitmap
+                if (bitmap != null) {
+                    bitmapCropping?.doCropping(
+                        bitmap,
+                        binding?.cameraCutoutKtp!!,
+                        object : BitmapProcessingListener {
+                            override fun onBitmapReady(croppedBitmap: Bitmap) {
+                                val byteArray = bitmapToByteArray(croppedBitmap)
+
+                                CameraUtils.writeToFile(byteArray, getFileLocationFromDirectory()) {
+                                    finalCameraResultFilePath = it?.path ?: ""
+                                    loadImagePreview()
+                                    showCameraPreviewActionButtons()
+                                    hideCameraProp()
+
+                                    binding?.cameraCaptureButton?.isClickable = true
+                                    reset()
+                                    hideLoading()
+                                }
+                            }
+
+                            override fun onFailed(
+                                originalBitmap: Bitmap,
+                                throwable: Throwable
+                            ) {
+                                reset()
+                                hideLoading()
+                            }
+                        })
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    private fun getFileLocationFromDirectory(): File {
+        val directory = ContextWrapper(context).getDir(HomeCreditUseCase.FOLDER_NAME, Context.MODE_PRIVATE)
+        if (!directory.exists()) directory.mkdir()
+        val imageName = System.currentTimeMillis().toString() + HomeCreditUseCase.FILE_EXTENSIONS
+        return File(directory.absolutePath, imageName)
+    }
+
+    private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        return byteArrayOutputStream.toByteArray()
     }
 
     private fun observeViewModel() {
@@ -172,7 +281,7 @@ class HomeCreditCameraV2Fragment(
             when (imageDetail) {
                 is Success -> {
                     finalCameraResultFilePath = imageDetail.data.imagePath ?: ""
-                    loadImagePreview(imageDetail.data)
+                    loadImagePreview()
                     showCameraPreviewActionButtons()
                     hideCameraProp()
                 }
@@ -183,13 +292,6 @@ class HomeCreditCameraV2Fragment(
             reset()
             hideLoading()
         }
-    }
-
-    private fun generateImage(imageByte: ByteArray) {
-        if (mCaptureNativeSize == null) {
-            mCaptureNativeSize = binding?.camera?.pictureSize
-        }
-        homeCreditViewModel?.computeImageArray(imageByte, mCaptureNativeSize)
     }
 
     private fun capturePicture() {
@@ -245,11 +347,11 @@ class HomeCreditCameraV2Fragment(
         setCutout(cameraDetail.cameraCutout)
     }
 
-    private fun loadImagePreview(data: ImageDetail) {
+    private fun loadImagePreview() {
         binding?.cameraPreview?.show()
         context?.let { context ->
             binding?.cameraPreview?.let { imageView ->
-                Glide.with(context).load(data.imagePath).centerCrop().into(imageView)
+                Glide.with(context).load(originalBitmap).centerCrop().into(imageView)
             }
         }
     }

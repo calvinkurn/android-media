@@ -20,7 +20,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -28,9 +27,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.scp.auth.GotoSdk
+import com.scp.auth.common.utils.ScpUtils
+import com.scp.auth.common.utils.TkpdAdditionalHeaders
+import com.scp.login.core.domain.contracts.listener.LSdkCheckOneTapStatusListener
+import com.scp.login.core.domain.onetaplogin.mappers.OneTapLoginError
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -63,6 +66,7 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
+import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
 import com.tokopedia.home_account.data.model.CommonDataView
@@ -77,7 +81,9 @@ import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
+import com.tokopedia.home_account.fundsAndInvestment.FundsAndInvestmentComposeActivity
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
+import com.tokopedia.home_account.view.activity.FundsAndInvestmentActivity
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
@@ -138,7 +144,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
@@ -208,6 +213,7 @@ open class HomeAccountUserFragment :
     private var topAdsHeadlineUiModel: TopadsHeadlineUiModel? = null
     private var isShowDarkModeToggle = false
     private var isShowScreenRecorder = false
+    private var statusNameTokopediaCard = ""
 
     var adapter: HomeAccountUserAdapter? = null
     var balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter? = null
@@ -421,10 +427,6 @@ open class HomeAccountUserFragment :
                 createAndShowSafeModeAlertDialog(isActive)
             }
 
-            AccountConstants.SettingCode.SETTING_DARK_MODE -> {
-                setupDarkMode(isActive)
-            }
-
             AccountConstants.SettingCode.SETTING_PLAY_WIDGET_AUTOPLAY -> {
                 accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_PLAY_WIDGET_AUTOPLAY, isActive)
             }
@@ -629,6 +631,13 @@ open class HomeAccountUserFragment :
     }
 
     override fun onClickBalanceAndPoint(balanceAndPointUiModel: BalanceAndPointUiModel) {
+        if (balanceAndPointUiModel.id == AccountConstants.WALLET.CO_BRAND_CC) {
+            TokopediaCardAnalytics.sendClickOnTokopediaCardPyEvent(
+                eventLabel = balanceAndPointUiModel.statusName,
+                userId = userSession.userId
+            )
+        }
+
         homeAccountAnalytic.eventClickAccountPage(
             balanceAndPointUiModel.id,
             balanceAndPointUiModel.isActive,
@@ -648,7 +657,7 @@ open class HomeAccountUserFragment :
 
     private fun fetchRemoteConfig() {
         context?.let {
-            isShowDarkModeToggle = remoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+            isShowDarkModeToggle = !remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, true)
             isShowScreenRecorder = remoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
     }
@@ -739,15 +748,6 @@ open class HomeAccountUserFragment :
                     is ResultBalanceAndPoint.Fail -> {
                         onFailedGetBalanceAndPoint(it.walletId)
                     }
-                }
-            }
-        )
-
-        viewModel.phoneNo.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (it.isNotEmpty()) {
-                    getData()
                 }
             }
         )
@@ -866,6 +866,14 @@ open class HomeAccountUserFragment :
     }
 
     private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
+        if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC) {
+            statusNameTokopediaCard = balanceAndPoint.statusName
+            TokopediaCardAnalytics.sendViewTokopediaCardIconPyEvent(
+                eventLabel = balanceAndPoint.statusName,
+                userId = userSession.userId
+            )
+        }
+
         balanceAndPointAdapter?.changeItemToSuccessBySameId(
             UiModelMapper.getBalanceAndPointUiModel(
                 balanceAndPoint
@@ -957,6 +965,9 @@ open class HomeAccountUserFragment :
 
         if (accountPref.isShowCoachmark()) {
             setCoachMark()
+        }
+        if (shouldScrollToSafeMode()) {
+            scrollToSafeMode()
         }
     }
 
@@ -1095,8 +1106,17 @@ open class HomeAccountUserFragment :
         setupSettingList()
         getFirstRecommendation()
         viewModel.getSafeModeValue()
-        if (oclUtils.isOclEnabled()) {
-            viewModel.getOclStatus()
+        if (ScpUtils.isGotoLoginEnabled()) {
+            GotoSdk.LSDKINSTANCE?.getOneTapStatus(lifecycle, additionalHeaders = TkpdAdditionalHeaders(requireContext()), object: LSdkCheckOneTapStatusListener {
+                override fun onCompleted(isEligible: Boolean) {
+                    viewModel.setOneTapStatus(isEligible)
+                }
+                override fun onError(error: OneTapLoginError) {}
+            })
+        } else {
+            if (oclUtils.isOclEnabled()) {
+                viewModel.getOclStatus()
+            }
         }
     }
 
@@ -1164,7 +1184,8 @@ open class HomeAccountUserFragment :
                 accountPref,
                 permissionChecker,
                 isShowDarkModeToggle,
-                isShowScreenRecorder
+                isShowScreenRecorder,
+                isExpanded = shouldScrollToSafeMode()
             ),
             addSeparator = true
         )
@@ -1210,6 +1231,17 @@ open class HomeAccountUserFragment :
         }
     }
 
+    private fun goToFundsAndInvestment() {
+        val directionActivity = if (DeeplinkMapperUser.isFundsAndInvestmentComposeActivated()) {
+            FundsAndInvestmentComposeActivity::class.java
+        } else {
+            FundsAndInvestmentActivity::class.java
+        }
+
+        val intent = Intent(activity, directionActivity)
+        startActivity(intent)
+    }
+
     private fun goToApplink(applink: String) {
         if (applink.isNotEmpty()) {
             val intent = RouteManager.getIntent(context, applink)
@@ -1221,31 +1253,6 @@ open class HomeAccountUserFragment :
         if (link.isNotEmpty()) {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, link)
             startActivity(intent)
-        }
-    }
-
-    private fun setupDarkMode(isDarkMode: Boolean) {
-        setAppCompatMode(isDarkMode)
-        saveDarkModeToSharefPreference(isDarkMode)
-        homeAccountAnalytic.eventClickThemeSetting(isDarkMode)
-        recreateView()
-    }
-
-    private fun setAppCompatMode(isDarkMode: Boolean) {
-        val screenMode =
-            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        AppCompatDelegate.setDefaultNightMode(screenMode)
-    }
-
-    private fun saveDarkModeToSharefPreference(isDarkMode: Boolean) {
-        accountPref.saveSettingValue(TkpdCache.Key.KEY_DARK_MODE, isDarkMode)
-    }
-
-    private fun recreateView() {
-        activity?.run {
-            finish()
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-            startActivity(Intent(this, this.javaClass))
         }
     }
 
@@ -1283,8 +1290,12 @@ open class HomeAccountUserFragment :
     private fun mapSettingId(item: CommonDataView) {
         when (item.id) {
             AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE -> {
+                TokopediaCardAnalytics.sendClickOnLihatSemuaPyEvent(
+                    eventLabel = statusNameTokopediaCard,
+                    userId = userSession.userId
+                )
                 homeAccountAnalytic.eventClickViewMoreWalletAccountPage()
-                goToApplink(item.applink)
+                goToFundsAndInvestment()
             }
 
             AccountConstants.SettingCode.SETTING_MORE_MEMBER -> {
@@ -1387,6 +1398,10 @@ open class HomeAccountUserFragment :
                 checkLogoutOffering()
             }
 
+            AccountConstants.SettingCode.SETTING_DARK_MODE -> {
+                goToApplink(item.applink)
+            }
+
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
                 RouteManager.route(context, ApplinkConstInternalUserPlatform.MEDIA_QUALITY_SETTING)
             }
@@ -1432,9 +1447,9 @@ open class HomeAccountUserFragment :
     }
 
     private fun checkLogoutOffering() {
-        if (viewModel.getOclStatus.value?.isShowing == true) {
+        if (viewModel.isOclEligible.value == true) {
             showOclBtmSheet()
-        } else if (isEnableBiometricOffering()) {
+        } else if (DeeplinkMapperUser.isGotoLoginDisabled() && isEnableBiometricOffering()) {
             homeAccountAnalytic.trackOnClickLogoutDialog()
             viewModel.getFingerprintStatus()
         } else {
@@ -1570,6 +1585,19 @@ open class HomeAccountUserFragment :
             isEnable
         commonAdapter?.notifyItemChanged(POSITION_1)
         adapter?.notifyItemChanged(POSITION_3)
+    }
+
+    private fun shouldScrollToSafeMode(): Boolean {
+        return arguments?.containsKey(AccountConstants.PARAM_SCROLL_TO) ?: false &&
+            arguments?.getString(AccountConstants.PARAM_SCROLL_TO, "") == AccountConstants.SCROLL_TO_SAFEMODE
+    }
+
+    private fun scrollToSafeMode() {
+        lifecycleScope.launch {
+            // add delay to make sure the items are fully loaded
+            delay(1000)
+            binding?.homeAccountUserFragmentRv?.smoothScrollToPosition(POSITION_3)
+        }
     }
 
     private fun updateSafeModeSwitch(isEnable: Boolean) {
@@ -1754,7 +1782,7 @@ open class HomeAccountUserFragment :
                 addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
             val bottomSheet = BottomSheetUnify()
 
-            ImageUtils.loadImage(iconAddName, getString(R.string.add_name_url_icon))
+            iconAddName.loadImage(getString(R.string.add_name_url_icon))
             iconAddName.setOnClickListener {
                 gotoChangeName(profile)
                 bottomSheet.dismiss()
@@ -1803,8 +1831,6 @@ open class HomeAccountUserFragment :
 
     override fun onClick(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
         tokopediaAnalytics.sendClickOnTokopediaPlusButtonEvent(tokopediaPlusDataModel.isSubscriber)
-        val intent = RouteManager.getIntent(context, tokopediaPlusDataModel.applink)
-        startActivity(intent)
     }
 
     override fun onAddPhoneClicked() {
@@ -1861,7 +1887,7 @@ open class HomeAccountUserFragment :
         private const val ACC_SETTING_POS = 1
 
         private const val COACHMARK_DELAY_MS = 1000L
-        private const val PRIVACY_POLICY = "Kebijakan Privasi"
+        private const val PRIVACY_POLICY = "Pemberitahuan Privasi"
         private const val TITLE = "Tokopedia"
 
         fun newInstance(bundle: Bundle?): Fragment {

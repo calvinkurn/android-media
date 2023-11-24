@@ -19,14 +19,13 @@ class AutoCompleteMapper @Inject constructor() {
         }
     }
 
-    private fun suggestedPlaceData(response: List<Prediction>) : List<SuggestedPlace> {
+    private fun suggestedPlaceData(response: List<Prediction>): List<SuggestedPlace> {
         return response.map {
             SuggestedPlace(
-                    it.structuredFormatting.mainText,
-                    it.structuredFormatting.secondaryText,
-                    it.placeId
+                it.structuredFormatting.mainText,
+                it.structuredFormatting.secondaryText,
+                it.placeId
             )
         }
     }
-
 }

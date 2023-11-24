@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
 import com.tokopedia.affiliate.model.response.AffiliateTrafficCommissionCardDetails
 import com.tokopedia.affiliate.usecase.*
-import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
+import com.tokopedia.universal_sharing.domain.usecase.ExtractBranchLinkUseCase
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

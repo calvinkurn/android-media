@@ -6,7 +6,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.stub.data.response.ResponseStub
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WIDGET_PAGE_NAME
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WIDGET_PAGE_NAME_POST_PURCHASE
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WIDGET_PAGE_NAME_PRE_PURCHASE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.PARAM_PAGE_NAME
@@ -59,9 +60,21 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
             (
                 (
                     GqlQueryParser.parse(query).first() ==
+                        GqlResponseStub.postPurchaseProductRecommendationResponse.query
+                    ) &&
+                    variables?.get(PARAM_PAGE_NAME) == WIDGET_PAGE_NAME_POST_PURCHASE
+                ) -> {
+                shouldThrow(GqlResponseStub.postPurchaseProductRecommendationResponse)
+                GqlMockUtil.createSuccessResponse(
+                    GqlResponseStub.postPurchaseProductRecommendationResponse.responseObject
+                )
+            }
+            (
+                (
+                    GqlQueryParser.parse(query).first() ==
                         GqlResponseStub.prePurchaseProductRecommendationResponse.query
                     ) &&
-                    variables?.get(PARAM_PAGE_NAME) == WIDGET_PAGE_NAME
+                    variables?.get(PARAM_PAGE_NAME) == WIDGET_PAGE_NAME_PRE_PURCHASE
                 ) -> {
                 shouldThrow(GqlResponseStub.prePurchaseProductRecommendationResponse)
                 GqlMockUtil.createSuccessResponse(

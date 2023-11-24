@@ -28,6 +28,7 @@ import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTracker
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsBaseTabFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashDeletedGroupFragment
@@ -125,6 +126,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
             if (it is TopAdsListAllInsightState.Success) {
                 recommendationWidget?.renderWidget(it.data.remainingAdsGroup, it.data.totalAdsGroup)
                 recommendationWidget?.binding?.widgetCTAButton?.setOnClickListener {
+                    RecommendationTracker.clickLihatSelengkapnyaSaranTopadsHeadline()
                     recommendationWidgetCTAListener?.onWidgetCTAClick()
                 }
             }

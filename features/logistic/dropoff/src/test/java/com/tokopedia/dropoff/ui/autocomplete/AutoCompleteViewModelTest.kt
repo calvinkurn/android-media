@@ -4,12 +4,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.dropoff.domain.mapper.AutoCompleteMapper
 import com.tokopedia.dropoff.ui.autocomplete.model.ValidatedDistrict
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.AddressResponse
 import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.domain.model.SavedAddress
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetAutoCompleteUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -32,7 +34,9 @@ class AutoCompleteViewModelTest {
     @get:Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val repo: KeroRepository = mockk(relaxed = true)
+    private val getDistrict: GetDistrictUseCase = mockk(relaxed = true)
+    private val getAutoCompleteUseCase: GetAutoCompleteUseCase = mockk(relaxed = true)
+    private val getAddress: GetAddressUseCase = mockk(relaxed = true)
     private val mapper: AutoCompleteMapper = AutoCompleteMapper() // lets test actual mapper too
     lateinit var viewModel: AutoCompleteViewModel
 
@@ -44,7 +48,7 @@ class AutoCompleteViewModelTest {
 
     @Test
     fun `When autocomplete Given success response Then livedata is changed to success`() {
-        coEvery { repo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
+        coEvery { getAutoCompleteUseCase(any()) } returns AutoCompleteResponse()
         viewModel.getAutoCompleteList("")
         verify { autoCompleteObserver.onChanged(match { it is Success }) }
     }
@@ -52,35 +56,35 @@ class AutoCompleteViewModelTest {
     @Test
     fun `When autocomplete Given error response Then livedata is changed to fail`() {
         val testError = defaultThrowable
-        coEvery { repo.getAutoComplete(any(), any()) } throws testError
+        coEvery { getAutoCompleteUseCase(any()) } throws testError
         viewModel.getAutoCompleteList("")
         verify { autoCompleteObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `When get district Given success callback Then livedata is changed to success`() {
-        coEvery { repo.getDistrict(any()) } returns GetDistrictResponse()
+        coEvery { getDistrict(any()) } returns GetDistrictResponse()
         viewModel.getLatLng("")
         verify { validateObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `When get district Given error callback Then livedata is changed to fail`() {
-        coEvery { repo.getDistrict(any()) } throws defaultThrowable
+        coEvery { getDistrict(any()) } throws defaultThrowable
         viewModel.getLatLng("")
         verify { validateObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `When get saved address Given success callback Then livedata is changed to success`() {
-        coEvery { repo.getAddress() } returns AddressResponse()
+        coEvery { getAddress(any()) } returns AddressResponse()
         viewModel.getSavedAddress()
         verify { savedObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `When get saved address Given error callback Then livedata is changed to fail`() {
-        coEvery { repo.getAddress() } throws defaultThrowable
+        coEvery { getAddress(any()) } throws defaultThrowable
         viewModel.getSavedAddress()
         verify { savedObserver.onChanged(match { it is Fail }) }
     }
@@ -88,7 +92,7 @@ class AutoCompleteViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        viewModel = AutoCompleteViewModel(repo, mapper)
+        viewModel = AutoCompleteViewModel(getAutoCompleteUseCase, getDistrict, getAddress, mapper)
         viewModel.autoCompleteList.observeForever(autoCompleteObserver)
         viewModel.validatedDistrict.observeForever(validateObserver)
         viewModel.savedAddress.observeForever(savedObserver)

@@ -31,7 +31,8 @@ open class PaymentListingActivity : BaseSimpleActivity(), HasComponent<PaymentCo
             intent.getStringExtra(EXTRA_PAYMENT_MERCHANT) ?: "",
             intent.getStringExtra(EXTRA_PAYMENT_BID) ?: "",
             intent.getStringExtra(EXTRA_ORDER_METADATA) ?: "",
-            intent.getStringExtra(EXTRA_PROMO_PARAM) ?: ""
+            intent.getStringExtra(EXTRA_PROMO_PARAM) ?: "",
+            intent.getStringExtra(EXTRA_CALLBACK_URL) ?: ""
         )
     }
 
@@ -53,6 +54,7 @@ open class PaymentListingActivity : BaseSimpleActivity(), HasComponent<PaymentCo
         internal const val EXTRA_PAYMENT_BID = "payment_bid"
         internal const val EXTRA_ORDER_METADATA = "order_metadata"
         internal const val EXTRA_PROMO_PARAM = "promo_param"
+        internal const val EXTRA_CALLBACK_URL = "callback_url"
 
         internal const val EXTRA_RESULT_GATEWAY = "RESULT_GATEWAY"
         internal const val EXTRA_RESULT_METADATA = "RESULT_METADATA"

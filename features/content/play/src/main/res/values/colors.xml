@@ -39,9 +39,6 @@
     <color name="play_dms_pinned_link">#00AA5B</color>
     <color name="play_dms_pinned_icon">#FFC400</color>
 
-    <!--Partner Info-->
-    <color name="play_dms_partner_icon_placeholder">#AD31353B</color>
-
     <!-- Product Icon See More -->
     <color name="play_dms_product_count_background">#FFC400</color>
     <color name="play_dms_product_count_color">#212121</color>

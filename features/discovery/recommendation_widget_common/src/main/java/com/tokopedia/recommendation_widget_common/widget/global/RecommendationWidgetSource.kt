@@ -2,12 +2,15 @@ package com.tokopedia.recommendation_widget_common.widget.global
 
 sealed interface RecommendationWidgetSource {
     val xSourceValue: String
-    val trackingValue: String
+    val eventCategory: String
 
-    object PDP : RecommendationWidgetSource {
+    class PDP(
+        val anchorProductId: String = "",
+        val trackingMap: Map<String, Any> = emptyMap()
+    ) : RecommendationWidgetSource {
         override val xSourceValue: String
             get() = "pdp"
-        override val trackingValue: String
+        override val eventCategory: String
             get() = "product detail page"
     }
 
@@ -15,10 +18,13 @@ sealed interface RecommendationWidgetSource {
         val anchorProductId: String,
         val isUserLoggedIn: Boolean,
         val userId: String,
-    ): RecommendationWidgetSource {
+        val warehouseId: String,
+        val offerId: String,
+        val shopId: String
+    ) : RecommendationWidgetSource {
         override val xSourceValue: String
             get() = "pdp"
-        override val trackingValue: String
+        override val eventCategory: String
             get() = "product detail page"
     }
 }

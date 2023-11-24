@@ -18,6 +18,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.newrelic.agent.android.FeatureFlag;
+import com.scp.auth.GotoSdk;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -40,6 +43,7 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.applink.AppUtil;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -57,6 +61,7 @@ import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallback
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.device.info.model.AdditionalDeviceInfo;
 import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLifecycleCallbacks;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
@@ -75,6 +80,7 @@ import com.tokopedia.common.network.cdn.MonitoringActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
+import com.tokopedia.notifications.utils.PushTokenRefreshUtil;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -147,6 +153,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY = "key_strict_mode_leak_publisher_toggle";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
     private final boolean STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false;
+    private final String PUSH_DELETION_TIME_GAP = "android_push_deletion_time_gap";
+    private final String ENABLE_PUSH_TOKEN_DELETION_WORKER = "android_push_token_deletion_rollence";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -201,6 +209,15 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
+        initGotoSDK();
+        if(RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)){
+            PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
+            pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
+        }
+    }
+
+    private void initGotoSDK() {
+        GotoSdk.init(this);
     }
 
     private void initializationNewRelic() {
@@ -209,6 +226,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 @NotNull
                 @Override
                 public Object execute() {
+                    enableNetworkRequestNewRelic();
+                    enableCrashReportingNewRelic();
                     NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(ConsumerMainApplication.this);
                     return true;
                 }
@@ -447,9 +466,23 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
         });
 
+        getWidevineId();
+
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
         return true;
+    }
+
+    private void getWidevineId() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND, true)) {
+            AdditionalDeviceInfo.getWidevineIdSuspend(ConsumerMainApplication.this, new Function1<String, Unit>() {
+                @Override
+                public Unit invoke(String s) {
+                    FingerprintModelGenerator.INSTANCE.expireFingerprint();
+                    return Unit.INSTANCE;
+                }
+            });
+        }
     }
 
     private boolean getLeakCanaryToggleValue() {
@@ -509,6 +542,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @Override
             public int getVersionCode() {
                 return GlobalConfig.VERSION_CODE;
+            }
+
+            @NonNull
+            @Override
+            public String getActivityName() {
+                return AppUtil.currentActivityName;
             }
 
             @NotNull

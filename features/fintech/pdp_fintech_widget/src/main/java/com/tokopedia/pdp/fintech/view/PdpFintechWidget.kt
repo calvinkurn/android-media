@@ -1,6 +1,7 @@
 package com.tokopedia.pdp.fintech.view
 
 import android.content.Context
+import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.annotation.AttrRes
@@ -41,7 +42,7 @@ class PdpFintechWidget @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
 
-    private var idToPriceMap = HashMap<String, FintechPriceDataModel>()
+    private var idToPriceUrlMap = HashMap<String, FintechPriceURLDataModel>()
     private var priceToChip = HashMap<String, ArrayList<ChipsData>>()
     private var categoryId: String? = null
     private var productID: String? = ""
@@ -69,7 +70,6 @@ class PdpFintechWidget @JvmOverloads constructor(
         initInjector()
         initView()
         initRecycler()
-
     }
 
 
@@ -102,7 +102,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     private fun onSuccessData(it: Success<WidgetDetail>) {
         setPriceToChipMap(it.data)
         updateTestForChip(it.data)
-        getChipDataAndUpdate(idToPriceMap[productID]?.price)
+        getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
     }
 
     private fun updateTestForChip(widgetDetail: WidgetDetail) {
@@ -235,8 +235,8 @@ class PdpFintechWidget @JvmOverloads constructor(
     ) {
         try {
             if (this.productID == productID && this.logInStatus == loggedIn && priceToChip.isNotEmpty()) {
-                if (idToPriceMap[productID] != null)
-                    getChipDataAndUpdate(idToPriceMap[productID]?.price)
+                if (idToPriceUrlMap[productID] != null)
+                    getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
                 else
                     getDetailFromApi(productID, fintechWidgetViewHolder, shopID, parentId)
             } else {
@@ -262,7 +262,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         categoryId?.let {
             fintechWidgetViewModel.getWidgetData(
                 it,
-                idToPriceMap,
+                idToPriceUrlMap,
                 shopID,
                 parentId
             )
@@ -318,11 +318,11 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     fun updateIdToPriceMap(
-        productIdToPrice: HashMap<String, FintechPriceDataModel>,
+        productIdToPrice: HashMap<String, FintechPriceURLDataModel>,
         productCategoryId: String?
 
     ) {
-        idToPriceMap = productIdToPrice
+        idToPriceUrlMap = productIdToPrice
         categoryId = productCategoryId
     }
 
@@ -335,6 +335,7 @@ class PdpFintechWidget @JvmOverloads constructor(
 
 }
 
-data class FintechPriceDataModel(
-    var price: String? = null
+data class FintechPriceURLDataModel(
+    var price: String? = null,
+    var url: String
 )

@@ -16,5 +16,6 @@ class ShippingScheduleWidgetModel(
     var isSelected: Boolean,
     var isShowCoachMark: Boolean = false,
     var onSelectedWidgetListener: (() -> Unit)? = null,
-    var onClickIconListener: (() -> Unit)? = null
+    var onClickIconListener: (() -> Unit)? = null,
+    var showOtherScheduleButton: Boolean = false
 ) : Parcelable

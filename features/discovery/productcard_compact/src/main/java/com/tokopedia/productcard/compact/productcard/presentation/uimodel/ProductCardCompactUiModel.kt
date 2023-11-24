@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 data class ProductCardCompactUiModel(
     val productId: String = "",
+    val warehouseId: String = "",
     val imageUrl: String = "",
     val minOrder: Int = 0,
     val maxOrder: Int = 0,

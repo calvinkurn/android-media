@@ -65,7 +65,6 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceRecomProductCartMapData
-import com.tokopedia.purchase_platform.common.constant.CartConstant.QTY_ADDON_REPLACE
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
@@ -223,7 +222,6 @@ class CartListPresenter @Inject constructor(
             for (entry in updatedAddOnSummary) {
                 totalAddOnPrice += entry.priceValue.toLong()
             }
-            summaryTransactionUiModel?.paymentTotal = summaryTransactionUiModel?.totalValue?.plus(totalAddOnPrice) ?: 0
             summaryTransactionUiModel?.listSummaryAddOns = updatedAddOnSummary
         }
         return summaryTransactionUiModel
@@ -642,6 +640,7 @@ class CartListPresenter @Inject constructor(
         var subtotalBeforeSlashedPrice = 0.0
         var subtotalPrice = 0.0
         var subtotalCashback = 0.0
+        var totalAddOnPrice = 0.0
 
         // Collect all Cart Item & also calculate total weight on each shop
         val cartItemDataList = getAvailableCartItemDataList(dataList)
@@ -652,40 +651,30 @@ class CartListPresenter @Inject constructor(
         subtotalBeforeSlashedPrice += returnValueMarketplaceProduct.second.first
         subtotalPrice += returnValueMarketplaceProduct.second.second
         subtotalCashback += returnValueMarketplaceProduct.third
+        totalAddOnPrice += returnValueMarketplaceProduct.second.third
 
         updateSummaryTransactionUiModel(
             subtotalBeforeSlashedPrice,
             subtotalPrice,
             totalItemQty,
-            subtotalCashback
+            subtotalCashback,
+            totalAddOnPrice
         )
 
+        val totalPayment = subtotalPrice + totalAddOnPrice
         view?.updateCashback(subtotalCashback)
-        view?.renderDetailInfoSubTotal(totalItemQty.toString(), subtotalPrice, dataList.isEmpty())
+        view?.renderDetailInfoSubTotal(totalItemQty.toString(), totalPayment, dataList.isEmpty())
     }
 
     private fun updateSummaryTransactionUiModel(
         subtotalBeforeSlashedPrice: Double,
         subtotalPrice: Double,
         totalItemQty: Int,
-        subtotalCashback: Double
+        subtotalCashback: Double,
+        totalAddOnPrice: Double
     ) {
-        // update summary addons
-        var totalAddonPrice = 0.0
-        for ((key, value) in summariesAddOnUiModel) {
-            summaryTransactionUiModel?.listSummaryAddOns?.forEach {
-                if (it.type == key) {
-                    it.qty = totalQtyWithAddon
-                    it.wording = value.replace(QTY_ADDON_REPLACE, totalQtyWithAddon.toString())
-
-                    totalAddonPrice = totalQtyWithAddon * it.priceValue
-                    it.priceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalAddonPrice, false).removeDecimalSuffix()
-                }
-            }
-        }
-
-        val priceAfterAddon = subtotalPrice + totalAddonPrice
-        val priceAfterAddonBeforeSlashedPrice = subtotalBeforeSlashedPrice + totalAddonPrice
+        val priceAfterAddon = subtotalPrice + totalAddOnPrice
+        val priceAfterAddonBeforeSlashedPrice = subtotalBeforeSlashedPrice + totalAddOnPrice
 
         summaryTransactionUiModel?.qty = totalItemQty.toString()
         if (priceAfterAddonBeforeSlashedPrice == 0.0) {
@@ -824,11 +813,12 @@ class CartListPresenter @Inject constructor(
         return Triple(tmpSubtotalBeforeSlashedPrice, tmpSubTotalPrice, tmpSubtotalCashback)
     }
 
-    private fun calculatePriceMarketplaceProduct(allCartItemDataList: ArrayList<CartItemHolderData>): Triple<Int, Pair<Double, Double>, Double> {
+    private fun calculatePriceMarketplaceProduct(allCartItemDataList: ArrayList<CartItemHolderData>): Triple<Int, Triple<Double, Double, Double>, Double> {
         var totalItemQty = 0
         var subtotalBeforeSlashedPrice = 0.0
         var subtotalPrice = 0.0
         var subtotalCashback = 0.0
+        var totalAddOnPrice = 0.0
 
         val subtotalWholesaleBeforeSlashedPriceMap = HashMap<String, Double>()
         val subtotalWholesalePriceMap = HashMap<String, Double>()
@@ -902,7 +892,11 @@ class CartListPresenter @Inject constructor(
             if (cartItemHolderData.addOnsProduct.listData.isNotEmpty()) {
                 totalQtyWithAddon = itemQty
                 cartItemHolderData.addOnsProduct.listData.forEach {
-                    subtotalPrice += (totalQtyWithAddon * it.price)
+                    val qtyToCalculate = if (it.fixedQuantity) 1 else totalQtyWithAddon
+
+                    // subtotalPrice += (qtyToCalculate * it.price)
+                    totalAddOnPrice += (qtyToCalculate * it.price)
+                    // subtotalBeforeSlashedPrice += (qtyToCalculate * it.price)
                 }
             }
         }
@@ -925,7 +919,7 @@ class CartListPresenter @Inject constructor(
             }
         }
 
-        val pricePair = Pair(subtotalBeforeSlashedPrice, subtotalPrice)
+        val pricePair = Triple(subtotalBeforeSlashedPrice, subtotalPrice, totalAddOnPrice)
         return Triple(totalItemQty, pricePair, subtotalCashback)
     }
 

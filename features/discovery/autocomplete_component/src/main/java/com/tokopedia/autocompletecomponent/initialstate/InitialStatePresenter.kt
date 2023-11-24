@@ -121,7 +121,6 @@ class InitialStatePresenter @Inject constructor(
 
         val view = view ?: return
         view.showInitialStateResult(listVisitable)
-        if (initialStateUniverse.isMps) view.enableMps() else view.disableMps()
     }
 
     private fun <E: Any, T: Collection<E>> T.withNotEmpty(func: T.() -> Unit): Unit {
