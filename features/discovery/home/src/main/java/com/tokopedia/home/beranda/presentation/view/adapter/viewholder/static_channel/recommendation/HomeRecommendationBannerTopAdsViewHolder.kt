@@ -35,6 +35,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
 
     override fun bind(element: HomeRecommendationBannerTopAdsUiModel) {
         setImageTopAdsNewQuery(element)
+        setBannerTopAdsClickListener(element)
     }
 
     override fun bindPayload(newItem: HomeRecommendationBannerTopAdsUiModel?) {
@@ -45,7 +46,6 @@ class HomeRecommendationBannerTopAdsViewHolder(
 
     private fun setImageTopAdsNewQuery(element: HomeRecommendationBannerTopAdsUiModel) {
         loadImageTopAdsNewQuery(element)
-        setBannerTopAdsClickListener(element)
     }
 
     private fun loadImageTopAdsNewQuery(
@@ -121,9 +121,9 @@ class HomeRecommendationBannerTopAdsViewHolder(
                     appCompatImageView.show()
                     binding?.homeRecomTopadsLoaderImage?.hide()
                 }, onError = {
-                    appCompatImageView.hide()
-                    binding?.homeRecomTopadsLoaderImage?.hide()
-                })
+                        appCompatImageView.hide()
+                        binding?.homeRecomTopadsLoaderImage?.hide()
+                    })
             }
         }
     }
