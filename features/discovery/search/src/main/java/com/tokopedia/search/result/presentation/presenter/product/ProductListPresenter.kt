@@ -50,6 +50,7 @@ import com.tokopedia.search.result.product.broadmatch.RelatedDataView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
+import com.tokopedia.search.result.product.deduplication.Deduplication
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
@@ -166,6 +167,7 @@ class ProductListPresenter @Inject constructor(
     private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
     private val reimagineRollence: ReimagineRollence,
     private val lastClickProductIdProvider: LastClickedProductIdProviderImpl,
+    private val deduplication: Deduplication,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -373,6 +375,8 @@ class ProductListPresenter @Inject constructor(
     private fun createProductDataView(
         searchProductModel: SearchProductModel,
     ): ProductDataView {
+        deduplication.appendProductId(searchProductModel)
+
         val lastProductItemPosition = view.lastProductItemPositionFromCache
         val keyword = view.queryKey
 
@@ -433,6 +437,7 @@ class ProductListPresenter @Inject constructor(
                     externalReference,
                     constructGlobalSearchApplink(),
                     loadMoreProductList,
+                    view.queryKey,
                 )
             )
 
@@ -500,6 +505,7 @@ class ProductListPresenter @Inject constructor(
         dimension90 = Dimension90Utils.getDimension90(searchParameter)
         additionalParams = ""
         lastClickProductIdProvider.lastClickedProductId = ""
+        deduplication.clear()
 
         val requestParams = requestParamsGenerator.createInitializeSearchParam(
             searchParameter,
@@ -897,6 +903,7 @@ class ProductListPresenter @Inject constructor(
                 searchProductModel,
                 externalReference,
                 constructGlobalSearchApplink(),
+                view.queryKey,
             )
         )
 

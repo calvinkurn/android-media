@@ -424,6 +424,21 @@ data class DataItem(
     @SerializedName("play_id")
     var playWidgetPlayID: String? = null,
 
+    @SerializedName("widget_type")
+    var playWidgetType: String? = null,
+
+    @SerializedName("product_ids")
+    var productIds: String? = null,
+
+    @SerializedName("category_ids")
+    var categoryIds: String? = null,
+
+    @SerializedName("mobile_banner")
+    var mobileBanner: String? = null,
+
+    @SerializedName("is_dynamic_video")
+    var playWidgetTypeIsDynamicVideo: Boolean = false,
+
     @SerializedName("campaign_code")
     var campaignCode: String? = null,
 

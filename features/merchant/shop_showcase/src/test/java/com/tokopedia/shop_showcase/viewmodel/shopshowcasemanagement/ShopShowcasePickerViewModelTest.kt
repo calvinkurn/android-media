@@ -7,7 +7,7 @@ import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseP
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcasePickerViewModel
-import com.tokopedia.shop_showcase.shop_showcase_product_add.data.model.Product
+import com.tokopedia.shop_showcase.shop_showcase_product_add.data.model.ProductListResponse
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.mapper.ProductMapper
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.usecase.GetProductListUseCase
@@ -97,7 +97,7 @@ class ShopShowcasePickerViewModelTest {
     fun `when get total product should return success`() {
         runBlocking {
 
-            val productList = listOf<Product>()
+            val productList = listOf<ProductListResponse.ProductList.Data>()
             val productMapper = ProductMapper()
             val showCaseProductList = productMapper.mapToUIModel(productList)
             coEvery { getProductListUseCase.executeOnBackground() } returns showCaseProductList

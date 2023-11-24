@@ -45,7 +45,7 @@ class ProductDataView {
     var productListType: String = ""
     var isShowButtonAtc: Boolean = false
     var isReimagineProductCard: Boolean = false
-    var seamlessCarouselDataViewList = mapOf<Int, List<Visitable<*>>>()
+    var seamlessCarouselDataViewList =  listOf<InspirationCarouselDataView>()
     val defaultView: Int
         get() =
             if (productListType == LIST_VIEW) ViewType.LIST.value

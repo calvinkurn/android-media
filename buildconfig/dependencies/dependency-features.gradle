@@ -18,6 +18,7 @@ ext {
             nps                             : ":features:common:nps",
             feedbackForm                    : ":features:common:feedback_form",
             internalReview                  : ":features:common:internal_review",
+            darkModeConfig                  : ":features:common:dark_mode_config",
 
             catalog                         : ":features:category:catalog",
             catalogLibrary                  : ":features:category:catalog_library",

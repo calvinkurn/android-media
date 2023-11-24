@@ -32,6 +32,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -88,7 +89,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         private const val BOTTOM_NAV_ENTER_ANIM_DURATION = 4f
         private const val BOTTOM_NAV_EXIT_ANIM_DURATION = 1f
 
-        private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
         private const val ACTION_GET_ALL_APP_WIDGET_DATA =
             "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
@@ -97,6 +97,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
         private const val WEAR_POPUP_KEY = "isWearPopupShown"
         private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.tokopedia.sellerapp"
+        const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
     }
 
     @Inject
@@ -169,6 +170,13 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         return DaggerHomeDashboardComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
             .build()
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        binding?.sahBottomNav?.addOneTimeGlobalLayoutListener {
+            navigator?.navigateOnRestored(savedInstanceState, lifecycleScope)
+        }
     }
 
     override fun onResume() {
@@ -355,6 +363,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                     initSomListLoadTimeMonitoring()
                     lastSomTab = page
                 }
+
                 FragmentType.PRODUCT -> lastProductManagePage = page
             }
 

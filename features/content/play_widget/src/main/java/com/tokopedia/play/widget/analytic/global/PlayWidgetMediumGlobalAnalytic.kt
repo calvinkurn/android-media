@@ -316,7 +316,8 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isRemindMe: Boolean,
-        verticalWidgetPosition: Int
+        verticalWidgetPosition: Int,
+        config: PlayWidgetConfigUiModel,
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
