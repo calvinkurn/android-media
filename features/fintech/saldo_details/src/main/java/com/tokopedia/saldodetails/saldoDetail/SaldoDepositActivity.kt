@@ -39,7 +39,7 @@ import com.tokopedia.saldodetails.R as saldodetailsR
 
 class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComponent>, SaldoCoachMarkListener {
 
-    lateinit var saldoToolbar: HeaderUnify
+    var saldoToolbar: HeaderUnify? = null
 
     @Inject
     lateinit var userSession: UserSession
@@ -124,7 +124,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
 
     private fun setUpToolbar() {
         saldoToolbar = findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_toolbar)
-        saldoToolbar.apply {
+        saldoToolbar?.apply {
             headerView?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
             navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
             setNavigationOnClickListener {

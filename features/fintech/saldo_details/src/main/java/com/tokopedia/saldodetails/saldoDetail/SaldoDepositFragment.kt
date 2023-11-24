@@ -457,14 +457,14 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 oldScrollY: Int
             ) {
                 if (scrollY == 0) {
-                    (activity as SaldoDepositActivity).saldoToolbar.apply {
+                    (activity as SaldoDepositActivity).saldoToolbar?.apply {
                         if (transparentMode) return
                         transparentMode = true
                         headerView?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
                         navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
                     }
                 } else {
-                    (activity as SaldoDepositActivity).saldoToolbar.apply {
+                    (activity as SaldoDepositActivity).saldoToolbar?.apply {
                         if (!transparentMode) return
                         transparentMode = false
                         headerView?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
