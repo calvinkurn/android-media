@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.nakamaupdate
+package com.tokopedia.appdownloadmanager
 
 import android.app.Activity
 import android.app.DownloadManager

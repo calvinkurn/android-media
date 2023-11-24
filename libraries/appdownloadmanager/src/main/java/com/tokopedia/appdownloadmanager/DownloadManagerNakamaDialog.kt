@@ -1,10 +1,13 @@
-package com.tokopedia.abstraction.base.view.nakamaupdate
+package com.tokopedia.appdownloadmanager
 
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
+import com.tokopedia.abstraction.base.view.nakamaupdate.BaseAppDistributionDialog
+import com.tokopedia.abstraction.base.view.nakamaupdate.DownloadManagerUpdateDialogBuilder
+import com.tokopedia.abstraction.base.view.nakamaupdate.DownloadManagerUpdateModel
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero

@@ -14,8 +14,8 @@ buildscript {
 }
 
 android {
-    namespace 'com.tokopedia.appdownloadmanager_noinstall'
-    testNamespace 'com.tokopedia.appdownloadmanager_noinstall.test'
+    namespace 'com.tokopedia.appdownloadmanager'
+    testNamespace 'com.tokopedia.appdownloadmanager.test'
 }
 
 dependencies {
@@ -33,10 +33,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'appdownloadmanager-noinstall'
+    artifactId = 'appdownloadmanager'
     groupId = 'com.tokopedia.library'
     versionName = "0.0.1"
-    artifactName = "appdownloadmanager-noinstall-release"
+    artifactName = "appdownloadmanager-release"
 }
 
 apply from: '../../publish_local.gradle'
