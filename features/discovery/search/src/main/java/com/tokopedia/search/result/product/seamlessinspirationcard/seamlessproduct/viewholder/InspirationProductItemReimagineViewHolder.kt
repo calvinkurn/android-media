@@ -57,7 +57,7 @@ class InspirationProductItemReimagineViewHolder(
         )
 
     private fun labelGroupList(element: InspirationProductItemDataView) =
-        element.labelGroupDataList.map(::labelGroup)
+        element.labelGroupList.map(::labelGroup)
 
     private fun labelGroup(labelGroupDataView: LabelGroupDataView) =
         ProductCardModel.LabelGroup(

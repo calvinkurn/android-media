@@ -10,7 +10,7 @@ import com.tokopedia.shop_showcase.shop_showcase_management.data.model.DeleteSho
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ReorderShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.*
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcaseListViewModel
-import com.tokopedia.shop_showcase.shop_showcase_product_add.data.model.Product
+import com.tokopedia.shop_showcase.shop_showcase_product_add.data.model.ProductListResponse
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.mapper.ProductMapper
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.usecase.GetProductListUseCase
@@ -18,7 +18,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -236,7 +235,7 @@ class ShopShowcaseManageViewModel {
     fun `when get total product should return success`() {
         runBlocking {
 
-            val productList = listOf<Product>()
+            val productList = listOf<ProductListResponse.ProductList.Data>()
             val productMapper = ProductMapper()
             val showCaseProductList = productMapper.mapToUIModel(productList)
             coEvery { getProductListUseCase.executeOnBackground() } returns showCaseProductList
