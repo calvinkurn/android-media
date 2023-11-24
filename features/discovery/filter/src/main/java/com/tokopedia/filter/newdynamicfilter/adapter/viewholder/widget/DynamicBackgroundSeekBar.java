@@ -1,9 +1,8 @@
-package com.tokopedia.design.price;
+package com.tokopedia.filter.newdynamicfilter.adapter.viewholder.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import androidx.annotation.Nullable;
 import android.util.AttributeSet;

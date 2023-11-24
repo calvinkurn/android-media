@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.design.price.DynamicBackgroundSeekBar;
 import com.tokopedia.filter.R;
 
 /**

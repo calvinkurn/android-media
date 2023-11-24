@@ -21,10 +21,10 @@ import com.tokopedia.imagepicker.common.listener.VideoPickerCallback
 import com.tokopedia.imagepicker.common.state.StateRecorder
 import com.tokopedia.imagepicker.videorecorder.DURATION_MAX
 import com.tokopedia.imagepicker.videorecorder.utils.*
+import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
-import com.tokopedia.utils.video.VideoUtil
-import com.tokopedia.utils.video.VideoUtil.VIDEO_DIR
 import kotlinx.android.synthetic.main.fragment_recorder.*
+import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -36,6 +36,8 @@ class VideoRecorderFragment : TkpdBaseV4Fragment() {
 
     companion object {
         const val SAVED_FLASH_INDEX = "saved_flash_index"
+        const val VIDEO_DIR = "video/"
+        const val VIDEO_EXT = ".mp4"
     }
 
     //flash collection
@@ -49,6 +51,12 @@ class VideoRecorderFragment : TkpdBaseV4Fragment() {
 
     //for progress loader
     private lateinit var timer: Timer
+
+    fun getTokopediaVideoPath(relativePathDirectory: String? = VIDEO_DIR): File {
+        return File(
+            FileUtil.getTokopediaInternalDirectory(relativePathDirectory).absolutePath,
+            FileUtil.generateUniqueFileName() + VIDEO_EXT)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -156,7 +164,7 @@ class VideoRecorderFragment : TkpdBaseV4Fragment() {
             progress.show()
             btnFlip.hide()
             btnFlash.hide()
-            val file = VideoUtil.getTokopediaVideoPath()
+            val file = getTokopediaVideoPath()
             cameraView.takeVideo(file, DURATION_MAX)
             //progress and duration countdown
             timer = Timer()

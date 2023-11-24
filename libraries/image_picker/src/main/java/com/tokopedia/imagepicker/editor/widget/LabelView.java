@@ -1,13 +1,10 @@
-package com.tokopedia.design.label;
+package com.tokopedia.imagepicker.editor.widget;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.ColorInt;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.content.res.AppCompatResources;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -17,6 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.ColorInt;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
@@ -297,7 +298,7 @@ public class LabelView extends BaseCustomView {
         return counter;
     }
 
-    public void setContentClick(View.OnClickListener onClickListener){
+    public void setContentClick(OnClickListener onClickListener){
         if (onClickListener == null){
             this.contentTextView.setClickable(false);
         } else {

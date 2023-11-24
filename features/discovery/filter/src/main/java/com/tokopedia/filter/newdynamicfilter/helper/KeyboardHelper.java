@@ -1,7 +1,8 @@
-package com.tokopedia.design.keyboard;
+package com.tokopedia.filter.newdynamicfilter.helper;
 
 import android.view.View;
 import android.view.ViewTreeObserver;
+
 import com.tokopedia.design.R;
 
 /**

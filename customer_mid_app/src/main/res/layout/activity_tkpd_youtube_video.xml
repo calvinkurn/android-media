@@ -109,7 +109,7 @@
                 android:visibility="gone" />
 
 
-            <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
+            <com.tokopedia.tkpd.utils.CirclePageIndicator
                 android:id="@+id/v_pager_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

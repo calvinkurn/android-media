@@ -82,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp">
 
-        <com.tokopedia.design.price.DynamicBackgroundSeekBar
+        <com.tokopedia.filter.newdynamicfilter.adapter.viewholder.widget.DynamicBackgroundSeekBar
             android:id="@+id/seekbar_background"
             android:layout_width="match_parent"
             android:layout_height="4dp"

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.design.viewpagerindicator;
+package com.tokopedia.tkpd.utils;
 
 import androidx.viewpager.widget.ViewPager;
 

@@ -25,9 +25,9 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.design.label.LabelView;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.GalleryType;
+import com.tokopedia.imagepicker.editor.widget.LabelView;
 import com.tokopedia.imagepicker.picker.album.AlbumPickerActivity;
 import com.tokopedia.imagepicker.common.adapter.AlbumMediaAdapter;
 import com.tokopedia.imagepicker.common.internal.entity.Album;

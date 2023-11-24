@@ -1,4 +1,4 @@
-package com.tokopedia.design.item;
+package com.tokopedia.filter.newdynamicfilter.adapter.viewholder.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
