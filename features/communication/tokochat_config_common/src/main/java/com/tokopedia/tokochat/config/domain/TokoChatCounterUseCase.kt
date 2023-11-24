@@ -5,6 +5,7 @@ import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.config.util.asFlowResult
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -18,9 +19,14 @@ class TokoChatCounterUseCase @Inject constructor(
 
     fun fetchUnreadCount(channelId: String): Flow<TokoChatResult<Int>> {
         return flow {
-            repository.getConversationRepository()
-                ?.getUnreadCountForGroupBookings(channelId)
-                ?.asFlowResult()
+            val conversationRepository = repository.getConversationRepository()
+            if (conversationRepository != null) {
+                emitAll(
+                    conversationRepository
+                        .getUnreadCountForGroupBookings(channelId)
+                        .asFlowResult()
+                )
+            }
         }
     }
 }
