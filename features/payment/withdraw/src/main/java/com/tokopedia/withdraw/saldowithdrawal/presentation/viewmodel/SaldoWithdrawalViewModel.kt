@@ -40,13 +40,13 @@ class SaldoWithdrawalViewModel @Inject constructor(
             val popUp = async { validatePopUpUseCase.getValidatePopUpData(bankAccount) }
 
             if (isSeller) {
-                val topadsAutoTopupRecom = async { topadsAutoTopupWithdrawRecomUseCase(shopID) }
-                when (val topadsAutoTopupRecomData = topadsAutoTopupRecom.await()) {
+                when (val topadsAutoTopupRecom = topadsAutoTopupWithdrawRecomUseCase(shopID)) {
                     is Success -> {
                         val recomAmount =
-                            topadsAutoTopupRecomData.data.topAdsAutoTopupWithdrawalRecom.data.recommendationValue
+                            topadsAutoTopupRecom.data.topAdsAutoTopupWithdrawalRecom.data.recommendationValue
                         val isWDAmountGreaterThanRecom = withdrawalAmount > recomAmount
-                        val isAutoTopadsActive = topadsAutoTopupRecomData.data.topAdsAutoTopupWithdrawalRecom.data.autoTopUpStatus > Int.ZERO
+                        val isAutoTopadsActive =
+                            topadsAutoTopupRecom.data.topAdsAutoTopupWithdrawalRecom.data.autoTopUpStatus > Int.ZERO
                         shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.postValue(
                             Pair(isWDAmountGreaterThanRecom && isAutoTopadsActive, recomAmount.toLong())
                         )
