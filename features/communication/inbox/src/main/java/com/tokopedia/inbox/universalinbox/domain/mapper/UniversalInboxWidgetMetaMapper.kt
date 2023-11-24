@@ -119,13 +119,11 @@ class UniversalInboxWidgetMetaMapper @Inject constructor(
                 val driverMember = channel.members.find {
                     it.ownerType == driver
                 }
-                if (channel.expiresAt > System.currentTimeMillis() && driverMember != null) {
+                if ((channel.expiresAt > System.currentTimeMillis() || channel.expiresAt == 0L) && // Expires At should not be 0, If 0 then SDK initialize the chat and the data is still being fetch
+                    driverMember != null
+                ) {
                     val serviceType = channel.metadata?.orderInfo?.serviceType ?: 0
-                    if ((
-                        serviceType != GOSEND_INSTANT_SERVICE_TYPE &&
-                            serviceType != GOSEND_SAMEDAY_SERVICE_TYPE
-                        ) || isTokoChatLogisticEnabled()
-                    ) {
+                    if (isChatTokofood(serviceType) || isTokoChatLogisticEnabled()) {
                         activeChannel++
                         unreadTotal += channel.unreadCount
                     }
@@ -149,9 +147,14 @@ class UniversalInboxWidgetMetaMapper @Inject constructor(
         ) == ROLLENCE_LOGISTIC_CHAT
     }
 
+    fun isChatTokofood(serviceType: Int): Boolean {
+        return serviceType == TOKOFOOD_SERVICE_TYPE
+    }
+
     companion object {
         const val ROLLENCE_LOGISTIC_CHAT = "gosend_chat_an"
         private const val GOSEND_INSTANT_SERVICE_TYPE = 14
         private const val GOSEND_SAMEDAY_SERVICE_TYPE = 23
+        private const val TOKOFOOD_SERVICE_TYPE = 5
     }
 }
