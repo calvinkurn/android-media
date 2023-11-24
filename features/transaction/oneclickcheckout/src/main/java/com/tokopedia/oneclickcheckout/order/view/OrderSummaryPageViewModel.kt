@@ -1413,7 +1413,13 @@ class OrderSummaryPageViewModel @Inject constructor(
                         cartString = orderCart.cartString,
                         pslCode = pslCode,
                         cartData = orderCart.cartData,
-                        warehouseId = orderCart.shop.warehouseId
+                        warehouseId = orderCart.shop.warehouseId,
+                        ratesParam = logisticProcessor.generateRatesParam(
+                            orderCart,
+                            orderProfile.value,
+                            orderCost,
+                            orderShop.value.shopShipment
+                        ).first
                     )
                 )
             }
