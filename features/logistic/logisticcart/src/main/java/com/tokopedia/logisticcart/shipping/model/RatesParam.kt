@@ -126,7 +126,8 @@ data class RatesParam(
         "is_fulfillment" to is_fulfillment,
         "bo_metadata" to bo_metadata,
         "warehouse_id" to warehouse_id,
-        "group_type" to group_type
+        "group_type" to group_type,
+        "group_metadata" to groupMetadata
     )
 
     fun toMetadata(): Map<String, Any?> = mapOf(
