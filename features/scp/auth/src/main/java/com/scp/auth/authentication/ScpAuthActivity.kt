@@ -154,7 +154,6 @@ class ScpAuthActivity : BaseActivity() {
         } else {
             "Selamat datang di Tokopedia, $name!"
         }
-        GlobalToasterWorker.scheduleWorker(applicationContext, text)
     }
 
     private fun handleError(errorMsg: String){

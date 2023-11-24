@@ -33,13 +33,11 @@ import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -57,7 +55,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     public static final String INAPP_UPDATE = "inappupdate";
-    public static final String SUCCESS_REGISTER_TOSTER = "success_register_toaster";
     private static final long DISMISS_TIME = 10000;
 
     public BannerEnvironment bannerEnv = null;
@@ -83,11 +80,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
         inappReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (Objects.equals(intent.getAction(), SUCCESS_REGISTER_TOSTER)) {
-                    showSuccessRegisterToaster(intent.getStringExtra(SUCCESS_REGISTER_TOSTER));
-                } else if (Objects.equals(intent.getAction(), INAPP_UPDATE)) {
-                    AppUpdateManagerWrapper.showSnackBarComplete(BaseActivity.this);
-                }
+                AppUpdateManagerWrapper.showSnackBarComplete(BaseActivity.this);
             }
         };
 
@@ -105,17 +98,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         if (GlobalConfig.isAllowDebuggingTools()) {
             bannerEnv = new BannerEnvironment();
         }
-    }
-
-    private void showSuccessRegisterToaster(String message) {
-        try {
-            Toaster.build(
-                    findViewById(android.R.id.content),
-                    message,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL
-            ).show();
-        } catch (Exception ignored) {}
     }
 
     @Override
