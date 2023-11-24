@@ -7,16 +7,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationEmpty
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.baselist.R as baselistR
 
 class HomeRecommendationEmptyViewHolder(view: View) :
     AbstractViewHolder<HomeRecommendationEmpty>(view) {
 
     private val title =
-        view.findViewById<TextView>(com.tokopedia.baselist.R.id.text_view_empty_title_text)
+        view.findViewById<TextView>(baselistR.id.text_view_empty_title_text)
     private val description =
-        view.findViewById<TextView>(com.tokopedia.baselist.R.id.text_view_empty_content_text)
+        view.findViewById<TextView>(baselistR.id.text_view_empty_content_text)
     private val buttonRetry =
-        view.findViewById<Button>(com.tokopedia.baselist.R.id.button_add_promo)
+        view.findViewById<Button>(baselistR.id.button_add_promo)
 
     override fun bind(element: HomeRecommendationEmpty) {
         buttonRetry.gone()

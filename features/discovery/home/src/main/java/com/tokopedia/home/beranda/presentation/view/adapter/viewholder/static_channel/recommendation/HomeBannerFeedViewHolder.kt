@@ -6,13 +6,13 @@ import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.databinding.HomeFeedBannerBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.BaseRecommendationForYouViewHolder
+import com.tokopedia.topads.sdk.R as topadssdkR
 
 class HomeBannerFeedViewHolder(
     itemView: View,
@@ -38,8 +38,7 @@ class HomeBannerFeedViewHolder(
             if (it.imageUrl != item?.imageUrl) {
                 setBannerImageUrl(it.imageUrl)
             }
-            setBannerOnClickListener(it)
-            setBannerImpression(it)
+            item = it
         }
     }
 
@@ -75,7 +74,7 @@ class HomeBannerFeedViewHolder(
             .asBitmap()
             .load(imageUrl)
             .dontAnimate()
-            .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+            .placeholder(topadssdkR.drawable.loading_page)
             .error(R.drawable.error_drawable)
             .into(binding.bannerImageView)
     }
