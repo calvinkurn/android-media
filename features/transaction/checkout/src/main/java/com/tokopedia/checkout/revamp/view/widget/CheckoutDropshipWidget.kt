@@ -136,6 +136,8 @@ class CheckoutDropshipWidget : ConstraintLayout {
     private fun showDetailDropship(isError: Boolean) {
         val tfName = binding?.tfDropshipName
         val tfPhone = binding?.tfDropshipPhone
+        tfName?.visible()
+        tfPhone?.visible()
         if (isError) {
             if (tfName?.editText?.text?.isEmpty() == true) {
                 tfName.isInputError = true
@@ -174,10 +176,12 @@ class CheckoutDropshipWidget : ConstraintLayout {
                 tfPhone.isInputError = true
                 tfPhone.setMessage(context.getString(checkoutR.string.message_error_dropshipper_phone_max_length))
             }
+        } else {
+            tfName?.isInputError = false
+            tfPhone?.isInputError = false
         }
+
         tfName?.apply {
-            visible()
-            isInputError = false
             editText.imeOptions = EditorInfo.IME_ACTION_DONE
             editText.inputType = InputType.TYPE_CLASS_TEXT
             editText.onFocusChangeListener = OnFocusChangeListener { _, focused ->
@@ -221,8 +225,6 @@ class CheckoutDropshipWidget : ConstraintLayout {
         }
 
         tfPhone?.apply {
-            visible()
-            isInputError = false
             editText.imeOptions = EditorInfo.IME_ACTION_DONE
             editText.inputType = InputType.TYPE_CLASS_PHONE
             editText.onFocusChangeListener = OnFocusChangeListener { _, focused ->
