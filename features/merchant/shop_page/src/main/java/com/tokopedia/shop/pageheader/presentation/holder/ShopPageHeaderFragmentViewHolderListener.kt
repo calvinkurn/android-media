@@ -28,5 +28,5 @@ interface ShopPageHeaderFragmentViewHolderListener {
 
     fun getStoriesWidgetManager(): StoriesWidgetManager
 
-    fun getContentCreationListener(): ContentCreationBottomSheet.ContentCreationBottomSheetListener
+    fun getContentCreationListener(): ContentCreationBottomSheet.Listener
 }

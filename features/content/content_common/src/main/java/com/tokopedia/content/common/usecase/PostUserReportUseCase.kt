@@ -1,6 +1,8 @@
 package com.tokopedia.content.common.usecase
 
 import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
+import com.tokopedia.content.common.types.ContentCommonUserType.VALUE_TYPE_ID_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.VALUE_TYPE_ID_USER
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -82,16 +84,12 @@ class PostUserReportUseCase @Inject constructor(
         companion object {
             private const val VALUE_PLAY_BUYER = "buyer"
 
-            private const val VALUE_STORY_SHOP = 2
-            private const val VALUE_STORY_USER = 3
-
             fun getTypeValue(value: Any): PartnerType =
                 when (value) {
-                    VALUE_STORY_SHOP -> Shop
-                    VALUE_STORY_USER, VALUE_PLAY_BUYER -> User
+                    VALUE_TYPE_ID_SHOP -> Shop
+                    VALUE_TYPE_ID_USER, VALUE_PLAY_BUYER -> User
                     else -> Unknown
                 }
-
         }
     }
 }

@@ -230,12 +230,12 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     override fun onCloseButtonClicked() {
-        (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as? ContentReportBottomSheet?)?.dismiss()
+        ContentReportBottomSheet.get(childFragmentManager)?.dismiss()
         viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Report))
     }
 
     override fun onItemReportClick(item: PlayUserReportReasoningUiModel.Reasoning) {
-        (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as? ContentReportBottomSheet?)?.dismiss()
+        ContentReportBottomSheet.get(childFragmentManager)?.dismiss()
         viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Report))
 
         ContentSubmitReportBottomSheet.getOrCreate(
