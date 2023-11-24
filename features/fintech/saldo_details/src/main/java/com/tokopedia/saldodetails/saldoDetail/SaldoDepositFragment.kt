@@ -59,6 +59,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class SaldoDepositFragment : BaseDaggerFragment() {
 
@@ -388,7 +389,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             localLoadSaldoBalance.visible()
             localLoadSaldoBalance.refreshBtn?.setOnClickListener {
                 newCardBalance.visible()
-                saldoCard.setOnTouchListener { v, event -> true }
                 localLoadSaldoBalance.gone()
                 refresh()
             }
@@ -460,15 +460,15 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                     (activity as SaldoDepositActivity).saldoToolbar.apply {
                         if (transparentMode) return
                         transparentMode = true
-                        headerView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
-                        navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
+                        headerView?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
+                        navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
                     }
                 } else {
                     (activity as SaldoDepositActivity).saldoToolbar.apply {
                         if (!transparentMode) return
                         transparentMode = false
-                        headerView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
-                        navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
+                        headerView?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
+                        navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
                     }
                 }
             }

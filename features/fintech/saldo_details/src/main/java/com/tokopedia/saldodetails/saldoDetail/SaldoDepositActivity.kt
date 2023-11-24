@@ -29,6 +29,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import javax.inject.Inject
+import com.tokopedia.saldodetails.R as saldodetailsR
 
 /**
  * For navigating to this class
@@ -111,7 +112,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         val toasterText = queryParam[TOASTER]
         val shouldReload = queryParam.containsKey(RELOAD)
         if (toasterText?.isNotEmpty() == true) {
-            val rootView = findViewById<RelativeLayout>(com.tokopedia.saldodetails.R.id.il_main_content)
+            val rootView = findViewById<RelativeLayout>(saldodetailsR.id.il_main_content)
             val type = if (queryParam[TOASTER_ERROR] == "true") Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
             Toaster.build(rootView, toasterText, Snackbar.LENGTH_SHORT, type).show()
         }

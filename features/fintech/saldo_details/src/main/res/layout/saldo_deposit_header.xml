@@ -13,6 +13,7 @@
         android:layout_alignTop="@+id/saldo_balance_layout"
         android:layout_alignBottom="@+id/saldo_balance_layout"
         app:srcCompat="@drawable/background_saldo"
+        android:contentDescription="@string/content_desc_background"
         android:scaleType="fitXY"
         />
 
