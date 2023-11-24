@@ -5306,9 +5306,9 @@ class CartRevampFragment :
         setCheckboxGlobalState()
         setSelectedAmountVisibility()
 
-        requireContext().let {
+        requireContext().let { context ->
             if (isChecked && !hasShowBulkActionCoachMark && !CoachMarkPreference.hasShown(
-                    it,
+                    context,
                     CART_BULK_ACTION_COACH_MARK
                 )
             ) {
