@@ -51,6 +51,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -4221,7 +4222,8 @@ open class ShopPageHomeFragment :
             shopId,
             extParam,
             ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
-            getSelectedTabName()
+            getSelectedTabName(),
+            activity?.let { DeviceConnectionInfo.getConnectionType(it) }.orEmpty()
         )
     }
 

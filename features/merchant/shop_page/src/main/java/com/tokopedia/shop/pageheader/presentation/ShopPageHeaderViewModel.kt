@@ -179,6 +179,7 @@ class ShopPageHeaderViewModel @Inject constructor(
         widgetUserAddressLocalData: LocalCacheModel,
         extParam: String,
         tabName: String,
+        connectionType: String,
         shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String> = mapOf(),
         isEnableShopReimagined: Boolean
     ) {
@@ -192,7 +193,8 @@ class ShopPageHeaderViewModel @Inject constructor(
                         isRefresh = isRefresh,
                         extParam = extParam,
                         widgetUserAddressLocalData = widgetUserAddressLocalData,
-                        tabName = tabName
+                        tabName = tabName,
+                        connectionType = connectionType
                     )
                 },
                 onError = {
@@ -307,7 +309,8 @@ class ShopPageHeaderViewModel @Inject constructor(
         isRefresh: Boolean,
         extParam: String,
         widgetUserAddressLocalData: LocalCacheModel,
-        tabName: String
+        tabName: String,
+        connectionType: String
     ): NewShopPageHeaderP1 {
         val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
@@ -316,7 +319,8 @@ class ShopPageHeaderViewModel @Inject constructor(
             shopDomain = shopDomain,
             extParam = extParam,
             widgetUserAddressLocalData = widgetUserAddressLocalData,
-            tabName = tabName
+            tabName = tabName,
+            connectionType = connectionType
         )
         return useCase.executeOnBackground()
     }
