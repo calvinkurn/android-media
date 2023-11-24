@@ -8,6 +8,7 @@
         android:id="@+id/divider_pof_thick"
         android:layout_width="match_parent"
         android:layout_height="8dp"
+        android:background="@color/_dms_som_pof_divider_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
