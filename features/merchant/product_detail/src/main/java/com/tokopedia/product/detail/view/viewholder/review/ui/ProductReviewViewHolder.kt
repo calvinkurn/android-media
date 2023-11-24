@@ -1,21 +1,27 @@
-package com.tokopedia.product.detail.view.viewholder
+package com.tokopedia.product.detail.view.viewholder.review.ui
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.ItemSpaceDecorator
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.review.UserStatistic
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.databinding.ItemDynamicReviewBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
+import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
+import com.tokopedia.product.detail.view.viewholder.review.delegate.ReviewCallback
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
@@ -25,23 +31,52 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.R
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.reviewcommon.R as reviewcommonR
 
-class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
-    AbstractViewHolder<ProductMostHelpfulReviewDataModel>(view) {
+class ProductReviewViewHolder(
+    val view: View,
+    val listener: DynamicProductDetailListener,
+    val callback: ReviewCallback
+) : ProductDetailPageViewHolder<ProductMostHelpfulReviewUiModel>(view) {
 
     companion object {
-        const val MAX_LINES_REVIEW_DESCRIPTION = 3
+        private const val MAX_LINES_REVIEW_DESCRIPTION = 3
+        private val KEYWORD_ITEM_SPACING = 4.toPx()
         val LAYOUT = R.layout.item_dynamic_review
     }
 
     private val binding = ItemDynamicReviewBinding.bind(view)
-    private var element: ProductMostHelpfulReviewDataModel? = null
+
+    private var element: ProductMostHelpfulReviewUiModel? = null
+
+    private val keywordAdapter by lazyThreadSafetyNone {
+        RatingKeywordAdapter(callback = callback, pdpListener = listener).also(::setupRvKeyword)
+    }
+
+    private val keywordLayoutManager by lazyThreadSafetyNone {
+        LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+    }
+
+    private fun setupRvKeyword(ratingKeywordAdapter: RatingKeywordAdapter) {
+        binding.rvKeyword.apply {
+            adapter = ratingKeywordAdapter
+            layoutManager = keywordLayoutManager
+            addItemDecoration(ItemSpaceDecorator(space = KEYWORD_ITEM_SPACING))
+            optimizeNestedRecyclerView()
+        }
+    }
+
+    private fun RecyclerView.optimizeNestedRecyclerView() {
+        setRecycledViewPool(listener.getParentRecyclerViewPool())
+        setHasFixedSize(true)
+    }
 
     init {
         binding.reviewMediaThumbnails.setListener(ReviewMediaThumbnailListener())
     }
 
-    override fun bind(element: ProductMostHelpfulReviewDataModel?) {
+    override fun bind(element: ProductMostHelpfulReviewUiModel?) {
         this.element = element
         element?.let {
             if (it.mediaThumbnails == null && element.review == null) {
@@ -64,10 +99,10 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             setSeeAllReviewClickListener(componentData)
             renderImageReview(
                 element.mediaThumbnails,
-                element.formattedRating,
-                element.totalRatingCount,
-                element.totalReviewCount
+                element.rating
             )
+            renderKeyword(rating = element.rating)
+
             val reviewData = it.review
             reviewData?.let { review ->
                 setBasicInfoListener(review)
@@ -113,29 +148,27 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     private fun renderImageReview(
         reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel?,
-        formattedRating: String,
-        formattedRatingCount: String,
-        formattedReviewCount: String
+        rating: ReviewRatingUiModel
     ) {
         with(binding) {
             reviewCount.apply {
-                text = if (formattedReviewCount == "0") {
-                    context.getString(R.string.pdp_review_rating_only_count, formattedRatingCount)
+                text = if (rating.totalReviewAndImage == "0") {
+                    context.getString(R.string.pdp_review_rating_only_count, rating.ratingScore)
                 } else {
                     context.getString(
                         R.string.pdp_review_rating_and_review_count,
-                        formattedRatingCount,
-                        formattedReviewCount
+                        rating.totalRating,
+                        rating.totalReviewAndImage
                     )
                 }
                 show()
             }
             icMostHelpfulReviewRatingStar.apply {
-                setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.reviewcommon.R.drawable.ic_rating_star_item))
+                setImageDrawable(MethodChecker.getDrawable(context, reviewcommonR.drawable.ic_rating_star_item))
                 show()
             }
             reviewRating.apply {
-                text = formattedRating
+                text = rating.ratingScore
                 show()
             }
 
@@ -147,6 +180,12 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 return
             }
             reviewMediaThumbnails.gone()
+        }
+    }
+
+    private fun renderKeyword(rating: ReviewRatingUiModel) {
+        binding.rvKeyword.showIfWithBlock(rating.keywords.isNotEmpty()) {
+            keywordAdapter.submitList(rating.keywords)
         }
     }
 
@@ -229,9 +268,6 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             show()
         }
     }
-
-    private fun getComponentTrackData(data: ProductMostHelpfulReviewDataModel): ComponentTrackDataModel =
-        ComponentTrackDataModel(data.type, data.name, adapterPosition + 1)
 
     private fun hideAllOtherElements() {
         binding.apply {
