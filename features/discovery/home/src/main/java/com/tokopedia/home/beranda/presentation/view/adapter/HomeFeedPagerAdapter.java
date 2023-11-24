@@ -32,7 +32,7 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
                                 FragmentManager fragmentManager,
                                 List<RecommendationTabDataModel> recommendationTabDataModelList,
                                 RecyclerView.RecycledViewPool parentPool) {
-        super(fragmentManager, BEHAVIOR_SET_USER_VISIBLE_HINT);
+        super(fragmentManager);
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
         this.parentPool = parentPool;

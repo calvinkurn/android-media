@@ -293,23 +293,6 @@ class HomeRecommendationFragment :
         }
     }
 
-    private fun showToasterError() {
-        view?.let {
-            if (adapter.itemCount > 1) {
-                Toaster.build(
-                    it,
-                    getString(R.string.home_error_connection),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
-                    getString(abstractionR.string.title_try_again),
-                    View.OnClickListener {
-                        endlessRecyclerViewScrollListener?.loadMoreNextPage()
-                    }
-                ).show()
-            }
-        }
-    }
-
     private fun updateScrollEndlessListener(hasNextPage: Boolean) {
         // load next page data if adapter data less than minimum scrollable data
         // when the list has next page and auto load next page is enabled
@@ -348,13 +331,16 @@ class HomeRecommendationFragment :
                         // case 1: position > 0, then scroll to down disable recyclerview parent
                         // case 2: position == 0, then scroll up / down, enable recyclerview parent
                         if (isScrolledToTop()) {
-                            // Check if deltaY is negative, indicating upward movement
+                            // Check if deltaY is negative, indicating upward movement (scroll up -> down)
                             if (deltaY < 0) {
+                                // Disallowing the parent ViewGroup to intercept touch events
                                 rv.parent.requestDisallowInterceptTouchEvent(true)
                             } else {
+                                // Allowing the parent ViewGroup to intercept touch events
                                 rv.parent.requestDisallowInterceptTouchEvent(false)
                             }
                         } else {
+                            // Disallowing the parent ViewGroup to intercept touch events
                             rv.parent.requestDisallowInterceptTouchEvent(true)
                         }
 
