@@ -72,6 +72,8 @@ class RewardDetailBottomSheet : BaseBottomSheet<ShcBottomSheetRewardDetailBindin
             binding?.tvRewardDetailHeaderTitle?.text = it.rewardTitle
             binding?.tvRewardDetailHeaderDescription?.text = it.rewardSubtitle
             binding?.ivRewardDetailHeader?.loadImage(it.rewardImage)
+            // TODO: Add illustration URL
+            binding?.ivRewardDetailIllustration?.loadImage("")
         }
     }
 

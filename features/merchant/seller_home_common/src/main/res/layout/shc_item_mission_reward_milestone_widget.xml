@@ -45,14 +45,15 @@
             app:layout_constraintTop_toBottomOf="@id/tvShcMissionRewardTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/barrierShcMissionReward"
+            app:layout_constraintBottom_toTopOf="@id/barrierShcMissionReward"
+            app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="Selesaikan misi &amp; dapatkan hadiah"/>
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrierShcMissionReward"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:barrierDirection="top"
             app:constraint_referenced_ids="tvShcMissionRewardCta, btnShcMissionReward"/>
@@ -71,11 +72,8 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnShcMissionReward"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:unifyButtonSize="small"
             tools:text="Detail Hadiah"/>

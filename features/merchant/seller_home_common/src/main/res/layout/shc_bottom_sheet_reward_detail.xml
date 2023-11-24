@@ -50,12 +50,22 @@
             tools:text="Hanya untuk 999 orang tercepat."/>
         
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/ivRewardDetailHeader"
+            android:id="@+id/ivRewardDetailIllustration"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+        
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivRewardDetailHeader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="22dp"
+            android:layout_marginTop="21dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvRewardDetailBenefit"
