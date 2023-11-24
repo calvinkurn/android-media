@@ -26,7 +26,7 @@ class TkpdDesignComponentDetector: LayoutDetector(), XmlScanner {
                 ISSUE,
                 element,
                 context.getLocation(element),
-                "Using component from the tkpddesign package in XML is not allowed. Because TkpdDesign will be delete soon."
+                "Using component from the tkpddesign package in XML is not allowed. Because TkpdDesign will be deleted soon."
             )
         }
     }
@@ -35,7 +35,7 @@ class TkpdDesignComponentDetector: LayoutDetector(), XmlScanner {
         val ISSUE = Issue.create(
             "TkpdDesignComponentUsage",
             "Avoid using tkpddesign component",
-            "Using component from a tkpddesign module is not allowed.Because TkpdDesign will be delete soon.",
+            "Using component from a tkpddesign module is not allowed.Because TkpdDesign will be deleted soon.",
             Category.CORRECTNESS, 6, Severity.ERROR,
             Implementation(TkpdDesignComponentDetector::class.java, Scope.RESOURCE_FILE_SCOPE)
         )
