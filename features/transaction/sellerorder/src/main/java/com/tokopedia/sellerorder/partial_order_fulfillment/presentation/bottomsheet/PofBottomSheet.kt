@@ -133,11 +133,13 @@ class PofBottomSheet : BottomSheetUnify(),
         lifecycleScope.launchWhenResumed {
             viewModel.uiState.collectLatest { uiState ->
                 Handler(Looper.getMainLooper()).post {
-                    setTitle(uiState.title.getStringWithDefaultValue(context))
-                    updateResetButton(uiState.showResetButton)
-                    updateBody(uiState.items)
-                    updateFooter(uiState.footerUiState)
-                    updateSummaryBottomSheetUi(uiState.bottomSheetSummaryUiState)
+                    if (activity?.isFinishing == false && isAdded && !isDetached) {
+                        setTitle(uiState.title.getStringWithDefaultValue(context))
+                        updateResetButton(uiState.showResetButton)
+                        updateBody(uiState.items)
+                        updateFooter(uiState.footerUiState)
+                        updateSummaryBottomSheetUi(uiState.bottomSheetSummaryUiState)
+                    }
                 }
             }
         }
