@@ -22,7 +22,10 @@ object DeeplinkMapperUser {
     const val ROLLENCE_GOTO_LOGIN = "scp_goto_login_and"
     private const val ROLLENCE_CVSDK_INTEGRATION = "and_cvsdk_intg"
     const val ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE = "android_fundinvest"
-    private val WHITELISTED_SCP_OTP_TYPE = listOf<Int>(126, 116, 169)
+    private const val REGISTER_PHONE_NUMBER = 116
+    private const val REGISTER_EMAIL = 126
+    private const val SQCP = 169
+    private val WHITELISTED_SCP_OTP_TYPE = listOf<Int>(REGISTER_EMAIL, REGISTER_PHONE_NUMBER, SQCP)
 
     fun getRegisteredNavigationUser(deeplink: String): String {
         return when {

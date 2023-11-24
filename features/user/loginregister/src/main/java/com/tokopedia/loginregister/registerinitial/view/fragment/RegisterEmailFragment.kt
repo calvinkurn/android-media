@@ -53,6 +53,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.sessioncommon.R as sessioncommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by nisie on 10/25/18.
@@ -174,7 +176,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                 } else {
                     if (context != null) {
                         val forbiddenMessage = context?.getString(
-                            com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth
+                            sessioncommonR.string.default_request_error_forbidden_auth
                         )
                         if (errorMessage.removeErrorCode() == forbiddenMessage) {
                             onForbidden()
@@ -227,10 +229,12 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             object : ClickableSpan() {
                 override fun onClick(view: View) {}
                 override fun updateDrawState(ds: TextPaint) {
-                    context?.resources?.let { ds.color = it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500) }
+                    context?.resources?.let { ds.color = it.getColor(unifyprinciplesR.color.Unify_GN500) }
                 }
             },
-            sourceString.indexOf(hyperlinkString), sourceString.length, 0
+            sourceString.indexOf(hyperlinkString),
+            sourceString.length,
+            0
         )
         return spannable
     }
