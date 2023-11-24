@@ -182,14 +182,11 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
     }
 
     private fun getBackgroundColor(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel): Int {
-        return if (shopAdsWithSingleProductModel.isOfficial) {
-            unifyprinciplesR.color.Unify_PN50
-        } else if (shopAdsWithSingleProductModel.isPMPro) {
-            unifyprinciplesR.color.Unify_GN50
-        } else if (shopAdsWithSingleProductModel.isPowerMerchant) {
-            unifyprinciplesR.color.Unify_GN50
-        } else {
-            unifyprinciplesR.color.Unify_NN50
+        return when {
+            shopAdsWithSingleProductModel.isOfficial -> unifyprinciplesR.color.Unify_PN50
+            shopAdsWithSingleProductModel.isPMPro -> unifyprinciplesR.color.Unify_GN50
+            shopAdsWithSingleProductModel.isPowerMerchant -> unifyprinciplesR.color.Unify_GN50
+            else -> unifyprinciplesR.color.Unify_NN50
         }
     }
 
