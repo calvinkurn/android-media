@@ -576,7 +576,7 @@ object AuthAnalyticsMapper {
                 event = CLICK_ACCOUNT_EVENT,
                 category = SSO_PAGE_CATEGORY,
                 action = CLICK_ON_CONTINUE,
-                label = "success - register - ${LoginMethodAnalytic.SSO} - $progressiveSignupTransactionId",
+                label = "$LABEL_SUCCESS - register - ${LoginMethodAnalytic.SSO} - $progressiveSignupTransactionId",
                 customDimension = createCustomDimension(lsdkVersion)
             )
         )
@@ -589,7 +589,7 @@ object AuthAnalyticsMapper {
                 event = CLICK_ACCOUNT_EVENT,
                 category = SSO_PAGE_CATEGORY,
                 action = CLICK_ON_CONTINUE,
-                label = "failed - $errorMsg - register - ${LoginMethodAnalytic.SSO} - $progressiveSignupTransactionId",
+                label = "$LABEL_FAILED - $errorMsg - register - ${LoginMethodAnalytic.SSO} - $progressiveSignupTransactionId",
                 customDimension = createCustomDimension(lsdkVersion)
             )
         )
@@ -667,7 +667,6 @@ object AuthAnalyticsMapper {
 
     private const val CLICK_ON_CONTINUE = "click on continue"
 
-    private const val PROG_SIGN_UP_SUCCESS = "success"
-    private const val PROG_SIGN_UP_FAILED = "failed"
-    private const val PROG_SIGN_UP_CLICK = "click"
+    private const val LABEL_SUCCESS = "success"
+    private const val LABEL_FAILED = "failed"
 }

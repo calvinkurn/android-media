@@ -15,8 +15,8 @@ import com.tokopedia.user.session.UserSession
 
 object ScpUtils {
 
-    private val ROLLENCE_KEY_SCP_LOGIN = "scp_goto_login_and"
-    private val ROLLENCE_KEY_PROGRESSIVE_SIGNUP = "and_prog_sign_up_sso"
+    private const val ROLLENCE_KEY_SCP_LOGIN = "scp_goto_login_and"
+    private const val ROLLENCE_KEY_PROGRESSIVE_SIGNUP = "and_prog_sign_up_sso"
 
     fun isGotoLoginEnabled(): Boolean {
         return RemoteConfigInstance.getInstance()

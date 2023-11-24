@@ -2,6 +2,7 @@ package com.scp.auth.authentication
 
 import android.content.Context
 import com.scp.auth.common.utils.ScpConstants
+import com.scp.auth.common.utils.ScpUtils
 import com.scp.login.core.domain.contracts.configs.LSdkAppConfig
 import com.scp.login.core.domain.contracts.configs.LSdkAuthConfig
 import com.scp.login.core.domain.contracts.configs.LSdkConfig
@@ -21,7 +22,7 @@ class LoginSdkConfigs(val context: Context) : LSdkConfig {
             userLang = ScpConstants.APP_LOCALE,
             userType = ScpConstants.TOKO_USER_TYPE,
             uniqueId = uniqueId,
-            isSupportProgressiveSignup = true
+            isSupportProgressiveSignup = ScpUtils.isProgressiveSignupEnabled()
         )
     }
 
@@ -39,7 +40,7 @@ class LoginSdkConfigs(val context: Context) : LSdkConfig {
 
     private fun getEnvironment(): LSdkEnvironment {
         return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-            LSdkEnvironment.DEV
+            LSdkEnvironment.INTEGRATION
         } else {
             LSdkEnvironment.PROD
         }

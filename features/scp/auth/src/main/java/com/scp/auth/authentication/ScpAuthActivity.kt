@@ -70,7 +70,6 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -130,7 +129,7 @@ class ScpAuthActivity : BaseActivity() {
             onProgressiveSignupSuccess.observe(this@ScpAuthActivity) {
                 if (it.isNotEmpty()) {
                     AuthAnalyticsMapper.trackProgressiveSignupSuccess()
-                    onProgressiveSignupSuccess(it)
+                    postLoginAction()
                 } else {
                     showGenericErrorBottomSheet()
                 }
@@ -145,18 +144,7 @@ class ScpAuthActivity : BaseActivity() {
         }
     }
 
-    private fun onProgressiveSignupSuccess(name: String) {
-        postLoginAction()
-        val text = if (userSession.name.lowercase(Locale.getDefault()).contains("topper")) {
-            "Halo ${userSession.name}. Kamu bisa ubah namamu di halaman Profil, ya!"
-        } else if (userSession.name != name) {
-            "Halo, ${userSession.name}! Kamu bisa ubah namamu di halaman Profil, ya!"
-        } else {
-            "Selamat datang di Tokopedia, $name!"
-        }
-    }
-
-    private fun handleError(errorMsg: String){
+    private fun handleError(errorMsg: String) {
         try {
             ScpUtils.clearTokens()
             Toast.makeText(this@ScpAuthActivity, errorMsg, Toast.LENGTH_LONG).show()
@@ -187,9 +175,7 @@ class ScpAuthActivity : BaseActivity() {
             } else {
                 connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
             }
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
+        } catch (ignored: Exception) { }
     }
 
     private fun startGotoLogin() {
@@ -456,20 +442,16 @@ class ScpAuthActivity : BaseActivity() {
 
     fun showNoConnectionBottomSheet() {
         hideKeyboard()
-        noConnectionBottomSheet = if(noConnectionBottomSheet == null) createNoConnectionBottomSheet {
-            finish()
-        } else noConnectionBottomSheet
-        if(noConnectionBottomSheet?.isAdded == false) {
+        noConnectionBottomSheet = if (noConnectionBottomSheet == null) createNoConnectionBottomSheet { finish() } else noConnectionBottomSheet
+        if (noConnectionBottomSheet?.isAdded == false) {
             noConnectionBottomSheet?.show(supportFragmentManager,  "")
         }
     }
 
     fun showGenericErrorBottomSheet() {
         hideKeyboard()
-        genericErrorBottomSheet = if(genericErrorBottomSheet == null) createGenericBottomSheet {
-            finish()
-        } else genericErrorBottomSheet
-        if(genericErrorBottomSheet?.isAdded == false) {
+        genericErrorBottomSheet = if (genericErrorBottomSheet == null) createGenericBottomSheet { finish() } else genericErrorBottomSheet
+        if (genericErrorBottomSheet?.isAdded == false) {
             genericErrorBottomSheet?.show(supportFragmentManager, "")
         }
     }
