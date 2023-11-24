@@ -9,17 +9,9 @@
     <FrameLayout
         android:id="@+id/vg_floating_egg"
         android:layout_width="@dimen/gami_core_floating_egg_widget_width"
-        android:layout_height="@dimen/gami_core_floating_egg_widget_height">
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/ivClose"
-            android:visibility="gone"
-            android:foregroundTint="@color/Unify_NN500"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/gami_core_floating_egg_dp_30"
-            android:layout_gravity="top|end"/>
-
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp">
         <FrameLayout
             android:id="@+id/egg_counter_timer"
             android:layout_width="match_parent"
@@ -66,12 +58,24 @@
                 app:typographyWeight="bold"
                 tools:text="01:12:12"/>
         </FrameLayout>
-        <androidx.appcompat.widget.AppCompatImageView
+
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/minimize_img_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:visibility="visible"
             android:layout_marginTop="10dp"
+            android:background="@drawable/gami_core_circle_background"
+            app:icon_name="CHEVRON_RIGHT"
             android:layout_gravity="center_vertical|start"/>
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ivClose"
+            android:visibility="visible"
+            app:icon_name="CLOSE"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:padding="4dp"
+            android:background="@drawable/gami_core_circle_background"
+            android:layout_gravity="top|end"/>
     </FrameLayout>
 </FrameLayout>

@@ -156,15 +156,12 @@ class SubmitPostService : JobIntentServiceX() {
                 viewModel.completeImageList.map {
                     getFileAbsolutePath(it.path)!! to it.type
                 },
-                if (isTypeAffiliate(viewModel.authorType)) {
-                    viewModel.adIdList
-                } else {
-                    viewModel.productIdList
-                },
                 viewModel.completeImageList,
                 viewModel.mediaWidth,
                 viewModel.mediaHeight
-            )
+            ) {
+
+            }
         }
 
         /**

@@ -19,7 +19,6 @@ import com.tokopedia.catalogcommon.uimodel.VideoUiModel
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase.Companion.KEY_YOUTUBE_VIDEO_ID
 
 class VideoViewHolder(
     itemView: View,
@@ -30,6 +29,8 @@ class VideoViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_video
+
+        const val KEY_YOUTUBE_VIDEO_ID = "v"
     }
 
     private val binding by viewBinding<WidgetVideoBinding>()

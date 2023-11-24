@@ -65,8 +65,4 @@ dependencies {
 
     // Core
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
-
-    // Media
-    implementation projectOrAar(rootProject.ext.features.mediaeditor)
-    implementation projectOrAar(rootProject.ext.features.universalEditor)
 }

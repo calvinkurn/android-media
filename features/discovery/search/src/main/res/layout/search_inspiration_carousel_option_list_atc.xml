@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.home_component_header.view.HomeChannelHeaderView
+    <com.tokopedia.home_component_header.view.HomeComponentHeaderView
         android:id="@+id/inspirationCarouselListAtcHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

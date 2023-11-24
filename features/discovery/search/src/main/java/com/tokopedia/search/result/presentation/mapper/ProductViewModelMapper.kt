@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation.mapper
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductListType.FIXED_GRID
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
@@ -29,8 +28,6 @@ import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarous
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordCardView
-import com.tokopedia.search.result.product.seamlessinspirationcard.utils.InspirationSeamlessMapper
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 
@@ -97,22 +94,20 @@ class ProductViewModelMapper(
         productDataView.keywordProcess = searchProductModel.keywordProcess(isUseAceSearchProductV5)
         productDataView.pageComponentId = searchProductModel.componentId(isUseAceSearchProductV5)
         productDataView.isQuerySafe = searchProductModel.isQuerySafe(isUseAceSearchProductV5)
-        productDataView.inspirationCarouselDataView = convertToInspirationCarouselViewModel(
+        val inspirationCarouselDataView = convertToInspirationCarouselDataView(
             searchProductModel.searchInspirationCarousel,
             dimension90,
             externalReference,
             keyword,
         )
+        productDataView.inspirationCarouselDataView =
+            inspirationCarouselDataView.filter { !it.isCarouselSeamlessLayout() }
+        productDataView.seamlessCarouselDataViewList =
+            inspirationCarouselDataView.filter(InspirationCarouselDataView::isCarouselSeamlessLayout)
         productDataView.inspirationWidgetDataView = InspirationWidgetVisitable.create(
             searchProductModel.searchInspirationWidget,
             keyword,
             dimension90,
-        )
-        productDataView.seamlessCarouselDataViewList = convertToSeamlessCarousel(
-            searchProductModel.searchInspirationCarousel,
-            dimension90,
-            externalReference,
-            keyword,
         )
         productDataView.additionalParams =
             searchProductModel.additionalParams(isUseAceSearchProductV5)
@@ -431,7 +426,7 @@ class ProductViewModelMapper(
         )
     }
 
-    private fun convertToInspirationCarouselViewModel(
+    private fun convertToInspirationCarouselDataView(
         searchInspirationCarousel: SearchInspirationCarousel,
         dimension90: String,
         externalReference: String,
@@ -439,7 +434,6 @@ class ProductViewModelMapper(
     ): List<InspirationCarouselDataView> =
         searchInspirationCarousel
             .data
-            .filter { !it.isCarouselSeamless() }
             .map { data ->
                 inspirationCarouselDataView(data, dimension90, externalReference, keyword)
             }
@@ -540,40 +534,4 @@ class ProductViewModelMapper(
         val violation = searchProductModel.violation(isUseAceSearchProductV5)
         return ViolationDataView.create(violation)
     }
-
-    private fun convertToSeamlessCarousel(
-        searchInspirationCarousel: SearchInspirationCarousel,
-        dimension90: String,
-        externalReference: String,
-        keyword: String,
-    ): Map<Int, List<Visitable<*>>> =
-        searchInspirationCarousel
-            .data
-            .filter(InspirationCarouselData::isCarouselSeamless)
-            .associate {
-                val data = inspirationCarouselDataView(
-                    it,
-                    dimension90,
-                    externalReference,
-                    keyword,
-                )
-                val inspirationKeywordVisitableList = mutableListOf<Visitable<*>>()
-                val (inspirationKeyboard, inspirationProduct, isOneOrMoreItemIsEmptyImage) =
-                    InspirationSeamlessMapper.convertToInspirationList(
-                        data.options,
-                        externalReference
-                    )
-                inspirationKeywordVisitableList.add(
-                    InspirationKeywordCardView.create(
-                        data.title,
-                        inspirationKeyboard,
-                        isOneOrMoreItemIsEmptyImage,
-                        data.type,
-                        keyword,
-                    )
-                )
-                inspirationKeywordVisitableList.addAll(inspirationProduct)
-
-                it.position to inspirationKeywordVisitableList
-            }
 }
