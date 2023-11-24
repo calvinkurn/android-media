@@ -86,6 +86,11 @@ object DeeplinkSellerApp {
         "review-reminder" to mutableListOf(
             DLP.goToLink { ApplinkConstInternalSellerapp.REVIEW_REMINDER }
         ),
+        "seller" to mutableListOf(
+            DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
+                DeeplinkMapperOrder.getRegisteredNavigationSellerPartialOrderFulfillment(uri)
+            }
+        ),
         "seller-mvc" to mutableListOf(
             DLP.matchPattern("create/{voucher_type}") { _, _, deeplink, _ ->
                 DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcCreate(
@@ -125,11 +130,6 @@ object DeeplinkSellerApp {
         "seller-search" to mutableListOf(
             DLP.goTo { context, _, _, _ ->
                 SellerSearchDeeplinkMapper.getInternalApplinkSellerSearch(context)
-            }
-        ),
-        "seller" to mutableListOf(
-            DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
-                DeeplinkMapperOrder.getRegisteredNavigationSellerPartialOrderFulfillment(uri)
             }
         ),
         "setting" to mutableListOf(
