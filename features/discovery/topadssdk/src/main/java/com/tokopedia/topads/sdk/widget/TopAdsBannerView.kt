@@ -824,10 +824,13 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         )
     }
 
-    protected open fun isEligible(cpmData: CpmData?) =
-            cpmData != null
-                    && cpmData.cpm.cpmShop != null
-                    && (cpmData.cpm.cpmShop.products.size > 0 || showProductShimmer)
+    protected open fun isEligible(cpmData: CpmData?): Boolean {
+        return if (cpmData?.cpm?.layout == LAYOUT_10 || cpmData?.cpm?.layout == LAYOUT_11) {
+            cpmData.cpm.cpmShop.products.size > 0 || showProductShimmer
+        } else {
+            cpmData != null && (cpmData.cpm.cpmShop.products.size > 1 || showProductShimmer)
+        }
+    }
 
     protected open fun activityIsFinishing(context: Context): Boolean {
         return if (context is Activity) {
