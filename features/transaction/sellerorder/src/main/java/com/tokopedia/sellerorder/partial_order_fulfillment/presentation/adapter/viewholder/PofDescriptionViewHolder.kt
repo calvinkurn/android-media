@@ -11,7 +11,9 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.databinding.ItemPofDescriptionBinding
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.PofAdapterTypeFactory
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.model.PofDescriptionUiModel
+import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.UiEvent
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UrlLinkManager
 
 class PofDescriptionViewHolder(
     view: View,
@@ -36,18 +38,20 @@ class PofDescriptionViewHolder(
         binding.tvPofDescription.text = HtmlLinkHelper(
             binding.root.context, element.text.getString(binding.root.context)
         ).apply {
-            urlList.forEach { url ->
-                url.onClick = {
-                    val appLink = formatUrlToAppLink(url.linkUrl)
-                    val intent = RouteManager.getIntentNoFallback(binding.root.context, appLink)
-                    if (intent != null) {
-                        listener.onEvent(element.onClickEventData)
-                        binding.root.context.startActivity(intent)
-                    }
-                }
-            }
+            urlList.forEach { url -> attachUrlClickListener(url, element.onClickEventData) }
         }.spannedString ?: String.EMPTY
         binding.tvPofDescription.movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    private fun attachUrlClickListener(url: UrlLinkManager, onClickEventData: UiEvent) {
+        url.onClick = {
+            val appLink = formatUrlToAppLink(url.linkUrl)
+            val intent = RouteManager.getIntentNoFallback(binding.root.context, appLink)
+            if (intent != null) {
+                listener.onEvent(onClickEventData)
+                binding.root.context.startActivity(intent)
+            }
+        }
     }
 
     private fun formatUrlToAppLink(url: String): String {

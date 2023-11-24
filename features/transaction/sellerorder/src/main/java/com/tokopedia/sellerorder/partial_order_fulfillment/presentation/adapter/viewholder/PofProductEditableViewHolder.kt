@@ -74,49 +74,62 @@ class PofProductEditableViewHolder(
     private fun initTextWatcher(
         quantityEditorData: PofProductEditableUiModel.QuantityEditorData
     ): TextWatcher {
-        return object : TextWatcher {
-            // Keep track of the previous value because somehow afterTextChanged is called twice
-            // when the value changed
-            private var previousValue = quantityEditorData.quantity
+        return QuantityChangeListener(quantityEditorData).apply { textWatcher = this }
+    }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // noop
-            }
+    private inner class QuantityChangeListener(
+        private val quantityEditorData: PofProductEditableUiModel.QuantityEditorData
+    ): TextWatcher {
+        // Keep track of the previous value because somehow afterTextChanged is called twice
+        // when the value changed
+        private var previousValue = quantityEditorData.quantity
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            // noop
+        }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // noop
-            }
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            // noop
+        }
 
-            override fun afterTextChanged(text: Editable?) {
-                val quantityText = text?.toString().orEmpty().filter { it.isDigit() }
-                val quantityNumber = quantityText.toIntOrZero()
-                if (quantityText.isNotBlank() && quantityNumber != previousValue) {
-                    if (quantityNumber < quantityEditorData.minQuantity) {
-                        binding.qePofProductQuantity.editText.removeTextChangedListener(this)
-                        binding.qePofProductQuantity.setValue(quantityEditorData.quantity)
-                        previousValue = quantityEditorData.quantity
-                        binding.qePofProductQuantity.editText.addTextChangedListener(this)
-                        listener.onEvent(UiEvent.OnTryChangeProductQuantityBelowMinQuantity)
-                    } else if (quantityNumber > quantityEditorData.maxQuantity) {
-                        binding.qePofProductQuantity.editText.removeTextChangedListener(this)
-                        binding.qePofProductQuantity.setValue(quantityEditorData.quantity)
-                        previousValue = quantityEditorData.quantity
-                        binding.qePofProductQuantity.editText.addTextChangedListener(this)
-                        listener.onEvent(UiEvent.OnTryChangeProductQuantityAboveMaxQuantity)
-                    } else {
-                        listener.onEvent(
-                            UiEvent.ProductQuantityChanged(
-                                orderDetailId = quantityEditorData.orderDetailId,
-                                newQuantity = quantityNumber,
-                                oldQuantity = quantityEditorData.quantity
-                            )
-                        )
-                        previousValue = quantityNumber
-                    }
+        override fun afterTextChanged(text: Editable?) {
+            val quantityText = text?.toString().orEmpty().filter { it.isDigit() }
+            val quantityNumber = quantityText.toIntOrZero()
+            if (quantityText.isNotBlank() && quantityNumber != previousValue) {
+                if (quantityNumber < quantityEditorData.minQuantity) {
+                    onTryChangeProductQuantityBelowMinQuantity()
+                } else if (quantityNumber > quantityEditorData.maxQuantity) {
+                    onTryChangeProductQuantityAboveMaxQuantity()
+                } else {
+                    onProductQuantityChanged(quantityNumber)
                 }
             }
-        }.apply {
-            textWatcher = this
+        }
+
+        private fun onTryChangeProductQuantityBelowMinQuantity() {
+            binding.qePofProductQuantity.editText.removeTextChangedListener(this)
+            binding.qePofProductQuantity.setValue(quantityEditorData.quantity)
+            previousValue = quantityEditorData.quantity
+            binding.qePofProductQuantity.editText.addTextChangedListener(this)
+            listener.onEvent(UiEvent.OnTryChangeProductQuantityBelowMinQuantity)
+        }
+
+        private fun onTryChangeProductQuantityAboveMaxQuantity() {
+            binding.qePofProductQuantity.editText.removeTextChangedListener(this)
+            binding.qePofProductQuantity.setValue(quantityEditorData.quantity)
+            previousValue = quantityEditorData.quantity
+            binding.qePofProductQuantity.editText.addTextChangedListener(this)
+            listener.onEvent(UiEvent.OnTryChangeProductQuantityAboveMaxQuantity)
+        }
+
+        private fun onProductQuantityChanged(quantity: Int) {
+            listener.onEvent(
+                UiEvent.ProductQuantityChanged(
+                    orderDetailId = quantityEditorData.orderDetailId,
+                    newQuantity = quantity,
+                    oldQuantity = quantityEditorData.quantity
+                )
+            )
+            previousValue = quantity
         }
     }
 }

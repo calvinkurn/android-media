@@ -1,5 +1,7 @@
 package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.activity
 
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -34,6 +36,7 @@ class PofActivity : BaseSimpleActivity(), HasComponent<PofComponent> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        adjustOrientation()
         handleDimming()
         hideToolbar()
         showPofBottomSheet()
@@ -70,6 +73,12 @@ class PofActivity : BaseSimpleActivity(), HasComponent<PofComponent> {
                     show(supportFragmentManager, PofBottomSheet.TAG)
                 }
             }
+        }
+    }
+
+    private fun adjustOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
 }
