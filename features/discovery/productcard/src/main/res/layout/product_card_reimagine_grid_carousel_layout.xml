@@ -243,8 +243,8 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardLabelBenefit"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/product_card_reimagine_label_height"
-                android:paddingHorizontal="4dp"
+                android:layout_height="@dimen/product_card_reimagine_label_benefit_height"
+                android:paddingHorizontal="6dp"
                 android:paddingVertical="2dp"
                 android:background="@drawable/product_card_reimagine_label_background"
                 android:layout_marginTop="@dimen/product_card_reimagine_label_benefit_margin_top"
@@ -259,8 +259,8 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardLabelBMSM"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/product_card_reimagine_label_height"
-                android:paddingHorizontal="4dp"
+                android:layout_height="@dimen/product_card_reimagine_label_benefit_height"
+                android:paddingHorizontal="6dp"
                 android:paddingVertical="2dp"
                 android:background="@drawable/product_card_reimagine_label_bmsm_background"
                 android:layout_marginTop="@dimen/product_card_reimagine_label_bmsm_margin_top"
