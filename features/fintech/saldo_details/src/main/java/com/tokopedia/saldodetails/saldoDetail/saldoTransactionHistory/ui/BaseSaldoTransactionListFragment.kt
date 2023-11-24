@@ -115,10 +115,22 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
                 activity?.window?.decorView?.findViewById<LinearLayout>(R.id.merchant_status_ll)?.getLocationOnScreen(cardTopArr)
                 val rvTopArr = IntArray(2)
                 transactionRecyclerView.getLocationOnScreen(rvTopArr)
-                transactionRecyclerView.layoutParams.height = activityHeight - HEADER_HEIGHT.toPx() - NavToolbarExt.getStatusbarHeight(it) - RECYCLERVIEW_HEIGHT_OFFSET.toPx()
+                transactionRecyclerView.layoutParams.height = activityHeight - HEADER_HEIGHT.toPx() - getNavigationBarHeight() - RECYCLERVIEW_HEIGHT_OFFSET.toPx()
                 transactionRecyclerView.requestLayout()
             }
         }
+    }
+
+    private fun getNavigationBarHeight() : Int{
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R){
+            val imm = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view?.windowToken, 0)
+        }
+        val resources = context?.resources
+        val resourceId:Int = resources?.getIdentifier("navigation_bar_height", "dimen", "android").toZeroIfNull()
+        return if (resourceId > 0) {
+            resources?.getDimensionPixelSize(resourceId) ?: 0
+        } else 0
     }
 
     private fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -212,7 +224,7 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
     companion object {
         const val PARAM_TRANSACTION_TYPE = "PARAM_TRANSACTION_TYPE"
 
-        private const val RECYCLERVIEW_HEIGHT_OFFSET = 207
+        private const val RECYCLERVIEW_HEIGHT_OFFSET = 205
         private const val HEADER_HEIGHT = 64
 
         fun getInstance(transactionTitleStr: String): BaseSaldoTransactionListFragment {
