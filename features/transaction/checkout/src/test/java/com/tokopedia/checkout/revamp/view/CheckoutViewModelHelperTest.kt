@@ -38,6 +38,7 @@ class CheckoutViewModelHelperTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel(cartStringGroup = "1"),
             CheckoutProductModel(cartStringGroup = "2", productId = 3, productCatId = 2),
             CheckoutProductModel(cartStringGroup = "2", productId = 4, productCatId = 3),
+            CheckoutProductModel(cartStringGroup = "2", productId = 5, productCatId = 4, isError = true),
             CheckoutOrderModel(cartStringGroup = "2")
         )
 
