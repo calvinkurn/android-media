@@ -45,17 +45,7 @@ class TopAdsHeadlineHelper  @Inject constructor() {
                         process(index, list, true)
                         return@breaker
                     }
-                    LAYOUT_1 -> {
-                        val list = arrayListOf<CpmData>()
-                        list.add(cpmData)
-                        process(index, list, true)
-                    }
-                    LAYOUT_10 -> {
-                        val list = arrayListOf<CpmData>()
-                        list.add(cpmData)
-                        process(index, list, true)
-                    }
-                    LAYOUT_11 -> {
+                    LAYOUT_1, LAYOUT_10, LAYOUT_11 -> {
                         val list = arrayListOf<CpmData>()
                         list.add(cpmData)
                         process(index, list, true)
