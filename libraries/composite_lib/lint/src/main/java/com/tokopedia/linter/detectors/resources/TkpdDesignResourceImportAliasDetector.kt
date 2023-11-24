@@ -33,7 +33,7 @@ class TkpdDesignResourceImportAliasDetector : Detector(), SourceCodeScanner {
                             ISSUE,
                             importStatement,
                             context.getLocation(importStatement),
-                            "Avoid importing classes from com.tokopedia.design module. TkpdDesign will be delete soon",
+                            "Avoid importing classes from com.tokopedia.design module. TkpdDesign will be deleted soon",
                             quickfixData = fix().replace().range(context.getLocation(importStatement)).with("").build()
                         )
                     }
@@ -48,7 +48,7 @@ class TkpdDesignResourceImportAliasDetector : Detector(), SourceCodeScanner {
             Issue.create(
                 "TkpdDesignModuleUsage",
                 "Avoid importing classes from com.tokopedia.design module",
-                "Importing classes from com.tokopedia.design module is not allowed in this project. TkpdDesign will be delete soon",
+                "Importing classes from com.tokopedia.design module is not allowed in this project.TkpdDesign will be deleted soon",
                 CORRECTNESS, 6, Severity.ERROR,
                 Implementation(TkpdDesignResourceImportAliasDetector::class.java, JAVA_FILE_SCOPE)
             )
