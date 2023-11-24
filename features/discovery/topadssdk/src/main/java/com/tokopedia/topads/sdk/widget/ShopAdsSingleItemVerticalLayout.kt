@@ -177,6 +177,21 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
                 shopAdsWithSingleProductModel.impressionListener?.onImpressionHeadlineAdsItem(Int.ZERO, shopAdsWithSingleProductModel.cpmData)
             }
         }
+
+        shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
+            shopImage?.addOnImpressionListener(impressHolder){
+                shopAdsWithSingleProductModel.impressionListener?.let {
+                    it.onImpressionHeadlineAdsItem(Int.ZERO, shopAdsWithSingleProductModel.cpmData)
+                    topAdsUrlHitter.hitImpressionUrl(
+                        this::class.java.name,
+                        shopAdsWithSingleProductModel.cpmData.cpm.cpmImage.fullUrl,
+                        "",
+                        "",
+                        ""
+                    )
+                }
+            }
+        }
     }
 
     private fun setShopVoucher(vouchers: MutableList<String>) {
