@@ -9,7 +9,7 @@ object RecommendationVerticalMapper {
         return mutableListOf<RecommendationVerticalVisitable>().apply {
             addAll(mapRecommendationVerticalProductCard(model))
             if (model.widget.seeMoreAppLink.isNotEmpty()) {
-                add(mapRecommendationVerticalSeeMore(model.widget))
+                add(mapRecommendationVerticalSeeMore(model))
             }
         }
     }
@@ -23,18 +23,20 @@ object RecommendationVerticalMapper {
                 recomItem = it,
                 recomWidget = model.widget,
                 trackingModel = model.trackingModel,
-                componentName = model.widget.pageName
+                componentName = model.widget.pageName,
+                widgetTracking = model.widgetTracking,
             )
         }
     }
 
     private fun mapRecommendationVerticalSeeMore(
-        widget: RecommendationWidget
+        model: RecommendationVerticalModel
     ): RecommendationVerticalVisitable {
         return RecommendationVerticalSeeMoreModel(
-            appLink = widget.seeMoreAppLink,
-            recomWidget = widget,
-            componentName = widget.pageName
+            appLink = model.widget.seeMoreAppLink,
+            recomWidget = model.widget,
+            componentName = model.widget.pageName,
+            widgetTracking = model.widgetTracking,
         )
     }
 }
