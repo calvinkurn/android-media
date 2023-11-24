@@ -35,8 +35,7 @@ class ShopOfferSupportingBrandViewModel(
     @Inject
     var useCase: SupportingBrandUseCase? = null
 
-    override fun onAttachToViewHolder() {
-        super.onAttachToViewHolder()
+    init {
         layout.addShimmer()
     }
 

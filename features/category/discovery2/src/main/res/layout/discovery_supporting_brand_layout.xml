@@ -21,16 +21,4 @@
         tools:listitem="@layout/item_discovery_shop_offer_supporting_brand_layout"
         tools:orientation="horizontal" />
 
-    <com.tokopedia.unifycomponents.LocalLoad
-        android:id="@+id/localLoad"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
-        android:translationZ="2dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

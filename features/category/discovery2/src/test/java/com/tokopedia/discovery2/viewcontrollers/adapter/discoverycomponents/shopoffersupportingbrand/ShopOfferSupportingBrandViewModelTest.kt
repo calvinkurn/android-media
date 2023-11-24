@@ -41,12 +41,12 @@ class ShopOfferSupportingBrandViewModelTest {
         MockKAnnotations.init(this)
         Dispatchers.setMain(UnconfinedTestDispatcher())
 
+        mockkConstructor(URLParser::class)
+        coEvery { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+
         viewModel = spyk(ShopOfferSupportingBrandViewModel(application, component, 99))
 
         viewModel.useCase = useCase
-
-        mockkConstructor(URLParser::class)
-        coEvery { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
     }
 
     @Test
