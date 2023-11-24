@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcBottomSheetRewardDetailBinding
@@ -72,8 +73,7 @@ class RewardDetailBottomSheet : BaseBottomSheet<ShcBottomSheetRewardDetailBindin
             binding?.tvRewardDetailHeaderTitle?.text = it.rewardTitle
             binding?.tvRewardDetailHeaderDescription?.text = it.rewardSubtitle
             binding?.ivRewardDetailHeader?.loadImage(it.rewardImage)
-            // TODO: Add illustration URL
-            binding?.ivRewardDetailIllustration?.loadImage("")
+            binding?.ivRewardDetailIllustration?.loadImage(TokopediaImageUrl.SELLER_HOME_REWARD_DETAIL)
         }
     }
 
