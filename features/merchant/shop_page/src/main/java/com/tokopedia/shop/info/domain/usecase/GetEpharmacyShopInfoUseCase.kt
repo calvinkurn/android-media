@@ -1,9 +1,9 @@
-package com.tokopedia.shop.info.domain
+package com.tokopedia.shop.info.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.shop.info.data.GetEpharmacyShopInfoResponse
+import com.tokopedia.shop.info.data.response.GetEpharmacyShopInfoResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject

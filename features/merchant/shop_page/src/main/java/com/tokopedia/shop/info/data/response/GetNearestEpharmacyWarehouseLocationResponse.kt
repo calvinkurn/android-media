@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.data
+package com.tokopedia.shop.info.data.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
