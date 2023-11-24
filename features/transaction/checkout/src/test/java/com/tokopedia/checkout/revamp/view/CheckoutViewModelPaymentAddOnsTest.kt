@@ -23,8 +23,19 @@ class CheckoutViewModelPaymentAddOnsTest : BaseCheckoutViewModelTest() {
     @Test
     fun generate_all_payment_add_ons_analytic() {
         // given
-        val eGoldData = CheckoutEgoldModel(egoldAttributeModel = EgoldAttributeModel(isEligible = true, isChecked = true))
-        val crossSellData = CheckoutCrossSellModel(crossSellModel = CrossSellModel(orderSummary = CrossSellOrderSummaryModel(title = "Pulsa"), id = "50"))
+        val eGoldData = CheckoutEgoldModel(
+            egoldAttributeModel = EgoldAttributeModel(
+                isEligible = true,
+                isChecked = true
+            )
+        )
+        val crossSellData = CheckoutCrossSellModel(
+            crossSellModel = CrossSellModel(
+                orderSummary = CrossSellOrderSummaryModel(title = "Pulsa"),
+                id = "50"
+            ),
+            isChecked = true
+        )
         val donationData = CheckoutDonationModel(donation = Donation(isChecked = true))
         viewModel.listData.value = listOf(
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -64,7 +75,12 @@ class CheckoutViewModelPaymentAddOnsTest : BaseCheckoutViewModelTest() {
     @Test
     fun generate_eGold_donation_payment_add_ons_analytic() {
         // given
-        val eGoldData = CheckoutEgoldModel(egoldAttributeModel = EgoldAttributeModel(isEligible = true, isChecked = true))
+        val eGoldData = CheckoutEgoldModel(
+            egoldAttributeModel = EgoldAttributeModel(
+                isEligible = true,
+                isChecked = true
+            )
+        )
         val donationData = CheckoutDonationModel(donation = Donation(isChecked = true))
         viewModel.listData.value = listOf(
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -97,8 +113,19 @@ class CheckoutViewModelPaymentAddOnsTest : BaseCheckoutViewModelTest() {
 
     @Test
     fun generate_eGold_crossSell_payment_add_ons_analytic() {
-        val eGoldData = CheckoutEgoldModel(egoldAttributeModel = EgoldAttributeModel(isEligible = true, isChecked = true))
-        val crossSellData = CheckoutCrossSellModel(crossSellModel = CrossSellModel(orderSummary = CrossSellOrderSummaryModel(title = "Pulsa"), id = "50"))
+        val eGoldData = CheckoutEgoldModel(
+            egoldAttributeModel = EgoldAttributeModel(
+                isEligible = true,
+                isChecked = true
+            )
+        )
+        val crossSellData = CheckoutCrossSellModel(
+            crossSellModel = CrossSellModel(
+                orderSummary = CrossSellOrderSummaryModel(title = "Pulsa"),
+                id = "50"
+            ),
+            isChecked = true
+        )
         viewModel.listData.value = listOf(
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
             CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
@@ -131,7 +158,13 @@ class CheckoutViewModelPaymentAddOnsTest : BaseCheckoutViewModelTest() {
     @Test
     fun generate_crossSell_donation_payment_add_ons_analytic() {
         // given
-        val crossSellData = CheckoutCrossSellModel(crossSellModel = CrossSellModel(orderSummary = CrossSellOrderSummaryModel(title = "Pulsa"), id = "50"))
+        val crossSellData = CheckoutCrossSellModel(
+            crossSellModel = CrossSellModel(
+                orderSummary = CrossSellOrderSummaryModel(title = "Pulsa"),
+                id = "50"
+            ),
+            isChecked = true
+        )
         val donationData = CheckoutDonationModel(donation = Donation(isChecked = true))
         viewModel.listData.value = listOf(
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -165,7 +198,12 @@ class CheckoutViewModelPaymentAddOnsTest : BaseCheckoutViewModelTest() {
     @Test
     fun generate_eGold_payment_add_ons_not_checked() {
         // given
-        val eGoldData = CheckoutEgoldModel(egoldAttributeModel = EgoldAttributeModel(isEligible = true, isChecked = false))
+        val eGoldData = CheckoutEgoldModel(
+            egoldAttributeModel = EgoldAttributeModel(
+                isEligible = true,
+                isChecked = false
+            )
+        )
         viewModel.listData.value = listOf(
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
             CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
@@ -186,7 +224,12 @@ class CheckoutViewModelPaymentAddOnsTest : BaseCheckoutViewModelTest() {
     @Test
     fun generate_eGold_payment_add_ons_not_eligible() {
         // given
-        val eGoldData = CheckoutEgoldModel(egoldAttributeModel = EgoldAttributeModel(isEligible = false, isChecked = false))
+        val eGoldData = CheckoutEgoldModel(
+            egoldAttributeModel = EgoldAttributeModel(
+                isEligible = false,
+                isChecked = false
+            )
+        )
         viewModel.listData.value = listOf(
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
             CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
