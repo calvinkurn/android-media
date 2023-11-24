@@ -822,7 +822,6 @@ open class HomeRevampFragment :
                 updateThematicVerticalPosition()
                 setHomeBottomNavBasedOnScrolling()
                 evaluateHomeComponentOnScroll(recyclerView)
-                setHomeBottomNavBasedOnScrolling()
             }
         })
         setupEmbraceBreadcrumbListener()
