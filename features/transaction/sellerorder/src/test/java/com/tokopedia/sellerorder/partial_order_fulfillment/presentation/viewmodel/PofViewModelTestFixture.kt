@@ -3,6 +3,8 @@ package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.viewmod
 import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.orderextension.presentation.model.StringRes
@@ -29,6 +31,7 @@ import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.To
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.UiEffect
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.UiEvent
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.UiState
+import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.tracker.PofTracker
 import com.tokopedia.sellerorder.util.TestHelper
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.MockKAnnotations
@@ -71,6 +74,9 @@ abstract class PofViewModelTestFixture {
     @RelaxedMockK
     lateinit var bundle: Bundle
 
+    @RelaxedMockK
+    lateinit var tracker: PofTracker
+
     @get:Rule
     val rule = UnconfinedTestRule()
 
@@ -94,7 +100,8 @@ abstract class PofViewModelTestFixture {
             getPofEstimateUseCase,
             sendPofUseCase,
             PofUiStateMapper(),
-            PofToasterMapper()
+            PofToasterMapper(),
+            tracker
         )
     }
 
@@ -107,14 +114,14 @@ abstract class PofViewModelTestFixture {
 
     private fun createErrorVisitableListWithStatus0(): List<PofVisitable> {
         return listOf(
-            PofDescriptionUiModel(StringRes(R.string.som_pof_description_initial)),
+            PofDescriptionUiModel(StringRes(R.string.som_pof_description_initial), UiEvent.OnClickDescriptionLearnMore),
             PofErrorStateUiModel(throwable)
         ).toList()
     }
 
     private fun createInitialVisitableListWithStatus0(): List<PofVisitable> {
         return listOf(
-            PofDescriptionUiModel(StringRes(R.string.som_pof_description_initial)),
+            PofDescriptionUiModel(StringRes(R.string.som_pof_description_initial), UiEvent.OnClickDescriptionLearnMore),
             PofProductListHeaderUiModel(
                 textLeft = StringRes(R.string.som_pof_product_list_header_left_label),
                 textRight = StringRes(R.string.som_pof_product_list_header_right_label)
@@ -140,6 +147,7 @@ abstract class PofViewModelTestFixture {
                     ?.forEachIndexed { index, details ->
                         val checkoutQuantity = details?.quantityCheckout.orZero()
                         val availableQuantity = details?.quantityCheckout.orZero()
+                        val minQuantity = if (detailsOriginal.count() == 1) Int.ONE else Int.ZERO
                         add(
                             PofProductEditableUiModel(
                                 orderDetailId = details?.orderDetailId.orZero(),
@@ -151,6 +159,7 @@ abstract class PofViewModelTestFixture {
                                     productId = details?.productId.orZero(),
                                     quantity = availableQuantity,
                                     maxQuantity = checkoutQuantity,
+                                    minQuantity = minQuantity,
                                     updateTimestamp = 0,
                                     enabled = true
                                 )
@@ -411,9 +420,9 @@ abstract class PofViewModelTestFixture {
     protected fun sendProductAvailableQuantityChangedEvent(
         orderDetailId: Long,
         quantity: Int,
-        exceedCheckoutQuantity: Boolean
+        previousQuantity: Int
     ) {
-        viewModel.onEvent(UiEvent.ProductQuantityChanged(orderDetailId, quantity, exceedCheckoutQuantity))
+        viewModel.onEvent(UiEvent.ProductQuantityChanged(orderDetailId, quantity, previousQuantity))
     }
 
     protected fun sendOnClickSendPofEvent() {
@@ -562,6 +571,17 @@ abstract class PofViewModelTestFixture {
             .infoRequestPartialOrderFulfillment
             ?.detailsOriginal
             ?.firstOrNull()
+            ?.quantityCheckout!!
+    }
+
+    protected fun getLastOriginalCheckoutQuantity(): Int {
+        return TestHelper
+            .createSuccessResponse<GetPofRequestInfoResponse.Data>(
+                SUCCESS_RESPONSE_GET_POF_INFO_RESULT_WITH_STATUS_0
+            )
+            .infoRequestPartialOrderFulfillment
+            ?.detailsOriginal
+            ?.lastOrNull()
             ?.quantityCheckout!!
     }
 }

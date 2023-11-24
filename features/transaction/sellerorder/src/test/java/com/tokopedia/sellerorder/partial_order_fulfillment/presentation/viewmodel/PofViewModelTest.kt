@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.viewmodel
 
+import android.app.Activity
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.model.PofProductEditableUiModel
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.PofBottomSheetSummaryUiState
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.ToasterQueue
@@ -201,14 +202,15 @@ class PofViewModelTest : PofViewModelTestFixture() {
             //endregion perform open screen
 
             //region perform change quantity
+            val targetQuantity = getFirstOriginalCheckoutQuantity().dec()
             clearMocks(getPofInfoUseCase)
             clearMocks(getPofEstimateUseCase)
             createSuccessGetPofInfoWithStatus0()
             createSuccessGetPofEstimate()
             sendProductAvailableQuantityChangedEvent(
                 orderDetailId = getFirstOriginalOrderDetailId(),
-                quantity = 0,
-                exceedCheckoutQuantity = false
+                quantity = targetQuantity,
+                previousQuantity = getFirstOriginalCheckoutQuantity()
             )
             uiState = uiStates.last()
             //region verify use-cases
@@ -216,7 +218,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
                 getPofEstimateUseCase(
                     createGetPofEstimateParamsWithDefinedQuantity(
                         delay = 1000,
-                        quantityList = listOf(getFirstOriginalOrderDetailId() to 0)
+                        quantityList = listOf(getFirstOriginalOrderDetailId() to targetQuantity)
                     )
                 )
             }
@@ -234,7 +236,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
                         visitable.copy(
                             quantityEditorData = visitable
                                 .quantityEditorData
-                                .copy(quantity = 0)
+                                .copy(quantity = targetQuantity)
                         )
                     } else visitable
                 }
@@ -266,7 +268,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
             //region verify footer
             var expectedFooterUiState = createFooterUiState(
                 pofEstimateResponseFilePath = SUCCESS_RESPONSE_GET_POF_ESTIMATE_RESULT_WITH_FIRST_PRODUCT_ZERO,
-                quantityList = listOf(getFirstOriginalOrderDetailId() to 0)
+                quantityList = listOf(getFirstOriginalOrderDetailId() to targetQuantity)
             )
             assertEquals(expectedFooterUiState, uiState.footerUiState)
             //endregion verify footer
@@ -672,91 +674,6 @@ class PofViewModelTest : PofViewModelTestFixture() {
     }
 
     @Test
-    fun `validate when receive ProductAvailableQuantityChanged event and quantity is above checkout quantity`() {
-        runCollecting { uiStates, toasterQueues, _ ->
-            //region perform open screen
-            createSuccessGetPofInfoWithStatus0()
-            createSuccessGetPofEstimate()
-
-            sendOpenScreenEvent()
-
-            var uiState = uiStates.last()
-            //region verify use-cases
-            coVerify(exactly = 1) {
-                getPofInfoUseCase(createGetPofInfoParams())
-                getPofEstimateUseCase(createGetPofEstimateParams())
-            }
-            coVerify(ordering = Ordering.SEQUENCE) {
-                getPofInfoUseCase(createGetPofInfoParams())
-                getPofEstimateUseCase(createGetPofEstimateParams())
-            }
-            //endregion verify use-cases
-            //region verify items
-            assertEquals(initialVisitableListWithStatus0, uiState.items)
-            //endregion verify items
-            //region verify summary bottom sheet should hidden
-            assertEquals(PofBottomSheetSummaryUiState.Hidden, uiState.bottomSheetSummaryUiState)
-            //endregion verify summary bottom sheet should hidden
-            //region verify footer
-            assertEquals(createFooterUiState(), uiState.footerUiState)
-            //endregion verify footer
-            //endregion perform open screen
-
-            //region perform change quantity
-            clearMocks(getPofInfoUseCase)
-            clearMocks(getPofEstimateUseCase)
-            createSuccessGetPofInfoWithStatus0()
-            createSuccessGetPofEstimate()
-            sendProductAvailableQuantityChangedEvent(
-                orderDetailId = getFirstOriginalOrderDetailId(),
-                quantity = getFirstOriginalCheckoutQuantity(),
-                exceedCheckoutQuantity = true
-            )
-            uiState = uiStates.last()
-            //region verify use-cases
-            coVerify(inverse = true) {
-                getPofInfoUseCase(createGetPofInfoParams())
-                getPofEstimateUseCase(createGetPofEstimateParams())
-            }
-            //endregion verify use-cases
-            //region verify items
-            uiState.items.forEachIndexed { index, visitable ->
-                if (
-                    visitable is PofProductEditableUiModel &&
-                    visitable.orderDetailId == getFirstOriginalOrderDetailId()
-                ) {
-                    Assertions
-                        .assertThat(visitable)
-                        .isEqualToIgnoringGivenFields(
-                            initialVisitableListWithStatus0[index] as PofProductEditableUiModel,
-                            PofProductEditableUiModel::quantityEditorData.name
-                        )
-                    Assertions
-                        .assertThat(visitable.quantityEditorData)
-                        .isEqualToIgnoringGivenFields(
-                            (initialVisitableListWithStatus0[index] as PofProductEditableUiModel).quantityEditorData,
-                            PofProductEditableUiModel.QuantityEditorData::updateTimestamp.name
-                        )
-                } else {
-                    assertEquals(initialVisitableListWithStatus0[index], visitable)
-                }
-            }
-            //endregion verify items
-            //region verify summary bottom sheet should hidden
-            assertEquals(PofBottomSheetSummaryUiState.Hidden, uiState.bottomSheetSummaryUiState)
-            //endregion verify summary bottom sheet should hidden
-            //region verify footer
-            assertEquals(createFooterUiState(), uiState.footerUiState)
-            //endregion verify footer
-            //region verify toaster queue
-            val toasterQueue = toasterQueues.last()
-            assertEquals(toasterQueueCannotExceedCheckoutQuantity, toasterQueue)
-            //endregion verify toaster queue
-            //endregion perform change quantity
-        }
-    }
-
-    @Test
     fun `validate when receive ProductAvailableQuantityChanged event and quantity is zero but others quantity is above zero`() {
         runCollecting { uiStates, toasterQueues, _ ->
             //region perform open screen
@@ -795,7 +712,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
             sendProductAvailableQuantityChangedEvent(
                 orderDetailId = getFirstOriginalOrderDetailId(),
                 quantity = 0,
-                exceedCheckoutQuantity = false
+                previousQuantity = getFirstOriginalCheckoutQuantity()
             )
             uiState = uiStates.last()
             //region verify use-cases
@@ -814,15 +731,20 @@ class PofViewModelTest : PofViewModelTestFixture() {
             //region verify items
             val expectedVisitableList = initialVisitableListWithStatus0
                 .map { visitable ->
-                    if (
-                        visitable is PofProductEditableUiModel &&
-                        visitable.orderDetailId == getFirstOriginalOrderDetailId()
-                    ) {
-                        visitable.copy(
-                            quantityEditorData = visitable
-                                .quantityEditorData
-                                .copy(quantity = 0)
-                        )
+                    if (visitable is PofProductEditableUiModel) {
+                        if (visitable.orderDetailId == getFirstOriginalOrderDetailId()) {
+                            visitable.copy(
+                                quantityEditorData = visitable
+                                    .quantityEditorData
+                                    .copy(quantity = 0)
+                            )
+                        } else {
+                            visitable.copy(
+                                quantityEditorData = visitable
+                                    .quantityEditorData
+                                    .copy(minQuantity = 1)
+                            )
+                        }
                     } else visitable
                 }
             uiState.items.forEachIndexed { index, visitable ->
@@ -865,167 +787,6 @@ class PofViewModelTest : PofViewModelTestFixture() {
     }
 
     @Test
-    fun `validate when receive ProductAvailableQuantityChanged event and all quantity is zero`() {
-        runCollecting { uiStates, toasterQueues, _ ->
-            //region perform open screen
-            createSuccessGetPofInfoWithStatus0()
-            createSuccessGetPofEstimate()
-
-            sendOpenScreenEvent()
-
-            var uiState = uiStates.last()
-            //region verify use-cases
-            coVerify(exactly = 1) {
-                getPofInfoUseCase(createGetPofInfoParams())
-                getPofEstimateUseCase(createGetPofEstimateParams())
-            }
-            coVerify(ordering = Ordering.SEQUENCE) {
-                getPofInfoUseCase(createGetPofInfoParams())
-                getPofEstimateUseCase(createGetPofEstimateParams())
-            }
-            //endregion verify use-cases
-            //region verify items
-            assertEquals(initialVisitableListWithStatus0, uiState.items)
-            //endregion verify items
-            //region verify summary bottom sheet should hidden
-            assertEquals(PofBottomSheetSummaryUiState.Hidden, uiState.bottomSheetSummaryUiState)
-            //endregion verify summary bottom sheet should hidden
-            //region verify footer
-            assertEquals(createFooterUiState(), uiState.footerUiState)
-            //endregion verify footer
-            //endregion perform open screen
-
-            //region perform change quantity on first product
-            clearMocks(getPofInfoUseCase)
-            clearMocks(getPofEstimateUseCase)
-            createSuccessGetPofInfoWithStatus0()
-            createSuccessGetPofEstimate()
-            sendProductAvailableQuantityChangedEvent(
-                orderDetailId = getFirstOriginalOrderDetailId(),
-                quantity = 0,
-                exceedCheckoutQuantity = false
-            )
-            uiState = uiStates.last()
-            //region verify use-cases
-            coVerify(exactly = 1) {
-                getPofEstimateUseCase(
-                    createGetPofEstimateParamsWithDefinedQuantity(
-                        delay = 1000,
-                        quantityList = listOf(getFirstOriginalOrderDetailId() to 0)
-                    )
-                )
-            }
-            coVerify(inverse = true) {
-                getPofInfoUseCase(createGetPofInfoParams())
-            }
-            //endregion verify use-cases
-            //region verify items
-            val expectedVisitableList = initialVisitableListWithStatus0
-                .map { visitable ->
-                    if (
-                        visitable is PofProductEditableUiModel &&
-                        visitable.orderDetailId == getFirstOriginalOrderDetailId()
-                    ) {
-                        visitable.copy(
-                            quantityEditorData = visitable
-                                .quantityEditorData
-                                .copy(quantity = 0)
-                        )
-                    } else visitable
-                }
-            uiState.items.forEachIndexed { index, visitable ->
-                if (
-                    visitable is PofProductEditableUiModel
-                ) {
-                    Assertions
-                        .assertThat(visitable)
-                        .isEqualToIgnoringGivenFields(
-                            expectedVisitableList[index] as PofProductEditableUiModel,
-                            PofProductEditableUiModel::quantityEditorData.name
-                        )
-                    Assertions
-                        .assertThat(visitable.quantityEditorData)
-                        .isEqualToIgnoringGivenFields(
-                            (expectedVisitableList[index] as PofProductEditableUiModel).quantityEditorData,
-                            PofProductEditableUiModel.QuantityEditorData::updateTimestamp.name
-                        )
-                } else {
-                    assertEquals(expectedVisitableList[index], visitable)
-                }
-            }
-            //endregion verify items
-            //region verify summary bottom sheet should hidden
-            assertEquals(PofBottomSheetSummaryUiState.Hidden, uiState.bottomSheetSummaryUiState)
-            //endregion verify summary bottom sheet should hidden
-            //region verify footer
-            var expectedFooterUiState = createFooterUiState(
-                pofEstimateResponseFilePath = SUCCESS_RESPONSE_GET_POF_ESTIMATE_RESULT_WITH_FIRST_PRODUCT_ZERO,
-                quantityList = listOf(getFirstOriginalOrderDetailId() to 0)
-            )
-            assertEquals(expectedFooterUiState, uiState.footerUiState)
-            //endregion verify footer
-            //region verify toaster queue
-            assertEquals(emptyList<ToasterQueue>(), toasterQueues)
-            //endregion verify toaster queue
-            //endregion perform change quantity on first product
-
-            //region perform change quantity on last product
-            clearMocks(getPofInfoUseCase)
-            clearMocks(getPofEstimateUseCase)
-            createSuccessGetPofInfoWithStatus0()
-            createSuccessGetPofEstimate()
-            sendProductAvailableQuantityChangedEvent(
-                orderDetailId = getLastOriginalOrderDetailId(),
-                quantity = 0,
-                exceedCheckoutQuantity = false
-            )
-            uiState = uiStates.last()
-            //region verify use-cases
-            coVerify(inverse = true) {
-                getPofEstimateUseCase(any())
-                getPofInfoUseCase(any())
-            }
-            //endregion verify use-cases
-            //region verify items
-            uiState.items.forEachIndexed { index, visitable ->
-                if (
-                    visitable is PofProductEditableUiModel
-                ) {
-                    Assertions
-                        .assertThat(visitable)
-                        .isEqualToIgnoringGivenFields(
-                            expectedVisitableList[index] as PofProductEditableUiModel,
-                            PofProductEditableUiModel::quantityEditorData.name
-                        )
-                    Assertions
-                        .assertThat(visitable.quantityEditorData)
-                        .isEqualToIgnoringGivenFields(
-                            (expectedVisitableList[index] as PofProductEditableUiModel).quantityEditorData,
-                            PofProductEditableUiModel.QuantityEditorData::updateTimestamp.name
-                        )
-                } else {
-                    assertEquals(expectedVisitableList[index], visitable)
-                }
-            }
-            //endregion verify items
-            //region verify summary bottom sheet should hidden
-            assertEquals(PofBottomSheetSummaryUiState.Hidden, uiState.bottomSheetSummaryUiState)
-            //endregion verify summary bottom sheet should hidden
-            //region verify footer
-            expectedFooterUiState = createFooterUiState(
-                pofEstimateResponseFilePath = SUCCESS_RESPONSE_GET_POF_ESTIMATE_RESULT_WITH_FIRST_PRODUCT_ZERO,
-                quantityList = listOf(getFirstOriginalOrderDetailId() to 0)
-            )
-            assertEquals(expectedFooterUiState, uiState.footerUiState)
-            //endregion verify footer
-            //region verify toaster queue
-            assertEquals(toasterQueueCannotEmptyAllQuantity, toasterQueues.last())
-            //endregion verify toaster queue
-            //endregion perform change quantity on last product
-        }
-    }
-
-    @Test
     fun `validate when receive OnClickSendPof event and success`() {
         runCollecting { uiStates, toasterQueues, uiEffects ->
             //region perform open screen
@@ -1057,14 +818,15 @@ class PofViewModelTest : PofViewModelTestFixture() {
             //endregion perform open screen
 
             //region perform change quantity on first product
+            val targetQuantity = getFirstOriginalCheckoutQuantity().dec()
             clearMocks(getPofInfoUseCase)
             clearMocks(getPofEstimateUseCase)
             createSuccessGetPofInfoWithStatus0()
             createSuccessGetPofEstimate()
             sendProductAvailableQuantityChangedEvent(
                 orderDetailId = getFirstOriginalOrderDetailId(),
-                quantity = 0,
-                exceedCheckoutQuantity = false
+                quantity = targetQuantity,
+                previousQuantity = getFirstOriginalCheckoutQuantity()
             )
             uiState = uiStates.last()
             //region verify use-cases
@@ -1072,7 +834,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
                 getPofEstimateUseCase(
                     createGetPofEstimateParamsWithDefinedQuantity(
                         delay = 1000,
-                        quantityList = listOf(getFirstOriginalOrderDetailId() to 0)
+                        quantityList = listOf(getFirstOriginalOrderDetailId() to targetQuantity)
                     )
                 )
             }
@@ -1090,7 +852,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
                         visitable.copy(
                             quantityEditorData = visitable
                                 .quantityEditorData
-                                .copy(quantity = 0)
+                                .copy(quantity = targetQuantity)
                         )
                     } else visitable
                 }
@@ -1121,7 +883,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
             //region verify footer
             val expectedFooterUiState = createFooterUiState(
                 pofEstimateResponseFilePath = SUCCESS_RESPONSE_GET_POF_ESTIMATE_RESULT_WITH_FIRST_PRODUCT_ZERO,
-                quantityList = listOf(getFirstOriginalOrderDetailId() to 0)
+                quantityList = listOf(getFirstOriginalOrderDetailId() to targetQuantity)
             )
             assertEquals(expectedFooterUiState, uiState.footerUiState)
             //endregion verify footer
@@ -1147,7 +909,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
             }
             //endregion validate use case
             //region validate ui effect
-            assertEquals(UiEffect.FinishActivity, uiEffects.last())
+            assertEquals(UiEffect.FinishActivity(Activity.RESULT_OK), uiEffects.last())
             //endregion validate ui effect
             //endregion perform send pof request
         }
@@ -1185,14 +947,15 @@ class PofViewModelTest : PofViewModelTestFixture() {
             //endregion perform open screen
 
             //region perform change quantity on first product
+            val targetQuantity = getFirstOriginalCheckoutQuantity().dec()
             clearMocks(getPofInfoUseCase)
             clearMocks(getPofEstimateUseCase)
             createSuccessGetPofInfoWithStatus0()
             createSuccessGetPofEstimate()
             sendProductAvailableQuantityChangedEvent(
                 orderDetailId = getFirstOriginalOrderDetailId(),
-                quantity = 0,
-                exceedCheckoutQuantity = false
+                quantity = targetQuantity,
+                previousQuantity = getFirstOriginalCheckoutQuantity()
             )
             uiState = uiStates.last()
             //region verify use-cases
@@ -1200,7 +963,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
                 getPofEstimateUseCase(
                     createGetPofEstimateParamsWithDefinedQuantity(
                         delay = 1000,
-                        quantityList = listOf(getFirstOriginalOrderDetailId() to 0)
+                        quantityList = listOf(getFirstOriginalOrderDetailId() to targetQuantity)
                     )
                 )
             }
@@ -1218,7 +981,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
                         visitable.copy(
                             quantityEditorData = visitable
                                 .quantityEditorData
-                                .copy(quantity = 0)
+                                .copy(quantity = targetQuantity)
                         )
                     } else visitable
                 }
@@ -1249,7 +1012,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
             //region verify footer
             val expectedFooterUiState = createFooterUiState(
                 pofEstimateResponseFilePath = SUCCESS_RESPONSE_GET_POF_ESTIMATE_RESULT_WITH_FIRST_PRODUCT_ZERO,
-                quantityList = listOf(getFirstOriginalOrderDetailId() to 0)
+                quantityList = listOf(getFirstOriginalOrderDetailId() to targetQuantity)
             )
             assertEquals(expectedFooterUiState, uiState.footerUiState)
             //endregion verify footer
@@ -1313,14 +1076,15 @@ class PofViewModelTest : PofViewModelTestFixture() {
             //endregion perform open screen
 
             //region perform change quantity on first product
+            val targetQuantity = getFirstOriginalCheckoutQuantity().dec()
             clearMocks(getPofInfoUseCase)
             clearMocks(getPofEstimateUseCase)
             createSuccessGetPofInfoWithStatus0()
             createSuccessGetPofEstimate()
             sendProductAvailableQuantityChangedEvent(
                 orderDetailId = getFirstOriginalOrderDetailId(),
-                quantity = 0,
-                exceedCheckoutQuantity = false
+                quantity = targetQuantity,
+                previousQuantity = getFirstOriginalCheckoutQuantity()
             )
             uiState = uiStates.last()
             //region verify use-cases
@@ -1328,7 +1092,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
                 getPofEstimateUseCase(
                     createGetPofEstimateParamsWithDefinedQuantity(
                         delay = 1000,
-                        quantityList = listOf(getFirstOriginalOrderDetailId() to 0)
+                        quantityList = listOf(getFirstOriginalOrderDetailId() to targetQuantity)
                     )
                 )
             }
@@ -1346,7 +1110,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
                         visitable.copy(
                             quantityEditorData = visitable
                                 .quantityEditorData
-                                .copy(quantity = 0)
+                                .copy(quantity = targetQuantity)
                         )
                     } else visitable
                 }
@@ -1377,7 +1141,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
             //region verify footer
             val expectedFooterUiState = createFooterUiState(
                 pofEstimateResponseFilePath = SUCCESS_RESPONSE_GET_POF_ESTIMATE_RESULT_WITH_FIRST_PRODUCT_ZERO,
-                quantityList = listOf(getFirstOriginalOrderDetailId() to 0)
+                quantityList = listOf(getFirstOriginalOrderDetailId() to targetQuantity)
             )
             assertEquals(expectedFooterUiState, uiState.footerUiState)
             //endregion verify footer
