@@ -20,7 +20,7 @@ object DeeplinkMapperUser {
     const val ROLLENCE_GOTO_KYC_SA = "goto_kyc_sellerapp"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
     const val ROLLENCE_GOTO_LOGIN = "scp_goto_login_and"
-    private const val ROLLENCE_CVSDK_INTEGRATION = "and_cvsdk_intg"
+    const val ROLLENCE_CVSDK_INTEGRATION = "and_cvsdk_intg"
     const val ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE = "android_fundinvest"
     private const val REGISTER_PHONE_NUMBER = 116
     private const val REGISTER_EMAIL = 126
@@ -47,7 +47,7 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.REGISTER -> getRegisterApplink()
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             deeplink.startsWith(ApplinkConst.GOTO_KYC_WEBVIEW) -> ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
-            deeplink == ApplinkConst.OTP || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.COTP) -> getOtpApplink(deeplink)
+            deeplink.startsWithPattern(ApplinkConst.OTP) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.COTP) -> getOtpApplink(deeplink)
             else -> deeplink
         }
     }
