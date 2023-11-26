@@ -79,7 +79,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
         // Given
         ApiResponseStub.getInstance().channelListResponse.responseEditor = {
             var result = it
-            result = result.replace("9223372036854775807", "0")
+            result = result.replace("9223372036854775807", "1")
             result
         }
 
