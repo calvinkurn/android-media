@@ -35,7 +35,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
     private var item: HomeRecommendationBannerTopAdsUiModel? = null
 
     override fun bind(element: HomeRecommendationBannerTopAdsUiModel) {
-        this.item = item
+        this.item = element
         setImageTopAdsNewQuery(element)
         setBannerTopAdsClickListener()
     }
