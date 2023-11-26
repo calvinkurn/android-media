@@ -336,6 +336,56 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
     }
 
     @Test
+    fun validate_dropship_without_protection_add_on_opt_in() {
+        // given
+        val orderModel = CheckoutOrderModel(
+            useDropship = true,
+            cartStringGroup = "123",
+            shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "", isSelected = true))
+        )
+
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(
+                "123",
+                addOnProduct = AddOnProductDataModel(
+                    listAddOnProductData = arrayListOf(
+                        AddOnProductDataItemModel(uniqueId = "a1", status = 0),
+                        AddOnProductDataItemModel(uniqueId = "a2", status = 0, type = 4)
+                    )
+                )
+            ),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        viewModel.setAddon(false, AddOnProductDataItemModel(uniqueId = "a2"), 4)
+
+        // then
+        Assert.assertEquals(
+            CheckoutDropshipWidget.State.INIT,
+            (viewModel.listData.value[5] as CheckoutOrderModel).stateDropship
+        )
+    }
+
+    @Test
     fun checkout_with_dropship_name_empty_should_show_toaster() {
         // Given
         val orderModel = CheckoutOrderModel(
