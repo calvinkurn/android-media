@@ -275,15 +275,6 @@ class CheckoutDropshipWidget : ConstraintLayout {
         }
     }
 
-    private fun validateShowingDetailDropship() {
-        if (actionListener?.isAddOnProtectionOptIn() == true) {
-            binding?.switchDropship?.isChecked = false
-            actionListener?.showToasterErrorProtectionUsage()
-        } else {
-            showDetailDropship(false)
-        }
-    }
-
     private fun renderDefaultDropship() {
         binding?.tvDropshipTitle?.setDropshipLabel()
         hideDetailDropship()
