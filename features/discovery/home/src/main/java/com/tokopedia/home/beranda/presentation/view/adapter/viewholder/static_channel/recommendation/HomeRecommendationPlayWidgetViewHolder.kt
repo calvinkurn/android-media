@@ -52,6 +52,7 @@ class HomeRecommendationPlayWidgetViewHolder(
 
     override fun bindPayload(newItem: HomeRecommendationPlayWidgetUiModel?) {
         newItem?.let {
+            this.item = it
             bindHomeRecomPlayWidgetVideo(it)
         }
     }
