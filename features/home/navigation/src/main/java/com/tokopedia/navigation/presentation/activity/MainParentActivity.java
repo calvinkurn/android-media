@@ -790,6 +790,7 @@ public class MainParentActivity extends BaseActivity implements
     private void showDownloadManagerDialogAndCheckPermission() {
         if (downloadManagerNakamaDialog != null) {
 //            if (downloadManagerNakamaDialog.isWhitelistByRollence()) {
+            if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.P) {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this,
@@ -798,6 +799,9 @@ public class MainParentActivity extends BaseActivity implements
                 } else {
                     showDownloadManagerDialog();
                 }
+            } else {
+                showDownloadManagerDialog();
+            }
 //            }
         }
     }

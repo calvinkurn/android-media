@@ -87,7 +87,7 @@ dependencies {
 //        implementation projectOrAar(rootProject.ext.libraries.appDownloadManagerNoInstall)
 //    }
 
-    implementation projectOrAar(rootProject.ext.libraries.appDownloadManagerNoInstall)
+    implementation projectOrAar(rootProject.ext.libraries.appDownloadManager)
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
