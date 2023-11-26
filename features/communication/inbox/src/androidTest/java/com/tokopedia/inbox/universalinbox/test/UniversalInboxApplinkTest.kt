@@ -46,22 +46,6 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
     }
 
     @Test
-    fun should_open_discussion() {
-        // When
-        launchActivity()
-        stubAllIntents()
-        menuRobot {
-            clickMenuOnPosition(3)
-        }
-
-        // Then
-        Thread.sleep(1000)
-        menuResult {
-            assertApplinkDiscussion()
-        }
-    }
-
-    @Test
     fun should_open_review() {
         // When
         launchActivity()
