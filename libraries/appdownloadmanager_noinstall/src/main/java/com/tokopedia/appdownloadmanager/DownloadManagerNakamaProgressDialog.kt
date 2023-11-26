@@ -32,7 +32,7 @@ class DownloadManagerNakamaProgressDialog(
         private const val DELAY_MAX_UPDATE_PROGRESS = 300L
         private const val MESSAGE_PREPARE_DOWNLOAD = "Preparing to download..."
         private const val MESSAGE_DOWNLOADING = "Downloading new version..."
-        private const val VERSION_PARAM = "version"
+        private const val VERSION_PARAM = "versionname"
     }
 
     init {
@@ -118,6 +118,7 @@ class DownloadManagerNakamaProgressDialog(
                                         }
                                     }
                                 }
+
                                 else -> {
                                     // no op
                                 }
@@ -164,11 +165,7 @@ class DownloadManagerNakamaProgressDialog(
 
     private fun openDownloadDir() {
         weakActivity.get()?.let {
-            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                getIntentOpenDownloadDirQAbove()
-            } else {
-                getIntentOpenDownloadDirPieBelow()
-            }
+            val intent = getIntentOpenDownloadDir()
 
             try {
                 it.startActivity(intent)
@@ -179,19 +176,20 @@ class DownloadManagerNakamaProgressDialog(
         }
     }
 
-    private fun getIntentOpenDownloadDirPieBelow(): Intent {
-        return Intent(Intent.ACTION_VIEW).apply {
-            val downloadsFolderUri = Uri.parse("content://downloads/public_downloads")
-            setDataAndType(downloadsFolderUri, "*/*")
-        }
-    }
+    private fun getIntentOpenDownloadDir(): Intent {
+        val downloadsFolder =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val uri = Uri.fromFile(downloadsFolder)
 
-    private fun getIntentOpenDownloadDirQAbove(): Intent {
         return Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "*/*"
-            val downloadsFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString()
-            putExtra(DocumentsContract.EXTRA_INITIAL_URI, downloadsFolder)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri)
+            }
+
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
     }
 

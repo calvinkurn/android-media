@@ -57,7 +57,9 @@ class DownloadManagerNakamaDialog(
                                 setCacheExpire()
                             }
                         )
-                    downloadManagerUpdateDialog?.show()
+                    if (downloadManagerUpdateDialog?.isShowing == false) {
+                        downloadManagerUpdateDialog.show()
+                    }
                 }
             }
         }
@@ -114,6 +116,6 @@ class DownloadManagerNakamaDialog(
         const val PRE_APP_DISTRIBUTION_EXPIRED_TIME = "expired_time"
         const val PRE_APP_DISTRIBUTION_TIMESTAMP = "timestamp"
 
-        const val APK_URL = "https://docs-android.tokopedia.net/downloadApk?packagename=com.tokopedia.tkpd&version=3.243"
+        const val APK_URL = "https://docs-android.tokopedia.net/downloadApk?packagename=com.tokopedia.tkpd&versionname=3.246"
     }
 }

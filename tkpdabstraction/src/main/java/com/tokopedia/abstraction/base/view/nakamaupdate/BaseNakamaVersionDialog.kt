@@ -17,7 +17,7 @@ abstract class BaseAppDistributionDialog(
 
     abstract fun isExpired(): Boolean
 
-    protected fun isWhitelistByRollence(): Boolean {
+    open fun isWhitelistByRollence(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
             RollenceKey.ANDROID_INTERNAL_TEST,
             ""

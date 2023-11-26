@@ -81,11 +81,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
 
-    if (rootProject.hasProperty('nakamaVersion')?: false) {
-        implementation projectOrAar(rootProject.ext.libraries.appDownloadManager)
-    } else {
-        implementation projectOrAar(rootProject.ext.libraries.appDownloadManagerNoInstall)
-    }
+//    if (rootProject.hasProperty('nakamaVersion')?: false) {
+//        implementation projectOrAar(rootProject.ext.libraries.appDownloadManager)
+//    } else {
+//        implementation projectOrAar(rootProject.ext.libraries.appDownloadManagerNoInstall)
+//    }
+
+    implementation projectOrAar(rootProject.ext.libraries.appDownloadManagerNoInstall)
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
