@@ -389,11 +389,18 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
     fun checkout_with_dropship_name_empty_should_show_toaster() {
         // Given
         val orderModel = CheckoutOrderModel(
+            isDropshipperDisabled = false,
             dropshipPhone = "0818111111",
             isDropshipPhoneValid = true,
             useDropship = true,
             cartStringGroup = "123",
-            shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "", isSelected = true))
+            shipment = CheckoutOrderShipment(
+                courierItemData = CourierItemData(
+                    logPromoCode = "",
+                    isSelected = true,
+                    isAllowDropshiper = true
+                )
+            )
         )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
