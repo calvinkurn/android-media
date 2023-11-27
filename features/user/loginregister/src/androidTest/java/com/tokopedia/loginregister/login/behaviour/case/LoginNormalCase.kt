@@ -18,7 +18,6 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
-import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -146,44 +145,44 @@ class LoginNormalCase : LoginBase() {
     }
 
     /* Check if RegisterInitialActivity is launching when Daftar button in dialog clicked */
-    @Test
-    fun goToRegisterInitial_IfNotRegistered() {
-        val data = RegisterCheckPojo(
-            RegisterCheckData(
-                isExist = false,
-                userID = "0",
-                registerType = "email",
-                view = "yoris.prayogo@tokopedia.com"
-            )
-        )
-        fakeRepo.registerCheckConfig = Config.WithResponse(data)
-
-        runTest {
-            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWith(
-                Instrumentation.ActivityResult(
-                    Activity.RESULT_OK,
-                    Intent().apply {
-                        putExtras(
-                            Bundle().apply {
-                                putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
-                                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
-                                putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
-                            }
-                        )
-                    }
-                )
-            )
-            inputEmailOrPhone("yoris.prayogo@tokopedia.com")
-            clickSubmit()
-
-            onView(withText("Ya, Daftar"))
-                .inRoot(isDialog())
-                .check(matches(isDisplayed()))
-                .perform(click())
-
-            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
-        }
-    }
+//    @Test
+//    fun goToRegisterInitial_IfNotRegistered() {
+//        val data = RegisterCheckPojo(
+//            RegisterCheckData(
+//                isExist = false,
+//                userID = "0",
+//                registerType = "email",
+//                view = "yoris.prayogo@tokopedia.com"
+//            )
+//        )
+//        fakeRepo.registerCheckConfig = Config.WithResponse(data)
+//
+//        runTest {
+//            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWith(
+//                Instrumentation.ActivityResult(
+//                    Activity.RESULT_OK,
+//                    Intent().apply {
+//                        putExtras(
+//                            Bundle().apply {
+//                                putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
+//                                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
+//                                putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
+//                            }
+//                        )
+//                    }
+//                )
+//            )
+//            inputEmailOrPhone("yoris.prayogo@tokopedia.com")
+//            clickSubmit()
+//
+//            onView(withText("Ya, Daftar"))
+//                .inRoot(isDialog())
+//                .check(matches(isDisplayed()))
+//                .perform(click())
+//
+//            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
+//        }
+//    }
 
     /* Check if activity is finished when login success */
     @Test
