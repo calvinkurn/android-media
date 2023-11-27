@@ -754,14 +754,12 @@ class RegisterInitialFragment :
                 } else {
                     if (loginCredential.isNotEmpty()) {
                         startVerificationFlow(registerCheckData.view)
-                        // TODO: handle finish when request code on this function failed
                     } else {
                         showProceedWithPhoneDialog(registerCheckData.view)
                     }
                 }
             }
             LoginConstants.LoginType.EMAIL_TYPE -> {
-                // TODO: handle finish when request code on this function failed, and set identifier for SCP
                 registerAnalytics.trackClickEmailSignUpButton()
                 if (registerCheckData.isExist) {
                     if (!registerCheckData.isPending) {

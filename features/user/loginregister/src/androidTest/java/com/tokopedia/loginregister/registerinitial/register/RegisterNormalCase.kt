@@ -107,31 +107,33 @@ class RegisterNormalCase : RegisterInitialBase() {
         }
     }
 
-//    @Test
-//    /* Go to login page if registered phone dialog clicked */
-//    fun gotoLoginIfPhoneDialogClicked() {
-//        isDefaultRegisterCheck = false
-//        val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "phone", view = "082242454511")
-//        registerCheckUseCase.response = RegisterCheckPojo(data)
-//
-//        runTest {
-//            setupRollence()
-//            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
-//            inputEmailOrPhone("082242454511")
-//            clickSubmit()
-//            isDialogDisplayed("Nomor Ponsel Sudah Terdaftar")
-//
-//            onView(withText("Ya, Masuk"))
-//                .inRoot(isDialog())
-//                .check(matches(isDisplayed()))
-//                .perform(click())
-//
-//            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
-//        }
-//    }
-//
-//    private fun setupRollence() {
-//        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-//            DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION, "")
-//    }
+    /* Go to login page if registered phone dialog clicked */
+    @Test
+    fun gotoLoginIfPhoneDialogClicked() {
+        isDefaultRegisterCheck = false
+        val data = RegisterCheckData(isExist = true, userID = "123456", registerType = "phone", view = "082242454511")
+        registerCheckUseCase.response = RegisterCheckPojo(data)
+
+        runTest {
+            setupRollence()
+            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
+            inputEmailOrPhone("082242454511")
+            clickSubmit()
+            isDialogDisplayed("Nomor Ponsel Sudah Terdaftar")
+
+            onView(withText("Ya, Masuk"))
+                .inRoot(isDialog())
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
+        }
+    }
+
+    private fun setupRollence() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+            DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION,
+            ""
+        )
+    }
 }
