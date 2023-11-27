@@ -1850,11 +1850,12 @@ class CheckoutViewModel @Inject constructor(
             val itemList = listData.value.toMutableList()
             for ((index, checkoutOrderModel) in itemList.withIndex()) {
                 if (checkoutOrderModel is CheckoutOrderModel) {
-                    if (checkoutOrderModel.useDropship && (
-                        checkoutOrderModel.dropshipName.isEmpty() ||
-                            checkoutOrderModel.dropshipPhone.isEmpty() || !checkoutOrderModel.isDropshipNameValid ||
-                            !checkoutOrderModel.isDropshipPhoneValid
-                        )
+                    if (checkoutOrderModel.isEnableDropship &&
+                        checkoutOrderModel.useDropship && (
+                            checkoutOrderModel.dropshipName.isEmpty() ||
+                                checkoutOrderModel.dropshipPhone.isEmpty() || !checkoutOrderModel.isDropshipNameValid ||
+                                !checkoutOrderModel.isDropshipPhoneValid
+                            )
                     ) {
                         itemList[index] = checkoutOrderModel.copy(
                             stateDropship = CheckoutDropshipWidget.State.ERROR
