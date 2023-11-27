@@ -79,7 +79,7 @@ class ScpVerificationActivity : BaseActivity() {
                 },
                 onFailed = { error ->
                     if ((error is CVError.UserCancelled).not()) {
-                        Toast.makeText(this, "Terjadi Kesalahan $error ${error.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Terjadi Kesalahan ${error.message} ${error.errorCode}", Toast.LENGTH_LONG).show()
                         finish()
                     } else {
                         finish()
