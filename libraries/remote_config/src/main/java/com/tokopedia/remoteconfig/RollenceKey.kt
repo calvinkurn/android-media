@@ -78,6 +78,10 @@ object RollenceKey {
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
     const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
 
+    const val PDP_PREFETCH = "prefetch_pdp_android"
+    const val PDP_PREFETCH_ENABLE = "variant_prefetch"
+    const val PDP_PREFETCH_DISABLE = "control_prefetch"
+
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
