@@ -30,7 +30,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 163
-        const val SIZE_PATH = 270
+        const val SIZE_PATH = 271
     }
 
     override fun setup() {
