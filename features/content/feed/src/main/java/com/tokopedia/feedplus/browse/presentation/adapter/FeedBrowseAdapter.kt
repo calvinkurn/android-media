@@ -11,6 +11,7 @@ import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalCreatorsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
@@ -27,7 +28,8 @@ internal class FeedBrowseAdapter(
     private val scope: CoroutineScope,
     private val chipsListener: ChipsViewHolder.Listener,
     private val bannerListener: FeedBrowseBannerViewHolder.Listener,
-    private val channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener
+    private val channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener,
+    private val creatorListener: FeedBrowseHorizontalCreatorsViewHolder.Listener
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<FeedBrowseItemListModel>() {
         override fun areItemsTheSame(oldItem: FeedBrowseItemListModel, newItem: FeedBrowseItemListModel): Boolean {
@@ -69,6 +71,9 @@ internal class FeedBrowseAdapter(
             TYPE_TITLE -> {
                 FeedBrowseTitleViewHolder.create(parent)
             }
+            TYPE_HORIZONTAL_CREATORS -> {
+                FeedBrowseHorizontalCreatorsViewHolder.create(parent, creatorListener, scope)
+            }
             else -> error("ViewType $viewType is not supported")
         }
     }
@@ -86,6 +91,9 @@ internal class FeedBrowseAdapter(
                 holder.bind(item)
             }
             holder is FeedBrowseTitleViewHolder && item is FeedBrowseItemListModel.Title -> {
+                holder.bind(item)
+            }
+            holder is FeedBrowseHorizontalCreatorsViewHolder && item is FeedBrowseItemListModel.HorizontalCreator -> {
                 holder.bind(item)
             }
         }
@@ -118,6 +126,7 @@ internal class FeedBrowseAdapter(
             is FeedBrowseItemListModel.Banner -> TYPE_BANNER
             is FeedBrowseItemListModel.Title -> TYPE_TITLE
             is FeedBrowseItemListModel.InspirationCard -> TYPE_INSPIRATION_CARD
+            is FeedBrowseItemListModel.HorizontalCreator -> TYPE_HORIZONTAL_CREATORS
         }
     }
 
@@ -140,6 +149,7 @@ internal class FeedBrowseAdapter(
         internal const val TYPE_BANNER = 2
         internal const val TYPE_TITLE = 3
         internal const val TYPE_INSPIRATION_CARD = 4
+        internal const val TYPE_HORIZONTAL_CREATORS = 5
     }
 
     fun setList(items: List<FeedBrowseStatefulModel>, onCommit: () -> Unit = {}) {
@@ -158,6 +168,7 @@ internal class FeedBrowseAdapter(
                     index
                 )
                 is FeedBrowseSlotUiModel.InspirationBanner -> item.model.mapToItems(index)
+                is FeedBrowseSlotUiModel.Creators -> item.model.mapToItems(item.result, index)
             }
         }
     }
@@ -213,6 +224,17 @@ internal class FeedBrowseAdapter(
         }
     }
 
+    private fun FeedBrowseSlotUiModel.Creators.mapToItems(
+        state: ResultState,
+        position: Int
+    ): List<FeedBrowseItemListModel> {
+        val slotInfo = getSlotInfo(position)
+        return buildList {
+            add(FeedBrowseItemListModel.Title(slotInfo, title))
+            add(FeedBrowseItemListModel.HorizontalCreator(slotInfo, creatorList))
+        }
+    }
+
     private fun getPlaceholders(): List<FeedBrowseItemListModel> {
         return listOf(
             FeedBrowseItemListModel.Title.Loading,
@@ -223,7 +245,7 @@ internal class FeedBrowseAdapter(
             FeedBrowseItemListModel.HorizontalChannels.Loading,
 
             FeedBrowseItemListModel.Title.Loading,
-            FeedBrowseItemListModel.HorizontalChannels.Loading,
+            FeedBrowseItemListModel.HorizontalCreator.Loading,
         )
     }
 

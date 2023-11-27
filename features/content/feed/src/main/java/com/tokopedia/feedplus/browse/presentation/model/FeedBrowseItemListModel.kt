@@ -67,6 +67,19 @@ internal sealed interface FeedBrowseItemListModel {
             override val slotInfo: SlotInfo = SlotInfo.Empty
         }
     }
+
+    data class HorizontalCreator(
+        override val slotInfo: SlotInfo,
+        val itemState: FeedBrowseChannelListState<PlayWidgetChannelUiModel>
+    ) : FeedBrowseItemListModel {
+
+        companion object {
+            val Loading = HorizontalCreator(
+                SlotInfo.Empty,
+                FeedBrowseChannelListState.initLoading(),
+            )
+        }
+    }
 }
 
 internal data class ChipsModel(

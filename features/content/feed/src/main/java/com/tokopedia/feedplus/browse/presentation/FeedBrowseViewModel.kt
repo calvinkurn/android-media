@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.browse.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.types.ResultState
@@ -128,6 +127,7 @@ internal class FeedBrowseViewModel @Inject constructor(
         when (model) {
             is FeedBrowseSlotUiModel.ChannelsWithMenus -> model.getAndUpdateData()
             is FeedBrowseSlotUiModel.InspirationBanner -> model.getAndUpdateData()
+            is FeedBrowseSlotUiModel.Creators -> model.getAndUpdateData()
         }
     }
 
@@ -186,6 +186,23 @@ internal class FeedBrowseViewModel @Inject constructor(
         if (response !is WidgetRecommendationModel.Banners) return
         updateWidget<FeedBrowseSlotUiModel.InspirationBanner>(slotId, ResultState.Success) {
             it.copy(bannerList = response.banners)
+        }
+    }
+
+    private suspend fun FeedBrowseSlotUiModel.Creators.getAndUpdateData() {
+        updateWidget<FeedBrowseSlotUiModel.Creators>(slotId, ResultState.Loading) {
+            it.copy(creatorList = FeedBrowseChannelListState.initLoading())
+        }
+        try {
+            val mappedResult = repository.getWidgetRecommendation(identifier)
+            if (mappedResult !is WidgetRecommendationModel.Channels) return
+            updateWidget<FeedBrowseSlotUiModel.Creators>(slotId, ResultState.Success) {
+                it.copy(creatorList = FeedBrowseChannelListState.initSuccess(mappedResult.channels))
+            }
+        } catch (err: Throwable) {
+            updateWidget<FeedBrowseSlotUiModel.Creators>(slotId, ResultState.Fail(err)) {
+                it.copy(creatorList = FeedBrowseChannelListState.initFail(err))
+            }
         }
     }
 
