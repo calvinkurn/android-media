@@ -10,7 +10,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.creation.common.upload.model.CreationUploadType
-import com.tokopedia.creation.common.upload.uploader.dialog.PlayInstallMainAppDialog
+import com.tokopedia.creation.common.upload.uploader.dialog.ContentInstallMainAppDialog
 import com.tokopedia.kotlin.extensions.view.isAppInstalled
 import javax.inject.Inject
 
@@ -26,21 +26,25 @@ class ContentCreationPostUploadActivity : BaseActivity() {
         CreationUploadType.mapFromValue(intent.getStringExtra(EXTRA_UPLOAD_TYPE).orEmpty())
     }
 
-    private val playInstallMainAppDialog by lazy(LazyThreadSafetyMode.NONE) {
-        PlayInstallMainAppDialog()
+    private val installMainAppDialog by lazy(LazyThreadSafetyMode.NONE) {
+        ContentInstallMainAppDialog()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
 
-        hitAnalytic()
-        redirectToPlayRoom()
+        installMainAppDialog.openPlayStore(this) {
+            finish()
+        }
+
+//        hitAnalytic()
+//        redirectToPlayRoom()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        playInstallMainAppDialog.clear()
+        installMainAppDialog.clear()
     }
 
     private fun inject() {
@@ -75,7 +79,7 @@ class ContentCreationPostUploadActivity : BaseActivity() {
                 )
                 finish()
             } else {
-                playInstallMainAppDialog.openPlayStore(this) {
+                installMainAppDialog.openPlayStore(this) {
                     finish()
                 }
             }

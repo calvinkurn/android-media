@@ -5,11 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.creation.common.R
+import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created By : Jonathan Darwin on May 03, 2023
  */
-class PlayInstallMainAppDialog {
+class ContentInstallMainAppDialog {
 
     companion object {
         private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
@@ -41,19 +42,24 @@ class PlayInstallMainAppDialog {
                 imageType = DialogUnify.NO_IMAGE
             ).apply {
                 setTitle(
-                    context.getString(R.string.play_widget_watch_title)
+                    context.getString(R.string.content_creation_watch_in_ma_title)
                 )
+
                 setDescription(
-                    context.getString(R.string.play_widget_watch_desc)
+                    context.getString(R.string.content_creation_watch_in_ma_desc)
                 )
+
                 setPrimaryCTAText(
-                    context.getString(R.string.play_widget_download_tokopedia)
+                    context.getString(R.string.content_creation_watch_in_ma_action_text)
                 )
+
                 setSecondaryCTAText(
-                    context.getString(R.string.play_widget_watch_later)
+                    context.getString(R.string.content_creation_watch_in_ma_cancel_text)
                 )
             }
         }
+
+        dialog?.dialogSecondaryLongCTA?.buttonVariant = UnifyButton.Variant.GHOST
 
         dialog?.setPrimaryCTAClickListener {
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(CUSTOMER_APP_PLAY_STORE)))
