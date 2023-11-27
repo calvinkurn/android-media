@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
@@ -28,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.content.common.util.doOnApplyWindowInsets
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -190,6 +193,15 @@ class ShopPageHeaderFragmentTabContentWrapper :
             chooseAddressWidgetListener
         )
         mainLayout?.requestFocus()
+
+        setupInsets()
+    }
+
+    private fun setupInsets() {
+        mainLayout?.doOnApplyWindowInsets { view, insets, padding, _ ->
+            val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            view.updatePadding(top = padding.top + statusBarInsets.top - navToolbar?.paddingTop.orZero())
+        }
     }
 
     private fun getPlayHeaderListener(): ShopPageHeaderPlayWidgetViewHolder.Listener? {
