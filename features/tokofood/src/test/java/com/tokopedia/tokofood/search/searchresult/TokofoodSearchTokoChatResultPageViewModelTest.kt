@@ -26,7 +26,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 
-class TokofoodSearchResultPageViewModelTest : TokofoodSearchResultPageViewModelTestFixture() {
+class TokofoodSearchTokoChatResultPageViewModelTest : TokofoodSearchTokoChatResultPageViewModelTestFixture() {
 
     @Test
     fun `when setKeyword should set searchParameter`() {

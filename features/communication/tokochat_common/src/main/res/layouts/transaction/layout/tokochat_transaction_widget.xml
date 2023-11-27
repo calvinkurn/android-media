@@ -8,11 +8,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ViewStub
-        android:id="@+id/tokochat_partial_order_status_viewstub"
-        android:inflatedId="@+id/tokochat_partial_order_status_viewstub"
+        android:id="@+id/tokochat_partial_tokofood_order_status_viewstub"
+        android:inflatedId="@+id/tokochat_partial_tokofood_order_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout="@layout/tokochat_partial_order_status_widget"
+        android:layout="@layout/tokochat_partial_tokofood_order_status_widget"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ViewStub
+        android:id="@+id/tokochat_partial_logistic_order_status_viewstub"
+        android:inflatedId="@+id/tokochat_partial_logistic_order_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/tokochat_partial_logistic_order_status_widget"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

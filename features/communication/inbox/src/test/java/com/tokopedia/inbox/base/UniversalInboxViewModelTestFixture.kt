@@ -103,7 +103,7 @@ abstract class UniversalInboxViewModelTestFixture {
         context = mockk()
         resourceProvider = UniversalInboxResourceProviderImpl(context)
         inboxMenuMapper = spyk(UniversalInboxMenuMapper(resourceProvider))
-        inboxWidgetMetaMapper = spyk(UniversalInboxWidgetMetaMapper())
+        inboxWidgetMetaMapper = spyk(UniversalInboxWidgetMetaMapper(abTestPlatform))
     }
 
     private fun earlyMock() {
