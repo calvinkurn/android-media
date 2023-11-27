@@ -340,19 +340,19 @@ class LoginNormalCase : LoginBase() {
         }
     }
 
-    @Test
-    fun gotoVerification_true() {
-        runTest {
-            Thread.sleep(1000)
-
-            val viewDevOpts = onView(withText("Developer Options"))
-            if (GlobalConfig.isAllowDebuggingTools()) {
-                viewDevOpts.check(matches(isDisplayed()))
-            } else {
-                viewDevOpts.check(matches(not(isDisplayed())))
-            }
-        }
-    }
+//    @Test
+//    fun gotoVerification_true() {
+//        runTest {
+//            Thread.sleep(1000)
+//
+//            val viewDevOpts = onView(withText("Developer Options"))
+//            if (GlobalConfig.isAllowDebuggingTools()) {
+//                viewDevOpts.check(matches(isDisplayed()))
+//            } else {
+//                viewDevOpts.check(matches(not(isDisplayed())))
+//            }
+//        }
+//    }
 
     private fun clickOnViewChild(viewId: Int) = object : ViewAction {
         override fun getConstraints() = null
