@@ -5,6 +5,7 @@ import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTrackerCo
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderExtensionTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.domain.models.PlusComponent
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
@@ -123,6 +124,19 @@ class BuyerOrderDetailStickyActionButtonHandler(
                 )
             }
         }
+    }
+
+    override fun onSavingsWidgetClicked(
+        plusComponent: PlusComponent,
+        isPlus: Boolean,
+        isMixPromo: Boolean
+    ) {
+        BuyerOrderDetailTracker.SavingsWidget.clickSavingsWidget(
+            orderId = viewModel.getOrderId(),
+            isPlus = isPlus,
+            isMixPromo = isMixPromo
+        )
+        bottomSheetManager.showSavingsWidgetBottomSheet(plusComponent)
     }
 
     private fun trackRespondToSubmissionOrderExtensionClicked() {

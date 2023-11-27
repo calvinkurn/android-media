@@ -1,7 +1,13 @@
 package com.tokopedia.analyticsdebugger.sse.ui.fragment
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -14,11 +20,10 @@ import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.sse.di.DaggerSSELoggingComponent
 import com.tokopedia.analyticsdebugger.sse.ui.adapter.SSELogAdapter
 import com.tokopedia.analyticsdebugger.sse.ui.viewmodel.SSELoggingViewModel
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.fragment_sse_logging.*
 import javax.inject.Inject
 
 /**
@@ -33,10 +38,10 @@ class SSELoggingFragment: Fragment() {
 
     private val adapter: SSELogAdapter by lazy { SSELogAdapter() }
 
-    private lateinit var etSSELogSearch: SearchInputView
-    private lateinit var swipeRefresh: SwipeRefreshLayout
-    private lateinit var rvSSELog: RecyclerView
-    private lateinit var tvNoData: Typography
+    private var etSSELogSearch: SearchBarUnify? = null
+    private var swipeRefresh: SwipeRefreshLayout? = null
+    private var rvSSELog: RecyclerView? = null
+    private var tvNoData: Typography? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjection()
@@ -68,7 +73,7 @@ class SSELoggingFragment: Fragment() {
         rvSSELog = view.findViewById(R.id.rv_sse_log)
         tvNoData = view.findViewById(R.id.tv_sse_log_no_data)
 
-        rvSSELog.apply {
+        rvSSELog?.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@SSELoggingFragment.adapter
         }
@@ -83,11 +88,11 @@ class SSELoggingFragment: Fragment() {
 
     private fun initObserver() {
         viewModel.observableSSELog.observe(viewLifecycleOwner) {
-            swipeRefresh.isRefreshing = false
+            swipeRefresh?.isRefreshing = false
             adapter.updateData(it)
 
-            if(it.isNullOrEmpty()) tvNoData.visible()
-            else tvNoData.hide()
+            if(it.isNullOrEmpty()) tvNoData?.visible()
+            else tvNoData?.hide()
         }
 
         viewModel.observableError.observe(viewLifecycleOwner) {
@@ -96,23 +101,23 @@ class SSELoggingFragment: Fragment() {
     }
 
     private fun initListener() {
-        etSSELogSearch.setListener(object: SearchInputView.Listener {
-            override fun onSearchSubmitted(text: String?) {
+        etSSELogSearch?.searchBarTextField?.setOnEditorActionListener { textView, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 loadData()
+                return@setOnEditorActionListener true
             }
+            return@setOnEditorActionListener false
+        }
 
-            override fun onSearchTextChanged(text: String?) {}
-        })
-
-        swipeRefresh.setOnRefreshListener {
+        swipeRefresh?.setOnRefreshListener {
             loadData()
         }
     }
 
     private fun loadData() {
-        val query = etSSELogSearch.searchText
+        val query = etSSELogSearch?.searchBarTextField?.text.toString()
 
-        swipeRefresh.isRefreshing = true
+        swipeRefresh?.isRefreshing = true
         viewModel.getLog(query)
     }
 

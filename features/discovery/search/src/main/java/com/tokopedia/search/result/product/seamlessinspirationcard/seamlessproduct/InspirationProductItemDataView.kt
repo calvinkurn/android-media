@@ -12,6 +12,7 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product
 import com.tokopedia.search.result.product.productitem.ProductItemVisitable
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
 import com.tokopedia.search.result.product.wishlist.Wishlistable
 import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.search.utils.orNone
@@ -44,8 +45,12 @@ data class InspirationProductItemDataView(
     val discountPercentage: Int = 0,
     val externalReference: String = "",
     val stockBarDataView: StockBarDataView = StockBarDataView(),
-    val warehouseID: String = ""
+    val warehouseID: String = "",
+    val layout: String = "",
 ) : ImpressHolder(), ProductItemVisitable, Wishlistable {
+
+    val isShowAdsLabel: Boolean =
+        isOrganicAds && layout != LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
         if (this.id == productID) {
@@ -106,7 +111,8 @@ data class InspirationProductItemDataView(
             discountPercentage = product.discountPercentage,
             externalReference = externalReference,
             stockBarDataView = product.stockBarDataView,
-            warehouseID = product.warehouseID
+            warehouseID = product.warehouseID,
+            layout = product.layout,
         )
     }
 

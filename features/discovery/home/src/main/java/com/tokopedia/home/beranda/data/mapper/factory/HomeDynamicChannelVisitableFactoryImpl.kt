@@ -26,7 +26,6 @@ import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampI
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
-import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -415,7 +414,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                         serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(
                             channel.header.serverTimeUnix
                         ),
-                        headerType = BestSellerMapper.getHeaderType()
+                        headerType = ChannelHeader.HeaderType.CHEVRON,
                     )
                 )
             )

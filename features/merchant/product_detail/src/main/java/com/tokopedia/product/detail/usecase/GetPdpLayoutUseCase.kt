@@ -179,6 +179,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         priceFmt
                         slashPriceFmt
                         discPercentage
+                        isPriceMasked
                       }
                       campaign {
                         campaignID
@@ -349,6 +350,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         priceFmt
                         slashPriceFmt
                         discPercentage
+                        isPriceMasked
                         sku
                         optionID
                         optionName

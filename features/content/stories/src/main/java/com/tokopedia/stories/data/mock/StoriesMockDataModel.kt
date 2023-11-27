@@ -1,6 +1,9 @@
 package com.tokopedia.stories.data.mock
 
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
@@ -15,6 +18,7 @@ fun mockInitialDataModel(
     isProductCountEmpty: Boolean = false,
     productCount: Int = 0,
     duration: Int = 500,
+    storiesCategory: StoriesDetailItem.StoryCategory = StoriesDetailItem.StoryCategory.ASGC,
 ): StoriesUiModel {
     return StoriesUiModel(
         selectedGroupId = if (isCached) "groupId $selectedGroup" else "",
@@ -52,6 +56,7 @@ fun mockInitialDataModel(
                             StoriesDetailItem(
                                 id = "0",
                                 event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
@@ -63,12 +68,20 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
+                                ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
                                 status = StoriesDetailItem.StoryStatus.Active,
                             ),
                             StoriesDetailItem(
                                 id = "1",
                                 event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
@@ -80,12 +93,20 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
+                                ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
                                 status = StoriesDetailItem.StoryStatus.Active,
                             ),
                             StoriesDetailItem(
                                 id = "2",
                                 event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
@@ -96,6 +117,13 @@ fun mockInitialDataModel(
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
+                                ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
                                 status = StoriesDetailItem.StoryStatus.Active,
@@ -116,6 +144,7 @@ fun mockInitialDataModel(
                             StoriesDetailItem(
                                 id = "0",
                                 event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
@@ -127,12 +156,20 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
+                                ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
                                 status = StoriesDetailItem.StoryStatus.Active,
                             ),
                             StoriesDetailItem(
                                 id = "1",
                                 event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
@@ -144,12 +181,20 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
+                                ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
                                 status = StoriesDetailItem.StoryStatus.Active,
                             ),
                             StoriesDetailItem(
                                 id = "2",
                                 event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
@@ -160,6 +205,13 @@ fun mockInitialDataModel(
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
+                                ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
                                 status = StoriesDetailItem.StoryStatus.Active,
@@ -180,6 +232,7 @@ fun mockInitialDataModel(
                             StoriesDetailItem(
                                 id = "0",
                                 event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
@@ -191,12 +244,20 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
+                                ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
                                 status = StoriesDetailItem.StoryStatus.Active,
                             ),
                             StoriesDetailItem(
                                 id = "1",
                                 event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
@@ -208,12 +269,20 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
+                                ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
                                 status = StoriesDetailItem.StoryStatus.Active,
                             ),
                             StoriesDetailItem(
                                 id = "2",
                                 event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
@@ -224,6 +293,13 @@ fun mockInitialDataModel(
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
+                                ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
                                 status = StoriesDetailItem.StoryStatus.Active,
@@ -693,3 +769,18 @@ fun mockContentTaggedProductUiModel(): ContentTaggedProductUiModel {
         stock = ContentTaggedProductUiModel.Stock.OutOfStock,
     )
 }
+
+fun mockReportReasonList(): List<PlayUserReportReasoningUiModel.Reasoning> = listOf(
+    PlayUserReportReasoningUiModel.Reasoning(
+        reasoningId = 1,
+        title = "Reason One",
+        detail = "Report Reason",
+        submissionData = UserReportOptions.OptionAdditionalField(),
+    ),
+    PlayUserReportReasoningUiModel.Reasoning(
+        reasoningId = 2,
+        title = "Reason Two",
+        detail = "Report Reason",
+        submissionData = UserReportOptions.OptionAdditionalField(),
+    ),
+)

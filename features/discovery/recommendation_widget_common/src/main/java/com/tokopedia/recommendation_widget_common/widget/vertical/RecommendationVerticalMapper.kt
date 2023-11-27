@@ -8,7 +8,7 @@ object RecommendationVerticalMapper {
     fun mapVisitableList(model: RecommendationVerticalModel): List<RecommendationVerticalVisitable> {
         return mutableListOf<RecommendationVerticalVisitable>().apply {
             addAll(mapRecommendationVerticalProductCard(model))
-            if (model.widget.hasNext) {
+            if (model.widget.seeMoreAppLink.isNotEmpty()) {
                 add(mapRecommendationVerticalSeeMore(model))
             }
         }

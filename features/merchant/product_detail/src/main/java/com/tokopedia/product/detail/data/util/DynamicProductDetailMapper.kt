@@ -62,7 +62,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherS
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
@@ -147,7 +147,7 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductMiniSocialProofStockDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.REVIEW -> {
-                    listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductMostHelpfulReviewUiModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.INFO -> {
                     val contentData = component.componentData.firstOrNull()
@@ -798,7 +798,7 @@ object DynamicProductDetailMapper {
             MethodChecker.fromHtml(productInfo.getProductName).toString(),
             productInfo.data.price.currency,
             productInfo.basic.url,
-            isProductHasMaskingPrice(productInfo.data.price.priceFmt),
+            productInfo.data.price.isPriceMasked,
             shopUrl,
             productInfo.basic.shopName,
             productInfo.basic.productID,
@@ -806,10 +806,6 @@ object DynamicProductDetailMapper {
             campaignId = zeroIfEmpty(productInfo.data.campaign.campaignID),
             bundleId = zeroIfEmpty(bundleId)
         )
-    }
-
-    private fun isProductHasMaskingPrice(finalPrice: String): Boolean {
-        return finalPrice.contains("?")
     }
 
     fun generatePersonalizedData(product: DynamicProductInfoP1, productP2: ProductInfoP2UiData?): PersonalizedCampaignModel {
