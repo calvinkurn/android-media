@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tokopedianow_bg_quest">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tp_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="@+id/siv_circle_see_all"
+            app:layout_constraintEnd_toStartOf="@+id/siv_circle_see_all"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/siv_circle_see_all"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Misi seru NOW! Raih kupon s.d 120rb!" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/siv_circle_see_all"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="14dp"
+            android:padding="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/circleImageDisplay"
+            app:srcCompat="@drawable/iconunify_chevron_right"
+            app:strokeColor="@color/Unify_Static_White"
+            app:strokeWidth="0.75dp" />
+
+        <com.tokopedia.tokopedianow.home.presentation.view.HomeQuestProgressBarView
+            android:id="@+id/quest_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="9dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/siv_circle_see_all" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_quest_cards"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/quest_progress_bar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

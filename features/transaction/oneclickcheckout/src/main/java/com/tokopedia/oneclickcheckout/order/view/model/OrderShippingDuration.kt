@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 
@@ -13,5 +14,6 @@ data class OrderShippingDuration(
     val isDisableOrderPrioritas: Boolean = false,
     val pslCode: String = "",
     val cartData: String = "",
-    val warehouseId: String = ""
+    val warehouseId: String = "",
+    val ratesParam: RatesParam? = null
 )

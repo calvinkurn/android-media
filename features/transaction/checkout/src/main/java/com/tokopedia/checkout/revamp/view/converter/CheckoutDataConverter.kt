@@ -202,6 +202,7 @@ class CheckoutDataConverter @Inject constructor() {
                 groupInfoBadgeUrl = groupShop.groupInfoBadgeUrl,
                 groupInfoDescription = groupShop.groupInfoDescription,
                 groupInfoDescriptionBadgeUrl = groupShop.groupInfoDescriptionBadgeUrl,
+                groupMetadata = groupShop.groupMetadata,
                 isBlackbox = cartShipmentAddressFormData.isBlackbox,
                 isHidingCourier = cartShipmentAddressFormData.isHidingCourier,
                 addressId = cartShipmentAddressFormData.groupAddress[0].userAddress.addressId,

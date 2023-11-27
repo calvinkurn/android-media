@@ -80,6 +80,7 @@ object ConstantTransactionAnalytics {
         const val REMOVE_FROM_CART_V2 = "remove_from_cart"
         const val CLICK_PG = "clickPG"
         const val VIEW_PG_IRIS = "viewPGIris"
+        const val CLICK_DIGITAL = "clickDigital"
     }
 
     object EventCategory {
