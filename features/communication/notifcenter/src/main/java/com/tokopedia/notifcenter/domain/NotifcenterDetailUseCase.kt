@@ -139,7 +139,7 @@ class NotifcenterDetailUseCase @Inject constructor(
             				rating
             				count_review
                             warehouse_id
-            				labels {
+            				label {
             					title
             					color
             				}
@@ -276,7 +276,7 @@ class NotifcenterDetailUseCase @Inject constructor(
             				rating
             				count_review
                             warehouse_id
-            				labels {
+            				label {
             					title
             					color
             				}

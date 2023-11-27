@@ -14,14 +14,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.domain.model.TickerModel
-import com.tokopedia.logisticCommon.util.TargetedTickerHelper.renderTargetedTickerView
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
@@ -31,14 +26,15 @@ import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragm
 import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_QUERY
+import com.tokopedia.targetedticker.domain.TargetedTickerPage
+import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * ManageAddressFragment
@@ -47,7 +43,6 @@ import javax.inject.Inject
  */
 class ManageAddressFragment :
     BaseDaggerFragment(),
-    SearchInputView.Listener,
     FromFriendFragment.Listener,
     MainAddressFragment.MainAddressListener {
 
@@ -71,6 +66,7 @@ class ManageAddressFragment :
     }
 
     private var binding by autoClearedNullable<FragmentManageAddressBinding>()
+
     private var bottomSheetLainnya: BottomSheetUnify? = null
 
     private var manageAddressListener: ManageAddressListener? = null
@@ -103,7 +99,6 @@ class ManageAddressFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setupDataFromArgument(arguments)
-        observeTickerState()
         if (viewModel.isNeedValidateShareAddress) {
             observerValidateShareAddress()
             showLoading(true)
@@ -125,46 +120,6 @@ class ManageAddressFragment :
         }
     }
 
-    private fun observeTickerState() {
-        viewModel.tickerState.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    showTicker(it.data)
-                }
-                is Fail -> {
-                    hideTicker()
-                }
-            }
-        }
-    }
-
-    private fun showTicker(tickerItem: TickerModel) {
-        context?.let {
-            binding?.tickerManageAddress?.renderTargetedTickerView(
-                it,
-                tickerItem,
-                onClickUrl = { url ->
-                    RouteManager.route(
-                        context,
-                        "${ApplinkConst.WEBVIEW}?url=$url"
-                    )
-                },
-                onClickApplink = { applink ->
-                    startActivity(
-                        RouteManager.getIntent(
-                            context,
-                            applink
-                        )
-                    )
-                }
-            )
-        }
-    }
-
-    private fun hideTicker() {
-        binding?.tickerManageAddress?.gone()
-    }
-
     private fun observerValidateShareAddress() {
         viewModel.validateShareAddressState.observe(viewLifecycleOwner) {
             when (it) {
@@ -178,6 +133,7 @@ class ManageAddressFragment :
                         }
                     bindView()
                 }
+
                 is ValidateShareAddressState.Fail -> {
                     if (viewModel.isNeedToShareAddress) {
                         viewModel.receiverUserId = null
@@ -261,14 +217,6 @@ class ManageAddressFragment :
 
             searchInputView.searchBarTextField.setText(viewModel.savedQuery)
         }
-    }
-
-    override fun onSearchSubmitted(text: String) {
-        performSearch(text)
-    }
-
-    override fun onSearchTextChanged(text: String?) {
-        openSoftKeyboard()
     }
 
     override fun onDestroyView() {
@@ -358,7 +306,7 @@ class ManageAddressFragment :
 
     override fun updateFromFriendsTabText(count: Int) {
         binding?.tlManageAddress?.tabLayout?.getTabAt(FROM_FRIEND_FRAGMENT_POSITION)?.apply {
-            customView?.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.tab_item_text_id)
+            customView?.findViewById<TextView>(unifycomponentsR.id.tab_item_text_id)
                 ?.apply {
                     text = if (count > 0) {
                         getString(R.string.tablayout_label_from_friend_with_value, count.toString())
@@ -377,6 +325,29 @@ class ManageAddressFragment :
     }
 
     override fun setupTicker(firstTicker: String?) {
-        viewModel.getTargetedTicker(firstTicker)
+        binding?.tickerManageAddress?.apply {
+            loadAndShow(TargetedTickerPage.ADDRESS_LIST_NON_OCC)
+
+            setResultListener(
+                onSuccess = { ticker ->
+                    ticker.addSingleTicker(firstTicker)
+                },
+                onError = {
+                    val ticker = TickerModel()
+                    ticker.addSingleTicker(firstTicker)
+                }
+            )
+        }
+    }
+
+    private fun TickerModel.addSingleTicker(firstTicker: String?): TickerModel {
+        val tickerItems = this.item.toMutableList()
+        if (firstTicker?.isNotBlank() == true) {
+            tickerItems.add(
+                TickerModel.TickerItem(type = Ticker.TYPE_ANNOUNCEMENT, content = firstTicker)
+            )
+        }
+
+        return this.copy(item = tickerItems.toList())
     }
 }

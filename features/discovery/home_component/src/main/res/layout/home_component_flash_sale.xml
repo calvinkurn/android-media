@@ -23,9 +23,9 @@
         android:id="@+id/container_flash_sale"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="@dimen/home_component_padding_top_default"
+        android:layout_marginBottom="@dimen/home_component_padding_bottom_default"
+        android:layout_marginHorizontal="@dimen/home_component_padding_horizontal_default"
         app:layout_constraintTop_toBottomOf="@id/home_component_divider_header"
         app:layout_constraintBottom_toTopOf="@id/home_component_divider_footer"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -43,7 +43,7 @@
             app:layout_constraintHorizontal_bias="1"
             android:alpha=".12"
             android:contentDescription="@string/content_desc_flash_sale_supergraphic"
-            android:src="@drawable/supergraphic_flash_sale_default"/>
+            app:srcCompat="@drawable/supergraphic_flash_sale_default"/>
 
         <com.tokopedia.home_component.customview.DynamicChannelHeaderView
             android:id="@+id/home_component_header_view"

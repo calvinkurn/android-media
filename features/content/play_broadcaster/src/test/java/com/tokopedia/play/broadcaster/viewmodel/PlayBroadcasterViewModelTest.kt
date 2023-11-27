@@ -30,6 +30,7 @@ import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.util.PriceFormatUtil
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertEvent
@@ -76,6 +77,8 @@ class PlayBroadcasterViewModelTest {
     private val mockHydraConfigStore: HydraConfigStore = mockk(relaxed = true)
     private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
 
+    private val productUiMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(PriceFormatUtil())
+
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
     private val uiModelBuilder = UiModelBuilder()
 
@@ -109,7 +112,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = PlayBroProductUiMapper(PriceFormatUtil()),
         )
 
         robot.use {
@@ -169,7 +172,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -199,7 +202,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             sharedPref = sharedPreferences,
         )
 
@@ -232,7 +235,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             sharedPref = sharedPreferences,
         )
 
@@ -456,7 +459,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = PlayBroProductUiMapper(PriceFormatUtil()),
         )
 
         robot.use {
@@ -479,7 +482,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -504,7 +507,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -532,7 +535,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -562,7 +565,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -586,7 +589,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -629,7 +632,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -656,7 +659,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -684,7 +687,7 @@ class PlayBroadcasterViewModelTest {
             sharedPref = mockHydraSharedPreferences,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -711,7 +714,7 @@ class PlayBroadcasterViewModelTest {
             sharedPref = mockHydraSharedPreferences,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -735,7 +738,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -759,7 +762,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -783,7 +786,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -809,7 +812,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -836,7 +839,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -860,7 +863,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -884,7 +887,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -909,7 +912,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
         )
 
         robot.use {
@@ -1326,7 +1329,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             mDataStore = mockDataStore,
             hydraConfigStore = mockHydraConfigStore,
         )
@@ -1360,7 +1363,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             mDataStore = mockDataStore,
             hydraConfigStore = mockHydraConfigStore,
         )

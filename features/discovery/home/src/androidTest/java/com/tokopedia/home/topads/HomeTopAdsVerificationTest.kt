@@ -20,9 +20,9 @@ import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
@@ -47,6 +47,9 @@ import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEa
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.junit.*
+import com.tokopedia.carouselproductcard.R as carouselproductcardR
+import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
+import com.tokopedia.home_component.R as home_componentR
 
 /**
  * Created by DevAra
@@ -167,7 +170,7 @@ class HomeTopAdsVerificationTest {
 
         val itemList = recomFeedRecyclerView?.getRecomItemList().orEmpty()
 
-        val count = itemList.count { it is HomeRecommendationItemDataModel && it.product.isTopads }
+        val count = itemList.count { it is HomeRecommendationItemDataModel && it.recommendationProductItem?.isTopAds == true }
         topAdsCount += count
     }
 
@@ -175,18 +178,18 @@ class HomeTopAdsVerificationTest {
         when (val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)) {
             is MixTopComponentViewHolder -> {
                 waitForData()
-                clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.dc_banner_rv, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, home_componentR.id.dc_banner_rv, 0)
             }
             is MixLeftComponentViewHolder -> {
-                val childRecyclerView: RecyclerView = viewHolder.itemView.findViewById(com.tokopedia.home_component.R.id.rv_product)
+                val childRecyclerView: RecyclerView = viewHolder.itemView.findViewById(home_componentR.id.rv_product)
                 val childItemCount = childRecyclerView.adapter?.itemCount ?: 0
                 if (childItemCount >= MIX_LEFT_ITEM_COUNT_THRESHOLD) {
-                    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.rv_product, 0)
+                    clickOnEachItemRecyclerView(viewHolder.itemView, home_componentR.id.rv_product, 0)
                 }
             }
             is FeaturedShopViewHolder -> {
                 waitForData()
-                clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.dc_banner_rv, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, home_componentR.id.dc_banner_rv, 0)
             }
             is HomeRecommendationFeedViewHolder -> {
                 waitForData()
@@ -195,13 +198,13 @@ class HomeTopAdsVerificationTest {
             }
             is BestSellerViewHolder -> {
                 waitForData()
-                clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.recommendation_widget_common.R.id.best_seller_recommendation_recycler_view, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, recommendation_widget_commonR.id.best_seller_recommendation_recycler_view, 0)
             }
             is Lego4ProductViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
             }
             is FlashSaleViewHolder -> {
-                clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, carouselproductcardR.id.carouselProductCardRecyclerView, 0)
             }
         }
     }
@@ -226,7 +229,7 @@ class HomeTopAdsVerificationTest {
         return homeAdapter.currentList
     }
 
-    private fun RecyclerView.getRecomItemList(): List<HomeRecommendationVisitable> {
+    private fun RecyclerView.getRecomItemList(): List<Visitable<HomeRecommendationTypeFactoryImpl>> {
         val homeRecomAdapter = this.adapter as? HomeRecommendationAdapter
 
         if (homeRecomAdapter == null) {

@@ -19,4 +19,14 @@ class CheckoutDataHelper @Inject constructor() {
         }
         return products
     }
+
+    fun getAllProductCategoryIds(listData: List<CheckoutItem>): List<Long> {
+        return listData.mapNotNull { checkoutItem ->
+            if (checkoutItem is CheckoutProductModel && !checkoutItem.isError) {
+                checkoutItem.productCatId
+            } else {
+                null
+            }
+        }
+    }
 }

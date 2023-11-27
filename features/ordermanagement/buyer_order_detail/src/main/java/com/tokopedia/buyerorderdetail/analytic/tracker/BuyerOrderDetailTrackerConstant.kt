@@ -33,6 +33,7 @@ object BuyerOrderDetailTrackerConstant {
     // event categories
     const val EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP = "my purchase list detail - mp"
     const val EVENT_ORDER_DETAIL_HISTORY = "order detail history"
+    const val EVENT_CATEGORY_PG_ORDER_DETAIL = "pg order detail"
 
     // event actions
     const val EVENT_ACTION_PARTIAL_CLICK = "click"
@@ -67,6 +68,9 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
     const val EVENT_ACTION_CLICK_SHARING_CHANNEL = "click - sharing channel"
     const val EVENT_ACTION_IMPRESSION_SHARE_BOTTOM_SHEET = "view on sharing channel"
+    const val EVENT_ACTION_CLICK_SAVING_WIDGET = "click savings widget - "
+    const val EVENT_ACTION_IMPRESSION_SAVING_WIDGET = "impression savings widget - "
+    const val EVENT_ACTION_CLICK_CHAT = "click chat from order detail"
 
     // pof
     const val EVENT_ACTION_CLICK_TOTAL_AVAILABLE_ITEM_POF = "click jumlah barang tersedia - popup pof"
@@ -85,6 +89,7 @@ object BuyerOrderDetailTrackerConstant {
     const val BUSINESS_UNIT_MARKETPLACE = "Seller Order Management"
     const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
     const val BUSINESS_UNIT_SHARING_EXPERIENCE = "sharingexperience"
+    const val BUSINESS_UNIT_COMMMUNICATION = "communication"
 
     // current site
     const val CURRENT_SITE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
@@ -134,9 +139,11 @@ object BuyerOrderDetailTrackerConstant {
     const val TRACKER_ID_45656 = "45656"
     const val TRACKER_ID_47433 = "47433"
     const val TRACKER_ID_48377 = "48377"
+    const val TRACKER_ID_48479 = "48479"
 
     // others
     const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"
+    const val ROLE_BUYER = "buyer"
 
     // buyer order extension
     const val EVENT_ACTION_CONFIRMATION_ORDER_EXTENSION =
