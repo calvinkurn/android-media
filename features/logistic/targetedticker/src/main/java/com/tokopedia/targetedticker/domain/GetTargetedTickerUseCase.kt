@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.domain.usecase
+package com.tokopedia.targetedticker.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -6,30 +6,29 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
-import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerRequest
-import com.tokopedia.logisticCommon.domain.response.GetTargetedTickerResponse
 import javax.inject.Inject
 
 class GetTargetedTickerUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<String, GetTargetedTickerResponse>(dispatcher.io) {
+) : CoroutineUseCase<TargetedTickerParamModel, GetTargetedTickerResponse>(dispatcher.io) {
 
     @GqlQuery(
         QUERY_GET_TARGETED_TICKER_NAME,
         QUERY_GET_TARGETED_TICKER
     )
 
-    override suspend fun execute(params: String): GetTargetedTickerResponse {
-        return repository.request(GetTargetedTicker(), createParams(params))
+    override suspend fun execute(params: TargetedTickerParamModel): GetTargetedTickerResponse {
+        return repository.request(graphqlQuery(), createParams(params))
     }
 
-    private fun createParams(page: String): GetTargetedTickerRequest {
+    private fun createParams(param: TargetedTickerParamModel): GetTargetedTickerRequest {
         return GetTargetedTickerRequest(
             GetTargetedTickerParam(
-                page = page,
-                target = listOf()
+                page = param.page,
+                target = param.targets.map {
+                    GetTargetedTickerParam.GetTargetedTickerRequestTarget(it.type, it.value)
+                }
             )
         )
     }
