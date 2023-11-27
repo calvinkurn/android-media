@@ -105,6 +105,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shop
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemIconViewHolder
@@ -597,6 +601,17 @@ class DiscoveryHomeFactory {
                 ComponentsList.ShopOfferHeroBrandProductItem,
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.ShopOfferSupportingBrand,
+                ::ShopOfferSupportingBrandViewHolder,
+                ::ShopOfferSupportingBrandViewModel
+            )
+            initializeComponent(
+                ComponentsList.ShopOfferSupportingBrandItem,
+                ::ShopOfferSupportingBrandItemViewHolder,
+                ::ShopOfferSupportingBrandItemViewModel
             )
         }
 

@@ -44,6 +44,8 @@ data class InspirationCarouselDataView(
 
     fun isCarouselSeamlessLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
 
+    fun isSeamlessProductLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
+
     @Suppress("LongParameterList")
     data class Option(
         val title: String = "",

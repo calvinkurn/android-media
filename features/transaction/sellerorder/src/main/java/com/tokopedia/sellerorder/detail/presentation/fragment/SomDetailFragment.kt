@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -139,6 +138,7 @@ import com.tokopedia.sellerorder.detail.presentation.model.SomDetailIncomeUiMode
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
+import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_INITIAL
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -699,13 +699,13 @@ open class SomDetailFragment :
                                 setActionConfirmShipping(buttonResp.displayName)
                             }
 
-buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
+                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
                                 KEY_CONFIRM_SHIPPING_DROP_OFF,
                                 true
                             ) -> {
                                 binding?.btnPrimary?.isLoading = true
                                 setActionConfirmShippingAuto(buttonResp)
-                            }                            buttonResp.key.equals(
+                            } buttonResp.key.equals(
                                 KEY_VIEW_COMPLAINT_SELLER,
                                 true
                             ) -> setActionSeeComplaint(buttonResp.url)
@@ -1253,10 +1253,9 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
 
     override fun onDialPhone(strPhoneNo: String) {
         try {
-            val intent = Intent(Intent.ACTION_DIAL)
-            val phone = "tel:$strPhoneNo"
-            intent.data = Uri.parse(phone)
-            startActivity(intent)
+            val bottomSheetMaskingPhoneNumber =
+                MaskingPhoneNumberBottomSheet.newInstance(strPhoneNo)
+            bottomSheetMaskingPhoneNumber.show(childFragmentManager)
         } catch (t: Throwable) {
             t.showErrorToaster()
         }
@@ -1713,7 +1712,7 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
         return SomDetailAdapterFactoryImpl(this, recyclerViewSharedPool)
     }
 
-    inner class TransparencyFeeCoachMarkHandler: RecyclerView.OnScrollListener() {
+    inner class TransparencyFeeCoachMarkHandler : RecyclerView.OnScrollListener() {
 
         private val transparencyFeeEntryPointCoachMark by lazy(LazyThreadSafetyMode.NONE) {
             context?.let { CoachMark2(it) }

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="8dp" />
 
-    <com.tokopedia.promocheckout.common.view.widget.PromoEntryPointWidget
+    <com.tokopedia.promousage.view.widget.PromoEntryPointWidget
         android:id="@+id/btn_checkout_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -37,6 +37,8 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Success
@@ -76,6 +78,12 @@ abstract class BuyerOrderDetailViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var atcUseCase: AddToCartMultiUseCase
+
+    @RelaxedMockK
+    lateinit var tokoChatGroupBookingUseCase: TokoChatGroupBookingUseCase
+
+    @RelaxedMockK
+    lateinit var tokoChatCounterUseCase: TokoChatCounterUseCase
 
     lateinit var viewModel: BuyerOrderDetailViewModel
 
@@ -177,6 +185,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             getBuyerOrderDetailDataUseCase = { getBuyerOrderDetailDataUseCase },
             finishOrderUseCase = { finishOrderUseCase },
             atcUseCase = { atcUseCase },
+            tokoChatGroupBookingUseCase = { tokoChatGroupBookingUseCase },
+            tokoChatCounterUseCase = { tokoChatCounterUseCase },
             resourceProvider = { resourceProvider }
         )
 
