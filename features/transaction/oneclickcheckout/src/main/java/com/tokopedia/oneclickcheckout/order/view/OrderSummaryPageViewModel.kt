@@ -1632,7 +1632,8 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderCart,
             orderProfile.value,
             orderTotal.value.orderCost,
-            orderShop.value.shopShipment
+            orderShop.value.shopShipment,
+            orderShipment.value
         ).first
     }
 

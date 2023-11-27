@@ -60,7 +60,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         orderCart: OrderCart,
         orderProfile: OrderProfile,
         orderCost: OrderCost,
-        listShopShipment: List<ShopShipment>
+        listShopShipment: List<ShopShipment>,
+        orderShipment: OrderShipment
     ): Pair<RatesParam?, Double> {
         val (shipping, overweight) = generateShippingParam(orderCart, orderProfile, orderCost)
         if (shipping == null) return null to overweight
@@ -68,6 +69,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             .warehouseId(orderCart.shop.warehouseId)
             .cartData(orderCart.cartData)
             .groupMetadata(orderCart.groupMetadata)
+            .promoCode(if (orderShipment.isApplyLogisticPromo) orderShipment.logisticPromoViewModel?.promoCode ?: "" else "")
             .build()
             .apply {
                 occ = "1"
@@ -168,7 +170,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                     orderCart,
                     orderProfile,
                     orderCost,
-                    listShopShipment
+                    listShopShipment,
+                    orderShipment
                 )
                 if (param == null) {
                     // overweight

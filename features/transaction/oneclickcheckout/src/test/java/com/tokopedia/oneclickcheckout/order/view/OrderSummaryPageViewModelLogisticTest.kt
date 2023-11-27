@@ -39,8 +39,10 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.verify
+import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 import rx.Observable
 
@@ -2915,11 +2917,10 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         // When
-        orderSummaryPageViewModel.getShippingBottomsheetParam()
+        val result = orderSummaryPageViewModel.getShippingBottomsheetParam()
 
         // Then
-        // todo
-//        assert(orderSummaryPageViewModel.orderShippingDuration.value is OccState.Success)
+        assertNotNull(result)
     }
 
     @Test
@@ -2935,14 +2936,10 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
 
         // When
-        orderSummaryPageViewModel.getShippingBottomsheetParam()
+        val result = orderSummaryPageViewModel.getShippingBottomsheetParam()
 
         // Then
-        // todo
-//        assertNotEquals(
-//            OccState.Success(OrderShippingDuration()),
-//            orderSummaryPageViewModel.orderShippingDuration.value
-//        )
+        assertNull(result)
     }
 
     @Test
@@ -2954,10 +2951,9 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
             helper.orderShipment.copy(isApplyLogisticPromo = true)
 
         // When
-        orderSummaryPageViewModel.getShippingBottomsheetParam()
+        val result = orderSummaryPageViewModel.getShippingBottomsheetParam()
 
         // Then
-        // todo
-//        assert((orderSummaryPageViewModel.orderShippingDuration.value as OccState.Success<OrderShippingDuration>).data.pslCode == helper.logisticPromo.promoCode)
+        assert(result?.psl_code == helper.logisticPromo.promoCode)
     }
 }
