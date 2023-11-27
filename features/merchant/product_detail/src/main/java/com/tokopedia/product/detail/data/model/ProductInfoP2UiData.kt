@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.data.model.dynamiconeliner.DynamicOneLiner
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
+import com.tokopedia.product.detail.data.model.gwp.GWPData
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
@@ -71,7 +72,8 @@ data class ProductInfoP2UiData(
     var shopReview: ProductShopReviewUiModel = ProductShopReviewUiModel(),
     var bottomSheetEdu: BottomSheetEduUiModel = BottomSheetEduUiModel(),
     var dynamicOneLiner: List<DynamicOneLiner> = emptyList(),
-    var bmgm: BMGMData = BMGMData()
+    var bmgm: BMGMData = BMGMData(),
+    var gwp: GWPData = GWPData()
 ) {
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {

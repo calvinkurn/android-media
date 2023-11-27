@@ -636,6 +636,31 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 offerID
               }
             }
+            gwp {
+              separator
+              data {
+                backgroundColor
+                titleColor
+                iconUrl
+                title
+                action {
+                  type
+                  link
+                }
+                cards {
+                  title
+                  productName
+                  subtitle
+                  contents {
+                    imageUrl
+                    loadMoreText
+                  }
+                }
+                loadMoreText
+                productIDs
+                offerID
+              }
+            }
           }
         }
         """.trimIndent()
