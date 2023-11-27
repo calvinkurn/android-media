@@ -85,7 +85,9 @@ class RechargeHomepageViewModel @Inject constructor(
                     it.key != PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS
                 }
             } else {
-                mapParams
+                mapParams.filter {
+                    it.key != PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_NAME
+                }
             }
 
         launchCatchError(block = {
