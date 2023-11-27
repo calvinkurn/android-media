@@ -863,7 +863,7 @@ class CatalogDetailPageFragment :
         columnedInfoUiModel.widgetContent.rowData.forEachIndexed { index, _ ->
             val promotions = hashMapOf<String, String>()
             promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = catalogTitle
-            promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.inc().toString()
             promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
             promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET
             list.add(promotions)
