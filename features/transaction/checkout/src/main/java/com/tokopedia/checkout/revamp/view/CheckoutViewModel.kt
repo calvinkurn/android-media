@@ -773,7 +773,11 @@ class CheckoutViewModel @Inject constructor(
 
             if (checkoutModel != null && oldCheckoutModel != null) {
                 val entryPointInfo = promoProcessor
-                    .getEntryPointInfo(cleanPromoFromPromoRequest(generateCouponListRecommendationRequestWithListData(checkoutItems)))
+                    .getEntryPointInfo(
+                        cleanPromoFromPromoRequest(
+                            generateCouponListRecommendationRequestWithListData(checkoutItems)
+                        )
+                    )
                 return checkoutItems.map { model ->
                     if (model is CheckoutPromoModel) {
                         return@map model.copy(
@@ -1807,7 +1811,13 @@ class CheckoutViewModel @Inject constructor(
                 if (checkoutItem is CheckoutEpharmacyModel) {
                     if (isPrescriptionFrontEndValidationError) {
                         items[index] =
-                            checkoutItem.copy(epharmacy = checkoutItem.epharmacy.copy(isError = true, productErrorCount = productErrorPrescriptionCount, isIncompletePrescriptionError = productSuccessPrescriptionCount > 0))
+                            checkoutItem.copy(
+                                epharmacy = checkoutItem.epharmacy.copy(
+                                    isError = true,
+                                    productErrorCount = productErrorPrescriptionCount,
+                                    isIncompletePrescriptionError = productSuccessPrescriptionCount > 0
+                                )
+                            )
                     }
                 }
             }
@@ -2510,6 +2520,10 @@ class CheckoutViewModel @Inject constructor(
         return helper.getOrderProducts(listData.value, cartStringGroup)
     }
 
+    fun getProductCatIds(): List<Long> {
+        return helper.getAllProductCategoryIds(listData.value)
+    }
+
     fun cancelUpsell(
         isReloadData: Boolean,
         skipUpdateOnboardingState: Boolean,
@@ -2563,6 +2577,31 @@ class CheckoutViewModel @Inject constructor(
 
     fun useNewPromoPage(): Boolean {
         return isPromoRevamp == true
+    }
+
+    fun generatePaymentLevelAddOnsAnalyticData(): List<Pair<String, String>> {
+        val result = mutableListOf<Pair<String, String>>()
+        val crossSellGroup = listData.value.crossSellGroup()
+        val eGoldAttribute =
+            crossSellGroup?.crossSellList?.firstOrNullInstanceOf(CheckoutEgoldModel::class.java)
+        if (eGoldAttribute != null && eGoldAttribute.egoldAttributeModel.isEligible && eGoldAttribute.egoldAttributeModel.isChecked) {
+            result.add(Pair(eGoldAttribute.getCategoryName(), eGoldAttribute.getCrossSellProductId()))
+        }
+        val listShipmentCrossSellModel =
+            crossSellGroup?.crossSellList?.filterIsInstance(CheckoutCrossSellModel::class.java)
+                ?: emptyList()
+        if (listShipmentCrossSellModel.isNotEmpty()) {
+            for (crossSellModel in listShipmentCrossSellModel) {
+                if (crossSellModel.isChecked) {
+                    result.add(Pair(crossSellModel.getCategoryName(), crossSellModel.getCrossSellProductId()))
+                }
+            }
+        }
+        val donationModel = crossSellGroup?.crossSellList?.firstOrNullInstanceOf(CheckoutDonationModel::class.java)
+        if (donationModel != null && donationModel.donation.isChecked) {
+            result.add(Pair(donationModel.getCategoryName(), donationModel.getCrossSellProductId()))
+        }
+        return result
     }
 
     companion object {
