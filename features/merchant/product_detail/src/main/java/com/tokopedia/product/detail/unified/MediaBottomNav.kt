@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.widget
+package com.tokopedia.product.detail.unified
 
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
