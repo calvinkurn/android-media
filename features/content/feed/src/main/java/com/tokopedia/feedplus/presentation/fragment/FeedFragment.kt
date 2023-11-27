@@ -1489,7 +1489,7 @@ class FeedFragment :
                     when (event) {
                         is FeedMainEvent.ScrollToTop -> {
                             if (event.tabKey != data?.key) return@collect
-                            binding.rvFeedPost.smoothScrollToPosition(0)
+                            binding.rvFeedPost.scrollToPosition(0)
                         }
 
                         else -> {}
