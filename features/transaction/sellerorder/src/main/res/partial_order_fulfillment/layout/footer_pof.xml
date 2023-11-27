@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_pof_footer"
+    android:paddingVertical="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_pof_footer_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/layout_pof_footer_price"
+        app:layout_constraintEnd_toStartOf="@id/btn_pof_footer"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="display_3"
+        tools:text="Total Harga Baru (9/10)" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_pof_footer_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_pof_footer"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_pof_footer_title">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_pof_footer_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@id/layout_pof_footer_price"
+            app:layout_constraintEnd_toStartOf="@id/card_pof_footer_icon"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="Rp45.000.000" />
+
+        <com.tokopedia.unifycomponents.CardUnify2
+            android:id="@+id/card_pof_footer_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="4dp"
+            app:cardCornerRadius="12dp"
+            app:card_type="clear"
+            app:layout_constraintBottom_toBottomOf="@id/tv_pof_footer_price"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_pof_footer_price"
+            app:layout_constraintTop_toTopOf="@id/tv_pof_footer_price">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_pof_footer"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                app:icon_name="CHEVRON_UP" />
+
+        </com.tokopedia.unifycomponents.CardUnify2>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_pof_footer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:minWidth="149dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Konfirmasi (9)" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_tv_pof_footer_title"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="29dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/loader_tv_pof_footer_price"
+        app:layout_constraintEnd_toStartOf="@id/btn_pof_footer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_tv_pof_footer_price"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="29dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_pof_footer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loader_tv_pof_footer_title"
+        app:loader_type="rect" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
