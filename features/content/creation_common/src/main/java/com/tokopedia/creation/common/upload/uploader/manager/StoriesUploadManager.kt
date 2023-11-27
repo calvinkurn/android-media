@@ -190,8 +190,8 @@ class StoriesUploadManager @AssistedInject constructor(
             }
             is UploadResult.Error -> {
                 if (mediaType.isVideo) {
-                    /** TODO JOE: add requestId here */
-                    sendErrorRequestId(uploadData, "")
+                    println("JOE LOG $result")
+                    sendErrorRequestId(uploadData, result.requestId)
                 }
 
                 throw Exception(result.message)
