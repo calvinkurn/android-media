@@ -1,15 +1,19 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
+import com.tokopedia.unifyprinciples.ColorMode
+import com.tokopedia.unifyprinciples.modeAware
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.home.R as homeR
 
 /**
  * Created by frenzel
  */
-class HomeThematicUtil @Inject constructor() {
+class HomeThematicUtil @Inject constructor(context: Context) {
     companion object {
         const val COLOR_DARK = "dark"
         const val COLOR_LIGHT = "light"
@@ -20,54 +24,47 @@ class HomeThematicUtil @Inject constructor() {
     var thematicModel: HomeThematicModel = HomeThematicModel()
     var isBackgroundLoaded: Boolean = false
 
-    private fun getColorMode() = if(thematicModel.isShown && isBackgroundLoaded) thematicModel.colorMode else COLOR_DEFAULT
-
     private val thematicColorMap = mapOf<@receiver:ColorRes Int, HomeThematicColorToken>(
         unifyprinciplesR.color.Unify_NN1000 to HomeThematicColorToken(
             unifyprinciplesR.color.Unify_Static_Black,
             unifyprinciplesR.color.Unify_Static_White,
-        ),
-        unifyprinciplesR.color.Unify_GN500 to HomeThematicColorToken(
-            homeR.color.home_dms_Unify_GN500_force_light,
-            homeR.color.home_dms_Unify_GN500_force_dark,
-        ),
-        unifyprinciplesR.color.Unify_NN600 to HomeThematicColorToken(
-            homeR.color.home_dms_Unify_NN600_force_light,
-            homeR.color.home_dms_Unify_NN600_force_dark,
-        ),
-        unifyprinciplesR.color.Unify_NN950 to HomeThematicColorToken(
-            homeR.color.home_dms_Unify_NN950_force_light,
-            homeR.color.home_dms_Unify_NN950_force_dark,
-        ),
-        unifyprinciplesR.color.Unify_NN950 to HomeThematicColorToken(
-            homeR.color.home_dms_Unify_NN950_force_light,
-            homeR.color.home_dms_Unify_NN950_force_dark,
-        ),
-        unifyprinciplesR.color.Unify_NN100 to HomeThematicColorToken(
-            homeR.color.home_dms_Unify_NN100_force_light,
-            homeR.color.home_dms_Unify_NN100_force_dark,
-        ),
-        unifyprinciplesR.color.Unify_NN50 to HomeThematicColorToken(
-            homeR.color.home_dms_Unify_NN50_force_light,
-            homeR.color.home_dms_Unify_NN50_force_dark,
-        ),
+        )
     )
 
-    @ColorRes
-    internal fun asThematicColor(actualColorToken: Int): Int {
+    private fun getColorMode() = if(thematicModel.isShown && isBackgroundLoaded) {
+        when (thematicModel.colorMode) {
+            COLOR_LIGHT -> ColorMode.LIGHT_MODE
+            COLOR_DARK -> ColorMode.DARK_MODE
+            else -> ColorMode.DEFAULT
+        }
+    } else {
+        ColorMode.DEFAULT
+    }
+
+    internal fun getThematicColor(actualColorToken: Int, context: Context): Int {
+        val ctx = context.modeAware(getColorMode()) ?: context
+        return ContextCompat.getColor(ctx, actualColorToken)
+    }
+
+    internal fun getThematicColorToken(actualColorToken: Int): Int {
         val colorToken = thematicColorMap[actualColorToken] ?: return actualColorToken
         return when(getColorMode()) {
-            COLOR_LIGHT -> colorToken.lightColorToken
-            COLOR_DARK -> colorToken.darkColorToken
+            ColorMode.LIGHT_MODE -> colorToken.lightColorToken
+            ColorMode.DARK_MODE -> colorToken.darkColorToken
             else -> actualColorToken
         }
     }
 
-    fun isDarkMode() = getColorMode() == COLOR_DARK
+    internal fun getThematicDrawable(actualColorToken: Int, context: Context): Drawable? {
+        val ctx = context.modeAware(getColorMode()) ?: context
+        return ContextCompat.getDrawable(ctx, actualColorToken)
+    }
 
-    fun isLightMode() = getColorMode() == COLOR_LIGHT
+    fun isDarkMode() = getColorMode() == ColorMode.DARK_MODE
 
-    fun isDefault() = getColorMode() != COLOR_DARK && getColorMode() != COLOR_LIGHT
+    fun isLightMode() = getColorMode() == ColorMode.LIGHT_MODE
+
+    fun isDefault() = getColorMode() == ColorMode.DEFAULT
 }
 
 /**

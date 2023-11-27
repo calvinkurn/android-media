@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.Constant.ProductHighlight
 import com.tokopedia.discovery2.Constant.ProductHighlight.ATC_OCS
@@ -18,15 +19,18 @@ import com.tokopedia.discovery2.databinding.DiscoItemSingleProductHighlightRevam
 import com.tokopedia.discovery2.databinding.DiscoItemTripleProductHighlightRevampBinding
 import com.tokopedia.discovery2.databinding.EmptyStateProductHighlightDoubleBinding
 import com.tokopedia.discovery2.databinding.EmptyStateProductHighlightSingleBinding
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.customview.CashbackView
 import com.tokopedia.discovery2.viewcontrollers.customview.PriceBoxView
 import com.tokopedia.discovery2.viewcontrollers.customview.ProductHighlightStockShopView
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.abstraction.R as abstractionR
 
 class ProductHighlightRevampItem(
     private val productHighlightData: DataItem,
@@ -37,7 +41,8 @@ class ProductHighlightRevampItem(
     previousProductHighlightItem: BaseProductHighlightItem?,
     override val context: Context,
     islastItem: Boolean,
-    override val compType: String? = null
+    override val compType: String? = null,
+    private val isBackgroundPresent: Boolean
 ) : BaseProductHighlightItem(
     productHighlightData,
     constraintLayout,
@@ -81,6 +86,7 @@ class ProductHighlightRevampItem(
                         renderCashback(cashbackView)
                         renderPriceBox(priceBox)
                         renderStatus(phImageTextBottom)
+                        handleFestiveBackgroundOnSingle()
 
                         if (productHighlightData.isActive == false) {
                             val matrix = ColorMatrix().apply {
@@ -133,6 +139,10 @@ class ProductHighlightRevampItem(
                         renderCashback(cashbackView)
                         renderPriceBox(priceBox)
                         renderStatus(phImageTextBottom)
+                        handleFestiveBackgroundOnMultiple(
+                            multipleBinding?.parentConstraintContainer,
+                            multipleBinding?.dataCardParent
+                        )
 
                         if (productHighlightData.isActive == false) {
                             val matrix = ColorMatrix().apply {
@@ -173,6 +183,10 @@ class ProductHighlightRevampItem(
                         renderCashback(cashbackView)
                         renderPriceBox(priceBox)
                         renderStatus(phImageTextBottom)
+                        handleFestiveBackgroundOnMultiple(
+                            tripleBinding?.parentConstraintContainer,
+                            tripleBinding?.dataCardParent
+                        )
 
                         if (productHighlightData.isActive == false) {
                             val matrix = ColorMatrix().apply {
@@ -194,6 +208,46 @@ class ProductHighlightRevampItem(
                     }
                 }
             }
+        }
+    }
+
+    private fun handleFestiveBackgroundOnSingle() {
+        if (isBackgroundPresent) {
+            val padding4dp = context.resources.getDimensionPixelOffset(abstractionR.dimen.dp_4)
+            val padding8dp = context.resources.getDimensionPixelOffset(abstractionR.dimen.dp_8)
+
+            singleBinding?.parentConstraintContainer?.apply {
+                background = ContextCompat.getDrawable(context, R.drawable.disco_bg_festive_product_highlight)
+                setPadding(padding4dp, padding4dp, padding8dp, padding4dp)
+            }
+        } else {
+            singleBinding?.parentConstraintContainer?.apply {
+                background = null
+                setPadding(0, 0, 0, 0)
+            }
+        }
+    }
+
+    private fun handleFestiveBackgroundOnMultiple(
+        parent: ConstraintLayout?,
+        dataContainer: ConstraintLayout?
+    ) {
+        if (isBackgroundPresent) {
+            val padding4dp = context.resources.getDimensionPixelOffset(abstractionR.dimen.dp_4)
+
+            parent?.apply {
+                background = ContextCompat.getDrawable(context, R.drawable.disco_bg_festive_product_highlight)
+                setPadding(0, 0, 0, padding4dp)
+            }
+
+            dataContainer?.setMargin(padding4dp, 0, padding4dp, 0)
+        } else {
+            parent?.apply {
+                background = null
+                setPadding(0, 0, 0, 0)
+            }
+
+            dataContainer?.setMargin(0, 0, 0, 0)
         }
     }
 

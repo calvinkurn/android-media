@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity"
+            android:name=".collection.view.activity.WishlistCollectionActivity"
             android:exported="false"
             android:label="@string/page_name_wishlist_collection"
             android:screenOrientation="portrait"
@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity"
+            android:name=".detail.view.activity.WishlistCollectionDetailActivity"
             android:exported="false"
             android:label="@string/page_name_wishlist_collection_detail"
             android:screenOrientation="portrait"
@@ -42,7 +42,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionHostBottomSheetActivity"
+            android:name=".collection.view.activity.WishlistCollectionHostBottomSheetActivity"
             android:exported="false"
             android:label="@string/page_name_wishlist_collection_host_bottomsheet"
             android:theme="@style/Theme.TransparentNoAnimation">
@@ -60,7 +60,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity"
+            android:name=".collection.view.activity.WishlistCollectionEditActivity"
             android:exported="false"
             android:label="@string/page_name_wishlist_edit"
             android:launchMode="singleTask"
@@ -80,7 +80,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionCreateHostBottomSheetActivity"
+            android:name=".collection.view.activity.WishlistCollectionCreateHostBottomSheetActivity"
             android:exported="false"
             android:label="@string/page_name_wishlist_collection_create_host_bottomsheet"
             android:theme="@style/Theme.TransparentNoAnimation">

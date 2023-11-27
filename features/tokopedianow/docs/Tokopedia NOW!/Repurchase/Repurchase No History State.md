@@ -1,4 +1,4 @@
-![image](../../res/repurchase_no_history_state.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/repurchase_no_history_state.png)
 
 
 <!--left header table-->

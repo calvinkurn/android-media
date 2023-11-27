@@ -1,10 +1,12 @@
 package com.tokopedia.product.detail.tracking
 
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 
 data class CommonTracker(
     val productInfo: DynamicProductInfoP1,
-    val userId: String
+    val userId: String,
+    val componentTracker: ComponentTrackDataModel = ComponentTrackDataModel()
 ) {
     private val productBasic by lazy { productInfo.basic }
     private val basicCategory by lazy { productBasic.category }

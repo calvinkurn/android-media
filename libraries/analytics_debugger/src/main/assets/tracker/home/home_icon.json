@@ -14,12 +14,13 @@
       "promotions": [
         {
           "creative_name": ".*_.*_.*",
-          "creative_slot": ".* - .*",
+          "creative_slot": ".*",
           "item_id": ".*",
           "item_name": "/ - .* - dynamic icon",
           "creative_url": ".*"
         }
-      ]
+      ],
+      "hits_time": ".*"
     },
     {
       "businessUnit": "home & browse",
@@ -31,7 +32,7 @@
       "promotions": [
         {
           "creative_name": ".*_.*_.*",
-          "creative_slot": ".* - .*",
+          "creative_slot": ".*",
           "item_id": ".*",
           "item_name": "/ - .* - dynamic icon",
           "creative_url": ".*"

@@ -46,6 +46,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycPreference
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.webview.ext.decode
 import javax.inject.Inject
 
 class GotoKycTransparentFragment : BaseDaggerFragment() {
@@ -153,7 +154,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         oneKycSdk.init()
         val projectId = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID)
         val source = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_SOURCE)
-        val callback = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_CALL_BACK)
+        val callback = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_CALL_BACK)?.decode()
         isReVerify = activity?.intent?.extras?.getBoolean(IS_RE_VERIFY).orFalse()
         validationParameter(projectId = projectId, source = source, callback)
         initObserver()

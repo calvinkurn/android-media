@@ -14,7 +14,8 @@ buildscript {
 }
 
 android {
-
+    namespace 'com.tokopedia.df.category.affiliate'
+    testNamespace 'com.tokopedia.df.category.affiliate.test'
     signingConfigs {
         debug {
             storeFile file("debug.keystore")

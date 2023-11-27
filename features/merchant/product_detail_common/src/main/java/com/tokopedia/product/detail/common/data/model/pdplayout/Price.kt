@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -19,20 +20,23 @@ data class Price(
     @SerializedName("slashPriceFmt")
     val slashPriceFmt: String = "",
     @SerializedName("discPercentage")
-    val discPercentage: String = ""
+    val discPercentage: String = "",
+    @SerializedName("isPriceMasked")
+    val isPriceMasked: Boolean = false
 ) {
 
     fun updatePrice(variantChild: VariantChild?) = copy(
         value = variantChild?.price.orZero(),
         priceFmt = variantChild?.priceFmt.ifNullOrBlank {
-            variantChild?.finalMainPrice.orZero().getCurrencyFormatted()
+            variantChild?.finalPrice?.getCurrencyFormatted().orEmpty()
         },
         slashPriceFmt = variantChild?.slashPriceFmt.ifNullOrBlank {
-            variantChild?.campaign?.discountedPrice?.getCurrencyFormatted().orEmpty()
+            variantChild?.finalMainPrice?.getCurrencyFormatted().orEmpty()
         },
         discPercentage = variantChild?.discPercentage.ifNullOrBlank {
-            variantChild?.campaign?.discountedPercentage.orZero().percentFormatted()
-        }
+            variantChild?.campaign?.discountedPercentage?.percentFormatted().orEmpty()
+        },
+        isPriceMasked = variantChild?.isPriceMasked.orFalse()
     )
 
     fun updatePriceFmt() = copy(

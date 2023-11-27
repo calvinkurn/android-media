@@ -35,6 +35,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
+import com.tokopedia.checkout.analytics.CheckoutPaymentAddOnsAnalytics
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.CornerAnalytics
 import com.tokopedia.checkout.databinding.BottomSheetPlatformFeeInfoBinding
@@ -52,6 +53,8 @@ import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
 import com.tokopedia.checkout.revamp.view.processor.CheckoutResult
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
@@ -150,6 +153,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
+import com.tokopedia.purchase_platform.common.revamp.PromoEntryPointImprovementRollenceManager
 import com.tokopedia.purchase_platform.common.utils.animateGone
 import com.tokopedia.purchase_platform.common.utils.animateShow
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -195,6 +199,9 @@ class CheckoutFragment :
 
     @Inject
     lateinit var checkoutEgoldAnalytics: CheckoutEgoldAnalytics
+
+    @Inject
+    lateinit var paymentAddOnsAnalytics: CheckoutPaymentAddOnsAnalytics
 
     @Inject
     lateinit var shippingCourierConverter: ShippingCourierConverter
@@ -404,6 +411,9 @@ class CheckoutFragment :
         viewModel.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
             RemoteConfigInstance.getInstance().abTestPlatform
         ).isRevamp()
+        viewModel.usePromoEntryPointNewInterface = PromoEntryPointImprovementRollenceManager(
+            RemoteConfigInstance.getInstance().abTestPlatform
+        ).enableNewInterface()
         viewModel.isOneClickShipment = isOneClickShipment
         viewModel.isTradeIn = isTradeIn
         viewModel.deviceId = deviceId
@@ -1851,7 +1861,8 @@ class CheckoutFragment :
         if (!viewModel.isLoading()) {
             val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
             if (viewModel.useNewPromoPage()) {
-                val validateUseRequestParam = viewModel.generateValidateUsePromoRequestForPromoUsage()
+                val validateUseRequestParam =
+                    viewModel.generateValidateUsePromoRequestForPromoUsage()
                 val totalAmount = viewModel.listData.value.buttonPayment()!!.totalPriceNum
                 val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
                     entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,
@@ -2074,6 +2085,20 @@ class CheckoutFragment :
         val digitalProductId = crossSellModel.crossSellModel.id
         val eventLabel = "$digitalCategoryName - $digitalProductId"
         val digitalProductName = crossSellModel.crossSellModel.info.title
+        val productCatIds = viewModel.getProductCatIds()
+        if (checked) {
+            paymentAddOnsAnalytics.eventCheckCrossSellIcon(
+                digitalCategoryName,
+                digitalProductId,
+                productCatIds
+            )
+        } else {
+            paymentAddOnsAnalytics.eventUncheckCrossSellIcon(
+                digitalCategoryName,
+                digitalProductId,
+                productCatIds
+            )
+        }
         checkoutAnalyticsCourierSelection.eventClickCheckboxCrossSell(
             checked,
             userSessionInterface.userId,
@@ -2084,7 +2109,7 @@ class CheckoutFragment :
         )
     }
 
-    override fun onEgoldChecked(checked: Boolean) {
+    override fun onEgoldChecked(checked: Boolean, egoldModel: CheckoutEgoldModel) {
         viewModel.updateEgold(checked)
         checkoutEgoldAnalytics.eventClickEgoldRoundup(checked)
         if (isTradeIn) {
@@ -2093,12 +2118,38 @@ class CheckoutFragment :
                 checked
             )
         }
+        val productCatIds = viewModel.getProductCatIds()
+        if (checked) {
+            paymentAddOnsAnalytics.eventCheckCrossSellIcon(
+                egoldModel.getCategoryName(),
+                egoldModel.getCrossSellProductId(),
+                productCatIds
+            )
+        } else {
+            paymentAddOnsAnalytics.eventUncheckCrossSellIcon(
+                egoldModel.getCategoryName(),
+                egoldModel.getCrossSellProductId(),
+                productCatIds
+            )
+        }
     }
 
-    override fun onDonationChecked(checked: Boolean) {
+    override fun onDonationChecked(checked: Boolean, checkoutDonationModel: CheckoutDonationModel) {
         viewModel.updateDonation(checked)
+        val productCatIds = viewModel.getProductCatIds()
         if (checked) {
             checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickTopDonasi()
+            paymentAddOnsAnalytics.eventCheckCrossSellIcon(
+                checkoutDonationModel.getCategoryName(),
+                checkoutDonationModel.getCrossSellProductId(),
+                productCatIds
+            )
+        } else {
+            paymentAddOnsAnalytics.eventUncheckCrossSellIcon(
+                checkoutDonationModel.getCategoryName(),
+                checkoutDonationModel.getCrossSellProductId(),
+                productCatIds
+            )
         }
         checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked)
         if (isTradeIn) {
@@ -2139,6 +2190,7 @@ class CheckoutFragment :
             viewModel.checkout(publicKey, { onTriggerEpharmacyTracker(it) }) {
                 onSuccessCheckout(it)
             }
+            sendProcessToPaymentAnalytic()
         }
     }
 
@@ -2485,7 +2537,11 @@ class CheckoutFragment :
                     )
                 val clearPromoUiModel =
                     data.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
-                onResultFromPromo(validateUsePromoRequest, validateUsePromoRevampUiModel, clearPromoUiModel)
+                onResultFromPromo(
+                    validateUsePromoRequest,
+                    validateUsePromoRevampUiModel,
+                    clearPromoUiModel
+                )
             }
         }
     }
@@ -2599,5 +2655,23 @@ class CheckoutFragment :
 
     override fun onClearPromoFailed(throwable: Throwable) {
         showToast(throwable.message)
+    }
+
+    override fun onPaymentLevelAddOnsImpressed(categoryName: String, crossSellProductId: String) {
+        val productCatIds = viewModel.getProductCatIds()
+        paymentAddOnsAnalytics.eventImpressCrossSellIcon(
+            categoryName,
+            crossSellProductId,
+            productCatIds
+        )
+    }
+
+    private fun sendProcessToPaymentAnalytic() {
+        val productCatIds = viewModel.getProductCatIds()
+        val paymentAddOnsAnalyticData = viewModel.generatePaymentLevelAddOnsAnalyticData()
+        paymentAddOnsAnalytics.eventClickPaymentMethodWithCrossSell(
+            paymentAddOnsAnalyticData,
+            productCatIds
+        )
     }
 }

@@ -4,7 +4,7 @@ import com.gojek.conversations.extensions.ExtensionMessage
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.IMAGE_ATTACHMENT_MSG
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat.stub.repository.TokoChatRepositoryStub

@@ -10,15 +10,22 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
 import com.tokopedia.people.data.UserFollowRepository
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.di.UserProfileScope
 import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.FollowResultUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.state.LoadingState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @UserProfileScope
 class FollowerFollowingViewModel @Inject constructor(
-    private val repo: UserFollowRepository
+    private val repo: UserFollowRepository,
+    private val repoProfile: UserProfileRepository
 ) : BaseViewModel(Dispatchers.Main) {
 
     private val profileFollowers = MutableLiveData<Resources<FollowListUiModel.Follower>>()
@@ -35,11 +42,32 @@ class FollowerFollowingViewModel @Inject constructor(
     private val followersError = MutableLiveData<Throwable>()
     val followersErrorLiveData: LiveData<Throwable> get() = followersError
 
-    var username: String = ""
-
+    private val _followCount = MutableLiveData<FollowListUiModel.FollowCount>()
     val followCount: LiveData<FollowListUiModel.FollowCount>
         get() = _followCount
-    private val _followCount = MutableLiveData<FollowListUiModel.FollowCount>()
+
+    private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
+    val profileInfo: Flow<ProfileUiModel>
+        get() = _profileInfo
+
+    val username: String
+        get() = _profileInfo.value.username
+
+    private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Hide)
+    val loadingState: Flow<LoadingState>
+        get() = _loadingState
+
+    fun getProfile(userId: String) {
+        viewModelScope.launchCatchError(block = {
+            _loadingState.update { LoadingState.Show }
+
+            _profileInfo.value = repoProfile.getProfile(userId)
+
+            _loadingState.update { LoadingState.Hide }
+        }, onError = { error ->
+                _loadingState.update { LoadingState.Error(error) }
+            })
+    }
 
     fun getFollowers(
         cursor: String,

@@ -20,6 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyType="body_1"
+            app:typographyWeight="bold"
             android:textColor="@color/Unify_NN950"
             android:text="@string/shop_page_label_description" />
 
@@ -31,7 +32,7 @@
             android:layout_marginLeft="8dp"
             app:labelType="highlight_light_green"
             android:layout_gravity="center"
-            tools:text="Apotek Berlisensi"
+            android:text="@string/licensed_apotik_badge"
             tools:visibility="visible" />
 
     </LinearLayout>

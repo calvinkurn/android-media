@@ -662,7 +662,7 @@ class SelectVariantViewModelTest {
     fun `When unlisted event is triggered, should not emit any effect`() {
         runBlockingTest {
             //When
-            viewModel.processEvent(mockk())
+            viewModel.processEvent(mockk(relaxed = true))
 
             val emittedEffects = arrayListOf<SelectVariantEffect>()
 

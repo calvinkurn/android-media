@@ -10,8 +10,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AffiliateViewModel @Inject constructor(
-        private val userSessionInterface: UserSessionInterface,
-        private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase
+    private val userSessionInterface: UserSessionInterface,
+    private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase
 ) : BaseViewModel() {
 
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
@@ -21,17 +21,18 @@ class AffiliateViewModel @Inject constructor(
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
             progressBar.value = true
-            validateUserdata.value = affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
+            affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email).let {
+                validateUserdata.value = it
+            }
             progressBar.value = false
         }, onError = {
-            it.printStackTrace()
-            progressBar.value = false
-            errorMessage.value = it
-        })
+                it.printStackTrace()
+                progressBar.value = false
+                errorMessage.value = it
+            })
     }
 
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun progressBar(): LiveData<Boolean> = progressBar
-
 }

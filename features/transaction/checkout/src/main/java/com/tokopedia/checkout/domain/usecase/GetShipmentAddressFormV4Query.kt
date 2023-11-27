@@ -88,6 +88,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                   }
                   group_type
                   ui_group_type
+                  group_metadata
                   group_information {
                       name
                       badge_url
@@ -663,6 +664,9 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 profile_code
                 additional_data
                 error_wording
+              }
+              payment_level_add_ons {
+                id  
               }
             }
           }

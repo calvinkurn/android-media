@@ -1,7 +1,6 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.activity
 
 import android.os.Bundle
-import android.view.View
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -11,6 +10,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -23,6 +23,7 @@ import com.tokopedia.seller.search.common.GlobalSearchSellerConstant
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoring
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringType
+import com.tokopedia.seller.search.common.util.IdViewGenerator
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.DaggerInitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
@@ -69,8 +70,11 @@ class InitialSellerSearchComposeActivity :
 
         setContent {
             NestTheme {
-                val initialStateContainerId = remember { View.generateViewId() }
-                val suggestionSearchContainerId = remember { View.generateViewId() }
+                val initialStateContainerId =
+                    remember { IdViewGenerator.generateUniqueId(InitialSearchComposeFragment::class.java.simpleName) }
+                val suggestionSearchContainerId = remember {
+                    IdViewGenerator.generateUniqueId(SuggestionSearchComposeFragment::class.java.name)
+                }
 
                 val fragmentManager = remember { supportFragmentManager }
 
@@ -224,27 +228,59 @@ class InitialSellerSearchComposeActivity :
         suggestionSearchContainerId: Int,
         showSearchSuggestions: Boolean
     ) {
-        fragmentManager?.commit {
+        fragmentManager?.commit(allowStateLoss = true) {
             if (showSearchSuggestions) {
-                initialSearchFragment?.let { hide(it) }
-                if (suggestionSearchFragment == null) {
-                    add(suggestionSearchContainerId, SuggestionSearchComposeFragment())
-                } else {
-                    show(suggestionSearchFragment)
-                }
+                showSuggestionSearchFragment(
+                    initialSearchFragment,
+                    suggestionSearchFragment,
+                    suggestionSearchContainerId
+                )
             } else {
-                suggestionSearchFragment?.let { hide(it) }
-                if (initialSearchFragment == null) {
-                    add(
-                        initialStateContainerId,
-                        InitialSearchComposeFragment().apply {
-                            setHistoryViewUpdateListener(this@InitialSellerSearchComposeActivity)
-                        }
-                    )
-                } else {
-                    show(initialSearchFragment)
-                }
+                showInitialSearchFragment(
+                    initialSearchFragment,
+                    suggestionSearchFragment,
+                    initialStateContainerId
+                )
             }
+        }
+    }
+
+    private fun FragmentTransaction.showSuggestionSearchFragment(
+        initialSearchFragment: InitialSearchComposeFragment?,
+        suggestionSearchFragment: SuggestionSearchComposeFragment?,
+        suggestionSearchContainerId: Int
+    ) {
+        if (initialSearchFragment?.isVisible == true) {
+            hide(initialSearchFragment)
+        }
+        if (suggestionSearchFragment?.isAdded == true) {
+            if (!suggestionSearchFragment.isVisible) {
+                show(suggestionSearchFragment)
+            }
+        } else {
+            add(suggestionSearchContainerId, SuggestionSearchComposeFragment())
+        }
+    }
+
+    private fun FragmentTransaction.showInitialSearchFragment(
+        initialSearchFragment: InitialSearchComposeFragment?,
+        suggestionSearchFragment: SuggestionSearchComposeFragment?,
+        initialStateContainerId: Int
+    ) {
+        if (suggestionSearchFragment?.isVisible == true) {
+            hide(suggestionSearchFragment)
+        }
+        if (initialSearchFragment?.isAdded == true) {
+            if (!initialSearchFragment.isVisible) {
+                show(initialSearchFragment)
+            }
+        } else {
+            add(
+                initialStateContainerId,
+                InitialSearchComposeFragment().apply {
+                    setHistoryViewUpdateListener(this@InitialSellerSearchComposeActivity)
+                }
+            )
         }
     }
 
