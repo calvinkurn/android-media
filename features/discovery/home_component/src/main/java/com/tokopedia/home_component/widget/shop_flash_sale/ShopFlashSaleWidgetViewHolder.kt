@@ -23,7 +23,7 @@ import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabM
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
 import com.tokopedia.home_component.widget.shop_tab.ShopTabListener
 import com.tokopedia.home_component_header.model.ChannelHeader
-import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
+import com.tokopedia.home_component_header.view.HomeComponentHeaderListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -97,7 +97,7 @@ class ShopFlashSaleWidgetViewHolder(
     ) {
         binding?.homeComponentShopFlashSaleHeaderView?.bind(
             channelHeader,
-            object: HomeChannelHeaderListener {
+            object: HomeComponentHeaderListener {
                 override fun onSeeAllClick(link: String) {
                     listener.onSeeAllClick(trackingAttributionModel, link)
                 }

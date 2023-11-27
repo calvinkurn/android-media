@@ -16,6 +16,7 @@ import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailModule
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
+import com.tokopedia.tokochat.config.util.TokoChatConnection
 
 open class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDetailComponent> {
 
@@ -53,6 +54,7 @@ open class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOr
     override fun getComponent(): BuyerOrderDetailComponent {
         return DaggerBuyerOrderDetailComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .tokoChatConfigComponent(TokoChatConnection.getComponent(this))
                 .buyerOrderDetailModule(BuyerOrderDetailModule())
                 .build()
     }

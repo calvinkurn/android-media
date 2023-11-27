@@ -9,8 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -40,6 +43,7 @@ import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.CourierButtonListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
@@ -62,12 +66,14 @@ import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailSticky
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.EstimateInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
+import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEvent
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundSummaryUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
 import com.tokopedia.buyerorderdetail.presentation.scroller.BuyerOrderDetailRecyclerViewScroller
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
@@ -117,11 +123,11 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 open class BuyerOrderDetailFragment :
     BaseDaggerFragment(),
@@ -137,7 +143,8 @@ open class BuyerOrderDetailFragment :
     PartialProductItemViewHolder.ShareProductBottomSheetListener,
     ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     OwocInfoViewHolder.Listener,
-    BmgmSectionViewHolder.Listener {
+    BmgmSectionViewHolder.Listener,
+    CourierButtonListener {
 
     companion object {
         @JvmStatic
@@ -201,7 +208,8 @@ open class BuyerOrderDetailFragment :
             navigator,
             this,
             this,
-            recyclerViewSharedPool
+            recyclerViewSharedPool,
+            this
         )
     }
     protected open val adapter: BuyerOrderDetailAdapter by lazy {
@@ -305,6 +313,9 @@ open class BuyerOrderDetailFragment :
         observeAddSingleToCart()
         observeAddMultipleToCart()
         observeMedalTouchPoint()
+        observeGroupBooking()
+        observeChatUnreadCounter()
+        observeOneTimeEvent()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -499,6 +510,24 @@ open class BuyerOrderDetailFragment :
         }
     }
 
+    private fun observeOneTimeEvent() {
+        collectLatestWhenResumed(viewModel.oneTimeMethodState) {
+            when (it.event) {
+                is OrderOneTimeEvent.ImpressSavingsWidget -> {
+                    BuyerOrderDetailTracker.SavingsWidget.impressSavingsWidget(
+                        orderId = it.event.orderId,
+                        isPlus = it.event.isPlus,
+                        isMixPromo = it.event.isMixPromo
+                    )
+                }
+
+                else -> {
+                    //no op
+                }
+            }
+        }
+    }
+
     private fun observeMedalTouchPoint() {
         scpMedalTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
             when (val result = it.result) {
@@ -565,6 +594,7 @@ open class BuyerOrderDetailFragment :
         updateToolbarMenu(uiState)
         updateContent(uiState)
         updateStickyButtons(uiState)
+        updateSavingsWidget(uiState)
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stopLoadTimeMonitoring()
     }
@@ -607,6 +637,45 @@ open class BuyerOrderDetailFragment :
     private fun updateStickyButtons(uiState: BuyerOrderDetailUiState.HasData) {
         stickyActionButton?.setupActionButtons(
             actionButtonsUiModel = uiState.actionButtonsUiState.data
+        )
+    }
+
+    private fun updateSavingsWidget(uiState: BuyerOrderDetailUiState.HasData) {
+        when (uiState.savingsWidgetUiState) {
+            is SavingsWidgetUiState.Success -> {
+                onSuccessGetSavingWidget(uiState)
+            }
+            is SavingsWidgetUiState.Error -> {
+                stickyActionButton?.hideSavingWidget()
+            }
+            is SavingsWidgetUiState.Hide -> {
+                stickyActionButton?.hideSavingWidget()
+            }
+            else -> {
+                //noop
+            }
+        }
+    }
+
+    private fun onSuccessGetSavingWidget(uiState: BuyerOrderDetailUiState.HasData) {
+        val savingWidgetData = (uiState.savingsWidgetUiState as?
+                SavingsWidgetUiState.Success)?.data
+
+        if (savingWidgetData == null) {
+            stickyActionButton?.hideSavingWidget()
+            return
+        }
+
+        viewModel.changeOneTimeMethod(
+            OrderOneTimeEvent.ImpressSavingsWidget(
+                orderId = viewModel.getOrderId(),
+                isPlus = savingWidgetData.isPlus,
+                isMixPromo = savingWidgetData.plusTicker.rightText.isNotEmpty()
+            )
+        )
+
+        stickyActionButton?.setupSavingWidget(
+            savingWidgetData
         )
     }
 
@@ -695,6 +764,7 @@ open class BuyerOrderDetailFragment :
         }
         toolbarMenuAnimator?.transitionToEmpty()
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
+        stickyActionButton?.hideSavingWidget()
         stopLoadTimeMonitoring()
     }
 
@@ -710,6 +780,7 @@ open class BuyerOrderDetailFragment :
         updateToolbarMenu(uiState)
         updateContent(uiState)
         updateStickyButtons(uiState)
+        updateSavingsWidget(uiState)
     }
 
     private fun GlobalError.showMessageExceptionError(
@@ -1100,6 +1171,53 @@ open class BuyerOrderDetailFragment :
     private fun showToaster(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
+    override fun initGroupBooking(gojekOrderId: String, source: String) {
+        viewModel.initGroupBooking(gojekOrderId, source)
+    }
+
+    override fun onChatButtonClicked(gojekOrderId: String, source: String, counter: String) {
+        val value = viewModel.buyerOrderDetailUiState.value
+        if (value is BuyerOrderDetailUiState.HasData) {
+            val orderStatus = value.orderStatusUiState.data.orderStatusHeaderUiModel.orderStatus
+            val tokopediaOrderId = viewModel.getOrderId()
+            BuyerOrderDetailTracker.sendClickChatButton(
+                orderStatus,
+                tokopediaOrderId,
+                gojekOrderId,
+                source,
+                counter
+            )
+        }
+    }
+
+    private fun observeGroupBooking() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.groupBookingUiState.collectLatest {
+                    if (it.error == null) {
+                        viewModel.fetchUnReadChatCount()
+                    } else {
+                        adapter.updateCourierCounter(0)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeChatUnreadCounter() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.chatCounterUiState.collectLatest {
+                    if (it.error == null) {
+                        adapter.updateCourierCounter(it.counter)
+                    } else {
+                        adapter.updateCourierCounter(0)
+                    }
+                }
+            }
         }
     }
 }

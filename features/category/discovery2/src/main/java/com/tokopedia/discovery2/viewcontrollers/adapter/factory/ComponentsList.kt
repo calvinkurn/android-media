@@ -144,4 +144,12 @@ enum class ComponentsList(val id: Int, val componentName: String) {
         id = R.layout.master_product_card_item_layout,
         componentName = ComponentNames.ShopOfferHeroBrandProductItem.componentName
     ),
+    ShopOfferSupportingBrand(
+        id = R.layout.discovery_supporting_brand_layout,
+        componentName = ComponentNames.ShopOfferSupportingBrand.componentName
+    ),
+    ShopOfferSupportingBrandItem(
+        id = R.layout.item_discovery_shop_offer_supporting_brand_layout,
+        componentName = ComponentNames.ShopOfferSupportingBrandItem.componentName
+    )
 }
