@@ -25,7 +25,6 @@
         android:id="@+id/divider_scheduled_delivery"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shipment_time_option_view" />
