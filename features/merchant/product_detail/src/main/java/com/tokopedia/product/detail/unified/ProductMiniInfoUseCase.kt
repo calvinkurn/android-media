@@ -20,11 +20,18 @@ class ProductMiniInfoUseCase @Inject constructor(
 
     override fun graphqlQuery(): String = QUERY
 
+    fun convertToMap(param: Param) : Map<String, Any> {
+        return mapOf(
+            PRODUCT_ID_PARAM to param.productId,
+        )
+    }
+
     data class Param (
         val productId: String,
     )
 
     companion object {
+        private const val PRODUCT_ID_PARAM = "productID"
         private const val QUERY = """
             query getMiniInfo(${'$'}productID: String) {
                 productrevGetMiniProductInfo(productID: ${'$'}productID) {
