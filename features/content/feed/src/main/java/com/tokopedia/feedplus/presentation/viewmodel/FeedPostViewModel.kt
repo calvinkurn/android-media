@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
@@ -23,8 +22,8 @@ import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
-import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
 import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
@@ -186,6 +185,16 @@ class FeedPostViewModel @Inject constructor(
     val selectedReport get() = _selectedReport.value
     private val _isReported = MutableLiveData<Result<Unit>>()
     val isReported: LiveData<Result<Unit>> get() = _isReported
+
+    private var mIsInitiallyLoggedIn: Boolean = userSession.isLoggedIn
+
+    fun shouldFetchInitialPost(): Boolean {
+        return !isJustLoggedIn() || feedHome.value?.items.orEmpty().isEmpty()
+    }
+
+    private fun isJustLoggedIn(): Boolean {
+        return !mIsInitiallyLoggedIn && userSession.isLoggedIn
+    }
 
     fun fetchFeedPosts(
         source: String,
@@ -448,10 +457,11 @@ class FeedPostViewModel @Inject constructor(
             if (it is Success) {
                 val followRecomData = it.data.items.getOrNull(position)
 
-                if (followRecomData is FeedFollowRecommendationModel)
+                if (followRecomData is FeedFollowRecommendationModel) {
                     viewModelScope.launch {
                         fetchFollowRecommendation(followRecomData.id)
                     }
+                }
             }
         }
     }
@@ -1216,10 +1226,11 @@ class FeedPostViewModel @Inject constructor(
      */
     fun removeProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
         viewModelScope.launch {
-            val feedHome = if (_feedHome.value != null && _feedHome.value is Success)
+            val feedHome = if (_feedHome.value != null && _feedHome.value is Success) {
                 _feedHome.value
-            else
+            } else {
                 return@launch
+            }
 
             if (feedHome == null) return@launch
 

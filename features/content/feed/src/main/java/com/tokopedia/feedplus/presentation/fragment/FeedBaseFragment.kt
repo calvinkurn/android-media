@@ -8,10 +8,12 @@ import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -49,6 +51,8 @@ import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadRece
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
 import com.tokopedia.feedplus.presentation.receiver.UploadType
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreOwner
+import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreProvider
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
@@ -153,6 +157,8 @@ class FeedBaseFragment :
             )
         }
 
+    private val viewModelStoreProvider by activityViewModels<FeedPostViewModelStoreProvider>()
+
     private val openCreateShorts =
         registerForActivityResult(OpenCreateShortsContract()) { isCreatingNewShorts ->
             if (!isCreatingNewShorts) return@registerForActivityResult
@@ -187,6 +193,13 @@ class FeedBaseFragment :
                             feedMainViewModel.metaData.value.entryPoints
                         )
                     )
+                }
+                is FeedFragment -> {
+                    fragment.setDataSource(object : FeedFragment.DataSource {
+                        override fun getViewModelStoreOwner(type: String): ViewModelStoreOwner {
+                            return FeedPostViewModelStoreOwner(viewModelStoreProvider, type)
+                        }
+                    })
                 }
             }
         }

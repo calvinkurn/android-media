@@ -14,6 +14,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -213,16 +214,19 @@ class FeedFragment :
     @Inject
     lateinit var commentFactory: ContentCommentFactory.Creator
 
+    private var mDataSource: DataSource? = null
+
     private val feedMainViewModel: FeedMainViewModel by viewModels(
-        ownerProducer = {
-            parentFragment ?: this
-        },
+        ownerProducer = { parentFragment ?: this },
         factoryProducer = {
             FeedMainViewModel.provideFactory(viewModelAssistedFactory, ActiveTabSource.Empty)
         }
-
     )
-    private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
+
+    private val feedPostViewModel: FeedPostViewModel by viewModels(
+        ownerProducer = { mDataSource?.getViewModelStoreOwner(data?.type.orEmpty()) ?: this },
+        factoryProducer = { viewModelFactory }
+    )
 
     private val feedMvcAnalytics = FeedMVCAnalytics()
 
@@ -515,23 +519,26 @@ class FeedFragment :
         super.onViewCreated(view, savedInstanceState)
 
         showLoading()
-        postSourceModel = arguments?.getString(UF_EXTRA_FEED_SOURCE_ID)?.let { sourceId ->
-            PostSourceModel(
-                id = sourceId,
-                source = if (isCdp) {
-                    FeedBaseFragment.TAB_TYPE_CDP
-                } else {
-                    arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME)
-                },
-                entryPoint = feedEntrySource.entryPoint
+
+        if (feedPostViewModel.shouldFetchInitialPost()) {
+            postSourceModel = arguments?.getString(UF_EXTRA_FEED_SOURCE_ID)?.let { sourceId ->
+                PostSourceModel(
+                    id = sourceId,
+                    source = if (isCdp) {
+                        FeedBaseFragment.TAB_TYPE_CDP
+                    } else {
+                        arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME)
+                    },
+                    entryPoint = feedEntrySource.entryPoint
+                )
+            }
+
+            feedPostViewModel.fetchFeedPosts(
+                data?.type ?: "",
+                isNewData = true,
+                postSource = postSourceModel
             )
         }
-
-        feedPostViewModel.fetchFeedPosts(
-            data?.type ?: "",
-            isNewData = true,
-            postSource = postSourceModel
-        )
 
         initView()
         observePostData()
@@ -567,6 +574,7 @@ class FeedFragment :
         super.onDestroy()
         FeedVideoCache.cleanUp(requireContext())
         mUiListener = null
+        mDataSource = null
     }
 
     override fun initInjector() {
@@ -1121,6 +1129,10 @@ class FeedFragment :
     }
 
     override fun isMuted(): Boolean = FeedContentManager.muteState.value.orFalse()
+
+    fun setDataSource(dataSource: FeedFragment.DataSource?) {
+        mDataSource = dataSource
+    }
 
     private fun onAttachChildFragment(fragmentManager: FragmentManager, childFragment: Fragment) {
         when (childFragment) {
@@ -2188,5 +2200,9 @@ class FeedFragment :
                 putBoolean(ARGUMENT_IS_CDP, isCdp)
             }
         }
+    }
+
+    interface DataSource {
+        fun getViewModelStoreOwner(type: String): ViewModelStoreOwner
     }
 }
