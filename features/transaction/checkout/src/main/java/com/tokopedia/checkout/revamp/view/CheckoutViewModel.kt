@@ -1882,9 +1882,9 @@ class CheckoutViewModel @Inject constructor(
                         pageState.value = CheckoutPageState.Normal
                         pageState.value = CheckoutPageState.ScrollTo(index)
                         return@launch
-                    } else if (checkoutOrderModel.useDropship && checkoutOrderModel.dropshipName.isNotEmpty() &&
-                        checkoutOrderModel.dropshipPhone.isNotEmpty() && checkoutOrderModel.isDropshipNameValid &&
-                        checkoutOrderModel.isDropshipPhoneValid
+                    } else if (checkoutOrderModel.isEnableDropship && checkoutOrderModel.useDropship &&
+                        checkoutOrderModel.dropshipName.isNotEmpty() && checkoutOrderModel.dropshipPhone.isNotEmpty() &&
+                        checkoutOrderModel.isDropshipNameValid && checkoutOrderModel.isDropshipPhoneValid
                     ) {
                         checkoutWithDropship = true
                     }

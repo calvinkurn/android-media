@@ -111,7 +111,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                     cartStringGroup = shipmentCartItemModel.cartStringGroup,
                     shippingInfo = shippingInfoCheckoutRequest,
                     dropship = Dropship(
-                        isDropship = 0,
+                        isDropship = if (shipmentCartItemModel.useDropship && shipmentCartItemModel.isEnableDropship) 1 else 0,
                         name = shipmentCartItemModel.dropshipName,
                         telpNo = shipmentCartItemModel.dropshipPhone
                     ),
