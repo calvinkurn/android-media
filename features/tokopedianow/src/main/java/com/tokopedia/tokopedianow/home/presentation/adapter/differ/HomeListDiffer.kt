@@ -11,6 +11,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcU
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
 
 class HomeListDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
@@ -36,6 +37,8 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
             oldItem.id == newItem.id
         } else if (oldItem is HomeHeaderUiModel && newItem is HomeHeaderUiModel) {
             oldItem.id == newItem.id
+        } else if (oldItem is HomeQuestReloadWidgetUiModel && newItem is HomeQuestReloadWidgetUiModel) {
+            false
         } else {
             oldItem == newItem
         }

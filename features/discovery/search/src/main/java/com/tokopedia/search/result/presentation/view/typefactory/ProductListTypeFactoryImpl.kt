@@ -78,14 +78,19 @@ import com.tokopedia.search.result.product.samesessionrecommendation.SameSession
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordCardView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListener
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordViewHolder
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.reimagine.InspirationKeywordReimagineViewHolder
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductListener
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.GridInspirationProductItemViewHolder
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.InspirationProductItemReimagineViewHolder
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.ListInspirationProductItemViewHolder
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproducttitle.InspirationProductTitleDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproducttitle.InspirationProductTitleViewHolder
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaViewHolder
+import com.tokopedia.search.result.product.separator.VerticalSeparatorDataView
+import com.tokopedia.search.result.product.separator.VerticalSeparatorViewHolder
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.search.result.product.suggestion.SuggestionViewHolder
@@ -258,8 +263,12 @@ class ProductListTypeFactoryImpl(
     override fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int =
         AdsLowOrganicTitleViewHolder.LAYOUT
 
-    override fun type(inspirationKeywordCardView: InspirationKeywordCardView): Int =
-        InspirationKeywordViewHolder.LAYOUT
+    override fun type(inspirationKeywordCardView: InspirationKeywordCardView): Int {
+        return if(inspirationKeywordCardView.layoutType.isGridLayout())
+            InspirationKeywordReimagineViewHolder.LAYOUT
+        else
+            InspirationKeywordViewHolder.LAYOUT
+    }
 
     override fun type(inspirationProductCardView: InspirationProductItemDataView): Int {
         return if (reimagineSearch3ProductCard.isReimagineProductCard()) {
@@ -273,6 +282,12 @@ class ProductListTypeFactoryImpl(
             }
         }
     }
+
+    override fun type(inspirationCarouselSeamlessProductTitle: InspirationProductTitleDataView): Int =
+        InspirationProductTitleViewHolder.LAYOUT
+
+    override fun type(separatorDataView: VerticalSeparatorDataView): Int =
+        VerticalSeparatorViewHolder.LAYOUT
 
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -365,12 +380,19 @@ class ProductListTypeFactoryImpl(
                 AdsLowOrganicTitleViewHolder(view)
             InspirationKeywordViewHolder.LAYOUT ->
                 InspirationKeywordViewHolder(view, inspirationKeywordListener, changeViewListener)
+            InspirationKeywordReimagineViewHolder.LAYOUT ->
+                InspirationKeywordReimagineViewHolder(view, inspirationKeywordListener)
             GridInspirationProductItemViewHolder.LAYOUT, GridInspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
                 GridInspirationProductItemViewHolder(view, inspirationProductListener, productListener)
             ListInspirationProductItemViewHolder.LAYOUT, ListInspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
                 ListInspirationProductItemViewHolder(view, inspirationProductListener, productListener)
             InspirationProductItemReimagineViewHolder.LAYOUT ->
                 InspirationProductItemReimagineViewHolder(view, inspirationProductListener)
+            InspirationProductTitleViewHolder.LAYOUT -> InspirationProductTitleViewHolder(
+                view,
+                inspirationCarouselListener,
+            )
+            VerticalSeparatorViewHolder.LAYOUT -> VerticalSeparatorViewHolder(view)
 
             else -> super.createViewHolder(view, type)
         }
