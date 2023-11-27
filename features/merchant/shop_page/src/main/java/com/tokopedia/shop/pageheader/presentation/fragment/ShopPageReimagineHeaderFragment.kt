@@ -115,8 +115,10 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_P1_MIDDLE
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.data.ShopPagePreFetchDataModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopAffiliateData
+import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
@@ -1216,6 +1218,7 @@ class ShopPageReimagineHeaderFragment :
             getInitialData()
             initViews(view)
             setViewState(VIEW_LOADING)
+            checkShopPagePreFetchData()
         }
         context?.let {
             screenShotDetector = SharingUtil.createAndStartScreenShotDetector(
@@ -1227,6 +1230,47 @@ class ShopPageReimagineHeaderFragment :
         }
         shopLandingPageInitAffiliateCookie()
         storiesManager.updateStories(listOf(shopId))
+    }
+
+    private fun checkShopPagePreFetchData() {
+        val shopPagePreFetchDataModel = activity?.intent?.getParcelableExtra<ShopPagePreFetchDataModel>(
+            ShopPagePreFetchDataModel.PARCEL_KEY,
+        )
+        if(null != shopPagePreFetchDataModel){
+            setViewState(VIEW_CONTENT)
+            createShopPreFetchDataTab(shopPagePreFetchDataModel)
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun createShopPreFetchDataTab(shopPagePreFetchDataModel: ShopPagePreFetchDataModel) {
+        val tabData = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData(
+            name = ShopPageHeaderTabName.PRE_FETCH_DATA
+        )
+        val tabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance().apply {
+            setTabData(tabData)
+            ShopPageHeaderP1HeaderData(
+                shopName = shopPagePreFetchDataModel.shopName,
+                shopAvatar = shopPagePreFetchDataModel.shopAvatarImageUrl,
+                shopBadge = shopPagePreFetchDataModel.shopBadgeImageUrl,
+            ).let { headerData ->
+                setShopPageHeaderP1Data(
+                    shopPageHeaderP1Data = headerData,
+                    isEnableDirectPurchase = getIsEnableDirectPurchase(headerData),
+                    isShouldShowFeed = isShowFeed
+                )
+            }
+        }
+        val listShopPageTabModel = mutableListOf<ShopPageHeaderTabModel>()
+        listShopPageTabModel.add(
+            ShopPageHeaderTabModel(
+                tabName = tabData.name,
+                tabFragment = tabContentWrapper,
+            )
+        )
+        viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
+        tabLayout?.removeAllTabs()
+        viewPagerAdapterHeader?.notifyDataSetChanged()
     }
 
     private fun checkAffiliateAppLink(uri: Uri) {

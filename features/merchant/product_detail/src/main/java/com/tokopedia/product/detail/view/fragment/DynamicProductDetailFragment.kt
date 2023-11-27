@@ -312,6 +312,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.shop.common.constant.ShopStatusDef
+import com.tokopedia.shop.common.data.ShopPagePreFetchDataModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
@@ -5107,15 +5108,28 @@ open class DynamicProductDetailFragment :
                 shopId,
                 componentTrackDataModel
             )
+            val intent = RouteManager.getIntent(
+                it,
+                ApplinkConst.SHOP,
+                shopId
+            )
+            generateShopPagePreFetchData(intent)
             startActivityForResult(
-                RouteManager.getIntent(
-                    it,
-                    ApplinkConst.SHOP,
-                    shopId
-                ),
+                intent,
                 ProductDetailConstant.REQUEST_CODE_SHOP_INFO
             )
         }
+    }
+
+    private fun generateShopPagePreFetchData(intent: Intent?) {
+        ShopPagePreFetchDataModel.Builder()
+            .setShopName(viewModel.getDynamicProductInfoP1?.basic?.shopName.orEmpty())
+            .setShopAvatarImageUrl(viewModel.getShopInfo().shopAssets.avatar)
+            .setShopBadgeImageUrl(viewModel.getShopInfo().shopTierBadgeUrl)
+            .build()
+            .let {
+                intent?.putExtra(ShopPagePreFetchDataModel.PARCEL_KEY, it)
+            }
     }
 
     override fun onShopTickerClicked(

@@ -316,7 +316,8 @@ class ShopPageHeaderFragmentTabContentWrapper :
             shopPagePageHeaderWidgetList,
             shopFollowButtonUiModel,
             getShopHeaderConfig(),
-            shopHeaderLayoutData.isOverrideTheme
+            shopHeaderLayoutData.isOverrideTheme,
+            shopPageHeaderDataModel
         )
     }
 
@@ -739,6 +740,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             avatar = shopPageHeaderP1Data.shopAvatar
             listDynamicTabData = shopPageHeaderP1Data.listDynamicTabData
             this.isEnableDirectPurchase = isEnableDirectPurchase
+            this.shopBadge = shopPageHeaderP1Data.shopBadge
         }
         shopPagePageHeaderWidgetList = shopPageHeaderP1Data.listShopPageHeaderWidget
         shopHeaderLayoutData = shopPageHeaderP1Data.shopHeaderLayoutData
