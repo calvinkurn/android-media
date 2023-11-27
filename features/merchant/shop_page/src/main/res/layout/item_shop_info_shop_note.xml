@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgShopNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginEnd="40dp"
+        android:paddingVertical="12dp"
+        tools:text="Syarat dan Ketentuan"
+        app:typographyType="display_3"
+        android:textColor="@color/Unify_NN950" />
+
+    <View
+        android:id="@+id/dividerShopSupportedShipment"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/Unify_NN50" 
+        android:layout_below="@id/tpgShopNote"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconChevron"
+        android:layout_width="24dp"
+        android:layout_alignTop="@id/tpgShopNote"
+        android:layout_alignBottom="@id/tpgShopNote"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="16dp"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"
+        app:icon_name="CHEVRON_RIGHT" />
+    
+</RelativeLayout>

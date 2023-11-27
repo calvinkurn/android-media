@@ -9,6 +9,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.PGRecommendationWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.PaymentInfoUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 
@@ -24,7 +25,8 @@ object BuyerOrderDetailUiStateMapper {
         orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
         orderInsuranceUiState: OrderInsuranceUiState,
         epharmacyInfoUiState: EpharmacyInfoUiState,
-        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState
+        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState,
+        savingsWidgetUiState: SavingsWidgetUiState
     ): BuyerOrderDetailUiState {
         return if (
             actionButtonsUiState is ActionButtonsUiState.HasData &&
@@ -58,7 +60,8 @@ object BuyerOrderDetailUiStateMapper {
                     orderResolutionTicketStatusUiState,
                     orderInsuranceUiState,
                     epharmacyInfoUiState,
-                    scpRewardsMedalTouchPointWidgetUiState
+                    scpRewardsMedalTouchPointWidgetUiState,
+                    savingsWidgetUiState
                 )
             } else {
                 BuyerOrderDetailUiState.HasData.Showing(
@@ -71,7 +74,8 @@ object BuyerOrderDetailUiStateMapper {
                     orderResolutionTicketStatusUiState,
                     orderInsuranceUiState,
                     epharmacyInfoUiState,
-                    scpRewardsMedalTouchPointWidgetUiState
+                    scpRewardsMedalTouchPointWidgetUiState,
+                    savingsWidgetUiState
                 )
             }
         } else if (actionButtonsUiState is ActionButtonsUiState.Error) {

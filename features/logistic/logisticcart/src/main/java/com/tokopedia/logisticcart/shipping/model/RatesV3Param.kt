@@ -85,6 +85,9 @@ data class OngkirRatesV3Input(
     // new owoc
     @SerializedName("group_type")
     val group_type: Int = 0,
+    // O2O
+    @SerializedName("group_metadata")
+    val group_metadata: String = "",
     // new ofoc
     @SerializedName("grouping_state")
     val grouping_state: Int = 0

@@ -3,7 +3,12 @@ package com.tokopedia.stories.data.repository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.usecase.GetUserReportListUseCase
+import com.tokopedia.content.common.usecase.PostUserReportUseCase
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.stories.data.mapper.StoriesMapperImpl
 import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
@@ -17,6 +22,7 @@ import com.tokopedia.stories.usecase.ProductMapper
 import com.tokopedia.stories.usecase.StoriesProductUseCase
 import com.tokopedia.stories.usecase.UpdateStoryUseCase
 import com.tokopedia.stories.view.model.StoriesDetail
+import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
 import com.tokopedia.user.session.UserSessionInterface
@@ -37,6 +43,8 @@ class StoriesRepositoryImpl @Inject constructor(
     private val mapper: StoriesMapperImpl,
     private val seenStorage: StoriesSeenStorage,
     private val storiesPrefUtil: StoriesPreferenceUtil,
+    private val getReportUseCase: GetUserReportListUseCase,
+    private val postReportUseCase: PostUserReportUseCase,
 ) : StoriesRepository {
 
     override suspend fun getStoriesInitialData(data: StoriesRequestModel): StoriesUiModel =
@@ -60,7 +68,7 @@ class StoriesRepositoryImpl @Inject constructor(
             return@withContext trackActivityRequest.data.isSuccess
         }
 
-    override suspend fun deleteStory(storyId: String) : Boolean = withContext(dispatchers.io) {
+    override suspend fun deleteStory(storyId: String): Boolean = withContext(dispatchers.io) {
         val param = UpdateStoryUseCase.Param(storyId, StoryActionType.Delete)
         val response = updateStoryUseCase(param)
         response.storyId.storyId == storyId
@@ -82,6 +90,13 @@ class StoriesRepositoryImpl @Inject constructor(
     override suspend fun setHasAckStoriesFeature() {
         storiesPrefUtil.setHasAckStoriesFeature()
     }
+
+    override suspend fun setHasSeenManualStoriesDurationCoachmark() {
+        storiesPrefUtil.setHasAckManualStoriesDuration()
+    }
+
+    override suspend fun hasSeenManualStoriesDurationCoachmark() =
+        storiesPrefUtil.hasAckManualStoriesDuration()
 
     override suspend fun getStoriesProducts(
         shopId: String,
@@ -128,4 +143,40 @@ class StoriesRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getReportReasonList(): List<PlayUserReportReasoningUiModel.Reasoning> =
+        withContext(dispatchers.io) {
+            val response = getReportUseCase.executeOnBackground()
+            response.data.map { reasoning ->
+                PlayUserReportReasoningUiModel.Reasoning(
+                    reasoningId = reasoning.id,
+                    title = reasoning.value,
+                    detail = reasoning.detail,
+                    submissionData = if (reasoning.additionalField.isNotEmpty()) reasoning.additionalField.first() else UserReportOptions.OptionAdditionalField()
+                )
+            }
+        }
+
+    override suspend fun submitReport(
+        storyDetail: StoriesDetailItem,
+        reasonId: Int,
+        timestamp: Long,
+        reportDesc: String
+    ): Boolean =
+        withContext(dispatchers.io) {
+            val request = postReportUseCase.createParam(
+                channelId = storyDetail.id.toLongOrZero(),
+                mediaUrl = storyDetail.content.data,
+                reasonId = reasonId,
+                timestamp = timestamp,
+                reportDesc = reportDesc,
+                partnerId = storyDetail.author.id.toLongOrZero(),
+                partnerType = PostUserReportUseCase.PartnerType.getTypeValue(storyDetail.author.type.value),
+                reporterId = userSession.userId.toLongOrZero()
+            )
+
+            postReportUseCase.setRequestParams(request.parameters)
+            val response = postReportUseCase.executeOnBackground()
+
+            response.submissionReport.status.equals("success", true)
+        }
 }

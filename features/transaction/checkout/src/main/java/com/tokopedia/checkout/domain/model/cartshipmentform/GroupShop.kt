@@ -54,6 +54,9 @@ data class GroupShop(
 
     var listSubtotalAddOn: List<ShipmentSubtotalAddOnData> = emptyList(),
 
+    // new O2O
+    val groupMetadata: String = "",
+
     val shipmentAction: HashMap<Long, ShipmentAction> = HashMap()
 ) : Parcelable {
 

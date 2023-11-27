@@ -97,6 +97,7 @@ public class BranchHelper {
                                         .setProductName(product.get(LinkerConstants.NAME))
                                         .setQuantity(LinkerUtils.convertStringToDouble(product.get(LinkerConstants.QTY)))
                                         .setSku(product.get(LinkerConstants.ID))
+                                        .setProductBrand(product.get(LinkerConstants.PRODUCT_BRAND))
                                         .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
                                         .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(product.get(LinkerConstants.CATEGORY))));
 

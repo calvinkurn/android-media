@@ -52,7 +52,10 @@ data class RatesParam(
     // new ofoc
     val grouping_state: Int = 0,
 
-    var shopShipments: List<ShopShipment> = listOf()
+    var shopShipments: List<ShopShipment> = listOf(),
+
+    // O2O
+    var groupMetadata: String = ""
 ) {
 
     private constructor(builder: Builder) : this(
@@ -88,6 +91,7 @@ data class RatesParam(
         warehouse_id = builder.warehouseId,
         group_type = builder.groupType,
         shopShipments = builder.shopShipments,
+        groupMetadata = builder.groupMetadata,
         grouping_state = builder.groupingState
     )
 
@@ -125,7 +129,8 @@ data class RatesParam(
         "is_fulfillment" to is_fulfillment,
         "bo_metadata" to bo_metadata,
         "warehouse_id" to warehouse_id,
-        "group_type" to group_type
+        "group_type" to group_type,
+        "group_metadata" to groupMetadata
     )
 
     fun toMetadata(): Map<String, Any?> = mapOf(
@@ -214,6 +219,7 @@ data class RatesParam(
             bo_metadata = bo_metadata,
             warehouse_id = warehouse_id,
             group_type = group_type,
+            group_metadata = groupMetadata,
             grouping_state = grouping_state
         )
     }
@@ -280,6 +286,8 @@ data class RatesParam(
             private set
         var groupType: Int = shipping.groupType
             private set
+        var groupMetadata: String = ""
+            private set
         var groupingState: Int = shipping.groupingState
             private set
 
@@ -298,6 +306,8 @@ data class RatesParam(
         fun cartData(cartData: String) = apply { this.cartData = cartData }
 
         fun warehouseId(warehouseId: String) = apply { this.warehouseId = warehouseId }
+
+        fun groupMetadata(groupMetadata: String) = apply { this.groupMetadata = groupMetadata }
 
         fun build() = RatesParam(this)
     }

@@ -3,10 +3,12 @@ package com.tokopedia.tokofood.stub.postpurchase.di.module
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import com.gojek.conversations.courier.BabbleCourierClient
-import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
+import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.tokofood.feature.ordertracking.di.scope.TokoFoodOrderTrackingScope
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.DriverPhoneNumberMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.ITokoFoodOrderCompletedMapper
@@ -21,8 +23,6 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderSt
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetDriverPhoneNumberUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetUnreadChatCountUseCase
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.TokoChatConfigGroupBookingUseCase
 import com.tokopedia.tokofood.stub.common.graphql.interactor.GraphqlUseCaseStub
 import com.tokopedia.tokofood.stub.common.graphql.repository.GraphqlRepositoryStub
 import com.tokopedia.tokofood.stub.common.util.UserSessionStub
@@ -33,8 +33,6 @@ import com.tokopedia.tokofood.stub.postpurchase.domain.mapper.TokoFoodOrderStatu
 import com.tokopedia.tokofood.stub.postpurchase.domain.usecase.GetDriverPhoneNumberUseCaseStub
 import com.tokopedia.tokofood.stub.postpurchase.domain.usecase.GetTokoFoodOrderDetailUseCaseStub
 import com.tokopedia.tokofood.stub.postpurchase.domain.usecase.GetTokoFoodOrderStatusUseCaseStub
-import com.tokopedia.tokofood.stub.postpurchase.domain.usecase.GetUnreadChatCountUseCaseStub
-import com.tokopedia.tokofood.stub.postpurchase.domain.usecase.TokoChatConfigGroupBookingUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -118,16 +116,16 @@ class TokoFoodOrderTrackingModuleStub {
     @Provides
     fun provideGetUnreadChatCountUseCaseStub(
         tokoChatRepositoryStub: TokoChatRepository
-    ): GetUnreadChatCountUseCase {
-        return GetUnreadChatCountUseCaseStub(tokoChatRepositoryStub)
+    ): TokoChatCounterUseCase {
+        return TokoChatCounterUseCase(tokoChatRepositoryStub)
     }
 
     @TokoFoodOrderTrackingScope
     @Provides
     fun provideTokoChatConfigGroupBookingUseCaseStub(
         tokoChatRepositoryStub: TokoChatRepository
-    ): TokoChatConfigGroupBookingUseCase {
-        return TokoChatConfigGroupBookingUseCaseStub(tokoChatRepositoryStub)
+    ): TokoChatGroupBookingUseCase {
+        return TokoChatGroupBookingUseCase(tokoChatRepositoryStub)
     }
 
     @Provides

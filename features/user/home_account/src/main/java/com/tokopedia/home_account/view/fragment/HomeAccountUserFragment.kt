@@ -20,7 +20,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -35,7 +34,6 @@ import com.scp.login.core.domain.contracts.listener.LSdkCheckOneTapStatusListene
 import com.scp.login.core.domain.onetaplogin.mappers.OneTapLoginError
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -429,10 +427,6 @@ open class HomeAccountUserFragment :
                 createAndShowSafeModeAlertDialog(isActive)
             }
 
-            AccountConstants.SettingCode.SETTING_DARK_MODE -> {
-                setupDarkMode(isActive)
-            }
-
             AccountConstants.SettingCode.SETTING_PLAY_WIDGET_AUTOPLAY -> {
                 accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_PLAY_WIDGET_AUTOPLAY, isActive)
             }
@@ -663,7 +657,7 @@ open class HomeAccountUserFragment :
 
     private fun fetchRemoteConfig() {
         context?.let {
-            isShowDarkModeToggle = remoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+            isShowDarkModeToggle = !remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, true)
             isShowScreenRecorder = remoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
     }
@@ -972,6 +966,9 @@ open class HomeAccountUserFragment :
         if (accountPref.isShowCoachmark()) {
             setCoachMark()
         }
+        if (shouldScrollToSafeMode()) {
+            scrollToSafeMode()
+        }
     }
 
     private fun setCoachMark() {
@@ -1187,7 +1184,8 @@ open class HomeAccountUserFragment :
                 accountPref,
                 permissionChecker,
                 isShowDarkModeToggle,
-                isShowScreenRecorder
+                isShowScreenRecorder,
+                isExpanded = shouldScrollToSafeMode()
             ),
             addSeparator = true
         )
@@ -1255,31 +1253,6 @@ open class HomeAccountUserFragment :
         if (link.isNotEmpty()) {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, link)
             startActivity(intent)
-        }
-    }
-
-    private fun setupDarkMode(isDarkMode: Boolean) {
-        setAppCompatMode(isDarkMode)
-        saveDarkModeToSharefPreference(isDarkMode)
-        homeAccountAnalytic.eventClickThemeSetting(isDarkMode)
-        recreateView()
-    }
-
-    private fun setAppCompatMode(isDarkMode: Boolean) {
-        val screenMode =
-            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        AppCompatDelegate.setDefaultNightMode(screenMode)
-    }
-
-    private fun saveDarkModeToSharefPreference(isDarkMode: Boolean) {
-        accountPref.saveSettingValue(TkpdCache.Key.KEY_DARK_MODE, isDarkMode)
-    }
-
-    private fun recreateView() {
-        activity?.run {
-            finish()
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-            startActivity(Intent(this, this.javaClass))
         }
     }
 
@@ -1423,6 +1396,10 @@ open class HomeAccountUserFragment :
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
                 checkLogoutOffering()
+            }
+
+            AccountConstants.SettingCode.SETTING_DARK_MODE -> {
+                goToApplink(item.applink)
             }
 
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
@@ -1608,6 +1585,19 @@ open class HomeAccountUserFragment :
             isEnable
         commonAdapter?.notifyItemChanged(POSITION_1)
         adapter?.notifyItemChanged(POSITION_3)
+    }
+
+    private fun shouldScrollToSafeMode(): Boolean {
+        return arguments?.containsKey(AccountConstants.PARAM_SCROLL_TO) ?: false &&
+            arguments?.getString(AccountConstants.PARAM_SCROLL_TO, "") == AccountConstants.SCROLL_TO_SAFEMODE
+    }
+
+    private fun scrollToSafeMode() {
+        lifecycleScope.launch {
+            // add delay to make sure the items are fully loaded
+            delay(1000)
+            binding?.homeAccountUserFragmentRv?.smoothScrollToPosition(POSITION_3)
+        }
     }
 
     private fun updateSafeModeSwitch(isEnable: Boolean) {
@@ -1897,7 +1887,7 @@ open class HomeAccountUserFragment :
         private const val ACC_SETTING_POS = 1
 
         private const val COACHMARK_DELAY_MS = 1000L
-        private const val PRIVACY_POLICY = "Kebijakan Privasi"
+        private const val PRIVACY_POLICY = "Pemberitahuan Privasi"
         private const val TITLE = "Tokopedia"
 
         fun newInstance(bundle: Bundle?): Fragment {

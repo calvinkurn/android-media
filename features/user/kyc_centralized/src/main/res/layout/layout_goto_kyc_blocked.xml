@@ -48,23 +48,11 @@
         android:id="@+id/btn_primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/goto_kyc_contact_tokopedia_care"
+        android:text="@string/goto_kyc_see_term_condition"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_description" />
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_secondary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/goto_kyc_maybe_later"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
-        app:unifyButtonVariant="ghost"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_primary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

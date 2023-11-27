@@ -19,5 +19,6 @@ object FilterRobot {
         onView(withId(R.id.rv_order_list)).perform(
             smoothScrollTo(position)
         )
+        Thread.sleep(1000)
     }
 }
