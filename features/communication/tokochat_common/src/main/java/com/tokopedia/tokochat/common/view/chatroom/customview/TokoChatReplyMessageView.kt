@@ -14,9 +14,8 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.tokochat_common.R
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.MAX_DISPLAYED_OFFSET
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.MAX_DISPLAYED_STRING
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.MAX_DISPLAYED_OFFSET
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.MAX_DISPLAYED_STRING
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil.ELEVEN_DP
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil.FORTY_EIGHT_DP
@@ -27,6 +26,7 @@ import com.tokopedia.tokochat.common.util.TokoChatViewUtil.ZERO_DP
 import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatReplyAreaListener
 import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatTypingListener
+import com.tokopedia.tokochat_common.R
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import java.text.NumberFormat

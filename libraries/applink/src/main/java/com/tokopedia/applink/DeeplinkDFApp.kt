@@ -34,8 +34,10 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_GAMIFICATION
 import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_TOKOPOINTS
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FEEDBACK
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FRONT_FUNNEL
+import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_PDP
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_TALK
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SHOP_SETTINGS_SELLER_APP
+import com.tokopedia.applink.DeeplinkDFMapper.DF_STORIES_CREATION
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOCHAT
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOFOOD
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOPEDIA_NOW
@@ -44,7 +46,6 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_USER_LIVENESS
 import com.tokopedia.applink.DeeplinkDFMapper.DF_USER_SETTINGS
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.constant.DeeplinkConstant.SCHEME_SELLERAPP
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.HOST_RECHARGE
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.HOST_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.HOST_MONEYIN
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication.HOST_COMMUNICATION
@@ -52,6 +53,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.HOST_AFFILIATE
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.HOST_CONTENT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.HOST_PLAY_BROADCASTER
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.HOST_PLAY_SHORTS
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.HOST_STORIES
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.PATH_STORIES_CREATION
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.HOST_DEALS
 import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia.HOST_DILAYANI_TOKOPEDIA
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.HOST_EVENT
@@ -173,7 +176,8 @@ object DeeplinkDFApp {
         DF_TOKOPEDIA_NOW to getDfTokopediaNow(),
         DF_TRAVEL to getDfTravel(),
         DF_USER_LIVENESS to getDfUserLiveness(),
-        DF_USER_SETTINGS to getDfUserSettings()
+        DF_USER_SETTINGS to getDfUserSettings(),
+        DF_STORIES_CREATION to getDfStoriesCreationMainApp(),
     )
 
     fun getDfSellerappMap() = mapOf(
@@ -184,7 +188,9 @@ object DeeplinkDFApp {
         DF_SELLER_FEEDBACK to getDfSellerFeedback(),
         DF_SELLER_FRONT_FUNNEL to getDfSellerFrontFunnel(),
         DF_SELLER_TALK to getDfSellerTalk(),
-        DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp()
+        DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp(),
+        DF_SELLER_PDP to getDfSellerPdp(),
+        DF_STORIES_CREATION to getDfStoriesCreationSellerApp(),
     )
 
     private fun Map<String, List<DFP>>?.filteredOnDF(context: Context): Map<String, List<DFP>> {
@@ -244,10 +250,6 @@ object DeeplinkDFApp {
         // play_broadcaster
         DFP(INTERNAL, HOST_PLAY_BROADCASTER, PathType.NO_PATH, ""),
         DFP(INTERNAL, HOST_PLAY_SHORTS, PathType.NO_PATH, ""),
-        // mediapicker
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-album"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
         // live-broadcaster
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/chucker")
     )
@@ -284,9 +286,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_CONTENT, PathType.PATTERN, "/create_post_v2/"),
         // image_picker_insta
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/image-picker/v2/"),
-        // mediaeditor
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-editor"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor"),
         // image_picker
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/image-picker"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/video-picker"),
@@ -504,7 +503,8 @@ object DeeplinkDFApp {
         // people
         DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/settings/.*"),
         DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/people/followers/")
+        DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*/followers"),
+        DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*/following")
     )
 
     private fun getDfPromoGamification() = mutableListOf(
@@ -698,6 +698,36 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-settings-etalase/add"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-page-setting"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/settings")
+    )
+
+    private fun getDfSellerPdp() = mutableListOf(
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-detail/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-detail/.*/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-edu/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/post-atc/.*/")
+    )
+
+    private fun getDfStoriesCreationMainApp() = mutableListOf(
+        // stories_creation
+        DFP(INTERNAL, HOST_STORIES, PathType.PATH, PATH_STORIES_CREATION),
+        // mediapicker
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-album"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
+        // mediaeditor
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-editor"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor"),
+    )
+
+    private fun getDfStoriesCreationSellerApp() = mutableListOf(
+        // stories_creation
+        DFP(INTERNAL, HOST_STORIES, PathType.PATH, PATH_STORIES_CREATION),
+        // mediapicker
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-album"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
+        // mediaeditor
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor"),
     )
 
     fun Map<String, List<DFP>>.mapDF(): MutableList<DFPSchemeToDF> {

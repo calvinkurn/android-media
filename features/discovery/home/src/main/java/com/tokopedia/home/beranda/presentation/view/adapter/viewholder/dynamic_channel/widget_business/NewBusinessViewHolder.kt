@@ -190,7 +190,6 @@ class NewBusinessViewHolder(
             channelModel = element?.channelModel,
             dividerTop = dividerTop,
             dividerBottom = dividerBottom,
-            useBottomPadding = element?.channelModel?.channelConfig?.borderStyle == ChannelStyleUtil.BORDER_STYLE_BLEEDING
         )
     }
 

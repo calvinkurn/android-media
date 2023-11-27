@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/header_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/home_component_header_margin_top"
+    android:paddingBottom="@dimen/home_component_header_bottom_padding"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/header_title"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        android:layout_marginLeft="@dimen/home_component_header_margin_default"
+        android:layout_marginRight="@dimen/home_component_header_margin_default"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:maxEms="12"
+        android:lines="1"
+        android:ellipsize="end"
+        tools:text="Hypebeast Banget Pokoknya"
+        app:layout_constraintRight_toLeftOf="@id/cta_chevron"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/header_icon_subtitle"
+        android:contentDescription="@string/content_desc_icon_subtitle"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginLeft="@dimen/home_component_header_margin_default"
+        app:layout_goneMarginTop="@dimen/home_component_header_subtitle_top_padding"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/header_timer"
+        app:layout_constraintTop_toTopOf="@id/header_timer"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/header_subtitle"
+        app:typographyType="display_3"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginRight="@dimen/home_component_header_margin_subtitle_to_icon"
+        android:layout_marginLeft="@dimen/home_component_header_margin_subtitle_to_icon"
+        app:layout_goneMarginLeft="@dimen/home_component_header_margin_default"
+        app:layout_goneMarginTop="@dimen/home_component_header_subtitle_top_padding"
+        app:layout_goneMarginRight="@dimen/home_component_header_margin_default"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_default="wrap"
+        android:layout_centerVertical="true"
+        android:lines="1"
+        android:ellipsize="end"
+        tools:text="Berakhir dalam"
+        android:textIsSelectable="false"
+        tools:visibility="visible"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toRightOf="@id/header_icon_subtitle"
+        app:layout_constraintRight_toLeftOf="@id/header_timer"
+        app:layout_constraintTop_toTopOf="@id/header_timer"
+        app:layout_constraintBottom_toBottomOf="@id/header_timer"
+        app:layout_constraintHorizontal_bias="0"/>
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/header_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginLeft="@dimen/home_component_header_margin_timer_to_subtitle"
+        app:layout_goneMarginLeft="@dimen/home_component_header_margin_default"
+        android:layout_marginRight="@dimen/home_component_header_margin_default"
+        app:layout_goneMarginRight="@dimen/home_component_header_margin_default"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_title"
+        app:layout_constraintLeft_toRightOf="@+id/header_subtitle"
+        app:layout_constraintRight_toLeftOf="@id/cta_chevron"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        android:layout_marginTop="@dimen/home_component_header_timer_top_padding"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <include
+        android:id="@+id/cta_chevron"
+        layout="@layout/home_component_header_chevron_cta"
+        android:layout_marginRight="@dimen/home_component_header_margin_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

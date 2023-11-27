@@ -2,6 +2,7 @@
 
     <string name="swd_activity_withdraw">Penarikan Saldo</string>
     <string name="swd_activity_auto_withdraw_settings">Pengaturan Saldo</string>
+    <string name="swd_activity_auto_topads_bottomsheet">Auto Top Up Bottom Sheet</string>
 
     <string name="swd_title_action_withdraw">Tarik Saldo</string>
     <string name="swd_rp">Rp%s</string>
@@ -128,4 +129,11 @@
     <string name="swd_dialog_gopay_redirection_upgrade_description">Untuk sekarang, kamu hanya bisa upgrade ke GoPay Plus lewat aplikasi Tokopedia.</string>
     <string name="swd_dialog_gopay_redirection_activate_title">Daftarnya lewat aplikasi, ya</string>
     <string name="swd_dialog_gopay_redirection_activate_description">Untuk sekarang, kamu hanya bisa aktifkan GoPay lewat aplikasi Tokopedia.</string>
+
+    <string name="swd_dialog_auto_topads_title">Oops, kamu punya pembayaran Kredit Otomatis TopAds</string>
+    <string name="swd_dialog_auto_topads_description">Supaya pembayaran TopAds kamu lancar, kami sarankan sisakan Saldo Penghasilan yang cukup.</string>
+    <string name="swd_dialog_auto_topads_original_amount_title">Jumlah Penarikan</string>
+    <string name="swd_dialog_auto_topads_recommended_amount_title">Rekomendasi</string>
+    <string name="swd_dialog_auto_topads_primary_button_text">Tarik Sesuai Rekomendasi</string>
+    <string name="swd_dialog_auto_topads_secondary_button_text">Tarik Jumlah Awal</string>
 </resources>

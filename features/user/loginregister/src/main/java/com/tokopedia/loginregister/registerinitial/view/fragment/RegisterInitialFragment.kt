@@ -1707,7 +1707,7 @@ class RegisterInitialFragment :
         private const val SOCMED_BUTTON_CORNER_SIZE = 10
 
         private const val TERM_AND_CONDITION = "Syarat & Ketentuan"
-        private const val PRIVACY_POLICY = "Kebijakan Privasi"
+        private const val PRIVACY_POLICY = "Pemberitahuan Privasi"
 
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 

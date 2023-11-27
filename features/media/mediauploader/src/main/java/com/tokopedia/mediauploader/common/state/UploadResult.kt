@@ -12,5 +12,8 @@ sealed class UploadResult {
         val videoUrl: String = ""
     ): UploadResult()
 
-    data class Error(val message: String): UploadResult()
+    data class Error(
+        val message: String,
+        val requestId: String = ""
+    ): UploadResult()
 }

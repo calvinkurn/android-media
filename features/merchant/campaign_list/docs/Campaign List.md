@@ -55,11 +55,11 @@ implementation project(rootProject.ext.features.campaignList)
 
 The project only consist of one page - Campaign List page. Within this page, sellers are able to monitor their previously created exclusive launch event and gives them ability to broadcast the event to their external social media (e.g Whatsapp, Instagram, Line, Facebook, etc) 
 
-![](res/Screen%20Shot%202023-01-09%20at%2015.21.28.png)
+![](https://docs-android.tokopedia.net/images/docs/campaign_list/Screen%20Shot%202023-01-09%20at%2015.21.28.png)
 
-![](res/Screen%20Shot%202023-01-09%20at%2015.21.51.png)
+![](https://docs-android.tokopedia.net/images/docs/campaign_list/Screen%20Shot%202023-01-09%20at%2015.21.51.png)
 
-![](res/Screen%20Shot%202023-01-09%20at%2015.21.40.png)
+![](https://docs-android.tokopedia.net/images/docs/campaign_list/Screen%20Shot%202023-01-09%20at%2015.21.40.png)
 
 ## Tech Stack
 

@@ -61,10 +61,10 @@ class TdnCarouselView : BaseCustomView, CoroutineScope {
 
     fun setCarouselModel(
         topAdsImageViewModel: List<TopAdsImageViewModel>,
-        onTdnBannerClicked: (applink: String) -> Unit,
+        onTdnBannerClicked: (imageData: TopAdsImageViewModel) -> Unit,
         cornerRadius: Int,
         onLoadFailed: () -> Unit,
-        onTdnBannerImpressed: () -> Unit
+        onTdnBannerImpressed: (imageData: TopAdsImageViewModel) -> Unit
     ) {
         val model = topAdsImageViewModel.firstOrNull()
         tdnCarouselAdapter = TdnCarouselAdapter(

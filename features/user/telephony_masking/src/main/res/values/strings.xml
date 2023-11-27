@@ -2,7 +2,7 @@
 <resources>
     <string name="telephony_title">Lebih mudah kenali nomor\nHP Tokopedia Care</string>
     <string name="telephony_desc">Tim kami mungkin perlu menghubungimu, kasih akses kontak ke Tokopedia untuk menyimpan nomor Tokopedia Care.</string>
-    <string name="telephony_privacy">Cek Kebijakan Privasi</string>
+    <string name="telephony_privacy">Cek Pemberitahuan Privasi</string>
     <string name="telephony_save_button">Kasih Akses</string>
     <string name="telephony_skip_button">Nanti Saja</string>
 </resources>

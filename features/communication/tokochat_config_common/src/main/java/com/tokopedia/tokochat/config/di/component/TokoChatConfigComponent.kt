@@ -3,13 +3,13 @@ package com.tokopedia.tokochat.config.di.component
 import android.content.Context
 import com.gojek.conversations.courier.BabbleCourierClient
 import com.gojek.courier.CourierConnection
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.config.di.module.TokoChatConfigContextModule
 import com.tokopedia.tokochat.config.di.module.TokoChatConfigConversationModule
 import com.tokopedia.tokochat.config.di.module.TokoChatConfigModule
 import com.tokopedia.tokochat.config.di.module.TokoChatConfigNetworkModule
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
-import com.tokopedia.remoteconfig.RemoteConfig
 import dagger.Component
 import retrofit2.Retrofit
 

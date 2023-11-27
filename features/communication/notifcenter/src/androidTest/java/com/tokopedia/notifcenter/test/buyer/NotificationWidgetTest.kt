@@ -1,7 +1,6 @@
 package com.tokopedia.notifcenter.test.buyer
 
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import com.tokopedia.notifcenter.stub.data.response.GqlResponseStub
 import com.tokopedia.notifcenter.test.base.BaseNotificationTest
 import com.tokopedia.notifcenter.test.robot.detailResult
 import com.tokopedia.notifcenter.test.robot.generalResult
@@ -26,10 +25,10 @@ class NotificationWidgetTest : BaseNotificationTest() {
     @Test
     fun should_render_widget_message() {
         // Given
-        GqlResponseStub.notificationDetailResponse.filePath =
+        gqlResponseStub.notificationDetailResponse.filePath =
             "detail/notifcenter_detail_v3_no_track_history_widget.json"
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject { }
-        val msg = GqlResponseStub.notificationDetailResponse.responseObject
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject { }
+        val msg = gqlResponseStub.notificationDetailResponse.responseObject
             .notifcenterDetail.newList[0].widget.message
         launchActivity()
 
@@ -43,9 +42,9 @@ class NotificationWidgetTest : BaseNotificationTest() {
     @Test
     fun should_render_short_desc_on_notif_widget() {
         // Given
-        GqlResponseStub.notificationDetailResponse.filePath =
+        gqlResponseStub.notificationDetailResponse.filePath =
             "detail/notifcenter_detail_v3_no_track_history_widget.json"
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             it.notifcenterDetail.newList[0].widget.message = ""
         }
         launchActivity()

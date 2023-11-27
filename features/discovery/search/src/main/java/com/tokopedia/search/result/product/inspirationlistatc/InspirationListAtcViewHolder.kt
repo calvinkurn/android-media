@@ -8,7 +8,7 @@ import com.tokopedia.carouselproductcard.reimagine.CarouselProductCardModel
 import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridModel
 import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.home_component_header.model.ChannelHeader
-import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
+import com.tokopedia.home_component_header.view.HomeComponentHeaderListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
@@ -79,9 +79,9 @@ class InspirationListAtcViewHolder(
                     subtitle = item.option.subtitle,
                     applink = item.option.applink,
                     iconSubtitleUrl = item.option.iconSubtitle,
-                    headerType = ChannelHeader.HeaderType.REVAMP,
+                    headerType = ChannelHeader.HeaderType.CHEVRON,
                 ),
-                listener = object : HomeChannelHeaderListener {
+                listener = object : HomeComponentHeaderListener {
                     override fun onSeeAllClick(link: String) {
                         inspirationListAtcListener.onListAtcSeeMoreClicked(item.option)
                     }

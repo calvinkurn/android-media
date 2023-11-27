@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginStart="16dp"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/bg_recharge_homepage_todo_widget"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_todo_widget_background"
+        android:layout_width="101dp"
+        android:layout_height="98dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_title_todo_widget"
+        app:typographyType="display_3"
+        android:textColor="@color/Unify_NN0"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="@id/img_todo_widget_background"
+        app:layout_constraintBottom_toBottomOf="@id/img_todo_widget_background"
+        app:layout_constraintStart_toStartOf="@id/img_todo_widget_background"
+        app:layout_constraintEnd_toEndOf="@id/img_todo_widget_background"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="Halo Bayar sekaligus"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_sub_title_todo_widget"
+        app:typographyType="display_3"
+        android:textColor="@color/Unify_NN0"
+        android:layout_marginStart="8dp"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toBottomOf="@id/tg_title_todo_widget"
+        app:layout_constraintStart_toStartOf="@id/img_todo_widget_background"
+        android:layout_marginTop="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_chevron_todo_widget"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_color_light_enable="@color/Unify_NN0"
+        app:icon_color_night_enable="@color/Unify_NN0"
+        app:layout_constraintTop_toBottomOf="@id/tg_title_todo_widget"
+        app:layout_constraintEnd_toEndOf="@id/img_todo_widget_background"
+        android:padding="4dp"
+        app:icon_name="CHEVRON_RIGHT"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

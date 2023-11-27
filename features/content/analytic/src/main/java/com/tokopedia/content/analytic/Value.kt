@@ -7,7 +7,9 @@ object Value {
 
     const val user = "user"
     const val shop = "shop"
+    const val seller = "seller"
 
     const val follow = "follow"
     const val unfollow = "unfollow"
+
 }

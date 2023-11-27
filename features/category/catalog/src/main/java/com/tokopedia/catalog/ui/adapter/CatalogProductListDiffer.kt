@@ -1,42 +1,19 @@
 package com.tokopedia.catalog.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.catalog.domain.model.CatalogProductItem
 import com.tokopedia.productcard.ProductCardModel
 
-class CatalogProductListDiffer : DiffUtil.Callback() {
-
-    private var oldProductList: List<ProductCardModel> = emptyList()
-    private var newProductList: List<ProductCardModel> = emptyList()
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldProductList[oldItemPosition]
-        val newItem = newProductList[newItemPosition]
-
-        val isTheSameObject = when {
-            oldItem is ProductCardModel && newItem is ProductCardModel -> {
-                isTheSameProduct(oldItem, newItem)
-            }
-            else -> false
-        }
-
-        return isTheSameObject || isTheSameItem(oldItem, newItem)
+class CatalogProductListDiffer : DiffUtil.ItemCallback<Visitable<*>>() {
+    override fun areItemsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
+        return (oldItem as CatalogProductItem).name == (newItem as CatalogProductItem).name &&
+            oldItem.shop.name == newItem.shop.name
     }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldProductList[oldItemPosition] == newProductList[newItemPosition]
-    }
-
-    override fun getOldListSize() = oldProductList.size
-
-    override fun getNewListSize() = newProductList.size
-
-
-
-    private fun isTheSameProduct(oldItem: ProductCardModel, newItem: ProductCardModel): Boolean {
-        return oldItem.productName == newItem.productName
-    }
-    private fun isTheSameItem(oldItem: ProductCardModel, newItem: ProductCardModel): Boolean {
-        return oldItem == newItem
+    override fun areContentsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
+        return (oldItem as CatalogProductItem) == (newItem as CatalogProductItem)
     }
 }
+

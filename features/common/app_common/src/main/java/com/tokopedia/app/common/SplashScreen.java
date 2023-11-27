@@ -158,7 +158,7 @@ abstract public class SplashScreen extends AppCompatActivity {
         intent.setData(Uri.parse(tokopediaDeeplink));
         // destroyed activity (SplashScreen) might not launch activity,
         // so better to use currentActivity instead.
-        boolean startFromCurrent = AppUtil.INSTANCE.startActivityFromCurrentActivity(intent);
+        boolean startFromCurrent = AppUtil.startActivityFromCurrentActivity(intent);
         if (!startFromCurrent) {
             startActivity(intent);
         }
@@ -169,7 +169,7 @@ abstract public class SplashScreen extends AppCompatActivity {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("reason", reason);
         messageMap.put("deeplink", deeplink);
-        ServerLogger.log(Priority.P2, "LINKER", messageMap);
+        ServerLogger.logP2("LINKER", messageMap);
     }
 
     @Override

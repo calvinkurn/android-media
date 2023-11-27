@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    app:layout_constraintDimensionRatio="H,9:16"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
     <com.tokopedia.play_common.view.RoundedImageView
         android:id="@+id/iv_stories_detail_content"
@@ -11,11 +16,62 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="H,9:16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:rImg_cornerRadius="20dp" />
+        app:rImg_cornerRadius="20dp"
+        tools:visibility="visible" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/container_video_stories_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/Unify_Static_Black"
+        android:visibility="gone"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="H,9:16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_Static_Black">
+
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/player_stories_detail_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:resize_mode="fixed_height"
+                app:show_timeout="3000"
+                app:shutter_background_color="@android:color/transparent"
+                app:surface_type="texture_view"
+                app:use_controller="false" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_stories_detail_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="decorative_white" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

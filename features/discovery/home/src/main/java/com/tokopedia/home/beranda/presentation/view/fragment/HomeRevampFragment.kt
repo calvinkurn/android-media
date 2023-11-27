@@ -146,7 +146,6 @@ import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
-import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
@@ -590,7 +589,6 @@ open class HomeRevampFragment :
         if (::homeRemoteConfigController.isInitialized) {
             getRemoteConfigController().fetchHomeRemoteConfig()
         }
-        HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         HomeRollenceController.fetchHomeRollenceValue()
 
         // show nav toolbar
@@ -820,6 +818,7 @@ open class HomeRevampFragment :
                 super.onScrolled(recyclerView, dx, dy)
                 scrollPositionY = recyclerView.computeVerticalScrollOffset()
                 updateThematicVerticalPosition()
+                setHomeBottomNavBasedOnScrolling()
                 evaluateHomeComponentOnScroll(recyclerView)
             }
         })
@@ -1554,7 +1553,7 @@ open class HomeRevampFragment :
         if (!this::homePrefController.isInitialized) {
             initInjectorHome()
         }
-        layoutManager = AccurateOffsetLinearLayoutManager(context, adapter)
+        context?.let { layoutManager = AccurateOffsetLinearLayoutManager(it, adapter) }
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
         bannerCarouselCallback = BannerComponentCallback(context, this)

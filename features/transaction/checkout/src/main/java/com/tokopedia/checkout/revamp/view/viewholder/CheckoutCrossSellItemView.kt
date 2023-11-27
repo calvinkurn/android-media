@@ -124,7 +124,7 @@ object CheckoutCrossSellItemView {
         itemBinding.cbCheckoutCrossSellItem.isChecked = donationModel.donation.isChecked
         itemBinding.cbCheckoutCrossSellItem.skipAnimation()
         itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            listener.onDonationChecked(isChecked)
+            listener.onDonationChecked(isChecked, donationModel)
         }
         itemBinding.tvCheckoutCrossSellItem.setOnClickListener {
             showDonationBottomSheet(itemBinding, donationModel, listener)
@@ -198,7 +198,7 @@ object CheckoutCrossSellItemView {
         itemBinding.cbCheckoutCrossSellItem.skipAnimation()
         itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             if (egoldModel.egoldAttributeModel.isEnabled) {
-                listener.onEgoldChecked(isChecked)
+                listener.onEgoldChecked(isChecked, egoldModel)
             }
         }
     }
