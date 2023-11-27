@@ -38,6 +38,7 @@ import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
 import com.tokopedia.checkout.analytics.CheckoutPaymentAddOnsAnalytics
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.CornerAnalytics
+import com.tokopedia.checkout.databinding.BottomSheetDropshipBinding
 import com.tokopedia.checkout.databinding.BottomSheetPlatformFeeInfoBinding
 import com.tokopedia.checkout.databinding.FragmentCheckoutBinding
 import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
@@ -2673,5 +2674,44 @@ class CheckoutFragment :
             paymentAddOnsAnalyticData,
             productCatIds
         )
+    }
+
+    override fun showDropshipInfoBottomSheet() {
+        checkoutAnalyticsCourierSelection.eventClickInfoDropshipWidget()
+        val bottomSheetDropshipBinding =
+            BottomSheetDropshipBinding.inflate(LayoutInflater.from(context))
+        val bottomSheetUnify = BottomSheetUnify()
+        bottomSheetUnify.setTitle(
+            getString(R.string.dropship_bottomsheet_title)
+        )
+        bottomSheetUnify.showCloseIcon = false
+        bottomSheetUnify.showKnob = true
+        bottomSheetUnify.setChild(bottomSheetDropshipBinding.root)
+        bottomSheetUnify.show(childFragmentManager, null)
+    }
+
+    override fun showDropshipToasterErrorProtectionUsage() {
+        Toaster.build(binding.root, getString(R.string.dropship_error_protection_usage), type = Toaster.TYPE_ERROR).show()
+    }
+
+    override fun checkLatestProtectionOptIn(cartStringGroup: String): Boolean {
+        return viewModel.isAnyProtectionAddonOptIn(cartStringGroup)
+    }
+
+    override fun onCheckChangedDropship(isChecked: Boolean, position: Int) {
+        checkoutAnalyticsCourierSelection.eventClickToggleDropshipWidget(isChecked)
+        viewModel.setDropshipSwitch(isChecked, position)
+    }
+
+    override fun setValidationDropshipName(name: String, isValid: Boolean, position: Int) {
+        viewModel.setValidationDropshipName(name, isValid, position)
+    }
+
+    override fun setValidationDropshipPhone(phone: String, isValid: Boolean, position: Int) {
+        viewModel.setValidationDropshipPhone(phone, isValid, position)
+    }
+
+    override fun onSendImpressionDropshipWidgetAnalytics() {
+        checkoutAnalyticsCourierSelection.eventViewDropshipWidget()
     }
 }

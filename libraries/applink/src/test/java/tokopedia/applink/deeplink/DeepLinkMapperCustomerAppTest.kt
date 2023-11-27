@@ -3,12 +3,15 @@ package tokopedia.applink.deeplink
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper
+import com.tokopedia.applink.RouteManager.KEY_REDIRECT_TO_SELLER_APP
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
 import com.tokopedia.applink.model.Always
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
@@ -30,7 +33,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 163
-        const val SIZE_PATH = 271
+        const val SIZE_PATH = 272
     }
 
     override fun setup() {
@@ -2509,6 +2512,15 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-partial-order-fulfillment"
         assertEqualsDeepLinkMapper(ApplinkConst.BUYER_PARTIAL_ORDER_FULFILLMENT, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller partial order fulfillment appLink then should return tokopedia internal seller partial order fulfillment in customerapp`() {
+        val orderId = "123456789"
+        val pofStatus = "1"
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://seller/seller-partial-order-fulfillment?$PARAM_ORDER_ID=$orderId&$PARAM_POF_STATUS=$pofStatus&$KEY_REDIRECT_TO_SELLER_APP=true"
+        assertEqualsDeepLinkMapper("${ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT}?$PARAM_ORDER_ID=$orderId&$PARAM_POF_STATUS=$pofStatus&$KEY_REDIRECT_TO_SELLER_APP=true", expectedDeepLink)
     }
 
     @Test

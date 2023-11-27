@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.viewmodel
+package com.tokopedia.home.beranda.presentation.view.uimodel
 
 import java.util.*
 
