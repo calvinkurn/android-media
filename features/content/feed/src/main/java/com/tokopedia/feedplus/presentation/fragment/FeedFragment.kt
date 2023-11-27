@@ -830,6 +830,10 @@ class FeedFragment :
         return videoPlayerManager.occupy(id)
     }
 
+    override fun isAllowedToPlayVideo(): Boolean {
+        return viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+    }
+
     override fun detachPlayer(player: FeedExoPlayer) {
         videoPlayerManager.detach(player)
     }
