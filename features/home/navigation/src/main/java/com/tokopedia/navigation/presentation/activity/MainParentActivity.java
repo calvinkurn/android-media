@@ -800,15 +800,15 @@ public class MainParentActivity extends BaseActivity implements
 
     private void reloadPage(int position, boolean isJustLoggedIn) {
         boolean isPositionFeed = position == FEED_MENU;
-        getIntent().putExtra(
-                ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
-                isPositionFeed && isJustLoggedIn
-        );
+        Intent intent = getIntent()
+                .putExtra(
+                        ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
+                        isPositionFeed && isJustLoggedIn
+                ).putExtra(ARGS_TAB_POSITION, position);
         if (isPositionFeed) {
             recreate();
         } else {
             finish();
-            Intent intent = getIntent().putExtra(ARGS_TAB_POSITION, position);
             startActivity(intent);
         }
     }

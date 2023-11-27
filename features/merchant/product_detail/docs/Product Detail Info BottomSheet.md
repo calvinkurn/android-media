@@ -27,10 +27,10 @@ Product Detail Info BottomSheet is a bottom sheet for explain more detail regard
 
 
 
-| ![](res/image-20230717-043243.png)<br/> | ![](res/Spesifikasi%20Bottomsheet.png)<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/product_detail/image-20230717-043243.png)<br/> | ![](https://docs-android.tokopedia.net/images/docs/product_detail/Spesifikasi%20Bottomsheet.png)<br/> |
 | --- | --- |
 
-![](res/Screenshot%202023-07-17%20at%2016.29.55.png)
+![](https://docs-android.tokopedia.net/images/docs/product_detail/Screenshot%202023-07-17%20at%2016.29.55.png)
 
 ### Background
 
@@ -91,16 +91,16 @@ Product detail info bottom sheet have a recycler-view to display multiple type i
 
 | **TYPE** | **SCREENSHOT** | **DATA SOURCE** |
 | --- | --- | --- |
-| Header | ![](res/Screenshot%202023-07-18%20at%2013.30.58.png)<br/> | `PdpGetDetailBottomSheet.bottomsheetData.componentName='header'` |
-| Annotation | ![](res/Screenshot%202023-07-18%20at%2013.36.42.png)<br/> | `PdpGetDetailBottomSheet.bottomsheetData.componentName='detail'`but this data get from`infoData: ProductDetailInfoDataModel` |
-| Discussion | ![](res/Screenshot%202023-07-18%20at%2013.28.24.png)<br/> | `PdpGetDetailBottomSheet.discussion` |
-| Expandable List | ![](res/Screenshot%202023-07-18%20at%2013.35.36.png)<br/> | `PdpGetDetailBottomSheet.dataShopNotes` |
-| Card | ![](res/Screenshot%202023-07-18%20at%2013.27.01.png)<br/> | `PdpGetDetailBottomSheet.bottomSheetData.componentName='custom_info'` |
-| Catalog | ![](res/Screenshot%202023-07-18%20at%2013.27.59.png)<br/> | `PdpGetDetailBottomSheet.bottomSheetData.componentName='catalog'` |
-| Expandable Image | ![](res/Screenshot%202023-07-18%20at%2013.35.01.png)<br/> | `PdpGetDetailBottomSheet.bottomSheetData.componentName='panduan_ukuran'` |
-| Shimmering for product catalog | ![](res/Screenshot%202023-07-18%20at%2013.32.25.png)<br/> | `ProductInfoParcelData.isOpenSpecification = true` |
-| Shimmering for product description only | ![](res/Screenshot%202023-07-18%20at%2013.31.25.png)<br/> | `ProductInfoParcelData.isOpenSpecification == false && isCatalog == true` |
-| Legacy Shimmering | ![](res/Screenshot%202023-07-18%20at%2013.33.27.png)<br/> | `otherwise this` |
+| Header | ![](https://docs-android.tokopedia.net/images/docs/product_detail/Screenshot%202023-07-18%20at%2013.30.58.png)<br/> | `PdpGetDetailBottomSheet.bottomsheetData.componentName='header'` |
+| Annotation | ![](https://docs-android.tokopedia.net/images/docs/product_detail/Screenshot%202023-07-18%20at%2013.36.42.png)<br/> | `PdpGetDetailBottomSheet.bottomsheetData.componentName='detail'`but this data get from`infoData: ProductDetailInfoDataModel` |
+| Discussion | ![](https://docs-android.tokopedia.net/images/docs/product_detail/Screenshot%202023-07-18%20at%2013.28.24.png)<br/> | `PdpGetDetailBottomSheet.discussion` |
+| Expandable List | ![](https://docs-android.tokopedia.net/images/docs/product_detail/Screenshot%202023-07-18%20at%2013.35.36.png)<br/> | `PdpGetDetailBottomSheet.dataShopNotes` |
+| Card | ![](https://docs-android.tokopedia.net/images/docs/product_detail/Screenshot%202023-07-18%20at%2013.27.01.png)<br/> | `PdpGetDetailBottomSheet.bottomSheetData.componentName='custom_info'` |
+| Catalog | ![](https://docs-android.tokopedia.net/images/docs/product_detail/Screenshot%202023-07-18%20at%2013.27.59.png)<br/> | `PdpGetDetailBottomSheet.bottomSheetData.componentName='catalog'` |
+| Expandable Image | ![](https://docs-android.tokopedia.net/images/docs/product_detail/Screenshot%202023-07-18%20at%2013.35.01.png)<br/> | `PdpGetDetailBottomSheet.bottomSheetData.componentName='panduan_ukuran'` |
+| Shimmering for product catalog | ![](https://docs-android.tokopedia.net/images/docs/product_detail/Screenshot%202023-07-18%20at%2013.32.25.png)<br/> | `ProductInfoParcelData.isOpenSpecification = true` |
+| Shimmering for product description only | ![](https://docs-android.tokopedia.net/images/docs/product_detail/Screenshot%202023-07-18%20at%2013.31.25.png)<br/> | `ProductInfoParcelData.isOpenSpecification == false && isCatalog == true` |
+| Legacy Shimmering | ![](https://docs-android.tokopedia.net/images/docs/product_detail/Screenshot%202023-07-18%20at%2013.33.27.png)<br/> | `otherwise this` |
 
 ## Data Source
 

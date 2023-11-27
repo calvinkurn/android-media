@@ -24,7 +24,7 @@
 
 ### **Description**
 
-![image](../../res/tokopedia_now_category_filter_bottom_sheet.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_category_filter_bottom_sheet.png)
 
 This bottom sheet is used for showing all available categories filter options in TokoNOW.
 
