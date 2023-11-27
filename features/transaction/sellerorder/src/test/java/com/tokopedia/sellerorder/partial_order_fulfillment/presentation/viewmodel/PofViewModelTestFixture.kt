@@ -445,6 +445,22 @@ abstract class PofViewModelTestFixture {
         )
     }
 
+    protected fun sendOnClickDescriptionLearnMore() {
+        viewModel.onEvent(UiEvent.OnClickDescriptionLearnMore)
+    }
+
+    protected fun sendOnClickDismissPofBottomSheet() {
+        viewModel.onEvent(UiEvent.OnClickDismissPofBottomSheet)
+    }
+
+    protected fun sendOnTryChangeProductQuantityAboveMaxQuantity() {
+        viewModel.onEvent(UiEvent.OnTryChangeProductQuantityAboveMaxQuantity)
+    }
+
+    protected fun sendOnTryChangeProductQuantityBelowMinQuantity() {
+        viewModel.onEvent(UiEvent.OnTryChangeProductQuantityBelowMinQuantity)
+    }
+
     protected fun excludeCalls(calls: suspend MockKMatcherScope.() -> Unit) {
         coExcludeRecords(excludeBlock = calls)
     }
