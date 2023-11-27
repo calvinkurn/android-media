@@ -16,7 +16,6 @@ sealed class MainEditorEffect {
     // Visibility handler
     object ShowCloseDialogConfirmation : MainEditorEffect()
     data class ShowToastErrorMessage(val message: String) : MainEditorEffect()
-    data class ParentToolbarVisibility(val visible: Boolean) : MainEditorEffect()
     data class RemoveAudioState(val isRemoved: Boolean) : MainEditorEffect()
 
     // Global loader

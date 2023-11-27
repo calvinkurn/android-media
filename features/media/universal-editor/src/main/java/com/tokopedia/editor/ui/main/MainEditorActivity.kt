@@ -3,12 +3,17 @@
 
 package com.tokopedia.editor.ui.main
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AccelerateInterpolator
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -102,13 +107,17 @@ open class MainEditorActivity : AppCompatActivity()
     private val audioMuteState by uiComponent { AudioStateUiComponent(it) }
 
     private val inputTextIntent = registerForActivityResult(StartActivityForResult()) {
-        val result = InputTextActivity.result(it)
-        viewModel.onEvent(MainEditorEvent.InputTextResult(result))
+        animateChangePageTransition(true) {
+            val result = InputTextActivity.result(it)
+            viewModel.onEvent(MainEditorEvent.InputTextResult(result))
+        }
     }
 
     private val placementIntent = registerForActivityResult(StartActivityForResult()) {
-        val result = PlacementImageActivity.result(it)
-        viewModel.onEvent(MainEditorEvent.PlacementImageResult(result))
+        animateChangePageTransition(true) {
+            val result = PlacementImageActivity.result(it)
+            viewModel.onEvent(MainEditorEvent.PlacementImageResult(result))
+        }
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -219,10 +228,6 @@ open class MainEditorActivity : AppCompatActivity()
 
     private fun onEffectHandler(effect: MainEditorEffect) {
         when (effect) {
-            is MainEditorEffect.ParentToolbarVisibility -> {
-                toolbar.setVisibility(effect.visible)
-                navigationTool.setVisibility(effect.visible)
-            }
             is MainEditorEffect.CloseMainEditorPage -> {
                 viewModel.onEvent(MainEditorEvent.DisposeRemainingTasks)
                 finish()
@@ -240,11 +245,21 @@ open class MainEditorActivity : AppCompatActivity()
                 navigationTool.setRemoveAudioUiState(effect.isRemoved)
                 audioMuteState.onShowOrHideAudioState(effect.isRemoved)
             }
-            is MainEditorEffect.OpenPlacementPage -> navigateToPlacementImagePage(effect.sourcePath, effect.model)
-            is MainEditorEffect.UpdatePagerSourcePath -> pagerContainer.updateView(effect.newSourcePath)
+            is MainEditorEffect.OpenPlacementPage -> {
+                animateChangePageTransition {
+                    navigateToPlacementImagePage(effect.sourcePath, effect.model)
+                }
+            }
+            is MainEditorEffect.UpdatePagerSourcePath -> {
+                pagerContainer.updateView(effect.newSourcePath)
+            }
             is MainEditorEffect.FinishEditorPage -> navigateBackToPickerAndFinishIntent(effect.filePath)
             is MainEditorEffect.ShowToastErrorMessage -> onShowToastErrorMessage(effect.message)
-            is MainEditorEffect.OpenInputText -> navigateToInputTextTool(effect.model)
+            is MainEditorEffect.OpenInputText -> {
+                animateChangePageTransition {
+                    navigateToInputTextTool(effect.model)
+                }
+            }
             is MainEditorEffect.ShowLoading -> globalLoader.showLoading()
             is MainEditorEffect.HideLoading -> globalLoader.hideLoading()
         }
@@ -263,6 +278,39 @@ open class MainEditorActivity : AppCompatActivity()
         val intent = InputTextActivity.create(this, model)
         inputTextIntent.launch(intent)
         overridePendingTransition(0, 0)
+    }
+
+    private fun animateChangePageTransition(isShow: Boolean = false, onFinish: () -> Unit) {
+        val animatorSet = AnimatorSet()
+
+        // determine animation play flow, show / hide
+        val valueSet = if (isShow) {
+            Pair(0f, 1f)
+        } else {
+            Pair(1f, 0f)
+        }
+
+        listOf(toolbar.container(), navigationTool.container()).forEach {
+            animatorSet.playTogether(
+                ObjectAnimator.ofFloat(it,"alpha", valueSet.first, valueSet.second).apply {
+                    repeatCount = 0
+                    interpolator = AccelerateInterpolator()
+                }
+            )
+        }
+
+        animatorSet.apply {
+            addListener(object: AnimatorListener{
+                override fun onAnimationStart(p0: Animator) {}
+                override fun onAnimationCancel(p0: Animator) {}
+                override fun onAnimationRepeat(p0: Animator) {}
+                override fun onAnimationEnd(p0: Animator) {
+                    onFinish()
+                }
+            })
+            duration = TRANSITION_PAGE_DURATION
+            start()
+        }
     }
 
     private fun navigateToPlacementImagePage(sourcePath: String, model: ImagePlacementModel?) {
@@ -356,5 +404,9 @@ open class MainEditorActivity : AppCompatActivity()
      */
     private fun isSplitInstallEnabled(): Boolean {
         return true
+    }
+
+    companion object {
+        private const val TRANSITION_PAGE_DURATION = 250L
     }
 }
