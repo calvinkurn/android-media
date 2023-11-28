@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.tokofood.common.domain.response.KeroEditAddressResponse
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeDynamicIconsResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeLayoutResponse
@@ -103,10 +102,10 @@ abstract class TokoFoodHomeViewModelTestFixture {
         } throws errorThrowable
     }
 
-    protected fun onGetKeroEditAddress_thenReturn(keroEditAddressResponse: KeroEditAddressResponse) {
+    protected fun onGetKeroEditAddress_thenReturn(keroEditAddressResponse: com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse.Data) {
         coEvery {
             keroEditAddressUseCase.execute("", "", "")
-        } returns keroEditAddressResponse.keroEditAddress.data.isEditSuccess()
+        } returns keroEditAddressResponse.keroEditAddress.data
     }
 
     protected fun onGetKeroEditAddress_thenReturn(errorThrowable: Throwable) {

@@ -15,6 +15,8 @@ import com.tokopedia.tokofood.common.domain.response.CartListCartMetadata
 import com.tokopedia.tokofood.common.domain.response.CartListTokofoodResponse
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
+import com.tokopedia.tokofood.data.createKeroEditAddressResponse
+import com.tokopedia.tokofood.data.createKeroEditAddressResponseFail
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodResponse
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.PurchaseUiEvent
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getProductById
@@ -432,7 +434,6 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                 expectedFlag,
                 (viewModel.purchaseUiEvent.value?.data as? Pair<*, *>)?.second
             )
-
         }
     }
 
@@ -609,7 +610,8 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             assertEquals(
                 viewModel.visitables.value?.any {
                     it is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel || it is TokoFoodPurchasePromoTokoFoodPurchaseUiModel
-                }, false
+                },
+                false
             )
         }
     }
@@ -943,9 +945,9 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             val deletedCartId: String
             successResponse.data.getTokofoodBusinessData().getAvailableSectionProducts()
                 .getOrNull(0).let { deletedProduct ->
-                deletedProductId = deletedProduct?.productId.orEmpty()
-                deletedCartId = deletedProduct?.cartId.orEmpty()
-            }
+                    deletedProductId = deletedProduct?.productId.orEmpty()
+                    deletedCartId = deletedProduct?.cartId.orEmpty()
+                }
 
             viewModel.setIsHasPinpoint("123", true)
             viewModel.loadData()
@@ -1029,9 +1031,11 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.loadData()
             viewModel.deleteProduct(deletedProductId, deletedCartId)
 
-            assert(viewModel.visitables.value?.any {
-                it is TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel
-            } == false)
+            assert(
+                viewModel.visitables.value?.any {
+                    it is TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel
+                } == false
+            )
         }
     }
 
@@ -1106,7 +1110,6 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when validateBulkDelete should show not collapsed unavailable product count`() {
-
         val rawSuccessResponse =
             JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_UNAVAILABLE_PRODUCTS_JSON
@@ -1136,7 +1139,6 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when bulkDeleteUnavailableProducts should remove all unavailable product section`() {
-
         val rawSuccessResponse =
             JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_UNAVAILABLE_PRODUCTS_JSON
@@ -1170,7 +1172,6 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when bulkDeleteUnavailableProducts but no unavailable products, should not do anything`() {
-
         val rawSuccessResponse =
             JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_SINGLE_PRODUCT_JSON
@@ -1195,7 +1196,8 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             successResponse.data.getTokofoodBusinessData().getUnavailableSectionProducts().size
         assertEquals(
             expectedUnavailableProductCount,
-            viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !it.isAvailable })
+            viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !it.isAvailable }
+        )
     }
 
     @Test
@@ -1222,9 +1224,11 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
         viewModel.toggleUnavailableProductsAccordion()
 
         assert(
-            (viewModel.visitables.value?.find {
-                it is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
-            } as? TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel)?.isCollapsed == true
+            (
+                viewModel.visitables.value?.find {
+                    it is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
+                } as? TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
+                )?.isCollapsed == true
         )
     }
 
@@ -1253,9 +1257,11 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
         viewModel.toggleUnavailableProductsAccordion()
 
         assert(
-            (viewModel.visitables.value?.find {
-                it is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
-            } as? TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel)?.isCollapsed == false
+            (
+                viewModel.visitables.value?.find {
+                    it is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
+                } as? TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
+                )?.isCollapsed == false
         )
     }
 
@@ -1286,7 +1292,8 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             successResponse.data.getTokofoodBusinessData().getUnavailableSectionProducts().size
         assertEquals(
             expectedUnavailableProductCount,
-            viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !it.isAvailable })
+            viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !it.isAvailable }
+        )
     }
 
     @Test
@@ -1316,7 +1323,8 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             val expectedUnavailableProductCount = 1
             assertEquals(
                 expectedUnavailableProductCount,
-                viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !it.isAvailable })
+                viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !it.isAvailable }
+            )
         }
     }
 
@@ -1718,7 +1726,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             coEvery {
                 keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
-            } returns true
+            } returns createKeroEditAddressResponse(latitude, longitude).keroEditAddress.data
 
             viewModel.updateAddressPinpoint(latitude, longitude)
 
@@ -1737,7 +1745,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             coEvery {
                 keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
-            } returns true
+            } returns createKeroEditAddressResponse(latitude, longitude).keroEditAddress.data
 
             viewModel.updateAddressPinpoint(latitude, longitude)
 
@@ -1756,7 +1764,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             coEvery {
                 keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
-            } returns true
+            } returns createKeroEditAddressResponse(latitude, longitude).keroEditAddress.data
 
             viewModel.updateAddressPinpoint(latitude, longitude)
 
@@ -1775,7 +1783,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             coEvery {
                 keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
-            } returns true
+            } returns createKeroEditAddressResponse(latitude, longitude).keroEditAddress.data
 
             viewModel.updateAddressPinpoint(latitude, longitude)
 
@@ -1794,7 +1802,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             coEvery {
                 keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
-            } returns false
+            } returns createKeroEditAddressResponseFail().keroEditAddress.data
 
             viewModel.updateAddressPinpoint(latitude, longitude)
 
@@ -2262,5 +2270,4 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             assertNotEquals(expectedUiEventState, viewModel.purchaseUiEvent.value?.state)
         }
     }
-
 }

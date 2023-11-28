@@ -1,5 +1,7 @@
 package com.tokopedia.tokofood.merchant
 
+import com.tokopedia.tokofood.data.createKeroEditAddressResponse
+import com.tokopedia.tokofood.data.createKeroEditAddressResponseFail
 import com.tokopedia.tokofood.data.generateTestDeliveryCoverageResult
 import com.tokopedia.tokofood.data.generateTestKeroEditAddressResponse
 import com.tokopedia.usecase.coroutines.Fail
@@ -23,26 +25,27 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
 
     @Test
     fun `when updatePinPoint is success expect the boolean result to be true`() {
+        val latitude = "111"
+        val longitude = "112"
         coEvery {
-            keroEditAddressUseCase.execute("", "", "")
-        } returns generateTestKeroEditAddressResponse().keroEditAddress
-        viewModel.updatePinPoint("", "", "")
+            keroEditAddressUseCase.execute("", latitude, longitude)
+        } returns createKeroEditAddressResponse(latitude, longitude).keroEditAddress.data
+        viewModel.updatePinPoint("", latitude, longitude)
         val expectedResult = generateTestKeroEditAddressResponse()
-        viewModel.updatePinPoint("", "", "")
-        coVerify { keroEditAddressUseCase.execute("", "", "") }
-        assertEquals(expectedResult.keroEditAddress.data.isEditSuccess(), viewModel.updatePinPointState.value)
+        viewModel.updatePinPoint("", latitude, longitude)
+        coVerify { keroEditAddressUseCase.execute("", latitude, longitude) }
+        assertEquals(viewModel.updatePinPointState.value?.isSuccess, 1)
     }
 
     @Test
     fun `when updatePinPoint is not success expect the boolean result to be false`() {
         coEvery {
             keroEditAddressUseCase.execute("", "", "")
-        } returns !generateTestKeroEditAddressResponse().keroEditAddress.data.isEditSuccess()
+        } returns createKeroEditAddressResponseFail().keroEditAddress.data
         viewModel.updatePinPoint("", "", "")
-        val expectedResult = generateTestKeroEditAddressResponse()
         viewModel.updatePinPoint("", "", "")
         coVerify { keroEditAddressUseCase.execute("", "", "") }
-        assertEquals(!expectedResult.keroEditAddress.data.isEditSuccess(), viewModel.updatePinPointState.value)
+        assertEquals(viewModel.updatePinPointState.value?.isSuccess, 0)
     }
 
     @Test

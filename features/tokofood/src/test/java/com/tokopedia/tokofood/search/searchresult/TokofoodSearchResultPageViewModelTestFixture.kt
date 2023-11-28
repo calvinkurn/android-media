@@ -8,6 +8,7 @@ import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.tokofood.data.createKeroEditAddressResponse
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodFilterSortMapper
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodMerchantSearchResultMapper
 import com.tokopedia.tokofood.feature.search.searchresult.domain.response.TokofoodFilterSortResponse
@@ -255,7 +256,7 @@ open class TokofoodSearchResultPageViewModelTestFixture {
     ) {
         coEvery {
             keroEditAddressUseCase.execute(addressId, lat, long)
-        } returns isSuccess
+        } returns createKeroEditAddressResponse(lat, long, if (isSuccess) 1 else 0).keroEditAddress.data
     }
 
     protected fun onEditAddress_shouldThrow(
