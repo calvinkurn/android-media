@@ -1849,6 +1849,20 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             listOrder.add(UohTypeData(orderList, UohConsts.TYPE_TICKER))
         }
 
+        val recommendationWidget = RecommendationWidget(
+                title = "Waktunya beli kebutuhanmu lagi!",
+                recommendationItemList = listOf(RecommendationItem(
+                        name = "Fillet Ikan Pangasius",
+                        imageUrl = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/22/8e7f3536-af84-4300-bfff-4832fb6f0f99.png",
+                        price = "Rp25.500",
+                        priceInt = 25500,
+                        discountPercentageInt = 15,
+                        discountPercentage = "15",
+                        slashedPrice = "Rp30.000"
+                ))
+        )
+        listOrder.add(UohTypeData(recommendationWidget, UohConsts.TYPE_BUY_AGAIN))
+
         orderList.orders.forEach {
             listOrder.add(UohTypeData(it, UohConsts.TYPE_ORDER_LIST))
         }

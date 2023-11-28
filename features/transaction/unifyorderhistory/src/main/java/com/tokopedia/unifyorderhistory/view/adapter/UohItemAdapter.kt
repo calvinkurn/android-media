@@ -11,6 +11,7 @@ import com.tokopedia.unifyorderhistory.data.model.PmsNotification
 import com.tokopedia.unifyorderhistory.data.model.UohEmptyState
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
+import com.tokopedia.unifyorderhistory.databinding.UohBuyAgainBinding
 import com.tokopedia.unifyorderhistory.databinding.UohEmptyStateBinding
 import com.tokopedia.unifyorderhistory.databinding.UohListItemBinding
 import com.tokopedia.unifyorderhistory.databinding.UohLoaderItemBinding
@@ -21,6 +22,7 @@ import com.tokopedia.unifyorderhistory.databinding.UohRecommendationTitleBinding
 import com.tokopedia.unifyorderhistory.databinding.UohTdnBannerLayoutBinding
 import com.tokopedia.unifyorderhistory.databinding.UohTickerItemBinding
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_BANNER
+import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_BUY_AGAIN
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_EMPTY
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_LOADER
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_LOADER_PMS_BUTTON
@@ -29,6 +31,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_PMS_BUTTON
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_RECOMMENDATION_ITEM
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_TICKER
+import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohBuyAgainViewHolder
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohEmptyStateViewHolder
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohLoaderItemViewHolder
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohLoaderPmsButtonItemViewHolder
@@ -57,6 +60,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val LAYOUT_BANNER = 6
         const val LAYOUT_PMS_BUTTON = 7
         const val LAYOUT_LOADER_PMS_BUTTON = 8
+        const val LAYOUT_BUY_AGAIN = 9
     }
 
     interface ActionListener {
@@ -117,6 +121,10 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 val binding = UohLoaderPmsButtonItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
                 UohLoaderPmsButtonItemViewHolder(binding)
             }
+            LAYOUT_BUY_AGAIN -> {
+                val binding = UohBuyAgainBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                UohBuyAgainViewHolder(binding)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -136,6 +144,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TDN_BANNER -> LAYOUT_BANNER
             TYPE_PMS_BUTTON -> LAYOUT_PMS_BUTTON
             TYPE_LOADER_PMS_BUTTON -> LAYOUT_LOADER_PMS_BUTTON
+            TYPE_BUY_AGAIN -> LAYOUT_BUY_AGAIN
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -168,6 +177,9 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element)
             }
             is UohLoaderPmsButtonItemViewHolder -> {
+                holder.bind(element)
+            }
+            is UohBuyAgainViewHolder -> {
                 holder.bind(element)
             }
         }

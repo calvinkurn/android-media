@@ -62,6 +62,7 @@ object UohConsts {
     const val TYPE_RECOMMENDATION_ITEM = "recommendation"
     const val TDN_BANNER = "tdn"
     const val TYPE_PMS_BUTTON = "pms_button"
+    const val TYPE_BUY_AGAIN = "buy_again"
 
     const val TYPE_ACTION_BUTTON_LINK = "link"
     const val TYPE_ACTION_CANCEL_ORDER = "cancelOrder"

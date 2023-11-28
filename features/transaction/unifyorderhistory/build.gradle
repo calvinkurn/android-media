@@ -46,6 +46,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation rootProject.ext.composeDependencies.composeCoil
+    implementation rootProject.ext.composeDependencies.composeConstraint
 
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
