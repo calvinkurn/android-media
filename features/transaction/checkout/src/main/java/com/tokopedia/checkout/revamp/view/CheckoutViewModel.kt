@@ -2037,22 +2037,8 @@ class CheckoutViewModel @Inject constructor(
 
             if (checkoutWithDropship) mTrackerShipment.eventClickPilihPembayaranWithDropshipEnabled()
 
-            val validateUsePromoRevampUiModel = promoProcessor.finalValidateUse(
-                promoProcessor.generateValidateUsePromoRequest(
-                    listData.value,
-                    isTradeIn,
-                    isTradeInByDropOff,
-                    isOneClickShipment
-                )
-            )
+            val validateUsePromoRevampUiModel = promoProcessor.validateUsePromoRevampUiModel
             if (validateUsePromoRevampUiModel != null) {
-                val itemList = listData.value.toMutableList()
-                itemList[itemList.size - 4] = itemList.promo()!!.copy(
-                    promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
-                        validateUsePromoRevampUiModel.promoUiModel
-                    )
-                )
-                listData.value = itemList
                 val notEligiblePromoHolderdataList = arrayListOf<NotEligiblePromoHolderdata>()
                 if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
                     val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
