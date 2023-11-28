@@ -4,13 +4,11 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.epharmacy.R
-import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_IDS
 import com.tokopedia.epharmacy.utils.EPharmacyNavigator
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class EPharmacyComponentBottomSheet : BottomSheetUnify() {
+class EPharmacyCommonBottomSheet : BottomSheetUnify() {
 
     init {
         isFullpage = false
@@ -54,8 +52,8 @@ class EPharmacyComponentBottomSheet : BottomSheetUnify() {
         const val COMPONENT_NAME = "ComponentName"
         private const val TYPE_QUANTITY_EDITOR = "quantity-editor"
 
-        fun newInstance(bundle: Bundle): EPharmacyComponentBottomSheet {
-            return EPharmacyComponentBottomSheet().apply {
+        fun newInstance(bundle: Bundle): EPharmacyCommonBottomSheet {
+            return EPharmacyCommonBottomSheet().apply {
                 arguments = bundle
             }
         }
