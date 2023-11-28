@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.marginTop
+import androidx.core.view.updateMargins
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -31,6 +33,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.content.common.util.doOnApplyWindowInsets
+import com.tokopedia.content.common.util.marginLp
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -198,9 +201,13 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     private fun setupInsets() {
-        mainLayout?.doOnApplyWindowInsets { view, insets, padding, _ ->
+        val initialNavToolbarPaddingTop = navToolbar?.paddingTop.orZero()
+        val initialHeaderTopAnchorMarginTop = viewBinding?.headerTopAnchor?.marginTop.orZero()
+
+        mainLayout?.doOnApplyWindowInsets { _, insets, _, _ ->
             val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            view.updatePadding(top = padding.top + statusBarInsets.top - navToolbar?.paddingTop.orZero())
+            navToolbar?.updatePadding(top = statusBarInsets.top)
+            viewBinding?.headerTopAnchor?.marginLp?.updateMargins(top = initialHeaderTopAnchorMarginTop + statusBarInsets.top - initialNavToolbarPaddingTop)
         }
     }
 
