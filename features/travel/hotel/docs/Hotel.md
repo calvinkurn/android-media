@@ -51,11 +51,11 @@ Here is the flow diagram of the hotel feature
 1. Booking Hotel Flow  
 
 
-![](res/Screen-Shot-2023-05-17.png)
+![](https://docs-android.tokopedia.net/images/docs/hotel/Screen-Shot-2023-05-17.png)
 2. Cancel Hotel Flow  
 
 
-![](res/Hotel-Home-Page-General-Cancel-Flow.png)
+![](https://docs-android.tokopedia.net/images/docs/hotel/Hotel-Home-Page-General-Cancel-Flow.png)
 
 ## List Feature Page
 

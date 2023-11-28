@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgShopNoteTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:typographyType="display_1"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginHorizontal="16dp"
+            tools:text="Kebijakan pengembalian produk"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgShopNoteDescription"
+            android:layout_marginHorizontal="16dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="paragraph_2"
+            tools:text="Sangat disarantkan bagi pembeli untuk mendisinfektan paket dan kemudian merekam " />
+
+    </LinearLayout>
+
+
+</ScrollView>

@@ -23,4 +23,14 @@ data class SelectedFilters(
         topic?.let { listOfFilters.add(it) }
         return listOfFilters.joinToString(separator = ";") { "${it.param}=${it.value}" }
     }
+
+    fun getSelectedParam(): String {
+        val params = mutableListOf<String>()
+        withMedia?.let {
+            params.add("image")
+            params.add("video")
+        }
+        rating?.let { params.add("${it.param}=${it.value}") }
+        return params.joinToString(";")
+    }
 }

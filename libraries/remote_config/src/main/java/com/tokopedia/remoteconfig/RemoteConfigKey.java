@@ -27,6 +27,7 @@ public class RemoteConfigKey {
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
     public static final String ENABLE_MINI_CONSULTATION_PAGE = "android_main_app_enable_mini_consultation";
+    public static final String REDIRECT_EPHARMACY_WEB_VIEW_VERSION_LOW = "android_main_app_redirect_epharmacy_webview_version_low";
     public static final String DISABLE_CATALOG_LIBRARY_PAGE = "android_main_app_disable_catalog_library";
 
 
@@ -174,6 +175,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_PEDULI_LINDUNGI_SCANQR = "android_customer_enable_peduli_lindungi_scanqr";
 
     public static final String FORCE_LIGHT_MODE = "android_force_light_mode";
+    public static final String FORCE_LIGHT_MODE_SELLER_APP = "android_force_light_mode_seller_app";
+    public static final String ENABLE_DARK_MODE_INTRO = "android_enable_dark_mode_intro_bottom_sheet";
 
     public static final String SHOW_SHOPADS_FEED_NEW_DESIGN = "app_android_feed_shopads_new_design_flag";
     public static final String ENABLE_QUEST_WIDGET = "android_enable_quest_widget";
@@ -204,7 +207,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_SHOP_HOME_NPL_WIDGET = "android_enable_shop_home_npl_widget";
 
     public static final String ENABLE_SHOP_PAGE_REIMAGINED = "android_enable_shop_page_re_imagined";
-
+    
     public static final String ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC = "android_enable_old_seller_mvc_routing_to_new_seller_mvc";
 
     public static final String ENABLE_CURSOR_EMBRACE_LOGGING = "android_newrelic_cursor_out_of_bound";
@@ -277,8 +280,8 @@ public class RemoteConfigKey {
     public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
 
     public static final String MAINAPP_DISABLED_STORIES_ENTRY_POINTS = "android_main_app_disabled_stories_entry_points";
-
     public static final String SELLERAPP_DISABLED_STORIES_ENTRY_POINTS = "android_seller_app_disabled_stories_entry_points";
+    public static final String APP_CONTENT_CREATION_STORIES_CONFIG = "android_app_content_creation_stories_config";
 
     public static final String ANDROID_SET_VISIBLE_PRODUCT_COUNTER_OLP = "android_set_visible_product_counter_olp";
 
@@ -292,7 +295,19 @@ public class RemoteConfigKey {
 
     public static final String SELLER_SEARCH_COMPOSE = "android_seller_search_compose";
 
+    public static final String ANDROID_CREDIT_CARD_ENABLE_AUTOFILL_GOOGLE_WALLET = "android_credit_card_enable_autofill_google_wallet";
+
     public static final String ANDROID_PM_OPT_OUT_DATE = "android_pm_opt_out_date";
 
     public static final String ENABLE_PDP_PREFETCH = "android_pdp_enable_prefetch";
+
+    public static final String LOAD_PRODUCT_IMAGE_ARCHIVAL_KEY = "android_load_product_image_archival_enabled";
+
+    public static final String ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST = "android_set_catalog_product_list_improvement";
+
+    public static final String ENABLE_WEBVIEW_BACK_PRESSED = "android_webview_enable_override_back_pressed";
+
+    public static final String ANDROID_MAIN_APP_ENABLE_DISCO_SHOP_OFFER_HERO_BRAND = "android_main_app_enable_disco_shop_offer_hero_brand";
+
+    public static final String ANDROID_ENABLE_AUTO_TOPADS_WD_RECOMMENDATION = "android_enable_auto_topads_wd_recommendation";
 }

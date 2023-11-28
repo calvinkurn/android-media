@@ -51,8 +51,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.ProductDetailPrefetch
-import com.tokopedia.product.detail.common.ProductDetailPrefetch.Data.Companion.CONTAINER_TYPE_PORTRAIT
-import com.tokopedia.product.detail.common.ProductDetailPrefetch.Data.Companion.CONTAINER_TYPE_SQUARE
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -876,9 +874,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 it.position == LABEL_INTEGRITY
         }?.title ?: ""
 
-        val containerType = if (item.isPortrait) CONTAINER_TYPE_PORTRAIT
-        else CONTAINER_TYPE_SQUARE
-
         val prefetchData = ProductDetailPrefetch.Data(
             image = item.imageUrl300,
             name = item.productName,
@@ -887,8 +882,7 @@ class ProductListFragment: BaseDaggerFragment(),
             discount = item.discountPercentage,
             freeShippingLogo = item.freeOngkirDataView.imageUrl,
             rating = item.ratingString,
-            integrity = integrity,
-            containerType = containerType
+            integrity = integrity
         )
         ProductDetailPrefetch.process(context, intent, prefetchData)
     }

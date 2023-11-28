@@ -1,69 +1,55 @@
 package com.tokopedia.mediauploader.image
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.mediauploader.BaseParam
+import com.tokopedia.mediauploader.BaseUploaderParam
+import com.tokopedia.mediauploader.ImageParam
 import com.tokopedia.mediauploader.UploaderManager
-import com.tokopedia.mediauploader.common.data.consts.*
-import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
+import com.tokopedia.mediauploader.analytics.UploaderLogger
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
+import com.tokopedia.mediauploader.common.data.consts.SOURCE_NOT_FOUND
+import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
+import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
-import com.tokopedia.mediauploader.common.logger.DebugLog
-import com.tokopedia.mediauploader.common.logger.onShowDebugLogcat
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.isMaxBitmapResolution
-import com.tokopedia.mediauploader.common.util.isMaxFileSize
-import com.tokopedia.mediauploader.common.util.isMinBitmapResolution
 import com.tokopedia.mediauploader.image.data.params.ImageUploadParam
-import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
-import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
-import java.io.File
 import javax.inject.Inject
 
 class ImageUploaderManager @Inject constructor(
-    @UploaderQualifier private val policyManager: SourcePolicyManager,
-    private val imagePolicyUseCase: GetImagePolicyUseCase,
     private val imageUploaderUseCase: GetImageUploaderUseCase,
-    private val imageSecurePolicyUseCase: GetImageSecurePolicyUseCase
+    @UploaderQualifier val sourcePolicyManager: SourcePolicyManager
 ) : UploaderManager {
 
-    suspend operator fun invoke(
-        file: File,
-        sourceId: String,
-        loader: ProgressUploader?,
-        isSecure: Boolean = false,
-        extraHeader: Map<String, String>,
-        extraBody: Map<String, String>
-    ): UploadResult {
-        if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
+    override suspend fun upload(param: BaseUploaderParam): UploadResult {
+        val base = (param as ImageParam).base as BaseParam
+        val policy = sourcePolicyManager.get() ?: return UploadResult.Error(UNKNOWN_ERROR)
+        if (base.sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
-        // hit the uploader policy
-        val policy = if (isSecure) imageSecurePolicyUseCase(sourceId) else imagePolicyUseCase(sourceId)
-        policyManager.set(policy)
+        val (isValid, message) = ImageUploaderValidator(base.file, policy.imagePolicy)
+        if (isValid.not()) return UploadResult.Error(message)
 
-        return validateError(policy, file) ?: kotlin.run {
-            setProgressUploader(loader)
-            upload(file, sourceId, policy, isSecure, extraHeader, extraBody)
-        }
+        setProgressUploader(base.progress)
+        return upload(policy, param)
     }
 
-    private suspend fun upload(
-        file: File,
-        sourceId: String,
-        policy: SourcePolicy,
-        isSecure: Boolean,
-        extraHeader: Map<String, String> = mapOf(),
-        extraBody: Map<String, String> = mapOf()
-    ): UploadResult {
-        val upload = imageUploaderUseCase(ImageUploadParam(
-            timeOut = policy.timeOut.orZero().toString(),
-            hostUrl = policy.host,
-            sourceId = sourceId,
-            file = file,
-            isSecure = isSecure,
-            extraBody = extraBody,
-            extraHeader = extraHeader
-        ))
+    private suspend fun upload(policy: SourcePolicy, param: ImageParam): UploadResult {
+        val base = param.base as BaseParam
+
+        val upload = imageUploaderUseCase(
+            ImageUploadParam(
+                timeOut = policy.timeOut.orZero().toString(),
+                hostUrl = policy.host,
+                sourceId = base.sourceId,
+                file = base.file,
+                isSecure = param.isSecure,
+                extraBody = param.extraBody,
+                extraHeader = param.extraHeader
+            )
+        )
+
+        val requestId = upload.header.requestId ?: ""
 
         val error = if (upload.header.messages.isNotEmpty()) {
             upload.header.messages.first()
@@ -71,57 +57,24 @@ class ImageUploaderManager @Inject constructor(
             UNKNOWN_ERROR
         }
 
-        onShowDebugLogcat(
-            DebugLog(
-                sourceId = sourceId,
-                sourceFile = file.path,
-                uploadId = upload.data?.uploadId.toString(),
-                sourcePolicy = policy
-            )
-        )
-
         return if (upload.data != null && upload.header.isSuccess) {
             upload.data.let {
-                UploadResult.Success(fileUrl = it.fileUrl, uploadId = it.uploadId)
+                UploadResult.Success(
+                    fileUrl = it.fileUrl,
+                    uploadId = it.uploadId
+                )
             }
         } else {
-            UploadResult.Error(error)
-        }
-    }
-
-
-    private fun validateError(policy: SourcePolicy, file: File): UploadResult? {
-        policy.imagePolicy?.let { imagePolicy ->
-            val maxFileSize = imagePolicy.maxFileSize
-            val maxRes = imagePolicy.maximumRes
-            val minRes = imagePolicy.minimumRes
-            val filePath = file.path
-
-            return when {
-                !file.exists() -> {
-                    UploadResult.Error(FILE_NOT_FOUND)
-                }
-                file.isMaxFileSize(maxFileSize) -> {
-                    UploadResult.Error(maxFileSizeMessage(maxFileSize))
-                }
-                !allowedExt(filePath, imagePolicy.extension) -> {
-                    UploadResult.Error(formatNotAllowedMessage(imagePolicy.extension))
-                }
-                filePath.isMaxBitmapResolution(maxRes.width, maxRes.height) -> {
-                    UploadResult.Error(maxResBitmapMessage(maxRes.width, maxRes.height))
-                }
-                filePath.isMinBitmapResolution(minRes.width, minRes.height) -> {
-                    UploadResult.Error(minResBitmapMessage(minRes.width, minRes.height))
-                }
-                else -> {
-                    null
-                }
+            UploadResult.Error(
+                message = error,
+                requestId = requestId
+            ).also {
+                UploaderLogger.commonError(base, it)
             }
-        }?: return UploadResult.Error(UNKNOWN_ERROR)
+        }
     }
 
     override fun setProgressUploader(progress: ProgressUploader?) {
         imageUploaderUseCase.progressUploader = progress
     }
-
 }

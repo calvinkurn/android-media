@@ -10,6 +10,8 @@ android {
     defaultConfig {
         minSdkVersion 29
         targetSdkVersion 33
+        testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "NOT-PROFILEABLE"
+        testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "DEBUGGABLE, EMULATOR"
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true

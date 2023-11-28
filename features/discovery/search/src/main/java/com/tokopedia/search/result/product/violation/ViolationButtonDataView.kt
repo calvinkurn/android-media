@@ -6,7 +6,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 typealias ViolationButtonTypeVariant = Pair<Int, Int>
 
 data class ViolationButtonDataView(
-    val ctaUrl: String = "",
+    val ctaApplink: String = "",
     val text: String = "",
     val type: Int = BUTTON_TYPE_DEFAULT_VALUE,
     val variant: Int = BUTTON_VARIANT_DEFAULT_VALUE
@@ -37,11 +37,11 @@ data class ViolationButtonDataView(
             violation: SearchProductModel.Violation
         ): ViolationButtonDataView {
             val (buttonType, buttonVariant) = convertTypeVariantStringToViolationButtonTypeVariant(violation.buttonType)
-            return ViolationButtonDataView(violation.ctaUrl, violation.buttonText, buttonType, buttonVariant)
+            return ViolationButtonDataView(violation.ctaApplink, violation.buttonText, buttonType, buttonVariant)
         }
     }
 
     val isVisible: Boolean by lazy(LazyThreadSafetyMode.NONE) {
-        text.isNotEmpty() && ctaUrl.isNotEmpty()
+        text.isNotEmpty() && ctaApplink.isNotEmpty()
     }
 }

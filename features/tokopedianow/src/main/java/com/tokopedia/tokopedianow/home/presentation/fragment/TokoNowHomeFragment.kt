@@ -86,7 +86,6 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MA
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
-import com.tokopedia.tokopedianow.common.listener.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.listener.TokoNowRepurchaseProductListener
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
@@ -117,6 +116,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOK
 import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.analytic.HomePlayWidgetAnalyticModel
 import com.tokopedia.tokopedianow.home.analytic.HomeProductCarouselChipsAnalytics
+import com.tokopedia.tokopedianow.home.analytic.HomeQuestWidgetAnalytics
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
@@ -163,6 +163,9 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomV
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
+import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestFinishedWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestReloadWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -245,6 +248,9 @@ class TokoNowHomeFragment :
     lateinit var analytics: HomeAnalytics
 
     @Inject
+    lateinit var analyticsQuestWidget: HomeQuestWidgetAnalytics
+
+    @Inject
     lateinit var homeSharedPref: TokoNowSharedPreference
 
     @Inject
@@ -267,7 +273,7 @@ class TokoNowHomeFragment :
                 homeEducationalInformationListener = this,
                 serverErrorListener = this,
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
-                homeQuestSequenceWidgetListener = createQuestWidgetCallback(),
+                homeQuestSequenceWidgetListener = createQuestCallback(),
                 dynamicLegoBannerCallback = createLegoBannerCallback(),
                 homeSwitcherListener = createHomeSwitcherListener(),
                 homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
@@ -283,6 +289,9 @@ class TokoNowHomeFragment :
                 productBundleWidgetListener = bundleWidgetCallback,
                 tokoNowBundleWidgetListener = bundleWidgetCallback,
                 homeHeaderListener = createHomeHeaderListener(),
+                questReloadWidgetListener = createQuestReloadWidgetCallback(),
+                questWidgetListener = createQuestWidgetCallback(),
+                questFinishedListener = createQuestFinishedWidgetCallback(),
                 recycledViewPool = mRecycledViewPool
             ),
             differ = HomeListDiffer()
@@ -1941,7 +1950,7 @@ class TokoNowHomeFragment :
         }
     }
 
-    private fun createQuestWidgetCallback(): HomeQuestSequenceWidgetListener {
+    private fun createQuestCallback(): HomeQuestSequenceWidgetListener {
         return QuestWidgetCallback(this, viewModelTokoNow, analytics)
     }
 
@@ -2068,14 +2077,42 @@ class TokoNowHomeFragment :
         )
     }
 
-    private fun createProductCardListener(): TokoNowProductCardListener {
-        return TokoNowProductCardListener(
-            context = context,
-            userSession = userSession,
-            viewModel = viewModelTokoNow,
-            analytics = analytics,
-            startActivityForResult = this::startActivityForResult
-        )
+    private fun createQuestReloadWidgetCallback() = object : HomeQuestReloadWidgetViewHolder.HomeQuestReloadWidgetListener {
+        override fun onReloadListener() {
+            viewModelTokoNow.refreshQuestWidget()
+        }
+    }
+
+    private fun createQuestWidgetCallback() = object : HomeQuestWidgetViewHolder.HomeQuestWidgetListener {
+        override fun onImpressQuestWidget() {
+            analyticsQuestWidget.trackImpressionQuestWidget()
+        }
+
+        override fun onClickSeeDetailsQuestWidget() {
+            analyticsQuestWidget.trackClickSeeDetailsQuestWidget()
+        }
+
+        override fun onClickQuestCard() {
+            analyticsQuestWidget.trackClickCardQuestWidget()
+        }
+
+        override fun onClickProgressiveBar() {
+            analyticsQuestWidget.trackClickProgressiveBarQuestWidget()
+        }
+
+        override fun onImpressQuestCardSwiped() {
+            analyticsQuestWidget.trackImpressionSwipeQuestCardQuestWidget()
+        }
+    }
+
+    private fun createQuestFinishedWidgetCallback() = object : HomeQuestFinishedWidgetViewHolder.HomeQuestFinishedWidgetListener {
+        override fun onClickSeeDetailsQuestWidget() {
+            analyticsQuestWidget.trackClickSeeDetailsQuestWidget()
+        }
+
+        override fun onImpressFinishCard() {
+            analyticsQuestWidget.trackImpressionFinishedQuestWidget()
+        }
     }
 
     private fun showDialogReceiverReferral(data: HomeReceiverReferralDialogUiModel) {

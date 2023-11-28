@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.setup
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
+import com.tokopedia.content.product.picker.seller.util.PriceFormatUtil
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
@@ -43,7 +44,7 @@ fun parentBroViewModel(
     userSession: UserSessionInterface = mockk(relaxed = true),
     playBroadcastWebSocket: PlayBroadcastWebSocket = mockk(relaxed = true),
     playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(DefaultHtmlTextTransformer(), DefaultUriParser(), mockk(relaxed = true)),
-    productMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(),
+    productMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(PriceFormatUtil()),
     interactiveMapper: PlayInteractiveMapper = PlayInteractiveMapper(DefaultHtmlTextTransformer()),
     repo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),

@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.GqlParam
 
 data class JakCardRequest(
     @SerializedName("body")
-    val body: JakCardBodyEnc = JakCardBodyEnc(),
+    val body: CommonBodyEnc = CommonBodyEnc(),
 ): GqlParam
 
 data class JakCardBody(
@@ -23,13 +23,6 @@ data class JakCardBody(
     val refNo: String = "",
     @SerializedName("action")
     val action: Int = 0,
-)
-
-data class JakCardBodyEnc(
-    @SerializedName("encKey")
-    var encKey: String = "",
-    @SerializedName("encPayload")
-    var encPayload: String = "",
 )
 
 enum class JakCardAction(val action: Int) {

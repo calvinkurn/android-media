@@ -3,8 +3,8 @@ package com.tokopedia.shop.home.view.customview.directpurchase
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class WidgetData(
-    val widgetTitle: String,
-    val titleList: List<Title>
+    val widgetTitle: String = "",
+    val titleList: List<Title> = listOf()
 )
 
 data class ProductCardDirectPurchaseDataModel(

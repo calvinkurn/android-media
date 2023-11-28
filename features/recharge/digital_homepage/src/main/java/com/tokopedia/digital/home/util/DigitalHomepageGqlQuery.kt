@@ -10,6 +10,8 @@ import com.tokopedia.digital.home.util.DigitalHomeSearchAutoCompleteQuery.HOME_S
 import com.tokopedia.digital.home.util.DigitalHomeSearchAutoCompleteQuery.HOME_SEARCH_AUTO_COMPLETE_QUERY_NAME
 import com.tokopedia.digital.home.util.DigitalHomeSectionQuery.HOME_SECTION_QUERY
 import com.tokopedia.digital.home.util.DigitalHomeSectionQuery.HOME_SECTION_QUERY_NAME
+import com.tokopedia.digital.home.util.DigitalPersonalizationCloseWidgetMutation.HOME_RECHARGE_PERSO_CLOSE_WIDGET_MUTATION
+import com.tokopedia.digital.home.util.DigitalPersonalizationCloseWidgetMutation.HOME_RECHARGE_PERSO_CLOSE_WIDGET_MUTATION_NAME
 import com.tokopedia.gql_query_annotation.GqlQuery
 
 @GqlQuery(HOME_SECTION_QUERY_NAME, HOME_SECTION_QUERY)
@@ -143,6 +145,18 @@ internal object DigitalHomeRechargeFavoriteRecommendationListQuery{
         			type
         		}
         	}
+        }
+    """
+}
+
+@GqlQuery(HOME_RECHARGE_PERSO_CLOSE_WIDGET_MUTATION_NAME, HOME_RECHARGE_PERSO_CLOSE_WIDGET_MUTATION)
+internal object DigitalPersonalizationCloseWidgetMutation {
+    const val HOME_RECHARGE_PERSO_CLOSE_WIDGET_MUTATION_NAME = "MutationDigitalPersonalizationCloseWidget"
+    const val HOME_RECHARGE_PERSO_CLOSE_WIDGET_MUTATION = """
+        mutation digitalPersonalizationCloseWidget(${'$'}input: CloseWidgetRequest) {
+            digitalPersonalizationCloseWidget(input: ${'$'}input) {
+                __typename
+            }
         }
     """
 }

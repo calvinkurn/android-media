@@ -18,13 +18,13 @@
     tools:cardUseCompatPadding="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_data_product"
+        android:id="@+id/searchInspirationKeywordContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="12dp">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/searchSeamlessInspirationTitle"
+            android:id="@+id/searchInspirationKeywordTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:maxLines="2"
@@ -43,8 +43,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/searchSeamlessInspirationTitle"
-            app:layout_constraintTop_toBottomOf="@+id/searchSeamlessInspirationTitle"
+            app:layout_constraintStart_toStartOf="@+id/searchInspirationKeywordTitle"
+            app:layout_constraintTop_toBottomOf="@+id/searchInspirationKeywordTitle"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

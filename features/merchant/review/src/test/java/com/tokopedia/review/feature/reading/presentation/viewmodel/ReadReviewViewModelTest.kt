@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.reading.presentation.viewmodel
 import com.tokopedia.review.common.data.ProductrevLikeReview
 import com.tokopedia.review.common.data.ToggleLikeReviewResponse
 import com.tokopedia.review.feature.reading.data.ImageAttachments
+import com.tokopedia.review.feature.reading.data.Keyword
 import com.tokopedia.review.feature.reading.data.Product
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductRatingAndTopic
@@ -77,7 +78,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
                         ProductReviewDetail(4, "10", 10F),
                         ProductReviewDetail(3, "10", 10F),
                         ProductReviewDetail(2, "10", 10F),
-                        ProductReviewDetail(1, "0", 0F),
+                        ProductReviewDetail(1, "0", 0F)
                     )
                 )
             )
@@ -97,18 +98,18 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
     fun `when setShopId should call getShopRatingAndTopics and return expected results`() {
         val shopId = anyString()
         val expectedResponse = ShopRatingAndTopic(
-                ProductrevGetShopRatingAndTopic(
-                        ProductRating(
-                                satisfactionRate = "90% pembeli merasa puas",
-                                detail = listOf(
-                                        ProductReviewDetail(5, "70", 70F),
-                                        ProductReviewDetail(4, "10", 10F),
-                                        ProductReviewDetail(3, "10", 10F),
-                                        ProductReviewDetail(2, "10", 10F),
-                                        ProductReviewDetail(1, "0", 0F),
-                                )
-                        )
+            ProductrevGetShopRatingAndTopic(
+                ProductRating(
+                    satisfactionRate = "90% pembeli merasa puas",
+                    detail = listOf(
+                        ProductReviewDetail(5, "70", 70F),
+                        ProductReviewDetail(4, "10", 10F),
+                        ProductReviewDetail(3, "10", 10F),
+                        ProductReviewDetail(2, "10", 10F),
+                        ProductReviewDetail(1, "0", 0F)
+                    )
                 )
+            )
         )
 
         onGetShopRatingAndTopicsSuccess_thenReturn(expectedResponse)
@@ -204,7 +205,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
             ReadReviewUiModel(reviewData = ProductReview("2"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId),
             ReadReviewUiModel(reviewData = ProductReview("3"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId),
             ReadReviewUiModel(reviewData = ProductReview("4"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId),
-            ReadReviewUiModel(reviewData = ProductReview("5"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId),
+            ReadReviewUiModel(reviewData = ProductReview("5"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId)
         )
 
         viewModel.setProductId(productId)
@@ -225,15 +226,15 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
     fun `when mapShopReviewToReadReviewUiModel should return expected list of ReadReviewUiModel`() {
         val productId = "129123"
         val shopReviews = listOf(
-                ShopReview(reviewID = "1", product = Product(productID = productId), imageAttachments = listOf(ImageAttachments())),
-                ShopReview(reviewID = "2", product = Product(productID = productId))
+            ShopReview(reviewID = "1", product = Product(productID = productId), imageAttachments = listOf(ImageAttachments())),
+            ShopReview(reviewID = "2", product = Product(productID = productId))
         )
         val isShopViewHolder = true
         val shopId = "423543"
         val shopName = "My Shop"
         val expectedReadReviewUiModelList = listOf(
-                ReadReviewUiModel(reviewData = ProductReview("1"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId),
-                ReadReviewUiModel(reviewData = ProductReview("2"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId)
+            ReadReviewUiModel(reviewData = ProductReview("1"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId),
+            ReadReviewUiModel(reviewData = ProductReview("2"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId)
         )
         viewModel.setShopId(productId)
         val result = viewModel.mapShopReviewToReadReviewUiModel(shopReviews, shopId, shopName)
@@ -267,7 +268,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
             ReadReviewUiModel(reviewData = ProductReview("2"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId),
             ReadReviewUiModel(reviewData = ProductReview("3"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId),
             ReadReviewUiModel(reviewData = ProductReview("4"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId),
-            ReadReviewUiModel(reviewData = ProductReview("5"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId),
+            ReadReviewUiModel(reviewData = ProductReview("5"), isShopViewHolder = isShopViewHolder, shopId = shopId, shopName = shopName, productId = productId)
         )
 
         val result = viewModel.mapProductReviewToReadReviewUiModel(productReviews, shopId, shopName)
@@ -364,10 +365,10 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         val totalLike = 1
         val index = anyInt()
         val expectedResponse = ToggleLikeReviewResponse(
-                ProductrevLikeReview(
-                        likeStatus = likeStatus,
-                        totalLike = 1
-                )
+            ProductrevLikeReview(
+                likeStatus = likeStatus,
+                totalLike = 1
+            )
         )
         val expectedValue = ToggleLikeUiModel(likeStatus, totalLike, index)
 
@@ -471,8 +472,8 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         val expectedRatingAndTopicResponse = Throwable()
         val emptyDescription = ""
         val selectedFilters = setOf(
-                ListItemUnify(productQualityTopic, emptyDescription),
-                ListItemUnify(shopServiceTopic, emptyDescription)
+            ListItemUnify(productQualityTopic, emptyDescription),
+            ListItemUnify(shopServiceTopic, emptyDescription)
         )
         val type = SortFilterBottomSheetType.TopicFilterBottomSheet
 
@@ -548,8 +549,8 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         val ratingThree = "3"
         val emptyDescription = ""
         val selectedFilters = setOf(
-                ListItemUnify(ratingFive, emptyDescription),
-                ListItemUnify(ratingThree, emptyDescription)
+            ListItemUnify(ratingFive, emptyDescription),
+            ListItemUnify(ratingThree, emptyDescription)
         )
         val type = SortFilterBottomSheetType.RatingFilterBottomSheet
         val expectedRatingFilter = setOf(ratingFive, ratingThree)
@@ -578,7 +579,8 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
                     ProductTopic(
                         formatted = productQualityTopic,
                         key = productQualityTopicKey
-                    ), ProductTopic(formatted = shopServiceTopic, key = shopServiceTopicKey)
+                    ),
+                    ProductTopic(formatted = shopServiceTopic, key = shopServiceTopicKey)
                 )
             )
         )
@@ -616,19 +618,20 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         val productQualityTopicKey = "kualitas"
         val shopServiceTopicKey = "pelayanan"
         val expectedRatingAndTopicResponse = ShopRatingAndTopic(
-                ProductrevGetShopRatingAndTopic(
-                        topics = listOf(
-                                ProductTopic(
-                                        formatted = productQualityTopic,
-                                        key = productQualityTopicKey
-                                ), ProductTopic(formatted = shopServiceTopic, key = shopServiceTopicKey)
-                        )
+            ProductrevGetShopRatingAndTopic(
+                topics = listOf(
+                    ProductTopic(
+                        formatted = productQualityTopic,
+                        key = productQualityTopicKey
+                    ),
+                    ProductTopic(formatted = shopServiceTopic, key = shopServiceTopicKey)
                 )
+            )
         )
         val emptyDescription = ""
         val selectedFilters = setOf(
-                ListItemUnify(productQualityTopic, emptyDescription),
-                ListItemUnify(shopServiceTopic, emptyDescription)
+            ListItemUnify(productQualityTopic, emptyDescription),
+            ListItemUnify(shopServiceTopic, emptyDescription)
         )
         val type = SortFilterBottomSheetType.TopicFilterBottomSheet
         val expectedTopicFilter = setOf(productQualityTopic, shopServiceTopic)
@@ -659,18 +662,19 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         val productQualityTopicKey = "kualitas"
         val shopServiceTopicKey = "pelayanan"
         val expectedRatingAndTopicResponse = ShopRatingAndTopic(
-                ProductrevGetShopRatingAndTopic(
-                        topics = listOf(
-                                ProductTopic(
-                                        formatted = productQualityTopic,
-                                        key = productQualityTopicKey
-                                ), ProductTopic(formatted = shopServiceTopic, key = shopServiceTopicKey)
-                        )
+            ProductrevGetShopRatingAndTopic(
+                topics = listOf(
+                    ProductTopic(
+                        formatted = productQualityTopic,
+                        key = productQualityTopicKey
+                    ),
+                    ProductTopic(formatted = shopServiceTopic, key = shopServiceTopicKey)
                 )
+            )
         )
         val emptyDescription = ""
         val selectedFilters = setOf(
-                ListItemUnify("", emptyDescription)
+            ListItemUnify("", emptyDescription)
         )
         val type = SortFilterBottomSheetType.TopicFilterBottomSheet
         val expectedTopicFilter = setOf("")
@@ -781,7 +785,8 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
                     ProductTopic(
                         formatted = productQualityTopic,
                         key = productQualityTopicKey
-                    ), ProductTopic(formatted = shopServiceTopic, key = shopServiceTopicKey)
+                    ),
+                    ProductTopic(formatted = shopServiceTopic, key = shopServiceTopicKey)
                 )
             )
         )
@@ -803,6 +808,81 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         verifyGetProductReviewListUseCaseExecuted()
         verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
         Assert.assertEquals(expectedTopicFilter, actualTopicFilter)
+    }
+
+    @Test
+    fun `topic extraction set topic filter success change filter`() {
+        val keyword = "Kualitas Bagus"
+        val isProductReview = true
+        val expectedResponse = ProductReviewList()
+
+        onGetProductReviewsSuccess_thenReturn(expectedResponse)
+
+        viewModel.setTopicFilter(keyword, isProductReview)
+        verifyGetProductReviewListUseCaseExecuted()
+        verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
+    }
+
+    @Test
+    fun `topic extraction set topic filter with empty keywords will null filter`() {
+        val keyword = ""
+        val isProductReview = true
+        val expectedResponse = ProductReviewList()
+
+        onGetProductReviewsSuccess_thenReturn(expectedResponse)
+
+        viewModel.setTopicFilter(keyword, isProductReview)
+        verifyGetProductReviewListUseCaseExecuted()
+        verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
+    }
+
+    @Test
+    fun `update topic extraction when enabled`() {
+        val expectedResponse = ProductRatingAndTopic(
+            ProductrevGetProductRatingAndTopic(
+                keywords = listOf(Keyword("Kualitas Bagus", "10"))
+            )
+        )
+        onGetProductRatingAndTopicsSuccess_thenReturn(expectedResponse)
+
+        val expectedSuccessValue = Success(expectedResponse.productrevGetProductRatingAndTopics)
+
+        viewModel.setProductId("12345")
+        viewModel.updateTopicExtraction()
+
+        viewModel.topicExtraction.verifySuccessEquals(expectedSuccessValue)
+        coVerify(exactly = 2) { getProductRatingAndTopicsUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `update topic extraction when disabled`() {
+        val expectedResponse = ProductRatingAndTopic(
+            ProductrevGetProductRatingAndTopic(
+                keywords = listOf(Keyword("Kualitas Bagus", "10"))
+            )
+        )
+        onGetProductRatingAndTopicsSuccess_thenReturn(expectedResponse)
+
+        viewModel.updateTopicExtraction()
+
+        coVerify(exactly = 0) { getProductRatingAndTopicsUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `update topic extraction return fail`() {
+        val expectedResponse = ProductRatingAndTopic(
+            ProductrevGetProductRatingAndTopic(
+                keywords = listOf(Keyword("Kualitas Bagus", "10"))
+            )
+        )
+        onGetProductRatingAndTopicsSuccess_thenReturn(expectedResponse)
+        viewModel.setProductId("12345")
+        onGetProductRatingAndTopicsFail_thenReturn(Throwable())
+        viewModel.updateTopicExtraction()
+
+        viewModel.topicExtraction
+
+        coVerify(exactly = 2) { getProductRatingAndTopicsUseCase.executeOnBackground() }
     }
 
     private fun onGetProductRatingAndTopicsSuccess_thenReturn(expectedResponse: ProductRatingAndTopic) {

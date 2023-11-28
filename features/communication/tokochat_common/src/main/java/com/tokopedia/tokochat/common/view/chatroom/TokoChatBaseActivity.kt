@@ -12,14 +12,15 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.tokochat_common.R
-import com.tokopedia.tokochat_common.databinding.TokochatBaseActivityBinding
 import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.TYPING_DARK_MODE
 import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.TYPING_LIGHT_MODE
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil.loadGif
+import com.tokopedia.tokochat_common.R
+import com.tokopedia.tokochat_common.databinding.TokochatBaseActivityBinding
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 abstract class TokoChatBaseActivity<T> : BaseSimpleActivity(), HasComponent<T> {
 
@@ -75,7 +76,7 @@ abstract class TokoChatBaseActivity<T> : BaseSimpleActivity(), HasComponent<T> {
 
     private fun setBackgroundColor() {
         viewBinding?.tokochatLayoutChatroomFragment?.setBackgroundColor(
-            MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+            MethodChecker.getColor(this, unifyprinciplesR.color.Unify_NN50)
         )
     }
 
@@ -117,7 +118,6 @@ abstract class TokoChatBaseActivity<T> : BaseSimpleActivity(), HasComponent<T> {
         hideHeaderShimmering()
         photoHeaderContainer?.show()
         headerContainer?.show()
-        iconHeaderMenu?.show()
     }
 
     fun hideHeaderShimmering() {

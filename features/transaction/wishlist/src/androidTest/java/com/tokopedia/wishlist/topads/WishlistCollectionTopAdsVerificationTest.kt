@@ -2,17 +2,12 @@ package com.tokopedia.wishlist.topads
 
 import android.Manifest
 import android.app.Activity
-import android.app.Instrumentation
 import android.app.Instrumentation.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
@@ -22,13 +17,13 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.runWishlistCollectionBot
-import com.tokopedia.wishlist.util.WishlistIdlingResource
+import com.tokopedia.wishlist.detail.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.adapter
 import com.tokopedia.wishlist.util.disableWishlistCoachmark
 import com.tokopedia.wishlist.util.setupRemoteConfig
-import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity
-import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
-import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionRecommendationItemViewHolder
+import com.tokopedia.wishlist.collection.view.activity.WishlistCollectionActivity
+import com.tokopedia.wishlist.collection.view.adapter.WishlistCollectionAdapter
+import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionRecommendationItemViewHolder
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
