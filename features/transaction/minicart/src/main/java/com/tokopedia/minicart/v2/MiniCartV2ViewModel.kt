@@ -36,6 +36,10 @@ internal class MiniCartV2ViewModel @Inject constructor(
     val miniCartABTestData: LiveData<MiniCartABTestData>
         get() = _miniCartABTestData
 
+    private val _miniCartLoadingState = MutableLiveData<Boolean>()
+    val miniCartLoadingState: LiveData<Boolean>
+        get() = _miniCartLoadingState
+
     private val _globalEvent = MutableSharedFlow<MiniCartV2GlobalEvent>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
@@ -51,6 +55,10 @@ internal class MiniCartV2ViewModel @Inject constructor(
         _miniCartSimplifiedData.value = miniCartSimplifiedData
     }
 
+    fun updateMiniCartLoadingState(isLoading: Boolean) {
+        _miniCartLoadingState.value = isLoading
+    }
+
     private fun getMiniCartItems(): List<MiniCartItem> {
         return miniCartSimplifiedData.value?.miniCartItems?.values?.toList() ?: emptyList()
     }
@@ -62,18 +70,19 @@ internal class MiniCartV2ViewModel @Inject constructor(
         )
     }
 
-    // API Call & Callback
-
     fun getLatestWidgetState(param: GetMiniCartParam) {
         launch {
             try {
+                updateMiniCartLoadingState(true)
                 val data = getMiniCartWidgetUseCase.invoke(param)
                 setMiniCartABTestData(
                     isOCCFlow = data.miniCartWidgetData.isOCCFlow,
                     buttonBuyWording = data.miniCartWidgetData.buttonBuyWording
                 )
+                updateMiniCartLoadingState(false)
                 _miniCartSimplifiedData.value = data
             } catch (e: Exception) {
+                updateMiniCartLoadingState(false)
                 if (miniCartSimplifiedData.value != null) {
                     _miniCartSimplifiedData.value = miniCartSimplifiedData.value
                 } else {

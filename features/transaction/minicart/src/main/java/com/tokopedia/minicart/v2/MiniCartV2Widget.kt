@@ -143,6 +143,7 @@ class MiniCartV2Widget @JvmOverloads constructor(
         val viewModelStoreOwner = findViewTreeViewModelStoreOwner() ?: return
         viewModel = ViewModelProvider(viewModelStoreOwner, viewModelFactory)[MiniCartV2ViewModel::class.java]
         observeGlobalEvent(lifecycleOwner)
+        observeMiniCartLoadingState(lifecycleOwner)
         observeMiniCartWidgetUiModel(lifecycleOwner)
     }
 
@@ -211,7 +212,6 @@ class MiniCartV2Widget @JvmOverloads constructor(
 
     private fun onFailedGoToCheckout(globalEvent: MiniCartV2GlobalEvent.FailGoToCheckout) {
         hideProgressLoading()
-        setTotalAmountLoading(false)
         context?.let { ctx ->
             miniCartWidgetListener?.getFragmentManager()?.let { fm ->
                 handleFailedGoToCheckout(binding?.root, ctx, fm, globalEvent)
@@ -369,6 +369,12 @@ class MiniCartV2Widget @JvmOverloads constructor(
         }
     }
 
+    private fun observeMiniCartLoadingState(lifecycleOwner: LifecycleOwner) {
+        viewModel?.miniCartLoadingState?.observe(lifecycleOwner) {
+            setTotalAmountLoading(it)
+        }
+    }
+
     private fun observeMiniCartWidgetUiModel(lifecycleOwner: LifecycleOwner) {
         viewModel?.miniCartSimplifiedData?.observe(lifecycleOwner) {
             renderWidget(it)
@@ -379,13 +385,10 @@ class MiniCartV2Widget @JvmOverloads constructor(
     private fun renderWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             renderEmptyWidget(miniCartSimplifiedData)
-            setTotalAmountLoading(false)
         } else if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
             renderUnavailableWidget(miniCartSimplifiedData)
-            setTotalAmountLoading(false)
         } else {
             renderAvailableWidget(miniCartSimplifiedData)
-            setTotalAmountLoading(false)
             binding?.miniCartTotalAmount?.apply {
                 setAdditionalButton(config.additionalButton)
             }
@@ -521,9 +524,10 @@ class MiniCartV2Widget @JvmOverloads constructor(
         } else {
             if (binding?.miniCartTotalAmount?.isTotalAmountLoading == true) {
                 binding?.miniCartTotalAmount?.isTotalAmountLoading = false
+                binding?.miniCartTotalAmount?.amountCtaView?.visibility = View.VISIBLE
             }
+            validateTotalAmountView()
         }
-        validateTotalAmountView()
     }
 
     private fun validateTotalAmountView() {
@@ -576,7 +580,6 @@ class MiniCartV2Widget @JvmOverloads constructor(
     * This will trigger view model to fetch latest data from backend and update the UI
     * */
     fun refresh(param: GetMiniCartParam) {
-        setTotalAmountLoading(true)
         viewModel?.getLatestWidgetState(param)
     }
 
@@ -593,7 +596,7 @@ class MiniCartV2Widget @JvmOverloads constructor(
     }
 
     fun showLoading() {
-        setTotalAmountLoading(true)
+        viewModel?.updateMiniCartLoadingState(true)
     }
 
     companion object {
