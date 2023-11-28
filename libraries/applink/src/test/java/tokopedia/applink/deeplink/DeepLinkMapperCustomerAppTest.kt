@@ -927,9 +927,48 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check otp appLink then should return tokopedia internal otp in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/cotp"
+    fun `check otp appLink with cvsdk rollence off then should return cotp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/cotp?otpType={otp-type}"
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION)
+        } returns ""
         assertEqualsDeepLinkMapper(ApplinkConst.OTP, expectedDeepLink)
+    }
+
+    @Test
+    fun `check otp appLink without otp type and with cvsdk rollence on then should return cotp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/cotp?otpType={otp-type}"
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION)
+        } returns DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION
+        assertEqualsDeepLinkMapper(ApplinkConst.OTP, expectedDeepLink)
+    }
+
+    @Test
+    fun `check otp applink with otp type and with cvsdk rollence off then should return cotp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/cotp?otpType={otp-type}"
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION)
+        } returns ""
+        assertEqualsDeepLinkMapper(UriUtil.buildUri(ApplinkConst.OTP, "126"), expectedDeepLink)
+    }
+
+    @Test
+    fun `check otp applink with whitelisted otp type and with rollence on then should return scp otp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/scp-otp?otpType=126"
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION)
+        } returns DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION
+        assertEqualsDeepLinkMapper(UriUtil.buildUri(ApplinkConst.OTP, "126"), expectedDeepLink)
+    }
+
+    @Test
+    fun `check otp applink with non-whitelisted otp type and with rollence on then should return cotp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/cotp?otpType={otp-type}"
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION)
+        } returns DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION
+        assertEqualsDeepLinkMapper(UriUtil.buildUri(ApplinkConst.OTP, "999"), expectedDeepLink)
     }
 
     @Test
