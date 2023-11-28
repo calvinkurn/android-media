@@ -515,7 +515,6 @@ class MiniCartV2Widget @JvmOverloads constructor(
         binding?.imageChevronUnavailable?.gone()
     }
 
-    // cannot use viewmodel due to race condition issue in total amount unify
     private fun setTotalAmountLoading(isLoading: Boolean) {
         if (isLoading) {
             if (binding?.miniCartTotalAmount?.isTotalAmountLoading == false) {
@@ -588,6 +587,7 @@ class MiniCartV2Widget @JvmOverloads constructor(
     * This will trigger widget to update the UI with provided data
     * */
     fun refresh(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        viewModel?.updateMiniCartLoadingState(false)
         viewModel?.setMiniCartABTestData(
             miniCartSimplifiedData.miniCartWidgetData.isOCCFlow,
             miniCartSimplifiedData.miniCartWidgetData.buttonBuyWording
