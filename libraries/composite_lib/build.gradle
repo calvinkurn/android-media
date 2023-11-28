@@ -39,9 +39,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath ('com.android.tools.build:gradle:8.0.1') {
-            exclude module: 'proguard-gradle'
-        }
+        classpath ('com.android.tools.build:gradle:8.0.1')
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
         classpath('net.sf.proguard:proguard-gradle:6.0.3') {
             force = true
