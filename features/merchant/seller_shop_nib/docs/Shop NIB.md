@@ -75,7 +75,7 @@ Or if you have Seller App installed on your device, you can also follow these st
 2. Navigate to **Home** menu
 3. Tap **Masukkan NIB-mu dulu, yuk!** card
 
-![](res/Screenshot%202023-06-12%20at%2009.57.01.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_shop_nib/Screenshot%202023-06-12%20at%2009.57.01.png)
 
 ## Feature Journey
 
@@ -85,12 +85,12 @@ Here are list of pages that exist within Shop NIB feature:
 
 | **Screenshot** | **Page Name** | **Description** |
 | --- | --- | --- |
-| ![](res/Screenshot%202023-06-12%20at%2009.35.39.png)<br/> | **Submission Page**(state: Default state) | This is default state of submission page where seller has not filled out any information yet. Button “Selesai” is disabled until the required NIB file and NIB submission date is filled. |
-| ![](res/Screenshot%202023-06-12%20at%2009.35.56.png)<br/> | **Submission Page** (State: File selected) | Once seller has select their NIB file from their device storage, the preview will be updated with the selected file. Rules:- Only pdf/jpeg/png file are allowed<br/>- Max file size is 5 MB<br/> |
-| ![](res/Screenshot%202023-06-12%20at%2009.36.24.png)<br/> | **Submission Page** (State: Selecting NIB submission date) | After file is selected, seller are also required to fill NIB submission date (Tanggal NIB diterbitkan) |
-| ![](res/Screenshot%202023-06-12%20at%2009.36.38.png)<br/> | **Submission Page** (State: File and Date are selected) | After NIB file and NIB submission date are filled, button Selesai are enabled and seller can proceed to upload their NIB. |
-| ![](res/Screenshot%202023-06-12%20at%2009.37.20.png)<br/> | **Submission Success Page** | When all the input are valid and successfully uploaded, seller will be redirected to submission success page. Seller can tap “Kembali ke Home” button where they will be redirected back to seller home page. |
-| ![](res/Screenshot%202023-06-12%20at%2009.39.46.png)<br/> | **NIB already registered Page** | In case seller are revisit the NIB page again after previous NIB submission done, they will see this warning page. This page informs seller that they can not re-submit the NIB file for the second time. |
+| ![](https://docs-android.tokopedia.net/images/docs/seller_shop_nib/Screenshot%202023-06-12%20at%2009.35.39.png)<br/> | **Submission Page**(state: Default state) | This is default state of submission page where seller has not filled out any information yet. Button “Selesai” is disabled until the required NIB file and NIB submission date is filled. |
+| ![](https://docs-android.tokopedia.net/images/docs/seller_shop_nib/Screenshot%202023-06-12%20at%2009.35.56.png)<br/> | **Submission Page** (State: File selected) | Once seller has select their NIB file from their device storage, the preview will be updated with the selected file. Rules:- Only pdf/jpeg/png file are allowed<br/>- Max file size is 5 MB<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/seller_shop_nib/Screenshot%202023-06-12%20at%2009.36.24.png)<br/> | **Submission Page** (State: Selecting NIB submission date) | After file is selected, seller are also required to fill NIB submission date (Tanggal NIB diterbitkan) |
+| ![](https://docs-android.tokopedia.net/images/docs/seller_shop_nib/Screenshot%202023-06-12%20at%2009.36.38.png)<br/> | **Submission Page** (State: File and Date are selected) | After NIB file and NIB submission date are filled, button Selesai are enabled and seller can proceed to upload their NIB. |
+| ![](https://docs-android.tokopedia.net/images/docs/seller_shop_nib/Screenshot%202023-06-12%20at%2009.37.20.png)<br/> | **Submission Success Page** | When all the input are valid and successfully uploaded, seller will be redirected to submission success page. Seller can tap “Kembali ke Home” button where they will be redirected back to seller home page. |
+| ![](https://docs-android.tokopedia.net/images/docs/seller_shop_nib/Screenshot%202023-06-12%20at%2009.39.46.png)<br/> | **NIB already registered Page** | In case seller are revisit the NIB page again after previous NIB submission done, they will see this warning page. This page informs seller that they can not re-submit the NIB file for the second time. |
 
 ## Networking
 

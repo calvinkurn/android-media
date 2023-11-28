@@ -94,7 +94,7 @@ object ShopPageProductListMapper {
                             it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
                         }
                         it.hideGimmick = campaign.hideGimmick
-                        it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                        it.displayedPrice = campaign.discountedPriceFmt.toFloatOrNull()?.getCurrencyFormatted() ?: price.textIdr
                         it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
                         setStockAndSoldOutForCampaignEtalase(it, shopProduct)
                     }
@@ -108,9 +108,9 @@ object ShopPageProductListMapper {
                             }
                             it.stockLabel = labelGroupList.firstOrNull { labelGroup ->
                                 labelGroup.position.isEmpty()
-                            }?.title ?: ""
+                            }?.title.takeIf { showStockBar }.orEmpty()
                             it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
-                            it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                            it.displayedPrice = campaign.discountedPriceFmt.toFloatOrNull()?.getCurrencyFormatted() ?: price.textIdr
                         } else {
                             // hide discount percentage when flash sale campaign is upcoming
                             it.discountPercentage = ZERO_PRODUCT_DISCOUNT

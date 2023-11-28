@@ -35,6 +35,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PATH_SELLER_PARTIAL_ORDER_FULFILLMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -184,6 +185,11 @@ object DeeplinkMainApp {
         "catalog-library" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperCategory.getRegisteredNavigationCategory(deeplink)
+            }
+        ),
+        "catalog-product-list" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationCatalogProductList(deeplink)
             }
         ),
         "category" to mutableListOf(
@@ -639,8 +645,8 @@ object DeeplinkMainApp {
             }
         ),
         "otp" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.COTP
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "otp-verify" to mutableListOf(
@@ -670,6 +676,12 @@ object DeeplinkMainApp {
             }
         ),
         "people" to mutableListOf(
+            DLP.matchPattern("{user_id}/following") { deeplink: String ->
+                DeeplinkMapperContent.getProfileDeeplink(deeplink)
+            },
+            DLP.matchPattern("{user_id}/followers") { deeplink: String ->
+                DeeplinkMapperContent.getProfileDeeplink(deeplink)
+            },
             DLP.matchPattern("{user_id}") { deeplink: String ->
                 DeeplinkMapperContent.getProfileDeeplink(deeplink)
             },
@@ -970,6 +982,9 @@ object DeeplinkMainApp {
             },
             DLP.startsWith("seller-center") { _: String ->
                 DeeplinkMapperMerchant.getRegisteredSellerCenter()
+            },
+            DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
+                DeeplinkMapperOrder.getRegisteredNavigationSellerPartialOrderFulfillment(uri)
             }
         ),
         "seller-review-detail" to mutableListOf(
@@ -1214,7 +1229,10 @@ object DeeplinkMainApp {
             DLP.matchPattern(
                 "shop/{shop_id}",
                 DeeplinkMapperContent::getRegisteredNavigation
-            )
+            ),
+            DLP.matchPattern("creation") { deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            }
         ),
         "talk" to mutableListOf(
             DLP.goTo { deeplink: String ->
@@ -1235,8 +1253,10 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("list") { context: Context, deeplink: String ->
                 DeeplinkMapperCommunication.getRegisteredNavigationTokoChatList(context, deeplink)
-            }
-
+            },
+            DLP.matchPattern("bottomsheet/{type}") { deeplink: String ->
+                DeeplinkMapperCommunication.getRegisteredNavigation(deeplink)
+            },
         ),
         "tokopoints" to mutableListOf(
             DLP.goTo { deeplink: String ->

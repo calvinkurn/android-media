@@ -2,7 +2,6 @@ package com.tokopedia.tkpd;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
@@ -102,7 +101,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         CheckAndTraceAppStartIfEnabled();
         Embrace.getInstance().start(this);
         super.onCreate();
-        setupAppScreenMode();
+        super.setupAppScreenMode();
         setupAlphaObserver();
         registerAppLifecycleCallbacks();
     }
@@ -121,29 +120,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
                 }
             });
         }
-    }
-
-    private boolean checkForceLightMode() {
-        if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false)) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
-            return true;
-        }
-        return false;
-    }
-
-    private void setupAppScreenMode() {
-        boolean isForceLightMode = checkForceLightMode();
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
-        int screenMode;
-        if (isDarkMode && !isForceLightMode) {
-            screenMode = AppCompatDelegate.MODE_NIGHT_YES;
-        } else {
-            screenMode = AppCompatDelegate.MODE_NIGHT_NO;
-        }
-        AppCompatDelegate.setDefaultNightMode(screenMode);
     }
 
     private void openFeedbackForm(Uri uri, String className, boolean isFromScreenshot) {

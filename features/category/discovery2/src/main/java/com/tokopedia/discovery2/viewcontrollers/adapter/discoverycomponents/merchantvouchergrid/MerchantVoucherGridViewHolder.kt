@@ -1,8 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid
 
-import android.os.Build
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
@@ -23,7 +21,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 
-@RequiresApi(Build.VERSION_CODES.M)
 class MerchantVoucherGridViewHolder(
     itemView: View,
     val fragment: Fragment

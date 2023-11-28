@@ -44,7 +44,7 @@ class InspirationProductItemReimagineViewHolder(
     private fun productCardModel(element: InspirationProductItemDataView) =
         ProductCardModel(
             imageUrl = element.imageUrl,
-            isAds = element.isOrganicAds,
+            isAds = element.isShowAdsLabel,
             name = element.name,
             price = element.priceString,
             slashedPrice = element.originalPrice,
@@ -57,7 +57,7 @@ class InspirationProductItemReimagineViewHolder(
         )
 
     private fun labelGroupList(element: InspirationProductItemDataView) =
-        element.labelGroupDataList.map(::labelGroup)
+        element.labelGroupList.map(::labelGroup)
 
     private fun labelGroup(labelGroupDataView: LabelGroupDataView) =
         ProductCardModel.LabelGroup(

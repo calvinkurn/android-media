@@ -1,12 +1,15 @@
 package com.tokopedia.applink.user
 
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
@@ -17,7 +20,12 @@ object DeeplinkMapperUser {
     const val ROLLENCE_GOTO_KYC_SA = "goto_kyc_sellerapp"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
     const val ROLLENCE_GOTO_LOGIN = "scp_goto_login_and"
+    const val ROLLENCE_CVSDK_INTEGRATION = "and_cvsdk_intg"
     const val ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE = "android_fundinvest"
+    private const val REGISTER_PHONE_NUMBER = 116
+    private const val REGISTER_EMAIL = 126
+    private const val SQCP = 169
+    private val WHITELISTED_SCP_OTP_TYPE = listOf<Int>(REGISTER_EMAIL, REGISTER_PHONE_NUMBER, SQCP)
 
     fun getRegisteredNavigationUser(deeplink: String): String {
         return when {
@@ -39,6 +47,7 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.REGISTER -> getRegisterApplink()
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             deeplink.startsWith(ApplinkConst.GOTO_KYC_WEBVIEW) -> ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
+            deeplink.startsWithPattern(ApplinkConst.OTP) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.COTP) -> getOtpApplink(deeplink)
             else -> deeplink
         }
     }
@@ -57,6 +66,28 @@ object DeeplinkMapperUser {
         } else {
             ApplinkConstInternalUserPlatform.LOGIN
         }
+    }
+
+    private fun getOtpApplink(deeplink: String): String {
+        val uriMap = UriUtil.uriQueryParamsToMap(Uri.parse(deeplink))
+        val otpType = (uriMap[ApplinkConstInternalUserPlatform.PARAM_OTP_TYPE] ?: "-1").toIntSafely()
+        return if (isGotoVerificationEnabled(otpType)) {
+            ApplinkConstInternalUserPlatform.SCP_OTP
+        } else {
+            ApplinkConstInternalUserPlatform.COTP
+        }
+    }
+
+    private fun isGotoVerificationEnabled(otpType: Int): Boolean {
+        return isRollenceGotoVerificationEnabled() && isOtpTypeWhitelisted(otpType)
+    }
+
+    private fun isRollenceGotoVerificationEnabled(): Boolean {
+        return getAbTestPlatform().getString(ROLLENCE_CVSDK_INTEGRATION).isNotEmpty()
+    }
+
+    private fun isOtpTypeWhitelisted(otpType: Int): Boolean {
+        return WHITELISTED_SCP_OTP_TYPE.contains(otpType)
     }
 
     private fun getProfileApplink(): String {
@@ -122,7 +153,8 @@ object DeeplinkMapperUser {
     fun getRegisteredUserNavigation(deeplink: String): String {
         return deeplink.replace(
             DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH,
-            ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER+"/")
+            ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER + "/"
+        )
     }
 
     fun isGotoLoginDisabled(): Boolean {
@@ -140,6 +172,4 @@ object DeeplinkMapperUser {
 
     private fun getAbTestPlatform(): AbTestPlatform =
         RemoteConfigInstance.getInstance().abTestPlatform
-
-
 }

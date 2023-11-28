@@ -26,11 +26,11 @@ There are condition where users use keywords that too specific or user search wi
 ### Project Description
 Show list of alternative keywords with the list of products for users to choose and continue searching with those alternative keywords.
 
-![image](../res/broadmatch/no_product_broadmatch_description.png)
-![image](../res/broadmatch/low_product_broadmatch_description.png)
+![image](https://docs-android.tokopedia.net/images/docs/search/broadmatch/no_product_broadmatch_description.png)
+![image](https://docs-android.tokopedia.net/images/docs/search/broadmatch/low_product_broadmatch_description.png)
 
 ## Flow Diagram
-![image](../res/broadmatch/diagram.png)
+![image](https://docs-android.tokopedia.net/images/docs/search/broadmatch/diagram.png)
 
 
 ## Useful Links
