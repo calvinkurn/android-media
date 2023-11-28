@@ -6,6 +6,7 @@ apply from: 'tools/version/version_module.gradle'
 
 buildscript {
     ext.kotlin_version = '1.7.10'
+    ext.kspVersion = "1.7.10-1.0.6"
     ext.jacocoVersion = '0.8.7'
     repositories {
         gradlePluginPortal()
@@ -58,6 +59,7 @@ buildscript {
         classpath "io.fabric.tools:gradle:1.28.0"
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8"
+        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:$kspVersion"
     }
 }
 
