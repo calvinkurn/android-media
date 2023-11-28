@@ -1,7 +1,6 @@
 package com.tokopedia.creation.common.presentation.screen
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -50,7 +49,6 @@ fun ContentInfoScreen(
             NestImage(
                 source = ImageSource.Remote(imageUrl),
                 modifier = Modifier
-                    .wrapContentSize()
                     .constrainAs(imgHeader) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
