@@ -26,6 +26,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -37,6 +38,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.Action.Companion.SALDO_AUTO_WD_TICKER_CLICK
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.TRACKER_ID_47693
 import com.tokopedia.saldodetails.commom.design.SaldoInstructionsBottomSheet
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.utils.ErrorMessage
@@ -321,16 +324,21 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             ) {
                 saldoTicker.text = autoWDInitData.data.scheduleWording
                 saldoTicker.setOnClickListener {
-                    onSaldoTickerClick(autoWDInitData.data.redirectLink)
+                    onAutoWDTickerClick(autoWDInitData)
                 }
                 saldoTickerIcon.setOnClickListener {
-                    onSaldoTickerClick(autoWDInitData.data.redirectLink)
+                    onAutoWDTickerClick(autoWDInitData)
                 }
                 saldoTickerBackground.setOnClickListener {
-                    onSaldoTickerClick(autoWDInitData.data.redirectLink)
+                    onAutoWDTickerClick(autoWDInitData)
                 }
             }
         }
+    }
+
+    private fun onAutoWDTickerClick(autoWDInitData: RichieAutoWDInit) {
+        saldoDetailsAnalytics.sendClickPaymentEvents(SALDO_AUTO_WD_TICKER_CLICK, String.EMPTY, TRACKER_ID_47693)
+        onSaldoTickerClick(autoWDInitData.data.redirectLink)
     }
 
     private fun onSaldoTickerClick(applink: String) {
