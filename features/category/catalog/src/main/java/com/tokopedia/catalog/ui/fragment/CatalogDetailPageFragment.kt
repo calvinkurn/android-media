@@ -205,6 +205,7 @@ class CatalogDetailPageFragment :
     private var catalogUrl = ""
     private var compareCatalogId = ""
     private var selectNavigationFromScroll = true
+    private val seenTracker = mutableListOf<String>()
 
     private val userSession: UserSession by lazy {
         UserSession(activity)
@@ -232,6 +233,13 @@ class CatalogDetailPageFragment :
                     }
                 }
             }
+        }
+    }
+
+    private fun sendOnTimeImpression(uniqueId: String, trackerFunction: () -> Unit) {
+        if (!seenTracker.any { it == uniqueId }) {
+            seenTracker.add(uniqueId)
+            trackerFunction.invoke()
         }
     }
 
@@ -562,6 +570,7 @@ class CatalogDetailPageFragment :
         imageDescription: List<String>,
         brandImageUrl: List<String>
     ) {
+        if (!(isAdded && isVisible)) return
         val impressionImageDescription = if (imageDescription.isNotEmpty()) {
             imageDescription.subList(Int.ZERO, currentPositionVisibility + 1)
         } else {
@@ -580,15 +589,17 @@ class CatalogDetailPageFragment :
             list.add(promotions)
         }
 
-        CatalogReimagineDetailAnalytics.sendEventImpressionList(
-            event = EVENT_VIEW_ITEM,
-            action = EVENT_ACTION_IMPRESSION_HERO_IMAGE,
-            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
-            labels = catalogId,
-            trackerId = TRACKER_ID_IMPRESSION_HERO_BANNER,
-            userId = userSession.userId,
-            promotion = list
-        )
+        sendOnTimeImpression(listOf(TRACKER_ID_IMPRESSION_HERO_BANNER, currentPositionVisibility).joinToString()) {
+            CatalogReimagineDetailAnalytics.sendEventImpressionList(
+                event = EVENT_VIEW_ITEM,
+                action = EVENT_ACTION_IMPRESSION_HERO_IMAGE,
+                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                labels = catalogId,
+                trackerId = TRACKER_ID_IMPRESSION_HERO_BANNER,
+                userId = userSession.userId,
+                promotion = list
+            )
+        }
     }
 
     override fun onStickyNavigationImpression() {
@@ -657,15 +668,17 @@ class CatalogDetailPageFragment :
             promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_IMPRESSION_VIDEO_BANNER_WIDGET
             list.add(promotions)
         }
-        CatalogReimagineDetailAnalytics.sendEventImpressionListGeneral(
-            event = EVENT_VIEW_ITEM,
-            action = EVENT_IMPRESSION_VIDEO_WIDGET,
-            category = EVENT_CATEGORY_CATALOG_PAGE,
-            labels = "$catalogTitle - $catalogId",
-            trackerId = TRACKER_ID_IMPRESSION_VIDEO,
-            userId = userSession.userId,
-            promotion = list
-        )
+        sendOnTimeImpression(TRACKER_ID_IMPRESSION_VIDEO) {
+            CatalogReimagineDetailAnalytics.sendEventImpressionListGeneral(
+                event = EVENT_VIEW_ITEM,
+                action = EVENT_IMPRESSION_VIDEO_WIDGET,
+                category = EVENT_CATEGORY_CATALOG_PAGE,
+                labels = "$catalogTitle - $catalogId",
+                trackerId = TRACKER_ID_IMPRESSION_VIDEO,
+                userId = userSession.userId,
+                promotion = list
+            )
+        }
     }
 
     override fun onClickVideoExpert() {
@@ -689,15 +702,17 @@ class CatalogDetailPageFragment :
             list.add(promotions)
         }
 
-        CatalogReimagineDetailAnalytics.sendEventImpressionList(
-            event = EVENT_VIEW_ITEM,
-            action = EVENT_ACTION_IMPRESSION_EXPERT_REVIEW,
-            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
-            labels = catalogId,
-            trackerId = TRACKER_ID_IMPRESSION_EXPERT_REVIEW,
-            userId = userSession.userId,
-            promotion = list
-        )
+        sendOnTimeImpression(TRACKER_ID_IMPRESSION_EXPERT_REVIEW) {
+            CatalogReimagineDetailAnalytics.sendEventImpressionList(
+                event = EVENT_VIEW_ITEM,
+                action = EVENT_ACTION_IMPRESSION_EXPERT_REVIEW,
+                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                labels = catalogId,
+                trackerId = TRACKER_ID_IMPRESSION_EXPERT_REVIEW,
+                userId = userSession.userId,
+                promotion = list
+            )
+        }
     }
 
     override fun onImpressionAccordionInformation() {
@@ -745,6 +760,17 @@ class CatalogDetailPageFragment :
             userId = userSession.userId,
             promotion = list
         )
+        sendOnTimeImpression(TRACKER_ID_IMPRESSION_EXPERT_REVIEW) {
+            CatalogReimagineDetailAnalytics.sendEventImpressionList(
+                event = EVENT_VIEW_ITEM,
+                action = EVENT_ACTION_IMPRESSION_EXPERT_REVIEW,
+                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                labels = catalogId,
+                trackerId = TRACKER_ID_IMPRESSION_EXPERT_REVIEW,
+                userId = userSession.userId,
+                promotion = list
+            )
+        }
     }
 
     override fun onTopFeatureImpression(items: List<TopFeaturesUiModel.ItemTopFeatureUiModel>) {
@@ -758,15 +784,17 @@ class CatalogDetailPageFragment :
             list.add(promotions)
         }
 
-        CatalogReimagineDetailAnalytics.sendEventImpressionList(
-            event = EVENT_VIEW_ITEM,
-            action = EVENT_ACTION_IMPRESSION_TOP_FEATURE,
-            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
-            labels = catalogId,
-            trackerId = TRACKER_ID_IMPRESSION_TOP_FEATURE,
-            userId = userSession.userId,
-            promotion = list
-        )
+        sendOnTimeImpression(TRACKER_ID_IMPRESSION_TOP_FEATURE) {
+            CatalogReimagineDetailAnalytics.sendEventImpressionList(
+                event = EVENT_VIEW_ITEM,
+                action = EVENT_ACTION_IMPRESSION_TOP_FEATURE,
+                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                labels = catalogId,
+                trackerId = TRACKER_ID_IMPRESSION_TOP_FEATURE,
+                userId = userSession.userId,
+                promotion = list
+            )
+        }
     }
 
     override fun onDoubleBannerImpression() {
@@ -869,14 +897,16 @@ class CatalogDetailPageFragment :
             list.add(promotions)
         }
 
-        CatalogReimagineDetailAnalytics.sendEventImpressionListGeneral(
-            event = EVENT_VIEW_ITEM,
-            action = EVENT_IMPRESSION_COLUMN_INFO_WIDGET,
-            category = EVENT_CATEGORY_CATALOG_PAGE,
-            labels = "$catalogTitle - $catalogId",
-            trackerId = TRACKER_ID_IMPRESSION_COLUMN_INFO,
-            userId = userSession.userId,
-            promotion = list
-        )
+        sendOnTimeImpression(TRACKER_ID_IMPRESSION_COLUMN_INFO) {
+            CatalogReimagineDetailAnalytics.sendEventImpressionListGeneral(
+                event = EVENT_VIEW_ITEM,
+                action = EVENT_IMPRESSION_COLUMN_INFO_WIDGET,
+                category = EVENT_CATEGORY_CATALOG_PAGE,
+                labels = "$catalogTitle - $catalogId",
+                trackerId = TRACKER_ID_IMPRESSION_COLUMN_INFO,
+                userId = userSession.userId,
+                promotion = list
+            )
+        }
     }
 }
