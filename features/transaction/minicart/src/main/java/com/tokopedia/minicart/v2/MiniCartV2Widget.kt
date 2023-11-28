@@ -33,7 +33,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.minicart.databinding.WidgetMiniCartV2Binding
-import com.tokopedia.minicart.v2.domain.GetMiniCartParam
+import com.tokopedia.minicart.domain.GetMiniCartParam
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Toaster
@@ -468,7 +468,13 @@ class MiniCartV2Widget @JvmOverloads constructor(
 
     private fun renderAvailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         binding?.miniCartTotalAmount?.apply {
-            setLabelTitle(miniCartSimplifiedData.miniCartWidgetData.headlineWording)
+            setLabelTitle(
+                miniCartSimplifiedData.miniCartWidgetData.headlineWording.ifBlank {
+                    context.getString(
+                        R.string.mini_cart_widget_label_total_price
+                    )
+                }
+            )
             setAmount(
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     miniCartSimplifiedData.miniCartWidgetData.totalProductPrice,

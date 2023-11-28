@@ -10,9 +10,9 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.minicart.domain.GetMiniCartParam
 import com.tokopedia.minicart.v2.MiniCartV2Widget
 import com.tokopedia.minicart.v2.MiniCartV2WidgetListener
-import com.tokopedia.minicart.v2.domain.GetMiniCartParam
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TestMiniCartActivity : AppCompatActivity() {

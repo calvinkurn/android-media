@@ -16,8 +16,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartABTestData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.v2.domain.GetMiniCartParam
-import com.tokopedia.minicart.v2.domain.GetMiniCartWidgetUseCase
+import com.tokopedia.minicart.domain.GetMiniCartParam
+import com.tokopedia.minicart.domain.GetMiniCartWidgetUseCase
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
