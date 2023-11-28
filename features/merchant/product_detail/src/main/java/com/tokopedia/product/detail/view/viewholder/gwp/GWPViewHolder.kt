@@ -1,12 +1,15 @@
 package com.tokopedia.product.detail.view.viewholder.gwp
 
 import android.view.View
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.databinding.ItemDynamicProductBmgmBinding
 import com.tokopedia.product.detail.databinding.ItemDynamicProductGwpBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
+import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
+import com.tokopedia.product.detail.view.viewholder.gwp.widget.GWPWidgetRouter
+import com.tokopedia.product.detail.view.viewholder.gwp.widget.GWPWidgetTracker
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -16,7 +19,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 class GWPViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : ProductDetailPageViewHolder<GWPUiModel>(view) {
+) : ProductDetailPageViewHolder<GWPUiModel>(view), GWPWidgetRouter {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_gwp
@@ -26,37 +29,35 @@ class GWPViewHolder(
         ItemDynamicProductGwpBinding.bind(view)
     }
 
-    override fun bind(element: GWPUiModel) {
-        /*binding.pdpBmgmWidget.setData(
-            uiState = element.state,
-            router = object : BMGMWidgetRouter {
-                override fun goToAppLink(url: String) {
-                    listener.goToApplink(url)
-                }
+    init {
+        binding.pdpGwpWidget.init(this)
+    }
 
-                override fun goToWebView(url: String) {
-                    listener.goToWebView(url)
-                }
-            },
-            tracker = object : BMGMWidgetTracker {
+    override fun bind(element: GWPUiModel) {
+        binding.pdpGwpWidget.setData(
+            state = element.state,
+            tracker = object : GWPWidgetTracker {
                 override fun getImpressionHolder(): ImpressHolder = element.impressHolder
 
-                override fun getImpressionHolders() = listener.getImpressionHolders()
+                override fun getImpressionHolders(): MutableList<String> = listener.getImpressionHolders()
 
                 override fun onImpressed() {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
 
-                override fun onClick(data: BMGMWidgetUiModel) {
-                    listener.onBMGMClicked(
-                        title = data.title,
-                        offerId = data.offerId,
-                        component = getComponentTrackData(element)
-                    )
-                }
+                override fun isCacheable(): Boolean = listener.isRemoteCacheableActive()
 
-                override fun isCacheable() = listener.isRemoteCacheableActive()
+                override fun onClickTracking(data: GWPWidgetUiModel) {
+                }
             }
-        )*/
+        )
+    }
+
+    override fun goToAppLink(appLink: String) {
+        listener.goToApplink(url = appLink)
+    }
+
+    override fun goToWebView(link: String) {
+        listener.goToWebView(url = link)
     }
 }

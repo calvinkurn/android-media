@@ -5,11 +5,12 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.isInvisible
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -21,13 +22,11 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.databinding.GwpCardListBinding
 import com.tokopedia.product.detail.databinding.GwpWidgetBinding
 import com.tokopedia.product.detail.view.util.isInflated
-import com.tokopedia.product.detail.view.viewholder.bmgm.adapter.BMGMProductItemAdapter
-import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiModel
-import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
-import com.tokopedia.product.detail.view.viewholder.bmgm.widget.BMGMWidgetRouter
-import com.tokopedia.product.detail.view.viewholder.bmgm.widget.BMGMWidgetTracker
+import com.tokopedia.product.detail.view.viewholder.ActionUiModel
+import com.tokopedia.product.detail.view.viewholder.gwp.adapter.GWPCardAdapter
+import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
+import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiState
 import com.tokopedia.unifyprinciples.stringToUnifyColor
-import com.tokopedia.product.detail.R as productdetailR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
@@ -42,14 +41,12 @@ class GWPWidget @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val SPAN_COUNT = 3
-
         private const val MIN_GRADIENT_COLOR = 2
     }
 
     private val binding by lazyThreadSafetyNone {
-        val view = inflate(context, productdetailR.layout.gwp_widget, this, true)
-        GwpWidgetBinding.bind(view)
+        val inflater = LayoutInflater.from(context)
+        GwpWidgetBinding.inflate(inflater, this, true)
     }
 
     private val cardListBinding by lazyThreadSafetyNone {
@@ -57,48 +54,39 @@ class GWPWidget @JvmOverloads constructor(
         GwpCardListBinding.bind(productListStub)
     }
 
-    private val productAdapter by lazyThreadSafetyNone {
-        BMGMProductItemAdapter().apply {
-            cardListBinding.bmgmProductList.layoutManager = GridLayoutManager(
+    private val cardAdapter by lazyThreadSafetyNone {
+        GWPCardAdapter().apply {
+            cardListBinding.gwpCardList.layoutManager = LinearLayoutManager(
                 context,
-                SPAN_COUNT,
-                GridLayoutManager.VERTICAL,
+                LinearLayoutManager.HORIZONTAL,
                 false
             )
-            cardListBinding.bmgmProductList.adapter = this
-            cardListBinding.bmgmProductList.itemAnimator = null
+            cardListBinding.gwpCardList.adapter = this
+            cardListBinding.gwpCardList.itemAnimator = null
         }
     }
 
-    private var previousState: BMGMWidgetUiState? = null
-    // endregion
+    private var router: GWPWidgetRouter? = null
 
-    // region expose function
-    fun setData(uiState: BMGMWidgetUiState, router: BMGMWidgetRouter, tracker: BMGMWidgetTracker) {
-        if (previousState?.hasSame(newUiModel = uiState) == true) {
-            return
-        }
-        previousState = uiState
+    fun init(router: GWPWidgetRouter) {
+        this.router = router
+    }
 
-        when (uiState) {
-            is BMGMWidgetUiState.Loading -> {
-                // no - ops
+    fun setData(state: GWPWidgetUiState, tracker: GWPWidgetTracker) {
+        when (state) {
+            is GWPWidgetUiState.Loading -> {
+                // no-ops
             }
 
-            is BMGMWidgetUiState.Hide -> {
+            is GWPWidgetUiState.Hide -> {
                 hideContent()
             }
 
-            is BMGMWidgetUiState.Show -> {
-                showContent(uiModel = uiState.uiModel, router = router, tracker = tracker)
+            is GWPWidgetUiState.Show -> {
+                showContent(uiModel = state.uiModel, tracker = tracker)
             }
         }
     }
-
-    private fun BMGMWidgetUiState?.hasSame(newUiModel: BMGMWidgetUiState): Boolean {
-        return this?.hashCode() == newUiModel.hashCode()
-    }
-    // endregion
 
     // region hide state
     private fun hideContent() {
@@ -109,47 +97,47 @@ class GWPWidget @JvmOverloads constructor(
     // endregion
 
     // region show content
-    private fun showContent(uiModel: BMGMWidgetUiModel, router: BMGMWidgetRouter, tracker: BMGMWidgetTracker) {
+    private fun showContent(uiModel: GWPWidgetUiModel, tracker: GWPWidgetTracker) {
         binding.root.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+        setWidgetImpression(uiModel = uiModel, tracker = tracker)
+        setHeaderData(uiModel = uiModel)
+        setBackgroundGradient(colors = uiModel.backgroundColor)
+        setCardList(uiModel = uiModel)
+        setSeparator(uiModel = uiModel)
+        setEvent(uiModel = uiModel, tracker = tracker)
+    }
+
+    private fun setWidgetImpression(uiModel: GWPWidgetUiModel, tracker: GWPWidgetTracker) {
         binding.root.addOnImpressionListener(
             holder = tracker.getImpressionHolder(),
             holders = tracker.getImpressionHolders(),
             name = uiModel.title,
             useHolders = tracker.isCacheable()
-        ) {
-            tracker.onImpressed()
-        }
-
-        binding.bmgmImageLeft.loadImage(url = uiModel.iconUrl)
-        setTitle(title = uiModel.title, color = uiModel.titleColor)
-        setBackgroundGradient(colors = uiModel.backgroundColor)
-        setProductList(uiModel = uiModel, router = router)
-        setSeparator(uiModel = uiModel)
-        setEvent(uiModel = uiModel, router = router, tracker = tracker)
+        ) { tracker.onImpressed() }
     }
-    // endregion
 
-    // region title
+    private fun setHeaderData(uiModel: GWPWidgetUiModel) {
+        binding.gwpImageLeft.loadImage(url = uiModel.iconUrl)
+        setTitle(title = uiModel.title, color = uiModel.titleColor)
+    }
+
     private fun setTitle(title: String, color: String) {
-        binding.bmgmTitle.text = title
+        binding.gwpTitle.text = title
 
         val default = unifyprinciplesR.color.Unify_TN500
         val unifyColor = getStringUnifyColor(color = color, default = default)
-        binding.bmgmTitle.setTextColor(unifyColor)
+        binding.gwpTitle.setTextColor(unifyColor)
     }
-    // endregion
 
-    // region set product list
-    private fun setProductList(uiModel: BMGMWidgetUiModel, router: BMGMWidgetRouter) {
-        if (uiModel.products.isNotEmpty()) {
+    private fun setCardList(uiModel: GWPWidgetUiModel) {
+        if (uiModel.cards.isNotEmpty()) {
             cardListBinding.root.show()
 
-            productAdapter.submitList(uiModel.products)
-        } else if (binding.bmgmProductList.isInflated()) { // stub has already inflated
+            cardAdapter.submitList(uiModel.cards)
+        } else if (binding.gwpCardList.isInflated()) { // stub has already inflated
             cardListBinding.root.gone()
         }
     }
-    // endregion
 
     // region background
     private fun setBackgroundGradient(colors: String) {
@@ -168,39 +156,37 @@ class GWPWidget @JvmOverloads constructor(
     }.toIntArray()
     // endregion
 
-    // region separator
-    private fun setSeparator(uiModel: BMGMWidgetUiModel) {
-        binding.bmgmSeparatorBottom.isInvisible = !uiModel.showSeparatorBottom
+    private fun setSeparator(uiModel: GWPWidgetUiModel) {
+        binding.gwpSeparatorBottom.isInvisible = !uiModel.showSeparatorBottom
     }
-    // endregion
 
     // region event
     @SuppressLint("ClickableViewAccessibility")
-    private fun setEvent(uiModel: BMGMWidgetUiModel, router: BMGMWidgetRouter, tracker: BMGMWidgetTracker) {
-        fun onClick() {
-            setRouting(action = uiModel.action, router = router)
-            tracker.onClick(data = uiModel)
-        }
+    private fun setEvent(uiModel: GWPWidgetUiModel, tracker: GWPWidgetTracker) {
+        binding.root.setOnClickListener { onClick(uiModel = uiModel, tracker = tracker) }
 
-        binding.root.setOnClickListener { onClick() }
-
-        if (binding.bmgmProductList.isInflated()) {
-            cardListBinding.bmgmProductList.setOnTouchListener { _, event ->
+        if (binding.gwpCardList.isInflated()) {
+            cardListBinding.gwpCardList.setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
-                    onClick()
+                    onClick(uiModel = uiModel, tracker = tracker)
                 }
                 false
             }
         }
     }
 
-    private fun setRouting(
-        action: BMGMWidgetUiModel.Action,
-        router: BMGMWidgetRouter
-    ) {
+    private fun onClick(uiModel: GWPWidgetUiModel, tracker: GWPWidgetTracker) {
+        setRouting(action = uiModel.action)
+        tracker.onClickTracking(data = uiModel)
+    }
+
+    private fun setRouting(action: ActionUiModel) {
         when (action.type) {
-            BMGMWidgetUiModel.Action.APPLINK -> router.goToAppLink(action.link)
-            BMGMWidgetUiModel.Action.WEBVIEW -> router.goToWebView(action.link)
+            ActionUiModel.APPLINK -> router?.goToAppLink(appLink = action.link)
+            ActionUiModel.WEBVIEW -> router?.goToWebView(link = action.link)
+            else -> {
+                // no-ops
+            }
         }
     }
     // endregion

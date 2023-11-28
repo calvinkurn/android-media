@@ -6,6 +6,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.view.componentization.ComponentCallback
+import com.tokopedia.product.detail.view.componentization.ComponentEvent
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 
 /**
@@ -13,9 +14,9 @@ import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMe
  * Project name: android-tokopedia-core
  **/
 
-abstract class BaseComponentCallback<Event : BaseComponentEvent>(
+abstract class BaseComponentCallback<Event : ComponentEvent>(
     private val mediator: PdpComponentCallbackMediator
-) : ComponentCallback<BaseComponentEvent> {
+) : ComponentCallback<ComponentEvent> {
 
     protected val context
         get() = mediator.rootView.context
@@ -27,15 +28,16 @@ abstract class BaseComponentCallback<Event : BaseComponentEvent>(
         get() = mediator.queueTracker
 
     @Suppress("UNCHECKED_CAST")
-    override fun event(event: BaseComponentEvent) {
+    override fun event(event: ComponentEvent) {
         when (event) {
-            is OnImpressComponent -> {
+            is BasicComponentEvent.OnImpressed -> {
                 onImpressComponent(trackData = event.trackData)
             }
 
-            is GoToApplink -> {
+            is BasicComponentEvent.GoToAppLink -> {
                 RouteManager.route(context, event.applink)
             }
+
             else -> {
                 val mEvent = event as? Event
 

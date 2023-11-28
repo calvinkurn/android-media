@@ -1,16 +1,9 @@
 package com.tokopedia.product.detail.view.viewholder.gwp.adapter
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.product.detail.databinding.BmgmProductItemBinding
-import com.tokopedia.product.detail.databinding.BmgmProductShowMoreViewBinding
-import com.tokopedia.product.detail.view.util.isInflated
-import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiModel
+import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
+import com.tokopedia.viewallcard.ViewAllCard
+import timber.log.Timber
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -18,31 +11,24 @@ import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiModel
  **/
 
 class GWPCardOfShowMoreViewHolder(
-    private val binding: BmgmProductItemBinding
-) : RecyclerView.ViewHolder(binding.root) {
+    private val binding: ViewAllCard
+) : GWPCardViewHolder<GWPWidgetUiModel.Card.LoadMore>(binding.rootView) {
 
-    private val overlayBinding by lazyThreadSafetyNone {
-        val view = binding.bmgmProductShowMoreStub.inflate()
-        BmgmProductShowMoreViewBinding.bind(view)
-    }
+    override fun bind(data: GWPWidgetUiModel.Card.LoadMore) {
+        // binding.allcard1.title = "Title here"
+        binding.description = data.title
 
-    fun bind(product: BMGMWidgetUiModel.Product) {
-        binding.bmgmProductImage.loadImage(product.imageUrl)
-
-        if (product.loadMoreText.isNotBlank()) {
-            overlayBinding.root.show()
-            overlayBinding.bmgmShowMoreText.text = product.loadMoreText
-        } else if (binding.bmgmProductShowMoreStub.isInflated()) {
-            overlayBinding.root.hide()
+        binding.cardView.setOnClickListener {
+            Timber.d("loadmore click")
         }
     }
 
     companion object {
+        val ID = ViewAllCard.hashCode()
 
         fun create(parent: ViewGroup): GWPCardOfShowMoreViewHolder {
-            val inflater = LayoutInflater.from(parent.context)
-            val view = BmgmProductItemBinding.inflate(inflater)
-            return GWPCardOfShowMoreViewHolder(view)
+            val card = ViewAllCard(parent.context)
+            return GWPCardOfShowMoreViewHolder(card)
         }
     }
 }
