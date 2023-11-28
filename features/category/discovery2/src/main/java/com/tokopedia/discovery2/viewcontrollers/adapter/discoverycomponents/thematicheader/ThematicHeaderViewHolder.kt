@@ -49,7 +49,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
                 if (thematicData != null) {
                     setupUi(thematicData)
                 } else {
-                    hideWidget()
+                    hideWidget(null)
                 }
             }
         }
@@ -61,11 +61,18 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
         viewModel?.thematicData?.removeObservers(lifecycleOwner)
     }
 
-    private fun DiscoThematicHeaderLayoutBinding.hideWidget() {
+    private fun DiscoThematicHeaderLayoutBinding.hideWidget(color: String?) {
         title.hide()
         subtitle.hide()
         backgroundImage.hide()
         lottieAnimation.hide()
+        try {
+            if (!color.isNullOrEmpty()) {
+                balanceWidgetView.setBackgroundColor(Color.parseColor(color))
+            }
+        } catch (e: Exception) {
+            /* do nothing */
+        }
     }
 
     private fun DiscoThematicHeaderLayoutBinding.setupUi(
@@ -88,7 +95,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
             title.text = dataItem.title
             subtitle.text = dataItem.subtitle
         } else {
-            hideWidget()
+            hideWidget(dataItem.color)
         }
     }
 
@@ -123,21 +130,14 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun DiscoThematicHeaderLayoutBinding.setupBackground(dataItem: DataItem) {
-        backgroundImage.showIfWithBlock(!dataItem.color.isNullOrBlank() && !dataItem.title.isNullOrBlank() || !dataItem.subtitle.isNullOrBlank() || !dataItem.lottieImage.isNullOrBlank()) {
+        backgroundImage.showIfWithBlock(!dataItem.color.isNullOrBlank() && !dataItem.title.isNullOrBlank() || !dataItem.subtitle.isNullOrBlank() || !dataItem.lottieImage.isNullOrBlank() || !dataItem.image.isNullOrEmpty()) {
             try {
                 mFragment.setupBackgroundColorForHeader(dataItem.color)
                 backgroundImage.setBackgroundColor(Color.parseColor(dataItem.color))
-                backgroundImage.loadImageWithoutPlaceholder(dataItem.imageUrl)
+                backgroundImage.loadImageWithoutPlaceholder(dataItem.image)
             } catch (e: Exception) {
-                hideWidget()
+                hideWidget(dataItem.color)
             }
-        }
-        try {
-            if (!dataItem.color.isNullOrEmpty()) {
-                balanceWidgetView.setBackgroundColor(Color.parseColor(dataItem.color))
-            }
-        } catch (e: Exception) {
-            /* do nothing */
         }
     }
 }
