@@ -11,7 +11,7 @@ interface PerformanceTrace {
 
     fun stopMonitoring(result: Result<PerformanceTraceData>)
 
-    fun recordPerformanceData(performanceTraceData: PerformanceTraceData)
+    fun recordPerformanceData(result: Result<PerformanceTraceData>)
 }
 
 sealed class Result<out T>

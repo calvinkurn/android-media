@@ -4,8 +4,6 @@ import android.app.Activity
 import android.view.View
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.ParsingStrategy
-import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.parser.ViewInfoParser
-import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.parser.XmlViewInfoParser
 import com.tokopedia.analytics.performance.perf.performanceTracing.data.BlocksModel
 import com.tokopedia.analytics.performance.perf.performanceTracing.data.PerformanceTraceData
 import com.tokopedia.analytics.performance.perf.performanceTracing.repository.PerformanceRepository
@@ -66,9 +64,7 @@ class XMLPagePerformanceTrace(
     }
 
     override fun stopMonitoring(result: Result<PerformanceTraceData>) {
-        performanceRepository.stopRecord(
-            performanceTraceData.get().blocksModel
-        )
+        recordPerformanceData(result)
         when (result) {
             is Success -> onPerformanceTraceFinished.invoke(result)
             is Error -> onPerformanceTraceError.invoke(result)
@@ -78,7 +74,15 @@ class XMLPagePerformanceTrace(
         parsingStrategy.getViewCallbackStrategy().stopObserving()
     }
 
-    override fun recordPerformanceData(performanceTraceData: PerformanceTraceData) {
+    override fun recordPerformanceData(result: Result<PerformanceTraceData>) {
+        when(result) {
+            is Success -> {
+                performanceRepository.stopRecord(
+                    performanceTraceData.get().blocksModel
+                )
+            }
+            else -> {}
+        }
     }
 
     private fun recordTTIL() {
@@ -132,8 +136,6 @@ class XMLPagePerformanceTrace(
     }
     
     private fun observeXMLPagePerformance(rootView: View) {
-        val viewInfoParser: ViewInfoParser<View> = XmlViewInfoParser()
-        
         parsingStrategy.getViewCallbackStrategy().registerCallback {
             
             if (isPerformanceTraceFinished) {
@@ -152,7 +154,7 @@ class XMLPagePerformanceTrace(
                 /**
                  * Parse root view into list of ViewInfo model
                  */
-                val viewInfos = viewInfoParser.parse(rootView, 0)
+                val viewInfos = parsingStrategy.getViewInfoParserStrategy().parse(rootView, 0)
 
                 if (viewInfos.isNotEmpty()) {
                     onLayoutRendered()
@@ -161,7 +163,7 @@ class XMLPagePerformanceTrace(
                  * If the given root view is ready to parse, then start to validate ViewInfo
                  */
                 if (parsingStrategy.getStartParserStrategy().isLayoutReady(rootView, viewInfos)) {
-                    val isLayoutFinished = parsingStrategy.getFinishParsingStrategry().isLayoutFinished(rootView, viewInfos)
+                    val isLayoutFinished = parsingStrategy.getFinishParsingStrategy().isLayoutFinished(rootView, viewInfos)
 
                     if (isLayoutFinished) {
                         scope.launch(Dispatchers.Main) {

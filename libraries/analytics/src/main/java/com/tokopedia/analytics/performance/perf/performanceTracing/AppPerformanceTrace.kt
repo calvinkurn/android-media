@@ -133,6 +133,7 @@ class AppPerformanceTrace {
                         activityName = activity.javaClass.simpleName,
                         state = State.PERF_ENABLED
                     )
+                    performanceTrace?.recordPerformanceData(result)
                     performanceTrace = null
                 }
 

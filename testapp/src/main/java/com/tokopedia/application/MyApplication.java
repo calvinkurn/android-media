@@ -107,6 +107,7 @@ public class MyApplication extends BaseMainApplication
 
         GraphqlClient.init(this, getAuthenticator());
         GraphqlClient.setContextData(getApplicationContext());
+        
 
         NetworkClient.init(this);
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
