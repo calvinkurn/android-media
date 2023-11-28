@@ -8,8 +8,8 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
     override fun getOperationNameList() = listOf(OPERATION_NAME)
 
     override fun getQuery() = """
-           mutation $OPERATION_NAME() {
-              prepareProductsGroup()
+           mutation $OPERATION_NAME(${'$'}input: prepareProductGroupParam!) {
+              prepareProductsGroup(input: ${'$'}input)
               {
                 header {
                   process_time

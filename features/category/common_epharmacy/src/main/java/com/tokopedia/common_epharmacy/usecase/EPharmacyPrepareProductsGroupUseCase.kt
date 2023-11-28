@@ -35,7 +35,7 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
     companion object {
         const val PARAM_INPUT = "input"
         const val PARAM_SOURCE = "source"
-        const val PARAM_TOKO_CONSULTATION_ID = "tokoConsultationID"
+        const val PARAM_TOKO_CONSULTATION_IDS = "tokoConsultationIDs"
     }
 
     fun setParams(params: Map<String, Any?>) {

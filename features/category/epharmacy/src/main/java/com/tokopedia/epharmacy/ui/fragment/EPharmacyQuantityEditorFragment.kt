@@ -29,6 +29,7 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.utils.CategoryKeys
 import com.tokopedia.epharmacy.utils.EPHARMACY_APPLINK
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_IDS
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
 import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationAnalytics
@@ -65,7 +66,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     private var ePharmacyGlobalError: GlobalError? = null
     private var qCTotalAmount: TotalAmount? = null
 
-    private var tConsultationId = 0L
+    private var tConsultationIds = listOf<String>()
     private var totalAmount = 0.0
 
     @JvmField
@@ -120,7 +121,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     }
 
     private fun initArguments() {
-        tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
+        tConsultationIds = arguments?.getStringArrayList(EPHARMACY_TOKO_CONSULTATION_IDS).orEmpty()
     }
 
     private fun setUpObservers() {
@@ -152,7 +153,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     private fun makeRequestParams(): MutableMap<String, Any?> {
         return mutableMapOf(
             EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to EPHARMACY_PPG_QTY_CHANGE,
-            EPharmacyPrepareProductsGroupUseCase.PARAM_TOKO_CONSULTATION_ID to tConsultationId
+            EPharmacyPrepareProductsGroupUseCase.PARAM_TOKO_CONSULTATION_IDS to tConsultationIds
         )
     }
 
@@ -401,10 +402,10 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     companion object {
 
         @JvmStatic
-        fun newInstance(tConsultationId: Long): EPharmacyQuantityChangeFragment {
+        fun newInstance(tConsultationIds: ArrayList<String>?): EPharmacyQuantityChangeFragment {
             return EPharmacyQuantityChangeFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(EPHARMACY_TOKO_CONSULTATION_ID, tConsultationId)
+                    putStringArrayList(EPHARMACY_TOKO_CONSULTATION_IDS, tConsultationIds)
                 }
             }
         }
@@ -423,7 +424,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
             .send()
     }
 
-    fun sendViewErrorToasterOnQuantityChangeBottomsheetEvent(eventLabel: String) {
+    private fun sendViewErrorToasterOnQuantityChangeBottomsheetEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent("viewGroceriesIris")
             .setEventAction("view error toaster on quantity change bottomsheet")
@@ -436,7 +437,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
             .send()
     }
 
-    fun sendClickAddQuantityOnChangeQuantityBottomsheetEvent(eventLabel: String) {
+    private fun sendClickAddQuantityOnChangeQuantityBottomsheetEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent("clickGroceries")
             .setEventAction("click add quantity on change quantity bottomsheet")
@@ -449,7 +450,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
             .send()
     }
 
-    fun sendClickRemoveQuantityOnChangeQuantityBottomsheetEvent(eventLabel: String) {
+    private fun sendClickRemoveQuantityOnChangeQuantityBottomsheetEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent("clickGroceries")
             .setEventAction("click remove quantity on change quantity bottomsheet")
