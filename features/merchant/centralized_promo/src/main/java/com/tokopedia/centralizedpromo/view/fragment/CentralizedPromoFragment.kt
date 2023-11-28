@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.centralizedpromo.R
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTER_INCREASE_AVERAGE_ORDER_VALUE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.common.errorhandler.CentralizedPromoErrorHandler
 import com.tokopedia.centralizedpromo.databinding.FragmentCentralizedPromoBinding
@@ -205,6 +206,9 @@ class CentralizedPromoFragment :
                     getLayoutData(
                         LayoutType.PROMO_CREATION
                     )
+                },
+                onAovFilterImpressed = { isSelected ->
+                    CentralizedPromoTracking.sendImpressionAovFilter(isSelected)
                 }
             )
         }
@@ -417,7 +421,11 @@ class CentralizedPromoFragment :
     }
 
     private fun onImpressionPromoList(promoName: String, pageId: String, targetView: View) {
-        CentralizedPromoTracking.sendImpressionCard(promoName, currentFilterTab.name)
+        if (currentFilterTab.id == ID_FILTER_INCREASE_AVERAGE_ORDER_VALUE) {
+            CentralizedPromoTracking.sendImpressionAovCard(promoName)
+        } else {
+            CentralizedPromoTracking.sendImpressionCard(promoName, currentFilterTab.name)
+        }
         view?.post {
             showCoachMarkPromoCreationItem(pageId, targetView)
         }

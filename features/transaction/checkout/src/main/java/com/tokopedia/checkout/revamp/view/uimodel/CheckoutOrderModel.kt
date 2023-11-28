@@ -62,8 +62,9 @@ data class CheckoutOrderModel(
     val isProductFcancelPartial: Boolean = false,
     val isProductIsPreorder: Boolean = false,
 
-    // todo check this usage
-    var products: List<CheckoutProductModel> = ArrayList(),
+    // Do not use this variable, except for checkout param
+    private val finalCheckoutProducts: List<CheckoutProductModel> = ArrayList(),
+    val orderProductIds: List<String> = emptyList(),
     var preOrderDurationDay: Int = 0,
 
     // View state
@@ -153,15 +154,21 @@ data class CheckoutOrderModel(
     val groupInfoDescriptionBadgeUrl: String = "",
 
     // add ons subtotal
-    var subtotalAddOnMap: HashMap<Int, String> = hashMapOf()
+    var subtotalAddOnMap: HashMap<Int, String> = hashMapOf(),
+
+    // O2O
+    val groupMetadata: String = ""
 ) : CheckoutItem {
 
     val isCustomPinpointError: Boolean
         get() = isDisableChangeCourier && !hasGeolocation
 
-    val cartItemModelsGroupByOrder: Map<String, List<CheckoutProductModel>>
-        get() = products.filter { !it.isError }
+    val finalCheckoutProductsGroupByOrder: Map<String, List<CheckoutProductModel>>
+        get() = finalCheckoutProducts.filter { !it.isError }
             .groupBy { it.cartStringOrder }
+
+    val hasValidEthicalDrugProduct: Boolean
+        get() = finalCheckoutProducts.find { !it.isError && it.ethicalDrugDataModel.needPrescription } != null
 }
 
 @Parcelize

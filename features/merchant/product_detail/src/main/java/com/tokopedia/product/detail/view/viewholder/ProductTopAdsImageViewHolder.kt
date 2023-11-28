@@ -31,10 +31,10 @@ class ProductTopAdsImageViewHolder(
                 if (tdnBanner != null) {
                     topAdsTdnView.renderTdnBanner(
                         tdnBanner,
-                        onTdnBannerClicked = { applink ->
+                        onTdnBannerClicked = { banner ->
                             listener.onTopAdsImageViewClicked(
                                 element,
-                                applink,
+                                banner.applink,
                                 bannerId,
                                 bannerName
                             )

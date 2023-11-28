@@ -167,6 +167,7 @@ class CheckoutViewModel @Inject constructor(
     private var isPromoRevamp: Boolean? = null
 
     var isCartCheckoutRevamp: Boolean = false
+    var usePromoEntryPointNewInterface: Boolean = false
 
     fun stopEmbraceTrace() {
         val emptyMap: Map<String, Any> = HashMap()
@@ -267,7 +268,8 @@ class CheckoutViewModel @Inject constructor(
                             isEnable = !tickerError.isError,
                             promo = saf.cartShipmentAddressFormData.lastApplyData,
                             isPromoRevamp = isPromoRevamp ?: false,
-                            isLoading = isPromoRevamp ?: false
+                            isLoading = isPromoRevamp ?: false,
+                            enableNewInterface = usePromoEntryPointNewInterface
                         )
                         if (promo.isEnable && saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
                             PromoRevampAnalytics.eventCartViewPromoMessage(saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message)
@@ -1082,7 +1084,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value = list
             cartProcessor.processSaveShipmentState(
                 newOrderModel,
-                listData.value.address()!!.recipientAddressModel
+                listData.value.address()!!.recipientAddressModel,
+                listData.value
             )
             calculateTotal()
             sendEEStep3()
@@ -1214,7 +1217,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value = list
             cartProcessor.processSaveShipmentState(
                 newOrderModel,
-                listData.value.address()!!.recipientAddressModel
+                listData.value.address()!!.recipientAddressModel,
+                listData.value
             )
             calculateTotal()
             sendEEStep3()
@@ -1279,7 +1283,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value = list
             cartProcessor.processSaveShipmentState(
                 newOrder,
-                listData.value.address()!!.recipientAddressModel
+                listData.value.address()!!.recipientAddressModel,
+                listData.value
             )
             validatePromo()
             pageState.value = CheckoutPageState.Normal
@@ -1683,7 +1688,8 @@ class CheckoutViewModel @Inject constructor(
         listData.value = list
         cartProcessor.processSaveShipmentState(
             newOrder1,
-            listData.value.address()!!.recipientAddressModel
+            listData.value.address()!!.recipientAddressModel,
+            listData.value
         )
         validatePromo()
         pageState.value = CheckoutPageState.Normal
@@ -1721,7 +1727,8 @@ class CheckoutViewModel @Inject constructor(
         listData.value = checkoutItems
         cartProcessor.processSaveShipmentState(
             newOrder,
-            listData.value.address()!!.recipientAddressModel
+            listData.value.address()!!.recipientAddressModel,
+            listData.value
         )
         validatePromo()
         pageState.value = CheckoutPageState.Normal

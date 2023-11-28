@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:startColor="@color/tokopedianow_quest_bg_start_dms_color"
+        android:centerColor="@color/tokopedianow_quest_bg_center_dms_color"
+        android:endColor="@color/tokopedianow_quest_bg_end_dms_color"
+        android:angle="45"
+        android:type="linear"
+        android:centerX="0.2"
+        android:centerY="0.2" />
+</shape>

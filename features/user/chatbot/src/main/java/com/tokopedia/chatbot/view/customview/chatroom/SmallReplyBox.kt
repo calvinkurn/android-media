@@ -20,6 +20,7 @@ import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.TextAreaUnify2
+import com.tokopedia.unifycomponents.toPx
 
 class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
@@ -67,6 +68,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
             replyBox = findViewById(R.id.reply_box)
             replyBubbleContainer = findViewById(R.id.reply_bubble_container)
             commentEditText = findViewById(R.id.new_comment)
+            setEditTextPadding()
             addAttachmentMenu = commentEditText?.icon1
             sendButton = findViewById(R.id.send_but)
             guideline = findViewById(R.id.guideline_reply_bubble)
@@ -75,6 +77,17 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
             ?.let { setHint(it) }
         addAttachmentMenu?.setOnClickListener {
             replyBoxClickListener?.onAttachmentMenuClicked()
+        }
+    }
+
+    private fun setEditTextPadding() {
+        commentEditText?.editText?.apply {
+            this.setPadding(
+                this.paddingLeft,
+                this.paddingTop,
+                ICON_1_PADDING.toPx() + this.paddingRight,
+                this.paddingBottom
+            )
         }
     }
 
@@ -151,5 +164,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
 
     companion object {
         val LAYOUT = R.layout.customview_chatbot_small_reply_box
+
+        const val ICON_1_PADDING = 32
     }
 }

@@ -1,11 +1,13 @@
 package com.tokopedia.content.common.usecase
 
+import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
+import com.tokopedia.content.common.types.ContentCommonUserType.VALUE_TYPE_ID_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.VALUE_TYPE_ID_USER
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -21,7 +23,8 @@ class PostUserReportUseCase @Inject constructor(
         setGraphqlQuery(PostUserReportUseCaseQuery())
         setCacheStrategy(
             GraphqlCacheStrategy
-            .Builder(CacheType.ALWAYS_CLOUD).build())
+                .Builder(CacheType.ALWAYS_CLOUD).build()
+        )
         setTypeClass(UserReportSubmissionResponse::class.java)
     }
 
@@ -34,7 +37,7 @@ class PostUserReportUseCase @Inject constructor(
         partnerId: Long,
         partnerType: PartnerType,
         reporterId: Long,
-    ): RequestParams{
+    ): RequestParams {
         val param = mutableMapOf(
             REPORTER_ID_PARAM to reporterId,
             CHANNEL_ID_PARAM to channelId,
@@ -75,15 +78,18 @@ class PostUserReportUseCase @Inject constructor(
 
     enum class PartnerType {
         Shop,
-        User;
+        User,
+        Unknown;
 
         companion object {
-            fun getTypeFromFeed(value: Int) : PartnerType {
-                return if (value == 3) User else Shop
-            }
-            fun getTypeFromPlay(value: String): PartnerType {
-                return if (value == "buyer") User else Shop
-            }
+            private const val VALUE_PLAY_BUYER = "buyer"
+
+            fun getTypeValue(value: Any): PartnerType =
+                when (value) {
+                    VALUE_TYPE_ID_SHOP -> Shop
+                    VALUE_TYPE_ID_USER, VALUE_PLAY_BUYER -> User
+                    else -> Unknown
+                }
         }
     }
 }

@@ -44,6 +44,9 @@ data class RechargeHomepageSectionSkeleton (
             val id: String = "",
             @SerializedName("template")
             @Expose
-            val template: String = ""
+            val template: String = "",
+            @SerializedName("name")
+            @Expose
+            val name: String = "",
     )
 }
