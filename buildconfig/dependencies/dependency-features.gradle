@@ -61,6 +61,7 @@ ext {
 			contentProductPicker            : ":features:content:product_picker",
 			creationCommon					: ":features:content:creation_common",
 			storiesCreation					: ":features:content:stories_creation",
+			productPreview					: ":features:content:product_preview",
 
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",

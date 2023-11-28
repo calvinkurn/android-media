@@ -156,6 +156,7 @@
 /features/content/stories_internal/                     @tokopedia/android-minionlance-dev
 /features/content/stories_widget/                       @tokopedia/android-minionlance-dev
 /features/media/live-broadcaster/                       @tokopedia/android-minionlance-dev
+/features/content/product_preview/                      @tokopedia/android-minionlance-dev
 
 /features/recharge/common_digital                       @tokopedia/android-minionmark-dev
 /features/recharge/common_electronic_money              @tokopedia/android-minionmark-dev
