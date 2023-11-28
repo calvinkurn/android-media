@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.presentation.model
 
 import android.content.Context
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocProductListTypeFactoryImpl
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 
 data class OwocProductListUiModel(
     val productListHeaderUiModel: ProductListHeaderUiModel,
@@ -45,7 +46,7 @@ data class OwocProductListUiModel(
         val productName: String,
         val productThumbnailUrl: String,
         val quantity: Int,
-        val addonsListUiModel: OwocAddonsListUiModel? = null,
+        val addOnSummaryUiModel: AddOnSummaryUiModel? = null,
         val isPof: Boolean = false
     ) : BaseOwocVisitableUiModel {
 
