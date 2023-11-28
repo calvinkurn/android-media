@@ -161,20 +161,7 @@ class LoginNormalCase : LoginBase() {
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
-            intending(hasData(UriUtil.buildUri(ApplinkConstInternalUserPlatform.COTP, RegisterConstants.OtpType.OTP_TYPE_REGISTER.toString()).toString())).respondWith(
-                Instrumentation.ActivityResult(
-                    Activity.RESULT_OK,
-                    Intent().apply {
-                        putExtras(
-                            Bundle().apply {
-                                putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
-                                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
-                                putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
-                            }
-                        )
-                    }
-                )
-            )
+            mockOtpPageRegisterEmail()
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
 
@@ -184,6 +171,33 @@ class LoginNormalCase : LoginBase() {
                 .perform(click())
 
             intended(hasData(UriUtil.buildUri(ApplinkConstInternalUserPlatform.COTP, RegisterConstants.OtpType.OTP_TYPE_REGISTER.toString()).toString()))
+        }
+    }
+
+    @Test
+    fun goToRegisterInitial_IfNotRegistered_WhenRollenceScpCvsdkActive() {
+        val data = RegisterCheckPojo(
+            RegisterCheckData(
+                isExist = false,
+                userID = "0",
+                registerType = "email",
+                view = "yoris.prayogo@tokopedia.com"
+            )
+        )
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
+
+        runTest {
+            setupRollence(isScpActive = true)
+            mockOtpPageRegisterEmail()
+            inputEmailOrPhone("yoris.prayogo@tokopedia.com")
+            clickSubmit()
+
+            onView(withText("Ya, Daftar"))
+                .inRoot(isDialog())
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+            intended(hasData(ApplinkConstInternalUserPlatform.SCP_OTP))
         }
     }
 

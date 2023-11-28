@@ -12,7 +12,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
@@ -20,7 +19,6 @@ import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.utils.respondWithOk
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
@@ -53,15 +51,30 @@ class RegisterNormalCase : RegisterInitialBase() {
     @Test
     fun gotoVerificationpage_IfNotRegistered() {
         isDefaultRegisterCheck = false
-        setupRollence()
         val data = RegisterCheckData(isExist = false, userID = "123456", registerType = "email", view = "yoris.prayogo+3@tokopedia.com")
         registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
+            setupRollence()
             intending(hasData(UriUtil.buildUri(ApplinkConstInternalUserPlatform.COTP, RegisterConstants.OtpType.OTP_TYPE_REGISTER.toString()))).respondWithOk()
             inputEmailOrPhone("yoris.prayogo+3@tokopedia.com")
             clickSubmit()
             intended(hasData(UriUtil.buildUri(ApplinkConstInternalUserPlatform.COTP, RegisterConstants.OtpType.OTP_TYPE_REGISTER.toString())))
+        }
+    }
+
+    @Test
+    fun gotoScpVerificationpage_WhenRollenceCvsdkActive_IfNotRegistered() {
+        isDefaultRegisterCheck = false
+        val data = RegisterCheckData(isExist = false, userID = "123456", registerType = "email", view = "yoris.prayogo+3@tokopedia.com")
+        registerCheckUseCase.response = RegisterCheckPojo(data)
+
+        runTest {
+            setupRollence(isScpActive = true)
+            intending(hasData(UriUtil.buildUri(ApplinkConstInternalUserPlatform.COTP, RegisterConstants.OtpType.OTP_TYPE_REGISTER.toString()))).respondWithOk()
+            inputEmailOrPhone("yoris.prayogo+3@tokopedia.com")
+            clickSubmit()
+            intended(hasData(ApplinkConstInternalUserPlatform.SCP_OTP))
         }
     }
 
@@ -133,12 +146,5 @@ class RegisterNormalCase : RegisterInitialBase() {
 
             intended(hasData(UriUtil.buildUri(ApplinkConstInternalUserPlatform.COTP, RegisterConstants.OtpType.OTP_LOGIN_PHONE_NUMBER.toString())))
         }
-    }
-
-    private fun setupRollence() {
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-            DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION,
-            ""
-        )
     }
 }
