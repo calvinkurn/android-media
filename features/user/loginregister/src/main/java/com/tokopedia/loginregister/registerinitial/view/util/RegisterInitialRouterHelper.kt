@@ -24,6 +24,7 @@ class RegisterInitialRouterHelper @Inject constructor() {
     var source = ""
 
     fun goToVerification(phone: String = "", email: String = "", otpType: Int, context: Context): Intent {
+        println("go to verificatin $otpType")
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP, otpType.toString())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
