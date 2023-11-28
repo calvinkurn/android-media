@@ -1,8 +1,8 @@
 package com.tokopedia.discovery2.viewcontrollers.customview
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.google.android.material.card.MaterialCardView
@@ -18,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-@SuppressLint("RestrictedApi")
 class MerchantVoucherViewCard @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -30,18 +29,7 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
 
     init {
         binding.divider.addOneTimeGlobalLayoutListener {
-            val rightEdge = getRightEdge(binding.divider.y, binding.divider.height)
-            val leftEdge = getLeftEdge(
-                binding.divider.y,
-                binding.divider.height,
-                binding.root.height
-            )
-
-            val shapePathModel = ShapeAppearanceModel.builder()
-                .setAllCorners(CornerFamily.ROUNDED, CORNER_SIZE)
-                .setLeftEdge(leftEdge)
-                .setRightEdge(rightEdge)
-                .build()
+            val shapePathModel = constructShapeAppearance()
 
             val materialShapeDrawable = MaterialShapeDrawable(shapePathModel)
             val defaultColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
@@ -55,6 +43,26 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
             background = materialShapeDrawable
             binding.cardBackground.shapeAppearanceModel = shapePathModel
         }
+    }
+
+    private fun constructShapeAppearance(): ShapeAppearanceModel {
+        val shapeAppearanceBuilder = ShapeAppearanceModel.builder()
+            .setAllCorners(CornerFamily.ROUNDED, CORNER_SIZE)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val rightEdge = getRightEdge(binding.divider.y, binding.divider.height)
+            val leftEdge = getLeftEdge(
+                binding.divider.y,
+                binding.divider.height,
+                binding.root.height
+            )
+
+            shapeAppearanceBuilder
+                .setLeftEdge(leftEdge)
+                .setRightEdge(rightEdge)
+        }
+
+        return shapeAppearanceBuilder.build()
     }
 
     fun setData(item: DataItem) {

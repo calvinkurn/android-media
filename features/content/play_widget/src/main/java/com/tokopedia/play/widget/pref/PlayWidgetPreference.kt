@@ -15,10 +15,10 @@ class PlayWidgetPreference @Inject constructor(
 
     fun getAutoPlay(isAutoPlayFromBE: Boolean): Boolean {
         val isAutoPlayFromSettings = sharedPref.getBoolean(KEY_PLAY_WIDGET_AUTOPLAY, true)
-        return if(isAutoPlayFromSettings) isAutoPlayFromBE else false
+        return if (isAutoPlayFromSettings) isAutoPlayFromBE else false
     }
 
     companion object {
-        private const val KEY_PLAY_WIDGET_AUTOPLAY = "play_widget_autoplay"
+        const val KEY_PLAY_WIDGET_AUTOPLAY = "play_widget_autoplay"
     }
 }

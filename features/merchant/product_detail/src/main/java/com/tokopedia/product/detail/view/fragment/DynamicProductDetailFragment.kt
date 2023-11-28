@@ -2714,7 +2714,7 @@ open class DynamicProductDetailFragment :
                         it.data,
                         viewModel.userId,
                         it.data.minOrder.coerceAtLeast(DEFAULT_QTY_1),
-                        anchorProductId = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
+                        anchorProductId = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
                     )
                 }
             }, {})
@@ -4472,7 +4472,8 @@ open class DynamicProductDetailFragment :
             variantId = variantId,
             offerId = viewModel.getP2()?.bmgm?.data?.firstOrNull {
                 it.productIDs.contains(productId)
-            }?.offerId.orEmpty()
+            }?.offerId.orEmpty(),
+            nearestWarehouseId = viewModel.getMultiOriginByProductId().id
         )
     }
 
