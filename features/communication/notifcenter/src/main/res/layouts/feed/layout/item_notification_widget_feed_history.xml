@@ -6,6 +6,19 @@
     style="@style/BaseNotification_Container"
     android:paddingBottom="0dp">
 
+    <com.tokopedia.unifycomponents.ContainerUnify
+        android:id="@+id/notifcenter_container_feed_history"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:container_color="GREY"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/notifcenter_iv_type"
         style="@style/BaseNotification_Icon"
