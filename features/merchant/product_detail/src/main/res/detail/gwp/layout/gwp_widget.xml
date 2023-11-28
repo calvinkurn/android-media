@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gwp_component"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/gwp_image_left"
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/gwp_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAlignment="textStart"
+            android:textColor="@color/Unify_TN500"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            tools:text="Belanja untuk dapat hadiah langsung!" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/gwp_icon_right"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:icon_name="CHEVRON_RIGHT" />
+    </LinearLayout>
+
+    <ViewStub
+        android:id="@+id/gwp_card_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:inflatedId="@+id/gwp_card_list"
+        android:layout="@layout/gwp_card_list" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/gwp_separator_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/thick_divider_height_component"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</LinearLayout>
