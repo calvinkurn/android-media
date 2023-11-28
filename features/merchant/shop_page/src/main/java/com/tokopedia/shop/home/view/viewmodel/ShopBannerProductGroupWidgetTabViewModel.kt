@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -71,14 +72,14 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         getShopProductUseCase.clearCache()
         _carouselWidgets.postValue(UiState.Loading)
 
-        val productMetadata = getProductMetadata(widgets)
+        val listProductMetadata = getListProductMetadata(widgets)
 
-        if (productMetadata != null) {
+        if (listProductMetadata != null) {
             launchCatchError(
                 context = dispatcherProvider.io,
                 block = {
 
-                    val products = getProductsByProductMetadata(shopId, userAddress, productMetadata, overrideTheme, colorSchema)
+                    val products = getProductsByProductMetadata(shopId, userAddress, listProductMetadata, overrideTheme, colorSchema)
 
                     val hasVerticalBanner = widgetStyle == BannerProductGroupUiModel.WidgetStyle.VERTICAL.id
                     val carouselWidgets = if (hasVerticalBanner) {
@@ -137,40 +138,58 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         _verticalProductCarousel.postValue(updatedProductCarousels)
     }
 
-    private fun getProductMetadata(
+    private fun getListProductMetadata(
         widgets: List<BannerProductGroupUiModel.Tab.ComponentList>
-    ): BannerProductGroupUiModel.Tab.ComponentList.Data? {
+    ): List<BannerProductGroupUiModel.Tab.ComponentList.Data>? {
         val productComponents = widgets.filter { widget -> widget.componentName == ComponentName.PRODUCT }
 
         val product = productComponents.getOrNull(0) ?: return null
 
-        val productMetadata = product.data.getOrNull(0)
-        return productMetadata
+        return product.data
     }
 
     private suspend fun getProductsByProductMetadata(
         shopId: String,
         userAddress: LocalCacheModel,
-        productWidget: BannerProductGroupUiModel.Tab.ComponentList.Data,
+        listProductMetaData: List<BannerProductGroupUiModel.Tab.ComponentList.Data>,
         overrideTheme: Boolean,
         colorSchema: ShopPageColorSchema
     ): List<ProductItemType> {
-        val showProductInfo = productWidget.isShowProductInfo
-
-        return when(productWidget.linkType) {
+        val showProductInfo = listProductMetaData.firstOrNull()?.isShowProductInfo.orFalse()
+        return when (listProductMetaData.firstOrNull()?.linkType) {
             LinkType.FEATURED_PRODUCT -> {
-                val featuredProducts = getFeaturedProducts(shopId, userSession.userId, userAddress, showProductInfo, overrideTheme, colorSchema)
+                val featuredProducts = getFeaturedProducts(
+                    shopId,
+                    userSession.userId,
+                    userAddress,
+                    showProductInfo,
+                    overrideTheme,
+                    colorSchema
+                )
                 featuredProducts
             }
-            LinkType.PRODUCT -> {
-                val sortId = productWidget.linkId
-                val sortedProducts = getSortedProducts(shopId, userAddress, sortId, showProductInfo, overrideTheme, colorSchema)
-                sortedProducts
-            }
-            LinkType.SHOWCASE -> {
-                val showcaseId = productWidget.linkId.toString()
-                val showCaseProducts = getShowcaseProduct(shopId, showcaseId, userAddress, showProductInfo, overrideTheme, colorSchema)
-                showCaseProducts
+
+            else -> {
+                var sortId = ""
+                var showcaseId = ""
+                listProductMetaData.find { it.linkType == LinkType.SHOWCASE }?.let {
+                    showcaseId = it.linkId
+                }
+                listProductMetaData.find { it.linkType == LinkType.PRODUCT }?.let {
+                    sortId = it.linkId
+                }
+                listProductMetaData.find { it.linkType == LinkType.SORT }?.let {
+                    sortId = it.linkId
+                }
+                getShowcaseProduct(
+                    shopId,
+                    showcaseId,
+                    sortId,
+                    userAddress,
+                    showProductInfo,
+                    overrideTheme,
+                    colorSchema
+                )
             }
         }
     }
@@ -178,6 +197,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     private suspend fun getShowcaseProduct(
         shopId: String,
         showcaseId: String,
+        sortId: String,
         userAddress: LocalCacheModel,
         showProductInfo: Boolean,
         overrideTheme: Boolean,
@@ -188,32 +208,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
             ShopProductFilterInput().apply {
                 etalaseMenu = showcaseId
                 this.page = FIRST_PAGE
-                sort = SORT_ID_SORT_BY_SOLD_DESC
-                perPage = PRODUCT_COUNT_TO_FETCH
-                userDistrictId = userAddress.district_id
-                userCityId = userAddress.city_id
-                userLat = userAddress.lat
-                userLong = userAddress.long
-            }
-        )
-
-        return getProducts(showProductInfo, overrideTheme, colorSchema, params)
-    }
-
-    private suspend fun getSortedProducts(
-        shopId: String,
-        userAddress: LocalCacheModel,
-        sortId: Long,
-        showProductInfo: Boolean,
-        overrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema
-    ): List<ProductItemType> {
-        val params = GqlGetShopProductUseCase.createParams(
-            shopId,
-            ShopProductFilterInput().apply {
-                etalaseMenu = ShopPageConstant.ALL_SHOWCASE_ID
-                this.page = FIRST_PAGE
-                sort = sortId.toInt()
+                sort = sortId.toIntOrZero()
                 perPage = PRODUCT_COUNT_TO_FETCH
                 userDistrictId = userAddress.district_id
                 userCityId = userAddress.city_id

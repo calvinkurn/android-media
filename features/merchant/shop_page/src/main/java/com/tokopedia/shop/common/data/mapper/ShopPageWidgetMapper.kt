@@ -267,7 +267,7 @@ object ShopPageWidgetMapper {
                     BannerProductGroupUiModel.Tab.ComponentList.Data(
                         data.imageUrl,
                         data.ctaLink,
-                        data.linkID,
+                        data.link,
                         linkType,
                         data.isShowProductInfo
                     )
@@ -373,7 +373,7 @@ object ShopPageWidgetMapper {
                     imageUrl = it.banner,
                     etalaseList = it.listEtalase.map {etalase ->
                         Etalase(
-                            etalaseId = etalase.linkId,
+                            etalaseId = etalase.link,
                             name = etalase.name,
                             imageUrl = etalase.imageUrl,
                             productList = listOf()

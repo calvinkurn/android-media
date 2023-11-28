@@ -49,7 +49,7 @@ data class BannerProductGroupUiModel(
             data class Data(
                 val imageUrl: String,
                 val ctaLink: String,
-                val linkId: Long,
+                val linkId: String,
                 val linkType: LinkType,
                 val isShowProductInfo: Boolean
             ) : Parcelable {
@@ -57,7 +57,8 @@ data class BannerProductGroupUiModel(
                 enum class LinkType(var id: String) : Parcelable {
                     PRODUCT("product"),
                     SHOWCASE("showcase"),
-                    FEATURED_PRODUCT("featured")
+                    FEATURED_PRODUCT("featured"),
+                    SORT("sort")
                 }
             }
         }

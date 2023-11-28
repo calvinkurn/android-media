@@ -229,8 +229,8 @@ data class ShopLayoutWidget(
                     val ctaText: String = "",
                     @SerializedName("ctaLink")
                     val ctaLink: String = "",
-                    @SerializedName("linkID")
-                    val linkID: Long = 0,
+                    @SerializedName("link")
+                    val link: String = "",
                     @SerializedName("linkType")
                     val linkType: String = "",
                     @SerializedName("isShowProductInfo")
@@ -259,8 +259,8 @@ data class ShopLayoutWidget(
                 val desktopImageUrl: String = "",
                 @SerializedName("linkType")
                 val linkType: String = "",
-                @SerializedName("linkID")
-                val linkId: String = "",
+                @SerializedName("link")
+                val link: String = "",
                 @SerializedName("Name")
                 val name: String = ""
             )
