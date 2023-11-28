@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.reimagine.Search3ProductCard
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -65,7 +64,7 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
     private fun ViolationDataView.verify(violation: Violation) {
         headerText shouldBe violation.headerText
         descriptionText shouldBe violation.descriptionText
-        violationButton.ctaUrl shouldBe violation.ctaUrl
+        violationButton.ctaApplink shouldBe violation.ctaApplink
         violationButton.text shouldBe violation.buttonText
         verticalSeparator shouldBe VerticalSeparator.Bottom
     }

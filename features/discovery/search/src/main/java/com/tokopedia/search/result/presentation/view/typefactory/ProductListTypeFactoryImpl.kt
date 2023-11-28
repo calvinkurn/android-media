@@ -84,9 +84,13 @@ import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessprodu
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.GridInspirationProductItemViewHolder
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.InspirationProductItemReimagineViewHolder
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.ListInspirationProductItemViewHolder
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproducttitle.InspirationProductTitleDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproducttitle.InspirationProductTitleViewHolder
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaViewHolder
+import com.tokopedia.search.result.product.separator.VerticalSeparatorDataView
+import com.tokopedia.search.result.product.separator.VerticalSeparatorViewHolder
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.search.result.product.suggestion.SuggestionViewHolder
@@ -279,6 +283,12 @@ class ProductListTypeFactoryImpl(
         }
     }
 
+    override fun type(inspirationCarouselSeamlessProductTitle: InspirationProductTitleDataView): Int =
+        InspirationProductTitleViewHolder.LAYOUT
+
+    override fun type(separatorDataView: VerticalSeparatorDataView): Int =
+        VerticalSeparatorViewHolder.LAYOUT
+
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -378,6 +388,11 @@ class ProductListTypeFactoryImpl(
                 ListInspirationProductItemViewHolder(view, inspirationProductListener, productListener)
             InspirationProductItemReimagineViewHolder.LAYOUT ->
                 InspirationProductItemReimagineViewHolder(view, inspirationProductListener)
+            InspirationProductTitleViewHolder.LAYOUT -> InspirationProductTitleViewHolder(
+                view,
+                inspirationCarouselListener,
+            )
+            VerticalSeparatorViewHolder.LAYOUT -> VerticalSeparatorViewHolder(view)
 
             else -> super.createViewHolder(view, type)
         }

@@ -31,6 +31,7 @@ import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment.Companion.EMONEY_PDP_PREFERENCES_NAME
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpResponseConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.CoreMatchers.not
@@ -41,6 +42,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.common.topupbills.R as commontopupbillsR
 
 /**
  * @author by jessica on 16/04/21
@@ -108,11 +111,12 @@ class EmoneyPdpActivityLoginTest {
 
     private fun validateTicker() {
         Espresso.onView(withId(R.id.emoneyPdpTicker)).check(matches(isDisplayed()))
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.ticker_description)).check(matches(isDisplayed()))
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.ticker_description)).check(matches(withText("this is dummy ticker Action Text")))
+        Espresso.onView(
+            CommonMatcher.firstView(withId(unifycomponentsR.id.ticker_description))).check(matches(isDisplayed()))
+        Espresso.onView(CommonMatcher.firstView(withId(unifycomponentsR.id.ticker_description))).check(matches(withText("this is dummy ticker Action Text")))
 
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.ticker_close_icon)).check(matches(isDisplayed()))
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.ticker_close_icon)).perform(click())
+        Espresso.onView(CommonMatcher.firstView(withId(unifycomponentsR.id.ticker_close_icon))).check(matches(isDisplayed()))
+        Espresso.onView(CommonMatcher.firstView(withId(unifycomponentsR.id.ticker_close_icon))).perform(click())
         Thread.sleep(1000)
         Espresso.onView(withId(R.id.emoneyPdpTicker)).check(matches(not(isDisplayed())))
     }
@@ -132,9 +136,9 @@ class EmoneyPdpActivityLoginTest {
         Espresso.onView(withId(R.id.emoneyHeaderViewCtaButton)).perform(click())
         Thread.sleep(2000)
 
-        Espresso.onView(AllOf.allOf(withText("8768567891012344"), withId(R.id.emoneyHeaderViewCardNumber))).check(matches(isDisplayed()))
+        Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2344"), withId(R.id.emoneyHeaderViewCardNumber))).check(matches(isDisplayed()))
         Espresso.onView(AllOf.allOf(withText("Rp 65.000"), withId(R.id.emoneyHeaderViewCardBalance))).check(matches(isDisplayed()))
-        Espresso.onView(withText("8768 5678 9101 2344")).check(matches(isDisplayed()))
+        Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2344"), withId(unifycomponentsR.id.text_field_input))).check(matches(isDisplayed()))
     }
 
     private fun clickCameraIconOnInputView() {
@@ -144,8 +148,8 @@ class EmoneyPdpActivityLoginTest {
         Thread.sleep(2000)
 
         Espresso.onView(withText("1234 5678")).check(matches(isDisplayed()))
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).check(matches(isDisplayed()))
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).perform(click())
+        Espresso.onView(withId(unifycomponentsR.id.text_field_icon_2)).check(matches(isDisplayed()))
+        Espresso.onView(withId(unifycomponentsR.id.text_field_icon_2)).perform(click())
         Thread.sleep(1000)
     }
 
@@ -157,13 +161,13 @@ class EmoneyPdpActivityLoginTest {
             )
         )
 
-        Espresso.onView(AllOf.allOf(withId(com.tokopedia.unifycomponents.R.id.tab_item_text_id), withText("Promo"))).perform(click())
+        Espresso.onView(AllOf.allOf(withId(unifycomponentsR.id.tab_item_text_id), withText("Promo"))).perform(click())
         Thread.sleep(1000)
 
         Espresso.onView(withId(R.id.emoneyPdpPromoListWidget)).check(matches(isDisplayed()))
         Espresso.onView(
             AllOf.allOf(
-                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
+                withId(commontopupbillsR.id.recycler_view_menu_component),
                 isDescendantOfA(withId(R.id.emoneyPdpPromoListWidget))
             )
         ).check(matches(isDisplayed())).perform(
@@ -176,36 +180,36 @@ class EmoneyPdpActivityLoginTest {
 
         Espresso.onView(
             AllOf.allOf(
-                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
+                withId(commontopupbillsR.id.recycler_view_menu_component),
                 isDescendantOfA(withId(R.id.emoneyPdpPromoListWidget))
             )
         ).check(matches(isDisplayed())).perform(
             RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
                 0,
-                CommonActions.clickChildViewWithId(com.tokopedia.common.topupbills.R.id.btn_copy_promo)
+                CommonActions.clickChildViewWithId(commontopupbillsR.id.btn_copy_promo)
             )
         )
         Thread.sleep(2000)
 
-        Espresso.onView(AllOf.allOf(withId(com.tokopedia.unifycomponents.R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
+        Espresso.onView(AllOf.allOf(withId(unifycomponentsR.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
         Thread.sleep(1000)
     }
 
     private fun clickOnFavNumberOnInputView() {
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(createOrderNumberTypeManual())
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
+        Espresso.onView(withId(unifycomponentsR.id.text_field_input)).perform(click())
         Thread.sleep(2000)
 
         Espresso.onView(withText("8768 5678 9101 2345")).check(matches(isDisplayed()))
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).check(matches(isDisplayed()))
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).perform(click())
+        Espresso.onView(withId(unifycomponentsR.id.text_field_icon_2)).check(matches(isDisplayed()))
+        Espresso.onView(withId(unifycomponentsR.id.text_field_icon_2)).perform(click())
         Thread.sleep(1000)
 
         Espresso.onView(withId(R.id.emoneyRecentNumberList)).check(matches(isDisplayed()))
         Thread.sleep(1000)
 
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
+        Espresso.onView(withId(unifycomponentsR.id.text_field_input)).perform(click())
         Thread.sleep(1000)
     }
 

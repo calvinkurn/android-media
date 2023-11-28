@@ -26,6 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.profilecompletion.R
@@ -48,7 +49,8 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     private var _binding: FragmentAddNameRegisterBinding? = null
     private val binding get() = _binding
     var phoneNumber: String? = ""
-    var uuid: String? = ""
+    var uuid: String = ""
+    private var isFromScp = false
 
     private var isError = false
 
@@ -105,6 +107,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         )
         uuid =
             getParamString(ApplinkConstInternalGlobal.PARAM_UUID, arguments, savedInstanceState, "")
+        isFromScp = getParamBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, arguments, savedInstanceState, false)
     }
 
     override fun onCreateView(
@@ -134,7 +137,6 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     private fun setViewListener() {
         binding?.etName?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-
             }
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
@@ -149,7 +151,6 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
             }
 
             override fun afterTextChanged(editable: Editable) {
-
             }
         })
 
@@ -166,7 +167,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     private fun registerPhoneAndName(name: String, phoneNumber: String) {
         if (isValidate(name)) {
-            presenter.registerPhoneNumberAndName(name, phoneNumber)
+            presenter.registerPhoneNumberAndName(name, phoneNumber, uuid, isFromScp)
         }
     }
 
@@ -211,7 +212,10 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
                             it,
                             com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
-                    ), SPAN_34, SPAN_54, FLAG_0
+                    ),
+                    SPAN_34,
+                    SPAN_54,
+                    FLAG_0
                 )
                 termPrivacy.setSpan(
                     ForegroundColorSpan(
@@ -219,7 +223,10 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
                             it,
                             com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
-                    ), SPAN_61, SPAN_78, FLAG_0
+                    ),
+                    SPAN_61,
+                    SPAN_78,
+                    FLAG_0
                 )
 
                 binding?.bottomInfo?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
@@ -289,7 +296,6 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         dismissLoading()
         showValidationError(ErrorHandler.getErrorMessage(context, throwable))
         analytics.trackErrorFinishAddNameButton(ErrorHandler.getErrorMessage(context, throwable))
-
     }
 
     private fun saveTokens(data: RegisterInfo) {
@@ -310,15 +316,20 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
             dismissLoading()
             analytics.trackSuccessRegisterPhoneNumber(registerInfo.userId)
 
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtras(Bundle().apply {
-                    putExtra(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA, registerInfo.enable2Fa)
-                    putExtra(
-                        ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA,
-                        registerInfo.enableSkip2Fa
+            setResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtras(
+                        Bundle().apply {
+                            putExtra(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA, registerInfo.enable2Fa)
+                            putExtra(
+                                ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA,
+                                registerInfo.enableSkip2Fa
+                            )
+                        }
                     )
-                })
-            })
+                }
+            )
 
             finish()
         }

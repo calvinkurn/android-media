@@ -33,13 +33,19 @@
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/lb_product_label"
+            app:layout_constraintTop_toTopOf="@id/iv_thumbnail"
+            app:layout_constraintLeft_toLeftOf="@id/iv_thumbnail"
+            app:layout_constraintRight_toRightOf="@id/iv_thumbnail"
+            app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constrainedWidth="true"
+            app:layout_constrainedHeight="true"
             app:labelType="general_light_grey"
-            android:text="@string/title_empty_stock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_lvl2"
-            app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
-            app:layout_constraintStart_toStartOf="@id/iv_thumbnail" />
+            android:layout_margin="4dp"
+            tools:text="Stock Habis hehe" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_name"

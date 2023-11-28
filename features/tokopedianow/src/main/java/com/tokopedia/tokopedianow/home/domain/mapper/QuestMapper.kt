@@ -8,17 +8,35 @@ import com.tokopedia.tokopedianow.home.domain.model.QuestList
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestCardItemUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestShimmeringWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestWidgetViewHolder.Companion.STATUS_IDLE
 
 object QuestMapper {
-
     private const val BANNER_TITLE = "banner_title"
     private const val BANNER_DESCRIPTION = "banner_description"
     private const val ICON_URL = "banner_icon_url"
 
-    fun mapQuestUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
+    fun mapQuestUiModel(
+        response: HomeLayoutResponse,
+        state: HomeLayoutItemState
+    ): HomeLayoutItemUiModel {
         val uiModel = HomeQuestSequenceWidgetUiModel(
             id = response.id,
             state = HomeLayoutItemState.LOADING
+        )
+        return HomeLayoutItemUiModel(uiModel, state)
+    }
+
+    fun mapQuestWidgetUiModel(
+        response: HomeLayoutResponse,
+        state: HomeLayoutItemState
+    ): HomeLayoutItemUiModel {
+        val uiModel = HomeQuestShimmeringWidgetUiModel(
+            id = response.id,
+            mainTitle = response.header.name,
+            finishedWidgetTitle = response.header.subtitle,
+            finishedWidgetContentDescription = response.widgetParam
         )
         return HomeLayoutItemUiModel(uiModel, state)
     }
@@ -38,6 +56,20 @@ object QuestMapper {
             ))
         }
         return questList
+    }
+
+    fun mapQuestCardData(questListResponse: List<QuestList>): List<HomeQuestCardItemUiModel> = questListResponse.map {
+        val mapConfig = convertJsonStringToMap(it.config)
+        val currentProgress = it.task.firstOrNull()?.progress?.current.orZero()
+        val totalProgress = it.task.firstOrNull()?.progress?.target.orZero()
+        HomeQuestCardItemUiModel(
+            id = it.id,
+            title = getValueFromConfig(mapConfig, BANNER_TITLE),
+            description = getValueFromConfig(mapConfig, BANNER_DESCRIPTION),
+            isLockedShown = it.questUser.status == STATUS_IDLE,
+            currentProgress = currentProgress,
+            totalProgress = totalProgress
+        )
     }
 
     private fun getValueFromConfig(config: Map<String, String>, key: String): String {

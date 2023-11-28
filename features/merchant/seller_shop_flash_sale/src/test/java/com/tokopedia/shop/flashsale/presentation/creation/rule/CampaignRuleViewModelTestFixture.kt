@@ -2,7 +2,6 @@ package com.tokopedia.shop.flashsale.presentation.creation.rule
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.campaign.usecase.RolloutFeatureVariantsUseCase
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC.TncRequest
