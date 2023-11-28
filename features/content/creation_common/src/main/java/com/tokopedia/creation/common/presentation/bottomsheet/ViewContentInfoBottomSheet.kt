@@ -1,4 +1,4 @@
-package com.tokopedia.stories.creation.view.bottomsheet
+package com.tokopedia.creation.common.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,55 +10,41 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.creation.common.presentation.screen.ContentInfoScreen
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.creation.common.R
 
 /**
- * Created By : Jonathan Darwin on September 20, 2023
+ * Created By : Jonathan Darwin on November 27, 2023
  */
-class StoriesCreationInfoBottomSheet : BottomSheetUnify() {
-
-    var listener: Listener? = null
-
-    var info: Info = Info()
+class ViewContentInfoBottomSheet : BottomSheetUnify() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        isDragable = false
+        isDragable = true
+        isHideable = true
         isSkipCollapseState = true
-        isHideable = false
-        isCancelable = false
-        overlayClickDismiss = false
         bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
-
-        setCloseClickListener {
-            listener?.onClose()
-        }
 
         val composeView = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
             setContent {
                 ContentInfoScreen(
-                    imageUrl = info.imageUrl,
-                    title = info.title,
-                    subtitle = info.subtitle,
-                    primaryText = info.primaryText,
-                    secondaryText = info.secondaryText,
+                    imageUrl = "https://images.tokopedia.net/img/android/content/content_creation/ic_content_too_much.png",
+                    title = getString(R.string.content_creation_check_content_in_tokopedia_feed_title),
+                    subtitle = getString(R.string.content_creation_check_content_in_tokopedia_feed_desc),
+                    primaryText = getString(R.string.content_creation_check_content_in_tokopedia_feed_action_text),
+                    secondaryText = "",
                     onPrimaryButtonClicked = {
-                        listener?.onPrimaryButtonClick()
+
                     },
-                    onSecondaryButtonClicked = {
-                        listener?.onSecondaryButtonClick()
-                    }
+                    onSecondaryButtonClicked = {  }
                 )
             }
         }
-
         setChild(composeView)
-
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -66,36 +52,19 @@ class StoriesCreationInfoBottomSheet : BottomSheetUnify() {
         if (!isAdded) show(fragmentManager, TAG)
     }
 
-    data class Info(
-        val imageUrl: String = "",
-        val title: String = "",
-        val subtitle: String = "",
-        val primaryText: String = "",
-        val secondaryText: String = "",
-    )
-
-    interface Listener {
-
-        fun onClose()
-
-        fun onPrimaryButtonClick()
-
-        fun onSecondaryButtonClick()
-    }
-
     companion object {
-        private const val TAG = "StoriesCreationInfoBottomSheet"
+        private const val TAG = "ViewContentInfoBottomSheet"
 
-        fun getFragment(
+        fun getOrCreateFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
-        ): StoriesCreationInfoBottomSheet {
+        ): ViewContentInfoBottomSheet {
             val oldInstance =
-                fragmentManager.findFragmentByTag(TAG) as? StoriesCreationInfoBottomSheet
+                fragmentManager.findFragmentByTag(TAG) as? ViewContentInfoBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                StoriesCreationInfoBottomSheet::class.java.name
-            ) as StoriesCreationInfoBottomSheet
+                ViewContentInfoBottomSheet::class.java.name
+            ) as ViewContentInfoBottomSheet
         }
     }
 }

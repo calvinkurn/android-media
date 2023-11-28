@@ -46,4 +46,8 @@
     <string name="content_creation_watch_in_ma_desc">Kamu juga bisa cek semua interaksi yang ada di kontenmu.</string>
     <string name="content_creation_watch_in_ma_action_text">Download Tokopedia</string>
     <string name="content_creation_watch_in_ma_cancel_text">Nanti Aja</string>
+
+    <string name="content_creation_check_content_in_tokopedia_feed_title">Cek kontenmu di Tokopedia Feed</string>
+    <string name="content_creation_check_content_in_tokopedia_feed_desc">Kontenmu akan selalu diupload dan dapat dilihat oleh penonton di Tokopedia Feed</string>
+    <string name="content_creation_check_content_in_tokopedia_feed_action_text">Lihat Konten</string>
 </resources>
