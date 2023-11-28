@@ -9,8 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -40,6 +43,7 @@ import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.CourierButtonListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
@@ -119,11 +123,11 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 open class BuyerOrderDetailFragment :
     BaseDaggerFragment(),
@@ -139,7 +143,8 @@ open class BuyerOrderDetailFragment :
     PartialProductItemViewHolder.ShareProductBottomSheetListener,
     ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     OwocInfoViewHolder.Listener,
-    BmgmSectionViewHolder.Listener {
+    BmgmSectionViewHolder.Listener,
+    CourierButtonListener {
 
     companion object {
         @JvmStatic
@@ -203,7 +208,8 @@ open class BuyerOrderDetailFragment :
             navigator,
             this,
             this,
-            recyclerViewSharedPool
+            recyclerViewSharedPool,
+            this
         )
     }
     protected open val adapter: BuyerOrderDetailAdapter by lazy {
@@ -307,6 +313,8 @@ open class BuyerOrderDetailFragment :
         observeAddSingleToCart()
         observeAddMultipleToCart()
         observeMedalTouchPoint()
+        observeGroupBooking()
+        observeChatUnreadCounter()
         observeOneTimeEvent()
     }
 
@@ -1163,6 +1171,53 @@ open class BuyerOrderDetailFragment :
     private fun showToaster(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
+    override fun initGroupBooking(gojekOrderId: String, source: String) {
+        viewModel.initGroupBooking(gojekOrderId, source)
+    }
+
+    override fun onChatButtonClicked(gojekOrderId: String, source: String, counter: String) {
+        val value = viewModel.buyerOrderDetailUiState.value
+        if (value is BuyerOrderDetailUiState.HasData) {
+            val orderStatus = value.orderStatusUiState.data.orderStatusHeaderUiModel.orderStatus
+            val tokopediaOrderId = viewModel.getOrderId()
+            BuyerOrderDetailTracker.sendClickChatButton(
+                orderStatus,
+                tokopediaOrderId,
+                gojekOrderId,
+                source,
+                counter
+            )
+        }
+    }
+
+    private fun observeGroupBooking() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.groupBookingUiState.collectLatest {
+                    if (it.error == null) {
+                        viewModel.fetchUnReadChatCount()
+                    } else {
+                        adapter.updateCourierCounter(0)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeChatUnreadCounter() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.chatCounterUiState.collectLatest {
+                    if (it.error == null) {
+                        adapter.updateCourierCounter(it.counter)
+                    } else {
+                        adapter.updateCourierCounter(0)
+                    }
+                }
+            }
         }
     }
 }

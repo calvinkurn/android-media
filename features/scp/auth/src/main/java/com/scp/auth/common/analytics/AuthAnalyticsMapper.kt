@@ -19,6 +19,9 @@ object AuthAnalyticsMapper {
 
     var loginFrom = ""
 
+    var progressiveSignupTransactionId = ""
+    var lsdkVersion = ""
+
     fun trackScreenLsdk(eventName: String, param: Map<String, Any?>) {
         val lsdkScreen = getSource(param)
         gtm.sendGeneralEvent(
@@ -282,7 +285,7 @@ object AuthAnalyticsMapper {
     }
 
     private fun createCustomDimension(sdkVersion: String): Map<String, Any> {
-        return mapOf(SDK_VERSION to sdkVersion, BUSINESS_UNIT to BUSINESS_UNIT_VALUE)
+        return mapOf(SDK_VERSION to sdkVersion, BUSINESS_UNIT to BUSINESS_UNIT_VALUE, CURRENT_SITE to CURRENT_SITE_VALUE)
     }
 
     private fun mapScreenView(lsdkScreen: String): String {
@@ -440,9 +443,15 @@ object AuthAnalyticsMapper {
 
     private fun getSource(param: Map<String, Any?>): String = param[CVEventFieldName.SOURCE].toString()
 
-    private fun getTransactionId(param: Map<String, Any?>): String = param[CVEventFieldName.TRANSACTION_ID].toString()
+    private fun getTransactionId(param: Map<String, Any?>): String {
+        progressiveSignupTransactionId = param[CVEventFieldName.TRANSACTION_ID].toString()
+        return progressiveSignupTransactionId
+    }
 
-    private fun getSdkVersion(param: Map<String, Any?>): String = param[CVEventFieldName.SDK_VERSION].toString()
+    private fun getSdkVersion(param: Map<String, Any?>): String {
+        lsdkVersion = param[CVEventFieldName.SDK_VERSION].toString()
+        return lsdkVersion
+    }
 
     private fun getVerificationType(param: Map<String, Any?>): String = param[LSdkAnalyticFieldName.VERIFICATION_TYPE].toString()
 
@@ -560,13 +569,45 @@ object AuthAnalyticsMapper {
         }
     }
 
+    fun trackProgressiveSignupSuccess() {
+        gtm.sendGeneralEvent(
+            createData(
+                trackerId = "46264",
+                event = CLICK_ACCOUNT_EVENT,
+                category = SSO_PAGE_CATEGORY,
+                action = CLICK_ON_CONTINUE,
+                label = "$LABEL_SUCCESS - register - ${LoginMethodAnalytic.SSO} - $progressiveSignupTransactionId",
+                customDimension = createCustomDimension(lsdkVersion)
+            )
+        )
+    }
+
+    fun trackProgressiveSignupFailed(errorMsg: String) {
+        gtm.sendGeneralEvent(
+            createData(
+                trackerId = "46264",
+                event = CLICK_ACCOUNT_EVENT,
+                category = SSO_PAGE_CATEGORY,
+                action = CLICK_ON_CONTINUE,
+                label = "$LABEL_FAILED - $errorMsg - register - ${LoginMethodAnalytic.SSO} - $progressiveSignupTransactionId",
+                customDimension = createCustomDimension(lsdkVersion)
+            )
+        )
+    }
+
     private fun getLoginLabel(eventName: String, param: Map<String, Any?>): String {
         val transactionId = getTransactionId(param)
         return when (eventName) {
             LSdkEventName.LSDK_LOGIN_SUCCESS -> "success - login - ${param[CVEventFieldName.METHOD]} - $transactionId"
             LSdkEventName.LSDK_LOGIN_FAIL -> "failed - login - ${param[CVEventFieldName.ERROR_MESSAGE]} - $transactionId"
             LSdkEventName.LSDK_CTA_OTHER_ACC -> transactionId
-            LSdkEventName.LSDK_LOGIN_CTA_CLICKED -> "click - ${param[CVEventFieldName.TYPE]} - $transactionId"
+            LSdkEventName.LSDK_LOGIN_CTA_CLICKED -> {
+                if (param[CVEventFieldName.TYPE] == "progressive_signup") {
+                    "click - register - ${LoginMethodAnalytic.SSO} - $transactionId"
+                } else {
+                    "click - login - ${param[CVEventFieldName.TYPE]} - $transactionId"
+                }
+            }
             else -> ""
         }
     }
@@ -574,7 +615,13 @@ object AuthAnalyticsMapper {
     private fun getCredentialScreenLabel(eventName: String, param: Map<String, Any?>): String {
         return when (eventName) {
             LSdkEventName.LSDK_INPUT_BOX_CLICKED, LSdkEventName.LSDK_ACC_RECOVERY_CLICKED -> getTransactionId(param)
-            LSdkEventName.LSDK_CONTINUE_CTA_CLICKED -> "click - ${LoginMethodAnalytic.Verification} - ${getTransactionId(param)}"
+            LSdkEventName.LSDK_CONTINUE_CTA_CLICKED -> {
+                if (param.containsKey(CVEventFieldName.FLOW)) {
+                    "click - ${param[CVEventFieldName.FLOW]} - ${LoginMethodAnalytic.Verification} - ${getTransactionId(param)}"
+                } else {
+                    "click - ${LoginMethodAnalytic.Verification} - ${getTransactionId(param)}"
+                }
+            }
             LSdkEventName.LSDK_SOCMED_CTA_CLICKED -> "click - ${getTransactionId(param)}"
             else -> ""
         }
@@ -585,7 +632,10 @@ object AuthAnalyticsMapper {
 
     private const val SDK_VERSION = "sdkVersion"
     private const val BUSINESS_UNIT = "businessUnit"
+    private const val CURRENT_SITE = "currentSite"
+
     private const val BUSINESS_UNIT_VALUE = "Shared Consumer Platform"
+    private const val CURRENT_SITE_VALUE = "tokopediamarketplace"
     private const val TRACKER_ID = "trackerId"
     private const val CCU_BUTTON_VALUE = "with CCU button"
     private const val WITHOUT_CCU_BUTTON_VALUE = "no CCU button"
@@ -595,6 +645,7 @@ object AuthAnalyticsMapper {
 
     // static category
     private const val TRIGGER_PAGE_CATEGORY = "goto trigger page"
+    private const val SSO_PAGE_CATEGORY = "goto sso page"
 
     // screen
     private const val SSO_LOGIN_SCREEN = "sso"
@@ -613,4 +664,9 @@ object AuthAnalyticsMapper {
     private const val ONE_TAP_ACTION = "view on onetap account fetch"
     private const val VIEW_ON_PROFILE_FETCH_ACTION = "view on profile fetch"
     private const val VIEW_ON_MFA_TRIGGER = "view on mfa trigger"
+
+    private const val CLICK_ON_CONTINUE = "click on continue"
+
+    private const val LABEL_SUCCESS = "success"
+    private const val LABEL_FAILED = "failed"
 }

@@ -5359,16 +5359,18 @@ class CartRevampFragment :
         setCheckboxGlobalState()
         setSelectedAmountVisibility()
 
-        if (isChecked && !hasShowBulkActionCoachMark && !CoachMarkPreference.hasShown(
-                requireContext(),
-                CART_BULK_ACTION_COACH_MARK
-            )
-        ) {
-            showBulkActionCoachMark()
-        } else if (!CartDataHelper.hasSelectedCartItem(viewModel.cartDataList.value)) {
-            hasShowBulkActionCoachMark = false
-            bulkActionCoachMark?.dismissCoachMark()
-            bulkActionCoachMarkLastActiveIndex = 0
+        context?.let { ctx ->
+            if (isChecked && !hasShowBulkActionCoachMark && !CoachMarkPreference.hasShown(
+                    ctx,
+                    CART_BULK_ACTION_COACH_MARK
+                )
+            ) {
+                showBulkActionCoachMark()
+            } else if (!CartDataHelper.hasSelectedCartItem(viewModel.cartDataList.value)) {
+                hasShowBulkActionCoachMark = false
+                bulkActionCoachMark?.dismissCoachMark()
+                bulkActionCoachMarkLastActiveIndex = 0
+            }
         }
 
         validateGoToCheckout()

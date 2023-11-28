@@ -91,7 +91,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.collapsingTabLayout)
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
     implementation projectOrAar(rootProject.ext.libraries.core_legacy)
-    implementation projectOrAar(rootProject.ext.libraries.diffUtilRecycler)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
