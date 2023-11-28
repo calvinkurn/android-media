@@ -662,7 +662,7 @@ class AddBankFragment : BaseDaggerFragment() {
         val color =
             MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN500)
 
-        if (startIndexPrivacy >= Int.ZERO) {
+        if (startIndexPrivacy >= Int.ZERO && endIndexPrivacy > startIndexPrivacy) {
             spannableStringPrivacyPolicy.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(widget: View) {
