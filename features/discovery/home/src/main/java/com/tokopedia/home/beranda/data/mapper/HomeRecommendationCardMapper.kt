@@ -74,6 +74,7 @@ class HomeRecommendationCardMapper @Inject constructor(
                                     layoutItem = card.layoutTracker,
                                     categoryId = card.categoryID,
                                     position = index,
+                                    cardId = card.id,
                                     topAdsImageViewModel = mapToTopAdsImageViewModel(
                                         bannerItemResponse
                                     )
@@ -92,6 +93,7 @@ class HomeRecommendationCardMapper @Inject constructor(
                         recommendationPlayWidgetResponse?.let {
                             homeRecommendationTypeFactoryImplList.add(
                                 mapToHomeRecommendationPlayWidget(
+                                    cardId = card.id,
                                     layoutCard = card.layout,
                                     layoutTracker = card.layoutTracker,
                                     playVideoWidgetResponse = it
@@ -110,11 +112,13 @@ class HomeRecommendationCardMapper @Inject constructor(
     }
 
     private fun mapToHomeRecommendationPlayWidget(
+        cardId: String,
         layoutCard: String,
         layoutTracker: String,
         playVideoWidgetResponse: PlayVideoWidgetResponse
     ): HomeRecommendationPlayWidgetUiModel {
         return HomeRecommendationPlayWidgetUiModel(
+            cardId = cardId,
             appLink = playVideoWidgetResponse.link.applink,
             playVideoWidgetUiModel = PlayVideoWidgetUiModel(
                 id = playVideoWidgetResponse.id,

@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 
 data class HomeRecommendationPlayWidgetUiModel(
+    val cardId: String,
     val appLink: String,
     val playVideoWidgetUiModel: PlayVideoWidgetUiModel,
     val playVideoTrackerUiModel: HomeRecommendationPlayVideoTrackerUiModel

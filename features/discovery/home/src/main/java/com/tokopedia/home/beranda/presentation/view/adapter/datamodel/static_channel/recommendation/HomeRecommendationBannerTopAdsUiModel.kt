@@ -7,6 +7,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 data class HomeRecommendationBannerTopAdsUiModel(
     val topAdsImageViewModel: TopAdsImageViewModel? = null,
+    val cardId: String,
     val layoutCard: String,
     val layoutItem: String,
     val categoryId: String,

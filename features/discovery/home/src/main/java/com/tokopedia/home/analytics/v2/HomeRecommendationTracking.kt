@@ -307,6 +307,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         )
     ).build()
 
+    // https://mynakama.tokopedia.com/datatracker/requestdetail/view/4265
     fun sendClickEntityCardTracking(
         recomEntityCardUiModel: RecomEntityCardUiModel,
         position: Int,
@@ -338,7 +339,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                 Bundle().also {
                     it.putString(Promotion.CREATIVE_NAME, "")
                     it.putString(Promotion.CREATIVE_SLOT, creativeSlot)
-                    it.putString(Promotion.ITEM_ID, "")
+                    it.putString(Promotion.ITEM_ID, recomEntityCardUiModel.id)
                     it.putString(
                         Promotion.ITEM_NAME,
                         ITEM_NAME_NEW_FOR_YOU_FORMAT.format(
@@ -369,6 +370,8 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         val homeChannelId = "0"
 
         val itemPosition = (position + Int.ONE).toString()
+
+        val itemId = "${homeChannelId}_${homeRecomPlayWidgetUiModel.cardId}_${playWidgetTrackerModel.playChannelId}"
 
         val bundle = Bundle().apply {
             putString(Event.KEY, Event.SELECT_CONTENT)
@@ -403,7 +406,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                 Bundle().also {
                     it.putString(Promotion.CREATIVE_NAME, "")
                     it.putString(Promotion.CREATIVE_SLOT, itemPosition)
-                    it.putString(Promotion.ITEM_ID, "")
+                    it.putString(Promotion.ITEM_ID, itemId)
                     it.putString(
                         Promotion.ITEM_NAME,
                         ITEM_NAME_FOR_YOU_VIDEO_FORMAT.format(
@@ -442,10 +445,12 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             playVideoWidgetUiModel.title
         )
 
+        val itemId = "${homeChannelId}_${homeRecomPlayWidgetUiModel.cardId}_${playWidgetTrackerModel.playChannelId}"
+
         val promotion = mapOf(
             Promotion.CREATIVE_NAME to "",
             Promotion.CREATIVE_SLOT to itemPosition,
-            Items.ITEM_ID to "",
+            Items.ITEM_ID to itemId,
             Items.ITEM_NAME to itemName
         )
 
@@ -471,6 +476,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         ) as HashMap<String, Any>
     }
 
+    // https://mynakama.tokopedia.com/datatracker/requestdetail/view/4265
     fun getImpressEntityCardTracking(
         recomEntityCardUiModel: RecomEntityCardUiModel,
         position: Int,
@@ -502,7 +508,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                         mapOf(
                             Promotion.CREATIVE_NAME to "",
                             Promotion.CREATIVE_SLOT to creativeSlot,
-                            Items.ITEM_ID to "",
+                            Items.ITEM_ID to recomEntityCardUiModel.id,
                             Items.ITEM_NAME to itemName
                         )
                     )
@@ -513,6 +519,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         ) as HashMap<String, Any>
     }
 
+    // https://mynakama.tokopedia.com/datatracker/requestdetail/view/4265
     fun getImpressBannerTopAdsTracking(
         homeTopAdsRecommendationBannerTopAdsUiModel: HomeRecommendationBannerTopAdsUiModel,
         position: Int,
@@ -533,7 +540,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             Promotion(
                 creative = "",
                 position = creativeSlot,
-                id = "",
+                id = homeTopAdsRecommendationBannerTopAdsUiModel.cardId,
                 name = itemName
             )
         )
@@ -553,6 +560,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             ).build()
     }
 
+    // https://mynakama.tokopedia.com/datatracker/requestdetail/view/4265
     fun sendClickBannerTopAdsTracking(
         bannerTopAdsUiModel: HomeRecommendationBannerTopAdsUiModel,
         position: Int,
@@ -584,7 +592,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                 Bundle().also {
                     it.putString(Promotion.CREATIVE_NAME, "")
                     it.putString(Promotion.CREATIVE_SLOT, creativeSlot)
-                    it.putString(Promotion.ITEM_ID, "")
+                    it.putString(Promotion.ITEM_ID, bannerTopAdsUiModel.cardId)
                     it.putString(
                         Promotion.ITEM_NAME,
                         ITEM_NAME_NEW_FOR_YOU_FORMAT.format(
