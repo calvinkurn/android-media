@@ -28,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -40,6 +39,7 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.TokofoodAddressExt.updateLocalChosenAddressPinpoint
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentManageLocationLayoutBinding
@@ -186,9 +186,7 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
         }
 
         observe(viewModel.updatePinPointState) { data ->
-            if (data.isSuccess == 1) {
-                setupChooseAddress(data)
-            }
+            setupChooseAddress(data)
         }
         observe(viewModel.checkDeliveryCoverageResult) {
             when (it) {
@@ -214,30 +212,7 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
 
     private fun setupChooseAddress(address: KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse) {
         context?.let {
-            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                context = it,
-                addressId = address.chosenAddressData.addressId.toString(),
-                cityId = address.chosenAddressData.cityId.toString(),
-                districtId = address.chosenAddressData.districtId.toString(),
-                lat = address.chosenAddressData.latitude,
-                long = address.chosenAddressData.longitude,
-                label = String.format(
-                    "%s %s",
-                    address.chosenAddressData.addressName,
-                    address.chosenAddressData.receiverName
-                ),
-                postalCode = address.chosenAddressData.postalCode,
-                warehouseId = address.tokonow.warehouseId.toString(),
-                shopId = address.tokonow.shopId.toString(),
-                warehouses = address.tokonow.warehouses.map { warehouse ->
-                    LocalWarehouseModel(
-                        warehouse.warehouseId,
-                        warehouse.serviceType
-                    )
-                },
-                serviceType = address.tokonow.serviceType,
-                lastUpdate = address.tokonow.tokonowLastUpdate
-            )
+            address.updateLocalChosenAddressPinpoint(it)
             checkIfChooseAddressWidgetDataUpdated()
             navigateToMerchantPage(viewModel.merchantId)
         }

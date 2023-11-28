@@ -34,7 +34,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -49,6 +48,7 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
+import com.tokopedia.tokofood.common.util.TokofoodAddressExt.updateLocalChosenAddressPinpoint
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -539,30 +539,7 @@ class SearchResultFragment :
     private fun updateLocalAddressData(data: Any?) {
         (data as? KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse)?.let { response ->
             context?.run {
-                ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                    context = this,
-                    addressId = response.chosenAddressData.addressId.toString(),
-                    cityId = response.chosenAddressData.cityId.toString(),
-                    districtId = response.chosenAddressData.districtId.toString(),
-                    lat = response.chosenAddressData.latitude,
-                    long = response.chosenAddressData.longitude,
-                    label = String.format(
-                        "%s %s",
-                        response.chosenAddressData.addressName,
-                        response.chosenAddressData.receiverName
-                    ),
-                    postalCode = response.chosenAddressData.postalCode,
-                    warehouseId = response.tokonow.warehouseId.toString(),
-                    shopId = response.tokonow.shopId.toString(),
-                    warehouses = response.tokonow.warehouses.map { warehouse ->
-                        LocalWarehouseModel(
-                            warehouse.warehouseId,
-                            warehouse.serviceType
-                        )
-                    },
-                    serviceType = response.tokonow.serviceType,
-                    lastUpdate = response.tokonow.tokonowLastUpdate
-                )
+                response.updateLocalChosenAddressPinpoint(this)
                 refreshAddressData()
             }
         }

@@ -41,7 +41,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
@@ -411,30 +410,7 @@ open class TokoFoodPurchaseFragment :
                 PurchaseUiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
                 PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> {
                     (it.data as? KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse)?.let { address ->
-                        ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                            context = requireContext(),
-                            addressId = address.chosenAddressData.addressId.toString(),
-                            cityId = address.chosenAddressData.cityId.toString(),
-                            districtId = address.chosenAddressData.districtId.toString(),
-                            lat = address.chosenAddressData.latitude,
-                            long = address.chosenAddressData.longitude,
-                            label = String.format(
-                                "%s %s",
-                                address.chosenAddressData.addressName,
-                                address.chosenAddressData.receiverName
-                            ),
-                            postalCode = address.chosenAddressData.postalCode,
-                            warehouseId = address.tokonow.warehouseId.toString(),
-                            shopId = address.tokonow.shopId.toString(),
-                            warehouses = address.tokonow.warehouses.map { warehouse ->
-                                LocalWarehouseModel(
-                                    warehouse.warehouseId,
-                                    warehouse.serviceType
-                                )
-                            },
-                            serviceType = address.tokonow.serviceType,
-                            lastUpdate = address.tokonow.tokonowLastUpdate
-                        )
+                        address.updateLocalChosenAddressPinpoint(requireContext())
                         loadData()
                     }
                 }
@@ -546,10 +522,6 @@ open class TokoFoodPurchaseFragment :
                 }
             }
         }
-    }
-
-    private fun setupChooseAddress(latitude: String, longitude: String) {
-        context?.updateLocalChosenAddressPinpoint(latitude, longitude)
     }
 
     private fun collectSharedUiState() {
