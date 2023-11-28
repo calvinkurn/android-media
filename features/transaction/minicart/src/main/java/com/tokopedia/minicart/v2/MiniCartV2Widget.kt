@@ -1,7 +1,6 @@
 package com.tokopedia.minicart.v2
 
 import android.app.Activity
-import android.app.Application
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
@@ -14,7 +13,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
@@ -77,11 +75,11 @@ class MiniCartV2Widget @JvmOverloads constructor(
         setOnClickListener {
             // prevent click event from passing through
         }
-        val application = (context as? Activity)?.application
-        initializeInjector(application)
+        initializeInjector()
     }
 
-    private fun initializeInjector(baseAppComponent: Application?) {
+    private fun initializeInjector() {
+        val baseAppComponent = (context as? Activity)?.application
         if (baseAppComponent is BaseMainApplication) {
             DaggerMiniCartWidgetComponent.builder()
                 .baseAppComponent(baseAppComponent.baseAppComponent)
@@ -92,10 +90,7 @@ class MiniCartV2Widget @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        if (viewModel != null) return
-        val lifecycleOwner = findViewTreeLifecycleOwner() ?: return
-        val viewModelStoreOwner = findViewTreeViewModelStoreOwner() ?: return
-        initializeViewModel(viewModelStoreOwner, lifecycleOwner)
+        initializeViewModel()
     }
 
     fun initialize(
@@ -105,11 +100,7 @@ class MiniCartV2Widget @JvmOverloads constructor(
         this.config = config
         initializeView(config)
         initializeListener(listener)
-        val lifecycleOwner = findViewTreeLifecycleOwner()
-        val viewModelStoreOwner = findViewTreeViewModelStoreOwner()
-        if (viewModel == null && viewModelStoreOwner != null && lifecycleOwner != null) {
-            initializeViewModel(viewModelStoreOwner, lifecycleOwner)
-        }
+        initializeViewModel()
     }
 
     private fun initializeView(config: MiniCartV2WidgetConfig) {
@@ -146,8 +137,11 @@ class MiniCartV2Widget @JvmOverloads constructor(
         miniCartWidgetListener = listener
     }
 
-    private fun initializeViewModel(owner: ViewModelStoreOwner, lifecycleOwner: LifecycleOwner) {
-        viewModel = ViewModelProvider(owner, viewModelFactory)[MiniCartV2ViewModel::class.java]
+    private fun initializeViewModel() {
+        if (viewModel != null) return
+        val lifecycleOwner = findViewTreeLifecycleOwner() ?: return
+        val viewModelStoreOwner = findViewTreeViewModelStoreOwner() ?: return
+        viewModel = ViewModelProvider(viewModelStoreOwner, viewModelFactory)[MiniCartV2ViewModel::class.java]
         observeGlobalEvent(lifecycleOwner)
         observeMiniCartWidgetUiModel(lifecycleOwner)
     }

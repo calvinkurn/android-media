@@ -1,19 +1,57 @@
 package com.tokopedia.minicart.v2.domain
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSourceValue
 import com.tokopedia.network.exception.ResponseErrorException
 import kotlinx.coroutines.delay
 import javax.inject.Inject
+
+data class GetMiniCartParam(
+    @SerializedName("shop_ids")
+    val shopIds: List<String>,
+    @SerializedName("source")
+    val source: MiniCartSourceValue,
+    @SerializedName("usecase")
+    val useCase: String = "minicart",
+    @SerializedName("is_shop_direct_purchase")
+    val isShopDirectPurchase: Boolean = false,
+    @SerializedName("promo")
+    val promo: GetMiniCartPromoParam? = null,
+    @SerializedName("bmgm")
+    val bmgm: GetMiniCartBmgmParam? = null,
+    @SerializedName("chosen_address")
+    internal var chosenAddress: ChosenAddress = ChosenAddress(),
+    @Transient
+    val delay: Long = 0
+) {
+
+    data class GetMiniCartPromoParam(
+        @SerializedName("promo_id")
+        val promoId: Long = 0,
+        @SerializedName("promo_code")
+        val promoCode: String = ""
+    )
+
+    data class GetMiniCartBmgmParam(
+        @SerializedName("offer_ids")
+        val offerIds: List<Long> = emptyList(),
+        @SerializedName("offer_json_data")
+        val offerJsonData: String = "{}",
+        @SerializedName("warehouse_ids")
+        val warehouseIds: List<Long> = emptyList()
+    )
+}
 
 class GetMiniCartWidgetUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
@@ -21,6 +59,32 @@ class GetMiniCartWidgetUseCase @Inject constructor(
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<GetMiniCartParam, MiniCartSimplifiedData>(dispatchers.io) {
+
+    override fun graphqlQuery(): String {
+        return QUERY
+    }
+
+    override suspend fun execute(params: GetMiniCartParam): MiniCartSimplifiedData {
+        if (params.delay > 0) {
+            delay(params.delay)
+        }
+
+        params.chosenAddress = chosenAddressRequestHelper.getChosenAddress()
+
+        val response = graphqlRepository.request<Map<String, Any>, MiniCartGqlResponse>(
+            graphqlQuery(),
+            mapOf(
+                GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
+                GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to params
+            )
+        )
+
+        if (response.miniCart.status == "OK") {
+            return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)
+        } else {
+            throw ResponseErrorException(response.miniCart.errorMessage.joinToString(", "))
+        }
+    }
 
     companion object {
         val QUERY = """
@@ -219,34 +283,5 @@ class GetMiniCartWidgetUseCase @Inject constructor(
           }
         }
         """.trimIndent()
-    }
-
-    override fun graphqlQuery(): String {
-        return QUERY
-    }
-
-    override suspend fun execute(params: GetMiniCartParam): MiniCartSimplifiedData {
-        if (params.delay > 0) {
-            delay(params.delay)
-        }
-
-        params.chosenAddress = chosenAddressRequestHelper.getChosenAddress()
-
-        val request = GraphqlRequest(
-            graphqlQuery(),
-            MiniCartGqlResponse::class.java,
-            mapOf(
-                GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
-                GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to params
-            )
-        )
-        val response =
-            graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()
-
-        if (response.miniCart.status == "OK") {
-            return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)
-        } else {
-            throw ResponseErrorException(response.miniCart.errorMessage.joinToString(", "))
-        }
     }
 }
