@@ -51,6 +51,7 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.convertUrlToBitmapAndLoadImage
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopFollowButtonUiModel
