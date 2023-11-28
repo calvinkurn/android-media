@@ -40,6 +40,7 @@ import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.mapper.ConfigMapper;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
@@ -240,6 +241,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                     }
             );
         } else if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PERFORMANCE_TRACE_V2, true)) {
+            ConfigMapper.INSTANCE.updatePerfConfig(
+                    remoteConfig.getString(RemoteConfigKey.PERFORMANCE_TRACE_CONFIG, "")
+            );
             AppPerformanceTrace.Companion.init(
                     this,
                     new DefaultAppPerformanceConfig(),

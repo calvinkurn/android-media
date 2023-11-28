@@ -7,26 +7,31 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.Perf
 import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.RecyclerViewPageParsingStrategy
 
 object ConfigMapper {
-    
+
     fun updatePerfConfig(json: String) {
-        val list = mapToConfig(json)
-        DefaultAppPerformanceConfig.configs = 
-            list.map { 
-                Pair(it.activityName, PagePerformanceConfig(
-                    traceName = it.traceName,
-                    activityName = it.activityName, 
-                    when(it.strategy) {
-                        "FullRecyclerViewContent" -> PerfParsingType.XML(
-                            RecyclerViewPageParsingStrategy()
+        try {
+            val list = mapToConfig(json)
+            DefaultAppPerformanceConfig.configs =
+                list.map {
+                    Pair(
+                        it.activityName,
+                        PagePerformanceConfig(
+                            traceName = it.traceName,
+                            activityName = it.activityName,
+                            when (it.strategy) {
+                                "FullRecyclerViewContent" -> PerfParsingType.XML(
+                                    RecyclerViewPageParsingStrategy()
+                                )
+                                else -> PerfParsingType.XML(
+                                    RecyclerViewPageParsingStrategy()
+                                )
+                            }
                         )
-                        else -> PerfParsingType.XML(
-                            RecyclerViewPageParsingStrategy()
-                        )
-                    }
-                ))
-            }.toMap()
+                    )
+                }.toMap()
+        } catch (e: Exception) {}
     }
-    
+
     private fun mapToConfig(json: String): List<PerfConfig> {
         val gson = Gson()
         val perfConfigList: PerfConfigList = gson.fromJson(json, PerfConfigList::class.java)
