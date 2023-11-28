@@ -20,6 +20,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -50,8 +51,10 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.creation.common.consts.ContentCreationConsts
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
+import com.tokopedia.creation.common.presentation.bottomsheet.ViewContentInfoBottomSheet
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
+import com.tokopedia.creation.common.presentation.utils.ContentCreationEntryPointSharedPref
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -326,6 +329,9 @@ class ShopPageReimagineHeaderFragment :
     @Inject
     lateinit var playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic
 
+    @Inject
+    lateinit var entryPointSharedPref: ContentCreationEntryPointSharedPref
+
     var shopHeaderViewModel: ShopPageHeaderViewModel? = null
     private var remoteConfig: RemoteConfig? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
@@ -414,6 +420,17 @@ class ShopPageReimagineHeaderFragment :
 
     private val bottomSheetTabNotFound: ShopEtalaseNotFoundBottomSheet by lazy {
         ShopEtalaseNotFoundBottomSheet.createInstance()
+    }
+
+    private val contentCreationActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { data ->
+        if (data.resultCode == Activity.RESULT_OK &&
+            GlobalConfig.isSellerApp() &&
+            !entryPointSharedPref.hasShownViewContentInfoInMa()
+        ) {
+            ViewContentInfoBottomSheet
+                .getOrCreateFragment(childFragmentManager, requireActivity().classLoader)
+                .show(childFragmentManager)
+        }
     }
 
     override fun getComponent() = activity?.run {
@@ -523,7 +540,7 @@ class ShopPageReimagineHeaderFragment :
                     }
 
                     ContentCreationTypeEnum.STORY -> {
-                        RouteManager.route(context, data.applink)
+                        goToStoriesCreation(data.applink)
                     }
 
                     else -> {}
@@ -533,6 +550,16 @@ class ShopPageReimagineHeaderFragment :
 
     override fun getStoriesWidgetManager(): StoriesWidgetManager {
         return storiesManager
+    }
+
+    private fun onFragmentAttached() {
+        childFragmentManager.addFragmentOnAttachListener { _, childFragment ->
+            when (childFragment) {
+                is ViewContentInfoBottomSheet -> {
+                    entryPointSharedPref.setShownViewContentInfoInMa()
+                }
+            }
+        }
     }
 
     private fun initViews(view: View) {
@@ -1227,6 +1254,7 @@ class ShopPageReimagineHeaderFragment :
         }
         shopLandingPageInitAffiliateCookie()
         storiesManager.updateStories(listOf(shopId))
+        onFragmentAttached()
     }
 
     private fun checkAffiliateAppLink(uri: Uri) {
@@ -1710,7 +1738,13 @@ class ShopPageReimagineHeaderFragment :
     }
 
     private fun goToShortsCreation() {
-        RouteManager.route(context, ApplinkConst.PLAY_SHORTS)
+        val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_SHORTS)
+        contentCreationActivityResult.launch(intent)
+    }
+
+    private fun goToStoriesCreation(appLink: String) {
+        val intent = RouteManager.getIntent(context, appLink)
+        contentCreationActivityResult.launch(intent)
     }
 
     private fun goToBroadcaster() {
