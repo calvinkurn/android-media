@@ -12,7 +12,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -83,7 +82,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
     private fun DiscoThematicHeaderLayoutBinding.setupTitleSubtitle(
         dataItem: DataItem
     ) {
-        if (!dataItem.title.isNullOrEmpty() || !dataItem.subtitle.isNullOrEmpty()) {
+        if (!dataItem.title.isNullOrBlank() || !dataItem.subtitle.isNullOrBlank()) {
             title.show()
             subtitle.show()
             title.text = dataItem.title
@@ -124,7 +123,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun DiscoThematicHeaderLayoutBinding.setupBackground(dataItem: DataItem) {
-        backgroundImage.showIfWithBlock(!dataItem.color.isNullOrEmpty() && title.isVisible || subtitle.isVisible || lottieAnimation.isVisible) {
+        backgroundImage.showIfWithBlock(!dataItem.color.isNullOrBlank() && !dataItem.title.isNullOrBlank() || !dataItem.subtitle.isNullOrBlank() || !dataItem.lottieImage.isNullOrBlank()) {
             try {
                 mFragment.setupBackgroundColorForHeader(dataItem.color)
                 backgroundImage.setBackgroundColor(Color.parseColor(dataItem.color))
