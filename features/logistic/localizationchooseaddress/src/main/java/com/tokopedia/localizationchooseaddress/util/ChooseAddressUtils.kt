@@ -268,12 +268,6 @@ object ChooseAddressUtils {
         chooseAddressPref.setLocalCache(newData)
     }
 
-    fun updatePinpointLocalizingAddressData(context: Context, lat: String, long: String) {
-        val chooseAddressPref = ChooseAddressSharePref(context)
-        val newData = getLocalizingAddressData(context).copy(lat = lat, long = long)
-        chooseAddressPref.setLocalCache(newData)
-    }
-
     fun refreshTokonowData(
         context: Context,
         lastUpdate: String,

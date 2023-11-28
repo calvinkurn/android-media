@@ -3,7 +3,6 @@ package com.tokopedia.tokofood.merchant
 import com.tokopedia.tokofood.data.createKeroEditAddressResponse
 import com.tokopedia.tokofood.data.createKeroEditAddressResponseFail
 import com.tokopedia.tokofood.data.generateTestDeliveryCoverageResult
-import com.tokopedia.tokofood.data.generateTestKeroEditAddressResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -30,8 +29,6 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
         coEvery {
             keroEditAddressUseCase.execute("", latitude, longitude)
         } returns createKeroEditAddressResponse(latitude, longitude).keroEditAddress.data
-        viewModel.updatePinPoint("", latitude, longitude)
-        val expectedResult = generateTestKeroEditAddressResponse()
         viewModel.updatePinPoint("", latitude, longitude)
         coVerify { keroEditAddressUseCase.execute("", latitude, longitude) }
         assertEquals(viewModel.updatePinPointState.value?.isSuccess, 1)
