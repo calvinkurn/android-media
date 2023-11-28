@@ -8,9 +8,11 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.creation.common.presentation.screen.ContentInfoScreen
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.creation.common.R
+import com.tokopedia.creation.common.upload.uploader.activity.ContentCreationPostUploadActivity
 
 /**
  * Created By : Jonathan Darwin on November 27, 2023
@@ -25,6 +27,7 @@ class ViewContentInfoBottomSheet : BottomSheetUnify() {
         isDragable = true
         isHideable = true
         isSkipCollapseState = true
+        showCloseIcon = false
         bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
 
         val composeView = ComposeView(requireContext()).apply {
@@ -38,7 +41,16 @@ class ViewContentInfoBottomSheet : BottomSheetUnify() {
                     primaryText = getString(R.string.content_creation_check_content_in_tokopedia_feed_action_text),
                     secondaryText = "",
                     onPrimaryButtonClicked = {
-
+                        val intent = ContentCreationPostUploadActivity.getIntent(
+                            context = requireContext(),
+                            channelId = "",
+                            authorId = "",
+                            authorType = "",
+                            uploadType = "",
+                            appLink = ApplinkConst.FEED
+                        )
+                        
+                        requireActivity().startActivity(intent)
                     },
                     onSecondaryButtonClicked = {  }
                 )

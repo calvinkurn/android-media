@@ -34,12 +34,8 @@ class ContentCreationPostUploadActivity : BaseActivity() {
         inject()
         super.onCreate(savedInstanceState)
 
-        installMainAppDialog.openPlayStore(this) {
-            finish()
-        }
-
-//        hitAnalytic()
-//        redirectToPlayRoom()
+        hitAnalytic()
+        redirectToPlayRoom()
     }
 
     override fun onDestroy() {
