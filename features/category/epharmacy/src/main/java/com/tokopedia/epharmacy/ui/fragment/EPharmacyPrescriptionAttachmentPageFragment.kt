@@ -31,7 +31,7 @@ import com.tokopedia.epharmacy.component.model.EPharmacyShimmerDataModel
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
-import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyComponentBottomSheet
+import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyCommonBottomSheet
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.ATTACH_PRESCRIPTION_PAGE
 import com.tokopedia.epharmacy.utils.ENABLER_IMAGE_URL
@@ -475,13 +475,13 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             when(result) {
                 is PapCtaRedirection.RedirectionUpdateQuantity -> ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart(ePharmacyAttachmentUiUpdater)
                 is PapCtaRedirection.RedirectionQuantityEditor -> {
-                    EPharmacyComponentBottomSheet.newInstance(
+                    EPharmacyCommonBottomSheet.newInstance(
                         Bundle().apply {
                             putStringArrayList(EPHARMACY_TOKO_CONSULTATION_IDS,
                                 ArrayList(result.tConsultationIds)
                             )
                         }
-                    ).show(childFragmentManager, EPharmacyComponentBottomSheet::class.simpleName)
+                    ).show(childFragmentManager, EPharmacyCommonBottomSheet::class.simpleName)
                 }
                 is PapCtaRedirection.None -> {
                     // No - op

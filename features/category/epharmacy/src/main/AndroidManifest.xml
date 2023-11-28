@@ -118,7 +118,7 @@
         </activity>
 
         <activity
-            android:name=".ui.activity.EPharmacyComponentActivity"
+            android:name=".ui.activity.EPharmacyCommonBsActivity"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent"
             android:launchMode="singleTop"
             android:exported="false">
@@ -129,7 +129,7 @@
                 <data
                     android:host="@string/host_epharmacy"
                     android:scheme="@string/internal_scheme"
-                    android:pathPattern="@string/applink_epharmacy_component"/>
+                    android:pathPattern="@string/applink_epharmacy_common_bs"/>
             </intent-filter>
         </activity>
 

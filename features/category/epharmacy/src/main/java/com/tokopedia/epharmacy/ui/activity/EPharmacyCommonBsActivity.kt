@@ -11,11 +11,11 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.epharmacy.databinding.EpharmacyMiniConsultationTransparentActivityBinding
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
-import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyComponentBottomSheet
+import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyCommonBottomSheet
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_IDS
 import com.tokopedia.kotlin.extensions.view.EMPTY
 
-class EPharmacyComponentActivity : BaseActivity(), HasComponent<EPharmacyComponent> {
+class EPharmacyCommonBsActivity : BaseActivity(), HasComponent<EPharmacyComponent> {
 
     private var componentName = String.EMPTY
     private var tConsultationIds = listOf<String>()
@@ -36,12 +36,12 @@ class EPharmacyComponentActivity : BaseActivity(), HasComponent<EPharmacyCompone
     }
 
     private fun openBottomSheet() {
-        EPharmacyComponentBottomSheet.newInstance(
+        EPharmacyCommonBottomSheet.newInstance(
             Bundle().apply {
-                    putString(EPharmacyComponentBottomSheet.COMPONENT_NAME, componentName)
+                    putString(EPharmacyCommonBottomSheet.COMPONENT_NAME, componentName)
                     putStringArrayList(EPHARMACY_TOKO_CONSULTATION_IDS, ArrayList(tConsultationIds))
             }
-        ).show(supportFragmentManager, EPharmacyComponentBottomSheet::class.simpleName)
+        ).show(supportFragmentManager, EPharmacyCommonBottomSheet::class.simpleName)
     }
 
     private fun extractParameters() {
