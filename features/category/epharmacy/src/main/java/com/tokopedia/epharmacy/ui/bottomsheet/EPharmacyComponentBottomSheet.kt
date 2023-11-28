@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_IDS
 import com.tokopedia.epharmacy.utils.EPharmacyNavigator
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class EPharmacyComponentBottomSheet : BottomSheetUnify() {
@@ -15,6 +17,8 @@ class EPharmacyComponentBottomSheet : BottomSheetUnify() {
         isHideable = true
         clearContentPadding = true
     }
+
+    private var tConsultationIds = arrayListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,9 +35,8 @@ class EPharmacyComponentBottomSheet : BottomSheetUnify() {
         if (savedInstanceState == null) {
             when (arguments?.getString(COMPONENT_NAME)) {
                 TYPE_QUANTITY_EDITOR -> {
-                    arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID)?.let { tConsultationId ->
-                        EPharmacyNavigator.navigateToQuantityBottomSheet(tConsultationId, childFragmentManager)
-                    }
+                    tConsultationIds = arguments?.getStringArrayList(EPHARMACY_TOKO_CONSULTATION_IDS) ?: arrayListOf()
+                    EPharmacyNavigator.navigateToQuantityBottomSheet(tConsultationIds, childFragmentManager)
                 }
             }
         }

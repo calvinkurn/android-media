@@ -1,6 +1,7 @@
 package com.tokopedia.epharmacy
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
@@ -33,6 +34,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
     private val ePharmacyPrepareProductsGroupUseCase = mockk<EPharmacyPrepareProductsGroupUseCase>(relaxed = true)
     private val ePharmacyInitiateConsultationUseCase = mockk<EPharmacyInitiateConsultationUseCase>(relaxed = true)
     private val ePharmacyGetConsultationDetailsUseCase = mockk<EPharmacyGetConsultationDetailsUseCase>(relaxed = true)
+    private val updateCartUseCase = mockk<UpdateCartUseCase>(relaxed = true)
 
     private val dispatcherBackground = TestCoroutineDispatcher()
     private lateinit var viewModel: EPharmacyPrescriptionAttachmentViewModel
@@ -52,6 +54,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
             ePharmacyPrepareProductsGroupUseCase,
             ePharmacyInitiateConsultationUseCase,
             ePharmacyGetConsultationDetailsUseCase,
+            updateCartUseCase,
             dispatcherBackground
         )
     }
@@ -62,7 +65,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any())
         } coAnswers {
-            firstArg<(EPharmacyPrepareProductsGroupResponse) -> Unit>().invoke(response)
+            firstArg<(EPharmacyPrepareProductsGroupResponse, String?) -> Unit>().invoke(response, "")
         }
         viewModel.getPrepareProductGroup("", mutableMapOf())
         assert(viewModel.productGroupLiveDataResponse.value is Success)
@@ -75,7 +78,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any())
         } coAnswers {
-            firstArg<(EPharmacyPrepareProductsGroupResponse) -> Unit>().invoke(response)
+            firstArg<(EPharmacyPrepareProductsGroupResponse, String?) -> Unit>().invoke(response, "")
         }
         viewModel.getPrepareProductGroup("", mutableMapOf())
         assert(viewModel.productGroupLiveDataResponse.value is Success)
@@ -89,7 +92,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any())
         } coAnswers {
-            firstArg<(EPharmacyPrepareProductsGroupResponse) -> Unit>().invoke(response)
+            firstArg<(EPharmacyPrepareProductsGroupResponse, String?) -> Unit>().invoke(response, "")
         }
         viewModel.getPrepareProductGroup("", mutableMapOf())
         assert(viewModel.productGroupLiveDataResponse.value is Success)
@@ -107,7 +110,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any())
         } coAnswers {
-            firstArg<(EPharmacyPrepareProductsGroupResponse) -> Unit>().invoke(response)
+            firstArg<(EPharmacyPrepareProductsGroupResponse, String?) -> Unit>().invoke(response, "")
         }
         viewModel.getPrepareProductGroup("", mutableMapOf())
         assert(viewModel.productGroupLiveDataResponse.value is Success)
@@ -122,7 +125,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any())
         } coAnswers {
-            firstArg<(EPharmacyPrepareProductsGroupResponse) -> Unit>().invoke(response)
+            firstArg<(EPharmacyPrepareProductsGroupResponse, String?) -> Unit>().invoke(response, "")
         }
         viewModel.getPrepareProductGroup("", mutableMapOf())
         assert(viewModel.productGroupLiveDataResponse.value is Success)
@@ -135,7 +138,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any())
         } coAnswers {
-            firstArg<(EPharmacyPrepareProductsGroupResponse) -> Unit>().invoke(response)
+            firstArg<(EPharmacyPrepareProductsGroupResponse, String?) -> Unit>().invoke(response, "")
         }
         viewModel.getPrepareProductGroup("", mutableMapOf())
         Assert.assertEquals(

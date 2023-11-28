@@ -27,7 +27,7 @@ class EPharmacyOrderDetailHeaderViewHolder(
     private val ticker = view.findViewById<Ticker>(R.id.ep_order_ticker)
     private val invoiceNumberText = view.findViewById<Typography>(R.id.ep_invoice_number)
     private val copyInvoiceNumber = view.findViewById<IconUnify>(R.id.ep_invoice_copy)
-    private val lihatInvoice = view.findViewById<Typography>(R.id.ep_lihat_invoice)
+    private val viewInvoice = view.findViewById<Typography>(R.id.ep_lihat_invoice)
     private val purchaseDate = view.findViewById<Typography>(R.id.ep_purchase_date)
     private val purchaseDateValue = view.findViewById<Typography>(R.id.ep_purchase_date_value)
     private val validUntil = view.findViewById<Typography>(R.id.ep_time_valid_until)
@@ -65,7 +65,10 @@ class EPharmacyOrderDetailHeaderViewHolder(
     }
 
     private fun setUpInvoiceLink(invoiceLink: String?) {
-        lihatInvoice.setOnClickListener {
+        viewInvoice.setOnClickListener {
+            if(invoiceLink?.isNotBlank().orFalse()){
+                ePharmacyListener?.onLihatInvoiceClicked(invoiceLink)
+            }
         }
     }
 

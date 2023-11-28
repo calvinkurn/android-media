@@ -31,6 +31,7 @@ import com.tokopedia.epharmacy.component.model.EPharmacyShimmerDataModel
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
+import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyComponentBottomSheet
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.ATTACH_PRESCRIPTION_PAGE
 import com.tokopedia.epharmacy.utils.ENABLER_IMAGE_URL
@@ -40,6 +41,7 @@ import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_IDS
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
 import com.tokopedia.epharmacy.utils.EPharmacyConsultationStatus
@@ -54,6 +56,7 @@ import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY
 import com.tokopedia.epharmacy.utils.EXTRA_SOURCE_STRING
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.FAILED
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.SUCCESS
+import com.tokopedia.epharmacy.utils.PapCtaRedirection
 import com.tokopedia.epharmacy.utils.PrescriptionActionType
 import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT
 import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_1
@@ -66,6 +69,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isLessThanEqualZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -90,7 +94,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     private var ePharmacyGlobalError: GlobalError? = null
     private var trackingSentBoolean = false
 
-    private var tConsultationId = 0L
+    private var  tConsultationId = 0L
     private var source = EPHARMACY_PPG_SOURCE_CHECKOUT
     private var isSendResult = false
 
@@ -171,10 +175,13 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun makeRequestParams(): MutableMap<String, Any?> {
-        return mutableMapOf(
-            EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to source,
-            EPharmacyPrepareProductsGroupUseCase.PARAM_TOKO_CONSULTATION_ID to tConsultationId
+        val params = mutableMapOf<String, Any?>(
+            EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to source
         )
+        if(!tConsultationId.isLessThanEqualZero()){
+            params[EPharmacyPrepareProductsGroupUseCase.PARAM_TOKO_CONSULTATION_IDS] = arrayOf(tConsultationId)
+        }
+        return params
     }
 
     private fun addShimmer() {
@@ -463,11 +470,22 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             activity,
             appLink,
             source,
-            isSendResult,
             ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout()
-        ).let { isUpdateCart ->
-            if (isUpdateCart) {
-                ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart(ePharmacyAttachmentUiUpdater)
+        ).let { result ->
+            when(result) {
+                is PapCtaRedirection.RedirectionUpdateQuantity -> ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart(ePharmacyAttachmentUiUpdater)
+                is PapCtaRedirection.RedirectionQuantityEditor -> {
+                    EPharmacyComponentBottomSheet.newInstance(
+                        Bundle().apply {
+                            putStringArrayList(EPHARMACY_TOKO_CONSULTATION_IDS,
+                                ArrayList(result.tConsultationIds)
+                            )
+                        }
+                    ).show(childFragmentManager, EPharmacyComponentBottomSheet::class.simpleName)
+                }
+                is PapCtaRedirection.None -> {
+                    // No - op
+                }
             }
         }
     }

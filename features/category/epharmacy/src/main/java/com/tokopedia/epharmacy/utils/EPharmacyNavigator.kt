@@ -42,10 +42,13 @@ internal object EPharmacyNavigator {
         )
     }
 
-    internal fun prescriptionAttachmentDoneRedirection(activity: Activity?, appLink: String?, source: String, isSendResult: Boolean, result: ArrayList<EPharmacyMiniConsultationResult>): Boolean {
-        if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_APP_CHECKOUT_APPLINK)) {
+    internal fun prescriptionAttachmentDoneRedirection(activity: Activity?, appLink: String?, source: String, result: ArrayList<EPharmacyMiniConsultationResult>): PapCtaRedirection {
+        if(appLink.isNullOrBlank() )
+            return PapCtaRedirection.None
+
+        if (appLink.contains(EPHARMACY_APP_CHECKOUT_APPLINK)) {
             if (source != EPHARMACY_PPG_SOURCE_CHECKOUT) {
-                return true
+                return PapCtaRedirection.RedirectionUpdateQuantity
             }
             activity?.setResult(
                 EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE,
@@ -57,22 +60,35 @@ internal object EPharmacyNavigator {
                 }
             )
             activity?.finish()
-        } else if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_CART_APPLINK)) {
+        } else if (appLink.contains(EPHARMACY_CART_APPLINK)) {
             activity?.setResult(
                 EPHARMACY_REDIRECT_CART_RESULT_CODE,
                 Intent()
             )
             activity?.finish()
+        } else if (appLink.contains(EPHARMACY_QUANTITY_EDITOR)){
+           PapCtaRedirection.RedirectionQuantityEditor(getTConsultationIds(result))
         } else {
             RouteManager.route(activity, appLink)
         }
-        return false
+        return PapCtaRedirection.None
     }
 
-    fun navigateToQuantityBottomSheet(tConsultationId: Long, childFragmentManager: FragmentManager) {
+    private fun getTConsultationIds(result: ArrayList<EPharmacyMiniConsultationResult>): List<String> {
+        return result
+            .mapNotNull { it.tokoConsultationId?.takeIf { id -> id.isNotBlank() } }
+    }
+
+    fun navigateToQuantityBottomSheet(tConsultationIds: ArrayList<String>?, childFragmentManager: FragmentManager) {
         childFragmentManager.beginTransaction().replace(
             R.id.ep_frame_content,
-            EPharmacyQuantityChangeFragment.newInstance(tConsultationId)
+            EPharmacyQuantityChangeFragment.newInstance(tConsultationIds)
         ).commit()
     }
+}
+
+sealed class PapCtaRedirection {
+    object RedirectionUpdateQuantity : PapCtaRedirection()
+    data class RedirectionQuantityEditor(val tConsultationIds: List<String>) : PapCtaRedirection()
+    object None : PapCtaRedirection()
 }

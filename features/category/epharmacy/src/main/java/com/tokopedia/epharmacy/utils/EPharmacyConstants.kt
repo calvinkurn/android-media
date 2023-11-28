@@ -17,6 +17,7 @@ const val EPHARMACY_GROUP_ID = "epharmacy_group_id"
 const val EPHARMACY_ENABLER_NAME = "enabler_name"
 const val EPHARMACY_ENABLER_ID = "enabler_id"
 const val EPHARMACY_TOKO_CONSULTATION_ID = "toko_consultation_id"
+const val EPHARMACY_TOKO_CONSULTATION_IDS = "toko_consultation_ids"
 const val EPHARMACY_CONS_DURATION = "epharmacy_cons_duration"
 const val EPHARMACY_CONS_PRICE = "epharmacy_cons_price"
 const val EPHARMACY_NOTE = "epharmacy_note"
@@ -71,6 +72,7 @@ const val MINI_CONS_CHOOSER_IMAGE_URL_DISABLED = "https://images.tokopedia.net/i
 
 const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
 const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser"
+const val EPHARMACY_QUANTITY_EDITOR = "tokopedia://epharmacy/quantity-editor"
 
 const val DATA_TYPE = "data_type"
 const val ENABLER_NAME = "enabler_name"
