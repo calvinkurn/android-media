@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.notifcenter.view.customview.widget.NotificationConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/notification_container"
+    style="@style/BaseNotification_Container"
+    android:paddingBottom="0dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/notifcenter_iv_type"
+        style="@style/BaseNotification_Icon"
+        android:contentDescription="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/notifcenter_tv_type"
+        style="@style/BaseNotification_Type"
+        app:layout_constraintStart_toEndOf="@id/notifcenter_iv_type"
+        app:layout_constraintTop_toTopOf="@id/notifcenter_iv_type"
+        tools:text="Promo" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/notifcenter_tv_time"
+        style="@style/BaseNotification_Time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="23 Jam" />
+
+    <include
+        android:id="@+id/layout_pin_top"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        layout="@layout/layout_notif_pin_top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/notifcenter_tv_title"
+        style="@style/BaseNotification_Title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/notifcenter_iv_type"
+        app:layout_constraintTop_toBottomOf="@id/notifcenter_tv_type"
+        tools:text="Lorem mengomentari postinganmu: “Mantap banget gan!!”" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_progress_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="notifcenter_iv_circle, notifcenter_bottom_line" />
+
+    <ImageView
+        android:id="@+id/notifcenter_iv_circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/notif_dp_22"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toBottomOf="@id/notifcenter_tv_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/notifcenter_tv_title"
+        app:srcCompat="@drawable/notifcenter_ic_gray_circle_history" />
+
+    <View
+        android:id="@+id/notifcenter_bottom_line"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/Unify_NN200"
+        app:layout_constraintBottom_toTopOf="@id/notifcenter_rv_feed"
+        app:layout_constraintEnd_toEndOf="@id/notifcenter_iv_circle"
+        app:layout_constraintStart_toStartOf="@id/notifcenter_iv_circle"
+        app:layout_constraintTop_toBottomOf="@id/notifcenter_iv_circle" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notifcenter_rv_feed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notifcenter_tv_title"
+        tools:visibility="visible"
+        tools:itemCount="4"
+        tools:listitem="@layout/item_notification_timeline_feed_history"/>
+
+    <LinearLayout
+        android:id="@+id/toggle_history_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="48dp"
+        android:paddingEnd="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notifcenter_rv_feed">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tp_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/unify_space_12"
+            android:paddingBottom="@dimen/unify_space_12"
+            android:text="@string/cta_widget_notifcenter_see_previous"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rv_history"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/tp_history_state"
+            android:layout_width="@dimen/notif_dp_30"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/notif_dp_4"
+            android:paddingEnd="@dimen/notif_dp_8"
+            app:icon_color_light_enable="@color/Unify_NN600"
+            app:icon_name="CHEVRON_UP"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tp_history"
+            app:layout_constraintTop_toBottomOf="@+id/rv_history" />
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_pin_expired"
+        style="@style/BaseNotification_Expired_Pin"
+        app:layout_constraintLeft_toLeftOf="@id/tp_message"
+        app:layout_constraintTop_toBottomOf="@id/toggle_history_btn"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Di-pin sampai 2 Apr 2022" />
+
+</com.tokopedia.notifcenter.view.customview.widget.NotificationConstraintLayout>
