@@ -35,7 +35,7 @@ class ViewContentInfoBottomSheet : BottomSheetUnify() {
 
             setContent {
                 ContentInfoScreen(
-                    imageUrl = "https://images.tokopedia.net/img/android/content/content_creation/ic_content_too_much.png",
+                    imageUrl = getString(R.string.img_download_app),
                     title = getString(R.string.content_creation_check_content_in_tokopedia_feed_title),
                     subtitle = getString(R.string.content_creation_check_content_in_tokopedia_feed_desc),
                     primaryText = getString(R.string.content_creation_check_content_in_tokopedia_feed_action_text),
@@ -49,7 +49,7 @@ class ViewContentInfoBottomSheet : BottomSheetUnify() {
                             uploadType = "",
                             appLink = ApplinkConst.FEED
                         )
-                        
+
                         requireActivity().startActivity(intent)
                     },
                     onSecondaryButtonClicked = {  }
