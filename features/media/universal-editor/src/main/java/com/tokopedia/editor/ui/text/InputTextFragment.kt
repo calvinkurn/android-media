@@ -2,9 +2,16 @@
 
 package com.tokopedia.editor.ui.text
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Handler
 import android.view.Gravity
+import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -36,10 +43,9 @@ class InputTextFragment @Inject constructor(
 
         initListener()
 
-        viewBinding?.addTextInput?.let {
-            it.setText(viewModel.textValue.value)
-            it.requestFocus()
-        }
+        viewBinding?.addTextInput?.setText(viewModel.textValue.value)
+
+        animationShow()
     }
 
     override fun initObserver() {
@@ -240,7 +246,55 @@ class InputTextFragment @Inject constructor(
         }
     }
 
+    private fun showSoftKeyboard() {
+        (context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(
+            InputMethodManager.SHOW_IMPLICIT,
+            InputMethodManager.HIDE_IMPLICIT_ONLY
+        )
+    }
+
+    // animate container UI to fade in
+    private fun animationShow() {
+        viewBinding?.let {
+            val animatorSet = AnimatorSet()
+
+            listOf(
+                it.fontColorScroll,
+                it.fontSelectionContainer,
+                it.lineSeparator,
+                it.colorAlignmentContainer,
+                it.parent,
+            ).forEach {
+                val animator = ObjectAnimator.ofFloat(it, "alpha", 0f, 1f).apply {
+                    duration = ANIMATION_DURATION
+                    repeatCount = 0
+                }
+
+                animatorSet.playTogether(animator)
+            }
+
+            animatorSet.apply {
+                addListener(object: AnimatorListener{
+                    override fun onAnimationStart(p0: Animator) {}
+                    override fun onAnimationCancel(p0: Animator) {}
+                    override fun onAnimationRepeat(p0: Animator) {}
+
+                    override fun onAnimationEnd(p0: Animator) {
+                        viewBinding?.addTextInput?.requestFocus()
+                        Handler().postDelayed({
+                            showSoftKeyboard()
+                        }, SOFT_KEYBOARD_SHOW_DELAY)
+                    }
+                })
+
+                start()
+            }
+        }
+    }
+
     companion object {
         private const val DEFAULT_TEXT_COLOR = -1
+        private const val ANIMATION_DURATION = 400L
+        private const val SOFT_KEYBOARD_SHOW_DELAY = 400L
     }
 }
