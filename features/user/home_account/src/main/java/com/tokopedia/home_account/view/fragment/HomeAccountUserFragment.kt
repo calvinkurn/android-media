@@ -20,7 +20,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -35,7 +34,6 @@ import com.scp.login.core.domain.contracts.listener.LSdkCheckOneTapStatusListene
 import com.scp.login.core.domain.onetaplogin.mappers.OneTapLoginError
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -83,7 +81,9 @@ import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
+import com.tokopedia.home_account.fundsAndInvestment.FundsAndInvestmentComposeActivity
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
+import com.tokopedia.home_account.view.activity.FundsAndInvestmentActivity
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
@@ -144,7 +144,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
@@ -428,10 +427,6 @@ open class HomeAccountUserFragment :
                 createAndShowSafeModeAlertDialog(isActive)
             }
 
-            AccountConstants.SettingCode.SETTING_DARK_MODE -> {
-                setupDarkMode(isActive)
-            }
-
             AccountConstants.SettingCode.SETTING_PLAY_WIDGET_AUTOPLAY -> {
                 accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_PLAY_WIDGET_AUTOPLAY, isActive)
             }
@@ -662,7 +657,7 @@ open class HomeAccountUserFragment :
 
     private fun fetchRemoteConfig() {
         context?.let {
-            isShowDarkModeToggle = remoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+            isShowDarkModeToggle = !remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, true)
             isShowScreenRecorder = remoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
     }
@@ -971,6 +966,9 @@ open class HomeAccountUserFragment :
         if (accountPref.isShowCoachmark()) {
             setCoachMark()
         }
+        if (shouldScrollToSafeMode()) {
+            scrollToSafeMode()
+        }
     }
 
     private fun setCoachMark() {
@@ -1186,7 +1184,8 @@ open class HomeAccountUserFragment :
                 accountPref,
                 permissionChecker,
                 isShowDarkModeToggle,
-                isShowScreenRecorder
+                isShowScreenRecorder,
+                isExpanded = shouldScrollToSafeMode()
             ),
             addSeparator = true
         )
@@ -1232,6 +1231,17 @@ open class HomeAccountUserFragment :
         }
     }
 
+    private fun goToFundsAndInvestment() {
+        val directionActivity = if (DeeplinkMapperUser.isFundsAndInvestmentComposeActivated()) {
+            FundsAndInvestmentComposeActivity::class.java
+        } else {
+            FundsAndInvestmentActivity::class.java
+        }
+
+        val intent = Intent(activity, directionActivity)
+        startActivity(intent)
+    }
+
     private fun goToApplink(applink: String) {
         if (applink.isNotEmpty()) {
             val intent = RouteManager.getIntent(context, applink)
@@ -1243,31 +1253,6 @@ open class HomeAccountUserFragment :
         if (link.isNotEmpty()) {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, link)
             startActivity(intent)
-        }
-    }
-
-    private fun setupDarkMode(isDarkMode: Boolean) {
-        setAppCompatMode(isDarkMode)
-        saveDarkModeToSharefPreference(isDarkMode)
-        homeAccountAnalytic.eventClickThemeSetting(isDarkMode)
-        recreateView()
-    }
-
-    private fun setAppCompatMode(isDarkMode: Boolean) {
-        val screenMode =
-            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        AppCompatDelegate.setDefaultNightMode(screenMode)
-    }
-
-    private fun saveDarkModeToSharefPreference(isDarkMode: Boolean) {
-        accountPref.saveSettingValue(TkpdCache.Key.KEY_DARK_MODE, isDarkMode)
-    }
-
-    private fun recreateView() {
-        activity?.run {
-            finish()
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-            startActivity(Intent(this, this.javaClass))
         }
     }
 
@@ -1310,7 +1295,7 @@ open class HomeAccountUserFragment :
                     userId = userSession.userId
                 )
                 homeAccountAnalytic.eventClickViewMoreWalletAccountPage()
-                goToApplink(item.applink)
+                goToFundsAndInvestment()
             }
 
             AccountConstants.SettingCode.SETTING_MORE_MEMBER -> {
@@ -1411,6 +1396,10 @@ open class HomeAccountUserFragment :
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
                 checkLogoutOffering()
+            }
+
+            AccountConstants.SettingCode.SETTING_DARK_MODE -> {
+                goToApplink(item.applink)
             }
 
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
@@ -1598,6 +1587,19 @@ open class HomeAccountUserFragment :
         adapter?.notifyItemChanged(POSITION_3)
     }
 
+    private fun shouldScrollToSafeMode(): Boolean {
+        return arguments?.containsKey(AccountConstants.PARAM_SCROLL_TO) ?: false &&
+            arguments?.getString(AccountConstants.PARAM_SCROLL_TO, "") == AccountConstants.SCROLL_TO_SAFEMODE
+    }
+
+    private fun scrollToSafeMode() {
+        lifecycleScope.launch {
+            // add delay to make sure the items are fully loaded
+            delay(1000)
+            binding?.homeAccountUserFragmentRv?.smoothScrollToPosition(POSITION_3)
+        }
+    }
+
     private fun updateSafeModeSwitch(isEnable: Boolean) {
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID }?.isChecked =
             isEnable
@@ -1780,7 +1782,7 @@ open class HomeAccountUserFragment :
                 addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
             val bottomSheet = BottomSheetUnify()
 
-            ImageUtils.loadImage(iconAddName, getString(R.string.add_name_url_icon))
+            iconAddName.loadImage(getString(R.string.add_name_url_icon))
             iconAddName.setOnClickListener {
                 gotoChangeName(profile)
                 bottomSheet.dismiss()
@@ -1885,7 +1887,7 @@ open class HomeAccountUserFragment :
         private const val ACC_SETTING_POS = 1
 
         private const val COACHMARK_DELAY_MS = 1000L
-        private const val PRIVACY_POLICY = "Kebijakan Privasi"
+        private const val PRIVACY_POLICY = "Pemberitahuan Privasi"
         private const val TITLE = "Tokopedia"
 
         fun newInstance(bundle: Bundle?): Fragment {

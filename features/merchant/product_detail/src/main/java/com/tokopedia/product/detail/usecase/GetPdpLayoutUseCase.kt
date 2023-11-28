@@ -176,6 +176,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       isCOD
                       price {
                         value
+                        priceFmt
+                        slashPriceFmt
+                        discPercentage
+                        isPriceMasked
                       }
                       campaign {
                         campaignID
@@ -344,6 +348,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         subText
                         price
                         priceFmt
+                        slashPriceFmt
+                        discPercentage
+                        isPriceMasked
                         sku
                         optionID
                         optionName
@@ -446,6 +453,18 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       queryParam
                       thematicID
                     }
+                    ... on pdpDataComponentSocialProofV2 {
+                        socialProofContent {
+                            socialProofType
+                            socialProofID
+                            title
+                            subtitle
+                            icon
+                            applink {
+                                appLink
+                            }
+                        }
+                    }
                   }
                 }
               }
@@ -502,7 +521,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
             ProductDetailConstant.FINTECH_WIDGET_TYPE,
             ProductDetailConstant.FINTECH_WIDGET_V2_TYPE,
             ProductDetailConstant.CONTENT_WIDGET,
-            ProductDetailConstant.GLOBAL_BUNDLING
+            ProductDetailConstant.GLOBAL_BUNDLING,
+            ProductDetailConstant.NOTIFY_ME
         )
     }
 
@@ -534,7 +554,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         }
     }.catch {
         emit(Result.failure(it))
-    }
+    }.flowOn(dispatcher.io)
 
     private fun prepareRequest() {
         gqlUseCase.clearRequest()
@@ -563,7 +583,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
 
         val pdpLayoutCloudState = processRequestAlwaysCloud(cacheState = pdpLayoutCache)
         emit(pdpLayoutCloudState)
-    }.flowOn(dispatcher.io)
+    }
 
     private suspend fun processRequestCacheOnly(cacheState: CacheState) = runCatching {
         val response = GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY).build().let {
@@ -658,7 +678,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
         cacheState: CacheState,
         isCampaign: Boolean
     ): ProductDetailDataModel {
-        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(components)
+        val getDynamicProductInfoP1 = DynamicProductDetailMapper
+            .mapToDynamicProductDetailP1(this)
+            .copy(cacheState = cacheState, isCampaign = isCampaign)
+        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(components, getDynamicProductInfoP1)
             .filterNot {
                 if (cacheState.isFromCache) {
                     getIgnoreComponentTypeInCache().contains(it.type())
@@ -666,9 +689,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     false
                 }
             }.toMutableList()
-        val getDynamicProductInfoP1 = DynamicProductDetailMapper
-            .mapToDynamicProductDetailP1(this)
-            .copy(cacheState = cacheState, isCampaign = isCampaign)
         val p1VariantData = DynamicProductDetailMapper
             .mapVariantIntoOldDataClass(this)
         return ProductDetailDataModel(

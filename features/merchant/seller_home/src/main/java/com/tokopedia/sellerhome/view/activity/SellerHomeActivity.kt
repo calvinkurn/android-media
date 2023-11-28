@@ -32,6 +32,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -75,6 +76,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener,
     SomListLoadTimeMonitoringActivity, HasComponent<HomeDashboardComponent> {
@@ -87,7 +89,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         private const val BOTTOM_NAV_ENTER_ANIM_DURATION = 4f
         private const val BOTTOM_NAV_EXIT_ANIM_DURATION = 1f
 
-        private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
         private const val ACTION_GET_ALL_APP_WIDGET_DATA =
             "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
@@ -96,6 +97,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
         private const val WEAR_POPUP_KEY = "isWearPopupShown"
         private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.tokopedia.sellerapp"
+        const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
     }
 
     @Inject
@@ -168,6 +170,13 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         return DaggerHomeDashboardComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
             .build()
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        binding?.sahBottomNav?.addOneTimeGlobalLayoutListener {
+            navigator?.navigateOnRestored(savedInstanceState, lifecycleScope)
+        }
     }
 
     override fun onResume() {
@@ -313,7 +322,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     private fun setupBackground() {
         window.decorView.setBackgroundColor(
-            getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            getResColor(unifyprinciplesR.color.Unify_Background)
         )
     }
 
@@ -354,6 +363,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                     initSomListLoadTimeMonitoring()
                     lastSomTab = page
                 }
+
                 FragmentType.PRODUCT -> lastProductManagePage = page
             }
 
@@ -583,7 +593,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_home_to_enabled,
                 R.drawable.ic_sah_bottom_nav_home_active,
                 R.drawable.ic_sah_bottom_nav_home_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
+                unifyprinciplesR.color.Unify_GN600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION
@@ -597,7 +607,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_product_to_enabled,
                 R.drawable.ic_sah_bottom_nav_product_active,
                 R.drawable.ic_sah_bottom_nav_product_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
+                unifyprinciplesR.color.Unify_GN600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION
@@ -611,7 +621,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_chat_to_enabled,
                 R.drawable.ic_sah_bottom_nav_chat_active,
                 R.drawable.ic_sah_bottom_nav_chat_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
+                unifyprinciplesR.color.Unify_GN600,
                 true,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION
@@ -625,7 +635,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_order_to_enabled,
                 R.drawable.ic_sah_bottom_nav_order_active,
                 R.drawable.ic_sah_bottom_nav_order_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
+                unifyprinciplesR.color.Unify_GN600,
                 true,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION
@@ -639,7 +649,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_other_to_enabled,
                 R.drawable.ic_sah_bottom_nav_other_active,
                 R.drawable.ic_sah_bottom_nav_other_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
+                unifyprinciplesR.color.Unify_GN600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION

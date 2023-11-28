@@ -25,11 +25,11 @@ abstract class InspirationProductItemViewHolder(
             formattedPrice = this.priceString,
             productImageUrl = this.imageUrl,
             countSoldRating = this.ratingAverage,
-            labelGroupList = this.labelGroupDataList.toProductCardLabelGroup(),
+            labelGroupList = this.labelGroupList.toProductCardLabelGroup(),
             shopLocation = if (this.shopLocation.isNotEmpty()) this.shopLocation else this.shopName,
             shopBadgeList = this.badgeItemDataViewList.toProductCardModelShopBadges(),
             freeOngkir = this.freeOngkirDataView.toProductCardModelFreeOngkir(),
-            isTopAds = this.isOrganicAds,
+            isTopAds = this.isShowAdsLabel,
             hasThreeDots = this.seamlessInspirationProductType.hasThreeDots,
             cardInteraction = true,
             discountPercentage = if (this.discountPercentage > 0) "${this.discountPercentage}%"
@@ -39,7 +39,6 @@ abstract class InspirationProductItemViewHolder(
             stockBarLabel = this.stockBarDataView.value,
             stockBarLabelColor = this.stockBarDataView.color,
             isWideContent = false,
-            pageSource = ProductCardModel.PageSource.SEARCH,
         )
 
     private fun List<BadgeItemDataView>?.toProductCardModelShopBadges(): List<ProductCardModel.ShopBadge> {

@@ -22,5 +22,24 @@ data class TickerInfo(
 
         @SerializedName("action_url")
         @Expose
-        val actionUrl: String = ""
-)
+        val actionUrl: String = "",
+
+        @SerializedName("cta_text")
+        @Expose
+        val ctaText: String = "",
+
+        @SerializedName("cta_action_type")
+        @Expose
+        val ctaActionType: String = "",
+
+        @SerializedName("cta_action_value")
+        @Expose
+        val ctaActionValue: String = ""
+) {
+    companion object {
+        const val CTA_TYPE_ACTION = "CTA_ACTION"
+        const val CTA_TYPE_URI = "CTA_URI"
+
+        const val CTA_ACTION_VALUE_POF = "order_detail_pof"
+    }
+}

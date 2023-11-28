@@ -17,13 +17,13 @@
 
 <!--toc-->
 
-![image](../../res/recipe_bookmark_page.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_bookmark_page.png)
 
 ## **Description**
 
 A special page to display recipes that have been previously bookmarked and can be accessed through Recipe Home page.
 
-![image](../../res/recipe_home_bookmark_highlighted.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_home_bookmark_highlighted.png)
 
 ## **Requirements**
 
@@ -31,19 +31,19 @@ There are some requirements need to fulfill when developed this page, the requir
 
 - Unbookmark the recipe by clicking the filled bookmark icon. After clicked this, the item will be removed from the list and toaster displayed.
 
-![image](../../res/recipe_bookmark_bookmark_icon.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_bookmark_bookmark_icon.png)
 
 - After cancelling the bookmark, toaster will be displayed with “*Batalkan” / “Cancel”* cta. If user click the cta, the recipe will be re-added to the top of the page.
 
-![image](../../res/recipe_bookmark_success_toaster.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_bookmark_success_toaster.png)
 
 - If recipe is empty, the page will be empty state.
 
-![image](../../res/recipe_bookmark_empty_state.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_bookmark_empty_state.png)
 
 - Display the tag name if the number of tags is 4 maximum, if the tag more than 4, the fourth tag will be shown as “*+ {$tagSize - 3} lainnya*”.
 
-![image](../../res/recipe_bookmark_coupon_label.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_bookmark_coupon_label.png)
 
 ## **Contract Used**
 

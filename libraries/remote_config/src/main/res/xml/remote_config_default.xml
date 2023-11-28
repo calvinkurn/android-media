@@ -646,4 +646,24 @@
         <key>android_pdp_p1_cache_age</key>
         <value>30</value>
     </entry>
+    <entry>
+        <key>android_enable_compose_centralized_promo</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_pdp_enable_prefetch</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_load_product_image_archival_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_force_light_mode_seller_app</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_enable_dark_mode_intro_bottom_sheet</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

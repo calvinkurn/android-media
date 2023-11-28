@@ -36,6 +36,7 @@ import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
@@ -107,6 +108,7 @@ class ProductChooserIdGenerator {
     private val mockProductSections = emptyList<ProductTagSectionUiModel>()
 
     private val repo = mockk<PlayBroadcastRepository>(relaxed = true)
+    private val productPickerCommonRepo = mockk<ProductPickerSellerCommonRepository>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
     private val mockProductSetupViewModelFactory = object : ContentProductPickerSellerViewModel.Factory {
@@ -126,6 +128,7 @@ class ProductChooserIdGenerator {
                 savedStateHandle = savedStateHandle,
                 isEligibleForPin = isEligibleForPin,
                 repo = repo,
+                commonRepo = productPickerCommonRepo,
                 userSession = userSession,
                 dispatchers = CoroutineDispatchersProvider,
                 isNumerationShown = isNumerationShown,
@@ -248,8 +251,8 @@ class ProductChooserIdGenerator {
             hasNextPage = false
         )
 
-        coEvery { repo.getEtalaseList() } returns etalaseList
-        coEvery { repo.getCampaignList() } returns campaignList
+        coEvery { productPickerCommonRepo.getEtalaseList() } returns etalaseList
+        coEvery { productPickerCommonRepo.getCampaignList() } returns campaignList
     }
 
     @Test

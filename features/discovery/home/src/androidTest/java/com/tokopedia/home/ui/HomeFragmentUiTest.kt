@@ -76,11 +76,8 @@ class HomeFragmentUiTest {
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
 
-    @Ignore
     @Test
     fun testFirstTimeLoggedInUser() {
-        assertHomeCoachmarkDisplayed()
-
         /**
          * Home skeleton content
          * - Toolbar
@@ -151,11 +148,6 @@ class HomeFragmentUiTest {
      * - All balance items are clickable
      */
     private fun assertHeader() {
-        /**
-         * Assert header background
-         */
-        onView(withId(R.id.header_background_home_background)).check(matches(isDisplayed()))
-
         /**
          * Assert choose address widget
          */

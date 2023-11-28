@@ -15,8 +15,8 @@ buildscript {
 }
 
 android {
-    namespace 'com.tokochat.tokochat_config_common'
-    testNamespace 'com.tokochat.tokochat_config_common.test'
+    namespace 'com.tokopedia.tokochat_config_common'
+    testNamespace 'com.tokopedia.tokochat_config_common.test'
 }
 
 dependencies {
@@ -26,6 +26,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation projectOrAar(rootProject.ext.libraries.logger)
+
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.liveDataKtx
 
     // Gojek dependencies
     api (rootProject.ext.miscDependencies.conversation) {

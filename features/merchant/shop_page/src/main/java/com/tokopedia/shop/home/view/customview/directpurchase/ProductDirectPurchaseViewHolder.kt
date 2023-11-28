@@ -31,6 +31,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.Typography.Companion.BOLD
+import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_2
 import com.tokopedia.viewallcard.ViewAllCard
 import com.tokopedia.viewallcard.ViewAllCard.Companion.MODE_INVERT
 import com.tokopedia.viewallcard.ViewAllCard.Companion.MODE_NORMAL
@@ -141,10 +143,10 @@ class ProductDirectPurchaseViewHolder private constructor() {
             )
             tvProductName.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
             tvPrice.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
-            tvSlashedPrice.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
-            tvRating.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
-            tvSoldCount.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
-            tvDotSeparator.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
+            tvSlashedPrice.setRetainTextColor(colorPallete, ColorPallete.ColorType.SECONDARY_TEXT)
+            tvRating.setRetainTextColor(colorPallete, ColorPallete.ColorType.SECONDARY_TEXT)
+            tvSoldCount.setRetainTextColor(colorPallete, ColorPallete.ColorType.SECONDARY_TEXT)
+            tvDotSeparator.setRetainTextColor(colorPallete, ColorPallete.ColorType.SECONDARY_TEXT)
         }
 
         companion object {
@@ -345,6 +347,8 @@ class ProductDirectPurchaseViewHolder private constructor() {
                         title = ""
                         description =
                             parent.context.getString(R.string.shop_page_see_more_product_desc)
+                        descriptionView.setType(DISPLAY_2)
+                        descriptionView.setWeight(BOLD)
                         setCta(parent.context.getString(R.string.shop_page_see_more)) {
                             listener.onSeeMoreClick()
                         }

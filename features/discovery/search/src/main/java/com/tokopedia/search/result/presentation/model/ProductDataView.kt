@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.model
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductListType.FIXED_GRID
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductListType.LIST_VIEW
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -44,6 +45,7 @@ class ProductDataView {
     var productListType: String = ""
     var isShowButtonAtc: Boolean = false
     var isReimagineProductCard: Boolean = false
+    var seamlessCarouselDataViewList =  listOf<InspirationCarouselDataView>()
     val defaultView: Int
         get() =
             if (productListType == LIST_VIEW) ViewType.LIST.value

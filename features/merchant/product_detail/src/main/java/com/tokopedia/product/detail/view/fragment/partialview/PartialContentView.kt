@@ -10,11 +10,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
-import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemProductContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
+import com.tokopedia.common_tradein.R as common_tradeinR
+import com.tokopedia.product.detail.common.R as productdetailcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Yehezkiel on 25/05/20
@@ -37,12 +39,10 @@ class PartialContentView(
         productName.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
         productName.text = MethodChecker.fromHtml(data.productName)
 
-        imgFreeOngkir.shouldShowWithAction(freeOngkirImgUrl.isNotEmpty()) {
-            imgFreeOngkir.setImageUrl(freeOngkirImgUrl)
-        }
+        renderFreeOngkir(freeOngkirImgUrl)
 
         textCashbackGreen.shouldShowWithAction(data.cashbackPercentage > 0) {
-            textCashbackGreen.text = context.getString(com.tokopedia.product.detail.common.R.string.template_cashback, data.cashbackPercentage.toString())
+            textCashbackGreen.text = context.getString(productdetailcommonR.string.template_cashback, data.cashbackPercentage.toString())
         }
 
         campaignRibbon.setCampaignCountDownCallback(this@PartialContentView)
@@ -81,9 +81,8 @@ class PartialContentView(
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(binding.fabDetailPdp) {
-        if (!shouldShowWishlist) {
-            hide()
-        } else if (activeState != wishlisted) {
+        showWithCondition(shouldShowWishlist)
+        if (shouldShowWishlist && activeState != wishlisted) {
             activeState = wishlisted
         }
     }
@@ -91,6 +90,16 @@ class PartialContentView(
     fun renderFreeOngkir(freeOngkirUrl: String) = with(binding) {
         imgFreeOngkir.shouldShowWithAction(freeOngkirUrl.isNotEmpty()) {
             imgFreeOngkir.setImageUrl(freeOngkirUrl)
+        }
+    }
+
+    fun updateUniversalShareWidget(shouldShow: Boolean) = with(binding.universalShareWidget) {
+        if (shouldShow) {
+            listener.onUniversalShareWidget(this)
+            setColorShareIcon(unifyprinciplesR.color.Unify_NN700)
+            show()
+        } else {
+            hide()
         }
     }
 
@@ -109,26 +118,18 @@ class PartialContentView(
 
     private fun setTextCampaignActive(campaign: CampaignModular) = with(binding) {
         txtMainPrice.run {
-            text = context.getString(
-                R.string.template_price,
-                "",
-                campaign.discountedPriceFmt
-            )
+            text = campaign.priceFmt
             show()
         }
 
         textSlashPrice.run {
-            text = context.getString(
-                R.string.template_price,
-                "",
-                campaign.originalPriceFmt
-            )
+            text = campaign.slashPriceFmt
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             show()
         }
 
         textDiscountRed.run {
-            text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, campaign.percentageAmount)
+            text = campaign.discPercentageFmt
             show()
         }
         hideGimmick(campaign)
@@ -150,11 +151,7 @@ class PartialContentView(
     }
 
     private fun hideProductCampaign(campaign: CampaignModular) = with(binding) {
-        txtMainPrice.text = context.getString(
-            R.string.template_price,
-            "",
-            campaign.originalPrice.getCurrencyFormatted()
-        )
+        txtMainPrice.text = campaign.slashPriceFmt
         campaignRibbon.hide()
         textDiscountRed.gone()
         textSlashPrice.gone()
@@ -163,7 +160,7 @@ class PartialContentView(
 
     fun renderTradein(showTradein: Boolean) = with(binding) {
         tradeinHeaderContainer.shouldShowWithAction(showTradein) {
-            tradeinHeaderContainer.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, com.tokopedia.common_tradein.R.drawable.tradein_white), null, null, null)
+            tradeinHeaderContainer.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, common_tradeinR.drawable.tradein_white), null, null, null)
         }
     }
 

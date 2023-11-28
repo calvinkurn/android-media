@@ -135,6 +135,7 @@ class OrderSummaryPageViewModel @Inject constructor(
     private var hasSentViewOspEe = false
 
     var isCartCheckoutRevamp: Boolean = false
+    var usePromoEntryPointNewInterface: Boolean = false
 
     fun getShopId(): String {
         return orderCart.shop.shopId
@@ -187,7 +188,8 @@ class OrderSummaryPageViewModel @Inject constructor(
             lastValidateUsePromoRequest = null
             orderPromo.value = result.orderPromo.copy(
                 isCartCheckoutRevamp = isCartCheckoutRevamp,
-                isPromoRevamp = isPromoRevamp
+                isPromoRevamp = isPromoRevamp,
+                enableNewInterface = usePromoEntryPointNewInterface
             )
             when {
                 result.globalEvent != null -> {
@@ -805,15 +807,27 @@ class OrderSummaryPageViewModel @Inject constructor(
             globalEvent.value = OccGlobalEvent.Loading
             try {
                 val metadata = JsonParser().parse(param.profile.metadata)
-                val expressCheckoutParams = metadata.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
+                val jsonObject = metadata.asJsonObject
+                val expressCheckoutParams = jsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
+                if (jsonObject.get(UpdateCartOccProfileRequest.GATEWAY_CODE) == null) {
+                    // unexpected null gateway code param
+                    throw IllegalStateException()
+                }
+                jsonObject.addProperty(UpdateCartOccProfileRequest.GATEWAY_CODE, selectedInstallmentTerm.gatewayCode)
                 if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
                     // unexpected null installment term param
                     throw IllegalStateException()
                 }
                 expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedInstallmentTerm.term.toString())
                 param = param.copy(
-                    profile = param.profile.copy(metadata = metadata.toString()),
-                    skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
+                    profile = param.profile.copy(
+                        metadata = metadata.toString(),
+                        gatewayCode = selectedInstallmentTerm.gatewayCode,
+                        tenureType = selectedInstallmentTerm.term
+                    ),
+                    skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(
+                        orderShipment.value
+                    ),
                     source = SOURCE_UPDATE_OCC_PAYMENT
                 )
             } catch (e: RuntimeException) {
@@ -826,7 +840,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                     it.isSelected = it.term == selectedInstallmentTerm.term
                     it.isError = false
                 }
-                orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
+                orderPayment.value = orderPayment.value.copy(gatewayCode = selectedInstallmentTerm.gatewayCode, creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
                 validateUsePromo()
                 globalEvent.value = OccGlobalEvent.Normal
                 orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.term.toString())
@@ -1004,9 +1018,17 @@ class OrderSummaryPageViewModel @Inject constructor(
     }
 
     private fun clearAllPromoFromLastRequest() {
+        val isCartCheckoutRevamp = orderPromo.value.isCartCheckoutRevamp
+        val isPromoRevamp = orderPromo.value.isPromoRevamp
+        val enableNewInterface = orderPromo.value.enableNewInterface
         validateUsePromoRevampUiModel = null
         lastValidateUsePromoRequest = promoProcessor.clearAllPromoFromLastRequest(lastValidateUsePromoRequest)
-        orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            isCartCheckoutRevamp = isCartCheckoutRevamp,
+            isPromoRevamp = isPromoRevamp,
+            enableNewInterface = enableNewInterface
+        )
     }
 
     private fun updatePromoState(lastApply: LastApplyUiModel, oldLastApply: LastApplyUiModel? = null) {
@@ -1219,7 +1241,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             return
         }
         val installmentTermList = paymentProcessor.get().getCreditCardAdminFee(
-            orderPayment.value.creditCard,
+            orderPayment.value,
             userSession.userId,
             orderCost,
             orderCart
@@ -1233,7 +1255,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             val selectedTerm = orderPayment.value.creditCard.selectedTerm?.term ?: -1
             val selectedInstallmentTerm = installmentTermList.firstOrNull { it.term == selectedTerm }
             selectedInstallmentTerm?.isSelected = true
-            orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentTermList))
+            orderPayment.value = newOrderPayment.copy(gatewayCode = selectedInstallmentTerm?.gatewayCode ?: newOrderPayment.gatewayCode, creditCard = newOrderPayment.creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentTermList))
         }
         calculator.calculateTotal(
             orderCart,
@@ -1413,7 +1435,13 @@ class OrderSummaryPageViewModel @Inject constructor(
                         cartString = orderCart.cartString,
                         pslCode = pslCode,
                         cartData = orderCart.cartData,
-                        warehouseId = orderCart.shop.warehouseId
+                        warehouseId = orderCart.shop.warehouseId,
+                        ratesParam = logisticProcessor.generateRatesParam(
+                            orderCart,
+                            orderProfile.value,
+                            orderCost,
+                            orderShop.value.shopShipment
+                        ).first
                     )
                 )
             }

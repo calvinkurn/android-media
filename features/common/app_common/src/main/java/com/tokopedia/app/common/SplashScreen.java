@@ -49,46 +49,7 @@ import java.util.Map;
  * <p>
  * fetch some data from server in order to worked around.
  */
-public class SplashScreen extends AppCompatActivity {
-
-    protected RemoteConfig remoteConfig;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        WeaveInterface remoteConfigWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return fetchRemoteConfig();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineNow(remoteConfigWeave);
-    }
-
-    @NotNull
-    private boolean fetchRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
-        remoteConfig.fetch(getRemoteConfigListener());
-        return true;
-    }
-
-    private RemoteConfig.Listener getRemoteConfigListener() {
-        return new RemoteConfig.Listener() {
-            @Override
-            public void onComplete(RemoteConfig remoteConfig) {
-                LogManager logManager = LogManager.instance;
-                if (logManager != null) {
-                    logManager.refreshConfig();
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        };
-    }
+abstract public class SplashScreen extends AppCompatActivity {
 
     @Override
     protected void onResume() {
@@ -131,11 +92,7 @@ public class SplashScreen extends AppCompatActivity {
         gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener(), isPlayServiceAvailable);
     }
 
-    public void finishSplashScreen() {
-        Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
-        startActivity(intent);
-        finish();
-    }
+    public abstract void finishSplashScreen();
 
     @NotNull
     public boolean getBranchDefferedDeeplink() {
@@ -169,6 +126,7 @@ public class SplashScreen extends AppCompatActivity {
         if (isUnderVersion) {
             intent = RouteManager.getDeeplinkNotFoundIntent(SplashScreen.this);
             intent.putExtra("type", "update");
+            intent.putExtra("source", "share");
 
             logLinker(deeplink, "update");
         } else {
@@ -188,6 +146,7 @@ public class SplashScreen extends AppCompatActivity {
                 Intent intentCheck = RouteManager.getIntentNoFallback(SplashScreen.this, tokopediaDeeplink);
                 if (intentCheck == null) {
                     intent = RouteManager.getDeeplinkNotFoundIntent(SplashScreen.this);
+                    intent.putExtra("source", "share");
                     logLinker(tokopediaDeeplink, "404");
                 } else {
                     intent.setClassName(SplashScreen.this.getPackageName(),
@@ -199,7 +158,7 @@ public class SplashScreen extends AppCompatActivity {
         intent.setData(Uri.parse(tokopediaDeeplink));
         // destroyed activity (SplashScreen) might not launch activity,
         // so better to use currentActivity instead.
-        boolean startFromCurrent = AppUtil.INSTANCE.startActivityFromCurrentActivity(intent);
+        boolean startFromCurrent = AppUtil.startActivityFromCurrentActivity(intent);
         if (!startFromCurrent) {
             startActivity(intent);
         }
@@ -210,7 +169,7 @@ public class SplashScreen extends AppCompatActivity {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("reason", reason);
         messageMap.put("deeplink", deeplink);
-        ServerLogger.log(Priority.P2, "LINKER", messageMap);
+        ServerLogger.logP2("LINKER", messageMap);
     }
 
     @Override

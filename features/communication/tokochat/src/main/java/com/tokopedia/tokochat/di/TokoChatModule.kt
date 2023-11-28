@@ -1,17 +1,20 @@
 package com.tokopedia.tokochat.di
 
 import android.content.Context
-import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.tokochat.common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
+import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
 import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatUploadImageApi
-import com.tokopedia.tokochat.common.util.TokoChatCacheManager
-import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.util.toggle.TokoChatAbPlatform
+import com.tokopedia.tokochat.util.toggle.TokoChatAbPlatformImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -49,7 +52,15 @@ object TokoChatModule {
     @ActivityScope
     @Provides
     internal fun provideTokoChatCacheManager(@ApplicationContext context: Context): TokoChatCacheManager {
-        val tokoChatCachePref = context.getSharedPreferences(TokoChatValueUtil.TOKOCHAT_CACHE, Context.MODE_PRIVATE)
+        val tokoChatCachePref = context.getSharedPreferences(TokoChatCommonValueUtil.TOKOCHAT_CACHE, Context.MODE_PRIVATE)
         return TokoChatCacheManagerImpl(tokoChatCachePref)
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideAbTestPlatform(): TokoChatAbPlatform {
+        return TokoChatAbPlatformImpl(
+            RemoteConfigInstance.getInstance().abTestPlatform
+        )
     }
 }

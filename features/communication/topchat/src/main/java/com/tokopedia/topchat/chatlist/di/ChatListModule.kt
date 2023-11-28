@@ -10,6 +10,8 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.Session
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.topchat.chatlist.data.datastore.TopChatListDataStore
+import com.tokopedia.topchat.chatlist.data.datastore.TopChatListDataStoreImpl
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
@@ -50,5 +52,11 @@ class ChatListModule {
     @Provides
     fun provideIrisSession(@ApplicationContext context: Context): Session {
         return IrisSession(context)
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideDataStore(@ApplicationContext context: Context): TopChatListDataStore {
+        return TopChatListDataStoreImpl(context)
     }
 }

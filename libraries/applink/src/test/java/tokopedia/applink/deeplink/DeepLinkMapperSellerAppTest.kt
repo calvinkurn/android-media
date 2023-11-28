@@ -3,6 +3,7 @@ package tokopedia.applink.deeplink
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
@@ -25,8 +26,8 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
     companion object {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
-        const val SIZE_HOST = 31
-        const val SIZE_PATH = 72
+        const val SIZE_HOST = 32
+        const val SIZE_PATH = 73
     }
 
     @Throws(RuntimeException::class)
@@ -231,7 +232,8 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check seller search appLink then should return tokopedia internal seller search in sellerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search"
+        setRemoteConfig(true)
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search-compose"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SEARCH, expectedDeepLink)
     }
 
@@ -245,6 +247,32 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
     fun `check centralized promo appLink then should return tokopedia internal centralized promo in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/centralized-promo"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CENTRALIZED_PROMO, expectedDeepLink)
+    }
+
+    @Test
+    fun `check centralized promo appLink and remote config true then should return tokopedia internal centralized promo in sellerapp`() {
+        setRemoteConfig(true)
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CENTRALIZED_PROMO,
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_COMPOSE
+        )
+    }
+
+    @Test
+    fun `check centralized promo internal appLink and remote config true then should return tokopedia internal centralized promo compose in sellerapp`() {
+        setRemoteConfig(true)
+        assertEqualsDeepLinkMapper(
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_COMPOSE
+        )
+    }
+
+    @Test
+    fun `check centralized promo internal appLink and remote config false then should return tokopedia internal centralized promo compose in sellerapp`() {
+        setRemoteConfig(false)
+        assertEqualsDeepLinkMapper(
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
+        )
     }
 
     @Test
@@ -519,5 +547,13 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
         val actualDeeplink = ApplinkConst.SellerApp.TOPADS_DASH_BOARD
         assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller partial order fulfillment appLink then should return tokopedia internal seller partial order fulfillment in customerapp`() {
+        val orderId = "123456789"
+        val pofStatus = "1"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://seller/seller-partial-order-fulfillment?${ApplinkConstInternalOrder.PARAM_ORDER_ID}=$orderId&${ApplinkConstInternalOrder.PARAM_POF_STATUS}=$pofStatus&${RouteManager.KEY_REDIRECT_TO_SELLER_APP}=true"
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, "${ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT}?${ApplinkConstInternalOrder.PARAM_ORDER_ID}=$orderId&${ApplinkConstInternalOrder.PARAM_POF_STATUS}=$pofStatus&${RouteManager.KEY_REDIRECT_TO_SELLER_APP}=true", expectedDeepLink)
     }
 }

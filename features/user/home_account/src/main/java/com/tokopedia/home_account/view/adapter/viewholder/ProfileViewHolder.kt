@@ -11,7 +11,6 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.Utils
@@ -28,11 +27,11 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -244,7 +243,7 @@ class ProfileViewHolder(
     }
 
     private fun loadImage(imageView: ImageView, imageUrl: String) {
-        ImageUtils.loadImageCircleWithPlaceHolder(imageView.context, imageView, imageUrl)
+        imageView.loadImageCircle(imageUrl)
     }
 
     private fun setupBalanceAndPointAdapter(itemView: View) {
@@ -252,8 +251,7 @@ class ProfileViewHolder(
         binding?.homeAccountProfileBalanceAndPointSection?.homeAccountViewMore?.setOnClickListener {
             listener.onSettingItemClicked(
                 CommonDataView(
-                    id = AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE,
-                    applink = ApplinkConstInternalUserPlatform.FUNDS_AND_INVESTMENT
+                    id = AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE
                 )
             )
         }

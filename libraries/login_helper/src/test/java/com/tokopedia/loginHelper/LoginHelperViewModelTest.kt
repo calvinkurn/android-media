@@ -51,7 +51,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import javax.crypto.SecretKey
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
@@ -69,7 +68,6 @@ class LoginHelperViewModelTest {
     private lateinit var getProfileUseCase: GetProfileUseCase
     private lateinit var getAdminTypeUseCase: GetAdminTypeUseCase
     private lateinit var aesEncryptorCBC: AESEncryptorCBC
-    private lateinit var secretKey: SecretKey
 
     private lateinit var viewModel: LoginHelperViewModel
     private lateinit var userSession: UserSessionInterface
@@ -93,7 +91,6 @@ class LoginHelperViewModelTest {
         getAdminTypeUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
         aesEncryptorCBC = mockk(relaxed = true)
-        secretKey = mockk(relaxed = true)
         viewModel =
             LoginHelperViewModel(
                 testRule.dispatchers,
