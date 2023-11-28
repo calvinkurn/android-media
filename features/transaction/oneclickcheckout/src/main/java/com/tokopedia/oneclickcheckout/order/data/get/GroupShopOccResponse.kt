@@ -10,6 +10,8 @@ class GroupShopOccResponse(
     val errors: List<String> = emptyList(),
     @SerializedName("errors_unblocking")
     val unblockingErrors: List<String> = emptyList(),
+    @SerializedName("group_metadata")
+    val groupMetadata: String = "",
     @SerializedName("cart_string")
     val cartString: String = "",
     @SerializedName("payment_profile")

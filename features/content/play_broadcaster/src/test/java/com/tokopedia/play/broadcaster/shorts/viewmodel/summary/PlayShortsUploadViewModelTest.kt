@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.viewmodel.summary
 
+import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.robot.PlayShortsViewModelRobot
@@ -8,7 +9,6 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertType
-import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -21,7 +21,7 @@ import org.junit.Test
 class PlayShortsUploadViewModelTest {
 
     private val mockRepo: PlayShortsRepository = mockk(relaxed = true)
-    private val mockPlayShortsUploader: PlayShortsUploader = mockk(relaxed = true)
+    private val mockCreationUploader: CreationUploader = mockk(relaxed = true)
 
     private val uiModelBuilder = UiModelBuilder()
 
@@ -105,11 +105,11 @@ class PlayShortsUploadViewModelTest {
 
         coEvery { mockRepo.getTagRecommendation(any()) } returns mockTagsSize5
         coEvery { mockRepo.saveTag(any(), any()) } returns true
-        coEvery { mockPlayShortsUploader.upload(any()) } throws mockException
+        coEvery { mockCreationUploader.upload(any()) } throws mockException
 
         val robot = PlayShortsViewModelRobot(
             repo = mockRepo,
-            playShortsUploader = mockPlayShortsUploader,
+            creationUploader = mockCreationUploader,
         )
 
         robot.use {

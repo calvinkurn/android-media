@@ -1,7 +1,7 @@
 package com.tokopedia.emoney.domain.usecase
 
 import com.tokopedia.emoney.domain.query.UpdateBalanceEmoneyDKIJakcard
-import com.tokopedia.emoney.domain.request.JakCardBodyEnc
+import com.tokopedia.emoney.domain.request.CommonBodyEnc
 import com.tokopedia.emoney.domain.request.JakCardRequest
 import com.tokopedia.emoney.domain.response.JakCardResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -22,7 +22,7 @@ class GetJakCardUseCase @Inject constructor(
         return executeOnBackground()
     }
 
-    private fun mapBody(params: JakCardBodyEnc): HashMap<String, Any> {
+    private fun mapBody(params: CommonBodyEnc): HashMap<String, Any> {
         val mapBody = HashMap<String, Any>()
         mapBody[ENC_KEY] = params.encKey
         mapBody[ENC_PAYLOAD] = params.encPayload

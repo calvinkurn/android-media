@@ -19,6 +19,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.viewallcard.ViewAllCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryExtensibleFragment
@@ -60,5 +62,7 @@ interface DiscoveryComponent {
     fun inject(viewAllCarouselViewModel: ViewAllCarouselViewModel)
     fun inject(merchantVoucherGridViewModel: MerchantVoucherGridViewModel)
     fun inject(merchantVoucherGridItemViewModel: MerchantVoucherGridItemViewModel)
+    fun inject(shopOfferSupportingBrandViewModel: ShopOfferSupportingBrandViewModel)
+    fun inject(shopOfferSupportingBrandItemViewModel: ShopOfferSupportingBrandItemViewModel)
     fun provideSubComponent(): UIWidgetComponent
 }
