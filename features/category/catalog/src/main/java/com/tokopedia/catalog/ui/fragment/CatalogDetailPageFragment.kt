@@ -576,9 +576,8 @@ class CatalogDetailPageFragment :
         } else {
             emptyList()
         }
-        val impressionbrandImageUrl = brandImageUrl.subList(Int.ZERO, currentPositionVisibility + 1)
         val list = arrayListOf<HashMap<String, String>>()
-        for (index in impressionbrandImageUrl.indices) {
+        for (index in brandImageUrl.indices) {
             val promotions = hashMapOf<String, String>()
             promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] =
                 impressionImageDescription.getOrNull(index).orEmpty()
@@ -751,22 +750,13 @@ class CatalogDetailPageFragment :
             list.add(promotions)
         }
 
-        CatalogReimagineDetailAnalytics.sendEventImpressionList(
-            event = EVENT_VIEW_ITEM,
-            action = EVENT_ACTION_IMPRESSION_TRUSTMAKER,
-            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
-            labels = catalogId,
-            trackerId = TRACKER_ID_IMPRESSION_TRUSTMAKER,
-            userId = userSession.userId,
-            promotion = list
-        )
-        sendOnTimeImpression(TRACKER_ID_IMPRESSION_EXPERT_REVIEW) {
+        sendOnTimeImpression(TRACKER_ID_IMPRESSION_TRUSTMAKER) {
             CatalogReimagineDetailAnalytics.sendEventImpressionList(
                 event = EVENT_VIEW_ITEM,
-                action = EVENT_ACTION_IMPRESSION_EXPERT_REVIEW,
+                action = EVENT_ACTION_IMPRESSION_TRUSTMAKER,
                 category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
                 labels = catalogId,
-                trackerId = TRACKER_ID_IMPRESSION_EXPERT_REVIEW,
+                trackerId = TRACKER_ID_IMPRESSION_TRUSTMAKER,
                 userId = userSession.userId,
                 promotion = list
             )
