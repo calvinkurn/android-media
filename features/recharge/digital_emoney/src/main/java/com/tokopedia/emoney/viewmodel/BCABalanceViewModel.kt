@@ -13,7 +13,7 @@ import com.tokopedia.emoney.domain.request.CommonBodyEnc
 import com.tokopedia.emoney.domain.response.BCAFlazzData
 import com.tokopedia.emoney.domain.response.BCAFlazzResponseMapper
 import com.tokopedia.emoney.domain.usecase.GetBCAFlazzUseCase
-import com.tokopedia.emoney.integration.BCALibrary
+import com.tokopedia.emoney.integration.BCALibraryIntegration
 import com.tokopedia.emoney.integration.data.JNIResult
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 class BCABalanceViewModel @Inject constructor(
     dispatcher: CoroutineDispatcher,
-    private val bcaLibrary: BCALibrary,
+    private val bcaLibrary: BCALibraryIntegration,
     private val gson: Gson,
     private val electronicMoneyEncryption: ElectronicMoneyEncryption,
     private val bcaFlazzUseCase: GetBCAFlazzUseCase
@@ -46,7 +46,7 @@ class BCABalanceViewModel @Inject constructor(
         ATD: String,
     ) {
         val bcaMTId = BCAFlazzResponseMapper.bcaMTId(merchantId, terminalId)
-        val setConfigResult = bcaLibrary.C_BCASetConfig(bcaMTId)
+        val setConfigResult = bcaLibrary.bcaSetConfig(bcaMTId)
         if (isoDep != null) {
             run {
                 try {
@@ -233,7 +233,7 @@ class BCABalanceViewModel @Inject constructor(
         if (isoDep != null) {
             run {
                 try {
-                    val bcaSession1 = bcaLibrary.C_BCAdataSession_1(
+                    val bcaSession1 = bcaLibrary.bcaDataSession1(
                         strTransactionId, ATD,
                         strCurrDateTime
                     )
@@ -329,7 +329,7 @@ class BCABalanceViewModel @Inject constructor(
             run {
                 try {
                     val bcaSession2 =
-                        bcaLibrary.C_BCAdataSession_2(bcaFlazzData.attributes.cardData)
+                        bcaLibrary.bcaDataSession2(bcaFlazzData.attributes.cardData)
                     if (bcaSession2.isSuccess == SUCCESS_JNI && getBCAPrefixSuccess(bcaSession2.strLogRsp)) {
                         processSDKBCATopUp1(
                             isoDep, cardNumber, lastBalance, rawPublicKeyString,
@@ -367,7 +367,7 @@ class BCABalanceViewModel @Inject constructor(
         if (isoDep != null) {
             run {
                 try {
-                    val topUp1 = bcaLibrary.BCATopUp_1(
+                    val topUp1 = bcaLibrary.bcaTopUp1(
                         strTransactionId,
                         ATD,
                         bcaFlazzData.attributes.accessCardNumber,
@@ -508,7 +508,7 @@ class BCABalanceViewModel @Inject constructor(
         if (isoDep != null) {
             run {
                 try {
-                    val topUp2 = bcaLibrary.BCATopUp_2(bcaFlazzData.attributes.cardData)
+                    val topUp2 = bcaLibrary.bcaTopUp2(bcaFlazzData.attributes.cardData)
                     val updatedBalance = checkLatestBalance()
                     if (topUp2.isSuccess == SUCCESS_JNI
                         && getBCAPrefixSuccess(topUp2.strLogRsp)) {
@@ -614,7 +614,7 @@ class BCABalanceViewModel @Inject constructor(
         if (isoDep != null) {
             run {
                 try {
-                    val reversal = bcaLibrary.BCAdataReversal(strTransactionId, ATD)
+                    val reversal = bcaLibrary.bcaDataReversal(strTransactionId, ATD)
                     if (reversal.isSuccess == SUCCESS_JNI && getBCAPrefixSuccess(reversal.strLogRsp)) {
                         getReversalProcess(
                             cardNumber,
@@ -720,7 +720,7 @@ class BCABalanceViewModel @Inject constructor(
         if (isoDep != null) {
             run {
                 try {
-                    val lastTopUp = bcaLibrary.BCAlastBCATopUp()
+                    val lastTopUp = bcaLibrary.bcaLastBCATopUp()
                     val updatedBalance = checkLatestBalance()
                     if (lastTopUp.isSuccess == SUCCESS_JNI) {
                         getACKProcess(
@@ -745,7 +745,7 @@ class BCABalanceViewModel @Inject constructor(
     }
 
     private fun checkLatestBalance(): JNIResult {
-        return bcaLibrary.C_BCACheckBalance()
+        return bcaLibrary.bcaCheckBalance()
     }
 
     private fun decryptPayload(
