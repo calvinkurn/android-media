@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".ProductPreviewActivity"
+            android:name=".view.activity.ProductPreviewActivity"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
