@@ -13,11 +13,13 @@ import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.product.detail.common.utils.ItemSpaceDecorator
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.databinding.GwpCardListBinding
 import com.tokopedia.product.detail.databinding.GwpWidgetBinding
@@ -26,6 +28,7 @@ import com.tokopedia.product.detail.view.viewholder.ActionUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.adapter.GWPCardAdapter
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiState
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -42,6 +45,7 @@ class GWPWidget @JvmOverloads constructor(
 
     companion object {
         private const val MIN_GRADIENT_COLOR = 2
+        private val CARD_ITEM_SPACING = 8.toPx()
     }
 
     private val binding by lazyThreadSafetyNone {
@@ -55,15 +59,18 @@ class GWPWidget @JvmOverloads constructor(
     }
 
     private val cardAdapter by lazyThreadSafetyNone {
-        GWPCardAdapter().apply {
-            cardListBinding.gwpCardList.layoutManager = LinearLayoutManager(
-                context,
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
-            cardListBinding.gwpCardList.adapter = this
-            cardListBinding.gwpCardList.itemAnimator = null
-        }
+        GWPCardAdapter().also(::setupCardRecyclerView)
+    }
+
+    private fun setupCardRecyclerView(cardAdapter: GWPCardAdapter) = with(cardListBinding.gwpCardList) {
+        layoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        adapter = cardAdapter
+        addItemDecoration(ItemSpaceDecorator(space = CARD_ITEM_SPACING))
+        setHasFixedSize(true)
     }
 
     private var router: GWPWidgetRouter? = null
@@ -157,7 +164,7 @@ class GWPWidget @JvmOverloads constructor(
     // endregion
 
     private fun setSeparator(uiModel: GWPWidgetUiModel) {
-        binding.gwpSeparatorBottom.isInvisible = !uiModel.showSeparatorBottom
+        binding.gwpSeparatorBottom.isVisible = uiModel.showSeparatorBottom
     }
 
     // region event

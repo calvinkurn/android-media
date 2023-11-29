@@ -3,7 +3,9 @@ package com.tokopedia.product.detail.view.viewholder.gwp
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiState
 
 /**
@@ -13,9 +15,15 @@ import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiState
 
 data class GWPUiModel(
     val type: String = "",
-    val name: String = "",
-    var state: GWPWidgetUiState = GWPWidgetUiState.Loading
+    val name: String = ""
 ) : DynamicPdpDataModel {
+
+    var state: GWPWidgetUiState = GWPWidgetUiState.Loading
+        private set
+
+    fun setState(state: GWPWidgetUiState) {
+        this.state = state
+    }
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
@@ -33,5 +41,18 @@ data class GWPUiModel(
 
     override fun newInstance(): DynamicPdpDataModel = copy()
 
-    override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? = null
+    override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
+        return if (newData is GWPUiModel) {
+            if (state !== newData.state)
+                return null
+
+            if (state != newData.state) {
+                Bundle().apply { putString(ProductDetailConstant.DIFFUTIL_PAYLOAD, "") }
+            } else {
+                null
+            }
+        } else {
+            null
+        }
+    }
 }

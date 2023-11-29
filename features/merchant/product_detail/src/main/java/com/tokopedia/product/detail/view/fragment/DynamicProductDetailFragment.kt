@@ -2764,6 +2764,10 @@ open class DynamicProductDetailFragment :
         viewModel.getP2()?.bmgm?.let {
             pdpUiUpdater?.updateBMGMSneakPeak(productId = productId.orEmpty(), bmgm = it)
         }
+
+        viewModel.getP2()?.gwp?.let {
+            pdpUiUpdater?.updateGWPSneakPeak(productId = productId.orEmpty(), gwp = it)
+        }
     }
 
     /**

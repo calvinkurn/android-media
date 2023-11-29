@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.viewallcard.ViewAllCard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gwp_product_image_view"
+    android:layout_width="99dp"
+    android:layout_height="88dp" />

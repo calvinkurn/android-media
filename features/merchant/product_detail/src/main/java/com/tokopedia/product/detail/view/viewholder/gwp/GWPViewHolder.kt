@@ -53,6 +53,13 @@ class GWPViewHolder(
         )
     }
 
+    override fun bind(element: GWPUiModel?, payloads: MutableList<Any>) {
+        val element = element ?: return
+        if (payloads.isEmpty()) return
+
+        bind(element = element)
+    }
+
     override fun goToAppLink(appLink: String) {
         listener.goToApplink(url = appLink)
     }

@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -46,7 +47,8 @@
         android:id="@+id/gwp_card_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="visible"
         android:inflatedId="@+id/gwp_card_list"
         android:layout="@layout/gwp_card_list" />
 
@@ -54,7 +56,7 @@
         android:id="@+id/gwp_separator_bottom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/thick_divider_height_component"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="2dp"
         android:visibility="gone"
         tools:visibility="visible" />
 
