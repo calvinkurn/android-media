@@ -1,9 +1,8 @@
 package com.tokopedia.product.detail.view.viewholder.gwp.adapter
 
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.extensions.getColorChecker
@@ -30,6 +29,7 @@ class GWPCardOfProductViewHolder(
         val color = context.getColorChecker(unifyprinciplesR.color.Unify_NN0)
         binding.gwpCardItem.setCardUnifyBackgroundColor(color)
     }
+
     override fun bind(data: GWPWidgetUiModel.Card.Product) {
         setTitle(title = data.title)
         setProductName(name = data.productName)
@@ -71,6 +71,7 @@ class GWPCardOfProductViewHolder(
     ) = createProductImageView().apply {
         setMarginEnd(isLastIndex = isLastIndex)
         loadImage(url = image.imageUrl)
+        setImageOverlay(counter = image.counter)
         setTextCounter(counter = image.counter)
     }.root
 
@@ -93,10 +94,17 @@ class GWPCardOfProductViewHolder(
         }
     }
 
+    private fun GwpProductImageBinding.setImageOverlay(counter: String) {
+        if (counter.isNotBlank()) {
+            val color = root.context.getColorChecker(unifyprinciplesR.color.Unify_Overlay_Lvl2)
+            gwpProductImage.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+        }
+    }
+
     private fun GwpProductImageBinding.setTextCounter(counter: String) {
         if (counter.isNotBlank()) {
             val showMoreView = createProductImageShowMoreView()
-            showMoreView.gwpProductImageShowMoreText.text = counter
+            showMoreView.root.text = counter
         }
     }
 

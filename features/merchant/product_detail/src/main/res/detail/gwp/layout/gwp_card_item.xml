@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/gwp_card_item"
     android:layout_height="wrap_content"
-    android:layout_width="328dp"
+    android:layout_width="wrap_content"
     app:card_type="border">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="328dp"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="12dp">

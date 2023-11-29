@@ -155,8 +155,7 @@ class GWPWidget @JvmOverloads constructor(
         if (mColors.size < MIN_GRADIENT_COLOR) {
             setBackgroundColor(mColors.firstOrNull().orZero())
         } else {
-            val gradient = RotatableGradientDrawable(GradientDrawable.Orientation.TL_BR, mColors)
-            gradient.shape = GradientDrawable.RECTANGLE
+            val gradient = GradientDrawable(GradientDrawable.Orientation.TL_BR, mColors)
             background = gradient
         }
     }
