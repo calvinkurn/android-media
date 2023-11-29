@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder.gwp
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
@@ -8,7 +9,7 @@ import com.tokopedia.product.detail.databinding.ItemDynamicProductGwpBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
-import com.tokopedia.product.detail.view.viewholder.gwp.widget.GWPWidgetRouter
+import com.tokopedia.product.detail.view.viewholder.gwp.widget.GWPWidgetListener
 import com.tokopedia.product.detail.view.viewholder.gwp.widget.GWPWidgetTracker
 
 /**
@@ -19,7 +20,7 @@ import com.tokopedia.product.detail.view.viewholder.gwp.widget.GWPWidgetTracker
 class GWPViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : ProductDetailPageViewHolder<GWPUiModel>(view), GWPWidgetRouter {
+) : ProductDetailPageViewHolder<GWPUiModel>(view), GWPWidgetListener {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_gwp
@@ -54,10 +55,10 @@ class GWPViewHolder(
     }
 
     override fun bind(element: GWPUiModel?, payloads: MutableList<Any>) {
-        val element = element ?: return
+        val mElement = element ?: return
         if (payloads.isEmpty()) return
 
-        bind(element = element)
+        bind(element = mElement)
     }
 
     override fun goToAppLink(appLink: String) {
@@ -66,5 +67,9 @@ class GWPViewHolder(
 
     override fun goToWebView(link: String) {
         listener.goToWebView(url = link)
+    }
+
+    override fun getRecyclerViewPool(): RecyclerView.RecycledViewPool? {
+        return listener.getParentRecyclerViewPool()
     }
 }

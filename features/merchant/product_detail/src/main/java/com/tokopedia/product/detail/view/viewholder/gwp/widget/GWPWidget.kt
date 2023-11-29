@@ -4,13 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.RotateDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -23,7 +21,6 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.utils.ItemSpaceDecorator
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
-import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.databinding.GwpCardListBinding
 import com.tokopedia.product.detail.databinding.GwpWidgetBinding
 import com.tokopedia.product.detail.view.util.isInflated
@@ -73,13 +70,18 @@ class GWPWidget @JvmOverloads constructor(
         )
         adapter = cardAdapter
         addItemDecoration(ItemSpaceDecorator(space = CARD_ITEM_SPACING))
+        optimizeNestedRecyclerView()
+    }
+
+    private fun RecyclerView.optimizeNestedRecyclerView() {
+        setRecycledViewPool(listener?.getRecyclerViewPool())
         setHasFixedSize(true)
     }
 
-    private var router: GWPWidgetRouter? = null
+    private var listener: GWPWidgetListener? = null
 
-    fun init(router: GWPWidgetRouter) {
-        this.router = router
+    fun init(router: GWPWidgetListener) {
+        this.listener = router
     }
 
     fun setData(state: GWPWidgetUiState, tracker: GWPWidgetTracker) {
@@ -159,7 +161,7 @@ class GWPWidget @JvmOverloads constructor(
             background = gradient
         }
     }
-    
+
     private fun getGradientColors(colors: String) = colors.split(",").map {
         val color = it.trim()
         getStringUnifyColor(color = color, default = Int.ZERO)
@@ -192,8 +194,8 @@ class GWPWidget @JvmOverloads constructor(
 
     private fun setRouting(action: ActionUiModel) {
         when (action.type) {
-            ActionUiModel.APPLINK -> router?.goToAppLink(appLink = action.link)
-            ActionUiModel.WEBVIEW -> router?.goToWebView(link = action.link)
+            ActionUiModel.APPLINK -> listener?.goToAppLink(appLink = action.link)
+            ActionUiModel.WEBVIEW -> listener?.goToWebView(link = action.link)
             else -> {
                 // no-ops
             }

@@ -11,6 +11,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.viewallcard.ViewAllCard
 import timber.log.Timber
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.viewallcard.R as viewallcardR
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -22,11 +23,16 @@ class GWPCardOfShowMoreViewHolder(
 ) : GWPCardViewHolder<GWPWidgetUiModel.Card.LoadMore>(binding.rootView) {
 
     init {
+        binding.mode = ViewAllCard.MODE_NORMAL
+        setupCardView()
+    }
+
+    private fun setupCardView() {
         val context = binding.context
         val color = context.getColorChecker(unifyprinciplesR.color.Unify_NN0)
-        binding.mode = ViewAllCard.MODE_NORMAL
+
         binding.cardView.cardType = CardUnify2.TYPE_BORDER
-        binding.cardView.setMargin(0,0,0,0)
+        binding.cardView.setMargin(0, 0, 0, 0)
         binding.cardView.setLayoutHeight(CARD_HEIGHT)
         binding.cardView.setLayoutWidth(CARD_WIDTH)
         binding.cardView.setCardUnifyBackgroundColor(color)
@@ -40,7 +46,8 @@ class GWPCardOfShowMoreViewHolder(
     }
 
     companion object {
-        val ID = ViewAllCard.hashCode()
+        val ID = viewallcardR.layout.view_all_card_layout
+
         private val CARD_HEIGHT = 88.toPx()
         private val CARD_WIDTH = 99.toPx()
 

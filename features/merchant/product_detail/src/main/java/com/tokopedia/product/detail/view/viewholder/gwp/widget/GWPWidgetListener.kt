@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder.gwp.widget
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 
@@ -8,7 +9,9 @@ import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
  * Project name: android-tokopedia-core
  **/
 
-interface GWPWidgetRouter {
+interface GWPWidgetListener {
+    fun getRecyclerViewPool(): RecyclerView.RecycledViewPool?
+
     fun goToAppLink(appLink: String)
 
     fun goToWebView(link: String)
