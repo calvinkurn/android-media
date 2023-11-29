@@ -214,6 +214,7 @@ class TokoNowHomeFragment :
         private const val PARAM_AFFILIATE_CHANNEL = "channel"
         private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
         private const val MAX_VIEW_POOL = 99
+        private const val MEASURE_SPEC_DEFAULT = 0
 
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
@@ -910,6 +911,7 @@ class TokoNowHomeFragment :
             }
             rvHome?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
             addHomeComponentScrollListener()
+            registerAdapterDataObserver()
         }
     }
 
@@ -1432,14 +1434,8 @@ class TokoNowHomeFragment :
     }
 
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
-        /**
-         *  due to ViewHolder not directly binding the data in android 9 after shimmering,
-         *  so here we submit loading state only if the version more than 9
-         **/
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            showHomeLayout(data)
-        }
         hideTopSpacingView()
+        showHomeLayout(data)
         checkAddressDataAndServiceArea()
         showHideChooseAddress()
         hideSwitcherCoachMark()
@@ -2114,6 +2110,33 @@ class TokoNowHomeFragment :
         val affiliateUuid = uri?.getQueryParameter(PARAM_AFFILIATE_UUID).orEmpty()
         val affiliateChannel = uri?.getQueryParameter(PARAM_AFFILIATE_CHANNEL).orEmpty()
         viewModelTokoNow.initAffiliateCookie(affiliateUuid, affiliateChannel)
+    }
+
+    private fun registerAdapterDataObserver() {
+        /**
+         *  ViewHolder frequently is not directly calling bind function in android 9 after shimmering,
+         *  to solve that issue we enforce RecyclerView to always measure the layout every time adapter updated, so it will trigger the bind function.
+         **/
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            rvHome?.apply {
+                adapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                    override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+                            width.orZero(),
+                            View.MeasureSpec.EXACTLY
+                        )
+
+                        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+                            height.orZero(),
+                            View.MeasureSpec.EXACTLY
+                        )
+
+                        measure(widthMeasureSpec, heightMeasureSpec)
+                        layout(MEASURE_SPEC_DEFAULT, MEASURE_SPEC_DEFAULT, widthMeasureSpec, heightMeasureSpec)
+                    }
+                })
+            }
+        }
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
