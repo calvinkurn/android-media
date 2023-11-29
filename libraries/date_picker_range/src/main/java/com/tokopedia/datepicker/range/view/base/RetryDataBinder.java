@@ -1,4 +1,4 @@
-package com.tokopedia.base.list.seller.view.old;
+package com.tokopedia.datepicker.range.view.base;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,8 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.TextView;
-
-import com.tokopedia.base.list.seller.R;
 /**
  * Created by Nisie on 2/26/16.
  */
@@ -43,7 +41,7 @@ public class RetryDataBinder extends DataBinder<RetryDataBinder.ViewHolder> {
     }
 
     @Override
-    public RetryDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
+    public ViewHolder newViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(com.tokopedia.abstraction.R.layout.design_retry, null);
         view.setLayoutParams(new AbsListView.LayoutParams(-1, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -81,7 +79,7 @@ public class RetryDataBinder extends DataBinder<RetryDataBinder.ViewHolder> {
         return 1;
     }
 
-    public void setOnRetryListenerRV(RetryDataBinder.OnRetryListener listener) {
+    public void setOnRetryListenerRV(OnRetryListener listener) {
         this.listener = listener;
     }
 

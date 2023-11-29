@@ -1,4 +1,4 @@
-package com.tokopedia.base.list.seller.view.old;
+package com.tokopedia.datepicker.range.view.base;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.ViewGroup;

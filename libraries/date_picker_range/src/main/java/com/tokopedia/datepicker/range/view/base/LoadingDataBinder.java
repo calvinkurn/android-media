@@ -1,4 +1,4 @@
-package com.tokopedia.base.list.seller.view.old;
+package com.tokopedia.datepicker.range.view.base;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
-import com.tokopedia.base.list.seller.R;
 /**
  * Created by Nisie on 2/26/16.
  */
@@ -30,7 +29,7 @@ public class LoadingDataBinder extends DataBinder<LoadingDataBinder.ViewHolder> 
     }
 
     @Override
-    public LoadingDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
+    public ViewHolder newViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(com.tokopedia.baselist.R.layout.loading_layout, null);
         return new ViewHolder(view);
