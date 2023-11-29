@@ -69,6 +69,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         const val TRACKER_ID_48662 = "48662"
 
         const val ITEM_NAME_NEW_FOR_YOU_FORMAT = "/ - p%s - %s - banner - %s - %s - %s - %s"
+        const val FOR_YOU_CREATIVE_NAME = "ForYou card"
     }
 
     private object ActionField {
@@ -337,7 +338,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             putBundle(
                 Promotion.KEY,
                 Bundle().also {
-                    it.putString(Promotion.CREATIVE_NAME, "")
+                    it.putString(Promotion.CREATIVE_NAME, CustomAction.FOR_YOU_CREATIVE_NAME)
                     it.putString(Promotion.CREATIVE_SLOT, creativeSlot)
                     it.putString(Promotion.ITEM_ID, recomEntityCardUiModel.id)
                     it.putString(
@@ -404,7 +405,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             putBundle(
                 Promotion.KEY,
                 Bundle().also {
-                    it.putString(Promotion.CREATIVE_NAME, "")
+                    it.putString(Promotion.CREATIVE_NAME, CustomAction.FOR_YOU_CREATIVE_NAME)
                     it.putString(Promotion.CREATIVE_SLOT, itemPosition)
                     it.putString(Promotion.ITEM_ID, itemId)
                     it.putString(
@@ -448,7 +449,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         val itemId = "${homeChannelId}_${homeRecomPlayWidgetUiModel.cardId}_${playWidgetTrackerModel.playChannelId}"
 
         val promotion = mapOf(
-            Promotion.CREATIVE_NAME to "",
+            Promotion.CREATIVE_NAME to CustomAction.FOR_YOU_CREATIVE_NAME,
             Promotion.CREATIVE_SLOT to itemPosition,
             Items.ITEM_ID to itemId,
             Items.ITEM_NAME to itemName
@@ -506,7 +507,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                     Promotion.KEY,
                     listOf(
                         mapOf(
-                            Promotion.CREATIVE_NAME to "",
+                            Promotion.CREATIVE_NAME to CustomAction.FOR_YOU_CREATIVE_NAME,
                             Promotion.CREATIVE_SLOT to creativeSlot,
                             Items.ITEM_ID to recomEntityCardUiModel.id,
                             Items.ITEM_NAME to itemName
@@ -538,7 +539,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
         val listPromotions = arrayListOf(
             Promotion(
-                creative = "",
+                creative = CustomAction.FOR_YOU_CREATIVE_NAME,
                 position = creativeSlot,
                 id = homeTopAdsRecommendationBannerTopAdsUiModel.cardId,
                 name = itemName
@@ -590,7 +591,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             putBundle(
                 Promotion.KEY,
                 Bundle().also {
-                    it.putString(Promotion.CREATIVE_NAME, "")
+                    it.putString(Promotion.CREATIVE_NAME, CustomAction.FOR_YOU_CREATIVE_NAME)
                     it.putString(Promotion.CREATIVE_SLOT, creativeSlot)
                     it.putString(Promotion.ITEM_ID, bannerTopAdsUiModel.cardId)
                     it.putString(
