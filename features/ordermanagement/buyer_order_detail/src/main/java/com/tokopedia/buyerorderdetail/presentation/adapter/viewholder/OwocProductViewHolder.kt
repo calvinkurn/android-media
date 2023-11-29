@@ -15,6 +15,8 @@ import com.tokopedia.order_management_common.databinding.PartialBmgmAddOnSummary
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.util.setupCardDarkMode
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
 
@@ -45,12 +47,16 @@ class OwocProductViewHolder(
 
     private val addOnDivider: DividerUnify? = itemView?.findViewById(R.id.dividerBomDetailProduct)
 
+    private val productCardContainer: CardUnify? =
+        itemView?.findViewById(R.id.cardBuyerOrderDetailProduct)
+
     override fun bind(element: OwocProductListUiModel.ProductUiModel?) {
         element?.let {
             this.element = it
             setupProductList(it)
             setupAddonSection(it.addOnSummaryUiModel)
             setupDividerAddonSummary(it.addOnSummaryUiModel)
+            productCardContainer?.setupCardDarkMode()
         }
     }
 

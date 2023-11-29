@@ -14,6 +14,7 @@ import com.tokopedia.order_management_common.databinding.ItemOrderProductBmgmSec
 import com.tokopedia.order_management_common.presentation.adapter.ProductBmgmItemAdapter
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.order_management_common.util.RecyclerViewItemDivider
+import com.tokopedia.order_management_common.util.setupCardDarkMode
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.order_management_common.R as order_management_commonR
@@ -45,6 +46,7 @@ class BmgmSectionViewHolder(
         setupBmgmItems(element.bmgmItemList)
         setupBmgmTotalPrice(element.totalPriceText)
         setupBmgmTotalPriceReductionInfo(element.totalPriceReductionInfoText)
+        binding.containerParentBmgm.setupCardDarkMode()
     }
 
     override fun bind(

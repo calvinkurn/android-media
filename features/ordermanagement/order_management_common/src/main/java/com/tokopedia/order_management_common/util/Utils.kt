@@ -14,7 +14,9 @@ import com.tokopedia.order_management_common.constants.OrderManagementConstants.
 import com.tokopedia.order_management_common.constants.OrderManagementConstants.STRING_BUTTON_VARIANT_FILLED
 import com.tokopedia.order_management_common.constants.OrderManagementConstants.STRING_BUTTON_VARIANT_GHOST
 import com.tokopedia.order_management_common.constants.OrderManagementConstants.STRING_BUTTON_VARIANT_TEXT_ONLY
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 private const val ROTATE_ICON_DURATION = 250L
 private const val ROTATE_0 = 0F
@@ -63,4 +65,12 @@ fun IconUnify.rotateBackIcon() {
 
 fun IconUnify.rotateIcon() {
     animate().rotation(ROTATE_180).duration = ROTATE_ICON_DURATION
+}
+
+fun CardUnify.setupCardDarkMode(){
+    cardType = if (context.isDarkMode()) {
+        CardUnify.TYPE_BORDER
+    } else {
+        CardUnify.TYPE_SHADOW
+    }
 }
