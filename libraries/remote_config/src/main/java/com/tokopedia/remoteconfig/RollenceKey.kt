@@ -131,6 +131,6 @@ object RollenceKey {
     const val SEARCH_1_INST_AUTO_VARIANT_3 = "variant_1_ac"
     const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_2_ac"
     const val PRODUCT_CARD_SRE_2024 = "productcard_sre2024"
-
+    const val SEARCH_ROLLOUT_UNIVERSE_V2 = "rollout_universe_v2"
     const val ANDROID_INTERNAL_TEST = "android_internal"
 }
