@@ -6,9 +6,4 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    android:paddingHorizontal="16dp"
-    android:overScrollMode="never"
-    android:orientation="horizontal"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    tools:itemCount="3"
-    tools:listitem="@layout/gwp_card_item" />
+    android:paddingHorizontal="16dp" />

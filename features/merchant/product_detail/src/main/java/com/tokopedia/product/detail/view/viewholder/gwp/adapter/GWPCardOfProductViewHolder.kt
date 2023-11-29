@@ -2,14 +2,19 @@ package com.tokopedia.product.detail.view.viewholder.gwp.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.product.detail.common.extensions.getColorChecker
+import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.databinding.GwpCardItemBinding
 import com.tokopedia.product.detail.databinding.GwpProductImageBinding
 import com.tokopedia.product.detail.databinding.GwpProductImageCountBinding
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.product.detail.R as productdetailR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -20,6 +25,11 @@ class GWPCardOfProductViewHolder(
     private val binding: GwpCardItemBinding
 ) : GWPCardViewHolder<GWPWidgetUiModel.Card.Product>(binding.root) {
 
+    init {
+        val context = binding.root.context
+        val color = context.getColorChecker(unifyprinciplesR.color.Unify_NN0)
+        binding.gwpCardItem.setCardUnifyBackgroundColor(color)
+    }
     override fun bind(data: GWPWidgetUiModel.Card.Product) {
         setTitle(title = data.title)
         setProductName(name = data.productName)
@@ -59,6 +69,7 @@ class GWPCardOfProductViewHolder(
         isLastIndex: Boolean,
         image: GWPWidgetUiModel.Card.Product.Images
     ) = createProductImageView().apply {
+        setMarginEnd(isLastIndex = isLastIndex)
         loadImage(url = image.imageUrl)
         setTextCounter(counter = image.counter)
     }.root
@@ -66,6 +77,14 @@ class GWPCardOfProductViewHolder(
     private fun createProductImageView(): GwpProductImageBinding {
         val inflater = LayoutInflater.from(binding.root.context)
         return GwpProductImageBinding.inflate(inflater, binding.gwpImages, false)
+    }
+
+    private fun GwpProductImageBinding.setMarginEnd(isLastIndex: Boolean) {
+        if (!isLastIndex) {
+            root.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                this?.marginEnd = PRODUCT_IMAGE_MARGIN_END
+            }
+        }
     }
 
     private fun GwpProductImageBinding.loadImage(url: String) {

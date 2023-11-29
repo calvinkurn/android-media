@@ -1,11 +1,16 @@
 package com.tokopedia.product.detail.view.viewholder.gwp.adapter
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.tokopedia.product.detail.databinding.GwpShowMoreBinding
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
+import com.tokopedia.kotlin.extensions.view.setLayoutWidth
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
+import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.viewallcard.ViewAllCard
 import timber.log.Timber
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -13,14 +18,21 @@ import timber.log.Timber
  **/
 
 class GWPCardOfShowMoreViewHolder(
-    private val binding: GwpShowMoreBinding
-) : GWPCardViewHolder<GWPWidgetUiModel.Card.LoadMore>(binding.root) {
+    private val binding: ViewAllCard
+) : GWPCardViewHolder<GWPWidgetUiModel.Card.LoadMore>(binding.rootView) {
 
     init {
-        binding.gwpProductImageView.mode = ViewAllCard.MODE_NORMAL
+        val context = binding.context
+        val color = context.getColorChecker(unifyprinciplesR.color.Unify_NN0)
+        binding.mode = ViewAllCard.MODE_NORMAL
+        binding.cardView.cardType = CardUnify2.TYPE_BORDER
+        binding.cardView.setMargin(0,0,0,0)
+        binding.cardView.setLayoutHeight(CARD_HEIGHT)
+        binding.cardView.setLayoutWidth(CARD_WIDTH)
+        binding.cardView.setCardUnifyBackgroundColor(color)
     }
 
-    override fun bind(data: GWPWidgetUiModel.Card.LoadMore) = with(binding.gwpProductImageView) {
+    override fun bind(data: GWPWidgetUiModel.Card.LoadMore) = with(binding) {
         description = data.title
         cardView.setOnClickListener {
             Timber.d("loadmore click")
@@ -29,11 +41,12 @@ class GWPCardOfShowMoreViewHolder(
 
     companion object {
         val ID = ViewAllCard.hashCode()
+        private val CARD_HEIGHT = 88.toPx()
+        private val CARD_WIDTH = 99.toPx()
 
         fun create(parent: ViewGroup): GWPCardOfShowMoreViewHolder {
-            val inflater = LayoutInflater.from(parent.context)
-            val binding = GwpShowMoreBinding.inflate(inflater, parent, false)
-            return GWPCardOfShowMoreViewHolder(binding)
+            val viewAllCard = ViewAllCard(parent.context)
+            return GWPCardOfShowMoreViewHolder(viewAllCard)
         }
     }
 }

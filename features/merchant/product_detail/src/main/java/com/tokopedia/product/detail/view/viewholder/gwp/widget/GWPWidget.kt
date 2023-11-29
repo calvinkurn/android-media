@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.RotateDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -21,6 +23,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.utils.ItemSpaceDecorator
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
+import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.databinding.GwpCardListBinding
 import com.tokopedia.product.detail.databinding.GwpWidgetBinding
 import com.tokopedia.product.detail.view.util.isInflated
@@ -139,7 +142,6 @@ class GWPWidget @JvmOverloads constructor(
     private fun setCardList(uiModel: GWPWidgetUiModel) {
         if (uiModel.cards.isNotEmpty()) {
             cardListBinding.root.show()
-
             cardAdapter.submitList(uiModel.cards)
         } else if (binding.gwpCardList.isInflated()) { // stub has already inflated
             cardListBinding.root.gone()
@@ -153,10 +155,12 @@ class GWPWidget @JvmOverloads constructor(
         if (mColors.size < MIN_GRADIENT_COLOR) {
             setBackgroundColor(mColors.firstOrNull().orZero())
         } else {
-            background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, mColors)
+            val gradient = RotatableGradientDrawable(GradientDrawable.Orientation.TL_BR, mColors)
+            gradient.shape = GradientDrawable.RECTANGLE
+            background = gradient
         }
     }
-
+    
     private fun getGradientColors(colors: String) = colors.split(",").map {
         val color = it.trim()
         getStringUnifyColor(color = color, default = Int.ZERO)
