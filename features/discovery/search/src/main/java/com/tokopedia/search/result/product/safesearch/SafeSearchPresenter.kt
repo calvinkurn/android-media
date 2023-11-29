@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.safesearch
 
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 
 interface SafeSearchPresenter {
@@ -8,5 +9,5 @@ interface SafeSearchPresenter {
     fun modifySearchParameterIfShowAdultEnabled(searchParameter: SearchParameter)
     fun showAdultForAdultTicker(ticker: TickerDataView)
     fun onSafeSearchViewDestroyed()
-    fun showBottomSheetInappropriate()
+    fun showBottomSheetInappropriate(itemProduct: ProductItemDataView)
 }

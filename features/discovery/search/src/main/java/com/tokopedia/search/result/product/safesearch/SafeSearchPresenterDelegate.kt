@@ -3,6 +3,7 @@ package com.tokopedia.search.result.product.safesearch
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.search.result.domain.model.UserDOB
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.product.dialog.BottomSheetInappropriateView
 import javax.inject.Inject
@@ -42,8 +43,11 @@ class SafeSearchPresenterDelegate @Inject constructor(
         safeSearchView.release()
     }
 
-    override fun showBottomSheetInappropriate() {
-        bottomSheetInappropriateView.openInappropriateWarningBottomSheet(isAdultUser()) {
+    override fun showBottomSheetInappropriate(itemProduct: ProductItemDataView) {
+        bottomSheetInappropriateView.openInappropriateWarningBottomSheet(
+            itemProduct,
+            isAdultUser(),
+        ) {
             enableShowAdult()
         }
     }
