@@ -37,7 +37,7 @@ android {
     sourceSets {
         main {
             res {
-                srcDirs 'src/main/res', 'src/main/res/layouts/feed'
+                srcDirs 'src/main/res', 'src/main/res/layouts/widgethistory'
             }
         }
     }

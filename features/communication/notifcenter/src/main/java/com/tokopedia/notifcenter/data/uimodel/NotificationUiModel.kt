@@ -192,13 +192,17 @@ data class NotificationUiModel(
         return isSingleLineWidget() && widget.description.isNotEmpty()
     }
 
-    fun noWidgetWithTrackHistory(): Boolean {
-        return typeLink == TYPE_TRACK_HISTORY && widgetType == NO_WIDGET &&
+    fun noWidgetOrderWithTrackHistory(): Boolean {
+        return typeLink == TYPE_TRACK_HISTORY_ORDER && widgetType == NO_WIDGET &&
             trackHistory.isNotEmpty()
     }
 
-    fun isTrackHistory(): Boolean {
-        return typeLink == TYPE_TRACK_HISTORY
+    fun isTrackHistoryOrder(): Boolean {
+        return typeLink == TYPE_TRACK_HISTORY_ORDER
+    }
+
+    fun isTrackHistoryFeed(): Boolean {
+        return typeLink == TYPE_TRACK_HISTORY_FEED
     }
 
     fun hasTrackHistory(): Boolean {
@@ -214,11 +218,12 @@ data class NotificationUiModel(
         const val STATUS_READ = 2
 
         const val TYPE_DEFAULT = 0
+        const val TYPE_RECOM = 2
+        const val TYPE_ATC = 3
         const val TYPE_BANNER = 4
         const val TYPE_BUY = 5
-        const val TYPE_ATC = 3
-        const val TYPE_TRACK_HISTORY = 8
-        const val TYPE_RECOM = 2
+        const val TYPE_TRACK_HISTORY_ORDER = 8
+        const val TYPE_TRACK_HISTORY_FEED = 9
 
         const val BS_TYPE_LongerContent = 0
         const val BS_TYPE_ProductCheckout = 1
