@@ -114,8 +114,8 @@ fun createLoadMoreState(): TokoFoodListUiModel {
     )
 }
 
-fun createKeroEditAddressResponse(latitude: String, longitude: String, isSuccess: Int = 1): com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse.Data {
-    return com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse.Data(
+fun createKeroEditAddressResponse(latitude: String, longitude: String, isSuccess: Int = 1): KeroEditAddressResponse.Data {
+    return KeroEditAddressResponse.Data(
         keroEditAddress = KeroEditAddressResponse.Data.KeroEditAddress(
             data = KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(
                 isSuccess = isSuccess,
@@ -125,8 +125,8 @@ fun createKeroEditAddressResponse(latitude: String, longitude: String, isSuccess
     )
 }
 
-fun createKeroEditAddressResponseFail(): com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse.Data {
-    return com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse.Data(
+fun createKeroEditAddressResponseFail(): KeroEditAddressResponse.Data {
+    return KeroEditAddressResponse.Data(
         keroEditAddress = KeroEditAddressResponse.Data.KeroEditAddress(
             data = KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(
                 isSuccess = 0,
