@@ -82,6 +82,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.tokofood.R as tokofoodR
 
 class SearchResultFragment :
     BaseDaggerFragment(),
@@ -741,7 +742,7 @@ class SearchResultFragment :
     private fun onResultFromChangeAddress(resultCode: Int) {
         if (resultCode == CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS) {
             showToaster(
-                context?.getString(com.tokopedia.tokofood.R.string.search_srp_ooc_success_change_address)
+                context?.getString(tokofoodR.string.search_srp_ooc_success_change_address)
                     .orEmpty(),
                 getOkayMessage()
             )
@@ -818,7 +819,7 @@ class SearchResultFragment :
         if (!isAdded) return
         if (sortFilterBottomSheet == null) {
             val customTitle =
-                context?.getString(com.tokopedia.tokofood.R.string.search_srp_filter_title)
+                context?.getString(tokofoodR.string.search_srp_filter_title)
                     .orEmpty()
             sortFilterBottomSheet = SortFilterBottomSheet.createInstance(customTitle)
         }
@@ -844,7 +845,7 @@ class SearchResultFragment :
     }
 
     private fun getApplyButtonText(): String {
-        return context?.getString(com.tokopedia.tokofood.R.string.search_srp_filter_apply).orEmpty()
+        return context?.getString(tokofoodR.string.search_srp_filter_apply).orEmpty()
     }
 
     private fun goToMerchantPage(applink: String) {
@@ -876,7 +877,7 @@ class SearchResultFragment :
 
     private fun showPinpointErrorMessage(throwable: Throwable?) {
         val errorMessage = throwable?.message
-            ?: context?.getString(com.tokopedia.tokofood.R.string.search_srp_ooc_failed_edit_pinpoint)
+            ?: context?.getString(tokofoodR.string.search_srp_ooc_failed_edit_pinpoint)
                 .orEmpty()
         showToasterError(errorMessage)
     }
@@ -897,7 +898,7 @@ class SearchResultFragment :
     }
 
     private fun getOkayMessage(): String =
-        context?.getString(com.tokopedia.tokofood.R.string.search_srp_ooc_okay).orEmpty()
+        context?.getString(tokofoodR.string.search_srp_ooc_okay).orEmpty()
 
     private fun logErrorException(
         throwable: Throwable,

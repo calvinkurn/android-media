@@ -55,7 +55,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
-import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
@@ -109,6 +108,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Job
 import javax.inject.Inject
+import com.tokopedia.tokofood.R as tokofoodR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoFoodHomeFragment :
     BaseMultiFragment(),
@@ -208,7 +209,7 @@ class TokoFoodHomeFragment :
     private var onScrollChangedListenerList =
         mutableListOf<ViewTreeObserver.OnScrollChangedListener>()
     private val spaceZero: Int
-        get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+        get() = context?.resources?.getDimension(unifyprinciplesR.dimen.unify_space_0)
             ?.toInt() ?: 0
 
     override fun getScreenName(): String {
@@ -501,7 +502,7 @@ class TokoFoodHomeFragment :
                     applyPadding = false,
                     applyPaddingNegative = true
                 )
-                toolbar.setToolbarTitle(getString(R.string.tokofood_title))
+                toolbar.setToolbarTitle(getString(tokofoodR.string.tokofood_title))
                 toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
                 setToolbarSearch()
             }
@@ -528,7 +529,7 @@ class TokoFoodHomeFragment :
         navToolbar?.setupSearchbar(
             hints = listOf(
                 HintData(
-                    placeholder = getString(com.tokopedia.tokofood.R.string.search_hint_searchbar_gofood)
+                    placeholder = getString(tokofoodR.string.search_hint_searchbar_gofood)
                 )
             ),
             searchbarClickCallback = { onSearchBarClick() }
@@ -736,10 +737,10 @@ class TokoFoodHomeFragment :
         searchCoachMark?.run {
             if (shouldShow && !isShowing) {
                 val title =
-                    context?.getString(com.tokopedia.tokofood.R.string.home_coachmark_search_title)
+                    context?.getString(tokofoodR.string.home_coachmark_search_title)
                         .orEmpty()
                 val description =
-                    context?.getString(com.tokopedia.tokofood.R.string.home_coachmark_search_desc)
+                    context?.getString(tokofoodR.string.home_coachmark_search_desc)
                         .orEmpty()
                 getSearchCoachMarkItem(title, description)?.let { coachMarkItem ->
                     showCoachMark(arrayListOf(coachMarkItem), null, Int.ZERO)
@@ -824,7 +825,7 @@ class TokoFoodHomeFragment :
         val tokoFoodUSPBottomSheet = TokoFoodUSPBottomSheet.getInstance()
         tokoFoodUSPBottomSheet.setUSP(
             uspResponse,
-            getString(com.tokopedia.tokofood.R.string.home_usp_bottom_sheet_title)
+            getString(tokofoodR.string.home_usp_bottom_sheet_title)
         )
         tokoFoodUSPBottomSheet.show(parentFragmentManager, "")
     }
@@ -998,14 +999,14 @@ class TokoFoodHomeFragment :
 
     private fun createShareHome(): TokoFoodHomeShare {
         return TokoFoodHomeShare(
-            sharingText = context?.resources?.getString(R.string.home_share_main_text).orEmpty(),
+            sharingText = context?.resources?.getString(tokofoodR.string.home_share_main_text).orEmpty(),
             sharingUrl = SHARE_URL,
             sharingDeeplink = SHARE_DEEPLINK,
             thumbNailImage = THUMBNAIL_IMAGE_SHARE_URL,
-            thumbNailTitle = context?.resources?.getString(R.string.home_share_tn_title).orEmpty(),
+            thumbNailTitle = context?.resources?.getString(tokofoodR.string.home_share_tn_title).orEmpty(),
             ogImageUrl = OG_IMAGE_SHARE_URL,
-            specificPageName = context?.resources?.getString(R.string.home_share_title).orEmpty(),
-            specificPageDescription = context?.resources?.getString(R.string.home_share_desc)
+            specificPageName = context?.resources?.getString(tokofoodR.string.home_share_title).orEmpty(),
+            specificPageDescription = context?.resources?.getString(tokofoodR.string.home_share_desc)
                 .orEmpty(),
             linkerType = FOOD_TYPE
         )
@@ -1165,7 +1166,7 @@ class TokoFoodHomeFragment :
                     Int.ZERO,
                     Int.ZERO,
                     Int.ZERO,
-                    context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
+                    context?.resources?.getDimensionPixelSize(unifyprinciplesR.dimen.layout_lvl7)
                         ?: Int.ZERO
                 )
             } else {

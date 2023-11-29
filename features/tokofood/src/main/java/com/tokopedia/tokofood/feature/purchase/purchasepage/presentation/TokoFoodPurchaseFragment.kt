@@ -92,6 +92,8 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.tokofood.R as tokofoodR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -276,7 +278,7 @@ open class TokoFoodPurchaseFragment :
             it.window.decorView.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    unifyprinciplesR.color.Unify_NN0
                 )
             )
         }
@@ -565,7 +567,7 @@ open class TokoFoodPurchaseFragment :
                                         }
 
                                         val toasterMessage =
-                                            context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_notes)
+                                            context?.getString(tokofoodR.string.text_purchase_success_notes)
                                                 .orEmpty()
                                         showToaster(toasterMessage, getOkayMessage())
                                     }
@@ -581,7 +583,7 @@ open class TokoFoodPurchaseFragment :
                                     val toasterMessage = message.takeIf { cartMessage ->
                                         cartMessage.isNotBlank()
                                     }
-                                        ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_quantity)
+                                        ?: context?.getString(tokofoodR.string.text_purchase_success_quantity)
                                             .orEmpty()
                                     showToaster(toasterMessage, getOkayMessage())
                                 }
@@ -737,13 +739,13 @@ open class TokoFoodPurchaseFragment :
             errorIllustration.loadImage(NO_PINPOINT_URL)
             errorIllustration.adjustViewBounds = true
             errorTitle.text =
-                context?.getString(com.tokopedia.tokofood.R.string.text_purchase_no_pinpoint)
+                context?.getString(tokofoodR.string.text_purchase_no_pinpoint)
                     .orEmpty()
             errorDescription.text =
-                context?.getString(com.tokopedia.tokofood.R.string.text_purchase_pinpoint_benefit)
+                context?.getString(tokofoodR.string.text_purchase_pinpoint_benefit)
                     .orEmpty()
             errorAction.text =
-                context?.getString(com.tokopedia.tokofood.R.string.text_purchase_set_pinpoint)
+                context?.getString(tokofoodR.string.text_purchase_set_pinpoint)
                     .orEmpty()
             setActionClickListener {
                 viewModel.validateSetPinpoint()
@@ -787,13 +789,13 @@ open class TokoFoodPurchaseFragment :
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
                     getString(
-                        com.tokopedia.tokofood.R.string.text_purchase_delete_item,
+                        tokofoodR.string.text_purchase_delete_item,
                         productCount.toString()
                     )
                 )
-                setDescription(getString(com.tokopedia.tokofood.R.string.text_purchase_delete_all))
-                setPrimaryCTAText(getString(com.tokopedia.tokofood.R.string.text_purchase_delete))
-                setSecondaryCTAText(getString(com.tokopedia.tokofood.R.string.text_purchase_back))
+                setDescription(getString(tokofoodR.string.text_purchase_delete_all))
+                setPrimaryCTAText(getString(tokofoodR.string.text_purchase_delete))
+                setSecondaryCTAText(getString(tokofoodR.string.text_purchase_back))
                 setPrimaryCTAClickListener {
                     activityViewModel?.deleteUnavailableProducts()
                     dismiss()
@@ -808,7 +810,7 @@ open class TokoFoodPurchaseFragment :
     private fun onSuccessRemoveProduct(productCount: Int) {
         showToaster(
             context?.getString(
-                com.tokopedia.tokofood.R.string.text_purchase_success_delete,
+                tokofoodR.string.text_purchase_success_delete,
                 productCount
             ).orEmpty(),
             getOkayMessage()
@@ -901,10 +903,10 @@ open class TokoFoodPurchaseFragment :
 
     private fun getAddressMessage(isNewAddress: Boolean): String {
         return if (isNewAddress) {
-            context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_add_address)
+            context?.getString(tokofoodR.string.text_purchase_success_add_address)
                 .orEmpty()
         } else {
-            context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_edit_address)
+            context?.getString(tokofoodR.string.text_purchase_success_edit_address)
                 .orEmpty()
         }
     }
@@ -1070,15 +1072,15 @@ open class TokoFoodPurchaseFragment :
     }
 
     private fun getOkayMessage(): String =
-        context?.getString(com.tokopedia.tokofood.R.string.text_purchase_okay).orEmpty()
+        context?.getString(tokofoodR.string.text_purchase_okay).orEmpty()
 
     private fun showDefaultCheckoutGeneralError(message: String? = null) {
         val errorMessage =
             message
-                ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_failed_to_payment)
+                ?: context?.getString(tokofoodR.string.text_purchase_failed_to_payment)
                     .orEmpty()
         val actionMessage =
-            context?.getString(com.tokopedia.tokofood.R.string.text_purchase_try_again).orEmpty()
+            context?.getString(tokofoodR.string.text_purchase_try_again).orEmpty()
         showToasterError(errorMessage, actionMessage) {
             if (canPaymentButtonClicked) {
                 viewModel.setPaymentButtonLoading(true)

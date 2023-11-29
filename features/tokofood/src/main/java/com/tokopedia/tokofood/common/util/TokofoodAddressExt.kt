@@ -18,11 +18,7 @@ object TokofoodAddressExt {
                 districtId = this.chosenAddressData.districtId.toString(),
                 lat = this.chosenAddressData.latitude,
                 long = this.chosenAddressData.longitude,
-                label = String.format(
-                    "%s %s",
-                    this.chosenAddressData.addressName,
-                    this.chosenAddressData.receiverName
-                ),
+                label = "${this.chosenAddressData.addressName} ${this.chosenAddressData.receiverName}",
                 postalCode = this.chosenAddressData.postalCode,
                 warehouseId = this.tokonow.warehouseId.toString(),
                 shopId = this.tokonow.shopId.toString(),
