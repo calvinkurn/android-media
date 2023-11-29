@@ -72,7 +72,7 @@ const val MINI_CONS_CHOOSER_IMAGE_URL_DISABLED = "https://images.tokopedia.net/i
 
 const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
 const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser"
-const val EPHARMACY_QUANTITY_EDITOR = "tokopedia://epharmacy/quantity-editor"
+const val EPHARMACY_QUANTITY_EDITOR = "quantity-editor"
 
 const val DATA_TYPE = "data_type"
 const val ENABLER_NAME = "enabler_name"
