@@ -2,8 +2,15 @@ package com.tokopedia.analytics.performance.perf.performanceTracing.config.mappe
 
 data class PerfConfig(
     val activityName: String,
-    val traceName: String,
     val parsingType: String,
+    val strategy: String,
+    val traceName: String,
+    val fragmentTrace: List<FragmentTrace> = listOf()
+)
+
+data class FragmentTrace(
+    val fragmentTag: String,
+    val traceName: String,
     val strategy: String
 )
 

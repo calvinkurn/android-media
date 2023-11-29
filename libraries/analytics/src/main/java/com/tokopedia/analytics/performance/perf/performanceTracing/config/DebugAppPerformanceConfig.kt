@@ -6,11 +6,12 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.Recy
 class DebugAppPerformanceConfig : AppPerformanceConfigRepository {
     override fun getConfig(activityName: String): PagePerformanceConfig<out PerfParsingType>? {
         return PagePerformanceConfig(
-            "debug_trace_$activityName",
-            activityName,
-            PerfParsingType.XML(
+            traceName = "debug_trace_$activityName",
+            activityName = activityName,
+            parsingType = PerfParsingType.XML(
                 RecyclerViewPageParsingStrategy()
-            )
+            ),
+            fragmentConfigs = listOf()
         )
     }
 }

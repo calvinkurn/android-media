@@ -1,12 +1,19 @@
 package com.tokopedia.analytics.performance.perf.performanceTracing
 
+import android.R
 import android.app.Activity
 import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentOnAttachListener
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.AppPerformanceConfigRepository
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.FragmentPerfConfig
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.PagePerformanceConfig
 import com.tokopedia.analytics.performance.perf.performanceTracing.data.DevState
 import com.tokopedia.analytics.performance.perf.performanceTracing.data.PerformanceTraceData
@@ -61,28 +68,16 @@ class AppPerformanceTrace {
                             activityName = activity.javaClass.simpleName,
                             state = State.PERF_MEASURING
                         )
-                        when (val type = traceConfig.parsingType) {
-                            is PerfParsingType.XML -> {
-                                val strategy = type.parsingStrategy
-                                performanceTrace = XMLPagePerformanceTrace(
-                                    activity = activity,
-                                    onPerformanceTraceError = { result ->
-                                        cancelPerformanceTracing(result, activity)
-                                    },
-                                    onPerformanceTraceFinished = { result ->
-                                        finishPerformanceTracing(result, activity)
-                                    },
-                                    performanceRepository = AppPerformanceRepository(traceConfig.traceName),
-                                    loadableComponentFlow = loadableComponentFlow,
-                                    parsingStrategy = strategy
-                                ).apply {
-                                    setTraceId(activityName)
-                                    startMonitoring()
-                                }
-                            }
-                            else -> {
-                                Log.d("AppPerformanceTrace", "Parsing not supported")
-                            }
+
+                        if (traceConfig.fragmentConfigs.isNotEmpty()) {
+                            startFragmentPerformanceTrace(
+                                activity = activity, traceConfig = traceConfig
+                            )
+                        } else {
+                            startActivityPerformanceTrace(
+                                activity = activity,
+                                traceConfig = traceConfig
+                            )
                         }
                     } else {
                         currentAppPerformanceDevState = DevState(
@@ -125,6 +120,80 @@ class AppPerformanceTrace {
                     performanceTrace?.stopMonitoring(
                         Error("Activity destroyed")
                     )
+                }
+
+                private fun startActivityPerformanceTrace(
+                    activity: Activity,
+                    traceConfig: PagePerformanceConfig<out PerfParsingType>
+                ) {
+                    startPerformanceBasedOnParsingType(
+                        parsingType = traceConfig.parsingType,
+                        activity = activity,
+                        traceName = traceConfig.traceName
+                    )
+                }
+
+                private fun startFragmentPerformanceTrace(
+                    activity: Activity,
+                    traceConfig: PagePerformanceConfig<out PerfParsingType>
+                ) {
+                    (activity as? FragmentActivity)?.let {
+                        val fragmentManager = activity.supportFragmentManager // Use getFragmentManager() if you are not using the support library
+                        fragmentManager.addFragmentOnAttachListener(object : FragmentOnAttachListener {
+                            override fun onAttachFragment(fragmentManager: FragmentManager, fragment: Fragment) {
+                                val fragmentTag = fragment.tag
+
+                                if (fragmentTag != null) {
+                                    traceConfig.fragmentConfigs.forEach { fragmentConfig ->
+                                        if (fragmentTag == fragmentConfig.fragmentTag) {
+                                            (fragmentConfig as? FragmentPerfConfig<*>)?.let {
+                                                startPerformanceBasedOnParsingType(
+                                                    parsingType = it.parsingType,
+                                                    activity = activity,
+                                                    traceName = it.fragmentTag
+                                                )
+                                            }
+                                        } else {
+                                            currentAppPerformanceDevState = DevState(
+                                                activityName = activity.javaClass.simpleName,
+                                                state = State.PERF_DISABLED
+                                            )
+                                            fragmentManager.removeFragmentOnAttachListener(this)
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                    }
+                }
+
+                private fun startPerformanceBasedOnParsingType(parsingType: PerfParsingType?, activity: Activity, traceName: String) {
+                    when (val type = parsingType) {
+                        is PerfParsingType.XML -> {
+                            val strategy = type.parsingStrategy
+                            val rootView = activity.window.decorView.findViewById<View>(R.id.content)
+                            performanceTrace = XMLPagePerformanceTrace(
+                                activityName = activity.javaClass.simpleName,
+                                rootView = rootView,
+                                onPerformanceTraceError = { result ->
+                                    cancelPerformanceTracing(result, activity)
+                                },
+                                onPerformanceTraceFinished = { result ->
+                                    finishPerformanceTracing(result, activity)
+                                },
+                                performanceRepository = AppPerformanceRepository(traceName),
+                                loadableComponentFlow = loadableComponentFlow,
+                                parsingStrategy = strategy
+                            ).apply {
+                                setTraceId(activity.javaClass.simpleName)
+                                startMonitoring()
+                            }
+                        }
+
+                        else -> {
+                            Log.d("AppPerformanceTrace", "Parsing not supported")
+                        }
+                    }
                 }
 
                 private fun cancelPerformanceTracing(result: Error, activity: Activity) {

@@ -1,12 +1,11 @@
 package com.tokopedia.analytics.performance.perf.performanceTracing.trace
 
-import android.app.Activity
 import android.view.View
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
-import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.ParsingStrategy
 import com.tokopedia.analytics.performance.perf.performanceTracing.data.BlocksModel
 import com.tokopedia.analytics.performance.perf.performanceTracing.data.PerformanceTraceData
 import com.tokopedia.analytics.performance.perf.performanceTracing.repository.PerformanceRepository
+import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.ParsingStrategy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,7 +15,8 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
 
 class XMLPagePerformanceTrace(
-    val activity: Activity,
+    val activityName: String,
+    val rootView: View,
     val performanceRepository: PerformanceRepository,
     val loadableComponentFlow: MutableSharedFlow<LoadableComponent>,
     val parsingStrategy: ParsingStrategy<View>,
@@ -27,7 +27,7 @@ class XMLPagePerformanceTrace(
     companion object {
         private const val DEFAULT_TIMEOUT = 10000
     }
-    
+
     protected val scope =
         CoroutineScope(Dispatchers.Main + Job())
 
@@ -37,7 +37,7 @@ class XMLPagePerformanceTrace(
     private var performanceTraceData: AtomicReference<PerformanceTraceData> =
         AtomicReference(
             PerformanceTraceData(
-                activityName = activity.javaClass.simpleName,
+                activityName = activityName,
                 traceName = performanceRepository.getTraceName()
             )
         )
@@ -56,9 +56,8 @@ class XMLPagePerformanceTrace(
         startTime = System.currentTimeMillis()
         observeLoadableComponent()
 
-        var rootView = activity.window.decorView.findViewById<View>(android.R.id.content)
         observeXMLPagePerformance(rootView)
-        
+
         performanceRepository.startRecord()
         parsingStrategy.getViewCallbackStrategy().startObserving()
     }
@@ -75,7 +74,7 @@ class XMLPagePerformanceTrace(
     }
 
     override fun recordPerformanceData(result: Result<PerformanceTraceData>) {
-        when(result) {
+        when (result) {
             is Success -> {
                 performanceRepository.stopRecord(
                     performanceTraceData.get().blocksModel
@@ -98,7 +97,7 @@ class XMLPagePerformanceTrace(
             performanceTraceData.get().copy(timeToFirstLayout = elapsedTime)
         )
     }
-    
+
     private fun observeLoadableComponent() {
         scope.launch {
             loadableComponentFlow.collect { loadableComponent ->
@@ -134,10 +133,9 @@ class XMLPagePerformanceTrace(
             }
         }
     }
-    
+
     private fun observeXMLPagePerformance(rootView: View) {
         parsingStrategy.getViewCallbackStrategy().registerCallback {
-            
             if (isPerformanceTraceFinished) {
                 parsingStrategy.getViewCallbackStrategy().stopObserving()
             }
@@ -171,10 +169,8 @@ class XMLPagePerformanceTrace(
                         }
                     }
                 }
-
             }
         }
-        
     }
 
     fun finishParsing(result: Result<Boolean>) {
@@ -190,7 +186,7 @@ class XMLPagePerformanceTrace(
             }
         }
     }
-    
+
     private fun onLayoutRendered() {
         if (!performanceTraceData.get().ttflMeasured()) {
             recordTTFL()

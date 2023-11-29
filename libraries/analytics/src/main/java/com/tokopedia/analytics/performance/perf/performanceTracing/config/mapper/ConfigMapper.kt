@@ -2,6 +2,7 @@ package com.tokopedia.analytics.performance.perf.performanceTracing.config.mappe
 
 import com.google.gson.Gson
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.DefaultAppPerformanceConfig
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.FragmentPerfConfig
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.PagePerformanceConfig
 import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.PerfParsingType
 import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.RecyclerViewPageParsingStrategy
@@ -12,18 +13,18 @@ object ConfigMapper {
         try {
             val list = mapToConfig(json)
             DefaultAppPerformanceConfig.configs =
-                list.map {
+                list.map { perfConfig ->
                     Pair(
-                        it.activityName,
+                        perfConfig.activityName,
                         PagePerformanceConfig(
-                            traceName = it.traceName,
-                            activityName = it.activityName,
-                            when (it.strategy) {
-                                "FullRecyclerViewContent" -> PerfParsingType.XML(
-                                    RecyclerViewPageParsingStrategy()
-                                )
-                                else -> PerfParsingType.XML(
-                                    RecyclerViewPageParsingStrategy()
+                            traceName = perfConfig.traceName,
+                            activityName = perfConfig.activityName,
+                            parsingType = parseStrategy(perfConfig.strategy),
+                            fragmentConfigs = perfConfig.fragmentTrace.map {
+                                FragmentPerfConfig(
+                                    traceName = it.traceName,
+                                    parsingType = parseStrategy(it.strategy),
+                                    fragmentTag = it.fragmentTag
                                 )
                             }
                         )
@@ -31,6 +32,17 @@ object ConfigMapper {
                 }.toMap()
         } catch (e: Exception) {}
     }
+
+    private fun parseStrategy(strategy: String) =
+        when (strategy) {
+            "FullRecyclerViewContent" -> PerfParsingType.XML(
+                RecyclerViewPageParsingStrategy()
+            )
+
+            else -> PerfParsingType.XML(
+                RecyclerViewPageParsingStrategy()
+            )
+        }
 
     private fun mapToConfig(json: String): List<PerfConfig> {
         val gson = Gson()
