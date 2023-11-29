@@ -140,6 +140,10 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 tab.customView = tabView
 
                 val tabTitle: Typography? = tabView.findViewById(R.id.tpgTabTitle)
+                tabTitle?.setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    tabTitle.context.resources.getDimension(R.dimen.tab_name_font_size)
+                )
                 tabTitle?.text = tabs[currentPosition].text
 
                 if (currentPosition == 0) tab.select(uiModel) else tab.unselect(uiModel)
@@ -186,7 +190,6 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
         tabTitle?.apply {
             setTypeface(Typography.getFontType(context, true, Typography.DISPLAY_3))
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, context?.resources?.getDimension(R.dimen.tab_name_font_size) ?: return)
             setTextColor(highEmphasizeColor)
             invalidate()
         }
@@ -204,7 +207,6 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         tabTitle?.apply {
             setTypeface(Typography.getFontType(context, false, Typography.DISPLAY_3))
             setTextColor(disabledTextColor)
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, context?.resources?.getDimension(R.dimen.tab_name_font_size) ?: return)
             invalidate()
         }
     }
