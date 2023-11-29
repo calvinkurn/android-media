@@ -80,13 +80,13 @@ internal class MiniCartV2ViewModel @Inject constructor(
                     buttonBuyWording = data.miniCartWidgetData.buttonBuyWording
                 )
                 updateMiniCartLoadingState(false)
-                _miniCartSimplifiedData.value = data
+                updateMiniCartSimplifiedData(data)
             } catch (e: Exception) {
                 updateMiniCartLoadingState(false)
                 if (miniCartSimplifiedData.value != null) {
-                    _miniCartSimplifiedData.value = miniCartSimplifiedData.value
+                    updateMiniCartSimplifiedData(miniCartSimplifiedData.value!!)
                 } else {
-                    _miniCartSimplifiedData.value = MiniCartSimplifiedData()
+                    updateMiniCartSimplifiedData(MiniCartSimplifiedData())
                 }
                 _globalEvent.tryEmit(MiniCartV2GlobalEvent.FailToLoadMiniCart(e))
             }
