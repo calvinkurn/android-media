@@ -50,8 +50,8 @@ class VideoUploaderManager @Inject constructor(
             loader = base.progress
         )
 
-//        val (isValid, message) = VideoUploaderValidator(filePath, policy.videoPolicy)
-//        if (isValid.not()) return UploadResult.Error(message)
+        val (isValid, message) = VideoUploaderValidator(filePath, policy.videoPolicy)
+        if (isValid.not()) return UploadResult.Error(message)
 
         val maxSizeOfSimpleUpload = policy.videoPolicy
             ?.thresholdSizeOfVideo()
