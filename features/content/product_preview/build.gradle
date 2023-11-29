@@ -1,13 +1,6 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-parcelize'
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 
 buildscript {
     repositories {
@@ -21,8 +14,8 @@ buildscript {
 }
 
 android {
-    namespace 'com.tokopedia.product.preview'
-    testNamespace 'com.tokopedia.product.preview.test'
+    namespace 'com.tokopedia.content.product.preview'
+    testNamespace 'com.tokopedia.content.product.preview.test'
 
     defaultConfig {
         multiDexEnabled true
@@ -33,7 +26,6 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
-        compose true
     }
 
     composeOptions {
@@ -43,9 +35,7 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
 
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     kapt rootProject.ext.supportLibDependencies.kotlinMetaData
 }

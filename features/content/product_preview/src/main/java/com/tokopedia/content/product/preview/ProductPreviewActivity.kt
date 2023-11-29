@@ -1,12 +1,12 @@
-package com.tokopedia.product.preview
+package com.tokopedia.content.product.preview
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.tokopedia.product.preview.R as productpreviewR
+import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
 class ProductPreviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(productpreviewR.layout.activity_product_preview)
+        setContentView(contentproductpreviewR.layout.activity_product_preview)
     }
 }
