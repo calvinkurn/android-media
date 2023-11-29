@@ -1432,8 +1432,14 @@ class TokoNowHomeFragment :
     }
 
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
+        /**
+         *  due to ViewHolder not directly binding the data in android 9 after shimmering,
+         *  so here we submit loading state only if the version more than 9
+         **/
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            showHomeLayout(data)
+        }
         hideTopSpacingView()
-        showHomeLayout(data)
         checkAddressDataAndServiceArea()
         showHideChooseAddress()
         hideSwitcherCoachMark()
