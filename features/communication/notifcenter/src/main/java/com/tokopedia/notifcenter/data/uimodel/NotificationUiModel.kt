@@ -222,8 +222,8 @@ data class NotificationUiModel(
         const val TYPE_ATC = 3
         const val TYPE_BANNER = 4
         const val TYPE_BUY = 5
-        const val TYPE_TRACK_HISTORY_ORDER = 8
-        const val TYPE_TRACK_HISTORY_FEED = 9
+        const val TYPE_TRACK_HISTORY_ORDER = 9
+        const val TYPE_TRACK_HISTORY_FEED = 8
 
         const val BS_TYPE_LongerContent = 0
         const val BS_TYPE_ProductCheckout = 1

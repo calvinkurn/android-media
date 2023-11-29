@@ -1,15 +1,18 @@
 package com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3
 
 import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.view.adapter.NotifcenterTimelineHistoryAdapter
@@ -17,6 +20,7 @@ import com.tokopedia.notifcenter.view.adapter.NotifcenterWidgetHistoryType
 import com.tokopedia.notifcenter.view.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.view.listener.NotificationItemListener
 import com.tokopedia.unifycomponents.ContainerUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -37,11 +41,19 @@ class NotifcenterWidgetFeedHistoryNotificationViewHolder constructor(
     /**
      * First indicator / Title indicator with line
      */
-    private val titleCircleIndicator: ImageView? = itemView?.findViewById(R.id.notifcenter_iv_title_progress_indicator_circle)
+    private val titleCircleIndicator: ImageUnify? = itemView?.findViewById(R.id.notifcenter_iv_title_progress_indicator_circle)
     private val titleBottomLineIndicator: View? = itemView?.findViewById(R.id.notifcenter_bottom_line)
     private val titleGroupProgressIndicator: Group? = itemView?.findViewById(
         R.id.notifcenter_group_title_progress_indicator
     )
+
+    /**
+     * Image thumbnails
+     */
+    private val constraintLayoutImageThumbnails: ConstraintLayout? = itemView?.findViewById(R.id.notifcenter_cl_feed_images)
+    private val singleImageThumbnails: ImageUnify? = itemView?.findViewById(R.id.notifcenter_iv_feed_rect_single)
+    private val firstCircleImageThumbnails: ImageUnify? = itemView?.findViewById(R.id.notifcenter_iv_feed_circle_one)
+    private val secondCircleImageThumbnails: ImageUnify? = itemView?.findViewById(R.id.notifcenter_iv_feed_circle_two)
 
     /**
      * Feed History RV
@@ -72,6 +84,7 @@ class NotifcenterWidgetFeedHistoryNotificationViewHolder constructor(
         bindHistoryBox(element)
         bindPaddingBottom()
         bindContainerUnify(element)
+        bindImageThumbnails(element)
     }
 
     private fun bindContainerUnify(element: NotificationUiModel) {
@@ -172,7 +185,45 @@ class NotifcenterWidgetFeedHistoryNotificationViewHolder constructor(
         }
     }
 
+    private fun bindImageThumbnails(element: NotificationUiModel) {
+        when (element.thumbnailImageList.size) {
+            NO_IMAGE -> bindNoImageThumbnail()
+            SINGLE_IMAGE -> bindSingleImageThumbnail(element.thumbnailImageList.first())
+            MULTIPLE_IMAGE -> bindMultipleImageThumbnails(element.thumbnailImageList)
+            else -> bindMultipleImageThumbnails(element.thumbnailImageList) // If more than 2, use the first 2 images
+        }
+    }
+
+    private fun bindNoImageThumbnail() {
+        constraintLayoutImageThumbnails?.hide()
+        singleImageThumbnails?.hide()
+        firstCircleImageThumbnails?.hide()
+        secondCircleImageThumbnails?.hide()
+    }
+
+    private fun bindSingleImageThumbnail(imageUrl: String) {
+        constraintLayoutImageThumbnails?.show()
+        singleImageThumbnails?.loadImage(imageUrl)
+        singleImageThumbnails?.show()
+
+        firstCircleImageThumbnails?.hide()
+        secondCircleImageThumbnails?.hide()
+    }
+
+    private fun bindMultipleImageThumbnails(listImageUrl: List<String>) {
+        constraintLayoutImageThumbnails?.show()
+        firstCircleImageThumbnails?.show()
+        secondCircleImageThumbnails?.show()
+
+        firstCircleImageThumbnails?.loadImage(listImageUrl[0])
+        secondCircleImageThumbnails?.loadImage(listImageUrl[1])
+    }
+
     companion object {
         val LAYOUT = R.layout.notifcenter_widget_feed_history_item
+
+        private const val NO_IMAGE = 0
+        private const val SINGLE_IMAGE = 1
+        private const val MULTIPLE_IMAGE = 2
     }
 }
