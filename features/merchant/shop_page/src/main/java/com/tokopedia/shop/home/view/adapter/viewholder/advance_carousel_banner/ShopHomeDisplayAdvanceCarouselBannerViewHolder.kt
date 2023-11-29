@@ -52,7 +52,7 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     private var adapterShopWidgetAdvanceCarouselBanner: ShopWidgetAdvanceCarouselBannerAdapter? =
         null
     private var uiModel: ShopHomeDisplayWidgetUiModel = ShopHomeDisplayWidgetUiModel()
-    private var timer = Timer()
+    private var timer: Timer? = Timer()
 
     private val itemSelectionListener: CarouselLayoutManager.OnCenterItemSelectionListener =
         CarouselLayoutManager.OnCenterItemSelectionListener { position ->
@@ -133,14 +133,10 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
         textViewTitle?.setTextColor(titleColor)
     }
 
-    private fun isWidgetNameWithAutoScroll(): Boolean {
-        return uiModel.name == WidgetNameEnum.SLIDER_BANNER.value
-    }
-
     private fun setAutoScrollOn() {
         setAutoScrollOff()
         timer = Timer()
-        timer.scheduleAtFixedRate(
+        timer?.scheduleAtFixedRate(
             object : TimerTask() {
                 override fun run() {
                     Handler(Looper.getMainLooper()).post {
@@ -158,7 +154,8 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     }
 
     private fun setAutoScrollOff() {
-        timer.cancel()
+        timer?.cancel()
+        timer = null
     }
 
     private fun setBannerIndicatorSection() {
@@ -260,15 +257,11 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     }
 
     fun pauseTimer() {
-        if (isWidgetNameWithAutoScroll()) {
-            setAutoScrollOff()
-        }
+        setAutoScrollOff()
     }
 
     fun resumeTimer() {
-        if (isWidgetNameWithAutoScroll()) {
-            currentItem = 0
-            setAutoScrollOn()
-        }
+        currentItem = 0
+        setAutoScrollOn()
     }
 }
