@@ -183,28 +183,33 @@ class EditorViewModel @Inject constructor(
 
     fun compressImage(editorParam: EditorParam, onFinish: () -> Unit) {
         viewModelScope.launch {
-            val newMap = mutableMapOf<String, EditorUiModel>()
-            val (compressWidth, compressHeight, compressQuality) = editorParam.getCompressConfig()
+            withContext(coroutineDispatchers.io) {
+                val newMap = mutableMapOf<String, EditorUiModel>()
+                val (compressWidth, compressHeight, compressQuality) = editorParam.getCompressConfig()
 
-            _editStateList.toList().forEach { (keyPath, _) ->
-                val newKey = if (isImageFormat(keyPath)) {
-                    imageCompressionRepository.compress(
-                        path = keyPath,
-                        maxWidth = compressWidth,
-                        maxHeight = compressHeight,
-                        quality = compressQuality,
-                        shouldSkipProcess = true
-                    )
-                } else {
-                    keyPath
+                _editStateList.toList().forEach { (keyPath, _) ->
+                    val newKey = if (isImageFormat(keyPath)) {
+                        imageCompressionRepository.compress(
+                            path = keyPath,
+                            maxWidth = compressWidth,
+                            maxHeight = compressHeight,
+                            quality = compressQuality,
+                            shouldSkipProcess = true
+                        )
+                    } else {
+                        keyPath
+                    }
+
+                    newMap[newKey] = EditorUiModel(newKey)
                 }
 
-                newMap[newKey] = EditorUiModel(newKey)
-            }
+                _editStateList.clear()
+                _editStateList = newMap
 
-            _editStateList.clear()
-            _editStateList = newMap
-            onFinish()
+                withContext(coroutineDispatchers.main) {
+                    onFinish()
+                }
+            }
         }
     }
 
