@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_SALDO_ENABLE_AUTO_WD_INIT_GQL
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
@@ -406,11 +407,14 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun shouldHitAutoWdInitGql(): Boolean {
+        return remoteConfig?.getBoolean(ANDROID_SALDO_ENABLE_AUTO_WD_INIT_GQL, false) == true
+    }
 
     private fun refresh() {
         if (::saldoDetailViewModel.isInitialized) {
             saldoDetailViewModel.getUserSaldoBalance()
-            saldoDetailViewModel.getAutoWDStatus()
+            saldoDetailViewModel.getAutoWDStatus(shouldHitAutoWdInitGql())
             saldoHistoryFragment?.onRefresh()
         }
     }
@@ -418,7 +422,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     fun resetPage() {
         if (::saldoDetailViewModel.isInitialized) {
             saldoDetailViewModel.getUserSaldoBalance()
-            saldoDetailViewModel.getAutoWDStatus()
+            saldoDetailViewModel.getAutoWDStatus(shouldHitAutoWdInitGql())
             saldoHistoryFragment?.startInitialFetch()
         }
     }
@@ -699,7 +703,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         saldoDetailViewModel.getUserSaldoBalance()
         saldoDetailViewModel.getTickerWithdrawalMessage()
         saldoDetailViewModel.getMerchantCreditLateCountValue()
-        saldoDetailViewModel.getAutoWDStatus()
+        saldoDetailViewModel.getAutoWDStatus(shouldHitAutoWdInitGql())
     }
 
     private fun setBalance(summaryUsebleDepositIdr: String) {
