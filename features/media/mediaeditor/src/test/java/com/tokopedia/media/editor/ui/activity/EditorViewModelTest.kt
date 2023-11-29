@@ -395,7 +395,7 @@ class EditorViewModelTest {
             )
         } returns expectedCompressedPath
         viewModel.initStateList(pathSampleList)
-        viewModel.compressImage(editorParam)
+        viewModel.compressImage(editorParam) {}
 
         // Then
         assertEquals(
@@ -414,7 +414,7 @@ class EditorViewModelTest {
         mockkStatic(::isImageFormat)
         every { isImageFormat(any()) } returns false
         viewModel.initStateList(pathSampleList)
-        viewModel.compressImage(editorParam)
+        viewModel.compressImage(editorParam) {}
 
         // Then
         assertEquals(viewModel.editStateList.size, pathSampleList.size)
