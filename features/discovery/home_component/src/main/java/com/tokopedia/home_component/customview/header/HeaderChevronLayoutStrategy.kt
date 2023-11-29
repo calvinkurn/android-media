@@ -55,11 +55,11 @@ class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
         colorMode: Int?
     ) {
         val header = channel.channelHeader
-        if (header.hasSeeMoreApplink() || ctaMode != DynamicChannelHeaderView.CTA_MODE_SEE_ALL) {
-            ctaButtonRevamp = itemView.findViewById(home_component_headerR.id.cta_chevron_icon)
-            ctaButtonRevampContainer = itemView.findViewById(home_component_headerR.id.cta_chevron_container)
-            ctaBorder = itemView.findViewById(home_component_headerR.id.cta_chevron_border)
+        ctaButtonRevamp = itemView.findViewById(home_component_headerR.id.cta_chevron_icon)
+        ctaButtonRevampContainer = itemView.findViewById(home_component_headerR.id.cta_chevron_container)
+        ctaBorder = itemView.findViewById(home_component_headerR.id.cta_chevron_border)
 
+        if (header.hasSeeMoreApplink() || ctaMode != DynamicChannelHeaderView.CTA_MODE_SEE_ALL) {
             setCtaIcon(
                 itemView.context,
                 ctaBorder,
