@@ -69,7 +69,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             .warehouseId(orderCart.shop.warehouseId)
             .cartData(orderCart.cartData)
             .groupMetadata(orderCart.groupMetadata)
-            .promoCode(if (orderShipment.isApplyLogisticPromo) orderShipment.logisticPromoViewModel?.promoCode ?: "" else "")
+            .promoCode(orderShipment.promoCode)
             .build()
             .apply {
                 occ = "1"
