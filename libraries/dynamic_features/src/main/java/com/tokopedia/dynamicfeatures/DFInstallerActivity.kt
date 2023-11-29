@@ -37,6 +37,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 import com.tokopedia.globalerror.R as globalerrorR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Activity that handles for installing new dynamic feature module
@@ -78,6 +79,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
 
     private var allowRunningServiceFromActivity: Boolean = false
     private var cancelDownloadBeforeInstallInPage: Boolean = false
+    private var hasStartTarget: Boolean = false
 
     private var job = Job()
     private var timerJob: Job = Job()
@@ -90,6 +92,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         private const val EXTRA_FALLBACK_WEB = "dffallbackurl"
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
+        private var TIMER_CHECK_INTERVAL = TimeUnit.SECONDS.toMillis(8) // check per timeout
         const val DOWNLOAD_MODE_PAGE = "Page"
         const val TIMEOUT_ERROR_MESSAGE = "timeout"
     }
@@ -114,6 +117,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
 
         setContentView(R.layout.activity_dynamic_feature_installer)
         initializeViews()
+        cancelAllPendingRequest()
         if (DFInstaller.isInstalled(this, moduleName)) {
             onSuccessfulLoad(moduleName, launch = true)
         } else if (isAutoDownload) {
@@ -161,7 +165,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         progressBar.progressDrawable.setColorFilter(
             MethodChecker.getColor(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                unifyprinciplesR.color.Unify_GN500
             ), android.graphics.PorterDuff.Mode.MULTIPLY
         )
     }
@@ -224,9 +228,18 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         }
         timerJob.cancel()
         timerJob = launch(Dispatchers.IO) {
-            delay(TimeUnit.SECONDS.toMillis(timeout))
+            var elapsedTime = 0L
+            val timeoutTotal = TimeUnit.SECONDS.toMillis(timeout)
+            while (elapsedTime < timeoutTotal) {
+                delay(TIMER_CHECK_INTERVAL)
+                if (DFInstaller.isInstalled(this@DFInstallerActivity, moduleName)) {
+                    onSuccessfulLoad(moduleName, launch = true)
+                    return@launch
+                }
+                elapsedTime += TIMER_CHECK_INTERVAL
+            }
             withContext(Dispatchers.Main) {
-                cancelPreviousDownload()
+                cancelAllPendingRequest()
                 // show timeoutError
                 onFailed(TIMEOUT_ERROR_MESSAGE + "after" + timeout)
             }
@@ -251,6 +264,11 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     }
 
     private fun launchAndForwardIntent(applink: String) {
+        // make sure the target is launched only once per Activity installer
+        if (hasStartTarget) {
+            return
+        }
+        hasStartTarget = true
         RouteManager.getIntentNoFallback(this, applink)?.let {
             it.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             intent.extras?.let { passBundle ->
@@ -385,7 +403,6 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     }
 
     private fun cancelAllPendingRequest(){
-        val manager = DFInstaller.getManager(this.applicationContext)?: return
         val sessionStates = manager.sessionStates
         val result = sessionStates.result
         if (result.isNotEmpty()) {
