@@ -35,7 +35,7 @@ object ConfigMapper {
 
     private fun parseStrategy(strategy: String) =
         when (strategy) {
-            "FullRecyclerViewContent" -> PerfParsingType.XML(
+            "XMLFullRecyclerViewContent" -> PerfParsingType.XML(
                 RecyclerViewPageParsingStrategy()
             )
 
