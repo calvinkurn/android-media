@@ -69,6 +69,9 @@ class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
             )
 
             ctaButtonRevampContainer?.show()
+            ctaButtonRevamp?.show()
+            ctaBorder?.show()
+
             ctaButtonRevamp?.setOnClickListener {
                 when (ctaMode) {
                     DynamicChannelHeaderView.CTA_MODE_SEE_ALL -> listener?.onSeeAllClick(channel.channelHeader.getLink())
@@ -81,6 +84,8 @@ class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
             }
         } else {
             ctaButtonRevampContainer?.hide()
+            ctaButtonRevamp?.hide()
+            ctaBorder?.hide()
         }
     }
 
