@@ -77,12 +77,13 @@ fun MyApp() {
 
 internal val listOfReport: List<ReportUiModel>
     get() = buildList {
-        add(ReportUiModel(text = "Ini adalah konten spam", isSelected = false))
+        add(ReportUiModel(text = "Ini adalah konten spam", isSelected = false, reasonCode = 1))
         add(
             ReportUiModel(
                 text = "Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/norma sosial",
-                isSelected = false
+                isSelected = false,
+                reasonCode = 2,
             )
         )
-        add(ReportUiModel(text = "Lainnya", isSelected = false))
+        add(ReportUiModel(text = "Lainnya", isSelected = false, reasonCode = 3))
     }

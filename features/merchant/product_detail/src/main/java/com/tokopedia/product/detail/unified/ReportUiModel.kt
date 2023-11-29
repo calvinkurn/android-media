@@ -5,5 +5,6 @@ package com.tokopedia.product.detail.unified
  */
 data class ReportUiModel(
     val text: String,
-    val isSelected: Boolean,
+    val isSelected: Boolean, //delete?
+    val reasonCode: Int,
 )
