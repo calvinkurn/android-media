@@ -43,8 +43,9 @@ internal object EPharmacyNavigator {
     }
 
     internal fun prescriptionAttachmentDoneRedirection(activity: Activity?, appLink: String?, source: String, result: ArrayList<EPharmacyMiniConsultationResult>): PapCtaRedirection {
-        if(appLink.isNullOrBlank() )
+        if (appLink.isNullOrBlank()) {
             return PapCtaRedirection.None
+        }
 
         if (appLink.contains(EPHARMACY_APP_CHECKOUT_APPLINK)) {
             if (source != EPHARMACY_PPG_SOURCE_CHECKOUT) {
@@ -66,8 +67,8 @@ internal object EPharmacyNavigator {
                 Intent()
             )
             activity?.finish()
-        } else if (appLink.contains(EPHARMACY_QUANTITY_EDITOR)){
-           PapCtaRedirection.RedirectionQuantityEditor(getTConsultationIds(result))
+        } else if (appLink.contains(EPHARMACY_QUANTITY_EDITOR)) {
+            return PapCtaRedirection.RedirectionQuantityEditor(getTConsultationIds(result))
         } else {
             RouteManager.route(activity, appLink)
         }

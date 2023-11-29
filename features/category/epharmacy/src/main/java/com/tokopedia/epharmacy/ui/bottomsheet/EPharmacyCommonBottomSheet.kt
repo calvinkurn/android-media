@@ -1,6 +1,5 @@
 package com.tokopedia.epharmacy.ui.bottomsheet
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.epharmacy.R
@@ -43,24 +42,19 @@ class EPharmacyCommonBottomSheet : BottomSheetUnify() {
     private fun setUpTitle() {
         setTitle("Perubahan jumlah pesanan")
         setCloseClickListener {
-            activity?.finish()
+            dismiss()
         }
     }
 
     companion object {
 
         const val COMPONENT_NAME = "ComponentName"
-        private const val TYPE_QUANTITY_EDITOR = "quantity-editor"
+        const val TYPE_QUANTITY_EDITOR = "quantity-editor"
 
         fun newInstance(bundle: Bundle): EPharmacyCommonBottomSheet {
             return EPharmacyCommonBottomSheet().apply {
                 arguments = bundle
             }
         }
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        activity?.finish()
     }
 }

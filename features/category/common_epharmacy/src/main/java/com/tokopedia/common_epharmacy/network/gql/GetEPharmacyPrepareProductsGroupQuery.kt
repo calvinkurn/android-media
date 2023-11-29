@@ -100,6 +100,7 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                         is_ethical_drug
                         product_image
                         item_weight
+                        price
                         product_total_weight_fmt
                         qty_comparison {
                           initial_qty

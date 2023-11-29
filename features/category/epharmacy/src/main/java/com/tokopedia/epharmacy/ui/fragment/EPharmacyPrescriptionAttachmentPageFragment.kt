@@ -94,7 +94,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     private var ePharmacyGlobalError: GlobalError? = null
     private var trackingSentBoolean = false
 
-    private var  tConsultationId = 0L
+    private var tConsultationId = 0L
     private var source = EPHARMACY_PPG_SOURCE_CHECKOUT
     private var isSendResult = false
 
@@ -178,7 +178,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         val params = mutableMapOf<String, Any?>(
             EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to source
         )
-        if(!tConsultationId.isLessThanEqualZero()){
+        if (!tConsultationId.isLessThanEqualZero()) {
             params[EPharmacyPrepareProductsGroupUseCase.PARAM_TOKO_CONSULTATION_IDS] = arrayOf(tConsultationId)
         }
         return params
@@ -472,12 +472,14 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             source,
             ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout()
         ).let { result ->
-            when(result) {
+            when (result) {
                 is PapCtaRedirection.RedirectionUpdateQuantity -> ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart(ePharmacyAttachmentUiUpdater)
                 is PapCtaRedirection.RedirectionQuantityEditor -> {
                     EPharmacyCommonBottomSheet.newInstance(
                         Bundle().apply {
-                            putStringArrayList(EPHARMACY_TOKO_CONSULTATION_IDS,
+                            putString(EPharmacyCommonBottomSheet.COMPONENT_NAME, EPharmacyCommonBottomSheet.TYPE_QUANTITY_EDITOR)
+                            putStringArrayList(
+                                EPHARMACY_TOKO_CONSULTATION_IDS,
                                 ArrayList(result.tConsultationIds)
                             )
                         }
