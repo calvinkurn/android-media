@@ -11,6 +11,7 @@ import com.tokopedia.order_management_common.databinding.PartialBmgmAddOnSummary
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.util.setupCardDarkMode
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.DetailProductCardItemBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
@@ -42,6 +43,11 @@ class SomDetailNonProductBundleCardViewHolder(
         productDetailViewHolder?.bind(element.product)
         setupDividerAddonSummary(element.addOnSummaryUiModel)
         setupAddonSection(element.addOnSummaryUiModel)
+        setupContainerBackground()
+    }
+
+    private fun setupContainerBackground() {
+        binding?.detailProductCardItem?.setupCardDarkMode()
     }
 
     private fun setupDividerAddonSummary(addOnSummaryUiModel: AddOnSummaryUiModel?) {

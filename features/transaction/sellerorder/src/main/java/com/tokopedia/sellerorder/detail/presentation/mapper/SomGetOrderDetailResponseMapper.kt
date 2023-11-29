@@ -1,18 +1,22 @@
 package com.tokopedia.sellerorder.detail.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
+import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder.GetSomDetail.AddOnInfo
 import com.tokopedia.sellerorder.detail.data.model.SomDetailProducts
 import com.tokopedia.sellerorder.detail.data.model.SomDetailShipping
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactory
 import com.tokopedia.sellerorder.detail.presentation.model.BaseProductUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.SomDetailAddOnOrderLevelUiModel
 
 object SomGetOrderDetailResponseMapper {
 
@@ -113,7 +117,7 @@ object SomGetOrderDetailResponseMapper {
     ): List<BaseProductUiModel> {
         return arrayListOf<BaseProductUiModel>().apply {
             includeProducts(products, addOnIcon, addOnLabel, addOnsExpandableState)
-            includeOrderAddOn(addOnInfo, addOnsExpandableState)
+            includeOrderAddOn(addOnInfo, addOnIcon, addOnLabel, addOnsExpandableState)
         }
     }
 
@@ -201,21 +205,23 @@ object SomGetOrderDetailResponseMapper {
     }
 
     private fun ArrayList<BaseProductUiModel>.includeOrderAddOn(
-        addOnInfo: SomDetailOrder.GetSomDetail.AddOnInfo?,
+        addOnInfo: AddOnInfo?,
+        addOnIcon: String,
+        addOnLabel: String,
         addOnsExpandableState: List<String>
     ) {
         addOnInfo?.orderLevelAddOnSummary?.let { addOnSummary ->
             add(
-                NonProductBundleUiModel(
-                    addOnSummaryUiModel = com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
+                SomDetailAddOnOrderLevelUiModel(
+                    addOnSummaryUiModel = AddOnSummaryUiModel(
                         addOnIdentifier = addOnSummary.label,
                         totalPriceText = addOnSummary.totalPriceStr,
-                        addonsLogoUrl = "",
-                        addonsTitle = "",
+                        addonsLogoUrl = addOnIcon,
+                        addonsTitle = addOnLabel,
                         addonItemList = addOnSummary.addons.map { addon ->
                             val addOnNote = addon.metadata?.addOnNote
                             val infoLink = addon.metadata?.infoLink
-                            com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel(
+                            AddonItemUiModel(
                                 priceText = addon.priceStr,
                                 quantity = addon.quantity,
                                 addonsId = addon.id,

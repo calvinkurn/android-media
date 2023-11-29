@@ -106,7 +106,6 @@ class BmgmAddOnViewHolder(
         val disableTruncate = addonItemUiModel.tips.isNotEmpty()
 
         layoutAddOnDescription.run {
-            setIsCopyable(copyable = addonItemUiModel.noteCopyable)
             setReceiverName(addonItemUiModel.toStr)
             setSenderName(addonItemUiModel.fromStr)
             setDescription(
@@ -114,6 +113,7 @@ class BmgmAddOnViewHolder(
                 addonItemUiModel.descriptionExpanded,
                 disableTruncate
             )
+            setIsCopyable(copyable = addonItemUiModel.noteCopyable)
             setMarginBottomAddonDescWidget()
             listener = this@BmgmAddOnViewHolder
             show()
