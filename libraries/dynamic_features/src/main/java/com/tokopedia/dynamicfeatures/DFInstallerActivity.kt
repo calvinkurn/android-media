@@ -36,6 +36,7 @@ import kotlinx.coroutines.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.globalerror.R as globalerrorR
 
 /**
  * Activity that handles for installing new dynamic feature module
@@ -313,7 +314,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         when (errorCodeTemp) {
             SplitInstallErrorCode.PLAY_STORE_NOT_FOUND.toString() -> {
                 updateInformationView(
-                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
+                    globalerrorR.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_play_store_title),
                     getString(R.string.download_error_play_store_subtitle),
                     getString(R.string.goto_playstore),
@@ -323,7 +324,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             }
 
             ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE -> updateInformationView(
-                com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
+                globalerrorR.drawable.unify_globalerrors_500,
                 getString(R.string.download_error_os_and_play_store_title),
                 getString(R.string.download_error_os_and_play_store_subtitle),
                 getString(R.string.goto_seting),
@@ -351,7 +352,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             )
 
             SplitInstallErrorCode.NETWORK_ERROR.toString() -> updateInformationView(
-                com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection,
+                globalerrorR.drawable.unify_globalerrors_connection,
                 getString(R.string.download_error_connection_title),
                 getString(R.string.download_error_connection_subtitle),
                 getString(R.string.df_installer_try_again),
@@ -368,17 +369,31 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                 { PlayServiceUtils.gotoPlayStore(this) },
                 getString(R.string.continue_without_install)
             )
-
             else -> {
-                toggleDfConfig()
+                if (errorCodeTemp == SplitInstallErrorCode.ACTIVE_SESSIONS_LIMIT_EXCEEDED.toString()) {
+                    cancelAllPendingRequest()
+                } else {
+                    toggleDfConfig()
+                }
                 updateInformationView(
-                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
+                    globalerrorR.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_general_title),
                     getString(R.string.download_error_general_subtitle),
                     getString(R.string.df_installer_try_again),
                     ::downloadFeature,
                     getString(R.string.continue_without_install)
                 )
+            }
+        }
+    }
+
+    private fun cancelAllPendingRequest(){
+        val manager = DFInstaller.getManager(this.applicationContext)?: return
+        val sessionStates = manager.sessionStates
+        val result = sessionStates.result
+        if (result.isNotEmpty()) {
+            result.forEach {
+                manager.cancelInstall(it.sessionId())
             }
         }
     }
