@@ -52,6 +52,7 @@ dependencies {
      * COMPOSE
      */
     implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.composeDependencies.accompanistFlowLayout
     implementation rootProject.ext.composeDependencies.composeActivity
     implementation rootProject.ext.composeDependencies.composeConstraint

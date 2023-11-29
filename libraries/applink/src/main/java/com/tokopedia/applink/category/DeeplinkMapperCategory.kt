@@ -5,6 +5,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 
 object DeeplinkMapperCategory {
     fun getRegisteredCategoryNavigation(uri: Uri): String {
@@ -21,6 +24,16 @@ object DeeplinkMapperCategory {
 
         return UriUtil.buildUri(ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, identifier)
 
+    }
+
+    fun getNewExploreCategoryNavigation(deeplink: String): String {
+        val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+        val isNewExploreCategory = abTestPlatform.getString(RollenceKey.JELAJAH_REVAMP, RollenceKey.EXPLORE_CATEGORY_DEFAULT) == RollenceKey.EXPLORE_CATEGORY_EXP
+        return if (isNewExploreCategory) {
+            ApplinkConstInternalDiscovery.INTERNAL_HOME_EXPLORE_CATEGORY
+        } else {
+            getRegisteredNavigationExploreCategory(deeplink)
+        }
     }
 
     fun getRegisteredNavigationExploreCategory(deeplink: String): String {

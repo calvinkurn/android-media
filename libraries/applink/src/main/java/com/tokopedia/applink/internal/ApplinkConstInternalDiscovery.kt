@@ -31,4 +31,6 @@ object ApplinkConstInternalDiscovery {
     const val DISCOVERY_CATEGORY_DETAIL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_MARKETPLACE/category/{DEPARTMENT_ID}/"
 
     const val SOS = "${ApplinkConstInternalGlobal.DISCOVERY}/sos"
+
+    const val INTERNAL_HOME_EXPLORE_CATEGORY = "$INTERNAL_DISCOVERY/home-explore-category"
 }

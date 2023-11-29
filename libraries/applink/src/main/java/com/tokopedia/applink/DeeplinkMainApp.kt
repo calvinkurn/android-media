@@ -202,7 +202,7 @@ object DeeplinkMainApp {
         ),
         "category-explore" to mutableListOf(
             DLP.goTo { deeplink: String ->
-                DeeplinkMapperCategory.getRegisteredNavigationExploreCategory(deeplink)
+                DeeplinkMapperCategory.getNewExploreCategoryNavigation(deeplink)
             }
         ),
         "changeinactivephone" to mutableListOf(
