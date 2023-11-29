@@ -24,6 +24,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.test.application.annotations.UiTest
 import io.mockk.every
 import io.mockk.mockkStatic
+import io.mockk.unmockkStatic
 import org.junit.Test
 
 @UiTest
@@ -82,6 +83,7 @@ class RegisterNormalCase : RegisterInitialBase() {
             inputEmailOrPhone("yoris.prayogo+3@tokopedia.com")
             clickSubmit()
             intended(hasData(ApplinkConstInternalUserPlatform.SCP_OTP))
+            unmockkStatic(RemoteConfigInstance::class)
         }
     }
 
