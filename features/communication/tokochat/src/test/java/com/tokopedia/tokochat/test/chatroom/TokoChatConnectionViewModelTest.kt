@@ -1,30 +1,37 @@
+ 
 package com.tokopedia.tokochat.test.chatroom
 
 import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
-import com.tokopedia.tokochat.utils.observeAwaitValue
+import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel.Companion.DELAY_UPDATE_ORDER_STATE
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
 class TokoChatConnectionViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
-    fun `when doCheckChatConnection should set the connection check job`() {
-        runBlocking {
+    fun `when doCheckChatConnection should set the connection check job and set the value`() {
+        runTest {
             // Given
-            val connectionDummy = true
             coEvery {
-                getChannelUseCase.isChatConnected()
-            } returns connectionDummy
+                tokoChatRoomUseCase.isChatConnected()
+            } returns true
 
             // When
             viewModel.doCheckChatConnection()
+            advanceTimeBy(DELAY_UPDATE_ORDER_STATE + 1000) // first delay
 
-            val result = viewModel.isChatConnected.observeAwaitValue(time = 6000)
+            // Given
+            coEvery {
+                tokoChatRoomUseCase.isChatConnected()
+            } returns false
+            advanceTimeBy(DELAY_UPDATE_ORDER_STATE + 1000) // second delay
 
             // Then
             coVerify(exactly = 1) {
@@ -32,21 +39,20 @@ class TokoChatConnectionViewModelTest : TokoChatViewModelTestFixture() {
             }
 
             coVerify {
-                getChannelUseCase.isChatConnected()
+                tokoChatRoomUseCase.isChatConnected()
             }
 
-            Assert.assertEquals(connectionDummy, result)
-            Assert.assertNotEquals(null, viewModel.connectionCheckJob)
+            Assert.assertEquals(false, viewModel.isChatConnected.value)
         }
     }
 
     @Test
     fun `when cancelCheckConnection should set connectionCheckJob as null`() {
-        runBlocking {
+        runTest {
             // Given
             val connectionDummy = true
             coEvery {
-                getChannelUseCase.isChatConnected()
+                tokoChatRoomUseCase.isChatConnected()
             } returns connectionDummy
 
             // When
@@ -59,40 +65,44 @@ class TokoChatConnectionViewModelTest : TokoChatViewModelTestFixture() {
     }
 
     @Test
-    fun `when currentCoroutineContext on doCheckChatConnection is not active should not check chat connected`() {
-        runBlocking {
+    fun `when currentCoroutineContext on doCheckChatConnection is not active should not continue check chat connected`() {
+        runTest {
+            // Given
+            every {
+                tokoChatRoomUseCase.isChatConnected()
+            } returns true
             // When
             viewModel.doCheckChatConnection()
             viewModel.connectionCheckJob?.cancel()
-            Thread.sleep(6000) // Wait until delay end
+            advanceTimeBy(DELAY_UPDATE_ORDER_STATE + 1000)
 
             // Then
-            coVerify(exactly = 0) {
-                getChannelUseCase.isChatConnected()
+            coVerify(exactly = 1) {
+                tokoChatRoomUseCase.isChatConnected()
             }
         }
     }
 
     @Test
     fun `when currentCoroutineContext is inactive on doCheckChatConnection while looping should not check chat connected anymore`() {
-        runBlocking {
+        runTest {
             // When
             viewModel.doCheckChatConnection()
-            Thread.sleep(6000) // Wait until delay end
+            advanceTimeBy(DELAY_UPDATE_ORDER_STATE + 1000) // Wait until delay end
 
             viewModel.connectionCheckJob?.cancel()
-            Thread.sleep(6000) // Wait until delay end
+            advanceTimeBy(DELAY_UPDATE_ORDER_STATE + 1000) // Wait until delay end
 
             // Then
             coVerify(exactly = 1) {
-                getChannelUseCase.isChatConnected()
+                tokoChatRoomUseCase.isChatConnected()
             }
         }
     }
 
     @Test
     fun `set connection check job`() {
-        runBlocking {
+        runTest {
             // Given
             val dummyJob = mockk<Job>(relaxed = true)
 
@@ -105,21 +115,21 @@ class TokoChatConnectionViewModelTest : TokoChatViewModelTestFixture() {
     }
 
     @Test
-    fun `when failed doCheckChatConnection should give throwable on error livedata`() {
-        runBlocking {
+    fun `when failed doCheckChatConnection should not intervene with chatroom`() {
+        runTest {
             // Given
             coEvery {
-                getChannelUseCase.isChatConnected()
+                tokoChatRoomUseCase.isChatConnected()
             } throws throwableDummy
 
             // When
             viewModel.doCheckChatConnection()
-            Thread.sleep(6000)
+            advanceTimeBy(DELAY_UPDATE_ORDER_STATE + 1000)
 
             // Then
             Assert.assertEquals(
-                false,
-                viewModel.isChatConnected.observeAwaitValue()
+                true,
+                viewModel.isChatConnected.value
             )
         }
     }

@@ -4,12 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.design.text.SearchInputView
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/et_sse_log_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:imeOptions="actionSearch"
         android:inputType="text"
+        android:padding="10dp"
+        app:search_bar_show_icon="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

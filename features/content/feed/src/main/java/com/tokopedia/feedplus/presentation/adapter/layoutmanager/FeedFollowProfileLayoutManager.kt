@@ -7,9 +7,9 @@ import com.tokopedia.content.common.ui.layoutmanager.FocusedCarouselLayoutManage
  * Created By : Jonathan Darwin on July 04, 2023
  */
 class FeedFollowProfileLayoutManager(
-    context: Context,
+    context: Context
 ) : FocusedCarouselLayoutManager(context) {
 
-    override val heightPercentage: Double
+    override val heightRatio: Double
         get() = 2.0
 }

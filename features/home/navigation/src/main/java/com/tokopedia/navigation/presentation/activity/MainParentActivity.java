@@ -37,6 +37,7 @@ import androidx.lifecycle.LifecycleOwnerKt;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.tokopedia.darkmodeconfig.common.DarkModeIntroductionLauncher;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
@@ -149,7 +150,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
     public static final int REQUEST_CODE_LOGIN = 12137;
-    public static final String FEED_PAGE = "FeedIntermediaryFragment";
+    public static final String FEED_PAGE = "FeedBaseFragment";
     public static final int UOH_MENU = 4;
     public static final int WISHLIST_MENU = 3;
     public static final String DEFAULT_NO_SHOP = "0";
@@ -276,6 +277,7 @@ public class MainParentActivity extends BaseActivity implements
                     PERFORMANCE_TRACE_HOME,
                     LifecycleOwnerKt.getLifecycleScope(this),
                     this,
+                    null,
                     null
             );
         } catch (Exception e) {
@@ -311,6 +313,7 @@ public class MainParentActivity extends BaseActivity implements
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
         }
         sendNotificationUserSetting();
+        showDarkModeIntroBottomSheet();
     }
 
     private void sendNotificationUserSetting() {
@@ -799,15 +802,15 @@ public class MainParentActivity extends BaseActivity implements
 
     private void reloadPage(int position, boolean isJustLoggedIn) {
         boolean isPositionFeed = position == FEED_MENU;
-        getIntent().putExtra(
-                ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
-                isPositionFeed && isJustLoggedIn
-        );
+        Intent intent = getIntent()
+                .putExtra(
+                        ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
+                        isPositionFeed && isJustLoggedIn
+                ).putExtra(ARGS_TAB_POSITION, position);
         if (isPositionFeed) {
             recreate();
         } else {
             finish();
-            Intent intent = getIntent().putExtra(ARGS_TAB_POSITION, position);
             startActivity(intent);
         }
     }
@@ -1363,6 +1366,12 @@ public class MainParentActivity extends BaseActivity implements
 
         startActivities(new Intent[]{intentHome, intentNewUser});
         finish();
+    }
+
+    private void showDarkModeIntroBottomSheet() {
+        DarkModeIntroductionLauncher
+                .withToaster(getIntent(), getWindow().getDecorView())
+                .launch(this, getSupportFragmentManager(), userSession.get().isLoggedIn());
     }
 
     @NonNull

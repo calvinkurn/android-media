@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <com.tokopedia.home_component_header.view.HomeChannelHeaderView
+    <com.tokopedia.home_component_header.view.HomeComponentHeaderView
         android:id="@+id/home_component_header_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,6 +33,8 @@
         android:orientation="horizontal"
         android:visibility="gone"
         tools:visibility="visible"
+        android:layout_marginLeft="8dp"
+        app:layout_goneMarginTop="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

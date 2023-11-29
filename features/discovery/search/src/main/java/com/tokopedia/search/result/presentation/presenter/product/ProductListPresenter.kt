@@ -50,6 +50,7 @@ import com.tokopedia.search.result.product.broadmatch.RelatedDataView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
+import com.tokopedia.search.result.product.deduplication.Deduplication
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
@@ -70,6 +71,7 @@ import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_P
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_SHOW_PRODUCT_LIST
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
+import com.tokopedia.search.result.product.productitem.ProductItemVisitable
 import com.tokopedia.search.result.product.recommendation.RecommendationPresenterDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.LastClickedProductIdProviderImpl
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
@@ -79,6 +81,7 @@ import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenter
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenterDelegate
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenter
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenterDelegate
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
@@ -87,6 +90,7 @@ import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.visitable.VisitableFactory
 import com.tokopedia.search.result.product.visitable.VisitableFactoryFirstPageData
 import com.tokopedia.search.result.product.visitable.VisitableFactorySecondPageData
+import com.tokopedia.search.result.product.visitable.indexOfFirstProductItem
 import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.utils.SchedulersProvider
@@ -163,6 +167,7 @@ class ProductListPresenter @Inject constructor(
     private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
     private val reimagineRollence: ReimagineRollence,
     private val lastClickProductIdProvider: LastClickedProductIdProviderImpl,
+    private val deduplication: Deduplication,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -210,7 +215,6 @@ class ProductListPresenter @Inject constructor(
     private var productListType = ""
     private var keywordIntention = -1
 
-    private var productList = mutableListOf<Visitable<*>>()
     override val quickFilterList = mutableListOf<Filter>()
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
@@ -371,6 +375,8 @@ class ProductListPresenter @Inject constructor(
     private fun createProductDataView(
         searchProductModel: SearchProductModel,
     ): ProductDataView {
+        deduplication.appendProductId(searchProductModel)
+
         val lastProductItemPosition = view.lastProductItemPositionFromCache
         val keyword = view.queryKey
 
@@ -404,7 +410,6 @@ class ProductListPresenter @Inject constructor(
     private fun getViewToProcessEmptyResultDuringLoadMore() {
         val list = visitableFactory.createEmptyResultDuringLoadMoreVisitableList(
             responseCode,
-            productList,
             isLocalSearch(),
             constructGlobalSearchApplink()
         )
@@ -414,41 +419,32 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getViewToShowMoreData(
-            searchParameter: Map<String, Any>,
-            searchProductModel: SearchProductModel,
-            productDataView: ProductDataView,
+        searchParameter: Map<String, Any>,
+        searchProductModel: SearchProductModel,
+        productDataView: ProductDataView,
     ) {
+        val loadMoreProductList = createProductItemVisitableList(
+            productDataView,
+            searchParameter,
+        )
+
         val loadMoreVisitableList =
-                constructVisitableListLoadMore(productDataView, searchProductModel, searchParameter)
+            visitableFactory.createLoadMoreVisitableList(
+                VisitableFactorySecondPageData(
+                    isLocalSearch(),
+                    responseCode,
+                    searchProductModel,
+                    externalReference,
+                    constructGlobalSearchApplink(),
+                    loadMoreProductList,
+                    view.queryKey,
+                )
+            )
 
         view.removeLoading()
         view.addProductList(loadMoreVisitableList)
         if (hasNextPage()) view.addLoading()
         view.updateScrollListener()
-    }
-
-    private fun constructVisitableListLoadMore(
-            productDataView: ProductDataView,
-            searchProductModel: SearchProductModel,
-            searchParameter: Map<String, Any>,
-    ): List<Visitable<*>> {
-        val loadMoreProductList = createProductItemVisitableList(
-            productDataView,
-            searchParameter,
-        )
-        productList.addAll(loadMoreProductList)
-
-        return visitableFactory.createLoadMoreVisitableList(
-            VisitableFactorySecondPageData(
-                isLocalSearch(),
-                responseCode,
-                productList,
-                searchProductModel,
-                externalReference,
-                constructGlobalSearchApplink(),
-                loadMoreProductList,
-            )
-        )
     }
 
     private fun createProductItemVisitableList(
@@ -509,6 +505,7 @@ class ProductListPresenter @Inject constructor(
         dimension90 = Dimension90Utils.getDimension90(searchParameter)
         additionalParams = ""
         lastClickProductIdProvider.lastClickedProductId = ""
+        deduplication.clear()
 
         val requestParams = requestParamsGenerator.createInitializeSearchParam(
             searchParameter,
@@ -856,12 +853,9 @@ class ProductListPresenter @Inject constructor(
         val productDataView = createProductViewModelMapperLocalSearchRecommendation(searchProductModel)
 
         val visitableList = mutableListOf<Visitable<*>>()
-        if (isFirstPage()) {
+        if (isFirstPage())
             visitableList.add(SearchProductTitleDataView(pageTitle, isRecommendationTitle = true))
-            productList.clear()
-        }
 
-        productList.addAll(productDataView.productList)
         visitableList.addAll(productDataView.productList)
 
         incrementStart()
@@ -889,13 +883,13 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getViewToShowProductList(
-            searchParameter: Map<String, Any>,
-            searchProductModel: SearchProductModel,
-            productDataView: ProductDataView,
+        searchParameter: Map<String, Any>,
+        searchProductModel: SearchProductModel,
+        productDataView: ProductDataView,
     ) {
         adsInjector.resetTopAdsPosition()
 
-        productList = createProductItemVisitableList(productDataView, searchParameter).toMutableList()
+        val productList = createProductItemVisitableList(productDataView, searchParameter)
 
         val visitableList = visitableFactory.createFirstPageVisitableList(
             VisitableFactoryFirstPageData(
@@ -909,6 +903,7 @@ class ProductListPresenter @Inject constructor(
                 searchProductModel,
                 externalReference,
                 constructGlobalSearchApplink(),
+                view.queryKey,
             )
         )
 
@@ -927,13 +922,9 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
-        val product = productList.firstOrNull {
-            (it as ProductItemDataView).hasLabelGroupFulfillment
-        }
+        val firstProductPositionWithBOELabel =
+            list.indexOfFirstProductItem(ProductItemVisitable::hasLabelGroupFulfillment)
 
-        product ?: return -1
-
-        val firstProductPositionWithBOELabel = list.indexOf(product)
         return max(firstProductPositionWithBOELabel, -1)
     }
 

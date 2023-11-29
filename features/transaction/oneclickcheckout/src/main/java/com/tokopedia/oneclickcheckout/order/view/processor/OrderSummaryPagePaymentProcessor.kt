@@ -129,7 +129,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             isEnable = !tenor.disable,
             fee = tenor.fee,
             monthlyAmount = tenor.amount,
-            description = tenor.desc
+            description = tenor.desc,
+            gatewayCode = tenor.gatewayCode
         )
     }
 

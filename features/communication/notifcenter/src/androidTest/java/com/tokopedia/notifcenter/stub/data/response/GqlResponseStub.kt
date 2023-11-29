@@ -7,7 +7,7 @@ import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailRespo
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 
-object GqlResponseStub {
+class GqlResponseStub {
 
     lateinit var notificationDetailResponse: ResponseStub<NotifcenterDetailResponse>
     lateinit var notificationFilterResponse: ResponseStub<NotifcenterFilterResponse>
