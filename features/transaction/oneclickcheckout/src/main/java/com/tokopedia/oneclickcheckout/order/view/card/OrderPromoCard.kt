@@ -9,10 +9,10 @@ import com.tokopedia.oneclickcheckout.databinding.CardOrderPromoBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
-import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
+import com.tokopedia.promousage.domain.entity.PromoEntryPointSummaryItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.promocheckout.common.R as promocheckoutcommonR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
@@ -40,6 +40,13 @@ class OrderPromoCard(
             }
         } else {
             renderOldButtonPromo(orderPromo)
+        }
+    }
+
+    private fun initPromoButton(enableNewInterface: Boolean) {
+        if (binding.btnPromoEntryPoint.enableNewInterface != enableNewInterface) {
+            binding.btnPromoEntryPoint.enableNewInterface = enableNewInterface
+            binding.btnPromoEntryPoint.init()
         }
     }
 
@@ -159,6 +166,7 @@ class OrderPromoCard(
     }
 
     private fun renderNewButtonPromoWithNewBehavior(orderPromo: OrderPromo) {
+        initPromoButton(orderPromo.enableNewInterface)
         binding.btnPromoCheckout.gone()
         binding.btnPromoEntryPoint.visible()
         binding.dividerPromoEntryPointBottom.visible()

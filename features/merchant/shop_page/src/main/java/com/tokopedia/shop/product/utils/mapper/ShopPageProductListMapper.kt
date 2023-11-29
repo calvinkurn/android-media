@@ -108,7 +108,7 @@ object ShopPageProductListMapper {
                             }
                             it.stockLabel = labelGroupList.firstOrNull { labelGroup ->
                                 labelGroup.position.isEmpty()
-                            }?.title ?: ""
+                            }?.title.takeIf { showStockBar }.orEmpty()
                             it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
                             it.displayedPrice = campaign.discountedPriceFmt.toFloatOrNull()?.getCurrencyFormatted() ?: price.textIdr
                         } else {

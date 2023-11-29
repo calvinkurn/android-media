@@ -9,20 +9,24 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
-class GQLGetShopInfoUseCase(private var gqlQuery: String,
-                            private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ShopInfo>() {
+class GQLGetShopInfoUseCase(
+    private var gqlQuery: String,
+    private val gqlUseCase: MultiRequestGraphqlUseCase
+) : UseCase<ShopInfo>() {
 
     var params: RequestParams = RequestParams.EMPTY
     var isFromCacheFirst: Boolean = true
-    val request by lazy{
+    val request by lazy {
         GraphqlRequest(gqlQuery, ShopInfo.Response::class.java, params.parameters)
     }
 
     override suspend fun executeOnBackground(): ShopInfo {
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(request)
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
+        gqlUseCase.setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build()
+        )
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ShopInfo.Response::class.java)
@@ -59,23 +63,28 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
         const val FIELD_CREATE_INFO = "create_info"
         const val FIELD_SHOP_SNIPPET = "shop-snippet"
         const val FIELD_OTHER_GOLD_OS = "other-goldos"
+        const val FIELD_OTHER_SHIPPING_LOCATION = "other-shiploc"
         const val FIELD_OS = "os"
         const val FIELD_GOLD = "gold"
+        const val FIELD_ACTIVE_PRODUCT = "active_product"
+        const val FIELD_SHOP_STATS = "shopstats"
         const val FIELD_TOP_CONTENT = "topContent"
         const val FIELD_HOME_TYPE = "shopHomeType"
         const val FIELD_BRANCH_LINK = "branch-link"
         const val FIELD_GOLD_OS = "goldOS"
 
-        private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
-                "last_active", "location", "terms", "allow_manage",
-                "is_owner", "other-goldos", "status", "is_open", "closed_info", "create_info", "shop-snippet", "goapotik", "fs_type")
+        private val DEFAULT_SHOP_FIELDS = listOf(
+            "core", "favorite", "assets", "shipment",
+            "last_active", "location", "terms", "allow_manage",
+            "is_owner", "other-goldos", "status", "is_open", "closed_info", "create_info", "shop-snippet", "goapotik", "fs_type"
+        )
 
         @JvmStatic
         fun createParams(
-                shopIds: List<Int>,
-                shopDomain: String? = null,
-                fields: List<String> = DEFAULT_SHOP_FIELDS,
-                source: String =  ""
+            shopIds: List<Int>,
+            shopDomain: String? = null,
+            fields: List<String> = DEFAULT_SHOP_FIELDS,
+            source: String = ""
         ): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_IDS, shopIds)
             putObject(PARAM_SHOP_FIELDS, fields)

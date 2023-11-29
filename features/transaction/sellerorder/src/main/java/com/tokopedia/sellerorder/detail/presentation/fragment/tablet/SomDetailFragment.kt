@@ -94,6 +94,14 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
+    override fun handlePof(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            shouldRefreshOrderList = true
+            loadDetail()
+            showCommonToaster(getString(R.string.som_pof_toaster_success_send_pof))
+        }
+    }
+
     override fun onGoToOrderDetailButtonClicked() {
         shouldRefreshOrderList = true
         super.onGoToOrderDetailButtonClicked()

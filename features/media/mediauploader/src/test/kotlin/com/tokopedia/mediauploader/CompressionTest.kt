@@ -6,6 +6,7 @@ import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractor
 import com.tokopedia.mediauploader.common.data.entity.UploaderTracker
 import com.tokopedia.mediauploader.common.compressor.data.Result
 import com.tokopedia.mediauploader.util.BaseUploaderTest
+import com.tokopedia.mediauploader.util.generateMockVideoFile
 import com.tokopedia.mediauploader.video.data.entity.VideoInfo
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepository

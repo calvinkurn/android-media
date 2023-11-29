@@ -17,7 +17,8 @@
       "eventAction": "impression on salam",
       "sessionIris": ".+",
       "eventLabel": ".+",
-      "userId": ".*"
+      "userId": ".*",
+      "hits_time": ".*"
     },
     {
       "promotions": [

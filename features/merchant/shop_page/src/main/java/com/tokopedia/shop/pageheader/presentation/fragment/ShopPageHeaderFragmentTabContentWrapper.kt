@@ -75,7 +75,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1Header
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
-import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
@@ -812,7 +811,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     fun setSgcPlayWidgetData() {
-        shopPageHeaderFragmentHeaderViewHolder?.setSgcPlaySection(shopPagePageHeaderWidgetList)
+        shopPageHeaderFragmentHeaderViewHolder?.setSgcPlaySection(shopPagePageHeaderWidgetList, getShopHeaderConfig())
     }
 
     fun updateNavToolbarNotification() {

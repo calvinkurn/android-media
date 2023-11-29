@@ -11,6 +11,8 @@ import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product
+import com.tokopedia.search.result.product.productitem.ProductItemVisitable
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
 import com.tokopedia.search.result.product.wishlist.Wishlistable
 import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.search.utils.orNone
@@ -35,7 +37,7 @@ data class InspirationProductItemDataView(
     val topAdsClickUrl: String = "",
     val topAdsWishlistUrl: String = "",
     val ratingAverage: String = "",
-    val labelGroupDataList: List<LabelGroupDataView> = listOf(),
+    val labelGroupList: List<LabelGroupDataView> = listOf(),
     val seamlessInspirationProductType: SeamlessInspirationItemProduct,
     val dimension90: String = "",
     val componentId: String = "",
@@ -43,14 +45,21 @@ data class InspirationProductItemDataView(
     val discountPercentage: Int = 0,
     val externalReference: String = "",
     val stockBarDataView: StockBarDataView = StockBarDataView(),
-    val warehouseID: String = ""
-) : ImpressHolder(), Visitable<ProductListTypeFactory>, Wishlistable {
+    val warehouseID: String = "",
+    val layout: String = "",
+) : ImpressHolder(), ProductItemVisitable, Wishlistable {
+
+    val isShowAdsLabel: Boolean =
+        isOrganicAds && layout != LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
         if (this.id == productID) {
             this.isWishlisted = isWishlisted
         }
     }
+
+    override val hasLabelGroupFulfillment: Boolean
+        get() = LabelGroupDataView.hasFulfillment(labelGroupList)
 
     private fun asObjectDataLayer(): MutableMap<String, Any> {
         return DataLayer.mapOf(
@@ -63,20 +72,10 @@ data class InspirationProductItemDataView(
             "list", seamlessInspirationProductType.getDataLayerList(),
             "position", position,
             "dimension90", dimension90,
-            "dimension115", labelGroupDataList.getFormattedPositionName(),
+            "dimension115", labelGroupList.getFormattedPositionName(),
             "dimension131", externalReference.orNone(),
             "dimension56", warehouseID.ifNullOrBlank { "0" }
         )
-    }
-
-    fun asImpressionObjectDataLayer(): Any {
-        return asObjectDataLayer()
-    }
-
-    fun asClickObjectDataLayer(): Any {
-        return asObjectDataLayer().also {
-            it["attribution"] = "none / other"
-        }
     }
 
     companion object {
@@ -95,7 +94,7 @@ data class InspirationProductItemDataView(
             applink = product.applink,
             priceString = product.priceStr,
             ratingAverage = product.ratingAverage,
-            labelGroupDataList = product.labelGroupDataList,
+            labelGroupList = product.labelGroupDataList,
             badgeItemDataViewList = product.badgeItemDataViewList,
             shopLocation = product.shopLocation,
             shopName = product.shopName,
@@ -112,7 +111,8 @@ data class InspirationProductItemDataView(
             discountPercentage = product.discountPercentage,
             externalReference = externalReference,
             stockBarDataView = product.stockBarDataView,
-            warehouseID = product.warehouseID
+            warehouseID = product.warehouseID,
+            layout = product.layout,
         )
     }
 
