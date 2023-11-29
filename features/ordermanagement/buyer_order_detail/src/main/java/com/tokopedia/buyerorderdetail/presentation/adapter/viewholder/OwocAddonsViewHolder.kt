@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewStub
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocRecyclerviewPoolListener
 import com.tokopedia.buyerorderdetail.presentation.model.OwocAddonsListUiModel
@@ -14,6 +13,7 @@ import com.tokopedia.order_management_common.databinding.PartialBmgmAddOnSummary
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.R as order_management_commonR
 
 class OwocAddonsViewHolder(
     itemView: View,
@@ -24,7 +24,7 @@ class OwocAddonsViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_buyer_order_detail_owoc_addon_order_level
+        val LAYOUT = order_management_commonR.layout.item_buyer_order_detail_addon_order_level
     }
 
     private var addOnSummaryViewHolder: BmgmAddOnSummaryViewHolder? = null
@@ -54,7 +54,8 @@ class OwocAddonsViewHolder(
     }
 
     private fun setupAddonSection(addOnSummaryUiModel: AddOnSummaryUiModel?) {
-        val addonsViewStub: View = itemView.findViewById(R.id.itemOwocAddonsOrderViewStub)
+        val addonsViewStub: View =
+            itemView.findViewById(order_management_commonR.id.itemAddonsOrderViewStub)
         if (addOnSummaryUiModel?.addonItemList?.isNotEmpty() == true) {
             if (addonsViewStub is ViewStub) addonsViewStub.inflate() else addonsViewStub.show()
             setupAddonsBinding()
@@ -76,7 +77,7 @@ class OwocAddonsViewHolder(
         if (partialAddonSummaryBinding == null) {
             partialAddonSummaryBinding =
                 PartialBmgmAddOnSummaryBinding
-                    .bind(this.itemView.findViewById(R.id.itemOwocAddonsOrderViewStub))
+                    .bind(this.itemView.findViewById(order_management_commonR.id.itemAddonsOrderViewStub))
         }
     }
 
