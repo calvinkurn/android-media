@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group
 
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -136,6 +137,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         tabTitle?.apply {
             typeface = Typography.getFontType(context, true, Typography.DISPLAY_3)
             setTextColor(highEmphasizeColor)
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, context?.resources?.getDimension(R.dimen.tab_name_font_size) ?: return)
             invalidate()
         }
     }
@@ -152,6 +154,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         tabTitle?.apply {
             typeface = Typography.getFontType(context, false, Typography.DISPLAY_3)
             setTextColor(disabledTextColor)
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, context?.resources?.getDimension(R.dimen.tab_name_font_size) ?: return)
             invalidate()
         }
     }
