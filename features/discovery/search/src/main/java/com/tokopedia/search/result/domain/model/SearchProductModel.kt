@@ -50,7 +50,11 @@ data class SearchProductModel(
 
     @SerializedName("fetchLastFilter")
     val lastFilter: LastFilter = LastFilter(),
-) {
+
+    @SerializedName("userProfileDob")
+    var userDOB: UserDOB = UserDOB(),
+
+    ) {
 
     private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
 

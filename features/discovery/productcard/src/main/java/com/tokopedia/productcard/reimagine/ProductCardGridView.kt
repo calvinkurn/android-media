@@ -31,6 +31,7 @@ class ProductCardGridView: ConstraintLayout {
     private val videoIdentifier by lazyView<ImageView?>(R.id.productCardVideoIdentifier)
     private val threeDots by lazyView<ImageView?>(R.id.productCardThreeDots)
     private val assignedValueLabel = ProductCardLabelAssignedValue(this)
+    private val productCardSafeContainer by lazyView<ConstraintLayout?>(R.id.productCardSafeContainer)
 
     val video: VideoPlayerController by lazyThreadSafetyNone {
         VideoPlayerController(this, R.id.productCardVideo, R.id.productCardImage)
@@ -73,6 +74,7 @@ class ProductCardGridView: ConstraintLayout {
         renderLabelPreventiveThematic(productCardModel)
         renderVideo(productCardModel)
         renderThreeDots(productCardModel)
+        renderSafeContainer(productCardModel)
 
         assignedValueLabel.render(productCardModel.labelAssignedValue())
     }
@@ -102,12 +104,20 @@ class ProductCardGridView: ConstraintLayout {
         }
     }
 
+    private fun renderSafeContainer(productCardModel: ProductCardModel){
+        productCardSafeContainer?.showWithCondition(productCardModel.isImageBlurred)
+    }
+
     fun addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
         imageView?.addOnImpressionListener(holder, onView)
     }
 
     fun setThreeDotsClickListener(onClickListener: OnClickListener) {
         threeDots?.setOnClickListener(onClickListener)
+    }
+
+    fun setProductSafeOnClickListener(onClickListener: OnClickListener) {
+        cardContainer?.setOnClickListener(onClickListener)
     }
 
     override fun setOnClickListener(l: OnClickListener?) {

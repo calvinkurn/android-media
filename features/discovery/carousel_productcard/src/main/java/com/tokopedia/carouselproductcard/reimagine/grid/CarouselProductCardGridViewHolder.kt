@@ -22,6 +22,8 @@ internal class CarouselProductCardGridViewHolder(
             setOnClickListener { element.onClick() }
 
             setAddToCartOnClickListener { element.onAddToCart() }
+
+            setProductSafeOnClickListener { element.onSafeProduct() }
         }
     }
 

@@ -2,14 +2,20 @@ package com.tokopedia.search.result.product.safesearch
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.search.result.domain.model.UserDOB
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.product.dialog.BottomSheetInappropriateView
+import javax.inject.Inject
 
-class SafeSearchPresenterDelegate(
+class SafeSearchPresenterDelegate @Inject constructor(
     private val safeSearchPreference: MutableSafeSearchPreference,
     private val safeSearchView: SafeSearchView,
+    private val bottomSheetInappropriateView : BottomSheetInappropriateView,
 ) : SafeSearchPresenter {
     override val isShowAdult: Boolean
         get() = safeSearchPreference.isShowAdult
+
+    private var userDob : UserDOB = UserDOB()
 
     override fun modifySearchParameterIfShowAdultEnabled(searchParameter: SearchParameter) {
         if (isShowAdult) {
@@ -35,4 +41,20 @@ class SafeSearchPresenterDelegate(
     override fun onSafeSearchViewDestroyed() {
         safeSearchView.release()
     }
+
+    override fun showBottomSheetInappropriate() {
+        bottomSheetInappropriateView.openInappropriateWarningBottomSheet(isAdultUser()) {
+            enableShowAdult()
+        }
+    }
+
+    fun setUserProfileDob(userDob : UserDOB) {
+        this.userDob = userDob
+    }
+
+    fun isAdultContentEnable() = isShowAdult
+        && userDob.isAdultAndVerify()
+
+    private fun isAdultUser() = userDob.isAdultAndVerify()
+
 }

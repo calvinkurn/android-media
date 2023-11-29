@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.CardUnify2
@@ -21,6 +22,7 @@ class ProductCardGridCarouselView: ConstraintLayout {
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by lazyView<ImageUnify?>(R.id.productCardImage)
+    private val productCardSafeContainer by lazyView<ConstraintLayout?>(R.id.productCardSafeContainer)
 
     val additionalMarginStart: Int
         get() = cardContainer?.marginStart ?: 0
@@ -58,6 +60,7 @@ class ProductCardGridCarouselView: ConstraintLayout {
         renderer.setProductModel(productCardModel)
 
         renderAddToCart(productCardModel)
+        renderSafeContainer(productCardModel)
         stockInfo.render(productCardModel)
     }
 
@@ -69,12 +72,20 @@ class ProductCardGridCarouselView: ConstraintLayout {
         }
     }
 
+    private fun renderSafeContainer(productCardModel: ProductCardModel){
+        productCardSafeContainer?.showWithCondition(productCardModel.isImageBlurred)
+    }
+
     fun addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
         imageView?.addOnImpressionListener(holder, onView)
     }
 
     fun setAddToCartOnClickListener(onClickListener: OnClickListener) {
         findViewById<View?>(R.id.productCardAddToCart)?.setOnClickListener(onClickListener)
+    }
+
+    fun setProductSafeOnClickListener(onClickListener: OnClickListener) {
+        cardContainer?.setOnClickListener(onClickListener)
     }
 
     override fun setOnClickListener(l: OnClickListener?) {

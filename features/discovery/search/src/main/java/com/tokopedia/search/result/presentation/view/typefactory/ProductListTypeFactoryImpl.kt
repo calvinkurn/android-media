@@ -26,6 +26,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
+import com.tokopedia.search.result.presentation.view.listener.ProductSafeListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.product.ads.AdsLowOrganicTitleDataView
 import com.tokopedia.search.result.product.ads.AdsLowOrganicTitleViewHolder
@@ -134,7 +135,8 @@ class ProductListTypeFactoryImpl(
     private val inspirationProductListener: InspirationProductListener,
     private val reimagineSearch2Component: Search2Component = Search2Component.CONTROL,
     private val reimagineSearch3ProductCard: Search3ProductCard = Search3ProductCard.CONTROL,
-) : BaseAdapterTypeFactory(), ProductListTypeFactory {
+    private val productSafeListener: ProductSafeListener,
+    ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override fun type(cpmDataView: CpmDataView): Int {
         return if (reimagineSearch2Component.isReimagineShopAds()) {
@@ -284,7 +286,7 @@ class ProductListTypeFactoryImpl(
             BigGridProductItemViewHolder.LAYOUT ->
                 BigGridProductItemViewHolder(view, productListener, isSneakPeekEnabled)
             GridProductItemViewHolder.LAYOUT ->
-                GridProductItemViewHolder(view, productListener, isSneakPeekEnabled)
+                GridProductItemViewHolder(view, productListener, isSneakPeekEnabled, productSafeListener)
             CpmViewHolder.LAYOUT -> CpmViewHolder(view, bannerAdsListener)
             CpmReimagineViewHolder.LAYOUT -> CpmReimagineViewHolder(view, bannerAdsListener, reimagineSearch2Component)
             TickerViewHolder.LAYOUT -> TickerViewHolder(view, tickerListener)

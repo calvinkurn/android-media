@@ -76,6 +76,7 @@ import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGe
 import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenterDelegate
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenter
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenterDelegate
@@ -147,7 +148,7 @@ class ProductListPresenter @Inject constructor(
     private val broadMatchDelegate: BroadMatchPresenterDelegate,
     private val suggestionPresenter: SuggestionPresenter,
     private val tickerPresenter: TickerPresenter,
-    private val safeSearchPresenter: SafeSearchPresenter,
+    private val safeSearchPresenter: SafeSearchPresenterDelegate,
     wishlistPresenterDelegate: WishlistPresenterDelegate,
     dynamicFilterModelProvider: DynamicFilterModelProvider,
     bottomSheetFilterPresenter: BottomSheetFilterPresenter,
@@ -384,6 +385,7 @@ class ProductListPresenter @Inject constructor(
             isShowLocalSearchRecommendation(),
             externalReference,
             newCardType,
+            safeSearchPresenter.isAdultContentEnable()
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -596,6 +598,7 @@ class ProductListPresenter @Inject constructor(
     ) {
         if (isViewNotAttached) return
 
+        safeSearchPresenter.setUserProfileDob(searchProductModel.userDOB)
         val productDataView = createFirstProductDataView(searchProductModel)
 
         if (isSearchRedirected(productDataView))

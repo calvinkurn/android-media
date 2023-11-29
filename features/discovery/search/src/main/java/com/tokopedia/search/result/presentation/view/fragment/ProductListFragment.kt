@@ -70,6 +70,7 @@ import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
+import com.tokopedia.search.result.presentation.view.listener.ProductSafeListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
@@ -150,7 +151,8 @@ class ProductListFragment: BaseDaggerFragment(),
     FragmentProvider,
     ClassNameProvider,
     ScreenNameProvider,
-    BackToTopView {
+    BackToTopView,
+    ProductSafeListener {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -526,6 +528,7 @@ class ProductListFragment: BaseDaggerFragment(),
             ),
             reimagineSearch2Component = reimagineRollence.search2Component(),
             reimagineSearch3ProductCard = reimagineRollence.search3ProductCard(),
+            productSafeListener = this,
         )
     }
 
@@ -1465,5 +1468,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun updateSearchBarNotification() {
         searchNavigationListener?.updateSearchBarNotification()
+    }
+
+    override fun onSafeProductClickInfo(item: ProductItemDataView?, adapterPosition: Int) {
+        presenter?.showBottomSheetInappropriate()
     }
 }

@@ -8,4 +8,5 @@ interface SafeSearchPresenter {
     fun modifySearchParameterIfShowAdultEnabled(searchParameter: SearchParameter)
     fun showAdultForAdultTicker(ticker: TickerDataView)
     fun onSafeSearchViewDestroyed()
+    fun showBottomSheetInappropriate()
 }

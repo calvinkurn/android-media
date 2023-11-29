@@ -95,6 +95,7 @@ object AceSearchProductV5Query {
                     meta {
                       warehouseID
                       componentID
+                      isImageBlurred
                     }
                   }
                 }
@@ -187,6 +188,7 @@ object AceSearchProductV5Query {
                   parentID
                   warehouseID
                   isPortrait
+                  isImageBlurred
                 }
               }
               totalDataText

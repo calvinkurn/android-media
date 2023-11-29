@@ -74,6 +74,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
     var showButtonAtc: Boolean = false
     var parentId: String = DEFAULT_PARENT_ID
     var isPortrait: Boolean = false
+    var isImageBlurred: Boolean = false
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
         if (this.productID == productID) {
