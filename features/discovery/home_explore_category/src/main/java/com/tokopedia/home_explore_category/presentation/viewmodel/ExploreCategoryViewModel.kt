@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ExploreCategoryViewModel @Inject constructor(
-    private val getExploreCategoryUseCase: Lazy<GetExploreCategoryUseCase>
+    private val getExploreCategoryUseCase: Lazy<GetExploreCategoryUseCase>,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -31,8 +31,7 @@ class ExploreCategoryViewModel @Inject constructor(
             }
             _exploreCategoryState.emit(ExploreCategoryState.Success(result))
         }, onError = {
-            _exploreCategoryState.emit(ExploreCategoryState.Fail(it))
-        })
+                _exploreCategoryState.emit(ExploreCategoryState.Fail(it))
+            })
     }
-
 }

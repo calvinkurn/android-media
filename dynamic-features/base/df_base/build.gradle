@@ -64,6 +64,7 @@ dependencies {
 
     //Category
     implementation projectOrAar(rootProject.ext.features.exploreCategory)
+    implementation projectOrAar(rootProject.ext.features.homeExploreCategory)
     implementation projectOrAar(rootProject.ext.features.catalog)
     implementation projectOrAar(rootProject.ext.features.catalogLibrary)
     implementation projectOrAar(rootProject.ext.features.kategori)
