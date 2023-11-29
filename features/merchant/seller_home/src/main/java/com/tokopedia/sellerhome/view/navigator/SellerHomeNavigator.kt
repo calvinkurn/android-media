@@ -154,8 +154,9 @@ class SellerHomeNavigator(
     }
 
     private fun getHomeFragment(pageFragment: PageFragment? = null): Fragment? {
-        if (homeFragment == null) {
-            homeFragment = SellerHomeFragment.newInstance(pageFragment?.sellerHomeData)
+        val sellerHomeData = pageFragment?.sellerHomeData
+        if (sellerHomeData != null || homeFragment == null) {
+            homeFragment = SellerHomeFragment.newInstance(sellerHomeData)
         }
         return homeFragment
     }
