@@ -1,17 +1,16 @@
 package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
+import static com.tokopedia.media.loader.JvmMediaLoader.loadImage;
+
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.baselist.R;
-import com.tokopedia.design.image.ImageLoader;
-
 
 /**
  * @author kulomady on 1/24/17.
@@ -53,7 +52,7 @@ public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolde
             emptyIconImageView.setImageDrawable(MethodChecker.getDrawable(context, element.getIconRes()));
         }
         if (!TextUtils.isEmpty(element.getUrlRes())) {
-            ImageLoader.LoadImage(emptyIconImageView, element.getUrlRes());
+            loadImage(emptyIconImageView, element.getUrlRes());
         }
         if (element.getCallback() != null) {
             callback = element.getCallback();

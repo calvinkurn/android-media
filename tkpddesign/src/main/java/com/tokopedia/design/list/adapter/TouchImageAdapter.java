@@ -10,7 +10,8 @@ import android.widget.ImageView;
 
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.tokopedia.design.image.ImageLoader;
+import com.bumptech.glide.Glide;
+import com.tokopedia.design.R;
 import com.tokopedia.design.image.TouchImageView;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
@@ -59,7 +60,7 @@ public class TouchImageAdapter extends PagerAdapter {
         });
         String thumbnail = FileLoc.get(position);
         if (URLUtil.isNetworkUrl(thumbnail)) {
-            ImageLoader.LoadImage(imageView, thumbnail);
+            loadImage(imageView, thumbnail);
         } else {
             loadImageFromFile(context, imageView, thumbnail);
         }
@@ -72,6 +73,18 @@ public class TouchImageAdapter extends PagerAdapter {
         if (!TextUtils.isEmpty(thumbnail)) {
             Bitmap bitmap = ImageProcessingUtil.getBitmapFromPath(thumbnail, DEF_WIDTH, DEF_HEIGHT, false);
             imageView.setImageBitmap(bitmap);
+        }
+    }
+
+    public void loadImage(ImageView imageview, String url) {
+        if (imageview.getContext() != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .fitCenter()
+                    .dontAnimate()
+                    .placeholder(com.tokopedia.design.R.drawable.ic_loading_image)
+                    .error(R.drawable.error_drawable)
+                    .into(imageview);
         }
     }
 

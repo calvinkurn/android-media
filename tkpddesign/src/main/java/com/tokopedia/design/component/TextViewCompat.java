@@ -110,7 +110,7 @@ public class TextViewCompat extends AppCompatTextView {
         } else if (theme == LIGHT_DISABLED) {
             this.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
         } else if (theme == DARK_PRIMARY) {
-            this.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            this.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0));
         } else if (theme == DARK_SECONDARY) {
             this.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0_44));
         } else if (theme == DARK_DISABLED) {
