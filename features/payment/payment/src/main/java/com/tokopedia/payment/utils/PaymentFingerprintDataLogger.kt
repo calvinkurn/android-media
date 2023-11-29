@@ -28,7 +28,7 @@ class PaymentFingerprintDataLogger {
     var transactionId: String = ""
 
     fun sendLog(postData: ByteArray) {
-        val differentLength: Boolean = length1 != length2 && length1 != length3
+        val differentLength: Boolean = length1 != length2 || length1 != length3
         val mapData = mapOf(
             KEY_IS_TOGGLED_ON to isToggledOn.toString(),
             KEY_LENGTH_ORI to lengthOri.toString(),
