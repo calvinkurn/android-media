@@ -2,10 +2,8 @@ package com.tokopedia.home_explore_category.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.basemvvm.viewmodel.ViewModelKey
-import com.tokopedia.basemvvm.viewmodel.ViewModelProviderFactory
-import com.tokopedia.exploreCategory.viewmodel.ECServiceViewModel
-import com.tokopedia.home_explore_category.di.ExploreCategoryScope
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.home_explore_category.presentation.viewmodel.ExploreCategoryViewModel
 import dagger.Binds
 import dagger.Module
@@ -16,12 +14,11 @@ abstract class ExploreCategoryViewModelModule {
 
     @ExploreCategoryScope
     @Binds
-    internal abstract fun bindViewModelFactory(viewModelProviderFactory: ViewModelProviderFactory): ViewModelProvider.Factory
+    abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
     @ExploreCategoryScope
     @ViewModelKey(ExploreCategoryViewModel::class)
     internal abstract fun provideExploreCategoryViewModel(viewModel: ExploreCategoryViewModel): ViewModel
-
 }

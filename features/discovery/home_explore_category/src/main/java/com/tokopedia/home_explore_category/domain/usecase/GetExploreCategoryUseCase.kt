@@ -8,14 +8,13 @@ import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryR
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-
 const val GET_EXPLORE_CATEGORY_QUERY = """
     query dynamicHomeIcon(${'$'}type: Int!, ${'$'}page: String!) {
         dynamicHomeIcon {
             categoryGroup(types:${'$'}type, page:${'$'}page){
               id
               title
-                imageUrl
+              imageUrl
               desc
               categoryRows{
                 id
