@@ -1,29 +1,17 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation
 
-import android.os.Bundle
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactory
-import com.tokopedia.smart_recycler_helper.SmartVisitable
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 
-class HomeRecommendationLoading : HomeRecommendationVisitable{
-    override fun getUniqueIdentity(): Any {
-        return LOADING_ID
-    }
+data class HomeRecommendationLoading(
+    val id: String = LOADING_ID
+) : Visitable<HomeRecommendationTypeFactoryImpl> {
 
-    override fun equalsDataModel(dataModel: SmartVisitable<*>): Boolean {
-        return dataModel == this
-    }
-
-    override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return null
-    }
-
-    override fun type(typeFactory: HomeRecommendationTypeFactory): Int {
+    override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }
 
-    companion object{
+    companion object {
         private const val LOADING_ID = "RECOMMENDATION_LOADING"
     }
-
 }

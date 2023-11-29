@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.customview
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
@@ -80,19 +81,23 @@ class RibbonView @JvmOverloads constructor(
     }
 
     private fun constructShapeAppearance(width: Int): ShapeAppearanceModel {
-        return ShapeAppearanceModel.builder()
+        val shapeAppearanceBuilder = ShapeAppearanceModel.builder()
             .setTopRightCorner(
                 CornerFamily.ROUNDED,
                 convertDpToPixel(CORNER_SIZE, context).toFloat()
             )
-            .setBottomEdge(
-                TriangleEdgeTreatment(
-                    width.toFloat() / 2,
-                    HEIGHT_RATIO,
-                    false
-                )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val edgeTreatment = TriangleEdgeTreatment(
+                width.toFloat() / 2,
+                HEIGHT_RATIO,
+                false
             )
-            .build()
+
+            shapeAppearanceBuilder.setBottomEdge(edgeTreatment)
+        }
+
+        return shapeAppearanceBuilder.build()
     }
 
     companion object {

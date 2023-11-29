@@ -17,6 +17,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
@@ -29,7 +30,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage.FeedbackPagePresenter
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.tickercreated.TicketCreatedActivity
 import com.tokopedia.feedback_form.R
@@ -49,9 +49,11 @@ import com.tokopedia.feedback_form.feedbackpage.ui.listener.ImageClickListener
 import com.tokopedia.feedback_form.feedbackpage.ui.preference.Preferences
 import com.tokopedia.feedback_form.feedbackpage.util.*
 import com.tokopedia.imagepicker.common.*
+import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -522,24 +524,21 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         bottomSheetPage = BottomSheetUnify()
         val viewBottomSheetPage = View.inflate(context, R.layout.bottomsheet_pages_name, null).apply {
             val rvPages = findViewById<RecyclerView>(R.id.rv_pages)
-            val searchInput = findViewById<SearchInputView>(R.id.search_input_page)
+            val searchInput = findViewById<SearchBarUnify>(R.id.search_input_page)
             rvPages.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rvPages.adapter = pagesAdapter
 
-            searchInput?.setListener(object : SearchInputView.Listener {
-                override fun onSearchSubmitted(text: String?) {
-                    if (text != null) {
-                        pagesAdapter.renderDataSearch(text)
-                    }
-                }
-
-                override fun onSearchTextChanged(text: String?) {
-                    if (text != null) {
-                        pagesAdapter.renderDataSearch(text)
-                    }
-                }
-
+            searchInput?.addDebouncedTextChangedListener({
+                pagesAdapter.renderDataSearch(it)
             })
+
+            searchInput?.searchBarTextField?.setOnEditorActionListener { textView, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    textView.hideKeyboard()
+                    pagesAdapter.renderDataSearch(textView.text.toString())
+                }
+                return@setOnEditorActionListener actionId == EditorInfo.IME_ACTION_SEARCH
+            }
         }
 
         bottomSheetPage?.apply {
