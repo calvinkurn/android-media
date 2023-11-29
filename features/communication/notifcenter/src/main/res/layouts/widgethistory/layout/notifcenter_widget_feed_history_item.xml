@@ -57,7 +57,23 @@
         app:layout_constraintTop_toBottomOf="@id/txt_notification_type"
         app:layout_constraintStart_toEndOf="@id/iv_icon"
         app:layout_constraintEnd_toStartOf="@id/notifcenter_cl_feed_images"
-        tools:text="Lorem mengomentari postinganmu: “Mantap banget gan!!”" />
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:typographyWeight="reguler"
+        tools:text="Lorem mengomentari postinganmu: " />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/notifcenter_tv_feed_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/txt_notification_title"
+        app:layout_constraintStart_toStartOf="@id/txt_notification_title"
+        app:layout_constraintEnd_toEndOf="@id/txt_notification_title"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="“Mantap banget gan!!”" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/notifcenter_iv_title_progress_indicator_circle"
@@ -65,7 +81,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/txt_notification_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/txt_notification_title"
+        app:layout_constraintBottom_toBottomOf="@id/notifcenter_tv_feed_description"
         android:layout_marginStart="22dp"
         android:contentDescription="@null"
         app:srcCompat="@drawable/notifcenter_ic_gray_circle_history" />
@@ -137,7 +153,7 @@
         android:id="@+id/notifcenter_rv_feed_history"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/txt_notification_title"
+        app:layout_constraintTop_toBottomOf="@id/notifcenter_tv_feed_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp"

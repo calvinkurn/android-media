@@ -6,6 +6,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -15,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
+import com.tokopedia.notifcenter.util.setupHtmlUrls
 import com.tokopedia.notifcenter.view.adapter.NotifcenterTimelineHistoryAdapter
 import com.tokopedia.notifcenter.view.adapter.NotifcenterWidgetHistoryType
 import com.tokopedia.notifcenter.view.adapter.common.NotificationAdapterListener
@@ -64,6 +67,9 @@ class NotifcenterWidgetFeedHistoryNotificationViewHolder constructor(
         NotifcenterWidgetHistoryType.FEED
     )
 
+    private val textDescription: Typography? = itemView?.findViewById(R.id.notifcenter_tv_feed_description)
+
+
     init {
         initRecyclerView()
     }
@@ -79,12 +85,35 @@ class NotifcenterWidgetFeedHistoryNotificationViewHolder constructor(
         }
     }
 
+    override fun bindTitle(element: NotificationUiModel) {
+        title?.text = setupHtmlUrls(
+            element.titleHtml,
+        MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_GN500)
+        ) {
+            RouteManager.route(itemView.context, it)
+        }
+    }
+
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
-        bindHistoryBox(element)
+        bindDescription(element)
+        bindTrackHistory(element)
+        bindTimeLineVisibility(element)
+        bindProgressIndicatorVisibility(element)
+        bindProgressIndicatorColor()
+        bindHistoryBtn(element)
         bindPaddingBottom()
         bindContainerUnify(element)
         bindImageThumbnails(element)
+    }
+
+    private fun bindDescription(element: NotificationUiModel) {
+        textDescription?.text = setupHtmlUrls(
+            element.shortDescriptionHtml,
+            MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_GN500)
+        ) {
+            RouteManager.route(itemView.context, it)
+        }
     }
 
     private fun bindContainerUnify(element: NotificationUiModel) {
@@ -96,14 +125,6 @@ class NotifcenterWidgetFeedHistoryNotificationViewHolder constructor(
 
     private fun bindTrackHistory(element: NotificationUiModel) {
         historyAdapter.updateHistories(element)
-    }
-
-    private fun bindHistoryBox(element: NotificationUiModel) {
-        bindTrackHistory(element)
-        bindTimeLineVisibility(element)
-        bindProgressIndicatorVisibility(element)
-        bindProgressIndicatorColor()
-        bindHistoryBtn(element)
     }
 
     private fun bindHistoryBtn(element: NotificationUiModel) {

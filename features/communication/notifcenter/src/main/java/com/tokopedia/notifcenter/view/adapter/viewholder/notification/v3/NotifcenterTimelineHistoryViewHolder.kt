@@ -1,15 +1,23 @@
 package com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3
 
+import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.TrackHistory
 import com.tokopedia.notifcenter.view.adapter.NotifcenterWidgetHistoryType
-import com.tokopedia.notifcenter.view.adapter.NotifcenterWidgetHistoryType.*
+import com.tokopedia.notifcenter.view.adapter.NotifcenterWidgetHistoryType.FEED
+import com.tokopedia.notifcenter.view.adapter.NotifcenterWidgetHistoryType.ORDER
+import com.tokopedia.notifcenter.util.setupHtmlUrls
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.htmltags.HtmlUtil
 import com.tokopedia.utils.time.TimeHelper
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -51,16 +59,30 @@ class NotifcenterTimelineHistoryViewHolder constructor(
     }
 
     private fun bindTitle(trackHistory: TrackHistory) {
-        title?.text = trackHistory.title
+        val text = trackHistory.titleHtml.ifBlank {
+            trackHistory.title
+        }
+        title?.text = setupHtmlUrls(
+            text,
+            MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_GN500)
+        ) {
+            RouteManager.route(itemView.context, it)
+        }
+        title?.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun bindSubtitle(trackHistory: TrackHistory) {
-        subtitle?.text = trackHistory.subtitle
+        subtitle?.text = HtmlUtil.fromHtml(trackHistory.subtitle)
         subtitle?.showWithCondition(trackHistory.subtitle.isNotBlank())
     }
 
     private fun bindTime(trackHistory: TrackHistory) {
-        time?.text = TimeHelper.getRelativeTimeFromNow(trackHistory.createTimeUnixMillis)
+        if (trackHistory.createTimeUnixMillis > 0) {
+            time?.text = TimeHelper.getRelativeTimeFromNow(trackHistory.createTimeUnixMillis)
+            time?.show()
+        } else {
+            time?.hide()
+        }
     }
 
     private fun bindTopLine(
