@@ -370,11 +370,8 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                 getString(R.string.continue_without_install)
             )
             else -> {
-                if (errorCodeTemp == SplitInstallErrorCode.ACTIVE_SESSIONS_LIMIT_EXCEEDED.toString()) {
-                    cancelAllPendingRequest()
-                } else {
-                    toggleDfConfig()
-                }
+                cancelAllPendingRequest()
+                toggleDfConfig()
                 updateInformationView(
                     globalerrorR.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_general_title),
