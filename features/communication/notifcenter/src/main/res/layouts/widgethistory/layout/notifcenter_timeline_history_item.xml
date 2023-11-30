@@ -50,7 +50,7 @@
         tools:text="Lorem mengomentari postinganmu." />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/notifcenter_tv_history_subtitle"
+        android:id="@+id/notifcenter_tv_history_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/notifcenter_tv_history_title"
@@ -63,7 +63,7 @@
         android:id="@+id/notifcenter_tv_history_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/notifcenter_tv_history_subtitle"
+        app:layout_constraintTop_toBottomOf="@id/notifcenter_tv_history_description"
         app:layout_constraintStart_toStartOf="@id/notifcenter_tv_history_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

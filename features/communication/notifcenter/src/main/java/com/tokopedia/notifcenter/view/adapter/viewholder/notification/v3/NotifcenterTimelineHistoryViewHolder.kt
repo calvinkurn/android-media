@@ -26,7 +26,7 @@ class NotifcenterTimelineHistoryViewHolder constructor(
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val title: Typography? = itemView.findViewById(R.id.notifcenter_tv_history_title)
-    private val subtitle: Typography? = itemView.findViewById(R.id.notifcenter_tv_history_subtitle)
+    private val description: Typography? = itemView.findViewById(R.id.notifcenter_tv_history_description)
     private val icon: ImageUnify? = itemView.findViewById(R.id.notifcenter_iv_history_circle)
     private val time: Typography? = itemView.findViewById(R.id.notifcenter_tv_history_time)
     private val topLine: View? = itemView.findViewById(R.id.notifcenter_history_top_line)
@@ -72,8 +72,8 @@ class NotifcenterTimelineHistoryViewHolder constructor(
     }
 
     private fun bindSubtitle(trackHistory: TrackHistory) {
-        subtitle?.text = HtmlUtil.fromHtml(trackHistory.subtitle)
-        subtitle?.showWithCondition(trackHistory.subtitle.isNotBlank())
+        description?.text = HtmlUtil.fromHtml(trackHistory.description)
+        description?.showWithCondition(trackHistory.description.isNotBlank())
     }
 
     private fun bindTime(trackHistory: TrackHistory) {
