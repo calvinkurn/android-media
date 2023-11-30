@@ -69,6 +69,7 @@ class GWPWidget @JvmOverloads constructor(
         )
         adapter = cardAdapter
         addItemDecoration(ItemSpaceDecorator(space = CARD_ITEM_SPACING))
+        itemAnimator = null
         optimizeNestedRecyclerView()
     }
 
