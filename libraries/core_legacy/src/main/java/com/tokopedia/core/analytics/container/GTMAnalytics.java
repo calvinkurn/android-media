@@ -131,6 +131,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private static String UTM_SOURCE_HOLDER = "";
     private static String UTM_MEDIUM_HOLDER = "";
     private static String UTM_CAMPAIGN_HOLDER = "";
+    private static String NO_GA_ID = "NO_GA_ID";
 
     public static void setUTMParamsForSession(Map<String, Object> maps) {
         if (maps != null && maps.get(AppEventTracking.GTM.UTM_SOURCE) != null) {
@@ -336,14 +337,14 @@ public class GTMAnalytics extends ContextAnalytics {
     @Override
     public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
         Observable.fromCallable(() -> {
-                Bundle bundle = addWrapperValue(value);
-                bundle = addGclIdIfNeeded(eventName, bundle);
-                pushEventV5(eventName, bundle, context);
-                return true;
-            })
-            .subscribeOn(Schedulers.io())
-            .unsubscribeOn(Schedulers.io())
-            .subscribe(getDefaultSubscriber());
+                    Bundle bundle = addWrapperValue(value);
+                    bundle = addGclIdIfNeeded(eventName, bundle);
+                    pushEventV5(eventName, bundle, context);
+                    return true;
+                })
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(getDefaultSubscriber());
     }
 
     @SuppressWarnings("unchecked")
@@ -794,15 +795,26 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public String getClientIDString() {
-        try {
-            if (TextUtils.isEmpty(clientIdString)) {
-                Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
-                clientIdString = GoogleAnalytics.getInstance(getContext()).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
+        if (TextUtils.isEmpty(clientIdString)) {
+            String clientIdFromLib = getClientIdFromLib();
+            if (TextUtils.isEmpty(clientIdFromLib) || NO_GA_ID.equals(clientIdFromLib)) {
+                // get from cache
+                clientIdString = sharedPreferences.getString(TkpdCache.Key.GCLID, clientIdFromLib);
+            } else {
+                // save to cache if client Id is not empty and not NO_GA_ID
+                sharedPreferences.edit().putString(TkpdCache.Key.GCLID, clientIdFromLib).apply();
+                clientIdString = clientIdFromLib;
             }
-            return clientIdString;
+        }
+        return clientIdString;
+    }
+
+    private String getClientIdFromLib() {
+        try {
+            Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
+            return GoogleAnalytics.getInstance(getContext()).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
         } catch (Exception e) {
-            e.printStackTrace();
-            return "NO_GA_ID";
+            return NO_GA_ID;
         }
     }
 
