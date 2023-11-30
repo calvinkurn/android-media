@@ -515,6 +515,7 @@ class ShopPageHeaderFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setDataFromAppLinkQueryParam()
+        onFragmentAttached()
         super.onCreate(savedInstanceState)
         FoldableAndTabletSupportManager(this, activity as AppCompatActivity)
     }
@@ -1268,7 +1269,6 @@ class ShopPageHeaderFragment :
         }
         shopLandingPageInitAffiliateCookie()
         storiesManager.updateStories(listOf(shopId))
-        onFragmentAttached()
     }
 
     private fun checkAffiliateAppLink(uri: Uri) {

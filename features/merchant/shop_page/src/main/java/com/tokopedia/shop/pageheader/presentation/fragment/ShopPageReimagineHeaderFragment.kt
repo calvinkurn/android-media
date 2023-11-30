@@ -446,6 +446,7 @@ class ShopPageReimagineHeaderFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setDataFromAppLinkQueryParam()
+        onFragmentAttached()
         super.onCreate(savedInstanceState)
     }
 
@@ -1254,7 +1255,6 @@ class ShopPageReimagineHeaderFragment :
         }
         shopLandingPageInitAffiliateCookie()
         storiesManager.updateStories(listOf(shopId))
-        onFragmentAttached()
     }
 
     private fun checkAffiliateAppLink(uri: Uri) {
