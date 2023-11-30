@@ -26,9 +26,7 @@ class HomeRecommendationItemGridViewHolder(
         val LAYOUT = R.layout.home_feed_item_grid
     }
 
-    private val binding by lazy(LazyThreadSafetyMode.NONE) {
-        HomeFeedItemGridBinding.bind(itemView)
-    }
+    private val binding = HomeFeedItemGridBinding.bind(itemView)
 
     private var item: HomeRecommendationItemDataModel? = null
 
