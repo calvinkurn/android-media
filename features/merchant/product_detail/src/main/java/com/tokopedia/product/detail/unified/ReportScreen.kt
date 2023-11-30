@@ -29,7 +29,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 @Composable
 fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit = {}) {
     var text by remember { mutableStateOf("") }
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(reports[0]) }
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(ReportUiModel.Empty) }
     Column(
         modifier = Modifier
             .wrapContentHeight()
@@ -54,16 +54,24 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
                 )
             }
         }
+        val isLastSelected = selectedOption == reports.last()
 
+        //enable when option 3 is clicked
         TextField(
             value = text,
             onValueChange = { text = it },
             label = { Text(text = "Alasan") },
+            enabled = isLastSelected,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp, bottom = 22.dp)
         )
-        NestButton(text = "Kirim", onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth())
+        // enable when report is not empty
+        NestButton(
+            text = "Kirim", onClick = { onSubmit(selectedOption) },
+            isEnabled = selectedOption != ReportUiModel.Empty,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
