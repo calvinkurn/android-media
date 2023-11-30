@@ -1109,6 +1109,10 @@ open class BuyerOrderDetailFragment :
         viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
     }
 
+    override fun onBmgmProductBenefitExpand(isExpand: Boolean, identifier: String) {
+        viewModel.expandCollapseBmgmProductBenefit(identifier, isExpand)
+    }
+
     private fun showToaster(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()

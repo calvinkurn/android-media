@@ -12,7 +12,8 @@ data class ProductBmgmSectionUiModel(
     val totalPrice: Double,
     val totalPriceText: String,
     val totalPriceReductionInfoText: String,
-    val bmgmItemList: List<ProductUiModel>
+    val bmgmItemList: List<ProductUiModel>,
+    val productBenefits: AddOnSummaryUiModel?
 ) : Visitable<BuyMoreGetMoreTypeFactory> {
 
     override fun type(typeFactory: BuyMoreGetMoreTypeFactory): Int {

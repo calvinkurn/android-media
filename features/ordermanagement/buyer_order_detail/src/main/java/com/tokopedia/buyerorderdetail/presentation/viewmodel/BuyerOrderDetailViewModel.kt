@@ -92,6 +92,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private var getBuyerOrderDetailDataJob: Job? = null
     private var warrantyClaimButtonImpressed = false
     private val addOnsExpandableState = mutableListOf<String>()
+    private val bmgmProductBenefitExpandableState = mutableListOf<String>()
 
     private val _finishOrderResult = MutableLiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>()
     val finishOrderResult: LiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>
@@ -394,6 +395,14 @@ class BuyerOrderDetailViewModel @Inject constructor(
         }
     }
 
+    fun expandCollapseBmgmProductBenefit(identifier: String, isExpand: Boolean) {
+        if (isExpand) {
+            bmgmProductBenefitExpandableState.remove(identifier)
+        } else {
+            bmgmProductBenefitExpandableState.add(identifier)
+        }
+    }
+
     private fun <T> Flow<T>.toStateFlow(initialValue: T) = stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
@@ -448,7 +457,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             singleAtcRequestStates,
             collapseProductList,
             warrantyClaimButtonImpressed,
-            addOnsExpandableState
+            addOnsExpandableState,
+            bmgmProductBenefitExpandableState
         )
     }
 

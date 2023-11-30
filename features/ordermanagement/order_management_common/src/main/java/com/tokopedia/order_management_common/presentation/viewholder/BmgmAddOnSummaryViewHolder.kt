@@ -2,7 +2,6 @@ package com.tokopedia.order_management_common.presentation.viewholder
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -18,6 +17,7 @@ import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUi
 import com.tokopedia.order_management_common.util.RecyclerViewItemDivider
 import com.tokopedia.order_management_common.util.rotateBackIcon
 import com.tokopedia.order_management_common.util.rotateIcon
+import com.tokopedia.order_management_common.util.runSafely
 import com.tokopedia.unifycomponents.toPx
 
 class BmgmAddOnSummaryViewHolder(
@@ -59,14 +59,8 @@ class BmgmAddOnSummaryViewHolder(
 
     private fun PartialBmgmAddOnSummaryBinding.setupRecyclerViewItemDecoration() {
         if (rvAddOn.itemDecorationCount.isZero()) {
-            val dividerDrawable = try {
-                MethodChecker.getDrawable(
-                    root.context,
-                    R.drawable.ic_dash_divider
-                )
-            } catch (t: Throwable) {
-                FirebaseCrashlytics.getInstance().recordException(t)
-                null
+            val dividerDrawable = runSafely {
+                MethodChecker.getDrawable(root.context, R.drawable.ic_dash_divider)
             }
             rvAddOn.addItemDecoration(
                 RecyclerViewItemDivider(
@@ -90,9 +84,7 @@ class BmgmAddOnSummaryViewHolder(
                     element.isExpand,
                     element.totalPriceText
                 )
-                if (element.addonItemList.isNotEmpty()) {
-                    setupAddOnSummaryAddOns(element.addonItemList)
-                }
+                setupAddOnSummaryAddOns(element.addonItemList)
 
                 root.setOnClickListener {
                     element.isExpand = !element.isExpand
@@ -150,7 +142,9 @@ class BmgmAddOnSummaryViewHolder(
     }
 
     private fun setupAddOnSummaryAddOns(addons: List<AddOnSummaryUiModel.AddonItemUiModel>) {
-        adapter.setElements(addons)
+        binding?.rvAddOn?.showIfWithBlock(addons.isNotEmpty()) {
+            this@BmgmAddOnSummaryViewHolder.adapter.setElements(addons)
+        }
     }
 
     fun bind(addOnSummary: AddOnSummaryUiModel?) {

@@ -1,6 +1,8 @@
 package com.tokopedia.sellerorder.detail.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.order_management_common.domain.data.ProductBenefit
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
@@ -26,7 +28,8 @@ object SomGetOrderDetailResponseMapper {
         bmgmIconUrl: String,
         addOnLabel: String,
         addOnIcon: String,
-        addOnsExpandableState: List<String>
+        addOnsExpandableState: List<String>,
+        bmgmProductBenefitExpandableState: MutableList<String>
     ): List<ProductBmgmSectionUiModel> {
         return bmgms?.map { bmgm ->
             ProductBmgmSectionUiModel(
@@ -77,9 +80,53 @@ object SomGetOrderDetailResponseMapper {
                             }
                         }
                     )
-                }
+                },
+                productBenefits = mapBmgmProductBenefit(
+                    productBenefit = bmgm.productBenefit,
+                    bmgmId = bmgm.id,
+                    expanded = !bmgmProductBenefitExpandableState.contains(bmgm.id)
+                )
             )
         }.orEmpty()
+    }
+
+    private fun mapBmgmProductBenefit(
+        productBenefit: ProductBenefit?,
+        bmgmId: String,
+        expanded: Boolean
+    ): AddOnSummaryUiModel? {
+        return productBenefit?.let {
+            AddOnSummaryUiModel(
+                addOnIdentifier = bmgmId,
+                totalPriceText = "(${productBenefit.orderDetail.count()} hadiah)",
+                addonsLogoUrl = productBenefit.iconUrl,
+                addonsTitle = productBenefit.label,
+                addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail)
+            ).apply { isExpand = expanded }
+        }
+    }
+
+    private fun mapBmgmProductBenefitItems(
+        orderDetails: List<ProductBenefit.OrderDetail>
+    ): List<AddOnSummaryUiModel.AddonItemUiModel> {
+        return orderDetails.map { orderDetail ->
+            AddOnSummaryUiModel.AddonItemUiModel(
+                priceText = orderDetail.productPrice,
+                quantity = orderDetail.productQty,
+                addonsId = orderDetail.productId.toString(),
+                addOnsName = orderDetail.productName,
+                type = String.EMPTY,
+                addOnsThumbnailUrl = orderDetail.picture,
+                toStr = String.EMPTY,
+                fromStr = String.EMPTY,
+                message = String.EMPTY,
+                descriptionExpanded = false,
+                noteCopyable = false,
+                providedByShopItself = true,
+                infoLink = String.EMPTY,
+                tips = String.EMPTY
+            )
+        }
     }
 
     private fun getProductBundleList(
@@ -127,10 +174,18 @@ object SomGetOrderDetailResponseMapper {
         bmgmIcon: String,
         addonIcon: String,
         addonLabel: String,
-        addOnsExpandableState: List<String>
+        addOnsExpandableState: List<String>,
+        bmgmProductBenefitExpandableState: MutableList<String>
     ) {
-        val bmgmList =
-            getBmgmList(bmgms, orderId, bmgmIcon, addonLabel, addonIcon, addOnsExpandableState)
+        val bmgmList = getBmgmList(
+            bmgms = bmgms,
+            orderId = orderId,
+            bmgmIconUrl = bmgmIcon,
+            addOnLabel = addonLabel,
+            addOnIcon = addonIcon,
+            addOnsExpandableState = addOnsExpandableState,
+            bmgmProductBenefitExpandableState = bmgmProductBenefitExpandableState
+        )
         (bmgmList as? List<Visitable<SomDetailAdapterFactory>>)?.let { addAll(it) }
     }
 
@@ -275,7 +330,10 @@ object SomGetOrderDetailResponseMapper {
         return SomDetailProducts(flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat, flagOrderMeta.isAffiliate)
     }
 
-    private fun SomDetailOrder.GetSomDetail.mapToProductsUiModel(addOnsExpandableState: List<String>)
+    private fun SomDetailOrder.GetSomDetail.mapToProductsUiModel(
+        addOnsExpandableState: List<String>,
+        bmgmProductBenefitExpandableState: MutableList<String>
+    )
             : List<Visitable<SomDetailAdapterFactory>> {
         return mutableListOf<Visitable<SomDetailAdapterFactory>>().apply {
             includeProductBmgms(
@@ -284,7 +342,8 @@ object SomGetOrderDetailResponseMapper {
                 details.bmgmIcon,
                 details.addOnIcon,
                 details.addOnLabel,
-                addOnsExpandableState
+                addOnsExpandableState,
+                bmgmProductBenefitExpandableState
             )
             includeProductBundles(details.bundle, details.bundleIcon)
             includeProductNonBundles(
@@ -346,9 +405,10 @@ object SomGetOrderDetailResponseMapper {
 
     fun mapResponseToProductsUiModels(
         response: SomDetailOrder.GetSomDetail?,
-        addOnsExpandableState: List<String>
+        addOnsExpandableState: List<String>,
+        bmgmProductBenefitExpandableState: MutableList<String>
     ): List<Visitable<SomDetailAdapterFactory>> {
-        return response?.mapToProductsUiModel(addOnsExpandableState).orEmpty()
+        return response?.mapToProductsUiModel(addOnsExpandableState, bmgmProductBenefitExpandableState).orEmpty()
     }
 
     fun mapResponseToShipmentUiModel(

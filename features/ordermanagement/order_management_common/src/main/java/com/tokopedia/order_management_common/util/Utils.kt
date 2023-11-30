@@ -7,6 +7,7 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import android.view.HapticFeedbackConstants
 import android.view.View
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.order_management_common.constants.OrderManagementConstants.STRING_BUTTON_TYPE_ALTERNATE
 import com.tokopedia.order_management_common.constants.OrderManagementConstants.STRING_BUTTON_TYPE_MAIN
@@ -65,6 +66,15 @@ fun IconUnify.rotateBackIcon() {
 
 fun IconUnify.rotateIcon() {
     animate().rotation(ROTATE_180).duration = ROTATE_ICON_DURATION
+}
+
+inline fun <T: Any> runSafely(runnable: () -> T?): T? {
+    return try {
+        runnable()
+    } catch (e: Exception) {
+        FirebaseCrashlytics.getInstance().recordException(e)
+        null
+    }
 }
 
 fun CardUnify.setupCardDarkMode(){

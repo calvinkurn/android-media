@@ -53,17 +53,10 @@ class BmgmAddOnViewHolder(
     private fun setupProductAddOn(addOnUiModel: AddOnSummaryUiModel.AddonItemUiModel) {
         binding?.run {
             setupAddOnImage(addOnUiModel.addOnsThumbnailUrl)
-            setupAddOnName(
-                addOnUiModel.type,
-                addOnUiModel.addOnsName
-            )
+            setupAddOnName(addOnUiModel.type, addOnUiModel.addOnsName)
             setupAddOnPrice(addOnUiModel.quantity, addOnUiModel.priceText)
-            setupAddOnDescriptions(
-                addOnUiModel
-            )
-            setupInfoLink(
-                addOnUiModel.infoLink
-            )
+            setupAddOnDescriptions(addOnUiModel)
+            setupInfoLink(addOnUiModel.infoLink)
         }
     }
 
@@ -124,7 +117,7 @@ class BmgmAddOnViewHolder(
         type: String,
         name: String
     ): CharSequence {
-        return "$type - $name"
+        return listOf(type, name).filter { it.isNotBlank() }.joinToString(" - ")
     }
 
     interface Listener {

@@ -16,13 +16,16 @@ import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.order_management_common.domain.data.ProductBenefit
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 
 object ProductListUiStateMapper {
@@ -37,7 +40,8 @@ object ProductListUiStateMapper {
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
         warrantyClaimButtonImpressed: Boolean,
-        addOnsExpandableState : List<String>
+        addOnsExpandableState: List<String>,
+        bmgmProductBenefitExpandableState: MutableList<String>
     ): ProductListUiState {
         val p1DataRequestState = getBuyerOrderDetailDataRequestState.getP1DataRequestState
         val getBuyerOrderDetailRequestState = getBuyerOrderDetailDataRequestState
@@ -64,7 +68,8 @@ object ProductListUiStateMapper {
                     singleAtcRequestStates,
                     collapseProductList,
                     warrantyClaimButtonImpressed,
-                    addOnsExpandableState
+                    addOnsExpandableState,
+                    bmgmProductBenefitExpandableState
                 )
             }
         }
@@ -176,7 +181,8 @@ object ProductListUiStateMapper {
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
         warrantyClaimButtonImpressed: Boolean,
-        addOnsExpandableState: List<String>
+        addOnsExpandableState: List<String>,
+        bmgmProductBenefitExpandableState: MutableList<String>
     ): ProductListUiState {
         return when (
             val insuranceDetailRequestState =
@@ -190,7 +196,8 @@ object ProductListUiStateMapper {
                     singleAtcRequestStates,
                     collapseProductList,
                     warrantyClaimButtonImpressed,
-                    addOnsExpandableState
+                    addOnsExpandableState,
+                    bmgmProductBenefitExpandableState
                 )
             }
 
@@ -201,7 +208,8 @@ object ProductListUiStateMapper {
                     singleAtcRequestStates,
                     collapseProductList,
                     warrantyClaimButtonImpressed,
-                    addOnsExpandableState
+                    addOnsExpandableState,
+                    bmgmProductBenefitExpandableState
                 )
             }
         }
@@ -224,7 +232,8 @@ object ProductListUiStateMapper {
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
         warrantyClaimButtonImpressed: Boolean,
-        addOnsExpandableState: List<String>
+        addOnsExpandableState: List<String>,
+        bmgmProductBenefitExpandableState: List<String>
     ): ProductListUiState {
         return if (currentState is ProductListUiState.HasData) {
             mapOnReloading(
@@ -234,7 +243,8 @@ object ProductListUiStateMapper {
                 singleAtcRequestStates,
                 collapseProductList,
                 warrantyClaimButtonImpressed,
-                addOnsExpandableState
+                addOnsExpandableState,
+                bmgmProductBenefitExpandableState
             )
         } else {
             mapOnDataReady(
@@ -243,7 +253,8 @@ object ProductListUiStateMapper {
                 singleAtcRequestStates,
                 collapseProductList,
                 warrantyClaimButtonImpressed,
-                addOnsExpandableState
+                addOnsExpandableState,
+                bmgmProductBenefitExpandableState
             )
         }
     }
@@ -260,7 +271,8 @@ object ProductListUiStateMapper {
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
         warrantyClaimButtonImpressed: Boolean,
-        addOnsExpandableState: List<String>
+        addOnsExpandableState: List<String>,
+        bmgmProductBenefitExpandableState: List<String>
     ): ProductListUiState {
         return mapOnDataReady(
             buyerOrderDetailData,
@@ -268,7 +280,8 @@ object ProductListUiStateMapper {
             singleAtcRequestStates,
             collapseProductList,
             warrantyClaimButtonImpressed,
-            addOnsExpandableState
+            addOnsExpandableState,
+            bmgmProductBenefitExpandableState
         )
     }
 
@@ -289,7 +302,8 @@ object ProductListUiStateMapper {
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
         warrantyClaimButtonImpressed: Boolean,
-        addOnsExpandableState: List<String>
+        addOnsExpandableState: List<String>,
+        bmgmProductBenefitExpandableState: List<String>
     ): ProductListUiState {
         val insuranceDetailData = when (insuranceDetailRequestState) {
             is GetInsuranceDetailRequestState.Requesting -> {
@@ -316,7 +330,8 @@ object ProductListUiStateMapper {
                 singleAtcRequestStates,
                 collapseProductList,
                 warrantyClaimButtonImpressed,
-                addOnsExpandableState
+                addOnsExpandableState,
+                bmgmProductBenefitExpandableState
             )
         )
     }
@@ -327,7 +342,8 @@ object ProductListUiStateMapper {
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
         warrantyClaimButtonImpressed: Boolean,
-        addOnsExpandableState: List<String>
+        addOnsExpandableState: List<String>,
+        bmgmProductBenefitExpandableState: List<String>
     ): ProductListUiState {
         val insuranceDetailData = insuranceDetailRequestState.let {
             if (it is GetInsuranceDetailRequestState.Complete.Success) {
@@ -348,7 +364,8 @@ object ProductListUiStateMapper {
                 singleAtcRequestStates,
                 collapseProductList,
                 warrantyClaimButtonImpressed,
-                addOnsExpandableState
+                addOnsExpandableState,
+                bmgmProductBenefitExpandableState
             )
         )
     }
@@ -444,7 +461,8 @@ object ProductListUiStateMapper {
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
         warrantyClaimButtonImpressed: Boolean,
-        addOnsExpandableState: List<String>
+        addOnsExpandableState: List<String>,
+        bmgmProductBenefitExpandableState: List<String>
     ): ProductListUiModel {
         /**
          * Map product bmgm response into UI model and limit the number of mapped items based on
@@ -465,7 +483,8 @@ object ProductListUiStateMapper {
             singleAtcResultFlow,
             insuranceDetailData,
             warrantyClaimButtonImpressed,
-            addOnsExpandableState
+            addOnsExpandableState,
+            bmgmProductBenefitExpandableState
         )
 
         /**
@@ -698,7 +717,8 @@ object ProductListUiStateMapper {
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         warrantyClaimButtonImpressed: Boolean,
-        addOnsExpandableState: List<String>
+        addOnsExpandableState: List<String>,
+        bmgmProductBenefitExpandableState: List<String>
     ): Pair<Int, List<ProductBmgmSectionUiModel>> {
         /**
          * Reduce the bmgm response items to be mapped based on the remaining slot on the product
@@ -734,10 +754,54 @@ object ProductListUiStateMapper {
                         warrantyClaimButtonImpressed,
                         addOnsExpandableState
                     )
-                }
+                },
+                productBenefits = mapBmgmProductBenefit(
+                    bmgm.productBenefit,
+                    bmgm.id,
+                    bmgmProductBenefitExpandableState.contains(bmgm.id)
+                )
             )
         }.orEmpty()
         return numOfRemovedBmgmDetail to mappedProductBmgm
+    }
+
+    private fun mapBmgmProductBenefit(
+        productBenefit: ProductBenefit?,
+        bmgmId: String,
+        expanded: Boolean
+    ): AddOnSummaryUiModel? {
+        return productBenefit?.let {
+            AddOnSummaryUiModel(
+                addOnIdentifier = bmgmId,
+                totalPriceText = "${productBenefit.orderDetail.count()} hadiah",
+                addonsLogoUrl = productBenefit.iconUrl,
+                addonsTitle = productBenefit.label,
+                addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail)
+            ).apply { isExpand = expanded }
+        }
+    }
+
+    private fun mapBmgmProductBenefitItems(
+        orderDetails: List<ProductBenefit.OrderDetail>
+    ): List<AddOnSummaryUiModel.AddonItemUiModel> {
+        return orderDetails.map { orderDetail ->
+            AddOnSummaryUiModel.AddonItemUiModel(
+                priceText = orderDetail.productPrice,
+                quantity = orderDetail.productQty,
+                addonsId = orderDetail.productId.toString(),
+                addOnsName = orderDetail.productName,
+                type = String.EMPTY,
+                addOnsThumbnailUrl = orderDetail.picture,
+                toStr = String.EMPTY,
+                fromStr = String.EMPTY,
+                message = String.EMPTY,
+                descriptionExpanded = false,
+                noteCopyable = false,
+                providedByShopItself = true,
+                infoLink = String.EMPTY,
+                tips = String.EMPTY
+            )
+        }
     }
 
     private fun mapProductListHeaderUiModel(

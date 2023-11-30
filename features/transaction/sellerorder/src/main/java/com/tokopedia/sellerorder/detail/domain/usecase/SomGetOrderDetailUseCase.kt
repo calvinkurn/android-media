@@ -378,6 +378,18 @@ class SomGetOrderDetailUseCase @Inject constructor(
                         total_quantity
                       }
                     }
+                    product_benefit {
+                      label
+                      icon_url
+                      order_detail {
+                        product_id
+                        product_name
+                        picture
+                        snapshot_url
+                        product_qty
+                        product_price
+                      }
+                    }
                   }
                 }
                 addon_info {

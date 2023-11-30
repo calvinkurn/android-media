@@ -212,6 +212,7 @@ open class SomDetailFragment :
     }
 
     private val addOnsExpandableState = mutableListOf<String>()
+    private val bmgmProductBenefitExpandableState = mutableListOf<String>()
 
     private fun createChatIcon(context: Context): IconUnify {
         return IconUnify(requireContext(), IconUnify.CHAT).apply {
@@ -656,7 +657,8 @@ open class SomDetailFragment :
                 somDetail,
                 somDynamicPriceResponse,
                 resolutionTicketStatusResponse,
-                addOnsExpandableState
+                addOnsExpandableState,
+                bmgmProductBenefitExpandableState
             )
         )
         transparencyFeeCoachMarkHandler.attach()
@@ -1181,6 +1183,10 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
         // no op
     }
 
+    override fun onBmgmProductBenefitExpand(isExpand: Boolean, identifier: String) {
+        expandCollapseBmgmProductBenefit(identifier, isExpand)
+    }
+
     override fun onDetailIncomeClicked() {
         val somDetailTransparencyFeeBottomSheet =
             SomDetailTransparencyFeeBottomSheet.newInstance(orderId)
@@ -1682,6 +1688,14 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
             addOnsExpandableState.remove(addOnIdentifier)
         } else {
             addOnsExpandableState.add(addOnIdentifier)
+        }
+    }
+
+    private fun expandCollapseBmgmProductBenefit(identifier: String, isExpand: Boolean) {
+        if (isExpand) {
+            bmgmProductBenefitExpandableState.remove(identifier)
+        } else {
+            bmgmProductBenefitExpandableState.add(identifier)
         }
     }
 

@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailLogisticSectionInfoID
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.order_management_common.domain.data.ProductBenefit
 
 data class GetBuyerOrderDetailResponse(
     @Expose
@@ -635,7 +636,9 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("tier_discount_amount")
                     val tierDiscountAmount: Int = 0,
                     @SerializedName("tier_discount_amount_formatted")
-                    val tierDiscountAmountFormatted: String = ""
+                    val tierDiscountAmountFormatted: String = "",
+                    @SerializedName("product_benefit")
+                    val productBenefit: ProductBenefit? = null
                 ) {
                     data class OrderDetail(
                         @SerializedName("order_detail_id")
