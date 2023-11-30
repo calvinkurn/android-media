@@ -10,7 +10,6 @@ import com.tokopedia.home.databinding.ItemHomeRecommendationPlayWidgetBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
-import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.BaseRecommendationForYouViewHolder
 
 class HomeRecommendationPlayWidgetViewHolder(
     view: View,

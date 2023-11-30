@@ -28,7 +28,7 @@ class HomeBannerFeedViewHolder(
     override fun bind(element: BannerRecommendationDataModel) {
         item = element
         setBannerImageUrl(element.imageUrl)
-        setBannerOnClickListener(element)
+        setBannerOnClickListener()
         setBannerImpression(element)
     }
 
@@ -41,15 +41,15 @@ class HomeBannerFeedViewHolder(
         }
     }
 
-    private fun setBannerOnClickListener(
-        element: BannerRecommendationDataModel
-    ) {
-        binding.bannerImageView.setOnClickListener {
-            HomePageTracking.eventClickOnBannerFeed(
-                element,
-                element.tabName
-            )
-            RouteManager.route(itemView.context, element.applink)
+    private fun setBannerOnClickListener() {
+        item?.let { element ->
+            binding.bannerImageView.setOnClickListener {
+                HomePageTracking.eventClickOnBannerFeed(
+                    element,
+                    element.tabName
+                )
+                RouteManager.route(itemView.context, element.applink)
+            }
         }
     }
 
