@@ -156,7 +156,7 @@
     <string name="search_mps_banned_tobacco_state_description">Silahkan cari barangnya di Tokopedia di HP atau komputer, ya.</string>
 
     <string name="search_result_product_inappropriate_title">Kamu tidak bisa lihat konten ini</string>
-    <string name="search_result_product_inappropriate_description_twenty_one">Kamu sedang mengaktifkan Safe Mode. Nonaktifkan sementara untuk melihat konten 21+ sampai aplikasi Tokopedia ditutup.</string>
+    <string name="search_result_product_inappropriate_description_twenty_one">Kamu sedang mengaktifkan Safe Mode.\nNonaktifkan sementara untuk melihat konten 21+ sampai aplikasi Tokopedia ditutup.</string>
     <string name="search_result_product_inappropriate_description_under_twenty_one">Produk mengandung hal sensitif untuk dilihat.</string>
     <string name="search_result_product_inappropriate_button_inactive">Nonaktifkan Sementara</string>
     <string name="search_result_product_inappropriate_success_inactive">Safe Mode berhasil dinonaktifkan sementara.</string>

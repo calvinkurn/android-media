@@ -52,11 +52,11 @@ class SafeSearchPresenterDelegate @Inject constructor(
         }
     }
 
-    fun setUserProfileDob(userDob : UserDOB) {
+    override fun setUserProfileDob(userDob : UserDOB) {
         this.userDob = userDob
     }
 
-    fun isAdultContentEnable() = isShowAdult
+    override fun isShowAdultEnableAndProfileVerify() = isShowAdult
         && userDob.isAdultAndVerify()
 
     private fun isAdultUser() = userDob.isAdultAndVerify()

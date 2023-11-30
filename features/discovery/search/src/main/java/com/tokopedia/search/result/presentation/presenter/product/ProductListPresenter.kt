@@ -82,7 +82,6 @@ import com.tokopedia.search.result.product.safesearch.SafeSearchPresenterDelegat
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenter
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenterDelegate
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenter
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenterDelegate
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
@@ -391,7 +390,7 @@ class ProductListPresenter @Inject constructor(
             isShowLocalSearchRecommendation(),
             externalReference,
             newCardType,
-            safeSearchPresenter.isAdultContentEnable()
+            safeSearchPresenter.isShowAdultEnableAndProfileVerify()
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
