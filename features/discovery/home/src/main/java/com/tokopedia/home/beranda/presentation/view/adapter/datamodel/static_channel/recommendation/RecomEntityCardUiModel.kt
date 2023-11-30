@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.kotlin.model.ImpressHolder
 
@@ -15,7 +14,7 @@ data class RecomEntityCardUiModel(
     val imageUrl: String,
     val backgroundColor: List<String>,
     val labelState: LabelState
-) : Visitable<HomeRecommendationTypeFactoryImpl>, ImpressHolder() {
+) : BaseHomeRecommendationVisitable, ImpressHolder() {
     data class LabelState(
         val iconUrl: String,
         val title: String,
@@ -24,6 +23,14 @@ data class RecomEntityCardUiModel(
 
     override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {
         return typeFactory.type(this)
+    }
+
+    override fun areItemsTheSame(other: Any): Boolean {
+        return other is RecomEntityCardUiModel && other.id == id
+    }
+
+    override fun areContentsTheSame(other: Any): Boolean {
+        return other == this
     }
 
     override fun equals(other: Any?): Boolean {

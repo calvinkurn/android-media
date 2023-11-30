@@ -2,18 +2,17 @@ package com.tokopedia.home.beranda.data.mapper
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.AdsBanner
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.PlayVideoWidgetResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BaseHomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.LAYOUT_NAME_LIST
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -34,7 +33,7 @@ class HomeRecommendationCardMapper @Inject constructor(
         pageNumber: Int
     ): HomeRecommendationDataModel {
         val homeRecommendationTypeFactoryImplList =
-            mutableListOf<Visitable<HomeRecommendationTypeFactoryImpl>>()
+            mutableListOf<BaseHomeRecommendationVisitable>()
 
         getHomeRecommendationCard.recommendationCards.forEachIndexed { index, card ->
             when (card.layout) {

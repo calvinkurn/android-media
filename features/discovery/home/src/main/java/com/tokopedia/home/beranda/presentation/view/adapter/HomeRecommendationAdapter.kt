@@ -17,8 +17,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 
 class HomeRecommendationAdapter(
     private val adapterTypeFactory: HomeRecommendationTypeFactoryImpl
-) : ListAdapter<Visitable<HomeRecommendationTypeFactoryImpl>, AbstractViewHolder<Visitable<*>>>(
-    AsyncDifferConfig.Builder(HomeRecommendationDiffUtil(adapterTypeFactory)).build()
+) : ListAdapter<BaseHomeRecommendationVisitable, AbstractViewHolder<Visitable<*>>>(
+    AsyncDifferConfig.Builder(HomeRecommendationDiffUtil()).build()
 ) {
 
     override fun onCreateViewHolder(
