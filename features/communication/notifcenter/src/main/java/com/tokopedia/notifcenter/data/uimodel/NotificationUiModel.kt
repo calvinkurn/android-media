@@ -78,7 +78,7 @@ data class NotificationUiModel(
     @SerializedName("notif_order_type")
     val widgetType: Int = 0,
     @SerializedName("track_history")
-    val trackHistory: List<TrackHistory> = listOf(),
+    var trackHistory: List<TrackHistory> = listOf(),
     @SerializedName("widget")
     val widget: Widget = Widget(),
     @SerializedName("is_last_journey")
