@@ -3,7 +3,6 @@ package com.tokopedia.creation.common.presentation.screen
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -15,7 +14,6 @@ import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By : Jonathan Darwin on November 27, 2023
@@ -61,7 +59,8 @@ fun ContentInfoScreen(
             NestTypography(
                 text = title,
                 textStyle = NestTheme.typography.heading2.copy(
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = NestTheme.colors.NN._950,
                 ),
                 modifier = Modifier
                     .constrainAs(txtTitle) {
@@ -77,7 +76,7 @@ fun ContentInfoScreen(
                 text = subtitle,
                 textStyle = NestTheme.typography.paragraph2.copy(
                     textAlign = TextAlign.Center,
-                    color = colorResource(id = unifyprinciplesR.color.Unify_NN600)
+                    color = NestTheme.colors.NN._600,
                 ),
                 modifier = Modifier.constrainAs(txtSubtitle) {
                     top.linkTo(txtTitle.bottom, 8.dp)
