@@ -53,7 +53,7 @@ class RechargeHomepageDualIconsViewHolder(itemView: View?, val listener: Recharg
                 viewRechargeHomeDualIconsContainer.hide()
                 viewRechargeHomeDualIconsShimmering.root.show()
 
-                listener.loadRechargeSectionData(element.visitableId())
+                listener.loadRechargeSectionData(element.visitableId(), element.section.name)
             }
         }
     }

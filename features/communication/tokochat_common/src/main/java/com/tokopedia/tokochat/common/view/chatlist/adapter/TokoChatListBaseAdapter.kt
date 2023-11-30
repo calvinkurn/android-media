@@ -22,10 +22,10 @@ class TokoChatListBaseAdapter(
         delegatesManager.addDelegate(TokoChatListLoaderDelegate())
     }
 
-    fun isLoaderExist(): Boolean {
-        return itemList.find {
+    fun getLoaderPosition(): Int {
+        return itemList.indexOfFirst {
             it is TokoChatListLoaderUiModel
-        } != null
+        }
     }
 
     fun getEmptyViewPosition(): Int {

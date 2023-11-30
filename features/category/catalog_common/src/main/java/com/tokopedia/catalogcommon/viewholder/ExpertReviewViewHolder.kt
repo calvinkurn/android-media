@@ -2,7 +2,6 @@ package com.tokopedia.catalogcommon.viewholder
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -22,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase.Companion.KEY_YOUTUBE_VIDEO_ID
 
 class ExpertReviewViewHolder(
     itemView: View,
@@ -33,6 +31,8 @@ class ExpertReviewViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_experts_review
+
+        private const val keyYoutubeVideoId = "v"
     }
 
     private val binding by viewBinding<WidgetExpertsReviewBinding>()
@@ -42,13 +42,12 @@ class ExpertReviewViewHolder(
         binding?.carousel?.apply {
             autoplay = false
             infinite = true
-            onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener{
+            onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
-                    val videoExpertHasSaw = if (prev == element.content.size-1){
-                        element.content.subList(Int.ZERO,element.content.size)
-
-                    }else{
-                        element.content.subList(Int.ZERO,current+1)
+                    val videoExpertHasSaw = if (prev == element.content.size - 1) {
+                        element.content.subList(Int.ZERO, element.content.size)
+                    } else {
+                        element.content.subList(Int.ZERO, current + 1)
                     }
                     listener?.onVideoExpertImpression(videoExpertHasSaw)
                 }
@@ -61,8 +60,6 @@ class ExpertReviewViewHolder(
                         false
                     )
                     setupColorIconPlayAndBackgroundColorCard(itemExpert, view)
-
-
 
                     view.tvReview.text = itemExpert.reviewText
                     view.tvReview.setTextColor(itemExpert.textReviewColor)
@@ -77,11 +74,10 @@ class ExpertReviewViewHolder(
                     }
                     addItem(view.clLayout)
                 }
-
             }
             activeIndex = Int.ZERO
 
-            listener?.onVideoExpertImpression(element.content.subList(Int.ZERO,Int.ONE))
+            listener?.onVideoExpertImpression(element.content.subList(Int.ZERO, Int.ONE))
             onceCreateCarousel = true
         }
     }
@@ -89,7 +85,7 @@ class ExpertReviewViewHolder(
     private fun playVideoYoutube(videoLink: String) {
         val uri = Uri.parse(videoLink)
 
-        val youTubeVideoId = uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
+        val youTubeVideoId = uri.getQueryParameter(keyYoutubeVideoId) ?: ""
         if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(itemView.context)
             == YouTubeInitializationResult.SUCCESS
         ) {
@@ -108,7 +104,6 @@ class ExpertReviewViewHolder(
         element: ExpertReviewUiModel.ItemExpertReviewUiModel,
         view: ItemExpertReviewBinding
     ) {
-
         view.lnPlay.setBackgroundResource(element.styleIconPlay.background)
         view.ivPlay.setImage(
             newDarkDisable = ContextCompat.getColor(

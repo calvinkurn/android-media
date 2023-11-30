@@ -84,7 +84,10 @@ data class OngkirRatesV3Input(
     var warehouse_id: String = "",
     // new owoc
     @SerializedName("group_type")
-    val group_type: Int = 0
+    val group_type: Int = 0,
+    // O2O
+    @SerializedName("group_metadata")
+    val group_metadata: String = ""
 ) : GqlParam
 
 data class RatesMetadata(@SerializedName("cart_data") val cartData: String) : GqlParam

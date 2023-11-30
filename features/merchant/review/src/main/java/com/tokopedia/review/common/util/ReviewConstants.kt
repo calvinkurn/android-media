@@ -89,6 +89,7 @@ object ReviewConstants {
     const val ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID"
     const val ARGS_SHOP_ID = "ARGS_SHOP_ID"
     const val ARGS_IS_PRODUCT_REVIEW = "ARGS_IS_PRODUCT_REVIEW"
+    const val ARGS_SELECTED_TOPIC = "ARGS_SELECTED_TOPIC"
 
     const val PARAM_IS_EDIT_MODE = "isEditMode"
     const val PARAM_FEEDBACK_ID = "feedbackId"
@@ -156,5 +157,3 @@ object ReviewConstants {
     const val RATING_5 = 5
     const val BAD_RATING_CATEGORY_THRESHOLD = 3
 }
-
-

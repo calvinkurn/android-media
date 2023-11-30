@@ -16,7 +16,7 @@ open class SubmitDataUseCase @Inject constructor(
 ) : CoroutineUseCase<SubmitDataModel, InactivePhoneSubmitDataModel>(dispatcher.io) {
 
     override suspend fun execute(params: SubmitDataModel): InactivePhoneSubmitDataModel {
-        return repository.request(graphqlQuery(), params.toMapParam())
+        return repository.request(graphqlQuery(), createParam(params))
     }
 
     override fun graphqlQuery(): String {
@@ -28,6 +28,22 @@ open class SubmitDataUseCase @Inject constructor(
               }
             }
         """.trimIndent()
+    }
+
+    private fun createParam(data: SubmitDataModel): Map<String, Any> {
+        val param = mutableMapOf<String, Any>()
+        val tempParam = data.toMapParam()
+        param.putAll(tempParam)
+        if (data.isScpToken) {
+            param.remove(VALIDATE_TOKEN)
+            param[GOTO_VERIFICATION_TOKEN] = data.validateToken
+        }
+        return param
+    }
+
+    companion object {
+        private const val VALIDATE_TOKEN = "validateToken"
+        private const val GOTO_VERIFICATION_TOKEN = "goto_verification_token"
     }
 }
 
@@ -45,5 +61,7 @@ data class SubmitDataModel(
     @SerializedName("fileSelfie")
     var selfieImage: String = "",
     @SerializedName("validateToken")
-    var validateToken: String = ""
-): GqlParam
+    var validateToken: String = "",
+    @Transient
+    var isScpToken: Boolean = false
+) : GqlParam

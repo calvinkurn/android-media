@@ -11,7 +11,7 @@ import com.tokopedia.track.interfaces.ContextAnalytics
  * @author by yoasfs on 01/09/20
  */
 abstract class BaseTrackerConst {
-    protected object Event{
+    protected object Event {
         const val NONE = ""
         const val KEY = "event"
         const val CLICK = "click"
@@ -26,15 +26,16 @@ abstract class BaseTrackerConst {
         const val CLICK_HOMEPAGE = "clickHomepage"
         const val PRODUCT_ADD_TO_CART = "addToCart"
         const val SELECT_CONTENT = "select_content"
+        const val VIEW_ITEM = "view_item"
     }
 
-    protected object Category{
+    protected object Category {
         const val KEY = "eventCategory"
         const val HOMEPAGE = "homepage"
         const val HOMEPAGE_TOPADS = "homepage-topads"
     }
 
-    protected object Action{
+    protected object Action {
         const val KEY = "eventAction"
         const val IMPRESSION = "%s impression"
         const val IMPRESSION_ON = "impression on %s"
@@ -42,7 +43,7 @@ abstract class BaseTrackerConst {
         const val CLICK_ON = "click on %s"
     }
 
-    protected object Label{
+    protected object Label {
         const val KEY = "eventLabel"
         const val CHANNEL_LABEL = "channelId"
         const val AFFINITY_LABEL = "affinityLabel"
@@ -54,35 +55,35 @@ abstract class BaseTrackerConst {
         const val FORMAT_2_ITEMS = "%s - %s"
     }
 
-    protected object Screen{
+    protected object Screen {
         const val KEY = "screenName"
         const val DEFAULT = "/"
     }
 
-    protected object UserId{
+    protected object UserId {
         const val KEY = "userId"
         const val DEFAULT = ""
     }
 
-    protected object CurrentSite{
+    protected object CurrentSite {
         const val KEY = "currentSite"
         const val DEFAULT = "tokopediamarketplace"
     }
 
-    protected object BusinessUnit{
+    protected object BusinessUnit {
         const val KEY = "businessUnit"
         const val DEFAULT = "home & browse"
     }
 
-    protected object ChannelId{
+    protected object ChannelId {
         const val KEY = "channelId"
     }
 
-    protected object CampaignCode{
+    protected object CampaignCode {
         const val KEY = "campaignCode"
     }
 
-    protected object TrackerId{
+    protected object TrackerId {
         const val KEY = "trackerId"
     }
 
@@ -114,13 +115,14 @@ abstract class BaseTrackerConst {
     }
 
     class Promotion(
-            val id: String,
-            val name: String,
-            val creative: String,
-            val position: String,
-            val promoIds: String = "",
-            val promoCodes: String = "",
-            val creativeUrl: String = "") {
+        val id: String,
+        val name: String,
+        val creative: String,
+        val position: String,
+        val promoIds: String = "",
+        val promoCodes: String = "",
+        val creativeUrl: String = ""
+    ) {
         companion object {
             const val KEY = "promotions"
             const val CREATIVE_NAME = "creative_name"
@@ -131,32 +133,32 @@ abstract class BaseTrackerConst {
     }
 
     open class Product(
-            val name: String,
-            val id: String,
-            val productPrice: String,
-            val brand: String,
-            val category: String,
-            val variant: String,
-            val productPosition: String,
-            val isFreeOngkir: Boolean,
-            val isFreeOngkirExtra: Boolean = false,
-            val channelId: String = "",
-            val persoType: String = "",
-            val isTopAds: Boolean? = false,
-            val cartId: String = "",
-            val categoryId: String = "",
-            val clusterId: Int = -1,
-            val quantity: String = "",
-            val headerName: String? = null,
-            val isCarousel: Boolean? = null,
-            val recommendationType: String = "",
-            val shopId:String = "",
-            val shopName: String = "",
-            val shopType: String = "",
-            val pageName: String = "",
-            val wishlistId: String = "",
-            val warehouseId: String? = null,
-            val isFulfillment: Boolean? = null
+        val name: String,
+        val id: String,
+        val productPrice: String,
+        val brand: String,
+        val category: String,
+        val variant: String,
+        val productPosition: String,
+        val isFreeOngkir: Boolean,
+        val isFreeOngkirExtra: Boolean = false,
+        val channelId: String = "",
+        val persoType: String = "",
+        val isTopAds: Boolean? = false,
+        val cartId: String = "",
+        val categoryId: String = "",
+        val clusterId: Int = -1,
+        val quantity: String = "",
+        val headerName: String? = null,
+        val isCarousel: Boolean? = null,
+        val recommendationType: String = "",
+        val shopId: String = "",
+        val shopName: String = "",
+        val shopType: String = "",
+        val pageName: String = "",
+        val wishlistId: String = "",
+        val warehouseId: String? = null,
+        val isFulfillment: Boolean? = null
     )
 
     object Ecommerce {
@@ -167,7 +169,7 @@ abstract class BaseTrackerConst {
         private const val CLICK = "click"
         private const val ADD = "add"
         private const val IMPRESSIONS = "impressions"
-        private const val PROMO_VIEW = "promoView"
+        const val PROMO_VIEW = "promoView"
         const val PROMO_CLICK = "promoClick"
         private const val PROMOTIONS = "promotions"
         private const val PRODUCTS = "products"
@@ -178,7 +180,6 @@ abstract class BaseTrackerConst {
         private const val FREE_ONGKIR = "bebas ongkir"
         private const val FREE_ONGKIR_EXTRA = "bebas ongkir extra"
         private const val NONE = "none / other"
-
 
         private const val KEY_ID = "id"
         private const val KEY_NAME = "name"
@@ -214,21 +215,28 @@ abstract class BaseTrackerConst {
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
-                    PROMO_VIEW, getPromotionsMap(promotions))
+                PROMO_VIEW,
+                getPromotionsMap(promotions)
+            )
         }
 
         fun getEcommerceObjectPromoView(promotions: List<Any>?): Map<String, Any> {
             return DataLayer.mapOf(
-                    PROMO_VIEW,
-                    DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(
-                            promotions
-                    ))
+                PROMO_VIEW,
+                DataLayer.mapOf(
+                    PROMOTIONS,
+                    DataLayer.listOf(
+                        promotions
+                    )
+                )
             )
         }
 
         fun getEcommercePromoClick(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
-                    PROMO_CLICK, getPromotionsMap(promotions))
+                PROMO_CLICK,
+                getPromotionsMap(promotions)
+            )
         }
 
         private fun getPromotionsMap(promotions: List<Promotion>): Map<String, Any> {
@@ -237,13 +245,18 @@ abstract class BaseTrackerConst {
 
         fun getEcommerceProductClick(products: List<Product>, list: String, buildCustomList: ((Product) -> String)?): Map<String, Any> {
             return DataLayer.mapOf(
-                    CURRENCY_CODE, IDR,
-                    CLICK, DataLayer.mapOf(
-                    ACTION_FIELD, DataLayer.mapOf(
-                    LIST, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list
-            ),
-                    PRODUCTS, getProductsClick(products, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list, buildCustomList)
-            )
+                CURRENCY_CODE,
+                IDR,
+                CLICK,
+                DataLayer.mapOf(
+                    ACTION_FIELD,
+                    DataLayer.mapOf(
+                        LIST,
+                        if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list
+                    ),
+                    PRODUCTS,
+                    getProductsClick(products, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list, buildCustomList)
+                )
             )
         }
 
@@ -262,129 +275,137 @@ abstract class BaseTrackerConst {
 
         fun getEcommerceProductAddToCart(products: List<Product>, list: String, buildCustomList: ((Product) -> String)?): Map<String, Any> {
             return DataLayer.mapOf(
-                    CURRENCY_CODE, IDR,
-                    ADD, DataLayer.mapOf(
-                    ACTION_FIELD, DataLayer.mapOf(
-                    LIST, setNewList(products.firstOrNull(), list)
-            ),
-                    PRODUCTS, getProductsClick(products, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list, buildCustomList)
-            )
+                CURRENCY_CODE,
+                IDR,
+                ADD,
+                DataLayer.mapOf(
+                    ACTION_FIELD,
+                    DataLayer.mapOf(
+                        LIST,
+                        setNewList(products.firstOrNull(), list)
+                    ),
+                    PRODUCTS,
+                    getProductsClick(products, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list, buildCustomList)
+                )
             )
         }
 
         fun getEcommerceProductView(products: List<Product>, list: String, buildCustomList: ((Product) -> String)?): Map<String, Any> {
             return DataLayer.mapOf(
-                    CURRENCY_CODE, IDR,
-                    IMPRESSIONS, getProductsImpression(products, list, buildCustomList)
+                CURRENCY_CODE,
+                IDR,
+                IMPRESSIONS,
+                getProductsImpression(products, list, buildCustomList)
             )
         }
 
-        private fun getPromotions(promotions: List<Promotion>): List<Any>{
-            val list = ArrayList<Map<String,Any>>()
+        private fun getPromotions(promotions: List<Promotion>): List<Any> {
+            val list = ArrayList<Map<String, Any>>()
             promotions.forEach { list.add(createPromotionMap(it)) }
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
-        private fun getProducts(products: List<Product>): List<Any>{
-            val list = ArrayList<Map<String,Any>>()
+        private fun getProducts(products: List<Product>): List<Any> {
+            val list = ArrayList<Map<String, Any>>()
             products.forEach { list.add(createProductMap(it)) }
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
-        private fun getProductsClick(products: List<Product>, listClick: String, buildCustomList: ((Product) -> String)? = null): List<Any>{
-            val list = ArrayList<Map<String,Any>>()
+        private fun getProductsClick(products: List<Product>, listClick: String, buildCustomList: ((Product) -> String)? = null): List<Any> {
+            val list = ArrayList<Map<String, Any>>()
             products.forEach { list.add(createProductMap(it, listClick, buildCustomList)) }
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
-        private fun getProductsClickBundle(products: List<Product>, listClick: String, buildCustomList: ((Product) -> String)? = null): List<Any>{
+        private fun getProductsClickBundle(products: List<Product>, listClick: String, buildCustomList: ((Product) -> String)? = null): List<Any> {
             val list = ArrayList<Bundle>()
             products.forEach { list.add(createProductBundle(it, listClick, buildCustomList)) }
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
-        private fun getProductsImpression(products: List<Product>, listImpression: String, buildCustomList: ((Product) -> String)? = null): List<Any>{
-            val list = ArrayList<Map<String,Any>>()
+        private fun getProductsImpression(products: List<Product>, listImpression: String, buildCustomList: ((Product) -> String)? = null): List<Any> {
+            val list = ArrayList<Map<String, Any>>()
             products.forEach { list.add(createProductMap(it, listImpression, buildCustomList)) }
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
-        private fun createPromotionMap(promotion: Promotion) : Map<String, String>{
+        private fun createPromotionMap(promotion: Promotion): Map<String, String> {
             val map = HashMap<String, String>()
             map[KEY_ID] = promotion.id
             map[KEY_NAME] = promotion.name
             map[KEY_CREATIVE] = promotion.creative
             map[KEY_CREATIVE_URL] = promotion.creativeUrl
             map[KEY_POSITION] = promotion.position
-            if(promotion.promoIds.isNotBlank()) map[KEY_PROMO_ID] = promotion.promoIds
-            if(promotion.promoCodes.isNotBlank()) map[KEY_PROMO_CODE] = promotion.promoCodes
+            if (promotion.promoIds.isNotBlank()) map[KEY_PROMO_ID] = promotion.promoIds
+            if (promotion.promoCodes.isNotBlank()) map[KEY_PROMO_CODE] = promotion.promoCodes
             return map
         }
 
-        private fun createProductMap(product: Product, list: String = "", buildCustomList: ((Product) -> String)? = null) : Map<String, String>{
+        private fun createProductMap(product: Product, list: String = "", buildCustomList: ((Product) -> String)? = null): Map<String, String> {
             val map = HashMap<String, String>()
             map[KEY_ID] = product.id
             map[KEY_NAME] = product.name
-            map[KEY_BRAND] = if(product.brand.isNotBlank()) product.brand else NONE
-            map[KEY_VARIANT] = if(product.variant.isNotBlank()) product.variant else NONE
+            map[KEY_BRAND] = if (product.brand.isNotBlank()) product.brand else NONE
+            map[KEY_VARIANT] = if (product.variant.isNotBlank()) product.variant else NONE
             map[KEY_PRICE] = product.productPrice
-            map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
+            map[KEY_CATEGORY] = if (product.category.isNotBlank()) product.category else NONE
             map[KEY_POSITION] = product.productPosition
-            map[KEY_DIMENSION_40] = buildCustomList?.invoke(product) ?: if(list.isEmpty()) setNewList(product, list) else list
-            if(product.clusterId != -1) map[KEY_DIMENSION_11] = product.clusterId.toString()
+            map[KEY_DIMENSION_40] = buildCustomList?.invoke(product) ?: if (list.isEmpty()) setNewList(product, list) else list
+            if (product.clusterId != -1) map[KEY_DIMENSION_11] = product.clusterId.toString()
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
             if (list.isNotEmpty()) map[KEY_LIST] = if (list.isEmpty()) setNewList(product, list) else list
-            if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_45] = product.cartId
-            if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_79] = product.shopId
-            if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_80] = NONE
-            if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_81] = ""
-            if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_82] = NONE
-            if(product.quantity.isNotEmpty()) map[KEY_QUANTITY] = product.quantity
-            if(product.wishlistId.isNotEmpty()) map[KEY_DIMENSION_125] = product.wishlistId
-            else {
-                map[KEY_CATEGORY_ID] = if(product.categoryId.isNotBlank()) product.categoryId else NONE
-                map[KEY_SHOP_ID] = if(product.shopId.isNotBlank()) product.shopId else NONE
-                map[KEY_SHOP_NAME] = if(product.shopName.isNotBlank()) product.shopId else NONE
-                map[KEY_SHOP_TYPE] = if(product.shopType.isNotBlank()) product.shopType else NONE
+            if (product.cartId.isNotEmpty()) map[KEY_DIMENSION_45] = product.cartId
+            if (product.cartId.isNotEmpty()) map[KEY_DIMENSION_79] = product.shopId
+            if (product.cartId.isNotEmpty()) map[KEY_DIMENSION_80] = NONE
+            if (product.cartId.isNotEmpty()) map[KEY_DIMENSION_81] = ""
+            if (product.cartId.isNotEmpty()) map[KEY_DIMENSION_82] = NONE
+            if (product.quantity.isNotEmpty()) map[KEY_QUANTITY] = product.quantity
+            if (product.wishlistId.isNotEmpty()) {
+                map[KEY_DIMENSION_125] = product.wishlistId
+            } else {
+                map[KEY_CATEGORY_ID] = if (product.categoryId.isNotBlank()) product.categoryId else NONE
+                map[KEY_SHOP_ID] = if (product.shopId.isNotBlank()) product.shopId else NONE
+                map[KEY_SHOP_NAME] = if (product.shopName.isNotBlank()) product.shopId else NONE
+                map[KEY_SHOP_TYPE] = if (product.shopType.isNotBlank()) product.shopType else NONE
                 map[KEY_DIMENSION_83] = checkBebasOngkir(product)
             }
-            if(product.warehouseId != null) { map[KEY_DIMENSION_56] = product.warehouseId.ifEmpty { "0" } }
-            if(product.isFulfillment != null) { map[KEY_DIMENSION_58] = product.isFulfillment.toString() }
+            if (product.warehouseId != null) { map[KEY_DIMENSION_56] = product.warehouseId.ifEmpty { "0" } }
+            if (product.isFulfillment != null) { map[KEY_DIMENSION_58] = product.isFulfillment.toString() }
             return map
         }
 
-        private fun createProductBundle(product: Product, list: String = "", buildCustomList: ((Product) -> String)? = null) : Bundle{
+        private fun createProductBundle(product: Product, list: String = "", buildCustomList: ((Product) -> String)? = null): Bundle {
             val bundle = Bundle()
-            bundle.putString(KEY_ID,product.id)
+            bundle.putString(KEY_ID, product.id)
             bundle.putString(KEY_NAME, product.name)
-            bundle.putString(KEY_BRAND, if(product.brand.isNotBlank()) product.brand else NONE)
-            bundle.putString(KEY_VARIANT, if(product.variant.isNotBlank()) product.variant else NONE)
+            bundle.putString(KEY_BRAND, if (product.brand.isNotBlank()) product.brand else NONE)
+            bundle.putString(KEY_VARIANT, if (product.variant.isNotBlank()) product.variant else NONE)
             bundle.putString(KEY_PRICE, product.productPrice)
-            bundle.putString(KEY_CATEGORY, if(product.category.isNotBlank()) product.category else NONE)
-            bundle.putString(KEY_CATEGORY_ID, if(product.categoryId.isNotBlank()) product.categoryId else NONE)
-            bundle.putString(KEY_SHOP_ID, if(product.shopId.isNotBlank()) product.shopId else NONE)
-            bundle.putString(KEY_SHOP_NAME, if(product.shopName.isNotBlank()) product.shopName else NONE)
-            bundle.putString(KEY_SHOP_TYPE, if(product.shopType.isNotBlank()) product.shopType else NONE)
+            bundle.putString(KEY_CATEGORY, if (product.category.isNotBlank()) product.category else NONE)
+            bundle.putString(KEY_CATEGORY_ID, if (product.categoryId.isNotBlank()) product.categoryId else NONE)
+            bundle.putString(KEY_SHOP_ID, if (product.shopId.isNotBlank()) product.shopId else NONE)
+            bundle.putString(KEY_SHOP_NAME, if (product.shopName.isNotBlank()) product.shopName else NONE)
+            bundle.putString(KEY_SHOP_TYPE, if (product.shopType.isNotBlank()) product.shopType else NONE)
             bundle.putString(KEY_POSITION, product.productPosition)
             bundle.putString(KEY_DIMENSION_83, checkBebasOngkir(product))
-            bundle.putString(KEY_DIMENSION_40, buildCustomList?.invoke(product) ?: if(list.isEmpty()) setNewList(product, list) else list)
-            if(product.clusterId != -1) bundle.putString(KEY_DIMENSION_11, product.clusterId.toString())
+            bundle.putString(KEY_DIMENSION_40, buildCustomList?.invoke(product) ?: if (list.isEmpty()) setNewList(product, list) else list)
+            if (product.clusterId != -1) bundle.putString(KEY_DIMENSION_11, product.clusterId.toString())
             if (product.channelId.isNotEmpty()) bundle.putString(KEY_DIMENSION_84, product.channelId) else NONE
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) bundle.putString(KEY_DIMENSION_96, String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId)) else NONE
             if (list.isNotEmpty()) bundle.putString(KEY_LIST, if (list.isEmpty()) setNewList(product, list) else list)
-            if(product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_45, product.cartId)
-            if(product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_79, product.shopId)
-            if(product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_80, NONE)
-            if(product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_81, "")
-            if(product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_82, NONE)
-            if(product.quantity.isNotEmpty()) bundle.putString(KEY_QUANTITY, product.quantity)
-            if(product.warehouseId != null) { bundle.putString(KEY_DIMENSION_56, product.warehouseId.ifEmpty { "0" }) }
-            if(product.isFulfillment != null) { bundle.putString(KEY_DIMENSION_58, product.isFulfillment.toString()) }
+            if (product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_45, product.cartId)
+            if (product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_79, product.shopId)
+            if (product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_80, NONE)
+            if (product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_81, "")
+            if (product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_82, NONE)
+            if (product.quantity.isNotEmpty()) bundle.putString(KEY_QUANTITY, product.quantity)
+            if (product.warehouseId != null) { bundle.putString(KEY_DIMENSION_56, product.warehouseId.ifEmpty { "0" }) }
+            if (product.isFulfillment != null) { bundle.putString(KEY_DIMENSION_58, product.isFulfillment.toString()) }
             return bundle
         }
 
-        private fun checkBebasOngkir(product: Product): String{
+        private fun checkBebasOngkir(product: Product): String {
             return when {
                 product.isFreeOngkirExtra -> FREE_ONGKIR_EXTRA
                 product.isFreeOngkir -> FREE_ONGKIR
@@ -392,13 +413,13 @@ abstract class BaseTrackerConst {
             }
         }
 
-        private fun setNewList(product: Product?, list: String): String{
-            if(product == null) return list
-            var newList = list + if(product.isTopAds == true) " - topads" else if(product.isTopAds == false) " - non topads" else ""
-            if(product.isCarousel != null) newList += if (product.isCarousel == true) " - carousel" else "- non carousel"
-            if(product.recommendationType.isNotEmpty()) newList += " - ${product.recommendationType}"
-            if(product.pageName.isNotEmpty()) newList += " - ${product.pageName}"
-            if(product.headerName != null) newList += " - ${product.headerName}"
+        private fun setNewList(product: Product?, list: String): String {
+            if (product == null) return list
+            var newList = list + if (product.isTopAds == true) " - topads" else if (product.isTopAds == false) " - non topads" else ""
+            if (product.isCarousel != null) newList += if (product.isCarousel == true) " - carousel" else "- non carousel"
+            if (product.recommendationType.isNotEmpty()) newList += " - ${product.recommendationType}"
+            if (product.pageName.isNotEmpty()) newList += " - ${product.pageName}"
+            if (product.headerName != null) newList += " - ${product.headerName}"
             return newList
         }
     }

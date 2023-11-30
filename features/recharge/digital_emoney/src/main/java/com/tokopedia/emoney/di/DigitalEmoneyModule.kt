@@ -2,6 +2,7 @@ package com.tokopedia.emoney.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.tokopedia.emoney.integration.BCALibrary
 import com.tokopedia.encryption.security.AESEncryptorGCM
 import com.tokopedia.encryption.security.RSA
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -28,6 +29,12 @@ class DigitalEmoneyModule {
     @Provides
     fun provideRSA(): RSA {
         return RSA()
+    }
+
+    @DigitalEmoneyScope
+    @Provides
+    fun provideBCALibrary(): BCALibrary {
+        return BCALibrary()
     }
 
     @DigitalEmoneyScope

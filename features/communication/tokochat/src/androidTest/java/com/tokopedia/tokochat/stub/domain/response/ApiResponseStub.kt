@@ -2,9 +2,7 @@ package com.tokopedia.tokochat.stub.domain.response
 
 import com.tokopedia.tokochat.test.base.BaseTokoChatTest.Companion.CHANNEL_ID_DUMMY
 
-object ApiResponseStub {
-
-    private const val GENERAL_RESPONSE_CODE = 200
+class ApiResponseStub {
 
     lateinit var generalEmptyResponse: ApiResponseModelStub
 
@@ -83,24 +81,35 @@ object ApiResponseStub {
         )
     }
 
-    // API List
-    /**
-     * Chat Room
-     */
-    const val CONNECTION_API = "/v2/chat/connection"
-    const val PROFILE_API = "/v1/chat/profile"
-    const val CHANNEL_ID_API = "/v2/order"
-    const val CHANNEL_API = "/v2/chat/channels/$CHANNEL_ID_DUMMY"
-    const val IMAGE_URL_API = "/v1/image"
-    const val IMAGE_UPLOAD_URL_API = "/v1/image/url"
-    const val SEND_MESSAGE_API = "/v2/chat/channels/$CHANNEL_ID_DUMMY/message"
+    companion object {
+        private const val GENERAL_RESPONSE_CODE = 200
 
-    /**
-     * Chat List
-     */
-    const val CHANNEL_LIST = "v2/chat/channels?batch_size=10&timestamp="
-    const val CHANNEL_LIST_MORE = "v2/chat/channels?batch_size=11&timestamp="
+        // API List
+        /**
+         * Chat Room
+         */
+        const val CONNECTION_API = "/v2/chat/connection"
+        const val PROFILE_API = "/v1/chat/profile"
+        const val CHANNEL_ID_API = "/v2/order"
+        const val CHANNEL_API = "/v2/chat/channels/$CHANNEL_ID_DUMMY"
+        const val IMAGE_URL_API = "/v1/image"
+        const val IMAGE_UPLOAD_URL_API = "/v1/image/url"
+        const val SEND_MESSAGE_API = "/v2/chat/channels/$CHANNEL_ID_DUMMY/message"
 
-    // Values
-    const val MESSAGES = "messages"
+        /**
+         * Chat List
+         */
+        const val CHANNEL_LIST = "v2/chat/channels?batch_size=10&timestamp="
+
+        // Values
+        const val MESSAGES = "messages"
+
+        @Volatile
+        private var INSTANCE: ApiResponseStub? = null
+        fun getInstance(): ApiResponseStub {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: ApiResponseStub().also { INSTANCE = it }
+            }
+        }
+    }
 }
