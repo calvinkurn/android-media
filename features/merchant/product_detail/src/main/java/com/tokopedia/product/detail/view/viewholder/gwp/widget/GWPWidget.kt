@@ -28,7 +28,6 @@ import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiState
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.stringToUnifyColor
-import timber.log.Timber
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
@@ -182,8 +181,7 @@ class GWPWidget @JvmOverloads constructor(
     }
 
     private fun onComponentClick(uiModel: GWPWidgetUiModel) {
-        Timber.tag("gwp-widget").d(uiModel.toString())
-        // setRouting(action = uiModel.action)
+        setRouting(action = uiModel.action)
         listener?.onClickTracking(data = uiModel)
     }
 

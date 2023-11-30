@@ -6,8 +6,11 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.ItemDynamicProductGwpBinding
+import com.tokopedia.product.detail.view.fragment.delegate.BasicComponentEvent
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
+import com.tokopedia.product.detail.view.viewholder.gwp.callback.GWPCallback
+import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPComponentEvent
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.widget.GWPWidgetListener
 
@@ -18,7 +21,8 @@ import com.tokopedia.product.detail.view.viewholder.gwp.widget.GWPWidgetListener
 
 class GWPViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: DynamicProductDetailListener,
+    private val gwpCallback: GWPCallback
 ) : ProductDetailPageViewHolder<GWPUiModel>(view), GWPWidgetListener {
 
     companion object {
@@ -48,11 +52,11 @@ class GWPViewHolder(
     }
 
     override fun goToAppLink(appLink: String) {
-        listener.goToApplink(url = appLink)
+        gwpCallback.event(BasicComponentEvent.GoToAppLink(appLink = appLink))
     }
 
     override fun goToWebView(link: String) {
-        listener.goToWebView(url = link)
+        gwpCallback.event(BasicComponentEvent.GoToWebView(link = link))
     }
 
     override fun getRecyclerViewPool(): RecyclerView.RecycledViewPool? {
@@ -65,11 +69,12 @@ class GWPViewHolder(
 
     override fun onImpressed() {
         val element = uiModel ?: return
-        listener.onImpressComponent(getComponentTrackData(element))
+        gwpCallback.event(BasicComponentEvent.OnImpressed(getComponentTrackData(element)))
     }
 
     override fun isRemoteCacheableActive(): Boolean = listener.isRemoteCacheableActive()
 
     override fun onClickTracking(data: GWPWidgetUiModel) {
+        gwpCallback.event(GWPComponentEvent.OnClickTracking(data = data))
     }
 }

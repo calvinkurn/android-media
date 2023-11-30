@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.fragment.delegate
 
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
@@ -8,6 +9,7 @@ import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.view.componentization.ComponentCallback
 import com.tokopedia.product.detail.view.componentization.ComponentEvent
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
+import java.util.*
 
 /**
  * Created by yovi.putra on 14/11/23"
@@ -27,24 +29,15 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
     protected val queueTracker
         get() = mediator.queueTracker
 
-    @Suppress("UNCHECKED_CAST")
     override fun event(event: ComponentEvent) {
         when (event) {
-            is BasicComponentEvent.OnImpressed -> {
-                onImpressComponent(trackData = event.trackData)
-            }
+            is BasicComponentEvent.OnImpressed -> onImpressComponent(trackData = event.trackData)
 
-            is BasicComponentEvent.GoToAppLink -> {
-                RouteManager.route(context, event.applink)
-            }
+            is BasicComponentEvent.GoToAppLink -> goToAppLink(appLink = event.appLink)
 
-            else -> {
-                val mEvent = event as? Event
+            is BasicComponentEvent.GoToWebView -> goToWebView(link = event.link)
 
-                if (mEvent != null) {
-                    onEvent(event = mEvent)
-                }
-            }
+            else -> componentEvent(event = event)
         }
     }
 
@@ -85,6 +78,26 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
 
     private fun getShipmentPlusText(): String {
         return viewModel.getP2ShipmentPlusByProductId()?.text.orEmpty()
+    }
+
+    private fun goToAppLink(appLink: String) {
+        RouteManager.route(context, appLink)
+    }
+
+    private fun goToWebView(link: String) {
+        RouteManager.route(
+            context,
+            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, link)
+        )
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun componentEvent(event: ComponentEvent) {
+        val mEvent = event as? Event
+
+        if (mEvent != null) {
+            onEvent(event = mEvent)
+        }
     }
 
     protected fun ComponentTrackDataModel.asCommonTracker(): CommonTracker? {
