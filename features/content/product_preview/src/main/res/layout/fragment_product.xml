@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_Static_Black">
@@ -15,15 +16,19 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom">
 
-        <com.tokopedia.unifycomponents.Label
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_indicator_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:labelTitle="1/6"
-            app:labelType="highlight_dark_grey"
+            android:background="@drawable/product_label_background"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="4dp"
+            android:textColor="@color/Unify_Static_White"
             app:layout_constraintBottom_toTopOf="@id/rv_indicator_product"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_2"
+            tools:text="2/16 • Winnie the Pooh" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_indicator_product"
@@ -31,7 +36,11 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:itemCount="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            tools:listitem="@layout/item_product_indicator" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

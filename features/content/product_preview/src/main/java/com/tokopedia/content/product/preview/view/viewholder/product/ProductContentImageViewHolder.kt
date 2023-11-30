@@ -5,4 +5,8 @@ import com.tokopedia.content.product.preview.databinding.ItemProductContentImage
 
 class ProductContentImageViewHolder(
     binding: ItemProductContentImageBinding
-) : ViewHolder(binding.root)
+) : ViewHolder(binding.root) {
+    fun bind() {
+
+    }
+}

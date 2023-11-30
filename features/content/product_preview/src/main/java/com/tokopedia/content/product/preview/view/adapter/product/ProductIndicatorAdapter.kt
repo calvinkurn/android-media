@@ -1,9 +1,13 @@
 package com.tokopedia.content.product.preview.view.adapter.product
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.tokopedia.content.product.preview.databinding.ItemProductIndicatorBinding
+import com.tokopedia.content.product.preview.view.viewholder.product.ProductIndicatorViewHolder
 
-class ProductIndicatorAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProductIndicatorAdapter : Adapter<ViewHolder>() {
 
     private val _productIndicatorList = mutableListOf<String>()
     private val productIndicatorList: List<String>
@@ -15,12 +19,17 @@ class ProductIndicatorAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemRangeInserted(0, productIndicatorList.size)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        TODO("Not yet implemented")
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ProductIndicatorViewHolder(
+            ItemProductIndicatorBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent, false
+            )
+        )
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        (holder as ProductIndicatorViewHolder).bind()
     }
 
     override fun getItemCount(): Int = productIndicatorList.size

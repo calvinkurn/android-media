@@ -5,4 +5,8 @@ import com.tokopedia.content.product.preview.databinding.ItemProductIndicatorBin
 
 class ProductIndicatorViewHolder(
     binding: ItemProductIndicatorBinding
-) : ViewHolder(binding.root)
+) : ViewHolder(binding.root) {
+    fun bind() {
+
+    }
+}

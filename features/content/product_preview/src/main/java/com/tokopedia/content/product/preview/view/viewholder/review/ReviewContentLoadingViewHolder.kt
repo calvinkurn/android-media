@@ -1,10 +1,10 @@
 package com.tokopedia.content.product.preview.view.viewholder.review
 
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.tokopedia.content.product.preview.databinding.ItemReviewContentVideoBinding
+import com.tokopedia.content.product.preview.databinding.ItemReviewContentLoadingBinding
 
-class ReviewContentVideoViewHolder(
-    binding: ItemReviewContentVideoBinding
+class ReviewContentLoadingViewHolder(
+    binding: ItemReviewContentLoadingBinding
 ) : ViewHolder(binding.root) {
     fun bind() {
 

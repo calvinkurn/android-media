@@ -5,4 +5,8 @@ import com.tokopedia.content.product.preview.databinding.ItemReviewContentImageB
 
 class ReviewContentImageViewHolder(
     binding: ItemReviewContentImageBinding
-) : ViewHolder(binding.root)
+) : ViewHolder(binding.root) {
+    fun bind() {
+
+    }
+}

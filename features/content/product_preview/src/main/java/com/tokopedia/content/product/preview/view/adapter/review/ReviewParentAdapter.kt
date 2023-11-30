@@ -1,9 +1,15 @@
 package com.tokopedia.content.product.preview.view.adapter.review
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
+import com.tokopedia.content.product.preview.databinding.ItemReviewParentLoadingBinding
+import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
+import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentLoadingViewHolder
 
-class ReviewParentAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ReviewParentAdapter : Adapter<ViewHolder>() {
 
     private val _reviewParentList = mutableListOf<String>()
     private val reviewParentList: List<String>
@@ -21,12 +27,33 @@ class ReviewParentAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemRangeInserted(startPosition, reviewParentList.size)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        TODO("Not yet implemented")
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return when (viewType) {
+            TYPE_CONTENT -> {
+                ReviewParentContentViewHolder(
+                    ItemReviewParentContentBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent, false
+                    )
+                )
+            }
+
+            else -> {
+                ReviewParentLoadingViewHolder(
+                    ItemReviewParentLoadingBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent, false
+                    )
+                )
+            }
+        }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        when (holder.itemViewType) {
+            TYPE_CONTENT -> (holder as ReviewParentContentViewHolder).bind()
+            else -> (holder as ReviewParentLoadingViewHolder).bind()
+        }
     }
 
     override fun getItemCount(): Int = reviewParentList.size

@@ -5,4 +5,8 @@ import com.tokopedia.content.product.preview.databinding.ItemReviewParentContent
 
 class ReviewParentContentViewHolder(
     binding: ItemReviewParentContentBinding
-) : ViewHolder(binding.root)
+) : ViewHolder(binding.root) {
+    fun bind() {
+
+    }
+}
