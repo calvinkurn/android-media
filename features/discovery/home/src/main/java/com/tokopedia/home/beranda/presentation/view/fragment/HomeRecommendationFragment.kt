@@ -691,8 +691,9 @@ class HomeRecommendationFragment :
     }
 
     private fun goToProductDetail(productId: String, position: Int) {
-        activity?.let {
-            val context = recyclerView?.context
+        val context = recyclerView?.context
+
+        context?.let {
             val intent = RouteManager.getIntent(
                 context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
