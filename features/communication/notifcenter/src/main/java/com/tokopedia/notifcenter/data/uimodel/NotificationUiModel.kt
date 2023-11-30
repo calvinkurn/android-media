@@ -59,6 +59,8 @@ data class NotificationUiModel(
     val templateKey: String = "",
     @SerializedName("title")
     val title: String = "",
+    @SerializedName("title_html")
+    val titleHtml: String = "",
     @SerializedName("total_product")
     val totalProduct: Int = 0,
     @SerializedName("type_bottomsheet")
@@ -88,7 +90,9 @@ data class NotificationUiModel(
     @SerializedName("is_pinned")
     var isPinned: Boolean = false,
     @SerializedName("pinned_text")
-    var pinnedText: String = ""
+    var pinnedText: String = "",
+    @SerializedName("thumbnail_urls")
+    var thumbnailImageList: List<String> = listOf()
 ) : Visitable<NotificationTypeFactory> {
 
     @delegate:Transient
