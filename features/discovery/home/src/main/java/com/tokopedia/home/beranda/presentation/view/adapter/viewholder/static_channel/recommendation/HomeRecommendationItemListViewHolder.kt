@@ -27,14 +27,17 @@ class HomeRecommendationItemListViewHolder(
 
     private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
 
-    private var item: HomeRecommendationItemDataModel? = null
-
     override fun bind(element: HomeRecommendationItemDataModel) {
-        this.item = element
         setLayout(element)
-        productCardImpressionListener()
-        setItemProductCardClickListener()
-        setItemThreeDotsClickListener()
+        productCardImpressionListener(element)
+        setItemProductCardClickListener(element)
+        setItemThreeDotsClickListener(element)
+    }
+
+    override fun bindPayload(newItem: HomeRecommendationItemDataModel?) {
+        newItem?.let {
+            setItemThreeDotsClickListener(it)
+        }
     }
 
     private fun setLayout(
@@ -43,41 +46,35 @@ class HomeRecommendationItemListViewHolder(
         productCardView.setProductModel(element.productCardModel)
     }
 
-    private fun productCardImpressionListener() {
-        item?.let { productCardItem ->
-            productCardView.setImageProductViewHintListener(
-                productCardItem,
-                object : ViewHintListener {
-                    override fun onViewHint() {
-                        homeRecommendationListener.onProductImpression(
-                            productCardItem,
-                            bindingAdapterPosition
-                        )
-                    }
+    private fun productCardImpressionListener(element: HomeRecommendationItemDataModel) {
+        productCardView.setImageProductViewHintListener(
+            element,
+            object : ViewHintListener {
+                override fun onViewHint() {
+                    homeRecommendationListener.onProductImpression(
+                        element,
+                        bindingAdapterPosition
+                    )
                 }
+            }
+        )
+    }
+
+    private fun setItemProductCardClickListener(element: HomeRecommendationItemDataModel) {
+        productCardView.setOnClickListener {
+            homeRecommendationListener.onProductClick(
+                element,
+                bindingAdapterPosition
             )
         }
     }
 
-    private fun setItemProductCardClickListener() {
-        item?.let { productCardItem ->
-            productCardView.setOnClickListener {
-                homeRecommendationListener.onProductClick(
-                    productCardItem,
-                    bindingAdapterPosition
-                )
-            }
-        }
-    }
-
-    private fun setItemThreeDotsClickListener() {
-        item?.let { productCardItem ->
-            productCardView.setThreeDotsOnClickListener {
-                homeRecommendationListener.onProductThreeDotsClick(
-                    productCardItem,
-                    bindingAdapterPosition
-                )
-            }
+    private fun setItemThreeDotsClickListener(element: HomeRecommendationItemDataModel) {
+        productCardView.setThreeDotsOnClickListener {
+            homeRecommendationListener.onProductThreeDotsClick(
+                element,
+                bindingAdapterPosition
+            )
         }
     }
 }

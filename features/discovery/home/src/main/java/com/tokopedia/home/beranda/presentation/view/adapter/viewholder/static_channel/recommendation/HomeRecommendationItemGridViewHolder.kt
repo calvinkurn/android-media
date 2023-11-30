@@ -13,10 +13,10 @@ import com.tokopedia.productcard.ProductCardGridView
  */
 
 class HomeRecommendationItemGridViewHolder(
-    itemView: View,
+    view: View,
     private val listener: HomeRecommendationListener
 ) : BaseRecommendationForYouViewHolder<HomeRecommendationItemDataModel>(
-    itemView,
+    view,
     HomeRecommendationItemDataModel::class.java
 ) {
 
@@ -27,19 +27,15 @@ class HomeRecommendationItemGridViewHolder(
 
     private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
 
-    private var item: HomeRecommendationItemDataModel? = null
-
     override fun bind(element: HomeRecommendationItemDataModel) {
-        this.item = element
         setLayout(element)
-        productCardImpressionListener()
-        setItemProductCardClickListener()
+        productCardImpressionListener(element)
+        setItemProductCardClickListener(element)
         setItemThreeDotsClickListener(element)
     }
 
     override fun bindPayload(newItem: HomeRecommendationItemDataModel?) {
         newItem?.let {
-            this.item = it
             setItemThreeDotsClickListener(it)
         }
     }
@@ -50,30 +46,26 @@ class HomeRecommendationItemGridViewHolder(
         productCardView.setProductModel(element.productCardModel)
     }
 
-    private fun productCardImpressionListener() {
-        item?.let { productCardItem ->
-            productCardView.setImageProductViewHintListener(
-                productCardItem,
-                object : ViewHintListener {
-                    override fun onViewHint() {
-                        listener.onProductImpression(
-                            productCardItem,
-                            bindingAdapterPosition
-                        )
-                    }
+    private fun productCardImpressionListener(element: HomeRecommendationItemDataModel) {
+        productCardView.setImageProductViewHintListener(
+            element,
+            object : ViewHintListener {
+                override fun onViewHint() {
+                    listener.onProductImpression(
+                        element,
+                        bindingAdapterPosition
+                    )
                 }
-            )
-        }
+            }
+        )
     }
 
-    private fun setItemProductCardClickListener() {
-        item?.let { productCardItem ->
-            productCardView.setOnClickListener {
-                listener.onProductClick(
-                    productCardItem,
-                    bindingAdapterPosition
-                )
-            }
+    private fun setItemProductCardClickListener(element: HomeRecommendationItemDataModel) {
+        productCardView.setOnClickListener {
+            listener.onProductClick(
+                element,
+                bindingAdapterPosition
+            )
         }
     }
 

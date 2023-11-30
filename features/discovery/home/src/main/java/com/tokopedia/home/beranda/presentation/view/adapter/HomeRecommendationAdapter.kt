@@ -60,10 +60,10 @@ class HomeRecommendationAdapter(
         position: Int,
         payloads: MutableList<Any>
     ) {
-        if (payloads.isEmpty()) {
-            onBindViewHolder(holder, position)
+        if (payloads.isNotEmpty()) {
+            holder.bind(getItem(holder.bindingAdapterPosition), payloads)
         } else {
-            holder.bind(getItem(position), payloads)
+            super.onBindViewHolder(holder, holder.bindingAdapterPosition, payloads)
         }
     }
 

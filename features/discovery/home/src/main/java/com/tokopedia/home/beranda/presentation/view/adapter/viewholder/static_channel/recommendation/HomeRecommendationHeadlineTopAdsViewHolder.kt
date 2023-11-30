@@ -24,10 +24,7 @@ class HomeRecommendationHeadlineTopAdsViewHolder(
 
     private var binding: HomeRecommedationHeadlineAdsLayoutBinding? by viewBinding()
 
-    private var item: HomeRecommendationHeadlineTopAdsDataModel? = null
-
     override fun bind(element: HomeRecommendationHeadlineTopAdsDataModel) {
-        this.item = element
         setHeadlineAdsClickListener()
         setHeadlineAdsImpression()
         setDisplayHeadlineAds(element)

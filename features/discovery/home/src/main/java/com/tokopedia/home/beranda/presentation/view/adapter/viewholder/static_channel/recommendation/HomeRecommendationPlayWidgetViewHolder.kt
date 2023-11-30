@@ -26,7 +26,6 @@ class HomeRecommendationPlayWidgetViewHolder(
     }
 
     private val binding = ItemHomeRecommendationPlayWidgetBinding.bind(itemView)
-    private var item: HomeRecommendationPlayWidgetUiModel? = null
 
     init {
         homeRecommendationPlayWidgetManager.bind(binding.homeRecomPlayWidgetVideo)
@@ -43,39 +42,34 @@ class HomeRecommendationPlayWidgetViewHolder(
     }
 
     override fun bind(element: HomeRecommendationPlayWidgetUiModel) {
-        this.item = element
         bindHomeRecomPlayWidgetVideo(element)
-        setOnPlayVideoImpressionListener()
-        setHomePlayWidgetVideoClick()
+        setOnPlayVideoImpressionListener(element)
+        setHomePlayWidgetVideoClick(element)
     }
 
     private fun bindHomeRecomPlayWidgetVideo(element: HomeRecommendationPlayWidgetUiModel) {
         binding.homeRecomPlayWidgetVideo.bind(element.playVideoWidgetUiModel)
     }
 
-    private fun setHomePlayWidgetVideoClick() {
-        item?.let { element ->
-            binding.homeRecomPlayWidgetVideo.setOnClickListener {
-                listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
-            }
+    private fun setHomePlayWidgetVideoClick(element: HomeRecommendationPlayWidgetUiModel) {
+        binding.homeRecomPlayWidgetVideo.setOnClickListener {
+            listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
+        }
 
-            itemView.setOnClickListener {
-                listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
-            }
+        itemView.setOnClickListener {
+            listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
         }
     }
 
-    private fun setOnPlayVideoImpressionListener() {
-        item?.let { element ->
-            binding.homeRecomPlayWidgetVideo.addOnImpressionListener(
-                element,
-                object : ViewHintListener {
-                    override fun onViewHint() {
-                        listener.onPlayVideoWidgetImpress(element, bindingAdapterPosition)
-                    }
+    private fun setOnPlayVideoImpressionListener(element: HomeRecommendationPlayWidgetUiModel) {
+        binding.homeRecomPlayWidgetVideo.addOnImpressionListener(
+            element,
+            object : ViewHintListener {
+                override fun onViewHint() {
+                    listener.onPlayVideoWidgetImpress(element, bindingAdapterPosition)
                 }
-            )
-        }
+            }
+        )
     }
 
     interface Listener {
