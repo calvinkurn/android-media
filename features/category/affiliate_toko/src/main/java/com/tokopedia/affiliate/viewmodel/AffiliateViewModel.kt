@@ -36,7 +36,7 @@ class AffiliateViewModel @Inject constructor(
                 progressBar.value = false
             },
             onError = {
-                it.printStackTrace()
+                Timber.e(it)
                 progressBar.value = false
                 errorMessage.value = it
             }

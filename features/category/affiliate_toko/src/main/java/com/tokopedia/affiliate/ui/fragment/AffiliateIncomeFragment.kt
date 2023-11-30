@@ -113,12 +113,12 @@ class AffiliateIncomeFragment :
         savedInstanceState: Bundle?
     ): View? {
         binding = AffiliateIncomeFragmentLayoutBinding.inflate(inflater, container, false)
-        affiliateViewModel = activity?.let { ViewModelProvider(it)[AffiliateViewModel::class.java] }
         return binding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        affiliateViewModel = activity?.let { ViewModelProvider(it)[AffiliateViewModel::class.java] }
         setObservers()
     }
 

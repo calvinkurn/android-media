@@ -183,6 +183,7 @@ class AffiliateAdpFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        affiliateViewModel = activity?.let { ViewModelProvider(it)[AffiliateViewModel::class.java] }
         setObservers()
     }
 
@@ -192,7 +193,6 @@ class AffiliateAdpFragment :
         savedInstanceState: Bundle?
     ): View? {
         binding = AffiliateAdpFragmentLayoutBinding.inflate(inflater, container, false)
-        affiliateViewModel = activity?.let { ViewModelProvider(it)[AffiliateViewModel::class.java] }
         return binding?.root
     }
 
