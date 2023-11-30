@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
@@ -25,7 +29,7 @@ import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -141,7 +145,7 @@ import com.tokopedia.resources.common.R as resourcescommonR
  * Created By : Muhammad Furqan on 01/02/23
  */
 class FeedFragment :
-    BaseDaggerFragment(),
+    TkpdBaseV4Fragment(),
     FeedListener,
     ContentThreeDotsMenuBottomSheet.Listener,
     FeedTaggedProductBottomSheet.Listener,
@@ -214,6 +218,9 @@ class FeedFragment :
     @Inject
     lateinit var commentFactory: ContentCommentFactory.Creator
 
+    @Inject
+    lateinit var feedPostViewModelFactory: FeedPostViewModel.Factory
+
     private var mDataSource: DataSource? = null
 
     private val feedMainViewModel: FeedMainViewModel by viewModels(
@@ -225,7 +232,17 @@ class FeedFragment :
 
     private val feedPostViewModel: FeedPostViewModel by viewModels(
         ownerProducer = { mDataSource?.getViewModelStoreOwner(data?.type.orEmpty()) ?: this },
-        factoryProducer = { viewModelFactory }
+        factoryProducer = {
+            object : AbstractSavedStateViewModelFactory(this, arguments) {
+                override fun <T : ViewModel> create(
+                    key: String,
+                    modelClass: Class<T>,
+                    handle: SavedStateHandle
+                ): T {
+                    return feedPostViewModelFactory.create(handle) as T
+                }
+            }
+        }
     )
 
     private val feedMvcAnalytics = FeedMVCAnalytics()
@@ -362,6 +379,7 @@ class FeedFragment :
                 updateBottomActionView(position)
 
                 adapter.select(position)
+                feedPostViewModel.saveScrollPosition(position)
             }
         }
     }
@@ -373,6 +391,8 @@ class FeedFragment :
     private var mCampaign: FeedCardCampaignModel? = null
 
     private var postSourceModel: PostSourceModel? = null
+
+    private var mHasNotScrolled = true
 
     private val feedFollowRecommendationListener = object : FeedFollowRecommendationListener {
 
@@ -453,9 +473,12 @@ class FeedFragment :
         mUiListener = uiListener
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onAttach(context: Context) {
         initInjector()
+        super.onAttach(context)
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.fragmentFactory = object : FragmentFactory() {
             override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
                 return when (className) {
@@ -504,6 +527,7 @@ class FeedFragment :
 
         outState.putParcelable(ARGUMENT_DATA, data)
         outState.putBoolean(ARGUMENT_IS_CDP, isCdp)
+        outState.putString("test_string", "abc")
     }
 
     override fun onCreateView(
@@ -577,7 +601,7 @@ class FeedFragment :
         mDataSource = null
     }
 
-    override fun initInjector() {
+    private fun initInjector() {
         DaggerFeedMainComponent.factory()
             .build(
                 activityContext = requireContext(),
@@ -1312,16 +1336,22 @@ class FeedFragment :
             when (it) {
                 is Success -> {
                     if (it.data.items.isEmpty()) {
-                        context?.let { ctx ->
-                            adapter.setList(
-                                listOf(
-                                    FeedNoContentModel.getNoContentInstance(ctx)
-                                )
+                        adapter.setList(
+                            listOf(
+                                FeedNoContentModel.getNoContentInstance(requireContext())
                             )
-                        }
+                        )
                         mUiListener?.onContentFailed()
                     } else {
-                        adapter.setList(it.data.items)
+                        adapter.setList(it.data.items) {
+                            if (_binding == null || !mHasNotScrolled) return@setList
+
+                            mHasNotScrolled = false
+                            val position = feedPostViewModel.getScrollPosition().orZero()
+
+                            binding.rvFeedPost.scrollToPosition(position)
+                            if (checkResume()) adapter.select(position)
+                        }
                         context?.let { ctx ->
                             if (feedPostViewModel.shouldShowNoMoreContent && !isCdp) {
                                 adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))

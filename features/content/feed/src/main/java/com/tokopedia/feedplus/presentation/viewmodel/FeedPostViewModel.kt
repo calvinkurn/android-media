@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -85,6 +86,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -92,12 +96,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.net.HttpURLConnection
-import javax.inject.Inject
 
 /**
  * Created By : Muhammad Furqan on 23/02/23
  */
-class FeedPostViewModel @Inject constructor(
+class FeedPostViewModel @AssistedInject constructor(
+    @Assisted private val handle: SavedStateHandle,
     private val repository: FeedRepository,
     private val addToCartUseCase: AddToCartUseCase,
     private val likeContentUseCase: SubmitLikeContentUseCase,
@@ -123,6 +127,11 @@ class FeedPostViewModel @Inject constructor(
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(handle: SavedStateHandle): FeedPostViewModel
+    }
 
     private val _feedHome = MutableLiveData<Result<FeedModel>?>()
     val feedHome: LiveData<Result<FeedModel>?>
@@ -194,6 +203,14 @@ class FeedPostViewModel @Inject constructor(
 
     private fun isJustLoggedIn(): Boolean {
         return !mIsInitiallyLoggedIn && userSession.isLoggedIn
+    }
+
+    fun saveScrollPosition(position: Int) {
+        handle["scroll_position"] = position
+    }
+
+    fun getScrollPosition(): Int? {
+        return handle["scroll_position"]
     }
 
     fun fetchFeedPosts(
