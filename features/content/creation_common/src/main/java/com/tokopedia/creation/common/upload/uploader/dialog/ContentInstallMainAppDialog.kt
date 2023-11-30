@@ -69,6 +69,10 @@ class ContentInstallMainAppDialog {
             onDismiss()
         }
 
+        dialog?.setOnDismissListener {
+            onDismiss()
+        }
+
         return dialog
     }
 }

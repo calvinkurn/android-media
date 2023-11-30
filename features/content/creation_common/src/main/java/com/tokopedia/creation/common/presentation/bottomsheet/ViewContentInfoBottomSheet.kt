@@ -51,6 +51,8 @@ class ViewContentInfoBottomSheet : BottomSheetUnify() {
                         )
 
                         requireActivity().startActivity(intent)
+
+                        dismiss()
                     },
                     onSecondaryButtonClicked = {  }
                 )
