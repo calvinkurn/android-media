@@ -34,14 +34,6 @@ class HomeRecommendationHeadlineTopAdsViewHolder(
         hideHeadlineAdsShimmer()
     }
 
-    override fun bindPayload(newItem: HomeRecommendationHeadlineTopAdsDataModel?) {
-        newItem?.let {
-            this.item = it
-            setDisplayHeadlineAds(it)
-            hideHeadlineAdsShimmer()
-        }
-    }
-
     private fun setHeadlineAdsImpression() {
         binding?.headlineAds?.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
             override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {

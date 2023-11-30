@@ -49,13 +49,6 @@ class HomeRecommendationPlayWidgetViewHolder(
         setHomePlayWidgetVideoClick()
     }
 
-    override fun bindPayload(newItem: HomeRecommendationPlayWidgetUiModel?) {
-        newItem?.let {
-            this.item = it
-            bindHomeRecomPlayWidgetVideo(it)
-        }
-    }
-
     private fun bindHomeRecomPlayWidgetVideo(element: HomeRecommendationPlayWidgetUiModel) {
         binding.homeRecomPlayWidgetVideo.bind(element.playVideoWidgetUiModel)
     }

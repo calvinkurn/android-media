@@ -39,13 +39,6 @@ class HomeRecommendationBannerTopAdsViewHolder(
         setBannerTopAdsClickListener()
     }
 
-    override fun bindPayload(newItem: HomeRecommendationBannerTopAdsUiModel?) {
-        newItem?.let {
-            this.item = it
-            setImageTopAdsNewQuery(it)
-        }
-    }
-
     private fun setImageTopAdsNewQuery(element: HomeRecommendationBannerTopAdsUiModel) {
         loadImageTopAdsNewQuery(element)
     }
