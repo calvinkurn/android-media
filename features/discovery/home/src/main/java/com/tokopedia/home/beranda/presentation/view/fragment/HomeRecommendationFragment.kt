@@ -96,7 +96,7 @@ class HomeRecommendationFragment :
         ViewModelProvider(this, viewModelFactory)[HomeRecommendationViewModel::class.java]
     }
 
-    private var recyclerView: RecyclerView? = null
+    private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
     private val adapterFactory by lazy(LazyThreadSafetyMode.NONE) {
         HomeRecommendationTypeFactoryImpl(
@@ -184,7 +184,6 @@ class HomeRecommendationFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView = view.findViewById(R.id.home_feed_fragment_recycler_view)
         setupArgs()
         fetchHomeRecommendationRollence()
         setupRecyclerView()
@@ -757,7 +756,7 @@ class HomeRecommendationFragment :
             return
         }
         val staggeredGridLayoutManager =
-            recyclerView?.layoutManager as StaggeredGridLayoutManager?
+            recyclerView?.layoutManager as? StaggeredGridLayoutManager
         if (staggeredGridLayoutManager != null && staggeredGridLayoutManager.findFirstVisibleItemPositions(
                 null
             )[0] > BASE_POSITION
@@ -948,7 +947,6 @@ class HomeRecommendationFragment :
 
     override fun onDestroyView() {
         Toaster.onCTAClick = View.OnClickListener { }
-        recyclerView = null
         super.onDestroyView()
     }
 
