@@ -123,7 +123,8 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
     }
 
     fun setMarginBottomAddonDescWidget() {
-        val hasDescription = senderName.isNotBlank() || receiverName.isNotBlank() == description.isNotBlank()
+        val hasDescription =
+            senderName.isNotBlank() || receiverName.isNotBlank() || description.isNotBlank()
         if (hasDescription) {
             val lParams = binding.root.layoutParams as? LayoutParams
             lParams?.bottomMargin = MARGIN_BOTTOM.toPx()
