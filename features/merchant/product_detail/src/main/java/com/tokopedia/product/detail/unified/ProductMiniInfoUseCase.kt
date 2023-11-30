@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.unified
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -10,7 +11,7 @@ import javax.inject.Inject
  * @author by astidhiyaa on 27/11/23
  */
 class ProductMiniInfoUseCase @Inject constructor(
-    private val repo: GraphqlRepository,
+    @ApplicationContext private val repo: GraphqlRepository,
     dispatchers: CoroutineDispatchers,
 ) : CoroutineUseCase<Map<String, Any>, GetMiniProductInfoResponse>(dispatchers.io) {
 
