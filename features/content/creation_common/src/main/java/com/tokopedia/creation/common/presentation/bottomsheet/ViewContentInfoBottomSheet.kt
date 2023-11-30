@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.applink.ApplinkConst
@@ -35,10 +36,10 @@ class ViewContentInfoBottomSheet : BottomSheetUnify() {
 
             setContent {
                 ContentInfoScreen(
-                    imageUrl = getString(R.string.img_download_app),
-                    title = getString(R.string.content_creation_check_content_in_tokopedia_feed_title),
-                    subtitle = getString(R.string.content_creation_check_content_in_tokopedia_feed_desc),
-                    primaryText = getString(R.string.content_creation_check_content_in_tokopedia_feed_action_text),
+                    imageUrl = stringResource(R.string.img_content_creation_download_app),
+                    title = stringResource(R.string.content_creation_check_content_in_tokopedia_feed_title),
+                    subtitle = stringResource(R.string.content_creation_check_content_in_tokopedia_feed_desc),
+                    primaryText = stringResource(R.string.content_creation_check_content_in_tokopedia_feed_action_text),
                     secondaryText = "",
                     onPrimaryButtonClicked = {
                         val intent = ContentCreationPostUploadActivity.getIntent(
