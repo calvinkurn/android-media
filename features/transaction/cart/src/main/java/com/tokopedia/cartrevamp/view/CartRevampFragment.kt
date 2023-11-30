@@ -307,6 +307,7 @@ class CartRevampFragment :
     private var plusCoachMark: CoachMark2? = null
     private var mainFlowCoachMark: CoachMark2? = null
     private var bulkActionCoachMark: CoachMark2? = null
+    private var deleteSource: CartDeleteButtonSource? = null
 
     private var isFirstCheckEvent: Boolean = true
     private var hasShowBulkActionCoachMark: Boolean = false
@@ -1190,11 +1191,12 @@ class CartRevampFragment :
         cartItemHolderData: CartItemHolderData,
         deleteSource: CartDeleteButtonSource
     ) {
+        this.deleteSource = deleteSource
         when (deleteSource) {
-            is CartDeleteButtonSource.TrashBin -> {
+            CartDeleteButtonSource.TrashBin -> {
                 cartPageAnalytics.eventClickAtcCartClickTrashBin()
             }
-            is CartDeleteButtonSource.SwipeToDelete -> {
+            CartDeleteButtonSource.SwipeToDelete -> {
                 val analyticItems =
                     CartPageAnalyticsUtil.generateRemoveCartFromSubtractButtonAnalytics(cartItemHolderData)
                 cartPageAnalytics.sendEventClickRemoveCartFromSwipe(analyticItems, userSession.userId)
@@ -1243,7 +1245,7 @@ class CartRevampFragment :
                 isFromEditBundle = false,
                 listCartStringOrderAndBmGmOfferId = listCartStringOrderOfferId
             )
-            if (deleteSource is CartDeleteButtonSource.TrashBin) {
+            if (deleteSource == CartDeleteButtonSource.TrashBin) {
                 cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
                     viewModel.generateDeleteCartDataAnalytics(toBeDeletedProducts)
                 )
@@ -3827,7 +3829,7 @@ class CartRevampFragment :
     }
 
     private fun onUndoDeleteClicked(cartIds: List<String>) {
-        cartPageAnalytics.eventClickUndoAfterDeleteProduct(userSession.userId)
+        cartPageAnalytics.eventClickUndoAfterDeleteProduct(userSession.userId, deleteSource?.eventLabel.orEmpty())
         viewModel.processUndoDeleteCartItem(cartIds)
     }
 

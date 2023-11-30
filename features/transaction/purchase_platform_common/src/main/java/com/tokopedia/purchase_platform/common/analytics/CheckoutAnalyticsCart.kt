@@ -733,14 +733,15 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
-    fun eventClickUndoAfterDeleteProduct(userId: String) {
+    fun eventClickUndoAfterDeleteProduct(userId: String, eventLabel: String) {
         val gtmData = getGtmData(
             ConstantTransactionAnalytics.EventName.CLICK_ATC,
             ConstantTransactionAnalytics.EventCategory.CART,
             ConstantTransactionAnalytics.EventAction.CLICK_UNDO_AFTER_DELETE_PRODUCT,
-            ""
+            eventLabel
         )
         gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_UNDO_AFTER_DELETE_PRODUCT
         sendGeneralEvent(gtmData)
     }
 

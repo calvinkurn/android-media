@@ -592,6 +592,7 @@ object ConstantTransactionAnalytics {
         const val CLICK_BUTTON_MIN_TO_DELETE_CART = "46933"
         const val CLICK_SWIPE_ON_PRODUCT_CART = "48948"
         const val CLICK_REMOVE_CART_FROM_SWIPE = "48949"
+        const val CLICK_UNDO_AFTER_DELETE_PRODUCT = "15468"
 
         // BMGM
         const val CLICK_SNK_BMGM = "46781"

@@ -1279,7 +1279,7 @@ class CartItemViewHolder constructor(
                     if (data.isBundlingItem) data.bundleQuantity else data.quantity
                 if ((currentQuantity == 1 && data.minOrder == 1) || (currentQuantity == data.minOrder && data.isAlreadyShowMinimumQuantityPurchasedError)) {
                     delayChangeQty?.cancel()
-                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.QuantityEditor)
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
                     actionListener?.sendRemoveCartFromSubtractButtonAnalytic(data)
                 }
                 actionListener?.onCartItemQuantityMinusButtonClicked()
@@ -1302,7 +1302,7 @@ class CartItemViewHolder constructor(
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.DropKeyboard(qtyEditorProduct.editText.context, itemView)
                 if (qtyEditorProduct.editText.text.toString() == "0") {
-                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.QuantityEditor)
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.QuantityEditorImeAction)
                 }
                 if (lastQty > data.maxOrder) {
                     binding.labelQuantityError.text = String.format(
@@ -1334,7 +1334,7 @@ class CartItemViewHolder constructor(
         }
         if (newValue < element.minOrder) {
             if (element.minOrder <= 1) {
-                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.QuantityEditor)
+                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.TrashBin)
                 return
             }
             binding.labelQuantityError.show()
@@ -1347,7 +1347,7 @@ class CartItemViewHolder constructor(
                 element.isAlreadyShowMinimumQuantityPurchasedError = true
             } else {
                 element.isAlreadyShowMinimumQuantityPurchasedError = false
-                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.QuantityEditor)
+                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.TrashBin)
             }
         }
         qtyEditorCart.addButton.isEnabled = true
