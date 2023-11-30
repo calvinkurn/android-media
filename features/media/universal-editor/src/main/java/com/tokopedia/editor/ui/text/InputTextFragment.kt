@@ -10,6 +10,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Handler
+import android.util.Log
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.addTextChangedListener
@@ -36,6 +37,7 @@ class InputTextFragment @Inject constructor(
 
     private val viewModel: InputTextViewModel by activityViewModels { viewModelFactory }
     private val viewBinding: FragmentInputTextBinding? by viewBinding()
+    private var handler: Handler? = null
 
     override fun initView() {
         initFontSelection()
@@ -53,6 +55,11 @@ class InputTextFragment @Inject constructor(
         initBackgroundObserver()
         initColorObserver()
         initFontStyleObserver()
+    }
+
+    override fun onPause() {
+        handler?.removeCallbacksAndMessages(null)
+        super.onPause()
     }
 
     private fun initAlignmentObserver() {
@@ -114,6 +121,7 @@ class InputTextFragment @Inject constructor(
             }
 
             it.addTextInputWrapper.setOnClickListener {
+                handler?.removeCallbacksAndMessages(null)
                 viewModel.saveInputText()
             }
 
@@ -247,11 +255,16 @@ class InputTextFragment @Inject constructor(
     }
 
     private fun showSoftKeyboard() {
-        (context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(
-            InputMethodManager.SHOW_IMPLICIT,
-            InputMethodManager.HIDE_IMPLICIT_ONLY
-        )
+        context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let {
+            (it as InputMethodManager).toggleSoftInput(
+                InputMethodManager.SHOW_IMPLICIT,
+                InputMethodManager.HIDE_IMPLICIT_ONLY
+            )
+        }
     }
+
+    var show = 0
+    var keyboard = 0
 
     // animate container UI to fade in
     private fun animationShow() {
@@ -281,8 +294,14 @@ class InputTextFragment @Inject constructor(
 
                     override fun onAnimationEnd(p0: Animator) {
                         viewBinding?.addTextInput?.requestFocus()
-                        Handler().postDelayed({
+                        show += 1
+                        Log.d("asd","show = $show")
+
+                        handler = Handler()
+                        handler?.postDelayed({
                             showSoftKeyboard()
+                            keyboard += 1
+                            Log.d("asd","keyboard = $keyboard")
                         }, SOFT_KEYBOARD_SHOW_DELAY)
                     }
                 })
@@ -295,6 +314,6 @@ class InputTextFragment @Inject constructor(
     companion object {
         private const val DEFAULT_TEXT_COLOR = -1
         private const val ANIMATION_DURATION = 400L
-        private const val SOFT_KEYBOARD_SHOW_DELAY = 400L
+        private const val SOFT_KEYBOARD_SHOW_DELAY = 300L
     }
 }
