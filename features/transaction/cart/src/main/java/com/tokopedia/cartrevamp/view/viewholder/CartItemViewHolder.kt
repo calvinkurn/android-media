@@ -1301,9 +1301,6 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.DropKeyboard(qtyEditorProduct.editText.context, itemView)
-                if (qtyEditorProduct.editText.text.toString() == "0") {
-                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.QuantityEditorImeAction)
-                }
                 if (lastQty > data.maxOrder) {
                     binding.labelQuantityError.text = String.format(
                         itemView.context.getString(R.string.cart_max_quantity_error),
