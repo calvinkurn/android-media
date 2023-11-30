@@ -1,6 +1,8 @@
 package com.tokopedia.creation.common.presentation.screen
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -27,13 +29,12 @@ fun ContentInfoScreen(
     secondaryText: String,
     onPrimaryButtonClicked: () -> Unit,
     onSecondaryButtonClicked: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val isSecondaryButtonShown = secondaryText.isNotEmpty()
 
     NestTheme(isOverrideStatusBarColor = false) {
         ConstraintLayout(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
         ) {
             val (
@@ -132,6 +133,6 @@ private fun StoriesCreationInfoLayoutPreview() {
         primaryText = "Buat Story",
         secondaryText = "Kembali",
         onPrimaryButtonClicked = {},
-        onSecondaryButtonClicked = {},
+        onSecondaryButtonClicked = {}
     )
 }
