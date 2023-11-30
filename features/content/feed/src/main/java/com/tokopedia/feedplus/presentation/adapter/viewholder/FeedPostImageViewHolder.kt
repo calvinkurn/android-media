@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
@@ -55,6 +56,7 @@ class FeedPostImageViewHolder(
     private val listener: FeedListener,
     private val trackerMapper: MapperFeedModelToTrackerDataModel,
     private val lifecycleOwner: LifecycleOwner,
+    private val dispatcher: CoroutineDispatchers,
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
     private val alphaAnimator = FeedPostAlphaAnimator(object : FeedPostAlphaAnimator.Listener {
@@ -544,7 +546,7 @@ class FeedPostImageViewHolder(
 
     private fun bindImagesContent(media: List<FeedMediaModel>) {
         with(binding) {
-            adapter = FeedPostImageAdapter(media.map { it.mediaUrl }, lifecycleOwner)
+            adapter = FeedPostImageAdapter(media.map { it.mediaUrl }, lifecycleOwner, dispatcher)
             rvFeedPostImageContent.adapter = adapter
         }
     }

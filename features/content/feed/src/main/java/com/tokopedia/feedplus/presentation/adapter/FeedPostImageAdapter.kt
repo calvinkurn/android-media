@@ -6,17 +6,17 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.databinding.ItemFeedPostImageBinding
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
  * Created By : Muhammad Furqan on 02/03/23
  */
-class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: LifecycleOwner) :
+class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: LifecycleOwner, private val dispatcher: CoroutineDispatchers) :
     RecyclerView.Adapter<FeedPostImageAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -27,6 +27,7 @@ class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: L
                 false,
             ),
             lifecycleOwner,
+            dispatcher,
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -38,6 +39,7 @@ class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: L
     class ViewHolder(
         private val binding: ItemFeedPostImageBinding,
         private val lifecycleOwner: LifecycleOwner,
+        private val dispatcher: CoroutineDispatchers,
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -47,7 +49,7 @@ class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: L
 
         fun bind(url: String) {
             lifecycleOwner.lifecycleScope.launch {
-                val bitmap = withContext(Dispatchers.IO) {
+                val bitmap = withContext(dispatcher.io) {
                     Glide.with(binding.root.context).asBitmap()
                         .load(url)
                         .submit()
