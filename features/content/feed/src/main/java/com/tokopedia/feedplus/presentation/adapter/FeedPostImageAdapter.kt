@@ -2,10 +2,8 @@ package com.tokopedia.feedplus.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenStateAtLeast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -36,6 +34,11 @@ class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: L
         holder.bind(data[position])
     }
 
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
+        holder.onDetached()
+        super.onViewDetachedFromWindow(holder)
+    }
+
     override fun getItemCount(): Int = data.size
 
     class ViewHolder(
@@ -60,11 +63,11 @@ class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: L
                 imageBlurUtil.blurredView(src = bitmap, view = binding.bgImgFeedPost, repeatCount = 8)
                 binding.bgImgFeedPost.alpha = BG_ALPHA
                 binding.imgFeedPost.setImageBitmap(bitmap)
-
-                lifecycleOwner.lifecycle.whenStateAtLeast(Lifecycle.State.DESTROYED) {
-                    imageBlurUtil.close()
-                }
             }
+        }
+
+        fun onDetached() {
+            imageBlurUtil.close()
         }
 
         companion object {
