@@ -21,9 +21,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
-import com.tokopedia.recommendation_widget_common.widget.entitycard.uimodel.RecomEntityCardUiModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -357,7 +357,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             putString(UserId.KEY, userId)
         }
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.PROMO_CLICK, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
     fun sendClickVideoRecommendationCardTracking(
@@ -423,7 +423,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             putString(UserId.KEY, userId)
         }
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.PROMO_CLICK, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
     fun getImpressPlayVideoWidgetTracking(
@@ -610,7 +610,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             putString(UserId.KEY, userId)
         }
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.PROMO_CLICK, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
     private fun mapToProductTracking(homeRecommendationItemDataModel: HomeRecommendationItemDataModel) =

@@ -5,9 +5,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationButtonRetryUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationEmpty
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationError
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationHeadlineTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationLoadMore
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationLoading
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 
 class HomeRecommendationDiffUtil(
@@ -18,11 +24,7 @@ class HomeRecommendationDiffUtil(
         oldItem: Visitable<HomeRecommendationTypeFactoryImpl>,
         newItem: Visitable<HomeRecommendationTypeFactoryImpl>
     ): Any? {
-        return if (oldItem.type(typeFactory) == newItem.type(typeFactory)) {
-            Pair(oldItem, newItem)
-        } else {
-            null
-        }
+        return Pair(oldItem, newItem)
     }
 
     override fun areItemsTheSame(
@@ -48,8 +50,33 @@ class HomeRecommendationDiffUtil(
             oldItem is HomeRecommendationPlayWidgetUiModel && newItem is HomeRecommendationPlayWidgetUiModel -> {
                 oldItem.playVideoWidgetUiModel.id == newItem.playVideoWidgetUiModel.id
             }
+
+            oldItem is HomeRecommendationLoading && newItem is HomeRecommendationLoading -> {
+                oldItem.id == newItem.id
+            }
+
+            oldItem is HomeRecommendationLoadMore && newItem is HomeRecommendationLoadMore -> {
+                oldItem.id == newItem.id
+            }
+
+            oldItem is HomeRecommendationError && newItem is HomeRecommendationError -> {
+                oldItem.id == newItem.id
+            }
+
+            oldItem is HomeRecommendationEmpty && newItem is HomeRecommendationEmpty -> {
+                oldItem.id == newItem.id
+            }
+
+            oldItem is HomeRecommendationButtonRetryUiModel && newItem is HomeRecommendationButtonRetryUiModel -> {
+                oldItem.id == newItem.id
+            }
+
+            oldItem is RecomEntityCardUiModel && newItem is RecomEntityCardUiModel -> {
+                oldItem.id == newItem.id
+            }
+
             else -> {
-                oldItem.type(typeFactory) == newItem.type(typeFactory)
+                return oldItem.type(typeFactory) == newItem.type(typeFactory)
             }
         }
     }

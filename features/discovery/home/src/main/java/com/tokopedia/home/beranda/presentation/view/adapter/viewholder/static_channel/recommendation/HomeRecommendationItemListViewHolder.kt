@@ -7,7 +7,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationLi
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.databinding.HomeFeedItemListBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.BaseRecommendationForYouViewHolder
 
 /**
  * Created by Lukas on 2019-07-15

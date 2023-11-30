@@ -1,8 +1,8 @@
-package com.tokopedia.recommendation_widget_common.widget.entitycard.uimodel
+package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.recommendation_widget_common.widget.entitycard.typefactory.RecomEntityCardTypeFactory
 
 data class RecomEntityCardUiModel(
     val id: String,
@@ -15,14 +15,14 @@ data class RecomEntityCardUiModel(
     val imageUrl: String,
     val backgroundColor: List<String>,
     val labelState: LabelState
-) : Visitable<RecomEntityCardTypeFactory>, ImpressHolder() {
+) : Visitable<HomeRecommendationTypeFactoryImpl>, ImpressHolder() {
     data class LabelState(
         val iconUrl: String,
         val title: String,
         val textColor: String
     )
 
-    override fun type(typeFactory: RecomEntityCardTypeFactory): Int {
+    override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }
 
@@ -40,8 +40,8 @@ data class RecomEntityCardUiModel(
         if (title != other.title) return false
         if (subTitle != other.subTitle) return false
         if (appLink != other.appLink) return false
-        if (backgroundColor != backgroundColor) return false
         if (labelState != other.labelState) return false
+        if (backgroundColor != backgroundColor) return false
 
         return true
     }
