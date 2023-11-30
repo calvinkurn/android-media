@@ -59,21 +59,15 @@
         app:layout_constraintVertical_bias="1"
         />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <include
         android:id="@+id/tv_live_badge"
+        layout="@layout/view_play_widget_live_badge"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginStart="12dp"
-        android:background="@drawable/bg_play_widget_live_badge"
-        android:gravity="center"
-        android:paddingHorizontal="4dp"
-        android:text="LIVE"
-        android:textColor="@color/Unify_Static_White"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/view_play_widget_total_views"
         app:layout_constraintBottom_toBottomOf="@id/view_play_widget_total_views"
-        app:typographyType="small"
-        app:typographyWeight="bold"
         />
 
     <include
@@ -90,7 +84,7 @@
 
     <include
         android:id="@+id/view_play_widget_action_button"
-        layout="@layout/view_play_widget_carousel_action_button"
+        layout="@layout/view_play_widget_lottie_action_button"
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginEnd="12dp"

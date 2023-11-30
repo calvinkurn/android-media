@@ -22,6 +22,19 @@ buildscript {
 android {
     namespace 'com.tokopedia.emoney'
     testNamespace 'com.tokopedia.emoney.test'
+    defaultConfig {
+        externalNativeBuild {
+            cmake {
+                cppFlags ''
+            }
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
+    }
 }
 
 dependencies {

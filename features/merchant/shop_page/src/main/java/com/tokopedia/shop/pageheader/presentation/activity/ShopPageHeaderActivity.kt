@@ -47,6 +47,7 @@ import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageHeaderActivity :
     BaseSimpleActivity(),
@@ -92,7 +93,7 @@ class ShopPageHeaderActivity :
             configStatusBarAndSetFullScreen()
         }
         super.onCreate(savedInstanceState)
-        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, unifyprinciplesR.color.Unify_Background))
     }
 
     private fun configStatusBarAndSetFullScreen() {

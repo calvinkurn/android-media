@@ -31,9 +31,9 @@ import com.tokopedia.gamification.giftbox.presentation.views.RewardButtons.Compa
 import com.tokopedia.gamification.taptap.data.entiity.RewardButton
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.image.ImageUtils
 
 class RewardSummaryView : FrameLayout {
 
@@ -144,7 +144,7 @@ class RewardSummaryView : FrameLayout {
 
     fun setRewardData(rewardSummaryItemList: List<RewardSummaryItem>) {
         if (!imageBoxUrl.isNullOrEmpty()) {
-            ImageUtils.loadImageWithoutPlaceholderAndError(imageBox, imageBoxUrl!!)
+            imageBox.loadImageWithoutPlaceholderAndError(imageBoxUrl!!)
         }
 
         val userSession = UserSession(context)

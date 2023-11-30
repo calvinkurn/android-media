@@ -5,4 +5,8 @@
     <color name="_dms_som_detail_product_bundling_product_divider">#DBDEE2</color>
 
     <color name="_dms_som_operational_less_than_24_hour_color">#D4263F</color>
+
+    <color name="_dms_som_pof_price_breakdown_normal">#F5FFFFFF</color>
+    <color name="_dms_som_pof_divider_color">#2E2F36</color>
+    <color name="_dms_som_pof_footer_background">#2E2F36</color>
 </resources>

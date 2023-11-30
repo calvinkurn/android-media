@@ -28,33 +28,24 @@ class BannerPresenterDelegate @Inject constructor(
         this.bannerDataView = data
     }
 
-    fun processBannerAtBottom(
-        list: List<Visitable<*>>,
-        action: (Int,Visitable<*>) -> Unit,
-    ) {
+    fun processBannerAtBottom(action: (Int,Visitable<*>) -> Unit) {
         if (!pagination.isLastPage()) return
 
-        bannerDataView?.let {
-            action(list.size, it)
+        bannerDataView?.let { banner ->
+            action(banner.position, banner)
             bannerDataView = null
         }
     }
 
-    fun processBannerAtTop(
-        list: List<Visitable<*>>,
-        productList: List<Visitable<*>>,
-        action: (Int, Visitable<*>) -> Unit,
-    ) {
+    fun processBannerAtTop(action: (Int, Visitable<*>) -> Unit) {
         bannerDataView?.let { banner ->
-            val index = list.indexOf(productList.getOrNull(0))
-            action(index, banner)
+            action(banner.position, banner)
             bannerDataView = null
         }
     }
 
     fun processBanner(
-        list: List<Visitable<*>>,
-        productList: List<Visitable<*>>,
+        totalProductItem: Int,
         action: (Int, Visitable<*>) -> Unit,
     ) {
         try {
@@ -62,28 +53,20 @@ class BannerPresenterDelegate @Inject constructor(
             val bannerDataView = bannerDataView ?: return
 
             when (bannerDataView.position) {
-                LAST_POSITION -> processBannerAtBottom(list, action)
-                FIRST_POSITION -> processBannerAtTop(list, productList, action)
-                else -> processBannerAtPosition(list, productList, action)
+                LAST_POSITION -> processBannerAtBottom(action)
+                FIRST_POSITION -> processBannerAtTop(action)
+                else -> processBannerAtPosition(totalProductItem, action)
             }
         } catch (throwable: Throwable) {
             Timber.w(throwable)
         }
     }
 
-    private fun processBannerAtPosition(
-        list: List<Visitable<*>>,
-        productList: List<Visitable<*>>,
-        action: (Int, Visitable<*>) -> Unit,
-    ) {
+    private fun processBannerAtPosition(totalProductItem: Int, action: (Int, Visitable<*>) -> Unit) {
         val bannerDataView = bannerDataView ?: return
-        if (productList.size < bannerDataView.position) return
+        if (totalProductItem < bannerDataView.position) return
 
-        val productItemVisitableIndex = bannerDataView.position - 1
-        val productItemVisitable = productList[productItemVisitableIndex]
-        val bannerVisitableIndex = list.indexOf(productItemVisitable) + 1
-
-        action(bannerVisitableIndex, bannerDataView)
+        action(bannerDataView.position, bannerDataView)
         this.bannerDataView = null
     }
 

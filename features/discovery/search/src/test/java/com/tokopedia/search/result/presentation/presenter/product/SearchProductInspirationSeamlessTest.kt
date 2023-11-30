@@ -9,9 +9,18 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselData
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProduct
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
+import com.tokopedia.search.result.product.productitem.ProductItemVisitable
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordCardView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.reimagine.LayoutType
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproducttitle.InspirationProductTitleDataView
+import com.tokopedia.search.result.product.separator.VerticalSeparatorDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
 import io.mockk.every
@@ -20,7 +29,10 @@ import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
 import io.mockk.verifyOrder
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.Subscriber
 import java.util.TreeMap
@@ -31,11 +43,30 @@ private const val inspirationProductWithOneKeywordNoImage =
     "searchproduct/seamlessinspiration/seamless-inspiration-product_one_item_no_image.json"
 private const val inspirationProductWithAllKeywordNoImage =
     "searchproduct/seamlessinspiration/seamless-inspiration-product_no_image_all.json"
-private const val LAYOUT_INSPIRATION_KEYWORD_SEAMLESS = "carousel_seamless"
+private const val inspirationKeywordGridIconDrifting =
+    "searchproduct/seamlessinspiration/seamless-inspiration-keyword-icon-drifting.json"
+private const val inspirationKeywordGridIconFunneling =
+    "searchproduct/seamlessinspiration/seamless-inspiration-keyword-icon-funneling.json"
+private const val inspirationKeywordGridIconSeamlessFunneling =
+    "searchproduct/seamlessinspiration/seamless-inspiration-keyword-icon-seamless-funneling.json"
+private const val inspirationKeywordGridIconSeamlessDrifting =
+    "searchproduct/seamlessinspiration/seamless-inspiration-keyword-icon-seamless-drifting.json"
+private const val inspirationKeywordGridImageDrifting =
+    "searchproduct/seamlessinspiration/seamless-inspiration-keyword-image-drifting.json"
+private const val inspirationKeywordGridImageFunneling =
+    "searchproduct/seamlessinspiration/seamless-inspiration-keyword-image-funneling.json"
+private const val inspirationKeywordGridImageSeamlessFunneling =
+    "searchproduct/seamlessinspiration/seamless-inspiration-keyword-image-seamless-funneling.json"
+private const val inspirationKeywordGridImageSeamlessDrifting =
+    "searchproduct/seamlessinspiration/seamless-inspiration-keyword-image-seamless-drifting.json"
+private const val inspirationCarouselSeamlessWithOtherCarousel =
+    "searchproduct/seamlessinspiration/inspiration-carousel-seamless-with-other-carousel.json"
 private const val TARGET_CLICK = 0
 
 internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFixtures() {
     private val visitableListSlot = slot<List<Visitable<*>>>()
+    private val visitableList by lazy { visitableListSlot.captured }
+
     private val keyword = "sepatu"
     private val searchParameter = mapOf<String, Any>(
         SearchApiConst.Q to keyword,
@@ -49,9 +80,10 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         val searchProductModel: SearchProductModel = inspirationProductWithAllImage.jsonToObject()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
-        `Then verify visitable list has correct inspiration seamless keyword product and product sequence`(
-            searchProductModel
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
+            searchProductModel,
+            LayoutType.DEFAULT_SEAMLESS,
+            keyword
         )
     }
 
@@ -61,9 +93,10 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
             inspirationProductWithOneKeywordNoImage.jsonToObject()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
-        `Then verify visitable list has correct inspiration seamless keyword product and product sequence`(
-            searchProductModel
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
+            searchProductModel,
+            LayoutType.DEFAULT_SEAMLESS,
+            keyword
         )
     }
 
@@ -73,9 +106,10 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
             inspirationProductWithAllKeywordNoImage.jsonToObject()
         `load Data Product Search With Data`(searchProductModel)
 
-        `Then verify view set product list`()
-        `Then verify visitable list has correct inspiration seamless keyword product and product sequence`(
-            searchProductModel
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
+            searchProductModel,
+            LayoutType.DEFAULT_SEAMLESS,
+            keyword
         )
     }
 
@@ -118,12 +152,129 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `Then verify view interaction for click inspiration product`(targetProduct)
     }
 
-    private fun `load Data Product Search With Data`(searchModel: SearchProductModel) {
+    @Test
+    fun `Show inspiration keyword grid icon keyword drifting`() {
+        val searchProductModel: SearchProductModel =
+            inspirationKeywordGridIconDrifting.jsonToObject()
+        `Given search reimagine rollence product card will return non control variant`()
+        `load Data Product Search With Data`(searchProductModel)
+
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
+            searchProductModel,
+            LayoutType.ICON_DRIFTING,
+            keyword
+        )
+    }
+
+    @Test
+    fun `Show inspiration keyword grid icon keyword funneling`() {
+        val searchProductModel: SearchProductModel =
+            inspirationKeywordGridIconFunneling.jsonToObject()
+        `Given search reimagine rollence product card will return non control variant`()
+        `load Data Product Search With Data`(searchProductModel)
+
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
+            searchProductModel,
+            LayoutType.ICON_FUNNELING,
+            keyword
+        )
+    }
+
+    @Test
+    fun `Show inspiration keyword grid icon seamless keyword funneling`() {
+        val searchProductModel: SearchProductModel =
+            inspirationKeywordGridIconSeamlessFunneling.jsonToObject()
+        `Given search reimagine rollence product card will return non control variant`()
+        `load Data Product Search With Data`(searchProductModel)
+
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
+            searchProductModel,
+            LayoutType.ICON_FUNNELING,
+            keyword
+        )
+    }
+
+    @Test
+    fun `Show inspiration keyword grid icon seamless keyword drifting`() {
+        val searchProductModel: SearchProductModel =
+            inspirationKeywordGridIconSeamlessDrifting.jsonToObject()
+        `Given search reimagine rollence product card will return non control variant`()
+        `load Data Product Search With Data`(searchProductModel)
+
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
+            searchProductModel,
+            LayoutType.ICON_DRIFTING,
+            keyword
+        )
+    }
+
+    @Test
+    fun `Show inspiration keyword grid image keyword drifting`() {
+        val searchProductModel: SearchProductModel =
+            inspirationKeywordGridImageDrifting.jsonToObject()
+        `Given search reimagine rollence product card will return non control variant`()
+        `load Data Product Search With Data`(searchProductModel)
+
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
+            searchProductModel,
+            LayoutType.IMAGE_DRIFTING,
+            keyword
+        )
+    }
+
+    @Test
+    fun `Show inspiration keyword grid image keyword funneling`() {
+        val searchProductModel: SearchProductModel =
+            inspirationKeywordGridImageFunneling.jsonToObject()
+        `Given search reimagine rollence product card will return non control variant`()
+        `load Data Product Search With Data`(searchProductModel)
+
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
+            searchProductModel,
+            LayoutType.IMAGE_FUNNELING,
+            keyword
+        )
+    }
+
+    @Test
+    fun `Show inspiration keyword grid image keyword seamless drifting`() {
+        val searchProductModel: SearchProductModel =
+            inspirationKeywordGridImageSeamlessDrifting.jsonToObject()
+        `Given search reimagine rollence product card will return non control variant`()
+        `load Data Product Search With Data`(searchProductModel)
+
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
+            searchProductModel,
+            LayoutType.IMAGE_DRIFTING,
+            keyword
+        )
+    }
+
+    @Test
+    fun `Show inspiration keyword grid image keyword seamless funneling`() {
+        val searchProductModel: SearchProductModel =
+            inspirationKeywordGridImageSeamlessFunneling.jsonToObject()
+        `Given search reimagine rollence product card will return non control variant`()
+        `load Data Product Search With Data`(searchProductModel)
+
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
+            searchProductModel,
+            LayoutType.IMAGE_FUNNELING,
+            keyword
+        )
+    }
+
+    private fun `load Data Product Search With Data`(
+        searchModel: SearchProductModel,
+        searchParams: Map<String, Any> = searchParameter,
+    ) {
         `Given Search Product API will return SearchProductModel with Inspiration Carousel`(
             searchModel
         )
         `Given Mechanism to save and get product position from cache`()
-        `When Load Data`()
+        `Given keyword from view`()
+
+        `When Load Data`(searchParams)
 
         `Then verify view set product list`()
     }
@@ -136,6 +287,10 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         }
     }
 
+    private fun `Given keyword from view`() {
+        every { productListView.queryKey } returns keyword
+    }
+
     private fun `Given Mechanism to save and get product position from cache`() {
         val lastProductPositionSlot = slot<Int>()
 
@@ -146,8 +301,8 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         every { productListView.saveLastProductItemPositionToCache(capture(lastProductPositionSlot)) } just runs
     }
 
-    private fun `When Load Data`() {
-        productListPresenter.loadData(searchParameter)
+    private fun `When Load Data`(searchParams: Map<String, Any>) {
+        productListPresenter.loadData(searchParams)
     }
 
     private fun `Then verify view set product list`() {
@@ -156,10 +311,11 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         }
     }
 
-    private fun `Then verify visitable list has correct inspiration seamless keyword product and product sequence`(
-        searchProductModel: SearchProductModel
+    private fun `Then verify visitable list has correct inspiration keyword product and product sequence`(
+        searchProductModel: SearchProductModel,
+        layoutType : LayoutType,
+        searchKeyword: String,
     ) {
-        val visitableList = visitableListSlot.captured
         visitableList.size shouldBe 19
 
         val inspirationSeamlessCardData =
@@ -183,7 +339,9 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
                     )
                     (visitable as InspirationKeywordCardView)
                         .assertInspirationKeywordDataView(
-                            inspirationSeamlessCardData[inspirationCarouselIndex]
+                            inspirationSeamlessCardData[inspirationCarouselIndex],
+                            layoutType,
+                            searchKeyword
                         )
                     inspirationCarouselIndex += 1
                     keywordIndex = index
@@ -227,11 +385,12 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
 
     private fun SearchInspirationCarousel.getDataInspirationSeamless(): List<InspirationCarouselData> {
         return this.data.filter {
-            it.layout == LAYOUT_INSPIRATION_KEYWORD_SEAMLESS
+            it.layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
         }
     }
 
-    private fun List<InspirationCarouselData>.indexingSeamlessInspirationProductByKeywordPosition(): TreeMap<Int, ArrayList<InspirationCarouselProduct>> {
+    private fun List<InspirationCarouselData>.indexingSeamlessInspirationProductByKeywordPosition()
+    : TreeMap<Int, ArrayList<InspirationCarouselProduct>> {
         val inspirationSeamlessProduct: TreeMap<Int, ArrayList<InspirationCarouselProduct>> =
             TreeMap()
         this.forEach {
@@ -245,7 +404,8 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         return inspirationSeamlessProduct
     }
 
-    private fun TreeMap<Int, ArrayList<InspirationCarouselProduct>>.getStartAndEndPositionOfSeamlessInspirationProduct(): TreeMap<Int, Int> {
+    private fun TreeMap<Int, ArrayList<InspirationCarouselProduct>>
+        .getStartAndEndPositionOfSeamlessInspirationProduct(): TreeMap<Int, Int> {
         val inspirationSeamlessProduct: TreeMap<Int, Int> = TreeMap()
         this.forEach { (position, inspirationCarouselProducts) ->
             val startPosition = position + 1
@@ -262,7 +422,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         this[key]?.get(productIndex) ?: throw IndexOutOfBoundsException()
 
     private fun InspirationProductItemDataView.assertInspirationProductItemDataView(
-        inspirationCarouselProduct: InspirationCarouselProduct
+        inspirationCarouselProduct: InspirationCarouselProduct,
     ) {
         this.id shouldBe inspirationCarouselProduct.id
         this.name shouldBe inspirationCarouselProduct.name
@@ -270,21 +430,28 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         this.imageUrl shouldBe inspirationCarouselProduct.imgUrl
         this.url shouldBe inspirationCarouselProduct.url
         this.applink shouldBe inspirationCarouselProduct.applink
+        this.topAdsViewUrl shouldBe inspirationCarouselProduct.ads.productViewUrl
+        this.topAdsClickUrl shouldBe inspirationCarouselProduct.ads.productClickUrl
+        this.isOrganicAds shouldBe inspirationCarouselProduct.isOrganicAds()
     }
 
     private fun InspirationKeywordCardView.assertInspirationKeywordDataView(
         inspirationCarouselData: InspirationCarouselData,
+        layoutType: LayoutType,
+        searchTerm: String,
     ) {
         val isNoImage = !inspirationCarouselData.inspirationCarouselOptions.none { it.bannerImageUrl.isEmpty() }
         this.title shouldBe inspirationCarouselData.title
         this.isOneOrMoreIsEmptyImage shouldBe isNoImage
+        this.layoutType shouldBe layoutType
+        this.searchTerm shouldBe searchTerm
         this.optionsItems.forEachIndexed { index, seamlessInspirationKeyword ->
-            seamlessInspirationKeyword.keyword shouldBe inspirationCarouselData.inspirationCarouselOptions[index].title
+            val title = inspirationCarouselData.inspirationCarouselOptions[index].title
+            seamlessInspirationKeyword.keyword shouldBe title
         }
     }
 
     private fun findKeywordInspirationOn(position: Int): InspirationKeywordDataView {
-        val visitableList = visitableListSlot.captured
         val inspirationKeywords =
             visitableList.find { it is InspirationKeywordCardView } as InspirationKeywordCardView
         return inspirationKeywords.optionsItems[position]
@@ -298,13 +465,17 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         productListPresenter.onInspirationKeywordItemClick(inspirationKeyword)
     }
 
-    private fun `Then verify view interaction for impressed inspiration keyword`(inspirationKeyword: InspirationKeywordDataView) {
+    private fun `Then verify view interaction for impressed inspiration keyword`(
+        inspirationKeyword: InspirationKeywordDataView
+    ) {
         verify {
             inspirationKeywordSeamlessView.trackEventImpressionInspirationKeyword(inspirationKeyword)
         }
     }
 
-    private fun `Then verify view interaction for click inspiration keyword`(inspirationKeyword: InspirationKeywordDataView) {
+    private fun `Then verify view interaction for click inspiration keyword`(
+        inspirationKeyword: InspirationKeywordDataView
+    ) {
         verify {
             inspirationKeywordSeamlessView.trackEventClickItemInspirationKeyword(inspirationKeyword)
             applinkModifier.modifyApplink(inspirationKeyword.applink)
@@ -313,7 +484,6 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
     }
 
     private fun findFirstProductInspiration(): InspirationProductItemDataView {
-        val visitableList = visitableListSlot.captured
         return visitableList.find { it is InspirationProductItemDataView } as InspirationProductItemDataView
     }
 
@@ -321,7 +491,9 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         productListPresenter.onInspirationProductItemImpressed(inspirationProduct)
     }
 
-    private fun `Then verify view interaction for impressed inspiration product`(inspirationProduct: InspirationProductItemDataView) {
+    private fun `Then verify view interaction for impressed inspiration product`(
+        inspirationProduct: InspirationProductItemDataView
+    ) {
         verify {
             val seamlessInspirationProductType = inspirationProduct.seamlessInspirationProductType
             inspirationProductSeamlessView.trackInspirationProductSeamlessImpression(
@@ -335,7 +507,9 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         productListPresenter.onInspirationProductItemClick(inspirationProduct)
     }
 
-    private fun `Then verify view interaction for click inspiration product`(inspirationProduct: InspirationProductItemDataView) {
+    private fun `Then verify view interaction for click inspiration product`(
+        inspirationProduct: InspirationProductItemDataView
+    ) {
         verify {
             val seamlessInspirationProductType = inspirationProduct.seamlessInspirationProductType
             inspirationProductSeamlessView.trackInspirationProductSeamlessClick(
@@ -347,5 +521,78 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
                 inspirationProduct.url
             )
         }
+    }
+
+    @Test
+    fun `Show other carousel between carousel_seamless carousel`() {
+        val searchProductModel: SearchProductModel =
+            inspirationCarouselSeamlessWithOtherCarousel.jsonToObject()
+
+        `Given search reimagine rollence product card will return non control variant`()
+        `load Data Product Search With Data`(searchProductModel)
+
+        `Then assert carousel product_list is between carousel_seamless`(searchProductModel)
+    }
+
+    private fun `Then assert carousel product_list is between carousel_seamless`(
+        searchProductModel: SearchProductModel
+    ) {
+        val productCountBeforeCarousel = searchProductModel
+            .searchInspirationCarousel
+            .data
+            .find { it.layout == LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT }
+            ?.position
+
+        val carouselIndex = visitableList.indexOfFirst { it is SuggestionDataView }
+        val productItemListBeforeCarousel = visitableList
+            .subList(0, carouselIndex)
+            .filterIsInstance<ProductItemVisitable>()
+
+        assertEquals(productItemListBeforeCarousel.size, productCountBeforeCarousel)
+    }
+
+    @Test
+    fun `inspiration carousel seamless_product`() {
+        val searchProductModel = "searchproduct/seamlessinspiration/seamless-product-diversification.json"
+            .jsonToObject<SearchProductModel>()
+
+        `Given search reimagine rollence product card will return non control variant`()
+        `load Data Product Search With Data`(searchProductModel)
+
+        `Then assert inspiration carousel seamless product`(searchProductModel)
+    }
+
+    private fun `Then assert inspiration carousel seamless product`(searchProductModel: SearchProductModel) {
+        val seamlessProductData = searchProductModel.searchInspirationCarousel.data.find {
+            it.layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
+        }!!
+
+        val seamlessProductItemList = seamlessProductData
+            .inspirationCarouselOptions
+            .flatMap { it.inspirationCarouselProducts }
+
+        val seamlessProductTitleIndex =
+            visitableList.indexOfFirst { it is ProductItemDataView } + seamlessProductData.position
+
+        val seamlessProductItemFirstIndex = seamlessProductTitleIndex + 1
+
+        assertThat(
+            visitableList[seamlessProductTitleIndex],
+            instanceOf(InspirationProductTitleDataView::class.java)
+        )
+
+        seamlessProductItemList.forEachIndexed { index, inspirationCarouselProduct ->
+            val inspirationProductItemDataView =
+                visitableList[index + seamlessProductItemFirstIndex] as InspirationProductItemDataView
+
+            inspirationProductItemDataView
+                .assertInspirationProductItemDataView(inspirationCarouselProduct)
+            inspirationProductItemDataView.isShowAdsLabel shouldBe false
+        }
+
+        assertThat(
+            visitableList[seamlessProductItemFirstIndex + seamlessProductItemList.size],
+            instanceOf(VerticalSeparatorDataView::class.java)
+        )
     }
 }

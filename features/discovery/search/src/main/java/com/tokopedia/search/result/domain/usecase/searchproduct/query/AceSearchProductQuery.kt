@@ -172,7 +172,7 @@ object AceSearchProductQuery {
                         headerText
                         descriptionText
                         imageURL
-                        ctaURL
+                        ctaApplink
                         buttonText
                         buttonType
                     }
