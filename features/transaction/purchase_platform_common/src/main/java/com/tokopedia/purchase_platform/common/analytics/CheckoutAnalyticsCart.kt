@@ -1143,7 +1143,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             ExtraKey.CURRENT_SITE to ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE,
             ExtraKey.BUSINESS_UNIT to ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
             ExtraKey.TRACKER_ID to ConstantTransactionAnalytics.TrackerId.CLICK_BUTTON_MIN_TO_DELETE_CART,
-            ExtraKey.PROMOTIONS to mapData,
+            ExtraKey.ITEMS to mapData,
             ExtraKey.USER_ID to userId
         )
 
