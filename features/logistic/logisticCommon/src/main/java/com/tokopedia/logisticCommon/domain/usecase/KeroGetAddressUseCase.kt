@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.common.domain.usecase
+package com.tokopedia.logisticCommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

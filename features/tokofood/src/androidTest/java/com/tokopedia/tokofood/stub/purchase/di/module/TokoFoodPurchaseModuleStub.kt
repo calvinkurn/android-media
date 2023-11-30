@@ -2,9 +2,9 @@ package com.tokopedia.tokofood.stub.purchase.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.logisticCommon.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
-import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
-import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.TokoFoodPurchaseScope
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutGeneralTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
@@ -70,5 +70,4 @@ class TokoFoodPurchaseModuleStub {
     ): CheckoutGeneralTokoFoodUseCase {
         return CheckoutGeneralTokoFoodUseCaseStub(graphQlRepository)
     }
-
 }

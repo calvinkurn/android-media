@@ -1,8 +1,8 @@
 package com.tokopedia.tokofood.stub.purchase.presentation.viewmodel
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
-import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutGeneralTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseViewModel
@@ -17,7 +17,7 @@ class TokoFoodPurchaseViewModelStub @Inject constructor(
     cartListTokofoodUseCase: Lazy<CheckoutTokoFoodUseCase>,
     checkoutGeneralTokoFoodUseCase: Lazy<CheckoutGeneralTokoFoodUseCase>,
     coroutineDispatchers: CoroutineDispatchers
-): TokoFoodPurchaseViewModel(
+) : TokoFoodPurchaseViewModel(
     keroEditAddressUseCase,
     keroGetAddressUseCase,
     cartListTokofoodUseCase,

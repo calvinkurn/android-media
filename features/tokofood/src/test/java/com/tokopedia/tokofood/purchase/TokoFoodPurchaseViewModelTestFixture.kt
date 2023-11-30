@@ -1,10 +1,10 @@
 package com.tokopedia.tokofood.purchase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.logisticCommon.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.common.domain.param.KeroAddressParamData
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
-import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
-import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodResponse
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutGeneralTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
@@ -76,22 +76,28 @@ abstract class TokoFoodPurchaseViewModelTestFixture {
         } throws throwable
     }
 
-    protected fun onCheckoutGeneral_thenReturn(cartListData: CartGeneralCartListData,
-                                               response: CheckoutGeneralTokoFoodResponse) {
+    protected fun onCheckoutGeneral_thenReturn(
+        cartListData: CartGeneralCartListData,
+        response: CheckoutGeneralTokoFoodResponse
+    ) {
         coEvery {
             checkoutGeneralTokoFoodUseCase.get().execute(cartListData)
         } returns response
     }
 
-    protected fun onCheckoutGeneral_thenThrow(cartListData: CartGeneralCartListData,
-                                              throwable: Throwable) {
+    protected fun onCheckoutGeneral_thenThrow(
+        cartListData: CartGeneralCartListData,
+        throwable: Throwable
+    ) {
         coEvery {
             checkoutGeneralTokoFoodUseCase.get().execute(cartListData)
         } throws throwable
     }
 
-    protected fun onGetAddressUseCase_thenReturn(addressId: String,
-                                                 keroAddressParamData: KeroAddressParamData?) {
+    protected fun onGetAddressUseCase_thenReturn(
+        addressId: String,
+        keroAddressParamData: KeroAddressParamData?
+    ) {
         coEvery {
             keroGetAddressUseCase.get().execute(addressId)
         } returns keroAddressParamData
@@ -115,6 +121,4 @@ abstract class TokoFoodPurchaseViewModelTestFixture {
 
         private const val CHECKOUT_PAGE_SOURCE = "checkout_page"
     }
-
-
 }
