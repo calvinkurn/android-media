@@ -136,7 +136,7 @@ class SellerHomeNavigator(
             pages.remove(fragment)
 
             val page = when (pageType) {
-                FragmentType.HOME -> getHomeFragment(it)
+                FragmentType.HOME -> homeFragment
                 FragmentType.PRODUCT -> setupProductManagePage(it)
                 FragmentType.ORDER -> setupSellerOrderPage(it)
                 else -> fragment
@@ -154,10 +154,6 @@ class SellerHomeNavigator(
     }
 
     private fun getHomeFragment(pageFragment: PageFragment? = null): Fragment? {
-        val sellerHomeData = pageFragment?.sellerHomeData
-        if (sellerHomeData != null || homeFragment == null) {
-            homeFragment = SellerHomeFragment.newInstance(sellerHomeData)
-        }
         return homeFragment
     }
 

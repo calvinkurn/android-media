@@ -30,8 +30,10 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.internal_review.factory.createReviewHelper
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -62,11 +64,13 @@ import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
+import com.tokopedia.sellerhome.view.model.SellerHomeDataUiModel
 import com.tokopedia.sellerhome.view.navigator.SellerHomeNavigator
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeOnApplyInsetsListener
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickListener
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -366,6 +370,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             binding?.sahBottomNav?.setSelected(pageType)
             navigator?.navigateFromAppLink(page)
             checkForSellerAppReview(pageType)
+            handleSellerPersona(page.sellerHomeData?.shouldShowPersonaBtmSheet)
+            handleToaster(page.sellerHomeData)
         }
     }
 
@@ -760,4 +766,27 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         DFInstaller.installOnBackground(this.application, moduleNameList, "Seller Home")
     }
 
+    private fun handleToaster(data: SellerHomeDataUiModel?) {
+        val message = data?.toasterMessage.orEmpty()
+        val actionText = data?.toasterCta.orEmpty()
+        if (message.isBlank()) return
+
+        val view = window?.decorView ?: return
+        view.post {
+            Toaster.toasterCustomBottomHeight = dpToPx(88).toInt()
+            Toaster.build(
+                view,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                actionText
+            ).show()
+        }
+    }
+
+    private fun handleSellerPersona(checkPersonaBtmSheet: Boolean?) {
+        if (checkPersonaBtmSheet.orFalse()) {
+            navigator?.getHomeFragment()?.refreshPersona()
+        }
+    }
 }

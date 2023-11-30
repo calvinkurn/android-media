@@ -93,7 +93,6 @@ import com.tokopedia.sellerhome.view.bottomsheet.SellerPersonaBottomSheet
 import com.tokopedia.sellerhome.view.customview.NotificationDotBadge
 import com.tokopedia.sellerhome.view.dialog.NewSellerDialog
 import com.tokopedia.sellerhome.view.helper.NewSellerJourneyHelper
-import com.tokopedia.sellerhome.view.model.SellerHomeDataUiModel
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
@@ -195,18 +194,11 @@ class SellerHomeFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(data: SellerHomeDataUiModel? = null) = SellerHomeFragment().apply {
-            data?.let {
-                arguments = Bundle().apply {
-                    putParcelable(KEY_SELLER_HOME_DATA, it)
-                }
-            }
-        }
+        fun newInstance() = SellerHomeFragment()
 
         private val SEARCH_MENU_ID = R.id.sah_search_action_menu
         private val NOTIFICATION_MENU_ID = R.id.sah_notification_action_menu
 
-        private const val KEY_SELLER_HOME_DATA = "seller_home_data"
         private const val REQ_CODE_MILESTONE_WIDGET = 8043
         private const val NOTIFICATION_BADGE_DELAY = 2000L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
@@ -296,6 +288,7 @@ class SellerHomeFragment :
     private var shopImageFilePath: String = ""
     private var binding: FragmentSahBinding? = null
     private var isNewSellerState: Boolean = false
+    private var isFromPersona = false
 
     private val recyclerView: RecyclerView?
         get() = try {
@@ -357,7 +350,6 @@ class SellerHomeFragment :
         observeShopShareTracker()
         observeWidgetDismissalStatus()
         observeShopStateInfo()
-        showSellerHomeToaster()
 
         context?.let { UpdateShopActiveWorker.execute(it.applicationContext) }
     }
@@ -986,6 +978,11 @@ class SellerHomeFragment :
         }, NOTIFICATION_BADGE_DELAY)
     }
 
+    fun refreshPersona() {
+        isFromPersona = true
+        reloadPage(TRIGGER_ERROR_RELOAD)
+    }
+
     private fun setContentBackground() {
         activity?.let {
             val background = it.getResColor(unifyprinciplesR.color.Unify_Background)
@@ -1539,12 +1536,11 @@ class SellerHomeFragment :
 
     private fun showPersonaBottomSheet(personaStatus: Int) {
         activity?.let {
-            val data = getSellerHomeDataFromArguments()
             val btmSheet = SellerPersonaBottomSheet.getInstance(childFragmentManager)
             val shouldShowBottomSheet =
                 !it.isFinishing && !btmSheet.isVisible && sharedPref.shouldShowPersonaHomePopup(
                     userSession.userId
-                ) && data?.shouldShowPersonaBtmSheet.orFalse()
+                ) && isFromPersona
 
             if (shouldShowBottomSheet) {
                 runCatching {
@@ -1557,6 +1553,8 @@ class SellerHomeFragment :
                     btmSheet.show(childFragmentManager)
                 }
             }
+
+            isFromPersona = false
         }
     }
 
@@ -1565,6 +1563,7 @@ class SellerHomeFragment :
         view.post {
             val message = view.context.getString(R.string.sah_activate_persona_entry_point_info)
             val cta = view.context.getString(R.string.saldo_btn_oke)
+            Toaster.toasterCustomBottomHeight = view.context.dpToPx(88).toInt()
             Toaster.build(
                 view,
                 message,
@@ -2926,36 +2925,6 @@ class SellerHomeFragment :
                     }
                 }
             }
-        }
-    }
-
-    @SuppressLint("DeprecatedMethod")
-    private fun showSellerHomeToaster() {
-        val view = activity?.window?.decorView ?: return
-        view.post {
-            val data = getSellerHomeDataFromArguments()
-            val message = data?.toasterMessage
-            if (!message.isNullOrBlank()) {
-                Toaster.toasterCustomBottomHeight = view.context.dpToPx(88).toInt()
-                Toaster.build(
-                    view,
-                    message,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    data.toasterCta
-                ).show()
-            }
-        }
-    }
-
-    private fun getSellerHomeDataFromArguments(): SellerHomeDataUiModel? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable(
-                KEY_SELLER_HOME_DATA,
-                SellerHomeDataUiModel::class.java
-            )
-        } else {
-            arguments?.getParcelable(KEY_SELLER_HOME_DATA)
         }
     }
 
