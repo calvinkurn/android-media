@@ -14,6 +14,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -130,11 +131,15 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun DiscoThematicHeaderLayoutBinding.setupBackground(dataItem: DataItem) {
-        backgroundImage.showIfWithBlock(!dataItem.color.isNullOrBlank() && !dataItem.title.isNullOrBlank() || !dataItem.subtitle.isNullOrBlank() || !dataItem.lottieImage.isNullOrBlank() || !dataItem.image.isNullOrEmpty()) {
+        backgroundImage.showIfWithBlock(!dataItem.color.isNullOrBlank() && !dataItem.title.isNullOrBlank() || !dataItem.subtitle.isNullOrBlank() || !dataItem.lottieImage.isNullOrBlank() || dataItem.image.isNotBlank()) {
             try {
                 mFragment.setupBackgroundColorForHeader(dataItem.color)
                 backgroundImage.setBackgroundColor(Color.parseColor(dataItem.color))
-                backgroundImage.loadImageWithoutPlaceholder(dataItem.image)
+                if (dataItem.lottieImage.isNullOrEmpty()) {
+                    backgroundImage.loadImageWithoutPlaceholder(dataItem.image)
+                } else {
+                    backgroundImage.clearImage()
+                }
             } catch (e: Exception) {
                 hideWidget(dataItem.color)
             }
