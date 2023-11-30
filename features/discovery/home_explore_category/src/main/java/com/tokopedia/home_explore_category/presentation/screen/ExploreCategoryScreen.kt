@@ -18,7 +18,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.globalerror.compose.NestGlobalError
+import com.tokopedia.globalerror.compose.NestGlobalErrorType
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiModel
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.card.NestCard
@@ -96,5 +99,22 @@ fun SubExploreCategoryItem(
 }
 
 @Composable
-fun ExploreCategoryGlobalError(throwable: Throwable) {
+fun ExploreCategoryGlobalError(globalErrorType: NestGlobalErrorType) {
+    NestGlobalError(
+        type = globalErrorType,
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+            .padding(top = 48.dp, bottom = 16.dp),
+        onClickAction = {
+        },
+        onClickSecondaryAction = {
+        }
+    )
+}
+
+@Preview
+@Composable
+fun ExploreCategoryScreenPreview() {
+    ExploreCategoryGlobalError(NestGlobalErrorType.NoConnection)
 }
