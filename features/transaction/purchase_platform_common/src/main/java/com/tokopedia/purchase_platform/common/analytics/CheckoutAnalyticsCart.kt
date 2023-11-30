@@ -1089,6 +1089,35 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
+    fun eventClickSwipeOnProductCard(productId: String) {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            ConstantTransactionAnalytics.EventAction.CLICK_SWIPE_ON_PRODUCT_CART,
+            productId
+        )
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_SWIPE_ON_PRODUCT_CART
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+
+    fun sendEventClickRemoveCartFromSwipe(mapData: Map<String, Any>, userId: String) {
+        val bundle = bundleOf(
+            ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.REMOVE_FROM_CART,
+            ExtraKey.EVENT_CATEGORY to ConstantTransactionAnalytics.EventCategory.CART,
+            ExtraKey.EVENT_ACTION to ConstantTransactionAnalytics.EventAction.CLICK_REMOVE_CART_FROM_SWIPE,
+            ExtraKey.EVENT_LABEL to "",
+            ExtraKey.CURRENT_SITE to ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE,
+            ExtraKey.BUSINESS_UNIT to ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
+            ExtraKey.TRACKER_ID to ConstantTransactionAnalytics.TrackerId.CLICK_REMOVE_CART_FROM_SWIPE,
+            ExtraKey.ITEMS to mapData,
+            ExtraKey.USER_ID to userId
+        )
+
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.VIEW_ITEM, bundle)
+    }
+
     fun sendCartImpressionEvent(data: List<Map<String, Any>>, userId: String) {
         val bundle = bundleOf(
             ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.VIEW_ITEM,

@@ -66,6 +66,7 @@ import com.tokopedia.cart.databinding.FragmentCartRevampBinding
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.view.CartFragment
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
+import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
 import com.tokopedia.cartcommon.data.response.common.Button
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartrevamp.view.adapter.cart.CartAdapter
@@ -1187,10 +1188,18 @@ class CartRevampFragment :
 
     override fun onCartItemDeleteButtonClicked(
         cartItemHolderData: CartItemHolderData,
-        isFromDeleteButton: Boolean
+        deleteSource: CartDeleteButtonSource
     ) {
-        if (isFromDeleteButton) {
-            cartPageAnalytics.eventClickAtcCartClickTrashBin()
+        when (deleteSource) {
+            is CartDeleteButtonSource.TrashBin -> {
+                cartPageAnalytics.eventClickAtcCartClickTrashBin()
+            }
+            is CartDeleteButtonSource.SwipeToDelete -> {
+                val analyticItems =
+                    CartPageAnalyticsUtil.generateRemoveCartFromSubtractButtonAnalytics(cartItemHolderData)
+                cartPageAnalytics.sendEventClickRemoveCartFromSwipe(analyticItems, userSession.userId)
+            }
+            else -> { /* no-op */ }
         }
         val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
         if (cartItemHolderData.isBundlingItem) {
@@ -1234,7 +1243,7 @@ class CartRevampFragment :
                 isFromEditBundle = false,
                 listCartStringOrderAndBmGmOfferId = listCartStringOrderOfferId
             )
-            if (isFromDeleteButton) {
+            if (deleteSource is CartDeleteButtonSource.TrashBin) {
                 cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
                     viewModel.generateDeleteCartDataAnalytics(toBeDeletedProducts)
                 )
@@ -5713,5 +5722,9 @@ class CartRevampFragment :
                 }
             })
         chooseAddressBottomSheet.show(childFragmentManager)
+    }
+
+    override fun onSwipeToDeleteClosed(productId: String) {
+        cartPageAnalytics.eventClickSwipeOnProductCard(productId)
     }
 }

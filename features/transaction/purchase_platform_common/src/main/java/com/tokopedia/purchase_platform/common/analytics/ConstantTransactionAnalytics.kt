@@ -419,6 +419,8 @@ object ConstantTransactionAnalytics {
         const val CLICK_NOTE_ICON = "click note icon"
         const val CLICK_BUTTON_MIN_TO_DELETE_CART = "click button - to delete cart"
         const val IMPRESSION_CART = "impression cart"
+        const val CLICK_SWIPE_ON_PRODUCT_CART = "click swipe on product cart"
+        const val CLICK_REMOVE_CART_FROM_SWIPE = "click remove cart from swipe"
 
         // BMGM
         const val CLICK_SNK_BMGM = "click snk bmgm"
@@ -588,6 +590,8 @@ object ConstantTransactionAnalytics {
         const val CLICK_NOTE_ICON = "46929"
         const val IMPRESSION_CART = "46932"
         const val CLICK_BUTTON_MIN_TO_DELETE_CART = "46933"
+        const val CLICK_SWIPE_ON_PRODUCT_CART = "48948"
+        const val CLICK_REMOVE_CART_FROM_SWIPE = "48949"
 
         // BMGM
         const val CLICK_SNK_BMGM = "46781"
