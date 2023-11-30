@@ -81,10 +81,7 @@ class RechargeHomepageTodoWidgetAdapter(
 
         fun removeItem(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
             try {
-                baseAdapter.list.remove(element)
-                val position = baseAdapter.list.indexOf(element)
-                baseAdapter.notifyItemRemoved(position)
-                baseAdapter.notifyItemRangeChanged(position, baseAdapter.list.size)
+                baseAdapter.removeElement(element)
                 if (baseAdapter.itemCount < Int.ONE) {
                     hideTitle()
                 }
