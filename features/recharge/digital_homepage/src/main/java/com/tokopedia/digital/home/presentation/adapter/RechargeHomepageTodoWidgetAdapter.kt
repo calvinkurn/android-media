@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import timber.log.Timber
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.digital.home.R as digitalhomeR
 
@@ -86,6 +87,7 @@ class RechargeHomepageTodoWidgetAdapter(
                     hideTitle()
                 }
             } catch (e: UnsupportedOperationException) {
+                Timber.d(e)
                 showToasterRemoveItemError()
             }
         }
