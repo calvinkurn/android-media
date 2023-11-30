@@ -29,4 +29,6 @@ data class KeroAddressParamData(
     val province: String = "",
     @SerializedName("receiver_name")
     val receiverName: String = "",
+    @SerializedName("is_tokonow_request")
+    val isTokonowRequest: Boolean = true
 )
