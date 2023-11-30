@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
 import com.tokopedia.logisticCommon.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
@@ -574,7 +575,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val result = withContext(dispatcher.io) {
-                    keroEditAddressUseCase(KeroEditAddressParam(addressId, latitude, longitude))
+                    keroEditAddressUseCase(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
                 }
                 if (result.isSuccess == 1) {
                     _uiEventFlow.tryEmit(

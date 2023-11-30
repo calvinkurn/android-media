@@ -27,7 +27,9 @@ data class EditPinpointParam(
     @SerializedName("phone")
     val phone: String,
     @SerializedName("is_tokonow_request")
-    val isTokonowRequest: Boolean = true
+    val isTokonowRequest: Boolean = true,
+    @SerializedName("source")
+    val source: String = ""
 ) : GqlParam
 
 data class UpdatePinpointParam(

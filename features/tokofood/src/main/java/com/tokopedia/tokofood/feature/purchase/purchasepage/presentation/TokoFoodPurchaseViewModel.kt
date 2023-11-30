@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
 import com.tokopedia.logisticCommon.domain.usecase.KeroEditAddressUseCase
@@ -490,7 +491,7 @@ open class TokoFoodPurchaseViewModel @Inject constructor(
                 launchCatchError(
                     block = {
                         val result = withContext(dispatcher.io) {
-                            keroEditAddressUseCase.get()(KeroEditAddressParam(addressId, latitude, longitude))
+                            keroEditAddressUseCase.get()(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
                         }
                         if (result.isSuccess == 1) {
                             _isAddressHasPinpoint.value = addressId to (latitude.isNotEmpty() && longitude.isNotEmpty())

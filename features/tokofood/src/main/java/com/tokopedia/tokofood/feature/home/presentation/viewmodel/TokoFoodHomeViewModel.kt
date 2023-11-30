@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
 import com.tokopedia.logisticCommon.domain.usecase.KeroEditAddressUseCase
@@ -308,7 +309,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private suspend fun updatePinPoin(addressId: String, latitude: String, longitude: String): Result<KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse> {
         val result = withContext(dispatchers.io) {
-            keroEditAddressUseCase(KeroEditAddressParam(addressId, latitude, longitude))
+            keroEditAddressUseCase(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
         }
         return Success(result)
     }

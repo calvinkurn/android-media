@@ -2,6 +2,7 @@ package com.tokopedia.logisticCommon.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.request.EditPinpointParam
 import com.tokopedia.logisticCommon.data.request.UpdatePinpointParam
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
@@ -17,36 +18,12 @@ open class KeroEditAddressUseCase @Inject constructor(
 ) : CoroutineUseCase<KeroEditAddressParam, KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse>(
     dispatcher.io
 ) {
-
-//    init {
-//        setGraphqlQuery(KeroEditAddressQuery)
-//        setTypeClass(KeroEditAddressResponse.Data::class.java)
-//    }
-
-//    suspend fun execute(
-//        addressId: String,
-//        latitude: String,
-//        longitude: String
-//    ): KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse {
-//        val addressParam = keroGetAddressUseCase.execute(addressId)?.copy(
-//            latitude = latitude,
-//            longitude = longitude,
-//            secondAddress = "$latitude,$longitude"
-//        )
-//        return if (addressParam == null) {
-//            KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(isSuccess = 0)
-//        } else {
-//            setRequestParams(KeroEditAddressQuery.createRequestParams(addressParam))
-//            executeOnBackground().keroEditAddress.data
-//        }
-//    }
-
     override fun graphqlQuery(): String {
         return ""
     }
 
     override suspend fun execute(params: KeroEditAddressParam): KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse {
-        val addressDetails = getAddressDetailUseCase(params.addressId.toAddressDetailParam())
+        val addressDetails = getAddressDetailUseCase(params.toAddressDetailParam())
         val address =
             addressDetails.keroGetAddress.data.find { it.addrId.toString() == params.addressId }
         return if (address != null) {
@@ -54,7 +31,7 @@ open class KeroEditAddressUseCase @Inject constructor(
                 address.copy(
                     latitude = params.latitude,
                     longitude = params.longitude
-                ).toUpdatePinpointParam()
+                ).toUpdatePinpointParam(params.source)
             )
             editedAddress.keroEditAddress.data
         } else {
@@ -64,7 +41,7 @@ open class KeroEditAddressUseCase @Inject constructor(
         }
     }
 
-    private fun KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse.toUpdatePinpointParam(): UpdatePinpointParam {
+    private fun KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse.toUpdatePinpointParam(source: ManageAddressSource): UpdatePinpointParam {
         return UpdatePinpointParam(
             input = EditPinpointParam(
                 addressId = this.addrId,
@@ -77,17 +54,18 @@ open class KeroEditAddressUseCase @Inject constructor(
                 phone = this.phone,
                 postalCode = this.postalCode,
                 receiverName = this.receiverName,
-                isTokonowRequest = true
+                isTokonowRequest = true,
+                source = source.source
             )
         )
     }
 
-    private fun String.toAddressDetailParam(): GetDetailAddressParam {
-        // todo source
+    private fun KeroEditAddressParam.toAddressDetailParam(): GetDetailAddressParam {
         return GetDetailAddressParam(
-            addressIds = this,
+            addressIds = this.addressId,
             needToTrack = false,
-            isManageAddressFlow = false
+            isManageAddressFlow = false,
+            source = this.source.source
         )
     }
 }
