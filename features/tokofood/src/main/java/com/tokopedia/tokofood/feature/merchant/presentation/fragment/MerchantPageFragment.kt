@@ -184,6 +184,7 @@ class MerchantPageFragment :
     private var currentPromoName: String? = null
     private var hasAppliedProductRendered = false
     private var isAbleToUpdateQuantity = false
+    private var shouldLoadFromOnResume = true
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var merchantInfoBottomSheet: MerchantInfoBottomSheet? = null
@@ -302,7 +303,9 @@ class MerchantPageFragment :
             viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse()
         )
         hasAppliedProductRendered = false
-        applySelectedProducts()
+        if (shouldLoadFromOnResume) {
+            applySelectedProducts()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -758,6 +761,7 @@ class MerchantPageFragment :
                 }
                 UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
                     if (it.source == SOURCE) {
+                        shouldLoadFromOnResume = false
                         onSuccessAddCart(it.data?.getSuccessAddToCartResultPair())
                     }
                 }
@@ -1066,9 +1070,7 @@ class MerchantPageFragment :
     }
 
     private fun renderProductList(productListItems: List<ProductListItem>) {
-        binding?.rvProductList?.post {
-            productListAdapter?.setProductListItems(productListItems)
-        }
+        productListAdapter?.setProductListItems(productListItems)
     }
 
     private fun scrollToCategorySection(positionItem: Int) {
@@ -1699,6 +1701,7 @@ class MerchantPageFragment :
                 if (isSameCustomProductExist || isMultipleCustomProductMade) {
                     showCustomOrderDetailBottomSheet(productUiModel, this)
                 }
+                shouldLoadFromOnResume = true
             }
         }
     }
