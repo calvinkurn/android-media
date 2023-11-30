@@ -202,7 +202,7 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
             )
         ) {
             val message =
-                "You detected using tkpddesign or ambiguous with tkpddesign. Using component from the tkpddesign package is not allowed. Because TkpdDesign will be deleted soon. You can also consult @edwinnrw or @faisalramd"
+                "Detected using tkpddesign or ambiguous with tkpddesign. Using component from the tkpddesign package is not allowed. Because TkpdDesign will be deleted soon. You can also consult @edwinnrw or @faisalramd"
             context.report(ISSUE, attribute, context.getLocation(attribute), message)
         }
     }
@@ -211,7 +211,7 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
         val ISSUE = Issue.create(
             "TkpdDesignResourceUsage",
             "Avoid using tkpddesign",
-            "You detected using tkpddesign or ambiguity with tkpddesign. Using component from the tkpddesign package is not allowed. Because TkpdDesign will be deleted soon. You can also consult @edwinnrw or @faisalramd",
+            "Detected using tkpddesign or ambiguity with tkpddesign. Using component from the tkpddesign package is not allowed. Because TkpdDesign will be deleted soon. You can also consult @edwinnrw or @faisalramd",
             Category.CORRECTNESS, 6, Severity.ERROR,
             Implementation(TkpdDesignAttributeDetector::class.java, Scope.RESOURCE_FILE_SCOPE)
         )
