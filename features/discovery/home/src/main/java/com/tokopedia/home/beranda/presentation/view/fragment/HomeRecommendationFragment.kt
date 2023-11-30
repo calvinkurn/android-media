@@ -525,10 +525,15 @@ class HomeRecommendationFragment :
                 position
             )
         )
-        RouteManager.route(
-            context,
-            homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel?.applink
-        )
+
+        val context = recyclerView?.context
+
+        context?.let {
+            RouteManager.route(
+                context,
+                homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel?.applink
+            )
+        }
     }
 
     override fun onBannerTopAdsOldImpress(
@@ -561,10 +566,14 @@ class HomeRecommendationFragment :
             position,
             userSessionInterface.userId
         )
-        RouteManager.route(
-            context,
-            homeTopAdsRecommendationBannerDataUiModel.topAdsImageViewModel?.applink
-        )
+
+        val context = recyclerView?.context
+        context?.let {
+            RouteManager.route(
+                it,
+                homeTopAdsRecommendationBannerDataUiModel.topAdsImageViewModel?.applink
+            )
+        }
     }
 
     override fun onBannerTopAdsImpress(
@@ -607,6 +616,7 @@ class HomeRecommendationFragment :
             position,
             userSessionInterface.userId
         )
+        val context = recyclerView?.context
         context?.let {
             RouteManager.route(it, item.appLink)
         }
@@ -621,6 +631,7 @@ class HomeRecommendationFragment :
             position,
             userSessionInterface.userId
         )
+        val context = recyclerView?.context
         context?.let {
             RouteManager.route(it, element.appLink)
         }
@@ -681,8 +692,9 @@ class HomeRecommendationFragment :
 
     private fun goToProductDetail(productId: String, position: Int) {
         activity?.let {
+            val context = recyclerView?.context
             val intent = RouteManager.getIntent(
-                it,
+                context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                 productId
             )
@@ -800,7 +812,10 @@ class HomeRecommendationFragment :
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 getRecommendationAddWishlistNonLogin(productCardOptionsModel.productId, tabName)
             )
-            RouteManager.route(context, ApplinkConst.LOGIN)
+            val context = recyclerView?.context
+            context?.let {
+                RouteManager.route(it, ApplinkConst.LOGIN)
+            }
         }
     }
 
@@ -918,6 +933,11 @@ class HomeRecommendationFragment :
     }
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
-        applink?.let { RouteManager.route(context, applink) }
+        val context = recyclerView?.context
+        context?.let { mContext ->
+            applink?.let {
+                RouteManager.route(mContext, applink)
+            }
+        }
     }
 }
