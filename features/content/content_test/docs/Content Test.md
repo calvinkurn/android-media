@@ -8,8 +8,8 @@ labels:
 
 | **Status** | <!--start status:GREEN-->RELEASE<!--end status--> |
 | --- | --- |
-| **Contributors** | [Kenny Rizky Hadisaputra](https://tokopedia.atlassian.net/wiki/people/5d1471f0b8c82e0c0ff12c67?ref=confluence) [Meyta Taliti](https://tokopedia.atlassian.net/wiki/people/5c8f676b8c3aae2d15113a7c?ref=confluence) [Jonathan Darwin](https://tokopedia.atlassian.net/wiki/people/60d02446a01e11006ae4c8f0?ref=confluence) [Fachrizal Achmad Zulfikar Mursalin](https://tokopedia.atlassian.net/wiki/people/62a6713a192edb006f9d9a2b?ref=confluence) [Asti Dhiya Anzaria](https://tokopedia.atlassian.net/wiki/people/5ff2a8373b5e470138d51a05?ref=confluence)  |
-| Product Manager | [Meyta Taliti](https://tokopedia.atlassian.net/wiki/people/5c8f676b8c3aae2d15113a7c?ref=confluence)  |
+| **Contributors** | [Kenny Rizky Hadisaputra](https://tokopedia.atlassian.net/wiki/people/5d1471f0b8c82e0c0ff12c67?ref=confluence) [Meyta Taliti (Unlicensed)](https://tokopedia.atlassian.net/wiki/people/5c8f676b8c3aae2d15113a7c?ref=confluence) [Jonathan Darwin](https://tokopedia.atlassian.net/wiki/people/60d02446a01e11006ae4c8f0?ref=confluence) [Fachrizal Achmad Zulfikar Mursalin](https://tokopedia.atlassian.net/wiki/people/62a6713a192edb006f9d9a2b?ref=confluence) [Asti Dhiya Anzaria](https://tokopedia.atlassian.net/wiki/people/5ff2a8373b5e470138d51a05?ref=confluence)  |
+| Product Manager | [Meyta Taliti (Unlicensed)](https://tokopedia.atlassian.net/wiki/people/5c8f676b8c3aae2d15113a7c?ref=confluence)  |
 | Team | [Minion Lance](https://tokopedia.atlassian.net/people/team/e1092372-ff41-4537-a48d-4824b575b890) |
 | Release date | 16 May 2022 / <!--start status:BLUE-->MA-3.174<!--end status--> <!--start status:BLUE-->SA-2.104<!--end status-->  |
 | Module type | <!--start status:PURPLE-->INTERNAL-LIBRARY<!--end status-->  |
@@ -58,7 +58,7 @@ This library provides helper functions for creating Cassava Test, Espresso UI Te
 
 ### Cassava Test Helper
 
-###### Use `contains` to assert that any of the tracker hit contains a pair of defined key and value
+Use `contains` to assert that any of the tracker hit contains a pair of defined key and value
 
 
 
@@ -69,7 +69,8 @@ ViewMatchers.assertThat(
 )
 ```
 
-###### Use `containsEventAction` to assert that any of the tracker hit contains the defined Event Action value
+  
+Use `containsEventAction` to assert that any of the tracker hit contains the defined Event Action value
 
 
 
@@ -80,7 +81,8 @@ ViewMatchers.assertThat(
 )
 ```
 
-###### Use `containsEvent` to assert that any of the tracker hit contains the defined Event value
+  
+Use `containsEvent` to assert that any of the tracker hit contains the defined Event value
 
 
 
@@ -93,7 +95,7 @@ ViewMatchers.assertThat(
 
 ### Espresso Test Helper
 
-###### Use `delay` to wait for certain amount of time before doing the next action
+Use `delay` to wait for certain amount of time before doing the next action
 
 
 
@@ -104,7 +106,7 @@ delay(5000) //delay for 5s
 robot.clickBuyButton()
 ```
 
-###### Use `clickOnViewChild` to click on a child of a View (by id). Usually this is use to click on a child view on a ViewHolder inside of a RecyclerView
+Use `clickOnViewChild` to click on a child of a View (by id). Usually this is use to click on a child view on a ViewHolder inside of a RecyclerView
 
 
 
@@ -118,7 +120,7 @@ Espresso.onView(
 )
 ```
 
-###### Use `waitUntilViewIsDisplayed` to wait until a certain view is displayed on the screen (by Matcher).
+Use `waitUntilViewIsDisplayed` to wait untul a certain view is displayed on the screen (by Matcher).
 
 
 
@@ -130,7 +132,7 @@ waitUntilViewIsDisplayed(
 )
 ```
 
-###### Use `click(id)` to click on a View with that id.
+Use ``click(id)` to click on a View with that id.
 
 
 
@@ -138,7 +140,7 @@ waitUntilViewIsDisplayed(
 click(R.id.my_button)
 ```
 
-###### Use `click(text)` to click on a View with that text
+Use `click(text)` to click on a View with that text
 
 
 
@@ -146,7 +148,7 @@ click(R.id.my_button)
 click("Submit")
 ```
 
-###### Use `clickWithMatcher` to click on a View that matches all the matchers provided
+Use `clickWithMatcher` to click on a View that matches all the matchers provided
 
 
 
@@ -157,7 +159,7 @@ clickWithMatcher(
 )
 ```
 
-###### Use `type(id, text)` to type the text on a View with that id
+Use `type(id, text)` to type the text on a View with that id
 
 
 
@@ -165,7 +167,7 @@ clickWithMatcher(
 type(R.id.search_text_field, "Buku")
 ```
 
-###### Use `pressActionSoftKeyboard(id)` to simulate pressing soft keyboard action button (`next, done, search, etc`) on a View with that id
+Use `pressActionSoftKeyboard(id)` to simulate pressing soft keyboard action button (`next, done, search, etc`) on a View with that id
 
 
 
@@ -175,7 +177,7 @@ pressActionSoftKeyboard(R.id.search_text_field)
 
 ### Common UI Test Helper
 
-###### Use `TestFragmentFactory` to create a mock FragmentFactory to be used in a UI Test. Usually it is used with test that launches Fragment(s) with `FragmentScenario`
+Use `TestFragmentFactory` to create a mock FragmentFactory to be used in a UI Test. It is used with test that launches Fragment(s) with `FragmentScenario`
 
 
 
@@ -197,7 +199,7 @@ val scenario = launchFragment<PlayFragment>(
 )
 ```
 
-###### Use `TestViewModelFactory` to create a mock ViewModelProvider.Factory to be used in a UI Test.
+Use `TestViewModelFactory` to create a mock ViewModelProvider.Factory to be used in a UI Test.
 
 
 
@@ -230,7 +232,7 @@ val scenario = launchFragment<PlayFragment>(
 )
 ```
 
-###### Use `ChildFragmentContainer` to create a parent for a Fragment is going to be tested. Usually used in case a Fragment is referencing `parentFragment` in the code
+Use `ChildFragmentContainer` to create a parent for a Fragment is going to be tested. Usually used in case a Fragment is referencing `parentFragment` in the code
 
 
 
@@ -244,7 +246,7 @@ val scenario = launchFragment(themeResId = R.style.AppTheme) {
 
 ### UI Test Helper
 
-###### `UiTestHelper` contains several function that we can reuse when we are creating ui test. Here is the functions that we can use for simplify our ui test.
+`UiTestHelper` contains several function that we can reuse when we are creating ui test. Here is the functions that we can use for simplify our ui test.
 
 1. `click(@IdRes id: Int)`  
 The function:
