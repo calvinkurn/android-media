@@ -387,6 +387,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                 { PlayServiceUtils.gotoPlayStore(this) },
                 getString(R.string.continue_without_install)
             )
+
             else -> {
                 cancelAllPendingRequest()
                 toggleDfConfig()
@@ -402,8 +403,11 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         }
     }
 
-    private fun cancelAllPendingRequest(){
+    private fun cancelAllPendingRequest() {
         val sessionStates = manager.sessionStates
+        if (!sessionStates.isComplete) {
+            return
+        }
         val result = sessionStates.result
         if (result.isNotEmpty()) {
             result.forEach {
