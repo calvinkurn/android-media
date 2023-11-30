@@ -9,7 +9,6 @@ import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.viewallcard.ViewAllCard
-import timber.log.Timber
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.viewallcard.R as viewallcardR
 
@@ -40,9 +39,6 @@ class GWPCardOfShowMoreViewHolder(
 
     override fun bind(data: GWPWidgetUiModel.Card.LoadMore) = with(binding) {
         description = data.title
-        cardView.setOnClickListener {
-            Timber.d("loadmore click")
-        }
     }
 
     companion object {

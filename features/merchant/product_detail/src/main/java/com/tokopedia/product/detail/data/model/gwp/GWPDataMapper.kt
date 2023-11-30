@@ -21,13 +21,14 @@ fun GWPData.Data.asUiModel(separator: String) =
     )
 
 fun List<GWPData.Data.Card>.asUiModel(loadMoreText: String): List<GWPWidgetUiModel.Card> {
-    val cards = mutableListOf<GWPWidgetUiModel.Card>()
     val products = map { it.asUiModel() }
-    val showMore = GWPWidgetUiModel.Card.LoadMore(title = loadMoreText)
 
-    cards.addAll(products)
-    cards.add(showMore)
-    return cards
+    return if (loadMoreText.isNotBlank()) {
+        val loadMore = GWPWidgetUiModel.Card.LoadMore(title = loadMoreText)
+        products + listOf(loadMore)
+    } else {
+        products
+    }
 }
 
 fun GWPData.Data.Card.asUiModel() = GWPWidgetUiModel.Card.Product(

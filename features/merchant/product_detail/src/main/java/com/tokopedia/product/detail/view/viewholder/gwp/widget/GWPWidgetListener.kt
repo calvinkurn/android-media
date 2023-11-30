@@ -10,22 +10,20 @@ import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
  **/
 
 interface GWPWidgetListener {
+
     fun getRecyclerViewPool(): RecyclerView.RecycledViewPool?
 
     fun goToAppLink(appLink: String)
 
     fun goToWebView(link: String)
-}
 
-interface GWPWidgetTracker {
-
-    fun getImpressionHolder(): ImpressHolder
+    fun getImpressionHolder(): ImpressHolder?
 
     fun getImpressionHolders(): MutableList<String>
 
     fun onImpressed()
 
-    fun isCacheable(): Boolean
+    fun isRemoteCacheableActive(): Boolean
 
     fun onClickTracking(data: GWPWidgetUiModel)
 }

@@ -27,6 +27,8 @@ class GWPCardAdapter :
         }
     }
 
+    var onItemClick: () -> Unit = {}
+
     @Suppress("UNCHECKED_CAST")
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -38,6 +40,8 @@ class GWPCardAdapter :
             else -> {
                 throw IllegalAccessException("viewType unresolved...")
             }
+        }.apply {
+            itemView.setOnClickListener { onItemClick.invoke() }
         }
 
         return viewHolder as GWPCardViewHolder<GWPWidgetUiModel.Card>

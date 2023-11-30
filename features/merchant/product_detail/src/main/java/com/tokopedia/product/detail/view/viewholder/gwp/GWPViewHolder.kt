@@ -10,7 +10,6 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.widget.GWPWidgetListener
-import com.tokopedia.product.detail.view.viewholder.gwp.widget.GWPWidgetTracker
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -34,24 +33,11 @@ class GWPViewHolder(
         binding.pdpGwpWidget.init(this)
     }
 
+    private var uiModel: GWPUiModel? = null
+
     override fun bind(element: GWPUiModel) {
-        binding.pdpGwpWidget.setData(
-            state = element.state,
-            tracker = object : GWPWidgetTracker {
-                override fun getImpressionHolder(): ImpressHolder = element.impressHolder
-
-                override fun getImpressionHolders(): MutableList<String> = listener.getImpressionHolders()
-
-                override fun onImpressed() {
-                    listener.onImpressComponent(getComponentTrackData(element))
-                }
-
-                override fun isCacheable(): Boolean = listener.isRemoteCacheableActive()
-
-                override fun onClickTracking(data: GWPWidgetUiModel) {
-                }
-            }
-        )
+        uiModel = element
+        binding.pdpGwpWidget.setData(state = element.state)
     }
 
     override fun bind(element: GWPUiModel?, payloads: MutableList<Any>) {
@@ -71,5 +57,19 @@ class GWPViewHolder(
 
     override fun getRecyclerViewPool(): RecyclerView.RecycledViewPool? {
         return listener.getParentRecyclerViewPool()
+    }
+
+    override fun getImpressionHolder(): ImpressHolder? = uiModel?.impressHolder
+
+    override fun getImpressionHolders(): MutableList<String> = listener.getImpressionHolders()
+
+    override fun onImpressed() {
+        val element = uiModel ?: return
+        listener.onImpressComponent(getComponentTrackData(element))
+    }
+
+    override fun isRemoteCacheableActive(): Boolean = listener.isRemoteCacheableActive()
+
+    override fun onClickTracking(data: GWPWidgetUiModel) {
     }
 }

@@ -1,12 +1,10 @@
 package com.tokopedia.product.detail.view.viewholder.gwp.widget
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +28,7 @@ import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiState
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.stringToUnifyColor
+import timber.log.Timber
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
@@ -80,11 +79,11 @@ class GWPWidget @JvmOverloads constructor(
 
     private var listener: GWPWidgetListener? = null
 
-    fun init(router: GWPWidgetListener) {
-        this.listener = router
+    fun init(listener: GWPWidgetListener) {
+        this.listener = listener
     }
 
-    fun setData(state: GWPWidgetUiState, tracker: GWPWidgetTracker) {
+    fun setData(state: GWPWidgetUiState) {
         when (state) {
             is GWPWidgetUiState.Loading -> {
                 // no-ops
@@ -95,7 +94,7 @@ class GWPWidget @JvmOverloads constructor(
             }
 
             is GWPWidgetUiState.Show -> {
-                showContent(uiModel = state.uiModel, tracker = tracker)
+                showContent(uiModel = state.uiModel)
             }
         }
     }
@@ -109,22 +108,25 @@ class GWPWidget @JvmOverloads constructor(
     // endregion
 
     // region show content
-    private fun showContent(uiModel: GWPWidgetUiModel, tracker: GWPWidgetTracker) {
+    private fun showContent(uiModel: GWPWidgetUiModel) {
         binding.root.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
-        setWidgetImpression(uiModel = uiModel, tracker = tracker)
+        setWidgetImpression(uiModel = uiModel)
         setHeaderData(uiModel = uiModel)
         setBackgroundGradient(colors = uiModel.backgroundColor)
         setCardList(uiModel = uiModel)
         setSeparator(uiModel = uiModel)
-        setEvent(uiModel = uiModel, tracker = tracker)
+        setRootClick(uiModel = uiModel)
     }
 
-    private fun setWidgetImpression(uiModel: GWPWidgetUiModel, tracker: GWPWidgetTracker) {
+    private fun setWidgetImpression(uiModel: GWPWidgetUiModel) {
+        val tracker = listener ?: return
+        val impressionHolder = tracker.getImpressionHolder() ?: return
+
         binding.root.addOnImpressionListener(
-            holder = tracker.getImpressionHolder(),
+            holder = impressionHolder,
             holders = tracker.getImpressionHolders(),
             name = uiModel.title,
-            useHolders = tracker.isCacheable()
+            useHolders = tracker.isRemoteCacheableActive()
         ) { tracker.onImpressed() }
     }
 
@@ -145,6 +147,7 @@ class GWPWidget @JvmOverloads constructor(
         if (uiModel.cards.isNotEmpty()) {
             cardListBinding.root.show()
             cardAdapter.submitList(uiModel.cards)
+            cardAdapter.onItemClick = { onComponentClick(uiModel = uiModel) }
         } else if (binding.gwpCardList.isInflated()) { // stub has already inflated
             cardListBinding.root.gone()
         }
@@ -173,23 +176,14 @@ class GWPWidget @JvmOverloads constructor(
     }
 
     // region event
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setEvent(uiModel: GWPWidgetUiModel, tracker: GWPWidgetTracker) {
-        binding.root.setOnClickListener { onClick(uiModel = uiModel, tracker = tracker) }
-
-        if (binding.gwpCardList.isInflated()) {
-            cardListBinding.gwpCardList.setOnTouchListener { _, event ->
-                if (event.action == MotionEvent.ACTION_UP) {
-                    onClick(uiModel = uiModel, tracker = tracker)
-                }
-                false
-            }
-        }
+    private fun setRootClick(uiModel: GWPWidgetUiModel) {
+        binding.root.setOnClickListener { onComponentClick(uiModel = uiModel) }
     }
 
-    private fun onClick(uiModel: GWPWidgetUiModel, tracker: GWPWidgetTracker) {
-        setRouting(action = uiModel.action)
-        tracker.onClickTracking(data = uiModel)
+    private fun onComponentClick(uiModel: GWPWidgetUiModel) {
+        Timber.tag("gwp-widget").d(uiModel.toString())
+        // setRouting(action = uiModel.action)
+        listener?.onClickTracking(data = uiModel)
     }
 
     private fun setRouting(action: ActionUiModel) {
