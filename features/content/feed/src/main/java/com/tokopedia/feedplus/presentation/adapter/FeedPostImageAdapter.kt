@@ -2,7 +2,10 @@ package com.tokopedia.feedplus.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -16,7 +19,11 @@ import kotlinx.coroutines.withContext
 /**
  * Created By : Muhammad Furqan on 02/03/23
  */
-class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: LifecycleOwner, private val dispatcher: CoroutineDispatchers) :
+class FeedPostImageAdapter(
+    val data: List<String>,
+    private val lifecycleOwner: LifecycleOwner,
+    private val dispatcher: CoroutineDispatchers
+) :
     RecyclerView.Adapter<FeedPostImageAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -34,11 +41,6 @@ class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: L
         holder.bind(data[position])
     }
 
-    override fun onViewDetachedFromWindow(holder: ViewHolder) {
-        holder.onDetached()
-        super.onViewDetachedFromWindow(holder)
-    }
-
     override fun getItemCount(): Int = data.size
 
     class ViewHolder(
@@ -52,6 +54,15 @@ class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: L
             ImageBlurUtil(binding.root.context)
         }
 
+        init {
+            lifecycleOwner.lifecycle.addObserver(object : LifecycleObserver {
+                @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+                fun onDestroy() {
+                    imageBlurUtil.close()
+                }
+            })
+        }
+
         fun bind(url: String) {
             lifecycleOwner.lifecycleScope.launch {
                 val bitmap = withContext(dispatcher.io) {
@@ -60,18 +71,19 @@ class FeedPostImageAdapter(val data: List<String>, private val lifecycleOwner: L
                         .submit()
                         .get()
                 }
-                imageBlurUtil.blurredView(src = bitmap, view = binding.bgImgFeedPost, repeatCount = 8)
+                imageBlurUtil.blurredView(
+                    src = bitmap,
+                    view = binding.bgImgFeedPost,
+                    repeatCount = BLUR_REPETITION
+                )
                 binding.bgImgFeedPost.alpha = BG_ALPHA
                 binding.imgFeedPost.setImageBitmap(bitmap)
             }
         }
 
-        fun onDetached() {
-            imageBlurUtil.close()
-        }
-
         companion object {
             private const val BG_ALPHA = 0.8f
+            private const val BLUR_REPETITION = 8
         }
     }
 }
