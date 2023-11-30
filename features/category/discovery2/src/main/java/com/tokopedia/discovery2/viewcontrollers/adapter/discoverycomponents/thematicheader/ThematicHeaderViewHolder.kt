@@ -21,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -72,6 +73,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
                 balanceWidgetView.setBackgroundColor(Color.parseColor(color))
             }
         } catch (e: Exception) {
+            Timber.d(e)
             /* do nothing */
         }
     }
@@ -118,6 +120,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
                         }
                     }
                 } catch (e: Exception) {
+                    Timber.d(e)
                     lottieAnimatedStateMap[tabIndex] = false
                     lottieAnimation.hide()
                 }
@@ -141,6 +144,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
                     backgroundImage.clearImage()
                 }
             } catch (e: Exception) {
+                Timber.d(e)
                 hideWidget(dataItem.color)
             }
         }
