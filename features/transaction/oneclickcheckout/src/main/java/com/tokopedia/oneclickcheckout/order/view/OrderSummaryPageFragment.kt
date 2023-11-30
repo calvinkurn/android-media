@@ -722,7 +722,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
     private fun openShippingDurationBottomsheet(data: OrderShippingDuration) {
         data.ratesParam?.run {
             ShippingDurationBottomsheet.show(
-                ratesParam = this,
+                ratesParam = this.copy(psl_code = data.pslCode),
                 fragmentManager = parentFragmentManager,
                 selectedServiceId = data.selectedServiceId,
                 selectedSpId = data.shipmentDetailData.selectedCourier?.shipperProductId ?: 0,
