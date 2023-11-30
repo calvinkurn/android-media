@@ -13,16 +13,17 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
-import com.tokopedia.home_explore_category.R as home_explore_categoryR
 import com.tokopedia.home_explore_category.analytic.ECConstants.Companion.EXTRA_TITLE
 import com.tokopedia.home_explore_category.analytic.ECConstants.Companion.EXTRA_TYPE
 import com.tokopedia.home_explore_category.analytic.ECConstants.Companion.TYPE_LAYANAN
+import com.tokopedia.home_explore_category.di.DaggerExploreCategoryComponent
 import com.tokopedia.home_explore_category.di.ExploreCategoryComponent
 import com.tokopedia.home_explore_category.presentation.screen.ExploreCategoryListGrid
 import com.tokopedia.home_explore_category.presentation.viewmodel.ExploreCategoryViewModel
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.home_explore_category.R as home_explore_categoryR
 
 class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComponent> {
 
@@ -42,8 +43,8 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
     private var title: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         initInjector()
+        super.onCreate(savedInstanceState)
         handleIntentFromDeeplink()
 
         setContent {
@@ -89,5 +90,4 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
     companion object {
         const val TITLE_LAYANAN = "Jelajah Tokopedia"
     }
-
 }

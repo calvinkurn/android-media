@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -23,6 +23,14 @@ android {
         compose true
     }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17
+    }
+
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
     composeOptions {
         kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
@@ -37,6 +45,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    compileOnly rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
+
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation rootProject.ext.unifyDependencies.principles
@@ -44,7 +59,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
 
     /**
      * COMPOSE
@@ -59,8 +73,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {
@@ -71,5 +83,6 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
 
 

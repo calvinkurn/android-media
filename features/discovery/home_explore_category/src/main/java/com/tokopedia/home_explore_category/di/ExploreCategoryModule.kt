@@ -10,8 +10,8 @@ import dagger.Provides
 @Module
 class ExploreCategoryModule {
 
-    @ExploreCategoryScope
     @Provides
+    @ExploreCategoryScope
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }

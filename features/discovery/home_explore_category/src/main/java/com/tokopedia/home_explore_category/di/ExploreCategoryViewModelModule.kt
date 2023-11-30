@@ -14,11 +14,11 @@ abstract class ExploreCategoryViewModelModule {
 
     @ExploreCategoryScope
     @Binds
-    abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
+    @ExploreCategoryScope
     @Binds
     @IntoMap
-    @ExploreCategoryScope
     @ViewModelKey(ExploreCategoryViewModel::class)
     internal abstract fun provideExploreCategoryViewModel(viewModel: ExploreCategoryViewModel): ViewModel
 }
