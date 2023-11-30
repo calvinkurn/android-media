@@ -81,6 +81,9 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     private var cancelDownloadBeforeInstallInPage: Boolean = false
     private var hasStartTarget: Boolean = false
 
+    // count for auto retry download without clicking button retry
+    private var autoRetryCount = 0
+
     private var job = Job()
     private var timerJob: Job = Job()
 
@@ -92,6 +95,8 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         private const val EXTRA_FALLBACK_WEB = "dffallbackurl"
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
+        private const val MAX_AUTO_RETRY_COUNT = 3
+        private var AUTO_RETRY_TIME_INTERVAL = TimeUnit.SECONDS.toMillis(3)
         private var TIMER_CHECK_INTERVAL = TimeUnit.SECONDS.toMillis(8) // check per timeout
         const val DOWNLOAD_MODE_PAGE = "Page"
         const val TIMEOUT_ERROR_MESSAGE = "timeout"
@@ -598,7 +603,20 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     override fun onFailed(errorString: String) {
         timerJob.cancel()
         endDownloadTimeStamp = System.currentTimeMillis()
-        showFailedMessage(errorString)
+        if (autoRetryCount < MAX_AUTO_RETRY_COUNT &&
+            endDownloadTimeStamp - startDownloadTimeStamp < AUTO_RETRY_TIME_INTERVAL
+        ) {
+            // capability to auto-retry without user clicking retry button
+            autoRetryCount++
+            cancelAllPendingRequest()
+            toggleDfConfig()
+            launch(Dispatchers.Main) {
+                delay(500)
+                downloadFeature()
+            }
+        } else {
+            showFailedMessage(errorString)
+        }
     }
 
     override fun getModuleNameView(): String {
