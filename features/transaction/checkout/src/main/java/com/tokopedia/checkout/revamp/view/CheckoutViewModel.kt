@@ -2037,8 +2037,24 @@ class CheckoutViewModel @Inject constructor(
 
             if (checkoutWithDropship) mTrackerShipment.eventClickPilihPembayaranWithDropshipEnabled()
 
-            val validateUsePromoRevampUiModel = promoProcessor.validateUsePromoRevampUiModel
+            val (validateUsePromoRevampUiModel, isForceHit) = promoProcessor.finalValidateUse(
+                promoProcessor.generateValidateUsePromoRequest(
+                    listData.value,
+                    isTradeIn,
+                    isTradeInByDropOff,
+                    isOneClickShipment
+                )
+            )
             if (validateUsePromoRevampUiModel != null) {
+                if (isForceHit) {
+                    val itemListNewPromo = listData.value.toMutableList()
+                    itemListNewPromo[itemListNewPromo.size - 4] = itemListNewPromo.promo()!!.copy(
+                        promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
+                            validateUsePromoRevampUiModel.promoUiModel
+                        )
+                    )
+                    listData.value = itemListNewPromo
+                }
                 val notEligiblePromoHolderdataList = arrayListOf<NotEligiblePromoHolderdata>()
                 if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
                     val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
@@ -2326,7 +2342,7 @@ class CheckoutViewModel @Inject constructor(
                         promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
                             promoUiModel
                         ),
-                        isLoading = true
+                        isLoading = isPromoRevamp ?: false
                     )
                 }
             }

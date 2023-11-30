@@ -1048,22 +1048,35 @@ class CheckoutPromoProcessor @Inject constructor(
         return newCheckoutItems
     }
 
+    fun forceHitFinalValidateUse(
+        validateUsePromoRequest: ValidateUsePromoRequest,
+        validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?
+    ): Boolean {
+        return false
+    }
+
     suspend fun finalValidateUse(
         validateUsePromoRequest: ValidateUsePromoRequest
-    ): ValidateUsePromoRevampUiModel? {
-        return try {
-            if (!hasPromo(validateUsePromoRequest)) {
-                return ValidateUsePromoRevampUiModel()
+    ): Pair<ValidateUsePromoRevampUiModel?, Boolean> {
+        if (forceHitFinalValidateUse(validateUsePromoRequest, validateUsePromoRevampUiModel) || (validateUsePromoRevampUiModel == null && hasPromo(validateUsePromoRequest))) {
+            // force hit or
+            // has promo request but no last validate use data, then should rehit validate use
+            return try {
+                val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
+                    setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
+                    validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
+                        .executeOnBackground()
+                }
+                validateUsePromoRevampUiModel to true
+            } catch (t: Throwable) {
+                Timber.d(t)
+                null to true
             }
-            val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
-                setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
-                validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
-                    .executeOnBackground()
-            }
-            validateUsePromoRevampUiModel
-        } catch (t: Throwable) {
-            Timber.d(t)
-            null
+        } else if (validateUsePromoRevampUiModel == null) {
+            // does not have promo request & validate use data is null, then just return empty validate use data
+            return ValidateUsePromoRevampUiModel() to false
+        } else {
+            return validateUsePromoRevampUiModel to false
         }
     }
 
