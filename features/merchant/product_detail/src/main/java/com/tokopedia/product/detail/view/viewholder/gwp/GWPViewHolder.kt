@@ -6,11 +6,10 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.ItemDynamicProductGwpBinding
+import com.tokopedia.product.detail.view.componentization.ComponentEvent
 import com.tokopedia.product.detail.view.fragment.delegate.BasicComponentEvent
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.gwp.callback.GWPCallback
-import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPComponentEvent
-import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.widget.GWPWidgetListener
 
 /**
@@ -49,14 +48,6 @@ class GWPViewHolder(
         bind(element = mElement)
     }
 
-    override fun goToAppLink(appLink: String) {
-        gwpCallback.event(BasicComponentEvent.GoToAppLink(appLink = appLink))
-    }
-
-    override fun goToWebView(link: String) {
-        gwpCallback.event(BasicComponentEvent.GoToWebView(link = link))
-    }
-
     override fun getRecyclerViewPool(): RecyclerView.RecycledViewPool? {
         return gwpCallback.parentRecyclerViewPool
     }
@@ -72,7 +63,7 @@ class GWPViewHolder(
 
     override fun isRemoteCacheableActive(): Boolean = gwpCallback.isRemoteCacheableActive
 
-    override fun onClickTracking(data: GWPWidgetUiModel) {
-        gwpCallback.event(GWPComponentEvent.OnClickTracking(data = data))
+    override fun event(event: ComponentEvent) {
+        gwpCallback.event(event)
     }
 }

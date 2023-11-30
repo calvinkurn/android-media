@@ -10,7 +10,6 @@ import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.view.componentization.ComponentCallback
 import com.tokopedia.product.detail.view.componentization.ComponentEvent
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
-import timber.log.Timber
 import java.util.*
 
 /**
@@ -41,18 +40,14 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
         get() = viewModel.getDynamicProductInfoP1?.cacheState?.remoteCacheableActive.orFalse()
 
     override fun event(event: ComponentEvent) {
-        runCatching {
-            when (event) {
-                is BasicComponentEvent.OnImpressed -> onImpressComponent(trackData = event.trackData)
+        when (event) {
+            is BasicComponentEvent.OnImpressed -> onImpressComponent(trackData = event.trackData)
 
-                is BasicComponentEvent.GoToAppLink -> goToAppLink(appLink = event.appLink)
+            is BasicComponentEvent.GoToAppLink -> goToAppLink(appLink = event.appLink)
 
-                is BasicComponentEvent.GoToWebView -> goToWebView(link = event.link)
+            is BasicComponentEvent.GoToWebView -> goToWebView(link = event.link)
 
-                else -> componentEvent(event = event)
-            }
-        }.onFailure {
-            Timber.e(it)
+            else -> componentEvent(event = event)
         }
     }
 

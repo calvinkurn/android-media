@@ -21,9 +21,11 @@ import com.tokopedia.product.detail.common.utils.ItemSpaceDecorator
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.databinding.GwpCardListBinding
 import com.tokopedia.product.detail.databinding.GwpWidgetBinding
+import com.tokopedia.product.detail.view.fragment.delegate.BasicComponentEvent
 import com.tokopedia.product.detail.view.util.isInflated
 import com.tokopedia.product.detail.view.viewholder.ActionUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.adapter.GWPCardAdapter
+import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPComponentEvent
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiState
 import com.tokopedia.unifycomponents.toPx
@@ -182,13 +184,19 @@ class GWPWidget @JvmOverloads constructor(
 
     private fun onComponentClick(uiModel: GWPWidgetUiModel) {
         setRouting(action = uiModel.action)
-        listener?.onClickTracking(data = uiModel)
+        listener?.event(GWPComponentEvent.OnClickTracking(data = uiModel))
     }
 
     private fun setRouting(action: ActionUiModel) {
         when (action.type) {
-            ActionUiModel.APPLINK -> listener?.goToAppLink(appLink = action.link)
-            ActionUiModel.WEBVIEW -> listener?.goToWebView(link = action.link)
+            ActionUiModel.APPLINK -> listener?.event(
+                event = BasicComponentEvent.GoToAppLink(appLink = action.link)
+            )
+
+            ActionUiModel.WEBVIEW -> listener?.event(
+                event = BasicComponentEvent.GoToWebView(link = action.link)
+            )
+
             else -> {
                 // no-ops
             }
