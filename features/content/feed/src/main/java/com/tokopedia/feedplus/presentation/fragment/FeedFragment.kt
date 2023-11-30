@@ -160,7 +160,8 @@ class FeedFragment :
                 viewLifecycleOwner,
                 binding.rvFeedPost,
                 trackerModelMapper,
-                feedFollowRecommendationListener
+                feedFollowRecommendationListener,
+                dispatchers,
             )
         ) {
             if (feedPostViewModel.shouldShowNoMoreContent || !feedPostViewModel.hasNext) return@FeedContentAdapter
