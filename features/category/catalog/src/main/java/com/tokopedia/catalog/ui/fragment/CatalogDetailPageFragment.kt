@@ -623,7 +623,7 @@ class CatalogDetailPageFragment :
             }
 
             BannerCatalogUiModel.Ratio.TWO_BY_ONE.ratioName -> {
-                sendOnTimeImpression(TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE) {
+                sendOnTimeImpression(TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE, {
                     CatalogReimagineDetailAnalytics.sendEvent(
                         event = EVENT_VIEW_PG_IRIS,
                         action = "$EVENT_ACTION_IMPRESSION_BANNER $ratio",
@@ -631,7 +631,7 @@ class CatalogDetailPageFragment :
                         labels = catalogId,
                         trackerId = TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE
                     )
-                }
+                })
             }
 
             BannerCatalogUiModel.Ratio.ONE_BY_ONE.ratioName -> {
@@ -649,7 +649,7 @@ class CatalogDetailPageFragment :
     }
 
     override fun onTextDescriptionImpression() {
-        sendOnTimeImpression(TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE) {
+        sendOnTimeImpression(TRACKER_ID_IMPRESSION_TEXT_DESCRIPTION) {
             CatalogReimagineDetailAnalytics.sendEvent(
                 event = EVENT_VIEW_PG_IRIS,
                 action = EVENT_ACTION_IMPRESSION_TEXT_DESCRIPTION,
