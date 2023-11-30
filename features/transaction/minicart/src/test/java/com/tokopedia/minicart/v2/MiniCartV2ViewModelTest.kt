@@ -26,6 +26,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MiniCartV2ViewModelTest {
@@ -84,6 +85,33 @@ class MiniCartV2ViewModelTest {
 
         // then
         assert(viewModel.miniCartABTestData.value == MiniCartABTestData(false, "Beli"))
+    }
+
+    @Test
+    fun `WHEN fetch last widget state error THEN global event should be updated accordingly`() {
+        runTest {
+            // given
+            val error = IOException()
+            coEvery { getMiniCartWidgetUseCase.invoke(any()) } throws error
+
+            var lastGlobalEvent: MiniCartV2GlobalEvent? = null
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.globalEvent.collect {
+                    lastGlobalEvent = it
+                }
+            }
+
+            // when
+            viewModel.getLatestWidgetState(
+                GetMiniCartParam(
+                    emptyList(),
+                    MiniCartSource.TokonowHome.value
+                )
+            )
+
+            // then
+            assert(lastGlobalEvent == MiniCartV2GlobalEvent.FailToLoadMiniCart(error))
+        }
     }
 
     @Test
@@ -166,6 +194,42 @@ class MiniCartV2ViewModelTest {
     }
 
     @Test
+    fun `WHEN go to checkout by atc from mini cart widget error THEN global event state should be updated accordingly`() {
+        runTest {
+            // given
+            val miniCartSimplifiedData =
+                DataProvider.provideMiniCartSimplifiedDataBundleAvailableAndUnavailable()
+            viewModel.updateMiniCartSimplifiedData(miniCartSimplifiedData)
+            viewModel.setMiniCartABTestData(
+                isOCCFlow = true,
+                buttonBuyWording = "Beli Langsung"
+            )
+
+            val error = IOException()
+
+            coEvery { addToCartOccMultiUseCase.setParams(any()) } answers { addToCartOccMultiUseCase }
+            coEvery { addToCartOccMultiUseCase.execute(any(), any()) } answers {
+                secondArg<(Throwable) -> Unit>().invoke(
+                    error
+                )
+            }
+
+            var lastGlobalEvent: MiniCartV2GlobalEvent? = null
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.globalEvent.collect {
+                    lastGlobalEvent = it
+                }
+            }
+
+            // when
+            viewModel.goToCheckout()
+
+            // then
+            assert(lastGlobalEvent == MiniCartV2GlobalEvent.FailGoToCheckout(throwable = error))
+        }
+    }
+
+    @Test
     fun `WHEN go to checkout by update cart from mini cart widget success THEN global event state should be updated accordingly`() {
         runTest {
             // given
@@ -228,6 +292,39 @@ class MiniCartV2ViewModelTest {
 
             // then
             assert(lastGlobalEvent == MiniCartV2GlobalEvent.FailGoToCheckout(data = MiniCartCheckoutData(outOfService = OutOfService(id = "0"))))
+        }
+    }
+
+    @Test
+    fun `WHEN go to checkout by update cart from mini cart widget error THEN global event state should be updated accordingly`() {
+        runTest {
+            // given
+            val miniCartSimplifiedData =
+                DataProvider.provideMiniCartSimplifiedDataBundleAvailableAndUnavailable()
+            viewModel.updateMiniCartSimplifiedData(miniCartSimplifiedData)
+            viewModel.setMiniCartABTestData(
+                isOCCFlow = false,
+                buttonBuyWording = "Beli"
+            )
+
+            val error = IOException()
+            coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+            coEvery { updateCartUseCase.execute(any(), any()) } answers {
+                secondArg<(Throwable) -> Unit>().invoke(error)
+            }
+
+            var lastGlobalEvent: MiniCartV2GlobalEvent? = null
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.globalEvent.collect {
+                    lastGlobalEvent = it
+                }
+            }
+
+            // when
+            viewModel.goToCheckout()
+
+            // then
+            assert(lastGlobalEvent == MiniCartV2GlobalEvent.FailGoToCheckout(throwable = error))
         }
     }
 }
