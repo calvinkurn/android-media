@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.fragment.delegate
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -9,6 +10,7 @@ import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.view.componentization.ComponentCallback
 import com.tokopedia.product.detail.view.componentization.ComponentEvent
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -29,15 +31,28 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
     protected val queueTracker
         get() = mediator.queueTracker
 
+    val impressionHolders
+        get() = viewModel.impressionHolders
+
+    val parentRecyclerViewPool
+        get() = mediator.recyclerViewPool
+
+    val isRemoteCacheableActive
+        get() = viewModel.getDynamicProductInfoP1?.cacheState?.remoteCacheableActive.orFalse()
+
     override fun event(event: ComponentEvent) {
-        when (event) {
-            is BasicComponentEvent.OnImpressed -> onImpressComponent(trackData = event.trackData)
+        runCatching {
+            when (event) {
+                is BasicComponentEvent.OnImpressed -> onImpressComponent(trackData = event.trackData)
 
-            is BasicComponentEvent.GoToAppLink -> goToAppLink(appLink = event.appLink)
+                is BasicComponentEvent.GoToAppLink -> goToAppLink(appLink = event.appLink)
 
-            is BasicComponentEvent.GoToWebView -> goToWebView(link = event.link)
+                is BasicComponentEvent.GoToWebView -> goToWebView(link = event.link)
 
-            else -> componentEvent(event = event)
+                else -> componentEvent(event = event)
+            }
+        }.onFailure {
+            Timber.e(it)
         }
     }
 

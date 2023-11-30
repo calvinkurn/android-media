@@ -399,7 +399,7 @@ class DynamicProductDetailAdapterFactoryImpl(
             DynamicOneLinerViewHolder.LAYOUT -> DynamicOneLinerViewHolder(view, listener)
             APlusImageViewHolder.LAYOUT -> APlusImageViewHolder(view, listener)
             BMGMViewHolder.LAYOUT -> BMGMViewHolder(view, listener)
-            GWPViewHolder.LAYOUT -> GWPViewHolder(view, listener, pdpCallback.gwp)
+            GWPViewHolder.LAYOUT -> GWPViewHolder(view, pdpCallback.gwp)
             else -> super.createViewHolder(view, type)
         }
     }

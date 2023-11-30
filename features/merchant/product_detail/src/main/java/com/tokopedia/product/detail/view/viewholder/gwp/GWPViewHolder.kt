@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.ItemDynamicProductGwpBinding
 import com.tokopedia.product.detail.view.fragment.delegate.BasicComponentEvent
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.gwp.callback.GWPCallback
 import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPComponentEvent
@@ -21,7 +20,6 @@ import com.tokopedia.product.detail.view.viewholder.gwp.widget.GWPWidgetListener
 
 class GWPViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener,
     private val gwpCallback: GWPCallback
 ) : ProductDetailPageViewHolder<GWPUiModel>(view), GWPWidgetListener {
 
@@ -60,19 +58,19 @@ class GWPViewHolder(
     }
 
     override fun getRecyclerViewPool(): RecyclerView.RecycledViewPool? {
-        return listener.getParentRecyclerViewPool()
+        return gwpCallback.parentRecyclerViewPool
     }
 
     override fun getImpressionHolder(): ImpressHolder? = uiModel?.impressHolder
 
-    override fun getImpressionHolders(): MutableList<String> = listener.getImpressionHolders()
+    override fun getImpressionHolders(): MutableList<String> = gwpCallback.impressionHolders
 
     override fun onImpressed() {
         val element = uiModel ?: return
         gwpCallback.event(BasicComponentEvent.OnImpressed(getComponentTrackData(element)))
     }
 
-    override fun isRemoteCacheableActive(): Boolean = listener.isRemoteCacheableActive()
+    override fun isRemoteCacheableActive(): Boolean = gwpCallback.isRemoteCacheableActive
 
     override fun onClickTracking(data: GWPWidgetUiModel) {
         gwpCallback.event(GWPComponentEvent.OnClickTracking(data = data))

@@ -654,6 +654,9 @@ open class DynamicProductDetailFragment :
     override val queueTracker: TrackingQueue
         get() = trackingQueue
 
+    override val recyclerViewPool: RecyclerView.RecycledViewPool?
+        get() = getRecyclerView()?.recycledViewPool
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (prefetchCacheId.isEmpty()) showLoading()
