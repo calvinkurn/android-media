@@ -34,7 +34,14 @@ class HomeRecommendationItemGridViewHolder(
         setLayout(element)
         productCardImpressionListener()
         setItemProductCardClickListener()
-        setItemThreeDotsClickListener()
+        setItemThreeDotsClickListener(element)
+    }
+
+    override fun bindPayload(newItem: HomeRecommendationItemDataModel?) {
+        newItem?.let {
+            this.item = it
+            setItemThreeDotsClickListener(it)
+        }
     }
 
     private fun setLayout(
@@ -70,14 +77,12 @@ class HomeRecommendationItemGridViewHolder(
         }
     }
 
-    private fun setItemThreeDotsClickListener() {
-        item?.let { productCardItem ->
-            productCardView.setThreeDotsOnClickListener {
-                listener.onProductThreeDotsClick(
-                    productCardItem,
-                    bindingAdapterPosition
-                )
-            }
+    private fun setItemThreeDotsClickListener(productCardItem: HomeRecommendationItemDataModel) {
+        productCardView.setThreeDotsOnClickListener {
+            listener.onProductThreeDotsClick(
+                productCardItem,
+                bindingAdapterPosition
+            )
         }
     }
 }
