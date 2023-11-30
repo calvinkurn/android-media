@@ -545,7 +545,7 @@ class HomeRecommendationFragment :
 
         rvContext?.let {
             RouteManager.route(
-                context,
+                it,
                 homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel?.applink
             )
         }
