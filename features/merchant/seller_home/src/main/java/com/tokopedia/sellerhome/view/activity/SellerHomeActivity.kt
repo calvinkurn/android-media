@@ -78,6 +78,7 @@ import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationLis
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -775,15 +776,17 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             .orEmpty()
         if (message.isBlank()) return
 
-        val view = window?.decorView ?: return
-        Toaster.toasterCustomBottomHeight = dpToPx(88).toInt()
-        Toaster.build(
-            view,
-            message,
-            Toaster.LENGTH_LONG,
-            Toaster.TYPE_NORMAL,
-            actionText
-        ).show()
+        Handler(Looper.getMainLooper()).postDelayed({
+            val view = window?.decorView ?: return@postDelayed
+            Toaster.toasterCustomBottomHeight = dpToPx(88).toInt()
+            Toaster.build(
+                view,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                actionText
+            ).show()
+        }, TimeUnit.SECONDS.toMillis(1))
     }
 
     private fun handleSellerPersona(intent: Intent?) {
