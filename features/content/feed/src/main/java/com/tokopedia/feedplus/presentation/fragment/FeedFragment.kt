@@ -160,7 +160,8 @@ class FeedFragment :
                 viewLifecycleOwner,
                 binding.rvFeedPost,
                 trackerModelMapper,
-                feedFollowRecommendationListener
+                feedFollowRecommendationListener,
+                dispatchers,
             )
         ) {
             if (feedPostViewModel.shouldShowNoMoreContent || !feedPostViewModel.hasNext) return@FeedContentAdapter
@@ -1919,7 +1920,12 @@ class FeedFragment :
             ) {}
         ) {
             if (userSession.isLoggedIn) {
-                feedPostViewModel.buyProduct(product)
+                if (product.showGlobalVariant) {
+                    dismissFeedProductBottomSheet()
+                    openVariantBottomSheet(product)
+                } else {
+                    feedPostViewModel.buyProduct(product)
+                }
             } else {
                 feedPostViewModel.suspendBuyProduct(product)
                 buyLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))

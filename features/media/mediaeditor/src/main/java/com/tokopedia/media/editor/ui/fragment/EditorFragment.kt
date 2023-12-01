@@ -101,9 +101,7 @@ class EditorFragment @Inject constructor(
         viewBinding?.btnRedo?.setOnClickListener {
             forwardState()
         }
-    }
 
-    private fun startAutoCrop() {
         loader = LoaderDialog(requireContext()).apply {
             setLoadingText("")
             customView = View.inflate(
@@ -113,7 +111,9 @@ class EditorFragment @Inject constructor(
             ) as LinearLayout
             show()
         }
+    }
 
+    private fun startAutoCrop() {
         autoCropStartTime = System.nanoTime()
         iterateCrop(viewModel.editStateList.values.toList(), 0)
     }
@@ -380,6 +380,20 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
+            viewModel.compressImage(it) { // on compress done
+                thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
+
+                if (it.autoCropRatio() != null) {
+                    startAutoCrop()
+                } else {
+                    viewBinding?.viewPager?.apply {
+                        setAdapter(viewModel.editStateList.values.toList())
+                        setPagerPageChangeListener(this)
+                    }
+                    loader?.dismiss()
+                }
+            }
+
             // show/hide add logo base on rollence
             if (!viewModel.isShopAvailable()) {
                 it.editorToolsList().apply {
@@ -397,16 +411,6 @@ class EditorFragment @Inject constructor(
             }
 
             editorToolComponent.setupView(it.editorToolsList())
-            thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
-
-            if (it.autoCropRatio() != null) {
-                startAutoCrop()
-            } else {
-                viewBinding?.viewPager?.apply {
-                    setAdapter(viewModel.editStateList.values.toList())
-                    setPagerPageChangeListener(this)
-                }
-            }
         }
     }
 

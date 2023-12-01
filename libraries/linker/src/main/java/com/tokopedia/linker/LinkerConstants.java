@@ -54,6 +54,7 @@ public interface LinkerConstants {
     String VARIANT = "variant";
     String QTY = "qty";
     String CATEGORY = "category";
+    String PRODUCT_BRAND = "product_brand";
 
     int EVENT_COMMERCE_VAL = 1;
     int EVENT_LOGIN_VAL = 2;
