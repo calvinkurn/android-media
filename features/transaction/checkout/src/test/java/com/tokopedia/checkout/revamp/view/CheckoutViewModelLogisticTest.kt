@@ -355,7 +355,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        viewModel.logisticProcessor.isBoUnstackEnabled = true
+        logisticProcessor.isBoUnstackEnabled = true
 
         val shippingCourierUiModel = ShippingCourierUiModel()
         coEvery { ratesUseCase.invoke(any()) } returns ShippingRecommendationData(
@@ -427,7 +427,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        viewModel.logisticProcessor.isBoUnstackEnabled = true
+        logisticProcessor.isBoUnstackEnabled = true
 
         val shippingCourierUiModel = ShippingCourierUiModel()
         coEvery { ratesUseCase.invoke(any()) } returns ShippingRecommendationData(
@@ -534,7 +534,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        viewModel.logisticProcessor.isBoUnstackEnabled = true
+        logisticProcessor.isBoUnstackEnabled = true
 
         val shippingCourierUiModel = ShippingCourierUiModel()
         coEvery { ratesUseCase.invoke(any()) } returns ShippingRecommendationData(
@@ -1083,7 +1083,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
     @Test
     fun `WHEN get shipping rates schedule success with bo code THEN should hit validate use`() {
         // Given
-        viewModel.logisticProcessor.isBoUnstackEnabled = true
+        logisticProcessor.isBoUnstackEnabled = true
         val ratesResponse = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
         val shippingRecommendationData =
@@ -1153,7 +1153,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
     @Test
     fun `WHEN get shipping rates schedule got error courier with bo code THEN should not hit validate use`() {
         // Given
-        viewModel.logisticProcessor.isBoUnstackEnabled = true
+        logisticProcessor.isBoUnstackEnabled = true
         val ratesResponse = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
         val shippingRecommendationData =
@@ -1217,7 +1217,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
     @Test
     fun `WHEN get shipping rates schedule got error courier THEN should not hit validate use`() {
         // Given
-        viewModel.logisticProcessor.isBoUnstackEnabled = true
+        logisticProcessor.isBoUnstackEnabled = true
         val ratesResponse = DataProvider.provideRatesV3Response()
         val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
         val shippingRecommendationData =
@@ -1976,7 +1976,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        viewModel.logisticProcessor.isBoUnstackEnabled = true
+        logisticProcessor.isBoUnstackEnabled = true
 
         coEvery {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
@@ -2048,7 +2048,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        viewModel.logisticProcessor.isBoUnstackEnabled = true
+        logisticProcessor.isBoUnstackEnabled = true
 
         val ioException = IOException("error")
         coEvery {
@@ -2104,7 +2104,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        viewModel.logisticProcessor.isBoUnstackEnabled = true
+        logisticProcessor.isBoUnstackEnabled = true
 
         val exception = AkamaiErrorException("error akamai")
         coEvery {

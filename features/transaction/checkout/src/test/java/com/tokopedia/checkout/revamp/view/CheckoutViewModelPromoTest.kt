@@ -231,7 +231,7 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                 CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
                 CheckoutPromoModel(
                     promo = LastApplyUiModel(),
-                    isLoading = true
+                    isLoading = false
                 ),
                 CheckoutCostModel(totalPriceString = "Rp0"),
                 CheckoutCrossSellGroupModel(),

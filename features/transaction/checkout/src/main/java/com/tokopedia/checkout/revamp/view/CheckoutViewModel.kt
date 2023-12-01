@@ -106,7 +106,7 @@ import javax.inject.Inject
 
 class CheckoutViewModel @Inject constructor(
     private val cartProcessor: CheckoutCartProcessor,
-    internal val logisticProcessor: CheckoutLogisticProcessor,
+    private val logisticProcessor: CheckoutLogisticProcessor,
     private val promoProcessor: CheckoutPromoProcessor,
     private val addOnProcessor: CheckoutAddOnProcessor,
     private val paymentProcessor: CheckoutPaymentProcessor,
@@ -2037,7 +2037,7 @@ class CheckoutViewModel @Inject constructor(
 
             if (checkoutWithDropship) mTrackerShipment.eventClickPilihPembayaranWithDropshipEnabled()
 
-            val validateUsePromoRevampUiModel = promoProcessor.finalValidateUse(
+            val (validateUsePromoRevampUiModel, isForceHit) = promoProcessor.finalValidateUse(
                 promoProcessor.generateValidateUsePromoRequest(
                     listData.value,
                     isTradeIn,
@@ -2046,13 +2046,15 @@ class CheckoutViewModel @Inject constructor(
                 )
             )
             if (validateUsePromoRevampUiModel != null) {
-                val itemList = listData.value.toMutableList()
-                itemList[itemList.size - 4] = itemList.promo()!!.copy(
-                    promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
-                        validateUsePromoRevampUiModel.promoUiModel
+                if (isForceHit) {
+                    val itemListNewPromo = listData.value.toMutableList()
+                    itemListNewPromo[itemListNewPromo.size - 4] = itemListNewPromo.promo()!!.copy(
+                        promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
+                            validateUsePromoRevampUiModel.promoUiModel
+                        )
                     )
-                )
-                listData.value = itemList
+                    listData.value = itemListNewPromo
+                }
                 val notEligiblePromoHolderdataList = arrayListOf<NotEligiblePromoHolderdata>()
                 if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
                     val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
@@ -2340,7 +2342,7 @@ class CheckoutViewModel @Inject constructor(
                         promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
                             promoUiModel
                         ),
-                        isLoading = true
+                        isLoading = isPromoRevamp ?: false
                     )
                 }
             }
