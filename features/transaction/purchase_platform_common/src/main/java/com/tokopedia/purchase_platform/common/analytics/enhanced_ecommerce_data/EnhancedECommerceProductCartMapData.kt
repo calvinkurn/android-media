@@ -214,6 +214,10 @@ class EnhancedECommerceProductCartMapData {
         Product[KEY_DIMENSION137] = offerId
     }
 
+    fun setImpressionAlgorithm(value: String?) {
+        Product[KEY_IMPRESSION_ALGORITHM] = if (!value.isNullOrBlank()) value else DEFAULT_VALUE_NONE_OTHER
+    }
+
     companion object {
         private const val KEY_NAME = "name"
         private const val KEY_ID = "id"
@@ -267,6 +271,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_BO_AFFORDABILITY = "dimension119"
         private const val KEY_DIMENSION136 = "dimension136"
         private const val KEY_DIMENSION137 = "dimension137"
+        private const val KEY_IMPRESSION_ALGORITHM = "dimension96"
         const val DEFAULT_VALUE_NONE_OTHER = "none/other"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
         const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
