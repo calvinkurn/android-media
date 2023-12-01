@@ -89,4 +89,6 @@ class OwocAddonsViewHolder(
 
     override fun onAddOnsInfoLinkClicked(infoLink: String) {
     }
+
+    override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {}
 }

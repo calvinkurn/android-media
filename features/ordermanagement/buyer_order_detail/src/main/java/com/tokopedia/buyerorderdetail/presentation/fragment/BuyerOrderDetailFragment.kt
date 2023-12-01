@@ -86,6 +86,7 @@ import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
@@ -1111,6 +1112,10 @@ open class BuyerOrderDetailFragment :
 
     override fun onBmgmProductBenefitExpand(isExpand: Boolean, identifier: String) {
         viewModel.expandCollapseBmgmProductBenefit(identifier, isExpand)
+    }
+
+    override fun onBmgmProductBenefitClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+        navigator.goToProductSnapshotPage(addOn.orderId, addOn.orderDetailId)
     }
 
     private fun showToaster(message: String) {

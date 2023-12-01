@@ -209,6 +209,10 @@ class BmgmSectionViewHolder(
         override fun onAddOnsInfoLinkClicked(infoLink: String) {
             // noop
         }
+
+        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+            listener.onBmgmProductBenefitClicked(addOn)
+        }
     }
 
     interface Listener {
@@ -221,5 +225,6 @@ class BmgmSectionViewHolder(
         fun onBmgmItemWarrantyClaim(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
         fun onBmgmItemImpressed(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
         fun onBmgmProductBenefitExpand(isExpand:Boolean, identifier: String)
+        fun onBmgmProductBenefitClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel)
     }
 }

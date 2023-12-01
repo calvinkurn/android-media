@@ -72,6 +72,8 @@ class SomDetailNonProductBundleCardViewHolder(
         actionListener?.onAddOnsInfoLinkClicked(infoLink)
     }
 
+    override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {}
+
     private fun setupAddonSection(addOnSummaryUiModel: AddOnSummaryUiModel?) {
         val addonsViewStub: View = itemView.findViewById(R.id.layoutProductAddOn)
         if (addOnSummaryUiModel?.addonItemList?.isNotEmpty() == true) {

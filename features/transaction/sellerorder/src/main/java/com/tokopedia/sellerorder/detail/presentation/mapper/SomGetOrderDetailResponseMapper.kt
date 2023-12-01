@@ -72,7 +72,9 @@ object SomGetOrderDetailResponseMapper {
                                         noteCopyable = true,
                                         providedByShopItself = true,
                                         infoLink = infoLink.orEmpty(),
-                                        tips = addOnNote?.tips.orEmpty()
+                                        tips = addOnNote?.tips.orEmpty(),
+                                        orderId = "",
+                                        orderDetailId = ""
                                     )
                                 }
                             ).also {
@@ -83,6 +85,7 @@ object SomGetOrderDetailResponseMapper {
                 },
                 productBenefits = mapBmgmProductBenefit(
                     productBenefit = bmgm.productBenefit,
+                    orderId = orderId,
                     bmgmId = bmgm.id,
                     expanded = !bmgmProductBenefitExpandableState.contains(bmgm.id)
                 )
@@ -92,6 +95,7 @@ object SomGetOrderDetailResponseMapper {
 
     private fun mapBmgmProductBenefit(
         productBenefit: ProductBenefit?,
+        orderId: String,
         bmgmId: String,
         expanded: Boolean
     ): AddOnSummaryUiModel? {
@@ -101,13 +105,14 @@ object SomGetOrderDetailResponseMapper {
                 totalPriceText = "(${productBenefit.orderDetail.count()} hadiah)",
                 addonsLogoUrl = productBenefit.iconUrl,
                 addonsTitle = productBenefit.label,
-                addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail)
+                addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail, orderId)
             ).apply { isExpand = expanded }
         }
     }
 
     private fun mapBmgmProductBenefitItems(
-        orderDetails: List<ProductBenefit.OrderDetail>
+        orderDetails: List<ProductBenefit.OrderDetail>,
+        orderId: String
     ): List<AddOnSummaryUiModel.AddonItemUiModel> {
         return orderDetails.map { orderDetail ->
             AddOnSummaryUiModel.AddonItemUiModel(
@@ -124,7 +129,9 @@ object SomGetOrderDetailResponseMapper {
                 noteCopyable = false,
                 providedByShopItself = true,
                 infoLink = String.EMPTY,
-                tips = String.EMPTY
+                tips = String.EMPTY,
+                orderId = orderId,
+                orderDetailId = orderDetail.orderDtlId.toString()
             )
         }
     }
@@ -247,7 +254,9 @@ object SomGetOrderDetailResponseMapper {
                                     noteCopyable = true,
                                     providedByShopItself = true,
                                     infoLink = infoLink.orEmpty(),
-                                    tips = addOnNote?.tips.orEmpty()
+                                    tips = addOnNote?.tips.orEmpty(),
+                                    orderId = "",
+                                    orderDetailId = ""
                                 )
                             }
                         ).also {
@@ -289,7 +298,9 @@ object SomGetOrderDetailResponseMapper {
                                 noteCopyable = true,
                                 providedByShopItself = true,
                                 infoLink = infoLink.orEmpty(),
-                                tips = addOnNote?.tips.orEmpty()
+                                tips = addOnNote?.tips.orEmpty(),
+                                orderId = "",
+                                orderDetailId = ""
                             )
                         }
                     ).also {

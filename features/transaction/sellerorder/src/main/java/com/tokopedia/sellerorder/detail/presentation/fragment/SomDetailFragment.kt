@@ -52,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -1185,6 +1186,10 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
 
     override fun onBmgmProductBenefitExpand(isExpand: Boolean, identifier: String) {
         expandCollapseBmgmProductBenefit(identifier, isExpand)
+    }
+
+    override fun onBmgmProductBenefitClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+        onClickProduct(addOn.orderDetailId.toLongOrZero())
     }
 
     override fun onDetailIncomeClicked() {

@@ -30,6 +30,11 @@ class BmgmAddOnViewHolder(
     override fun bind(element: AddOnSummaryUiModel.AddonItemUiModel) {
         this.element = element
         setupProductAddOn(element)
+        setupListener(element)
+    }
+
+    private fun setupListener(element: AddOnSummaryUiModel.AddonItemUiModel) {
+        binding?.root?.setOnClickListener { listener.onAddOnClicked(element) }
     }
 
     override fun onDescriptionSeeLessClicked() {
@@ -124,5 +129,6 @@ class BmgmAddOnViewHolder(
         fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence)
         fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)
         fun onAddOnsInfoLinkClicked(infoLink: String)
+        fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel)
     }
 }

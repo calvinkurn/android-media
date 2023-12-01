@@ -234,6 +234,8 @@ class ProductBmgmItemAdapter(
             listener.onAddOnsInfoLinkClicked(infoLink)
         }
 
+        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {}
+
         interface Listener {
             fun onAddOnsInfoLinkClicked(infoLink: String)
             fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)

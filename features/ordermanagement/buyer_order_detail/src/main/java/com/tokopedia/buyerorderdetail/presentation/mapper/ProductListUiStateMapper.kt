@@ -757,6 +757,7 @@ object ProductListUiStateMapper {
                 },
                 productBenefits = mapBmgmProductBenefit(
                     bmgm.productBenefit,
+                    orderId,
                     bmgm.id,
                     bmgmProductBenefitExpandableState.contains(bmgm.id)
                 )
@@ -767,6 +768,7 @@ object ProductListUiStateMapper {
 
     private fun mapBmgmProductBenefit(
         productBenefit: ProductBenefit?,
+        orderId: String,
         bmgmId: String,
         expanded: Boolean
     ): AddOnSummaryUiModel? {
@@ -776,19 +778,20 @@ object ProductListUiStateMapper {
                 totalPriceText = "${productBenefit.orderDetail.count()} hadiah",
                 addonsLogoUrl = productBenefit.iconUrl,
                 addonsTitle = productBenefit.label,
-                addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail)
+                addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail, orderId)
             ).apply { isExpand = expanded }
         }
     }
 
     private fun mapBmgmProductBenefitItems(
-        orderDetails: List<ProductBenefit.OrderDetail>
+        orderDetails: List<ProductBenefit.OrderDetail>,
+        orderId: String
     ): List<AddOnSummaryUiModel.AddonItemUiModel> {
         return orderDetails.map { orderDetail ->
             AddOnSummaryUiModel.AddonItemUiModel(
                 priceText = orderDetail.productPrice,
                 quantity = orderDetail.productQty,
-                addonsId = orderDetail.productId.toString(),
+                addonsId = orderDetail.orderDtlId.toString(),
                 addOnsName = orderDetail.productName,
                 type = String.EMPTY,
                 addOnsThumbnailUrl = orderDetail.picture,
@@ -799,7 +802,9 @@ object ProductListUiStateMapper {
                 noteCopyable = false,
                 providedByShopItself = true,
                 infoLink = String.EMPTY,
-                tips = String.EMPTY
+                tips = String.EMPTY,
+                orderId = orderId,
+                orderDetailId = orderDetail.orderDtlId.toString()
             )
         }
     }
@@ -1101,7 +1106,9 @@ object ProductListUiStateMapper {
                             noteCopyable = false,
                             providedByShopItself = true,
                             infoLink = addOnInfoLink.orEmpty(),
-                            tips = addOnNote?.tips.orEmpty()
+                            tips = addOnNote?.tips.orEmpty(),
+                            orderId = "",
+                            orderDetailId = ""
                         )
                     }.orEmpty()
                 ).also { addOnSummaryUiModel ->

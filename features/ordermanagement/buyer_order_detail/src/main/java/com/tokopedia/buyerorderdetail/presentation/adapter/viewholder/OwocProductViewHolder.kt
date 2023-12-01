@@ -156,4 +156,6 @@ class OwocProductViewHolder(
 
     override fun onAddOnsInfoLinkClicked(infoLink: String) {
     }
+
+    override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {}
 }

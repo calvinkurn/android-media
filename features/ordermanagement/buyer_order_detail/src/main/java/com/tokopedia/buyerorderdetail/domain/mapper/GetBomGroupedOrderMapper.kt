@@ -317,7 +317,9 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                     noteCopyable = false,
                     providedByShopItself = true,
                     infoLink = "",
-                    tips = ""
+                    tips = "",
+                    orderId = "",
+                    orderDetailId = ""
                 )
             }.orEmpty()
         )

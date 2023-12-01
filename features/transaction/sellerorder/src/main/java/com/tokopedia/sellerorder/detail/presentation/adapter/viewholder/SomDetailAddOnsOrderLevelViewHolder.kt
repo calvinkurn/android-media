@@ -72,4 +72,6 @@ class SomDetailAddOnsOrderLevelViewHolder(
     override fun onAddOnsInfoLinkClicked(infoLink: String) {
         actionListener.onAddOnsInfoLinkClicked(infoLink)
     }
+
+    override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {}
 }
