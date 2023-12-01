@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.device.info.DeviceScreenInfo
 import javax.inject.Inject
 
@@ -12,11 +13,8 @@ class DeviceScreenHelper @Inject constructor(
 ) {
     fun isFoldableOrTablet(): Boolean {
         val isTablet = DeviceScreenInfo.isTablet(context)
-        val isFoldable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            context.packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_HINGE_ANGLE)
-        } else {
-            false
-        }
-        return isFoldable || isTablet
+        val isFoldable = DeviceScreenInfo.isFoldable(context)
+        val isEmulator = DeviceInfo.isEmulated()
+        return isTablet || (!isEmulator && isFoldable)
     }
 }

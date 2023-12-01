@@ -21,6 +21,7 @@ import com.tokopedia.test.application.espresso_component.CommonActions
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.AllOf
+import com.tokopedia.recharge_component.R as recharge_componentR
 
 abstract class BaseRechargeCCTest {
 
@@ -28,7 +29,7 @@ abstract class BaseRechargeCCTest {
         onView(
             allOf(
                 supportsInputMethods(),
-                isDescendantOfA(withId(R.id.cc_widget_client_number))
+                isDescendantOfA(withId(recharge_componentR.id.client_number_widget_input_field))
             )
         ).perform(typeText(ccNumber))
     }

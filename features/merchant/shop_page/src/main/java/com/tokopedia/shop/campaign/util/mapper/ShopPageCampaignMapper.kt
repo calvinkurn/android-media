@@ -6,21 +6,8 @@ import com.tokopedia.shop.campaign.domain.entity.ShopCampaignRedeemPromoVoucherR
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
-import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
-import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.PRODUCT_HIGHLIGHT
-import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
-import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER_HIGHLIGHT
-import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
-import com.tokopedia.shop.home.WidgetName.VIDEO
-import com.tokopedia.shop.home.WidgetName.VOUCHER
-import com.tokopedia.shop.home.WidgetType.BUNDLE
-import com.tokopedia.shop.home.WidgetType.CAMPAIGN
-import com.tokopedia.shop.home.WidgetType.DISPLAY
-import com.tokopedia.shop.home.WidgetType.DYNAMIC
-import com.tokopedia.shop.home.WidgetType.VOUCHER_SLIDER
+import com.tokopedia.shop.home.WidgetNameEnum
+import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
@@ -55,8 +42,8 @@ object ShopPageCampaignMapper {
     }
 
     private fun isSpecialWidget(layoutWidget: ShopLayoutWidget.Widget): Boolean {
-        return layoutWidget.type.equals(DYNAMIC, ignoreCase = true) ||
-            layoutWidget.name.equals(SLIDER_BANNER_HIGHLIGHT, ignoreCase = true)
+        return layoutWidget.type.equals(WidgetTypeEnum.DYNAMIC.value, ignoreCase = true) ||
+            layoutWidget.name.equals(WidgetNameEnum.SLIDER_BANNER_HIGHLIGHT.value, ignoreCase = true)
     }
 
     private fun mapToWidgetUiModel(
@@ -65,15 +52,15 @@ object ShopPageCampaignMapper {
         widgetLayout: ShopPageWidgetUiModel?
     ): Visitable<*>? {
         return when (widgetResponse.type.lowercase()) {
-            VOUCHER_SLIDER.lowercase() -> mapToVoucherWidget(widgetResponse, widgetLayout)
+            WidgetTypeEnum.VOUCHER_SLIDER.value.lowercase() -> mapToVoucherWidget(widgetResponse, widgetLayout)
 
-            DISPLAY.lowercase() -> mapDisplayWidget(widgetResponse, widgetLayout)
+            WidgetTypeEnum.DISPLAY.value.lowercase() -> mapDisplayWidget(widgetResponse, widgetLayout)
 
-            CAMPAIGN.lowercase() -> mapCampaignWidget(widgetResponse, widgetLayout)
+            WidgetTypeEnum.CAMPAIGN.value.lowercase() -> mapCampaignWidget(widgetResponse, widgetLayout)
 
-            DYNAMIC.lowercase() -> mapDynamicWidget(widgetResponse, widgetLayout)
+            WidgetTypeEnum.DYNAMIC.value.lowercase() -> mapDynamicWidget(widgetResponse, widgetLayout)
 
-            BUNDLE.lowercase() -> mapBundleWidget(
+            WidgetTypeEnum.BUNDLE.value.lowercase() -> mapBundleWidget(
                 widgetResponse,
                 shopId,
                 widgetLayout
@@ -90,7 +77,7 @@ object ShopPageCampaignMapper {
         widgetLayout: ShopPageWidgetUiModel?
     ): Visitable<*>? {
         return when (widgetResponse.name) {
-            VOUCHER -> {
+            WidgetNameEnum.VOUCHER.value -> {
                 ShopPageWidgetMapper.mapToCampaignVoucherSliderUiModel(
                     widgetResponse,
                     widgetLayout
@@ -132,7 +119,7 @@ object ShopPageCampaignMapper {
         widgetLayout: ShopPageWidgetUiModel?
     ): Visitable<*>? {
         return when (widgetResponse.name) {
-            PRODUCT_HIGHLIGHT -> {
+            WidgetNameEnum.PRODUCT_HIGHLIGHT.value -> {
                 ShopPageWidgetMapper.mapToCampaignProductCarouselWidgetUiModel(
                     widgetResponse,
                     widgetLayout
@@ -148,15 +135,20 @@ object ShopPageCampaignMapper {
         widgetLayout: ShopPageWidgetUiModel?
     ): Visitable<*>? {
         return when (widgetResponse.name) {
-            DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN, SLIDER_BANNER, SLIDER_SQUARE_BANNER, VIDEO -> {
+            WidgetNameEnum.DISPLAY_SINGLE_COLUMN.value,
+            WidgetNameEnum.DISPLAY_DOUBLE_COLUMN.value,
+            WidgetNameEnum.DISPLAY_TRIPLE_COLUMN.value,
+            WidgetNameEnum.SLIDER_BANNER.value,
+            WidgetNameEnum.SLIDER_SQUARE_BANNER.value,
+            WidgetNameEnum.VIDEO.value -> {
                 ShopPageHomeMapper.mapToDisplayImageWidget(widgetResponse, widgetLayout, false, ShopPageColorSchema())
             }
 
-            BANNER_TIMER -> {
+            WidgetNameEnum.BANNER_TIMER.value -> {
                 ShopPageWidgetMapper.mapToBannerTimerWidget(widgetResponse, widgetLayout,false, ShopPageColorSchema())
             }
 
-            SLIDER_BANNER_HIGHLIGHT -> {
+            WidgetNameEnum.SLIDER_BANNER_HIGHLIGHT.value -> {
                 ShopPageWidgetMapper.mapToSliderBannerHighlightWidget(widgetResponse, widgetLayout)
             }
 

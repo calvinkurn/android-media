@@ -2,6 +2,22 @@ package com.tokopedia.tokochat.config.remoteconfig
 
 import com.google.gson.annotations.SerializedName
 
+data class CourierConfig(
+    @SerializedName("production")
+    val configList: List<CourierConfigWrapper> = listOf(),
+
+    @SerializedName("staging")
+    val configListStaging: List<CourierConfigWrapper> = listOf()
+)
+
+data class CourierConfigWrapper(
+    @SerializedName("configVersion")
+    val configVersion: Int = 0,
+
+    @SerializedName("data")
+    val data: CourierConfigData = CourierConfigData()
+)
+
 data class CourierConfigData(
     @SerializedName("courierEventProbability")
     val courierEventProbability: Int = 0,
@@ -101,5 +117,8 @@ data class CourierConfigData(
     val isMessageEnvelopeEnabled: Boolean = true,
 
     @SerializedName("shouldUseNewSSLFlow")
-    val shouldUseNewSSLFlow: Boolean = true
+    val shouldUseNewSSLFlow: Boolean = true,
+
+    @SerializedName("tokenExpiryIntervalMins")
+    val tokenExpiryIntervalMins: Long = 360
 )

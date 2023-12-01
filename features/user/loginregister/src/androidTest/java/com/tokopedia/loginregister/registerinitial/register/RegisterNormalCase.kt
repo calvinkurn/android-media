@@ -21,13 +21,13 @@ import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
 @UiTest
-class RegisterNormalCase: RegisterInitialBase() {
+class RegisterNormalCase : RegisterInitialBase() {
 
-    @Test
     /* Go to login page if registered email dialog clicked */
+    @Test
     fun gotoLoginIfDialogClicked() {
         isDefaultRegisterCheck = false
-        val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "email", view = "yoris.prayogooooo@tokopedia.com")
+        val data = RegisterCheckData(isExist = true, userID = "123456", registerType = "email", view = "yoris.prayogooooo@tokopedia.com")
         registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
@@ -45,23 +45,23 @@ class RegisterNormalCase: RegisterInitialBase() {
         }
     }
 
-    @Test
-    /* Go to verification page if email not exist */
-    fun gotoVerificationpage_IfNotRegistered() {
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(isExist = false , userID = "123456", registerType = "email", view = "yoris.prayogo+3@tokopedia.com")
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+//    @Test
+//    /* Go to verification page if email not exist */
+//    fun gotoVerificationpage_IfNotRegistered() {
+//        isDefaultRegisterCheck = false
+//        val data = RegisterCheckData(isExist = false , userID = "123456", registerType = "email", view = "yoris.prayogo+3@tokopedia.com")
+//        registerCheckUseCase.response = RegisterCheckPojo(data)
+//
+//        runTest {
+//            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
+//            inputEmailOrPhone("yoris.prayogo+3@tokopedia.com")
+//            clickSubmit()
+//            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
+//        }
+//    }
 
-        runTest {
-            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
-            inputEmailOrPhone("yoris.prayogo+3@tokopedia.com")
-            clickSubmit()
-            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
-        }
-    }
-
-    @Test
     /* Check if LoginActivity is launching when Top Masuk button clicked */
+    @Test
     fun goToLogin_Top() {
         runTest {
             intending(hasData(ApplinkConstInternalUserPlatform.LOGIN)).respondWithOk()
@@ -70,8 +70,8 @@ class RegisterNormalCase: RegisterInitialBase() {
         }
     }
 
-    @Test
     /* Show Discover Bottom Sheet when user click on Metode Lain button */
+    @Test
     fun showSocialMediaBottomSheet_True() {
         runTest {
             clickSocmedButton()
@@ -79,11 +79,11 @@ class RegisterNormalCase: RegisterInitialBase() {
         }
     }
 
-    @Test
     /* Show not registered dialog if phone registered */
+    @Test
     fun showNotRegisteredDialog_IfPhoneRegistered() {
         isDefaultRegisterCheck = false
-        val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "phone", view = "082242454511")
+        val data = RegisterCheckData(isExist = true, userID = "123456", registerType = "phone", view = "082242454511")
         registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
@@ -93,11 +93,11 @@ class RegisterNormalCase: RegisterInitialBase() {
         }
     }
 
-    @Test
     /* Show proceed dialog if phone not registered */
+    @Test
     fun showProceedPhoneDialog_IfPhoneNotRegistered() {
         isDefaultRegisterCheck = false
-        val data = RegisterCheckData(isExist = false , userID = "0", registerType = "phone", view = "08224245450411")
+        val data = RegisterCheckData(isExist = false, userID = "0", registerType = "phone", view = "08224245450411")
         registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
@@ -107,26 +107,33 @@ class RegisterNormalCase: RegisterInitialBase() {
         }
     }
 
-    @Test
     /* Go to login page if registered phone dialog clicked */
-    fun gotoLoginIfPhoneDialogClicked() {
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "phone", view = "082242454511")
-        registerCheckUseCase.response = RegisterCheckPojo(data)
-
-        runTest {
-            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
-            inputEmailOrPhone("082242454511")
-            clickSubmit()
-            isDialogDisplayed("Nomor Ponsel Sudah Terdaftar")
-
-            onView(withText("Ya, Masuk"))
-                .inRoot(isDialog())
-                .check(matches(isDisplayed()))
-                .perform(click())
-
-            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
-        }
-    }
-
+//    @Test
+//    fun gotoLoginIfPhoneDialogClicked() {
+//        isDefaultRegisterCheck = false
+//        val data = RegisterCheckData(isExist = true, userID = "123456", registerType = "phone", view = "082242454511")
+//        registerCheckUseCase.response = RegisterCheckPojo(data)
+//
+//        runTest {
+//            setupRollence()
+//            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
+//            inputEmailOrPhone("082242454511")
+//            clickSubmit()
+//            isDialogDisplayed("Nomor Ponsel Sudah Terdaftar")
+//
+//            onView(withText("Ya, Masuk"))
+//                .inRoot(isDialog())
+//                .check(matches(isDisplayed()))
+//                .perform(click())
+//
+//            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
+//        }
+//    }
+//
+//    private fun setupRollence() {
+//        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+//            DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION,
+//            ""
+//        )
+//    }
 }

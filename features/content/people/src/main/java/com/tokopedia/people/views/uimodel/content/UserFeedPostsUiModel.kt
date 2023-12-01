@@ -5,9 +5,16 @@ package com.tokopedia.people.views.uimodel.content
  * Created by fachrizalmrsln at 21/11/2022
  */
 data class UserFeedPostsUiModel(
-    val pagination: PaginationUiModel = PaginationUiModel(),
-    val posts: List<PostUiModel> = emptyList(),
-)
+    val pagination: PaginationUiModel,
+    val posts: List<PostUiModel>,
+) {
+    companion object {
+        val Empty = UserFeedPostsUiModel(
+            pagination = PaginationUiModel(),
+            posts = emptyList(),
+        )
+    }
+}
 
 data class PaginationUiModel(
     val cursor: String = "",

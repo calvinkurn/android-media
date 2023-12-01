@@ -45,6 +45,14 @@ class ProductMediaViewHolder(
         }
 
         payloads.forEach { processPayload(it as? Int, element) }
+        view.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
+            listener.onImpressComponent(getComponentTrackData(element))
+        }
     }
 
     private fun processPayload(payload: Int?, element: ProductMediaDataModel) = when (payload) {
@@ -69,7 +77,8 @@ class ProductMediaViewHolder(
             componentTrackDataModel = getComponentTrackData(element),
             initialScrollPosition = scrollPosition,
             containerType = element.containerType,
-            recommendation = element.recommendation
+            recommendation = element.recommendation,
+            isPrefetch = element.isPrefetch
         )
     }
 

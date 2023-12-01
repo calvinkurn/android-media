@@ -75,7 +75,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1Header
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
-import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
@@ -140,7 +139,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private var isLoadInitialData = false
     private var isUserSessionActive = false
     private var tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData? = null
-    private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var shopPageHeaderDataModel: ShopPageHeaderDataModel ? = null
     private var shopPagePageHeaderWidgetList: List<ShopPageHeaderWidgetUiModel> = listOf()
     private var shopHeaderLayoutData: ShopPageHeaderLayoutUiModel = ShopPageHeaderLayoutUiModel()
@@ -441,10 +439,8 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     internal fun updateShareIcon(newShareIconId: Int) {
-        navToolbar?.let {
-            iconShareId = newShareIconId
-            it.updateIcon(IconList.ID_SHARE, iconShareId)
-        }
+        iconShareId = newShareIconId
+        navToolbar?.updateIcon(IconList.ID_SHARE, iconShareId)
     }
 
     private fun isCartShownInNewNavToolbar(): Boolean {
@@ -622,9 +618,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                         shopRef,
                         shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     ).apply {
-                        initialProductListData?.let {
-                            setInitialProductListData(it)
-                        }
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
                         setHomeTabLottieUrl(it.lottieUrl)
@@ -644,9 +637,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                         shopRef = shopRef,
                         isEnableDirectPurchase = shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     )
-                    initialProductListData?.let {
-                        shopPageProductFragment.setInitialProductListData(it)
-                    }
                     shopPageProductFragment
                 }
 
@@ -758,10 +748,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
         this.tabData = tabData
     }
 
-    fun setInitialProductListData(initialProductListData: ShopProduct.GetShopProduct) {
-        this.initialProductListData = initialProductListData
-    }
-
     fun updateShopTickerData(tickerResultData: ShopPageHeaderTickerData) {
         this.tickerResultData = tickerResultData
         setupTicker()
@@ -825,7 +811,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     fun setSgcPlayWidgetData() {
-        shopPageHeaderFragmentHeaderViewHolder?.setSgcPlaySection(shopPagePageHeaderWidgetList)
+        shopPageHeaderFragmentHeaderViewHolder?.setSgcPlaySection(shopPagePageHeaderWidgetList, getShopHeaderConfig())
     }
 
     fun updateNavToolbarNotification() {

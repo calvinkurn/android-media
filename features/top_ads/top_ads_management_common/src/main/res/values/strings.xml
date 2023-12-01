@@ -300,7 +300,7 @@
     <string name="topads_common_the_group_name_is_already_in_use">Nama grup sudah digunakan.</string>
     <string name="topads_common_ad_groups_character_limit_error_msg">Grup iklan maksimal 70 karakter</string>
     <string name="top_ads_create_text_caption_one"><![CDATA[Iklan Dengan klik Iklankan, kamu menyetujui <strong><span style="color:#00AA5B">Syarat dan Ketentuan .</span></strong>]]></string>
-    <string name="top_ads_create_text_caption_two"><![CDATA[serta <strong><span style="color:#00AA5B">Kebijakan Privasi Tokopedia.</span></strong>]]></string>
+    <string name="top_ads_create_text_caption_two"><![CDATA[serta <strong><span style="color:#00AA5B">Pemberitahuan Privasi Tokopedia.</span></strong>]]></string>
     <string name="top_ads_create_edit_ad_group_name_bottom_sheet_title">Ubah nama grup</string>
     <string name="top_ads_create_edit_ad_group_name_bottom_sheet_label">Nama grup iklan</string>
     <string name="top_ads_create_edit_ad_group_name_bottom_sheet_cta">Ubah Nama</string>
@@ -311,9 +311,7 @@
     <string name="topads_ads_optimal_bid">Biaya optimal ✔️</string>
     <string name="topads_ads_error_multiple_fifty">Biaya harus kelipatan 50</string>
     <string name="topads_ads_search_bid_tooltip_title">Biaya Iklan di Pencarian</string>
-    <string name="topads_ads_search_bid_tooltip_description">Biaya iklan baru akan dikenakan setiap ada calon pembeli yang klik iklan produkmu baik itu secara organik ataupun saat iklanmu tampil sesuai dengan kata kunci pilihanmu.
-Tips:
-Semakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan.</string>
+    <string name="topads_ads_search_bid_tooltip_description">Biaya iklan baru akan dikenakan setiap ada calon pembeli yang klik iklan produkmu baik itu secara organik ataupun saat iklanmu tampil sesuai dengan kata kunci pilihanmu.\n\nTips:\nSemakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan.</string>
     <string name="topads_ads_performance_search_stats">Di Pencarian</string>
     <string name="topads_ads_performance_browse_stats">Di Rekomendasi</string>
     <string name="topads_ads_performance_total_stats">Total Tampil </string>

@@ -17,13 +17,13 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
-import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import kotlin.collections.ArrayList
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ProductHighlightComponentViewHolder(
     val view: View,
@@ -85,14 +85,9 @@ class ProductHighlightComponentViewHolder(
             },
             colorMode = element.channelModel.channelBanner.gradientColor.getColorMode()
         )
-        val topPadding = if (!HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
-            view.context.resources.getDimensionPixelSize(R.dimen.home_product_highlight_content_top_padding)
-        } else {
-            0
-        }
         binding?.masterProductCardDeals?.setMargin(
             view.context.resources.getDimensionPixelSize(R.dimen.home_product_highlight_content_horizontal_padding),
-            topPadding,
+            0,
             view.context.resources.getDimensionPixelSize(R.dimen.home_product_highlight_content_horizontal_padding),
             0
         )
@@ -100,7 +95,7 @@ class ProductHighlightComponentViewHolder(
 
     @SuppressLint("ResourceType")
     private fun ArrayList<String>.getColorMode(): Int {
-        val hexWhite = itemView.context.resources.getString(com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        val hexWhite = itemView.context.resources.getString(unifyprinciplesR.color.Unify_Static_White)
         // check if get empty or all white gradient color, then use mode normal
         return if (isEmpty() || get(0).lowercase(Locale.getDefault()).take(7) == hexWhite.lowercase().take(7)) {
             DynamicChannelHeaderView.COLOR_MODE_NORMAL

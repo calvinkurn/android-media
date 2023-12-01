@@ -34,11 +34,11 @@ Previously the shipping duration bottomsheet was separated between checkout & oc
 
 This bottomsheet is used to select the delivery duration on the checkout and occ page
 
-![](../res/shippingdurationbottomsheet/project_description.jpeg)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingdurationbottomsheet/project_description.jpeg)
 
 ## Flow Diagram
 
-![](../res/shippingdurationbottomsheet/shipping_duration_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingdurationbottomsheet/shipping_duration_drawio.png)
 
 ## How-to
 
@@ -124,7 +124,7 @@ ShippingDurationBottomsheet.show(
 
 ### LogisticPromoUiModel
 
-![](../res/shippingdurationbottomsheet/logistic_promo_ui.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingdurationbottomsheet/logistic_promo_ui.png)
 
 | **Variable name** | **Type** | **Description** | **Mapping from RatesV3** |
 | --- | --- | --- | --- |

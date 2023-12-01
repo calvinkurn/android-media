@@ -238,5 +238,6 @@ object AccountConstants {
     }
 
     const val LABEL_OCL_BTM_SHEET = "one_click_login"
-
+    const val PARAM_SCROLL_TO = "scrollto"
+    const val SCROLL_TO_SAFEMODE = "safemode"
 }

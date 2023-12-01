@@ -8,4 +8,6 @@ object ReviewCommonConstants {
     const val RATING_5 = 5
     const val REMOTE_CONFIG_KEY_ENABLE_GLIDE_VIDEO_THUMBNAIL_LOADER = "android_review_enable_glide_video_thumbnail_loader"
     const val REVIEW_EDITED = "edited"
+
+    const val EXTRAS_SELECTED_TOPIC = "EXTRAS_SELECTED_TOPIC"
 }

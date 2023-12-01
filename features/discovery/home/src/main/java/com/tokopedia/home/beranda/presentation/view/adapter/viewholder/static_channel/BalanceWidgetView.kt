@@ -54,7 +54,7 @@ class BalanceWidgetView : FrameLayout {
         this.itemContext = view.context
     }
 
-    fun bind(element: HomeBalanceModel, listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil = HomeThematicUtil()) {
+    fun bind(element: HomeBalanceModel, listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW)
         this.listener = listener
         renderWidget(element, homeThematicUtil)
@@ -88,14 +88,7 @@ class BalanceWidgetView : FrameLayout {
         if (element.balanceDrawerItemModels.isNotEmpty()) {
             subscriptionPosition = element.balancePositionSubscriptions
             balanceWidgetAdapter?.setVisitables(listOf(element))
-            if(!HomeRollenceController.isUsingAtf2Variant()) {
-                listener?.showHomeCoachmark(true, element)
-                rvBalance?.post {
-                    listener?.showHomeCoachmark(true, element)
-                }
-            } else {
-                listener?.showHomeCoachmark(false, element)
-            }
+            listener?.showHomeCoachmark(false, element)
         } else {
             balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))
         }

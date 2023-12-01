@@ -7,8 +7,6 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.*
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.*
-import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampItemDataModel
-import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampItemViewHolder
 
 /**
  * @author by yoasfs on 09/06/20
@@ -57,10 +55,6 @@ open class CommonCarouselProductCardTypeFactoryImpl(
         return CarouselBannerItemViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: SpecialReleaseRevampItemDataModel): Int {
-        return SpecialReleaseRevampItemViewHolder.LAYOUT
-    }
-
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
             CarouselProductCardViewHolder.LAYOUT -> {
@@ -89,9 +83,6 @@ open class CommonCarouselProductCardTypeFactoryImpl(
             }
             CarouselBannerItemViewHolder.LAYOUT -> {
                 CarouselBannerItemViewHolder(view, cardInteraction)
-            }
-            SpecialReleaseRevampItemViewHolder.LAYOUT -> {
-                SpecialReleaseRevampItemViewHolder(view)
             }
             else -> {
                 super.createViewHolder(view, viewType)

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.buyerorderdetail.presentation.adapter.CourierActionButtonAdapter.ViewHolder.Companion.CHAT_DRIVER
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.BuyerOrderDetailDiffUtilCallback
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
@@ -450,5 +451,24 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
 
     fun getBaseVisitableUiModels(): List<BaseVisitableUiModel> {
         return visitables.filterIsInstance<BaseVisitableUiModel>()
+    }
+
+    fun updateCourierCounter(counter: Int) {
+        val position = visitables.indexOfFirst { it is ShipmentInfoUiModel.CourierDriverInfoUiModel }
+        if (position >= 0) {
+            val driverUiModel = visitables[position] as ShipmentInfoUiModel.CourierDriverInfoUiModel
+            val chatDriverButton = driverUiModel.buttonList.find { it.key == CHAT_DRIVER }
+
+            chatDriverButton?.let {
+                val updatedButton = it.copy(counter = counter)
+                val updatedButtonList = driverUiModel.buttonList.map { button ->
+                    if (button == it) updatedButton else button
+                }
+
+                val updatedDriverUiModel = driverUiModel.copy(buttonList = updatedButtonList)
+                visitables[position] = updatedDriverUiModel
+                notifyItemChanged(position)
+            }
+        }
     }
 }

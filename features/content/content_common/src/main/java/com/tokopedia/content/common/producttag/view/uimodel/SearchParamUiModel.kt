@@ -1,7 +1,7 @@
 package com.tokopedia.content.common.producttag.view.uimodel
 
 import com.tokopedia.filter.common.helper.getSortFilterCount
-
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
  * Created By : Jonathan Darwin on May 17, 2022
@@ -17,7 +17,7 @@ data class SearchParamUiModel(
         }
 
     var start: Int
-        get() = try { value[KEY_START]?.toString()?.toInt() ?: 0 }
+        get() = try { value[KEY_START]?.toString()?.toIntOrZero() ?: 0 }
                 catch (e: Exception) { 0 }
         set(newValue) {
             value[KEY_START] = newValue
@@ -157,7 +157,7 @@ data class SearchParamUiModel(
     private fun setDefaultParam() {
         value[KEY_DEVICE] = "android"
         value[KEY_FROM] = "feed_content"
-        value[KEY_SOURCE] = "universe"
+        value[KEY_SOURCE] = "feed_content"
     }
 
     private val feedAdditionalKey = listOf(KEY_PREV_QUERY)

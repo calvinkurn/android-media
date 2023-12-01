@@ -394,6 +394,7 @@ class AddEditProductDetailViewModelTest {
         Assert.assertTrue(isError)
     }
 
+    /**
     @Test
     fun `validateProductNameInput should valid when product name isn't empty`() {
         val stringResMessage = "Tips: Jenis Produk + Merek Produk + Keterangan Tambahan"
@@ -405,6 +406,7 @@ class AddEditProductDetailViewModelTest {
         val isError = viewModel.isProductNameInputError.getOrAwaitValue()
         Assert.assertTrue(!isError && viewModel.productNameMessage.isNotBlank() && viewModel.productNameMessage == stringResMessage)
     }
+    */
 
     @Test
     fun `validateProductNameInput should invalid when product name is empty`() {

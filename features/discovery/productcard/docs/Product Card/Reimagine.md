@@ -39,20 +39,20 @@ For all templates, we will still use the same `ProductCardModel`. These are the 
 | Grid (regular) | Released MA-3.240 | ProductCardGridView         |
 | Grid Carousel  | Released MA-3.238 | ProductCardGridCarouselView |
 | Grid Small     | Not Released      | -                           |
-| Grid (regular) | Not Released      | -                           |
-| Grid Carousel  | Not Released      | -                           |
-| Grid Small     | Not Released      | -                           |
+| List (regular) | Not Released      | -                           |
+| List Carousel  | Not Released      | -                           |
+| List Small     | Not Released      | -                           |
 
 
 #### Product Card Grid
-![](../res/reimagine_grid.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/reimagine_grid.png)
 
 #### Product Card Grid Carousel
-![](../res/reimagine_grid_carousel.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/reimagine_grid_carousel.png)
 
 
 #### Image
-Image is rendered from field `imageUrl`.
+Image is rendered from field `imageUrl`. Image will always have an overlay of black color filter with 3% opacity. This is intended for products with white background so that the image's frame can still be visible.
 
 #### IsAds
 Ads marker on the bottom right of the image is rendered from field `isAds`. 
@@ -90,14 +90,27 @@ Three dots will be shown if `hasThreeDots` is set to true. It is also required t
 #### Stock Info
 Stock Info progress bar is rendered from field `label`, `percentage`, and `labelColor`. Progress bar color will change depending on the `label`, and it can also show fire icon if the `label` is `"Segera Habis"`.
 
+#### Label Group - Preventive Thematic
+Label Preventive Thematic is rendered if `labelGroupList` contains a label group with `position` = `ri_preventive_thematic`. The text will be rendered from the label group's `title`. The label background and text color will be rendered based on the label group's `style`.
+
 #### Label Group - Benefit
-Label Benefit is rendered if `labelGroupList` contains a label group with `position` = `ri_product_benefit`. The text will be rendered from the label group's `title`, and the label background will be rendered based on the label group's type. This is usually `lightGreen` for this label.
+Label Benefit is rendered if `labelGroupList` contains a label group with `position` = `ri_product_benefit`. The text will be rendered from the label group's `title`. This is usually said `Cashback xx%`. The label background and text color will be rendered based on the label group's `type`, which is usually `lightGreen`.
 
 #### Label Group - Credibility
 Label Credibility is rendered beside rating if `labelGroupList` contains a label group with `position` = `ri_product_credibility`. The text will be rendered from the label group's `title`. This is usually said `xx+ terjual` (sold count).
 
 #### Label Group - Ribbon
 Label Ribbon is rendered on the top left corner of the product card if `labelGroupList` contains a label group with `position` = `ri_ribbon`. The text will be rendered from label group's `title`. This is usually filled with Discount percentage.
+
+#### Label Group - Product Offers
+Label Product Offers is rendered to the right of Label Benefit if `labelGroupList` contains a label group with `position` = `ri_product_offers`. The text will be rendered from label group's `title`. This is usually said `Beli x Diskon xx%` (BMSM).
+For Grid Carousel, this label will not be rendered if there is Label Benefit.
+
+#### Label Group - Assigned Value
+Label Assigned Value is rendered below Product Image if `labelGroupList` contains a label group with `position` = `ri_assigned_value`.
+- The text will be rendered from label group's `title`.
+- The image icon will be rendered on the left side of the label based on label group's `imageUrl`. If it's empty, then the icon will not be shown.
+- The background color will be rendered based on label group's `style` with key `background-color`. The value will contain a String of colors, separated with `,`. If it's only one color, it will be rendered as solid single color. If it's more than one color, it will be rendered as gradient color.
 
 ## How to
 To implement Product Card Reimagine, choose a template that you needed, and implement the class mentioned above in your XML. After that, create an instance of `ProductCardModel` and call `setProductModel`.

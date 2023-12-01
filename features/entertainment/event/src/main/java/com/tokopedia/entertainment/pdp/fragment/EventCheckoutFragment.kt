@@ -320,8 +320,12 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initProgressDialog()
-        initTimerCountdown()
         requestData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initTimerCountdown()
     }
 
     private fun initTimerCountdown() {
@@ -335,17 +339,17 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                 binding?.partialEventCheckoutCountdown?.root?.hide()
                 showSoftbookEndedBottomSheet()
             } else {
-                renderCountdownTimer(countdownDuration)
+                renderCountdownTimer(date)
             }
         } catch (e: ParseException) {
             binding?.partialEventCheckoutCountdown?.root?.hide()
         }
     }
 
-    private fun renderCountdownTimer(duration: Long) {
+    private fun renderCountdownTimer(date: Date) {
         binding?.partialEventCheckoutCountdown?.timerEventCheckoutCountdownValue?.run {
             targetDate = Calendar.getInstance().apply {
-                timeInMillis += duration
+                time = date
             }
             onFinish = {
                 showSoftbookEndedBottomSheet()

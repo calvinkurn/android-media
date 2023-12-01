@@ -296,6 +296,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
         inputNumberField.icon1.hide()
     }
 
+    fun hideContactIcon2() {
+        inputNumberField.icon2.hide()
+    }
+
     fun setTextFieldStaticLabel(label: String) {
         textFieldStaticLabel = label
         inputNumberField.textInputLayout.hint = textFieldStaticLabel

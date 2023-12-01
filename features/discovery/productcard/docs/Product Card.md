@@ -64,7 +64,7 @@ data class LabelGroup(
 
 
 #### Status Label
-![](res/label_status.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/label_status.png)
 
 Example `LabelGroup`:
 ```
@@ -76,7 +76,7 @@ type = "transparentBlack"
 Status label will be rendered at the bottom left of the product card image.
 
 #### Price Label
-![](res/label_price.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/label_price.png)
 
 Example `LabelGroup`:
 ```
@@ -88,7 +88,7 @@ type = "lightGreen"
 Price label will be rendered below the product price.
 
 #### Campaign Label
-![](res/label_campaign.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/label_campaign.png)
 
 Example `LabelGroup`:
 ```
@@ -100,9 +100,9 @@ imageUrl = "http://images.tokopedia.net/campaign_image_url.png"
 
 #### Add To Cart with Quantity Editor for Non Variant Products
 
-![](res/add_to_cart_qty_editor_grid.png)
-![](res/add_to_cart_qty_editor_grid_shown.png)
-![](res/add_to_cart_qty_editor_list.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/add_to_cart_qty_editor_grid.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/add_to_cart_qty_editor_grid_shown.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/add_to_cart_qty_editor_list.png)
 
 1. Create and set object `ProductCardModel.NonVariant` into `ProductCardModel`.
 	1. `quantity` → Quantity of the product from Cart. If 0 then Product Card will show `+ Keranjang` button. If > 0 then Product Card will show Quantity Editor.
@@ -128,9 +128,9 @@ interface ATCNonVariantListener {
 
 #### Add to Cart for Variant Products
 
-![](res/add_to_cart_variant_grid.png)
-![](res/add_to_cart_variant_grid_quantity.png)
-![](res/add_to_cart_variant_list.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/add_to_cart_variant_grid.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/add_to_cart_variant_grid_quantity.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/add_to_cart_variant_list.png)
 
 1. Create and set `ProductCardModel.Variant` into `ProductCardModel`.
    1. `quantity` → Quantity of the Product from Cart. If 0 then Product Card will only show the `+ Keranjang` button. If > 0 then Product Card will also show the quantity label on the left of the `+ Keranjang` button (`ex. 30 pcs`)
@@ -144,7 +144,7 @@ fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
 
 #### Three Dots and Add To Cart Wishlist
 
-![](res/three_dots_atc_wishlist.png)
+![](https://docs-android.tokopedia.net/images/docs/productcard/three_dots_atc_wishlist.png)
 
 1. Set the flag `hasButtonThreeDotsWishlist` and `hasAddToCartWishlist` in `ProductCardModel`
 2. For the on click listener, use `setThreeDotsWishlistOnClickListener` and `setAddToCartWishlistOnClickListener` in `ProductCardGridView` and `ProductCardListView`

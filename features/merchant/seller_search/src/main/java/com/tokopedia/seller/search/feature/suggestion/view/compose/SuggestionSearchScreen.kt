@@ -136,7 +136,7 @@ fun SuggestionSearchScreen(
             itemsIndexed(
                 suggestionUiState?.suggestionSellerSearchList.orEmpty(),
                 key = { _, suggestionItem ->
-                    suggestionItem.hashCode()
+                    suggestionItem.getUniquePosition()
                 }
             ) { index, item ->
                 when (item) {

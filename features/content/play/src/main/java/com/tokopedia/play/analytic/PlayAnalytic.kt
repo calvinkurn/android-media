@@ -276,7 +276,7 @@ class PlayAnalytic(
             ProductAction.AddToCart -> clickAtcButtonProductWithVariant(product)
             ProductAction.Buy, ProductAction.OCC -> clickBeliButtonProductWithVariant(product)
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -319,7 +319,7 @@ class PlayAnalytic(
             generateBaseTracking(
                 product = product,
                 type = sectionInfo.config.type,
-                trackerId = "",
+                trackerId = ""
             )
         )
     }
@@ -423,12 +423,14 @@ class PlayAnalytic(
                     "currencyCode" to "IDR",
                     "impressions" to mutableListOf<HashMap<String, Any>>().apply {
                         products.forEach {
-                            add(convertProductToHashMapWithList(
-                                product = it.first,
-                                position = it.second + 1,
-                                sourceFrom = "featured product",
-                                dimension90 = dimensionTrackingHelper.getDimension90()
-                            ))
+                            add(
+                                convertProductToHashMapWithList(
+                                    product = it.first,
+                                    position = it.second + 1,
+                                    sourceFrom = "featured product",
+                                    dimension90 = dimensionTrackingHelper.getDimension90()
+                                )
+                            )
                         }
                     }
                 )
@@ -438,7 +440,7 @@ class PlayAnalytic(
                 Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
                 Key.userId to userId,
                 Key.businessUnit to BusinessUnit.play,
-                Key.trackerId to "8074",
+                Key.trackerId to "8074"
             )
         )
     }
@@ -555,7 +557,7 @@ class PlayAnalytic(
         product: PlayProductUiModel.Product,
         position: Int,
         sourceFrom: String,
-        dimension90: String,
+        dimension90: String
     ): HashMap<String, Any> {
         val dimension115 = buildString {
             append("pinned.${product.isPinned}, ")
@@ -586,7 +588,7 @@ class PlayAnalytic(
         product: PlayProductUiModel.Product,
         position: Int,
         sourceFrom: String,
-        dimension90: String,
+        dimension90: String
     ): Bundle =
         Bundle().apply {
             putString("item_name", product.title)
@@ -612,7 +614,7 @@ class PlayAnalytic(
         product: PlayProductUiModel.Product,
         shopInfo: PlayPartnerInfo,
         dimension39: String,
-        dimension90: String,
+        dimension90: String
     ): HashMap<String, Any> {
         return hashMapOf(
             "name" to product.title,
@@ -642,9 +644,9 @@ class PlayAnalytic(
             .setEventLabel("$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned} - ${product.label.rankType}")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(CurrentSite.tokopediaMarketplace)
-            .setCustomProperty(Key.sessionIris , TrackApp.getInstance().gtm.irisSessionId)
-            .setCustomProperty(Key.trackerId , "46422")
-            .setCustomProperty(Key.userId , userId)
+            .setCustomProperty(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
+            .setCustomProperty(Key.trackerId, "46422")
+            .setCustomProperty(Key.userId, userId)
             .build()
             .send()
     }
@@ -652,14 +654,14 @@ class PlayAnalytic(
     private fun clickAtcButtonProductWithVariant(product: PlayProductUiModel.Product) {
         Tracker.Builder()
             .setEvent(Event.clickContent)
-            .setEventAction("click atc in bottom sheet with varian",)
+            .setEventAction("click atc in bottom sheet with varian")
             .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned} - ${product.label.rankType}")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(CurrentSite.tokopediaMarketplace)
-            .setCustomProperty(Key.sessionIris , TrackApp.getInstance().gtm.irisSessionId)
-            .setCustomProperty(Key.trackerId , "46421")
-            .setCustomProperty(Key.userId , userId)
+            .setCustomProperty(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
+            .setCustomProperty(Key.trackerId, "46421")
+            .setCustomProperty(Key.userId, userId)
             .build()
             .send()
     }
@@ -848,7 +850,7 @@ class PlayAnalytic(
             .send()
     }
 
-    fun openScreen(channelId: String, channelType: PlayChannelType) {
+    fun openScreenWithOnBoarding(channelId: String, channelType: PlayChannelType, isShown: Boolean) {
         Tracker.Builder()
             .setEvent(Event.openScreen)
             .setCustomProperty(Key.trackerId, "13881")
@@ -856,7 +858,7 @@ class PlayAnalytic(
             .setCurrentSite(CurrentSite.tokopediaMarketplace)
             .setCustomProperty(Key.isLoggedInStatus, isLoggedIn)
             .setCustomProperty(Key.pageSource, dimensionTrackingHelper.getDimension90())
-            .setCustomProperty(Key.screenName, "/group-chat-room/$channelId/${channelType.value}/is coachmark true")
+            .setCustomProperty(Key.screenName, "/group-chat-room/$channelId/${channelType.value}/is coachmark $isShown")
             .setCustomProperty(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
             .setUserId(userId)
             .build()
@@ -890,7 +892,7 @@ class PlayAnalytic(
     private fun generateBaseTracking(
         product: PlayProductUiModel.Product,
         type: ProductSectionType,
-        trackerId: String,
+        trackerId: String
     ): HashMap<String, Any> {
         val base: HashMap<String, Any> = hashMapOf(
             Key.businessUnit to BusinessUnit.play,
@@ -921,7 +923,7 @@ class PlayAnalytic(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/222
     // Tracker ID: 42864
-    fun clickCartFromSheet () {
+    fun clickCartFromSheet() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - cart button bottom sheet")
@@ -936,10 +938,9 @@ class PlayAnalytic(
             .send()
     }
 
-
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/222
     // Tracker ID: 42863
-    fun impressCartFromBottomSheet () {
+    fun impressCartFromBottomSheet() {
         Tracker.Builder()
             .setEvent(Event.viewContentIris)
             .setEventAction("view - cart button bottom sheet")

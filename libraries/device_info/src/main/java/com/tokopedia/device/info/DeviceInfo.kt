@@ -61,9 +61,11 @@ object DeviceInfo {
                 Build.MODEL.contains("google_sdk") ||
                 Build.MODEL.contains("Emulator") ||
                 Build.MODEL.contains("Android SDK built for x86") ||
+                Build.MODEL.startsWith("sdk_gphone") ||
                 Build.MANUFACTURER.contains("Genymotion") ||
                 Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic") ||
-                "google_sdk" == Build.PRODUCT
+                Build.PRODUCT == "google_sdk" ||
+                Build.PRODUCT.startsWith("sdk_gphone")
             )
     }
 

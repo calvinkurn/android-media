@@ -1,5 +1,5 @@
 
-![image](../../res/home_sharing_education.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/home_sharing_education.png)
 
 <!--left header table-->
 | **Type Factory** | `HomeTypeFactory` |

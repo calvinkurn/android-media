@@ -6,9 +6,6 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.campaign.data.response.RollenceGradualRollout
-import com.tokopedia.campaign.usecase.RolloutFeatureVariantsUseCase
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
@@ -248,8 +245,8 @@ class CampaignRuleViewModel @Inject constructor(
 
         viewModelScope.launch {
             combine(
-                selectedPaymentTypeFlow,    // Pilih Metode Pembayaran
-                isUniqueBuyerFlow,  // Apakah pembeli yang sama
+                selectedPaymentTypeFlow, // Pilih Metode Pembayaran
+                isUniqueBuyerFlow, // Apakah pembeli yang sama
                 isCampaignRelationFlow,
                 relatedCampaignsFlow,
                 ::validateCampaignRuleInput
