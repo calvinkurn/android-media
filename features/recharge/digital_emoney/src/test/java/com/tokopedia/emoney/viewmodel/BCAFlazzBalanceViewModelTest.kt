@@ -62,6 +62,12 @@ class BCAFlazzBalanceViewModelTest {
     private val encBCALastBCATopUpKeyAes = "infinsoidnfosnodfns"
     private val encBCALastBCATopUpPayloadAes = "qereorerjoef"
     private var pairBCALastBCATopUpEncryptionResult = Pair("infinsoidnfosnodfns", "qereorerjoef")
+    private var encTrxIdKeyAes = "oinfoidfonefwnef"
+    private var encTrxIdPayloadAes = "naodfinoadiof"
+    private var pairBCATrxIdEncryptionResult = Pair("oinfoidfonefwnef", "naodfinoadiof")
+    private var encSessionKeyAes = "knfkdfkdofndk"
+    private var encSessionPayloadAes = "asdadfadkfnkdnnv"
+    private var pairBCASessionEncryptionResult = Pair("knfkdfkdofndk", "knfkdfkdofndk")
     private val GEN_ONE = "1"
     private val GEN_TWO = "2"
     private val merchantId = "0904039009"
@@ -71,8 +77,13 @@ class BCAFlazzBalanceViewModelTest {
     private val ATD = "989389898984"
     private val transactionId = "8394893849384"
     private val cardDataReversal = "3984798374982739420398ru293uowe"
+    private val cardDataCheckBalance = "idapfjapd9jfa9eufaodfhjoad98fja"
+    private val cardDataTrxId = "9hfw8hfo09hfw9ef0wef"
+    private val cardDataSessionId = "inflandfoaodfoainodfnioa"
     private val strLogResponseReversal = "UHRFKDJFBKDUFHKDJFHD483483HJFHJF"
     private val strLogResponseBCALastBCATopUp = "IJIFNINFINMOSFMODMOFODF"
+    private val strLogSession1 = "IUSFOIHSOIDOSIHDOISHD"
+    private val strLogSession2 = "NFOIASODIHSODIHOSIDH"
 
     private val checkNoPendingBalanceGen1Result = """
         {"Action":0,"Status":1,"Attributes":{"CardNumber":"0145201100001171","CardData":"","Amount":0,"LastBalance":2000,"TransactionID":"","ButtonText":"Topup Sekarang","ImageIssuer":"https://images.tokopedia.net/img/recharge/operator/FlazzBCA.png","Message":"Ini saldo kamu yang paling baru, ya.","HasMorePendingBalance":false,"AccessCardNumber":"","AccessCode":""},"EncKey":"","EncPayload":""}
@@ -84,6 +95,42 @@ class BCAFlazzBalanceViewModelTest {
 
     private val checkBalanceStatus3TransactionIdEmptyResult = """
         {"Action":0,"Status":3,"Attributes":{"CardNumber":"0145201100001171","CardData":"$cardDataReversal","Amount":0,"LastBalance":2000,"TransactionID":"","ButtonText":"Topup Sekarang","ImageIssuer":"https://images.tokopedia.net/img/recharge/operator/FlazzBCA.png","Message":"Ini saldo kamu yang paling baru, ya.","HasMorePendingBalance":false,"AccessCardNumber":"","AccessCode":""},"EncKey":"","EncPayload":""}
+    """
+
+    private val checkBalanceStatus0Result = """
+        {"Action":0,"Status":0,"Attributes":{"CardNumber":"0145201100001171","CardData":"$cardDataCheckBalance","Amount":0,"LastBalance":2000,"TransactionID":"$transactionId","ButtonText":"Topup Sekarang","ImageIssuer":"https://images.tokopedia.net/img/recharge/operator/FlazzBCA.png","Message":"Ini saldo kamu yang paling baru, ya.","HasMorePendingBalance":false,"AccessCardNumber":"","AccessCode":""},"EncKey":"","EncPayload":""}
+    """
+
+    private val trxIdStatus0Result = """
+        {"Action":1,"Status":0,"Attributes":{"CardNumber":"0145201100001171","CardData":"$cardDataTrxId","Amount":0,"LastBalance":2000,"TransactionID":"$transactionId","ButtonText":"Topup Sekarang","ImageIssuer":"https://images.tokopedia.net/img/recharge/operator/FlazzBCA.png","Message":"Ini saldo kamu yang paling baru, ya.","HasMorePendingBalance":false,"AccessCardNumber":"","AccessCode":""},"EncKey":"","EncPayload":""}
+    """
+
+    private val trxIdStatus0TransactionIdEmptyResult = """
+        {"Action":1,"Status":0,"Attributes":{"CardNumber":"0145201100001171","CardData":"$cardDataTrxId","Amount":0,"LastBalance":2000,"TransactionID":"","ButtonText":"Topup Sekarang","ImageIssuer":"https://images.tokopedia.net/img/recharge/operator/FlazzBCA.png","Message":"Ini saldo kamu yang paling baru, ya.","HasMorePendingBalance":false,"AccessCardNumber":"","AccessCode":""},"EncKey":"","EncPayload":""}
+    """
+
+    private val trxIdStatus1TransactionIdEmptyResult = """
+        {"Action":1,"Status":1,"Attributes":{"CardNumber":"0145201100001171","CardData":"$cardDataTrxId","Amount":0,"LastBalance":2000,"TransactionID":"","ButtonText":"Topup Sekarang","ImageIssuer":"https://images.tokopedia.net/img/recharge/operator/FlazzBCA.png","Message":"Ini saldo kamu yang paling baru, ya.","HasMorePendingBalance":false,"AccessCardNumber":"","AccessCode":""},"EncKey":"","EncPayload":""}
+    """
+
+    private val sessionStatus1Result = """
+        {"Action":2,"Status":1,"Attributes":{"CardNumber":"0145201100001171","CardData":"$cardDataSessionId","Amount":0,"LastBalance":2000,"TransactionID":"$transactionId","ButtonText":"Topup Sekarang","ImageIssuer":"https://images.tokopedia.net/img/recharge/operator/FlazzBCA.png","Message":"Ini saldo kamu yang paling baru, ya.","HasMorePendingBalance":false,"AccessCardNumber":"","AccessCode":""},"EncKey":"","EncPayload":""}
+    """
+
+    private val sessionStatus0Result = """
+        {"Action":2,"Status":0,"Attributes":{"CardNumber":"0145201100001171","CardData":"$cardDataSessionId","Amount":0,"LastBalance":2000,"TransactionID":"$transactionId","ButtonText":"Topup Sekarang","ImageIssuer":"https://images.tokopedia.net/img/recharge/operator/FlazzBCA.png","Message":"Ini saldo kamu yang paling baru, ya.","HasMorePendingBalance":false,"AccessCardNumber":"","AccessCode":""},"EncKey":"","EncPayload":""}
+    """
+
+    private val sessionStatus0CardDataEmptyResult = """
+        {"Action":2,"Status":0,"Attributes":{"CardNumber":"0145201100001171","CardData":"","Amount":0,"LastBalance":2000,"TransactionID":"$transactionId","ButtonText":"Topup Sekarang","ImageIssuer":"https://images.tokopedia.net/img/recharge/operator/FlazzBCA.png","Message":"Ini saldo kamu yang paling baru, ya.","HasMorePendingBalance":false,"AccessCardNumber":"","AccessCode":""},"EncKey":"","EncPayload":""}
+    """
+
+    private val sessionStatus1CardDataEmptyResult = """
+        {"Action":2,"Status":1,"Attributes":{"CardNumber":"0145201100001171","CardData":"","Amount":0,"LastBalance":2000,"TransactionID":"$transactionId","ButtonText":"Topup Sekarang","ImageIssuer":"https://images.tokopedia.net/img/recharge/operator/FlazzBCA.png","Message":"Ini saldo kamu yang paling baru, ya.","HasMorePendingBalance":false,"AccessCardNumber":"","AccessCode":""},"EncKey":"","EncPayload":""}
+    """
+
+    private val trxIdStatus1Result = """
+        {"Action":1,"Status":1,"Attributes":{"CardNumber":"0145201100001171","CardData":"$cardDataSessionId","Amount":0,"LastBalance":2000,"TransactionID":"$transactionId","ButtonText":"Topup Sekarang","ImageIssuer":"https://images.tokopedia.net/img/recharge/operator/FlazzBCA.png","Message":"Ini saldo kamu yang paling baru, ya.","HasMorePendingBalance":false,"AccessCardNumber":"","AccessCode":""},"EncKey":"","EncPayload":""}
     """
 
     private val reversalResult = """
@@ -179,6 +226,42 @@ class BCAFlazzBalanceViewModelTest {
     private val bcaLastBCATopUpResult = JNIResult(
         1,
         "0000$strLogResponseBCALastBCATopUp",
+        0,
+        balance,
+        cardNumber,
+        "0000"
+    )
+
+    private val session1Result = JNIResult(
+        1,
+        "0000$strLogSession1",
+        0,
+        balance,
+        cardNumber,
+        "0000"
+    )
+
+    private val session1FailResult = JNIResult(
+        0,
+        "0000$strLogSession1",
+        0,
+        balance,
+        cardNumber,
+        "0000"
+    )
+
+    private val session2Result = JNIResult(
+        1,
+        "8994",
+        0,
+        balance,
+        cardNumber,
+        "0000"
+    )
+
+    private val session2FailResult = JNIResult(
+        0,
+        "90390",
         0,
         balance,
         cardNumber,
@@ -310,6 +393,63 @@ class BCAFlazzBalanceViewModelTest {
         every {
             electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
         } returns checkNoPendingBalanceGen1Result
+
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            (bcaBalanceViewModel.bcaInquiry.value) as EmoneyInquiry,
+            BCAFlazzResponseMapper.bcaMapper(
+                cardNumber,
+                responseCheckBalance.attributes.lastBalance,
+                responseCheckBalance.attributes.imageIssuer,
+                false,
+                responseCheckBalance.attributes.amount,
+                responseCheckBalance.status,
+                responseCheckBalance.attributes.message,
+                responseCheckBalance.attributes.hasMorePendingBalance,
+            )
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldReturnLastBalance_Success_With_Reversal_But_TrxIdEmpty() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus3TransactionIdEmptyResult, BCAFlazzData::class.java)
+
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus3TransactionIdEmptyResult
 
         coEvery {
             bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
@@ -1074,15 +1214,1054 @@ class BCAFlazzBalanceViewModelTest {
         } returns pairBCALastBCATopUpEncryptionResult
         val encBCALastParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBCALastBCATopUpParam)
         val paramGetBCALastQuery = BCAFlazzRequestMapper.createEncryptedParam(encBCALastParam.first, encBCALastParam.second)
-        val responseBCALastEnc = BCAFlazzResponse(data = CommonBodyEnc(
-            encBCALastBCATopUpKeyAes, encBCALastBCATopUpPayloadAes
-        ))
         every {
             electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encBCALastBCATopUpKeyAes, encBCALastBCATopUpPayloadAes)
         } returns ackResult
         coEvery {
             bcaFlazzUseCase.execute(paramGetBCALastQuery)
         } throws IOException(ERROR_MESSAGE)
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessTrxId_Success() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus1Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus1Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } returns responseTrxEnc
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            (bcaBalanceViewModel.bcaInquiry.value) as EmoneyInquiry,
+            BCAFlazzResponseMapper.bcaMapper(
+                cardNumber,
+                responseTrxId.attributes.lastBalance,
+                responseTrxId.attributes.imageIssuer,
+                false,
+                responseTrxId.attributes.amount,
+                responseTrxId.status,
+                responseTrxId.attributes.message,
+                responseTrxId.attributes.hasMorePendingBalance,
+            )
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessTrxId_Empty_Failed() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus0TransactionIdEmptyResult, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus0TransactionIdEmptyResult
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } returns responseTrxEnc
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessTrxId_Status1_EmptyTrxId_Success() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus1TransactionIdEmptyResult, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus1TransactionIdEmptyResult
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } returns responseTrxEnc
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            (bcaBalanceViewModel.bcaInquiry.value) as EmoneyInquiry,
+            BCAFlazzResponseMapper.bcaMapper(
+                cardNumber,
+                responseTrxId.attributes.lastBalance,
+                responseTrxId.attributes.imageIssuer,
+                false,
+                responseTrxId.attributes.amount,
+                responseTrxId.status,
+                responseTrxId.attributes.message,
+                responseTrxId.attributes.hasMorePendingBalance,
+            )
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessTrxId_Throwable() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus1TransactionIdEmptyResult, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus1TransactionIdEmptyResult
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } throws IOException(ERROR_MESSAGE)
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessSession_Fail_JNI() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } returns responseTrxEnc
+
+
+        every {
+            bcaLibrary.bcaDataSession1(
+                transactionId, ATD, strCurrDateTime
+            )
+        } returns session1FailResult
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessSession_Fail_Throwable() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } returns responseTrxEnc
+
+
+        every {
+            bcaLibrary.bcaDataSession1(
+                transactionId, ATD, strCurrDateTime
+            )
+        } throws IOException()
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessSession_Success() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } returns responseTrxEnc
+
+        every {
+            bcaLibrary.bcaDataSession1(
+                transactionId, ATD, strCurrDateTime
+            )
+        } returns session1Result
+
+        val createSessionParam = BCAFlazzRequestMapper.createGetBCAGenerateSessionKey(
+            gson,
+            checkBalanceResult.cardNo,
+            strLogSession1,
+            checkBalanceResult.balance,
+            transactionId,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
+        } returns pairBCASessionEncryptionResult
+        val encSessionParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
+        val paramGetSessionQuery = BCAFlazzRequestMapper.createEncryptedParam(encSessionParam.first, encSessionParam.second)
+        val responseSessionEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encSessionKeyAes, encSessionPayloadAes
+        ))
+        val responseSession = gson.fromJson(sessionStatus1Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encSessionKeyAes, encSessionPayloadAes)
+        } returns sessionStatus1Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetSessionQuery)
+        } returns responseSessionEnc
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            (bcaBalanceViewModel.bcaInquiry.value) as EmoneyInquiry,
+            BCAFlazzResponseMapper.bcaMapper(
+                cardNumber,
+                responseSession.attributes.lastBalance,
+                responseSession.attributes.imageIssuer,
+                false,
+                responseSession.attributes.amount,
+                responseSession.status,
+                responseSession.attributes.message,
+                responseSession.attributes.hasMorePendingBalance,
+            )
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessSession_Throwable() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } returns responseTrxEnc
+
+        every {
+            bcaLibrary.bcaDataSession1(
+                transactionId, ATD, strCurrDateTime
+            )
+        } returns session1Result
+
+        val createSessionParam = BCAFlazzRequestMapper.createGetBCAGenerateSessionKey(
+            gson,
+            checkBalanceResult.cardNo,
+            strLogSession1,
+            checkBalanceResult.balance,
+            transactionId,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
+        } returns pairBCASessionEncryptionResult
+        val encSessionParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
+        val paramGetSessionQuery = BCAFlazzRequestMapper.createEncryptedParam(encSessionParam.first, encSessionParam.second)
+        val responseSessionEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encSessionKeyAes, encSessionPayloadAes
+        ))
+        val responseSession = gson.fromJson(sessionStatus1Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encSessionKeyAes, encSessionPayloadAes)
+        } returns sessionStatus1Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetSessionQuery)
+        } throws IOException(ERROR_MESSAGE)
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessSession_CardDataEmpty_Fail() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } returns responseTrxEnc
+
+        every {
+            bcaLibrary.bcaDataSession1(
+                transactionId, ATD, strCurrDateTime
+            )
+        } returns session1Result
+
+        val createSessionParam = BCAFlazzRequestMapper.createGetBCAGenerateSessionKey(
+            gson,
+            checkBalanceResult.cardNo,
+            strLogSession1,
+            checkBalanceResult.balance,
+            transactionId,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
+        } returns pairBCASessionEncryptionResult
+        val encSessionParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
+        val paramGetSessionQuery = BCAFlazzRequestMapper.createEncryptedParam(encSessionParam.first, encSessionParam.second)
+        val responseSessionEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encSessionKeyAes, encSessionPayloadAes
+        ))
+        val responseSession = gson.fromJson(sessionStatus0CardDataEmptyResult, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encSessionKeyAes, encSessionPayloadAes)
+        } returns sessionStatus0CardDataEmptyResult
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetSessionQuery)
+        } returns responseSessionEnc
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessSession_CardDataEmpty_Status1_Fail() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } returns responseTrxEnc
+
+        every {
+            bcaLibrary.bcaDataSession1(
+                transactionId, ATD, strCurrDateTime
+            )
+        } returns session1Result
+
+        val createSessionParam = BCAFlazzRequestMapper.createGetBCAGenerateSessionKey(
+            gson,
+            checkBalanceResult.cardNo,
+            strLogSession1,
+            checkBalanceResult.balance,
+            transactionId,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
+        } returns pairBCASessionEncryptionResult
+        val encSessionParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
+        val paramGetSessionQuery = BCAFlazzRequestMapper.createEncryptedParam(encSessionParam.first, encSessionParam.second)
+        val responseSessionEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encSessionKeyAes, encSessionPayloadAes
+        ))
+        val responseSession = gson.fromJson(sessionStatus1CardDataEmptyResult, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encSessionKeyAes, encSessionPayloadAes)
+        } returns sessionStatus1CardDataEmptyResult
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetSessionQuery)
+        } returns responseSessionEnc
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            (bcaBalanceViewModel.bcaInquiry.value) as EmoneyInquiry,
+            BCAFlazzResponseMapper.bcaMapper(
+                cardNumber,
+                responseSession.attributes.lastBalance,
+                responseSession.attributes.imageIssuer,
+                false,
+                responseSession.attributes.amount,
+                responseSession.status,
+                responseSession.attributes.message,
+                responseSession.attributes.hasMorePendingBalance,
+            )
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessSession_Session2_Fail() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } returns responseTrxEnc
+
+        every {
+            bcaLibrary.bcaDataSession1(
+                transactionId, ATD, strCurrDateTime
+            )
+        } returns session1Result
+
+        val createSessionParam = BCAFlazzRequestMapper.createGetBCAGenerateSessionKey(
+            gson,
+            checkBalanceResult.cardNo,
+            strLogSession1,
+            checkBalanceResult.balance,
+            transactionId,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
+        } returns pairBCASessionEncryptionResult
+        val encSessionParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
+        val paramGetSessionQuery = BCAFlazzRequestMapper.createEncryptedParam(encSessionParam.first, encSessionParam.second)
+        val responseSessionEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encSessionKeyAes, encSessionPayloadAes
+        ))
+        val responseSession = gson.fromJson(sessionStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encSessionKeyAes, encSessionPayloadAes)
+        } returns sessionStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetSessionQuery)
+        } returns responseSessionEnc
+
+        every {
+            bcaLibrary.bcaDataSession2(responseSession.attributes.cardData)
+        } returns session2FailResult
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessSession_Session2_Throwable() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } returns responseTrxEnc
+
+        every {
+            bcaLibrary.bcaDataSession1(
+                transactionId, ATD, strCurrDateTime
+            )
+        } returns session1Result
+
+        val createSessionParam = BCAFlazzRequestMapper.createGetBCAGenerateSessionKey(
+            gson,
+            checkBalanceResult.cardNo,
+            strLogSession1,
+            checkBalanceResult.balance,
+            transactionId,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
+        } returns pairBCASessionEncryptionResult
+        val encSessionParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
+        val paramGetSessionQuery = BCAFlazzRequestMapper.createEncryptedParam(encSessionParam.first, encSessionParam.second)
+        val responseSessionEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encSessionKeyAes, encSessionPayloadAes
+        ))
+        val responseSession = gson.fromJson(sessionStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encSessionKeyAes, encSessionPayloadAes)
+        } returns sessionStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetSessionQuery)
+        } returns responseSessionEnc
+
+        every {
+            bcaLibrary.bcaDataSession2(responseSession.attributes.cardData)
+        } throws IOException()
 
         //when
         bcaBalanceViewModel.processBCATagBalance(
