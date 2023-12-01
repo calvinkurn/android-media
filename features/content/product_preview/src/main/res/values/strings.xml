@@ -1,1 +1,4 @@
-<resources></resources>
+<resources>
+    <string name="product_preview_report_menu">Laporkan Ulasan</string>
+    <string name="product_preview_watch_menu">Mode Nonton</string>
+</resources>
