@@ -9,12 +9,14 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
 import com.tokopedia.epharmacy.component.viewholder.EPharmacyAttachmentViewHolder.Companion.MIN_VALUE_OF_PRODUCT_EDITOR
+import com.tokopedia.epharmacy.ui.fragment.EPharmacyQuantityChangeFragment
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -42,6 +44,8 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
     override fun bind(element: EPharmacyAccordionProductDataModel?) {
         dataModel = element
         renderProductData(element?.product)
+        initializeSums()
+        renderQuantityChangeViews()
         renderQuantityChangedLayout()
     }
 
@@ -57,8 +61,6 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
 
     private fun renderQuantityChangedLayout() {
         if (dataModel?.product?.qtyComparison != null) {
-            renderQuantityChangeViews()
-            initializeSums()
             renderEditorLayout()
         } else {
             quantityEditorLayout?.hide()
@@ -99,19 +101,25 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
         if (dataModel?.product?.qtyComparison?.currentQty.isZero()) {
             dataModel?.product?.qtyComparison?.currentQty = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
         }
+        var quantity = dataModel?.product?.quantity.toIntOrZero()
+        if(dataModel?.product?.qtyComparison != null) {
+            quantity = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
+        }
         if (dataModel?.product?.subTotal == 0.0) {
-            dataModel?.product?.subTotal = dataModel?.product?.qtyComparison?.recommendedQty?.toDouble().orZero() * dataModel?.product?.price.orZero()
+            dataModel?.product?.subTotal = quantity.toDouble() * (dataModel?.product?.price.orZero())
         }
     }
 
     private fun renderQuantityChangeViews() {
-        productAmount.show()
-        productAmount.text = EPharmacyUtils.getTotalAmountFmt(dataModel?.product?.price)
-        productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
-        initialProductQuantity.text = java.lang.String.format(
-            itemView.context.getString(epharmacyR.string.epharmacy_barang_quantity),
-            dataModel?.product?.qtyComparison?.initialQty.toString()
-        )
+        if(ePharmacyListener is EPharmacyQuantityChangeFragment){
+            productAmount.show()
+            productAmount.text = EPharmacyUtils.getTotalAmountFmt(dataModel?.product?.price)
+            productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
+            initialProductQuantity.text = java.lang.String.format(
+                itemView.context.getString(epharmacyR.string.epharmacy_barang_quantity),
+                dataModel?.product?.qtyComparison?.initialQty.toString()
+            )
+        }
     }
 
     private fun reCalculateSubTotal(): Double {

@@ -49,7 +49,7 @@ object EPharmacyMapper {
             ),
             isLastIndex(group.shopInfo, shopIndex),
             (isLastIndex(group.shopInfo, shopIndex) && isLastGroup).not(),
-            isAccordionEnable = getIsProductExpanded(source)
+            isAccordionEnable = getIsProductExpanded(source),
         )
     }
 
