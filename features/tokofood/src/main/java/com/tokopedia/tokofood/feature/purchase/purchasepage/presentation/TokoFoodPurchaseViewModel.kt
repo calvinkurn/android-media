@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
 import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
 import com.tokopedia.logisticCommon.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.KeroGetAddressUseCase
@@ -196,9 +197,16 @@ open class TokoFoodPurchaseViewModel @Inject constructor(
                     val cacheAddressId = _isAddressHasPinpoint.value.first
                     if (cacheAddressId.isEmpty()) {
                         // Check pinpoint remotely if cache address id is empty
-                        val remoteAddressId = businessData.customResponse.userAddress.addressId.toString()
-                        val addressResult = keroGetAddressUseCase.get().execute(remoteAddressId)
-                        val secondAddress = addressResult?.secondAddress
+                        val remoteAddressId =
+                            businessData.customResponse.userAddress.addressId.toString()
+                        val addressResult = keroGetAddressUseCase.get()(
+                            GetDetailAddressParam(
+                                remoteAddressId,
+                                source = ManageAddressSource.TOKOFOOD.source,
+                                isManageAddressFlow = false
+                            )
+                        )
+                        val secondAddress = addressResult.address2
                         secondAddress?.isNotEmpty().let { hasPinpointRemotely ->
                             if (hasPinpointRemotely == true) {
                                 _uiEvent.value = PurchaseUiEvent(

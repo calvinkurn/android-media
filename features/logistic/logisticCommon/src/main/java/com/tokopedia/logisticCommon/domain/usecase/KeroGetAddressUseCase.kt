@@ -1,26 +1,34 @@
 package com.tokopedia.logisticCommon.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokofood.common.domain.param.KeroAddressParamData
-import com.tokopedia.tokofood.common.domain.response.KeroGetAddressResponse
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.query.KeroGetAddressQuery
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
+import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
+import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
 import javax.inject.Inject
 
 open class KeroGetAddressUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<KeroGetAddressResponse>(graphqlRepository) {
+    private val getAddressDetailUseCase: GetAddressDetailUseCase,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<GetDetailAddressParam, KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse>(
+    dispatcher.io
+) {
 
-    init {
-        setGraphqlQuery(KeroGetAddressQuery)
-        setTypeClass(KeroGetAddressResponse::class.java)
+    override suspend fun execute(params: GetDetailAddressParam): KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse {
+        return getAddressDetailUseCase(params).keroGetAddress.data.find { params.addressIds == it.addrId.toString() }
+            ?: KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse(addrId = 0L)
     }
 
-    suspend fun execute(addressId: String): KeroAddressParamData? {
-        setRequestParams(KeroGetAddressQuery.createRequestParams(addressId))
-        return executeOnBackground().keroGetAddress.data.find {
-            it.addressId.toString() == addressId
+    override fun graphqlQuery(): String {
+        return ""
+    }
+
+    companion object {
+        fun getParam(addressId: String, source: ManageAddressSource): GetDetailAddressParam {
+            return GetDetailAddressParam(
+                addressIds = addressId,
+                source = source.source
+            )
         }
     }
-
 }
