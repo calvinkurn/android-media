@@ -365,7 +365,7 @@ class HotelSearchMapFragment :
     override fun getMinimumScrollableNumOfItems(): Int = MINIMUM_NUMBER_OF_RESULT_LOADED
 
     override fun showGetListError(throwable: Throwable?) {
-        val error = throwable?:return
+        val error = throwable ?: return
         when {
             isEmptyError(error) && adapter.data.isEmpty() -> {
                 hideCardListView()
@@ -427,7 +427,7 @@ class HotelSearchMapFragment :
                 Toaster.toasterLength,
                 Toaster.TYPE_ERROR
             ).show()
-            }
+        }
     }
 
     override fun onRetryClicked() {
@@ -724,7 +724,7 @@ class HotelSearchMapFragment :
 
         sortIndex?.let { index ->
             val selectedSort = findSortValue(selectedFilter[index], sort)
-            selectedSort?.let { hotelSearchMapViewModel.addSort(it) }?: hotelSearchMapViewModel.addSort(Sort())
+            selectedSort?.let { hotelSearchMapViewModel.addSort(it) } ?: hotelSearchMapViewModel.addSort(Sort())
             selectedFilter.removeAt(index)
         }
 
@@ -1207,7 +1207,7 @@ class HotelSearchMapFragment :
                         createCustomMarker(
                             requireContext(),
                             HOTEL_PRICE_ACTIVE_PIN,
-                            allMarker[position]!!.title
+                            allMarker[position].title!!
                         )
                     )
                     putPriceMarkerOnTop(position)
@@ -1248,7 +1248,7 @@ class HotelSearchMapFragment :
     private fun resetMarkerState() {
         if (!allMarker.isNullOrEmpty()) {
             allMarker.forEach {
-                it!!.setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_INACTIVE_PIN, it.title))
+                it!!.setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_INACTIVE_PIN, it.title!!))
             }
         }
     }
@@ -1670,7 +1670,7 @@ class HotelSearchMapFragment :
         )
 
         filterBottomSheet = HotelFilterBottomSheets()
-            .setSubmitFilterListener(object : SubmitFilterListener{
+            .setSubmitFilterListener(object : SubmitFilterListener {
                 override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {
                     onProcessFilter(selectedFilter, sort)
                 }
