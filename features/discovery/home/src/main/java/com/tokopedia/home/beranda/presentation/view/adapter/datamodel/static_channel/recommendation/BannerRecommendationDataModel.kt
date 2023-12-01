@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.kotlin.model.ImpressHolder
 
@@ -19,10 +18,18 @@ data class BannerRecommendationDataModel(
     val shopId: String,
     val categoryPersona: String,
     val tabName: String
-) : ImpressHolder(), Visitable<HomeRecommendationTypeFactoryImpl> {
+) : ImpressHolder(), BaseHomeRecommendationVisitable {
 
     override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {
         return typeFactory.type(this)
+    }
+
+    override fun areItemsTheSame(other: Any): Boolean {
+        return other is BannerRecommendationDataModel && id == other.id
+    }
+
+    override fun areContentsTheSame(other: Any): Boolean {
+        return this == other
     }
 
     override fun equals(other: Any?): Boolean {

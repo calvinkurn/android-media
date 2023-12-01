@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -9,19 +9,19 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntityCardBinding
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
-import com.tokopedia.recommendation_widget_common.widget.entitycard.uimodel.RecomEntityCardUiModel
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.modeAware
+import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class RecomEntityCardViewHolder(
@@ -34,7 +34,7 @@ class RecomEntityCardViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_recom_entity_card
+        val LAYOUT = recommendation_widget_commonR.layout.item_recom_entity_card
 
         private const val mingHeightCard = 320f
         internal const val SQUARE_IMAGE_RATIO = "1:1"
@@ -42,13 +42,11 @@ class RecomEntityCardViewHolder(
 
     private val binding = ItemRecomEntityCardBinding.bind(itemView)
 
-    private var item: RecomEntityCardUiModel? = null
-
     init {
         binding.entryPointCard.animateOnPress = CardUnify2.ANIMATE_BOUNCE
     }
+
     override fun bind(element: RecomEntityCardUiModel) {
-        this.item = element
         setBackgroundCardColor(element.backgroundColor)
         setProductName(element.title)
         setProductSubtitle(element.subTitle)
@@ -64,29 +62,6 @@ class RecomEntityCardViewHolder(
         setMinHeightEntryPointCard()
         setOnCardImpressionListener(element)
         setOnCardClickListener(element)
-    }
-
-    override fun bindPayload(newItem: RecomEntityCardUiModel?) {
-        newItem?.run {
-            if (item?.backgroundColor != backgroundColor) {
-                setBackgroundCardColor(backgroundColor)
-            }
-            if (item?.title != title) {
-                setProductName(title)
-            }
-            if (item?.subTitle != subTitle) {
-                setProductSubtitle(subTitle)
-            }
-            if (item?.imageUrl != imageUrl) {
-                setProductImageUrl(imageUrl)
-            }
-            if (item?.labelState != labelState) {
-                setLabelTitle(labelState)
-            }
-            if (item?.labelState?.iconUrl != labelState.iconUrl) {
-                setLabelIcon(labelState.iconUrl)
-            }
-        }
     }
 
     private fun setOnCardClickListener(element: RecomEntityCardUiModel) {
