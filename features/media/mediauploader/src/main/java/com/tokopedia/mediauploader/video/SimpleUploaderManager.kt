@@ -40,6 +40,15 @@ class SimpleUploaderManager @Inject constructor(
         val requestId = uploader.requestId ?: ""
         val error = uploader.errorMessage()
 
+        if (requestId.isNotEmpty()) {
+            return UploadResult.Error(
+                message = error,
+                requestId = requestId
+            ).also {
+                UploaderLogger.commonError(base, it)
+            }
+        }
+
         if (param.withTranscode) {
             while (true) {
                 if (maxRetryTranscoding >= MAX_RETRY_TRANSCODING) {
