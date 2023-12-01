@@ -13,12 +13,12 @@ class EPharmacyVerifyConsultationOrderUseCase @Inject constructor(graphqlReposit
     fun getEPharmacyVerifyConsultationOrder(
         onSuccess: (EPharmacyVerifyConsultationResponse) -> Unit,
         onError: (Throwable) -> Unit,
-        tokoConsultationId: Long
+        tokoConsultationId: Long, source: String
     ) {
         try {
             this.setTypeClass(EPharmacyVerifyConsultationResponse::class.java)
             this.setGraphqlQuery(EPharmacyVerifyConsultationOrder)
-            this.setRequestParams(createRequestParams(tokoConsultationId))
+            this.setRequestParams(createRequestParams(tokoConsultationId, source))
             this.execute(
                 { result ->
                     onSuccess(result)
@@ -32,15 +32,17 @@ class EPharmacyVerifyConsultationOrderUseCase @Inject constructor(graphqlReposit
         }
     }
 
-    private fun createRequestParams(tokoConsultationId: Long): Map<String, Any> {
+    private fun createRequestParams(tokoConsultationId: Long, source: String): Map<String, Any> {
         return mapOf<String, Any>(
             PARAM_TOKO_CONSULTATION_ID to tokoConsultationId,
-            PARAM_SOURCE to EPHARMACY_ANDROID_SOURCE
+            PARAM_SOURCE to EPHARMACY_ANDROID_SOURCE,
+            PARAM_SOURCE_EP to source
         )
     }
 
     companion object {
         const val PARAM_TOKO_CONSULTATION_ID = "toko_consultation_id"
         const val PARAM_SOURCE = "source"
+        const val PARAM_SOURCE_EP = "epharmacy_source"
     }
 }

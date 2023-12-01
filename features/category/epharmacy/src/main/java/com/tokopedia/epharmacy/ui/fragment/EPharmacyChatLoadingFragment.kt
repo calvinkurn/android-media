@@ -16,10 +16,12 @@ import com.tokopedia.epharmacy.databinding.EpharmacyReminderScreenBottomSheetBin
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.response.EPharmacyVerifyConsultationResponse
 import com.tokopedia.epharmacy.utils.CategoryKeys
+import com.tokopedia.epharmacy.utils.EPHARMACY_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.WEB_LINK_PREFIX
 import com.tokopedia.epharmacy.viewmodel.EPharmacyLoadingViewModel
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -32,11 +34,12 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.epharmacy.R as epharmacyR
 
-class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
+class EPharmacyChatLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private var ePharmacyGlobalError: GlobalError? = null
     private var illustrationImage: DeferredImageView? = null
     private var tConsultationId = 0L
+    private var source = String.EMPTY
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private var verifyRunnable: Runnable? = null
@@ -79,6 +82,7 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private fun extractArguments() {
         tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
+        source = arguments?.getString(EPHARMACY_SOURCE).orEmpty()
     }
 
     private fun setUpObservers() {
@@ -91,7 +95,7 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
             illustrationImage = findViewById(R.id.ep_illustration_image)
         }
         verifyRunnable = Runnable {
-            ePharmacyLoadingViewModel.getVerifyConsultationOrder(tConsultationId)
+            ePharmacyLoadingViewModel.getVerifyConsultationOrder(tConsultationId, source)
         }
     }
 
@@ -191,8 +195,8 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
         const val DELAY_MILLIS_VERIFY = 3000L
 
         @JvmStatic
-        fun newInstance(bundle: Bundle): EPharmacyLoadingFragment {
-            val fragment = EPharmacyLoadingFragment()
+        fun newInstance(bundle: Bundle): EPharmacyChatLoadingFragment {
+            val fragment = EPharmacyChatLoadingFragment()
             fragment.arguments = bundle
             return fragment
         }

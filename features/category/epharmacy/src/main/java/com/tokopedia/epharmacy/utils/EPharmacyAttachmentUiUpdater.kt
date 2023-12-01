@@ -56,10 +56,18 @@ class EPharmacyAttachmentUiUpdater(var mapOfData: LinkedHashMap<String, BaseEPha
         var subTotalAmount = 0.0
         mapOfData.values.forEach {
             (it as? EPharmacyAttachmentDataModel)?.let { ePharmacyAttachmentDataModel ->
-                subTotalAmount += ((ePharmacyAttachmentDataModel.product?.qtyComparison?.recommendedQty.orZero()) * (ePharmacyAttachmentDataModel.product?.price.orZero()))
+                var quantity = ePharmacyAttachmentDataModel.product?.quantity.toIntOrZero()
+                if(ePharmacyAttachmentDataModel.product?.qtyComparison != null) {
+                    quantity = ePharmacyAttachmentDataModel.product?.qtyComparison?.recommendedQty.orZero()
+                }
+                subTotalAmount += (quantity) * (ePharmacyAttachmentDataModel.product?.price.orZero())
                 ePharmacyAttachmentDataModel.subProductsDataModel?.forEach { model ->
                     (model as? EPharmacyAccordionProductDataModel)?.let { pModel ->
-                        subTotalAmount += ((pModel.product?.qtyComparison?.recommendedQty.orZero()) * (pModel.product?.price.orZero()))
+                        var pQuantity = pModel.product?.quantity.toIntOrZero()
+                        if(pModel.product?.qtyComparison != null) {
+                            pQuantity = pModel.product?.qtyComparison?.recommendedQty.orZero()
+                        }
+                        subTotalAmount += (pQuantity) * (pModel.product?.price.orZero())
                     }
                 }
             }

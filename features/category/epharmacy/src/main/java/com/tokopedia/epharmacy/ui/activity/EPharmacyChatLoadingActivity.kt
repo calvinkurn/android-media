@@ -9,13 +9,16 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
-import com.tokopedia.epharmacy.ui.fragment.EPharmacyLoadingFragment
+import com.tokopedia.epharmacy.ui.fragment.EPharmacyChatLoadingFragment
+import com.tokopedia.epharmacy.utils.EPHARMACY_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
-class EPharmacyLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
+class EPharmacyChatLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
 
     private var tConsultationId = 0L
+    private var source = String.EMPTY
 
     private val ePharmacyComponent: EPharmacyComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
 
@@ -31,9 +34,10 @@ class EPharmacyLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmacyCom
     override fun getNewFragment(): Fragment {
         extractArguments()
         initView()
-        return EPharmacyLoadingFragment.newInstance(
+        return EPharmacyChatLoadingFragment.newInstance(
             Bundle().apply {
                 putLong(EPHARMACY_TOKO_CONSULTATION_ID, tConsultationId)
+                putString(EPHARMACY_SOURCE, source)
             }
         )
     }
@@ -45,6 +49,9 @@ class EPharmacyLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmacyCom
     private fun extractArguments() {
         val pathSegments = Uri.parse(intent.data?.path.orEmpty()).pathSegments
         tConsultationId = if (pathSegments.size > 1) pathSegments[1].toLongOrZero() else 0L
+        intent?.data?.let { uri ->
+            source = uri.getQueryParameter(EPHARMACY_SOURCE).orEmpty()
+        }
     }
 
     override fun getComponent() = ePharmacyComponent

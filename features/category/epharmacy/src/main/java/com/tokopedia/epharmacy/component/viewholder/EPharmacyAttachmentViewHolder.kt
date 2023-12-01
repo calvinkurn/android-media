@@ -30,6 +30,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
@@ -101,6 +102,8 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private fun renderGroupData() {
         renderError()
         renderOrderTitle()
+        initializeSums()
+        renderQuantityChangeViews()
         renderQuantityChangedLayout()
         renderPartnerData()
         renderShopData()
@@ -123,8 +126,6 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
 
     private fun renderQuantityChangedLayout() {
         if (dataModel?.product?.qtyComparison != null && dataModel?.isAccordionEnable.orFalse()) {
-            renderQuantityChangeViews()
-            initializeSums()
             renderEditorLayout()
         } else {
             quantityEditorLayout?.hide()
@@ -132,21 +133,27 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderQuantityChangeViews() {
-        productAmount.show()
-        productAmount.text = EPharmacyUtils.getTotalAmountFmt(dataModel?.product?.price)
-        initialProductQuantity.text = java.lang.String.format(
-            itemView.context.getString(epharmacyR.string.epharmacy_barang_quantity),
-            dataModel?.product?.qtyComparison?.initialQty.toString()
-        )
-        productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
+        if(ePharmacyListener is EPharmacyQuantityChangeFragment) {
+            productAmount.show()
+            productAmount.text = EPharmacyUtils.getTotalAmountFmt(dataModel?.product?.price)
+            initialProductQuantity.text = java.lang.String.format(
+                itemView.context.getString(epharmacyR.string.epharmacy_barang_quantity),
+                dataModel?.product?.qtyComparison?.initialQty.toString()
+            )
+            productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
+        }
     }
 
     private fun initializeSums() {
         if (dataModel?.product?.qtyComparison?.currentQty.isZero()) {
             dataModel?.product?.qtyComparison?.currentQty = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
         }
+        var quantity = dataModel?.product?.quantity.toIntOrZero()
+        if(dataModel?.product?.qtyComparison != null) {
+            quantity = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
+        }
         if (dataModel?.product?.subTotal == 0.0) {
-            dataModel?.product?.subTotal = dataModel?.product?.qtyComparison?.recommendedQty?.toDouble().orZero() * dataModel?.product?.price.orZero()
+            dataModel?.product?.subTotal = quantity.toDouble() * (dataModel?.product?.price.orZero())
         }
     }
 

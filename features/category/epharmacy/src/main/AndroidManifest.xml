@@ -101,7 +101,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.EPharmacyLoadingActivity"
+            android:name=".ui.activity.EPharmacyChatLoadingActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

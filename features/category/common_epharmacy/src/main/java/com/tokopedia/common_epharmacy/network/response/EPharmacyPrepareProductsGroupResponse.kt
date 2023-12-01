@@ -255,9 +255,7 @@ data class EPharmacyPrepareProductsGroupResponse(
         @SerializedName("redirect_link_apps")
         val redirectLinkApps: String?,
         @SerializedName("state")
-        val state: String?,
-        @SerializedName("pap_secondary_cta")
-        val papSecondaryCTA: PapPrimaryCTA.PapSecondaryCTA?
+        val state: String?
     ) : Parcelable {
         @Parcelize
         data class PapSecondaryCTA(
