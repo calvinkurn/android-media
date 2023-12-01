@@ -138,6 +138,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
             try {
                 mFragment.setupBackgroundColorForHeader(dataItem.color)
                 backgroundImage.setBackgroundColor(Color.parseColor(dataItem.color))
+                balanceWidgetView.setBackgroundColor(Color.TRANSPARENT)
                 if (dataItem.lottieImage.isNullOrEmpty()) {
                     backgroundImage.loadImageWithoutPlaceholder(dataItem.image)
                 } else {
