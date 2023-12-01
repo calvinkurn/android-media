@@ -25,6 +25,7 @@ import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
@@ -64,7 +65,6 @@ import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
-import com.tokopedia.sellerhome.view.model.SellerHomeDataUiModel
 import com.tokopedia.sellerhome.view.navigator.SellerHomeNavigator
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeOnApplyInsetsListener
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
@@ -370,9 +370,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             binding?.sahBottomNav?.setSelected(pageType)
             navigator?.navigateFromAppLink(page)
             checkForSellerAppReview(pageType)
-            handleSellerPersona(page.sellerHomeData?.shouldShowPersonaBtmSheet)
-            handleToaster(page.sellerHomeData)
         }
+        handleSellerPersona(intent)
+        handleToaster(intent)
     }
 
     private fun doubleTapToExit() {
@@ -766,25 +766,29 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         DFInstaller.installOnBackground(this.application, moduleNameList, "Seller Home")
     }
 
-    private fun handleToaster(data: SellerHomeDataUiModel?) {
-        val message = data?.toasterMessage.orEmpty()
-        val actionText = data?.toasterCta.orEmpty()
+    private fun handleToaster(intent: Intent?) {
+        val uri = intent?.data ?: return
+        val message = uri.getQueryParameter(
+            SellerHomeApplinkConst.TOASTER_MESSAGE
+        ).orEmpty()
+        val actionText = uri.getQueryParameter(SellerHomeApplinkConst.TOASTER_CTA)
+            .orEmpty()
         if (message.isBlank()) return
 
         val view = window?.decorView ?: return
-        view.post {
-            Toaster.toasterCustomBottomHeight = dpToPx(88).toInt()
-            Toaster.build(
-                view,
-                message,
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                actionText
-            ).show()
-        }
+        Toaster.toasterCustomBottomHeight = dpToPx(88).toInt()
+        Toaster.build(
+            view,
+            message,
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_NORMAL,
+            actionText
+        ).show()
     }
 
-    private fun handleSellerPersona(checkPersonaBtmSheet: Boolean?) {
+    private fun handleSellerPersona(intent: Intent?) {
+        val uri = intent?.data ?: return
+        val checkPersonaBtmSheet = uri.getBooleanQueryParameter(SellerHomeApplinkConst.IS_PERSONA, false)
         if (checkPersonaBtmSheet.orFalse()) {
             navigator?.getHomeFragment()?.refreshPersona()
         }

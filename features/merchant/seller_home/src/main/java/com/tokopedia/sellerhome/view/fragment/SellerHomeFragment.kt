@@ -1538,7 +1538,7 @@ class SellerHomeFragment :
         activity?.let {
             val shouldShowBottomSheet = sharedPref.shouldShowPersonaHomePopup(
                     userSession.userId
-                ) && isFromPersona && !childFragmentManager.isStateSaved
+                ) && isFromPersona
 
             if (shouldShowBottomSheet) {
                 runCatching {
