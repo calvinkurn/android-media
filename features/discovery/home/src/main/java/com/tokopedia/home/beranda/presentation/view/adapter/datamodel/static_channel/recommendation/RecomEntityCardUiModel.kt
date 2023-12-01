@@ -48,7 +48,7 @@ data class RecomEntityCardUiModel(
         if (subTitle != other.subTitle) return false
         if (appLink != other.appLink) return false
         if (labelState != other.labelState) return false
-        if (backgroundColor != backgroundColor) return false
+        if (backgroundColor != other.backgroundColor) return false
 
         return true
     }
