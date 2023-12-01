@@ -54,7 +54,7 @@ object AddNewAddressUtils {
                 isGpsOn = true
             } else {
                 mSettingsClient
-                    .checkLocationSettings(mLocationSettingsRequest)
+                    .checkLocationSettings(mLocationSettingsRequest!!)
                     .addOnSuccessListener(context as Activity) {
                         isGpsOn = true
                     }

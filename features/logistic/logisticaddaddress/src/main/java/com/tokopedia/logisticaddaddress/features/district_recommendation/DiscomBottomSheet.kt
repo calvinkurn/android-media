@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -747,7 +748,7 @@ class DiscomBottomSheet :
                 fusedLocationClient?.requestLocationUpdates(
                     AddNewAddressUtils.getLocationRequest(),
                     locationCallback,
-                    null
+                    Looper.myLooper()!!
                 )
             }
         }

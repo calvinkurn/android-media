@@ -7,6 +7,7 @@ import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -194,9 +195,9 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             mPermissionChecker = PermissionCheckerHelper()
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             mLocationCallback = object : LocationCallback() {
-                override fun onLocationResult(result: LocationResult?) {
+                override fun onLocationResult(result: LocationResult) {
                     stopLocationRequest()
-                    if (result != null && result.locations.isNotEmpty()) {
+                    if (result.locations.isNotEmpty()) {
                         val location = result.locations[0]
                         moveCamera(getLatLng(location.latitude, location.longitude))
                     }
@@ -524,7 +525,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
         task.addOnSuccessListener {
             // Request location update once then remove when settings are satisfied
-            mFusedLocationClient?.requestLocationUpdates(locationRequest, mLocationCallback, null)
+            mFusedLocationClient?.requestLocationUpdates(locationRequest, mLocationCallback!!, Looper.myLooper()!!)
         }
         task.addOnFailureListener {
             if (it is ResolvableApiException) {
@@ -542,7 +543,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun stopLocationRequest() {
-        mFusedLocationClient?.removeLocationUpdates(mLocationCallback)
+        mFusedLocationClient?.removeLocationUpdates(mLocationCallback!!)
     }
 
     private val goToAutoComplete: (View?) -> Unit = {

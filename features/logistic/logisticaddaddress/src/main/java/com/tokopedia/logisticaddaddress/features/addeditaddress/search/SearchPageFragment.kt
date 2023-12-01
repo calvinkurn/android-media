@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextUtils
@@ -726,7 +727,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 fusedLocationClient?.requestLocationUpdates(
                     AddNewAddressUtils.getLocationRequest(),
                     locationCallback,
-                    null
+                    Looper.myLooper()!!
                 )
             }
         }
