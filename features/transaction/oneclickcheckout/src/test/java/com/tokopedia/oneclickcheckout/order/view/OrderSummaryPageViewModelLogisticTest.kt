@@ -2948,7 +2948,11 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderShipment.value =
-            helper.orderShipment.copy(isApplyLogisticPromo = true)
+            helper.orderShipment.copy(
+                isApplyLogisticPromo = true,
+                logisticPromoViewModel = helper.logisticPromo,
+                logisticPromoShipping = helper.firstCourierSecondDuration
+            )
 
         // When
         val result = orderSummaryPageViewModel.getShippingBottomsheetParam()
