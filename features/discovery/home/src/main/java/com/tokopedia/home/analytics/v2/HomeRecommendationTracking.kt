@@ -88,138 +88,130 @@ object HomeRecommendationTracking : BaseTrackerConst() {
     fun getRecommendationProductClickNonLogin(
         tabName: String,
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel
-    ) =
-        BaseTrackerBuilder().constructBasicProductClick(
-            event = Event.PRODUCT_CLICK,
-            eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
-            eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(
-                tabName,
-                homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
-                homeRecommendationItemDataModel.pageName
-            ),
-            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
-        ).build()
+    ) = BaseTrackerBuilder().constructBasicProductClick(
+        event = Event.PRODUCT_CLICK,
+        eventCategory = Category.HOMEPAGE,
+        eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
+        eventLabel = tabName,
+        list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(
+            tabName,
+            homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
+            homeRecommendationItemDataModel.pageName
+        ),
+        products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
+    ).build()
 
     fun getRecommendationProductClickLogin(
         tabName: String,
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel
-    ) =
-        BaseTrackerBuilder().constructBasicProductClick(
-            event = Event.PRODUCT_CLICK,
-            eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
-            eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(
-                tabName,
-                homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
-                homeRecommendationItemDataModel.pageName
-            ),
-            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
-        ).build()
+    ) = BaseTrackerBuilder().constructBasicProductClick(
+        event = Event.PRODUCT_CLICK,
+        eventCategory = Category.HOMEPAGE,
+        eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
+        eventLabel = tabName,
+        list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(
+            tabName,
+            homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
+            homeRecommendationItemDataModel.pageName
+        ),
+        products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
+    ).build()
 
     fun getRecommendationProductClickLoginTopAds(
         tabName: String,
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel
-    ) =
-        BaseTrackerBuilder().constructBasicProductClick(
-            event = Event.PRODUCT_CLICK,
-            eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
-            eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(
-                tabName,
-                homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
-                homeRecommendationItemDataModel.pageName
-            ),
-            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
-        ).build()
+    ) = BaseTrackerBuilder().constructBasicProductClick(
+        event = Event.PRODUCT_CLICK,
+        eventCategory = Category.HOMEPAGE,
+        eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
+        eventLabel = tabName,
+        list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(
+            tabName,
+            homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
+            homeRecommendationItemDataModel.pageName
+        ),
+        products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
+    ).build()
 
     fun getRecommendationProductClickNonLoginTopAds(
         tabName: String,
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel
-    ) =
-        BaseTrackerBuilder().constructBasicProductClick(
-            event = Event.PRODUCT_CLICK,
-            eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
-            eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(
-                tabName,
-                homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
-                homeRecommendationItemDataModel.pageName
-            ),
-            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
-        ).build()
+    ) = BaseTrackerBuilder().constructBasicProductClick(
+        event = Event.PRODUCT_CLICK,
+        eventCategory = Category.HOMEPAGE,
+        eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
+        eventLabel = tabName,
+        list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(
+            tabName,
+            homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
+            homeRecommendationItemDataModel.pageName
+        ),
+        products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
+    ).build()
 
     fun getRecommendationProductViewLogin(
         tabName: String,
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel
-    ) =
-        BaseTrackerBuilder().constructBasicProductView(
-            event = Event.PRODUCT_VIEW,
-            eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
-            eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(
-                tabName,
-                homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
-                homeRecommendationItemDataModel.pageName
-            ),
-            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
-        ).build()
+    ) = BaseTrackerBuilder().constructBasicProductView(
+        event = Event.PRODUCT_VIEW,
+        eventCategory = Category.HOMEPAGE,
+        eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
+        eventLabel = tabName,
+        list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(
+            tabName,
+            homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
+            homeRecommendationItemDataModel.pageName
+        ),
+        products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
+    ).build()
 
     fun getRecommendationProductViewLoginTopAds(
         tabName: String,
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel
-    ) =
-        BaseTrackerBuilder().constructBasicProductView(
-            event = Event.PRODUCT_VIEW,
-            eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
-            eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(
-                tabName,
-                homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
-                homeRecommendationItemDataModel.pageName
-            ),
-            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
-        ).build()
+    ) = BaseTrackerBuilder().constructBasicProductView(
+        event = Event.PRODUCT_VIEW,
+        eventCategory = Category.HOMEPAGE,
+        eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
+        eventLabel = tabName,
+        list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(
+            tabName,
+            homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
+            homeRecommendationItemDataModel.pageName
+        ),
+        products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
+    ).build()
 
     fun getRecommendationProductViewNonLogin(
         tabName: String,
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel
-    ) =
-        BaseTrackerBuilder().constructBasicProductView(
-            event = Event.PRODUCT_VIEW,
-            eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
-            eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(
-                tabName,
-                homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
-                homeRecommendationItemDataModel.pageName
-            ),
-            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
-        ).build()
+    ) = BaseTrackerBuilder().constructBasicProductView(
+        event = Event.PRODUCT_VIEW,
+        eventCategory = Category.HOMEPAGE,
+        eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
+        eventLabel = tabName,
+        list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(
+            tabName,
+            homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
+            homeRecommendationItemDataModel.pageName
+        ),
+        products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
+    ).build()
 
     fun getRecommendationProductViewNonLoginTopAds(
         tabName: String,
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel
-    ) =
-        BaseTrackerBuilder().constructBasicProductView(
-            event = Event.PRODUCT_VIEW,
-            eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
-            eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(
-                tabName,
-                homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
-                homeRecommendationItemDataModel.pageName
-            ),
-            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
-        ).build()
+    ) = BaseTrackerBuilder().constructBasicProductView(
+        event = Event.PRODUCT_VIEW,
+        eventCategory = Category.HOMEPAGE,
+        eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
+        eventLabel = tabName,
+        list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(
+            tabName,
+            homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
+            homeRecommendationItemDataModel.pageName
+        ),
+        products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
+    ).build()
 
     fun getRecommendationAddWishlistLogin(productId: String, tabName: String): Map<String, Any> =
         DataLayer.mapOf(
@@ -335,29 +327,31 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                 CurrentSite.DEFAULT
             )
             val creativeSlot = (position + Int.ONE).toString()
-            putBundle(
+            putParcelableArrayList(
                 Promotion.KEY,
-                Bundle().also {
-                    it.putString(Promotion.CREATIVE_NAME, CustomAction.FOR_YOU_CREATIVE_NAME)
-                    it.putString(Promotion.CREATIVE_SLOT, creativeSlot)
-                    it.putString(Promotion.ITEM_ID, recomEntityCardUiModel.id)
-                    it.putString(
-                        Promotion.ITEM_NAME,
-                        ITEM_NAME_NEW_FOR_YOU_FORMAT.format(
-                            creativeSlot,
-                            RECOMMENDATION_CARD_FOR_YOU,
-                            recomEntityCardUiModel.categoryId,
-                            recomEntityCardUiModel.layoutCard,
-                            recomEntityCardUiModel.layoutItem,
-                            recomEntityCardUiModel.title
+                arrayListOf(
+                    Bundle().also {
+                        it.putString(Promotion.CREATIVE_NAME, CustomAction.FOR_YOU_CREATIVE_NAME)
+                        it.putString(Promotion.CREATIVE_SLOT, creativeSlot)
+                        it.putString(Promotion.ITEM_ID, recomEntityCardUiModel.id)
+                        it.putString(
+                            Promotion.ITEM_NAME,
+                            ITEM_NAME_NEW_FOR_YOU_FORMAT.format(
+                                creativeSlot,
+                                RECOMMENDATION_CARD_FOR_YOU,
+                                recomEntityCardUiModel.categoryId,
+                                recomEntityCardUiModel.layoutCard,
+                                recomEntityCardUiModel.layoutItem,
+                                recomEntityCardUiModel.title
+                            )
                         )
-                    )
-                }
+                    }
+                )
             )
             putString(UserId.KEY, userId)
         }
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
     fun sendClickVideoRecommendationCardTracking(
@@ -372,7 +366,8 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
         val itemPosition = (position + Int.ONE).toString()
 
-        val itemId = "${homeChannelId}_${homeRecomPlayWidgetUiModel.cardId}_${playWidgetTrackerModel.playChannelId}"
+        val itemId =
+            "${homeChannelId}_${homeRecomPlayWidgetUiModel.cardId}_${playWidgetTrackerModel.playChannelId}"
 
         val bundle = Bundle().apply {
             putString(Event.KEY, Event.SELECT_CONTENT)
@@ -402,28 +397,30 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                 CurrentSite.KEY,
                 CurrentSite.DEFAULT
             )
-            putBundle(
+            putParcelableArrayList(
                 Promotion.KEY,
-                Bundle().also {
-                    it.putString(Promotion.CREATIVE_NAME, CustomAction.FOR_YOU_CREATIVE_NAME)
-                    it.putString(Promotion.CREATIVE_SLOT, itemPosition)
-                    it.putString(Promotion.ITEM_ID, itemId)
-                    it.putString(
-                        Promotion.ITEM_NAME,
-                        ITEM_NAME_FOR_YOU_VIDEO_FORMAT.format(
-                            itemPosition,
-                            playWidgetTrackerModel.categoryId,
-                            playWidgetTrackerModel.layoutCard,
-                            playWidgetTrackerModel.layoutItem,
-                            playVideoWidgetUiModel.title
+                arrayListOf(
+                    Bundle().also {
+                        it.putString(Promotion.CREATIVE_NAME, CustomAction.FOR_YOU_CREATIVE_NAME)
+                        it.putString(Promotion.CREATIVE_SLOT, itemPosition)
+                        it.putString(Promotion.ITEM_ID, itemId)
+                        it.putString(
+                            Promotion.ITEM_NAME,
+                            ITEM_NAME_FOR_YOU_VIDEO_FORMAT.format(
+                                itemPosition,
+                                playWidgetTrackerModel.categoryId,
+                                playWidgetTrackerModel.layoutCard,
+                                playWidgetTrackerModel.layoutItem,
+                                playVideoWidgetUiModel.title
+                            )
                         )
-                    )
-                }
+                    }
+                )
             )
             putString(UserId.KEY, userId)
         }
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
     fun getImpressPlayVideoWidgetTracking(
@@ -446,7 +443,8 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             playVideoWidgetUiModel.title
         )
 
-        val itemId = "${homeChannelId}_${homeRecomPlayWidgetUiModel.cardId}_${playWidgetTrackerModel.playChannelId}"
+        val itemId =
+            "${homeChannelId}_${homeRecomPlayWidgetUiModel.cardId}_${playWidgetTrackerModel.playChannelId}"
 
         val promotion = mapOf(
             Promotion.CREATIVE_NAME to CustomAction.FOR_YOU_CREATIVE_NAME,
@@ -456,12 +454,18 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         )
 
         return DataLayer.mapOf(
-            Event.KEY, Event.PROMO_VIEW,
-            Action.KEY, IMPRESSION_VIDEO_RECOMMENDATION_CARD_FOR_YOU_VIDEO,
-            Category.KEY, Category.HOMEPAGE,
-            Label.KEY, "$FOR_YOU - ${playWidgetTrackerModel.videoType} - ${playWidgetTrackerModel.partnerId} - ${playWidgetTrackerModel.playChannelId} - $itemPosition - $widgetPosition - ${playVideoWidgetUiModel.isAutoPlay} - ${playWidgetTrackerModel.recommendationType} - $homeChannelId",
-            BusinessUnit.KEY, PLAY,
-            CurrentSite.KEY, CurrentSite.DEFAULT,
+            Event.KEY,
+            Event.PROMO_VIEW,
+            Action.KEY,
+            IMPRESSION_VIDEO_RECOMMENDATION_CARD_FOR_YOU_VIDEO,
+            Category.KEY,
+            Category.HOMEPAGE,
+            Label.KEY,
+            "$FOR_YOU - ${playWidgetTrackerModel.videoType} - ${playWidgetTrackerModel.partnerId} - ${playWidgetTrackerModel.playChannelId} - $itemPosition - $widgetPosition - ${playVideoWidgetUiModel.isAutoPlay} - ${playWidgetTrackerModel.recommendationType} - $homeChannelId",
+            BusinessUnit.KEY,
+            PLAY,
+            CurrentSite.KEY,
+            CurrentSite.DEFAULT,
             Ecommerce.KEY,
             DataLayer.mapOf(
                 Ecommerce.PROMO_VIEW,
@@ -472,8 +476,10 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                     )
                 )
             ),
-            UserId.KEY, userId,
-            TrackerId.KEY, TRACKER_ID_48661
+            UserId.KEY,
+            userId,
+            TrackerId.KEY,
+            TRACKER_ID_48661
         ) as HashMap<String, Any>
     }
 
@@ -494,12 +500,18 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         )
 
         return DataLayer.mapOf(
-            Event.KEY, Event.PROMO_VIEW,
-            Action.KEY, IMPRESSION_ON_BANNER_RECOMMENDATION_CARD_FOR_YOU,
-            Category.KEY, Category.HOMEPAGE,
-            Label.KEY, "${recomEntityCardUiModel.layoutCard} - ${recomEntityCardUiModel.layoutItem} - ${recomEntityCardUiModel.title}",
-            BusinessUnit.KEY, BusinessUnit.DEFAULT,
-            CurrentSite.KEY, CurrentSite.DEFAULT,
+            Event.KEY,
+            Event.PROMO_VIEW,
+            Action.KEY,
+            IMPRESSION_ON_BANNER_RECOMMENDATION_CARD_FOR_YOU,
+            Category.KEY,
+            Category.HOMEPAGE,
+            Label.KEY,
+            "${recomEntityCardUiModel.layoutCard} - ${recomEntityCardUiModel.layoutItem} - ${recomEntityCardUiModel.title}",
+            BusinessUnit.KEY,
+            BusinessUnit.DEFAULT,
+            CurrentSite.KEY,
+            CurrentSite.DEFAULT,
             Ecommerce.KEY,
             DataLayer.mapOf(
                 Ecommerce.PROMO_VIEW,
@@ -515,8 +527,10 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                     )
                 )
             ),
-            UserId.KEY, userId,
-            TrackerId.KEY, TRACKER_ID_47626
+            UserId.KEY,
+            userId,
+            TrackerId.KEY,
+            TRACKER_ID_47626
         ) as HashMap<String, Any>
     }
 
@@ -552,10 +566,8 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             eventAction = IMPRESSION_ON_BANNER_RECOMMENDATION_CARD_FOR_YOU,
             eventLabel = "${homeTopAdsRecommendationBannerTopAdsUiModel.layoutCard} - ${homeTopAdsRecommendationBannerTopAdsUiModel.layoutItem} - ${homeTopAdsRecommendationBannerTopAdsUiModel.topAdsImageViewModel?.bannerName.orEmpty()}",
             promotions = listPromotions
-        ).appendBusinessUnit(BusinessUnit.DEFAULT)
-            .appendCurrentSite(CurrentSite.DEFAULT)
-            .appendUserId(userId)
-            .appendCustomKeyValue(
+        ).appendBusinessUnit(BusinessUnit.DEFAULT).appendCurrentSite(CurrentSite.DEFAULT)
+            .appendUserId(userId).appendCustomKeyValue(
                 TrackerId.KEY,
                 TRACKER_ID_47626
             ).build()
@@ -588,24 +600,26 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                 CurrentSite.DEFAULT
             )
             val creativeSlot = (position + Int.ONE).toString()
-            putBundle(
+            putParcelableArrayList(
                 Promotion.KEY,
-                Bundle().also {
-                    it.putString(Promotion.CREATIVE_NAME, CustomAction.FOR_YOU_CREATIVE_NAME)
-                    it.putString(Promotion.CREATIVE_SLOT, creativeSlot)
-                    it.putString(Promotion.ITEM_ID, bannerTopAdsUiModel.cardId)
-                    it.putString(
-                        Promotion.ITEM_NAME,
-                        ITEM_NAME_NEW_FOR_YOU_FORMAT.format(
-                            creativeSlot,
-                            RECOMMENDATION_CARD_FOR_YOU,
-                            bannerTopAdsUiModel.categoryId,
-                            bannerTopAdsUiModel.layoutCard,
-                            bannerTopAdsUiModel.layoutItem,
-                            bannerTopAdsUiModel.topAdsImageViewModel?.bannerName.orEmpty()
+                arrayListOf(
+                    Bundle().also {
+                        it.putString(Promotion.CREATIVE_NAME, CustomAction.FOR_YOU_CREATIVE_NAME)
+                        it.putString(Promotion.CREATIVE_SLOT, creativeSlot)
+                        it.putString(Promotion.ITEM_ID, bannerTopAdsUiModel.cardId)
+                        it.putString(
+                            Promotion.ITEM_NAME,
+                            ITEM_NAME_NEW_FOR_YOU_FORMAT.format(
+                                creativeSlot,
+                                RECOMMENDATION_CARD_FOR_YOU,
+                                bannerTopAdsUiModel.categoryId,
+                                bannerTopAdsUiModel.layoutCard,
+                                bannerTopAdsUiModel.layoutItem,
+                                bannerTopAdsUiModel.topAdsImageViewModel?.bannerName.orEmpty()
+                            )
                         )
-                    )
-                }
+                    }
+                )
             )
             putString(UserId.KEY, userId)
         }
