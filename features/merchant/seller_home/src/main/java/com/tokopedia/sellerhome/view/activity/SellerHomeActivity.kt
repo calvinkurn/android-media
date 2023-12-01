@@ -204,6 +204,11 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         handleAppLink(intent)
+
+        if (navigator?.isHomePageSelected().orFalse()) {
+            handleSellerPersona(intent)
+            handleToaster(intent)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -372,8 +377,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             navigator?.navigateFromAppLink(page)
             checkForSellerAppReview(pageType)
         }
-        handleSellerPersona(intent)
-        handleToaster(intent)
     }
 
     private fun doubleTapToExit() {
@@ -776,8 +779,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             .orEmpty()
         if (message.isBlank()) return
 
+        val view = binding?.sahContainer ?: return
         Handler(Looper.getMainLooper()).postDelayed({
-            val view = window?.decorView ?: return@postDelayed
             Toaster.toasterCustomBottomHeight = dpToPx(88).toInt()
             Toaster.build(
                 view,
