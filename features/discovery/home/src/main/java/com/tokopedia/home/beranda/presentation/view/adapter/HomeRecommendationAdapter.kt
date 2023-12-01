@@ -14,13 +14,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.diffutil.HomeRecomme
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationPlayWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.RecomEntityCardViewHolder
-import java.util.concurrent.Executors
 
 class HomeRecommendationAdapter(
     private val adapterTypeFactory: HomeRecommendationTypeFactoryImpl
 ) : ListAdapter<BaseHomeRecommendationVisitable, AbstractViewHolder<Visitable<*>>>(
     AsyncDifferConfig.Builder(HomeRecommendationDiffUtil())
-        .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
         .build()
 ) {
 
