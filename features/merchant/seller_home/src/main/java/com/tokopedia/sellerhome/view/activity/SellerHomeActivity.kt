@@ -55,6 +55,7 @@ import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitorin
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
+import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
