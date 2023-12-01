@@ -98,7 +98,7 @@ data class OrderShipment(
 
     val promoCode: String
         get() {
-            return if (isApplyLogisticPromo) logisticPromoViewModel?.promoCode.orEmpty() else ""
+            return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) logisticPromoViewModel.promoCode else ""
         }
 }
 
