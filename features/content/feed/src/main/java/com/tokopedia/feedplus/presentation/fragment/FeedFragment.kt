@@ -10,13 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
@@ -218,9 +215,6 @@ class FeedFragment :
     @Inject
     lateinit var commentFactory: ContentCommentFactory.Creator
 
-    @Inject
-    lateinit var feedPostViewModelFactory: FeedPostViewModel.Factory
-
     private var mDataSource: DataSource? = null
 
     private val feedMainViewModel: FeedMainViewModel by viewModels(
@@ -232,17 +226,7 @@ class FeedFragment :
 
     private val feedPostViewModel: FeedPostViewModel by viewModels(
         ownerProducer = { mDataSource?.getViewModelStoreOwner(data?.type.orEmpty()) ?: this },
-        factoryProducer = {
-            object : AbstractSavedStateViewModelFactory(this, arguments) {
-                override fun <T : ViewModel> create(
-                    key: String,
-                    modelClass: Class<T>,
-                    handle: SavedStateHandle
-                ): T {
-                    return feedPostViewModelFactory.create(handle) as T
-                }
-            }
-        }
+        factoryProducer = { viewModelFactory }
     )
 
     private val feedMvcAnalytics = FeedMVCAnalytics()
