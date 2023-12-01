@@ -1536,14 +1536,13 @@ class SellerHomeFragment :
 
     private fun showPersonaBottomSheet(personaStatus: Int) {
         activity?.let {
-            val btmSheet = SellerPersonaBottomSheet.getInstance(childFragmentManager)
-            val shouldShowBottomSheet =
-                !it.isFinishing && !btmSheet.isVisible && sharedPref.shouldShowPersonaHomePopup(
+            val shouldShowBottomSheet = sharedPref.shouldShowPersonaHomePopup(
                     userSession.userId
-                ) && isFromPersona
+                ) && isFromPersona && !childFragmentManager.isStateSaved
 
             if (shouldShowBottomSheet) {
                 runCatching {
+                    val btmSheet = SellerPersonaBottomSheet.getInstance()
                     btmSheet.setOnDismissListener {
                         sharedPref.markPersonaHomePopupShown(userSession.userId)
                         if (personaStatus == STATUS_PERSONA_INACTIVE) {
