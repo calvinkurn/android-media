@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -43,12 +43,11 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
             )
         )
         LazyColumn(modifier = Modifier.padding(top = 12.dp, bottom = 12.dp)) {
-            itemsIndexed(reports) { index, item ->
+            items(reports) { item ->
                 NestRadioButton(
-                    position = index,
                     text = item.text,
-                    isChecked = item.text == selectedOption.text,
-                    onChecked = {
+                    selected = item.text == selectedOption.text,
+                    onSelected = {
                         onOptionSelected(item)
                     }
                 )
