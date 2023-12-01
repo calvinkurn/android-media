@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.purchase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.logisticCommon.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EditPinpointWithAddressIdUseCase
 import com.tokopedia.logisticCommon.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.common.domain.param.KeroAddressParamData
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
@@ -34,7 +34,7 @@ abstract class TokoFoodPurchaseViewModelTestFixture {
     val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
-    protected lateinit var keroEditAddressUseCase: Lazy<KeroEditAddressUseCase>
+    protected lateinit var keroEditAddressUseCase: Lazy<EditPinpointWithAddressIdUseCase>
 
     @RelaxedMockK
     protected lateinit var keroGetAddressUseCase: Lazy<KeroGetAddressUseCase>

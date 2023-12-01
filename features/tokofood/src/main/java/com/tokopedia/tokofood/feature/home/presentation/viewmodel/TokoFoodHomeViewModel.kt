@@ -13,7 +13,7 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
-import com.tokopedia.logisticCommon.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EditPinpointWithAddressIdUseCase
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.MERCHANT_TITLE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
@@ -80,7 +80,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val tokoFoodHomeDynamicIconsUseCase: TokoFoodHomeDynamicIconsUseCase,
     private val tokoFoodHomeTickerUseCase: TokoFoodHomeTickerUseCase,
     private val tokoFoodMerchantListUseCase: TokoFoodMerchantListUseCase,
-    private val keroEditAddressUseCase: KeroEditAddressUseCase,
+    private val keroEditAddressUseCase: EditPinpointWithAddressIdUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val searchCoachmarkSharedPref: TokofoodHomeSharedPref,
     private val dispatchers: CoroutineDispatchers

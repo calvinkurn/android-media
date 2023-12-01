@@ -2,7 +2,7 @@ package com.tokopedia.tokofood.stub.purchase.di.component
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.logisticCommon.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EditPinpointWithAddressIdUseCase
 import com.tokopedia.logisticCommon.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.usecase.PromoListTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.TokoFoodPurchaseComponent
@@ -36,7 +36,7 @@ interface TokoFoodPurchaseComponentStub : TokoFoodPurchaseComponent {
 
     fun userSessionInterface(): UserSessionInterface
 
-    fun keroEditAddressUseCase(): KeroEditAddressUseCase
+    fun keroEditAddressUseCase(): EditPinpointWithAddressIdUseCase
 
     fun keroGetAddressUseCase(): KeroGetAddressUseCase
 

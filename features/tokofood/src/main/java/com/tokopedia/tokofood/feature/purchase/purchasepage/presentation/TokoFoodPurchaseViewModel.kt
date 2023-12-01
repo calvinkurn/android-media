@@ -14,7 +14,7 @@ import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
 import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
-import com.tokopedia.logisticCommon.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EditPinpointWithAddressIdUseCase
 import com.tokopedia.logisticCommon.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
@@ -69,7 +69,7 @@ import javax.inject.Inject
 
 @FlowPreview
 open class TokoFoodPurchaseViewModel @Inject constructor(
-    private val keroEditAddressUseCase: Lazy<KeroEditAddressUseCase>,
+    private val keroEditAddressUseCase: Lazy<EditPinpointWithAddressIdUseCase>,
     private val keroGetAddressUseCase: Lazy<KeroGetAddressUseCase>,
     private val cartListTokofoodUseCase: Lazy<CheckoutTokoFoodUseCase>,
     private val checkoutGeneralTokoFoodUseCase: Lazy<CheckoutGeneralTokoFoodUseCase>,

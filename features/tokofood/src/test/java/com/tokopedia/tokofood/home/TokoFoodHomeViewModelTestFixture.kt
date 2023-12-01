@@ -5,7 +5,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
-import com.tokopedia.logisticCommon.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EditPinpointWithAddressIdUseCase
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeDynamicIconsResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeLayoutResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeTickerResponse
@@ -51,7 +51,7 @@ abstract class TokoFoodHomeViewModelTestFixture {
     lateinit var tokoFoodMerchantListUseCase: TokoFoodMerchantListUseCase
 
     @RelaxedMockK
-    lateinit var keroEditAddressUseCase: KeroEditAddressUseCase
+    lateinit var keroEditAddressUseCase: EditPinpointWithAddressIdUseCase
 
     @RelaxedMockK
     lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase

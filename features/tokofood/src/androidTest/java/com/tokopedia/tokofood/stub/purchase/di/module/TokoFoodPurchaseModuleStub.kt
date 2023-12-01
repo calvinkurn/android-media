@@ -2,7 +2,7 @@ package com.tokopedia.tokofood.stub.purchase.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.logisticCommon.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EditPinpointWithAddressIdUseCase
 import com.tokopedia.logisticCommon.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.TokoFoodPurchaseScope
@@ -13,7 +13,7 @@ import com.tokopedia.tokofood.stub.common.util.TokoFoodChosenAddressRequestHelpe
 import com.tokopedia.tokofood.stub.common.util.UserSessionStub
 import com.tokopedia.tokofood.stub.purchase.domain.usecase.CheckoutGeneralTokoFoodUseCaseStub
 import com.tokopedia.tokofood.stub.purchase.domain.usecase.CheckoutTokoFoodUseCaseStub
-import com.tokopedia.tokofood.stub.purchase.domain.usecase.KeroEditAddressUseCaseStub
+import com.tokopedia.tokofood.stub.purchase.domain.usecase.EditPinpointWithAddressIdUseCaseStub
 import com.tokopedia.tokofood.stub.purchase.domain.usecase.KeroGetAddressUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -42,8 +42,8 @@ class TokoFoodPurchaseModuleStub {
     fun provideKeroEditAddressUseCaseStub(
         graphQlRepository: GraphqlRepositoryStub,
         keroGetAddressUseCase: KeroGetAddressUseCase
-    ): KeroEditAddressUseCase {
-        return KeroEditAddressUseCaseStub(graphQlRepository, keroGetAddressUseCase)
+    ): EditPinpointWithAddressIdUseCase {
+        return EditPinpointWithAddressIdUseCaseStub(graphQlRepository, keroGetAddressUseCase)
     }
 
     @Provides
