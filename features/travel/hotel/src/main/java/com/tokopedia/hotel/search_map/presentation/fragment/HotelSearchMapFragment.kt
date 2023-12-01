@@ -1191,11 +1191,9 @@ class HotelSearchMapFragment :
                         .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
                         .draggable(false)
                 )
-                marker?.run {
-                    tag = markerCounter
-                    allMarker.add(this)
-                    markerCounter++
-                }
+                marker!!.tag = markerCounter
+                allMarker.add(marker!!)
+                markerCounter++
             }
         }
     }
@@ -1209,7 +1207,7 @@ class HotelSearchMapFragment :
                         createCustomMarker(
                             requireContext(),
                             HOTEL_PRICE_ACTIVE_PIN,
-                            allMarker[position].title.orEmpty()
+                            allMarker[position]!!.title
                         )
                     )
                     putPriceMarkerOnTop(position)
@@ -1250,7 +1248,7 @@ class HotelSearchMapFragment :
     private fun resetMarkerState() {
         if (!allMarker.isNullOrEmpty()) {
             allMarker.forEach {
-                it.setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_INACTIVE_PIN, it.title.orEmpty()))
+                it!!.setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_INACTIVE_PIN, it.title))
             }
         }
     }
