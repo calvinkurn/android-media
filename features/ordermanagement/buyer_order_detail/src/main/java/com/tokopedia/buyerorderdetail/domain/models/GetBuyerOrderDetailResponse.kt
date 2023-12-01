@@ -668,7 +668,7 @@ data class GetBuyerOrderDetailResponse(
                         @SerializedName("category_id")
                         val categoryId: String = "0",
                         @SerializedName("addon_summary")
-                        val addonSummary: AddonSummary? = AddonSummary()
+                        val addonSummary: AddonSummary? = null
                     )
                 }
 
