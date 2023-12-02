@@ -18,12 +18,13 @@ import com.tokopedia.nest.components.loader.NestShimmerType
 const val TWELVE_SHIMMER = 21
 
 @Composable
-fun ExploreCategoryShimmer() {
+fun ExploreCategoryShimmer(modifier: Modifier = Modifier) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start),
-        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+        modifier = modifier
     ) {
         items(TWELVE_SHIMMER) {
             ExploreCategoryItemShimmer()

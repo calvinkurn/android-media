@@ -1,5 +1,8 @@
 package com.tokopedia.home_explore_category.presentation.uimodel
 
+import androidx.compose.runtime.Stable
+
+@Stable
 data class ExploreCategoryUiModel(
     val id: String,
     val categoryTitle: String,
@@ -7,6 +10,7 @@ data class ExploreCategoryUiModel(
     val isSelected: Boolean = false,
     val subExploreCategoryList: List<SubExploreCategoryUiModel>
 ) {
+    @Stable
     data class SubExploreCategoryUiModel(
         val id: String,
         val name: String,

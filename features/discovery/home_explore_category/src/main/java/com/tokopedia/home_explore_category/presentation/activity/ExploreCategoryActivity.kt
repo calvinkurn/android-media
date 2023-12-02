@@ -1,27 +1,41 @@
 package com.tokopedia.home_explore_category.presentation.activity
 
+import android.app.Activity
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.header.compose.NestHeader
-import com.tokopedia.header.compose.NestHeaderType
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_explore_category.analytic.ECConstants.Companion.EXTRA_TITLE
 import com.tokopedia.home_explore_category.analytic.ECConstants.Companion.EXTRA_TYPE
 import com.tokopedia.home_explore_category.analytic.ECConstants.Companion.TYPE_LAYANAN
 import com.tokopedia.home_explore_category.di.DaggerExploreCategoryComponent
 import com.tokopedia.home_explore_category.di.ExploreCategoryComponent
-import com.tokopedia.home_explore_category.presentation.screen.ExploreCategoryListGrid
+import com.tokopedia.home_explore_category.presentation.screen.ExploreCategoryAppBar
+import com.tokopedia.home_explore_category.presentation.screen.ExploreCategoryScreen
+import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiEvent
 import com.tokopedia.home_explore_category.presentation.viewmodel.ExploreCategoryViewModel
+import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.resources.isDarkMode
 import javax.inject.Inject
 import com.tokopedia.home_explore_category.R as home_explore_categoryR
 
@@ -49,23 +63,88 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
 
         setContent {
             NestTheme {
-                Scaffold(topBar = {
-                    NestHeader(
-                        modifier = Modifier.fillMaxWidth(),
-                        type = NestHeaderType.SingleLine(
-                            onBackClicked = { finish() },
-                            title = stringResource(id = home_explore_categoryR.string.title_browse_all_category)
+                val view = LocalView.current
+                val isDarkTheme = view.context.isDarkMode()
+                val backgroundColor = if (isDarkTheme) {
+                    NestNN.dark._0
+                } else {
+                    NestNN.light._50
+                }
+
+                LaunchedEffect(key1 = Unit, block = {
+                    collectUiEffect()
+                })
+
+                Scaffold(
+                    topBar = {
+                        ExploreCategoryAppBar(
+                            modifier = Modifier.height(48.dp),
+                            title = stringResource(id = home_explore_categoryR.string.title_browse_all_category),
+                            navigationClick = {
+                                finish()
+                            },
+                            backgroundColor = backgroundColor
                         )
+                    },
+                    backgroundColor = backgroundColor
+                ) { padding ->
+
+                    val uiState by viewModel.exploreCategoryState.collectAsState()
+
+                    ExploreCategoryScreen(
+                        modifier = Modifier.padding(padding),
+                        uiState = uiState,
+                        uiEvent = viewModel::onExploreCategoryUiEvent
                     )
-                }) { padding ->
-                    ExploreCategoryListGrid(Modifier.padding(padding))
+                }
+
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                    if (!view.isInEditMode) {
+                        SideEffect {
+                            val window = (view.context as? Activity)?.window
+                            window?.statusBarColor = backgroundColor.toArgb()
+                        }
+                    }
+                }
+            }
+        }
+
+        fetchAllCategories()
+    }
+
+    private fun initInjector() {
+        component.inject(this)
+    }
+
+    private fun fetchAllCategories() {
+        viewModel.fetchExploreCategory()
+    }
+
+    private suspend fun collectUiEffect() {
+        viewModel.exploreCategoryUiEvent.collect {
+            when (it) {
+                is ExploreCategoryUiEvent.OnSubExploreCategoryItemClicked -> {
+                    RouteManager.route(this, it.subExploreCategoryUiModel.appLink)
+                }
+
+                is ExploreCategoryUiEvent.OnPrimaryButtonErrorClicked -> {
+                    fetchAllCategories()
+                }
+
+                is ExploreCategoryUiEvent.OnSecondaryButtonErrorClicked -> {
+                    goToNetworkSetting()
+                }
+
+                else -> {
+                    // no op
                 }
             }
         }
     }
 
-    private fun initInjector() {
-        component.inject(this)
+    private fun goToNetworkSetting() {
+        val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+        startActivity(intent)
     }
 
     private fun handleIntentFromDeeplink() {
