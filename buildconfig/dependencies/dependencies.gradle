@@ -489,6 +489,7 @@ ext {
             composeAndroidUiTest: "androidx.compose.ui:ui-test-manifest:$composeVersion",
             accompanistPager    : "com.google.accompanist:accompanist-pager:$accompanistPagerVersion",
             accompanistFlowLayout : "com.google.accompanist:accompanist-flowlayout:$accompanistFlowLayout",
+            composeAnimation    : "androidx.compose.animation:animation:$composeVersion"
     ]
 
     kotlinParcelizeRuntimeDependencies = [

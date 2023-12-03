@@ -74,6 +74,7 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeActivity
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.composeDependencies.composeLiveData
+    implementation rootProject.ext.composeDependencies.composeAnimation
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.multiDex

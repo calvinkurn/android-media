@@ -3,6 +3,7 @@ package com.tokopedia.home_explore_category.domain.mapper
 import com.tokopedia.home_explore_category.domain.model.GetExploreCategoryResponse
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryResultUiModel
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import javax.inject.Inject
 
@@ -39,13 +40,13 @@ class ExploreCategoryMapper @Inject constructor() {
             exploreCategoryResponse.dynamicHomeIcon.categoryGroup.flatMap { exploreCategory ->
                 List(20) { position ->
                     ExploreCategoryUiModel(
-                        id = (exploreCategory.id.toIntOrZero() + position).toString(),
+                        id = (exploreCategory.id.toIntOrZero() + (position+Int.ONE)).toString(),
                         categoryTitle = exploreCategory.title,
                         categoryImageUrl = exploreCategory.imageUrl,
                         subExploreCategoryList = exploreCategory.categoryRows.flatMap { categoryRow ->
-                            List(15) {
+                            List(6) { subPosition ->
                                 ExploreCategoryUiModel.SubExploreCategoryUiModel(
-                                    id = categoryRow.id,
+                                    id = (categoryRow.id.toIntOrZero() + (subPosition+Int.ONE)).toString(),
                                     name = categoryRow.name,
                                     imageUrl = categoryRow.imageUrl,
                                     appLink = categoryRow.applinks,

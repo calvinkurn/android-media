@@ -32,7 +32,8 @@ class ExploreCategoryViewModel @Inject constructor(
     val exploreCategoryState: StateFlow<ExploreCategoryState<ExploreCategoryResultUiModel>>
         get() = _exploreCategoryState.asStateFlow()
 
-    private val _exploreCategoryUiEvent = MutableSharedFlow<ExploreCategoryUiEvent>(replay = Int.ONE)
+    private val _exploreCategoryUiEvent =
+        MutableSharedFlow<ExploreCategoryUiEvent>(replay = Int.ONE)
     val exploreCategoryUiEvent: SharedFlow<ExploreCategoryUiEvent>
         get() = _exploreCategoryUiEvent.asSharedFlow()
 
@@ -42,6 +43,7 @@ class ExploreCategoryViewModel @Inject constructor(
                 is ExploreCategoryUiEvent.OnExploreCategoryItemClicked -> {
                     toggleSelectedCategory(uiEvent.categoryId)
                 }
+
                 else -> {
                     _exploreCategoryUiEvent.emit(uiEvent)
                 }
@@ -58,25 +60,25 @@ class ExploreCategoryViewModel @Inject constructor(
             }
             _exploreCategoryState.emit(ExploreCategoryState.Success(result))
         }, onError = {
-                _exploreCategoryState.emit(ExploreCategoryState.Fail(it))
-            })
+            _exploreCategoryState.emit(ExploreCategoryState.Fail(it))
+        })
     }
 
     private fun toggleSelectedCategory(categoryId: String) {
         _exploreCategoryState.update {
             when (it) {
                 is ExploreCategoryState.Success -> {
-                    val newCategoryList = it.data.copy(
-                        exploreCategoryList = it.data.exploreCategoryList.map { exploreCategory ->
-                            if (exploreCategory.id == categoryId) {
-                                exploreCategory.copy(isSelected = !exploreCategory.isSelected)
-                            } else {
-                                exploreCategory.copy(isSelected = false)
-                            }
+                    val newCategoryList = it.data.exploreCategoryList.map { exploreCategory ->
+                        if (exploreCategory.id == categoryId) {
+                            exploreCategory.copy(isSelected = !exploreCategory.isSelected)
+                        } else {
+                            exploreCategory.copy(isSelected = false)
                         }
-                    )
-                    ExploreCategoryState.Success(newCategoryList)
+                    }
+
+                    ExploreCategoryState.Success(it.data.copy(exploreCategoryList = newCategoryList))
                 }
+
                 else -> it
             }
         }
