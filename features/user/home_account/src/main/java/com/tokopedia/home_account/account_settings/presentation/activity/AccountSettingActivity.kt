@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.Fragment
@@ -23,9 +25,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.getGotoKYCApplink
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountConstants.Analytics.ACCOUNT_BANK
 import com.tokopedia.home_account.AccountConstants.Analytics.ADDRESS_LIST
 import com.tokopedia.home_account.AccountConstants.Analytics.PERSONAL_DATA
@@ -38,6 +42,8 @@ import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.user.session.UserSessionInterface
@@ -55,7 +61,16 @@ class AccountSettingActivity : BaseSimpleActivity() {
     lateinit var userSession: UserSessionInterface
 
     @Inject
+    lateinit var firebaseRC: RemoteConfig
+
+    @Inject
+    lateinit var abPlatform: AbTestPlatform
+
+    @Inject
     lateinit var analytics: AccountAnalytics
+
+    private var isShowSignInNotif = false
+    private var isShowBiometric = false
 
     private val viewModel: AccountSettingViewModel by viewModels { factory }
 
@@ -68,8 +83,20 @@ class AccountSettingActivity : BaseSimpleActivity() {
         viewModel.errorToast.observe(this) {
             showErrorToast(it)
         }
+        isShowSignInNotif = firebaseRC.getBoolean(REMOTE_CONFIG_SETTING_OTP_PUSH_NOTIF, false)
+        isShowBiometric = DeeplinkMapperUser.isGotoLoginDisabled() &&
+            abPlatform.getString(AccountConstants.RollenceKey.BIOMETRIC_ENTRY_POINT, "")
+                .isNotEmpty()
         setContent {
             val state by viewModel.state.observeAsState()
+            val additionalState by remember {
+                mutableStateOf(
+                    AdditionalState(
+                        isShowSignInNotif,
+                        isShowBiometric
+                    )
+                )
+            }
 
             NestTheme {
                 Scaffold(topBar = {
@@ -82,6 +109,7 @@ class AccountSettingActivity : BaseSimpleActivity() {
                 }, content = { padding ->
                         AccountSettingScreen(
                             state = state,
+                            additionalState = additionalState,
                             modifier = Modifier.padding(padding),
                             onItemClicked = ::onItemClicked
                         )
@@ -255,6 +283,10 @@ class AccountSettingActivity : BaseSimpleActivity() {
 
     companion object {
         private const val REQUEST_CHANGE_PASSWORD = 123
+
+        private const val REMOTE_CONFIG_SETTING_OTP_PUSH_NOTIF =
+            "android_user_setting_otp_push_notif"
+
         fun createIntent(context: Context?): Intent {
             return Intent(context, AccountSettingActivity::class.java)
         }

@@ -64,6 +64,7 @@ import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
+import com.tokopedia.home_account.account_settings.presentation.activity.AccountSettingActivity
 import com.tokopedia.home_account.account_settings.presentation.activity.MediaQualitySettingComposeActivity
 import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
@@ -1108,12 +1109,15 @@ open class HomeAccountUserFragment :
         getFirstRecommendation()
         viewModel.getSafeModeValue()
         if (ScpUtils.isGotoLoginEnabled()) {
-            GotoSdk.LSDKINSTANCE?.getOneTapStatus(lifecycle, additionalHeaders = TkpdAdditionalHeaders(requireContext()), object: LSdkCheckOneTapStatusListener {
-                override fun onCompleted(isEligible: Boolean) {
-                    viewModel.setOneTapStatus(isEligible)
+            GotoSdk.LSDKINSTANCE?.getOneTapStatus(
+                lifecycle, additionalHeaders = TkpdAdditionalHeaders(requireContext()),
+                object : LSdkCheckOneTapStatusListener {
+                    override fun onCompleted(isEligible: Boolean) {
+                        viewModel.setOneTapStatus(isEligible)
+                    }
+                    override fun onError(error: OneTapLoginError) {}
                 }
-                override fun onError(error: OneTapLoginError) {}
-            })
+            )
         } else {
             if (oclUtils.isOclEnabled()) {
                 viewModel.getOclStatus()
@@ -1359,7 +1363,9 @@ open class HomeAccountUserFragment :
                 homeAccountAnalytic.eventClickGetToKnowAboutTokopedia()
                 val urlAboutUs = "${TokopediaUrl.getInstance().WEB}${AccountConstants.Url.PATH_ABOUT_US}"
                 RouteManager.getIntent(
-                    activity, ApplinkConstInternalGlobal.WEBVIEW, urlAboutUs
+                    activity,
+                    ApplinkConstInternalGlobal.WEBVIEW,
+                    urlAboutUs
                 ).run {
                     startActivity(this)
                 }
@@ -1368,7 +1374,7 @@ open class HomeAccountUserFragment :
             AccountConstants.SettingCode.SETTING_IP -> {
                 homeAccountAnalytic.eventClickIpAboutTokopedia()
                 val urlSettingIp = "${TokopediaUrl.getInstance().WEB}${AccountConstants.Url.PATH_IP}"
-                RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW_TITLE, TITLE,  urlSettingIp)
+                RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW_TITLE, TITLE, urlSettingIp)
             }
 
             AccountConstants.SettingCode.SETTING_PRIVACY_ID -> {
@@ -1421,14 +1427,15 @@ open class HomeAccountUserFragment :
             }
 
             AccountConstants.SettingCode.SETTING_SECURITY -> {
-                homeAccountAnalytic.eventClickAccountSettingAccountSecurity()
-                val intent = RouteManager.getIntent(context, item.applink).apply {
-                    putExtras(
-                        Bundle().apply {
-                            putExtra(ApplinkConstInternalGlobal.PARAM_NEW_HOME_ACCOUNT, true)
-                        }
-                    )
-                }
+//                homeAccountAnalytic.eventClickAccountSettingAccountSecurity()
+//                val intent = RouteManager.getIntent(context, item.applink).apply {
+//                    putExtras(
+//                        Bundle().apply {
+//                            putExtra(ApplinkConstInternalGlobal.PARAM_NEW_HOME_ACCOUNT, true)
+//                        }
+//                    )
+//                }
+                val intent = AccountSettingActivity.createIntent(requireContext())
                 startActivity(intent)
             }
 

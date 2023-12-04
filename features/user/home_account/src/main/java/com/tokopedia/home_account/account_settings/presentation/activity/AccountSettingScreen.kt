@@ -32,6 +32,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 fun AccountSettingScreen(
     state: AccountSettingUiModel?,
     modifier: Modifier = Modifier,
+    additionalState: AdditionalState = AdditionalState(),
     onItemClicked: (Int) -> Unit = {}
 ) {
     Column(modifier = modifier.fillMaxSize()) {
@@ -65,12 +66,14 @@ fun AccountSettingScreen(
                     onItemClicked
                 )
                 ItemDivider()
-                ItemSetting(
-                    stringResource(R.string.title_fingerprint),
-                    SettingConstant.SETTING_BIOMETRIC,
-                    onClick = onItemClicked
-                )
-                ItemDivider()
+                if (additionalState.showBiometric) {
+                    ItemSetting(
+                        stringResource(R.string.title_fingerprint),
+                        SettingConstant.SETTING_BIOMETRIC,
+                        onClick = onItemClicked
+                    )
+                    ItemDivider()
+                }
                 if (state.config.isIdentityEnabled) {
                     ItemSetting(
                         stringResource(R.string.title_kyc_setting),
@@ -79,15 +82,22 @@ fun AccountSettingScreen(
                     )
                     ItemDivider()
                 }
-                ItemSetting(
-                    stringResource(R.string.title_signin_with_notification),
-                    SettingConstant.SETTING_PUSH_NOTIF,
-                    onClick = onItemClicked
-                )
+                if (additionalState.showSignInNotif) {
+                    ItemSetting(
+                        stringResource(R.string.title_signin_with_notification),
+                        SettingConstant.SETTING_PUSH_NOTIF,
+                        onClick = onItemClicked
+                    )
+                }
             }
         }
     }
 }
+
+data class AdditionalState(
+    val showSignInNotif: Boolean = false,
+    val showBiometric: Boolean = false
+)
 
 @Composable
 private fun ItemSetting(
