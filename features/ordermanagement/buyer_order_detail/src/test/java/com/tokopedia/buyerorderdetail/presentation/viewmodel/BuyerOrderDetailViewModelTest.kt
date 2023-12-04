@@ -53,6 +53,42 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     }
 
     @Test
+    fun `bmgm product benefit expandable status should be retained`() {
+        runCollectingUiState {
+            mockProductListUiStateMapper {
+                createSuccessGetBuyerOrderDetailDataResult()
+
+                getBuyerOrderDetailData()
+
+                verify(exactly = 1) {
+                    map(any(), any(), any(), any(), any(), any(), listOf())
+                }
+
+                viewModel.expandCollapseBmgmProductBenefit("1:2:4", false)
+                viewModel.expandProductList()
+
+                verify(exactly = 1) {
+                    map(any(), any(), any(), any(), any(), any(), listOf("1:2:4"))
+                }
+
+                viewModel.expandCollapseBmgmProductBenefit("1:2:3", false)
+                viewModel.collapseProductList()
+
+                verify(exactly = 1) {
+                    map(any(), any(), any(), any(), any(), any(), listOf("1:2:4", "1:2:3"))
+                }
+
+                viewModel.expandCollapseBmgmProductBenefit("1:2:4", true)
+                viewModel.expandProductList()
+
+                verify(exactly = 1) {
+                    map(any(), any(), any(), any(), any(), any(), listOf("1:2:3"))
+                }
+            }
+        }
+    }
+
+    @Test
     fun `UI state should equals to Showing when getP0DataRequestState is Success`() =
         runCollectingUiState { uiStates ->
             createSuccessGetBuyerOrderDetailDataResult()

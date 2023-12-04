@@ -41,7 +41,7 @@ object ProductListUiStateMapper {
         collapseProductList: Boolean,
         warrantyClaimButtonImpressed: Boolean,
         addOnsExpandableState: List<String>,
-        bmgmProductBenefitExpandableState: MutableList<String>
+        bmgmProductBenefitExpandableState: List<String>
     ): ProductListUiState {
         val p1DataRequestState = getBuyerOrderDetailDataRequestState.getP1DataRequestState
         val getBuyerOrderDetailRequestState = getBuyerOrderDetailDataRequestState
@@ -182,7 +182,7 @@ object ProductListUiStateMapper {
         collapseProductList: Boolean,
         warrantyClaimButtonImpressed: Boolean,
         addOnsExpandableState: List<String>,
-        bmgmProductBenefitExpandableState: MutableList<String>
+        bmgmProductBenefitExpandableState: List<String>
     ): ProductListUiState {
         return when (
             val insuranceDetailRequestState =

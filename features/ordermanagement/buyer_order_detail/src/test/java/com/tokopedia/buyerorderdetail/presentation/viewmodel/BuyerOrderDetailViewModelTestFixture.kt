@@ -185,7 +185,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                         addonItemList = listOf()
                     )
                 )
-            )
+            ),
+            productBenefits = null
         )
 
     val additionalEpharmacyData =
@@ -346,7 +347,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         reloadingState: ProductListUiState.HasData.Reloading = mockk(relaxed = true),
         showingState: ProductListUiState.HasData.Showing = mockk(relaxed = true),
         errorState: ProductListUiState.Error = mockk(relaxed = true),
-        block: () -> Unit
+        block: ProductListUiStateMapper.() -> Unit
     ) {
         mockkObject(ProductListUiStateMapper, recordPrivateCalls = true) {
             every {
@@ -364,13 +365,14 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     any<Map<String, AddToCartSingleRequestState>>(),
                     any<Boolean>(),
                     any<Boolean>(),
+                    any<List<String>>(),
                     any<List<String>>()
                 )
             } returns showingState
             every {
                 ProductListUiStateMapper["mapOnError"](any<Throwable>())
             } returns errorState
-            block()
+            block(ProductListUiStateMapper)
         }
     }
 
