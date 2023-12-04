@@ -75,6 +75,7 @@ class FeedCampaignRibbonView(
             binding.root.context,
             R.drawable.feed_tag_product_background
         ) as GradientDrawable
+        drawable.mutate()
         drawable.cornerRadius = CORNER_RADIUS
         drawable
     }
