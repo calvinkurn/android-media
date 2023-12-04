@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable

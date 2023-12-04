@@ -1,14 +1,15 @@
 package com.tokopedia.mediauploader.video.data.entity
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Transcoding(
-    @Expose @SerializedName("status") val status: String? = ""
+    @SerializedName("status") val status: String? = "",
+    @SerializedName("request_id") val requestId: String? = "",
 ) {
 
     fun isCompleted(): Boolean {
         return status == "completed"
     }
 
+    fun requestId() = requestId ?: ""
 }

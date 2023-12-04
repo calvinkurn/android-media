@@ -10,7 +10,6 @@ import com.tokopedia.home.databinding.ItemHomeRecommendationPlayWidgetBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
-import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.BaseRecommendationForYouViewHolder
 
 class HomeRecommendationPlayWidgetViewHolder(
     view: View,
@@ -27,7 +26,6 @@ class HomeRecommendationPlayWidgetViewHolder(
     }
 
     private val binding = ItemHomeRecommendationPlayWidgetBinding.bind(itemView)
-    private var item: HomeRecommendationPlayWidgetUiModel? = null
 
     init {
         homeRecommendationPlayWidgetManager.bind(binding.homeRecomPlayWidgetVideo)
@@ -44,46 +42,34 @@ class HomeRecommendationPlayWidgetViewHolder(
     }
 
     override fun bind(element: HomeRecommendationPlayWidgetUiModel) {
-        this.item = element
         bindHomeRecomPlayWidgetVideo(element)
-        setOnPlayVideoImpressionListener()
-        setHomePlayWidgetVideoClick()
-    }
-
-    override fun bindPayload(newItem: HomeRecommendationPlayWidgetUiModel?) {
-        newItem?.let {
-            this.item = it
-            bindHomeRecomPlayWidgetVideo(it)
-        }
+        setOnPlayVideoImpressionListener(element)
+        setHomePlayWidgetVideoClick(element)
     }
 
     private fun bindHomeRecomPlayWidgetVideo(element: HomeRecommendationPlayWidgetUiModel) {
         binding.homeRecomPlayWidgetVideo.bind(element.playVideoWidgetUiModel)
     }
 
-    private fun setHomePlayWidgetVideoClick() {
-        item?.let { element ->
-            binding.homeRecomPlayWidgetVideo.setOnClickListener {
-                listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
-            }
+    private fun setHomePlayWidgetVideoClick(element: HomeRecommendationPlayWidgetUiModel) {
+        binding.homeRecomPlayWidgetVideo.setOnClickListener {
+            listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
+        }
 
-            itemView.setOnClickListener {
-                listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
-            }
+        itemView.setOnClickListener {
+            listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
         }
     }
 
-    private fun setOnPlayVideoImpressionListener() {
-        item?.let { element ->
-            binding.homeRecomPlayWidgetVideo.addOnImpressionListener(
-                element,
-                object : ViewHintListener {
-                    override fun onViewHint() {
-                        listener.onPlayVideoWidgetImpress(element, bindingAdapterPosition)
-                    }
+    private fun setOnPlayVideoImpressionListener(element: HomeRecommendationPlayWidgetUiModel) {
+        binding.homeRecomPlayWidgetVideo.addOnImpressionListener(
+            element,
+            object : ViewHintListener {
+                override fun onViewHint() {
+                    listener.onPlayVideoWidgetImpress(element, bindingAdapterPosition)
                 }
-            )
-        }
+            }
+        )
     }
 
     interface Listener {

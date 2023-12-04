@@ -22,12 +22,10 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
@@ -37,7 +35,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapterTypeFactory
@@ -59,7 +56,7 @@ class OtherMenuViewHolder(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner?,
     private val userSession: UserSessionInterface,
-    private var listener: Listener,
+    private var listener: Listener
 ) : LifecycleObserver {
 
     companion object {
@@ -237,13 +234,41 @@ class OtherMenuViewHolder(
         }
     }
 
-    fun setTopAdsShop(isUsed: Boolean){
+    fun setTopAdsShop(isUsed: Boolean) {
         otherMenuAdapter?.addIklanTopadsMenu(isUsed)
     }
 
     private fun initView() {
         view?.run {
-            contentMotionLayout = findViewById(R.id.motion_layout_sah_new_other)
+            contentMotionLayout = findViewById<MotionLayout?>(R.id.motion_layout_sah_new_other).apply {
+                setTransitionListener(object : MotionLayout.TransitionListener {
+                    override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+                        // NO-OP
+                    }
+
+                    override fun onTransitionChange(
+                        p0: MotionLayout?,
+                        p1: Int,
+                        p2: Int,
+                        p3: Float
+                    ) {
+                        // NO-OP
+                    }
+
+                    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                        listener.onFinishTransition()
+                    }
+
+                    override fun onTransitionTrigger(
+                        p0: MotionLayout?,
+                        p1: Int,
+                        p2: Boolean,
+                        p3: Float
+                    ) {
+                        // NO-OP
+                    }
+                })
+            }
             scrollView = findViewById(R.id.sv_sah_new_other)
             otherMenuHeader = findViewById(R.id.view_sah_new_other_header)
             secondaryInfoRecyclerView = findViewById(R.id.rv_sah_new_other_secondary_info)
@@ -543,5 +568,6 @@ class OtherMenuViewHolder(
         fun onTokoPlusClicked()
         fun onTokoPlusImpressed()
         fun onImpressionTokoMember()
+        fun onFinishTransition()
     }
 }

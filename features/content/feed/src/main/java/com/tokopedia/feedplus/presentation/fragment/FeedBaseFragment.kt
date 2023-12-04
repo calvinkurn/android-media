@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +9,12 @@ import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -19,7 +22,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -55,6 +58,8 @@ import com.tokopedia.feedplus.presentation.model.FeedTabModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreOwner
+import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreProvider
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
@@ -79,7 +84,7 @@ import com.tokopedia.creation.common.R as creationcommonR
  * Created By : Muhammad Furqan on 02/02/23
  */
 class FeedBaseFragment :
-    BaseDaggerFragment(),
+    TkpdBaseV4Fragment(),
     ContentCreationBottomSheet.Listener,
     FragmentListener {
 
@@ -165,6 +170,8 @@ class FeedBaseFragment :
             )
         }
 
+    private val viewModelStoreProvider by activityViewModels<FeedPostViewModelStoreProvider>()
+
     private val openCreateShorts =
         registerForActivityResult(OpenCreateShortsContract()) { isCreatingNewShorts ->
             if (!isCreatingNewShorts) return@registerForActivityResult
@@ -189,6 +196,11 @@ class FeedBaseFragment :
             }
         }
 
+    override fun onAttach(context: Context) {
+        inject()
+        super.onAttach(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
@@ -197,6 +209,13 @@ class FeedBaseFragment :
                     fragment.listener = this
                     fragment.shouldShowPerformanceAction = false
                     fragment.analytics = contentCreationAnalytics
+                }
+                is FeedFragment -> {
+                    fragment.setDataSource(object : FeedFragment.DataSource {
+                        override fun getViewModelStoreOwner(type: String): ViewModelStoreOwner {
+                            return FeedPostViewModelStoreOwner(viewModelStoreProvider, type)
+                        }
+                    })
                 }
             }
         }
@@ -248,6 +267,7 @@ class FeedBaseFragment :
     }
 
     override fun onScrollToTop() {
+        if (!isAdded) return
         feedMainViewModel.scrollCurrentTabToTop()
     }
 
@@ -259,7 +279,7 @@ class FeedBaseFragment :
         return true
     }
 
-    override fun initInjector() {
+    private fun inject() {
         DaggerFeedMainComponent.factory()
             .build(
                 activityContext = requireContext(),
@@ -587,6 +607,7 @@ class FeedBaseFragment :
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
+        if (!isAdded) return
         if (!isVisibleToUser) {
             onPauseInternal()
         } else {
