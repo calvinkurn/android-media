@@ -5,9 +5,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.tokopedianow.R
@@ -17,12 +17,12 @@ import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import com.tokopedia.productcard.compact.R as productcardcompactR
 
-class ProductCardMatcher {
+class ProductCardMatcher(private val containerId: Int = R.id.product_recommendation) {
 
     fun scrollProductToPosition(index: Int) {
         val recyclerView = allOf(
-            withId(R.id.recycler_view),
-            withParent(withId(R.id.product_card_carousel))
+            withId(productcardcompactR.id.recycler_view),
+            isDescendantOfA(withId(containerId))
         )
         waitForViewDisplayed(recyclerView, isDisplayed())
 

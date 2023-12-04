@@ -19,7 +19,9 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ChipCarouselMatcher {
 
-    private val productCardMatcher = ProductCardMatcher()
+    private val productCardMatcher = ProductCardMatcher(
+        containerId = R.id.product_carousel_chip_view
+    )
 
     fun assertTitleShown() {
         val getHomeChannelV2 = dynamicChannelChipCarouselResponse
