@@ -391,8 +391,12 @@ class ProductListTypeFactoryImpl(
             InspirationProductTitleViewHolder.LAYOUT -> InspirationProductTitleViewHolder(
                 view,
                 inspirationCarouselListener,
+                reimagineSearch3ProductCard.isReimagineProductCard(),
             )
-            VerticalSeparatorViewHolder.LAYOUT -> VerticalSeparatorViewHolder(view)
+            VerticalSeparatorViewHolder.LAYOUT -> VerticalSeparatorViewHolder(
+                view,
+                reimagineSearch3ProductCard.isReimagineProductCard(),
+            )
 
             else -> super.createViewHolder(view, type)
         }

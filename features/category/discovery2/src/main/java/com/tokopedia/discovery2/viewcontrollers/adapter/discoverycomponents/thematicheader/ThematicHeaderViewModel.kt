@@ -4,27 +4,49 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.kotlin.extensions.view.orZero
 
 class ThematicHeaderViewModel(
     application: Application,
     val component: ComponentsItem,
     val position: Int
 ) : DiscoveryBaseViewModel() {
-    private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
+    companion object {
+        private const val THEMATIC_HEADER_MIN_SIZE = 1
 
-    fun getComponentLiveData(): LiveData<ComponentsItem> = componentData
+        const val FIRST_DATA_POSITION = 1
+    }
+
+    private val _thematicData: MutableLiveData<Pair<Int, DataItem?>> = MutableLiveData()
+    val thematicData: LiveData<Pair<Int, DataItem?>>
+        get() = _thematicData
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
-        componentData.value = component
+        loadThematicHeaderData()
     }
 
-    fun fetchLottieState(): Boolean {
-        return component.isLottieAlreadyAnimated
+    private fun loadThematicHeaderData() {
+        val dataItems = component.data
+        if (dataItems != null && dataItems.size.orZero() == THEMATIC_HEADER_MIN_SIZE) {
+            _thematicData.value = Pair(
+                FIRST_DATA_POSITION,
+                dataItems.first()
+            )
+        }
     }
 
-    fun setLottieState(state: Boolean) {
-        component.isLottieAlreadyAnimated = state
+    fun switchThematicHeaderData(
+        tabPosition: Int
+    ) {
+        val item = component.data?.find { it.tabIndex?.contains(tabPosition) == true }
+        if (_thematicData.value?.second != item) {
+            _thematicData.value = Pair(
+                tabPosition,
+                item
+            )
+        }
     }
 }
