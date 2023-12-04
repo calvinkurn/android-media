@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.stub.purchase.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailByIdUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
@@ -74,7 +75,7 @@ class TokoFoodPurchaseModuleStub {
     fun provideKeroGetAddressUseCaseStub(
         getAddressDetailUseCase: GetAddressDetailUseCase,
         coroutineDispatchers: CoroutineDispatchers
-    ): GetAddressDetailById {
+    ): GetAddressDetailByIdUseCase {
         return GetAddressDetailByIdUseCaseStub(getAddressDetailUseCase, coroutineDispatchers)
     }
 

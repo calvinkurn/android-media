@@ -3,9 +3,11 @@ package com.tokopedia.tokofood.purchase
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
+import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
+import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
-import com.tokopedia.tokofood.common.domain.param.KeroAddressParamData
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataAdditionalGrouping
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataAdditionalGroupingDetail
@@ -306,7 +308,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             val isHasPinpoint = false
             onGetAddressUseCase_thenReturn(
                 addressId,
-                KeroAddressParamData(secondAddress = "123,123")
+                KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse(addrId = addressId.toLongOrZero(), address2 = "123,123")
             )
 
             viewModel.setIsHasPinpoint("", isHasPinpoint)
@@ -352,7 +354,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             onGetCheckoutTokoFood_thenReturn(updatedSuccessResponse)
             val isHasPinpoint = false
-            onGetAddressUseCase_thenReturn(addressId, KeroAddressParamData(secondAddress = ""))
+            onGetAddressUseCase_thenReturn(addressId, KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse(address2 = ""))
 
             viewModel.setIsHasPinpoint("", isHasPinpoint)
             viewModel.loadData()
@@ -396,7 +398,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                 )
             onGetCheckoutTokoFood_thenReturn(updatedSuccessResponse)
             val isHasPinpoint = false
-            onGetAddressUseCase_thenReturn(addressId, null)
+            onGetAddressUseCase_thenReturn(addressId, KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse(addrId = 0))
 
             viewModel.setIsHasPinpoint("", isHasPinpoint)
             viewModel.loadData()
@@ -517,7 +519,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             onGetCheckoutTokoFood_thenReturn(updatedSuccessResponse)
             onGetAddressUseCase_thenReturn(
                 addressId,
-                KeroAddressParamData(secondAddress = "123,456")
+                KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse(address2 = "123,456")
             )
 
             viewModel.setIsHasPinpoint("", true)
@@ -569,7 +571,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             onGetCheckoutTokoFood_thenReturn(updatedSuccessResponse)
             onGetAddressUseCase_thenReturn(
                 addressId,
-                KeroAddressParamData(secondAddress = "123,456")
+                KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse(address2 = "123,456")
             )
 
             viewModel.setIsHasPinpoint("", true)
@@ -1725,7 +1727,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.setIsHasPinpoint(addressId, false)
 
             coEvery {
-                keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
+                keroEditAddressUseCase.get()(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
             } returns createKeroEditAddressResponse(latitude, longitude).keroEditAddress.data
 
             viewModel.updateAddressPinpoint(latitude, longitude)
@@ -1744,7 +1746,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.setIsHasPinpoint(addressId, false)
 
             coEvery {
-                keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
+                keroEditAddressUseCase.get()(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
             } returns createKeroEditAddressResponse(latitude, longitude).keroEditAddress.data
 
             viewModel.updateAddressPinpoint(latitude, longitude)
@@ -1763,7 +1765,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.setIsHasPinpoint(addressId, false)
 
             coEvery {
-                keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
+                keroEditAddressUseCase.get()(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
             } returns createKeroEditAddressResponse(latitude, longitude).keroEditAddress.data
 
             viewModel.updateAddressPinpoint(latitude, longitude)
@@ -1782,7 +1784,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.setIsHasPinpoint(addressId, false)
 
             coEvery {
-                keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
+                keroEditAddressUseCase.get()(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
             } returns createKeroEditAddressResponse(latitude, longitude).keroEditAddress.data
 
             viewModel.updateAddressPinpoint(latitude, longitude)
@@ -1801,7 +1803,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.setIsHasPinpoint(addressId, false)
 
             coEvery {
-                keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
+                keroEditAddressUseCase.get()(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
             } returns createKeroEditAddressResponseFail().keroEditAddress.data
 
             viewModel.updateAddressPinpoint(latitude, longitude)
@@ -1820,7 +1822,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.setIsHasPinpoint(addressId, false)
 
             coEvery {
-                keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
+                keroEditAddressUseCase.get()(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
             } throws MessageErrorException("")
 
             viewModel.updateAddressPinpoint(latitude, longitude)

@@ -1,9 +1,10 @@
 package com.tokopedia.tokofood.purchase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailById
+import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
+import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailByIdUseCase
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
-import com.tokopedia.tokofood.common.domain.param.KeroAddressParamData
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodResponse
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutGeneralTokoFoodUseCase
@@ -21,7 +22,6 @@ import kotlinx.coroutines.FlowPreview
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.mockito.ArgumentMatchers.anyString
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -37,7 +37,7 @@ abstract class TokoFoodPurchaseViewModelTestFixture {
     protected lateinit var keroEditAddressUseCase: Lazy<UpdatePinpointWithAddressIdUseCase>
 
     @RelaxedMockK
-    protected lateinit var getAddressDetailById: Lazy<GetAddressDetailById>
+    protected lateinit var getAddressDetailByIdUseCase: Lazy<GetAddressDetailByIdUseCase>
 
     @RelaxedMockK
     protected lateinit var checkoutTokoFoodUseCase: Lazy<CheckoutTokoFoodUseCase>
@@ -52,7 +52,7 @@ abstract class TokoFoodPurchaseViewModelTestFixture {
         MockKAnnotations.init(this)
         viewModel = TokoFoodPurchaseViewModel(
             keroEditAddressUseCase,
-            getAddressDetailById,
+            getAddressDetailByIdUseCase,
             checkoutTokoFoodUseCase,
             checkoutGeneralTokoFoodUseCase,
             CoroutineTestDispatchersProvider
@@ -96,16 +96,16 @@ abstract class TokoFoodPurchaseViewModelTestFixture {
 
     protected fun onGetAddressUseCase_thenReturn(
         addressId: String,
-        keroAddressParamData: KeroAddressParamData?
+        keroAddressParamData: KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse
     ) {
         coEvery {
-            getAddressDetailById.get().execute(addressId)
+            getAddressDetailByIdUseCase.get()(GetDetailAddressParam(addressId, isManageAddressFlow = false, source = "tokofood"))
         } returns keroAddressParamData
     }
 
     protected fun onGetAddressUseCase_thenThrow(throwable: Throwable) {
         coEvery {
-            getAddressDetailById.get().execute(anyString())
+            getAddressDetailByIdUseCase.get()(any())
         } throws throwable
     }
 
