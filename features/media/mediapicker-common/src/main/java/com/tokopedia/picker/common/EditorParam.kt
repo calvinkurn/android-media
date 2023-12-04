@@ -54,8 +54,23 @@ data class EditorParam(
         customCtaText = text
     }
 
+    // prepare if we will open the compress config to user
+    fun getCompressConfig(): Triple<Float, Float, Int> {
+        return Triple(
+            COMPRESS_WIDTH,
+            COMPRESS_HEIGHT,
+            COMPRESS_QUALITY
+        )
+    }
+
     private fun setAutoCropRatio(ratio: ImageRatioType) {
         autoCropRatio = ratio
+    }
+
+    companion object {
+        private const val COMPRESS_WIDTH = 3000f
+        private const val COMPRESS_HEIGHT = 3000f
+        private const val COMPRESS_QUALITY = 100
     }
 }
 
