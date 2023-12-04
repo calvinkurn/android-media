@@ -3289,7 +3289,7 @@ open class DynamicProductDetailFragment :
                     updateUi()
                 }
             }, {
-                pdpUiUpdater?.updateViewToViewData(null, RecommendationCarouselData.STATE_FAILED)
+                pdpUiUpdater?.removeComponent(ProductDetailConstant.VIEW_TO_VIEW)
                 updateUi()
                 logException(it)
             })
@@ -6205,10 +6205,6 @@ open class DynamicProductDetailFragment :
                 viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
             )
         }
-    }
-
-    override fun onViewToViewReload(pageName: String, queryParam: String, thematicId: String) {
-        loadViewToView(pageName = pageName, queryParam = queryParam, thematicId = thematicId)
     }
 
     override fun onImpressScheduledDelivery(
