@@ -26,6 +26,7 @@ const val EPHARMACY_IS_OUTSIDE_WORKING_HOURS = "epharmacy_is_outside_working_hou
 const val EPHARMACY_VERTICAL_ID = "vertical_id"
 const val EPHARMACY_WAITING_INVOICE = "waiting_invoice"
 const val EPHARMACY_SOURCE = "source"
+const val IS_SINGLE_CONSUL_FLOW = "single_consul_flow"
 
 const val STATIC_INFO_COMPONENT = "static info component"
 const val PRESCRIPTION_COMPONENT = "prescription component"

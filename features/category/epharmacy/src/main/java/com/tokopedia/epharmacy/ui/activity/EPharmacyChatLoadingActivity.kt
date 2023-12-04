@@ -10,15 +10,14 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyChatLoadingFragment
-import com.tokopedia.epharmacy.utils.EPHARMACY_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
-import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.epharmacy.utils.IS_SINGLE_CONSUL_FLOW
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 class EPharmacyChatLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
 
     private var tConsultationId = 0L
-    private var source = String.EMPTY
+    private var singleConsulFlow = false
 
     private val ePharmacyComponent: EPharmacyComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
 
@@ -37,7 +36,7 @@ class EPharmacyChatLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmac
         return EPharmacyChatLoadingFragment.newInstance(
             Bundle().apply {
                 putLong(EPHARMACY_TOKO_CONSULTATION_ID, tConsultationId)
-                putString(EPHARMACY_SOURCE, source)
+                putBoolean(IS_SINGLE_CONSUL_FLOW, singleConsulFlow)
             }
         )
     }
@@ -50,7 +49,7 @@ class EPharmacyChatLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmac
         val pathSegments = Uri.parse(intent.data?.path.orEmpty()).pathSegments
         tConsultationId = if (pathSegments.size > 1) pathSegments[1].toLongOrZero() else 0L
         intent?.data?.let { uri ->
-            source = uri.getQueryParameter(EPHARMACY_SOURCE).orEmpty()
+            singleConsulFlow = uri.getBooleanQueryParameter(IS_SINGLE_CONSUL_FLOW, false)
         }
     }
 
