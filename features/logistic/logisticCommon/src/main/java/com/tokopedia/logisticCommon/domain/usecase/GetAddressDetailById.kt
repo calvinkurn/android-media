@@ -7,7 +7,7 @@ import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
 import javax.inject.Inject
 
-open class KeroGetAddressUseCase @Inject constructor(
+open class GetAddressDetailById @Inject constructor(
     private val getAddressDetailUseCase: GetAddressDetailUseCase,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<GetDetailAddressParam, KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse>(

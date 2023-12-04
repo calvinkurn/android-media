@@ -2,10 +2,10 @@ package com.tokopedia.tokofood.stub.purchase.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
-import com.tokopedia.logisticCommon.domain.usecase.KeroGetAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailById
 import javax.inject.Inject
 
-class KeroGetAddressUseCaseStub @Inject constructor(
+class GetAddressDetailByIdStub @Inject constructor(
     getAddressDetailUseCase: GetAddressDetailUseCase,
     coroutineDispatchers: CoroutineDispatchers
-) : KeroGetAddressUseCase(getAddressDetailUseCase, coroutineDispatchers)
+) : GetAddressDetailById(getAddressDetailUseCase, coroutineDispatchers)

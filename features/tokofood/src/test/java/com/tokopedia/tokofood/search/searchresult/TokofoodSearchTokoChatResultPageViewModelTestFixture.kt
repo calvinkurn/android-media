@@ -6,7 +6,7 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.logisticCommon.domain.usecase.EditPinpointWithAddressIdUseCase
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokofood.data.createKeroEditAddressResponse
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodFilterSortMapper
@@ -50,7 +50,7 @@ open class TokofoodSearchTokoChatResultPageViewModelTestFixture {
     lateinit var tokofoodFilterSortUseCase: TokofoodFilterSortUseCase
 
     @RelaxedMockK
-    lateinit var keroEditAddressUseCase: EditPinpointWithAddressIdUseCase
+    lateinit var keroEditAddressUseCase: UpdatePinpointWithAddressIdUseCase
 
     @RelaxedMockK
     lateinit var tokofoodMerchantSearchResultMapper: TokofoodMerchantSearchResultMapper

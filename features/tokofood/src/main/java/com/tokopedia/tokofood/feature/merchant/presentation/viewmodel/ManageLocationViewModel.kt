@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
-import com.tokopedia.logisticCommon.domain.usecase.EditPinpointWithAddressIdUseCase
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
 import com.tokopedia.tokofood.feature.merchant.domain.usecase.CheckDeliveryCoverageUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ManageLocationViewModel @Inject constructor(
-    private val keroEditAddressUseCase: EditPinpointWithAddressIdUseCase,
+    private val keroEditAddressUseCase: UpdatePinpointWithAddressIdUseCase,
     private val checkDeliveryCoverageUseCase: CheckDeliveryCoverageUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {

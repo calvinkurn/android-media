@@ -2,10 +2,10 @@ package com.tokopedia.tokofood.stub.purchase.di.component
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.logisticCommon.domain.usecase.EditPinpointWithAddressIdUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailById
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
-import com.tokopedia.logisticCommon.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.usecase.PromoListTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.TokoFoodPurchaseComponent
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.TokoFoodPurchaseScope
@@ -38,9 +38,9 @@ interface TokoFoodPurchaseComponentStub : TokoFoodPurchaseComponent {
 
     fun userSessionInterface(): UserSessionInterface
 
-    fun keroEditAddressUseCase(): EditPinpointWithAddressIdUseCase
+    fun keroEditAddressUseCase(): UpdatePinpointWithAddressIdUseCase
 
-    fun keroGetAddressUseCase(): KeroGetAddressUseCase
+    fun keroGetAddressUseCase(): GetAddressDetailById
 
     fun updatePinpointUseCase(): UpdatePinpointUseCase
 
