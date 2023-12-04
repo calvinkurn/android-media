@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="@dimen/product_card_reimagine_carousel_width"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
@@ -18,7 +18,7 @@
 
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/productCardCardUnifyContainer"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/product_card_reimagine_carousel_width"
         android:layout_height="match_parent"
         app:cardCornerRadius="8dp"
         app:cardPreventCornerOverlap="false"
@@ -240,14 +240,39 @@
                 app:barrierDirection="bottom"
                 app:constraint_referenced_ids="productCardSlashedPrice,productCardDiscount" />
 
-            <include
-                layout="@layout/product_card_reimagine_label"
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardLabelBenefit"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/product_card_reimagine_label_height"
+                android:layout_height="@dimen/product_card_reimagine_label_benefit_height"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:background="@drawable/product_card_reimagine_label_background"
                 android:layout_marginTop="@dimen/product_card_reimagine_label_benefit_margin_top"
+                android:gravity="center"
+                android:textSize="9sp"
+                app:typographyWeight="bold"
                 app:layout_constraintTop_toBottomOf="@id/productCardDiscountSlashedPriceBarrier"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                tools:textColor="@color/Unify_GN500"
+                tools:text="Cashback Rp10 rb" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productCardLabelBMSM"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/product_card_reimagine_label_benefit_height"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:background="@drawable/product_card_reimagine_label_bmsm_background"
+                android:layout_marginTop="@dimen/product_card_reimagine_label_bmsm_margin_top"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/Unify_GN500"
+                android:gravity="center"
+                android:textSize="9sp"
+                app:typographyWeight="bold"
+                app:layout_constraintTop_toBottomOf="@id/productCardLabelBenefit"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Beli 3 Diskon 10%" />
 
             <LinearLayout
                 android:id="@+id/productCardCredibility"
@@ -255,7 +280,7 @@
                 android:layout_height="@dimen/product_card_reimagine_credibility_height"
                 android:layout_marginTop="@dimen/product_card_reimagine_credibility_margin_top"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/productCardLabelBenefit">
+                app:layout_constraintTop_toBottomOf="@id/productCardLabelBMSM">
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/productCardRatingIcon"

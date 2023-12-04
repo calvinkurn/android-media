@@ -5,10 +5,8 @@ import com.tokopedia.remoteconfig.RollenceKey.TOKOPEDIA_NOW_PAGINATION
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_DISABLED
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ENABLED
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
-import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
-import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.searchcategory.assertBannerDataView
 import com.tokopedia.tokopedianow.searchcategory.assertCategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.assertChooseAddressDataView
@@ -22,7 +20,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidg
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.verifyProductItemDataViewList
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
-import io.mockk.every
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -140,7 +137,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         val footerStartIndex = lastProductIndex + 1
         val footerList = visitableList.subList(footerStartIndex, visitableList.size)
 
-        footerList.first().assertCategoryJumperDataView(searchModel.searchCategoryJumper)
         footerList.last().assertCTATokopediaNowHomeDataView()
     }
 
@@ -153,26 +149,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         val footerList = visitableList.subList(footerStartIndex, visitableList.size)
 
         footerList.first().assertSwitcherWidgetDataView()
-        footerList.last().assertCategoryJumperDataView(searchModel.searchCategoryJumper)
-    }
-
-    private fun Visitable<*>.assertCategoryJumperDataView(
-            searchCategoryJumper: SearchCategoryJumperData
-    ) {
-        assertThat(this, instanceOf(CategoryJumperDataView::class.java))
-
-        val categoryJumperDataView = this as CategoryJumperDataView
-        assertThat(categoryJumperDataView.title, shouldBe(searchCategoryJumper.getTitle()))
-
-        val expectedItemList = searchCategoryJumper.getJumperItemList()
-        assertThat(categoryJumperDataView.itemList.size, shouldBe(expectedItemList.size))
-
-        categoryJumperDataView.itemList.forEachIndexed { index, actualItem ->
-            val expectedItem = expectedItemList[index]
-
-            assertThat(actualItem.title, shouldBe(expectedItem.title))
-            assertThat(actualItem.applink, shouldBe(expectedItem.applink))
-        }
     }
 
     private fun Visitable<*>.assertCTATokopediaNowHomeDataView() {

@@ -17,7 +17,7 @@ import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE
+import com.tokopedia.remoteconfig.RemoteConfigKey.FORCE_LIGHT_MODE
 import com.tokopedia.remoteconfig.RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
@@ -63,7 +63,7 @@ class FakeHomeAccountUserModules(val context: Context) {
     fun provideRemoteConfig(@ApplicationContext context: Context?): RemoteConfig {
         return mockk(relaxed = true) {
             every { getBoolean(HomeAccountUserFragment.REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, any()) } returns true
-            every { getBoolean(SETTING_SHOW_DARK_MODE_TOGGLE, any()) } returns true
+            every { getBoolean(FORCE_LIGHT_MODE, any()) } returns false
             every { getBoolean(SETTING_SHOW_SCREEN_RECORDER, any()) } returns true
         }
     }

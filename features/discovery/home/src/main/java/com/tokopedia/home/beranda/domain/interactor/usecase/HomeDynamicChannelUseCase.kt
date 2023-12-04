@@ -29,7 +29,7 @@ import com.tokopedia.home.beranda.helper.LazyLoadDataMapper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
@@ -200,7 +200,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 list = listOf(it)
             )
         }
-        if(balanceJob?.isActive != true) {
+        if (balanceJob?.isActive != true) {
             balanceJob = coroutineScope.launch { homeHeaderUseCase.updateBalanceWidget() }
         }
 
@@ -226,7 +226,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 isAtfError = atf.isAtfError,
                 homeChooseAddressData = dc.homeChooseAddressData,
                 flowCompleted = dc.flowCompleted,
-                topadsPage = dc.topadsPage,
+                topadsPage = dc.topadsPage
             )
         }
     }
@@ -339,6 +339,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 GetMissionWidget.BANNER_LOCATION_PARAM,
                                 homeChooseAddressRepository.getRemoteData()
                                     ?.convertToLocationParams()
+                            )
+                            putString(
+                                GetMissionWidget.PARAM,
+                                it.widgetParam
                             )
                         }
                     },
@@ -1077,7 +1081,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 }
                                 jobList.add(job)
                             }
-                            AtfKey.TYPE_BANNER -> {
+                            AtfKey.TYPE_BANNER, AtfKey.TYPE_BANNER_V2 -> {
                                 val job = async {
                                     try {
                                         val bannerParam = Bundle().apply {
@@ -1161,7 +1165,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 }
                                 jobList.add(job)
                             }
-                            AtfKey.TYPE_ICON -> {
+                            AtfKey.TYPE_ICON, AtfKey.TYPE_ICON_V2 -> {
                                 val job = async {
                                     try {
                                         val dynamicIcon = homeIconRepository.getRemoteData(
@@ -1246,7 +1250,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 }
                                 jobList.add(job)
                             }
-                            AtfKey.TYPE_MISSION -> {
+                            AtfKey.TYPE_MISSION, AtfKey.TYPE_MISSION_V2 -> {
                                 jobList.add(
                                     async {
                                         atfData.apply {

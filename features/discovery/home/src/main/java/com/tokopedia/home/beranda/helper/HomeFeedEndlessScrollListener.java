@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.home.beranda.presentation.view.helper.AccurateOffsetLinearLayoutManager;
 
 public abstract class HomeFeedEndlessScrollListener extends RecyclerView.OnScrollListener {
     protected static final int STARTING_PAGE_INDEX = 0;
@@ -34,15 +35,18 @@ public abstract class HomeFeedEndlessScrollListener extends RecyclerView.OnScrol
         visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
 
+    public HomeFeedEndlessScrollListener(AccurateOffsetLinearLayoutManager layoutManager) {
+        resetState();
+        this.layoutManager = layoutManager;
+    }
+
     public HomeFeedEndlessScrollListener(RecyclerView.LayoutManager layoutManager) {
         resetState();
         this.layoutManager = layoutManager;
-        resetState();
         if (layoutManager instanceof GridLayoutManager) {
             visibleThreshold = visibleThreshold * ((GridLayoutManager)layoutManager).getSpanCount();
         } else if (layoutManager instanceof StaggeredGridLayoutManager){
             visibleThreshold = visibleThreshold * ((StaggeredGridLayoutManager)layoutManager).getSpanCount();
-//            visibleThreshold+=6;
         }
     }
 
@@ -112,6 +116,9 @@ public abstract class HomeFeedEndlessScrollListener extends RecyclerView.OnScrol
         } else if (getLayoutManager() instanceof LinearLayoutManager) {
             lastVisibleItemPosition
                     = ((LinearLayoutManager) getLayoutManager()).findLastVisibleItemPosition();
+        } else if (getLayoutManager() instanceof AccurateOffsetLinearLayoutManager) {
+            lastVisibleItemPosition
+                    = ((AccurateOffsetLinearLayoutManager) getLayoutManager()).findLastVisibleItemPosition();
         }
 
         if ((lastVisibleItemPosition + visibleThreshold) > totalItemCount &&

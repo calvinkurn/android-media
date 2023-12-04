@@ -6,14 +6,14 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.R
+import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.databinding.GlobalComponentMissionWidgetBinding
-import com.tokopedia.home_component.decoration.MissionWidgetItemDecoration
+import com.tokopedia.home_component.decoration.MissionWidgetCardItemDecoration
+import com.tokopedia.home_component.decoration.MissionWidgetClearItemDecoration
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.util.MissionWidgetUtil
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
 import com.tokopedia.home_component.widget.common.carousel.CommonCarouselDiffUtilCallback
@@ -33,7 +33,7 @@ class MissionWidgetViewHolder(
 ) : AbstractViewHolder<MissionWidgetListDataModel>(itemView) {
 
     companion object {
-        val LAYOUT = R.layout.global_component_mission_widget
+        val LAYOUT = home_componentR.layout.global_component_mission_widget
     }
 
     private var binding: GlobalComponentMissionWidgetBinding? by viewBinding()
@@ -45,7 +45,7 @@ class MissionWidgetViewHolder(
     }
 
     init {
-        valuateRecyclerViewDecoration()
+        setupRecyclerView()
     }
 
     private fun setHeaderComponent(element: MissionWidgetListDataModel) {
@@ -60,12 +60,7 @@ class MissionWidgetViewHolder(
         )
     }
 
-    private fun valuateRecyclerViewDecoration() {
-        if (binding?.homeComponentMissionWidgetRcv?.itemDecorationCount == 0) {
-            binding?.homeComponentMissionWidgetRcv?.addItemDecoration(
-                MissionWidgetItemDecoration()
-            )
-        }
+    private fun setupRecyclerView() {
         binding?.homeComponentMissionWidgetRcv?.itemAnimator = null
         binding?.homeComponentMissionWidgetRcv?.layoutManager = LinearLayoutManager(
             itemView.context,
@@ -75,28 +70,41 @@ class MissionWidgetViewHolder(
         binding?.homeComponentMissionWidgetRcv?.adapter = adapter
     }
 
+    private fun valuateRecyclerViewDecoration(type: MissionWidgetListDataModel.Type) {
+        if (binding?.homeComponentMissionWidgetRcv?.itemDecorationCount == 0) {
+            val itemDecoration = if(type == MissionWidgetListDataModel.Type.CLEAR)
+                MissionWidgetClearItemDecoration()
+            else MissionWidgetCardItemDecoration()
+            val translationY = if(type == MissionWidgetListDataModel.Type.CLEAR) 0f
+            else itemView.context.resources.getDimension(home_componentR.dimen.home_component_card_compat_padding_translation_y)
+            binding?.homeComponentMissionWidgetRcv?.addItemDecoration(itemDecoration)
+            binding?.homeComponentMissionWidgetRcv?.translationY = translationY
+        }
+    }
+
     private fun mappingItem(visitables: List<Visitable<MissionWidgetTypeFactory>>) {
         adapter.submitList(visitables as? List<Visitable<CommonCarouselProductCardTypeFactory>>) {
             binding?.homeComponentMissionWidgetRcv?.scrollToPosition(0)
         }
     }
 
-    private fun convertDataToMissionWidgetData(element: MissionWidgetListDataModel): List<Visitable<MissionWidgetTypeFactory>> {
-        val subtitleHeight = MissionWidgetUtil.findMaxHeightSubtitleText(
-            element.missionWidgetList,
-            itemView.context
-        )
-        return element.missionWidgetList.mapIndexed { index, item ->
+    private fun MissionWidgetListDataModel.convertToVisitables(): List<Visitable<MissionWidgetTypeFactory>> {
+        val titleHeight = missionWidgetUtil.findMaxTitleHeight(this, itemView.context)
+        val subtitleHeight = missionWidgetUtil.findMaxSubtitleHeight(this, itemView.context)
+        return missionWidgetList.mapIndexed { index, item ->
             CarouselMissionWidgetDataModel(
                 data = item,
-                channelId = element.id,
-                channelName = element.name,
-                headerName = element.header.name,
+                channelId = id,
+                channelName = name,
+                headerName = header.name,
+                withSubtitle = isWithSubtitle(),
+                titleHeight = titleHeight,
                 subtitleHeight = subtitleHeight,
-                verticalPosition = element.verticalPosition,
+                verticalPosition = verticalPosition,
                 cardPosition = index,
                 animateOnPress = item.animateOnPress,
                 isCache = item.isCache,
+                type = type
             )
         }
     }
@@ -132,8 +140,7 @@ class MissionWidgetViewHolder(
                     binding?.shimmeringMissionWidget?.gone()
                     binding?.homeComponentHeaderView?.show()
                     binding?.homeComponentMissionWidgetRcv?.setHasFixedSize(true)
-                    val visitables = convertDataToMissionWidgetData(element)
-                    mappingItem(visitables)
+                    mappingItem(element.convertToVisitables())
                 }
             }
         } else {
@@ -150,6 +157,7 @@ class MissionWidgetViewHolder(
     }
 
     override fun bind(element: MissionWidgetListDataModel) {
+        valuateRecyclerViewDecoration(element.type)
         setLayoutByStatus(element)
     }
 

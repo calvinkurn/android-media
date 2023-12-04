@@ -25,13 +25,13 @@
         android:id="@+id/recycleList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="12dp"
+        android:paddingHorizontal="@dimen/home_component_padding_horizontal_default"
         android:clipToPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
-        android:translationY="-8dp"
-        android:paddingBottom="8dp" />
+        android:translationY="@dimen/home_component_card_compat_padding_translation_y"
+        android:paddingBottom="@dimen/home_component_padding_bottom_with_compat_padding_translated" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/home_component_divider_footer"

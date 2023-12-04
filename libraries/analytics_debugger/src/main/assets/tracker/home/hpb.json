@@ -14,7 +14,8 @@
       "event": "view_item",
       "eventAction": "slider banner impression",
       "sessionIris": ".*",
-      "eventLabel": ".*"
+      "eventLabel": ".*",
+      "hits_time": ".*"
     },
     {
       "promotions": [{

@@ -277,7 +277,8 @@ class CheckoutViewModelLoadSafTest : BaseCheckoutViewModelTest() {
                     isChecked = true,
                     checkboxDisabled = false
                 )
-            )
+            ),
+            paymentLevelAddOnsPositions = listOf(1, 2, 3)
         )
         coEvery {
             getShipmentAddressFormV4UseCase.invoke(any())
@@ -326,7 +327,8 @@ class CheckoutViewModelLoadSafTest : BaseCheckoutViewModelTest() {
                     isChecked = false,
                     checkboxDisabled = false
                 )
-            )
+            ),
+            paymentLevelAddOnsPositions = listOf(1, 2, 3)
         )
         coEvery {
             getShipmentAddressFormV4UseCase.invoke(any())
@@ -417,7 +419,8 @@ class CheckoutViewModelLoadSafTest : BaseCheckoutViewModelTest() {
             egoldAttributes = EgoldAttributeModel(
                 isEligible = true,
                 isEnabled = true
-            )
+            ),
+            paymentLevelAddOnsPositions = listOf(1, 2, 3)
         )
         coEvery {
             getShipmentAddressFormV4UseCase.invoke(any())
@@ -456,7 +459,8 @@ class CheckoutViewModelLoadSafTest : BaseCheckoutViewModelTest() {
             donation = Donation(
                 title = "donasi",
                 nominal = 1
-            )
+            ),
+            paymentLevelAddOnsPositions = listOf(1, 2, 3)
         )
         coEvery {
             getShipmentAddressFormV4UseCase.invoke(any())
@@ -499,7 +503,8 @@ class CheckoutViewModelLoadSafTest : BaseCheckoutViewModelTest() {
                 title = "donasi",
                 nominal = 1,
                 isChecked = true
-            )
+            ),
+            paymentLevelAddOnsPositions = listOf(1, 2, 3)
         )
         coEvery {
             getShipmentAddressFormV4UseCase.invoke(any())

@@ -27,11 +27,11 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
     }
 }
 
@@ -63,7 +63,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

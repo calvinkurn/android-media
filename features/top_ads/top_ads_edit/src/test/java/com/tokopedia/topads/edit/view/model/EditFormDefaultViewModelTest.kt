@@ -2,6 +2,7 @@ package com.tokopedia.topads.edit.view.model
 
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
@@ -13,6 +14,9 @@ import com.tokopedia.topads.edit.usecase.EditSingleAdUseCase
 import com.tokopedia.topads.edit.usecase.GetAdsUseCase
 import com.tokopedia.topads.edit.usecase.GroupInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetBidSuggestionByProductIDsUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsImpressionPredictionSearchUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
@@ -37,8 +41,10 @@ class EditFormDefaultViewModelTest {
     private val bidInfoDefaultUseCase: BidInfoUseCase = mockk(relaxed = true)
     private val editSingleAdUseCase: EditSingleAdUseCase = mockk(relaxed = true)
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
     private val singleAdInfoUseCase: TopAdsGetPromoUseCase = mockk(relaxed = true)
+    private val topAdsGetBidSuggestionByProductIDsUseCase: TopAdsGetBidSuggestionByProductIDsUseCase = mockk(relaxed = true)
+    private val topAdsImpressionPredictionUseCase: TopAdsImpressionPredictionSearchUseCase = mockk(relaxed = true)
     private lateinit var viewModel: EditFormDefaultViewModel
     private val userSession: UserSession = mockk()
     private var groupId = 123
@@ -56,7 +62,9 @@ class EditFormDefaultViewModelTest {
             editSingleAdUseCase,
             singleAdInfoUseCase,
             userSession,
-            topAdsCreateUseCase
+            topAdsCreateUseCase,
+            topAdsGetBidSuggestionByProductIDsUseCase,
+            topAdsImpressionPredictionUseCase
         )
     }
 

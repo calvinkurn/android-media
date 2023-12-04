@@ -215,7 +215,8 @@ class LoginHelperViewModel @Inject constructor(
     private fun updateLocalUserDataList(userDataList: Result<UnifiedLoginHelperData>) {
         _uiState.update {
             it.copy(
-                localLoginDataList = userDataList
+                localLoginDataList = userDataList,
+                isLoading = false
             )
         }
     }

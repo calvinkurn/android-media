@@ -92,7 +92,6 @@ dependencies {
     debugImplementation rootProject.ext.composeDependencies.composeUiTooling
     debugImplementation rootProject.ext.composeDependencies.composePreview
 
-
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -114,7 +113,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     //test
     // Test Dependencies

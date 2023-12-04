@@ -31,13 +31,11 @@ import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
 import com.tokopedia.shop.score.penalty.presentation.activity.ShopPenaltyNotYetDeductedActivity
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemDetailPenaltyListener
-import com.tokopedia.shop.score.penalty.presentation.adapter.ItemHeaderCardPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyErrorListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyInfoNotificationListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyPointCardListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltySubsectionListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyTickerListener
-import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPeriodDateFilterListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemSortFilterPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
@@ -60,13 +58,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
+open class ShopPenaltyPageFragment :
+    BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
     PenaltyDateFilterBottomSheet.CalenderListener,
     PenaltyFilterBottomSheet.PenaltyFilterFinishListener,
     ItemDetailPenaltyListener,
-    ItemHeaderCardPenaltyListener,
-    ItemPeriodDateFilterListener,
     ItemPenaltyErrorListener,
     ItemSortFilterPenaltyListener,
     ItemPenaltySubsectionListener,
@@ -92,13 +90,11 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
             this,
             this,
             this,
-            this,
-            this,
             this
         )
     }
 
-    private val penaltyPageAdapter by lazy {
+    open val penaltyPageAdapter by lazy {
         PenaltyPageAdapter(penaltyPageAdapterFactory)
     }
 
@@ -172,6 +168,18 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(
+                androidx.core.content.ContextCompat.getColor(
+                    it,
+                    unifyprinciplesR.color.Unify_Background
+                )
+            )
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -187,32 +195,6 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
         observePenaltyPage()
         observeUpdateSortFilter()
         observeDetailPenaltyNextPage()
-    }
-
-    override fun onDateClick() {
-        val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance(
-            viewModelShopPenalty.getStartDate(),
-            viewModelShopPenalty.getEndDate(),
-            viewModelShopPenalty.getMaxStartDate(),
-            viewModelShopPenalty.getMaxEndDate()
-        )
-        bottomSheetDateFilter.setCalendarListener(this)
-        bottomSheetDateFilter.show(childFragmentManager)
-    }
-
-    override fun impressLearnMorePenaltyPage() {
-        shopScorePenaltyTracking.impressLearnMorePenaltyPage()
-    }
-
-    override fun onMoreInfoHelpPenaltyClicked() {
-        context?.let {
-            RouteManager.route(
-                it,
-                ApplinkConstInternalGlobal.WEBVIEW,
-                ShopScoreConstant.SYSTEM_PENALTY_HELP_URL
-            )
-        }
-        shopScorePenaltyTracking.clickLearMorePenaltyPage()
     }
 
     override fun onRetryRefreshError() {
@@ -348,13 +330,13 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     override fun startRenderPerformanceMonitoring() {
         shopPenaltyPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
         binding?.rvPenaltyPage?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                shopPenaltyPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-                shopPenaltyPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                binding?.rvPenaltyPage?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-            }
-        })
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    shopPenaltyPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                    shopPenaltyPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                    binding?.rvPenaltyPage?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ShopPenaltyPerformanceMonitoringListener? {
@@ -380,7 +362,6 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
         endlessRecyclerViewScrollListener.resetState()
         viewModelShopPenalty.setTypeFilterData(typeIds)
     }
-
 
     private fun observeUpdateSortFilter() {
         observe(viewModelShopPenalty.updateSortSelectedPeriod) {
@@ -494,7 +475,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
 
     companion object {
 
-        private const val PAGE_TYPE_KEY = "page_type"
+        const val PAGE_TYPE_KEY = "page_type"
 
         @JvmStatic
         fun createInstance(@ShopPenaltyPageType pageType: String): ShopPenaltyPageFragment {
@@ -505,7 +486,5 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
                 arguments = bundle
             }
         }
-
     }
-
 }

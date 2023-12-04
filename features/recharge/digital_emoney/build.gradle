@@ -22,6 +22,19 @@ buildscript {
 android {
     namespace 'com.tokopedia.emoney'
     testNamespace 'com.tokopedia.emoney.test'
+    defaultConfig {
+        externalNativeBuild {
+            cmake {
+                cppFlags ''
+            }
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
+    }
 }
 
 dependencies {
@@ -52,7 +65,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

@@ -12,13 +12,13 @@
     <string name="consent_withdrawal_section_title">Persetujuan kamu</string>
     <string name="consent_withdrawal_section_description">Atur fitur apa aja yang boleh akses datamu</string>
 
-    <!--Section | Privacy Policy -->
-    <string name="privacy_policy_label">Privacy Policy</string>
-    <string name="privacy_policy_section_title">Kebijakan Privasi Tokopedia</string>
-    <string name="privacy_policy_section_description">Kebijakan Privasi menjelaskan data pribadimu yang disimpan, bagaimana Tokopedia menggunakannya, dan kenapa Tokopedia memprosesnya.</string>
-    <string name="privacy_policy_bottom_sheet_title">Riwayat Kebijakan Privasi</string>
+    <!--Section | Privacy Notice -->
+    <string name="privacy_policy_label">Privacy Notice</string>
+    <string name="privacy_policy_section_title">Pemberitahuan Privasi Tokopedia</string>
+    <string name="privacy_policy_section_description">Pemberitahuan Privasi menjelaskan data pribadimu yang disimpan, bagaimana Tokopedia menggunakannya, dan kenapa Tokopedia memprosesnya.</string>
+    <string name="privacy_policy_bottom_sheet_title">Riwayat Pemberitahuan Privasi</string>
     <string name="privacy_policy_show_all_list_button">Lihat Semua</string>
-    <string name="privacy_policy_info_title">Info Riwayat Kebijakan Privasi</string>
+    <string name="privacy_policy_info_title">Info Riwayat Pemberitahuan Privasi</string>
 
     <!--Section | Recommendation and promotion-->
     <string name="privacy_center_recommendation_title">Rekomendasi &amp; promo</string>
@@ -36,7 +36,7 @@
     <string name="privacy_center_recommendation_friend_in_feed_title">Rekomendasi Teman di Feed</string>
     <string name="privacy_center_recommendation_friend_in_feed_subtitle">Tampilkan teman yang bisa di-follow</string>
     <string name="privacy_center_recommendation_friend_desc">Kami akan kasih rekomendasi teman yang bisa di-follow di Profil Feed kamu, berdasarkan datamu di fitur Referral dan Berbagi Alamat.</string>
-    <string name="privacy_center_recommendation_friend_checkbox_desc">Saya telah membaca dan menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi yang berlaku.</string>
+    <string name="privacy_center_recommendation_friend_checkbox_desc">Saya telah membaca dan menyetujui Syarat &amp; Ketentuan serta Pemberitahuan Privasi yang berlaku.</string>
     <string name="privacy_center_recommendation_friend_button">Aktifkan Sekarang</string>
     <string name="privacy_center_recommendation_friend_dialog_disabled_title">Matikan penggunaan data akun?</string>
     <string name="privacy_center_recommendation_friend_dialog_disabled_subtitle">Kamu nggak akan dapat rekomendasi teman yang mungkin kamu kenal di Feed.</string>
@@ -140,9 +140,9 @@
     <string name="dsar_range_item_3">3 Bulan Terakhir</string>
     <string name="dsar_range_item_2">3 Tahun Terakhir</string>
     <string name="dsar_range_item_1">Selama Tahun Ini</string>
-    <string name="txt_privacy_info">Demi menjaga relevansi dengan keadaan dan perubaan saat ini, Tokopedia hanya akan menampilkan tiga perubahan terbaru untuk kebijakan privasi.</string>
-    <string name="privacy_policy_subtitle">Demi menjaga relevansi dengan keadaan dan perubaan saat ini, Tokopedia hanya akan menampilkan tiga perubahan terbaru untuk kebijakan privasi.</string>
-    <string name="privacy_history_section_title">Riwayat Kebijakan Privasi</string>
+    <string name="txt_privacy_info">Demi menjaga relevansi dengan keadaan dan perubaan saat ini, Tokopedia hanya akan menampilkan tiga perubahan terbaru untuk pemberitahuan privasi.</string>
+    <string name="privacy_policy_subtitle">Demi menjaga relevansi dengan keadaan dan perubaan saat ini, Tokopedia hanya akan menampilkan tiga perubahan terbaru untuk pemberitahuan privasi.</string>
+    <string name="privacy_history_section_title">Riwayat Pemberitahuan Privasi</string>
 
 
 </resources>

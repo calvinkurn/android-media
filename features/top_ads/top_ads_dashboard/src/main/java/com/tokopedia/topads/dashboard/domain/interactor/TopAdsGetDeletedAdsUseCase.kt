@@ -23,7 +23,7 @@ const val TOP_ADS_DELETED_ADS_QUERY =
     data {
       stat_total_spent
       stat_total_gross_profit
-      stat_total_roas
+      stat_direct_roas
       stat_avg_click
       stat_total_impression
       stat_total_click

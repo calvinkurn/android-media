@@ -17,7 +17,8 @@
       "userId": ".*",
       "eventAction": "impression on banner dynamic channel feature campaign",
       "sessionIris": ".*",
-      "eventLabel": ""
+      "eventLabel": "",
+      "hits_time": ".*"
     },
     {
       "promotions": [{

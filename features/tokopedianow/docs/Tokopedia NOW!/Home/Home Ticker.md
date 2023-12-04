@@ -1,5 +1,5 @@
 
-![image](../../res/home_ticker.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/home_ticker.png)
 
 <!--left header table-->
 | **Type Factory** | `HomeTypeFactory` |

@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.domain.gql.feed
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 
 data class Product(
     @SerializedName("id") @Expose
@@ -85,6 +86,32 @@ data class Product(
     @Expose
     val freeOngkirInformation: FreeOngkirInformation = FreeOngkirInformation()
 ) {
+
+    fun mapToHomeRecommendationProductItem(): HomeRecommendationItemDataModel.HomeRecommendationProductItem {
+        return HomeRecommendationItemDataModel.HomeRecommendationProductItem(
+            id = id,
+            name = name,
+            imageUrl = imageUrl,
+            recommendationType = recommendationType,
+            priceInt = priceInt,
+            freeOngkirIsActive = freeOngkirInformation.isActive,
+            labelGroup = labelGroup.map {
+                HomeRecommendationItemDataModel.HomeRecommendationProductItem.LabelGroup(
+                    position = it.position,
+                    title = it.title,
+                    type = it.type,
+                    url = it.imageUrl
+                )
+            },
+            categoryBreadcrumbs = categoryBreadcrumbs,
+            clusterID = clusterId,
+            isTopAds = isTopads,
+            trackerImageUrl = trackerImageUrl,
+            clickUrl = clickUrl,
+            isWishlist = isWishlist,
+            wishListUrl = wishlistUrl
+        )
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

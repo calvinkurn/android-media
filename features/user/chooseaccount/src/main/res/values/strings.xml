@@ -74,7 +74,7 @@
     <string name="error_char_count_under">Nomor ponsel terlalu pendek, minimum 8 angka</string>
     <string name="error_char_count_over">Nomor ponsel terlalu panjang, maksimal 15 angka</string>
     <string name="error_input_phone_number">Masukkan nomor ponsel untuk mendaftar</string>
-    <string name="string_bottom_info">Dengan mendaftar, saya menyetujui \n<a href="https://m.tokopedia.com/terms.pl">Syarat dan Ketentuan</a> serta <a href="https://m.tokopedia.com/privacy.pl">Kebijakan Privasi</a>.</string>
+    <string name="string_bottom_info">Dengan mendaftar, saya menyetujui \n<a href="https://m.tokopedia.com/terms.pl">Syarat dan Ketentuan</a> serta <a href="https://m.tokopedia.com/privacy.pl">Pemberitahuan Privasi</a>.</string>
     <string name="phone_number_already_registered_info">Masuk dengan nomor %1$s?</string>
     <string name="phone_number_not_registered_info">Apakah nomor ponsel yang Anda masukkan sudah benar?</string>
     <string name="phone_number_already_registered_no">Ubah</string>

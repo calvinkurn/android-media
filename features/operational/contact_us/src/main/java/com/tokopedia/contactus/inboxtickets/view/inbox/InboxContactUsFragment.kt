@@ -36,8 +36,8 @@ import com.tokopedia.contactus.inboxtickets.view.fragment.ServicePrioritiesBotto
 import com.tokopedia.contactus.inboxtickets.view.inbox.delegates.HasPaginatedList
 import com.tokopedia.contactus.inboxtickets.view.inbox.delegates.HasPaginatedListImpl
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxFilterSelection
-import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiState
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
+import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiState
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.UiObjectMapper.mapToSelectionFilterObject
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.getIntent
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.RESULT_FINISH
@@ -184,14 +184,14 @@ class InboxContactUsFragment :
         }
     }
 
-    private fun sendRecordToFirebase(e : Exception?){
+    private fun sendRecordToFirebase(e: Exception?) {
         e?.let {
             FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
-    private fun showErrorTopChatStatus(errorMessage: String){
-        if(errorMessage.isNotEmpty()) {
+    private fun showErrorTopChatStatus(errorMessage: String) {
+        if (errorMessage.isNotEmpty()) {
             binding?.rvEmailList.showToasterErrorWithCta(
                 errorMessage,
                 context?.getString(R.string.contact_us_ok).orEmpty()
@@ -238,7 +238,7 @@ class InboxContactUsFragment :
     }
 
     private fun showToastWhenNeeded(throwable: Throwable) {
-        if(!throwable.isInternetException() || !mAdapter.isEmpty) {
+        if (!throwable.isInternetException() || !mAdapter.isEmpty) {
             val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
             binding?.rvEmailList.showToasterErrorWithCta(
                 errorMessage,
@@ -248,7 +248,7 @@ class InboxContactUsFragment :
     }
 
     private fun showErrorPage(throwable: Throwable) {
-        if(mAdapter.isEmpty) {
+        if (mAdapter.isEmpty) {
             binding?.viewOfContent?.hide()
             binding?.layoutErrorGlobal?.show()
             binding?.homeGlobalError?.run {
@@ -258,23 +258,23 @@ class InboxContactUsFragment :
     }
 
     private fun getTypeOfErrorGlobal(throwable: Throwable): Int {
-        return if(throwable.isInternetException()){
+        return if (throwable.isInternetException()) {
             GlobalError.NO_CONNECTION
         } else {
             GlobalError.SERVER_ERROR
         }
     }
 
-    private fun Throwable.isInternetException() : Boolean {
-        return  this is SocketException || this is SocketTimeoutException || this is UnknownHostException
+    private fun Throwable.isInternetException(): Boolean {
+        return this is SocketException || this is SocketTimeoutException || this is UnknownHostException
     }
 
-    private fun hideErrorPage(){
+    private fun hideErrorPage() {
         binding?.viewOfContent?.show()
         binding?.layoutErrorGlobal?.hide()
     }
 
-    private fun loadDataIntoRecyclerView(data : InboxUiEffect.LoadNextPageSuccess){
+    private fun loadDataIntoRecyclerView(data: InboxUiEffect.LoadNextPageSuccess) {
         showFilter()
         toggleEmptyLayout(View.GONE)
         mAdapter.clear()
@@ -319,9 +319,11 @@ class InboxContactUsFragment :
 
                 override fun onClickTicket(index: Int, isOfficialStore: Boolean) {
                     val itemTicket = viewModel.getItemTicketOnPosition(index)
-                    val ticketId = itemTicket.id.orEmpty()
-                    sendTrackingClickToDetailTicketMessage(index)
-                    goToInboxDetail(ticketId, isOfficialStore)
+                    itemTicket?.let {
+                        val ticketId = itemTicket.id.orEmpty()
+                        sendTrackingClickToDetailTicketMessage(index)
+                        goToInboxDetail(ticketId, isOfficialStore)
+                    }
                 }
             })
             adapter = mAdapter
@@ -334,12 +336,14 @@ class InboxContactUsFragment :
 
     fun sendTrackingClickToDetailTicketMessage(positionItem: Int) {
         val itemTicket = viewModel.getItemTicketOnPosition(positionItem)
-        ContactUsTracking.sendGTMInboxTicket(
-            InboxTicketTracking.Event.Event,
-            InboxTicketTracking.Category.EventCategoryInbox,
-            InboxTicketTracking.Action.EventTicketClick,
-            itemTicket.caseNumber.orEmpty()
-        )
+        itemTicket?.let {
+            ContactUsTracking.sendGTMInboxTicket(
+                InboxTicketTracking.Event.Event,
+                InboxTicketTracking.Category.EventCategoryInbox,
+                InboxTicketTracking.Action.EventTicketClick,
+                itemTicket.caseNumber.orEmpty()
+            )
+        }
     }
 
     private fun setOptionsFilter() {
@@ -372,7 +376,7 @@ class InboxContactUsFragment :
         }
     }
 
-    private fun settingClickListenerOfErrorPage(){
+    private fun settingClickListenerOfErrorPage() {
         binding?.layoutErrorGlobal?.run {
             binding?.homeGlobalError?.run {
                 errorSecondaryAction.hide()
@@ -389,8 +393,10 @@ class InboxContactUsFragment :
         val BOTTOM_FRAGMENT = "Bottom_Sheet_Fragment"
         bottomFragment =
             parentFragmentManager.findFragmentByTag(BOTTOM_FRAGMENT) as? BottomSheetDialogFragment?
-        if (bottomFragment == null) bottomFragment =
-            getBottomFragment(getBottomSheetLayoutRes(), options)
+        if (bottomFragment == null) {
+            bottomFragment =
+                getBottomFragment(getBottomSheetLayoutRes(), options)
+        }
         bottomFragment?.show(parentFragmentManager, BOTTOM_FRAGMENT)
     }
 
@@ -482,7 +488,7 @@ class InboxContactUsFragment :
         showChatBotWidgetNotification(isHasUnReadNotification)
     }
 
-    private fun getWelcomeMessage(message : String) : String {
+    private fun getWelcomeMessage(message: String): String {
         return message.ifEmpty {
             getString(R.string.tool_tip_tanya_default_value)
         }
@@ -506,17 +512,17 @@ class InboxContactUsFragment :
         }
     }
 
-    private fun routeOnEmptyPage(){
+    private fun routeOnEmptyPage() {
         ContactUsTracking.sendGTMInboxTicket(
             "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickHubungi,
             InboxTicketTracking.Label.InboxEmpty
         )
-        if(isFromTokopediaHelp) {
+        if (isFromTokopediaHelp) {
             activity?.finish()
         } else {
-            ContactUsHomeActivity.start(context?:requireContext())
+            ContactUsHomeActivity.start(context ?: requireContext())
         }
     }
 
@@ -546,13 +552,13 @@ class InboxContactUsFragment :
         binding?.progressBarLayout?.gone()
     }
 
-    private fun goToInboxDetail(ticketId : String, isOfficialStore: Boolean) {
+    private fun goToInboxDetail(ticketId: String, isOfficialStore: Boolean) {
         val detailIntent =
             getIntent(context ?: return, ticketId, isOfficialStore)
         toTicketFeedBack.launch(detailIntent)
     }
 
-    private fun getInboxDetailResultActivityLauncher() : ActivityResultLauncher<Intent> {
+    private fun getInboxDetailResultActivityLauncher(): ActivityResultLauncher<Intent> {
         return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_FINISH) {
                 routeToHomeContactUs()
@@ -560,7 +566,7 @@ class InboxContactUsFragment :
         }
     }
 
-    private fun routeToHomeContactUs(){
+    private fun routeToHomeContactUs() {
         activity?.startActivity(
             Intent(
                 context,

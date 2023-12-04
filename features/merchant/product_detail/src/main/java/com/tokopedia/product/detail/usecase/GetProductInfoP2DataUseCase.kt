@@ -414,6 +414,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                   isUsingPadding
                   imageHeight
                 }
+                shipmentBody {
+                  icon
+                  text
+                }
               }
               boMetadata
               productMetadata {
@@ -430,6 +434,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 action
                 actionLink
               }
+              background
             }
             merchantVoucherSummary{
                 animatedInfo{
@@ -521,6 +526,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 totalRating
                 totalReviewTextAndImage
                 showRatingReview
+                keywords {
+                    text
+                    filter
+                }
             }
            arInfo{
               productIDs
@@ -576,16 +585,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                title
                status
                componentName
-            }
-            socialProofComponent {
-                socialProofType
-                socialProofID
-                title
-                subtitle
-                icon
-                applink {
-                    appLink
-                }
             }
             reviewList {
                 title

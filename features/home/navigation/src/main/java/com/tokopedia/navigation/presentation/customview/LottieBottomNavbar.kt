@@ -24,11 +24,11 @@ import android.widget.TextView
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
-import com.tokopedia.navigation.util.IconJumperUtil
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.utils.resources.isDarkMode
@@ -43,9 +43,6 @@ class LottieBottomNavbar : LinearLayout {
         } else {
             context.isDarkMode()
         }
-
-    private val isIconJumperEnabled: Boolean
-        get() = IconJumperUtil.isEnabledIconJumper()
 
     private val modeAwareContext: Context
         get() = if (isDarkMode) mDarkModeContext else context
@@ -596,7 +593,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun getNewAnimationName(index: Int, bottomMenu: BottomMenu): Int? {
-        return if (isIconJumperEnabled && index == Int.ZERO) {
+        return if (HomeRollenceController.isIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
                 getOldAnimationName(bottomMenu)
             } else {
@@ -612,7 +609,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun getIconTitle(index: Int, bottomMenu: BottomMenu): String? {
-        return if (isIconJumperEnabled && index == Int.ZERO) {
+        return if (HomeRollenceController.isIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
                 bottomMenu.homeForYou?.homeTitle
             } else {
@@ -628,7 +625,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun getNewAnimationToEnabledName(index: Int, bottomMenu: BottomMenu): Int? {
-        return if (isIconJumperEnabled && index == Int.ZERO) {
+        return if (HomeRollenceController.isIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
                 getOldAnimationToEnabledName(bottomMenu)
             } else {
@@ -644,7 +641,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun getNewImageName(index: Int, bottomMenu: BottomMenu): Int? {
-        return if (isIconJumperEnabled && index == Int.ZERO) {
+        return if (HomeRollenceController.isIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
                 bottomMenu.homeForYou?.homeImageName
             } else {
@@ -676,7 +673,7 @@ class LottieBottomNavbar : LinearLayout {
 
     private fun handleItemClicked(index: Int, bottomMenu: BottomMenu) {
         // invoke listener
-        Handler(Looper.getMainLooper()).post {
+        Handler().post {
             if (listener?.menuClicked(index, bottomMenu.id) == true) {
                 changeColor(index)
                 selectedItem = index
@@ -749,12 +746,12 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun isForYouSelectedByPosition(index: Int): Boolean {
-        return isIconJumperEnabled && index == Int.ZERO && !isForYouToHomeSelected
+        return HomeRollenceController.isIconJumper() && index == Int.ZERO && !isForYouToHomeSelected
     }
 
     private fun changeColor(newPosition: Int) {
         if (selectedItem == newPosition) {
-            if (newPosition == Int.ZERO && isIconJumperEnabled) {
+            if (newPosition == Int.ZERO && HomeRollenceController.isIconJumper()) {
                 homeForYouListener?.homeForYouMenuReselected(newPosition, menu[newPosition].id)
             } else {
                 listener?.menuReselected(newPosition, menu[newPosition].id)
@@ -858,7 +855,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun setTitleIconHomeOrForYou(newPosition: Int) {
-        if (isIconJumperEnabled) {
+        if (HomeRollenceController.isIconJumper()) {
             val textIcon = titleList.getOrNull(Int.ZERO)
             val iconTitle = when {
                 newPosition == Int.ZERO -> {

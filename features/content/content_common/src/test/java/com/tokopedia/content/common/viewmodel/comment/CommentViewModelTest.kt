@@ -14,10 +14,12 @@ import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import io.mockk.Called
 import io.mockk.called
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Rule
 import org.junit.Test
@@ -283,7 +285,7 @@ class CommentViewModelTest {
             comment.list.assertType<List<CommentUiModel>> {
                 it.contains(item).assertTrue()
             }
-            coVerify { mockRepo.deleteComment(any()) wasNot called }
+            coVerify(exactly = 0) { mockRepo.deleteComment(any()) }
             val selected = it.vm
                 .getPrivateField<MutableStateFlow<Pair<CommentUiModel.Item, Int>>>("_selectedComment")
             selected.value.first.assertEqualTo(item)
@@ -312,7 +314,7 @@ class CommentViewModelTest {
             comment.list.assertType<List<CommentUiModel>> {
                 it.contains(item).assertFalse()
             }
-            coVerify { mockRepo.deleteComment(any()) wasNot called }
+            coVerify(exactly = 0) { mockRepo.deleteComment(any()) }
             val selected = it.vm
                 .getPrivateField<MutableStateFlow<Pair<CommentUiModel.Item, Int>>>("_selectedComment")
             selected.value.first.assertEqualTo(item)
@@ -339,7 +341,7 @@ class CommentViewModelTest {
                 )
             }
             event.last().assertEqualTo(CommentEvent.ShowSuccessToaster())
-            coVerify { mockRepo.deleteComment(any()) wasNot called }
+            coVerify(exactly = 0) { mockRepo.deleteComment(any()) }
             val selected = it.vm
                 .getPrivateField<MutableStateFlow<Pair<CommentUiModel.Item, Int>>>("_selectedComment")
             selected.value.first.assertEqualTo(item)

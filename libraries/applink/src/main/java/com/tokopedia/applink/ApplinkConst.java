@@ -1,5 +1,7 @@
 package com.tokopedia.applink;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_OTP_TYPE;
+
 /**
  * @author ricoharisin .
  * <p>
@@ -134,7 +136,7 @@ public interface ApplinkConst {
     String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
     String DISCOVERY_CATALOG = "tokopedia://catalog";
 
-    String DISCOVERY_CATALOG_PRODUCT_LIST = "tokopedia://catalog/product_list";
+    String DISCOVERY_CATALOG_PRODUCT_LIST = "tokopedia://catalog-product-list";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
     String WISHLIST = "tokopedia://wishlist";
     String NEW_WISHLIST = "tokopedia://new-wishlist";
@@ -143,7 +145,7 @@ public interface ApplinkConst {
     String LOGIN = "tokopedia://login";
     String ADD_PHONE = "tokopedia://add-phone";
     String PRIVACY_CENTER = "tokopedia://privacy-center";
-    String OTP = "tokopedia://otp";
+    String OTP = "tokopedia://otp" + "?" + PARAM_OTP_TYPE + "={otp-type}";
     String QR_LOGIN = "tokopedia://login/qr";
     String OTP_PUSH_NOTIF_RECEIVER = "tokopedia://otp-verify";
     String OFFICIAL_STORES = "tokopedia://official-stores";
@@ -194,6 +196,8 @@ public interface ApplinkConst {
      */
     String TOKO_CHAT = "tokopedia://tokochat";
     String TOKO_CHAT_LIST = "tokopedia://tokochat/list";
+
+    String TOKO_CHAT_BOTTOMSHEET = "tokopedia://tokochat/bottomsheet/{type}";
 
     String CHATBOT_HOST = "chatbot";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
@@ -255,6 +259,7 @@ public interface ApplinkConst {
     String BUYER_ORDER_EXTENSION = "tokopedia://marketplace/buyer-order-extension";
 
     String BUYER_PARTIAL_ORDER_FULFILLMENT = "tokopedia://marketplace/buyer-partial-order-fulfillment";
+    String SELLER_PARTIAL_ORDER_FULFILLMENT = "tokopedia://seller/seller-partial-order-fulfillment";
     String BELANJA_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_SUB = "tokopedia://order/marketplace/filter";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
@@ -706,7 +711,6 @@ public interface ApplinkConst {
         String SHOP_ID = "shop_id";
         String OPPONENT_NAME = "opponent_name";
         String OPPONENT_ROLE = "opponent_role";
-        String SOURCE = "source";
         String TO_USER_ID = "toUserId";
         String TO_SHOP_ID = "toShopId";
         String CUSTOM_MESSAGE = "customMessage";
@@ -729,15 +733,24 @@ public interface ApplinkConst {
         String PATH_ASK_SELLER = "askseller";
         String PATH_ASK_BUYER = "askbuyer";
 
-        String SOURCE_ASK_SELLER = "tx_ask_seller";
-        String SOURCE_PAGE = "source_page";
+
         String SEARCH_CREATE_TIME = "search_create_time_str";
         String SEARCH_PRODUCT_KEYWORD = "search_product_keyword";
 
         String SHOP_FOLLOWERS_CHAT_KEY = "shop_followers_chat_key";
 
         // chat source page
-        String SOURCE_CHAT_SEARCH = "chat_search";
+        String SOURCE = "source";
+        interface Source {
+            String SOURCE_SHOP = "shop";
+            String SOURCE_PDP = "pdp";
+            String SOURCE_ASK_BUYER = "tx_ask_buyer";
+            String SOURCE_ASK_SELLER = "tx_ask_seller";
+            String SOURCE_CHAT_SEARCH = "chatSearch";
+
+            // Default / Unspecified
+            String SOURCE_REGULAR_CHAT = "regularChat";
+        }
     }
 
     interface Tokomember{
@@ -864,11 +877,23 @@ public interface ApplinkConst {
         String ORDER_ID_GOJEK = "orderIdGojek";
         String ORDER_ID_TKPD = "orderIdTkpd";
 
-        //bundle params
+        // bundle params
         String IS_FROM_TOKOFOOD_POST_PURCHASE = "isFromTokoFoodPostPurchase";
     }
 
     interface AppNotifSetting {
         String DEVICE_APP_NOTIF_SETTINGS_PAGE = "";
+    }
+
+    interface Stories {
+
+        String STORIES_VIEWER_ARG_SOURCE = "source";
+        String STORIES_VIEWER_ARG_SOURCE_ID = "source_id";
+        String STORIES_VIEWER_TYPE_SHOP = "shop";
+        String STORIES_VIEWER_TYPE_USER = "user";
+        String STORIES_VIEWER_SOURCE_SHARELINK = "sharelink";
+
+        String STORIES_VIEWER = "tokopedia://stories/{stories_type}/{author_id}";
+        String STORIES_CREATION = "tokopedia://stories/creation";
     }
 }

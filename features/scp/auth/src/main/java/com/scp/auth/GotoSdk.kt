@@ -19,7 +19,7 @@ import com.scp.auth.common.analytics.GotoPinAnalyticsMapper
 import com.scp.auth.common.utils.ScpUtils
 import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.auth.di.ScpAuthComponent
-import com.scp.auth.verification.VerificationSdk.getCvSdkProvider
+import com.scp.auth.verification.VerificationSdk
 import com.scp.login.core.domain.common.infrastructure.LSdkEventName
 import com.scp.login.core.domain.contracts.services.LSdkServices
 import com.scp.login.init.GotoLogin
@@ -64,6 +64,8 @@ object GotoSdk {
 
     fun getActivity(): AppCompatActivity? = scpAuthActivity
 
+    fun getGotopinInstance(): PinManager? = GOTOPINSDKINSTANCE
+
     @JvmStatic
     fun init(application: Application): LSdkProvider? {
         val appComponent = (application as BaseMainApplication)
@@ -72,7 +74,7 @@ object GotoSdk {
             .baseAppComponent(appComponent)
             .build()
         LSDKINSTANCE = GotoLogin.getInstance(
-            cvSdkProvider = getCvSdkProvider(application),
+            cvSdkProvider = VerificationSdk.getInstance(application),
             gotoPinManager = getGotoPinSdkProvider(application),
             configurations = LoginSdkConfigs(application),
             application = application,
@@ -84,7 +86,7 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: Map<String, Any?>
                     ) {
-                        AuthAnalyticsMapper.trackScreenLsdk(eventName.eventName, params)
+                        trackLsdk(eventName.eventName, params)
                     }
 
                     override fun trackError(
@@ -94,7 +96,7 @@ object GotoSdk {
                         if (eventName.eventName == LSdkEventName.LSDK_VERIFICATION_FAIL || eventName.eventName == LSdkEventName.LSDK_LOGIN_FAIL) {
                             ScpUtils.logError(eventName.eventName, params)
                         }
-                        AuthAnalyticsMapper.trackEventLsdk(eventName.eventName, params)
+                        trackLsdk(eventName.eventName, params)
                     }
 
                     override fun trackEvent(
@@ -104,7 +106,7 @@ object GotoSdk {
                         if (eventName.eventName == LSdkEventName.LSDK_LOGIN_SUCCESS) {
                             ScpUtils.updateUserSessionLoginMethod(application, params[CVEventFieldName.METHOD].toString())
                         }
-                        AuthAnalyticsMapper.trackEventLsdk(eventName.eventName, params)
+                        trackLsdk(eventName.eventName, params)
                     }
                 }
             )
@@ -174,6 +176,11 @@ object GotoSdk {
             )
         )
         return GOTOPINSDKINSTANCE!!
+    }
+
+    private fun trackLsdk(eventName: String, params: Map<String, Any?>) {
+        AuthAnalyticsMapper.trackScreenLsdk(eventName, params)
+        AuthAnalyticsMapper.trackEventLsdk(eventName, params)
     }
 
     private fun getDeviceName(): String {
