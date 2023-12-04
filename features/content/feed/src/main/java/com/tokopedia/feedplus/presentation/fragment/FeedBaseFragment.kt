@@ -9,10 +9,12 @@ import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -56,6 +58,8 @@ import com.tokopedia.feedplus.presentation.model.FeedTabModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreOwner
+import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreProvider
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
@@ -166,6 +170,8 @@ class FeedBaseFragment :
             )
         }
 
+    private val viewModelStoreProvider by activityViewModels<FeedPostViewModelStoreProvider>()
+
     private val openCreateShorts =
         registerForActivityResult(OpenCreateShortsContract()) { isCreatingNewShorts ->
             if (!isCreatingNewShorts) return@registerForActivityResult
@@ -203,6 +209,13 @@ class FeedBaseFragment :
                     fragment.listener = this
                     fragment.shouldShowPerformanceAction = false
                     fragment.analytics = contentCreationAnalytics
+                }
+                is FeedFragment -> {
+                    fragment.setDataSource(object : FeedFragment.DataSource {
+                        override fun getViewModelStoreOwner(type: String): ViewModelStoreOwner {
+                            return FeedPostViewModelStoreOwner(viewModelStoreProvider, type)
+                        }
+                    })
                 }
             }
         }
