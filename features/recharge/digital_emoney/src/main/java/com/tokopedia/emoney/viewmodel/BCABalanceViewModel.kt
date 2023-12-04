@@ -100,8 +100,8 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun getPendingBalanceProcess(
-        isoDep: IsoDep,
+    fun getPendingBalanceProcess(
+        isoDep: IsoDep?,
         cardNumber: String,
         lastBalance: Int,
         rawPublicKeyString: String,
@@ -159,8 +159,8 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun getGenerateTrxIdProcess(
-        isoDep: IsoDep,
+    fun getGenerateTrxIdProcess(
+        isoDep: IsoDep?,
         cardNumber: String,
         lastBalance: Int,
         rawPublicKeyString: String,
@@ -219,8 +219,8 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processSDKBCADataSession1(
-        isoDep: IsoDep,
+    fun processSDKBCADataSession1(
+        isoDep: IsoDep?,
         cardNumber: String,
         lastBalance: Int,
         rawPublicKeyString: String,
@@ -258,8 +258,8 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun getSessionKeyProcess(
-        isoDep: IsoDep,
+    fun getSessionKeyProcess(
+        isoDep: IsoDep?,
         cardNumber: String,
         lastBalance: Int,
         rawPublicKeyString: String,
@@ -313,8 +313,8 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processSDKBCADataSession2(
-        isoDep: IsoDep,
+    fun processSDKBCADataSession2(
+        isoDep: IsoDep?,
         cardNumber: String,
         lastBalance: Int,
         rawPublicKeyString: String,
@@ -352,8 +352,8 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processSDKBCATopUp1(
-        isoDep: IsoDep,
+    fun processSDKBCATopUp1(
+        isoDep: IsoDep?,
         cardNumber: String,
         lastBalance: Int,
         rawPublicKeyString: String,
@@ -406,8 +406,8 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun getBetweenTopUpProcess(
-        isoDep: IsoDep,
+    fun getBetweenTopUpProcess(
+        isoDep: IsoDep?,
         cardNumber: String,
         lastBalance: Int,
         rawPublicKeyString: String,
@@ -496,8 +496,8 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processSDKBCATopUp2(
-        isoDep: IsoDep,
+    fun processSDKBCATopUp2(
+        isoDep: IsoDep?,
         cardNumber: String,
         rawPublicKeyString: String,
         rawPrivateKeyString: String,
@@ -600,8 +600,8 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processSDKReversal(
-        isoDep: IsoDep,
+    fun processSDKReversal(
+        isoDep: IsoDep?,
         strTransactionId: String,
         ATD: String,
         cardNumber: String,
@@ -709,8 +709,8 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processSDKBCAlastBCATopUp(
-        isoDep: IsoDep,
+    fun processSDKBCAlastBCATopUp(
+        isoDep: IsoDep?,
         strTransactionId: String,
         cardNumber: String,
         rawPublicKeyString: String,

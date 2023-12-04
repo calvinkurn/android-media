@@ -47,6 +47,8 @@ class BCAFlazzBalanceViewModelTest {
     @MockK
     lateinit var isoDep: IsoDep
 
+    private val nullIsoDep: IsoDep? = null
+
     private lateinit var bcaBalanceViewModel: BCABalanceViewModel
 
     private val gson = Gson()
@@ -3909,4 +3911,95 @@ class BCAFlazzBalanceViewModelTest {
             ERROR_MESSAGE
         )
     }
+
+    @Test
+    fun processSDKBCADataSession1_checkIsoDep() {
+        //when
+        bcaBalanceViewModel.processSDKBCADataSession1(
+            nullIsoDep,
+            "",
+            0,"","","","","",""
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun processSDKBCADataSession2_checkIsoDep() {
+        //when
+        bcaBalanceViewModel.processSDKBCADataSession2(
+            nullIsoDep,
+            "",
+            0,"","","","","","", BCAFlazzData()
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun processSDKBCATopUp1_checkIsoDep() {
+        //when
+        bcaBalanceViewModel.processSDKBCATopUp1(
+            nullIsoDep,
+            "",
+            0,"","","","","","",BCAFlazzData()
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun processSDKBCATopUp2_checkIsoDep() {
+        //when
+        bcaBalanceViewModel.processSDKBCATopUp2(
+            nullIsoDep,
+            "",
+            "","","","",BCAFlazzData()
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun processSDKReversal_checkIsoDep() {
+        //when
+        bcaBalanceViewModel.processSDKReversal(
+            nullIsoDep,
+            "",
+            "","",0,"","","", BCAFlazzData()
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun processSDKBCAlastBCATopUp_checkIsoDep() {
+        //when
+        bcaBalanceViewModel.processSDKBCAlastBCATopUp(
+            nullIsoDep,
+            "",
+            "","","",""
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
 }
