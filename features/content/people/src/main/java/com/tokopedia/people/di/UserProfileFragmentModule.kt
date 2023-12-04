@@ -2,6 +2,7 @@ package com.tokopedia.people.di
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
+import com.tokopedia.people.views.fragment.FollowListFragment
 import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment
 import com.tokopedia.people.views.fragment.FollowerListingFragment
 import com.tokopedia.people.views.fragment.FollowingListingFragment
@@ -53,4 +54,9 @@ abstract class UserProfileFragmentModule {
     @IntoMap
     @FragmentKey(FollowingListingFragment::class)
     abstract fun bindFollowingListingFragment(fragment: FollowingListingFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(FollowListFragment::class)
+    abstract fun bindFollowListFragment(fragment: FollowListFragment): Fragment
 }

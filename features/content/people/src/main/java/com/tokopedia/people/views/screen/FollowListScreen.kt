@@ -3,7 +3,6 @@ package com.tokopedia.people.views.screen
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.components.ButtonSize
@@ -27,6 +27,7 @@ import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.noRippleClickable
 import com.tokopedia.people.views.uimodel.PeopleUiModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
@@ -70,21 +71,23 @@ private fun ShopFollowListItemRow(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .clickable { onItemClicked(item) }
+            .noRippleClickable { onItemClicked(item) }
             .wrapContentHeight()
             .fillMaxWidth()
             .padding(16.dp, 8.dp)
     ) {
         NestImage(
             source = ImageSource.Remote(item.logoUrl),
-            Modifier
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
                 .requiredSize(48.dp)
                 .clip(CircleShape)
         )
         if (item.badgeUrl.isNotBlank()) {
             NestImage(
                 source = ImageSource.Remote(item.badgeUrl),
-                Modifier
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
                     .padding(start = 12.dp)
                     .requiredSize(18.dp)
                     .clip(CircleShape)
@@ -118,14 +121,15 @@ private fun UserFollowListItemRow(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .clickable { onItemClicked(item) }
+            .noRippleClickable { onItemClicked(item) }
             .wrapContentHeight()
             .fillMaxWidth()
             .padding(16.dp, 8.dp)
     ) {
         NestImage(
             source = ImageSource.Remote(item.photoUrl),
-            Modifier
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
                 .requiredSize(48.dp)
                 .clip(CircleShape)
         )

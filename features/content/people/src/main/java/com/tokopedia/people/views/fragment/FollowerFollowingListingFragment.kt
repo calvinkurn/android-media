@@ -26,6 +26,7 @@ import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity.Companion.EXTRA_ACTIVE_TAB
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity.Companion.EXTRA_USERNAME
+import com.tokopedia.people.views.uimodel.FollowListType
 import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.LoadingState
@@ -120,9 +121,10 @@ class FollowerFollowingListingFragment @Inject constructor(
                     getString(peopleR.string.up_title_followers),
                     currState.stats.totalFollowerFmt
                 ),
-                FollowerListingFragment.getFragment(
+                FollowListFragment.getOrCreate(
                     childFragmentManager,
-                    requireContext().classLoader
+                    requireContext().classLoader,
+                    FollowListFragment.Param(FollowListType.Follower, userId)
                 )
             ),
             Pair(
@@ -130,9 +132,10 @@ class FollowerFollowingListingFragment @Inject constructor(
                     getString(peopleR.string.up_title_following),
                     currState.stats.totalFollowingFmt
                 ),
-                FollowingListingFragment.getFragment(
+                FollowListFragment.getOrCreate(
                     childFragmentManager,
-                    requireContext().classLoader
+                    requireContext().classLoader,
+                    FollowListFragment.Param(FollowListType.Following, userId)
                 )
             )
         )
