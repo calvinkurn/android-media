@@ -75,6 +75,7 @@ interface PlayWidgetInListMediumAnalyticListener {
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
+        config: PlayWidgetConfigUiModel,
     ) {}
 
     /**

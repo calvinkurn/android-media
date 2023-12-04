@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.data.repository
 
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.play.broadcaster.domain.repository.*
 import javax.inject.Inject
 

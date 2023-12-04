@@ -1,42 +1,28 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation
 
-import android.os.Bundle
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.smart_recycler_helper.SmartVisitable
 
 data class BannerRecommendationDataModel(
-        val id: Int,
-        val name: String,
-        val imageUrl: String,
-        val url: String,
-        val applink: String,
-        val buAttribution: String,
-        val creativeName: String,
-        val target: String,
-        val position: Int,
-        val galaxyAttribution: String,
-        val affinityLabel: String,
-        val shopId: String,
-        val categoryPersona: String,
-        val tabName: String
-): ImpressHolder(), HomeRecommendationVisitable {
+    val id: Int,
+    val name: String,
+    val imageUrl: String,
+    val url: String,
+    val applink: String,
+    val buAttribution: String,
+    val creativeName: String,
+    val target: String,
+    val position: Int,
+    val galaxyAttribution: String,
+    val affinityLabel: String,
+    val shopId: String,
+    val categoryPersona: String,
+    val tabName: String
+) : ImpressHolder(), Visitable<HomeRecommendationTypeFactoryImpl> {
 
-    override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return Bundle()
-    }
-
-    override fun equalsDataModel(dataModel: SmartVisitable<*>): Boolean {
-        return dataModel == this
-    }
-
-    override fun type(typeFactory: HomeRecommendationTypeFactory): Int {
+    override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {
         return typeFactory.type(this)
-    }
-
-    override fun getUniqueIdentity(): Any {
-        return id.toString()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -78,6 +64,4 @@ data class BannerRecommendationDataModel(
         result = 31 * result + categoryPersona.hashCode()
         return result
     }
-
-
 }

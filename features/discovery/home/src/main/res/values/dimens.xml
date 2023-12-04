@@ -40,4 +40,10 @@
 
     <!--Paddings-->
     <dimen name="home_padding_bottom_bu_widget">10dp</dimen> <!--already has 2dp padding & card compat padding on item level, so it will be 16dp in total-->
+
+    <dimen name="for_you_outer_padding">16dp</dimen>
+    <dimen name="for_you_outer_padding_with_internal_padding">13dp</dimen>
+    <dimen name="for_you_inner_vertical_padding">8dp</dimen>
+    <dimen name="for_you_inner_vertical_padding_with_internal_padding">-2dp</dimen>
+    <dimen name="for_you_inner_horizontal_padding">8dp</dimen>
 </resources>

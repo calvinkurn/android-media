@@ -6,7 +6,6 @@ import com.tokopedia.mediauploader.BaseUploaderParam
 import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.VideoParam
 import com.tokopedia.mediauploader.analytics.MediaUploaderAnalytics
-import com.tokopedia.mediauploader.common.FeatureToggleUploader
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.data.consts.SOURCE_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
@@ -50,8 +49,8 @@ class VideoUploaderManager @Inject constructor(
             loader = base.progress
         )
 
-//        val (isValid, message) = VideoUploaderValidator(filePath, policy.videoPolicy)
-//        if (isValid.not()) return UploadResult.Error(message)
+        val (isValid, message) = VideoUploaderValidator(filePath, policy.videoPolicy)
+        if (isValid.not()) return UploadResult.Error(message)
 
         val maxSizeOfSimpleUpload = policy.videoPolicy
             ?.thresholdSizeOfVideo()
@@ -99,10 +98,7 @@ class VideoUploaderManager @Inject constructor(
         // the toggle comes from policy
         val isCompressionEnabled = compressionPolicy.isCompressionEnabled
 
-        // feature toggle using ab-test
-        val isCompressionRemoteConfigEnabled = FeatureToggleUploader.isCompressionEnabled()
-
-        return if (shouldCompress && isCompressionEnabled && isCompressionRemoteConfigEnabled) {
+        return if (shouldCompress && isCompressionEnabled) {
             val originalFileSizeInMb = originalFile.length() / (1024 * 1024)
 
             if (originalFileSizeInMb < compressionPolicy.thresholdInMb.orZero()) {

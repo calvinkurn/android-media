@@ -17,6 +17,7 @@ import com.tokopedia.tokochat_common.databinding.TokochatBubblesAwarenessBottoms
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
+import com.tokopedia.tokochat_common.R as tokochat_commonR
 
 class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
 
@@ -34,7 +35,7 @@ class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            com.tokopedia.tokochat_common.R.layout.tokochat_bubbles_awareness_bottomsheet,
+            tokochat_commonR.layout.tokochat_bubbles_awareness_bottomsheet,
             container,
             false
         )
@@ -65,7 +66,7 @@ class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
     }
 
     private fun setBottomSheetTitle() {
-        setTitle(getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_awareness_bottomsheet_title).orEmpty())
+        setTitle(getString(tokochat_commonR.string.tokochat_bubbles_awareness_bottomsheet_title).orEmpty())
     }
 
     private fun setupAwarenessViewPager() {
@@ -96,7 +97,7 @@ class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
     private fun setButtonText(position: Int, maxPosition: Int) {
         if (position >= maxPosition) {
             binding?.btnTokochatBubbleAwareness?.run {
-                text = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_awareness_activate_setting_button)
+                text = getString(tokochat_commonR.string.tokochat_bubbles_awareness_activate_setting_button)
                 setOnClickListener {
                     goToSettingsPage()
                     analyticsListener?.onClickSettingActivation()
@@ -104,7 +105,7 @@ class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
             }
         } else {
             binding?.btnTokochatBubbleAwareness?.run {
-                text = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_awareness_next_button)
+                text = getString(tokochat_commonR.string.tokochat_bubbles_awareness_next_button)
                 setOnClickListener {
                     binding?.vpTokochatBubbleAwareness?.currentItem = position + Int.ONE
                     analyticsListener?.onClickContinue()
@@ -117,17 +118,17 @@ class TokoChatBubblesAwarenessBottomSheet: BottomSheetUnify() {
         return listOf(
             TokoChatBubblesAwarenessFragment.createInstance(
                 imageUrl = TokopediaImageUrl.IMG_TOKOCHAT_BUBBLES_AWARENESS_BIG,
-                desc = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_awareness_bottomsheet_desc_1)
+                desc = getString(tokochat_commonR.string.tokochat_bubbles_awareness_bottomsheet_desc_1)
             ),
             TokoChatBubblesAwarenessTickerFragment.createInstance(
                 imageUrl = TokopediaImageUrl.IMG_TOKOCHAT_BUBBLES_AWARENESS_1,
-                firstDesc = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_awareness_bottomsheet_desc_2),
+                firstDesc = getString(tokochat_commonR.string.tokochat_bubbles_awareness_bottomsheet_desc_2),
                 secondDesc = String.EMPTY
             ),
             TokoChatBubblesAwarenessTickerFragment.createInstance(
                 imageUrl = TokopediaImageUrl.IMG_TOKOCHAT_BUBBLES_AWARENESS_2,
-                firstDesc = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_awareness_bottomsheet_desc_3),
-                secondDesc = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_awareness_bottomsheet_desc_info_3)
+                firstDesc = getString(tokochat_commonR.string.tokochat_bubbles_awareness_bottomsheet_desc_3),
+                secondDesc = getString(tokochat_commonR.string.tokochat_bubbles_awareness_bottomsheet_desc_info_3)
             ).apply {
                 setEduClickListener {
                     analyticsListener?.onClickEdu()

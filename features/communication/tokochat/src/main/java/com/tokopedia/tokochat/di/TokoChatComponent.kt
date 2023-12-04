@@ -1,8 +1,8 @@
 package com.tokopedia.tokochat.di
 
-import com.tokopedia.tokochat.config.di.component.TokoChatConfigComponent
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.tokochat.config.di.component.TokoChatConfigComponent
 import com.tokopedia.tokochat.view.chatlist.TokoChatListActivity
 import com.tokopedia.tokochat.view.chatroom.TokoChatActivity
 import dagger.Component
@@ -11,7 +11,6 @@ import dagger.Component
 @Component(
     modules = [
         TokoChatModule::class,
-        TokoChatUseCaseModule::class,
         TokoChatViewModelModule::class,
         TokoChatImageAttachmentNetworkModule::class,
         TokoChatFragmentModule::class

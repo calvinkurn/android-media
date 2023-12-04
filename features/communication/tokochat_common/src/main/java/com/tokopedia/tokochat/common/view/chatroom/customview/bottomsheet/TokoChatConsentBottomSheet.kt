@@ -1,26 +1,29 @@
 package com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.tokochat_common.databinding.TokochatConsentBottomsheetBinding
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
 import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IMAGE_TOKOCHAT_CONSENT
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat_common.databinding.TokochatConsentBottomsheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
+import com.tokopedia.tokochat_common.R as tokochat_commonR
 
 class TokoChatConsentBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TokochatConsentBottomsheetBinding>()
     private var needConsent = true
 
-    private var submitAction: (() -> Unit) = {}
-    private var dismissAction: (() -> Unit) = {}
+    private var submitAction: (() -> Unit)? = {}
+    private var dismissAction: (() -> Unit)? = {}
 
     init {
         setupBottomSheetVariant(VariantType.CLOSE)
@@ -33,7 +36,7 @@ class TokoChatConsentBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            com.tokopedia.tokochat_common.R.layout.tokochat_consent_bottomsheet,
+            tokochat_commonR.layout.tokochat_consent_bottomsheet,
             container,
             false
         )
@@ -65,7 +68,7 @@ class TokoChatConsentBottomSheet : BottomSheetUnify() {
 
     private fun loadConsentWidget() {
         binding?.tokochatWidgetConsent?.load(
-            TokoChatValueUtil.consentParam
+            TokoChatCommonValueUtil.consentParam
         )
     }
 
@@ -81,11 +84,11 @@ class TokoChatConsentBottomSheet : BottomSheetUnify() {
         }
         setOnDismissListener {
             if (needConsent) { // finish page if need consent but bottomsheet dismissed
-                dismissAction()
+                dismissAction?.invoke()
             }
         }
         setCloseClickListener {
-            dismissAction()
+            dismissAction?.invoke()
         }
         setShowListener {
             Handler(Looper.getMainLooper()).postDelayed({
@@ -112,8 +115,8 @@ class TokoChatConsentBottomSheet : BottomSheetUnify() {
 
     private fun dismissAndLoadTokoChatData() {
         needConsent = false
+        submitAction?.invoke()
         this.dismiss()
-        submitAction()
     }
 
     fun setConsentListener(
@@ -122,6 +125,20 @@ class TokoChatConsentBottomSheet : BottomSheetUnify() {
     ) {
         this.submitAction = submitAction
         this.dismissAction = dismissAction
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        this.submitAction = null
+        this.dismissAction = null
+    }
+
+    fun show(fragmentManager: FragmentManager?) {
+        fragmentManager?.let {
+            if (!isVisible) {
+                show(it, TAG)
+            }
+        }
     }
 
     companion object {

@@ -15,7 +15,9 @@ import com.tokopedia.search.result.product.inspirationbundle.InspirationProductB
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordCardView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproducttitle.InspirationProductTitleDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.InspirationSeamlessMapper
+import com.tokopedia.search.result.product.separator.VerticalSeparatorDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
@@ -171,6 +173,9 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         data.isChipsLayout() ->
             convertInspirationCarouselToChipsCarousel(data)
 
+        data.isSeamlessProductLayout() ->
+            convertInspirationCarouselToSeamlessInspiration(data, externalReference)
+
         else ->
             listOf(data)
     }
@@ -230,6 +235,29 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                 }
             )
         )
+    }
+
+    private fun convertInspirationCarouselToSeamlessInspiration(
+        data: InspirationCarouselDataView,
+        externalReference: String,
+    ): List<Visitable<*>> {
+        val visitableList = mutableListOf<Visitable<*>>()
+
+        visitableList.add(InspirationProductTitleDataView.create(data))
+
+        visitableList.addAll(
+            data.options.flatMap { option ->
+                InspirationSeamlessMapper.convertToInspirationProductDataView(
+                    option,
+                    externalReference,
+                    deduplication,
+                )
+            }
+        )
+
+        visitableList.add(VerticalSeparatorDataView)
+
+        return visitableList
     }
 
     override fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product) {
@@ -412,7 +440,8 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
             LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
             LAYOUT_INSPIRATION_CAROUSEL_VIDEO,
-            LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
+            LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS,
+            LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT,
         )
     }
 }

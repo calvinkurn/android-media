@@ -1122,7 +1122,7 @@ class FeedPostViewModel @Inject constructor(
                     timestamp = timestamp,
                     reportDesc = desc,
                     partnerId = item.author.id.toLongOrZero(),
-                    partnerType = PostUserReportUseCase.PartnerType.getTypeFromFeed(item.author.type.value),
+                    partnerType = PostUserReportUseCase.PartnerType.getTypeValue(item.author.type.value),
                     reporterId = userSession.userId.toLongOrZero()
                 )
                 postReportUseCase.setRequestParams(request.parameters)

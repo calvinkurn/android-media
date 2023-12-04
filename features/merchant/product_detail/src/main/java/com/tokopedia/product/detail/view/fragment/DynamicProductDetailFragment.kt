@@ -19,6 +19,7 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
@@ -250,6 +251,9 @@ import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAda
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.bottomsheet.ProductMediaRecomBottomSheetManager
 import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
+import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
+import com.tokopedia.product.detail.view.fragment.delegate.PdpCallbackDelegate
+import com.tokopedia.product.detail.view.fragment.delegate.PdpCallbackDelegateImpl
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.fragment.partialview.TokoNowButtonData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -363,7 +367,9 @@ open class DynamicProductDetailFragment :
     ProductDetailBottomSheetListener,
     PartialButtonShopFollowersListener,
     ScreenShotListener,
-    PlayWidgetListener {
+    PlayWidgetListener,
+    PdpComponentCallbackMediator,
+    PdpCallbackDelegate by PdpCallbackDelegateImpl() {
 
     companion object {
 
@@ -547,13 +553,14 @@ open class DynamicProductDetailFragment :
     private var productVideoCoordinator: ProductVideoCoordinator? = null
     private val adapterFactory by lazy {
         DynamicProductDetailAdapterFactoryImpl(
-            this,
-            this,
-            viewModel.userId,
+            listener = this,
+            variantListener = this,
+            userId = viewModel.userId,
             playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
                 setListener(this@DynamicProductDetailFragment)
             },
-            affiliateCookieHelper.get()
+            affiliateCookieHelper = affiliateCookieHelper.get(),
+            pdpCallback = this
         )
     }
     private val adapter by lazy {
@@ -634,6 +641,18 @@ open class DynamicProductDetailFragment :
     private val productMediaRecomBottomSheetManager by lazyThreadSafetyNone {
         ProductMediaRecomBottomSheetManager(childFragmentManager, this)
     }
+
+    override val rootView: Fragment
+        get() = this
+
+    override val pdpViewModel: DynamicProductDetailViewModel
+        get() = viewModel
+
+    override val uiUpdater: PdpUiUpdater?
+        get() = pdpUiUpdater
+
+    override val queueTracker: TrackingQueue
+        get() = trackingQueue
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -851,6 +870,7 @@ open class DynamicProductDetailFragment :
         )
         assignDeviceId()
         loadData()
+        registerCallback(mediator = this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -2694,7 +2714,7 @@ open class DynamicProductDetailFragment :
                         it.data,
                         viewModel.userId,
                         it.data.minOrder.coerceAtLeast(DEFAULT_QTY_1),
-                        anchorProductId = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
+                        anchorProductId = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
                     )
                 }
             }, {})
@@ -3269,7 +3289,7 @@ open class DynamicProductDetailFragment :
                     updateUi()
                 }
             }, {
-                pdpUiUpdater?.updateViewToViewData(null, RecommendationCarouselData.STATE_FAILED)
+                pdpUiUpdater?.removeComponent(ProductDetailConstant.VIEW_TO_VIEW)
                 updateUi()
                 logException(it)
             })
@@ -4452,7 +4472,8 @@ open class DynamicProductDetailFragment :
             variantId = variantId,
             offerId = viewModel.getP2()?.bmgm?.data?.firstOrNull {
                 it.productIDs.contains(productId)
-            }?.offerId.orEmpty()
+            }?.offerId.orEmpty(),
+            nearestWarehouseId = viewModel.getMultiOriginByProductId().id
         )
     }
 
@@ -6184,10 +6205,6 @@ open class DynamicProductDetailFragment :
                 viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
             )
         }
-    }
-
-    override fun onViewToViewReload(pageName: String, queryParam: String, thematicId: String) {
-        loadViewToView(pageName = pageName, queryParam = queryParam, thematicId = thematicId)
     }
 
     override fun onImpressScheduledDelivery(

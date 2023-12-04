@@ -119,6 +119,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.thematicheader.ThematicHeaderViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
@@ -2413,7 +2414,13 @@ open class DiscoveryFragment :
                 AtcVariantHelper.goToAtcVariant(
                     context = it,
                     productId = productId,
-                    pageSource = VariantPageSource.DISCOVERY_PAGESOURCE,
+                    pageSource = VariantPageSource.BUY_MORE_GET_MORE,
+                    extParams = AtcVariantHelper.generateExtParams(
+                        mapOf(
+                            Constant.ExternalParams.OFFER_ID to bmGmDataParam?.offerId.orEmpty(),
+                            Constant.ExternalParams.WAREHOUSE_ID to bmGmDataParam?.warehouseTco.orEmpty()
+                        )
+                    ),
                     shopId = requestingComponent?.data?.firstOrNull()?.shopId.orEmpty(),
                     startActivitResult = { intent, reqCode ->
                         startActivityForResult(intent, reqCode)
@@ -2658,6 +2665,20 @@ open class DiscoveryFragment :
             )
         } else if (componentId != null) {
             scrollToPinnedComponent(discoveryAdapter.currentList, componentId.toString())
+        }
+    }
+
+    fun setTabPosition(tabPosition: Int) {
+        discoveryAdapter.getFirstViewModel(ThematicHeaderViewModel::class.java)?.let { discoveryBaseViewModel ->
+            if (discoveryBaseViewModel is ThematicHeaderViewModel) {
+                discoveryBaseViewModel.switchThematicHeaderData(tabPosition)
+            }
+        }
+    }
+
+    fun setupBackgroundColorForHeader(color: String?) {
+        if (!color.isNullOrEmpty()) {
+            setupHexBackgroundColor(color)
         }
     }
 }
