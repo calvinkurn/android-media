@@ -46,7 +46,7 @@ class TokoFoodPurchaseModuleStub {
     @TokoFoodPurchaseScope
     fun provideKeroEditAddressUseCaseStub(
         coroutineDispatchers: CoroutineDispatchers,
-        getAddressDetailById: GetAddressDetailById,
+        getAddressDetailById: GetAddressDetailByIdUseCase,
         updatePinpointUseCase: UpdatePinpointUseCase
     ): UpdatePinpointWithAddressIdUseCase {
         return UpdatePinpointWithAddressIdUseCaseStub(getAddressDetailById, updatePinpointUseCase, coroutineDispatchers)
