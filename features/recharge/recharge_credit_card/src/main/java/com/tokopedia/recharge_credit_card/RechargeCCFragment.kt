@@ -110,8 +110,7 @@ class RechargeCCFragment :
     RechargeCCBankListWidget.RechargeCCBankListListener,
     TopupBillsRecentNumberListener,
     RechargeCCPromoFragment.RechargeCCPromoItemListener,
-    PcidssInputFieldWidget.PcidssInputFieldWidgetListener
-{
+    PcidssInputFieldWidget.PcidssInputFieldWidgetListener {
     private lateinit var rechargeCCViewModel: RechargeCCViewModel
     private lateinit var rechargeSubmitCCViewModel: RechargeSubmitCCViewModel
     private lateinit var saveInstanceManager: SaveInstanceCacheManager
@@ -597,7 +596,12 @@ class RechargeCCFragment :
 //                    identifier
 //                )
                 binding?.ccWidgetClientNumber?.submitInstantCheckout(
-                    clientNumber, operatorId, productId, userSession.userId, signature, identifier
+                    clientNumber,
+                    operatorId,
+                    productId,
+                    userSession.userId,
+                    signature,
+                    identifier
                 )
             }
         } else {
@@ -632,43 +636,43 @@ class RechargeCCFragment :
     }
 
     private fun onSuccessGetFavoriteChips(favoriteChips: List<FavoriteChipModel>) {
-        val dummy = listOf(
-            FavoriteChipModel(
-                clientName = "Credit Card A - 1",
-                clientNumber = "4111 11** **** 4444",
-                token = "Token A - 1",
-                operatorId = "856"
-            ),
-            FavoriteChipModel(
-                clientName = "Credit Card B - 1",
-                clientNumber = "4111 11** **** 9999",
-                token = "Token B - 1",
-                operatorId = "856"
-            ),
-        )
+//        val dummy = listOf(
+//            FavoriteChipModel(
+//                clientName = "Credit Card A - 1",
+//                clientNumber = "4111 11** **** 4444",
+//                token = "Token A - 1",
+//                operatorId = "856"
+//            ),
+//            FavoriteChipModel(
+//                clientName = "Credit Card B - 1",
+//                clientNumber = "4111 11** **** 9999",
+//                token = "Token B - 1",
+//                operatorId = "856"
+//            ),
+//        )
         binding?.ccWidgetClientNumber?.run {
             setFilterChipShimmer(false, favoriteChips.isEmpty())
             setFavoriteNumber(
-                RechargeCCWidgetMapper.mapFavoriteChipsToWidgetModels(dummy)
+                RechargeCCWidgetMapper.mapFavoriteChipsToWidgetModels(favoriteChips)
             )
         }
     }
 
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
-        val dummy = listOf(
-            AutoCompleteModel(
-                clientName = "Credit Card A - 2",
-                clientNumber = "4111 11** **** 4444",
-                token = "Token A - 2"
-            ),
-            AutoCompleteModel(
-                clientName = "Credit Card B - 2",
-                clientNumber = "4111 11** **** 9999",
-                token = "Token B - 2"
-            ),
-        )
+//        val dummy = listOf(
+//            AutoCompleteModel(
+//                clientName = "Credit Card A - 2",
+//                clientNumber = "4111 11** **** 4444",
+//                token = "Token A - 2"
+//            ),
+//            AutoCompleteModel(
+//                clientName = "Credit Card B - 2",
+//                clientNumber = "4111 11** **** 9999",
+//                token = "Token B - 2"
+//            ),
+//        )
         binding?.ccWidgetClientNumber?.setAutoCompleteList(
-            RechargeCCWidgetMapper.mapAutoCompletesToWidgetModels(dummy)
+            RechargeCCWidgetMapper.mapAutoCompletesToWidgetModels(autoComplete)
         )
     }
 
@@ -792,7 +796,6 @@ class RechargeCCFragment :
 
     // region PcidssInputFieldWidgetListener
     override fun onTextChanged(isManualInput: Boolean) {
-
     }
 
     override fun onClickClearIcon() {
@@ -952,7 +955,7 @@ class RechargeCCFragment :
                         handleCallbackFavoriteNumber(
                             orderClientNumber.clientName,
                             orderClientNumber.clientNumber,
-                            orderClientNumber.token,
+                            orderClientNumber.token
                         )
                     } else {
                         handleCallbackAnySavedNumberCancel()
