@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
 import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
+import com.tokopedia.topads.auto.view.fragment.CreateAutoPsAdsFragment
 import com.tokopedia.topads.auto.view.fragment.EditAutoAdsBudgetFragment
 
 /**
@@ -18,7 +19,7 @@ import com.tokopedia.topads.auto.view.fragment.EditAutoAdsBudgetFragment
 class EditBudgetAutoAdsActivity : BaseSimpleActivity(), HasComponent<AutoAdsComponent> {
 
     override fun getNewFragment(): Fragment? {
-        return EditAutoAdsBudgetFragment.newInstance()
+        return CreateAutoPsAdsFragment.newInstance()
     }
 
     override fun getComponent(): AutoAdsComponent = DaggerAutoAdsComponent.builder()
