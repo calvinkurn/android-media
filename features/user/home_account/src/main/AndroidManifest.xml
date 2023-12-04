@@ -48,14 +48,7 @@
             android:exported="false"
             android:label="@string/image_quality_setting_screen"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
-
-        <activity android:name=".account_settings.presentation.activity.MediaQualitySettingActivity"
-            android:exported="false"
-            android:label="@string/image_quality_setting_screen"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -66,6 +59,13 @@
                     android:host="@string/host_user"
                     android:path="@string/path_image_quality_setting"/>
             </intent-filter>
+        </activity>
+
+        <activity android:name=".account_settings.presentation.activity.MediaQualitySettingActivity"
+            android:exported="false"
+            android:label="@string/image_quality_setting_screen"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
         </activity>
 
         <activity

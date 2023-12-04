@@ -64,6 +64,7 @@ import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
+import com.tokopedia.home_account.account_settings.presentation.activity.AccountSettingActivity
 import com.tokopedia.home_account.account_settings.presentation.activity.MediaQualitySettingComposeActivity
 import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
@@ -1428,13 +1429,7 @@ open class HomeAccountUserFragment :
 
             AccountConstants.SettingCode.SETTING_SECURITY -> {
                 homeAccountAnalytic.eventClickAccountSettingAccountSecurity()
-                val intent = RouteManager.getIntent(context, item.applink).apply {
-                    putExtras(
-                        Bundle().apply {
-                            putExtra(ApplinkConstInternalGlobal.PARAM_NEW_HOME_ACCOUNT, true)
-                        }
-                    )
-                }
+                val intent = Intent(requireContext(), AccountSettingActivity::class.java)
                 startActivity(intent)
             }
 
