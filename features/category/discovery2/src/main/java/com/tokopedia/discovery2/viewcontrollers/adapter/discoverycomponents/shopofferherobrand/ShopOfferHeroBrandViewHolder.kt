@@ -220,21 +220,22 @@ class ShopOfferHeroBrandViewHolder(
     private fun addScrollListener() {
         if (viewModel?.hasHeader() == false) return
 
-        rvProductCarousel.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val visibleItemCount: Int = mLayoutManager.childCount
-                val totalItemCount: Int = mLayoutManager.itemCount
-                val firstVisibleItemPosition: Int = mLayoutManager.findFirstVisibleItemPosition()
-                viewModel?.let { mProductCarouselComponentViewModel ->
-                    if (!mProductCarouselComponentViewModel.isLoading && mProductCarouselComponentViewModel.hasNextPage()) {
-                        if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0 && totalItemCount >= PRODUCT_PER_PAGE) {
-                            mProductCarouselComponentViewModel.loadMore()
+        rvProductCarousel.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val visibleItemCount: Int = mLayoutManager.childCount
+                    val totalItemCount: Int = mLayoutManager.itemCount
+                    val firstVisibleItemPosition: Int = mLayoutManager.findFirstVisibleItemPosition()
+                    viewModel?.let { mProductCarouselComponentViewModel ->
+                        if (!mProductCarouselComponentViewModel.isLoading && mProductCarouselComponentViewModel.hasNextPage()) {
+                            if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0 && totalItemCount >= PRODUCT_PER_PAGE) {
+                                mProductCarouselComponentViewModel.loadMore()
+                            }
                         }
                     }
                 }
             }
-        }
         )
     }
 
@@ -458,6 +459,10 @@ class ShopOfferHeroBrandViewHolder(
                     }
                 )
                 errorHolder.show()
+                localLoad.gone()
+                rvProductCarousel.gone()
+            } else {
+                errorHolder.gone()
                 localLoad.gone()
                 rvProductCarousel.gone()
             }
