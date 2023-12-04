@@ -15,7 +15,7 @@ import com.tokopedia.tokofood.stub.common.util.TokoFoodChosenAddressRequestHelpe
 import com.tokopedia.tokofood.stub.common.util.UserSessionStub
 import com.tokopedia.tokofood.stub.purchase.domain.usecase.CheckoutGeneralTokoFoodUseCaseStub
 import com.tokopedia.tokofood.stub.purchase.domain.usecase.CheckoutTokoFoodUseCaseStub
-import com.tokopedia.tokofood.stub.purchase.domain.usecase.GetAddressDetailByIdStub
+import com.tokopedia.tokofood.stub.purchase.domain.usecase.GetAddressDetailByIdUseCaseStub
 import com.tokopedia.tokofood.stub.purchase.domain.usecase.GetAddressDetailUseCaseStub
 import com.tokopedia.tokofood.stub.purchase.domain.usecase.UpdatePinpointUseCaseStub
 import com.tokopedia.tokofood.stub.purchase.domain.usecase.UpdatePinpointWithAddressIdUseCaseStub
@@ -75,7 +75,7 @@ class TokoFoodPurchaseModuleStub {
         getAddressDetailUseCase: GetAddressDetailUseCase,
         coroutineDispatchers: CoroutineDispatchers
     ): GetAddressDetailById {
-        return GetAddressDetailByIdStub(getAddressDetailUseCase, coroutineDispatchers)
+        return GetAddressDetailByIdUseCaseStub(getAddressDetailUseCase, coroutineDispatchers)
     }
 
     @Provides

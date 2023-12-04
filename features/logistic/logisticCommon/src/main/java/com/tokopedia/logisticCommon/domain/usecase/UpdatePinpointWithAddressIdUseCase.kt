@@ -12,7 +12,7 @@ import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
 import javax.inject.Inject
 
 open class UpdatePinpointWithAddressIdUseCase @Inject constructor(
-    private val getAddressDetailUseCase: GetAddressDetailById,
+    private val getAddressDetailUseCase: GetAddressDetailByIdUseCase,
     private val updatePinpointUseCase: UpdatePinpointUseCase,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<KeroEditAddressParam, KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse>(

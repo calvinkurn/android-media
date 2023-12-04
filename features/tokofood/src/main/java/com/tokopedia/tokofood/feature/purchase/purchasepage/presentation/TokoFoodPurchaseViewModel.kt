@@ -14,7 +14,7 @@ import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
 import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
-import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailById
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailByIdUseCase
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
@@ -70,7 +70,7 @@ import javax.inject.Inject
 @FlowPreview
 open class TokoFoodPurchaseViewModel @Inject constructor(
     private val keroEditAddressUseCase: Lazy<UpdatePinpointWithAddressIdUseCase>,
-    private val getAddressDetailById: Lazy<GetAddressDetailById>,
+    private val getAddressDetailByIdUseCase: Lazy<GetAddressDetailByIdUseCase>,
     private val cartListTokofoodUseCase: Lazy<CheckoutTokoFoodUseCase>,
     private val checkoutGeneralTokoFoodUseCase: Lazy<CheckoutGeneralTokoFoodUseCase>,
     val dispatcher: CoroutineDispatchers
@@ -199,7 +199,7 @@ open class TokoFoodPurchaseViewModel @Inject constructor(
                         // Check pinpoint remotely if cache address id is empty
                         val remoteAddressId =
                             businessData.customResponse.userAddress.addressId.toString()
-                        val addressResult = getAddressDetailById.get()(
+                        val addressResult = getAddressDetailByIdUseCase.get()(
                             GetDetailAddressParam(
                                 remoteAddressId,
                                 source = ManageAddressSource.TOKOFOOD.source,

@@ -3,17 +3,17 @@ package com.tokopedia.tokofood.stub.purchase.domain.usecase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
-import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailById
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailByIdUseCase
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import javax.inject.Inject
 
 class UpdatePinpointWithAddressIdUseCaseStub @Inject constructor(
-    getAddressDetailById: GetAddressDetailById,
+    getAddressDetailByIdUseCase: GetAddressDetailByIdUseCase,
     updatePinpointUseCase: UpdatePinpointUseCase,
     coroutineDispatchers: CoroutineDispatchers
 ) : UpdatePinpointWithAddressIdUseCase(
-    getAddressDetailById,
+    getAddressDetailByIdUseCase,
     updatePinpointUseCase,
     coroutineDispatchers
 ) {
