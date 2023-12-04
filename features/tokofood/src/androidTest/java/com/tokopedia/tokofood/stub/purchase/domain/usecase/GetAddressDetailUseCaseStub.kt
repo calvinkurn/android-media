@@ -1,11 +1,14 @@
 package com.tokopedia.tokofood.stub.purchase.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
-import com.tokopedia.logisticCommon.domain.usecase.KeroGetAddressUseCase
 import javax.inject.Inject
 
-class KeroGetAddressUseCaseStub @Inject constructor(
-    getAddressDetailUseCase: GetAddressDetailUseCase,
+class GetAddressDetailUseCaseStub @Inject constructor(
+    repository: GraphqlRepository,
     coroutineDispatchers: CoroutineDispatchers
-) : KeroGetAddressUseCase(getAddressDetailUseCase, coroutineDispatchers)
+) : GetAddressDetailUseCase(
+    repository,
+    coroutineDispatchers
+)

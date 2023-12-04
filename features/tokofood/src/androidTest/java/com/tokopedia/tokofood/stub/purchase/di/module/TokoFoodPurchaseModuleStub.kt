@@ -2,8 +2,11 @@ package com.tokopedia.tokofood.stub.purchase.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.logisticCommon.domain.usecase.EditPinpointWithAddressIdUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
 import com.tokopedia.logisticCommon.domain.usecase.KeroGetAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.TokoFoodPurchaseScope
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutGeneralTokoFoodUseCase
@@ -14,7 +17,9 @@ import com.tokopedia.tokofood.stub.common.util.UserSessionStub
 import com.tokopedia.tokofood.stub.purchase.domain.usecase.CheckoutGeneralTokoFoodUseCaseStub
 import com.tokopedia.tokofood.stub.purchase.domain.usecase.CheckoutTokoFoodUseCaseStub
 import com.tokopedia.tokofood.stub.purchase.domain.usecase.EditPinpointWithAddressIdUseCaseStub
+import com.tokopedia.tokofood.stub.purchase.domain.usecase.GetAddressDetailUseCaseStub
 import com.tokopedia.tokofood.stub.purchase.domain.usecase.KeroGetAddressUseCaseStub
+import com.tokopedia.tokofood.stub.purchase.domain.usecase.UpdatePinpointUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -40,18 +45,38 @@ class TokoFoodPurchaseModuleStub {
     @Provides
     @TokoFoodPurchaseScope
     fun provideKeroEditAddressUseCaseStub(
-        graphQlRepository: GraphqlRepositoryStub,
-        keroGetAddressUseCase: KeroGetAddressUseCase
+        coroutineDispatchers: CoroutineDispatchers,
+        keroGetAddressUseCase: KeroGetAddressUseCase,
+        updatePinpointUseCase: UpdatePinpointUseCase
     ): EditPinpointWithAddressIdUseCase {
-        return EditPinpointWithAddressIdUseCaseStub(graphQlRepository, keroGetAddressUseCase)
+        return EditPinpointWithAddressIdUseCaseStub(keroGetAddressUseCase, updatePinpointUseCase, coroutineDispatchers)
+    }
+
+    @Provides
+    @TokoFoodPurchaseScope
+    fun provideUpdatePinpointUseCaseStub(
+        graphQlRepository: GraphqlRepositoryStub,
+        coroutineDispatchers: CoroutineDispatchers
+    ): UpdatePinpointUseCase {
+        return UpdatePinpointUseCaseStub(graphQlRepository, coroutineDispatchers)
+    }
+
+    @Provides
+    @TokoFoodPurchaseScope
+    fun provideAddressDetailUseCaseStub(
+        graphQlRepository: GraphqlRepositoryStub,
+        coroutineDispatchers: CoroutineDispatchers
+    ): GetAddressDetailUseCase {
+        return GetAddressDetailUseCaseStub(graphQlRepository, coroutineDispatchers)
     }
 
     @Provides
     @TokoFoodPurchaseScope
     fun provideKeroGetAddressUseCaseStub(
-        graphQlRepository: GraphqlRepositoryStub
+        getAddressDetailUseCase: GetAddressDetailUseCase,
+        coroutineDispatchers: CoroutineDispatchers
     ): KeroGetAddressUseCase {
-        return KeroGetAddressUseCaseStub(graphQlRepository)
+        return KeroGetAddressUseCaseStub(getAddressDetailUseCase, coroutineDispatchers)
     }
 
     @Provides
