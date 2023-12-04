@@ -7,6 +7,9 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -40,7 +43,6 @@ import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.nest.components.quantityeditor.QtyButton
-import com.tokopedia.nest.components.quantityeditor.QtyState
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -53,9 +55,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
+import com.tokopedia.nest.components.R as nestcomponentsR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.nest.components.R as nestcomponentsR
 
 @SuppressLint("ClickableViewAccessibility")
 class CartItemViewHolder constructor(
@@ -79,6 +81,7 @@ class CartItemViewHolder constructor(
         binding.qtyEditorProduct.apply {
             isExpand = true
             expandState.value = true
+            enableManualInput.value = true
         }
     }
 
@@ -1227,6 +1230,28 @@ class CartItemViewHolder constructor(
 //                }
 //            }
 //            onValueChanged = { }
+            keyboardOptions.value = KeyboardOptions(
+                imeAction = ImeAction.Done
+            )
+            keyboardAction.value = KeyboardActions(
+                onDone = {
+                    if (qtyValue.value == 0) {
+                        actionListener?.onCartItemDeleteButtonClicked(data, false)
+                    }
+                    if (lastQty > data.maxOrder) {
+                        binding.labelQuantityError.text = String.format(
+                            itemView.context.getString(R.string.cart_max_quantity_error),
+                            data.maxOrder
+                        )
+                        data.isAlreadyShowMaximumQuantityPurchasedError = true
+                        binding.labelQuantityError.show()
+                    } else if (lastQty > data.minOrder && lastQty < data.maxOrder) {
+                        data.isAlreadyShowMaximumQuantityPurchasedError = false
+                        binding.labelQuantityError.gone()
+                    }
+                }
+            )
+
             qtyValue.value = if (data.isBundlingItem) data.bundleQuantity else data.quantity
             configState.value = configState.value.copy(
                 qtyMinusButton = getQuantityEditorMinButton(data),
@@ -1242,21 +1267,11 @@ class CartItemViewHolder constructor(
             )
 
             onValueChanged = { qty ->
-                if (configState.value.isValueMin(qty)) {
-                    configState.value = configState.value.copy(
-                        qtyMinusButton = configState.value.qtyMinusButton.copy (
-                            iconUnifyId = IconUnify.DELETE_SMALL
-                        )
-                    )
-                    qtyValue.value = configState.value.minInt
-                } else {
-                    qtyValue.value = qty
-                    configState.value = configState.value.copy(
-                        qtyMinusButton = configState.value.qtyMinusButton.copy (
-                            iconUnifyId = IconUnify.REMOVE_16
-                        )
-                    )
-                }
+                lastQty = qty
+
+                configState.value = configState.value.copy(
+                    qtyMinusButton = getQuantityEditorMinButton(data)
+                )
 //                delayChangeQty?.cancel()
 //                delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
                 val newValue = qty.toString().replace(".", "").toIntOrZero()
@@ -1388,7 +1403,10 @@ class CartItemViewHolder constructor(
             binding.qtyEditorProduct.configState.value.qtyMinusButton.copy(
                 iconUnifyId = IconUnify.DELETE_SMALL,
                 colorInt = nestcomponentsR.color.Unify_NN950,
-                qtyEnabledCondition = { _, _ -> true }
+                qtyEnabledCondition = { _, _ -> true },
+                onClick = {
+                    actionListener?.onCartItemDeleteButtonClicked(data)
+                }
             )
         } else {
             QtyButton.defaultMinButton
