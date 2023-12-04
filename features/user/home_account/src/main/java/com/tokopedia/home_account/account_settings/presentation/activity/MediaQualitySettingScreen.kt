@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
+import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +28,7 @@ fun MediaQualitySettingScreen(qualities: List<MediaQualityUIModel>, modifier: Mo
     var selectedIndex by remember { mutableStateOf(0) }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(16.dp)
             .fillMaxSize()
     ) {
@@ -42,7 +44,11 @@ fun MediaQualitySettingScreen(qualities: List<MediaQualityUIModel>, modifier: Mo
         Spacer(modifier = Modifier.height(8.dp))
         qualities.forEachIndexed { i, v ->
             Row() {
-                RadioButton(selected = selectedIndex == i, onClick = { selectedIndex = i })
+                RadioButton(
+                    selected = selectedIndex == i,
+                    colors = RadioButtonDefaults.colors(MaterialTheme.colors.primary),
+                    onClick = { selectedIndex = i }
+                )
                 Column {
                     NestTypography(
                         text = stringResource(v.title),
