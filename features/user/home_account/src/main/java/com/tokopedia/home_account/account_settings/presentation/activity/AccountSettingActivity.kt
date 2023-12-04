@@ -273,11 +273,6 @@ class AccountSettingActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-//        val bundle = Bundle()
-//        if (intent.extras != null) {
-//            bundle.putAll(intent.extras)
-//        }
-//        return AccountSettingFragment.createInstance(bundle)
         return null
     }
 
