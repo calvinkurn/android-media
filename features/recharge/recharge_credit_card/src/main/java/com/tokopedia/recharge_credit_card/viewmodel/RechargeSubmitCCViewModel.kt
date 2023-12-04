@@ -24,6 +24,7 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
                                                     private val submitCCUseCase: RechargeSubmitCcUseCase)
     : BaseViewModel(dispatcher) {
 
+    private val _signature = MutableLiveData<String>()
     private val _errorSubmitCreditCard = MutableLiveData<Throwable>()
     private val _redirectUrl = MutableLiveData<CCRedirectUrl>()
     private val _errorSignature = MutableLiveData<Throwable>()
@@ -31,8 +32,12 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
     val errorSubmitCreditCard: LiveData<Throwable> = _errorSubmitCreditCard
     val redirectUrl: LiveData<CCRedirectUrl> = _redirectUrl
     val errorSignature: LiveData<Throwable> = _errorSignature
+    val signature: LiveData<String> = _signature
 
-    fun postCreditCard(rawQuery: String, categoryId: String, paramSubmitCC: HashMap<String, String>) {
+    fun postCreditCard(
+        rawQuery: String,
+        categoryId: String,
+    ) {
         launchCatchError(block = {
             val mapParam = mutableMapOf<String, Any>()
             mapParam[CATEGORY_ID] = categoryId.toIntSafely()
@@ -43,8 +48,9 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
             }.getSuccessData<RechargeCCSignatureReponse>()
 
             if (data.rechargeSignature.messageError.isEmpty()) {
-                paramSubmitCC[PARAM_PCIDSS] = data.rechargeSignature.signature
-                submitCreditCard(paramSubmitCC)
+                _signature.postValue(data.rechargeSignature.signature)
+//                paramSubmitCC[PARAM_PCIDSS] = data.rechargeSignature.signature
+//                submitCreditCard(paramSubmitCC)
             } else {
                 _errorSignature.postValue(MessageErrorException(data.rechargeSignature.messageError))
             }
@@ -53,26 +59,26 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         }
     }
 
-    fun submitCreditCard(mapParam: HashMap<String, String>) {
-        launchCatchError(block = {
-            val data = withContext(dispatcher) {
-                submitCCUseCase.setMapParam(mapParam)
-                convertCCResponse(submitCCUseCase.executeOnBackground())
-            }
-
-            val ccRedirectUrl = data?.data ?: CCRedirectUrl()
-            if (ccRedirectUrl.redirectUrl != "") {
-                ccRedirectUrl.clientNumber = mapParam[PARAM_CLIENT_NUMBER] ?: ""
-                ccRedirectUrl.operatorId = mapParam[PARAM_OPERATOR_ID] ?: ""
-                ccRedirectUrl.productId = mapParam[PARAM_PRODUCT_ID] ?: ""
-                _redirectUrl.postValue(ccRedirectUrl)
-            } else {
-                _errorSubmitCreditCard.postValue(MessageErrorException(ccRedirectUrl.messageError))
-            }
-        }) {
-            _errorSubmitCreditCard.postValue(it)
-        }
-    }
+//    fun submitCreditCard(mapParam: HashMap<String, String>) {
+//        launchCatchError(block = {
+//            val data = withContext(dispatcher) {
+//                submitCCUseCase.setMapParam(mapParam)
+//                convertCCResponse(submitCCUseCase.executeOnBackground())
+//            }
+//
+//            val ccRedirectUrl = data?.data ?: CCRedirectUrl()
+//            if (ccRedirectUrl.redirectUrl != "") {
+//                ccRedirectUrl.clientNumber = mapParam[PARAM_CLIENT_NUMBER] ?: ""
+//                ccRedirectUrl.operatorId = mapParam[PARAM_OPERATOR_ID] ?: ""
+//                ccRedirectUrl.productId = mapParam[PARAM_PRODUCT_ID] ?: ""
+//                _redirectUrl.postValue(ccRedirectUrl)
+//            } else {
+//                _errorSubmitCreditCard.postValue(MessageErrorException(ccRedirectUrl.messageError))
+//            }
+//        }) {
+//            _errorSubmitCreditCard.postValue(it)
+//        }
+//    }
 
     fun createMapParam(clientNumber: String, operatorId: String,
                        productId: String, userId: String): HashMap<String, String> {

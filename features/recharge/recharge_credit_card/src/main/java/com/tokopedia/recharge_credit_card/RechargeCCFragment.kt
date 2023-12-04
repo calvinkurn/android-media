@@ -25,7 +25,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -41,7 +40,6 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipMode
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
-import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
 import com.tokopedia.common.topupbills.widget.TopupBillsRecentNumberListener
@@ -49,7 +47,6 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
 import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.show
@@ -57,9 +54,7 @@ import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
-import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -76,9 +71,14 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCRecommendation
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
+import com.tokopedia.recharge_credit_card.pcidss.model.PcidssOperator
+import com.tokopedia.recharge_credit_card.pcidss.model.PcidssPrefix
+import com.tokopedia.recharge_credit_card.pcidss.model.PcidssPrefixSelect
+import com.tokopedia.recharge_credit_card.pcidss.model.PcidssPrefixValidatorModel
+import com.tokopedia.recharge_credit_card.pcidss.model.PrefixAttributes
+import com.tokopedia.recharge_credit_card.pcidss.model.Validation
+import com.tokopedia.recharge_credit_card.pcidss.widgets.PcidssInputFieldWidget
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst
-import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DEFAULT_MAX_CC_LENGTH
-import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DEFAULT_MIN_CC_LENGTH
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst.REQUEST_CODE_FAVORITE_NUMBER
 import com.tokopedia.recharge_credit_card.util.RechargeCCGqlQuery
 import com.tokopedia.recharge_credit_card.util.RechargeCCMapper
@@ -105,13 +105,13 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class RechargeCCFragment :
     BaseDaggerFragment(),
     MenuProvider,
-    ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
-    ClientNumberAutoCompleteListener,
     RechargeCCClientNumberWidget.CreditCardActionListener,
     RechargeCCBankListWidget.RechargeCCBankListListener,
     TopupBillsRecentNumberListener,
-    RechargeCCPromoFragment.RechargeCCPromoItemListener {
+    RechargeCCPromoFragment.RechargeCCPromoItemListener,
+    PcidssInputFieldWidget.PcidssInputFieldWidgetListener
+{
     private lateinit var rechargeCCViewModel: RechargeCCViewModel
     private lateinit var rechargeSubmitCCViewModel: RechargeSubmitCCViewModel
     private lateinit var saveInstanceManager: SaveInstanceCacheManager
@@ -138,7 +138,6 @@ class RechargeCCFragment :
     private var categoryId: String = ""
     private var menuId: String = ""
     private var checkoutPassDataState: DigitalCheckoutPassData? = null
-    private var token: String = ""
 
     override fun getScreenName(): String {
         return ""
@@ -187,7 +186,6 @@ class RechargeCCFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initializedViewModel()
         setupKeyboardWatcher()
         setupToolbarMenu()
@@ -207,7 +205,6 @@ class RechargeCCFragment :
             setInputFieldStaticLabel(context.getString(R.string.cc_label_input_number))
             setInputFieldListener(this@RechargeCCFragment)
             setFilterChipListener(this@RechargeCCFragment)
-            setAutoCompleteListener(this@RechargeCCFragment)
             setCreditCardATCListener(this@RechargeCCFragment)
         }
 
@@ -307,35 +304,40 @@ class RechargeCCFragment :
                 }
             }
         )
-        rechargeCCViewModel.creditCardSelected.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding?.run {
-                    if (it.defaultProductId.isEmpty() && it.operatorId.isEmpty()) {
-                        ccWidgetClientNumber.hideOperatorIcon()
-                        ccWidgetClientNumber.setLoading(false)
-                        ccWidgetClientNumber.setErrorInputField(
-                            getString(R.string.cc_bank_is_not_supported)
-                        )
-                    } else {
-                        ccWidgetClientNumber.showOperatorIcon(it.imageUrl)
-                    }
-                }
-                operatorIdSelected = it.operatorId
-                productIdSelected = it.defaultProductId
-            }
-        )
 
         rechargeCCViewModel.prefixSelect.observe(
             viewLifecycleOwner,
             Observer {
                 when (it) {
                     is RechargeNetworkResult.Success -> {
-                        binding?.run {
-                            rechargeCCViewModel.checkPrefixNumber(ccWidgetClientNumber.getInputNumber())
-                            rechargeCCViewModel.cancelValidatorJob()
-                            rechargeCCViewModel.validateCCNumber(ccWidgetClientNumber.getInputNumber())
-                        }
+                        binding?.ccWidgetClientNumber?.setPrefixValidator(
+                            PcidssPrefixValidatorModel(
+                                prefixSelect = PcidssPrefixSelect(
+                                    it.data.prefixSelect.text,
+                                    it.data.prefixSelect.validations.map { validation ->
+                                        Validation(
+                                            title = validation.title,
+                                            message = validation.message,
+                                            rule = validation.rule
+                                        )
+                                    },
+                                    it.data.prefixSelect.prefixes.map { prefix ->
+                                        PcidssPrefix(
+                                            key = prefix.key,
+                                            value = prefix.value,
+                                            operator = PcidssOperator(
+                                                id = prefix.operator.id,
+                                                attribute = PrefixAttributes(
+                                                    imageUrl = prefix.operator.attribute.imageUrl,
+                                                    defaultProductId = prefix.operator.attribute.defaultProductId,
+                                                    name = prefix.operator.attribute.name
+                                                )
+                                            )
+                                        )
+                                    }
+                                )
+                            )
+                        )
                     }
                     is RechargeNetworkResult.Fail -> {
                         showErrorToaster(it.error)
@@ -347,55 +349,20 @@ class RechargeCCFragment :
             }
         )
 
-        rechargeCCViewModel.prefixValidation.observe(
-            viewLifecycleOwner,
-            Observer { isValid ->
-                binding?.ccWidgetClientNumber?.run {
-                    setLoading(false)
-                    val clientNumber = getInputNumber()
-                    if (clientNumber.length in DEFAULT_MIN_CC_LENGTH..DEFAULT_MAX_CC_LENGTH) {
-                        if (isValid && rechargeCCViewModel.creditCardSelected.value?.operatorId?.isEmpty() == false) {
-                            if (!clientNumber.isMasked() &&
-                                !RechargeCCUtil.isCreditCardValid(clientNumber)
-                            ) {
-                                setErrorInputField(getString(R.string.cc_error_invalid_number))
-                            } else {
-                                clearErrorState()
-                                enablePrimaryButton()
-                            }
-                        }
-                    }
-                }
-            }
-        )
+        rechargeSubmitCCViewModel.signature.observe(viewLifecycleOwner) { signature ->
+            binding?.ccWidgetClientNumber?.submitCheckout(
+                operatorIdSelected,
+                productIdSelected,
+                signature,
+                userSession.userId
+            )
+        }
 
         rechargeSubmitCCViewModel.errorSignature.observe(
             viewLifecycleOwner,
             Observer {
                 hideLoading()
                 showErrorToaster(it)
-            }
-        )
-
-        rechargeSubmitCCViewModel.redirectUrl.observe(
-            viewLifecycleOwner,
-            Observer {
-                hideLoading()
-                val passData = DigitalCheckoutPassData.Builder()
-                    .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-                    .categoryId(categoryId)
-                    .instantCheckout("0")
-                    .isPromo("0")
-                    .operatorId(it.operatorId)
-                    .productId(it.productId)
-                    .idemPotencyKey(RechargeCCUtil.generateIdemPotencyCheckout(userSession.userId))
-                    .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                    .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                    .isFromPDP(true)
-                    .build()
-                checkoutPassDataState = passData
-
-                navigateToCart(passData)
             }
         )
 
@@ -574,11 +541,10 @@ class RechargeCCFragment :
     ) {
         topupBillsRecommendation.position = position
         binding?.ccWidgetClientNumber?.run {
-            setInputNumber(topupBillsRecommendation.clientNumber)
+            setInputNumber(topupBillsRecommendation.clientNumber, topupBillsRecommendation.token)
             operatorIdSelected = topupBillsRecommendation.operatorId
             productIdSelected = topupBillsRecommendation.productId
-            token = topupBillsRecommendation.token
-            dialogConfirmation()
+            showDialogConfirmation()
         }
         creditCardAnalytics.sendClickLastTransactionListEvent(
             rechargeCCViewModel.categoryName,
@@ -600,28 +566,6 @@ class RechargeCCFragment :
         )
     }
 
-    private fun checkPrefixCreditCardNumber(clientNumber: String) {
-        rechargeCCViewModel.prefixData.prefixSelect.prefixes.isEmpty().let {
-            if (it) {
-                rechargeCCViewModel.getPrefixes(RechargeCCGqlQuery.catalogPrefix, menuId)
-            } else {
-                if (clientNumber.length > RechargeCCConst.MIN_VALID_LENGTH) {
-                    rechargeCCViewModel.run {
-                        checkPrefixNumber(clientNumber)
-                        cancelValidatorJob()
-                        validateCCNumber(clientNumber)
-                    }
-                } else {
-                    binding?.ccWidgetClientNumber?.run {
-                        clearErrorState()
-                        setLoading(false)
-                        hideOperatorIcon()
-                    }
-                }
-            }
-        }
-    }
-
     private fun showErrorToaster(error: Throwable) {
         KeyboardHandler.hideSoftKeyboard(activity)
         view?.run {
@@ -631,53 +575,6 @@ class RechargeCCFragment :
                 Snackbar.LENGTH_SHORT,
                 Toaster.TYPE_ERROR
             ).show()
-        }
-    }
-
-    private fun dialogConfirmation() {
-        if (operatorIdSelected.isNotEmpty() && productIdSelected.isNotEmpty()) {
-            binding?.run {
-                val formattedClientNumber = binding?.ccWidgetClientNumber?.getFormattedInputNumber() ?: ""
-                val dialogDesc = if (formattedClientNumber.isMasked()) {
-                    getString(R.string.cc_desc_dialog)
-                } else {
-                    String.format(
-                        CC_DIALOG_BOX_DESC_FORMAT,
-                        getString(R.string.cc_desc_dialog),
-                        formattedClientNumber
-                    )
-                }
-                val dialog = DialogUnify(root.context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-                dialog.setTitle(getString(R.string.cc_title_dialog))
-                dialog.setDescription(MethodChecker.fromHtml(dialogDesc).trim())
-                dialog.setPrimaryCTAText(getString(R.string.cc_cta_btn_primary))
-                dialog.setSecondaryCTAText(getString(R.string.cc_cta_btn_secondary))
-                dialog.setPrimaryCTAClickListener {
-                    dialog.dismiss()
-                    creditCardAnalytics.clickToContinueCheckout(
-                        categoryId,
-                        operatorIdSelected,
-                        userSession.userId
-                    )
-                    submitCreditCard(
-                        categoryId,
-                        operatorIdSelected,
-                        productIdSelected,
-                        binding?.ccWidgetClientNumber?.getInputNumber() ?: ""
-                    )
-                }
-                dialog.setSecondaryCTAClickListener {
-                    creditCardAnalytics.clickBackOnConfirmationPage(
-                        categoryId,
-                        operatorIdSelected,
-                        userSession.userId
-                    )
-                    dialog.dismiss()
-                }
-                dialog.show()
-            }
-        } else {
-            showErrorToaster(MessageErrorException(getString(R.string.cc_error_default_message)))
         }
     }
 
@@ -691,15 +588,17 @@ class RechargeCCFragment :
                 val identifier = it.getString(PARAM_IDENTIFIER) ?: ""
                 val clientNumber = it.getString(PARAM_CLIENT_NUMBER) ?: ""
 
-                val mapParam = rechargeSubmitCCViewModel.createPcidssParamFromApplink(
-                    clientNumber,
-                    operatorId,
-                    productId,
-                    userSession.userId,
-                    signature,
-                    identifier
+//                val mapParam = rechargeSubmitCCViewModel.createPcidssParamFromApplink(
+//                    clientNumber,
+//                    operatorId,
+//                    productId,
+//                    userSession.userId,
+//                    signature,
+//                    identifier
+//                )
+                binding?.ccWidgetClientNumber?.submitInstantCheckout(
+                    clientNumber, operatorId, productId, userSession.userId, signature, identifier
                 )
-                rechargeSubmitCCViewModel.submitCreditCard(mapParam)
             }
         } else {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
@@ -707,27 +606,14 @@ class RechargeCCFragment :
         }
     }
 
-    private fun submitCreditCard(categoryId: String, operatorId: String, productId: String, clientNumber: String) {
+    private fun postCreditCard(categoryId: String) {
         showLoading()
         if (userSession.isLoggedIn) {
-            val mapParam = if (token.isNotEmpty() && clientNumber.isMasked()) {
-                rechargeSubmitCCViewModel.createMaskedMapParam(
-                    clientNumber,
-                    operatorId,
-                    productId,
-                    userSession.userId,
-                    token
-                )
+            if (operatorIdSelected.isNotEmpty() && productIdSelected.isNotEmpty()) {
+                rechargeSubmitCCViewModel.postCreditCard(RechargeCCGqlQuery.rechargeCCSignature, categoryId)
             } else {
-                rechargeSubmitCCViewModel.createMapParam(
-                    clientNumber,
-                    operatorId,
-                    productId,
-                    userSession.userId
-                )
+                showErrorToaster(MessageErrorException(getString(R.string.cc_error_default_message)))
             }
-
-            rechargeSubmitCCViewModel.postCreditCard(RechargeCCGqlQuery.rechargeCCSignature, categoryId, mapParam)
         } else {
             hideLoading()
             navigateUserLogin()
@@ -746,28 +632,52 @@ class RechargeCCFragment :
     }
 
     private fun onSuccessGetFavoriteChips(favoriteChips: List<FavoriteChipModel>) {
+        val dummy = listOf(
+            FavoriteChipModel(
+                clientName = "Credit Card A - 1",
+                clientNumber = "4111 11** **** 4444",
+                token = "Token A - 1",
+                operatorId = "856"
+            ),
+            FavoriteChipModel(
+                clientName = "Credit Card B - 1",
+                clientNumber = "4111 11** **** 9999",
+                token = "Token B - 1",
+                operatorId = "856"
+            ),
+        )
         binding?.ccWidgetClientNumber?.run {
             setFilterChipShimmer(false, favoriteChips.isEmpty())
             setFavoriteNumber(
-                RechargeCCWidgetMapper.mapFavoriteChipsToWidgetModels(favoriteChips)
+                RechargeCCWidgetMapper.mapFavoriteChipsToWidgetModels(dummy)
             )
         }
     }
 
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
+        val dummy = listOf(
+            AutoCompleteModel(
+                clientName = "Credit Card A - 2",
+                clientNumber = "4111 11** **** 4444",
+                token = "Token A - 2"
+            ),
+            AutoCompleteModel(
+                clientName = "Credit Card B - 2",
+                clientNumber = "4111 11** **** 9999",
+                token = "Token B - 2"
+            ),
+        )
         binding?.ccWidgetClientNumber?.setAutoCompleteList(
-            RechargeCCWidgetMapper.mapAutoCompletesToWidgetModels(autoComplete)
+            RechargeCCWidgetMapper.mapAutoCompletesToWidgetModels(dummy)
         )
     }
 
     private fun onSuccessGetPrefill(prefill: PrefillModel) {
         binding?.run {
-            val clientNumber = ccWidgetClientNumber.getInputNumber()
-            if (clientNumber.isEmpty()) {
+            if (ccWidgetClientNumber.isInputFieldEmpty()) {
                 ccWidgetClientNumber.run {
                     setContactName(prefill.clientName)
-                    setInputNumber(prefill.clientNumber)
-                    token = prefill.token
+                    setInputNumber(prefill.clientNumber, prefill.token)
                 }
             }
         }
@@ -817,17 +727,13 @@ class RechargeCCFragment :
     //endregion
 
     //region CreditCardActionListener
-    override fun onClickNextButton(clientNumber: String) {
+    override fun onClickNextButton() {
         creditCardAnalytics.clickToConfirmationPage(
             categoryId,
             operatorIdSelected,
             userSession.userId
         )
-        dialogConfirmation()
-    }
-
-    override fun onManualInput() {
-        token = ""
+        binding?.ccWidgetClientNumber?.showDialogConfirmation()
     }
 
     override fun onNavigateTokoCardWebView() {
@@ -836,33 +742,11 @@ class RechargeCCFragment :
 
     //endregion
 
-    //region ClientNumberInputFieldListener
-    override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
-        binding?.run {
-            checkPrefixCreditCardNumber(ccWidgetClientNumber.getInputNumber())
-        }
-    }
-
-    override fun onClearInput() {
-        operatorIdSelected = ""
-        productIdSelected = ""
-    }
-
-    override fun onClickNavigationIcon() {
-        // do nothing
-    }
-
-    override fun isKeyboardShown(): Boolean {
-        return keyboardWatcher.isKeyboardOpened
-    }
-    //endregion
-
     //region FilterChipListener
     override fun onClickIcon(isSwitchChecked: Boolean) {
         // isSwitchChecked is not used here
         binding?.run {
             navigateToFavoriteNumberPage(
-                ccWidgetClientNumber.getInputNumber(),
                 arrayListOf(categoryId),
                 rechargeCCViewModel.categoryName,
                 rechargeCCViewModel.loyaltyStatus
@@ -887,7 +771,7 @@ class RechargeCCFragment :
     }
 
     override fun onClickFilterChip(isLabeled: Boolean, favorite: RechargeClientNumberChipModel) {
-        token = favorite.token
+        binding?.ccWidgetClientNumber?.setInputNumber(favorite.clientNumber, favorite.token)
         if (isLabeled) {
             creditCardAnalytics.clickFavoriteContactChips(
                 rechargeCCViewModel.categoryName,
@@ -906,10 +790,20 @@ class RechargeCCFragment :
     }
     //endregion
 
-    //region AutoCompleteListener
-    override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
-        token = favorite.token
-        if (favorite.name.isNotEmpty()) {
+    // region PcidssInputFieldWidgetListener
+    override fun onTextChanged(isManualInput: Boolean) {
+
+    }
+
+    override fun onClickClearIcon() {
+        operatorIdSelected = ""
+        productIdSelected = ""
+        binding?.ccWidgetClientNumber?.disablePrimaryButton()
+    }
+
+    override fun onClickAutoCompleteItem(name: String) {
+        binding?.ccWidgetClientNumber?.setContactName(name)
+        if (name.isNotEmpty()) {
             creditCardAnalytics.clickFavoriteContactAutoComplete(
                 rechargeCCViewModel.categoryName,
                 rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
@@ -925,10 +819,83 @@ class RechargeCCFragment :
             )
         }
     }
+
+    override fun isSoftKeyboardShown(): Boolean {
+        return keyboardWatcher.isKeyboardOpened
+    }
+
+    override fun onDialogSubmitCreditCard() {
+        showLoading()
+        creditCardAnalytics.clickToContinueCheckout(
+            categoryId,
+            operatorIdSelected,
+            userSession.userId
+        )
+        postCreditCard(categoryId)
+    }
+
+    override fun onDialogClickBack() {
+        creditCardAnalytics.clickBackOnConfirmationPage(
+            categoryId,
+            operatorIdSelected,
+            userSession.userId
+        )
+    }
+
+    override fun onSuccessSubmitCreditCard(productId: String, operatorId: String) {
+        hideLoading()
+        val passData = DigitalCheckoutPassData.Builder()
+            .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+            .categoryId(categoryId)
+            .instantCheckout("0")
+            .isPromo("0")
+            .operatorId(operatorId)
+            .productId(productId)
+            .idemPotencyKey(RechargeCCUtil.generateIdemPotencyCheckout(userSession.userId))
+            .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+            .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+            .isFromPDP(true)
+            .build()
+        checkoutPassDataState = passData
+
+        navigateToCart(passData)
+    }
+
+    override fun onFailSubmitCreditCard(errorMessage: String) {
+        hideLoading()
+        showErrorToaster(MessageErrorException(errorMessage))
+    }
+
+    override fun onSelectedCreditCardNotSupported() {
+        binding?.ccWidgetClientNumber?.hideOperatorIcon()
+        productIdSelected = ""
+        operatorIdSelected = ""
+    }
+
+    override fun onSelectedCreditCardSupported(
+        operatorId: String,
+        productId: String,
+        imageUrl: String
+    ) {
+        binding?.ccWidgetClientNumber?.showOperatorIcon(imageUrl)
+        productIdSelected = productId
+        operatorIdSelected = operatorId
+    }
+
+    override fun onCreditCardPrefixValidated() {
+        binding?.ccWidgetClientNumber?.enablePrimaryButton()
+    }
+
+    override fun onCheckPrefixEmpty() {
+        rechargeCCViewModel.getPrefixes(RechargeCCGqlQuery.catalogPrefix, menuId)
+    }
+
+    override fun onCreditCardNumberBelowMinLength() {
+        binding?.ccWidgetClientNumber?.hideOperatorIcon()
+    }
     //endregion
 
     private fun navigateToFavoriteNumberPage(
-        clientNumber: String,
         dgCategoryIds: ArrayList<String>,
         categoryName: String,
         loyaltyStatus: String
@@ -936,7 +903,7 @@ class RechargeCCFragment :
         context?.let {
             val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
                 it,
-                clientNumber,
+                "",
                 dgCategoryIds,
                 arrayListOf(),
                 categoryName,
@@ -964,12 +931,7 @@ class RechargeCCFragment :
             REQUEST_CODE_LOGIN -> {
                 if (userSession.isLoggedIn) {
                     binding?.run {
-                        submitCreditCard(
-                            categoryId,
-                            operatorIdSelected,
-                            productIdSelected,
-                            ccWidgetClientNumber.getInputNumber()
-                        )
+                        ccWidgetClientNumber.showDialogConfirmation()
                     }
                 }
             }
@@ -990,10 +952,8 @@ class RechargeCCFragment :
                         handleCallbackFavoriteNumber(
                             orderClientNumber.clientName,
                             orderClientNumber.clientNumber,
-                            orderClientNumber.operatorId,
-                            orderClientNumber.inputNumberActionTypeIndex
+                            orderClientNumber.token,
                         )
-                        token = orderClientNumber.token
                     } else {
                         handleCallbackAnySavedNumberCancel()
                     }
@@ -1011,12 +971,11 @@ class RechargeCCFragment :
     private fun handleCallbackFavoriteNumber(
         clientName: String,
         clientNumber: String,
-        operatorId: String,
-        inputNumberActionTypeIndex: Int
+        token: String
     ) {
         binding?.ccWidgetClientNumber?.run {
             setContactName(clientName)
-            setInputNumber(clientNumber)
+            setInputNumber(clientNumber, token)
         }
     }
 
@@ -1112,7 +1071,6 @@ class RechargeCCFragment :
         const val REQUEST_CODE_LOGIN = 1001
         const val REQUEST_CODE_LOGIN_INSTANT_CHECKOUT = 1020
 
-        const val CC_DIALOG_BOX_DESC_FORMAT = "%s<h3><b>%s</b></h3>"
         private const val TOOLBAR_ICON_SIZE = 64
 
         fun newInstance(
