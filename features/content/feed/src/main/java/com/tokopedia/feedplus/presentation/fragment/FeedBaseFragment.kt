@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +20,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -79,7 +80,7 @@ import com.tokopedia.creation.common.R as creationcommonR
  * Created By : Muhammad Furqan on 02/02/23
  */
 class FeedBaseFragment :
-    BaseDaggerFragment(),
+    TkpdBaseV4Fragment(),
     ContentCreationBottomSheet.Listener,
     FragmentListener {
 
@@ -189,6 +190,11 @@ class FeedBaseFragment :
             }
         }
 
+    override fun onAttach(context: Context) {
+        inject()
+        super.onAttach(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
@@ -248,6 +254,7 @@ class FeedBaseFragment :
     }
 
     override fun onScrollToTop() {
+        if (!isAdded) return
         feedMainViewModel.scrollCurrentTabToTop()
     }
 
@@ -259,7 +266,7 @@ class FeedBaseFragment :
         return true
     }
 
-    override fun initInjector() {
+    private fun inject() {
         DaggerFeedMainComponent.factory()
             .build(
                 activityContext = requireContext(),
@@ -587,6 +594,7 @@ class FeedBaseFragment :
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
+        if (!isAdded) return
         if (!isVisibleToUser) {
             onPauseInternal()
         } else {
