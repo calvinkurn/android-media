@@ -121,7 +121,7 @@ class AccountSettingActivity : BaseSimpleActivity() {
     private fun showErrorToast(it: Throwable?) {
         val err = ErrorHandler.getErrorMessage(this, it)
         Toaster.build(
-            findViewById(android.R.id.content)!!,
+            findViewById(android.R.id.content),
             err,
             Snackbar.LENGTH_LONG,
             TYPE_ERROR,
