@@ -10,10 +10,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,9 +20,12 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 
 @Composable
-fun MediaQualitySettingScreen(qualities: List<MediaQualityUIModel>, modifier: Modifier = Modifier) {
-    var selectedIndex by remember { mutableStateOf(0) }
-
+fun MediaQualitySettingScreen(
+    qualities: List<MediaQualityUIModel>,
+    modifier: Modifier = Modifier,
+    selectedIndex: Int = 0,
+    onSelected: (Int) -> Unit = {}
+) {
     Column(
         modifier = modifier
             .padding(16.dp)
@@ -47,7 +46,7 @@ fun MediaQualitySettingScreen(qualities: List<MediaQualityUIModel>, modifier: Mo
                 RadioButton(
                     selected = selectedIndex == i,
                     colors = RadioButtonDefaults.colors(MaterialTheme.colors.primary),
-                    onClick = { selectedIndex = i }
+                    onClick = { onSelected(i) }
                 )
                 Column {
                     NestTypography(
