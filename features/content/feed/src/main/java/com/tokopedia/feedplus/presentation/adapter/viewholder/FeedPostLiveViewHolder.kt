@@ -202,6 +202,9 @@ class FeedPostLiveViewHolder(
     }
 
     private fun bindVideoPlayer(element: FeedCardLivePreviewContentModel) {
+        binding.containerFeedLiveEnd.root.show()
+        binding.playerFeedVideo.hide()
+
         val videoPlayer = mVideoPlayer ?: listener.getVideoPlayer(element.id)
         mVideoPlayer = videoPlayer
 
@@ -223,12 +226,8 @@ class FeedPostLiveViewHolder(
             }
 
             override fun onBehindLiveWindow(playWhenReady: Boolean) {
-                videoPlayer.start(
-                    element.videoUrl,
-                    false,
-                    playWhenReady = playWhenReady,
-                    isLive = true
-                )
+                binding.containerFeedLiveEnd.root.show()
+                binding.playerFeedVideo.hide()
             }
         })
 
