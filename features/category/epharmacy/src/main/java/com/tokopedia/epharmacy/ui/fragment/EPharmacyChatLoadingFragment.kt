@@ -16,12 +16,12 @@ import com.tokopedia.epharmacy.databinding.EpharmacyReminderScreenBottomSheetBin
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.response.EPharmacyVerifyConsultationResponse
 import com.tokopedia.epharmacy.utils.CategoryKeys
-import com.tokopedia.epharmacy.utils.EPHARMACY_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.epharmacy.utils.IS_SINGLE_CONSUL_FLOW
 import com.tokopedia.epharmacy.utils.WEB_LINK_PREFIX
 import com.tokopedia.epharmacy.viewmodel.EPharmacyLoadingViewModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -39,7 +39,7 @@ class EPharmacyChatLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     private var ePharmacyGlobalError: GlobalError? = null
     private var illustrationImage: DeferredImageView? = null
     private var tConsultationId = 0L
-    private var source = String.EMPTY
+    private var singleConsulFlow = false
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private var verifyRunnable: Runnable? = null
@@ -82,7 +82,7 @@ class EPharmacyChatLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private fun extractArguments() {
         tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
-        source = arguments?.getString(EPHARMACY_SOURCE).orEmpty()
+        singleConsulFlow = arguments?.getBoolean(IS_SINGLE_CONSUL_FLOW).orFalse()
     }
 
     private fun setUpObservers() {
@@ -95,7 +95,7 @@ class EPharmacyChatLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
             illustrationImage = findViewById(R.id.ep_illustration_image)
         }
         verifyRunnable = Runnable {
-            ePharmacyLoadingViewModel.getVerifyConsultationOrder(tConsultationId, source)
+            ePharmacyLoadingViewModel.getVerifyConsultationOrder(tConsultationId, singleConsulFlow)
         }
     }
 

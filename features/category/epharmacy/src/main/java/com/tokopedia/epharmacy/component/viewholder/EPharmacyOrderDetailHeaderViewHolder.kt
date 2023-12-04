@@ -52,6 +52,9 @@ class EPharmacyOrderDetailHeaderViewHolder(
     }
 
     private fun setUpInvoiceClipBoard(invoiceNumber: String?) {
+        if (invoiceNumber.isNullOrEmpty()) {
+            copyInvoiceNumber.hide()
+        }
         copyInvoiceNumber.setOnClickListener {
             (view.context?.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager)?.apply {
                 setPrimaryClip(
@@ -65,15 +68,18 @@ class EPharmacyOrderDetailHeaderViewHolder(
     }
 
     private fun setUpInvoiceLink(invoiceLink: String?) {
+        if (invoiceLink.isNullOrBlank()) {
+            viewInvoice.hide()
+        }
         viewInvoice.setOnClickListener {
-            if(invoiceLink?.isNotBlank().orFalse()){
+            if (invoiceLink?.isNotBlank().orFalse()) {
                 ePharmacyListener?.onLihatInvoiceClicked(invoiceLink)
             }
         }
     }
 
-    private fun setUpInvoiceData(invoiceTitle: String?, paymentDate: String?) {
-        invoiceNumberText.text = invoiceTitle
+    private fun setUpInvoiceData(invoiceNumber: String?, paymentDate: String?) {
+        invoiceNumberText.displayTextOrHide(invoiceNumber.orEmpty())
         purchaseDateValue.displayTextOrHide(paymentDate.orEmpty())
         if (paymentDate?.isNotBlank().orFalse()) {
             purchaseDate.show()
