@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">saldo_details</string>
-    <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
+    <string name="saldo_detail_title_activity_people_deposit">Saldo Tokopedia</string>
+    <string name="saldo_tokopedia_title">Saldo Tokopedia</string>
     <string name="saldo_detail_title_header_saldo_intro">Info Detail Saldo</string>
     <string name="sp_label_new">Baru</string>
     <string name="sp_btn_cancel">Kembali</string>
@@ -18,7 +19,7 @@
     <string name="sp_positive_saldo_balance">+%s</string>
     <string name="sp_negative_saldo_balance">-%s</string>
     <string name="sp_date_time_view">%s WIB</string>
-    <string name="saldo_hold_balance_text"><![CDATA[Ada saldo tertahan senilai %s. <a href="(%1$s)">Cek Status</a>]]></string>
+    <string name="saldo_hold_balance_text"><![CDATA[Ada saldo tertahan senilai <b>%s</b>]]></string>
     <string name="check_saldo_hold_balance_status">Cek Status</string>
     <string name="sp_saldo_withdraw_warning_title">Informasi Penarikan Saldo</string>
     <string name="sp_saldo_withdraw_warning_desc">Layanan pencairan dana bergantung pada jadwal proses kerja bank. Info lebih lanjut, silakan hubungi layanan nasabah bank.</string>
@@ -34,10 +35,10 @@
     <string name="saldo_intro_title_refund">Refund</string>
     <string name="saldo_intro_description_refund">Berisi dana pengembalian  dari transaksi gagal dan hasil penjualan produk investasi. Dana digunakan kembali untuk melakukan pembelian di Tokopedia.</string>
     <string name="saldo_intro_goto_balance_page">Cek Halaman Saldo</string>
-    <string name="title_saldo_detail">Detail Saldo</string>
+    <string name="title_saldo_detail">Saldo Tokopedia</string>
     <string name="saldo_total_balance_buyer">Saldo Refund</string>
     <string name="saldo_total_balance_seller">Saldo Penghasilan</string>
-    <string name="total_saldo_text">Total Saldo Aktif</string>
+    <string name="total_saldo_text">Total Saldo Tokopedia</string>
     <string name="saldo_balance_buyer_desc">Saldo ini berasal dari transaksi yang dibatalkan. Kamu bisa gunakan Saldo Refund untuk bertransaksi lagi dan saldo bisa ditarik ke rekening bank.</string>
     <string name="saldo_balance_seller_desc">Saldo yang menampung penghasilanmu di Tokopedia, dan tidak bisa dipakai untuk bertransaksi. Saldo Penghasilan berasal dari hasil penjualan produk (khusus Seller), dan penjualan hasil investasi seperti reksa dana dan emas. Saldo bisa ditarik ke rekening bank.</string>
     <string name="sumber_dana_refund">Sumber dana Refund</string>
@@ -113,4 +114,5 @@
     <string name="download_trx_fee_report_ticker_title_link">di sini</string>
 
     <string name="saldo_transaction_detail_account_name">"%1$s - %2$s"</string>
+    <string name="content_desc_background">background</string>
 </resources>

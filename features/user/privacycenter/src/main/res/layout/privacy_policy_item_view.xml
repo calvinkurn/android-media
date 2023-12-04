@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_3"
         app:typographyWeight="bold"
-        tools:text="Kebijakan Privasi v.005 - 23 Des 2022" />
+        tools:text="Pemberitahuan Privasi v.005 - 23 Des 2022" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerPrivacyPolicy"

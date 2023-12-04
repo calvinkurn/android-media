@@ -66,6 +66,8 @@ class EPharmacyTickerViewHolder(
     }
 
     private fun showWebViewTicker(data: EPharmacyTickerDataModel) {
+        if (data.tickerWebViewText.isNullOrBlank()) return
+
         webViewTicker.setHtmlDescription(data.tickerWebViewText.orEmpty())
         webViewTicker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {

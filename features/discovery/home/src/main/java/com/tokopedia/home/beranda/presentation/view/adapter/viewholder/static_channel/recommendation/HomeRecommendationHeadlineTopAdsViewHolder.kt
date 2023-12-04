@@ -6,22 +6,51 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.databinding.HomeRecommedationHeadlineAdsLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
-import com.tokopedia.smart_recycler_helper.SmartListener
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class HomeRecommendationHeadlineTopAdsViewHolder(view: View, private  val topAdsBannerClickListener: TopAdsBannerClickListener) :
-    SmartAbstractViewHolder<HomeRecommendationHeadlineTopAdsDataModel>(view) {
+class HomeRecommendationHeadlineTopAdsViewHolder(
+    view: View,
+    private val topAdsBannerClickListener: TopAdsBannerClickListener
+) : BaseRecommendationForYouViewHolder<HomeRecommendationHeadlineTopAdsDataModel>(
+    view,
+    HomeRecommendationHeadlineTopAdsDataModel::class.java
+) {
     companion object {
         val LAYOUT = R.layout.home_recommedation_headline_ads_layout
     }
 
     private var binding: HomeRecommedationHeadlineAdsLayoutBinding? by viewBinding()
 
-    override fun bind(element: HomeRecommendationHeadlineTopAdsDataModel, listener: SmartListener) {
+    override fun bind(element: HomeRecommendationHeadlineTopAdsDataModel) {
+        setHeadlineAdsClickListener()
+        setHeadlineAdsImpression()
+        setDisplayHeadlineAds(element)
+        hideHeadlineAdsShimmer()
+    }
+
+    private fun setHeadlineAdsImpression() {
+        binding?.headlineAds?.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
+            override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {
+            }
+        })
+    }
+
+    private fun setDisplayHeadlineAds(
+        element: HomeRecommendationHeadlineTopAdsDataModel
+    ) {
+        if (!element.headlineAds.data.isNullOrEmpty()) {
+            binding?.headlineAds?.displayAds(element.headlineAds, Int.ZERO)
+        }
+    }
+
+    private fun hideHeadlineAdsShimmer() {
+        binding?.headlineAdsShimmer?.hide()
+    }
+
+    private fun setHeadlineAdsClickListener() {
         binding?.headlineAds?.setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
             override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
                 topAdsBannerClickListener.onBannerAdsClicked(
@@ -30,15 +59,6 @@ class HomeRecommendationHeadlineTopAdsViewHolder(view: View, private  val topAds
                     data
                 )
             }
-
         })
-        binding?.headlineAds?.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
-            override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {
-            }
-        })
-        if (!element.headlineAds.data.isNullOrEmpty()){
-            binding?.headlineAds?.displayAds(element.headlineAds, Int.ZERO)
-        }
-        binding?.headlineAdsShimmer?.hide()
     }
 }
