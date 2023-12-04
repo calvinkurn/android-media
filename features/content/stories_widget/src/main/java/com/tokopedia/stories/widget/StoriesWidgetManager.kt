@@ -225,6 +225,7 @@ class StoriesWidgetManager private constructor(
     private fun StoriesWidgetLayout.onDetached() {
         coachMark.hide(this)
         setListener(null)
+        viewToObserverMap.remove(this)
     }
 
     private fun StoriesWidgetLayout.getObserver(): StoriesWidgetObserver? {
