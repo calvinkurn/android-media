@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.stories.creation.view.screen.StoriesCreationInfoLayout
+import com.tokopedia.creation.common.presentation.screen.ContentInfoScreen
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**
@@ -41,7 +41,7 @@ class StoriesCreationInfoBottomSheet : BottomSheetUnify() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
             setContent {
-                StoriesCreationInfoLayout(
+                ContentInfoScreen(
                     imageUrl = info.imageUrl,
                     title = info.title,
                     subtitle = info.subtitle,

@@ -95,6 +95,8 @@ public class LinkerData implements Parcelable {
     private String minVersionAndroid = "";
     private String minVersionIOS = "";
 
+    private String shopName = "";
+
     public String getCustmMsg() {
         return custmMsg;
     }
@@ -154,6 +156,7 @@ public class LinkerData implements Parcelable {
         linkAffiliateType = in.readString();
         minVersionAndroid = in.readString();
         minVersionIOS = in.readString();
+        shopName = in.readString();
     }
 
     @Override
@@ -205,6 +208,7 @@ public class LinkerData implements Parcelable {
         dest.writeString(linkAffiliateType);
         dest.writeString(minVersionAndroid);
         dest.writeString(minVersionIOS);
+        dest.writeString(shopName);
     }
 
     public String getMinVersionIOS() {
@@ -221,6 +225,14 @@ public class LinkerData implements Parcelable {
 
     public void setMinVersionAndroid(String minVersionAndroid) {
         this.minVersionAndroid = minVersionAndroid;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 
     @Override
@@ -751,6 +763,7 @@ public class LinkerData implements Parcelable {
         private String linkAffiliateType;
         private String minVersionAndroid;
         private String minVersionIOS;
+        private String shopName;
 
         private Builder() {
         }
@@ -998,6 +1011,11 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
+        public Builder setShopName(String shopName) {
+            this.shopName = shopName;
+            return this;
+        }
+
         public Builder but() {
             return getLinkerBuilder().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -1049,6 +1067,7 @@ public class LinkerData implements Parcelable {
             linkerData.setAffiliate(isAffiliate);
             linkerData.setAdditionalQueryParam(additionalQueryParam);
             linkerData.setLinkAffiliateType(linkAffiliateType);
+            linkerData.setShopName(shopName);
             return linkerData;
         }
 

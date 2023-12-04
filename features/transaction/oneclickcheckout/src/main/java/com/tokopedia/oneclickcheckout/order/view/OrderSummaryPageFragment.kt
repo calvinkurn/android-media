@@ -47,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -111,7 +112,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShippingDuration
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.payment.activation.PaymentActivationWebViewBottomSheet
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerActivity
@@ -535,8 +535,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
 
         observeGlobalEvent()
 
-        observeOrderShippingDuration()
-
         observeUploadPrescription()
 
         // first load
@@ -696,43 +694,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                 is OccState.FirstLoad -> showMainContent(it.data)
                 is OccState.Success -> showMainContent(it.data)
             }
-        }
-    }
-
-    private fun observeOrderShippingDuration() {
-        viewModel.orderShippingDuration.observe(viewLifecycleOwner) {
-            when (it) {
-                is OccState.Loading -> {
-                    // no ops
-                }
-                is OccState.Failed -> {
-                    binding.loaderContent.animateGone()
-                    it.getFailure()?.let { failure ->
-                        handleError(failure.throwable)
-                    }
-                }
-                is OccState.FirstLoad -> {
-                    // no ops
-                }
-                is OccState.Success -> openShippingDurationBottomsheet(it.data)
-            }
-        }
-    }
-
-    private fun openShippingDurationBottomsheet(data: OrderShippingDuration) {
-        data.ratesParam?.run {
-            ShippingDurationBottomsheet.show(
-                ratesParam = this,
-                fragmentManager = parentFragmentManager,
-                selectedServiceId = data.selectedServiceId,
-                selectedSpId = data.shipmentDetailData.selectedCourier?.shipperProductId ?: 0,
-                cartPosition = 0,
-                isDisableOrderPrioritas = true,
-                isRatesTradeInApi = false,
-                recipientAddressModel = null,
-                isOcc = true,
-                shippingDurationBottomsheetListener = getShippingDurationListener()
-            )
         }
     }
 
@@ -1718,7 +1679,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                 } else if (currentSpId.isNotEmpty()) {
                     orderSummaryAnalytics.eventClickArrowToChangeDurationOption(currentSpId, userSession.get().userId)
                 }
-                viewModel.getShippingBottomsheetParam()
+                viewModel.getShippingBottomsheetParam()?.let { param ->
+                    ShippingDurationBottomsheet.show(
+                        ratesParam = param,
+                        fragmentManager = parentFragmentManager,
+                        selectedServiceId = viewModel.orderShipment.value.serviceId.toZeroIfNull(),
+                        selectedSpId = viewModel.orderShipment.value.shipperProductId.toZeroIfNull(),
+                        cartPosition = 0,
+                        isDisableOrderPrioritas = true,
+                        isRatesTradeInApi = false,
+                        recipientAddressModel = null,
+                        isOcc = true,
+                        shippingDurationBottomsheetListener = getShippingDurationListener()
+                    )
+                }
             }
         }
 
