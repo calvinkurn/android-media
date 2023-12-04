@@ -1859,6 +1859,33 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         discountPercentageInt = 15,
                         discountPercentage = "15",
                         slashedPrice = "Rp30.000"
+                ),
+                RecommendationItem(
+                        name = "Fillet Ikan Pangasius",
+                        imageUrl = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/22/8e7f3536-af84-4300-bfff-4832fb6f0f99.png",
+                        price = "Rp25.500",
+                        priceInt = 25500,
+                        discountPercentageInt = 15,
+                        discountPercentage = "15",
+                        slashedPrice = "Rp30.000"
+                ),
+                RecommendationItem(
+                        name = "Fillet Ikan Pangasius",
+                        imageUrl = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/22/8e7f3536-af84-4300-bfff-4832fb6f0f99.png",
+                        price = "Rp25.500",
+                        priceInt = 25500,
+                        discountPercentageInt = 15,
+                        discountPercentage = "15",
+                        slashedPrice = "Rp30.000"
+                ),
+                RecommendationItem(
+                        name = "Fillet Ikan Pangasius",
+                        imageUrl = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/22/8e7f3536-af84-4300-bfff-4832fb6f0f99.png",
+                        price = "Rp25.500",
+                        priceInt = 25500,
+                        discountPercentageInt = 15,
+                        discountPercentage = "15",
+                        slashedPrice = "Rp30.000"
                 ))
         )
         listOrder.add(UohTypeData(recommendationWidget, UohConsts.TYPE_BUY_AGAIN))
