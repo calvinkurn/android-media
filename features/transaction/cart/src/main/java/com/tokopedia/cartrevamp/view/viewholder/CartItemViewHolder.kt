@@ -79,6 +79,7 @@ class CartItemViewHolder constructor(
     private var informationLabel: MutableList<String> = mutableListOf()
     private var qtyTextWatcher: TextWatcher? = null
     private var lastQty: Int = 0
+    private var isFromDoneImeAction: Boolean = false
 
     @SuppressLint("ClickableViewAccessibility")
     fun clear() {
@@ -1259,7 +1260,11 @@ class CartItemViewHolder constructor(
                         if (data.isBundlingItem) data.bundleQuantity else data.quantity
                     if (isActive && previousQuantity != newValue) {
                         if (!qtyEditorProduct.editText.isFocused) {
-                            validateQty(newValue, data)
+                            if (isFromDoneImeAction) {
+                                isFromDoneImeAction = false
+                            } else {
+                                validateQty(newValue, data)
+                            }
                             if (isActive && newValue != 0) {
                                 actionListener?.onCartItemQuantityChanged(data, newValue)
                                 handleRefreshType(data, viewHolderListener)
@@ -1301,6 +1306,10 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.DropKeyboard(qtyEditorProduct.editText.context, itemView)
+                isFromDoneImeAction = true
+                if (qtyEditorProduct.editText.text.toString() == "0") {
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.QuantityEditorImeAction)
+                }
                 if (lastQty > data.maxOrder) {
                     binding.labelQuantityError.text = String.format(
                         itemView.context.getString(R.string.cart_max_quantity_error),
