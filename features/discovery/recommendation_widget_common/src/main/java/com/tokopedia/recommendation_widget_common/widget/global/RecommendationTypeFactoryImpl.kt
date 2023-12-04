@@ -8,6 +8,8 @@ import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.Comparis
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
 import com.tokopedia.recommendation_widget_common.widget.loading.RecommendationCarouselShimmeringModel
 import com.tokopedia.recommendation_widget_common.widget.loading.RecommendationCarouselShimmeringView
+import com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookWidgetModel
+import com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookWidgetView
 import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalView
 import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 
@@ -29,6 +31,10 @@ class RecommendationTypeFactoryImpl : RecommendationTypeFactory {
 
     override fun type(model: RecommendationVerticalModel): Int {
         return RecommendationVerticalView.LAYOUT
+    }
+
+    override fun type(model: StealTheLookWidgetModel): Int {
+        return StealTheLookWidgetView.LAYOUT
     }
 
     override fun createView(context: Context, model: RecommendationVisitable): ViewGroup {

@@ -4,6 +4,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.PAGENAME_STEAL_THE_LOOK
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_LIMIT_VERTICAL
 import com.tokopedia.recommendation_widget_common.mvvm.UiState
@@ -12,6 +13,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
 import com.tokopedia.recommendation_widget_common.widget.loading.RecommendationCarouselShimmeringModel
+import com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 
 data class RecommendationWidgetState(
@@ -75,6 +77,12 @@ data class RecommendationWidgetState(
                 recommendationWidget = widget,
                 source = model.source,
                 listener = model.listener,
+                userId = userId
+            )
+        } else if (widget.pageName.contains(PAGENAME_STEAL_THE_LOOK)) {
+            StealTheLookWidgetModel.from(
+                model = model,
+                data = widget,
                 userId = userId
             )
         } else {

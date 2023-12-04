@@ -48,6 +48,7 @@ data class RecommendationItem(
     val isOfficial: Boolean = false,
     val specs: List<RecommendationSpecificationLabels> = listOf(),
     val addToCartType: AddToCartType = AddToCartType.None,
+    val gridPosition: GridPosition = GridPosition.None,
     // for tracker field
     val dimension61: String = "",
     // for tokonow
@@ -59,6 +60,13 @@ data class RecommendationItem(
         DirectAtc,
         QuantityEditor,
         None
+    }
+
+    enum class GridPosition {
+        None,
+        Left,
+        TopRight,
+        BottomRight
     }
 
     override fun equals(other: Any?): Boolean {

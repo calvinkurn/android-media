@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
 import com.tokopedia.recommendation_widget_common.widget.loading.RecommendationCarouselShimmeringModel
+import com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 
 /**
@@ -15,5 +16,6 @@ interface RecommendationTypeFactory {
     fun type(model: RecommendationCarouselModel): Int
     fun type(model: RecommendationCarouselShimmeringModel): Int
     fun type(model: RecommendationVerticalModel): Int
+    fun type(model: StealTheLookWidgetModel): Int
     fun createView(context: Context, model: RecommendationVisitable): ViewGroup
 }
