@@ -10,15 +10,18 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
+import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailByIdUseCase
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
 import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.domain.response.CartListData
-import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
-import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
@@ -66,8 +69,8 @@ import javax.inject.Inject
 
 @FlowPreview
 open class TokoFoodPurchaseViewModel @Inject constructor(
-    private val keroEditAddressUseCase: Lazy<KeroEditAddressUseCase>,
-    private val keroGetAddressUseCase: Lazy<KeroGetAddressUseCase>,
+    private val keroEditAddressUseCase: Lazy<UpdatePinpointWithAddressIdUseCase>,
+    private val getAddressDetailByIdUseCase: Lazy<GetAddressDetailByIdUseCase>,
     private val cartListTokofoodUseCase: Lazy<CheckoutTokoFoodUseCase>,
     private val checkoutGeneralTokoFoodUseCase: Lazy<CheckoutGeneralTokoFoodUseCase>,
     val dispatcher: CoroutineDispatchers
@@ -194,9 +197,16 @@ open class TokoFoodPurchaseViewModel @Inject constructor(
                     val cacheAddressId = _isAddressHasPinpoint.value.first
                     if (cacheAddressId.isEmpty()) {
                         // Check pinpoint remotely if cache address id is empty
-                        val remoteAddressId = businessData.customResponse.userAddress.addressId.toString()
-                        val addressResult = keroGetAddressUseCase.get().execute(remoteAddressId)
-                        val secondAddress = addressResult?.secondAddress
+                        val remoteAddressId =
+                            businessData.customResponse.userAddress.addressId.toString()
+                        val addressResult = getAddressDetailByIdUseCase.get()(
+                            GetDetailAddressParam(
+                                remoteAddressId,
+                                source = ManageAddressSource.TOKOFOOD.source,
+                                isManageAddressFlow = false
+                            )
+                        )
+                        val secondAddress = addressResult.address2
                         secondAddress?.isNotEmpty().let { hasPinpointRemotely ->
                             if (hasPinpointRemotely == true) {
                                 _uiEvent.value = PurchaseUiEvent(
@@ -489,7 +499,7 @@ open class TokoFoodPurchaseViewModel @Inject constructor(
                 launchCatchError(
                     block = {
                         val result = withContext(dispatcher.io) {
-                            keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
+                            keroEditAddressUseCase.get()(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
                         }
                         if (result.isSuccess == 1) {
                             _isAddressHasPinpoint.value = addressId to (latitude.isNotEmpty() && longitude.isNotEmpty())

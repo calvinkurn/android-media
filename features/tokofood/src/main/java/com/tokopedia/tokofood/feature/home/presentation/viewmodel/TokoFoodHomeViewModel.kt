@@ -10,8 +10,10 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
-import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.MERCHANT_TITLE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
@@ -78,7 +80,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val tokoFoodHomeDynamicIconsUseCase: TokoFoodHomeDynamicIconsUseCase,
     private val tokoFoodHomeTickerUseCase: TokoFoodHomeTickerUseCase,
     private val tokoFoodMerchantListUseCase: TokoFoodMerchantListUseCase,
-    private val keroEditAddressUseCase: KeroEditAddressUseCase,
+    private val keroEditAddressUseCase: UpdatePinpointWithAddressIdUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val searchCoachmarkSharedPref: TokofoodHomeSharedPref,
     private val dispatchers: CoroutineDispatchers
@@ -307,7 +309,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private suspend fun updatePinPoin(addressId: String, latitude: String, longitude: String): Result<KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse> {
         val result = withContext(dispatchers.io) {
-            keroEditAddressUseCase.execute(addressId, latitude, longitude)
+            keroEditAddressUseCase(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
         }
         return Success(result)
     }

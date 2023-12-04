@@ -1,5 +1,7 @@
 package com.tokopedia.tokofood.merchant
 
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
+import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
 import com.tokopedia.tokofood.data.createKeroEditAddressResponse
 import com.tokopedia.tokofood.data.createKeroEditAddressResponseFail
 import com.tokopedia.tokofood.data.generateTestDeliveryCoverageResult
@@ -27,28 +29,28 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
         val latitude = "111"
         val longitude = "112"
         coEvery {
-            keroEditAddressUseCase.execute("", latitude, longitude)
+            keroEditAddressUseCase(KeroEditAddressParam("", latitude, longitude, ManageAddressSource.TOKOFOOD))
         } returns createKeroEditAddressResponse(latitude, longitude).keroEditAddress.data
         viewModel.updatePinPoint("", latitude, longitude)
-        coVerify { keroEditAddressUseCase.execute("", latitude, longitude) }
+        coVerify { keroEditAddressUseCase(KeroEditAddressParam("", latitude, longitude, ManageAddressSource.TOKOFOOD)) }
         assertEquals(viewModel.updatePinPointState.value?.isSuccess, 1)
     }
 
     @Test
     fun `when updatePinPoint is not success expect the boolean result to be false`() {
         coEvery {
-            keroEditAddressUseCase.execute("", "", "")
+            keroEditAddressUseCase(KeroEditAddressParam("", "", "", ManageAddressSource.TOKOFOOD))
         } returns createKeroEditAddressResponseFail().keroEditAddress.data
         viewModel.updatePinPoint("", "", "")
         viewModel.updatePinPoint("", "", "")
-        coVerify { keroEditAddressUseCase.execute("", "", "") }
+        coVerify { keroEditAddressUseCase(KeroEditAddressParam("", "", "", ManageAddressSource.TOKOFOOD)) }
         assertEquals(viewModel.updatePinPointState.value?.isSuccess, 0)
     }
 
     @Test
     fun `when updatePinPoint is failed expect error message`() {
         coEvery {
-            keroEditAddressUseCase.execute("", "", "")
+            keroEditAddressUseCase(KeroEditAddressParam("", "", "", ManageAddressSource.TOKOFOOD))
         } throws Throwable("error_message")
         viewModel.updatePinPoint("", "", "")
         val actualResponse = viewModel.errorMessage.value

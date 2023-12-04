@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
-import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
 import com.tokopedia.tokofood.feature.merchant.domain.usecase.CheckDeliveryCoverageUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -16,7 +18,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ManageLocationViewModel @Inject constructor(
-    private val keroEditAddressUseCase: KeroEditAddressUseCase,
+    private val keroEditAddressUseCase: UpdatePinpointWithAddressIdUseCase,
     private val checkDeliveryCoverageUseCase: CheckDeliveryCoverageUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -36,7 +38,14 @@ class ManageLocationViewModel @Inject constructor(
     fun updatePinPoint(addressId: String, latitude: String, longitude: String) {
         launchCatchError(block = {
             val isSuccess = withContext(dispatchers.io) {
-                keroEditAddressUseCase.execute(addressId, latitude, longitude)
+                keroEditAddressUseCase(
+                    KeroEditAddressParam(
+                        addressId,
+                        latitude,
+                        longitude,
+                        ManageAddressSource.TOKOFOOD
+                    )
+                )
             }
             _updatePinPointState.postValue(isSuccess)
         }) {
