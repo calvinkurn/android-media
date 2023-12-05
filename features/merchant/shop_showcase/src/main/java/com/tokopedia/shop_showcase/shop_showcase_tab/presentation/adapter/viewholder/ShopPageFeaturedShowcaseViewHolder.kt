@@ -71,18 +71,23 @@ class ShopPageFeaturedShowcaseViewHolder(
                 }
         )
         
-        if (shouldForceToLightMode) {
-            viewBinding?.container?.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    viewBinding?.container?.context ?: return,
-                    R.color.dms_clr_Unify_NN0_0_light
-                )
-            )
-            val highEmphasizeTextColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
-            viewBinding?.tvShowcaseName?.setTextColor(highEmphasizeTextColor)
-        }
+        handleColorSchema(shouldForceToLightMode)
     }
 
+    private fun handleColorSchema(shouldForceToLightMode: Boolean) {
+        if (shouldForceToLightMode) {
+            val cardBackgroundColor = ContextCompat.getColor(
+                viewBinding?.container?.context ?: return,
+                R.color.dms_clr_Unify_NN0_0_light
+            )
+            
+            viewBinding?.container?.setCardBackgroundColor(cardBackgroundColor)
+            
+            val showcaseTextColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+            viewBinding?.tvShowcaseName?.setTextColor(showcaseTextColor)
+        }
+    }
+    
     private fun setItemMargin(position: Int, list: List<FeaturedShowcaseUiModel>) {
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
