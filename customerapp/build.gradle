@@ -336,6 +336,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.youtubePlayer)
 
+    if (rootProject.hasProperty('nakamaVersion') ?: false) {
+        implementation projectOrAar(rootProject.ext.features.feedbackForm)
+    }
+
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.auth
