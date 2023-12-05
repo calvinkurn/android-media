@@ -806,7 +806,7 @@ public class GTMAnalytics extends ContextAnalytics {
         if (successGetClientId) {
             return false;
         }
-        if (!TextUtils.isEmpty(clientIdString) && !NO_GA_ID.equals(clientIdString)) {
+        if (isClientIdValid(clientIdString)) {
             return false;
         }
         if (gaIdRetryCount < MAX_GA_ID_RETRY) {
