@@ -1,11 +1,13 @@
 package com.tokopedia.home_account.account_settings.presentation.activity
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
@@ -44,11 +46,15 @@ fun MediaQualitySettingScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
         qualities.forEachIndexed { i, v ->
-            Row() {
+            Row(modifier = Modifier
+                .clickable { onSelected(i) }
+                .padding(vertical = 8.dp)
+            ) {
                 RadioButton(
                     selected = selectedIndex == i,
+                    modifier = Modifier.size(48.dp),
                     colors = RadioButtonDefaults.colors(MaterialTheme.colors.primary),
-                    onClick = { onSelected(i) }
+                    onClick = null
                 )
                 Column {
                     NestTypography(
@@ -63,7 +69,6 @@ fun MediaQualitySettingScreen(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

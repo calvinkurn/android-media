@@ -24,7 +24,7 @@ import com.tokopedia.media.loader.internal.MediaSettingPreferences
 import com.tokopedia.nest.principles.ui.NestTheme
 import kotlinx.coroutines.launch
 
-class MediaQualitySettingComposeActivity : BaseSimpleActivity() {
+class MediaQualitySettingActivity : BaseSimpleActivity() {
 
     private val settings by lazy { MediaSettingPreferences(this) }
 
@@ -56,8 +56,8 @@ class MediaQualitySettingComposeActivity : BaseSimpleActivity() {
                                 scope.launch {
                                     settings.setQualitySettings(it)
                                     val message = generateToastMessage(it)
-                                    snackbarHostState.showSnackbar(message)
                                     selectedQuality = settings.qualitySettings()
+                                    snackbarHostState.showSnackbar(message)
                                 }
                             }
                         )

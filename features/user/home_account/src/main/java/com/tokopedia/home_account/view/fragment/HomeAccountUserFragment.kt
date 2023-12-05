@@ -65,7 +65,7 @@ import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.account_settings.presentation.activity.AccountSettingActivity
-import com.tokopedia.home_account.account_settings.presentation.activity.MediaQualitySettingComposeActivity
+import com.tokopedia.home_account.account_settings.presentation.activity.MediaQualitySettingActivity
 import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
@@ -1412,7 +1412,7 @@ open class HomeAccountUserFragment :
 
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
 //                RouteManager.route(context, ApplinkConstInternalUserPlatform.MEDIA_QUALITY_SETTING)
-                startActivity(Intent(requireContext(), MediaQualitySettingComposeActivity::class.java))
+                startActivity(Intent(requireContext(), MediaQualitySettingActivity::class.java))
             }
 
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
