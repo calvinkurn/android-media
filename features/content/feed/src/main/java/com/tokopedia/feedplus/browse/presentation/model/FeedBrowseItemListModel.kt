@@ -52,10 +52,16 @@ internal sealed interface FeedBrowseItemListModel {
         }
     }
 
-    data class Banner(
-        override val slotInfo: SlotInfo,
-        val banner: BannerWidgetModel
-    ) : FeedBrowseItemListModel
+    sealed interface Banner : FeedBrowseItemListModel {
+        data class Item(
+            override val slotInfo: SlotInfo,
+            val banner: BannerWidgetModel,
+        ) : Banner
+
+        object Placeholder : Banner {
+            override val slotInfo: SlotInfo = SlotInfo.Empty
+        }
+    }
 
     sealed interface InspirationCard : FeedBrowseItemListModel {
         data class Item(

@@ -166,7 +166,6 @@ internal class CategoryInspirationAdapter(
         return object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (getItem(position)) {
-                    is FeedBrowseItemListModel.Banner -> 1
                     is FeedBrowseItemListModel.InspirationCard -> 1
                     else -> 2
                 }

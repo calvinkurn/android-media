@@ -49,7 +49,7 @@ class FeedBrowseItemDecoration(
         val positionInfo = parent.getChildValidPositionInfo(view, state)
         when (parent.findViewHolderByPositionInfo(positionInfo)) {
             is FeedBrowseTitleViewHolder -> outRect.itemOffsetsTitle()
-            is FeedBrowseBannerViewHolder -> outRect.itemOffsetsBanner(parent, view, state)
+            is FeedBrowseBannerViewHolder.Item, is FeedBrowseBannerViewHolder.Placeholder -> outRect.itemOffsetsBanner(parent, view, state)
             is ChipsViewHolder -> outRect.itemOffsetsChips(parent, view, state)
             is FeedBrowseHorizontalChannelsViewHolder,
             is FeedBrowseHorizontalCreatorsViewHolder -> outRect.itemOffsetsHorizontalChannels()
@@ -105,7 +105,7 @@ class FeedBrowseItemDecoration(
         if (prevSpanRowPosition < 0) return
 
         top = when (parent.findViewHolderByPositionInfo(positionInfo)) {
-            is FeedBrowseBannerViewHolder -> offset8
+            is FeedBrowseBannerViewHolder.Item, is FeedBrowseBannerViewHolder.Placeholder -> offset8
             else -> offset12
         }
     }

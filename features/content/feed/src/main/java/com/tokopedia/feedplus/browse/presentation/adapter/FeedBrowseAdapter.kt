@@ -27,7 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 internal class FeedBrowseAdapter(
     private val scope: CoroutineScope,
     private val chipsListener: ChipsViewHolder.Listener,
-    private val bannerListener: FeedBrowseBannerViewHolder.Listener,
+    private val bannerListener: FeedBrowseBannerViewHolder.Item.Listener,
     private val channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener,
     private val creatorListener: FeedBrowseHorizontalCreatorsViewHolder.Listener
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
@@ -66,7 +66,10 @@ internal class FeedBrowseAdapter(
                 FeedBrowseHorizontalChannelsViewHolder.create(parent, scope, channelListener)
             }
             TYPE_BANNER -> {
-                FeedBrowseBannerViewHolder.create(parent, bannerListener)
+                FeedBrowseBannerViewHolder.Item.create(parent, bannerListener)
+            }
+            TYPE_BANNER_PLACEHOLDER -> {
+                FeedBrowseBannerViewHolder.Placeholder.create(parent)
             }
             TYPE_TITLE -> {
                 FeedBrowseTitleViewHolder.create(parent)
@@ -87,7 +90,7 @@ internal class FeedBrowseAdapter(
             holder is FeedBrowseHorizontalChannelsViewHolder && item is FeedBrowseItemListModel.HorizontalChannels -> {
                 holder.bind(item)
             }
-            holder is FeedBrowseBannerViewHolder && item is FeedBrowseItemListModel.Banner -> {
+            holder is FeedBrowseBannerViewHolder.Item && item is FeedBrowseItemListModel.Banner.Item -> {
                 holder.bind(item)
             }
             holder is FeedBrowseTitleViewHolder && item is FeedBrowseItemListModel.Title -> {
@@ -120,13 +123,14 @@ internal class FeedBrowseAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
+        return when (val item = getItem(position)) {
             is FeedBrowseItemListModel.Chips -> TYPE_CHIPS
             is FeedBrowseItemListModel.HorizontalChannels -> TYPE_HORIZONTAL_CHANNELS
-            is FeedBrowseItemListModel.Banner -> TYPE_BANNER
+            is FeedBrowseItemListModel.Banner.Item -> TYPE_BANNER
+            is FeedBrowseItemListModel.Banner.Placeholder -> TYPE_BANNER_PLACEHOLDER
             is FeedBrowseItemListModel.Title -> TYPE_TITLE
-            is FeedBrowseItemListModel.InspirationCard -> TYPE_INSPIRATION_CARD
             is FeedBrowseItemListModel.HorizontalCreator -> TYPE_HORIZONTAL_CREATORS
+            else -> error("Item $item is not supported")
         }
     }
 
@@ -135,8 +139,8 @@ internal class FeedBrowseAdapter(
             override fun getSpanSize(position: Int): Int {
                 val item = getItem(position)
                 return when (item::class) {
-                    FeedBrowseItemListModel.Banner::class -> 1
-                    FeedBrowseItemListModel.InspirationCard::class -> 1
+                    FeedBrowseItemListModel.Banner.Item::class,
+                    FeedBrowseItemListModel.Banner.Placeholder::class -> 1
                     else -> 2
                 }
             }
@@ -147,9 +151,10 @@ internal class FeedBrowseAdapter(
         internal const val TYPE_CHIPS = 0
         internal const val TYPE_HORIZONTAL_CHANNELS = 1
         internal const val TYPE_BANNER = 2
-        internal const val TYPE_TITLE = 3
-        internal const val TYPE_INSPIRATION_CARD = 4
-        internal const val TYPE_HORIZONTAL_CREATORS = 5
+        internal const val TYPE_BANNER_PLACEHOLDER = 3
+        internal const val TYPE_TITLE = 4
+        internal const val TYPE_INSPIRATION_CARD = 5
+        internal const val TYPE_HORIZONTAL_CREATORS = 6
     }
 
     fun setList(items: List<FeedBrowseStatefulModel>, onCommit: () -> Unit = {}) {
@@ -219,7 +224,8 @@ internal class FeedBrowseAdapter(
         return buildList {
             add(FeedBrowseItemListModel.Title(slotInfo, title))
             addAll(
-                bannerList.map { FeedBrowseItemListModel.Banner(slotInfo, it) }
+                if (isLoading) List(6) { FeedBrowseItemListModel.Banner.Placeholder }
+                else bannerList.map { FeedBrowseItemListModel.Banner.Item(slotInfo, it) }
             )
         }
     }

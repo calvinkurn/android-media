@@ -64,10 +64,10 @@ internal class FeedBrowseFragment @Inject constructor(
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
 
-    private val bannerListener = object : FeedBrowseBannerViewHolder.Listener {
+    private val bannerListener = object : FeedBrowseBannerViewHolder.Item.Listener {
         override fun onBannerClicked(
-            viewHolder: FeedBrowseBannerViewHolder,
-            item: FeedBrowseItemListModel.Banner
+            viewHolder: FeedBrowseBannerViewHolder.Item,
+            item: FeedBrowseItemListModel.Banner.Item
         ) {
             router.route(context, item.banner.appLink)
         }

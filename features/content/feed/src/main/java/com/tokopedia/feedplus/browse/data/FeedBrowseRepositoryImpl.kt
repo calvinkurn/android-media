@@ -68,7 +68,8 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                     slotId = "item.id",
                     title = "Ini Banner",
                     identifier = "content_browse_inspirational",
-                    bannerList = emptyList()
+                    bannerList = emptyList(),
+                    isLoading = false,
                 ),
                 FeedBrowseSlotUiModel.Creators(
                     slotId = "random.slot.id",
@@ -103,16 +104,11 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
     override suspend fun getWidgetRecommendation(
         identifier: String
     ): WidgetRecommendationModel = withContext(dispatchers.io) {
-        // TODO("Replace this mock data")
         val response = getContentWidgetRecommendationUseCase(
             GetContentWidgetRecommendationUseCase.Param.create(identifier)
         )
 
         mapper.mapWidgetResponse(response)
-//
-//        if (identifier == "browse_widget_recommendation:ugc_widget") {
-//            mockCreators()
-//        } else mockBanners()
     }
 
     private fun mockBanners() = WidgetRecommendationModel.Banners(

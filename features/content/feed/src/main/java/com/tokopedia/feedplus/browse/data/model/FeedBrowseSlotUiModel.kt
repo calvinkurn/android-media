@@ -34,7 +34,8 @@ internal sealed interface FeedBrowseSlotUiModel {
         override val slotId: String,
         override val title: String,
         val identifier: String,
-        val bannerList: List<BannerWidgetModel>
+        val bannerList: List<BannerWidgetModel>,
+        val isLoading: Boolean,
     ) : FeedBrowseSlotUiModel
 
     data class Creators(

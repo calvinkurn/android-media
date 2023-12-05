@@ -182,10 +182,14 @@ internal class FeedBrowseViewModel @Inject constructor(
     }
 
     private suspend fun FeedBrowseSlotUiModel.InspirationBanner.getAndUpdateData() {
+        updateWidget<FeedBrowseSlotUiModel.InspirationBanner>(slotId, ResultState.Success) {
+            it.copy(isLoading = true)
+        }
         val response = repository.getWidgetRecommendation(identifier)
         if (response !is WidgetRecommendationModel.Banners) return
+
         updateWidget<FeedBrowseSlotUiModel.InspirationBanner>(slotId, ResultState.Success) {
-            it.copy(bannerList = response.banners)
+            it.copy(bannerList = response.banners, isLoading = false)
         }
     }
 
