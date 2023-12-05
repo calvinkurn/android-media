@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="is_downloading_title">Sedang download..</string>
+    <string name="is_downloading_desc">Setelah selesai download, kamu bisa langsung eksplor dan cobain fitur terbaru!</string>
+    <string name="is_downloading_cancel_text">Batal</string>
+</resources>

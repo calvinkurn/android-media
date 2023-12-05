@@ -323,8 +323,7 @@
 /libraries/analytics/							        @tokopedia/android-core-dev
 /libraries/analytics_debugger/							@tokopedia/android-core-dev
 /libraries/analytics_debugger_noop/					    @tokopedia/android-core-dev
-/libraries/appdownloadmanager/							@tokopedia/android-core-dev
-/libraries/appdownloadmanager_noinstall/			    @tokopedia/android-core-dev
+/libraries/appdownloadmanager_common/   			    @tokopedia/android-core-dev
 /libraries/applink/										@tokopedia/android-core-dev
 /libraries/banner_dynamic/								@tokopedia/android-core-dev
 /libraries/base_adapter/								@tokopedia/android-core-dev
