@@ -651,6 +651,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                   title
                   productName
                   subtitle
+                  action {
+                    type
+                    link
+                  }
                   contents {
                     imageUrl
                     loadMoreText

@@ -10,7 +10,8 @@ import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.view.componentization.ComponentCallback
 import com.tokopedia.product.detail.view.componentization.ComponentEvent
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
-import java.util.*
+import timber.log.Timber
+import java.util.Locale
 
 /**
  * Created by yovi.putra on 14/11/23"
@@ -40,8 +41,9 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
         get() = viewModel.getDynamicProductInfoP1?.cacheState?.remoteCacheableActive.orFalse()
 
     override fun event(event: ComponentEvent) {
+        Timber.tag("pdp_event").d(event.toString())
         when (event) {
-            is BasicComponentEvent.OnImpressed -> onImpressComponent(trackData = event.trackData)
+            is BasicComponentEvent.OnImpresseComponent -> onImpressComponent(trackData = event.trackData)
 
             is BasicComponentEvent.GoToAppLink -> goToAppLink(appLink = event.appLink)
 

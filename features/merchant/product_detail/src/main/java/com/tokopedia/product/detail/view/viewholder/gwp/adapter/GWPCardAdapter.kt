@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder.gwp.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPEvent
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 
 /**
@@ -27,7 +28,7 @@ class GWPCardAdapter :
         }
     }
 
-    var onItemClick: () -> Unit = {}
+    var onCardEvent: (GWPEvent) -> Unit = {}
 
     @Suppress("UNCHECKED_CAST")
     override fun onCreateViewHolder(
@@ -35,13 +36,11 @@ class GWPCardAdapter :
         viewType: Int
     ): GWPCardViewHolder<GWPWidgetUiModel.Card> {
         val viewHolder = when (viewType) {
-            GWPCardOfProductViewHolder.ID -> GWPCardOfProductViewHolder.create(parent)
-            GWPCardOfShowMoreViewHolder.ID -> GWPCardOfShowMoreViewHolder.create(parent)
+            GWPCardOfProductViewHolder.ID -> GWPCardOfProductViewHolder.create(parent, onCardEvent)
+            GWPCardOfShowMoreViewHolder.ID -> GWPCardOfShowMoreViewHolder.create(parent, onCardEvent)
             else -> {
                 throw IllegalAccessException("viewType unresolved...")
             }
-        }.apply {
-            itemView.setOnClickListener { onItemClick.invoke() }
         }
 
         return viewHolder as GWPCardViewHolder<GWPWidgetUiModel.Card>

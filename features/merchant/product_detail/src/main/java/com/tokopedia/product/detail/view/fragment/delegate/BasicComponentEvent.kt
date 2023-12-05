@@ -9,7 +9,7 @@ import com.tokopedia.product.detail.view.componentization.ComponentEvent
  * This is due to the fact that a sealed interface/class cannot extend its subclass to children of BasicComponentEvent.
  */
 sealed interface BasicComponentEvent : ComponentEvent {
-    data class OnImpressed(val trackData: ComponentTrackDataModel) : ComponentEvent
+    data class OnImpresseComponent(val trackData: ComponentTrackDataModel) : ComponentEvent
     data class GoToAppLink(val appLink: String) : ComponentEvent
     data class GoToWebView(val link: String) : ComponentEvent
 }

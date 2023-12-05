@@ -18,7 +18,7 @@ data class GWPUiModel(
     val name: String = ""
 ) : DynamicPdpDataModel {
 
-    var state: GWPWidgetUiState = GWPWidgetUiState.Loading
+    var state: GWPWidgetUiState = GWPWidgetUiState.Hide
         private set
 
     fun setState(state: GWPWidgetUiState) {

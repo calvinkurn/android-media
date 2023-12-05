@@ -60,6 +60,9 @@ data class GWPData(
             @SerializedName("subtitle")
             @Expose
             val subtitle: String = "",
+            @SerializedName("action")
+            @Expose
+            val action: ActionData = ActionData(),
             @SerializedName("contents")
             @Expose
             val contents: List<Content> = emptyList()

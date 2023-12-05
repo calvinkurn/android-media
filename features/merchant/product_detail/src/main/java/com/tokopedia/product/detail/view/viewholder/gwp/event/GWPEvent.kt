@@ -8,6 +8,11 @@ import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
  * Project name: android-tokopedia-core
  **/
 
-sealed interface GWPComponentEvent : ComponentEvent {
-    data class OnClickTracking(val data: GWPWidgetUiModel) : GWPComponentEvent
+sealed interface GWPEvent : ComponentEvent {
+
+    data class OnClickComponent(val data: GWPWidgetUiModel) : GWPEvent
+
+    data class OnClickProduct(val data: GWPWidgetUiModel.Card.Product) : GWPEvent
+
+    data class OnClickShowMore(val data: GWPWidgetUiModel.Card.LoadMore) : GWPEvent
 }

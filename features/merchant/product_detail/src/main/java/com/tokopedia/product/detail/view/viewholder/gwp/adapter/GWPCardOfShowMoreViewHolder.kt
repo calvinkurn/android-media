@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.setLayoutWidth
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.detail.common.extensions.getColorChecker
+import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPEvent
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.toPx
@@ -18,7 +19,8 @@ import com.tokopedia.viewallcard.R as viewallcardR
  **/
 
 class GWPCardOfShowMoreViewHolder(
-    private val binding: ViewAllCard
+    private val binding: ViewAllCard,
+    private val onEvent: (GWPEvent) -> Unit
 ) : GWPCardViewHolder<GWPWidgetUiModel.Card.LoadMore>(binding.rootView) {
 
     init {
@@ -38,7 +40,18 @@ class GWPCardOfShowMoreViewHolder(
     }
 
     override fun bind(data: GWPWidgetUiModel.Card.LoadMore) = with(binding) {
-        description = data.title
+        setTitle(title = data.title)
+        setEvent(data = data)
+    }
+
+    private fun ViewAllCard.setTitle(title: String) {
+        description = title
+    }
+
+    private fun ViewAllCard.setEvent(data: GWPWidgetUiModel.Card.LoadMore) {
+        cardView.setOnClickListener {
+            onEvent(GWPEvent.OnClickShowMore(data = data))
+        }
     }
 
     companion object {
@@ -47,9 +60,12 @@ class GWPCardOfShowMoreViewHolder(
         private val CARD_HEIGHT = 88.toPx()
         private val CARD_WIDTH = 99.toPx()
 
-        fun create(parent: ViewGroup): GWPCardOfShowMoreViewHolder {
+        fun create(
+            parent: ViewGroup,
+            onEvent: (GWPEvent) -> Unit
+        ): GWPCardOfShowMoreViewHolder {
             val viewAllCard = ViewAllCard(parent.context)
-            return GWPCardOfShowMoreViewHolder(viewAllCard)
+            return GWPCardOfShowMoreViewHolder(binding = viewAllCard, onEvent = onEvent)
         }
     }
 }
