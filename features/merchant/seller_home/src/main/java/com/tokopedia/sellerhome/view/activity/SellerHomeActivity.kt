@@ -78,8 +78,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener,
-    SomListLoadTimeMonitoringActivity, HasComponent<HomeDashboardComponent> {
+open class SellerHomeActivity :
+    BaseActivity(),
+    SellerHomeFragment.Listener,
+    IBottomClickListener,
+    SomListLoadTimeMonitoringActivity,
+    HasComponent<HomeDashboardComponent> {
 
     companion object {
         @JvmStatic
@@ -118,7 +122,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     private var canExitApp = false
     private var lastProductManagePage = PageFragment(FragmentType.PRODUCT)
-    private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
+    private var lastSomTab = PageFragment(FragmentType.ORDER) // by default show tab "Semua Pesanan"
     private var navigator: SellerHomeNavigator? = null
     private val accelerometerOrientationListener: AccelerometerOrientationListener by lazy {
         AccelerometerOrientationListener(contentResolver) {
@@ -243,6 +247,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     override fun onDestroy() {
         super.onDestroy()
         navigator?.cleanupNavigator()
+        otherMenuFragmentChangeCallback = null
+        sellerHomeFragmentChangeCallback = null
     }
 
     override fun menuClicked(position: Int, id: Int): Boolean {
@@ -278,7 +284,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     override fun menuReselected(position: Int, id: Int) {
-
     }
 
     override fun initSomListLoadTimeMonitoring() {
@@ -519,7 +524,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                         SellerHomeErrorHandler.SELLER_HOME_TAG,
                         it.throwable,
                         SellerHomeErrorHandler.SHOP_INFO,
-                        SellerHomeErrorHandler.SHOP_INFO,
+                        SellerHomeErrorHandler.SHOP_INFO
                     )
                     navigator?.run {
                         if (isHomePageSelected()) {
@@ -746,7 +751,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                             this@SellerHomeActivity,
                             resources.getString(R.string.wearos_toast_install),
                             Toast.LENGTH_LONG
-                            ).show()
+                        ).show()
                     }
                     setSecondaryCTAClickListener {
                         dialog.dismiss()
