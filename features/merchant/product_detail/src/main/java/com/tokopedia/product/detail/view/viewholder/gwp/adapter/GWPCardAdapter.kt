@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.view.viewholder.gwp.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPEvent
+import com.tokopedia.product.detail.view.viewholder.gwp.callback.GWPCallback
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 
 /**
@@ -11,7 +11,9 @@ import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
  * Project name: android-tokopedia-core
  **/
 
-class GWPCardAdapter :
+class GWPCardAdapter(
+    private val callback: GWPCallback
+) :
     ListAdapter<GWPWidgetUiModel.Card, GWPCardViewHolder<GWPWidgetUiModel.Card>>(DIFF_ITEMS) {
 
     companion object {
@@ -28,16 +30,14 @@ class GWPCardAdapter :
         }
     }
 
-    var onCardEvent: (GWPEvent) -> Unit = {}
-
     @Suppress("UNCHECKED_CAST")
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): GWPCardViewHolder<GWPWidgetUiModel.Card> {
         val viewHolder = when (viewType) {
-            GWPCardOfProductViewHolder.ID -> GWPCardOfProductViewHolder.create(parent, onCardEvent)
-            GWPCardOfShowMoreViewHolder.ID -> GWPCardOfShowMoreViewHolder.create(parent, onCardEvent)
+            GWPCardOfProductViewHolder.ID -> GWPCardOfProductViewHolder.create(parent, callback)
+            GWPCardOfShowMoreViewHolder.ID -> GWPCardOfShowMoreViewHolder.create(parent, callback)
             else -> {
                 throw IllegalAccessException("viewType unresolved...")
             }

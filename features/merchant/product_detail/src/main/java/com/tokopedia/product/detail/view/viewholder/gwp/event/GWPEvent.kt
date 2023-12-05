@@ -15,4 +15,6 @@ sealed interface GWPEvent : ComponentEvent {
     data class OnClickProduct(val data: GWPWidgetUiModel.Card.Product) : GWPEvent
 
     data class OnClickShowMore(val data: GWPWidgetUiModel.Card.LoadMore) : GWPEvent
+
+    data class OnCardImpress(val card: GWPWidgetUiModel.Card) : GWPEvent
 }

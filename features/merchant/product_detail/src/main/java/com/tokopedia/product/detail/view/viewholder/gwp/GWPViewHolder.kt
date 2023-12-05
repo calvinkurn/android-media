@@ -19,7 +19,6 @@ import com.tokopedia.product.detail.common.utils.ItemSpaceDecorator
 import com.tokopedia.product.detail.common.utils.extensions.addOnPdpImpressionListener
 import com.tokopedia.product.detail.databinding.ItemDynamicProductGwpBinding
 import com.tokopedia.product.detail.view.fragment.delegate.BasicComponentEvent
-import com.tokopedia.product.detail.view.util.isInflated
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.gwp.adapter.GWPCardAdapter
 import com.tokopedia.product.detail.view.viewholder.gwp.callback.GWPCallback
@@ -54,7 +53,8 @@ class GWPViewHolder(
     private val rootView get() = binding.root
 
     private val cardAdapter by lazyThreadSafetyNone {
-        GWPCardAdapter().also(::setupCardRecyclerView)
+        GWPCardAdapter(callback = callback)
+            .also(::setupCardRecyclerView)
     }
 
     private fun setupCardRecyclerView(cardAdapter: GWPCardAdapter) =
@@ -144,7 +144,6 @@ class GWPViewHolder(
         if (uiModel.cards.isNotEmpty()) {
             gwpCardList.show()
             cardAdapter.submitList(uiModel.cards)
-            cardAdapter.onCardEvent = { callback.event(it) }
         } else {
             gwpCardList.gone()
         }

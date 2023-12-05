@@ -5,6 +5,8 @@ import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.setLayoutWidth
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.detail.common.extensions.getColorChecker
+import com.tokopedia.product.detail.common.utils.extensions.addOnPdpImpressionListener
+import com.tokopedia.product.detail.view.viewholder.gwp.callback.GWPCallback
 import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPEvent
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.unifycomponents.CardUnify2
@@ -20,7 +22,7 @@ import com.tokopedia.viewallcard.R as viewallcardR
 
 class GWPCardOfShowMoreViewHolder(
     private val binding: ViewAllCard,
-    private val onEvent: (GWPEvent) -> Unit
+    private val callback: GWPCallback
 ) : GWPCardViewHolder<GWPWidgetUiModel.Card.LoadMore>(binding.rootView) {
 
     init {
@@ -42,6 +44,7 @@ class GWPCardOfShowMoreViewHolder(
     override fun bind(data: GWPWidgetUiModel.Card.LoadMore) = with(binding) {
         setTitle(title = data.title)
         setEvent(data = data)
+        setImpression(data = data)
     }
 
     private fun ViewAllCard.setTitle(title: String) {
@@ -50,7 +53,16 @@ class GWPCardOfShowMoreViewHolder(
 
     private fun ViewAllCard.setEvent(data: GWPWidgetUiModel.Card.LoadMore) {
         cardView.setOnClickListener {
-            onEvent(GWPEvent.OnClickShowMore(data = data))
+            callback.event(GWPEvent.OnClickShowMore(data = data))
+        }
+    }
+
+    private fun setImpression(data: GWPWidgetUiModel.Card.LoadMore) {
+        binding.addOnPdpImpressionListener(
+            holders = callback.impressionHolders,
+            name = data.id.toString()
+        ) {
+            callback.event(GWPEvent.OnCardImpress(card = data))
         }
     }
 
@@ -62,10 +74,10 @@ class GWPCardOfShowMoreViewHolder(
 
         fun create(
             parent: ViewGroup,
-            onEvent: (GWPEvent) -> Unit
+            callback: GWPCallback
         ): GWPCardOfShowMoreViewHolder {
             val viewAllCard = ViewAllCard(parent.context)
-            return GWPCardOfShowMoreViewHolder(binding = viewAllCard, onEvent = onEvent)
+            return GWPCardOfShowMoreViewHolder(binding = viewAllCard, callback = callback)
         }
     }
 }

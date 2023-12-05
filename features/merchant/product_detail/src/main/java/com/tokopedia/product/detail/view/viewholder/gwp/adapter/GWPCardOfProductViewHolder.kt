@@ -3,16 +3,15 @@ package com.tokopedia.product.detail.view.viewholder.gwp.adapter
 import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.setLayoutWidth
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.extensions.getColorChecker
+import com.tokopedia.product.detail.common.utils.extensions.addOnPdpImpressionListener
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.databinding.GwpCardItemBinding
 import com.tokopedia.product.detail.databinding.GwpProductImageBinding
 import com.tokopedia.product.detail.databinding.GwpProductImageCountBinding
-import com.tokopedia.product.detail.view.viewholder.ActionUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.callback.GWPCallback
 import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPEvent
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
@@ -27,7 +26,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class GWPCardOfProductViewHolder(
     private val binding: GwpCardItemBinding,
-    private val onEvent: (GWPEvent) -> Unit
+    private val callback: GWPCallback
 ) : GWPCardViewHolder<GWPWidgetUiModel.Card.Product>(binding.root) {
 
     init {
@@ -43,6 +42,7 @@ class GWPCardOfProductViewHolder(
         setProductImages(images = data.images)
         setCardWidth(width = data.width)
         setEvent(data = data)
+        setImpression(data = data)
     }
 
     private fun setTitle(title: String) {
@@ -69,7 +69,16 @@ class GWPCardOfProductViewHolder(
 
     private fun setEvent(data: GWPWidgetUiModel.Card.Product) {
         binding.root.setOnClickListener {
-            onEvent(GWPEvent.OnClickProduct(data = data))
+            callback.event(GWPEvent.OnClickProduct(data = data))
+        }
+    }
+
+    private fun setImpression(data: GWPWidgetUiModel.Card.Product) {
+        binding.root.addOnPdpImpressionListener(
+            holders = callback.impressionHolders,
+            name = data.id.toString()
+        ) {
+            callback.event(GWPEvent.OnCardImpress(card = data))
         }
     }
 
@@ -135,10 +144,10 @@ class GWPCardOfProductViewHolder(
         val ID = productdetailR.layout.gwp_card_item
         private val PRODUCT_IMAGE_MARGIN_END = 4.toPx()
 
-        fun create(parent: ViewGroup, onEvent: (GWPEvent) -> Unit): GWPCardOfProductViewHolder {
+        fun create(parent: ViewGroup, callback: GWPCallback): GWPCardOfProductViewHolder {
             val inflater = LayoutInflater.from(parent.context)
             val view = GwpCardItemBinding.inflate(inflater)
-            return GWPCardOfProductViewHolder(binding = view, onEvent = onEvent)
+            return GWPCardOfProductViewHolder(binding = view, callback = callback)
         }
     }
 }
