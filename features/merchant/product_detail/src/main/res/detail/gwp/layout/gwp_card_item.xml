@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:id="@+id/gwp_card_item_container"
-        android:layout_width="328dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"

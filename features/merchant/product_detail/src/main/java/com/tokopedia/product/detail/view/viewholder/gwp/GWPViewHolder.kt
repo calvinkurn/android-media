@@ -17,7 +17,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.ItemSpaceDecorator
 import com.tokopedia.product.detail.common.utils.extensions.addOnPdpImpressionListener
-import com.tokopedia.product.detail.databinding.GwpCardListBinding
 import com.tokopedia.product.detail.databinding.ItemDynamicProductGwpBinding
 import com.tokopedia.product.detail.view.fragment.delegate.BasicComponentEvent
 import com.tokopedia.product.detail.view.util.isInflated
@@ -54,14 +53,22 @@ class GWPViewHolder(
 
     private val rootView get() = binding.root
 
-    private val cardListBinding by lazyThreadSafetyNone {
-        val productListStub = binding.gwpCardList.inflate()
-        GwpCardListBinding.bind(productListStub)
-    }
-
     private val cardAdapter by lazyThreadSafetyNone {
         GWPCardAdapter().also(::setupCardRecyclerView)
     }
+
+    private fun setupCardRecyclerView(cardAdapter: GWPCardAdapter) =
+        with(binding.gwpCardList) {
+            layoutManager = LinearLayoutManager(
+                context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+            adapter = cardAdapter
+            addItemDecoration(ItemSpaceDecorator(space = CARD_ITEM_SPACING))
+            itemAnimator = null
+            optimizeNestedRecyclerView()
+        }
 
     private var mElement: GWPUiModel = GWPUiModel()
 
@@ -85,19 +92,6 @@ class GWPViewHolder(
 
         bind(element = data)
     }
-
-    private fun setupCardRecyclerView(cardAdapter: GWPCardAdapter) =
-        with(cardListBinding.gwpCardList) {
-            layoutManager = LinearLayoutManager(
-                context,
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
-            adapter = cardAdapter
-            addItemDecoration(ItemSpaceDecorator(space = CARD_ITEM_SPACING))
-            itemAnimator = null
-            optimizeNestedRecyclerView()
-        }
 
     private fun RecyclerView.optimizeNestedRecyclerView() {
         setRecycledViewPool(callback.parentRecyclerViewPool)
@@ -146,13 +140,13 @@ class GWPViewHolder(
         binding.gwpTitle.setTextColor(unifyColor)
     }
 
-    private fun setCardList(uiModel: GWPWidgetUiModel) {
+    private fun setCardList(uiModel: GWPWidgetUiModel) = with(binding) {
         if (uiModel.cards.isNotEmpty()) {
-            cardListBinding.root.show()
+            gwpCardList.show()
             cardAdapter.submitList(uiModel.cards)
             cardAdapter.onCardEvent = { callback.event(it) }
-        } else if (binding.gwpCardList.isInflated()) { // stub has already inflated
-            cardListBinding.root.gone()
+        } else {
+            gwpCardList.gone()
         }
     }
 
@@ -163,7 +157,7 @@ class GWPViewHolder(
         if (mColors.size < MIN_GRADIENT_COLOR) {
             rootView.setBackgroundColor(mColors.firstOrNull().orZero())
         } else {
-            val gradient = GradientDrawable(GradientDrawable.Orientation.TL_BR, mColors)
+            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, mColors)
             rootView.background = gradient
         }
     }

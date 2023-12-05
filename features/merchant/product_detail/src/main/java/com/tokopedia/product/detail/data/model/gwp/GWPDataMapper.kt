@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.model.gwp
 
 import android.view.ViewGroup
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.product.detail.data.model.ActionData
 import com.tokopedia.product.detail.data.model.asUiModel
 import com.tokopedia.product.detail.view.viewholder.ActionUiModel
@@ -50,7 +51,7 @@ fun GWPData.Data.Card.asUiModel(multipleTier: Boolean) = GWPWidgetUiModel.Card.P
     width = if (multipleTier) {
         308.toPx()
     } else {
-        ViewGroup.LayoutParams.MATCH_PARENT
+        getScreenWidth() - 32.toPx()
     }
 )
 

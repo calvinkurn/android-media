@@ -43,14 +43,17 @@
             app:icon_name="CHEVRON_RIGHT" />
     </LinearLayout>
 
-    <ViewStub
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/gwp_card_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:overScrollMode="never"
+        android:paddingHorizontal="16dp"
         android:layout_marginBottom="16dp"
-        android:visibility="visible"
-        android:inflatedId="@+id/gwp_card_list"
-        android:layout="@layout/gwp_card_list" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/gwp_card_item" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/gwp_separator_bottom"
