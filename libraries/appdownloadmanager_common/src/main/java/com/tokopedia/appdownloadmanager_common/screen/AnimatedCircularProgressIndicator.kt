@@ -52,7 +52,7 @@ fun AnimatedCircularProgressIndicator(
         LaunchedEffect(downloadingProgressUiModel.currentProgressInPercent) {
             animateFloat.animateTo(
                 targetValue = downloadingProgressUiModel.currentProgressInPercent / MAX_VALUE.toFloat(),
-                animationSpec = tween(durationMillis = 2000, easing = FastOutSlowInEasing)
+                animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
             )
         }
 

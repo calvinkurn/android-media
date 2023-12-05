@@ -2,9 +2,12 @@ package com.tokopedia.appdownloadmanager_common.presentation.util
 
 import android.app.Activity
 import android.content.Context
+import android.os.Environment
+import androidx.fragment.app.FragmentActivity
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.appdownloadmanager_common.nakamaupdate.DownloadManagerUpdateModel
+import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownloadingBottomSheet
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.interceptor.BannerEnvironmentInterceptor
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -35,7 +38,8 @@ abstract class BaseDownloadManagerHelper(
     open fun isEnableShowBottomSheet(): Boolean {
         val canShowToday = isExpired()
 //        return canShowToday && isBetaNetwork() && isWhitelistByRollence()
-        return true
+
+        return isAppDownloadingBottomSheetNotShow()
     }
 
     open fun isExpired(): Boolean {
@@ -72,6 +76,16 @@ abstract class BaseDownloadManagerHelper(
         return activityRef.get()?.let { BannerEnvironmentInterceptor.isBeta(it) } == true
     }
 
+    private fun isAppDownloadingBottomSheetNotShow(): Boolean {
+        val appDownloadingTag = AppDownloadingBottomSheet::class.java.simpleName
+        (activityRef.get() as? FragmentActivity)?.let {
+            if (it.supportFragmentManager.findFragmentByTag(appDownloadingTag) == null) {
+                return true
+            }
+        }
+        return false
+    }
+
     private fun initDownloadManagerUpdateConfig() {
         val internalTestConfigJson =
             remoteConfig.getString(RemoteConfigKey.ANDROID_INTERNAL_TEST_UPDATE_CONFIG)
@@ -97,5 +111,7 @@ abstract class BaseDownloadManagerHelper(
         const val DOWNLOAD_MANAGER_TIMESTAMP = "timestamp"
 
         const val APK_MIME_TYPE = "application/vnd.android.package-archive"
+
+        val TKPD_DOWNLOAD_APK_DIR = "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)}/Tokopedia-Apk"
     }
 }

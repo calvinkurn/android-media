@@ -2,9 +2,9 @@ package com.tokopedia.appdownloadmanager_common.domain.service
 
 import android.app.DownloadManager
 import android.net.Uri
-import android.os.Environment
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingProgressUiModel
+import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.TKPD_DOWNLOAD_APK_DIR
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -173,9 +173,7 @@ class DownloadManagerService @Inject constructor(
     ): DownloadManager.Request {
         val fileName = getFileNameFromUrl(apkUrl)
 
-        this.fileNamePath =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            .toString() + "/$fileName"
+        this.fileNamePath = "$TKPD_DOWNLOAD_APK_DIR/$fileName"
 
         val file = File(fileNamePath)
 
@@ -194,8 +192,12 @@ class DownloadManagerService @Inject constructor(
     }
 
     private fun convertToHumanReadableSize(bytes: Long): String {
+        // If the size is less than 1024 bytes, return the size in bytes
         if (bytes < 1024) return "$bytes B"
+
+        // Calculate the appropriate unit (KB, MB, GB, TB, PB, or EB) for better readability
         val z = (63 - numberOfLeadingZeros(bytes)) / 10
+        // Format the result using the appropriate unit
         return String.format("%.1f %sB", bytes.toDouble() / (1L shl (z * 10)), " KMGTPE"[z])
     }
 
