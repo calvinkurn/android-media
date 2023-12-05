@@ -6,10 +6,13 @@ import com.tokopedia.cachemanager.db.CacheDeletion
 import com.tokopedia.cachemanager.db.model.PersistentCacheDbModel
 
 class PersistentCacheRepository(context: Context) :
-        CacheRepository<PersistentCacheDbModel>(context) {
+    CacheRepository<PersistentCacheDbModel>(context) {
 
-    override fun createCacheDataSource() =
-            PersistentCacheDataSource(context)
+    companion object {
+        fun create(context: Context) = PersistentCacheRepository(context = context)
+    }
+
+    override fun createCacheDataSource() = PersistentCacheDataSource(context)
 
     override fun needDeleteExpired(): Boolean {
         return CacheDeletion.isPersistentNeedDeletion()

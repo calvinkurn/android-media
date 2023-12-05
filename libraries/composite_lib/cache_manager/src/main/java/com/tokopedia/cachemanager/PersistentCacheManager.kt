@@ -27,24 +27,31 @@ import com.tokopedia.cachemanager.repository.PersistentCacheRepository
  */
 class PersistentCacheManager(context: Context) : CacheManager(context) {
 
-    companion object {
-        @SuppressLint("StaticFieldLeak")
-        lateinit var instance: PersistentCacheManager
-
-        @JvmStatic
-        fun init(context: Context) {
-            PersistentCacheManager(context)
-        }
-    }
-
-    init {
-        instance = this
-    }
-
-    override fun createRepository(context: Context) =
-        PersistentCacheRepository(context.applicationContext)
-
     constructor(context: Context, id: String? = null) : this(context) {
         this.id = id
     }
+
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        var instance: PersistentCacheManager? = null
+
+        @JvmStatic
+        fun init(context: Context): PersistentCacheManager {
+            return instance ?: PersistentCacheManager(context).also {
+                instance = it
+            }
+        }
+
+        /**
+         * alias for init
+         */
+        @JvmStatic
+        fun get(context: Context): PersistentCacheManager {
+            return init(context)
+        }
+    }
+
+    override fun createRepository(context: Context) =
+        PersistentCacheRepository.create(context.applicationContext)
+
 }

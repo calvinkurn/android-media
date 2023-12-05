@@ -170,6 +170,7 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
+import com.tokopedia.locationmanager.RequestLocationType
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.HomeBottomNavListener
@@ -1965,15 +1966,13 @@ open class HomeRevampFragment :
     private fun detectAndSendLocation() {
         activity?.let {
             Observable.just(true).map { aBoolean: Boolean? ->
-                val locationDetectorHelper = LocationDetectorHelper(
-                    permissionCheckerHelper.get(),
-                    LocationServices.getFusedLocationProviderClient(it.applicationContext),
-                    it.applicationContext
-                )
+                val locationDetectorHelper = LocationDetectorHelper(it.applicationContext)
                 locationDetectorHelper.getLocation(
                     onGetLocation(),
                     it,
                     LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                    RequestLocationType.APPROXIMATE_OR_PRECISE,
+                    permissionCheckerHelper.get(),
                     rationaleText = ""
                 )
                 true
