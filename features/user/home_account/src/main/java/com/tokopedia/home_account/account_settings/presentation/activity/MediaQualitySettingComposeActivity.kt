@@ -1,10 +1,11 @@
 package com.tokopedia.home_account.account_settings.presentation.activity
 
 import android.os.Bundle
-import android.view.View
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -13,7 +14,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
@@ -22,7 +22,6 @@ import com.tokopedia.home_account.account_settings.presentation.uimodel.MediaQua
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.internal.MediaSettingPreferences
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.launch
 
 class MediaQualitySettingComposeActivity : BaseSimpleActivity() {
@@ -35,17 +34,20 @@ class MediaQualitySettingComposeActivity : BaseSimpleActivity() {
         setContent {
             NestTheme {
                 var selectedQuality by remember { mutableStateOf(settings.qualitySettings()) }
-
+                val snackbarHostState = remember { SnackbarHostState() }
                 val scope = rememberCoroutineScope()
 
-                Scaffold(topBar = {
-                    NestHeader(
-                        type = NestHeaderType.SingleLine(
-                            title = stringResource(id = R.string.menu_account_title_quality_setting),
-                            onBackClicked = { onBackClicked() }
+                Scaffold(
+                    topBar = {
+                        NestHeader(
+                            type = NestHeaderType.SingleLine(
+                                title = stringResource(id = R.string.menu_account_title_quality_setting),
+                                onBackClicked = { onBackClicked() }
+                            )
                         )
-                    )
-                }, content = { padding ->
+                    },
+                    snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+                    content = { padding ->
                         MediaQualitySettingScreen(
                             qualities = MediaQualityUIModel.settingsMenu(),
                             modifier = Modifier.padding(padding),
@@ -53,25 +55,29 @@ class MediaQualitySettingComposeActivity : BaseSimpleActivity() {
                             onSelected = {
                                 scope.launch {
                                     settings.setQualitySettings(it)
-                                    showToast(it)
+                                    val message = generateToastMessage(it)
+                                    snackbarHostState.showSnackbar(message)
                                     selectedQuality = settings.qualitySettings()
                                 }
                             }
                         )
-                    })
+                    }
+                )
             }
         }
     }
 
-    private fun showToast(quality: Int) {
-        val message = when (quality) {
-            2 -> R.string.image_quality_high_toast
-            1 -> R.string.image_quality_low_toast
-            else -> R.string.image_quality_auto_toast
-        }
-        findViewById<View>(android.R.id.content)?.rootView?.let {
-            Toaster.build(it, getString(message), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-        }
+    private fun generateToastMessage(quality: Int): String {
+        return getString(
+            when (quality) {
+                2 -> R.string.image_quality_high_toast
+                1 -> R.string.image_quality_low_toast
+                else -> R.string.image_quality_auto_toast
+            }
+        )
+//        findViewById<View>(android.R.id.content)?.rootView?.let {
+//            Toaster.build(it, getString(message), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+//        }
     }
 
     override fun getNewFragment(): Fragment? {
