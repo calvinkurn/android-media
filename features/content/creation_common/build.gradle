@@ -98,6 +98,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.fragmentKtx
 
+    implementation rootProject.ext.composeDependencies.composeConstraint
+
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     api rootProject.ext.dbDependencies.dbRoomRuntime

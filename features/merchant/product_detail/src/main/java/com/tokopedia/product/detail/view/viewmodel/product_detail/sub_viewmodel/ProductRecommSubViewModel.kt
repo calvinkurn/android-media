@@ -82,9 +82,10 @@ class ProductRecommSubViewModel @Inject constructor(
                     )
                 )
 
-                _loadViewToView.value = if (response.isNotEmpty()) {
+                _loadViewToView.value = if (!response.firstOrNull()?.recommendationItemList.isNullOrEmpty()) {
                     Success(response.first())
                 } else {
+                    alreadyHitRecom.remove(pageName)
                     Fail(MessageErrorException())
                 }
             }.onFailure {

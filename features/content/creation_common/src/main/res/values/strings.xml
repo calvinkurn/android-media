@@ -24,7 +24,7 @@
     <string name="content_creation_failed_network_image_url">https://images.tokopedia.net/img/content/creation/content_creation_network-error.png</string>
 
     <string name="content_creation_entry_point_button_label">Buat Konten</string>
-    <string name="content_creation_entry_point_desription"><![CDATA[Promosikan produkmu dengan <b>Live, Video, Foto & Story</b>!]]></string>
+    <string name="content_creation_entry_point_desription"><![CDATA[Promosi di <b>Live, Video & Foto</b> bikin orang impulsif belanja!]]></string>
 
     <string name="content_creation_upload_notification_shorts_progress_title">Tunggu ya, videomu lagi di-upload</string>
     <string name="content_creation_upload_notification_shorts_progress_description">Selagi menunggu video di-upload, kamu bisa cek produk atau konten menarik lainnya di Tokopedia.</string>\
@@ -42,11 +42,12 @@
     <string name="content_creation_upload_notification_stories_fail_description">Klik di sini buat ulangi progres upload Story-nya, ya!</string>
     <string name="content_creation_upload_notification_stories_fail_retry">Coba lagi</string>
 
-    <string name="play_widget_watch_title">Tonton videomu di aplikasi Tokopedia, ya!</string>
-    <string name="play_widget_watch_desc">
-        Download aplikasi Tokopedia buat
-        tonton video di Tokopedia Play!
-    </string>
-    <string name="play_widget_download_tokopedia">Download Tokopedia</string>
-    <string name="play_widget_watch_later">Nanti Dulu</string>
+    <string name="content_creation_watch_in_ma_title">Lihat konten jadi lebih nyaman di aplikasi Tokopedia</string>
+    <string name="content_creation_watch_in_ma_desc">Kamu juga bisa cek semua interaksi yang ada di kontenmu.</string>
+    <string name="content_creation_watch_in_ma_action_text">Download Tokopedia</string>
+    <string name="content_creation_watch_in_ma_cancel_text">Nanti Aja</string>
+
+    <string name="content_creation_check_content_in_tokopedia_feed_title">Cek kontenmu di Tokopedia Feed</string>
+    <string name="content_creation_check_content_in_tokopedia_feed_desc">Kontenmu akan selalu diupload dan dapat dilihat oleh penonton di Tokopedia Feed</string>
+    <string name="content_creation_check_content_in_tokopedia_feed_action_text">Lihat Konten</string>
 </resources>
