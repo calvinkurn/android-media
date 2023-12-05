@@ -110,6 +110,8 @@ interface FeedListener {
      */
     fun getVideoPlayer(id: String): FeedExoPlayer
 
+    fun isAllowedToPlayVideo(): Boolean
+
     fun detachPlayer(player: FeedExoPlayer)
     fun onPauseVideoPost(trackerModel: FeedTrackerDataModel)
     fun onTapHoldSeekbarVideoPost(trackerModel: FeedTrackerDataModel)

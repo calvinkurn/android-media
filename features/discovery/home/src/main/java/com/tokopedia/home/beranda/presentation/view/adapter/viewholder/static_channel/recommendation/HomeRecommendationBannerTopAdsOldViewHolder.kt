@@ -20,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
-import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.BaseRecommendationForYouViewHolder
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_HORIZONTAL
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
@@ -42,19 +41,9 @@ class HomeRecommendationBannerTopAdsOldViewHolder(
 
     private val binding: ItemHomeBannerTopadsOldLayoutBinding? by viewBinding()
 
-    private var item: HomeRecommendationBannerTopAdsOldDataModel? = null
-
     override fun bind(element: HomeRecommendationBannerTopAdsOldDataModel) {
-        this.item = element
         setImageTopAdsOldQuery(element)
-        setBannerTopAdsClickListener()
-    }
-
-    override fun bindPayload(newItem: HomeRecommendationBannerTopAdsOldDataModel?) {
-        newItem?.let {
-            this.item = it
-            setImageTopAdsOldQuery(it)
-        }
+        setBannerTopAdsClickListener(element)
     }
 
     private fun setImageTopAdsOldQuery(element: HomeRecommendationBannerTopAdsOldDataModel) {
@@ -142,19 +131,17 @@ class HomeRecommendationBannerTopAdsOldViewHolder(
         )
     }
 
-    private fun setBannerTopAdsClickListener() {
-        item?.let { element ->
-            binding?.homeRecomTopadsImageView?.setOnClickListener {
-                TopAdsUrlHitter(itemView.context).hitClickUrl(
-                    this::class.java.simpleName,
-                    element.topAdsImageViewModel?.adClickUrl,
-                    "",
-                    "",
-                    element.topAdsImageViewModel?.imageUrl,
-                    HOME_RECOM_TAB_BANNER
-                )
-                homeRecommendationListener.onBannerTopAdsOldClick(element, bindingAdapterPosition)
-            }
+    private fun setBannerTopAdsClickListener(element: HomeRecommendationBannerTopAdsOldDataModel) {
+        binding?.homeRecomTopadsImageView?.setOnClickListener {
+            TopAdsUrlHitter(itemView.context).hitClickUrl(
+                this::class.java.simpleName,
+                element.topAdsImageViewModel?.adClickUrl,
+                "",
+                "",
+                element.topAdsImageViewModel?.imageUrl,
+                HOME_RECOM_TAB_BANNER
+            )
+            homeRecommendationListener.onBannerTopAdsOldClick(element, bindingAdapterPosition)
         }
     }
 

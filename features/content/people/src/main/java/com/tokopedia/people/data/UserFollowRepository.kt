@@ -10,16 +10,15 @@ interface UserFollowRepository {
 
     suspend fun followUser(encryptedUserId: String, follow: Boolean): MutationUiModel
 
-    suspend fun getMyFollowers(
+    suspend fun getFollowers(
         username: String,
         cursor: String,
-        limit: Int,
+        limit: Int
     ): FollowListUiModel.Follower
 
-    suspend fun getMyFollowing(
+    suspend fun getFollowing(
         username: String,
         cursor: String,
-        limit: Int,
+        limit: Int
     ): FollowListUiModel.Following
-
 }

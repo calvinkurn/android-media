@@ -117,6 +117,12 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
             ?: super.getItemId(position)
     }
 
+    fun <T: DiscoveryBaseViewModel> getFirstViewModel(
+        viewModelClass: Class<T>
+    ): DiscoveryBaseViewModel? {
+        return viewHolderListModel.getFirstViewModel(viewModelClass)
+    }
+
     fun addDataList(dataList: List<ComponentsItem>) {
         componentList.clear()
         clearListViewModel()

@@ -88,12 +88,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.*
 
 /**
  * Created By : Muhammad Furqan on 22/05/23
@@ -139,6 +139,8 @@ class FeedPostViewModelTest {
 
     @Before
     fun setUp() {
+        every { userSession.isLoggedIn } returns false
+
         viewModel = FeedPostViewModel(
             repository = repository,
             addToCartUseCase = atcUseCase,

@@ -85,5 +85,8 @@ class HomeMissionWidgetData {
         @SerializedName("shopID")
         @Expose
         val shopId: String = "",
+        @SerializedName("campaignCode")
+        @Expose
+        val campaignCode: String = "",
     )
 }

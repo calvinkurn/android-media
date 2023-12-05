@@ -10,6 +10,7 @@ import com.google.android.material.chip.ChipGroup
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
+import com.tokopedia.kotlin.extensions.view.setOnClickDebounceListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetReadReviewExtractedTopicBinding
 import com.tokopedia.review.feature.reading.data.Keyword
@@ -77,8 +78,9 @@ class ReadReviewTopics @JvmOverloads constructor(
 
     @SuppressLint("RestrictedApi")
     private fun determineExpandButton(chipGroup: ChipGroup) {
-        if (chipGroup.layoutParams.height == WRAP_CONTENT) binding.extractedTopicExpand.hide()
-        else {
+        if (chipGroup.layoutParams.height == WRAP_CONTENT) {
+            binding.extractedTopicExpand.hide()
+        } else {
             val lastChip = chipGroup.children.last()
             val lastChipRowIndex = chipGroup.getRowIndex(lastChip)
             if (lastChipRowIndex > 0) showExpandButton()
@@ -103,7 +105,9 @@ class ReadReviewTopics @JvmOverloads constructor(
     private fun Keyword.toChip(position: Int): Chip {
         val chip = Chip(ChipsUnify(context), this).apply {
             view.chipText = "%s (%s)".format(text, count)
-            view.setOnClickListener { onClickChip(this, position) }
+            view.setOnClickDebounceListener {
+                onClickChip(this, position)
+            }
         }
         return chip
     }
@@ -162,7 +166,7 @@ class ReadReviewTopics @JvmOverloads constructor(
         extractedTopicShimmerCollapse.hide()
     }
 
-    private fun hideAll() = with(binding){
+    private fun hideAll() = with(binding) {
         extractedTopicMain.hide()
         extractedTopicShimmerExpand.hide()
         extractedTopicShimmerCollapse.hide()

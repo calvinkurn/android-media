@@ -364,7 +364,10 @@ open class SomListFragment :
             showCoachMarkAutoTabbing(highLightStatusKey)
         } else {
             coachMarkManager?.dismissCoachMark()
-            autoTabbingCoachMark?.dismissCoachMark()
+            autoTabbingCoachMark?.run {
+                onDismissListener = {}
+                dismissCoachMark()
+            }
         }
     }
 
@@ -2996,13 +2999,15 @@ open class SomListFragment :
                         )
 
                         autoTabbingCoachMark?.run {
-                            onFinishListener = {
+                            val onCompleteListener = {
                                 CoachMarkPreference.setShown(
                                     it,
                                     SHARED_PREF_SOM_LIST_TAB_COACH_MARK,
                                     true
                                 )
                             }
+                            onFinishListener = onCompleteListener
+                            onDismissListener = onCompleteListener
                             isDismissed = false
                             showCoachMark(
                                 step = arrayListOf(coachMarkItem)

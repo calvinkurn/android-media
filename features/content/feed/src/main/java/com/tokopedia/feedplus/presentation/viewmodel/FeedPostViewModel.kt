@@ -183,6 +183,8 @@ class FeedPostViewModel @Inject constructor(
     val uiEvent: Flow<FeedPostEvent?>
         get() = uiEventManager.event
 
+    private var mSavedPostPosition: Int? = null
+
     private val _userReport = MutableLiveData<Result<List<PlayUserReportReasoningUiModel>>>()
     val userReportList
         get() =
@@ -192,6 +194,24 @@ class FeedPostViewModel @Inject constructor(
     val selectedReport get() = _selectedReport.value
     private val _isReported = MutableLiveData<Result<Unit>>()
     val isReported: LiveData<Result<Unit>> get() = _isReported
+
+    private var mIsInitiallyLoggedIn: Boolean = userSession.isLoggedIn
+
+    fun shouldFetchInitialPost(): Boolean {
+        return !isJustLoggedIn() || feedHome.value?.items.orEmpty().isEmpty()
+    }
+
+    private fun isJustLoggedIn(): Boolean {
+        return !mIsInitiallyLoggedIn && userSession.isLoggedIn
+    }
+
+    fun saveScrollPosition(position: Int) {
+        mSavedPostPosition = position
+    }
+
+    fun getScrollPosition(): Int? {
+        return mSavedPostPosition
+    }
 
     fun fetchFeedPosts(
         source: String,
@@ -463,10 +483,11 @@ class FeedPostViewModel @Inject constructor(
             if (it is Success) {
                 val followRecomData = it.data.items.getOrNull(position)
 
-                if (followRecomData is FeedFollowRecommendationModel)
+                if (followRecomData is FeedFollowRecommendationModel) {
                     viewModelScope.launch {
                         fetchFollowRecommendation(followRecomData.id)
                     }
+                }
             }
         }
     }
@@ -1294,10 +1315,11 @@ class FeedPostViewModel @Inject constructor(
      */
     fun removeProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
         viewModelScope.launch {
-            val feedHome = if (_feedHome.value != null && _feedHome.value is Success)
+            val feedHome = if (_feedHome.value != null && _feedHome.value is Success) {
                 _feedHome.value
-            else
+            } else {
                 return@launch
+            }
 
             if (feedHome == null) return@launch
 
