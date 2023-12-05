@@ -43,6 +43,8 @@ import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.nest.components.quantityeditor.QtyButton
+import com.tokopedia.nest.components.quantityeditor.QtyField
+import com.tokopedia.nest.components.quantityeditor.QtyState
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -82,6 +84,9 @@ class CartItemViewHolder constructor(
             isExpand = true
             expandState.value = true
             enableManualInput.value = true
+            configState.value = configState.value.copy(
+                qtyField = QtyField(cursorColor = unifyprinciplesR.color.Unify_RN500)
+            )
         }
     }
 
@@ -1230,6 +1235,9 @@ class CartItemViewHolder constructor(
 //                }
 //            }
 //            onValueChanged = { }
+            onFocusChanged = {
+                qtyState.value = if (it.isFocused) QtyState.Focus else QtyState.Enabled
+            }
             keyboardOptions.value = KeyboardOptions(
                 imeAction = ImeAction.Done
             )

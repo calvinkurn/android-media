@@ -4988,16 +4988,18 @@ class CartRevampFragment :
                         val nearestCartItemViewHolder =
                             findViewHolderForAdapterPosition(nearestItemHolderDataPosition)
                         if (nearestCartItemViewHolder is CartItemViewHolder) {
-//                            val quantityView =
-//                                nearestCartItemViewHolder.getItemViewBinding().qtyEditorProduct..
-//                            bulkActionCoachMarkItems.add(
-//                                CoachMark2Item(
-//                                    quantityView,
-//                                    "",
-//                                    minQuantityOnboardingData.text,
-//                                    CoachMark2.POSITION_BOTTOM
-//                                )
-//                            )
+                            val quantityView =
+                                nearestCartItemViewHolder.getItemViewBinding().qtyEditorProduct.anchorMinusButton
+                            quantityView?.let {
+                                bulkActionCoachMarkItems.add(
+                                    CoachMark2Item(
+                                        quantityView,
+                                        "",
+                                        minQuantityOnboardingData.text,
+                                        CoachMark2.POSITION_BOTTOM
+                                    )
+                                )
+                            }
                         } else if (nearestCartItemViewHolder == null && bulkActionCoachMarkItems.isNotEmpty()) {
                             binding?.root?.let {
                                 bulkActionCoachMarkItems.add(
