@@ -170,7 +170,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     private boolean isAlphaVersion() {
         String versionName = GlobalConfig.VERSION_NAME;
         return versionName.endsWith(SUFFIX_ALPHA)
-                && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)
+                && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true);
     }
 
     private boolean isNakamaVersion() {
