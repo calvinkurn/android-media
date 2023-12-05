@@ -76,7 +76,7 @@ class SearchProductFirstPageGqlUseCase(
             addInspirationCarouselRequest(requestParams, params)
             addInspirationWidgetRequest(requestParams, params)
             addGetLastFilterRequest(requestParams, params)
-            addUserProfileDobRequest()
+            addUserProfileDobRequest(reimagineRollence)
         }
 
         graphqlUseCase.clearRequest()
@@ -236,8 +236,11 @@ class SearchProductFirstPageGqlUseCase(
             UserProfileDobModel::class.java,
         )
 
-    private fun MutableList<GraphqlRequest>.addUserProfileDobRequest() {
-        add(createUserProfileDobRequest())
+    private fun MutableList<GraphqlRequest>.addUserProfileDobRequest(
+        reimagineRollence: ReimagineRollence,
+    ) {
+        if (reimagineRollence.search3ProductCard().isUseAceSearchProductV5())
+            add(createUserProfileDobRequest())
     }
 
 

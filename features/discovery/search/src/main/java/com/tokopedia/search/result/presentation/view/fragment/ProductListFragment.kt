@@ -161,8 +161,6 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT"
         private const val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
         private const val LABEL_POSITION_VIEW = "view"
-        private const val LABEL_POSITION_SHOW_BLUR = "show"
-        private const val LABEL_POSITION_BLUR = "blur"
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {
@@ -746,7 +744,7 @@ class ProductListFragment: BaseDaggerFragment(),
         } ?: ""
         val pageComponentId = presenter?.pageComponentId ?: ""
 
-        val additionalLabel = createAdditionalLabel(item.isImageBlurred, additionalPositionMap)
+        val additionalLabel = item.createAdditionalLabel(additionalPositionMap)
         dataLayerList.add(
             item.getProductAsObjectDataLayer(
                 filterSortParams,
@@ -822,7 +820,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView) {
         val product = createTopAdsProductForTracking(item)
         val pageComponentId = presenter?.pageComponentId ?: ""
-
+        val additionalLabel = item.createAdditionalLabel(additionalPositionMap)
         TopAdsGtmTracker.eventSearchResultProductClick(
             context,
             queryKey,
@@ -831,7 +829,7 @@ class ProductListFragment: BaseDaggerFragment(),
             getUserId(),
             item.dimension90,
             item.topadsTag,
-            item.getDimension115(additionalPositionMap),
+            item.getDimension115(additionalLabel),
             item.dimension131,
             pageComponentId,
         )
@@ -854,11 +852,12 @@ class ProductListFragment: BaseDaggerFragment(),
             filterSortParams = filterSortParams,
             componentId = pageComponentId,
         )
+        val additionalLabel = item.createAdditionalLabel(additionalPositionMap)
         SearchTracking.trackEventClickSearchResultProduct(
             item.getProductAsObjectDataLayer(
                 filterSortParams,
                 pageComponentId,
-                additionalPositionMap,
+                additionalLabel,
             ),
             eventLabel,
             userId,
@@ -1474,17 +1473,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onSafeProductClickInfo(itemProduct: ProductItemDataView, adapterPosition: Int) {
+        presenter?.trackProductClick(itemProduct)
         presenter?.showBottomSheetInappropriate(itemProduct)
-    }
-
-    private fun createAdditionalLabel(
-        isImageBlurred: Boolean,
-        positionMap: Map<String, String>,
-    ): Map<String, String> {
-        return if(isImageBlurred) {
-            positionMap.plus(LABEL_POSITION_SHOW_BLUR to LABEL_POSITION_BLUR)
-        } else {
-            positionMap
-        }
     }
 }

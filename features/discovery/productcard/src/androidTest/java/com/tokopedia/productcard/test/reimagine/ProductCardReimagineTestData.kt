@@ -3,6 +3,7 @@ package com.tokopedia.productcard.test.reimagine
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_BENEFIT
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.reimagine.ProductCardModel.FreeShipping
@@ -13,6 +14,7 @@ import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.longProductName
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
+import com.tokopedia.productcard.utils.LIGHT_GREEN
 import com.tokopedia.productcard.utils.TEXT_DARK_GREY
 import org.hamcrest.Matcher
 
@@ -440,6 +442,7 @@ private fun imageBlurred(): ProductCardReimagineMatcher {
         R.id.productCardFreeShipping to isDisplayed(),
         R.id.productCardSafeContainer to isDisplayed(),
         R.id.productCardSafeDivider to isDisplayed(),
+        R.id.productCardSafeIcon to isDisplayed(),
         R.id.productCardSafeTitle to isDisplayed(),
         R.id.productCardSafeDescription to isDisplayed(),
         R.id.productCardSafeCheckInfo to isDisplayed(),

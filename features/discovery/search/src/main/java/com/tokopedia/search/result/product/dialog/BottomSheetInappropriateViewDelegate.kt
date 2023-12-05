@@ -21,6 +21,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 class BottomSheetInappropriateViewDelegate @Inject constructor(
     @SearchContext
@@ -45,8 +46,7 @@ class BottomSheetInappropriateViewDelegate @Inject constructor(
         isAdult: Boolean,
         onButtonConfirmationClicked: () -> Unit,
     ) {
-        val descMessageInappropriate = generateDescMessageInappropriate(isAdult)
-        val bottomSheet = BottomSheetInappropriate.newInstance(isAdult, descMessageInappropriate)
+        val bottomSheet = BottomSheetInappropriate.newInstance(isAdult)
         bottomSheet.setOnButtonConfirmationClicked {
             trackOnClickConfirmation(item)
             onButtonConfirmationClicked.invoke()
@@ -57,14 +57,6 @@ class BottomSheetInappropriateViewDelegate @Inject constructor(
             getFragment().parentFragmentManager,
             bottomSheet.tag
         )
-    }
-
-    private fun generateDescMessageInappropriate(isAdult: Boolean): String {
-        return if(isAdult) {
-            context?.getString(R.string.search_result_product_inappropriate_description_twenty_one)
-        } else {
-            context?.getString(R.string.search_result_product_inappropriate_description_under_twenty_one)
-        }.orEmpty()
     }
 
     private fun showMessageSuccessInactiveSafeProduct() {

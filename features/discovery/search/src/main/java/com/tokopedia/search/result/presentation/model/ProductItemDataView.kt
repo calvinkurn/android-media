@@ -178,10 +178,21 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
             .joinToString { it }
     }
 
+    fun createAdditionalLabel(
+        positionMap: Map<String, String>,
+    ): Map<String, String> {
+        return when {
+            isImageBlurred -> positionMap.plus(LABEL_POSITION_SHOW_BLUR to LABEL_POSITION_BLUR)
+            else -> positionMap
+        }
+    }
+
     val isKeywordIntentionLow : Boolean
         get() = keywordIntention == KEYWORD_INTENT_LOW
 
     companion object {
+        private const val LABEL_POSITION_SHOW_BLUR = "show"
+        private const val LABEL_POSITION_BLUR = "blur"
         fun create(
             topAds: TopAdsProductData,
             position: Int,

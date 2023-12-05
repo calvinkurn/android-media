@@ -41,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchInappropriateTitle"
         app:typographyType="paragraph_2"
-        android:textColor="@color/Unify_NN950"
+        android:textColor="@color/Unify_NN600"
         android:text="@string/search_result_product_inappropriate_description_twenty_one" />
 
     <com.tokopedia.unifycomponents.UnifyButton
