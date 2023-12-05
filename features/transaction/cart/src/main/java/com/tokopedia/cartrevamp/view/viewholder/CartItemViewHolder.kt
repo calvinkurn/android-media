@@ -79,7 +79,7 @@ class CartItemViewHolder constructor(
     private var informationLabel: MutableList<String> = mutableListOf()
     private var qtyTextWatcher: TextWatcher? = null
     private var lastQty: Int = 0
-    private var isFromDoneImeAction: Boolean = false
+    private var isDeleteFromDoneImeButton: Boolean = false
 
     @SuppressLint("ClickableViewAccessibility")
     fun clear() {
@@ -98,7 +98,7 @@ class CartItemViewHolder constructor(
     ) {
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
-        this.isFromDoneImeAction = false
+        this.isDeleteFromDoneImeButton = false
 
         itemView.addOnImpressionListener(data, onView = {
             if (!data.isError) {
@@ -1261,8 +1261,8 @@ class CartItemViewHolder constructor(
                         if (data.isBundlingItem) data.bundleQuantity else data.quantity
                     if (isActive && previousQuantity != newValue) {
                         if (!qtyEditorProduct.editText.isFocused) {
-                            if (isFromDoneImeAction) {
-                                isFromDoneImeAction = false
+                            if (isDeleteFromDoneImeButton) {
+                                isDeleteFromDoneImeButton = false
                             } else {
                                 validateQty(newValue, data)
                             }
@@ -1307,8 +1307,9 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.DropKeyboard(qtyEditorProduct.editText.context, itemView)
-                isFromDoneImeAction = true
-                if (qtyEditorProduct.editText.text.toString() == "0") {
+                val isDeletion = qtyEditorProduct.editText.text.toString() == "0"
+                isDeleteFromDoneImeButton = isDeletion
+                if (isDeletion) {
                     delayChangeQty?.cancel()
                     actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.QuantityEditorImeAction)
                 }
