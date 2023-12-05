@@ -11,6 +11,7 @@ import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
+import com.tokopedia.feedplus.domain.usecase.GetContentWidgetRecommendationUseCase
 import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -32,6 +33,7 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
     private val feedXHeaderUseCase: FeedXHeaderUseCase,
     private val feedXHomeUseCase: FeedXHomeUseCase,
     private val playWidgetSlotUseCase: GetPlayWidgetSlotUseCase,
+    private val getContentWidgetRecommendationUseCase: GetContentWidgetRecommendationUseCase,
     private val mapper: FeedBrowseMapper,
     private val connectionUtil: PlayWidgetConnectionUtil,
     private val dispatchers: CoroutineDispatchers
@@ -58,20 +60,20 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
     override suspend fun getSlots(): List<FeedBrowseSlotUiModel> {
         return withContext(dispatchers.io) {
             val response = feedXHomeUseCase(
-                feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE)
+                feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE, cursor = "TUN3d0xESXNNQ3dzTXl3c01Dd3dMREFzTERBc01Dd3NMQT09Og==")
             )
             // TODO("Remove this mock data")
             listOf(
                 FeedBrowseSlotUiModel.InspirationBanner(
                     slotId = "item.id",
                     title = "Ini Banner",
-                    identifier = "Identifier Banner",
+                    identifier = "content_browse_inspirational",
                     bannerList = emptyList()
                 ),
                 FeedBrowseSlotUiModel.Creators(
                     slotId = "random.slot.id",
                     title = "Video asik dari kreator ",
-                    identifier = "browse_widget_recommendation:ugc_widget",
+                    identifier = "content_browse_ugc",
                     creatorList = FeedBrowseChannelListState.initLoading()
                 )
             ) + mapper.mapSlotsResponse(response).ifEmpty {
@@ -102,9 +104,15 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         identifier: String
     ): WidgetRecommendationModel = withContext(dispatchers.io) {
         // TODO("Replace this mock data")
-        if (identifier == "browse_widget_recommendation:ugc_widget") {
-            mockCreators()
-        } else mockBanners()
+        val response = getContentWidgetRecommendationUseCase(
+            GetContentWidgetRecommendationUseCase.Param.create(identifier)
+        )
+
+        mapper.mapWidgetResponse(response)
+//
+//        if (identifier == "browse_widget_recommendation:ugc_widget") {
+//            mockCreators()
+//        } else mockBanners()
     }
 
     private fun mockBanners() = WidgetRecommendationModel.Banners(
@@ -137,7 +145,7 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         )
     )
 
-    private fun mockCreators() = WidgetRecommendationModel.Channels(
+    private fun mockCreators() = WidgetRecommendationModel.Authors(
         channels = List(5) { index ->
             PlayWidgetChannelUiModel(
                 channelId = "$index",
@@ -168,7 +176,7 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                 channelTypeTransition = PlayWidgetChannelTypeTransition(
                     prevType = null,
                     currentType = PlayWidgetChannelType.Unknown
-                ),
+                )
             )
         }
     )

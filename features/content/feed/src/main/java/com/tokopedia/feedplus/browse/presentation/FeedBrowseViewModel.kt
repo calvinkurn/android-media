@@ -195,7 +195,7 @@ internal class FeedBrowseViewModel @Inject constructor(
         }
         try {
             val mappedResult = repository.getWidgetRecommendation(identifier)
-            if (mappedResult !is WidgetRecommendationModel.Channels) return
+            if (mappedResult !is WidgetRecommendationModel.Authors) return
             updateWidget<FeedBrowseSlotUiModel.Creators>(slotId, ResultState.Success) {
                 it.copy(creatorList = FeedBrowseChannelListState.initSuccess(mappedResult.channels))
             }

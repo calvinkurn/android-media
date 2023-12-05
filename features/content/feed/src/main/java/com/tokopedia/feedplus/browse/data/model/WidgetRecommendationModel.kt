@@ -8,10 +8,12 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 internal sealed interface WidgetRecommendationModel {
 
     data class Banners(
-        val banners: List<BannerWidgetModel>,
+        val banners: List<BannerWidgetModel>
     ) : WidgetRecommendationModel
 
-    data class Channels(
-        val channels: List<PlayWidgetChannelUiModel>,
+    data class Authors(
+        val channels: List<PlayWidgetChannelUiModel>
     ) : WidgetRecommendationModel
+
+    object Empty : WidgetRecommendationModel
 }

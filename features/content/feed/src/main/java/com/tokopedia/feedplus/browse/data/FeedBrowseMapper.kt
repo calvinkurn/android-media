@@ -5,11 +5,14 @@ import com.tokopedia.content.common.model.ContentItem
 import com.tokopedia.content.common.model.ContentSlotMeta
 import com.tokopedia.content.common.model.FeedXHeaderResponse
 import com.tokopedia.content.common.model.WidgetSlot
+import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
+import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXHomeEntity
+import com.tokopedia.feedplus.data.GetContentWidgetRecommendationResponse
 import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayGridType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
@@ -51,7 +54,7 @@ class FeedBrowseMapper @Inject constructor() {
                     FeedBrowseSlotUiModel.InspirationBanner(
                         slotId = item.id,
                         title = item.title,
-                        identifier = item.type,
+                        identifier = item.type.removePrefix("browse_widget_recommendation"),
                         bannerList = emptyList()
                     )
                 } else {
@@ -91,6 +94,32 @@ class FeedBrowseMapper @Inject constructor() {
             else -> {
                 ContentSlotModel.NoData(nextCursor)
             }
+        }
+    }
+
+    internal fun mapWidgetResponse(response: GetContentWidgetRecommendationResponse): WidgetRecommendationModel {
+        val data = response.contentWidgetRecommendation.data
+        val firstItem = data.firstOrNull() ?: return WidgetRecommendationModel.Empty
+        return when (firstItem.typename) {
+            "ContentWidgetAuthor" -> {
+                WidgetRecommendationModel.Authors(emptyList())
+            }
+            "ContentWidgetBanner" -> {
+                WidgetRecommendationModel.Banners(
+                    data.mapNotNull {
+                        if (it.typename != "ContentWidgetBanner") {
+                            null
+                        } else {
+                            BannerWidgetModel(
+                                title = it.title,
+                                imageUrl = it.media.link,
+                                appLink = it.appLink
+                            )
+                        }
+                    }
+                )
+            }
+            else -> WidgetRecommendationModel.Empty
         }
     }
 

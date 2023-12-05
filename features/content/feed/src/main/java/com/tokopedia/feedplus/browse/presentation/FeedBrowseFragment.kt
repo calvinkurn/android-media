@@ -69,7 +69,7 @@ internal class FeedBrowseFragment @Inject constructor(
             viewHolder: FeedBrowseBannerViewHolder,
             item: FeedBrowseItemListModel.Banner
         ) {
-            startActivity(Intent(requireContext(), CategoryInspirationActivity::class.java))
+            router.route(context, item.banner.appLink)
         }
     }
 
@@ -184,7 +184,7 @@ internal class FeedBrowseFragment @Inject constructor(
                 chipsListener,
                 bannerListener,
                 channelListener,
-                creatorListener,
+                creatorListener
             )
         }
     )
@@ -337,8 +337,9 @@ internal class FeedBrowseFragment @Inject constructor(
 
     private fun renderContent(widgets: List<FeedBrowseStatefulModel>) {
         impressionManager.onNewWidgets(widgets.map { it.model })
-        if (widgets.isEmpty()) adapter.setPlaceholder()
-        else {
+        if (widgets.isEmpty()) {
+            adapter.setPlaceholder()
+        } else {
             adapter.setList(widgets) {
                 if (_binding == null) return@setList
                 binding.feedBrowseList.invalidateItemDecorations()
