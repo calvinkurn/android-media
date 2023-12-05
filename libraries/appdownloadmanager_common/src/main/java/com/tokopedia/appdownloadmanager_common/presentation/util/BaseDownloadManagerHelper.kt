@@ -5,7 +5,6 @@ import android.content.Context
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.appdownloadmanager_common.nakamaupdate.DownloadManagerUpdateModel
-import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownloadingBottomSheet
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.interceptor.BannerEnvironmentInterceptor
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -16,7 +15,7 @@ import com.tokopedia.remoteconfig.RollenceKey
 import java.lang.ref.WeakReference
 
 abstract class BaseDownloadManagerHelper(
-     val activityRef: WeakReference<Activity>
+    val activityRef: WeakReference<Activity>
 ) {
 
     protected val sharePref by lazy {
@@ -57,12 +56,12 @@ abstract class BaseDownloadManagerHelper(
 
         val sharePrefEditor = sharePref?.edit()
         sharePrefEditor?.putInt(
-            AppDownloadingBottomSheet.DOWNLOAD_MANAGER_EXPIRED_TIME,
+            DOWNLOAD_MANAGER_EXPIRED_TIME,
             expireTime
         )
         val currTime = System.currentTimeMillis() / 1000
         sharePrefEditor?.putLong(
-            AppDownloadingBottomSheet.DOWNLOAD_MANAGER_TIMESTAMP,
+            DOWNLOAD_MANAGER_TIMESTAMP,
             currTime
         )
 

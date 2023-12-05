@@ -4,26 +4,36 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.collectAsState
+import android.widget.LinearLayout
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.appdownloadmanager_common.di.component.DaggerDownloadManagerComponent
 import com.tokopedia.appdownloadmanager_common.di.component.DownloadManagerComponent
-import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingState
+import com.tokopedia.appdownloadmanager_common.nakamaupdate.DownloadManagerUpdateModel
+import com.tokopedia.appdownloadmanager_common.presentation.listener.DownloadManagerSuccessListener
+import com.tokopedia.appdownloadmanager_common.presentation.model.AppDownloadingUiEvent
+import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingUiState
+import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadManagerPermission
 import com.tokopedia.appdownloadmanager_common.presentation.viewmodel.DownloadManagerViewModel
-import com.tokopedia.appdownloadmanager_common.screen.DownloadManagerDownloadingScreen
+import com.tokopedia.appdownloadmanager_common.screen.AppDownloadingState
+import com.tokopedia.appdownloadmanager_common.screen.DownloadManagerOnboardingScreen
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
-class AppDownloadingBottomSheet : BottomSheetUnify(),
+class AppDownloadingBottomSheet :
+    BottomSheetUnify(),
     HasComponent<DownloadManagerComponent> {
-
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -32,7 +42,11 @@ class AppDownloadingBottomSheet : BottomSheetUnify(),
         ViewModelProvider(this, viewModelFactory).get(DownloadManagerViewModel::class.java)
     }
 
-    private var onSuccessDownloaded: ((filename: String) -> Unit)? = null
+    private var downloadManagerUpdateModel: DownloadManagerUpdateModel? = null
+
+    private var startAppDownloading: (() -> Unit)? = null
+
+    private var downloadManagerSuccessListener: DownloadManagerSuccessListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,38 +59,70 @@ class AppDownloadingBottomSheet : BottomSheetUnify(),
         savedInstanceState: Bundle?
     ): View? {
         val composeView = ComposeView(inflater.context).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-
             setContent {
-                val downloadingManagerState by viewModel.downloadingState.collectAsState(initial = null)
+                val downloadingUiState by viewModel.downloadingUiState.collectAsStateWithLifecycle()
 
-                downloadingManagerState?.let {
-                    when (it) {
-                        is DownloadingState.Downloading -> {
-                            DownloadManagerDownloadingScreen(downloadingProgressUiModel = it.downloadingProgressUiModel, onCancelClick = {
-                                viewModel.cancelDownload()
-                            })
-                        }
+                when (downloadingUiState) {
+                    is DownloadingUiState.Onboarding -> {
+                        DownloadManagerOnboardingScreen(
+                            downloadManagerUpdateModel = downloadManagerUpdateModel,
+                            onDownloadClick = {
+                                activity?.let { mActivity ->
+                                    AppDownloadManagerPermission.checkAndRequestPermission(mActivity) {
+                                        if (it) {
+                                            startDownloadingAndChangeState()
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    }
 
-                        is DownloadingState.DownloadSuccess -> {
-                            DownloadManagerDownloadingScreen(downloadingProgressUiModel = it.downloadingProgressUiModel, onCancelClick = {
-                                viewModel.cancelDownload()
-                            })
+                    is DownloadingUiState.Downloading -> {
+                        viewModel.startDownload(APK_URL)
 
-                            onSuccessDownloaded?.invoke(it.fileName)
-                        }
-
-                        is DownloadingState.DownloadFailed -> {
-                            dismissAllowingStateLoss()
-                        }
-
+                        AppDownloadingState(
+                            viewModel = viewModel,
+                            appDownloadingUiEvent = ::onDownloadingUiEvent
+                        )
                     }
                 }
             }
         }
 
+        showKnob = true
+        showCloseIcon = false
         setChild(composeView)
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        hideKnobDownloadingUiState(view)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        AppDownloadManagerPermission.checkRequestPermissionResult(
+            requestCode,
+            grantResults
+        ) { hasGrantPermission ->
+            if (hasGrantPermission) {
+                startDownloadingAndChangeState()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        downloadManagerUpdateModel = null
+        startAppDownloading = null
+        downloadManagerSuccessListener = null
+        super.onDestroy()
     }
 
     override fun getComponent(): DownloadManagerComponent {
@@ -85,27 +131,94 @@ class AppDownloadingBottomSheet : BottomSheetUnify(),
             .build()
     }
 
-    override fun onDestroy() {
-        onSuccessDownloaded = null
-        super.onDestroy()
+    private fun hideKnobDownloadingUiState(view: View) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.downloadingUiState.collectLatest {
+                when (it) {
+                    is DownloadingUiState.Downloading -> {
+                        val viewTarget: LinearLayout =
+                            view.findViewById(unifycomponentsR.id.bottom_sheet_wrapper)
+
+                        isCancelable = false
+                        dialog?.setCanceledOnTouchOutside(false)
+                        BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
+                    }
+                }
+            }
+        }
     }
 
-    fun showBottomSheet(fragmentManager: FragmentManager?) {
-        fragmentManager?.let {
+    private fun onDownloadingUiEvent(uiEvent: AppDownloadingUiEvent) {
+        when (uiEvent) {
+            is AppDownloadingUiEvent.OnDownloadSuccess -> {
+                onDownloadSuccess(uiEvent.fileNamePath)
+            }
+            is AppDownloadingUiEvent.OnDownloadFailed -> {
+                onDownloadFailed(uiEvent.reason)
+            }
+
+            is AppDownloadingUiEvent.OnCancelClick -> {
+                onDownloadCancelled()
+            }
+        }
+    }
+
+    private fun startDownloadingAndChangeState() {
+        startAppDownloading?.invoke()
+        viewModel.updateDownloadingState()
+    }
+
+    private fun onDownloadFailed(reason: String) {
+        showErrorToaster(reason)
+        dismiss()
+    }
+
+    private fun onDownloadSuccess(fileNamePath: String) {
+        downloadManagerSuccessListener?.onSuccessDownloaded(fileNamePath)
+        dismiss()
+    }
+
+    private fun onDownloadCancelled() {
+        viewModel.cancelDownload()
+        dismiss()
+    }
+
+    fun setDownloadManagerUpdate(downloadManagerUpdateModel: DownloadManagerUpdateModel) {
+        this.downloadManagerUpdateModel = downloadManagerUpdateModel
+    }
+
+    fun setAppDownloadListener(
+        startAppDownloading: () -> Unit,
+        downloadManagerSuccessListener: DownloadManagerSuccessListener
+    ) {
+        this.startAppDownloading = startAppDownloading
+        this.downloadManagerSuccessListener = downloadManagerSuccessListener
+    }
+
+    fun showBottomSheet(fragmentManager: FragmentManager) {
+        fragmentManager.let {
             if (!isVisible) {
                 show(it, TAG)
             }
         }
     }
 
-    fun onSuccessDownloaded(onSuccessDownloaded: (filename: String) -> Unit) {
-        this.onSuccessDownloaded = onSuccessDownloaded
+    private fun showErrorToaster(reason: String) {
+        view?.let {
+            Toaster.build(
+                it,
+                reason,
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_ERROR
+            ).show()
+        }
     }
 
     companion object {
-        const val DOWNLOAD_MANAGER_EXPIRED_TIME = "expired_time"
-        const val DOWNLOAD_MANAGER_TIMESTAMP = "timestamp"
         private val TAG = AppDownloadingBottomSheet::class.java.simpleName
+
+        const val APK_URL =
+            "https://docs-android.tokopedia.net/downloadApk?packagename=com.tokopedia.tkpd&versionname=3.246"
 
         fun newInstance(): AppDownloadingBottomSheet {
             return AppDownloadingBottomSheet()

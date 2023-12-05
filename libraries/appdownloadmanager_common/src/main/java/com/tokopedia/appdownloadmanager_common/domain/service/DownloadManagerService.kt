@@ -21,7 +21,8 @@ class DownloadManagerService @Inject constructor(
 ) : CoroutineScope {
 
     companion object {
-        private const val VERSION_PARAM = "version"
+        private const val VERSION_PARAM = "versionname"
+        private const val VERSION_CODE_PARAM = ""
         private const val APK_MIME_TYPE = "application/vnd.android.package-archive"
         private const val DELAY_UPDATE_PROGRESS = 300L
         private const val MAX_PROGRESS = 100
@@ -36,7 +37,6 @@ class DownloadManagerService @Inject constructor(
         apkUrl: String,
         downloadManagerListener: DownloadManagerListener
     ) {
-
         val request = getDownloadRequest(apkUrl)
 
         downloadID = downloadManager?.enqueue(request) ?: -1L
@@ -49,7 +49,6 @@ class DownloadManagerService @Inject constructor(
 
         launch {
             try {
-
                 val query = DownloadManager.Query()
 
                 if (downloadID != -1L) {
@@ -82,8 +81,7 @@ class DownloadManagerService @Inject constructor(
                                             ),
                                             totalResourceSize = convertToHumanReadableSize(
                                                 apkTotalSize
-                                            ),
-                                            isFinishedDownloading = true
+                                            )
                                         )
                                         downloadManagerListener.onSuccessDownload(
                                             downloadingProgressUiModel,
@@ -91,12 +89,19 @@ class DownloadManagerService @Inject constructor(
                                         )
                                     }
 
-                                    DownloadManager.STATUS_FAILED -> {
+                                    DownloadManager.STATUS_FAILED, DownloadManager.ERROR_UNKNOWN,
+                                    DownloadManager.ERROR_FILE_ALREADY_EXISTS, DownloadManager.ERROR_HTTP_DATA_ERROR,
+                                    DownloadManager.ERROR_FILE_ERROR, DownloadManager.ERROR_UNHANDLED_HTTP_CODE,
+                                    DownloadManager.ERROR_INSUFFICIENT_SPACE,
+                                    DownloadManager.ERROR_TOO_MANY_REDIRECTS, DownloadManager.ERROR_DEVICE_NOT_FOUND,
+                                    DownloadManager.ERROR_CANNOT_RESUME -> {
                                         finishDownload = true
-                                        downloadManagerListener.onFailedDownload()
+                                        val reasonColumnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_REASON)
+                                        val reason = cursor.getString(reasonColumnIndex)
+                                        downloadManagerListener.onFailedDownload(reason)
                                     }
 
-                                    DownloadManager.STATUS_RUNNING -> {
+                                    DownloadManager.STATUS_RUNNING, DownloadManager.STATUS_PENDING -> {
                                         if (totalSizeColumnIndex != -1 && downloadedColumnIndex != -1) {
                                             val apkTotalSize = cursor.getLong(totalSizeColumnIndex)
                                             val downloadedProgress =
@@ -114,12 +119,11 @@ class DownloadManagerService @Inject constructor(
                                                         ),
                                                         totalResourceSize = convertToHumanReadableSize(
                                                             apkTotalSize
-                                                        ),
-                                                        isFinishedDownloading = false
+                                                        )
                                                     )
 
                                                 downloadManagerListener.onDownloading(
-                                                    downloadingProgressUiModel,
+                                                    downloadingProgressUiModel
                                                 )
 
                                                 delay(DELAY_UPDATE_PROGRESS)
@@ -128,9 +132,10 @@ class DownloadManagerService @Inject constructor(
                                     }
 
                                     else -> {
-                                        // no op
                                         finishDownload = true
-                                        downloadManagerListener.onFailedDownload()
+                                        val reasonColumnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_REASON)
+                                        val reason = cursor.getString(reasonColumnIndex)
+                                        downloadManagerListener.onFailedDownload(reason)
                                     }
                                 }
                             }
@@ -144,7 +149,8 @@ class DownloadManagerService @Inject constructor(
                 }
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(e)
-                downloadManagerListener.onFailedDownload()
+                job.cancel()
+                downloadManagerListener.onFailedDownload(e.localizedMessage.orEmpty())
             }
         }
     }
@@ -169,7 +175,7 @@ class DownloadManagerService @Inject constructor(
 
         this.fileNamePath =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                .toString() + "/$fileName"
+            .toString() + "/$fileName"
 
         val file = File(fileNamePath)
 
@@ -194,19 +200,18 @@ class DownloadManagerService @Inject constructor(
     }
 
     interface DownloadManagerListener {
+        suspend fun onFailedDownload(reason: String)
+
+        suspend fun onDownloading(
+            downloadingProgressUiModel: DownloadingProgressUiModel
+        )
 
         suspend fun onSuccessDownload(
             downloadingProgressUiModel: DownloadingProgressUiModel,
             fileNamePath: String
         )
-        suspend fun onFailedDownload()
-
-        suspend fun onDownloading(
-            downloadingProgressUiModel: DownloadingProgressUiModel,
-        )
     }
 
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Default
-
 }

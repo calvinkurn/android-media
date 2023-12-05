@@ -1,14 +1,15 @@
 package com.tokopedia.appdownloadmanager_common.screen
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,7 +38,8 @@ fun DownloadManagerOnboardingScreen(
     ) {
         NestImage(
             source = ImageSource.Remote(DOWNLOAD_MANAGER_ONBOARDING_URL),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().height(240.dp),
+            contentScale = ContentScale.Crop
         )
 
         NestTypography(
@@ -46,9 +48,10 @@ fun DownloadManagerOnboardingScreen(
                 .wrapContentSize(Alignment.Center)
                 .padding(top = 16.dp),
             textStyle = NestTheme.typography.heading2.copy(
-                fontWeight = FontWeight.Bold, color = NestTheme.colors.NN._950,
+                fontWeight = FontWeight.Bold,
+                color = NestTheme.colors.NN._950,
                 textAlign = TextAlign.Center
-            ),
+            )
         )
 
         NestTypography(
@@ -57,7 +60,8 @@ fun DownloadManagerOnboardingScreen(
                 .wrapContentSize(Alignment.Center)
                 .padding(top = 8.dp),
             textStyle = NestTheme.typography.paragraph2.copy(
-                fontWeight = FontWeight.Normal, color = NestTheme.colors.NN._600,
+                fontWeight = FontWeight.Normal,
+                color = NestTheme.colors.NN._600,
                 textAlign = TextAlign.Center
             )
         )

@@ -1,33 +1,34 @@
 package com.tokopedia.appdownloadmanager
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentActivity
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownloadOnboardingBottomSheet
+import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownloadingBottomSheet
 import com.tokopedia.appdownloadmanager_common.presentation.listener.DownloadManagerSuccessListener
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper
 import java.io.File
 import java.lang.ref.WeakReference
 
 class AppDownloadManagerHelper(
-    activityRef: WeakReference<Activity>,
+    activityRef: WeakReference<Activity>
 ) : BaseDownloadManagerHelper(activityRef), DownloadManagerSuccessListener {
     override fun showAppDownloadManagerBottomSheet() {
         if (isEnableShowBottomSheet()) {
             (activityRef.get() as? FragmentActivity)?.let {
-                val onBoardingBottomSheet = AppDownloadOnboardingBottomSheet.newInstance()
+                val onBoardingBottomSheet = AppDownloadingBottomSheet.newInstance()
                 downloadManagerUpdateModel?.let { downloadManagerUpdate ->
                     onBoardingBottomSheet.setDownloadManagerUpdate(downloadManagerUpdate)
                 }
                 onBoardingBottomSheet.setAppDownloadListener(
                     startAppDownloading = {
                         setCacheExpire()
-                    }, this
+//                        onBoardingBottomSheet.dismissNow()
+                    },
+                    this
                 )
                 onBoardingBottomSheet.showBottomSheet(it.supportFragmentManager)
             }

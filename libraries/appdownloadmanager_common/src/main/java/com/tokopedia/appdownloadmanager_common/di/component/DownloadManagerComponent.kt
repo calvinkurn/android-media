@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.appdownloadmanager_common.di.module.DownloadManagerModule
 import com.tokopedia.appdownloadmanager_common.di.module.DownloadManagerViewModelModule
 import com.tokopedia.appdownloadmanager_common.di.scope.DownloadManagerScope
-import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownloadOnboardingBottomSheet
 import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownloadingBottomSheet
 import dagger.Component
 
@@ -14,7 +13,5 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface DownloadManagerComponent {
-    fun inject(appDownloadOnboardingBottomSheet: AppDownloadOnboardingBottomSheet)
-
     fun inject(appDownloadingBottomSheet: AppDownloadingBottomSheet)
 }

@@ -37,7 +37,6 @@ fun AnimatedCircularProgressIndicator(
     progressIndicatorColor: Color,
     modifier: Modifier = Modifier.fillMaxWidth()
 ) {
-
     val stroke = with(LocalDensity.current) {
         Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
     }
@@ -50,7 +49,7 @@ fun AnimatedCircularProgressIndicator(
 
         val animateFloat = remember { Animatable(0f) }
 
-        LaunchedEffect(animateFloat) {
+        LaunchedEffect(downloadingProgressUiModel.currentProgressInPercent) {
             animateFloat.animateTo(
                 targetValue = downloadingProgressUiModel.currentProgressInPercent / MAX_VALUE.toFloat(),
                 animationSpec = tween(durationMillis = 2000, easing = FastOutSlowInEasing)
@@ -62,7 +61,6 @@ fun AnimatedCircularProgressIndicator(
                 .progressSemantics(downloadingProgressUiModel.currentProgressInPercent / MAX_VALUE.toFloat())
                 .size(CIRCULAR_INDICATOR_SIZE)
         ) {
-
             val startAngle = 270f
             val sweep: Float = animateFloat.value * 360f
             val diameterOffset = stroke.width / 2
@@ -83,7 +81,6 @@ fun ProgressStatus(
     modifier: Modifier = Modifier
 ) {
     Column {
-
         NestTypography(
             modifier = modifier.wrapContentSize(Alignment.Center),
             text = "${downloadingProgressUiModel.currentProgressInPercent}%",
@@ -105,7 +102,6 @@ fun ProgressStatus(
             )
         )
     }
-
 }
 
 private fun DrawScope.drawCircularProgressIndicator(
