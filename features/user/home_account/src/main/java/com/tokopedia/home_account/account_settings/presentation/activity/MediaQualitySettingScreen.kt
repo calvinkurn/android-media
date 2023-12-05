@@ -38,7 +38,9 @@ fun MediaQualitySettingScreen(
         NestTypography(
             stringResource(R.string.image_quality_setting_subtitle),
             modifier = Modifier.padding(top = 4.dp),
-            textStyle = NestTheme.typography.display2
+            textStyle = NestTheme.typography.display2.copy(
+                color = NestTheme.colors.NN._950.copy(0.68f)
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
         qualities.forEachIndexed { i, v ->
@@ -55,7 +57,9 @@ fun MediaQualitySettingScreen(
                     )
                     NestTypography(
                         text = stringResource(v.subtitle),
-                        textStyle = NestTheme.typography.body2
+                        textStyle = NestTheme.typography.body2.copy(
+                            color = NestTheme.colors.NN._950.copy(0.68f)
+                        )
                     )
                 }
             }
