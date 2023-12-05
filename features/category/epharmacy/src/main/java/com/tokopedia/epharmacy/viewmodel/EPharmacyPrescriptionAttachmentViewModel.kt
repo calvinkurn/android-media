@@ -9,6 +9,7 @@ import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultation
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyPPGTrackingData
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
 import com.tokopedia.epharmacy.network.response.EPharmacyConsultationDetails
@@ -175,5 +176,10 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     fun findGroup(ePharmacyGroupId: String?): EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup? {
         return EPharmacyUtils.findGroup(ePharmacyGroupId, ePharmacyPrepareProductsGroupResponseData)
+    }
+
+    fun getTrackingData(): EPharmacyPPGTrackingData {
+        ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups
+        return EPharmacyPPGTrackingData("", "", "")
     }
 }
