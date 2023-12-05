@@ -91,7 +91,7 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
         view.showToasterSuccess(
             message = getString(R.string.pdp_common_gallery_default_selected),
             heightOffset = R.dimen.pdp_common_80_dp,
-            ctaText = getString(R.string.pdp_common_oke)
+            ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
         )
     }
 
