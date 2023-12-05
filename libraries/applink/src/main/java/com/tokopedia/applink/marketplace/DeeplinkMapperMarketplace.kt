@@ -10,7 +10,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.applink.salam.DeeplinkMapperSalam
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
 import com.tokopedia.config.GlobalConfig
@@ -53,9 +52,7 @@ object DeeplinkMapperMarketplace {
     }
 
     fun getShopPageInternalAppLink(ctx: Context, uri: Uri, deeplink: String, internalAppLink: String, shopId: String): String {
-        return if (isSpecialShop(shopId) && uri.pathSegments.size == 1) {
-            DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop(deeplink)
-        } else if (isTokopediaNowShopId(shopId) && !GlobalConfig.isSellerApp()) {
+        return if (isTokopediaNowShopId(shopId) && !GlobalConfig.isSellerApp()) {
             ApplinkConstInternalTokopediaNow.HOME
         } else {
             if (isShopReviewAppLink(deeplink)) {
@@ -71,10 +68,6 @@ object DeeplinkMapperMarketplace {
 
     fun getShopMvcLockedToProductShopIdInternalAppLink(shopId: String, voucherId: String): String {
         return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT, shopId, voucherId)
-    }
-
-    private fun isSpecialShop(shopId: String): Boolean {
-        return shopId == ApplinkConst.SALAM_UMRAH_SHOP_ID
     }
 
     private fun isShopReviewAppLink(deeplink: String): Boolean {

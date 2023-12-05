@@ -187,7 +187,6 @@
 /dynamic-features-customerapp_pro/travel                @tokopedia/android-minionmark-dev
 /dynamic-features/travel                                @tokopedia/android-minionmark-dev
 
-/features/salam/umrah                                   @tokopedia/android-minionmark-dev
 /libraries/travel_calendar                              @tokopedia/android-minionmark-dev
 
 /features/promo/promo_checkout/                 		@tokopedia/android-minionmark-dev
