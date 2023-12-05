@@ -207,47 +207,68 @@ class ShippingDurationViewHolder(
         showCaseCoachmark?.showCoachMark(list, null)
     }
 
-    private fun ShippingDurationUiModel.constructErrorUi(): CharSequence? {
+    fun ShippingDurationUiModel.constructErrorUi(): CharSequence? {
         this.errorMessage?.takeIf { it.isNotEmpty() }?.let { errorMessage ->
-            val action =
-                if (this.serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) "Atur Pinpoint" else ""
+            val action = this.errorAction
             val wording = "$errorMessage $action".trim()
             val result = SpannableString(wording).apply {
-                setSpan(
-                    ForegroundColorSpan(
-                        MethodChecker.getColor(
-                            binding.root.context,
-                            unifyprinciplesR.color.Unify_RN500
-                        )
-                    ),
-                    0,
-                    errorMessage.length,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                if (action.isNotEmpty()) {
-                    setSpan(
-                        StyleSpan(Typeface.BOLD),
-                        wording.indexOf(action, errorMessage.length),
-                        wording.length,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    setSpan(
-                        ForegroundColorSpan(
-                            MethodChecker.getColor(
-                                binding.root.context,
-                                unifyprinciplesR.color.Unify_GN500
-                            )
-                        ),
-                        wording.indexOf(action, errorMessage.length),
-                        wording.length,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                }
+                setErrorMessageSpan(errorMessage)
+                setActionErrorSpan(action, errorMessage, wording)
             }
             return result
         }
         return null
     }
+
+    fun SpannableString.setErrorMessageSpan(errorMessage: String) {
+        setSpan(
+            ForegroundColorSpan(
+                MethodChecker.getColor(
+                    binding.root.context,
+                    unifyprinciplesR.color.Unify_RN500
+                )
+            ),
+            0,
+            errorMessage.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+    }
+
+
+    fun SpannableString.setActionErrorSpan(
+        action: String,
+        errorMessage: String,
+        fullWording: String
+    ) {
+        if (action.isNotEmpty()) {
+            setSpan(
+                StyleSpan(Typeface.BOLD),
+                fullWording.indexOf(action, errorMessage.length),
+                fullWording.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            setSpan(
+                ForegroundColorSpan(
+                    MethodChecker.getColor(
+                        binding.root.context,
+                        unifyprinciplesR.color.Unify_GN500
+                    )
+                ),
+                fullWording.indexOf(action, errorMessage.length),
+                fullWording.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+    }
+
+    val ShippingDurationUiModel.errorAction: String
+        get() {
+            return if (this.errorPinpoint) binding.root.context.getString(logisticcartR.string.service_error_pinpoint_action) else ""
+        }
+    val ShippingDurationUiModel.errorPinpoint: Boolean
+        get() {
+            return serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+        }
 
     companion object {
         val ITEM_VIEW_SHIPMENT_DURATION = 5
