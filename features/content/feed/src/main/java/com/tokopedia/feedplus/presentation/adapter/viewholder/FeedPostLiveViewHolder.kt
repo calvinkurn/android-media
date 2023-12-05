@@ -166,7 +166,21 @@ class FeedPostLiveViewHolder(
         }
     }
 
+    private fun handleResumeLiveVideo(element: FeedCardLivePreviewContentModel) {
+        with(binding) {
+            if (element.isLive) {
+                mVideoPlayer?.resume(shouldReset = false)
+                playerFeedVideo.show()
+                containerFeedLiveEnd.root.hide()
+            } else {
+                playerFeedVideo.hide()
+                containerFeedLiveEnd.root.show()
+            }
+        }
+    }
+
     private fun onSelected(element: FeedCardLivePreviewContentModel) {
+        listener.checkLiveStatus(element.playChannelId)
         listener.onPostImpression(
             trackerDataModel ?: trackerMapper.transformLiveContentToTrackerModel(
                 element
@@ -176,7 +190,7 @@ class FeedPostLiveViewHolder(
         )
 
         mVideoPlayer?.toggleVideoVolume(listener.isMuted())
-        mVideoPlayer?.resume(shouldReset = false)
+        handleResumeLiveVideo(element)
         onScrolling(false)
     }
 
@@ -202,9 +216,6 @@ class FeedPostLiveViewHolder(
     }
 
     private fun bindVideoPlayer(element: FeedCardLivePreviewContentModel) {
-        binding.containerFeedLiveEnd.root.show()
-        binding.playerFeedVideo.hide()
-
         val videoPlayer = mVideoPlayer ?: listener.getVideoPlayer(element.id)
         mVideoPlayer = videoPlayer
 
@@ -226,18 +237,44 @@ class FeedPostLiveViewHolder(
             }
 
             override fun onBehindLiveWindow(playWhenReady: Boolean) {
-                binding.containerFeedLiveEnd.root.show()
-                binding.playerFeedVideo.hide()
+                startVideo(
+                    videoPlayer = videoPlayer,
+                    videoUrl = element.videoUrl,
+                    isMute = false,
+                    playWhenReady = playWhenReady,
+                    isLiveContent = true,
+                    stillLive = element.isLive
+                )
             }
         })
 
         binding.playerFeedVideo.player = videoPlayer.getExoPlayer()
-        videoPlayer.start(
-            element.videoUrl,
-            false,
+        startVideo(
+            videoPlayer = videoPlayer,
+            videoUrl = element.videoUrl,
+            isMute = false,
             playWhenReady = false,
-            isLive = true
+            isLiveContent = true,
+            stillLive = element.isLive
         )
+    }
+
+    private fun startVideo(
+        videoPlayer: FeedExoPlayer,
+        videoUrl: String,
+        isMute: Boolean,
+        playWhenReady: Boolean,
+        isLiveContent: Boolean,
+        stillLive: Boolean
+    ) {
+        if (stillLive) {
+            videoPlayer.start(
+                videoUrl,
+                isMute = isMute,
+                playWhenReady = playWhenReady,
+                isLive = isLiveContent
+            )
+        }
     }
 
     private fun showLoading() {

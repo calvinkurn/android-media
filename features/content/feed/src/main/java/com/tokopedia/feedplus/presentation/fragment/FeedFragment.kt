@@ -228,17 +228,23 @@ class FeedFragment :
     private val feedMvcAnalytics = FeedMVCAnalytics()
 
     private val feedEntrySource: MapperFeedModelToTrackerDataModel.FeedEntrySource by lazyThreadSafetyNone {
-        val widgetId = arguments?.getString(UF_EXTRA_FEED_WIDGET_ID).ifNullOrBlank { ENTRY_POINT_DEFAULT }
-        val source = arguments?.getString(ARGUMENT_ENTRY_POINT).ifNullOrBlank { ENTRY_POINT_DEFAULT }
+        val widgetId =
+            arguments?.getString(UF_EXTRA_FEED_WIDGET_ID).ifNullOrBlank { ENTRY_POINT_DEFAULT }
+        val source =
+            arguments?.getString(ARGUMENT_ENTRY_POINT).ifNullOrBlank { ENTRY_POINT_DEFAULT }
         val entryPoint = arguments?.getString(UF_EXTRA_FEED_ENTRY_POINT).ifNullOrBlank { source }
 
-        MapperFeedModelToTrackerDataModel.FeedEntrySource(widgetId = widgetId, entryPoint = entryPoint)
+        MapperFeedModelToTrackerDataModel.FeedEntrySource(
+            widgetId = widgetId,
+            entryPoint = entryPoint
+        )
     }
 
-    private val tabType: String get() {
-        isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
-        return if (isCdp) FeedBaseFragment.TAB_TYPE_CDP else data?.type.orEmpty()
-    }
+    private val tabType: String
+        get() {
+            isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
+            return if (isCdp) FeedBaseFragment.TAB_TYPE_CDP else data?.type.orEmpty()
+        }
 
     private val trackerModelMapper: MapperFeedModelToTrackerDataModel by lazy {
         MapperFeedModelToTrackerDataModel(
@@ -456,7 +462,11 @@ class FeedFragment :
         childFragmentManager.fragmentFactory = object : FragmentFactory() {
             override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
                 return when (className) {
-                    ContentCommentBottomSheet::class.java.name -> ContentCommentBottomSheet(commentFactory, router)
+                    ContentCommentBottomSheet::class.java.name -> ContentCommentBottomSheet(
+                        commentFactory,
+                        router
+                    )
+
                     else -> super.instantiate(classLoader, className)
                 }
             }
@@ -1124,6 +1134,10 @@ class FeedFragment :
 
     override fun isMuted(): Boolean = FeedContentManager.muteState.value.orFalse()
 
+    override fun checkLiveStatus(channelId: String) {
+        feedPostViewModel.updateChannelStatus(channelId)
+    }
+
     private fun onAttachChildFragment(fragmentManager: FragmentManager, childFragment: Fragment) {
         when (childFragment) {
             is ContentCommentBottomSheet -> {
@@ -1462,6 +1476,7 @@ class FeedFragment :
                     }
                     goToCartPage()
                 }
+
                 is Fail -> productBottomSheet?.doShowToaster(
                     message = it.throwable.localizedMessage.orEmpty(),
                     type = Toaster.TYPE_ERROR
@@ -1528,6 +1543,7 @@ class FeedFragment :
                 pauseVideo(item.id)
                 adapter.pauseVideoProductIconAnimation(currentIndex)
             }
+
             is FeedCardLivePreviewContentModel -> pauseVideo(item.id)
             is FeedFollowRecommendationModel -> adapter.pauseFollowRecommendationVideo(currentIndex)
             else -> {}
@@ -1544,6 +1560,7 @@ class FeedFragment :
                 resumeVideo(item.id)
                 adapter.resumeVideoProductIconAnimation(currentIndex)
             }
+
             is FeedCardLivePreviewContentModel -> resumeVideo(item.id)
             is FeedFollowRecommendationModel -> adapter.resumeFollowRecommendationVideo(currentIndex)
             else -> {}
@@ -2108,7 +2125,8 @@ class FeedFragment :
     }
 
     private fun dismissCommentBottomSheet() {
-        ContentCommentBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).dismiss()
+        ContentCommentBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader)
+            .dismiss()
     }
 
     private fun updateBottomActionView(position: Int) {
