@@ -54,5 +54,6 @@
 
     <string name="path_content_detail_page" translatable="false">/detail/.*\</string>
     <string name="path_content_browse" translatable="false">/browse</string>
+    <string name="path_content_browse_category_inspiration" translatable="false">/browse/inspirational</string>
 
 </resources>
