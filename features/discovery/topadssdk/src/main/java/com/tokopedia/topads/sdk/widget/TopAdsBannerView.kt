@@ -31,6 +31,8 @@ import com.tokopedia.shopwidget.shopcard.ShopCardView
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.TopAdsConstants.DILYANI_TOKOPEDIA
 import com.tokopedia.topads.sdk.TopAdsConstants.FULFILLMENT
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_10
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_11
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_8
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_9
 import com.tokopedia.topads.sdk.base.adapter.Item
@@ -150,10 +152,12 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val container = findViewById<View>(R.id.container)
         val cpmData = cpmModel?.data?.getOrNull(index)
         val shopAdsWithThreeProducts = findViewById<ShopAdsWithThreeProducts>(R.id.shopAdsWithThreeProducts)
+        val shopAdsWithSingleProductHorizontal = findViewById<ShopAdsSingleItemHorizontalLayout>(R.id.shopAdsWithSingleProductHorizontal)
+        val shopAdsWithSingleProductVertical = findViewById<ShopAdsSingleItemVerticalLayout>(R.id.shopAdsWithSingleProductVertical)
         linearLayoutMerchantVoucher = findViewById(R.id.linearLayoutMerchantVoucher)
         topAdsFlashSaleTimer= findViewById(R.id.topAdsFlashSaleTimer)
 
-        if (cpmData?.cpm?.layout != LAYOUT_6 && cpmData?.cpm?.layout != LAYOUT_5 && cpmData?.cpm?.layout != LAYOUT_8 && cpmData?.cpm?.layout != LAYOUT_9) {
+        if (cpmData?.cpm?.layout != LAYOUT_6 && cpmData?.cpm?.layout != LAYOUT_5 && cpmData?.cpm?.layout != LAYOUT_8 && cpmData?.cpm?.layout != LAYOUT_9 && cpmData?.cpm?.layout != LAYOUT_10 && cpmData?.cpm?.layout != LAYOUT_11) {
             if (isEligible(cpmData)) {
                 if (cpmData != null && (cpmData.cpm.layout == LAYOUT_2)) {
                     list?.gone()
@@ -289,7 +293,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             shopAdsWithThreeProducts.hide()
             container?.setBackgroundResource(0)
             setShopAdsProduct(cpmModel, shopAdsProductView)
-        }else if((cpmData.cpm?.layout == LAYOUT_8 || cpmData.cpm?.layout == LAYOUT_9) && isEligible(cpmData)){
+        }
+        else if((cpmData.cpm?.layout == LAYOUT_8 || cpmData.cpm?.layout == LAYOUT_9) && isEligible(cpmData)){
             topAdsCarousel.hide()
             shopDetail?.hide()
             shopAdsProductView.hide()
@@ -298,7 +303,27 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             list?.hide()
             setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerViewClickListener, hasAddProductToCartButton)
         }
-
+        else if(cpmData?.cpm?.layout == LAYOUT_10){
+            topAdsCarousel.hide()
+            shopDetail?.hide()
+            shopAdsProductView.hide()
+            adsBannerShopCardView?.hide()
+            shopAdsWithThreeProducts.hide()
+            list?.hide()
+            shopAdsWithSingleProductHorizontal.show()
+            shopAdsWithSingleProductVertical.hide()
+            shopAdsWithSingleProductHorizontal.setShopProductModel(getSingleAdsProductModel(cpmData, appLink, adsClickUrl, topAdsBannerViewClickListener, hasAddProductToCartButton))
+        } else if(cpmData?.cpm?.layout == LAYOUT_11){
+            topAdsCarousel.hide()
+            shopDetail?.hide()
+            shopAdsProductView.hide()
+            adsBannerShopCardView?.hide()
+            shopAdsWithThreeProducts.hide()
+            list?.hide()
+            shopAdsWithSingleProductHorizontal.hide()
+            shopAdsWithSingleProductVertical.show()
+            shopAdsWithSingleProductVertical.setShopProductModel(getSingleAdsProductModel(cpmData, appLink, adsClickUrl, topAdsBannerViewClickListener, hasAddProductToCartButton))
+        }
     }
 
     private fun hideFlashSaleToko() {
@@ -311,7 +336,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         topAdsFlashSaleTimer?.show()
     }
 
-    private fun renderFlashSaleTimer(flashSaleCampaignDetail: FlashSaleCampaignDetail) {
+    private fun  renderFlashSaleTimer(flashSaleCampaignDetail: FlashSaleCampaignDetail) {
         flashSaleTimerData = null
         val startDate = TopAdsSdkUtil.parseData(flashSaleCampaignDetail.startTime)
         val endDate = TopAdsSdkUtil.parseData(flashSaleCampaignDetail.endTime)
@@ -414,6 +439,36 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             repeat(ITEM_3) { items.add(BannerProductShimmerUiModel()) }
         }
         return items
+    }
+
+    private fun getSingleAdsProductModel(
+        cpmData: CpmData,
+        appLink: String,
+        adsClickUrl: String,
+        topAdsBannerClickListener: TopAdsBannerClickListener?,
+        hasAddProductToCartButton: Boolean,
+    ): ShopAdsWithSingleProductModel {
+        return ShopAdsWithSingleProductModel(
+            isOfficial = cpmData.cpm.cpmShop.isOfficial,
+            isPMPro = cpmData.cpm.cpmShop.isPMPro,
+            isPowerMerchant = cpmData.cpm.cpmShop.isPowerMerchant,
+            shopBadge = cpmData.cpm.badges.firstOrNull()?.imageUrl ?: "",
+            shopName = cpmData.cpm.cpmShop.name,
+            shopImageUrl = cpmData.cpm.cpmImage.fullEcs,
+            slogan = cpmData.cpm.cpmShop.slogan,
+            shopWidgetImageUrl = cpmData.cpm.widgetImageUrl,
+            merchantVouchers = cpmData.cpm.cpmShop.merchantVouchers,
+            listItem = cpmData.cpm.cpmShop.products.firstOrNull(),
+            shopApplink = appLink,
+            adsClickUrl = adsClickUrl,
+            hasAddToCartButton = hasAddProductToCartButton,
+            variant = cpmData.cpm.layout,
+            topAdsBannerClickListener = topAdsBannerClickListener,
+            impressionListener = impressionListener,
+            cpmData = cpmData,
+            impressHolder = cpmData.cpm.cpmShop.imageShop
+        )
+
     }
 
     private fun setShopAdsProduct(cpmModel: CpmModel, shopAdsProductView: ShopAdsWithOneProductView) {
@@ -769,10 +824,13 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         )
     }
 
-    protected open fun isEligible(cpmData: CpmData?) =
-            cpmData != null
-                    && cpmData.cpm.cpmShop != null
-                    && (cpmData.cpm.cpmShop.products.size > 1 || showProductShimmer)
+    protected open fun isEligible(cpmData: CpmData?): Boolean {
+        return if (cpmData?.cpm?.layout == LAYOUT_10 || cpmData?.cpm?.layout == LAYOUT_11) {
+            cpmData.cpm.cpmShop.products.size > 0 || showProductShimmer
+        } else {
+            cpmData != null && (cpmData.cpm.cpmShop.products.size > 1 || showProductShimmer)
+        }
+    }
 
     protected open fun activityIsFinishing(context: Context): Boolean {
         return if (context is Activity) {

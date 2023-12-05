@@ -2,9 +2,12 @@ package com.tokopedia.feedplus.analytics
 
 import android.os.Bundle
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.feedplus.data.FeedXCard
+import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedProductActionModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.track.TrackApp
@@ -14,16 +17,29 @@ import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
 /**
  * Created By : Muhammad Furqan on 14/04/23
  */
-class FeedAnalytics @Inject constructor(
-    private val userSession: UserSessionInterface
+class FeedAnalytics @AssistedInject constructor(
+    @Assisted private val userSession: UserSessionInterface,
+    @Assisted  private val entrySource: MapperFeedModelToTrackerDataModel.FeedEntrySource,
 ) {
 
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            userSession: UserSessionInterface,
+            entrySource: MapperFeedModelToTrackerDataModel.FeedEntrySource
+        ) : FeedAnalytics
+    }
+
     private val userId = userSession.userId
+
+    private val pageSource get() = "${entrySource.entryPoint}.0.0.${entrySource.widgetId}"
 
     private object Event {
         const val SELECT_CONTENT = "select_content"
@@ -75,6 +91,8 @@ class FeedAnalytics @Inject constructor(
         const val KEY_ITEMS = "items"
         const val KEY_PROMOTIONS = "promotions"
         const val KEY_DIMENSION40 = "dimension40"
+        const val KEY_DIMENSION90 = "dimension90"
+        const val KEY_DIMENSION45 = "dimension45"
         const val KEY_INDEX = "index"
         const val KEY_ITEM_BRAND = "item_brand"
         const val KEY_CATEGORY_ID = "category_id"
@@ -122,8 +140,9 @@ class FeedAnalytics @Inject constructor(
                         trackerData.type,
                         trackerData.mediaType
                     )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41567"
+                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${entrySource.entryPoint}",
+                "41567",
+                pageSource = pageSource,
             ).also {
                 it.putParcelableArrayList(
                     EnhanceEcommerce.KEY_PROMOTIONS,
@@ -183,7 +202,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.WATCH_VIDEO_POST,
                 getEventLabel(trackerData),
-                "41570"
+                "41570",
+                pageSource = pageSource,
             ).toMutableMap()
         trackerData[KEY_IS_LOGGED_IN_STATUS] = userSession.isLoggedIn
         trackerData[KEY_SCREEN_NAME] = UNIFIED_FEED_WATCH_VIDEO_POST
@@ -193,7 +213,8 @@ class FeedAnalytics @Inject constructor(
 
     fun eventSwipeUpDownContent(
         tabType: String,
-        entryPoint: String
+        entryPoint: String,
+        widgetId: String,
     ) {
         sendEventTracker(
             generateGeneralTrackerData(
@@ -201,7 +222,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.SWIPE_UP_DOWN_CONTENT,
                 "${getPrefix(tabType)} - $entryPoint",
-                "41571"
+                "41571",
+                pageSource = pageSource
             )
         )
     }
@@ -214,7 +236,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.SWIPE_RIGHT_LEFT_MULTIPLE_POST,
-                "${getPrefix(trackerData.tabType)} - ${trackerData.entryPoint}",
+                "${getPrefix(trackerData.tabType)} - ${entrySource.entryPoint}",
                 "41572"
             )
         )
@@ -290,7 +312,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_LIKE_BUTTON,
                 getEventLabel(trackerData),
-                "41577"
+                "41577",
+                pageSource = pageSource
             )
         )
     }
@@ -304,7 +327,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_DOUBLE_LIKE_BUTTON,
                 getEventLabel(trackerData),
-                "41578"
+                "41578",
+                pageSource = pageSource
             )
         )
     }
@@ -376,7 +400,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_PRODUCT_TAG,
                 getEventLabel(trackerData),
-                "41603"
+                "41603",
+                pageSource = pageSource
             )
         )
     }
@@ -391,7 +416,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_PRODUCT_LABEL_PDP,
                 "${getEventLabel(trackerData)} - ${productList.firstOrNull()?.id ?: ""}",
-                "41604"
+                "41604",
+                pageSource = pageSource
             ).also {
                 it.putString(
                     EnhanceEcommerce.KEY_ITEM_LIST,
@@ -401,7 +427,7 @@ class FeedAnalytics @Inject constructor(
                     EnhanceEcommerce.KEY_ITEMS,
                     ArrayList(productList.mapIndexed { index, feedCardProductModel ->
                         Bundle().apply {
-                            putString(EnhanceEcommerce.KEY_DIMENSION40, "")
+                            putString(EnhanceEcommerce.KEY_DIMENSION40, EnhanceEcommerce.ITEM_LIST_PRODUCT_LABEL)
                             putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
                             putString(
                                 EnhanceEcommerce.KEY_ITEM_BRAND,
@@ -412,6 +438,7 @@ class FeedAnalytics @Inject constructor(
                             putString(EnhanceEcommerce.KEY_ITEM_NAME, feedCardProductModel.name)
                             putString(EnhanceEcommerce.KEY_ITEM_VARIANT, "")
                             putDouble(EnhanceEcommerce.KEY_PRICE, feedCardProductModel.price)
+                            putString(EnhanceEcommerce.KEY_DIMENSION90, pageSource)
                         }
                     })
                 )
@@ -430,7 +457,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.VIEW_PRODUCT_LIST_BOTTOMSHEET,
                 "${getEventLabel(trackerData)} - ${productList.firstOrNull()?.id ?: ""}",
-                "41605"
+                "41605",
+                pageSource = pageSource
             ).also {
                 it.putString(
                     EnhanceEcommerce.KEY_ITEM_LIST,
@@ -441,7 +469,7 @@ class FeedAnalytics @Inject constructor(
                     ArrayList(
                         productList.mapIndexed { index, feedCardProductModel ->
                             Bundle().apply {
-                                putString(EnhanceEcommerce.KEY_DIMENSION40, "")
+                                putString(EnhanceEcommerce.KEY_DIMENSION40, EnhanceEcommerce.ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET)
                                 putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
                                 putString(
                                     EnhanceEcommerce.KEY_ITEM_BRAND,
@@ -452,6 +480,7 @@ class FeedAnalytics @Inject constructor(
                                 putString(EnhanceEcommerce.KEY_ITEM_NAME, feedCardProductModel.name)
                                 putString(EnhanceEcommerce.KEY_ITEM_VARIANT, "")
                                 putDouble(EnhanceEcommerce.KEY_PRICE, feedCardProductModel.price)
+                                putString(EnhanceEcommerce.KEY_DIMENSION90, pageSource)
                             }
                         }
                     )
@@ -467,7 +496,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.VIEW_VOUCHER_BOTTOMSHEET,
                 getEventLabel(trackerData),
-                "41606"
+                "41606",
+                pageSource = pageSource
             ).also {
                 it.putParcelableArrayList(
                     EnhanceEcommerce.KEY_PROMOTIONS,
@@ -500,7 +530,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_PRODUCT,
                 "${getEventLabel(trackerData)} - $productId",
-                "41608"
+                "41608",
+                pageSource = pageSource
             ).also {
                 it.putString(
                     EnhanceEcommerce.KEY_ITEM_LIST,
@@ -510,7 +541,7 @@ class FeedAnalytics @Inject constructor(
                     EnhanceEcommerce.KEY_ITEMS,
                     arrayListOf(
                         Bundle().apply {
-                            putString(EnhanceEcommerce.KEY_DIMENSION40, "")
+                            putString(EnhanceEcommerce.KEY_DIMENSION40, EnhanceEcommerce.ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET)
                             putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
                             putString(
                                 EnhanceEcommerce.KEY_ITEM_BRAND,
@@ -521,6 +552,7 @@ class FeedAnalytics @Inject constructor(
                             putString(EnhanceEcommerce.KEY_ITEM_NAME, productName)
                             putString(EnhanceEcommerce.KEY_ITEM_VARIANT, "")
                             putDouble(EnhanceEcommerce.KEY_PRICE, productPrice)
+                            putString(EnhanceEcommerce.KEY_DIMENSION90, pageSource)
                         }
                     )
                 )
@@ -530,12 +562,7 @@ class FeedAnalytics @Inject constructor(
 
     fun eventClickBuyButton(
         trackerData: FeedTrackerDataModel,
-        productName: String,
-        productId: String,
-        productPrice: Double,
-        shopId: String,
-        shopName: String,
-        index: Int
+        productInfo: FeedProductActionModel,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Event.ADD_TO_CART,
@@ -543,19 +570,20 @@ class FeedAnalytics @Inject constructor(
                 Event.ADD_TO_CART,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_BUY_BUTTON,
-                "${getEventLabel(trackerData)} - $productId",
-                "41609"
+                "${getEventLabel(trackerData)} - ${productInfo.product.id}",
+                "41609",
+                pageSource = pageSource
             ).also {
                 it.putParcelableArrayList(
                     EnhanceEcommerce.KEY_ITEMS,
                     arrayListOf(
                         getProductTrackerBundle(
-                            index,
-                            shopName,
-                            productId,
-                            productName,
-                            productPrice,
-                            shopId
+                            productInfo.product.shop.name,
+                            productInfo.product.id,
+                            productInfo.product.title,
+                            productInfo.product.finalPrice,
+                            productInfo.product.shop.id,
+                            productInfo.cartId
                         )
                     )
                 )
@@ -565,32 +593,28 @@ class FeedAnalytics @Inject constructor(
 
     fun eventClickCartButton(
         trackerData: FeedTrackerDataModel,
-        productName: String,
-        productId: String,
-        productPrice: Double,
-        shopId: String,
-        shopName: String,
-        index: Int
-    ) {
+        productInfo: FeedProductActionModel,
+        ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Event.ADD_TO_CART,
             generateGeneralTrackerBundleData(
                 Event.ADD_TO_CART,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_CART_BUTTON,
-                "${getEventLabel(trackerData)} - $productId",
-                "41610"
+                "${getEventLabel(trackerData)} - ${productInfo.product.id}",
+                "41610",
+                pageSource = pageSource
             ).also {
                 it.putParcelableArrayList(
                     EnhanceEcommerce.KEY_ITEMS,
                     arrayListOf(
                         getProductTrackerBundle(
-                            index,
-                            shopName,
-                            productId,
-                            productName,
-                            productPrice,
-                            shopId
+                            productInfo.product.shop.name,
+                            productInfo.product.id,
+                            productInfo.product.title,
+                            productInfo.product.finalPrice,
+                            productInfo.product.shop.id,
+                            productInfo.cartId
                         )
                     )
                 )
@@ -629,7 +653,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_FOLLOW_BUTTON,
                 getEventLabel(trackerData),
-                "41613"
+                "41613",
+                pageSource = pageSource
             )
         )
     }
@@ -677,7 +702,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_CONTENT_PRODUCT_LABEL,
                 getEventLabel(trackerData),
-                "41688"
+                "41688",
+                pageSource = pageSource
             )
         )
     }
@@ -689,7 +715,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_BUTTON_COMMENT,
                 getEventLabel(trackerData),
-                "41579"
+                "41579",
+                pageSource = pageSource,
             )
         )
     }
@@ -759,19 +786,18 @@ class FeedAnalytics @Inject constructor(
                 trackerData.type,
                 trackerData.mediaType
             )
-        } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}"
+        } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${entrySource.entryPoint}"
 
     private fun getProductTrackerBundle(
-        index: Int,
         shopName: String,
         productId: String,
         productName: String,
         productPrice: Double,
-        shopId: String
+        shopId: String,
+        cartId: String
     ) = Bundle().apply {
         putString(EnhanceEcommerce.KEY_CATEGORY_ID, "")
         putString(EnhanceEcommerce.KEY_DIMENSION40, "")
-        putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
         putString(
             EnhanceEcommerce.KEY_ITEM_BRAND,
             shopName
@@ -785,6 +811,8 @@ class FeedAnalytics @Inject constructor(
         putString(EnhanceEcommerce.KEY_SHOP_ID, shopId)
         putString(EnhanceEcommerce.KEY_SHOP_NAME, shopName)
         putString(EnhanceEcommerce.KEY_SHOP_TYPE, "")
+        putString(EnhanceEcommerce.KEY_DIMENSION45, cartId)
+        putString(EnhanceEcommerce.KEY_DIMENSION90, pageSource)
     }
 
     private fun sendEventTracker(params: Map<String, Any>) {
@@ -796,8 +824,9 @@ class FeedAnalytics @Inject constructor(
         eventCategory: String,
         eventAction: String,
         eventLabel: String,
-        trackerId: String
-    ): Map<String, Any> = mapOf(
+        trackerId: String,
+        pageSource: String = "",
+    ): Map<String, Any> = mutableMapOf(
         EVENT to eventName,
         EVENT_CATEGORY to eventCategory,
         EVENT_ACTION to eventAction,
@@ -806,14 +835,17 @@ class FeedAnalytics @Inject constructor(
         KEY_BUSINESS_UNIT_EVENT to BUSINESS_UNIT_CONTENT,
         KEY_CURRENT_SITE_EVENT to CURRENT_SITE_MARKETPLACE,
         KEY_TRACKER_ID to trackerId
-    )
+    ).apply {
+        if (pageSource.isNotEmpty()) put(Key.pageSource, pageSource)
+    }
 
     private fun generateGeneralTrackerBundleData(
         eventName: String,
         eventCategory: String,
         eventAction: String,
         eventLabel: String,
-        trackerId: String
+        trackerId: String,
+        pageSource: String = "",
     ): Bundle = Bundle().apply {
         putString(EVENT, eventName)
         putString(EVENT_ACTION, eventAction)
@@ -823,6 +855,7 @@ class FeedAnalytics @Inject constructor(
         putString(KEY_BUSINESS_UNIT_EVENT, BUSINESS_UNIT_CONTENT)
         putString(KEY_CURRENT_SITE_EVENT, CURRENT_SITE_MARKETPLACE)
         putString(KEY_TRACKER_ID, trackerId)
+        if (pageSource.isNotEmpty()) putString(Key.pageSource, pageSource)
     }
 
     fun sendClickShareButtonEvent(trackerData: FeedTrackerDataModel) {

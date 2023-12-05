@@ -2,9 +2,9 @@ package com.tokopedia.tokochat.stub.di
 
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
-import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatRoomUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
-import com.tokopedia.tokochat.stub.domain.usecase.TokoChatChannelUseCaseStub
+import com.tokopedia.tokochat.stub.domain.usecase.TokoChatRoomUseCaseStub
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatSendMessageUseCaseStub
 import com.tokopedia.tokochat.stub.repository.TokoChatRepositoryStub
 import dagger.Module
@@ -15,18 +15,18 @@ object TokoChatUseCaseModuleStub {
 
     @ActivityScope
     @Provides
-    fun provideTokoChatChannelUseCaseStub(
+    fun provideTokoChatRoomUseCaseStub(
         @TokoChatQualifier tokoChatRepositoryStub: TokoChatRepositoryStub
-    ): TokoChatChannelUseCaseStub {
-        return TokoChatChannelUseCaseStub(tokoChatRepositoryStub)
+    ): TokoChatRoomUseCaseStub {
+        return TokoChatRoomUseCaseStub(tokoChatRepositoryStub)
     }
 
     @ActivityScope
     @Provides
-    fun provideTokoChatChannelUseCase(
-        @ActivityScope tokoChatChannelUseCaseStub: TokoChatChannelUseCaseStub
-    ): TokoChatChannelUseCase {
-        return tokoChatChannelUseCaseStub
+    fun provideTokoChatRoomUseCase(
+        @ActivityScope tokoChatRoomUseCaseStub: TokoChatRoomUseCaseStub
+    ): TokoChatRoomUseCase {
+        return tokoChatRoomUseCaseStub
     }
 
     @ActivityScope

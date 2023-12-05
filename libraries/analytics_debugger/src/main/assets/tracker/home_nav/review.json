@@ -20,7 +20,8 @@
       ],
       "userId": ".*",
       "sessionIris": ".*",
-      "trackerId": "30840"
+      "trackerId": "30840",
+      "hits_time": ".*"
     },
     {
       "event": "select_content",

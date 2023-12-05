@@ -237,6 +237,9 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   action_text
                   action_key
                   action_url
+                  cta_text
+                  cta_action_type
+                  cta_action_value
                 }
                 details {
                   bundles {
@@ -406,6 +409,9 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   }
                   label
                   icon_url
+                }
+                pof_data {
+                  pof_status
                 }
               }
             }

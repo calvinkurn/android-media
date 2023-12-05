@@ -17,12 +17,19 @@ import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestSta
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
+import com.tokopedia.buyerorderdetail.domain.models.PlusComponent
+import com.tokopedia.buyerorderdetail.domain.models.PlusDetail
+import com.tokopedia.buyerorderdetail.domain.models.PlusFooter
+import com.tokopedia.buyerorderdetail.domain.models.PlusSavings
+import com.tokopedia.buyerorderdetail.domain.models.PlusTicker
+import com.tokopedia.buyerorderdetail.domain.models.PlusTotal
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailDataUseCase
 import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.SavingsWidgetUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
@@ -30,6 +37,8 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Success
@@ -69,6 +78,12 @@ abstract class BuyerOrderDetailViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var atcUseCase: AddToCartMultiUseCase
+
+    @RelaxedMockK
+    lateinit var tokoChatGroupBookingUseCase: TokoChatGroupBookingUseCase
+
+    @RelaxedMockK
+    lateinit var tokoChatCounterUseCase: TokoChatCounterUseCase
 
     lateinit var viewModel: BuyerOrderDetailViewModel
 
@@ -136,7 +151,29 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.EpharmacyData(
                 consultationName = "halodoc",
                 consultationDoctorName = "yusuf hendrawan"
+            ),
+            PlusSavings(
+                    plusTicker = PlusTicker(
+                        leftText = "asd",
+                        rightText = "asd",
+                        imageUrl = "asd"
+                    ),
+            plusComponents = PlusComponent(
+                plusDetailComponents = listOf(
+                    PlusDetail(
+                        label = "asd",
+                        value = "asd",
+                        imageUrl = "asd"
+                    )
+                ),
+                plusFooter = PlusFooter(
+                    PlusTotal(
+                    footerLabel = "asd",
+                    footerValue = "asd"
+                )
+                )
             )
+        )
         )
 
     @Before
@@ -148,6 +185,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             getBuyerOrderDetailDataUseCase = { getBuyerOrderDetailDataUseCase },
             finishOrderUseCase = { finishOrderUseCase },
             atcUseCase = { atcUseCase },
+            tokoChatGroupBookingUseCase = { tokoChatGroupBookingUseCase },
+            tokoChatCounterUseCase = { tokoChatCounterUseCase },
             resourceProvider = { resourceProvider }
         )
 
@@ -155,6 +194,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         mockkObject(EpharmacyInfoUiStateMapper)
         mockkStatic(TrackApp::class)
         justRun { TrackApp.getInstance().gtm.sendGeneralEvent(any()) }
+        mockkObject(SavingsWidgetUiStateMapper)
     }
 
     @After

@@ -6,18 +6,14 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.Transformation
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.SCROLL_STATE_DRAGGING
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemBannerHeroBinding
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
@@ -28,9 +24,10 @@ import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -38,7 +35,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class HeroBannerViewHolder(
     itemView: View,
     private val heroBannerListener: HeroBannerListener? = null
-): AbstractViewHolder<HeroBannerUiModel>(itemView) {
+) : AbstractViewHolder<HeroBannerUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -47,6 +44,8 @@ class HeroBannerViewHolder(
         private const val RECTANGULAR_CARD_RADIUS = 30F
         private const val BANNER_PREMIUM_RATIO = "1:1.5"
         private const val BANNER_REGULAR_RATIO = "1:1"
+        private const val BANNER_REGULAR_SHADOW_HEIGHT = 55
+        private const val SQUARE_BRAND_ICON_ASPECT_RATIO_THRESHOLD = 1.1
     }
 
     private val binding by viewBinding<WidgetItemBannerHeroBinding>()
@@ -84,7 +83,6 @@ class HeroBannerViewHolder(
         tfSubtitleBannerPremium.isVisible = isPremium
         iuBrandPremium.isVisible = isPremium
         iuBrandPremiumCard.isVisible = isPremium
-        bgGradient.isVisible = isPremium
 
         // regular views
         tfTitleBanner.isVisible = !isPremium
@@ -107,11 +105,17 @@ class HeroBannerViewHolder(
     }
 
     private fun WidgetItemBannerHeroBinding.renderRegularBrandData(element: HeroBannerUiModel) {
+        val colorBg = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_32)
         tfTitleBanner.text = element.brandTitle
-        iuBrand.loadImage(element.brandIconUrl) {
-            listener(onSuccess = { bitmap, _ ->
-                iuBrandCard.background = createCardBackground(bitmap ?: return@listener)
-            })
+        iuBrand.isVisible = element.brandIconUrl.isNotEmpty()
+        bgGradient.layoutParams.height = BANNER_REGULAR_SHADOW_HEIGHT.dpToPx(itemView.resources.displayMetrics)
+        bgGradient.background = createGradientDrawable(colorBottom = colorBg)
+        if (element.brandIconUrl.isNotEmpty()) {
+            iuBrand.loadImage(element.brandIconUrl) {
+                listener(onSuccess = { bitmap, _ ->
+                    iuBrandCard.background = createCardBackground(bitmap ?: return@listener)
+                })
+            }
         }
         (binding?.carouselBanner?.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = BANNER_REGULAR_RATIO
     }
@@ -165,7 +169,7 @@ class HeroBannerViewHolder(
 
     private fun createCardBackground(bitmap: Bitmap): Drawable {
         val cardColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White)
-        val radius = if (bitmap.width/bitmap.height <= 1.1) {
+        val radius = if (bitmap.width / bitmap.height <= SQUARE_BRAND_ICON_ASPECT_RATIO_THRESHOLD) {
             RECTANGULAR_CARD_RADIUS
         } else {
             CIRCULAR_CARD_RADIUS
@@ -177,6 +181,7 @@ class HeroBannerViewHolder(
         brandImageCount = element.brandImageUrls.size
         brandImageUrl = element.brandImageUrls
         binding?.configViewsVisibility(element.isPremium)
+
         if (element.isPremium) {
             binding?.renderPremiumBrandData(element)
         } else {
@@ -190,7 +195,7 @@ class HeroBannerViewHolder(
     }
 }
 
-class ImageSliderAdapter(private val context: Context): PagerAdapter() {
+class ImageSliderAdapter(private val context: Context) : PagerAdapter() {
 
     companion object {
         private const val LAST_POSITION_OFFSET = 2

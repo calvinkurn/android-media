@@ -11,7 +11,11 @@ import android.os.Handler
 import android.os.Process
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.ScrollingMovementMethod
+import android.widget.Scroller
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +28,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2.Companion.isCoachmmarkShowAllowed
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.branchlink.domain.BranchLinkUseCase
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionAdapter
@@ -64,6 +67,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
+
 
 /**
  * @author Said Faisal on 24/11/2021
@@ -471,15 +475,15 @@ class DeveloperOptionActivity :
     }
 
     private fun openResultBranch(result: String) {
-        val dialog = Dialog(this, Dialog.Type.LONG_PROMINANCE)
-        dialog.setTitle("Result branch")
-        dialog.setDesc(result)
-        dialog.setDescMovementMethod()
-        dialog.setBtnCancel("Close")
-        dialog.setOnCancelClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
+        val dialog: AlertDialog = AlertDialog.Builder(this)
+            .setTitle("Result branch")
+            .setMessage(result)
+            .setPositiveButton("Close") { dialog, _ -> dialog.dismiss() }
+            .show()
+        val textView: TextView? = dialog.findViewById(android.R.id.message)
+        textView?.setScroller(Scroller(this))
+        textView?.isVerticalScrollBarEnabled = true
+        textView?.movementMethod = ScrollingMovementMethod()
     }
 
     class DeveloperOptionException(message: String?) : RuntimeException(message)

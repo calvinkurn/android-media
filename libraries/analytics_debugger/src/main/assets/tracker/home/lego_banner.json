@@ -14,7 +14,8 @@
       "eventAction": "home banner impression",
       "sessionIris": ".*",
       "eventLabel": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "hits_time": ".*"
     },
     {
       "promotions": [{

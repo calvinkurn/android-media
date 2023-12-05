@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
@@ -26,8 +28,6 @@ import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
-import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import com.tokopedia.play_common.util.extension.combine
 import kotlinx.coroutines.CoroutineScope
@@ -48,7 +48,7 @@ class PlayShortsViewModel @Inject constructor(
     private val repo: PlayShortsRepository,
     private val sharedPref: HydraSharedPreferences,
     private val accountManager: PlayShortsAccountManager,
-    private val playShortsUploader: PlayShortsUploader
+    private val creationUploader: CreationUploader,
 ) : ViewModel() {
 
     /** Public Getter */
@@ -613,16 +613,17 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
-    private fun uploadMedia() {
-        val uploadData = PlayShortsUploadModel(
-            shortsId = shortsId,
+    private suspend fun uploadMedia() {
+        val uploadData = CreationUploadData.buildForShorts(
+            creationId = shortsId,
+            mediaUriList = listOf(_media.value.mediaUri),
+            coverUri = _coverForm.value.coverUri,
+            sourceId = _config.value.shortsVideoSourceId,
             authorId = selectedAccount.id,
             authorType = selectedAccount.type,
-            mediaUri = _media.value.mediaUri,
-            coverUri = _coverForm.value.coverUri,
-            shortsVideoSourceId = _config.value.shortsVideoSourceId
         )
-        playShortsUploader.upload(uploadData)
+
+        creationUploader.upload(uploadData)
     }
 
     companion object {

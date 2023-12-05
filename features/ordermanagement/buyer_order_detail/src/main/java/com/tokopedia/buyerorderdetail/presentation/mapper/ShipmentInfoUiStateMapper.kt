@@ -207,7 +207,8 @@ object ShipmentInfoUiStateMapper {
                 key = button.key,
                 icon = button.icon,
                 actionValue = button.actionType,
-                value = button.value
+                value = button.value,
+                counter = 0
             )
         }
     }

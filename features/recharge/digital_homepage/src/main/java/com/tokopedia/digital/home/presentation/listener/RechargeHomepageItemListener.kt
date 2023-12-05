@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 
 interface RechargeHomepageItemListener {
-    fun loadRechargeSectionData(sectionID: String)
-    fun loadRechargeSectionDataWithLoadedParam(sectionID: String, isLoaded: Boolean)
+    fun loadRechargeSectionData(sectionID: String, sectionNames: String)
+    fun loadRechargeSectionDataWithLoadedParam(sectionID: String, isLoaded: Boolean, sectionNames: String)
     fun onRechargeSectionEmpty(sectionID: String)
 
     fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item)

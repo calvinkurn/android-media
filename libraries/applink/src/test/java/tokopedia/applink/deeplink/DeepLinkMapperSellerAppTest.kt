@@ -3,6 +3,7 @@ package tokopedia.applink.deeplink
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
@@ -25,8 +26,8 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
     companion object {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
-        const val SIZE_HOST = 31
-        const val SIZE_PATH = 72
+        const val SIZE_HOST = 32
+        const val SIZE_PATH = 73
     }
 
     @Throws(RuntimeException::class)
@@ -546,5 +547,13 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
         val actualDeeplink = ApplinkConst.SellerApp.TOPADS_DASH_BOARD
         assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller partial order fulfillment appLink then should return tokopedia internal seller partial order fulfillment in customerapp`() {
+        val orderId = "123456789"
+        val pofStatus = "1"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://seller/seller-partial-order-fulfillment?${ApplinkConstInternalOrder.PARAM_ORDER_ID}=$orderId&${ApplinkConstInternalOrder.PARAM_POF_STATUS}=$pofStatus&${RouteManager.KEY_REDIRECT_TO_SELLER_APP}=true"
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, "${ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT}?${ApplinkConstInternalOrder.PARAM_ORDER_ID}=$orderId&${ApplinkConstInternalOrder.PARAM_POF_STATUS}=$pofStatus&${RouteManager.KEY_REDIRECT_TO_SELLER_APP}=true", expectedDeepLink)
     }
 }

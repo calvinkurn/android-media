@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.databinding.ItemFeedFollowRecommendationBinding
 import com.tokopedia.feedplus.databinding.ItemFeedLoadMoreContentBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
@@ -42,6 +43,7 @@ class FeedAdapterTypeFactory(
     private val parentToBeDisabled: ViewParent?,
     private val trackerMapper: MapperFeedModelToTrackerDataModel,
     private val followRecommendationListener: FeedFollowRecommendationListener,
+    private val dispatchers: CoroutineDispatchers,
 ) : BaseAdapterTypeFactory() {
 
     private val feedListener: FeedListener
@@ -70,7 +72,9 @@ class FeedAdapterTypeFactory(
                 ),
                 parentToBeDisabled,
                 feedListener,
-                trackerMapper
+                trackerMapper,
+                lifecycleOwner,
+                dispatchers,
             )
             FeedPostVideoViewHolder.LAYOUT -> FeedPostVideoViewHolder(
                 ItemFeedPostVideoBinding.inflate(

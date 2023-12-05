@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.R
+import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentBannerBinding
 import com.tokopedia.home_component.decoration.BannerChannelDecoration
@@ -45,7 +45,7 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
-import com.tokopedia.unifyprinciples.R as RUnify
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by devarafikry on 11/28/20.
@@ -61,8 +61,8 @@ class BannerComponentViewHolder(
     CoroutineScope {
     private var binding: HomeComponentBannerBinding? by viewBinding()
     private var isCache = true
-    private val rvBanner: RecyclerView = itemView.findViewById(R.id.rv_banner)
-    private val indicatorLayout: LinearLayout = itemView.findViewById(R.id.indicator_layout)
+    private val rvBanner: RecyclerView = itemView.findViewById(home_componentR.id.rv_banner)
+    private val indicatorLayout: LinearLayout = itemView.findViewById(home_componentR.id.indicator_layout)
     private var layoutManager = LinearLayoutManager(itemView.context)
 
     private var isUsingDotsAndInfiniteScroll: Boolean = false
@@ -142,7 +142,7 @@ class BannerComponentViewHolder(
     fun scrollTo(position: Int) {
         val resources = itemView.context.resources
         val width = resources.displayMetrics.widthPixels
-        val paddings = 2 * resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
+        val paddings = 2 * resources.getDimensionPixelSize(home_componentR.dimen.home_component_padding_horizontal_default)
         if (isUsingDotsAndInfiniteScroll) {
             pauseAutoScroll()
             rvBanner.smoothScrollBy(width - paddings, 0, autoScrollInterpolator, FLING_DURATION)
@@ -323,9 +323,9 @@ class BannerComponentViewHolder(
                         background = GradientDrawable().apply {
                             shape = GradientDrawable.OVAL
                             if (currentPage == i) {
-                                setColor(ContextCompat.getColor(context, RUnify.color.Unify_GN500))
+                                setColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500))
                             } else {
-                                setColor(ContextCompat.getColor(context, RUnify.color.Unify_NN200))
+                                setColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN200))
                             }
                         }
                     }
@@ -352,7 +352,7 @@ class BannerComponentViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.home_component_banner
+        val LAYOUT = home_componentR.layout.home_component_banner
         val autoScrollInterpolator: Interpolator = UnifyMotion.EASE_IN_OUT
         val manualScrollInterpolator: Interpolator = UnifyMotion.EASE_OUT
         const val FLING_DURATION = 600
