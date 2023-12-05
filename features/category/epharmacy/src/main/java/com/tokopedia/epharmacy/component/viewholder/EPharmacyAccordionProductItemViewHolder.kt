@@ -30,11 +30,11 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
     private val productAmount = view.findViewById<Typography>(R.id.lbl_PAP_productAmount)
     private val productImageUnify = view.findViewById<ImageView>(R.id.product_image)
     private val quantityEditorLayout = view.findViewById<ConstraintLayout>(R.id.quantity_editor_layout)
-    private val initialProductQuantity = view.findViewById<Typography>(R.id.initial_product_quantity)
+    private val initialProductQuantity = view.findViewById<Typography>(R.id.lblQuantityOrderInit)
     private val quantityChangedEditor = view.findViewById<QuantityEditorUnify>(R.id.quantity_change)
     private val productQuantityType = view.findViewById<Typography>(R.id.quantity_type)
-    private val totalQuantity = view.findViewById<Typography>(R.id.total_quantity)
-    private val totalAmount = view.findViewById<Typography>(R.id.qc_total_amount)
+    private val totalQuantity = view.findViewById<Typography>(R.id.lblSubtotalProductQuantity)
+    private val totalAmount = view.findViewById<Typography>(R.id.lblFinalProductPrice)
     companion object {
         val LAYOUT = R.layout.epharmacy_accordion_product_view_item
     }
@@ -102,7 +102,7 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
             dataModel?.product?.qtyComparison?.currentQty = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
         }
         var quantity = dataModel?.product?.quantity.toIntOrZero()
-        if(dataModel?.product?.qtyComparison != null) {
+        if (dataModel?.product?.qtyComparison != null) {
             quantity = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
         }
         if (dataModel?.product?.subTotal == 0.0) {
@@ -111,7 +111,7 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
     }
 
     private fun renderQuantityChangeViews() {
-        if(ePharmacyListener is EPharmacyQuantityChangeFragment){
+        if (ePharmacyListener is EPharmacyQuantityChangeFragment) {
             productAmount.show()
             productAmount.text = EPharmacyUtils.getTotalAmountFmt(dataModel?.product?.price)
             productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
