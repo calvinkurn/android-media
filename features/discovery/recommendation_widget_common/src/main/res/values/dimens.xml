@@ -38,6 +38,8 @@
     <dimen name="comparison_bpc_specs_icon_margin">4dp</dimen>
     <dimen name="comparison_bpc_specs_bullet_margin">8dp</dimen>
 
+    <dimen name="steal_the_look_outer_left_padding">12dp</dimen>
+    <dimen name="steal_the_look_outer_right_padding">16dp</dimen>
     <dimen name="steal_the_look_left_item_ratio">219:218</dimen>
     <dimen name="steal_the_look_right_item_ratio">113:105</dimen>
     <dimen name="steal_the_look_left_item_horizontal_weight">215</dimen>
@@ -50,5 +52,6 @@
     <dimen name="steal_the_look_inner_padding_half">4dp</dimen>
     <dimen name="steal_the_look_left_image_max_width">323dp</dimen>
     <dimen name="steal_the_look_right_image_max_width">158dp</dimen>
-    <dimen name="steal_the_look_outer_padding">16dp</dimen>
+    <dimen name="steal_the_look_ic_reload_size">18dp</dimen>
+    <dimen name="steal_the_look_circle_reload_size">24dp</dimen>
 </resources>

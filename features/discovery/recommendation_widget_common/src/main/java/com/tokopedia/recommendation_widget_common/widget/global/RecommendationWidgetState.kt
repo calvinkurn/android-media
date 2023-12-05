@@ -13,6 +13,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
 import com.tokopedia.recommendation_widget_common.widget.loading.RecommendationCarouselShimmeringModel
+import com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookMapper
+import com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookMapper.asStealTheLookModel
 import com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 
@@ -80,8 +82,7 @@ data class RecommendationWidgetState(
                 userId = userId
             )
         } else if (widget.pageName.contains(PAGENAME_STEAL_THE_LOOK)) {
-            StealTheLookWidgetModel.from(
-                model = model,
+            model.asStealTheLookModel(
                 data = widget,
                 userId = userId
             )

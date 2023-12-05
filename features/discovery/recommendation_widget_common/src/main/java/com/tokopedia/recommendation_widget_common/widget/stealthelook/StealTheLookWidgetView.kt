@@ -6,10 +6,14 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.carouselproductcard.helper.StartPagerSnapHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetStealTheLookBinding
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.viewutil.NpaLinearLayoutManager
 import com.tokopedia.recommendation_widget_common.widget.global.IRecommendationWidgetView
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -30,11 +34,21 @@ class StealTheLookWidgetView :
     )
 
     private val trackingQueue: TrackingQueue = TrackingQueue(context)
+
     private val binding by lazyThreadSafetyNone {
         RecommendationWidgetStealTheLookBinding.inflate(LayoutInflater.from(context), this)
     }
-    private val adapter by lazyThreadSafetyNone {
+
+    private val stealTheLookAdapter by lazyThreadSafetyNone {
         StealTheLookPagingAdapter(trackingQueue)
+    }
+
+    private val layoutManager by lazy { NpaLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL) }
+
+    private val snapHelper: StartPagerSnapHelper by lazy {
+        val leftPadding = context.resources.getDimensionPixelSize(recommendation_widget_commonR.dimen.steal_the_look_outer_left_padding)
+        val rightPadding = context.resources.getDimensionPixelSize(recommendation_widget_commonR.dimen.steal_the_look_outer_right_padding)
+        StartPagerSnapHelper(leftPadding + rightPadding)
     }
 
     override val layoutId: Int
@@ -51,7 +65,8 @@ class StealTheLookWidgetView :
 
     override fun bind(model: StealTheLookWidgetModel) {
         setupHeader(model.widget)
-        setupPages(model)
+        setupRecyclerView(model)
+        setupPageControl(model)
     }
 
     override fun recycle() { }
@@ -61,11 +76,32 @@ class StealTheLookWidgetView :
         binding.headerViewRecommendationVertical.seeAllButton?.hide()
     }
 
-    private fun setupPages(model: StealTheLookWidgetModel) {
-        if (binding.rvStealTheLook.adapter != adapter) {
-            binding.rvStealTheLook.adapter = adapter
+    private fun setupRecyclerView(model: StealTheLookWidgetModel) {
+        with(binding.rvStealTheLook) {
+            snapHelper.attachToRecyclerView(this)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+
+                    if(newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        val currentPagePosition = this@StealTheLookWidgetView.layoutManager.findFirstCompletelyVisibleItemPosition()
+                        changePage(currentPagePosition)
+                    }
+                }
+            })
+            if (this.adapter != stealTheLookAdapter) {
+                this.adapter = stealTheLookAdapter
+            }
+            stealTheLookAdapter.submitList(model.itemList)
         }
-        adapter.submitList(model.itemList)
+    }
+
+    private fun setupPageControl(model: StealTheLookWidgetModel) {
+        binding.stlPageControl.setIndicator(model.itemList.count())
+    }
+
+    private fun changePage(position: Int) {
+        binding.stlPageControl.setCurrentIndicator(position)
     }
 
     override fun onSeeAllClick(link: String) {}

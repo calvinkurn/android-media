@@ -3,14 +3,12 @@ package com.tokopedia.recommendation_widget_common.widget.stealthelook
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 
 internal class StealTheLookPagingAdapter(
     private val trackingQueue: TrackingQueue
-): ListAdapter<StealTheLookPageModel, StealTheLookPageViewHolder>(StealTheLookDiffUtilCallback()) {
+): ListAdapter<StealTheLookStyleModel, StealTheLookPageViewHolder>(StealTheLookDiffUtilCallback()) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -30,7 +28,7 @@ internal class StealTheLookPagingAdapter(
         holder.onViewRecycled()
     }
 
-    fun getItemAt(position: Int): StealTheLookPageModel? {
+    fun getItemAt(position: Int): StealTheLookStyleModel? {
         if (position !in currentList.indices) return null
         return getItem(position)
     }
