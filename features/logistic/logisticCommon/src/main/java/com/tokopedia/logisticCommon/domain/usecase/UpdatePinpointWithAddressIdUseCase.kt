@@ -28,7 +28,8 @@ open class UpdatePinpointWithAddressIdUseCase @Inject constructor(
             val editedAddress = updatePinpointUseCase(
                 addressDetails.copy(
                     latitude = params.latitude,
-                    longitude = params.longitude
+                    longitude = params.longitude,
+                    address2 = "${params.latitude},${params.longitude}"
                 ).toUpdatePinpointParam(params.source)
             )
             editedAddress.keroEditAddress.data
