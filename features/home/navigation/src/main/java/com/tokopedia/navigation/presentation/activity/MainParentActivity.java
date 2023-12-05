@@ -55,7 +55,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
-import com.tokopedia.appdownloadmanager.DownloadManagerNakamaDialog;
+import com.tokopedia.appdownloadmanager.AppDownloadManagerHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkDFMapper;
@@ -197,7 +197,6 @@ public class MainParentActivity extends BaseActivity implements
     public static final int RANK_DIGITAL_SHORTCUT = 2;
     public static final int RANK_WISHLIST_SHORTCUT = 1;
 
-    public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 879;
     public static final String UOH_SOURCE_FILTER_KEY = "source_filter";
     public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history";
     public static final String PARAM_HOME = "home";
@@ -256,7 +255,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private LottieBottomNavbar bottomNavigation;
 
-    private DownloadManagerNakamaDialog downloadManagerNakamaDialog;
+    private AppDownloadManagerHelper appDownloadManagerHelper;
 
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
@@ -322,19 +321,9 @@ public class MainParentActivity extends BaseActivity implements
         sendNotificationUserSetting();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                showDownloadManagerDialog();
-            }
-        }
-    }
-
     private void initDownloadManagerDialog() {
-        if (downloadManagerNakamaDialog == null) {
-            downloadManagerNakamaDialog = new DownloadManagerNakamaDialog(new WeakReference(this));
+        if (appDownloadManagerHelper == null) {
+            appDownloadManagerHelper = new AppDownloadManagerHelper(new WeakReference(this));
         }
     }
 
@@ -757,7 +746,7 @@ public class MainParentActivity extends BaseActivity implements
         // if user is downloading the update (in app update feature),
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
-        showDownloadManagerDialogAndCheckPermission();
+        showDownloadManagerBottomSheet();
         presenter.get().onResume();
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
             int position = HOME_MENU;
@@ -787,28 +776,9 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void showDownloadManagerDialogAndCheckPermission() {
-        if (downloadManagerNakamaDialog != null) {
-//            if (downloadManagerNakamaDialog.isWhitelistByRollence()) {
-            if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.P) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-                } else {
-                    showDownloadManagerDialog();
-                }
-            } else {
-                showDownloadManagerDialog();
-            }
-//            }
-        }
-    }
-
-    private void showDownloadManagerDialog() {
-        if (downloadManagerNakamaDialog != null) {
-            downloadManagerNakamaDialog.showDialog();
+    private void showDownloadManagerBottomSheet() {
+        if (appDownloadManagerHelper != null) {
+            appDownloadManagerHelper.showAppDownloadManagerBottomSheet();
         }
     }
 
@@ -844,8 +814,8 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (downloadManagerNakamaDialog != null) {
-            downloadManagerNakamaDialog.getWeakActivity().clear();
+        if (appDownloadManagerHelper != null) {
+            appDownloadManagerHelper.getActivityRef().clear();
         }
         if (presenter != null)
             presenter.get().onDestroy();
