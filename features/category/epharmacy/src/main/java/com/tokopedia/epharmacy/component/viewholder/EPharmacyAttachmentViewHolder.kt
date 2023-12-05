@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -119,6 +120,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
             ticker.show()
             ticker.tickerType = dataModel?.ticker?.tickerType ?: Ticker.TYPE_INFORMATION
             ticker.setHtmlDescription(dataModel?.ticker?.message.orEmpty())
+            sendViewChangedQuantityTickerEvent("${dataModel?.enablerName} - ${dataModel?.epharmacyGroupId} - ${dataModel?.tokoConsultationId}")
         } else {
             ticker.hide()
         }
@@ -133,7 +135,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderQuantityChangeViews() {
-        if(ePharmacyListener is EPharmacyQuantityChangeFragment) {
+        if (ePharmacyListener is EPharmacyQuantityChangeFragment) {
             productAmount.show()
             productAmount.text = EPharmacyUtils.getTotalAmountFmt(dataModel?.product?.price)
             initialProductQuantity.text = java.lang.String.format(
@@ -149,7 +151,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
             dataModel?.product?.qtyComparison?.currentQty = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
         }
         var quantity = dataModel?.product?.quantity.toIntOrZero()
-        if(dataModel?.product?.qtyComparison != null) {
+        if (dataModel?.product?.qtyComparison != null) {
             quantity = dataModel?.product?.qtyComparison?.recommendedQty.orZero()
         }
         if (dataModel?.product?.subTotal == 0.0) {
@@ -166,7 +168,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         quantityChangedEditor.setValue(dataModel?.product?.qtyComparison?.currentQty.orZero())
         quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
             if (newValue == MIN_VALUE_OF_PRODUCT_EDITOR || newValue == dataModel?.product?.qtyComparison?.recommendedQty) {
-                ePharmacyListener?.onEditorQuantityToast(
+                ePharmacyListener?. onEditorQuantityToast(
                     Toaster.TYPE_ERROR,
                     itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached)
                         .orEmpty(),
@@ -338,5 +340,18 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
             divisionSingleProduct.hide()
         }
         if (dataModel?.showDivider == true) divider.show() else divider.hide()
+    }
+
+    fun sendViewChangedQuantityTickerEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("viewGroceriesIris")
+            .setEventAction("view changed quantity ticker")
+            .setEventCategory("epharmacy attach prescription page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45873")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
     }
 }

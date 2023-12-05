@@ -24,11 +24,11 @@ import com.tokopedia.epharmacy.adapters.factory.EPharmacyAttachmentDetailDiffUti
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyPPGTrackingData
 import com.tokopedia.epharmacy.databinding.EpharmacyQuantityChangeFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.utils.CategoryKeys
 import com.tokopedia.epharmacy.utils.EPHARMACY_APPLINK
-import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_IDS
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
@@ -45,7 +45,6 @@ import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewMode
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.totalamount.TotalAmount
@@ -68,6 +67,8 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
 
     private var tConsultationIds = listOf<String>()
     private var totalAmount = 0.0
+
+    private var ePharmacyPPGTrackingData: EPharmacyPPGTrackingData? = null
 
     @JvmField
     @Inject
@@ -127,7 +128,6 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     private fun setUpObservers() {
         observerEPharmacyDetail()
         observerEPharmacyButtonData()
-        observerPrescriptionError()
         observerConsultationDetails()
         observerUpdateEPharmacyCart()
     }
@@ -212,7 +212,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
 
     private fun onDoneButtonClick() {
         ePharmacyPrescriptionAttachmentViewModel?.updateEPharmacyCart(ePharmacyAttachmentUiUpdater)
-        sendClickPerbaharuiPesananOnQuantityChangeBottomsheetEvent("")
+        sendClickPerbaharuiPesananOnQuantityChangeBottomsheetEvent(ePharmacyPPGTrackingData.toString())
     }
 
     private fun observerUpdateEPharmacyCart() {
@@ -262,11 +262,6 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
         }
     }
 
-    private fun observerPrescriptionError() {
-        ePharmacyPrescriptionAttachmentViewModel?.uploadError?.observe(viewLifecycleOwner) { error ->
-        }
-    }
-
     private fun onSuccessGroupData(it: Success<EPharmacyDataModel>) {
         ePharmacyAttachmentUiUpdater.mapOfData.clear()
         ePharmacyRecyclerView?.show()
@@ -275,6 +270,8 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
         }
         updateUi()
         setUpTotalAmount()
+        ePharmacyPPGTrackingData = ePharmacyPrescriptionAttachmentViewModel?.getTrackingData()
+        sendViewQuantityChangeBottomsheetEvent(ePharmacyPPGTrackingData.toString())
     }
 
     private fun setUpTotalAmount() {
@@ -457,6 +454,19 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
             .setEventCategory("epharmacy attach prescription page")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "45876")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    private fun sendViewQuantityChangeBottomsheetEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("viewGroceriesIris")
+            .setEventAction("view quantity change bottomsheet")
+            .setEventCategory("epharmacy attach prescription page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45874")
             .setBusinessUnit("Physical Goods")
             .setCurrentSite("tokopediamarketplace")
             .build()
