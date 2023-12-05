@@ -291,7 +291,6 @@ import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTracking
 import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
@@ -351,7 +350,7 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import com.tokopedia.product.detail.common.R as pdpCommonR
+import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
  * Separator Rule
@@ -979,7 +978,7 @@ open class DynamicProductDetailFragment :
                         message?.let {
                             view?.showToasterSuccess(
                                 it,
-                                ctaText = getString(pdpCommonR.string.pdp_common_oke),
+                                ctaText = getString(productdetailcommonR.string.pdp_common_oke),
                                 ctaListener = {}
                             )
                         }
@@ -1653,7 +1652,7 @@ open class DynamicProductDetailFragment :
         if (viewModel.getDynamicProductInfoP1?.basic?.status == ProductStatusTypeDef.WAREHOUSE) {
             view?.showToasterError(
                 getString(R.string.tradein_error_label),
-                ctaText = getString(pdpCommonR.string.pdp_common_oke)
+                ctaText = getString(productdetailcommonR.string.pdp_common_oke)
             )
             return
         }
@@ -2532,12 +2531,12 @@ open class DynamicProductDetailFragment :
         viewModel.deleteCartLiveData.observe(viewLifecycleOwner) {
             hideProgressDialog()
             it.doSuccessOrFail({ message ->
-                view?.showToasterSuccess(message.data, ctaText = getString(pdpCommonR.string.pdp_common_oke))
+                view?.showToasterSuccess(message.data, ctaText = getString(productdetailcommonR.string.pdp_common_oke))
                 updateButtonState()
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
-                    ctaText = getString(pdpCommonR.string.pdp_common_oke).uppercase()
+                    ctaText = getString(productdetailcommonR.string.pdp_common_oke).uppercase()
                 )
                 logException(throwable)
             }
@@ -2547,11 +2546,11 @@ open class DynamicProductDetailFragment :
     private fun observeUpdateCart() {
         viewModel.updateCartLiveData.observe(viewLifecycleOwner) {
             it.doSuccessOrFail({ success ->
-                view?.showToasterSuccess(success.data, ctaText = getString(pdpCommonR.string.pdp_common_oke))
+                view?.showToasterSuccess(success.data, ctaText = getString(productdetailcommonR.string.pdp_common_oke))
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
-                    ctaText = getString(pdpCommonR.string.pdp_common_oke)
+                    ctaText = getString(productdetailcommonR.string.pdp_common_oke)
                 )
                 logException(throwable)
             }
@@ -2694,7 +2693,7 @@ open class DynamicProductDetailFragment :
             }, {
                 view?.showToasterError(
                     it.message.orEmpty(),
-                    ctaText = getString(pdpCommonR.string.pdp_common_oke)
+                    ctaText = getString(productdetailcommonR.string.pdp_common_oke)
                 )
                 logException(it)
             })
@@ -2907,7 +2906,7 @@ open class DynamicProductDetailFragment :
                 if (it.data.errorReporter.eligible) {
                     view?.showToasterError(
                         it.data.errorReporter.texts.submitTitle,
-                        ctaText = getString(pdpCommonR.string.pdp_common_oke)
+                        ctaText = getString(productdetailcommonR.string.pdp_common_oke)
                     )
                 } else {
                     onSuccessAtc(it.data)
@@ -2933,7 +2932,7 @@ open class DynamicProductDetailFragment :
         if (t is AkamaiErrorException && t.message != null) {
             view?.showToasterError(
                 t.message.orEmpty(),
-                ctaText = getString(pdpCommonR.string.pdp_common_oke)
+                ctaText = getString(productdetailcommonR.string.pdp_common_oke)
             )
             ProductDetailServerLogger.logBreadCrumbAtc(
                 false,
@@ -2942,7 +2941,7 @@ open class DynamicProductDetailFragment :
             )
         } else {
             val errorMessage = getErrorMessage(t)
-            view?.showToasterError(errorMessage, ctaText = getString(pdpCommonR.string.pdp_common_oke))
+            view?.showToasterError(errorMessage, ctaText = getString(productdetailcommonR.string.pdp_common_oke))
             ProductDetailServerLogger.logBreadCrumbAtc(
                 isSuccess = false,
                 errorMessage = errorMessage,
@@ -3206,14 +3205,14 @@ open class DynamicProductDetailFragment :
         val isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: return
         val message =
             if (isFavorite) {
-                getString(pdpCommonR.string.merchant_product_detail_success_follow_shop)
+                getString(productdetailcommonR.string.merchant_product_detail_success_follow_shop)
             } else {
                 getString(
-                    pdpCommonR.string.merchant_product_detail_success_unfollow_shop
+                    productdetailcommonR.string.merchant_product_detail_success_unfollow_shop
                 )
             }
 
-        view?.showToasterSuccess(if (isNplFollowerType) getString(pdpCommonR.string.merchant_product_detail_success_follow_shop_npl) else message)
+        view?.showToasterSuccess(if (isNplFollowerType) getString(productdetailcommonR.string.merchant_product_detail_success_follow_shop_npl) else message)
     }
 
     private fun observeRecommendationProduct() {
@@ -3262,7 +3261,7 @@ open class DynamicProductDetailFragment :
             if (it is Fail) {
                 view?.showToasterError(
                     context?.getString(R.string.recom_filter_chip_click_error_network).orEmpty(),
-                    ctaText = getString(pdpCommonR.string.pdp_common_oke)
+                    ctaText = getString(productdetailcommonR.string.pdp_common_oke)
                 )
             }
         }
@@ -3347,7 +3346,7 @@ open class DynamicProductDetailFragment :
     private fun showAtcSuccessToaster(result: AddToCartDataModel) {
         view?.showToasterSuccess(
             result.data.message.firstOrNull().orEmpty(),
-            ctaText = getString(pdpCommonR.string.pdp_common_oke)
+            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
         )
         sendTrackingATC(result.data.cartId)
         updateButtonState()
@@ -3454,7 +3453,7 @@ open class DynamicProductDetailFragment :
                     }
                     else -> view?.showToasterError(
                         getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
-                        ctaText = getString(pdpCommonR.string.pdp_common_oke)
+                        ctaText = getString(productdetailcommonR.string.pdp_common_oke)
                     )
                 }
             }
@@ -4542,7 +4541,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorRemoveWishList(errorMsg: String?) {
         view?.showToasterError(
             getErrorMessage(errorMsg),
-            ctaText = getString(pdpCommonR.string.pdp_common_oke)
+            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
         )
     }
 
@@ -4558,7 +4557,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorAddWishList(errorMessage: String?) {
         view?.showToasterError(
             getErrorMessage(errorMessage),
-            ctaText = getString(pdpCommonR.string.pdp_common_oke)
+            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
         )
     }
 
@@ -5285,7 +5284,7 @@ open class DynamicProductDetailFragment :
             val drawable = context?.let { _context ->
                 ContextCompat.getDrawable(
                     _context,
-                    pdpCommonR.drawable.bg_shadow_top
+                    productdetailcommonR.drawable.bg_shadow_top
                 )
             }
             drawable?.let { actionButtonView.setBackground(it) }
@@ -5296,12 +5295,12 @@ open class DynamicProductDetailFragment :
         return context?.let {
             ProductDetailErrorHandler.getErrorMessage(it, throwable)
         }
-            ?: getString(pdpCommonR.string.merchant_product_detail_error_default)
+            ?: getString(productdetailcommonR.string.merchant_product_detail_error_default)
     }
 
     private fun getErrorMessage(errorMessage: String?): String {
         return errorMessage
-            ?: getString(pdpCommonR.string.merchant_product_detail_error_default)
+            ?: getString(productdetailcommonR.string.merchant_product_detail_error_default)
     }
 
     private fun hideProgressDialog() {
@@ -5416,7 +5415,7 @@ open class DynamicProductDetailFragment :
         viewModel.clearCacheP2Data()
         view?.showToasterSuccess(
             data.successMessage,
-            ctaText = getString(pdpCommonR.string.pdp_common_oke),
+            ctaText = getString(productdetailcommonR.string.pdp_common_oke),
             ctaListener = {
                 // noop
             }
@@ -5427,7 +5426,7 @@ open class DynamicProductDetailFragment :
         val dataModel = pdpUiUpdater?.notifyMeMap
         view?.showToasterError(
             getErrorMessage(t),
-            ctaText = getString(pdpCommonR.string.pdp_common_oke)
+            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
         )
         if (dataModel != null) {
             pdpUiUpdater?.updateNotifyMeButton(dataModel.notifyMe)
