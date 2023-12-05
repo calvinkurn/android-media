@@ -13,24 +13,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.account_settings.presentation.uimodel.MediaQualityUIModel
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.internal.MediaSettingPreferences
 import com.tokopedia.nest.principles.ui.NestTheme
 import kotlinx.coroutines.launch
 
-class MediaQualitySettingActivity : BaseSimpleActivity() {
+class MediaQualitySettingActivity : BaseActivity() {
 
     private val settings by lazy { MediaSettingPreferences(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        toolbar.hide()
         setContent {
             NestTheme {
                 var selectedQuality by remember { mutableStateOf(settings.qualitySettings()) }
@@ -75,13 +72,6 @@ class MediaQualitySettingActivity : BaseSimpleActivity() {
                 else -> R.string.image_quality_auto_toast
             }
         )
-//        findViewById<View>(android.R.id.content)?.rootView?.let {
-//            Toaster.build(it, getString(message), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-//        }
-    }
-
-    override fun getNewFragment(): Fragment? {
-        return null
     }
 
     private fun onBackClicked() {
