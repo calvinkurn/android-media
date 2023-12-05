@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home_account.account_settings.data.model.AccountSettingConfig
 import com.tokopedia.home_account.account_settings.domain.GetAccountSettingConfigUseCase
-import com.tokopedia.home_account.account_settings.presentation.AccountSetting
 import com.tokopedia.home_account.account_settings.presentation.presenter.AccountSettingPresenter
 import com.tokopedia.home_account.account_settings.presentation.subscriber.GetAccountSettingConfigSubscriber
 import io.mockk.every
@@ -56,7 +55,6 @@ class AccountSettingPresenterTest {
 
     @Test
     fun `Get Menu Account Settings Success but null`() {
-
         every {
             mockGraphqlResponse.getData<AccountSettingConfig>(any())
         } returns null
