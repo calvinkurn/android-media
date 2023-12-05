@@ -204,6 +204,7 @@ class FeedCampaignRibbonView(
 
                         val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
                         root.background = transitionDrawable
+                        transitionDrawable.isCrossFadeEnabled = true
                         transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                     }
                 }
@@ -215,6 +216,7 @@ class FeedCampaignRibbonView(
 
                     val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
                     root.background = transitionDrawable
+                    transitionDrawable.isCrossFadeEnabled = true
                     transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                 }
                 (type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING) && mCta?.colorGradient.isNullOrEmpty() -> {
@@ -225,6 +227,7 @@ class FeedCampaignRibbonView(
 
                     val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
                     root.background = transitionDrawable
+                    transitionDrawable.isCrossFadeEnabled = true
                     transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                 }
                 (type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING || type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING) && mCta?.colorGradient.isNullOrEmpty() -> {
@@ -235,6 +238,7 @@ class FeedCampaignRibbonView(
 
                     val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
                     root.background = transitionDrawable
+                    transitionDrawable.isCrossFadeEnabled = true
                     transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                 }
                 else -> {}
