@@ -23,6 +23,7 @@ import com.tokopedia.epharmacy.utils.EPHARMACY_FULL_ALPHA
 import com.tokopedia.epharmacy.utils.EPHARMACY_HALF_ALPHA
 import com.tokopedia.epharmacy.utils.EPharmacyConsultationStatus
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.epharmacy.utils.EventKeys
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
@@ -62,19 +63,19 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val productChevronTitle = view.findViewById<Typography>(R.id.tv_expand_other_product)
     private val chatDokterUploadLayout = view.findViewById<LinearLayout>(R.id.btn_PAP_chatDokter)
     private val containerUploadPrescription = view.findViewById<ConstraintLayout>(R.id.container_upload_prescription)
-    private val chatDokterUploadText = view.findViewById<Typography>(R.id.upload_prescription_text)
-    private val chatDokterUploadSubText = view.findViewById<Typography>(R.id.upload_description_text)
+    private val chatDokterUploadText = view.findViewById<Typography>(R.id.lblPrescriptionAttached)
+    private val chatDokterUploadSubText = view.findViewById<Typography>(R.id.lblPrescriptionEnablerName)
     private val chatDokterUploadIcon = view.findViewById<ImageUnify>(R.id.upload_icon)
     private val topView = view.findViewById<View>(R.id.transparent_view_top)
     private val bottomView = view.findViewById<View>(R.id.transparent_view_bottom)
     private val ticker = view.findViewById<Ticker>(R.id.lblChangingProductWarning)
     private val divisionSingleProduct = view.findViewById<View>(R.id.division_single_card)
     private val quantityEditorLayout = view.findViewById<ConstraintLayout>(R.id.quantity_editor_layout)
-    private val initialProductQuantity = view.findViewById<Typography>(R.id.initial_product_quantity)
+    private val initialProductQuantity = view.findViewById<Typography>(R.id.lblQuantityOrderInit)
     private val quantityChangedEditor = view.findViewById<QuantityEditorUnify>(R.id.quantity_change)
     private val productQuantityType = view.findViewById<Typography>(R.id.quantity_type)
-    private val totalQuantity = view.findViewById<Typography>(R.id.total_quantity)
-    private val totalAmount = view.findViewById<Typography>(R.id.qc_total_amount)
+    private val totalQuantity = view.findViewById<Typography>(R.id.lblSubtotalProductQuantity)
+    private val totalAmount = view.findViewById<Typography>(R.id.lblFinalProductPrice)
     companion object {
         val LAYOUT = R.layout.epharmacy_prescription_attachment_view_item
         private const val VIBRATION_ANIMATION_DURATION = 1250
@@ -342,15 +343,15 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         if (dataModel?.showDivider == true) divider.show() else divider.hide()
     }
 
-    fun sendViewChangedQuantityTickerEvent(eventLabel: String) {
+    private fun sendViewChangedQuantityTickerEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("viewGroceriesIris")
+            .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
             .setEventAction("view changed quantity ticker")
             .setEventCategory("epharmacy attach prescription page")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45873")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45873")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }

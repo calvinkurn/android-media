@@ -38,6 +38,7 @@ import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_ID_STRING
 import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE
 import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY
 import com.tokopedia.epharmacy.utils.EXTRA_SOURCE_STRING
+import com.tokopedia.epharmacy.utils.EventKeys
 import com.tokopedia.epharmacy.utils.PrescriptionActionType
 import com.tokopedia.epharmacy.utils.UPLOAD_PAGE_SOURCE_PAP
 import com.tokopedia.epharmacy.utils.openDocument
@@ -410,65 +411,65 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
 
     private fun sendClickPerbaharuiPesananOnQuantityChangeBottomsheetEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("clickGroceries")
+            .setEvent(EventKeys.CLICK_GROCERIES)
             .setEventAction("click perbaharui pesanan on quantity change bottomsheet")
             .setEventCategory("epharmacy attach prescription page")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45877")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45877")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }
 
     private fun sendViewErrorToasterOnQuantityChangeBottomsheetEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("viewGroceriesIris")
+            .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
             .setEventAction("view error toaster on quantity change bottomsheet")
             .setEventCategory("epharmacy attach prescription page")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45878")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45878")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }
 
     private fun sendClickAddQuantityOnChangeQuantityBottomsheetEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("clickGroceries")
+            .setEvent(EventKeys.CLICK_GROCERIES)
             .setEventAction("click add quantity on change quantity bottomsheet")
             .setEventCategory("epharmacy attach prescription page")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45875")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45875")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }
 
     private fun sendClickRemoveQuantityOnChangeQuantityBottomsheetEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("clickGroceries")
+            .setEvent(EventKeys.CLICK_GROCERIES)
             .setEventAction("click remove quantity on change quantity bottomsheet")
             .setEventCategory("epharmacy attach prescription page")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45876")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45876")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }
 
     private fun sendViewQuantityChangeBottomsheetEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("viewGroceriesIris")
+            .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
             .setEventAction("view quantity change bottomsheet")
             .setEventCategory("epharmacy attach prescription page")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45874")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45874")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }

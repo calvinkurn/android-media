@@ -9,9 +9,11 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyCheckoutFragment
+import com.tokopedia.epharmacy.utils.CategoryKeys
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.epharmacy.utils.EventKeys
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -87,13 +89,13 @@ class EPharmacyCheckoutActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
 
     private fun sendClickBackEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("clickGroceries")
+            .setEvent(EventKeys.CLICK_GROCERIES)
             .setEventAction("click back")
-            .setEventCategory("epharmacy chat dokter checkout page")
+            .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOkTER_CHECKOUT_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45890")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45890")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }
