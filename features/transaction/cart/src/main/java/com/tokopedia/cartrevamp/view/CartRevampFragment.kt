@@ -91,6 +91,7 @@ import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
+import com.tokopedia.cartrevamp.view.uimodel.CartDeleteItemData
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
@@ -307,7 +308,6 @@ class CartRevampFragment :
     private var plusCoachMark: CoachMark2? = null
     private var mainFlowCoachMark: CoachMark2? = null
     private var bulkActionCoachMark: CoachMark2? = null
-    private var deleteSource: CartDeleteButtonSource? = null
 
     private var isFirstCheckEvent: Boolean = true
     private var hasShowBulkActionCoachMark: Boolean = false
@@ -983,11 +983,12 @@ class CartRevampFragment :
                     collapseOrExpandDisabledItem()
                     forceExpand = true
                 }
-                viewModel.processDeleteCartItem(
-                    allDisabledCartItemDataList,
-                    false,
-                    forceExpand
+                val cartDeleteItemData = CartDeleteItemData(
+                    removedCartItems = allDisabledCartItemDataList,
+                    addWishList = false,
+                    forceExpandCollapsedUnavailableItems = forceExpand
                 )
+                viewModel.processDeleteCartItem(cartDeleteItemData)
                 cartPageAnalytics.eventClickDeleteAllUnavailableProduct(userSession.userId)
                 cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromHapusProdukBerkendala(
                     viewModel.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
@@ -1154,12 +1155,13 @@ class CartRevampFragment :
         val listCartStringOrderNeedUpdated =
             CartDataHelper.checkSelectedCartItemDataWithOfferBmGm(viewModel.cartDataList.value)
         dialog?.setPrimaryCTAClickListener {
-            viewModel.processDeleteCartItem(
+            val cartDeleteItemData = CartDeleteItemData(
                 removedCartItems = deletedCartItems,
                 addWishList = false,
                 isFromGlobalCheckbox = true,
                 listCartStringOrderAndBmGmOfferId = listCartStringOrderNeedUpdated
             )
+            viewModel.processDeleteCartItem(cartDeleteItemData)
             dialog.dismiss()
         }
         dialog?.setSecondaryCTAClickListener { dialog.dismiss() }
@@ -1191,7 +1193,6 @@ class CartRevampFragment :
         cartItemHolderData: CartItemHolderData,
         deleteSource: CartDeleteButtonSource
     ) {
-        this.deleteSource = deleteSource
         when (deleteSource) {
             CartDeleteButtonSource.TrashBin -> {
                 cartPageAnalytics.eventClickAtcCartClickTrashBin()
@@ -1237,14 +1238,16 @@ class CartRevampFragment :
                 listCartStringOrderOfferId.add("${cartItemHolderData.cartStringOrder}||${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}")
             }
 
-            viewModel.processDeleteCartItem(
-                toBeDeletedProducts,
-                false,
-                forceExpand,
+            val cartDeleteItemData = CartDeleteItemData(
+                removedCartItems = toBeDeletedProducts,
+                addWishList = false,
+                forceExpandCollapsedUnavailableItems = forceExpand,
                 isFromGlobalCheckbox = false,
                 isFromEditBundle = false,
-                listCartStringOrderAndBmGmOfferId = listCartStringOrderOfferId
+                listCartStringOrderAndBmGmOfferId = listCartStringOrderOfferId,
+                deleteSource = deleteSource
             )
+            viewModel.processDeleteCartItem(cartDeleteItemData)
             if (deleteSource == CartDeleteButtonSource.TrashBin) {
                 cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
                     viewModel.generateDeleteCartDataAnalytics(toBeDeletedProducts)
@@ -2789,11 +2792,7 @@ class CartRevampFragment :
                         onDeleteCartDataSuccess(
                             toBeDeletedCartIds,
                             removeAllItems,
-                            forceExpandCollapsedUnavailableItems,
-                            addWishList,
-                            isFromGlobalCheckbox,
-                            isFromEditBundle,
-                            listCartStringOrderAndOfferId
+                            cartDeleteItemData
                         )
 
                         val params = generateParamGetLastApplyPromo()
@@ -3563,38 +3562,34 @@ class CartRevampFragment :
     private fun onDeleteCartDataSuccess(
         deletedCartIds: List<String>,
         removeAllItems: Boolean,
-        forceExpandCollapsedUnavailableItems: Boolean,
-        isMoveToWishlist: Boolean,
-        isFromGlobalCheckbox: Boolean,
-        isFromEditBundle: Boolean,
-        listCartStringOrderAndOfferId: ArrayList<String>
+        cartDeleteItemData: CartDeleteItemData
     ) {
         var message =
             String.format(getString(R.string.message_product_already_deleted), deletedCartIds.size)
 
-        if (isMoveToWishlist) {
+        if (cartDeleteItemData.addWishList) {
             message = String.format(
                 getString(R.string.message_product_already_moved_to_wishlist),
                 deletedCartIds.size
             )
             refreshWishlistAfterItemRemoveAndMoveToWishlist()
-        } else if (isFromEditBundle) {
+        } else if (cartDeleteItemData.isFromEditBundle) {
             message = getString(R.string.message_toaster_cart_change_bundle_success)
         }
 
-        if (isFromGlobalCheckbox || isFromEditBundle) {
+        if (cartDeleteItemData.isFromGlobalCheckbox || cartDeleteItemData.isFromEditBundle) {
             showToastMessageGreen(message)
         } else {
             showToastMessageGreen(
                 message,
                 getString(R.string.toaster_cta_cancel)
-            ) { onUndoDeleteClicked(deletedCartIds) }
+            ) { onUndoDeleteClicked(deletedCartIds, cartDeleteItemData.deleteSource) }
         }
 
-        val needRefresh = removeAllItems || isFromEditBundle
+        val needRefresh = removeAllItems || cartDeleteItemData.isFromEditBundle
         val updateListResult =
-            viewModel.removeProductByCartId(deletedCartIds, needRefresh, isFromGlobalCheckbox)
-        removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
+            viewModel.removeProductByCartId(deletedCartIds, needRefresh, cartDeleteItemData.isFromGlobalCheckbox)
+        removeLocalCartItem(updateListResult, cartDeleteItemData.forceExpandCollapsedUnavailableItems)
 
         hideProgressLoading()
 
@@ -3609,13 +3604,13 @@ class CartRevampFragment :
                 refreshCartWithSwipeToRefresh()
             }
 
-            isFromEditBundle -> {
+            cartDeleteItemData.isFromEditBundle -> {
                 refreshCartWithProgressDialog()
             }
         }
 
-        if (listCartStringOrderAndOfferId.isNotEmpty()) {
-            listCartStringOrderAndOfferId.forEach { cartStringOrderAndOfferId ->
+        if (cartDeleteItemData.listCartStringOrderAndBmGmOfferId.isNotEmpty()) {
+            cartDeleteItemData.listCartStringOrderAndBmGmOfferId.forEach { cartStringOrderAndOfferId ->
                 val splitCartStringOrderAndOfferId = cartStringOrderAndOfferId.split("||")
                 if (splitCartStringOrderAndOfferId.isNotEmpty() && splitCartStringOrderAndOfferId.size > 1) {
                     getGroupProductTicker(
@@ -3759,13 +3754,14 @@ class CartRevampFragment :
                 )
                 viewModel.cartModel.toBeDeletedBundleGroupId = ""
                 if (cartItems.isNotEmpty()) {
-                    viewModel.processDeleteCartItem(
+                    val cartDeleteItemData = CartDeleteItemData(
                         removedCartItems = cartItems,
                         addWishList = false,
                         forceExpandCollapsedUnavailableItems = false,
                         isFromGlobalCheckbox = true,
                         isFromEditBundle = true
                     )
+                    viewModel.processDeleteCartItem(cartDeleteItemData)
                 }
             } else {
                 refreshCartWithSwipeToRefresh()
@@ -3828,8 +3824,11 @@ class CartRevampFragment :
         }
     }
 
-    private fun onUndoDeleteClicked(cartIds: List<String>) {
-        cartPageAnalytics.eventClickUndoAfterDeleteProduct(userSession.userId, deleteSource?.eventLabel.orEmpty())
+    private fun onUndoDeleteClicked(cartIds: List<String>, deleteSource: CartDeleteButtonSource) {
+        cartPageAnalytics.eventClickUndoAfterDeleteProduct(
+            userSession.userId,
+            deleteSource.eventLabel
+        )
         viewModel.processUndoDeleteCartItem(cartIds)
     }
 

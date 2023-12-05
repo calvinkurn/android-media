@@ -98,6 +98,7 @@ class CartItemViewHolder constructor(
     ) {
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
+        this.isFromDoneImeAction = false
 
         itemView.addOnImpressionListener(data, onView = {
             if (!data.isError) {
@@ -1308,6 +1309,7 @@ class CartItemViewHolder constructor(
                 KeyboardHandler.DropKeyboard(qtyEditorProduct.editText.context, itemView)
                 isFromDoneImeAction = true
                 if (qtyEditorProduct.editText.text.toString() == "0") {
+                    delayChangeQty?.cancel()
                     actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.QuantityEditorImeAction)
                 }
                 if (lastQty > data.maxOrder) {
