@@ -3,7 +3,9 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.Spanned
 import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -12,13 +14,14 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.databinding.ItemDurationBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.logisticcart.R as logisticcartR
-import com.tokopedia.unifyprinciples.R as RUnify
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -48,19 +51,19 @@ class ShippingDurationViewHolder(
                 tvDurationOrPrice.setTextColor(
                     ContextCompat.getColor(
                         tvDurationOrPrice.context,
-                        RUnify.color.Unify_N700_44
+                        unifyprinciplesR.color.Unify_N700_44
                     )
                 )
                 tvPriceOrDuration.visibility = View.GONE
                 tvTextDesc.visibility = View.GONE
                 tvOrderPrioritas.visibility = View.GONE
-                tvError.text = shippingDurationUiModel.errorMessage
+                tvError.text = shippingDurationUiModel.constructErrorUi()
                 tvError.visibility = View.VISIBLE
             } else {
                 tvDurationOrPrice.setTextColor(
                     ContextCompat.getColor(
                         tvDurationOrPrice.context,
-                        RUnify.color.Unify_N700_96
+                        unifyprinciplesR.color.Unify_N700_96
                     )
                 )
                 tvError.visibility = View.GONE
@@ -72,7 +75,8 @@ class ShippingDurationViewHolder(
                     tvTextDesc.visibility = View.GONE
                 }
                 if (!isDisableOrderPrioritas && shippingDurationUiModel.serviceData.orderPriority.now) {
-                    val orderPrioritasTxt = itemView.context.getString(logisticcartR.string.order_prioritas)
+                    val orderPrioritasTxt =
+                        itemView.context.getString(logisticcartR.string.order_prioritas)
                     val orderPrioritasLabel = SpannableString(orderPrioritasTxt)
                     orderPrioritasLabel.setSpan(
                         StyleSpan(Typeface.BOLD),
@@ -92,14 +96,20 @@ class ShippingDurationViewHolder(
             if (shippingDurationUiModel.merchantVoucherModel.isMvc == 1) {
                 flContainer.visibility = View.VISIBLE
                 flContainer.foreground =
-                    ContextCompat.getDrawable(flContainer.context, logisticcartR.drawable.fg_enabled_item)
+                    ContextCompat.getDrawable(
+                        flContainer.context,
+                        logisticcartR.drawable.fg_enabled_item
+                    )
                 ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel.mvcLogo)
                 tvMvcText.text = shippingDurationUiModel.merchantVoucherModel.mvcTitle
                 tvMvcError.visibility = View.GONE
             } else if (shippingDurationUiModel.merchantVoucherModel.isMvc == -1) {
                 flContainer.visibility = View.VISIBLE
                 flContainer.foreground =
-                    ContextCompat.getDrawable(flContainer.context, logisticcartR.drawable.fg_disabled_item)
+                    ContextCompat.getDrawable(
+                        flContainer.context,
+                        logisticcartR.drawable.fg_disabled_item
+                    )
                 ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel.mvcLogo)
                 tvMvcText.text = shippingDurationUiModel.merchantVoucherModel.mvcTitle
                 tvMvcError.visibility = View.VISIBLE
@@ -180,8 +190,10 @@ class ShippingDurationViewHolder(
     }
 
     private fun setShowCase() {
-        val label = itemView.context.getString(logisticcartR.string.label_title_showcase_shipping_duration)
-        val text = itemView.context.getString(logisticcartR.string.label_body_showcase_shipping_duration)
+        val label =
+            itemView.context.getString(logisticcartR.string.label_title_showcase_shipping_duration)
+        val text =
+            itemView.context.getString(logisticcartR.string.label_body_showcase_shipping_duration)
         val coachMarkItem = CoachMark2Item(
             binding.layoutShippingDuration,
             label,
@@ -193,6 +205,48 @@ class ShippingDurationViewHolder(
         }
         showCaseCoachmark = CoachMark2(binding.root.context)
         showCaseCoachmark?.showCoachMark(list, null)
+    }
+
+    private fun ShippingDurationUiModel.constructErrorUi(): CharSequence? {
+        this.errorMessage?.takeIf { it.isNotEmpty() }?.let { errorMessage ->
+            val action =
+                if (this.serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) "Atur Pinpoint" else ""
+            val wording = "$errorMessage $action".trim()
+            val result = SpannableString(wording).apply {
+                setSpan(
+                    ForegroundColorSpan(
+                        MethodChecker.getColor(
+                            binding.root.context,
+                            unifyprinciplesR.color.Unify_RN500
+                        )
+                    ),
+                    0,
+                    errorMessage.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                if (action.isNotEmpty()) {
+                    setSpan(
+                        StyleSpan(Typeface.BOLD),
+                        wording.indexOf(action, errorMessage.length),
+                        wording.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    setSpan(
+                        ForegroundColorSpan(
+                            MethodChecker.getColor(
+                                binding.root.context,
+                                unifyprinciplesR.color.Unify_GN500
+                            )
+                        ),
+                        wording.indexOf(action, errorMessage.length),
+                        wording.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            }
+            return result
+        }
+        return null
     }
 
     companion object {
