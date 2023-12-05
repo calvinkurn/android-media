@@ -15,6 +15,7 @@ interface EventKeys {
 
         const val BUSINESS_UNIT_VALUE = "Physical Goods"
         const val CURRENT_SITE_VALUE = "tokopediamarketplace"
+        const val CLICK_GROCERIES = "clickGroceries"
     }
 }
 
@@ -26,6 +27,7 @@ interface CategoryKeys {
         const val EPHARMACY_QUANTITY_CHANGE_BS = "epharmacy quantity change bottom sheet"
         const val EPHARMACY_LOADING_PAGE = "epharmacy loading page"
         const val EPHARMACY_ORDER_DETAIL_PAGE = "epharmacy order detail page"
+        const val EPHARMACY_CHAT_DOkTER_CHECKOUT_PAGE = "epharmacy chat dokter checkout page"
     }
 }
 

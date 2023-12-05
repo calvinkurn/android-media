@@ -18,12 +18,14 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.EPharmacyCheckoutParams
 import com.tokopedia.epharmacy.network.response.EPharmacyAtcInstantResponse
 import com.tokopedia.epharmacy.network.response.EPharmacyCartGeneralCheckoutResponse
+import com.tokopedia.epharmacy.utils.CategoryKeys
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.EPHARMACY_CHECKOUT_PAGE
 import com.tokopedia.epharmacy.utils.DEFAULT_ZERO_VALUE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.epharmacy.utils.EventKeys
 import com.tokopedia.epharmacy.viewmodel.EPharmacyCheckoutViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -301,39 +303,39 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun sendViewCheckoutPageEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("viewGroceriesIris")
+            .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
             .setEventAction("view checkout page")
-            .setEventCategory("epharmacy chat dokter checkout page")
+            .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOkTER_CHECKOUT_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45865")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45865")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }
 
     private fun sendClickPilihPembayaranEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("clickGroceries")
+            .setEvent(EventKeys.CLICK_GROCERIES)
             .setEventAction("click pilih pembayaran")
-            .setEventCategory("epharmacy chat dokter checkout page")
+            .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOkTER_CHECKOUT_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45866")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45866")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }
 
     private fun sendViewCheckoutErrorEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("viewGroceriesIris")
+            .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
             .setEventAction("view checkout error")
-            .setEventCategory("epharmacy chat dokter checkout page")
+            .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOkTER_CHECKOUT_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45870")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45870")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }
