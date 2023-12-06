@@ -37,5 +37,6 @@ enum class State{
     PERF_RESUMED,
     PERF_DISABLED,
     PERF_ENABLED,
-    PERF_MEASURING
+    PERF_MEASURING,
+    PERF_ERROR
 }

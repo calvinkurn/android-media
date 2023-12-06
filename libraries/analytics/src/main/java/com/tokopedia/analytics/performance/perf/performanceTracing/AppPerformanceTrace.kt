@@ -35,6 +35,7 @@ class AppPerformanceTrace {
         private var performanceTrace: PerformanceTrace? = null
         private var performanceConfigRepository: AppPerformanceConfigRepository? = null
 
+        var currentCreatedActivity = ""
         var currentAppPerformanceTraceData: PerformanceTraceData? = null
         var currentAppPerformanceDevState: DevState = DevState(
             state = State.PERF_ENABLED
@@ -55,6 +56,7 @@ class AppPerformanceTrace {
         fun init(
             application: Application,
             performanceConfigRepository: AppPerformanceConfigRepository,
+            onPerformanceTraceStarted: (Activity) -> Unit,
             onPerformanceTraceFinished: () -> Unit
         ) {
             this.performanceConfigRepository = performanceConfigRepository
@@ -62,24 +64,27 @@ class AppPerformanceTrace {
             application.registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
                 override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
                     if (performanceTrace != null) {
-                        performanceTrace?.stopMonitoring(
-                            Error("Activity closed")
+                        cancelPerformanceTracing(
+                            Error("err: Activity Closed. Performance trace cancelled"),
+                            activity
                         )
-                        performanceTrace = null
-                        currentAppPerformanceTraceData = null
                     }
+                    
+                    onPerformanceTraceStarted.invoke(activity)
+
+                    currentAppPerformanceDevState = DevState(
+                        activityName = activity.javaClass.simpleName,
+                        state = State.PERF_MEASURING
+                    )
                     
                     perfNotes = ""
 
                     val activityName = activity.javaClass.simpleName
                     val traceConfig = getTraceConfig(activityName)
 
+                    currentCreatedActivity = activityName
+                    
                     if (traceConfig != null) {
-                        currentAppPerformanceDevState = DevState(
-                            activityName = activity.javaClass.simpleName,
-                            state = State.PERF_MEASURING
-                        )
-
                         if (traceConfig.fragmentConfigs.isNotEmpty()) {
                             startFragmentPerformanceTrace(
                                 activity = activity, traceConfig = traceConfig
@@ -96,21 +101,28 @@ class AppPerformanceTrace {
                             state = State.PERF_DISABLED
                         )
                     }
+                    
                 }
 
                 override fun onActivityStarted(activity: Activity) {
                 }
 
                 override fun onActivityResumed(activity: Activity) {
+                    if (currentCreatedActivity != activity.javaClass.simpleName) {
+                        currentAppPerformanceDevState = DevState(
+                            activityName = activity.javaClass.simpleName,
+                            state = State.PERF_RESUMED
+                        )
+                    }
                 }
 
                 override fun onActivityPaused(activity: Activity) {
-                    performanceTrace?.stopMonitoring(
-                        Error("Activity closed")
-                    )
-                    performanceTrace = null
-                    currentAppPerformanceTraceData = null
-                    perfNotes = ""
+                    if (performanceTrace != null) {
+                        cancelPerformanceTracing(
+                            Error("err: Activity Closed. Performance trace cancelled"),
+                            activity
+                        )
+                    }
                 }
 
                 override fun onActivityStopped(activity: Activity) {
@@ -200,27 +212,20 @@ class AppPerformanceTrace {
                     }
                 }
 
-                private fun cancelPerformanceTracing(result: Error, activity: Activity) {
-                    Log.d("AppPerformanceTrace", "onPerformanceTraceError: $result")
-                    currentAppPerformanceDevState = DevState(
-                        activityName = activity.javaClass.simpleName,
-                        state = State.PERF_ENABLED
-                    )
-                    performanceTrace?.recordPerformanceData(result)
-                    performanceTrace = null
-                }
-
                 private fun finishPerformanceTracing(result: Success<PerformanceTraceData>, activity: Activity) {
-                    Log.d("AppPerformanceTrace", "onPerformanceTraceFinished: ${result.data.timeToInitialLoad} ms")
-                    Log.d("AppPerformanceTrace", result.data.toString())
-                    currentAppPerformanceTraceData = result.data
-                    performanceTrace?.recordPerformanceData(result)
-                    performanceTrace = null
-                    currentAppPerformanceDevState = DevState(
-                        activityName = activity.javaClass.simpleName,
-                        state = State.PERF_ENABLED
-                    )
-                    onPerformanceTraceFinished.invoke()
+                    if (performanceTrace != null) {
+                        Log.d("AppPerformanceTrace", "onPerformanceTraceFinished: ${result.data.timeToInitialLoad} ms")
+                        Log.d("AppPerformanceTrace", result.data.toString())
+                        currentAppPerformanceTraceData = result.data
+                        performanceTrace?.recordPerformanceData(result)
+                        performanceTrace = null
+                        currentAppPerformanceDevState = DevState(
+                            activityName = activity.javaClass.simpleName,
+                            state = State.PERF_ENABLED
+                        )
+                        perfNotes = result.message
+                        onPerformanceTraceFinished.invoke()
+                    }
                 }
 
                 private fun stopOngoingActivityPerformanceTrace(activityName: String) {
@@ -241,6 +246,19 @@ class AppPerformanceTrace {
                     }
                 }
             })
+        }
+
+        fun cancelPerformanceTracing(result: Error, activity: Activity) {
+            if (performanceTrace != null) {
+                Log.d("AppPerformanceTrace", "onPerformanceTraceError: ${result.message}")
+                currentAppPerformanceDevState = DevState(
+                    activityName = activity.javaClass.simpleName,
+                    state = State.PERF_ERROR
+                )
+                perfNotes = result.message
+                performanceTrace?.recordPerformanceData(result)
+                performanceTrace = null
+            }
         }
     }
 }

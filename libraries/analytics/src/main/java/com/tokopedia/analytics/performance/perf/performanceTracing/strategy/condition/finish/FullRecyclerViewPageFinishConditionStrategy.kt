@@ -14,7 +14,7 @@ class FullRecyclerViewPageFinishConditionStrategy : FinishConditionStrategyConfi
     }
 
     override fun timeoutMessage(): String {
-        return "No recyclerview with full height detected, try changing " +
+        return "err: Parsing Timeout. No recyclerview with full height detected, try changing " +
             "different finish condition strategy for your page."
     }
     
@@ -31,7 +31,7 @@ class FullRecyclerViewPageFinishConditionStrategy : FinishConditionStrategyConfi
 
         fullRecyclerView?.directChilds?.forEach {
             if (it.isVisible) {
-                val desc = "\n${it.name}, res: ${it.resourceIdString}"
+                val desc = "\n - ${it.name}, res: ${it.resourceIdString}"
                 summary += limitAndAddEllipsis(desc)
             }
         }
@@ -41,9 +41,9 @@ class FullRecyclerViewPageFinishConditionStrategy : FinishConditionStrategyConfi
     private fun limitAndAddEllipsis(input: String): String {
         val maxLength = 50
         return if (input.length <= maxLength) {
-            "- $input"
+            "$input"
         } else {
-            "- ${input.substring(0, maxLength - 3)}..."
+            "${input.substring(0, maxLength - 3)}..."
         }
     }
 

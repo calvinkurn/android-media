@@ -265,6 +265,7 @@ class FrameMetricsPopupWindow(
                 activityNameText?.text = "Measuring performance..."
                 ttflText?.text = "..."
                 ttilText?.text = "..."
+                perfNotesText?.text = ""
             }
             State.PERF_ENABLED -> {
                 if (data != null) {
@@ -272,6 +273,7 @@ class FrameMetricsPopupWindow(
                         activityNameText?.text = String.format(Locale.getDefault(), "%s (%s)", data.activityName, data.traceName)
                         ttflText?.text = String.format(Locale.getDefault(), "TTFL: %d%s", data.timeToFirstLayout, "ms")
                         ttilText?.text = String.format(Locale.getDefault(), "TTIL: %d%s", data.timeToInitialLoad, "ms")
+                        perfNotesText?.text = perfNotes
                     }
                 } else {
                     activityNameText?.text = "Performance not started."
@@ -287,6 +289,7 @@ class FrameMetricsPopupWindow(
                 )
                 ttflText?.text = "-"
                 ttilText?.text = "-"
+                perfNotesText?.text = ""
             }
             State.PERF_DISABLED -> {
                 activityNameText?.text = String.format(
@@ -297,9 +300,18 @@ class FrameMetricsPopupWindow(
                 ttflText?.text = "-"
                 ttilText?.text = "-"
             }
+            State.PERF_ERROR -> {
+                activityNameText?.text = String.format(
+                    Locale.getDefault(),
+                    "%s",
+                    "Perf Error"
+                )
+                ttflText?.text = "$perfNotes"
+                ttilText?.text = ""
+                perfNotesText?.text = ""
+            }
         }
         
-        perfNotesText?.text = perfNotes
     }
 
     private fun updateFpsColor(fps: Double) {

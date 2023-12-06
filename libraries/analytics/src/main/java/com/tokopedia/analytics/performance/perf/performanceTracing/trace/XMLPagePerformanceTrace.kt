@@ -102,7 +102,7 @@ class XMLPagePerformanceTrace(
         performanceTraceData.set(
             performanceTraceData.get().copy(timeToFirstLayout = elapsedTime)
         )
-        onPerformanceTraceFinished(Success(performanceTraceData.get()))
+        onPerformanceTraceFinished(Success(performanceTraceData.get(), "TTFL finished"))
     }
 
     private fun observeLoadableComponent() {
@@ -149,8 +149,7 @@ class XMLPagePerformanceTrace(
             }
 
             if (isTimeout()) {
-                finishParsing(Error("Parsing timeout."))
-                AppPerformanceTrace.perfNotes = parsingStrategy.getFinishParsingStrategy().timeoutMessage()
+                finishParsing(Error(parsingStrategy.getFinishParsingStrategy().timeoutMessage()))
             }
 
             if (perfParsingJob?.isActive == true) {
@@ -179,8 +178,7 @@ class XMLPagePerformanceTrace(
 
                     if (layoutStatus.isFinishedLoading) {
                         scope.launch(Dispatchers.Main) {
-                            AppPerformanceTrace.perfNotes = layoutStatus.summary
-                            finishParsing(Success(true))
+                            finishParsing(Success(true, layoutStatus.summary))
                         }
                     }
                 } catch (e: CancellationException) {
@@ -195,7 +193,7 @@ class XMLPagePerformanceTrace(
             is Success -> {
                 if (!performanceTraceData.get().ttilMeasured()) {
                     recordTTIL()
-                    stopMonitoring(Success(performanceTraceData.get()))
+                    stopMonitoring(Success(performanceTraceData.get(), result.message))
                 }
             }
             is Error -> {
