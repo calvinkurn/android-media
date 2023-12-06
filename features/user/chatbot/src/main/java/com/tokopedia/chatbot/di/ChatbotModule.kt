@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
 import com.tokopedia.chatbot.data.cache.ChatbotCacheManagerImpl
-import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
@@ -82,11 +81,5 @@ class ChatbotModule {
     @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
-    }
-
-    @ChatbotScope
-    @Provides
-    fun provideGetUserNameForReplyBubble(userSession: UserSessionInterface): GetUserNameForReplyBubble {
-        return GetUserNameForReplyBubble(userSession)
     }
 }
