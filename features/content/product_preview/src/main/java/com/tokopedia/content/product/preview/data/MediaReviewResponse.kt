@@ -12,7 +12,7 @@ data class MediaReviewResponse(
     data class ProductRevGetReviewMedia(
         @SerializedName("list")
         val reviewMedia: List<ReviewMedia> = emptyList(),
-        @SerializedName("")
+        @SerializedName("detail")
         val detail: Detail = Detail(),
         @SerializedName("hasNext")
         val hasNext: Boolean = false,
@@ -59,7 +59,7 @@ data class MediaReviewResponse(
         val description: String = "",
         @SerializedName("rating")
         val rating: Int = 0,
-        @SerializedName("")
+        @SerializedName("review")
         val review: String = "",
         @SerializedName("createTimestamp")
         val createTimestamp: String = "",

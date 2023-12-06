@@ -3,36 +3,41 @@ package com.tokopedia.content.product.preview.data.usecase
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 29/11/23
  */
+@GqlQuery(SubmitReportUseCase.QUERY_NAME, SubmitReportUseCase.QUERY)
 class SubmitReportUseCase @Inject constructor(
     @ApplicationContext private val repo: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, Any>, SubmitReportUseCase.ReportSubmissionResponse>(dispatchers.io) {
+) : CoroutineUseCase<SubmitReportUseCase.Param, SubmitReportUseCase.ReportSubmissionResponse>(dispatchers.io) {
 
-    override suspend fun execute(params: Map<String, Any>): ReportSubmissionResponse {
-        return repo.request(graphqlQuery(), params)
+    private val query: GqlQueryInterface = SubmitReportUseCaseQuery()
+
+    override suspend fun execute(params: Param): ReportSubmissionResponse {
+        return repo.request(query, params)
     }
 
-    override fun graphqlQuery(): String = QUERY
-
-    fun convertToMap(param: Param) = mapOf(
-        REVIEW_ID_PARAM to param.reviewId,
-        REASON_CODE_PARAM to param.report.reasonCode,
-        REASON_TEXT_PARAM to param.report.text,
-    )
+    override fun graphqlQuery(): String = query.getQuery()
 
     data class Param(
+        @SerializedName("feedbackID")
         val reviewId: Int,
-        val report: ReportUiModel,
-    )
+
+        @SerializedName("reasonCode")
+        val reasonCode: Int,
+
+        @SerializedName("reasonText")
+        val reasonText: String,
+    ) : GqlParam
 
     data class ReportSubmissionResponse(
         @SerializedName("productrevReportReview")
@@ -45,11 +50,8 @@ class SubmitReportUseCase @Inject constructor(
     }
 
     companion object {
-        private const val REVIEW_ID_PARAM = "feedbackID"
-        private const val REASON_CODE_PARAM = "reasonCode"
-        private const val REASON_TEXT_PARAM = "reasonText"
-
-        private const val QUERY = """
+        const val QUERY_NAME = "SubmitReportUseCaseQuery"
+        const val QUERY = """
             mutation reportReview(${'$'}feedbackID: String!, ${'$'}reasonCode: Int!, ${'$'}reasonText: String) {
               productrevReportReview(feedbackID: ${'$'}feedbackID, reasonCode: ${'$'}reasonCode, reasonText: ${'$'}reasonText) {
                 success

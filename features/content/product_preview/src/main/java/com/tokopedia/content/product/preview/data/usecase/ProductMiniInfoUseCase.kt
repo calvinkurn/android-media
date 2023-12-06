@@ -1,40 +1,41 @@
 package com.tokopedia.content.product.preview.data.usecase
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.product.preview.data.GetMiniProductInfoResponse
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 27/11/23
  */
+@GqlQuery(ProductMiniInfoUseCase.QUERY_NAME, ProductMiniInfoUseCase.QUERY)
 class ProductMiniInfoUseCase @Inject constructor(
     @ApplicationContext private val repo: GraphqlRepository,
     dispatchers: CoroutineDispatchers,
-) : CoroutineUseCase<Map<String, Any>, GetMiniProductInfoResponse>(dispatchers.io) {
+) : CoroutineUseCase<ProductMiniInfoUseCase.Param, GetMiniProductInfoResponse>(dispatchers.io) {
 
-    override suspend fun execute(params: Map<String, Any>): GetMiniProductInfoResponse {
-        return repo.request(graphqlQuery(), params)
+    private val query: GqlQueryInterface = ProductMiniInfoUseCaseQuery()
+    override suspend fun execute(params: Param): GetMiniProductInfoResponse {
+        return repo.request(query, params)
     }
 
-    override fun graphqlQuery(): String = QUERY
+    override fun graphqlQuery(): String = query.getQuery()
 
-    fun convertToMap(param: Param) : Map<String, Any> {
-        return mapOf(
-            PRODUCT_ID_PARAM to param.productId,
-        )
-    }
-
-    data class Param (
+    data class Param(
+        @SerializedName("productID")
         val productId: String,
-    )
+    ) : GqlParam
 
     companion object {
-        private const val PRODUCT_ID_PARAM = "productID"
-        private const val QUERY = """
+        const val QUERY_NAME = "ProductMiniInfoUseCaseQuery"
+        const val QUERY = """
             query getMiniInfo(${'$'}productID: String) {
                 productrevGetMiniProductInfo(productID: ${'$'}productID) {
                     product {
@@ -72,7 +73,5 @@ class ProductMiniInfoUseCase @Inject constructor(
                   }
             }
         """
-
     }
-
 }

@@ -65,6 +65,7 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.supportLibDependencies.kotlinMetaData
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 }
 
 
