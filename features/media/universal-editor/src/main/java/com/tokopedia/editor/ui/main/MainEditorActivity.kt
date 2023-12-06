@@ -6,14 +6,12 @@ package com.tokopedia.editor.ui.main
 import android.animation.Animator
 import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AccelerateInterpolator
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -40,6 +38,9 @@ import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
 import com.tokopedia.editor.util.safeLoadNativeLibrary
+import com.tokopedia.editor.util.slideDown
+import com.tokopedia.editor.util.slideOriginalPos
+import com.tokopedia.editor.util.slideTop
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
@@ -51,6 +52,7 @@ import com.tokopedia.picker.common.types.ToolType
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifyprinciples.UnifyMotion
 import javax.inject.Inject
 
 /**
@@ -107,14 +109,14 @@ open class MainEditorActivity : AppCompatActivity()
     private val audioMuteState by uiComponent { AudioStateUiComponent(it) }
 
     private val inputTextIntent = registerForActivityResult(StartActivityForResult()) {
-        animateChangePageTransition(true) {
+        animateSlide(isShow = true) {
             val result = InputTextActivity.result(it)
             viewModel.onEvent(MainEditorEvent.InputTextResult(result))
         }
     }
 
     private val placementIntent = registerForActivityResult(StartActivityForResult()) {
-        animateChangePageTransition(true) {
+        animateSlide(isShow = true) {
             val result = PlacementImageActivity.result(it)
             viewModel.onEvent(MainEditorEvent.PlacementImageResult(result))
         }
@@ -246,7 +248,7 @@ open class MainEditorActivity : AppCompatActivity()
                 audioMuteState.onShowOrHideAudioState(effect.isRemoved)
             }
             is MainEditorEffect.OpenPlacementPage -> {
-                animateChangePageTransition {
+                animateSlide {
                     navigateToPlacementImagePage(effect.sourcePath, effect.model)
                 }
             }
@@ -256,7 +258,7 @@ open class MainEditorActivity : AppCompatActivity()
             is MainEditorEffect.FinishEditorPage -> navigateBackToPickerAndFinishIntent(effect.filePath)
             is MainEditorEffect.ShowToastErrorMessage -> onShowToastErrorMessage(effect.message)
             is MainEditorEffect.OpenInputText -> {
-                animateChangePageTransition {
+                animateSlide {
                     navigateToInputTextTool(effect.model)
                 }
             }
@@ -280,23 +282,15 @@ open class MainEditorActivity : AppCompatActivity()
         overridePendingTransition(0, 0)
     }
 
-    private fun animateChangePageTransition(isShow: Boolean = false, onFinish: () -> Unit) {
+    private fun animateSlide(isShow: Boolean = false, onFinish: () -> Unit) {
         val animatorSet = AnimatorSet()
 
-        // determine animation play flow, show / hide
-        val valueSet = if (isShow) {
-            Pair(0f, 1f)
+        if (!isShow) {
+            animatorSet.playTogether(toolbar.container().slideTop())
+            animatorSet.playTogether(navigationTool.container().slideDown())
         } else {
-            Pair(1f, 0f)
-        }
-
-        listOf(toolbar.container(), navigationTool.container()).forEach {
-            animatorSet.playTogether(
-                ObjectAnimator.ofFloat(it,"alpha", valueSet.first, valueSet.second).apply {
-                    repeatCount = 0
-                    interpolator = AccelerateInterpolator()
-                }
-            )
+            animatorSet.playTogether(toolbar.container().slideOriginalPos())
+            animatorSet.playTogether(navigationTool.container().slideOriginalPos())
         }
 
         animatorSet.apply {
@@ -308,7 +302,7 @@ open class MainEditorActivity : AppCompatActivity()
                     onFinish()
                 }
             })
-            duration = TRANSITION_PAGE_DURATION
+            duration = UnifyMotion.T4
             start()
         }
     }
@@ -404,9 +398,5 @@ open class MainEditorActivity : AppCompatActivity()
      */
     private fun isSplitInstallEnabled(): Boolean {
         return true
-    }
-
-    companion object {
-        private const val TRANSITION_PAGE_DURATION = 250L
     }
 }

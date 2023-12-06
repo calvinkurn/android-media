@@ -314,6 +314,6 @@ class InputTextFragment @Inject constructor(
     companion object {
         private const val DEFAULT_TEXT_COLOR = -1
         private const val ANIMATION_DURATION = 400L
-        private const val SOFT_KEYBOARD_SHOW_DELAY = 300L
+        private const val SOFT_KEYBOARD_SHOW_DELAY = 100L
     }
 }
