@@ -1,12 +1,24 @@
 package com.tokopedia.content.product.preview.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.content.product.preview.data.usecase.MediaReviewUseCase
+import com.tokopedia.content.product.preview.data.usecase.ProductMiniInfoUseCase
+import com.tokopedia.content.product.preview.data.usecase.ReviewLikeUseCase
+import com.tokopedia.content.product.preview.data.usecase.SubmitReportUseCase
 import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 06/12/23
  */
-class ProductPreviewRepositoryImpl @Inject constructor(private val dispatchers: CoroutineDispatchers) :
+class ProductPreviewRepositoryImpl @Inject constructor(
+    private val dispatchers: CoroutineDispatchers,
+    private val miniInfoUseCase: ProductMiniInfoUseCase,
+    private val getReviewUseCase: MediaReviewUseCase,
+    private val likeUseCase: ReviewLikeUseCase,
+    private val submitReportUseCase: SubmitReportUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
+) :
     ProductPreviewRepository {
     override suspend fun getProductMiniInfo(productId: String) {
         TODO("Not yet implemented")
