@@ -19,7 +19,7 @@ class CategoryTitleAnalytic {
     // Tracker ID: 43848
     fun sendClickMoreCategoriesEvent (
         categoryIdL1: String,
-        warehouseId: String
+        warehouseIds: String
     ) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)
@@ -27,7 +27,7 @@ class CategoryTitleAnalytic {
             .setEventCategory(EVENT_CATEGORY_PAGE_L1)
             .setEventLabel(categoryIdL1)
             .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_OTHER_CATEGORIES)
-            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseIds)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()
