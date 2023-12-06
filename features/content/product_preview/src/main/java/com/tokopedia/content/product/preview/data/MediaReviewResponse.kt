@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.unified
+package com.tokopedia.content.product.preview.data
 
 import com.google.gson.annotations.SerializedName
 
@@ -12,7 +12,7 @@ data class MediaReviewResponse(
     data class ProductRevGetReviewMedia(
         @SerializedName("list")
         val reviewMedia: List<ReviewMedia> = emptyList(),
-        @SerializedName("detail")
+        @SerializedName("")
         val detail: Detail = Detail(),
         @SerializedName("hasNext")
         val hasNext: Boolean = false,
@@ -34,7 +34,7 @@ data class MediaReviewResponse(
     )
 
     data class Detail(
-        @SerializedName("review")
+        @SerializedName("")
         val reviewDetail: List<ReviewDetail> = emptyList(),
         @SerializedName("image")
         val reviewGalleryImages: List<ReviewGalleryImage> = emptyList(),
@@ -59,7 +59,7 @@ data class MediaReviewResponse(
         val description: String = "",
         @SerializedName("rating")
         val rating: Int = 0,
-        @SerializedName("review")
+        @SerializedName("")
         val review: String = "",
         @SerializedName("createTimestamp")
         val createTimestamp: String = "",

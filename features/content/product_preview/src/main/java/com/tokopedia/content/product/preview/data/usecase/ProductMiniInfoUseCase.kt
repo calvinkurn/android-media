@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.unified
+package com.tokopedia.content.product.preview.data.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
