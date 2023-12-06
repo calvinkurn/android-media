@@ -47,7 +47,3 @@ Although these libraries provide us with many functions that can be used immedia
 Content Test is a library that allows developers from Content Tribe to use functions that are often used when they are doing Unit Test or UI Test that are not available by default from the original test library.
 
 This library provides helper functions for creating Cassava Test, Espresso UI Test, and Unit Test.
-
-## Tech Stack
-
-- [**Espresso**](https://developer.android.com/training/testing/espresso): Default UI Test library for Android that can assert many states of Android views.
