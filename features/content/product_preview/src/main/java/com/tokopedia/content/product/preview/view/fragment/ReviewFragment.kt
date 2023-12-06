@@ -33,7 +33,7 @@ class ReviewFragment @Inject constructor(): TkpdBaseV4Fragment() {
     companion object {
         const val TAG = "ReviewFragment"
 
-        fun getFragment(
+        fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle

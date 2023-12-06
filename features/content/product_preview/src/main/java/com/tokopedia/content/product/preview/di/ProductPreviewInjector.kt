@@ -12,7 +12,7 @@ object ProductPreviewInjector {
             .baseAppComponent(
                 (context.applicationContext as BaseMainApplication).baseAppComponent,
             )
-            .productPreviewModule(ProductPreviewModule())
+            .productPreviewModule(ProductPreviewModule)
             .build()
     }
 
