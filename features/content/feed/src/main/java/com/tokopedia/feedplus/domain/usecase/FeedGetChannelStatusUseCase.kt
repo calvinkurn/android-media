@@ -10,6 +10,9 @@ import javax.inject.Inject
 
 /**
  * Created By : Muhammad Furqan on 04/12/23
+ *
+ * duplicate from : com.tokopedia.play.domain.GetChannelStatusUseCase
+ * need to revisit after "Redifine Common Modules in Content"
  */
 class FeedGetChannelStatusUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
