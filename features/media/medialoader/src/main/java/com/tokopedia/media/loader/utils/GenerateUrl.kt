@@ -71,7 +71,8 @@ private fun String.generateSecureUrl(
 internal fun Properties.generateUrl(): Any {
     val data = data.toString()
 
-    val isWebpEnabled = featureToggle?.isWebpFormatEnabled() == true
+    // we only need to send the webp converter for non-webp extension file type,
+    // which allows reduce the unnecessary process in the BE part.
     val isNotWebpImageUrl = MimeTypeMap.getFileExtensionFromUrl(data) != "webp"
 
     // secure image loader
@@ -79,7 +80,7 @@ internal fun Properties.generateUrl(): Any {
 
     // indicates that the url from our internal CDN, which contains a custom behavior,
     // such as adaptive delivery, webp support, custom header, etc.
-    if (data.isFromInternalCdnImageUrl() && isNotWebpImageUrl && isWebpEnabled) {
+    if (data.isFromInternalCdnImageUrl() && isNotWebpImageUrl) {
         return data.generateWebpUrl()
     }
 
