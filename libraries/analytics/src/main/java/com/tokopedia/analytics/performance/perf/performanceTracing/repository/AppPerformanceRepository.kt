@@ -20,11 +20,11 @@ class AppPerformanceRepository(
 
     private fun beginTrace() {
         beginAsyncSystraceSection(
-                "PageLoadTime.AsyncTTFL$name",
+                "AppPerfTrace.AsyncTTFL$name",
                 COOKIE_TTFL
         )
         beginAsyncSystraceSection(
-                "PageLoadTime.AsyncTTIL$name",
+                "AppPerfTrace.AsyncTTIL$name",
                 COOKIE_TTIL
         )
     }
@@ -35,12 +35,12 @@ class AppPerformanceRepository(
             recordPerfData(performanceTraceData)
             putFullyDrawnTrace(name)
             endAsyncSystraceSection(
-                "PageLoadTime.AsyncTTIL$name",
+                "AppPerfTrace.AsyncTTIL$name",
                 COOKIE_TTIL
             )
         } else if (performanceTraceData.ttflMeasured()) {
             endAsyncSystraceSection(
-                "PageLoadTime.AsyncTTFL$name",
+                "AppPerfTrace.AsyncTTFL$name",
                 COOKIE_TTFL
             )
         }

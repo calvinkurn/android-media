@@ -19,6 +19,7 @@
         android:theme="@style/NoActionBarTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="label,android:allowBackup,android:theme">
+        <profileable android:shell="true"/>
         <activity
             android:name=".comparison.ComparisonActivity"
             android:exported="false">
