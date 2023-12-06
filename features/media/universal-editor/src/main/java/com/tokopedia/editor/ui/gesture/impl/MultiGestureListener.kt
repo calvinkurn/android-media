@@ -52,9 +52,6 @@ class MultiGestureListener constructor(
     }
 
     override fun onTouch(view: View, event: MotionEvent): Boolean {
-        // skip the onTouch linter warning
-        view.performClick()
-
         // other gestures
         scaleGestureDetector.onTouchEvent(view, event)
         gestureDetector.onTouchEvent(event)
@@ -83,7 +80,6 @@ class MultiGestureListener constructor(
                 previousY = event.y
                 activePointerId = event.getPointerId(0)
                 view.bringToFront()
-                return true
             }
 
             // move

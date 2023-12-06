@@ -17,6 +17,7 @@ import com.tokopedia.editor.ui.model.AddTextModel;
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout;
 import com.tokopedia.editor.ui.widget.GridGuidelineView;
 
+@Deprecated // once the kt version got stable, let's remove this class.
 public class MultiTouchListener implements View.OnTouchListener {
 
     private static final int INVALID_POINTER_ID = -1;

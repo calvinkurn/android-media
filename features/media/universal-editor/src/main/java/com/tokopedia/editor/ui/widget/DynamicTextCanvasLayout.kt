@@ -135,6 +135,7 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         }
 
         addView(textView, layoutParams)
+        textView.id.updateModel(model)
     }
 
     private fun newGestureListener(textView: EditorEditTextView) {

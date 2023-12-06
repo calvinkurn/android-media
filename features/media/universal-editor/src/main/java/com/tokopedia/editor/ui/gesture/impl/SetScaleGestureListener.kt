@@ -24,19 +24,27 @@ class SetScaleGestureListener constructor(
     }
 
     override fun onScale(view: View, detector: ScaleGestureDetector): Boolean {
+        if (pivotX == 0f && pivotY == 0f) return false
+
         val info = AddTextModel(
-            detector.focusX - pivotX,
-            detector.focusY - pivotY,
-            detector.scaleFactor,
-            VectorAngle.get(prevSpanVector, detector.currentSpanVector),
-            pivotX,
-            pivotY,
-            0.2f,
-            10f
+            deltaX = detector.focusX - pivotX,
+            deltaY = detector.focusY - pivotY,
+            deltaScale = detector.getScaleFactor(),
+            deltaAngle = VectorAngle.get(prevSpanVector, detector.currentSpanVector),
+            pivotX = pivotX,
+            pivotY = pivotY,
+            minScale = MIN_SCALE,
+            maxScale = MAX_SCALE
         )
+
         multiGestureListener.move(view, info)
         return false
     }
 
     override fun onScaleEnd(view: View, detector: ScaleGestureDetector) {}
+
+    companion object {
+        private const val MIN_SCALE = 0.2f
+        private const val MAX_SCALE = 10.0f
+    }
 }
