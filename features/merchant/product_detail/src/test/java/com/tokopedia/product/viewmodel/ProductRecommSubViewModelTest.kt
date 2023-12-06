@@ -308,6 +308,23 @@ class ProductRecommSubViewModelTest {
     }
 
     @Test
+    fun `fail load view to view recommendation when recommendation item list is empty`() {
+        val response = RecommendationWidget(
+            pageName = "view_to_view",
+            recommendationItemList = emptyList()
+        )
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf(response)
+
+        viewModel.loadViewToView("view_to_view", "", false, "", "")
+
+        coVerify { getRecommendationUseCase.getData(any()) }
+        assertTrue(viewModel.loadViewToView.value is Fail)
+    }
+
+    @Test
     fun `fail load view to view recommendation on exception`() {
         coEvery {
             getRecommendationUseCase.getData(any())

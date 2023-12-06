@@ -259,4 +259,16 @@ object DetailResult {
             ).check(matches(isDisplayed()))
         }
     }
+
+    fun assertLabel(position: Int, text: String) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.lb_product_label)
+        ).check(matches(isDisplayed()))
+
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.lb_product_label)
+        ).check(matches(withText(text)))
+    }
 }

@@ -8,7 +8,9 @@ import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.network.authentication.HEADER_ORIGIN
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.youtube_common.YoutubeCommonConstant.ENDPOINT_TOKOPEDIA
 import com.tokopedia.youtube_common.YoutubeCommonConstant.ENDPOINT_URL
 import com.tokopedia.youtube_common.YoutubeCommonConstant.ID_KEY
 import com.tokopedia.youtube_common.YoutubeCommonConstant.PART_KEY
@@ -35,7 +37,8 @@ class GetYoutubeVideoDetailUseCase @Inject constructor(
             .setRequestType(RequestType.GET)
             .setHeaders(
                 mapOf(
-                    HEADER_USER_AGENT to AuthHelper.getUserAgent()
+                    HEADER_USER_AGENT to AuthHelper.getUserAgent(),
+                    HEADER_ORIGIN to ENDPOINT_TOKOPEDIA
                 )
             ).build()
         restRequestList.clear()

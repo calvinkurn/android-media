@@ -30,7 +30,7 @@ import androidx.annotation.StringDef
 )
 annotation class TokoNowLayoutType {
     companion object {
-        const val BANNER_CAROUSEL = "banner_carousel_v2"
+        const val BANNER_CAROUSEL = "tokonow_banner"
         const val CATEGORY = "category_tokonow"
         const val LEGO_3_IMAGE = "lego_3_image"
         const val LEGO_6_IMAGE = "6_image"

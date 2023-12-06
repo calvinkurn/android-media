@@ -9,7 +9,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class ReminderWidgetModel(
         val id: String = "",
         val data: ReminderWidget = ReminderWidget(),
-        var source: ReminderEnum
+        var source: ReminderEnum,
+        val name: String = "",
 ): ImpressHolder(), HomeComponentVisitable {
     override fun visitableId(): String? {
         return id

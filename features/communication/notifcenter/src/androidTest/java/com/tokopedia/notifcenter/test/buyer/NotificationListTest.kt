@@ -2,7 +2,6 @@ package com.tokopedia.notifcenter.test.buyer
 
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.stub.data.response.GqlResponseStub
 import com.tokopedia.notifcenter.test.base.BaseNotificationTest
 import com.tokopedia.notifcenter.test.robot.detailResult
 import com.tokopedia.notifcenter.test.robot.detailRobot
@@ -20,7 +19,7 @@ class NotificationListTest : BaseNotificationTest() {
     @Test
     fun should_show_new_list_title() {
         // Given
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             it.notifcenterDetail.list = listOf() // Remove old list
         }
 
@@ -37,7 +36,7 @@ class NotificationListTest : BaseNotificationTest() {
     @Test
     fun should_show_new_list_section_load_more_button_when_new_list_section_has_next_true_and_click() {
         // Given
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             it.notifcenterDetail.list = listOf() // Remove old list
             it.notifcenterDetail.newPaging.hasNext = true
         }
@@ -60,7 +59,7 @@ class NotificationListTest : BaseNotificationTest() {
     @Test
     fun should_hide_new_list_section_load_more_button_when_new_list_section_has_next_false() {
         // Given
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             it.notifcenterDetail.list = listOf() // Remove old list
             it.notifcenterDetail.newPaging.hasNext = false
         }
@@ -77,7 +76,7 @@ class NotificationListTest : BaseNotificationTest() {
     @Test
     fun should_show_earlier_title_only() {
         // Given
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             it.notifcenterDetail.newList = listOf() // Remove new list
         }
 
@@ -94,7 +93,7 @@ class NotificationListTest : BaseNotificationTest() {
     @Test
     fun should_show_earlier_section_load_more_button_when_earlier_section_has_next_true_and_click() {
         // Given
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             it.notifcenterDetail.newList = listOf() // Remove new list
             it.notifcenterDetail.paging.hasNext = true
         }
@@ -117,7 +116,7 @@ class NotificationListTest : BaseNotificationTest() {
     @Test
     fun should_hide_earlier_section_load_more_button_when_earlier_section_has_next_false() {
         // Given
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             it.notifcenterDetail.newList = listOf() // Remove new list
             it.notifcenterDetail.paging.hasNext = false
         }
@@ -149,7 +148,7 @@ class NotificationListTest : BaseNotificationTest() {
     @Test
     fun should_show_empty_state_with_just_text_when_notifications_is_empty() {
         // Given
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             it.notifcenterDetail.newList = listOf() // Remove new list
             it.notifcenterDetail.list = listOf() // Remove old list
         }
@@ -173,7 +172,7 @@ class NotificationListTest : BaseNotificationTest() {
         launchActivity()
 
         // Given
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             it.notifcenterDetail.newList = listOf() // Remove new list
             it.notifcenterDetail.list = listOf() // Remove old list
         }

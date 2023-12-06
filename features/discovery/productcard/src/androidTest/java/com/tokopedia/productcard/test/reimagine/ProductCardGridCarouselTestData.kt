@@ -3,9 +3,7 @@ package com.tokopedia.productcard.test.reimagine
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_BENEFIT
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
-import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_PRODUCT_OFFER
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_RIBBON
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
@@ -13,7 +11,6 @@ import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.longProductName
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
-import com.tokopedia.productcard.utils.LIGHT_GREEN
 import com.tokopedia.productcard.utils.RED
 import com.tokopedia.productcard.utils.TEXT_DARK_GREY
 import com.tokopedia.productcard.utils.WORDING_SEGERA_HABIS
@@ -48,11 +45,7 @@ private fun twoLineProductName(): ProductCardReimagineMatcher {
 }
 
 private fun atc(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
@@ -104,11 +97,7 @@ private fun stockInfoTersedia(): ProductCardReimagineMatcher {
         percentage = 40,
         label = "Tersedia"
     )
-    val reimagineBenefitLabel = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
@@ -165,11 +154,7 @@ private fun stockInfoSegeraHabis(): ProductCardReimagineMatcher {
         percentage = 90,
         label = WORDING_SEGERA_HABIS
     )
-    val reimagineBenefitLabel = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
@@ -226,11 +211,7 @@ private fun ribbonAndSlashedPriceInline(): ProductCardReimagineMatcher {
         percentage = 90,
         label = WORDING_SEGERA_HABIS
     )
-    val reimagineBenefitLabel = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
@@ -292,11 +273,7 @@ private fun ribbonAndSlashedPriceInline(): ProductCardReimagineMatcher {
 }
 
 private fun bmsm(): ProductCardReimagineMatcher {
-    val reimagineProductOffers = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_PRODUCT_OFFER,
-        title = "Beli 3 Diskon 10%",
-        type = LIGHT_GREEN,
-    )
+    val reimagineProductOffers = labelGroupProductOffers()
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
@@ -342,16 +319,8 @@ private fun bmsm(): ProductCardReimagineMatcher {
 }
 
 private fun benefitPriorityOverBMSM(): ProductCardReimagineMatcher {
-    val reimagineProductOffers = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_PRODUCT_OFFER,
-        title = "Beli 3 Diskon 10%",
-        type = LIGHT_GREEN,
-    )
-    val reimagineBenefitLabel = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+    val reimagineProductOffers = labelGroupProductOffers()
+    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
