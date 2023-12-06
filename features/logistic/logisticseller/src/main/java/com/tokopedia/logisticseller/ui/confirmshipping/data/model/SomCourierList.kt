@@ -23,10 +23,22 @@ data class SomCourierList(
             val status: String = ""
         ) {
 
+
             data class DataShipment(
                 @SerializedName("shipment")
-                val listShipment: List<Shipment> = listOf()
+                val listShipment: List<Shipment> = listOf(),
+
+                @SerializedName("ticker_unification_targets")
+                val tickerUnificationTargets: List<TickerUnificationTargets> = listOf()
             ) {
+
+                data class TickerUnificationTargets(
+                    @SerializedName("type")
+                    val type: String = "",
+
+                    @SerializedName("values")
+                    val values: List<String> = listOf()
+                )
 
                 data class Shipment(
                     @SerializedName("shipping_max_add_fee")

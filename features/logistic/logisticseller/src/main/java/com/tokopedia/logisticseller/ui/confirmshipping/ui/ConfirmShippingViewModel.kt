@@ -29,8 +29,8 @@ class ConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispatch
     val confirmShippingResult: LiveData<Result<SomConfirmShipping.Data.MpLogisticConfirmShipping>>
         get() = _confirmShippingResult
 
-    private val _courierListResult = MutableLiveData<Result<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>>()
-    val courierListResult: LiveData<Result<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>>
+    private val _courierListResult = MutableLiveData<Result<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment>>()
+    val courierListResult: LiveData<Result<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment>>
         get() = _courierListResult
 
     private val _changeCourierResult = MutableLiveData<Result<SomChangeCourier.Data>>()
@@ -48,6 +48,7 @@ class ConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispatch
     fun getCourierList() {
         launchCatchError(block = {
             _courierListResult.postValue(Success(somGetCourierListUseCase.execute()))
+
         }, onError = {
             _courierListResult.postValue(Fail(it))
         })

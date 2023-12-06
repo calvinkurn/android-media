@@ -34,6 +34,14 @@
 
     </FrameLayout>
 
+    <com.tokopedia.targetedticker.ui.TargetedTickerWidget
+        android:id="@+id/ticker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerSomConfirmShipping"/>
+
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tf_no_resi"
         android:layout_width="match_parent"
@@ -42,7 +50,7 @@
         android:layout_marginTop="16dp"
         android:contentDescription="@string/content_desc_tf_no_resi"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerSomConfirmShipping" />
+        app:layout_constraintTop_toBottomOf="@id/ticker" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_change_courier"

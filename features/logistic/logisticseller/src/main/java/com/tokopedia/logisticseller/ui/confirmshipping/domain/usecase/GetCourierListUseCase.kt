@@ -14,8 +14,8 @@ class GetCourierListUseCase @Inject constructor(private val useCase: GraphqlUseC
         useCase.setTypeClass(SomCourierList.Data::class.java)
     }
 
-    suspend fun execute(): MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment> {
+    suspend fun execute(): SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment {
         useCase.setGraphqlQuery(GetCourierListQuery)
-        return useCase.executeOnBackground().mpLogisticGetEditShippingForm.dataShipment.listShipment.toMutableList()
+        return useCase.executeOnBackground().mpLogisticGetEditShippingForm.dataShipment
     }
 }

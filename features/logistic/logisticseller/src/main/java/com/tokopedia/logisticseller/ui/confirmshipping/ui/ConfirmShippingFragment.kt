@@ -33,7 +33,12 @@ import com.tokopedia.logisticseller.ui.confirmshipping.data.ConfirmShippingAnaly
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
 import com.tokopedia.logisticseller.ui.confirmshipping.di.ConfirmShippingComponent
 import com.tokopedia.logisticseller.ui.confirmshipping.di.DaggerConfirmShippingComponent
+import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomConfirmReqPickup
+import com.tokopedia.targetedticker.domain.TargetedTickerPage
+import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
+import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -292,7 +297,7 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
             Observer {
                 when (it) {
                     is Success -> {
-                        courierListResponse = it.data
+                        courierListResponse = it.data.listShipment
 
                         if (courierListResponse.isNotEmpty()) {
                             currShipmentId = courierListResponse.first().shipmentId.toLongOrZero()
@@ -316,6 +321,8 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
 
                         binding?.labelChoosenCourierService?.setOnClickListener { showBottomSheetCourier(true) }
                         binding?.ivChooseCourierService?.setOnClickListener { showBottomSheetCourier(true) }
+
+                        initTicker(it.data.tickerUnificationTargets)
                     }
 
                     is Fail -> {
@@ -332,6 +339,23 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
                 }
             }
         )
+    }
+
+    private fun initTicker(tickerUnificationTargets: List<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.TickerUnificationTargets>) {
+
+        binding?.ticker?.apply { ->
+            setTickerShape(Ticker.SHAPE_FULL)
+            val param = TargetedTickerParamModel(
+                page = TargetedTickerPage.SHIPPING_FORM,
+                targets = tickerUnificationTargets.map {
+                    TargetedTickerParamModel.Target(it.type, it.values)
+                }
+            )
+            loadAndShow(param)
+        }
+
+
+
     }
 
     private fun observingChangeCourier() {

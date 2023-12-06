@@ -22,6 +22,10 @@ object GetCourierListQuery: GqlQueryInterface {
                       sp_id
                     }
                   }
+                  ticker_unification_targets{
+                    type
+                    values
+                  }
                 }
                 status
                 server_process_time
