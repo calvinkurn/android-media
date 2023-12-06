@@ -112,7 +112,7 @@ class FeedBrowseItemDecoration(
             else -> offset12
         }
 
-        val nextSpanRowPosition = currPosition + (spanCount - spanIndex - 1) + 1
+        val nextSpanRowPosition = currPosition + (spanCount - spanIndex - lParams.spanSize) + 1
         if (nextSpanRowPosition >= state.itemCount) return
 
         bottom = when (adapter.getItemViewType(nextSpanRowPosition)) {
