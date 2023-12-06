@@ -17,11 +17,13 @@
         android:id="@+id/rv_steal_the_look"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintWidth_max="@dimen/steal_the_look_container_max_width"
         android:paddingLeft="@dimen/steal_the_look_outer_left_padding"
         android:paddingRight="@dimen/steal_the_look_outer_right_padding"
         app:layout_constraintTop_toBottomOf="@id/header_view_recommendation_vertical"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0"/>
 
     <com.tokopedia.unifycomponents.PageControl
         android:id="@+id/stl_page_control"
