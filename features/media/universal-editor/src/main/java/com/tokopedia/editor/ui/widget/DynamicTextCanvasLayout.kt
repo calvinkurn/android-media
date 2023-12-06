@@ -103,6 +103,14 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         removeView(view)
     }
 
+    override fun onDrag() {
+        listener?.onDrag()
+    }
+
+    override fun onRelease(isDragging: Boolean) {
+        listener?.onRelease(isDragging)
+    }
+
     private fun editText(id: Int, model: InputTextModel) {
         val view = findViewById<EditorEditTextView>(id) ?: return
 
@@ -180,6 +188,8 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
 
     interface Listener {
         fun onTextClick(text: View, model: InputTextModel?)
+        fun onDrag()
+        fun onRelease(isDragging: Boolean)
     }
 
     companion object {

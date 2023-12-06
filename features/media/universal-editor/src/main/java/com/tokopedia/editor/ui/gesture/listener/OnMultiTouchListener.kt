@@ -4,4 +4,6 @@ import android.view.View
 
 interface OnMultiTouchListener {
     fun onRemoveView(view: View)
+    fun onDrag()
+    fun onRelease(isDragging: Boolean)
 }

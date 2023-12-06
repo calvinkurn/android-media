@@ -165,6 +165,16 @@ open class MainEditorActivity : AppCompatActivity()
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
     }
 
+    override fun onDrag() {
+        navigationTool.container().slideDown().start()
+    }
+
+    override fun onRelease(isDragging: Boolean) {
+        if (isDragging) {
+            navigationTool.container().slideOriginalPos().start()
+        }
+    }
+
     override fun onBackPressed() {
         viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton())
     }
