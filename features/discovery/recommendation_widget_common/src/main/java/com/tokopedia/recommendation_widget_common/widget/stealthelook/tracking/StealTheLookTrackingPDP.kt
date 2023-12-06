@@ -10,6 +10,7 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DEFAULT_VALUE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_40
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_56
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_58
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.IMPRESSIONS
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_BRAND
@@ -23,6 +24,7 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.TRACKER_ID
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.VALUE_IS_TOPADS
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.VALUE_NONE_OTHER
+import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookGridModel
@@ -52,6 +54,7 @@ class StealTheLookTrackingPDP(
         model: StealTheLookStyleModel
     ) {
         val anchorItem = model.grids.firstOrNull { it.recommendationItem.productId.toString() == source.anchorProductId }?.recommendationItem
+        val stylePosition = model.stylePosition + 1
         trackingQueue.putEETracking(hashMapOf(
             TrackAppUtils.EVENT to RecommendationTrackingConstants.Action.PRODUCT_VIEW,
             TrackAppUtils.EVENT_CATEGORY to source.eventCategory,
@@ -65,7 +68,7 @@ class StealTheLookTrackingPDP(
                 anchorItem?.recommendationType.orEmpty(),
                 if(anchorItem?.isTopAds == true) VALUE_IS_TOPADS else DEFAULT_VALUE,
                 widget.layoutType,
-                model.stylePosition,
+                stylePosition,
                 anchorItem?.position?.let { it + 1 }.orZero(),
                 anchorItem?.departmentId.orZero(),
                 source.anchorProductId
@@ -81,12 +84,13 @@ class StealTheLookTrackingPDP(
                             item.recommendationType,
                             if(item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
                             widget.layoutType,
-                            model.stylePosition,
+                            stylePosition,
                             it.position + 1,
                             item.departmentId,
                             source.anchorProductId
                         ),
                         DIMENSION_56 to item.warehouseId.toString(),
+                        DIMENSION_58 to item.labelGroupList.hasLabelGroupFulfillment().toString(),
                         KEY_INDEX to (it.position + 1).toString(),
                         ITEM_BRAND to VALUE_NONE_OTHER,
                         ITEM_CATEGORY to item.categoryBreadcrumbs,
@@ -102,12 +106,13 @@ class StealTheLookTrackingPDP(
 
     override fun sendEventItemClick(model: StealTheLookGridModel) {
         val item = model.recommendationItem
+        val stylePosition = model.stylePosition + 1
         val list = LIST_FORMAT.format(
             model.recommendationWidget.pageName,
             item.recommendationType,
             if(item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
             widget.layoutType,
-            model.stylePosition,
+            stylePosition,
             model.position,
             item.departmentId,
             source.anchorProductId
@@ -127,6 +132,7 @@ class StealTheLookTrackingPDP(
                     Bundle().apply {
                         putString(DIMENSION_40, list)
                         putString(DIMENSION_56, item.warehouseId.toString())
+                        putString(DIMENSION_58, item.labelGroupList.hasLabelGroupFulfillment().toString())
                         putString(KEY_INDEX, (model.position + 1).toString())
                         putString(ITEM_BRAND, VALUE_NONE_OTHER)
                         putString(ITEM_CATEGORY, item.categoryBreadcrumbs)
