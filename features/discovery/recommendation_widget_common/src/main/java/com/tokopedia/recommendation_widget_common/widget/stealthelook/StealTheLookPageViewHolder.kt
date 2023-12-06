@@ -14,6 +14,7 @@ import com.tokopedia.recommendation_widget_common.R as recommendation_widget_com
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetStealTheLookPageBinding
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifyprinciples.Typography
 
@@ -140,6 +141,7 @@ class StealTheLookPageViewHolder(
 
         setOnClickListener {
             if(model.recommendationItem.appUrl.isNotEmpty()) {
+                sendTopAdsClickTracker(model.recommendationItem)
                 model.tracking?.sendEventItemClick(model)
                 RouteManager.route(context, model.recommendationItem.appUrl)
             }
@@ -148,7 +150,35 @@ class StealTheLookPageViewHolder(
 
     private fun sendViewportImpression(model: StealTheLookStyleModel) {
         binding.root.addOnImpressionListener(model) {
+            sendTopadsImpressionTracker(model)
             model.tracking?.sendEventViewportImpression(trackingQueue, model)
+        }
+    }
+
+    private fun sendTopadsImpressionTracker(model: StealTheLookStyleModel) {
+        model.grids.forEach {
+            val item = it.recommendationItem
+            if (item.isTopAds && item.appUrl.isNotEmpty()) {
+                TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                    CLASS_NAME,
+                    item.trackerImageUrl,
+                    item.productId.toString(),
+                    item.name,
+                    item.imageUrl,
+                )
+            }
+        }
+    }
+
+    private fun sendTopAdsClickTracker(recommendationItem: RecommendationItem) {
+        if (recommendationItem.isTopAds && recommendationItem.appUrl.isNotEmpty()) {
+            TopAdsUrlHitter(itemView.context).hitClickUrl(
+                CLASS_NAME,
+                recommendationItem.clickUrl,
+                recommendationItem.productId.toString(),
+                recommendationItem.name,
+                recommendationItem.imageUrl
+            )
         }
     }
 
