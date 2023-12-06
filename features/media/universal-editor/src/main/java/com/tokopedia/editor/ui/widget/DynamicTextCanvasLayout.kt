@@ -11,10 +11,10 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.editor.R
 import com.tokopedia.editor.ui.gesture.api.MultiTouchListener
+import com.tokopedia.editor.ui.gesture.impl.MultiGestureListener
 import com.tokopedia.editor.ui.gesture.listener.OnGestureControl
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener
 import com.tokopedia.editor.ui.model.InputTextModel
@@ -120,15 +120,6 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
 
     private fun addText(model: InputTextModel) {
         val layoutParams = defaultLayoutParamEditTextView(model.textAlign)
-        val layout = RelativeLayout(context)
-
-        layout.addView(addScalableText(model))
-
-        addView(layout, layoutParams)
-        layout.id.updateModel(model)
-    }
-
-    private fun addScalableText(model: InputTextModel): EditorEditTextView {
         val textView = EditorEditTextView(context)
 
         textView.setViewId()
@@ -136,6 +127,32 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         textView.styleInsets(model)
         textView.setAsTextView()
 
+        // hansel-able
+        if (newApiEnabled()) {
+            newGestureListener(textView)
+        } else {
+            oldGestureListener(textView)
+        }
+
+        addView(textView, layoutParams)
+    }
+
+    private fun newGestureListener(textView: EditorEditTextView) {
+        val listener = MultiGestureListener(
+            view = textView,
+            context = context,
+            onGestureControl = object : OnGestureControl {
+                override fun onClick() {
+                    listener?.onTextClick(textView, models[textView.id])
+                }
+            },
+            onMultiTouchListener = this
+        )
+
+        textView.setOnTouchListener(listener)
+    }
+
+    private fun oldGestureListener(textView: EditorEditTextView) {
         val touchListener = MultiTouchListener(context, textView)
         touchListener.setOnMultiTouchListener(this)
 
@@ -147,8 +164,9 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         })
 
         textView.setOnTouchListener(touchListener)
-        return textView
     }
+
+    private fun newApiEnabled() = true
 
     private fun createGridGuidelineView() {
         gridGuidelineView.id = VIEW_GRID_GUIDELINE_ID
