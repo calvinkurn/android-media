@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.stealthelook.tracking
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.SELECT_CONTENT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_HOME
@@ -9,7 +10,6 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DEFAULT_VALUE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_40
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_56
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_58
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.IMPRESSIONS
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_BRAND
@@ -27,7 +27,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookGridModel
 import com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookStyleModel
-import com.tokopedia.recommendation_widget_common.widget.vertical.tracking.RecommendationVerticalTrackingPDP
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.constant.TrackerConstant
@@ -52,6 +51,7 @@ class StealTheLookTrackingPDP(
         trackingQueue: TrackingQueue,
         model: StealTheLookStyleModel
     ) {
+        val anchorItem = model.grids.firstOrNull { it.recommendationItem.productId.toString() == source.anchorProductId }?.recommendationItem
         trackingQueue.putEETracking(hashMapOf(
             TrackAppUtils.EVENT to RecommendationTrackingConstants.Action.PRODUCT_VIEW,
             TrackAppUtils.EVENT_CATEGORY to source.eventCategory,
@@ -62,19 +62,19 @@ class StealTheLookTrackingPDP(
             TrackerConstant.CURRENT_SITE to RecommendationTrackingConstants.Tracking.CURRENT_SITE_MP,
             ITEM_LIST to LIST_FORMAT.format(
                 model.recommendationWidget.pageName,
-                DEFAULT_VALUE,
-                DEFAULT_VALUE,
+                anchorItem?.recommendationType.orEmpty(),
+                if(anchorItem?.isTopAds == true) VALUE_IS_TOPADS else DEFAULT_VALUE,
                 widget.layoutType,
                 model.stylePosition,
-                DEFAULT_VALUE,
-                DEFAULT_VALUE,
+                anchorItem?.position?.let { it + 1 }.orZero(),
+                anchorItem?.departmentId.orZero(),
                 source.anchorProductId
             ),
             TrackerConstant.USERID to userId,
             RecommendationTrackingConstants.Tracking.ECOMMERCE to mapOf(
                 CURRENCY_CODE to RecommendationTrackingConstants.Tracking.IDR,
-                IMPRESSIONS to model.gridPositionMap.toList().mapIndexed { index, pair ->
-                    val item = pair.second.recommendationItem
+                IMPRESSIONS to model.grids.map {
+                    val item = it.recommendationItem
                     mapOf(
                         DIMENSION_40 to LIST_FORMAT.format(
                             model.recommendationWidget.pageName,
@@ -82,12 +82,12 @@ class StealTheLookTrackingPDP(
                             if(item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
                             widget.layoutType,
                             model.stylePosition,
-                            index + 1,
+                            it.position + 1,
                             item.departmentId,
                             source.anchorProductId
                         ),
                         DIMENSION_56 to item.warehouseId.toString(),
-                        KEY_INDEX to (index + 1).toString(),
+                        KEY_INDEX to (it.position + 1).toString(),
                         ITEM_BRAND to VALUE_NONE_OTHER,
                         ITEM_CATEGORY to item.categoryBreadcrumbs,
                         ITEM_ID to item.productId,

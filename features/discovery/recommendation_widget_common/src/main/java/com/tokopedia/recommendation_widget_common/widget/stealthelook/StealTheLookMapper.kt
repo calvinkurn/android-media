@@ -26,6 +26,7 @@ object StealTheLookMapper {
         tracking: StealTheLookTracking?,
     ): List<StealTheLookStyleModel> {
         return recommendationWidget.recommendationItemList.chunked(StealTheLookStyleModel.GRID_COUNT)
+            .filter { it.size == StealTheLookStyleModel.GRID_COUNT }
             .mapIndexed { index, recommendationItems ->
                 mapToStyleModel(
                     stylePosition = index,
@@ -44,11 +45,11 @@ object StealTheLookMapper {
     ): StealTheLookStyleModel {
         return StealTheLookStyleModel(
             stylePosition = stylePosition,
-            gridPositionMap = recommendationItems.withIndex().associate {
-                it.value.gridPosition to StealTheLookGridModel(
+            grids = recommendationItems.mapIndexed { index, recommendationItem ->
+                StealTheLookGridModel(
                     stylePosition,
-                    it.index,
-                    it.value,
+                    index,
+                    recommendationItem,
                     recommendationWidget,
                     tracking
                 )

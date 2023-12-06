@@ -13,7 +13,6 @@ import com.tokopedia.recommendation_widget_common.R as recommendation_widget_com
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetStealTheLookPageBinding
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.stealthelook.tracking.StealTheLookTracking
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifyprinciples.Typography
 
@@ -36,7 +35,7 @@ class StealTheLookPageViewHolder(
     }
 
     private fun StealTheLookStyleModel.getGridAtPos(gridPosition: RecommendationItem.GridPosition): StealTheLookGridModel? {
-        return gridPositionMap[gridPosition]
+        return grids.firstOrNull { it.recommendationItem.gridPosition == gridPosition }
     }
 
     private fun renderLeftGrid(model: StealTheLookStyleModel) {

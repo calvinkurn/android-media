@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/steal_the_look_outer_left_padding"
+    android:paddingRight="@dimen/steal_the_look_outer_right_padding">
 
     <include
         layout="@layout/recommendation_widget_steal_the_look_grid_left"

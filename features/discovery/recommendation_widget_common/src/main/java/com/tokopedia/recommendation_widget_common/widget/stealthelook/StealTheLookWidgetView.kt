@@ -46,9 +46,7 @@ class StealTheLookWidgetView :
     private val layoutManager by lazy { NpaLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL) }
 
     private val snapHelper: StartPagerSnapHelper by lazy {
-        val leftPadding = context.resources.getDimensionPixelSize(recommendation_widget_commonR.dimen.steal_the_look_outer_left_padding)
-        val rightPadding = context.resources.getDimensionPixelSize(recommendation_widget_commonR.dimen.steal_the_look_outer_right_padding)
-        StartPagerSnapHelper(leftPadding + rightPadding)
+        StartPagerSnapHelper().also { it.itemPerPage = 1 }
     }
 
     override val layoutId: Int
@@ -78,6 +76,7 @@ class StealTheLookWidgetView :
 
     private fun setupRecyclerView(model: StealTheLookWidgetModel) {
         with(binding.rvStealTheLook) {
+            layoutManager = this@StealTheLookWidgetView.layoutManager
             snapHelper.attachToRecyclerView(this)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
