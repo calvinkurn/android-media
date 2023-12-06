@@ -32,7 +32,8 @@ class HotspotTagView @JvmOverloads constructor(
         private const val ALPHA_SHOW = 1f
         private const val SCALE_X_SHOW = 1f
         private const val SCALE_Y_SHOW = 1f
-        private const val INTRO_ANIMATION_DELAY = 2000L
+        private const val INTRO_ANIMATION_START_DELAY = 1000L
+        private const val INTRO_ANIMATION_POST_DELAY = 2000L
     }
 
     interface Listener{
@@ -89,10 +90,13 @@ class HotspotTagView @JvmOverloads constructor(
     }
 
     fun showIntroAnimation() {
-        showWithAnimation().withEndAction {
-            coroutineScope.launch {
-                delay(INTRO_ANIMATION_DELAY)
-                hideWithAnimation()
+        coroutineScope.launch {
+            delay(INTRO_ANIMATION_START_DELAY)
+            showWithAnimation().withEndAction {
+                coroutineScope.launch{
+                    delay(INTRO_ANIMATION_POST_DELAY)
+                    hideWithAnimation()
+                }
             }
         }
     }
