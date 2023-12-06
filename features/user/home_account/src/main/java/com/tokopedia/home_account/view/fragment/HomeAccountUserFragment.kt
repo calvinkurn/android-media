@@ -81,8 +81,8 @@ import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
-import com.tokopedia.home_account.fundsAndInvestment.FundsAndInvestmentComposeActivity
 import com.tokopedia.home_account.ui.accountsettings.AccountSettingActivity
+import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentComposeActivity
 import com.tokopedia.home_account.ui.mediaquality.MediaQualitySettingActivity
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.FundsAndInvestmentActivity

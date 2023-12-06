@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.fundsAndInvestment.ui
+package com.tokopedia.home_account.ui.fundsAndInvestment.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,8 +26,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.home_account.R
-import com.tokopedia.home_account.fundsAndInvestment.FundsAndInvestmentResult
-import com.tokopedia.home_account.fundsAndInvestment.isRefreshData
+import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentResult
+import com.tokopedia.home_account.ui.fundsAndInvestment.isRefreshData
 import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.nest.principles.ui.NestTheme
 
