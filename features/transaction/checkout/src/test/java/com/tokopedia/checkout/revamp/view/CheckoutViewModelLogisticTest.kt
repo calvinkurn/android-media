@@ -2,6 +2,8 @@ package com.tokopedia.checkout.revamp.view
 
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
@@ -10,6 +12,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderInsurance
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
@@ -1279,6 +1282,224 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
     }
 
     @Test
+    fun set_selected_schedule_delivery_with_shipment_action() {
+        // given
+        coEvery { getShipmentAddressFormV4UseCase.invoke(any()) } returns CartShipmentAddressFormData()
+
+        val orderModel = CheckoutOrderModel(
+            "123",
+            shipmentAction = hashMapOf(
+                1L to ShipmentAction(action = "merge"),
+                2L to ShipmentAction(action = "split")
+            )
+        )
+        viewModel.shipmentAction = "merge"
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(false)
+        val courierItemData =
+            CourierItemData(scheduleDeliveryUiModel = scheduleDeliveryUiModel, shipperProductId = 2)
+
+        // when
+        viewModel.setSelectedScheduleDelivery(
+            5,
+            orderModel,
+            CourierItemData(),
+            scheduleDeliveryUiModel,
+            courierItemData
+        )
+
+        // then
+        coVerify { getShipmentAddressFormV4UseCase.invoke(match { it.shipmentAction == "split" }) }
+    }
+
+    @Test
+    fun set_selected_schedule_delivery_with_same_shipment_action() {
+        // given
+        coEvery { getShipmentAddressFormV4UseCase.invoke(any()) } returns CartShipmentAddressFormData()
+
+        val orderModel = CheckoutOrderModel(
+            "123",
+            shipmentAction = hashMapOf(
+                1L to ShipmentAction(action = "merge"),
+                2L to ShipmentAction(action = "split")
+            )
+        )
+        viewModel.shipmentAction = "split"
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(false)
+        val courierItemData =
+            CourierItemData(scheduleDeliveryUiModel = scheduleDeliveryUiModel, shipperProductId = 2)
+
+        // when
+        viewModel.setSelectedScheduleDelivery(
+            5,
+            orderModel,
+            CourierItemData(),
+            scheduleDeliveryUiModel,
+            courierItemData
+        )
+
+        // then
+        coVerify(inverse = true) { getShipmentAddressFormV4UseCase.invoke(match { it.shipmentAction == "split" }) }
+    }
+
+    @Test
+    fun set_selected_schedule_delivery_with_shipment_action_popup() {
+        // given
+        coEvery { getShipmentAddressFormV4UseCase.invoke(any()) } returns CartShipmentAddressFormData()
+
+        val orderModel = CheckoutOrderModel(
+            "123",
+            shipmentAction = hashMapOf(
+                1L to ShipmentAction(action = "merge"),
+                2L to ShipmentAction(
+                    action = "split",
+                    popup = ShipmentAction.ShipmentActionPopup(
+                        title = "title",
+                        body = "body",
+                        primaryButton = "button",
+                        secondaryButton = "button 2"
+                    )
+                )
+            )
+        )
+        viewModel.shipmentAction = "merge"
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(false)
+        val courierItemData =
+            CourierItemData(scheduleDeliveryUiModel = scheduleDeliveryUiModel, shipperProductId = 2)
+
+        // when
+        viewModel.setSelectedScheduleDelivery(
+            5,
+            orderModel,
+            CourierItemData(),
+            scheduleDeliveryUiModel,
+            courierItemData
+        )
+
+        // then
+        assertEquals(
+            CheckoutPageState.ShipmentActionPopUpConfirmation(
+                "123",
+                ShipmentAction(
+                    action = "split",
+                    popup = ShipmentAction.ShipmentActionPopup(
+                        title = "title",
+                        body = "body",
+                        primaryButton = "button",
+                        secondaryButton = "button 2"
+                    )
+                )
+            ),
+            viewModel.pageState.value
+        )
+        coVerify(inverse = true) { getShipmentAddressFormV4UseCase.invoke(match { it.shipmentAction == "split" }) }
+    }
+
+    @Test
+    fun set_selected_schedule_delivery_with_incomplete_shipment_action_popup() {
+        // given
+        coEvery { getShipmentAddressFormV4UseCase.invoke(any()) } returns CartShipmentAddressFormData()
+
+        val orderModel = CheckoutOrderModel(
+            "123",
+            shipmentAction = hashMapOf(
+                1L to ShipmentAction(action = "merge"),
+                2L to ShipmentAction(
+                    action = "split",
+                    popup = ShipmentAction.ShipmentActionPopup(
+                        title = "title",
+                        body = "",
+                        primaryButton = "button",
+                        secondaryButton = "button 2"
+                    )
+                )
+            )
+        )
+        viewModel.shipmentAction = "merge"
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(false)
+        val courierItemData =
+            CourierItemData(scheduleDeliveryUiModel = scheduleDeliveryUiModel, shipperProductId = 2)
+
+        // when
+        viewModel.setSelectedScheduleDelivery(
+            5,
+            orderModel,
+            CourierItemData(),
+            scheduleDeliveryUiModel,
+            courierItemData
+        )
+
+        // then
+        assertEquals(
+            CheckoutPageState.ShipmentActionPopUpConfirmation(
+                "123",
+                ShipmentAction(
+                    action = "split",
+                    popup = ShipmentAction.ShipmentActionPopup(
+                        title = "title",
+                        body = "",
+                        primaryButton = "button",
+                        secondaryButton = "button 2"
+                    )
+                )
+            ),
+            viewModel.pageState.value
+        )
+        coVerify(inverse = true) { getShipmentAddressFormV4UseCase.invoke(match { it.shipmentAction == "split" }) }
+    }
+
+    @Test
     fun set_selected_schedule_delivery() {
         // given
         coEvery {
@@ -1300,6 +1521,51 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
         val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(false)
+        val courierItemData = CourierItemData(scheduleDeliveryUiModel = scheduleDeliveryUiModel)
+
+        // when
+        viewModel.setSelectedScheduleDelivery(
+            5,
+            orderModel,
+            CourierItemData(),
+            scheduleDeliveryUiModel,
+            courierItemData
+        )
+
+        // then
+        assertEquals(
+            courierItemData,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
+    }
+
+    @Test
+    fun set_selected_schedule_delivery_with_no_promo() {
+        // given
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        val orderModel = CheckoutOrderModel("123")
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(
+            true,
+            scheduleDate = "scheduleDate",
+            timeslotId = 1,
+            deliveryProduct = DeliveryProduct(validationMetadata = "validationMetadata")
+        )
         val courierItemData = CourierItemData(scheduleDeliveryUiModel = scheduleDeliveryUiModel)
 
         // when
@@ -1362,6 +1628,80 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
         val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(false)
+        val courierItemData = CourierItemData(scheduleDeliveryUiModel = scheduleDeliveryUiModel)
+
+        // when
+        viewModel.setSelectedScheduleDelivery(
+            5,
+            orderModel,
+            orderModel.shipment.courierItemData!!,
+            scheduleDeliveryUiModel,
+            courierItemData
+        )
+
+        // then
+        assertEquals(
+            courierItemData,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
+        assertEquals(
+            LastApplyUiModel(),
+            (viewModel.listData.value[7] as CheckoutPromoModel).promo
+        )
+        coVerify(exactly = 1) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        }
+    }
+
+    @Test
+    fun set_selected_schedule_delivery_with_clear_old_promo_and_select_selly() {
+        // given
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } returns ClearPromoUiModel(
+            SuccessDataUiModel(true)
+        )
+
+        val orderModel = CheckoutOrderModel(
+            "123",
+            boUniqueId = "12",
+            shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode"))
+        )
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "12"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(
+                promo = LastApplyUiModel(
+                    voucherOrders = listOf(
+                        LastApplyVoucherOrdersItemUiModel(
+                            code = "boCode",
+                            "12",
+                            message = LastApplyMessageUiModel(state = "green"),
+                            type = "logistic",
+                            cartStringGroup = "123"
+                        )
+                    )
+                )
+            ),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(
+            true,
+            scheduleDate = "scheduleDate",
+            timeslotId = 1,
+            deliveryProduct = DeliveryProduct(validationMetadata = "validationMetadata")
+        )
         val courierItemData = CourierItemData(scheduleDeliveryUiModel = scheduleDeliveryUiModel)
 
         // when
@@ -2150,7 +2490,8 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
     @Test
     fun `WHEN get shipping schedule delivery rates success THEN should render success`() {
         // Given
-        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRecommendedRatesResponse()
+        val ratesScheduleDeliveryResponse =
+            DataProvider.provideScheduleDeliveryRecommendedRatesResponse()
         val cartStringGroup = "123"
 
         coEvery { scheduleDeliveryUseCase(any()) } returns ratesScheduleDeliveryResponse
