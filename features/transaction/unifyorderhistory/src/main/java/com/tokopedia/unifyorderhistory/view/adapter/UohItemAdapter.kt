@@ -81,6 +81,11 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             orderUUID: String,
             componentData: UohListOrder.UohOrders.Order.Metadata.ExtraComponent
         )
+        fun onChevronBuyAgainWidgetClicked(applink: String)
+
+        fun onProductCardClicked(pdpApplink: String)
+
+        fun onBuyAgainWidgetButtonClicked(recommendationItem: RecommendationItem)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -123,7 +128,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
             LAYOUT_BUY_AGAIN -> {
                 val binding = UohBuyAgainBinding.inflate(LayoutInflater.from(parent.context), null, false)
-                UohBuyAgainViewHolder(binding)
+                UohBuyAgainViewHolder(binding, actionListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -232,6 +237,11 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun appendList(list: List<UohTypeData>) {
         listTypeData.addAll(list)
         notifyDataSetChanged()
+    }
+
+    fun addBuyAgainWidget(data: UohTypeData) {
+        listTypeData.add(0, data)
+        notifyItemInserted(0)
     }
 
     fun setActionListener(fragment: UohListFragment) {

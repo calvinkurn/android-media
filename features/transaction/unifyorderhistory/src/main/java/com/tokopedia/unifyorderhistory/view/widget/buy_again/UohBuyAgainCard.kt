@@ -1,6 +1,7 @@
 package com.tokopedia.unifyorderhistory.view.widget.buy_again
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,9 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -41,10 +43,11 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.viewallcard.compose.NestViewAllCard
 import com.tokopedia.nest.principles.utils.ImageSource as ImageSource
 
-@Preview()
+/*@Preview
 @Composable
 fun BuyAgainPreview() {
     UohBuyAgainWidget(
@@ -59,7 +62,7 @@ fun BuyAgainPreview() {
                     discountPercentageInt = 15,
                     discountPercentage = "15",
                     slashedPrice = "Rp30.000"
-                )/*,
+                )*//*,
             RecommendationItem(
                     name = "Fillet Ikan Pangasius",
                     imageUrl = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/22/8e7f3536-af84-4300-bfff-4832fb6f0f99.png",
@@ -86,14 +89,19 @@ fun BuyAgainPreview() {
                     discountPercentageInt = 15,
                     discountPercentage = "15",
                     slashedPrice = "Rp30.000"
-            )*/
+            )*//*
             )
         )
     )
-}
+}*/
 
 @Composable
-fun UohBuyAgainWidget(recom: RecommendationWidget) {
+fun UohBuyAgainWidget(
+    recom: RecommendationWidget,
+    onChevronClicked: () -> Unit = {},
+    onProductCardClick: (pdpApplink: String) -> Unit,
+    onButtonBuyAgainClick: (recommItem: RecommendationItem) -> Unit
+) {
     val backgroundImg = "https://images.tokopedia.net/img/android/uoh/buy_again_bg.png"
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
         val (
@@ -137,24 +145,28 @@ fun UohBuyAgainWidget(recom: RecommendationWidget) {
             contentDescription = null
         )
 
-        NestTypography(
-            text = recom.title,
-            modifier = Modifier.constrainAs(title) {
-                top.linkTo(parent.top, margin = 12.dp)
-                start.linkTo(parent.start, margin = 16.dp)
-            },
-            textStyle = NestTheme.typography.display2.copy(
-                fontWeight = FontWeight.Bold
+        HtmlLinkHelper(LocalContext.current, recom.title).spannedString?.let {
+            NestTypography(
+                text = it,
+                modifier = Modifier.constrainAs(title) {
+                    top.linkTo(parent.top, margin = 12.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                },
+                textStyle = NestTheme.typography.display2.copy(
+                    fontWeight = FontWeight.Bold
+                )
             )
-        )
+        }
 
         NestIcon(
             iconId = IconUnify.CHEVRON_RIGHT,
-            modifier = Modifier.constrainAs(chevron) {
-                top.linkTo(title.top)
-                bottom.linkTo(title.bottom)
-                end.linkTo(parent.end, margin = 16.dp)
-            }
+            modifier = Modifier
+                .constrainAs(chevron) {
+                    top.linkTo(title.top)
+                    bottom.linkTo(title.bottom)
+                    end.linkTo(parent.end, margin = 16.dp)
+                }
+                .clickable { onChevronClicked.invoke() }
         )
 
         if (recom.recommendationItemList.size == 1) {
@@ -167,13 +179,9 @@ fun UohBuyAgainWidget(recom: RecommendationWidget) {
                         end.linkTo(parent.end, margin = 30.dp)
                         bottom.linkTo(bottomDivider.top, margin = 10.dp)
                     },
-                productName = recom.recommendationItemList[0].name,
-                productPrice = recom.recommendationItemList[0].price,
-                slashedPrice = recom.recommendationItemList[0].slashedPrice,
-                discountPercentage = recom.recommendationItemList[0].discountPercentage,
-                imageUrl = recom.recommendationItemList[0].imageUrl,
-                onProductCardClick = {},
-                isSingleCard = true
+                recommItem = recom.recommendationItemList[0],
+                onProductCardClick = { onProductCardClick.invoke(recom.recommendationItemList[0].appUrl) },
+                onBuyAgainButtonClicked = { onButtonBuyAgainClick.invoke(recom.recommendationItemList[0]) }
             )
         } else {
             UohBuyAgainList(
@@ -182,7 +190,9 @@ fun UohBuyAgainWidget(recom: RecommendationWidget) {
                     top.linkTo(title.bottom, margin = 4.dp)
                     start.linkTo(parent.start)
                     bottom.linkTo(bottomDivider.top, margin = 10.dp)
-                }
+                },
+                onProductCardClick = onProductCardClick,
+                onButtonBuyAgainClick = onButtonBuyAgainClick
             )
         }
 
@@ -201,7 +211,9 @@ fun UohBuyAgainWidget(recom: RecommendationWidget) {
 @Composable
 fun UohBuyAgainList(
     listBuyAgain: List<RecommendationItem> = emptyList(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onProductCardClick: (pdpApplink: String) -> Unit,
+    onButtonBuyAgainClick: (recommItem: RecommendationItem) -> Unit
 ) {
     LazyRow(
         modifier = modifier,
@@ -210,17 +222,15 @@ fun UohBuyAgainList(
         itemsIndexed(listBuyAgain) { index, item ->
             if (index < 3) {
                 UohBuyAgainCard(
-                    productName = listBuyAgain[index].name,
-                    productPrice = listBuyAgain[index].price,
-                    slashedPrice = listBuyAgain[index].slashedPrice,
-                    discountPercentage = listBuyAgain[index].discountPercentage,
-                    imageUrl = listBuyAgain[index].imageUrl,
-                    onProductCardClick = {},
-                    isSingleCard = false
+                    recommItem = listBuyAgain[index],
+                    onProductCardClick = { onProductCardClick.invoke(listBuyAgain[index].appUrl) },
+                    onBuyAgainButtonClicked = onButtonBuyAgainClick
                 )
             } else if (index == 3) {
                 NestViewAllCard(
-                    modifier = modifier.height(62.dp).padding(start = 6.dp, top = 6.dp),
+                    modifier = modifier
+                        .height(62.dp)
+                        .padding(start = 6.dp, top = 6.dp),
                     enableCta = true,
                     ctaText = "Lihat Semua",
                     subtitle = " "
@@ -234,39 +244,39 @@ fun UohBuyAgainList(
 
 @Composable
 fun UohBuyAgainCard(
-    productName: String,
-    productPrice: String,
-    slashedPrice: String,
-    discountPercentage: String,
-    imageUrl: String,
+    recommItem: RecommendationItem,
     modifier: Modifier = Modifier,
     onProductCardClick: () -> Unit,
-    isSingleCard: Boolean
+    onBuyAgainButtonClicked: (RecommendationItem) -> Unit
 ) {
     NestCard(
         modifier = modifier
             .heightIn(min = 56.dp)
-            .widthIn(min = 200.dp)
+            .widthIn(max = 315.dp)
             .padding(start = 6.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
         type = NestCardType.Shadow,
         onClick = onProductCardClick
     ) {
         Row {
             ImageProduct(
-                imageSource = ImageSource.Remote(imageUrl),
+                imageSource = ImageSource.Remote(recommItem.imageUrl),
                 modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
             )
-            Column(modifier = if (isSingleCard) Modifier.weight(1f) else Modifier) {
+            Column {
                 NestTypography(
-                    text = productName,
-                    modifier = Modifier.padding(start = 8.dp, top = 8.dp),
-                    textStyle = NestTheme.typography.paragraph3
+                    text = recommItem.name,
+                    modifier = Modifier
+                        .padding(start = 8.dp, top = 8.dp)
+                        .widthIn(max = 142.dp),
+                    textStyle = NestTheme.typography.paragraph3,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
                 )
                 Row(
                     modifier = Modifier.padding(top = 4.dp, start = 8.dp)
                 ) {
                     NestTypography(
-                        text = productPrice,
+                        text = recommItem.price,
                         textStyle = NestTheme.typography.display2.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -274,7 +284,7 @@ fun UohBuyAgainCard(
                             .align(Alignment.CenterVertically)
                     )
                     NestTypography(
-                        text = slashedPrice,
+                        text = recommItem.slashedPrice,
                         textStyle = NestTheme.typography.small.copy(
                             color = NestTheme.colors.NN._400,
                             textDecoration = TextDecoration.LineThrough
@@ -283,25 +293,27 @@ fun UohBuyAgainCard(
                             .padding(start = 4.dp)
                             .align(Alignment.CenterVertically)
                     )
-                    NestTypography(
-                        text = "$discountPercentage%",
-                        textStyle = NestTheme.typography.small.copy(
-                            color = NestTheme.colors.RN._500,
-                            fontWeight = FontWeight.Bold
-                        ),
-                        modifier = Modifier
-                            .padding(start = 4.dp)
-                            .align(Alignment.CenterVertically)
-                    )
+                    if (recommItem.discountPercentage.isNotEmpty()) {
+                        NestTypography(
+                            text = recommItem.discountPercentage,
+                            textStyle = NestTheme.typography.small.copy(
+                                color = NestTheme.colors.RN._500,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                                .align(Alignment.CenterVertically)
+                        )
+                    }
                 }
             }
             NestButton(
                 text = "Beli Lagi",
-                onClick = {},
+                onClick = { onBuyAgainButtonClicked.invoke(recommItem) },
                 variant = ButtonVariant.GHOST,
-                size = ButtonSize.SMALL,
+                size = ButtonSize.MICRO,
                 modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp)
+                    .padding(start = 4.dp, end = 8.dp)
                     .align(Alignment.CenterVertically)
             )
         }
@@ -371,51 +383,5 @@ private fun ViewAllCard(
                 )
             }
         }
-        /*ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-            val (
-                    bgImage,
-                    seeAllLabel,
-                    chevron
-            ) = createRefs()
-
-            NestImage(
-                    type = NestImageType.Rect(0.dp),
-                    contentScale = ContentScale.FillWidth,
-                    source = ImageSource.Remote(backgroundImg),
-                    modifier = Modifier
-                            .tag("background")
-                            .constrainAs(background) {
-                                top.linkTo(parent.top)
-                                end.linkTo(parent.end)
-                                start.linkTo(parent.start)
-                                bottom.linkTo(list.bottom)
-                                width = Dimension.fillToConstraints
-                                height = Dimension.fillToConstraints
-                            },
-                    contentDescription = null
-            )
-
-            NestTypography(text = "Lihat Semua",
-                    modifier = Modifier.constrainAs(seeAllLabel) {
-                        bottom.linkTo(parent.bottom, margin = 20.dp)
-                        start.linkTo(parent.start, margin = 4.dp)
-                    },
-                    textStyle = NestTheme.typography.small.copy(
-                            color = NestTheme.colors.RN._500,
-                            fontWeight = FontWeight.Bold
-                    ))
-
-            NestIcon(
-                    iconId = IconUnify.CHEVRON_RIGHT,
-                    modifier = Modifier
-                            .size(16.dp)
-                            .constrainAs(chevron) {
-                                top.linkTo(seeAllLabel.top)
-                                bottom.linkTo(seeAllLabel.bottom)
-                                end.linkTo(parent.end, margin = 40.dp)
-                            },
-                    colorLightEnable = NestTheme.colors.NN._900,
-                    colorNightEnable = NestTheme.colors.NN._900)
-        }*/
     }
 }

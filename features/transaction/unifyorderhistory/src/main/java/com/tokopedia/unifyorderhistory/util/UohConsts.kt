@@ -52,6 +52,7 @@ object UohConsts {
 
     const val XSOURCE = "recom_widget"
     const val PAGE_NAME = "bom_empty"
+    const val BUY_AGAIN_PAGE_NAME = "buy_it_again_uoh"
 
     const val TYPE_LOADER = "loader"
     const val TYPE_LOADER_PMS_BUTTON = "loader_pms_button"
