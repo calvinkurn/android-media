@@ -39,7 +39,7 @@ class CartItemAdapter {
         fun onBmGmChevronRightClicked(offerLandingPageLink: String, offerId: Long, widgetCaption: String, shopId: String)
         fun onBmGmTickerReloadClicked()
         fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData, isChecked: Boolean)
-
         fun onCartViewBmGmTicker(offerId: Long, widgetCaption: String, shopId: String)
+        fun clearAllFocus()
     }
 }
