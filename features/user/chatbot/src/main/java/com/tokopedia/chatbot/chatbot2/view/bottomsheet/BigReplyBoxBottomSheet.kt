@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.chatbot2.view.customview.chatroom
+package com.tokopedia.chatbot.chatbot2.view.bottomsheet
 
 import android.content.Context
 import android.os.Bundle

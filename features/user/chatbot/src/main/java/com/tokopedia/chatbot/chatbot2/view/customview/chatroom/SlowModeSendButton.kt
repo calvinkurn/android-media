@@ -18,7 +18,7 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
     private lateinit var circleAnimation: CircleAnimation
     private lateinit var textTimer: Typography
     private lateinit var iconSend: IconUnify
-    private lateinit var countDownTimer: CountDownTimer
+    private var countDownTimer: CountDownTimer? = null
 
     init {
         inflateLayout()
@@ -65,11 +65,11 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
         iconSend.gone()
         textTimer.show()
         initCountDownTimer(durationInMillis)
-        countDownTimer.start()
+        countDownTimer?.start()
     }
 
     fun cancelSlowDown() {
-        countDownTimer.cancel()
+        countDownTimer?.cancel()
     }
 
     companion object {
