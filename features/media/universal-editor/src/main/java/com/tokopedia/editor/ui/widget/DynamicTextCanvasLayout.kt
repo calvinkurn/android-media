@@ -15,7 +15,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.editor.R
 import com.tokopedia.editor.ui.gesture.api.MultiTouchListener
 import com.tokopedia.editor.ui.gesture.impl.MultiGestureListener
-import com.tokopedia.editor.ui.gesture.listener.OnGestureControl
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.FontAlignment
@@ -138,36 +137,24 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         textView.id.updateModel(model)
     }
 
+    private fun newApiEnabled() = true
+
     private fun newGestureListener(textView: EditorEditTextView) {
-        val listener = MultiGestureListener(
-            view = textView,
-            context = context,
-            onGestureControl = object : OnGestureControl {
-                override fun onClick() {
-                    listener?.onTextClick(textView, models[textView.id])
-                }
-            },
-            onMultiTouchListener = this
-        )
+        val listener = MultiGestureListener(textView, this) {
+            listener?.onTextClick(textView, models[textView.id])
+        }
 
         textView.setOnTouchListener(listener)
     }
 
     private fun oldGestureListener(textView: EditorEditTextView) {
         val touchListener = MultiTouchListener(context, textView)
-        touchListener.setOnMultiTouchListener(this)
 
-        // Propagate each click listener of any textView were added on this container.
-        touchListener.setOnGestureControl(object : OnGestureControl {
-            override fun onClick() {
-                listener?.onTextClick(textView, models[textView.id])
-            }
-        })
+        touchListener.setOnMultiTouchListener(this)
+        touchListener.setOnGestureControl { listener?.onTextClick(textView, models[textView.id]) }
 
         textView.setOnTouchListener(touchListener)
     }
-
-    private fun newApiEnabled() = true
 
     private fun createGridGuidelineView() {
         gridGuidelineView.id = VIEW_GRID_GUIDELINE_ID

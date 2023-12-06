@@ -1,6 +1,5 @@
 package com.tokopedia.editor.ui.gesture.impl
 
-import android.content.Context
 import android.view.GestureDetector
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
@@ -14,19 +13,18 @@ import kotlin.math.max
 import kotlin.math.min
 
 class MultiGestureListener constructor(
-    context: Context,
     view: View,
-    private val onGestureControl: OnGestureControl?,
     private val onMultiTouchListener: OnMultiTouchListener?,
+    private val onGestureControl: OnGestureControl?,
 ) : View.OnTouchListener
     , GridGuidelineControl by GridGuidelineControlImpl()
     , DeletionViewControl by DeletionViewControlImpl() {
 
-    private val gestureDetector =
-        GestureDetector(context, GestureListener())
+    private val gestureDetector = GestureDetector(view.context, GestureListener())
+    private val scaleGestureDetector = ScaleGestureDetector(SetScaleGestureListener(this))
 
-    private val scaleGestureDetector =
-        ScaleGestureDetector(SetScaleGestureListener(this))
+    // container which refer to [DynamicTextCanvasLayout]
+    private val container by lazy(LazyThreadSafetyMode.NONE) { view.parent as View }
 
     // Both variables used to reset the normal view size
     private var originalScaleX = 0f
@@ -52,7 +50,7 @@ class MultiGestureListener constructor(
     }
 
     override fun onTouch(view: View, event: MotionEvent): Boolean {
-        // other gestures
+        // invoke other gestures
         scaleGestureDetector.onTouchEvent(view, event)
         gestureDetector.onTouchEvent(event)
 
@@ -191,8 +189,8 @@ class MultiGestureListener constructor(
         val deltaVector = floatArrayOf(deltaX, deltaY)
 
         view.matrix.mapVectors(deltaVector)
-        view.translationX = view.translationX + deltaVector[0]
-        view.translationY = view.translationY + deltaVector[1]
+        view.translationX = view.translationX + deltaVector.first()
+        view.translationY = view.translationY + deltaVector.last()
     }
 
     private fun computeRenderOffset(view: View, pivotX: Float, pivotY: Float) {
@@ -204,8 +202,8 @@ class MultiGestureListener constructor(
         val currPoint = floatArrayOf(0.0f, 0.0f)
         view.matrix.mapPoints(currPoint)
 
-        val offsetX = currPoint[0] - prevPoint[0]
-        val offsetY = currPoint[1] - prevPoint[1]
+        val offsetX = currPoint.first() - prevPoint.first()
+        val offsetY = currPoint.last() - prevPoint.last()
 
         view.translationX = view.translationX - offsetX
         view.translationY = view.translationY - offsetY
@@ -222,8 +220,8 @@ class MultiGestureListener constructor(
     }
 
     private fun shouldForceSnapLocation(view: View) {
-        val containerCenterX = (view.parent as View).width / 2f
-        val containerCenterY = (view.parent as View).height / 2f
+        val containerCenterX = container.width / 2f
+        val containerCenterY = container.height / 2f
 
         // force snap the view horizontal alignment
         if (isNearestThresholdAlignCenterX(view)) {
@@ -238,13 +236,13 @@ class MultiGestureListener constructor(
 
     private fun isNearestThresholdAlignCenterX(view: View): Boolean {
         val centerX = view.x + view.width / 2f
-        val containerCenterX = (view.parent as View).width / 2f
+        val containerCenterX = container.width / 2f
         return abs(centerX - containerCenterX) <= ALIGNMENT_SNAP_THRESHOLD
     }
 
     private fun isNearestThresholdAlignCenterY(view: View): Boolean {
         val centerY = view.y + view.height / 2f
-        val containerCenterY = (view.parent as View).height / 2f
+        val containerCenterY = container.height / 2f
         return abs(centerY - containerCenterY) <= ALIGNMENT_SNAP_THRESHOLD
     }
 
@@ -282,10 +280,7 @@ class MultiGestureListener constructor(
         abs(lastPositionX - x) < VIEW_MOVE_THRESHOLD && abs(lastPositionY - y) < VIEW_MOVE_THRESHOLD
 
     inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
-
-        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            return true
-        }
+        override fun onSingleTapConfirmed(e: MotionEvent) = true
     }
 
     companion object {
