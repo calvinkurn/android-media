@@ -2,12 +2,13 @@ package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseBannerItemBinding
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseBannerPlaceholderBinding
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
 
 /**
@@ -24,13 +25,11 @@ internal class FeedBrowseBannerViewHolder private constructor() {
             binding.root.animateOnPress = CardUnify2.ANIMATE_BOUNCE
         }
 
-        fun bind(item: FeedBrowseUiModel.Banner) {
-            binding.imgBanner.setImageUrl(item.imageUrl)
-            binding.tvInspiration.text = item.title
-        }
-
         fun bind(item: FeedBrowseItemListModel.Banner.Item) {
-            binding.imgBanner.setImageUrl(item.banner.imageUrl)
+            binding.imgBanner.scaleType = ImageView.ScaleType.FIT_CENTER
+            binding.imgBanner.loadImage(item.banner.imageUrl) {
+                binding.imgBanner.scaleType = ImageView.ScaleType.CENTER_CROP
+            }
             binding.tvInspiration.text = item.banner.title
 
             binding.root.setOnClickListener {
