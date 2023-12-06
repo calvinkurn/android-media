@@ -178,6 +178,7 @@ includeIfEnabled("features:communication:inbox_common")
 includeIfEnabled("features:communication:attachvoucher")
 includeIfEnabled("features:communication:topchat")
 includeIfEnabled("features:communication:tokochat_common")
+includeIfEnabled("features:communication:shareexperience")
 
 includeIfEnabled("features:user:chatbot")
 includeIfEnabled("features:user:changephonenumber")
