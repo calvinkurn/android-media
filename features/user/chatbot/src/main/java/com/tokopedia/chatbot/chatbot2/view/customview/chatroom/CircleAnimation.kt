@@ -27,11 +27,11 @@ class CircleAnimation @JvmOverloads constructor(
         const val STATE_LOADING = "STATE_LOADING"
     }
 
-    lateinit var drawAreaLoader: RectF
-    lateinit var drawAreaBackground: RectF
-    lateinit var paintGrey: Paint
-    lateinit var paintGreen: Paint
-    lateinit var valueAnimator: ValueAnimator
+    private lateinit var drawAreaLoader: RectF
+    private lateinit var drawAreaBackground: RectF
+    private lateinit var paintGrey: Paint
+    private lateinit var paintGreen: Paint
+    private lateinit var valueAnimator: ValueAnimator
 
     var sweepAngle = 0f
     var state: String = STATE_ENABLED

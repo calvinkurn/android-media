@@ -123,14 +123,15 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.DynamicSt
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.StickyActionButtonClickListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.VideoUploadListener
+import com.tokopedia.chatbot.chatbot2.view.bottomsheet.BigReplyBoxBottomSheet
+import com.tokopedia.chatbot.chatbot2.view.bottomsheet.BigReplyBoxBottomSheet.Companion.MINIMUM_NUMBER_OF_WORDS
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotMediaRetryBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotRejectReasonsBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotReplyBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ChatbotReplyBottomSheetAdapter
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.listener.ChatbotRejectReasonsChipListener
-import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBox
-import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet
-import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet.Companion.MINIMUM_NUMBER_OF_WORDS
+import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.replybox.BigReplyBox
+import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.replybox.SmallReplyBox
 import com.tokopedia.chatbot.chatbot2.view.customview.floatinginvoice.ChatbotFloatingInvoice
 import com.tokopedia.chatbot.chatbot2.view.customview.reply.ReplyBubbleOnBoarding
 import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotContract
@@ -188,7 +189,6 @@ import com.tokopedia.chatbot.util.logNewRelicMessageIdError
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.DEEP_LINK_URI
 import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.PAGE_SOURCE
-import com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
 import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
@@ -2727,12 +2727,12 @@ class ChatbotFragment2 :
 
     override fun disableSendButton() {
         isSendButtonActivated = false
-        smallReplyBox?.sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
+        smallReplyBox?.sendButton?.disableSendButton()
     }
 
     override fun enableSendButton() {
         isSendButtonActivated = true
-        smallReplyBox?.sendButton?.setImageResource(R.drawable.ic_chatbot_send)
+        smallReplyBox?.sendButton?.enableSendButton()
     }
 
     override fun isInvoiceRemoved(isRemoved: Boolean) {
@@ -2801,6 +2801,7 @@ class ChatbotFragment2 :
         videoUploadOnBoarding.flush()
         replyBubbleOnBoarding.flush()
         coachmarkHandler.removeCallbacksAndMessages(null)
+        smallReplyBox?.sendButton?.cancelSlowDown()
     }
 
     override fun onClickMessageReply(messageUiModel: MessageUiModel) {
