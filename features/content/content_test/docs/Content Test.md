@@ -5,20 +5,6 @@ labels:
 - content
 ---
 
-## Release Notes
-
-<!--start expand:1 Nov 2022 (MA-3.198 & SA-2.128)-->
-Renamed to `content_test`
-
-PR : <https://github.com/tokopedia/android-tokopedia-core/pull/29707>
-<!--end expand-->
-
-<!--start expand:16 May 2022 (MA-3.174 & SA-2.104)-->
-Released as `play_test`
-
-PR : <https://github.com/tokopedia/android-tokopedia-core/pull/26065>
-<!--end expand-->
-
 ## Overview
 
 **Content Test** is an internal library (for content team) that helps developers in implementing test (Unit Test or UI Test). This library is created for the purpose of eliminating boilerplate that developers usually write when they created a test.
