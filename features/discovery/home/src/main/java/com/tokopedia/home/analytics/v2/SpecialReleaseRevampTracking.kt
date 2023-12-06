@@ -118,6 +118,7 @@ internal object SpecialReleaseRevampTracking : BaseTrackerConst() {
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendUserId(userId)
+            .appendCampaignCode(grid.campaignCode)
             .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_PRODUCT_CLICK)
             .build()
         getTracker().sendEnhanceEcommerceEvent(trackingBuilder)
@@ -168,6 +169,7 @@ internal object SpecialReleaseRevampTracking : BaseTrackerConst() {
             .appendUserId(userId)
             .appendChannelId(trackingAttributionModel.channelId)
             .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_BANNER_CLICK)
+            .appendCampaignCode(grid.campaignCode)
             .build() as HashMap<String, Any>
         getTracker().sendEnhanceEcommerceEvent(trackerBuilder)
     }
