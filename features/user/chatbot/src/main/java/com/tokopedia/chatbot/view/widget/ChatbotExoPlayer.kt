@@ -22,7 +22,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.util.Util
-import com.tokopedia.chatbot.view.adapter.viewholder.VideoDimensionsListener
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.VideoDimensionsListener
 import java.io.IOException
 
 class ChatbotExoPlayer(val context: Context, var videoControl: ChatbotVideoControlView? = null) : ChatbotVideoControlView.Listener {

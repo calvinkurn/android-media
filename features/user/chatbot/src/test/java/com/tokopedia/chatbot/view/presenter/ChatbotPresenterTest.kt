@@ -52,10 +52,6 @@ import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
-import com.tokopedia.chatbot.websocket.ChatbotWebSocket
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketException
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
