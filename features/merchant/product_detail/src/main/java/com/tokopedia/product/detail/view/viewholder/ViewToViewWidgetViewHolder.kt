@@ -71,24 +71,6 @@ class ViewToViewWidgetViewHolder(
         listener.onViewToViewClicked(data, title, itemPosition, adapterPosition)
     }
 
-    override fun onViewToViewReload(pageName: String) {
-        viewToView?.let {
-            it.state = RecommendationCarouselData.STATE_LOADING
-            bind(it)
-        }
-        listener.onViewToViewReload(
-            pageName = pageName,
-            queryParam = viewToView?.queryParam.orEmpty(),
-            thematicId = viewToView?.thematicId.orEmpty()
-        )
-    }
-
-    override fun onWidgetFail(pageName: String, e: Throwable) {
-    }
-
-    override fun onShowError(pageName: String, e: Throwable) {
-    }
-
     companion object {
         val LAYOUT = R.layout.item_dynamic_widget_view_to_view
     }

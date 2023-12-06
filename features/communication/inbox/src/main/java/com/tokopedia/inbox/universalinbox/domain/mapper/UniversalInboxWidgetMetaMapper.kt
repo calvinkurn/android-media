@@ -147,7 +147,7 @@ class UniversalInboxWidgetMetaMapper @Inject constructor(
         ) == ROLLENCE_LOGISTIC_CHAT
     }
 
-    fun isChatTokofood(serviceType: Int): Boolean {
+    private fun isChatTokofood(serviceType: Int): Boolean {
         return serviceType == TOKOFOOD_SERVICE_TYPE
     }
 

@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_BANNER_ADS
@@ -10,7 +9,6 @@ import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendationCardUseCase
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -95,7 +93,7 @@ class HomeRecommendationViewModel @Inject constructor(
         page: Int,
         locationParam: String = "",
         sourceType: String,
-        existingRecommendationData: List<Visitable<HomeRecommendationTypeFactoryImpl>>
+        existingRecommendationData: List<BaseHomeRecommendationVisitable>
     ) {
         if (HomeRecommendationController.isUsingRecommendationCard()) {
             fetchNextHomeRecommendationCard(tabName, page, locationParam, sourceType, existingRecommendationData)
@@ -142,7 +140,7 @@ class HomeRecommendationViewModel @Inject constructor(
         page: Int,
         locationParam: String,
         sourceType: String,
-        existingRecommendationData: List<Visitable<HomeRecommendationTypeFactoryImpl>>
+        existingRecommendationData: List<BaseHomeRecommendationVisitable>
     ) {
         val existingRecommendationDataMutableList = existingRecommendationData.toMutableList()
 
@@ -304,7 +302,7 @@ class HomeRecommendationViewModel @Inject constructor(
         topAdsBanner: ArrayList<Pair<String, ArrayList<TopAdsImageViewModel>>>,
         homeBannerTopAds: List<HomeRecommendationBannerTopAdsOldDataModel>,
         headlineAds: TopAdsHeadlineResponse,
-        newList: MutableList<Visitable<HomeRecommendationTypeFactoryImpl>>
+        newList: MutableList<BaseHomeRecommendationVisitable>
     ) {
         incrementTopadsPage()
         val headlineData = headlineAds.displayAds.data

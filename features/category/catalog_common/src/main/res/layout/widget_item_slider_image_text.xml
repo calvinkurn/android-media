@@ -6,8 +6,8 @@
     android:layout_marginBottom="16dp"
     android:orientation="vertical">
 
-    <com.tokopedia.catalogcommon.util.WrapContentViewPager
-        android:id="@+id/viewPager"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSlider"
         android:layout_width="match_parent"
         android:layout_marginStart="8dp"
         android:layout_height="wrap_content"/>
