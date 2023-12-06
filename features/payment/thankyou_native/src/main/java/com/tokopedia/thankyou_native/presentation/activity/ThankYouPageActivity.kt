@@ -169,6 +169,16 @@ class ThankYouPageActivity :
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
+
+//        return FragmentByPaymentMode(
+//            ThankYouBaseFragment.getFragmentInstance(
+//                bundle,
+//                thanksPageData,
+//                isWidgetOrderingEnabled()
+//            ),
+//            ""
+//        )
+
         return when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
             is ProcessingPaymentPage -> {
                 FragmentByPaymentMode(

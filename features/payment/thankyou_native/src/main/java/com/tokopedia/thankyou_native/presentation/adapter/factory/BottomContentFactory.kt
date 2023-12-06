@@ -35,6 +35,9 @@ class BottomContentFactory(
             HeadlineAdsItemViewHolder.LAYOUT_ID -> return HeadlineAdsItemViewHolder(parent)
             BannerItemViewHolder.LAYOUT_ID -> return BannerItemViewHolder(parent, bannerListener)
             MixTopComponentViewHolder.LAYOUT -> return MixTopComponentViewHolder(parent, null, mixTopComponentListener, true)
+            InstantHeaderViewHolder.LAYOUT_ID -> return InstantHeaderViewHolder(parent)
+            WaitingHeaderViewHolder.LAYOUT_ID -> return WaitingHeaderViewHolder(parent)
+            ProcessingHeaderViewHolder.LAYOUT_ID -> return ProcessingHeaderViewHolder(parent)
         }
         return super.createViewHolder(parent, type)
     }
@@ -61,6 +64,18 @@ class BottomContentFactory(
 
     fun type(bannerWidgetModel: BannerWidgetModel): Int {
         return BannerItemViewHolder.LAYOUT_ID
+    }
+
+    fun type(instantHeaderUiModel: InstantHeaderUiModel): Int {
+        return InstantHeaderViewHolder.LAYOUT_ID
+    }
+
+    fun type(waitingHeaderUiModel: WaitingHeaderUiModel): Int {
+        return WaitingHeaderViewHolder.LAYOUT_ID
+    }
+
+    fun type(processingHeaderUiModel: ProcessingHeaderUiModel): Int {
+        return ProcessingHeaderViewHolder.LAYOUT_ID
     }
 
     override fun type(flashSaleWidgetModel: ShopFlashSaleWidgetDataModel): Int {

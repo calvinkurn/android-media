@@ -87,6 +87,7 @@ import com.tokopedia.thankyou_native.presentation.views.listener.BannerListener
 import com.tokopedia.thankyou_native.presentation.views.listener.FlashSaleWidgetListener
 import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
 import com.tokopedia.thankyou_native.presentation.views.listener.MixTopComponentListenerCallback
+import com.tokopedia.thankyou_native.presentation.views.listener.ThankYouBaseInterface
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -109,24 +110,14 @@ import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 import javax.inject.Inject
 
-abstract class ThankYouBaseFragment :
+open class ThankYouBaseFragment :
     BaseDaggerFragment(),
     OnDialogRedirectListener,
     RegisterMemberShipListener,
     MarketplaceRecommendationListener,
     BannerListener,
-    FlashSaleWidgetListener {
-
-    abstract fun getRecommendationContainer(): LinearLayout?
-    abstract fun getFeatureListingContainer(): GyroView?
-    abstract fun getTopAdsView(): TopAdsView?
-    abstract fun bindThanksPageDataToUI(thanksPageData: ThanksPageData)
-    abstract fun getLoadingView(): View?
-    abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
-    abstract fun getTopTickerView(): Ticker?
-    abstract fun getBottomContentRecyclerView(): RecyclerView?
-    abstract fun getBannerTitle(): Typography?
-    abstract fun getBannerCarousel(): CarouselUnify?
+    FlashSaleWidgetListener,
+    ThankYouBaseInterface {
 
     private lateinit var dialogHelper: DialogHelper
 
@@ -198,16 +189,26 @@ abstract class ThankYouBaseFragment :
         }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.thank_base_layout, container, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getFeatureListingContainer()?.gone()
         if (!::thanksPageData.isInitialized) {
             activity?.finish()
         } else {
-            getBottomContentRecyclerView()?.layoutManager = LinearLayoutManager(context)
-            getBottomContentRecyclerView()?.adapter = bottomContentAdapter
+            val recyclerView = getBottomContentRecyclerView() ?: view.findViewById(R.id.thanksPageRecyclerView)
+            recyclerView?.layoutManager = LinearLayoutManager(context)
+            recyclerView?.adapter = bottomContentAdapter
 
             bindThanksPageDataToUI(thanksPageData)
+            addHeader()
             observeViewModel()
             getFeatureRecommendationData()
             addRecommendation(getRecommendationContainer())
@@ -220,6 +221,18 @@ abstract class ThankYouBaseFragment :
             )
 
             showOnBoardingShare()
+        }
+    }
+
+    override fun getScreenName(): String {
+        TODO("Not yet implemented")
+    }
+
+    private fun addHeader() {
+        if (true) return
+
+        if (thanksPageData.pageType == "Waiting") {
+            thanksPageDataViewModel.addBottomContentWidget(WaitingHeaderUiModel.create(thanksPageData, context))
         }
     }
 
@@ -995,5 +1008,57 @@ abstract class ThankYouBaseFragment :
         private val IMAGE_GAP = 8.toPx()
         private const val SLIDE_TO_SHOW_1_ITEM = 1f
         private const val SLIDE_TO_SHOW_MULTIPLE_ITEM = 1.1f
+
+        fun getFragmentInstance(
+            bundle: Bundle,
+            thanksPageData: ThanksPageData,
+            isWidgetOrderingEnabled: Boolean,
+        ): ThankYouBaseFragment = ThankYouBaseFragment().apply {
+            bundle.let {
+                arguments = bundle
+                bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
+                bundle.putBoolean(ARG_IS_WIDGET_ORDERING_ENABLED, isWidgetOrderingEnabled)
+            }
+        }
+    }
+
+    override fun getRecommendationContainer(): LinearLayout? {
+        return null
+    }
+
+    override fun getFeatureListingContainer(): GyroView? {
+        return null
+    }
+
+    override fun getTopAdsView(): TopAdsView? {
+        return null
+    }
+
+    override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
+
+    }
+
+    override fun getLoadingView(): View? {
+        return null
+    }
+
+    override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
+
+    }
+
+    override fun getTopTickerView(): Ticker? {
+        return null
+    }
+
+    override fun getBottomContentRecyclerView(): RecyclerView? {
+        return null
+    }
+
+    override fun getBannerTitle(): Typography? {
+        return null
+    }
+
+    override fun getBannerCarousel(): CarouselUnify? {
+        return null
     }
 }
