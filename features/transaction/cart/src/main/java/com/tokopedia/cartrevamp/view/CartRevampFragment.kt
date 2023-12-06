@@ -5679,6 +5679,7 @@ class CartRevampFragment :
             userSession.userId
         )
     }
+
     override fun clearAllFocus() {
         val view = activity?.currentFocus
         view?.clearFocus()
