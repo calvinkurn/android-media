@@ -70,7 +70,7 @@ class ProductPreviewActivity : BaseActivity() {
     }
 
     private fun getMediaPreviewFragment(): Fragment {
-        return ProductPreviewFragment.getFragment(
+        return ProductPreviewFragment.getOrCreate(
             fragmentManager = supportFragmentManager,
             classLoader = classLoader,
             bundle = bundle ?: Bundle(),
