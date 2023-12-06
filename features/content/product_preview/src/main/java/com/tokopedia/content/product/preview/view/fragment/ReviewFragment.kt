@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
+import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.viewmodel.EntrySource
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
@@ -31,6 +32,10 @@ class ReviewFragment @Inject constructor(
         )
     }
 
+    private val reviewAdapter by lazy {
+        ReviewParentAdapter()
+    }
+
     override fun getScreenName() = TAG
 
     override fun onCreateView(
@@ -44,6 +49,7 @@ class ReviewFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView()
         observeReview()
     }
 
@@ -51,6 +57,10 @@ class ReviewFragment @Inject constructor(
         super.onResume()
 
         viewModel.getReview()
+    }
+
+    private fun setupView() {
+        binding.rvReview.adapter = reviewAdapter
     }
 
     private fun observeReview() {
@@ -63,6 +73,7 @@ class ReviewFragment @Inject constructor(
 
     private fun renderList(prev: List<ReviewUiModel>?, data: List<ReviewUiModel>) {
         if (prev == null || prev == data) return
+        reviewAdapter.submitList(data)
     }
 
     companion object {

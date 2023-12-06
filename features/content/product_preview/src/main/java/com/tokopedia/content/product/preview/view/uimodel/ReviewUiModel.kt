@@ -12,43 +12,46 @@ data class ReviewUiModel(
     val likeState: LikeUiState,
     val author: AuthorUiModel,
     val description: DescriptionUiModel,
+)
+
+data class MediaUiModel(
+    val type: String,
+    val url: String,
 ) {
-    data class MediaUiModel(
-        val type: String,
-        val url: String,
-    ) {
-        enum class MediaType(val value: String) {
-            Image(""), Video("") //check response
-        }
+    enum class MediaType(val value: String) {
+        Image(""), Video("") //check response
     }
-
-    data class LikeUiState(
-        val count: Int,
-        val state: LikeStatus
-    ) {
-        enum class LikeStatus(val value: Int) {
-            Like(1),
-            Dislike(2),
-            Reset(3);
-        }
-    }
-
-    data class AuthorUiModel(
-        val name: String,
-        val type: ReviewerType,
-        val id: String,
-    ) {
-        enum class ReviewerType(val value: String) { //TODO need to adjust with backend
-            Complete("total-complete-review"),
-            Juara(""),
-            Unknown("");
-        }
-    }
-
-    data class DescriptionUiModel(
-        val stars: Int,
-        val productType: String,
-        val timestamp: String,
-        val description: String,
-    )
 }
+
+data class LikeUiState(
+    val count: Int,
+    val state: LikeStatus
+) {
+    enum class LikeStatus(val value: Int) {
+        Like(1),
+        Dislike(2),
+        Reset(3);
+    }
+}
+
+data class AuthorUiModel(
+    val name: String,
+    val type: ReviewerType,
+    val id: String,
+    val avatarUrl: String,
+    val appLink: String,
+) {
+    enum class ReviewerType(val value: String) { //TODO need to adjust with backend
+        Complete("total-complete-review"),
+        Juara(""),
+        Unknown("");
+    }
+}
+
+data class DescriptionUiModel(
+    val stars: Int,
+    val productType: String,
+    val timestamp: String,
+    val description: String,
+)
+
