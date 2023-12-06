@@ -5,15 +5,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
+import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.content.product.preview.viewmodel.EntrySource
+import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
+import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class ReviewFragment @Inject constructor(): TkpdBaseV4Fragment() {
+class ReviewFragment @Inject constructor(
+    private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
+) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentReviewBinding? = null
     private val binding: FragmentReviewBinding
         get() = _binding!!
+
+    private val viewModel by activityViewModels<ProductPreviewViewModel> {
+        viewModelFactory.create(
+            EntrySource(productId = "4937529690") //Testing purpose
+        )
+    }
 
     override fun getScreenName() = TAG
 
@@ -28,6 +44,25 @@ class ReviewFragment @Inject constructor(): TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeReview()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.getReview()
+    }
+
+    private fun observeReview() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.review.withCache().collectLatest { (prev, curr) ->
+                renderList(prev, curr)
+            }
+        }
+    }
+
+    private fun renderList(prev: List<ReviewUiModel>?, data: List<ReviewUiModel>) {
+        if (prev == null || prev == data) return
     }
 
     companion object {
@@ -47,5 +82,4 @@ class ReviewFragment @Inject constructor(): TkpdBaseV4Fragment() {
             } as ReviewFragment
         }
     }
-
 }

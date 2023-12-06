@@ -34,7 +34,7 @@ data class MediaReviewResponse(
     )
 
     data class Detail(
-        @SerializedName("")
+        @SerializedName("review")
         val reviewDetail: List<ReviewDetail> = emptyList(),
         @SerializedName("image")
         val reviewGalleryImages: List<ReviewGalleryImage> = emptyList(),

@@ -36,10 +36,12 @@ data class ReviewUiModel(
     data class AuthorUiModel(
         val name: String,
         val type: ReviewerType,
+        val id: String,
     ) {
         enum class ReviewerType(val value: String) { //TODO need to adjust with backend
             Complete("total-complete-review"),
-            Juara("");
+            Juara(""),
+            Unknown("");
         }
     }
 
