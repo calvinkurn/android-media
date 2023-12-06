@@ -6,6 +6,7 @@ import com.tokopedia.content.product.preview.data.usecase.MediaReviewUseCase
 import com.tokopedia.content.product.preview.data.usecase.ProductMiniInfoUseCase
 import com.tokopedia.content.product.preview.data.usecase.ReviewLikeUseCase
 import com.tokopedia.content.product.preview.data.usecase.SubmitReportUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -18,7 +19,8 @@ class ProductPreviewRepositoryImpl @Inject constructor(
     private val likeUseCase: ReviewLikeUseCase,
     private val submitReportUseCase: SubmitReportUseCase,
     private val addToCartUseCase: AddToCartUseCase,
-) :
+    private val userSessionInterface: UserSessionInterface,
+    ) :
     ProductPreviewRepository {
     override suspend fun getProductMiniInfo(productId: String) {
         TODO("Not yet implemented")
