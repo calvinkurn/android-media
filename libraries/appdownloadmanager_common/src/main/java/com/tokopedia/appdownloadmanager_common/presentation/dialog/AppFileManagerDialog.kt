@@ -4,10 +4,8 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.appdownloadmanager_common.R
-import com.tokopedia.appdownloadmanager_common.domain.model.AppVersionBetaInfoModel
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.TOKOPEDIA_APK_PATH
 import com.tokopedia.dialog.DialogUnify
-import java.net.URI
 
 object AppFileManagerDialog {
 
@@ -16,7 +14,6 @@ object AppFileManagerDialog {
         fileNamePath: String,
         onSuccessDownload: () -> Unit
     ) {
-
         val fileUri = Uri.parse(fileNamePath)
         val apkName = "${fileUri.lastPathSegment?.split("-")?.firstOrNull().orEmpty()}.apk"
 
@@ -32,6 +29,7 @@ object AppFileManagerDialog {
 
         dialog.setPrimaryCTAClickListener {
             onSuccessDownload.invoke()
+            dialog.dismiss()
         }
 
         dialog.setSecondaryCTAClickListener {

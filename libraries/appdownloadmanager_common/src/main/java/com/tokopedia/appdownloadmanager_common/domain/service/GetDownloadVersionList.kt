@@ -2,7 +2,6 @@ package com.tokopedia.appdownloadmanager_common.domain.service
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -20,8 +19,8 @@ object GetDownloadVersionList {
                 val inputStream = urlConnection?.inputStream
                 val reader = BufferedReader(InputStreamReader(inputStream))
                 val stringBuilder = StringBuilder()
-                var line:String?
-                while (reader.readLine().also { line =  it} != null) {
+                var line: String?
+                while (reader.readLine().also { line = it } != null) {
                     stringBuilder.append(line).append("\n")
                 }
                 stringBuilder.toString()
