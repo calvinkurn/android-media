@@ -1,4 +1,4 @@
-package com.tokopedia.appdownloadmanager_common.nakamaupdate
+package com.tokopedia.appdownloadmanager_common.presentation.model
 
 import com.google.gson.annotations.SerializedName
 

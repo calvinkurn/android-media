@@ -6,11 +6,15 @@ import android.os.Environment
 import androidx.fragment.app.FragmentActivity
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
-import com.tokopedia.appdownloadmanager_common.nakamaupdate.DownloadManagerUpdateModel
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.appdownloadmanager_common.domain.model.AppVersionBetaInfoModel
+import com.tokopedia.appdownloadmanager_common.domain.service.GetDownloadVersionList
+import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadManagerUpdateModel
 import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownloadingBottomSheet
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.interceptor.BannerEnvironmentInterceptor
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -29,17 +33,19 @@ abstract class BaseDownloadManagerHelper(
 
     protected var downloadManagerUpdateModel: DownloadManagerUpdateModel? = null
 
+    protected var appVersionBetaInfoModel: AppVersionBetaInfoModel? = null
+
     init {
         initDownloadManagerUpdateConfig()
     }
 
     abstract fun showAppDownloadManagerBottomSheet()
 
-    open fun isEnableShowBottomSheet(): Boolean {
+    open suspend fun isEnableShowBottomSheet(): Boolean {
         val canShowToday = isExpired()
 //        return canShowToday && isBetaNetwork() && isWhitelistByRollence()
 
-        return isAppDownloadingBottomSheetNotShow()
+        return isAppDownloadingBottomSheetNotShow() && isNeedToUpgradeVersion()
     }
 
     open fun isExpired(): Boolean {
@@ -48,6 +54,7 @@ abstract class BaseDownloadManagerHelper(
         val currTime = System.currentTimeMillis() / 1000
         return currTime - time > interval
     }
+
     open fun isWhitelistByRollence(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
             RollenceKey.ANDROID_INTERNAL_TEST,
@@ -74,6 +81,21 @@ abstract class BaseDownloadManagerHelper(
 
     open fun isBetaNetwork(): Boolean {
         return activityRef.get()?.let { BannerEnvironmentInterceptor.isBeta(it) } == true
+    }
+
+    private suspend fun isNeedToUpgradeVersion(): Boolean {
+        val typeToken = object: TypeToken<List<AppVersionBetaInfoModel>>() {}.type
+        val appVersionBetaInfoModel =
+            GetDownloadVersionList.getApiResponse<List<AppVersionBetaInfoModel>>(
+                TKPD_VERSION_LIST_URL, typeToken
+            )?.firstOrNull()
+
+        this@BaseDownloadManagerHelper.appVersionBetaInfoModel = AppVersionBetaInfoModel(
+            appVersionBetaInfoModel?.versionName.orEmpty(),
+            appVersionBetaInfoModel?.versionCode.orEmpty()
+        )
+
+        return GlobalConfig.VERSION_CODE < appVersionBetaInfoModel?.versionCode.toIntSafely()
     }
 
     private fun isAppDownloadingBottomSheetNotShow(): Boolean {
@@ -112,6 +134,15 @@ abstract class BaseDownloadManagerHelper(
 
         const val APK_MIME_TYPE = "application/vnd.android.package-archive"
 
-        val TKPD_DOWNLOAD_APK_DIR = "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)}/Tokopedia-Apk"
+        const val TKPD_VERSION_LIST_URL =
+            "https://docs-android.tokopedia.net/versionList?packagename=com.tokopedia.tkpd"
+
+        const val APK_URL =
+            "https://docs-android.tokopedia.net/downloadApk?packagename=com.tokopedia.tkpd&versionname=%s&versioncode=%s"
+
+        const val TOKOPEDIA_APK_PATH = "Tokopedia-Apk"
+
+        val TKPD_DOWNLOAD_APK_DIR =
+            "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)}/$TOKOPEDIA_APK_PATH"
     }
 }

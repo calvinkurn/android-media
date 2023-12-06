@@ -5,6 +5,7 @@ import com.tokopedia.appdownloadmanager_common.di.module.DownloadManagerModule
 import com.tokopedia.appdownloadmanager_common.di.module.DownloadManagerViewModelModule
 import com.tokopedia.appdownloadmanager_common.di.scope.DownloadManagerScope
 import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownloadingBottomSheet
+import com.tokopedia.appdownloadmanager_common.presentation.dialog.AppUpdateVersionDialog
 import dagger.Component
 
 @DownloadManagerScope
@@ -14,4 +15,5 @@ import dagger.Component
 )
 interface DownloadManagerComponent {
     fun inject(appDownloadingBottomSheet: AppDownloadingBottomSheet)
+    fun inject(appUpdateVersionDialog: AppUpdateVersionDialog)
 }

@@ -5,6 +5,7 @@ import com.tokopedia.appdownloadmanager_common.domain.service.DownloadManagerSer
 import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingProgressUiModel
 import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingState
 import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingUiState
+import com.tokopedia.config.GlobalConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +23,7 @@ class DownloadManagerViewModel @Inject constructor(
         get() = _downloadingState.asStateFlow()
 
     private val _downloadingUiState = MutableStateFlow<DownloadingUiState>(
-        DownloadingUiState.Onboarding
+        if (GlobalConfig.IS_NAKAMA_VERSION) DownloadingUiState.Downloading else DownloadingUiState.Onboarding
     )
     val downloadingUiState: StateFlow<DownloadingUiState>
         get() = _downloadingUiState
@@ -38,7 +39,7 @@ class DownloadManagerViewModel @Inject constructor(
             apkUrl,
             object : DownloadManagerService.DownloadManagerListener {
 
-                override suspend fun onFailedDownload(reason: String) {
+                override suspend fun onFailedDownload(reason: String, statusColumn: Int) {
                     _downloadingState.emit(DownloadingState.DownloadFailed(reason))
                 }
 

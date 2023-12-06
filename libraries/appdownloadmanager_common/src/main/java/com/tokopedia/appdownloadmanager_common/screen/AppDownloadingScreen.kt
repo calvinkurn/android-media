@@ -27,6 +27,9 @@ import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
+import kotlinx.coroutines.delay
+
+const val DELAY_DOWNLOADED_SUCCESS = 500L
 
 @Composable
 fun AppDownloadingState(
@@ -35,9 +38,10 @@ fun AppDownloadingState(
 ) {
     val downloadingState by viewModel.downloadingState.collectAsStateWithLifecycle()
 
-    val downloadingProgressUiModel =
-        (downloadingState as? DownloadingState.Downloading)?.downloadingProgressUiModel
-            ?: DownloadingProgressUiModel()
+    val downloadingProgressUiModel = (downloadingState as? DownloadingState.Downloading)?.downloadingProgressUiModel
+                ?: (downloadingState as? DownloadingState.DownloadSuccess)?.downloadingProgressUiModel
+                ?: DownloadingProgressUiModel()
+
 
     LaunchedEffect(key1 = downloadingState, block = {
         when (downloadingState) {
@@ -49,7 +53,8 @@ fun AppDownloadingState(
 
             is DownloadingState.DownloadSuccess -> {
                 (downloadingState as? DownloadingState.DownloadSuccess)?.let {
-                    appDownloadingUiEvent(AppDownloadingUiEvent.OnDownloadFailed(it.fileNamePath))
+                    delay(DELAY_DOWNLOADED_SUCCESS)
+                    appDownloadingUiEvent(AppDownloadingUiEvent.OnDownloadSuccess(it.fileNamePath))
                 }
             }
 

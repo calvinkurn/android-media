@@ -15,11 +15,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.appdownloadmanager_common.di.component.DaggerDownloadManagerComponent
 import com.tokopedia.appdownloadmanager_common.di.component.DownloadManagerComponent
-import com.tokopedia.appdownloadmanager_common.nakamaupdate.DownloadManagerUpdateModel
+import com.tokopedia.appdownloadmanager_common.domain.model.AppVersionBetaInfoModel
+import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadManagerUpdateModel
+import com.tokopedia.appdownloadmanager_common.presentation.dialog.AppFileManagerDialog
 import com.tokopedia.appdownloadmanager_common.presentation.listener.DownloadManagerSuccessListener
 import com.tokopedia.appdownloadmanager_common.presentation.model.AppDownloadingUiEvent
 import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingUiState
 import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadManagerPermission
+import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.APK_URL
 import com.tokopedia.appdownloadmanager_common.presentation.viewmodel.DownloadManagerViewModel
 import com.tokopedia.appdownloadmanager_common.screen.AppDownloadingState
 import com.tokopedia.appdownloadmanager_common.screen.DownloadManagerOnboardingScreen
@@ -43,6 +46,8 @@ class AppDownloadingBottomSheet :
     }
 
     private var downloadManagerUpdateModel: DownloadManagerUpdateModel? = null
+
+    private var appBetaVersionInfoModel: AppVersionBetaInfoModel? = null
 
     private var startAppDownloading: (() -> Unit)? = null
 
@@ -79,7 +84,8 @@ class AppDownloadingBottomSheet :
                     }
 
                     is DownloadingUiState.Downloading -> {
-                        viewModel.startDownload(APK_URL)
+                        val apkUrl = APK_URL.format(appBetaVersionInfoModel?.versionName, appBetaVersionInfoModel?.versionCode)
+                        viewModel.startDownload(apkUrl)
 
                         AppDownloadingState(
                             viewModel = viewModel,
@@ -187,6 +193,10 @@ class AppDownloadingBottomSheet :
         this.downloadManagerUpdateModel = downloadManagerUpdateModel
     }
 
+    fun setAppBetaVersionInfoModel(appVersionBetaInfoModel: AppVersionBetaInfoModel) {
+        this.appBetaVersionInfoModel = appVersionBetaInfoModel
+    }
+
     fun setAppDownloadListener(
         startAppDownloading: () -> Unit,
         downloadManagerSuccessListener: DownloadManagerSuccessListener
@@ -216,9 +226,6 @@ class AppDownloadingBottomSheet :
 
     companion object {
         private val TAG = AppDownloadingBottomSheet::class.java.simpleName
-
-        const val APK_URL =
-            "https://docs-android.tokopedia.net/downloadApk?packagename=com.tokopedia.tkpd&versionname=3.246"
 
         fun newInstance(): AppDownloadingBottomSheet {
             return AppDownloadingBottomSheet()

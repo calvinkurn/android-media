@@ -2,9 +2,11 @@ package com.tokopedia.appdownloadmanager_common.domain.service
 
 import android.app.DownloadManager
 import android.net.Uri
+import android.os.Environment
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingProgressUiModel
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.TKPD_DOWNLOAD_APK_DIR
+import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.TOKOPEDIA_APK_PATH
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -22,10 +24,11 @@ class DownloadManagerService @Inject constructor(
 
     companion object {
         private const val VERSION_PARAM = "versionname"
-        private const val VERSION_CODE_PARAM = ""
+        private const val VERSION_CODE_PARAM = "versioncode"
         private const val APK_MIME_TYPE = "application/vnd.android.package-archive"
         private const val DELAY_UPDATE_PROGRESS = 300L
         private const val MAX_PROGRESS = 100
+        private const val TWO_LAST_DIGIT = 2
     }
 
     private val job = SupervisorJob()
@@ -87,6 +90,8 @@ class DownloadManagerService @Inject constructor(
                                             downloadingProgressUiModel,
                                             fileNamePath
                                         )
+
+                                        deleteOldApks(fileNamePath)
                                     }
 
                                     DownloadManager.STATUS_FAILED, DownloadManager.ERROR_UNKNOWN,
@@ -96,9 +101,10 @@ class DownloadManagerService @Inject constructor(
                                     DownloadManager.ERROR_TOO_MANY_REDIRECTS, DownloadManager.ERROR_DEVICE_NOT_FOUND,
                                     DownloadManager.ERROR_CANNOT_RESUME -> {
                                         finishDownload = true
-                                        val reasonColumnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_REASON)
+                                        val reasonColumnIndex =
+                                            cursor.getColumnIndex(DownloadManager.COLUMN_REASON)
                                         val reason = cursor.getString(reasonColumnIndex)
-                                        downloadManagerListener.onFailedDownload(reason)
+                                        downloadManagerListener.onFailedDownload(reason, statusColumnIndex)
                                     }
 
                                     DownloadManager.STATUS_RUNNING, DownloadManager.STATUS_PENDING -> {
@@ -133,9 +139,10 @@ class DownloadManagerService @Inject constructor(
 
                                     else -> {
                                         finishDownload = true
-                                        val reasonColumnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_REASON)
+                                        val reasonColumnIndex =
+                                            cursor.getColumnIndex(DownloadManager.COLUMN_REASON)
                                         val reason = cursor.getString(reasonColumnIndex)
-                                        downloadManagerListener.onFailedDownload(reason)
+                                        downloadManagerListener.onFailedDownload(reason, statusColumnIndex)
                                     }
                                 }
                             }
@@ -150,7 +157,7 @@ class DownloadManagerService @Inject constructor(
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(e)
                 job.cancel()
-                downloadManagerListener.onFailedDownload(e.localizedMessage.orEmpty())
+                downloadManagerListener.onFailedDownload(e.localizedMessage.orEmpty(), DownloadManager.ERROR_UNKNOWN)
             }
         }
     }
@@ -165,7 +172,10 @@ class DownloadManagerService @Inject constructor(
 
     private fun getFileNameFromUrl(url: String): String {
         val uri = Uri.parse(url)
-        return "${uri.getQueryParameter(VERSION_PARAM).orEmpty()}.apk"
+        val versionCode = uri.getQueryParameter(VERSION_CODE_PARAM)?.takeLast(TWO_LAST_DIGIT).orEmpty()
+        val versionName = uri.getQueryParameter(VERSION_PARAM)
+
+        return "${versionName}-${versionCode}.apk"
     }
 
     private fun getDownloadRequest(
@@ -191,6 +201,26 @@ class DownloadManagerService @Inject constructor(
             .setMimeType(APK_MIME_TYPE)
     }
 
+    private fun deleteOldApks(
+        currentApkNamePath: String
+    ) {
+        val downloadDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), TOKOPEDIA_APK_PATH)
+
+        val currentApk = File(currentApkNamePath).name
+
+        if (downloadDir.exists() && downloadDir.isDirectory) {
+            val files = downloadDir.listFiles()
+
+            files?.forEach { file ->
+                val fileName = file.name
+                if (fileName.endsWith(".apk") && fileName != currentApk) {
+                    file.delete()
+                }
+            }
+        }
+    }
+
+
     private fun convertToHumanReadableSize(bytes: Long): String {
         // If the size is less than 1024 bytes, return the size in bytes
         if (bytes < 1024) return "$bytes B"
@@ -202,7 +232,7 @@ class DownloadManagerService @Inject constructor(
     }
 
     interface DownloadManagerListener {
-        suspend fun onFailedDownload(reason: String)
+        suspend fun onFailedDownload(reason: String, statusColumn: Int)
 
         suspend fun onDownloading(
             downloadingProgressUiModel: DownloadingProgressUiModel
