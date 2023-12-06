@@ -64,8 +64,6 @@ import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
-import com.tokopedia.home_account.account_settings.presentation.activity.AccountSettingActivity
-import com.tokopedia.home_account.account_settings.presentation.activity.MediaQualitySettingActivity
 import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
@@ -84,6 +82,8 @@ import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.fundsAndInvestment.FundsAndInvestmentComposeActivity
+import com.tokopedia.home_account.ui.accountsettings.AccountSettingActivity
+import com.tokopedia.home_account.ui.mediaquality.MediaQualitySettingActivity
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.FundsAndInvestmentActivity
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity

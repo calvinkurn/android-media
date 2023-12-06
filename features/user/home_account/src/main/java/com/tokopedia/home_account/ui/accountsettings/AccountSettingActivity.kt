@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.account_settings.presentation.activity
+package com.tokopedia.home_account.ui.accountsettings
 
 import android.content.Context
 import android.content.Intent

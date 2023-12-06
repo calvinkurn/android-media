@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.account_settings.presentation.activity
+package com.tokopedia.home_account.ui.mediaquality
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.home_account.R
-import com.tokopedia.home_account.account_settings.presentation.uimodel.MediaQualityUIModel
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 

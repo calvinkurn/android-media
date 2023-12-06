@@ -3,7 +3,7 @@ package com.tokopedia.home_account.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.home_account.fundsAndInvestment.FundsAndInvestmentComposeActivity
-import com.tokopedia.home_account.account_settings.presentation.activity.AccountSettingActivity
+import com.tokopedia.home_account.ui.accountsettings.AccountSettingActivity
 import com.tokopedia.home_account.view.fragment.FundsAndInvestmentFragment
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import dagger.Component

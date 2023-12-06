@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.account_settings.presentation.activity
+package com.tokopedia.home_account.ui.mediaquality
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.home_account.R
-import com.tokopedia.home_account.account_settings.presentation.uimodel.MediaQualityUIModel
 import com.tokopedia.media.loader.internal.MediaSettingPreferences
 import com.tokopedia.nest.principles.ui.NestTheme
 import kotlinx.coroutines.launch

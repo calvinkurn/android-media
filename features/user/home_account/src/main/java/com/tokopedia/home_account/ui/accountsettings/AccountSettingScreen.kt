@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.account_settings.presentation.activity
+package com.tokopedia.home_account.ui.accountsettings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
