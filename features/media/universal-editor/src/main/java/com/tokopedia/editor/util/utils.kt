@@ -3,6 +3,8 @@ package com.tokopedia.editor.util
 import android.animation.ObjectAnimator
 import android.view.View
 import android.view.animation.AccelerateInterpolator
+import androidx.core.view.marginBottom
+import androidx.core.view.marginTop
 import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.utils.file.FileUtil
 
@@ -17,7 +19,8 @@ internal fun View.slideTop(): ObjectAnimator {
 }
 
 internal fun View.slideDown(): ObjectAnimator {
-    return this.animateSlide(this.height)
+    val totalHeight = this.marginBottom + this.marginTop + this.height
+    return this.animateSlide(totalHeight)
 }
 
 internal fun View.slideOriginalPos(): ObjectAnimator {

@@ -256,6 +256,7 @@ class InputTextFragment @Inject constructor(
     private fun showSoftKeyboard() {
         handler = Handler()
         handler?.postDelayed({
+            viewBinding?.addTextInput?.requestFocus()
             context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let {
                 (it as InputMethodManager).toggleSoftInput(
                     InputMethodManager.SHOW_IMPLICIT,
