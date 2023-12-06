@@ -13,6 +13,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
 import com.tokopedia.recommendation_widget_common.widget.loading.RecommendationCarouselShimmeringModel
+import com.tokopedia.recommendation_widget_common.widget.loading.StealTheLookShimmeringModel
 import com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookMapper
 import com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookMapper.asStealTheLookModel
 import com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookWidgetModel
@@ -99,9 +100,19 @@ data class RecommendationWidgetState(
 
     fun loading(model: RecommendationWidgetModel): RecommendationWidgetState = copy(
         widgetMap = widgetMap + mapOf(
-            model.id to listOf(RecommendationCarouselShimmeringModel.from(model.metadata))
+            model.id to listOf(recommendationLoadingVisitable(model))
         )
     )
+
+    private fun recommendationLoadingVisitable(
+        model: RecommendationWidgetModel
+    ): RecommendationVisitable {
+        return if (model.metadata.pageName.contains(PAGENAME_STEAL_THE_LOOK)) {
+            StealTheLookShimmeringModel.from(model.metadata)
+        } else {
+            RecommendationCarouselShimmeringModel.from(model.metadata)
+        }
+    }
 
     fun error(model: RecommendationWidgetModel): RecommendationWidgetState = copy(
         widgetMap = widgetMap + mapOf(model.id to emptyList())

@@ -43,7 +43,6 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintTop_toTopOf="@id/stl_item_ribbon_content"
         app:layout_constraintBottom_toBottomOf="@id/stl_item_ribbon_content"
-        android:layout_marginLeft="@dimen/steal_the_look_inner_padding_half"
         android:visibility="gone"
         tools:visibility="visible" />
 
