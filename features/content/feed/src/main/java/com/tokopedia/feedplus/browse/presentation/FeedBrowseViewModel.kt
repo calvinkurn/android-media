@@ -182,21 +182,23 @@ internal class FeedBrowseViewModel @Inject constructor(
     }
 
     private suspend fun FeedBrowseSlotUiModel.InspirationBanner.getAndUpdateData() {
-        updateWidget<FeedBrowseSlotUiModel.InspirationBanner>(slotId, ResultState.Success) {
-            it.copy(isLoading = true)
-        }
-        val response = repository.getWidgetRecommendation(identifier)
-        if (response !is WidgetRecommendationModel.Banners) return
+        updateWidget<FeedBrowseSlotUiModel.InspirationBanner>(slotId, ResultState.Loading)
+        try {
+            val response = repository.getWidgetRecommendation(identifier)
+            if (response !is WidgetRecommendationModel.Banners) return
 
-        updateWidget<FeedBrowseSlotUiModel.InspirationBanner>(slotId, ResultState.Success) {
-            it.copy(bannerList = response.banners, isLoading = false)
+            updateWidget<FeedBrowseSlotUiModel.InspirationBanner>(slotId, ResultState.Success) {
+                it.copy(bannerList = response.banners)
+            }
+        } catch (err: Throwable) {
+            updateWidget<FeedBrowseSlotUiModel.InspirationBanner>(slotId, ResultState.Fail(err)) {
+                it.copy(bannerList = emptyList())
+            }
         }
     }
 
     private suspend fun FeedBrowseSlotUiModel.Authors.getAndUpdateData() {
-        updateWidget<FeedBrowseSlotUiModel.Authors>(slotId, ResultState.Loading) {
-            it.copy(isLoading = true, authorList = emptyList())
-        }
+        updateWidget<FeedBrowseSlotUiModel.Authors>(slotId, ResultState.Loading)
         try {
             val mappedResult = repository.getWidgetRecommendation(identifier)
             if (mappedResult !is WidgetRecommendationModel.Authors) return
@@ -205,7 +207,7 @@ internal class FeedBrowseViewModel @Inject constructor(
             }
         } catch (err: Throwable) {
             updateWidget<FeedBrowseSlotUiModel.Authors>(slotId, ResultState.Fail(err)) {
-                it.copy(isLoading = false, authorList = emptyList())
+                it.copy(authorList = emptyList())
             }
         }
     }
@@ -213,7 +215,7 @@ internal class FeedBrowseViewModel @Inject constructor(
     private suspend inline fun <reified T : FeedBrowseSlotUiModel> updateWidget(
         slotId: String,
         state: ResultState,
-        onUpdate: (T) -> FeedBrowseSlotUiModel
+        onUpdate: (T) -> FeedBrowseSlotUiModel = { it }
     ) = updateMutex.withLock {
         _widgets.update {
             val widget = it[slotId] ?: return@update it

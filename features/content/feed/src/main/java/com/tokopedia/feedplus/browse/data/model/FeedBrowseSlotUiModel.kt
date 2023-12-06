@@ -35,7 +35,6 @@ internal sealed interface FeedBrowseSlotUiModel {
         override val title: String,
         val identifier: String,
         val bannerList: List<BannerWidgetModel>,
-        val isLoading: Boolean,
     ) : FeedBrowseSlotUiModel
 
     data class Authors(
@@ -43,7 +42,6 @@ internal sealed interface FeedBrowseSlotUiModel {
         override val title: String,
         val identifier: String,
         val authorList: List<AuthorWidgetModel>,
-        val isLoading: Boolean,
     ) : FeedBrowseSlotUiModel
 }
 

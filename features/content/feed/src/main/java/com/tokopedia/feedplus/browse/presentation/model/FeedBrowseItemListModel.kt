@@ -77,14 +77,13 @@ internal sealed interface FeedBrowseItemListModel {
 
     data class HorizontalAuthors(
         override val slotInfo: SlotInfo,
-        val items: List<AuthorWidgetModel>
+        val items: List<AuthorWidgetModel>,
+        val isLoading: Boolean = false,
     ) : FeedBrowseItemListModel {
 
         companion object {
-            val Loading = HorizontalAuthors(
-                SlotInfo.Empty,
-                emptyList(),
-            )
+            val Loading: HorizontalAuthors
+                get() = HorizontalAuthors(SlotInfo.Empty, emptyList(), true)
         }
     }
 }

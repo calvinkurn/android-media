@@ -48,7 +48,7 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
     override suspend fun getSlots(): List<FeedBrowseSlotUiModel> {
         return withContext(dispatchers.io) {
             val response = feedXHomeUseCase(
-                feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE, cursor = "TUN3d0xESXNNQ3dzTXl3c01Dd3dMREFzTERBc01Dd3NMQT09Og==")
+                feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE)
             )
             // TODO("Remove this mock data")
             listOf(
@@ -57,14 +57,12 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                     title = "Ini Banner",
                     identifier = "content_browse_inspirational",
                     bannerList = emptyList(),
-                    isLoading = false,
                 ),
                 FeedBrowseSlotUiModel.Authors(
                     slotId = "random.slot.id",
                     title = "Video asik dari kreator ",
                     identifier = "content_browse_ugc",
                     authorList = emptyList(),
-                    isLoading = false,
                 )
             ) + mapper.mapSlotsResponse(response).ifEmpty {
                 throw IllegalStateException("no slots available")
@@ -99,40 +97,4 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
 
         mapper.mapWidgetResponse(response)
     }
-
-//    private fun mockCreators() = WidgetRecommendationModel.Authors(
-//        channels = List(5) { index ->
-//            PlayWidgetChannelUiModel(
-//                channelId = "$index",
-//                title = "",
-//                appLink = "https://www.tokopedia.com/play/channel/1729780",
-//                startTime = "",
-//                totalView = PlayWidgetTotalView("2.9 rb", true),
-//                promoType = PlayWidgetPromoType.NoPromo,
-//                reminderType = PlayWidgetReminderType.NotReminded,
-//                partner = PlayWidgetPartnerUiModel(
-//                    id = "$index",
-//                    name = "Wynne Armeline",
-//                    avatarUrl = "https://images.tokopedia.net/img/cache/100-square/tPxBYm/2023/6/23/91d6baf5-b79e-45c1-bf58-9f033b14a69f.jpg",
-//                    badgeUrl = "",
-//                    appLink = "https://www.tokopedia.com/people/wynnearmeline",
-//                    type = PartnerType.Buyer
-//                ),
-//                video = PlayWidgetVideoUiModel.Empty.copy(coverUrl = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/10/17/8ccb0444-a1b9-464c-b86f-119576b47504.jpg"),
-//                channelType = PlayWidgetChannelType.Vod,
-//                hasGame = false,
-//                share = PlayWidgetShareUiModel.Empty,
-//                performanceSummaryLink = "",
-//                poolType = "",
-//                recommendationType = "",
-//                hasAction = false,
-//                products = emptyList(),
-//                shouldShowPerformanceDashboard = false,
-//                channelTypeTransition = PlayWidgetChannelTypeTransition(
-//                    prevType = null,
-//                    currentType = PlayWidgetChannelType.Unknown
-//                )
-//            )
-//        }
-//    )
 }

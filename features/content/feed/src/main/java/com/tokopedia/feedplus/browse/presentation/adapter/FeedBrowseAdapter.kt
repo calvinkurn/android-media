@@ -75,7 +75,7 @@ internal class FeedBrowseAdapter(
                 FeedBrowseTitleViewHolder.create(parent)
             }
             TYPE_HORIZONTAL_CREATORS -> {
-                FeedBrowseHorizontalCreatorsViewHolder.create(parent, creatorListener, scope)
+                FeedBrowseHorizontalCreatorsViewHolder.create(parent, creatorListener)
             }
             else -> error("ViewType $viewType is not supported")
         }
@@ -171,7 +171,7 @@ internal class FeedBrowseAdapter(
                     item.result,
                     index
                 )
-                is FeedBrowseSlotUiModel.InspirationBanner -> item.model.mapToItems(index)
+                is FeedBrowseSlotUiModel.InspirationBanner -> item.model.mapToItems(item.result, index)
                 is FeedBrowseSlotUiModel.Authors -> item.model.mapToItems(item.result, index)
             }
         }
@@ -217,13 +217,14 @@ internal class FeedBrowseAdapter(
     }
 
     private fun FeedBrowseSlotUiModel.InspirationBanner.mapToItems(
+        state: ResultState,
         position: Int
     ): List<FeedBrowseItemListModel> {
         val slotInfo = getSlotInfo(position)
         return buildList {
             add(FeedBrowseItemListModel.Title(slotInfo, title))
             addAll(
-                if (isLoading) List(6) { FeedBrowseItemListModel.Banner.Placeholder }
+                if (state.isLoading) List(6) { FeedBrowseItemListModel.Banner.Placeholder }
                 else bannerList.map { FeedBrowseItemListModel.Banner.Item(slotInfo, it) }
             )
         }
@@ -237,7 +238,7 @@ internal class FeedBrowseAdapter(
         return buildList {
             add(FeedBrowseItemListModel.Title(slotInfo, title))
             add(
-                FeedBrowseItemListModel.HorizontalAuthors(slotInfo, authorList)
+                FeedBrowseItemListModel.HorizontalAuthors(slotInfo, authorList, isLoading = state.isLoading)
             )
         }
     }

@@ -57,7 +57,6 @@ class FeedBrowseMapper @Inject constructor() {
                         title = item.title,
                         identifier = item.type.removePrefix("browse_widget_recommendation"),
                         bannerList = emptyList(),
-                        isLoading = false,
                     )
                 } else {
                     null
