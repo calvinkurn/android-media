@@ -30,7 +30,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.ads
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
-    implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.miscDependencies.playIntegrityApi
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)

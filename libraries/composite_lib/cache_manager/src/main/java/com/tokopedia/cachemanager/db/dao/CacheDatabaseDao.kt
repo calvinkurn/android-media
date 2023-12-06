@@ -20,7 +20,7 @@ interface CacheDatabaseDao<T : CacheDbModel> {
     fun deleteByKey(key: String)
     fun deleteTable()
     fun getCacheModel(key: String): T?
-    fun getCacheModelFlow(key: String): Flow<T>
+    fun getCacheModelFlow(key: String): Flow<T?>
     fun deleteExpiredRecords(timeStamp:Long)
 
 }

@@ -50,6 +50,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_CITY_NAME
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_DISTRICT_NAME
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY
@@ -198,6 +200,10 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     )
                 )
                 viewModel.getDistrictData(
+                    locationResult.lastLocation.latitude,
+                    locationResult.lastLocation.longitude
+                )
+                LocationDetectorHelper(requireContext()).saveToCache(
                     locationResult.lastLocation.latitude,
                     locationResult.lastLocation.longitude
                 )
@@ -474,6 +480,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         PinpointAction.InvalidDistrictPinpoint.InvalidDistrictPinpointSource.ADD_ADDRESS_BUYER -> {
                             getString(R.string.txt_toaster_pinpoint_unmatched)
                         }
+
                         PinpointAction.InvalidDistrictPinpoint.InvalidDistrictPinpointSource.SHOP_ADDRESS -> {
                             getString(R.string.toaster_not_avail_shop_loc)
                         }
@@ -614,11 +621,11 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun allPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
             if (activity?.let {
-                ContextCompat.checkSelfPermission(
+                    ContextCompat.checkSelfPermission(
                         it,
                         permission
                     )
-            } != PackageManager.PERMISSION_GRANTED
+                } != PackageManager.PERMISSION_GRANTED
             ) {
                 return false
             }
@@ -633,6 +640,9 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
             if (data != null) {
                 moveMap(getLatLng(data.latitude, data.longitude))
                 viewModel.getDistrictData(data.latitude, data.longitude)
+                LocationDetectorHelper(requireContext()).saveToCache(
+                    data.latitude, data.longitude
+                )
             } else {
                 fusedLocationClient?.requestLocationUpdates(
                     AddNewAddressUtils.getLocationRequest(),
@@ -897,6 +907,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                                             userSession.userId
                                         )
                                     }
+
                                     PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> {
                                         LogisticAddAddressAnalytics.onClickIsiAlamatManualUndetectedLocation(
                                             userSession.userId
@@ -935,6 +946,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                 }
             }
+
             PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> {
                 when (addressUiState) {
                     AddressUiState.EditAddress -> {
@@ -963,6 +975,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 PinpointBottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE -> {
                     getString(R.string.out_of_indonesia_title)
                 }
+
                 PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> {
                     getString(R.string.undetected_location_new_edit)
                 }
@@ -1094,14 +1107,22 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         currentPlaceId = data?.getStringExtra(EXTRA_PLACE_ID).orEmpty()
         val currentLat = data?.getDoubleExtra(EXTRA_LAT, 0.0).orZero()
         val currentLong = data?.getDoubleExtra(EXTRA_LONG, 0.0).orZero()
-        viewModel.onResultFromSearchAddress(placeId = currentPlaceId, lat = currentLat, long = currentLong)
+        viewModel.onResultFromSearchAddress(
+            placeId = currentPlaceId,
+            lat = currentLat,
+            long = currentLong
+        )
     }
 
     fun onNewIntent(bundle: Bundle) {
         currentPlaceId = bundle.getString(EXTRA_PLACE_ID).orEmpty()
         val currentLat = bundle.getDouble(EXTRA_LAT, 0.0).orZero()
         val currentLong = bundle.getDouble(EXTRA_LONG, 0.0).orZero()
-        viewModel.onResultFromSearchAddress(placeId = currentPlaceId, lat = currentLat, long = currentLong)
+        viewModel.onResultFromSearchAddress(
+            placeId = currentPlaceId,
+            lat = currentLat,
+            long = currentLong
+        )
     }
 
     // region navigation

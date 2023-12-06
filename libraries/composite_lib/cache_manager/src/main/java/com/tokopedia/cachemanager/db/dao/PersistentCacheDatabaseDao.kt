@@ -15,7 +15,7 @@ interface PersistentCacheDatabaseDao : CacheDatabaseDao<PersistentCacheDbModel> 
     override fun getCacheModel(key: String): PersistentCacheDbModel?
 
     @Query("SELECT * FROM ${PersistentCacheDbModel.PERSISTENT_CACHE_TABLE_NAME} WHERE key LIKE :key LIMIT 1")
-    override fun getCacheModelFlow(key: String): Flow<PersistentCacheDbModel>
+    override fun getCacheModelFlow(key: String): Flow<PersistentCacheDbModel?>
 
     @Query("DELETE FROM ${PersistentCacheDbModel.PERSISTENT_CACHE_TABLE_NAME} WHERE key = :key")
     override fun deleteByKey(key: String)

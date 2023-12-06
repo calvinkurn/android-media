@@ -31,11 +31,9 @@ import com.tokopedia.device.info.model.AdditionalDeviceInfo
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.header.model.FingerPrint
 import com.tokopedia.devicefingerprint.header.model.FingerPrintNew
-import com.tokopedia.devicefingerprint.location.LocationCache
 import com.tokopedia.devicefingerprint.location.LocationCache.DEFAULT_LATITUDE
 import com.tokopedia.devicefingerprint.location.LocationCache.DEFAULT_LONGITUDE
 import com.tokopedia.encryption.security.toBase64
-import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.locationmanager.LocationDetectorHelper.Companion.LOCATION_CACHE
 import com.tokopedia.network.data.model.FingerprintModel
@@ -47,9 +45,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
 import kotlin.coroutines.CoroutineContext
 
 object FingerprintModelGenerator : CoroutineScope {
@@ -67,7 +66,8 @@ object FingerprintModelGenerator : CoroutineScope {
     @SuppressLint("StaticFieldLeak")
     private var locationDetectorHelper: LocationDetectorHelper? = null
 
-    private var locationFlow: Flow<DeviceLocation?>? = null
+    private var locationFlow: Flow<String?>? = null
+    var locationFlowJob: Job? = null
 
     @JvmStatic
     fun generateFingerprintModel(context: Context): FingerprintModel {
@@ -303,20 +303,33 @@ object FingerprintModelGenerator : CoroutineScope {
         }
     }
 
+    /**
+     * listen to location change from Room DB in form of Flow
+     * If location is changed, trigger fingerprint to expired, thus make the fingerprint refreshed
+     */
     private fun initFlowOnce(context: Context) {
-        if (locationFlow == null) {
-            PersistentCacheManager(context, LOCATION_CACHE).getFlow(
-                LocationDetectorHelper.PARAM_CACHE_DEVICE_LOCATION, DeviceLocation::class
-                    .java, DeviceLocation()
-            ).also {
-                locationFlow = it
-                launch {
-                    it.collect {
-                        expireFingerprint()
+        val fj = locationFlowJob
+        try {
+            if (locationFlow == null || fj == null || (fj.isCompleted)) {
+                PersistentCacheManager(
+                    context,
+                    LOCATION_CACHE
+                ).getFlow(LocationDetectorHelper.PARAM_CACHE_DEVICE_LOCATION).also {
+                    locationFlow = it
+                    // to be safe, we cancel previous job to make sure only 1 job exists
+                    if (locationFlowJob != null) {
+                        locationFlowJob?.cancel()
+                    }
+                    locationFlowJob = launch {
+                        it.collect {
+                            if (it?.isNotEmpty() == true) {
+                                expireFingerprint()
+                            }
+                        }
                     }
                 }
             }
-        }
+        } catch (ignored: Exception) { }
     }
 
     private fun getLocationHelper(ctx: Context): LocationDetectorHelper {

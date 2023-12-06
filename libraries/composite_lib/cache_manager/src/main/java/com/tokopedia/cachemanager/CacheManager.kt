@@ -65,6 +65,10 @@ abstract class CacheManager(val context: Context) {
         }
     }
 
+    fun getFlow(customId: String): Flow<String?> {
+        return cacheRepository.getFlow(id + customId)
+    }
+
     @JvmOverloads
     fun getString(customId: String, defaultString: String? = ""): String? {
         return try {

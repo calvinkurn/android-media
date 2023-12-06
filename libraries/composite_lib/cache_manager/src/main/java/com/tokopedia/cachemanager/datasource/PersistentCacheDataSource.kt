@@ -37,7 +37,7 @@ class PersistentCacheDataSource(context: Context) :
         }
     }
 
-    override fun getFlow(key: String): Flow<PersistentCacheDbModel> {
+    override fun getFlow(key: String): Flow<PersistentCacheDbModel?> {
         return cacheDatabaseDao.getCacheModelFlow(key)
     }
 

@@ -1963,45 +1963,6 @@ open class HomeRevampFragment :
         return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_NEW_BALANCE_WIDGET, true)
     }
 
-    private fun detectAndSendLocation() {
-        activity?.let {
-            Observable.just(true).map { aBoolean: Boolean? ->
-                val locationDetectorHelper = LocationDetectorHelper(it.applicationContext)
-                locationDetectorHelper.getLocation(
-                    onGetLocation(),
-                    it,
-                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                    RequestLocationType.APPROXIMATE_OR_PRECISE,
-                    permissionCheckerHelper.get(),
-                    rationaleText = ""
-                )
-                true
-            }.subscribeOn(Schedulers.io()).subscribe({ }) { }
-        }
-    }
-
-    private fun onGetLocation(): Function1<DeviceLocation, Unit> {
-        return { (latitude, longitude) ->
-            saveLocation(activity, latitude, longitude)
-        }
-    }
-
-    private fun saveLocation(context: Context?, latitude: Double, longitude: Double) {
-        val editor: SharedPreferences.Editor
-        if (context != null && !TextUtils.isEmpty(ConstantKey.LocationCache.KEY_LOCATION)) {
-            sharedPrefs = context.getSharedPreferences(
-                ConstantKey.LocationCache.KEY_LOCATION,
-                Context.MODE_PRIVATE
-            )
-            editor = sharedPrefs.edit()
-        } else {
-            return
-        }
-        editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LAT, latitude.toString())
-        editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LONG, longitude.toString())
-        editor.apply()
-    }
-
     private fun saveFirstInstallTime() {
         context?.let {
             sharedPrefs = it.getSharedPreferences(

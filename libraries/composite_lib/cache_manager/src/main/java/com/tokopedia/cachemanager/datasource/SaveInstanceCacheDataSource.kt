@@ -34,7 +34,7 @@ class SaveInstanceCacheDataSource(context: Context) :
         }
     }
 
-    override fun getFlow(key: String): Flow<SaveInstanceCacheDbModel> {
+    override fun getFlow(key: String): Flow<SaveInstanceCacheDbModel?> {
         return cacheDatabaseDao.getCacheModelFlow(key)
     }
 

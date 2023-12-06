@@ -24,6 +24,12 @@ import com.tokopedia.cachemanager.repository.PersistentCacheRepository
  * ==============================
  * Use SaveInstanceCacheManager instead, because the value will automatically deleted when we get th value.
  *
+ * HOW TO LISTEN TO CHANGED VALUES
+ * PersistentCacheManager.get(context).getFlow("KEY_DB",
+ *   MyObject::class.java,
+ *   MyObject())
+ * or
+ * PersistentCacheManager.get(context).getFlow("KEY_DB") if the object is string
  */
 class PersistentCacheManager(context: Context) : CacheManager(context) {
 
@@ -32,6 +38,9 @@ class PersistentCacheManager(context: Context) : CacheManager(context) {
     }
 
     companion object {
+        /**
+         * instance for persistentCacheManager with id null
+         */
         @SuppressLint("StaticFieldLeak")
         var instance: PersistentCacheManager? = null
 
@@ -51,7 +60,8 @@ class PersistentCacheManager(context: Context) : CacheManager(context) {
         }
     }
 
-    override fun createRepository(context: Context) =
-        PersistentCacheRepository.create(context.applicationContext)
+    override fun createRepository(context: Context): PersistentCacheRepository {
+        return PersistentCacheRepository.create(context.applicationContext)
+    }
 
 }
