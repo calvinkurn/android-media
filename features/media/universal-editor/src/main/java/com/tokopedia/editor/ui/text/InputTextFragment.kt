@@ -10,7 +10,6 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Handler
-import android.util.Log
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.addTextChangedListener
@@ -47,7 +46,7 @@ class InputTextFragment @Inject constructor(
 
         viewBinding?.addTextInput?.setText(viewModel.textValue.value)
 
-        animationShow()
+        this.showSoftKeyboard()
     }
 
     override fun initObserver() {
@@ -255,65 +254,19 @@ class InputTextFragment @Inject constructor(
     }
 
     private fun showSoftKeyboard() {
-        context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let {
-            (it as InputMethodManager).toggleSoftInput(
-                InputMethodManager.SHOW_IMPLICIT,
-                InputMethodManager.HIDE_IMPLICIT_ONLY
-            )
-        }
-    }
-
-    var show = 0
-    var keyboard = 0
-
-    // animate container UI to fade in
-    private fun animationShow() {
-        viewBinding?.let {
-            val animatorSet = AnimatorSet()
-
-            listOf(
-                it.fontColorScroll,
-                it.fontSelectionContainer,
-                it.lineSeparator,
-                it.colorAlignmentContainer,
-                it.parent,
-            ).forEach {
-                val animator = ObjectAnimator.ofFloat(it, "alpha", 0f, 1f).apply {
-                    duration = ANIMATION_DURATION
-                    repeatCount = 0
-                }
-
-                animatorSet.playTogether(animator)
+        handler = Handler()
+        handler?.postDelayed({
+            context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let {
+                (it as InputMethodManager).toggleSoftInput(
+                    InputMethodManager.SHOW_IMPLICIT,
+                    InputMethodManager.HIDE_IMPLICIT_ONLY
+                )
             }
-
-            animatorSet.apply {
-                addListener(object: AnimatorListener{
-                    override fun onAnimationStart(p0: Animator) {}
-                    override fun onAnimationCancel(p0: Animator) {}
-                    override fun onAnimationRepeat(p0: Animator) {}
-
-                    override fun onAnimationEnd(p0: Animator) {
-                        viewBinding?.addTextInput?.requestFocus()
-                        show += 1
-                        Log.d("asd","show = $show")
-
-                        handler = Handler()
-                        handler?.postDelayed({
-                            showSoftKeyboard()
-                            keyboard += 1
-                            Log.d("asd","keyboard = $keyboard")
-                        }, SOFT_KEYBOARD_SHOW_DELAY)
-                    }
-                })
-
-                start()
-            }
-        }
+        }, SOFT_KEYBOARD_SHOW_DELAY)
     }
 
     companion object {
         private const val DEFAULT_TEXT_COLOR = -1
-        private const val ANIMATION_DURATION = 400L
         private const val SOFT_KEYBOARD_SHOW_DELAY = 100L
     }
 }
