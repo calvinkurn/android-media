@@ -8,6 +8,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/stl_item_image"
+        android:foreground="?attr/selectableItemBackground"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="@string/steal_the_look_left_image_ratio"
@@ -35,7 +36,6 @@
         android:layout_marginTop="3dp"
         android:scaleType="fitXY"
         android:src="@drawable/recom_ribbon_arch_red"
-        tools:elevation="4dp"
         android:contentDescription="@string/product_card_content_desc_ribbon"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/stl_item_ribbon_content"
