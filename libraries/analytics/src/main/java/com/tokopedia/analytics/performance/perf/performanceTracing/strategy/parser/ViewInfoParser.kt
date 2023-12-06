@@ -3,5 +3,5 @@ package com.tokopedia.analytics.performance.perf.performanceTracing.strategy.par
 import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.ViewInfo
 
 interface ViewInfoParser<T> {
-    fun parse(input: T, depth: Int): List<ViewInfo>
+    suspend fun parse(input: T): ViewInfo
 }

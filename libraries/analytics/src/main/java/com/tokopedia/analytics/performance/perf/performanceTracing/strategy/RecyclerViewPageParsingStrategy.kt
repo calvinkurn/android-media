@@ -5,27 +5,20 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.call
 import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.callback.ViewCallbackStrategy
 import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.parser.ViewInfoParser
 import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.parser.XmlViewInfoParser
-import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.parser.finish.FinishParserStrategyConfig
-import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.parser.finish.FullRecyclerViewPageFinishParserStrategy
-import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.parser.start.FullRecyclerViewPageStartParser
-import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.parser.start.StartParserStrategyConfig
+import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.condition.finish.FinishConditionStrategyConfig
+import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.condition.finish.FullRecyclerViewPageFinishConditionStrategy
 
-class RecyclerViewPageParsingStrategy : ParsingStrategy<View> {
-
-    val strategy: ViewCallbackStrategy = FrameViewCallbackStrategy()
-    override fun getStartParserStrategy(): StartParserStrategyConfig<View> {
-        return FullRecyclerViewPageStartParser()
-    }
-
-    override fun getFinishParsingStrategy(): FinishParserStrategyConfig<View> {
-        return FullRecyclerViewPageFinishParserStrategy()
+class RecyclerViewPageParsingStrategy() : ParsingStrategy<View> {
+    val strategy = FrameViewCallbackStrategy()
+    override fun getFinishParsingStrategy(): FinishConditionStrategyConfig<View> {
+        return FullRecyclerViewPageFinishConditionStrategy()
     }
 
     override fun getViewCallbackStrategy(): ViewCallbackStrategy {
         return strategy
     }
 
-    override fun getViewInfoParserStrategy(): ViewInfoParser<View> {
+    override suspend fun getViewInfoParserStrategy2(): ViewInfoParser<View> {
         return XmlViewInfoParser()
     }
 }

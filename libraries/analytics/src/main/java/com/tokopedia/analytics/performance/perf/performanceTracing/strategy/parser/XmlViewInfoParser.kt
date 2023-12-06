@@ -1,35 +1,73 @@
 package com.tokopedia.analytics.performance.perf.performanceTracing.strategy.parser
 
+import android.content.Context
 import android.graphics.Rect
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.ViewInfo
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.yield
 
 class XmlViewInfoParser() : ViewInfoParser<View> {
-    override fun parse(view: View, depth: Int): List<ViewInfo> {
-        val viewInfoList = mutableListOf<ViewInfo>()
+
+    override suspend fun parse(view: View): ViewInfo {
+        val context = view.context
+        val resourceIdString = try {
+            context.resources.getResourceEntryName(view.id)
+        } catch (e: Exception) {
+            "N/A"
+        }
+
+        val isVisible = view.visibility == View.VISIBLE && view.isShown && getViewHeight(view) != 0
+        val height = getViewHeight(view)
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+
+        val viewInfo = ViewInfo(
+            name = view.javaClass.simpleName,
+            resourceIdString = resourceIdString,
+            isVisible = isVisible,
+            height = height,
+            location = location
+        )
+
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                val childView: View? = view.getChildAt(i)
+                childView?.let {
+                    val childViewInfo = parse(childView)
+                    viewInfo.directChilds += childViewInfo
+                }
+            }
+        }
+
+        return viewInfo
+    }
+
+    private fun createViewInfo(view: View): ViewInfo {
         var viewIdString = "unknown"
         try {
             viewIdString = view.resources.getResourceName(view.id)
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        val isVisible = view.isShown && getViewHeight(view) != 0 && isViewInViewport(view)
-        val viewInfo = ViewInfo(view.javaClass.simpleName, viewIdString, isVisible, getViewHeight(view))
-        viewInfoList.add(viewInfo)
+        val offset = 100
 
-        try {
-            if (view is ViewGroup) {
-                for (i in 0 until view.childCount) {
-                    viewInfoList.addAll(parse(view.getChildAt(i), depth + 1))
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return viewInfoList
+        val screen = Rect(0, 0, getScreenWidth(), getScreenHeight())
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val X = location[0] + offset
+        val Y = location[1] + offset
+        val isViewInViewport =  screen.top <= Y && screen.bottom >= Y &&
+            screen.left <= X && screen.right >= X
+
+        val isVisible = view.isShown && getViewHeight(view) != 0 && isViewInViewport
+        val viewInfo = ViewInfo(view.javaClass.simpleName, viewIdString, isVisible, getViewHeight(view), location)
+        return viewInfo
     }
 
     private fun printViewInfo(viewInfo: ViewInfo, depth: Int) {
@@ -37,24 +75,26 @@ class XmlViewInfoParser() : ViewInfoParser<View> {
         Log.d("ViewInfo", "$padding${viewInfo.name} - ID: ${viewInfo.resourceIdString}, Visible: ${viewInfo.isVisible}, Height: ${viewInfo.height}")
     }
 
-    private fun isViewInViewport(view: View): Boolean {
-        val scrollBounds = Rect()
-        view.getHitRect(scrollBounds)
-
-        // Get the dimensions of the screen using application context
-        val displayMetrics = view.context.applicationContext.resources.displayMetrics
-        val screenHeight = displayMetrics.heightPixels
-
-        // Check if the view intersects with the screen
-        return scrollBounds.top < screenHeight && scrollBounds.bottom > 0
+    fun isViewInViewport(view: View): Boolean {
+        val offset = 100
+        
+        if (!view.isShown) return false
+        val screen = Rect(0, 0, getScreenWidth(), getScreenHeight())
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val X = location[0] + offset
+        val Y = location[1] + offset
+        return screen.top <= Y && screen.bottom >= Y &&
+            screen.left <= X && screen.right >= X
     }
+
 
     private fun RecyclerView.calculateRecyclerViewHeight(): Int {
         var totalHeight = 0
 
         for (i in 0 until this.childCount) {
-            val child = this.getChildAt(i)
-            totalHeight += child.height
+            val child: View? = this.getChildAt(i)
+            child?.let { totalHeight += child.height }
         }
 
         // Add the height of the RecyclerView's padding
@@ -67,6 +107,13 @@ class XmlViewInfoParser() : ViewInfoParser<View> {
         return when (view) {
             is RecyclerView -> view.calculateRecyclerViewHeight()
             else -> view.height
+        }
+    }
+
+    private fun getChildCount(view: View): Int {
+        return when (view) {
+            is ViewGroup -> view.childCount
+            else -> 0
         }
     }
 }

@@ -1,17 +1,23 @@
 package com.tokopedia.analytics.performance.perf.performanceTracing.trace
 
+import android.util.Log
 import android.view.View
+import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.analytics.performance.perf.performanceTracing.data.BlocksModel
 import com.tokopedia.analytics.performance.perf.performanceTracing.data.PerformanceTraceData
 import com.tokopedia.analytics.performance.perf.performanceTracing.repository.PerformanceRepository
 import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.ParsingStrategy
+import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.ViewInfo
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import java.util.concurrent.atomic.AtomicReference
 
 class XMLPagePerformanceTrace(
@@ -44,6 +50,7 @@ class XMLPagePerformanceTrace(
     var isPerformanceTraceFinished = false
     var perfParsingJob: Job? = null
     var startTime = System.currentTimeMillis()
+    
 
     override fun traceId(): String {
         return trace_id
@@ -53,31 +60,30 @@ class XMLPagePerformanceTrace(
         this.trace_id = id
     }
     override fun startMonitoring() {
+        performanceRepository.startRecord()
         startTime = System.currentTimeMillis()
         observeLoadableComponent()
 
         observeXMLPagePerformance(rootView)
 
-        performanceRepository.startRecord()
-        parsingStrategy.getViewCallbackStrategy().startObserving()
+        parsingStrategy.getViewCallbackStrategy().startObserving(rootView)
     }
 
     override fun stopMonitoring(result: Result<PerformanceTraceData>) {
-        recordPerformanceData(result)
         when (result) {
             is Success -> onPerformanceTraceFinished.invoke(result)
             is Error -> onPerformanceTraceError.invoke(result)
         }
         scope.cancel()
         isPerformanceTraceFinished = true
-        parsingStrategy.getViewCallbackStrategy().stopObserving()
+        parsingStrategy.getViewCallbackStrategy().stopObserving(rootView)
     }
 
     override fun recordPerformanceData(result: Result<PerformanceTraceData>) {
         when (result) {
             is Success -> {
                 performanceRepository.stopRecord(
-                    performanceTraceData.get().blocksModel
+                    performanceTraceData.get()
                 )
             }
             else -> {}
@@ -96,6 +102,7 @@ class XMLPagePerformanceTrace(
         performanceTraceData.set(
             performanceTraceData.get().copy(timeToFirstLayout = elapsedTime)
         )
+        onPerformanceTraceFinished(Success(performanceTraceData.get()))
     }
 
     private fun observeLoadableComponent() {
@@ -137,37 +144,47 @@ class XMLPagePerformanceTrace(
     private fun observeXMLPagePerformance(rootView: View) {
         parsingStrategy.getViewCallbackStrategy().registerCallback {
             if (isPerformanceTraceFinished) {
-                parsingStrategy.getViewCallbackStrategy().stopObserving()
+                parsingStrategy.getViewCallbackStrategy().stopObserving(rootView)
+                perfParsingJob?.cancel()
             }
 
             if (isTimeout()) {
                 finishParsing(Error("Parsing timeout."))
+                AppPerformanceTrace.perfNotes = parsingStrategy.getFinishParsingStrategy().timeoutMessage()
             }
 
             if (perfParsingJob?.isActive == true) {
                 perfParsingJob?.cancel()
             }
 
-            perfParsingJob = scope.launch(Dispatchers.IO) {
-                /**
-                 * Parse root view into list of ViewInfo model
-                 */
-                val viewInfos = parsingStrategy.getViewInfoParserStrategy().parse(rootView, 0)
+            Log.d("PerfThread", "Frame Callback Received")
 
-                if (viewInfos.isNotEmpty()) {
-                    onLayoutRendered()
-                }
-                /**
-                 * If the given root view is ready to parse, then start to validate ViewInfo
-                 */
-                if (parsingStrategy.getStartParserStrategy().isLayoutReady(rootView, viewInfos)) {
-                    val isLayoutFinished = parsingStrategy.getFinishParsingStrategy().isLayoutFinished(rootView, viewInfos)
+            perfParsingJob = scope.launch(
+                Dispatchers.Default + CoroutineName("PerfParse"), 
+            ) {
+                val threadName = "${Thread.currentThread().name}"
+                Log.d("PerfThread", "Starting parse job in thread $threadName")
 
-                    if (isLayoutFinished) {
+                try {
+                    yield()
+                    val viewInfos = try {
+                        parsingStrategy.getViewInfoParserStrategy2().parse(rootView)
+                    } catch (e: CancellationException) {
+                        ViewInfo()
+                    }
+                    if (viewInfos.directChilds.isNotEmpty()) {
+                        onLayoutRendered()
+                    }
+                    val layoutStatus = parsingStrategy.getFinishParsingStrategy().isLayoutFinished(rootView, viewInfos)
+
+                    if (layoutStatus.isFinishedLoading) {
                         scope.launch(Dispatchers.Main) {
+                            AppPerformanceTrace.perfNotes = layoutStatus.summary
                             finishParsing(Success(true))
                         }
                     }
+                } catch (e: CancellationException) {
+                    Log.d("PerfThread", "Cancelled in thread $threadName")
                 }
             }
         }

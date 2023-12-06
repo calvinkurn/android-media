@@ -5,7 +5,7 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.data.Performa
 
 interface PerformanceRepository {
     fun startRecord()
-    fun stopRecord(blocks: Map<String, BlocksModel>)
+    fun stopRecord(performanceTraceData: PerformanceTraceData)
     fun getTraceName(): String
-    fun recordPerfData(performanceTraceData: PerformanceTraceData, blocks: Map<String, BlocksModel>)
+    fun recordPerfData(performanceTraceData: PerformanceTraceData)
 }
