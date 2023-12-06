@@ -220,12 +220,17 @@ internal class FeedBrowseAdapter(
         state: ResultState,
         position: Int
     ): List<FeedBrowseItemListModel> {
+        if (state.isFail || (state.isSuccess && bannerList.isEmpty())) return emptyList()
+
         val slotInfo = getSlotInfo(position)
         return buildList {
             add(FeedBrowseItemListModel.Title(slotInfo, title))
             addAll(
-                if (state.isLoading) List(6) { FeedBrowseItemListModel.Banner.Placeholder }
-                else bannerList.map { FeedBrowseItemListModel.Banner.Item(slotInfo, it) }
+                if (state.isLoading) {
+                    List(6) { FeedBrowseItemListModel.Banner.Placeholder }
+                } else {
+                    bannerList.map { FeedBrowseItemListModel.Banner.Item(slotInfo, it) }
+                }
             )
         }
     }
@@ -234,6 +239,8 @@ internal class FeedBrowseAdapter(
         state: ResultState,
         position: Int
     ): List<FeedBrowseItemListModel> {
+        if (state.isFail || (state.isSuccess && authorList.isEmpty())) return emptyList()
+
         val slotInfo = getSlotInfo(position)
         return buildList {
             add(FeedBrowseItemListModel.Title(slotInfo, title))
@@ -253,7 +260,7 @@ internal class FeedBrowseAdapter(
             FeedBrowseItemListModel.HorizontalChannels.Loading,
 
             FeedBrowseItemListModel.Title.Loading,
-            FeedBrowseItemListModel.HorizontalAuthors.Loading,
+            FeedBrowseItemListModel.HorizontalAuthors.Loading
         )
     }
 
