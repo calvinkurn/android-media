@@ -2,6 +2,7 @@ package com.tokopedia.editor.ui.gesture.api;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Matrix;
 import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
@@ -90,21 +91,17 @@ public class MultiTouchListener implements View.OnTouchListener {
 
     private void adjustTranslation(View view, float deltaX, float deltaY) {
         float[] deltaVector = {deltaX, deltaY};
+        view.getMatrix().invert(new Matrix());
         view.getMatrix().mapVectors(deltaVector);
         view.setTranslationX(view.getTranslationX() + deltaVector[0]);
         view.setTranslationY(view.getTranslationY() + deltaVector[1]);
     }
 
     private void computeRenderOffset(View view, float pivotX, float pivotY) {
-        if (view.getPivotX() == pivotX && view.getPivotY() == pivotY) {
-            return;
-        }
+        if (view.getPivotX() == pivotX && view.getPivotY() == pivotY) return;
 
         float[] prevPoint = {0.0f, 0.0f};
         view.getMatrix().mapPoints(prevPoint);
-
-        view.setPivotX(pivotX);
-        view.setPivotY(pivotY);
 
         float[] currPoint = {0.0f, 0.0f};
         view.getMatrix().mapPoints(currPoint);
