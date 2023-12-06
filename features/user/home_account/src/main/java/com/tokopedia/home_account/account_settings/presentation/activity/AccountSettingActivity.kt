@@ -14,10 +14,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -39,7 +38,6 @@ import com.tokopedia.home_account.account_settings.AccountHomeUrl
 import com.tokopedia.home_account.account_settings.analytics.AccountAnalytics
 import com.tokopedia.home_account.account_settings.constant.SettingConstant
 import com.tokopedia.home_account.di.ActivityComponentFactory
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -49,7 +47,7 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class AccountSettingActivity : BaseSimpleActivity() {
+class AccountSettingActivity : BaseActivity() {
 
     private val PROJECT_ID = 7
     private val SOURCE = "Account"
@@ -79,7 +77,6 @@ class AccountSettingActivity : BaseSimpleActivity() {
         ActivityComponentFactory.instance
             .createHomeAccountComponent(this, application)
             .inject(this)
-        toolbar.hide()
         viewModel.errorToast.observe(this) {
             showErrorToast(it)
         }
@@ -270,10 +267,6 @@ class AccountSettingActivity : BaseSimpleActivity() {
             Unit
         }
         dialog.show()
-    }
-
-    override fun getNewFragment(): Fragment? {
-        return null
     }
 
     companion object {
