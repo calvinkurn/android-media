@@ -45,7 +45,6 @@ class CatalogDetailUiMapper @Inject constructor(
 ) {
     companion object {
         private const val LAYOUT_VERSION_4_VALUE = 4
-        private const val COMPARISON_COUNT = 2
         private const val TOP_COMPARISON_SPEC_COUNT = 5
         private const val COLUMN_INFO_SPEC_COUNT = 5
         private const val INVALID_CATALOG_ID = "0"
@@ -448,7 +447,6 @@ class CatalogDetailUiMapper @Inject constructor(
         var isFirstData = true
         val displayedComparisons = data?.comparison.orEmpty()
             .filter { it.id != INVALID_CATALOG_ID }
-            .take(COMPARISON_COUNT)
         return if (displayedComparisons.size <= Int.ONE) {
             BlankUiModel()
         } else {
@@ -488,6 +486,14 @@ class CatalogDetailUiMapper @Inject constructor(
                         topComparisonSpecs = comparisonSpecs
                             .filter { comparisonSpec -> !comparisonSpec.isSpecCategoryTitle }
                             .take(TOP_COMPARISON_SPEC_COUNT)
+                            .map {
+                                it.copy(
+                                    isSpecTextTitleBold = true,
+                                    specTextTitleColor = getTextColor(isDarkMode),
+                                    specTextColor = getTextColor(isDarkMode)
+                                )
+                            }
+
                     )
                 }.toMutableList()
             )

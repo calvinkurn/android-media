@@ -2,4 +2,5 @@
     <!--put your strings here-->
     <string name="text_see_more">Lihat Semua</string>
     <string name="catalog_common_text_comparison_title">Bandingkan produk</string>
+    <string name="catalog_common_text_comparison_action_change">Ubah</string>
 </resources>

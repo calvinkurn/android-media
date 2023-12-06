@@ -38,6 +38,7 @@ data class ComparisonUiModel(
         var specHeight: Int = -1,
         var specTextColor: Int? = null,
         var specTextTitleColor: Int? = null,
+        var isSpecTextTitleBold: Boolean = false,
         val isDarkMode: Boolean
 
     )

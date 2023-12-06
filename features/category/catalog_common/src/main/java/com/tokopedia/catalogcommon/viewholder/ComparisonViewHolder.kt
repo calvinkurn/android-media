@@ -4,23 +4,22 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemComparisonBinding
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.viewholder.comparison.ComparisonItemAdapter
 import com.tokopedia.catalogcommon.viewholder.comparison.ComparisonSpecItemAdapter
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_CLEAR
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlin.math.ceil
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ComparisonViewHolder(
     itemView: View,
@@ -45,6 +44,7 @@ class ComparisonViewHolder(
         private const val DEFAULT_LINE_COUNT = 1
         private const val DEFAULT_CHAR_WIDTH = 15
         private const val DEFAULT_TITLE_CHAR_WIDTH = 20
+        private const val TOP_SPEC_MARGIN = 16
     }
 
     private val binding by viewBinding<WidgetItemComparisonBinding>()
@@ -73,14 +73,11 @@ class ComparisonViewHolder(
         comparedItem: ComparisonUiModel.ComparisonContent?,
         comparisonItems: List<ComparisonUiModel.ComparisonContent>
     ) {
-        val colorGray = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN500)
         val specs = if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
         layoutComparison.apply {
             tfProductName.text = comparedItem?.productTitle.orEmpty()
             tfProductPrice.text = comparedItem?.price.orEmpty()
             iuProduct.loadImage(comparedItem?.imageUrl.orEmpty())
-            cardProductAction.cardType = TYPE_CLEAR
-            iconProductAction.setImage(IconUnify.PUSH_PIN_FILLED, colorGray)
             root.addOneTimeGlobalLayoutListener {
                 val textAreaWidth: Double = tfProductPrice.measuredWidth.orZero().toDouble()
                 configureRowsHeight(textAreaWidth, comparedItem, comparisonItems)
@@ -163,9 +160,6 @@ class ComparisonViewHolder(
             tfProductPrice.setTextColor(element.widgetTextColor ?: return)
             element.content.forEach { comparisonContent ->
                 comparisonContent.productTextColor = element.widgetTextColor
-                comparisonContent.topComparisonSpecs.forEach { comparisonSpec ->
-                    comparisonSpec.specTextColor = element.widgetTextColor
-                }
             }
         }
     }
@@ -173,6 +167,13 @@ class ComparisonViewHolder(
     private fun WidgetItemComparisonBinding.setupTopSpecs(element: ComparisonUiModel) {
         btnSeeMore.isVisible = isDisplayingTopSpec
         tfCatalogTitle.isVisible = isDisplayingTopSpec
+        tfCatalogAction.isVisible = isDisplayingTopSpec
+        if (!isDisplayingTopSpec) {
+            layoutComparison.root.setBackgroundResource(Int.ZERO)
+        } else {
+            val margin = TOP_SPEC_MARGIN.dpToPx(itemView.resources.displayMetrics)
+            layoutComparison.root.setMargin(margin, margin, Int.ZERO, Int.ZERO)
+        }
     }
 
     override fun bind(element: ComparisonUiModel) {

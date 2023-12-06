@@ -6,6 +6,7 @@
     android:background="@color/Unify_NN0"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragment.CatalogComparisonDetailFragment">
+
     <com.tokopedia.catalogcommon.customview.CatalogToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -22,11 +23,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvContent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
         app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
