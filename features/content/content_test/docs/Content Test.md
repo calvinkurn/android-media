@@ -19,9 +19,9 @@ labels:
 ## Release Notes
 
 <!--start expand:16 May 2022 (MA-3.174 & SA-2.104)-->
-Released as `play_test`
+Released as play_test
 
-PR : <https://github.com/tokopedia/android-tokopedia-core/pull/26065>
+<https://github.com/tokopedia/android-tokopedia-core/pull/26065>
 <!--end expand-->
 
 ## Overview
