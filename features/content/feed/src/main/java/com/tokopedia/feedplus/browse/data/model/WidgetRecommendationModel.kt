@@ -1,7 +1,5 @@
 package com.tokopedia.feedplus.browse.data.model
 
-import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-
 /**
  * Created by kenny.hadisaputra on 13/10/23
  */
@@ -12,7 +10,7 @@ internal sealed interface WidgetRecommendationModel {
     ) : WidgetRecommendationModel
 
     data class Authors(
-        val channels: List<PlayWidgetChannelUiModel>
+        val channels: List<AuthorWidgetModel>
     ) : WidgetRecommendationModel
 
     object Empty : WidgetRecommendationModel

@@ -38,11 +38,12 @@ internal sealed interface FeedBrowseSlotUiModel {
         val isLoading: Boolean,
     ) : FeedBrowseSlotUiModel
 
-    data class Creators(
+    data class Authors(
         override val slotId: String,
         override val title: String,
         val identifier: String,
-        val creatorList: FeedBrowseChannelListState<PlayWidgetChannelUiModel>
+        val authorList: List<AuthorWidgetModel>,
+        val isLoading: Boolean,
     ) : FeedBrowseSlotUiModel
 }
 
@@ -70,4 +71,14 @@ internal data class BannerWidgetModel(
     val title: String,
     val imageUrl: String,
     val appLink: String
+)
+
+internal data class AuthorWidgetModel(
+    val id: String,
+    val name: String,
+    val avatarUrl: String,
+    val coverUrl: String,
+    val totalViewFmt: String,
+    val appLink: String,
+    val contentAppLink: String,
 )

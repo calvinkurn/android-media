@@ -96,7 +96,7 @@ internal class FeedBrowseAdapter(
             holder is FeedBrowseTitleViewHolder && item is FeedBrowseItemListModel.Title -> {
                 holder.bind(item)
             }
-            holder is FeedBrowseHorizontalCreatorsViewHolder && item is FeedBrowseItemListModel.HorizontalCreator -> {
+            holder is FeedBrowseHorizontalCreatorsViewHolder && item is FeedBrowseItemListModel.HorizontalAuthors -> {
                 holder.bind(item)
             }
         }
@@ -129,7 +129,7 @@ internal class FeedBrowseAdapter(
             is FeedBrowseItemListModel.Banner.Item -> TYPE_BANNER
             is FeedBrowseItemListModel.Banner.Placeholder -> TYPE_BANNER_PLACEHOLDER
             is FeedBrowseItemListModel.Title -> TYPE_TITLE
-            is FeedBrowseItemListModel.HorizontalCreator -> TYPE_HORIZONTAL_CREATORS
+            is FeedBrowseItemListModel.HorizontalAuthors -> TYPE_HORIZONTAL_CREATORS
             else -> error("Item $item is not supported")
         }
     }
@@ -153,8 +153,7 @@ internal class FeedBrowseAdapter(
         internal const val TYPE_BANNER = 2
         internal const val TYPE_BANNER_PLACEHOLDER = 3
         internal const val TYPE_TITLE = 4
-        internal const val TYPE_INSPIRATION_CARD = 5
-        internal const val TYPE_HORIZONTAL_CREATORS = 6
+        internal const val TYPE_HORIZONTAL_CREATORS = 5
     }
 
     fun setList(items: List<FeedBrowseStatefulModel>, onCommit: () -> Unit = {}) {
@@ -173,7 +172,7 @@ internal class FeedBrowseAdapter(
                     index
                 )
                 is FeedBrowseSlotUiModel.InspirationBanner -> item.model.mapToItems(index)
-                is FeedBrowseSlotUiModel.Creators -> item.model.mapToItems(item.result, index)
+                is FeedBrowseSlotUiModel.Authors -> item.model.mapToItems(item.result, index)
             }
         }
     }
@@ -230,14 +229,16 @@ internal class FeedBrowseAdapter(
         }
     }
 
-    private fun FeedBrowseSlotUiModel.Creators.mapToItems(
+    private fun FeedBrowseSlotUiModel.Authors.mapToItems(
         state: ResultState,
         position: Int
     ): List<FeedBrowseItemListModel> {
         val slotInfo = getSlotInfo(position)
         return buildList {
             add(FeedBrowseItemListModel.Title(slotInfo, title))
-            add(FeedBrowseItemListModel.HorizontalCreator(slotInfo, creatorList))
+            add(
+                FeedBrowseItemListModel.HorizontalAuthors(slotInfo, authorList)
+            )
         }
     }
 
@@ -251,7 +252,7 @@ internal class FeedBrowseAdapter(
             FeedBrowseItemListModel.HorizontalChannels.Loading,
 
             FeedBrowseItemListModel.Title.Loading,
-            FeedBrowseItemListModel.HorizontalCreator.Loading,
+            FeedBrowseItemListModel.HorizontalAuthors.Loading,
         )
     }
 

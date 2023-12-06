@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.browse.presentation.model
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -74,15 +75,15 @@ internal sealed interface FeedBrowseItemListModel {
         }
     }
 
-    data class HorizontalCreator(
+    data class HorizontalAuthors(
         override val slotInfo: SlotInfo,
-        val itemState: FeedBrowseChannelListState<PlayWidgetChannelUiModel>
+        val items: List<AuthorWidgetModel>
     ) : FeedBrowseItemListModel {
 
         companion object {
-            val Loading = HorizontalCreator(
+            val Loading = HorizontalAuthors(
                 SlotInfo.Empty,
-                FeedBrowseChannelListState.initLoading(),
+                emptyList(),
             )
         }
     }

@@ -3,11 +3,11 @@ package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseCreatorBinding
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseCreatorLoadingBinding
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by meyta.taliti on 25/09/23.
@@ -19,36 +19,22 @@ internal class CreatorCardViewHolder private constructor() {
         private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val playWidget = binding.cvCreator
+        fun bind(item: AuthorWidgetModel) {
+            binding.ivCover.loadImage(item.coverUrl)
+            binding.tvAuthorName.text = item.name
+            binding.ivAuthorProfilePic.loadImageCircle(item.avatarUrl)
+            binding.tvTotalViews.text = item.totalViewFmt
 
-        private val dp8 =
-            binding.root.context.resources.getDimensionPixelOffset(unifyprinciplesR.dimen.spacing_lvl3)
-
-        init {
-            playWidget.setCornerRadius(
-                topLeft = dp8.toFloat(),
-                topRight = dp8.toFloat(),
-                bottomLeft = 0f,
-                bottomRight = 0f
-            )
-        }
-
-        fun bind(item: PlayWidgetChannelUiModel) {
-            playWidget.setData(item)
-
-            binding.tvCreatorName.text = item.partner.name
-            binding.ivCreatorProfilePic.loadImageCircle(item.video.coverUrl)
-
-            playWidget.setOnClickListener {
-                listener.onCreatorChannelCardClicked(this@Item, item)
+            binding.containerAvatar.setOnClickListener {
+                listener.onAuthorClicked(this, item)
             }
 
-            binding.ivCreatorProfilePic.setOnClickListener {
-                listener.onCreatorClicked(this, item)
+            binding.clickAreaAuthor.setOnClickListener {
+                listener.onAuthorClicked(this, item)
             }
 
-            binding.root.setOnClickListener {
-                listener.onCreatorClicked(this, item)
+            binding.ivCover.setOnClickListener {
+                listener.onChannelClicked(this, item)
             }
         }
 
@@ -66,14 +52,14 @@ internal class CreatorCardViewHolder private constructor() {
         }
 
         interface Listener {
-            fun onCreatorChannelCardClicked(
+            fun onChannelClicked(
                 viewHolder: Item,
-                item: PlayWidgetChannelUiModel
+                item: AuthorWidgetModel
             )
 
-            fun onCreatorClicked(
+            fun onAuthorClicked(
                 viewHolder: Item,
-                item: PlayWidgetChannelUiModel
+                item: AuthorWidgetModel
             )
         }
     }

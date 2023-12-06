@@ -39,4 +39,9 @@
 
     <!--browse-->
     <color name="feed_dms_browse_placeholder_bg">#E4EBF5</color>
+    <color name="feed_dms_browse_author_widget_top_top_overlay">#33000000</color>
+    <color name="feed_dms_browse_author_widget_top_bottom_overlay">#00000000</color>
+
+    <color name="feed_dms_browse_author_widget_bottom_top_overlay">#00000000</color>
+    <color name="feed_dms_browse_author_widget_bottom_bottom_overlay">#66000000</color>
 </resources>

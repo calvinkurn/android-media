@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseImpressionManager
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
@@ -158,16 +159,16 @@ internal class FeedBrowseFragment @Inject constructor(
     }
 
     private val creatorListener = object : FeedBrowseHorizontalCreatorsViewHolder.Listener {
-        override fun onCreatorChannelCardClicked(
+        override fun onChannelClicked(
             viewHolder: FeedBrowseHorizontalCreatorsViewHolder,
-            item: PlayWidgetChannelUiModel
+            item: AuthorWidgetModel
         ) {
             router.route(context, item.appLink)
         }
 
-        override fun onCreatorClicked(
+        override fun onAuthorClicked(
             viewHolder: FeedBrowseHorizontalCreatorsViewHolder,
-            item: PlayWidgetChannelUiModel
+            item: AuthorWidgetModel
         ) {
             router.route(context, item.appLink)
         }

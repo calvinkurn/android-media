@@ -4,13 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.presentation.adapter.CreatorAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseHorizontalChannelsItemDecoration
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseHorizontalCreatorsBinding
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -29,24 +28,23 @@ internal class FeedBrowseHorizontalCreatorsViewHolder private constructor(
     private var retryJob: Job? = null
 
     private val adapter = CreatorAdapter(object : CreatorCardViewHolder.Item.Listener {
-        override fun onCreatorChannelCardClicked(
+        override fun onChannelClicked(
             viewHolder: CreatorCardViewHolder.Item,
-            item: PlayWidgetChannelUiModel
+            item: AuthorWidgetModel
         ) {
-            listener.onCreatorChannelCardClicked(this@FeedBrowseHorizontalCreatorsViewHolder, item)
+            listener.onChannelClicked(this@FeedBrowseHorizontalCreatorsViewHolder, item)
         }
 
-        override fun onCreatorClicked(
+        override fun onAuthorClicked(
             viewHolder: CreatorCardViewHolder.Item,
-            item: PlayWidgetChannelUiModel
+            item: AuthorWidgetModel
         ) {
-            listener.onCreatorClicked(this@FeedBrowseHorizontalCreatorsViewHolder, item)
+            listener.onAuthorClicked(this@FeedBrowseHorizontalCreatorsViewHolder, item)
         }
     })
 
     init {
         binding.rvCreators.adapter = adapter
-        binding.rvCreators.setHasFixedSize(true)
         binding.rvCreators.addItemDecoration(
             FeedBrowseHorizontalChannelsItemDecoration(binding.rvCreators.resources)
         )
@@ -61,24 +59,26 @@ internal class FeedBrowseHorizontalCreatorsViewHolder private constructor(
         })
     }
 
-    fun bind(item: FeedBrowseItemListModel.HorizontalCreator) {
+    fun bind(item: FeedBrowseItemListModel.HorizontalAuthors) {
 
         binding.errorView.stop()
 
-        when (item.itemState.state) {
-            is ResultState.Fail -> {
-                showContent(false)
-                binding.errorView.setOnClickListener { retry(item) }
-            }
-            ResultState.Loading -> {
-                adapter.setLoading()
-                showContent(true)
-            }
-            ResultState.Success -> {
-                showContent(true)
-                adapter.submitList(item.itemState.items)
-            }
-        }
+//        when (item.itemState.state) {
+//            is ResultState.Fail -> {
+//                showContent(false)
+//                binding.errorView.setOnClickListener { retry(item) }
+//            }
+//            ResultState.Loading -> {
+//                adapter.setLoading()
+//                showContent(true)
+//            }
+//            ResultState.Success -> {
+//                showContent(true)
+//                adapter.submitList(item.itemState.items)
+//            }
+//        }
+        showContent(true)
+        adapter.submitList(item.items)
     }
 
     private fun showContent(shouldShow: Boolean) {
@@ -86,7 +86,7 @@ internal class FeedBrowseHorizontalCreatorsViewHolder private constructor(
         binding.errorView.showWithCondition(!shouldShow)
     }
 
-    private fun retry(item: FeedBrowseItemListModel.HorizontalCreator) {
+    private fun retry(item: FeedBrowseItemListModel.HorizontalAuthors) {
         if (retryJob?.isActive == true) return
         retryJob = scope.launch {
             binding.errorView.startAnimating()
@@ -118,14 +118,14 @@ internal class FeedBrowseHorizontalCreatorsViewHolder private constructor(
 
     interface Listener {
 
-        fun onCreatorChannelCardClicked(
+        fun onChannelClicked(
             viewHolder: FeedBrowseHorizontalCreatorsViewHolder,
-            item: PlayWidgetChannelUiModel
+            item: AuthorWidgetModel
         )
 
-        fun onCreatorClicked(
+        fun onAuthorClicked(
             viewHolder: FeedBrowseHorizontalCreatorsViewHolder,
-            item: PlayWidgetChannelUiModel
+            item: AuthorWidgetModel
         )
 
         fun onRetry(
