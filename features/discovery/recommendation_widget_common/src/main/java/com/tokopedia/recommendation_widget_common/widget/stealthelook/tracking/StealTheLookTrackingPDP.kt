@@ -73,7 +73,7 @@ class StealTheLookTrackingPDP(
             TrackerConstant.USERID to userId,
             RecommendationTrackingConstants.Tracking.ECOMMERCE to mapOf(
                 CURRENCY_CODE to RecommendationTrackingConstants.Tracking.IDR,
-                IMPRESSIONS to model.grids.map {
+                IMPRESSIONS to model.grids.filter { it.recommendationItem.appUrl.isNotEmpty() }.map {
                     val item = it.recommendationItem
                     mapOf(
                         DIMENSION_40 to LIST_FORMAT.format(

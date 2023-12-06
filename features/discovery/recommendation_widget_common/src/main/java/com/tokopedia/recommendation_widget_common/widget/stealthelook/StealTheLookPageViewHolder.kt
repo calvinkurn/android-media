@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -138,7 +139,10 @@ class StealTheLookPageViewHolder(
         if(model.recommendationItem.appUrl.isBlank()) return
 
         setOnClickListener {
-            model.tracking?.sendEventItemClick(model)
+            if(model.recommendationItem.appUrl.isNotEmpty()) {
+                model.tracking?.sendEventItemClick(model)
+                RouteManager.route(context, model.recommendationItem.appUrl)
+            }
         }
     }
 
