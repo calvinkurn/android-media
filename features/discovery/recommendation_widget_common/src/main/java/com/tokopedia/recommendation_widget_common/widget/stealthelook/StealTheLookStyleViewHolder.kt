@@ -18,7 +18,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifyprinciples.Typography
 
-class StealTheLookPageViewHolder(
+class StealTheLookStyleViewHolder(
     itemView: View,
     private val trackingQueue: TrackingQueue
 ) : RecyclerView.ViewHolder(itemView) {

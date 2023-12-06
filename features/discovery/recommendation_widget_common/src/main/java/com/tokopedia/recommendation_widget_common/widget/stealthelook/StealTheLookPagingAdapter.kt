@@ -8,23 +8,23 @@ import com.tokopedia.recommendation_widget_common.R as recommendation_widget_com
 
 internal class StealTheLookPagingAdapter(
     private val trackingQueue: TrackingQueue
-): ListAdapter<StealTheLookStyleModel, StealTheLookPageViewHolder>(StealTheLookDiffUtilCallback()) {
+): ListAdapter<StealTheLookStyleModel, StealTheLookStyleViewHolder>(StealTheLookDiffUtilCallback()) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): StealTheLookPageViewHolder {
+    ): StealTheLookStyleViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(recommendation_widget_commonR.layout.recommendation_widget_steal_the_look_page, parent, false)
 
-        return StealTheLookPageViewHolder(view, trackingQueue)
+        return StealTheLookStyleViewHolder(view, trackingQueue)
     }
 
-    override fun onBindViewHolder(holder: StealTheLookPageViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: StealTheLookStyleViewHolder, position: Int) {
         try { holder.bind(getItem(position)) }
         catch (_: Exception) { }
     }
 
-    override fun onViewRecycled(holder: StealTheLookPageViewHolder) {
+    override fun onViewRecycled(holder: StealTheLookStyleViewHolder) {
         holder.onViewRecycled()
     }
 
