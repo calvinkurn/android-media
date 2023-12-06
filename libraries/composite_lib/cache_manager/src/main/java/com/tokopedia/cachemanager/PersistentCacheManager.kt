@@ -42,21 +42,19 @@ class PersistentCacheManager(context: Context) : CacheManager(context) {
          * instance for persistentCacheManager with id null
          */
         @SuppressLint("StaticFieldLeak")
-        var instance: PersistentCacheManager? = null
+        lateinit var instance: PersistentCacheManager
 
         @JvmStatic
-        fun init(context: Context): PersistentCacheManager {
-            return instance ?: PersistentCacheManager(context).also {
+        fun init(context: Context):PersistentCacheManager {
+            return PersistentCacheManager(context).also {
                 instance = it
             }
         }
+    }
 
-        /**
-         * alias for init
-         */
-        @JvmStatic
-        fun get(context: Context): PersistentCacheManager {
-            return init(context)
+    init {
+        if (id == null) {
+            instance = this
         }
     }
 
