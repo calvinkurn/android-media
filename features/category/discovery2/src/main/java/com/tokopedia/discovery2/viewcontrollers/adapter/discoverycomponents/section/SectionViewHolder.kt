@@ -86,7 +86,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         val shouldSupportFestive = items.find { !it.isBackgroundPresent } == null
 
-        if (!shouldSupportFestive) return
+        if (!shouldSupportFestive || items.isEmpty()) return
 
         items.forEach { item ->
             addComponentView(item)
