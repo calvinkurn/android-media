@@ -9,8 +9,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.appdownloadmanager_common.domain.model.AppVersionBetaInfoModel
 import com.tokopedia.appdownloadmanager_common.domain.service.GetDownloadVersionList
-import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadManagerUpdateModel
 import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownloadingBottomSheet
+import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadManagerUpdateModel
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.interceptor.BannerEnvironmentInterceptor
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -45,7 +45,8 @@ abstract class BaseDownloadManagerHelper(
         val canShowToday = isExpired()
 //        return canShowToday && isBetaNetwork() && isWhitelistByRollence()
 
-        return isAppDownloadingBottomSheetNotShow() && isNeedToUpgradeVersion()
+        return isAppDownloadingBottomSheetNotShow() && isNeedToUpgradeVersion() &&
+            downloadManagerUpdateModel?.isEnabled == true
     }
 
     open fun isExpired(): Boolean {
@@ -84,10 +85,11 @@ abstract class BaseDownloadManagerHelper(
     }
 
     private suspend fun isNeedToUpgradeVersion(): Boolean {
-        val typeToken = object: TypeToken<List<AppVersionBetaInfoModel>>() {}.type
+        val typeToken = object : TypeToken<List<AppVersionBetaInfoModel>>() {}.type
         val appVersionBetaInfoModel =
             GetDownloadVersionList.getApiResponse<List<AppVersionBetaInfoModel>>(
-                TKPD_VERSION_LIST_URL, typeToken
+                TKPD_VERSION_LIST_URL,
+                typeToken
             )?.firstOrNull()
 
         this@BaseDownloadManagerHelper.appVersionBetaInfoModel = AppVersionBetaInfoModel(
