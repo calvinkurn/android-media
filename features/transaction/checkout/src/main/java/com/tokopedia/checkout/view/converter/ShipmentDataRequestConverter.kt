@@ -92,7 +92,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                     promoRequest.type = Promo.TYPE_LOGISTIC
                     promoRequests.add(promoRequest)
                 }
-                val shopOrders = shipmentCartItemModel.cartItemModelsGroupByOrder.map {
+                val shopOrders = shipmentCartItemModel.finalCheckoutProductsGroupByOrder.map {
                     ShopOrder(
                         bundle = mapBundleNew(it.value),
                         cartStringOrder = it.key,
@@ -111,9 +111,9 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                     cartStringGroup = shipmentCartItemModel.cartStringGroup,
                     shippingInfo = shippingInfoCheckoutRequest,
                     dropship = Dropship(
-                        isDropship = 0,
-                        name = "",
-                        telpNo = ""
+                        isDropship = if (shipmentCartItemModel.useDropship && shipmentCartItemModel.isEnableDropship) 1 else 0,
+                        name = shipmentCartItemModel.dropshipName,
+                        telpNo = shipmentCartItemModel.dropshipPhone
                     ),
                     checkoutGiftingOrderLevel = mapAddOnsProduct(shipmentCartItemModel.addOnsOrderLevelModel, AddOnProductDataModel()),
                     orderMetadata = mapOrderMetadata(shipmentCartItemModel, selectedShipper, promoRequests),
@@ -356,26 +356,21 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
             // only add free shipping metadata if the order contains at least 1 promo logistic
             orderMetadata.add(OrderMetadata(OrderMetadata.FREE_SHIPPING_METADATA, selectedShipper.freeShippingMetadata))
         }
-        if (shipmentCartItemModel.hasEthicalProducts) {
-            for (cartItemModel in shipmentCartItemModel.products) {
-                if (!cartItemModel.isError && cartItemModel.ethicalDrugDataModel.needPrescription) {
-                    if (shipmentCartItemModel.prescriptionIds.isNotEmpty()) {
-                        orderMetadata.add(
-                            OrderMetadata(
-                                OrderMetadata.UPLOAD_PRESCRIPTION_META_DATA_KEY,
-                                shipmentCartItemModel.prescriptionIds.toString()
-                            )
-                        )
-                    } else if (shipmentCartItemModel.consultationDataString.isNotEmpty()) {
-                        orderMetadata.add(
-                            OrderMetadata(
-                                OrderMetadata.MINI_CONSULTATION_META_DATA_KEY,
-                                shipmentCartItemModel.consultationDataString
-                            )
-                        )
-                    }
-                    break
-                }
+        if (shipmentCartItemModel.hasEthicalProducts && shipmentCartItemModel.hasValidEthicalDrugProduct) {
+            if (shipmentCartItemModel.prescriptionIds.isNotEmpty()) {
+                orderMetadata.add(
+                    OrderMetadata(
+                        OrderMetadata.UPLOAD_PRESCRIPTION_META_DATA_KEY,
+                        shipmentCartItemModel.prescriptionIds.toString()
+                    )
+                )
+            } else if (shipmentCartItemModel.consultationDataString.isNotEmpty()) {
+                orderMetadata.add(
+                    OrderMetadata(
+                        OrderMetadata.MINI_CONSULTATION_META_DATA_KEY,
+                        shipmentCartItemModel.consultationDataString
+                    )
+                )
             }
         }
         if (selectedShipper.scheduleDate.isNotEmpty() && selectedShipper.timeslotId != 0L && shipmentCartItemModel.validationMetadata.isNotEmpty()) {

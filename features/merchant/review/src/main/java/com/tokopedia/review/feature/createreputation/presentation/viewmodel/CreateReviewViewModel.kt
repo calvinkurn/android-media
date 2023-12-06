@@ -78,6 +78,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
@@ -347,10 +349,10 @@ class CreateReviewViewModel @Inject constructor(
     // endregion anonymous info bottom sheet state
 
     val toasterQueue: Flow<CreateReviewToasterUiModel<Any>>
-        get() = _toasterQueue
+        get() = _toasterQueue.asSharedFlow()
 
     val submitReviewResult: Flow<SubmitReviewRequestState>
-        get() = _submitReviewResult
+        get() = _submitReviewResult.asStateFlow()
 
     // endregion state whose it's value is determined by other states
 
@@ -1318,12 +1320,13 @@ class CreateReviewViewModel @Inject constructor(
             submitReviewUseCase.setParams(requestParams)
             val result = submitReviewUseCase.executeOnBackground()
             feedbackId.value = result.productrevSuccessIndicator?.feedbackID.orEmpty()
+            sendReview.value = false
             _submitReviewResult.value = RequestState.Success(result)
         } catch (t: Throwable) {
+            sendReview.value = false
             _submitReviewResult.value = RequestState.Error(t)
             enqueueErrorSubmitReviewToaster(getErrorCode(t))
         }
-        sendReview.value = false
     }
 
     private fun enqueueErrorUploadMediaToaster(errorCode: String) {

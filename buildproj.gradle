@@ -156,6 +156,8 @@ subprojects {
                 substitute module("androidx.room:room-compiler") using module("androidx.room:room-compiler:$roomVersion")
 //                substitute module("com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework") using module("com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework:${accessibilityTestFrameworkVersion}")
 
+                substitute module("com.tokopedia.nest:principles") using module("com.tokopedia.nest:principles:$nestPrinciplesVersion")
+
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) using module(rootProject.ext.debugToolsDependencies.chuckNoop)
                     substitute module(rootProject.ext.tkpdInternalLibDependencies.fakeresponse) using module(rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp)

@@ -16,7 +16,7 @@
 
 **Home and Search Page**
 
-![image](../../res/recipe_home_page.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_home_page.png)
 
 Recipe home page contains list of recipe and recipe filters. On the top of the page there’s search bar for searching recipes. When users click on one of the recipe, users will be redirected to recipe detail page.
 
@@ -28,7 +28,7 @@ Beside the GQL call, there’s also little bit UI difference, on search page the
 
 The common features thats available on both pages provided on its base class which home and search page extends from it. Common features on home and search page are:
 
-![image](../../res/recipe_search_result_page.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_search_result_page.png)
 
 - Recipe list
 - Recipe filter
@@ -41,9 +41,9 @@ See more in [class diagram](https://tokopedia.atlassian.net/wiki/spaces/PA/pages
 
 Recipe home and search page will show empty state when BE returns empty list of recipes from [TokonowGetRecipes](https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/2033910971/Query+TokonowGetRecipes+GQL+FE) query. When user clicks on `Reset Filter` it will reset all applied filter and reload the recipe list. There’s also error state when home and search page failed to fetch [TokonowGetRecipes](https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/2033910971/Query+TokonowGetRecipes+GQL+FE).
 
-![image](../../res/recipe_home_search_empty_state.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_home_search_empty_state.png)
 
-![image](../../res/recipe_home_search_error_state.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_home_search_error_state.png)
 
 **Home & Search Applink**
 
@@ -56,14 +56,14 @@ Recipe home and search page will show empty state when BE returns empty list of 
 
 ## **Class Diagram**
 
-![image](../../res/recipe_home_search_class_diagram.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_home_search_class_diagram.png)
 
 
 
 | **Properties** | **Description** | **Screenshot**                                                     |
 | --- | --- |--------------------------------------------------------------------|
-| enableHeaderBackground  | Enable background in the header section. Current value:- Home: `true`<br/>- Search: `false`<br/> | ![image](../../res/recipe_home_header.png)<br/>                    |
-| searchHintData | Set initial search hint on the searchbar. Current value:- Home: `Cari resep`<br/>- Search: `Cari resep`<br/> | ![image](../../res/recipe_home_search_navigation_toolbar.png)<br/> |
+| enableHeaderBackground  | Enable background in the header section. Current value:- Home: `true`<br/>- Search: `false`<br/> | ![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_home_header.png)<br/>                    |
+| searchHintData | Set initial search hint on the searchbar. Current value:- Home: `Cari resep`<br/>- Search: `Cari resep`<br/> | ![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_home_search_navigation_toolbar.png)<br/> |
 | pageName | Used for tracking purpose. Current value:- Home: `TokoNow Recipe Home`<br/>- Search: `TokoNow Recipe Search`<br/> |                                                                    |
 | viewModel  | ViewModel used in the page (extend base class):- Home: `TokoNowRecipeHomeFragment`<br/>- Search: `TokoNowRecipeSearchFragment`<br/> |                                                                    |
 | sourcePage | sourcePage param to call [TokonowGetRecipes GQL](https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/2033910971/Query+TokonowGetRecipes+GQL+FE). Current value:- Home: `Home`<br/>- Search: `Search`<br/> |                                                                    |
@@ -74,9 +74,9 @@ Recipe home and search page will show empty state when BE returns empty list of 
 
 | **Name** | **Screenshot**                                                            | **Link** | **Module** | **PIC** |
 | --- |---------------------------------------------------------------------------| --- | --- | --- |
-| Recipe List, Search, and Filter  | ![image](../../res/recipe_home_search_coupon_list.png)<br/>               | [TokonowGetRecipes GQL](https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/2033910971/Query+TokonowGetRecipes+GQL+FE) | `tokopedianow` | [Reza Gama Hidayat](https://tokopedia.atlassian.net/wiki/people/5def15952702bc0ec7e775c5?ref=confluence)  |
-| Add Bookmark  | ![image](../../res/recipe_home_search_add_bookmark.png)<br/>              | [TokonowAddRecipeBookmark GQL](https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/1986497828/Mutation+TokonowAddRecipeBookmark+GQL) | `tokopedianow` | [Reza Gama Hidayat](https://tokopedia.atlassian.net/wiki/people/5def15952702bc0ec7e775c5?ref=confluence)  |
-| Remove Bookmark | ![image](../../res/recipe_home_search_remove_bookmark.png)<br/>           | [TokonowRemoveRecipeBookmark GQL](https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/1986498304/Mutation+TokonowRemoveRecipeBookmark+GQL) | `tokopedianow` | [Reza Gama Hidayat](https://tokopedia.atlassian.net/wiki/people/5def15952702bc0ec7e775c5?ref=confluence)  |
-| Bookmark Page | ![image](../../res/recipe_home_search_bookmark_page_entry_point.png)<br/> | [Documentation](/wiki/spaces/PA/pages/2133557783/Recipe+Bookmark) | `tokopedianow` | [Said Faisal](https://tokopedia.atlassian.net/wiki/people/5e25eee0ee264b0e745862c3?ref=confluence)  |
-| Filter Bottomsheet | ![image](../../res/recipe_home_search_chip_filter.png)<br/>               | Documentation  | `tokopedianow` | [Reza Gama Hidayat](https://tokopedia.atlassian.net/wiki/people/5def15952702bc0ec7e775c5?ref=confluence)  |
+| Recipe List, Search, and Filter  | ![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_home_search_coupon_list.png)<br/>               | [TokonowGetRecipes GQL](https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/2033910971/Query+TokonowGetRecipes+GQL+FE) | `tokopedianow` | [Reza Gama Hidayat](https://tokopedia.atlassian.net/wiki/people/5def15952702bc0ec7e775c5?ref=confluence)  |
+| Add Bookmark  | ![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_home_search_add_bookmark.png)<br/>              | [TokonowAddRecipeBookmark GQL](https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/1986497828/Mutation+TokonowAddRecipeBookmark+GQL) | `tokopedianow` | [Reza Gama Hidayat](https://tokopedia.atlassian.net/wiki/people/5def15952702bc0ec7e775c5?ref=confluence)  |
+| Remove Bookmark | ![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_home_search_remove_bookmark.png)<br/>           | [TokonowRemoveRecipeBookmark GQL](https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/1986498304/Mutation+TokonowRemoveRecipeBookmark+GQL) | `tokopedianow` | [Reza Gama Hidayat](https://tokopedia.atlassian.net/wiki/people/5def15952702bc0ec7e775c5?ref=confluence)  |
+| Bookmark Page | ![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_home_search_bookmark_page_entry_point.png)<br/> | [Documentation](/wiki/spaces/PA/pages/2133557783/Recipe+Bookmark) | `tokopedianow` | [Said Faisal](https://tokopedia.atlassian.net/wiki/people/5e25eee0ee264b0e745862c3?ref=confluence)  |
+| Filter Bottomsheet | ![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_home_search_chip_filter.png)<br/>               | Documentation  | `tokopedianow` | [Reza Gama Hidayat](https://tokopedia.atlassian.net/wiki/people/5def15952702bc0ec7e775c5?ref=confluence)  |
 

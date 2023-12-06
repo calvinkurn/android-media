@@ -15,12 +15,8 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddr
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
-import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.convertTargetedTickerToUiModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
-import com.tokopedia.logisticCommon.domain.model.TickerModel
-import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
 import com.tokopedia.manageaddress.domain.model.DeleteAddressParam
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
@@ -57,7 +53,6 @@ class ManageAddressViewModel @Inject constructor(
     private val chooseAddressMapper: ChooseAddressMapper,
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,
-    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val getUserConsentCollection: GetConsentCollectionUseCase,
     private val setStateChosenAddressFromAddressUseCase: SetStateChosenAddressFromAddressUseCase,
     private val getStateChosenAddressUseCase: GetStateChosenAddressUseCase
@@ -111,10 +106,6 @@ class ManageAddressViewModel @Inject constructor(
     private val _validateShareAddressState = MutableLiveData<ValidateShareAddressState>()
     val validateShareAddressState: LiveData<ValidateShareAddressState>
         get() = _validateShareAddressState
-
-    private val _tickerState = MutableLiveData<Result<TickerModel>>()
-    val tickerState: LiveData<Result<TickerModel>>
-        get() = _tickerState
 
     val deleteCollectionId: String
         get() = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
@@ -376,30 +367,5 @@ class ManageAddressViewModel @Inject constructor(
         } else {
             source
         }
-    }
-
-    fun getTargetedTicker(firstTickerContent: String? = null) {
-        viewModelScope.launchCatchError(
-            block = {
-                val response = getTargetedTickerUseCase(GetTargetedTickerParam.ADDRESS_LIST_NON_OCC)
-                _tickerState.value = Success(
-                    convertTargetedTickerToUiModel(
-                        targetedTickerData = response.getTargetedTickerData,
-                        firstTickerContent = firstTickerContent
-                    )
-                )
-            },
-            onError = {
-                if (firstTickerContent?.isNotBlank() == true) {
-                    _tickerState.value = Success(
-                        convertTargetedTickerToUiModel(
-                            firstTickerContent = firstTickerContent
-                        )
-                    )
-                } else {
-                    _tickerState.value = Fail(it)
-                }
-            }
-        )
     }
 }

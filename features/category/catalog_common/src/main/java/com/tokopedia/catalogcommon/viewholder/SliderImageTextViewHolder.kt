@@ -3,11 +3,13 @@ package com.tokopedia.catalogcommon.viewholder
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.adapter.ImageSlidePagerAdapter
+import com.tokopedia.catalogcommon.adapter.ImageSliderAdapter
 import com.tokopedia.catalogcommon.databinding.WidgetItemSliderImageTextBinding
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.util.orDefaultColor
@@ -25,8 +27,8 @@ class SliderImageTextViewHolder(itemView: View) :
     private val binding by viewBinding<WidgetItemSliderImageTextBinding>()
 
     override fun bind(element: SliderImageTextUiModel) {
-        val imageSlideAdapter = ImageSlidePagerAdapter(element.items)
-        binding?.viewPager?.adapter = imageSlideAdapter
-        binding?.viewPager?.currentItem = Int.ZERO
+        val imageSlideAdapter = ImageSliderAdapter(element.items)
+        binding?.rvSlider?.adapter = imageSlideAdapter
+        binding?.rvSlider?.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     }
 }

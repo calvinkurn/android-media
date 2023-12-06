@@ -452,7 +452,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getP2RatesEstimateByProductId(): P2RatesEstimate? {
+    fun getP2RatesEstimateByProductId(): P2RatesEstimate? {
         val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
         var result: P2RatesEstimate? = null
         p2Data.value?.ratesEstimate?.forEach {
@@ -1203,7 +1203,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                 requestParams = GetProductInfoP2DataUseCase.createParams(
                     productId,
                     pdpSession,
-                    generatePdpSessionWithDeviceId(),
+                    deviceId,
                     generateUserLocationRequest(userLocationCache),
                     generateTokoNowRequest(userLocationCache)
                 ),
@@ -1215,15 +1215,6 @@ class DynamicProductDetailViewModel @Inject constructor(
                     logP2Data(it, productId, pdpSession)
                 }
             )
-        }
-    }
-
-    private fun generatePdpSessionWithDeviceId(): String {
-        val p1Data = getDynamicProductInfoP1 ?: return ""
-        return if (!p1Data.data.isTradeIn) {
-            ""
-        } else {
-            deviceId
         }
     }
 

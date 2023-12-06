@@ -7,6 +7,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentFactory
+import androidx.fragment.app.commit
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.feedplus.R
@@ -30,12 +31,12 @@ class FeedBrowseActivity : BaseActivity() {
         setupStatusBar()
         setContentView(R.layout.activity_feed_browse)
 
-        supportFragmentManager.beginTransaction()
-            .add(
+        supportFragmentManager.commit {
+            replace(
                 R.id.feed_browse_container,
                 FeedBrowseFragment.create(supportFragmentManager, classLoader, intent.extras)
             )
-            .commit()
+        }
     }
 
     private fun inject() {

@@ -47,12 +47,12 @@ Tickets:
 
 ## Pages
 
-| ![](res/snapshot_entry_point.png) Snapshot Entry point in SOM/BOM Detail<br/> | ![](res/snapshot_page.png)Snapshot Page<br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/snapshot/snapshot_entry_point.png) Snapshot Entry point in SOM/BOM Detail<br/> | ![](https://docs-android.tokopedia.net/images/docs/snapshot/snapshot_page.png)Snapshot Page<br/> |
 |-------------------------------------------------------------------------------|----------------------------------------------|
 
 ## Flow Chart
 
-![](res/SnapshotProductPage_flowchart.png)
+![](https://docs-android.tokopedia.net/images/docs/snapshot/SnapshotProductPage_flowchart.png)
 
 
 The user should open the Product Snapshot Page by clicking on the product card on either the **BOM Detail** or **SOM Detail** page. The Snapshot Product Page will then provide information that will be available under this page: 

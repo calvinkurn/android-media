@@ -20,6 +20,7 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.applink.AppUtil;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
@@ -151,6 +152,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             showDevOptNotification();
             initDevMonitoringTools();
         }
+        super.setupAppScreenMode();
     }
 
     private void initCassava() {
@@ -228,6 +230,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             @Override
             public int getVersionCode() {
                 return GlobalConfig.VERSION_CODE;
+            }
+
+            @NonNull
+            @Override
+            public String getActivityName() {
+                return AppUtil.currentActivityName;
             }
 
             @NotNull

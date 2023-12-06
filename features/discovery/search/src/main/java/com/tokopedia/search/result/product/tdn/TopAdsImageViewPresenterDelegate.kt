@@ -2,9 +2,7 @@ package com.tokopedia.search.result.product.tdn
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.di.scope.SearchScope
-import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import timber.log.Timber
 import javax.inject.Inject
@@ -18,8 +16,7 @@ class TopAdsImageViewPresenterDelegate @Inject constructor() {
     }
 
     fun processTopAdsImageViewModel(
-        list: List<Visitable<*>>,
-        productList: List<Visitable<*>>,
+        totalProductItem: Int,
         action: (Int, Visitable<*>) -> Unit,
         logAction: (Exception) -> Unit,
     ) {
@@ -35,9 +32,11 @@ class TopAdsImageViewPresenterDelegate @Inject constructor() {
                 continue
             }
 
-            if (data.position <= productList.size) {
+            if (data.position <= totalProductItem) {
                 try {
-                    processTopAdsImageViewModelInPosition(list, productList, data, action)
+                    val searchProductTopAdsImageDataView = SearchProductTopAdsImageDataView(data)
+                    action(data.position, searchProductTopAdsImageDataView)
+
                     topAdsImageViewModelIterator.remove()
                 } catch (exception: java.lang.Exception) {
                     Timber.w(exception)
@@ -47,38 +46,7 @@ class TopAdsImageViewPresenterDelegate @Inject constructor() {
         }
     }
 
-    private fun processTopAdsImageViewModelInPosition(
-        list: List<Visitable<*>>,
-        productList: List<Visitable<*>>,
-        data: TopAdsImageViewModel,
-        action: (Int, Visitable<*>) -> Unit,
-    ) {
-        val isTopPosition = data.position == 1
-        val searchProductTopAdsImageDataView = SearchProductTopAdsImageDataView(data)
-        if (isTopPosition) {
-            val index = getIndexOfTopAdsImageViewModelAtTop(list)
-            action(index, searchProductTopAdsImageDataView)
-        } else {
-            val product = productList[data.position - 1]
-            action(list.indexOf(product) + 1, searchProductTopAdsImageDataView)
-        }
-    }
-
-    private fun getIndexOfTopAdsImageViewModelAtTop(list: List<Visitable<*>>): Int {
-        var index = 0
-        while (shouldIncrementIndexForTopAdsImageViewModel(index, list)) index++
-        return index
-    }
-
-    private fun shouldIncrementIndexForTopAdsImageViewModel(
-        index: Int,
-        list: List<Visitable<*>>,
-    ): Boolean {
-        if (index >= list.size) return false
-
-        val visitable = list[index]
-        val isCPMOrProductItem = visitable is CpmDataView || visitable is ProductItemDataView
-
-        return !isCPMOrProductItem
+    companion object {
+        const val TOP_POSITION = 1
     }
 }

@@ -19,7 +19,8 @@ data class ProductMediaDataModel(
     var shouldUpdateImage: Boolean = false,
     var shouldAnimateLabel: Boolean = true,
     var containerType: MediaContainerType = MediaContainerType.Square,
-    var recommendation: ProductMediaRecomData = ProductMediaRecomData()
+    var recommendation: ProductMediaRecomData = ProductMediaRecomData(),
+    var isPrefetch: Boolean = false
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
         isFinishedLoading = { false },

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.view.navigator
 
 import android.content.Context
+import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -17,6 +18,7 @@ import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.SomTabConst
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
+import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.shop.common.util.sellerfeedbackutil.SellerFeedbackUtil
 import com.tokopedia.user.session.UserSessionInterface
@@ -117,6 +119,13 @@ class SellerHomeNavigator(
             }
         }
         transaction.commitAllowingStateLoss()
+    }
+
+    fun navigateOnRestored(outState: Bundle, lifecycleScope: LifecycleCoroutineScope) {
+        val page = outState.getInt(SellerHomeActivity.LAST_FRAGMENT_TYPE_KEY, FragmentType.HOME)
+        lifecycleScope.launchWhenResumed {
+            showPage(page)
+        }
     }
 
     private fun setupPageFromAppLink(selectedPage: PageFragment?): Fragment? {
@@ -301,7 +310,7 @@ class SellerHomeNavigator(
         setSelectedPageSellerFeedback()
     }
 
-    fun setSelectedPageSellerFeedback() {
+    fun setSelectedPageSellerFeedback(shouldNavigate: Boolean = false) {
         lifecycleScope.launch {
             val selectedPage = when (currentSelectedPage) {
                 FragmentType.HOME -> SellerFeedbackUtil.SELLER_HOME_PAGE
@@ -312,6 +321,9 @@ class SellerHomeNavigator(
             }
             SellerFeedbackUtil(context.applicationContext)
                 .setSelectedPage(selectedPage)
+            if (shouldNavigate) {
+                showPage(currentSelectedPage ?: FragmentType.HOME)
+            }
         }
     }
 
@@ -328,5 +340,4 @@ class SellerHomeNavigator(
             shopName
         }
     }
-
 }

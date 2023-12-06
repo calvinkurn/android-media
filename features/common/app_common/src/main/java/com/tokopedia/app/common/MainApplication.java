@@ -1,9 +1,15 @@
 package com.tokopedia.app.common;
 
+import android.content.SharedPreferences;
+
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
+
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -191,5 +197,35 @@ public abstract class MainApplication extends CoreNetworkApplication {
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchUserIdentityWeave, ENABLE_ASYNC_BRANCH_USER_INFO, getApplicationContext(), true);
         return true;
+    }
+
+    protected void setupAppScreenMode() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isForceLightMode = checkForceLightMode(sharedPreferences);
+        if (isForceLightMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            return;
+        }
+
+        boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
+        int defaultScreenMode = isDarkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
+        int screenMode = sharedPreferences.getInt(TkpdCache.Key.KEY_DARK_MODE_CONFIG_SCREEN_MODE, defaultScreenMode);
+
+        AppCompatDelegate.setDefaultNightMode(screenMode);
+    }
+
+    private boolean checkForceLightMode(SharedPreferences sharedPreferences) {
+        if (GlobalConfig.isSellerApp()) {
+            if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE_SELLER_APP, false)) {
+                sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
+                return true;
+            }
+        } else {
+            if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false)) {
+                sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -2,7 +2,6 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller.mapper
 
 import android.content.Context
 import com.tokopedia.home_component_header.model.ChannelHeader
-import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
@@ -10,7 +9,6 @@ import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.unifycomponents.CardUnify2
 import kotlinx.coroutines.Dispatchers
 
 /**
@@ -40,7 +38,7 @@ class BestSellerMapper (
                 name = recommendationWidget.title,
                 subtitle = recommendationWidget.subtitle,
                 applink = recommendationWidget.seeMoreAppLink,
-                headerType = getHeaderType(),
+                headerType = ChannelHeader.HeaderType.CHEVRON,
             )
         )
     }
@@ -57,13 +55,5 @@ class BestSellerMapper (
             coroutineDispatcher = Dispatchers.IO,
             productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
         )
-    }
-
-    companion object {
-        fun getHeaderType(): ChannelHeader.HeaderType {
-            return if(HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
-                ChannelHeader.HeaderType.REVAMP
-            } else ChannelHeader.HeaderType.CONTROL
-        }
     }
 }

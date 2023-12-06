@@ -5,15 +5,16 @@
     android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.design.text.SearchInputView
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:layout_marginTop="4dp"
         android:id="@+id/search_input_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="10dp"
+        app:search_bar_show_icon="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:search_bar_show_icon="true"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_pages"

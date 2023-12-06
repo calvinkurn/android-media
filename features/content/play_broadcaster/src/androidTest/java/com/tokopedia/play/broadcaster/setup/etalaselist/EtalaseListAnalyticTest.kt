@@ -3,7 +3,8 @@ package com.tokopedia.play.broadcaster.setup.etalaselist
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
@@ -25,6 +26,7 @@ import org.junit.runner.RunWith
 class EtalaseListAnalyticTest {
 
     private val mockRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
+    private val mockCommonRepo: ProductPickerSellerCommonRepository = mockk(relaxed = true)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
@@ -56,14 +58,15 @@ class EtalaseListAnalyticTest {
     private val analyticFile = "tracker/content/playbroadcaster/play_broadcaster_analytic.json"
 
     init {
-        coEvery { mockRepo.getEtalaseList() } returns mockEtalaseList
-        coEvery { mockRepo.getCampaignList() } returns mockCampaignList
+        coEvery { mockCommonRepo.getEtalaseList() } returns mockEtalaseList
+        coEvery { mockCommonRepo.getCampaignList() } returns mockCampaignList
     }
 
     private fun createRobot() = EtalaseListRobot {
         productSetupViewModel(
             productSectionList = emptyList(),
             repo = mockRepo,
+            commonRepo = mockCommonRepo,
         )
     }
 

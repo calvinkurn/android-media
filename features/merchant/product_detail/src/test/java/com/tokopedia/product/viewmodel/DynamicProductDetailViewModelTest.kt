@@ -2986,7 +2986,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val freeShippingLogo = "asdf"
         val rating = "5.0"
         val integrity = "10 Terjual"
-        val containerType = "square"
         val prefetchData = ProductDetailPrefetch.Data(
             image = image,
             name = name,
@@ -2995,8 +2994,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             discount = discount,
             freeShippingLogo = freeShippingLogo,
             rating = rating,
-            integrity = integrity,
-            containerType = containerType
+            integrity = integrity
         )
 
         viewModel.getProductP1(
@@ -3039,8 +3037,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             discount = 0,
             freeShippingLogo = "",
             rating = "",
-            integrity = "",
-            containerType = ""
+            integrity = ""
         )
 
         viewModel.getProductP1(

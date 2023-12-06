@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageCustomLastItemAdapterTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageMyBillsAdapterTypeFactory
+import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageTodoWidgetAdapterTypeFactory
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel.Companion.ALL_CATEGORY_PLATFORM_ID
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -67,7 +68,8 @@ data class RechargeHomepageSections(
         val label2: String = "",
         @SerializedName("items")
         @Expose
-        val items: List<Item> = listOf()
+        val items: List<Item> = listOf(),
+        val name: String = ""
     ) : ImpressHolder()
 
     data class Item(
@@ -124,7 +126,64 @@ data class RechargeHomepageSections(
         val dueDate: String = "",
         @SerializedName("attributes")
         @Expose
-        val attributes: Attributes = Attributes()
+        val attributes: Attributes = Attributes(),
+        @SerializedName("widgets")
+        @Expose
+        val widgets: MutableList<Widgets> = mutableListOf<Widgets>(),
+    )
+
+    data class Widgets(
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+        @SerializedName("subtitle")
+        @Expose
+        val subtitle: String = "",
+        @SerializedName("label")
+        @Expose
+        val label: String = "",
+        @SerializedName("icon_url")
+        @Expose
+        val iconUrl: String = "",
+        @SerializedName("price")
+        @Expose
+        val price: String = "",
+        @SerializedName("reason")
+        @Expose
+        val reason: String = "",
+        @SerializedName("app_link")
+        @Expose
+        val appLink: String = "",
+        @SerializedName("button")
+        @Expose
+        val button: String = "",
+        @SerializedName("button_app_link")
+        @Expose
+        val buttonAppLink: String = "",
+        @SerializedName("type")
+        @Expose
+        val type: String = "",
+        @SerializedName("tracking")
+        @Expose
+        val tracking: List<Tracking> = listOf(),
+        @SerializedName("option_buttons")
+        @Expose
+        val optionButtons: List<OptionButton> = listOf(),
+        @SerializedName("is_close_button")
+        @Expose
+        val isCloseButton: Boolean = false,
+        @SerializedName("is_sticky")
+        @Expose
+        val isSticky: Boolean = false,
+        @SerializedName("fav_id")
+        @Expose
+        val favId: String = "",
+        @SerializedName("discount")
+        @Expose
+        val discount: String = "",
+        @SerializedName("slashed_price")
+        @Expose
+        val slashedPrice: String = "",
     )
 
     data class Attributes(
@@ -205,6 +264,16 @@ data class RechargeHomepageSections(
         @SerializedName("data")
         @Expose
         val data: String = ""
+    )
+
+    data class OptionButton(
+        @SerializedName("button")
+        @Expose
+        val button: String = "",
+
+        @SerializedName("app_link")
+        @Expose
+        val applink: String = "",
     )
 }
 
@@ -705,4 +774,26 @@ class RechargeHomepageMyBillsTripleEntryPointsModel(val section: RechargeHomepag
         return typeFactory.type(this)
     }
 
+}
+
+class RechargeHomepageTodoWidgetModel(val section: RechargeHomepageSections.Section) :
+    RechargeHomepageSectionModel {
+
+    override fun visitableId(): String = section.id
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageTodoWidgetModel) {
+            section == b.section
+        } else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+    class RechargeHomepageTodoWidgetAutoPayPostReminderItemModel(val widget: RechargeHomepageSections.Widgets) :
+        Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory> {
+        override fun type(typeFactory: RechargeHomepageTodoWidgetAdapterTypeFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
 }

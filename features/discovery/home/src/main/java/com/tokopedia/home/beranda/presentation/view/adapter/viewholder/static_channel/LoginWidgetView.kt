@@ -105,7 +105,7 @@ class LoginWidgetView : FrameLayout {
     }
 
     fun renderTextColor(homeThematicUtil: HomeThematicUtil) {
-        this.title?.setTextColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN950))
-        this.subtitle?.setTextColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN600))
+        this.title?.setTextColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN950, itemView.context))
+        this.subtitle?.setTextColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN600, itemView.context))
     }
 }
