@@ -423,8 +423,9 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         contentType: StoriesDetailItem.StoriesItemContentType,
         currentCircle: String
     ) {
-        val authorId =  if (storiesId == "0") "0" else args.authorId
-        val mediaType = if (contentType == StoriesDetailItem.StoriesItemContentType.Unknown) "0" else "asgc"
+        val authorId = if (storiesId == "0") "0" else args.authorId
+        val mediaType =
+            if (contentType == StoriesDetailItem.StoriesItemContentType.Unknown) "0" else "asgc"
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - exit story room")
@@ -434,6 +435,55 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
             .setCustomProperty(Key.sessionIris, sessionIris)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
+    // Tracker ID: 47950
+    override fun sendViewReportReasonList(
+        storiesId: String,
+        contentType: StoriesDetailItem.StoriesItemContentType
+    ) {
+        val authorId = if (storiesId == "0") "0" else args.authorId
+        val mediaType =
+            if (contentType == StoriesDetailItem.StoriesItemContentType.Unknown) "0" else "asgc"
+
+        Tracker.Builder()
+            .setEvent("viewContentIris")
+            .setEventAction("view - list report reason")
+            .setEventCategory("stories room")
+            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $mediaType - ${contentType.value}")
+            .setCustomProperty("trackerId", "47950")
+            .setBusinessUnit("content")
+            .setCurrentSite("tokopediamarketplace")
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
+    // Tracker ID: 47951
+    override fun sendClickReportReasonList(
+        storiesId: String,
+        contentType: StoriesDetailItem.StoriesItemContentType,
+        reportReason: String
+    ) {
+        val authorId = if (storiesId == "0") "0" else args.authorId
+        val mediaType =
+            if (contentType == StoriesDetailItem.StoriesItemContentType.Unknown) "0" else "asgc"
+
+        Tracker.Builder()
+            .setEvent("clickContent")
+            .setEventAction("click - report reason")
+            .setEventCategory("stories room")
+            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $mediaType - ${contentType.value} - $reportReason")
+            .setCustomProperty("trackerId", "47951")
+            .setBusinessUnit("content")
+            .setCurrentSite("tokopediamarketplace")
             .setUserId(userId)
             .build()
             .send()

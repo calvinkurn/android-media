@@ -238,6 +238,12 @@ class StoriesDetailFragment @Inject constructor(
         ContentReportBottomSheet.get(childFragmentManager)?.dismiss()
         viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Report))
 
+        analytic?.sendClickReportReason(
+            storiesId = viewModel.mDetail.id,
+            contentType = viewModel.mDetail.content.type,
+            reportReason = item.title
+        )
+
         ContentSubmitReportBottomSheet.getOrCreate(
             childFragmentManager,
             requireActivity().classLoader
@@ -964,6 +970,11 @@ class StoriesDetailFragment @Inject constructor(
         ).apply {
             updateList(viewModel.userReportReasonList)
         }.show(childFragmentManager, ContentReportBottomSheet.TAG)
+
+        analytic?.sendViewReportReasonList(
+            storiesId = viewModel.mDetail.id,
+            contentType = viewModel.mDetail.content.type,
+        )
 
         viewModel.submitAction(StoriesUiAction.OpenReport)
     }
