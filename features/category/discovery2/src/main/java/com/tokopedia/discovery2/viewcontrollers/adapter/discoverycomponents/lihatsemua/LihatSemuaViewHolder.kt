@@ -71,7 +71,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                         setupTitleTextColours(data.fontColor, backgroundImageView.isVisible)
                         setupSubtitleTextColours(backgroundImageView.isVisible)
                         setupTimer(data, backgroundImageView.isVisible)
-                        setupPadding(backgroundImageView.isVisible, titleImageViewParent.isVisible)
+                        setComponentSpace(data.isDynamicTitle())
                     }
                 }
             )
@@ -83,13 +83,23 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }
     }
 
+    private fun setComponentSpace(isDynamicTitle: Boolean) {
+        if (isDynamicTitle) {
+            setupMargin()
+        } else {
+            setupPadding(backgroundImageView.isVisible, titleImageViewParent.isVisible)
+        }
+    }
+
+    private fun DataItem.isDynamicTitle() = titleType == DYNAMIC_TITLE_TYPE
+
     private fun setupLihat(
         data: DataItem,
         componentsItem: ComponentsItem,
         backgroundPresent: Boolean
     ) {
         if (!data.btnApplink.isNullOrEmpty()) {
-            if (backgroundPresent) {
+            if (backgroundPresent || data.isDynamicTitle()) {
                 lihatImageView.show()
                 lihatTextView.hide()
             } else {
@@ -264,26 +274,35 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }
     }
 
+    private fun setupMargin() {
+        fragment.context?.resources?.let {
+            textTitleParent.setMargin(it.getDimensionPixelSize(R.dimen.dp_8), 0, 0, 0)
+        }
+    }
+
     private fun setupTitleImage(data: DataItem) {
         if (data.imageTitle.isNullOrEmpty()) {
             titleImageViewParent.hide()
         } else {
             titleImageView.loadImage(data.imageTitle)
             val lp = titleImageView.layoutParams
-            val height = Utils.extractDimension(data.imageTitle, "height")
-            val width = Utils.extractDimension(data.imageTitle, "width")
-            if (width != null && height != null) {
-                val aspectRatio = width.toFloat() / height.toFloat()
+            val heightParamValue = Utils.extractDimension(data.imageTitle, "height")
+            val widthParamValue = Utils.extractDimension(data.imageTitle, "width")
+            if (widthParamValue != null && heightParamValue != null) {
+                val aspectRatio = widthParamValue.toFloat() / heightParamValue.toFloat()
                 fragment.context?.resources?.let {
                     Utils.corners(titleImageViewParent, 0 - it.getDimension(R.dimen.dp_12).toInt(), 0, 0, 0 + it.getDimension(R.dimen.dp_12).toInt(), it.getDimension(R.dimen.dp_12))
                     Utils.corners(titleImageView, 0, 0, 0, 0, it.getDimension(R.dimen.dp_8))
-                    if (lihatSubTitleTextView.isVisible) {
-                        lp.height = it.getDimensionPixelOffset(R.dimen.dp_56)
-                        lp.width = (aspectRatio * it.getDimensionPixelOffset(R.dimen.dp_56)).toInt()
-                    } else {
-                        lp.height = it.getDimensionPixelOffset(R.dimen.dp_44)
-                        lp.width = (aspectRatio * it.getDimensionPixelOffset(R.dimen.dp_44)).toInt()
+
+                    val dimenHeight = when {
+                        data.isDynamicTitle() -> R.dimen.dp_40
+                        lihatSubTitleTextView.isVisible -> R.dimen.dp_56
+                        else -> R.dimen.dp_44
                     }
+
+                    val height = it.getDimensionPixelOffset(dimenHeight)
+                    lp.height = height
+                    lp.width = (aspectRatio * height).toInt()
                 }
             }
             titleImageView.layoutParams = lp
@@ -366,5 +385,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     companion object {
         const val BERAKHIR_DALAM = "Berakhir dalam"
         const val SUDAH_BERAKHIR = "Sudah berakhir"
+
+        private const val DYNAMIC_TITLE_TYPE = "Dynamic_Title+Image"
     }
 }
