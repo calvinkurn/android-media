@@ -62,9 +62,7 @@ class DigitalPDPDataPlanTestSetupActivity: BaseSimpleActivity(), HasComponent<Di
     }
 
     override fun getComponent(): DigitalPDPComponent {
-        return DaggerDigitalPDPComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
+        return getDaggerComponent()
     }
 
     private fun setupAppBar() {
