@@ -203,10 +203,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     locationResult.lastLocation.latitude,
                     locationResult.lastLocation.longitude
                 )
-                LocationDetectorHelper(requireContext()).saveToCache(
-                    locationResult.lastLocation.latitude,
-                    locationResult.lastLocation.longitude
-                )
+                context?.let { ctx ->
+                    LocationDetectorHelper(ctx).saveToCache(
+                        locationResult.lastLocation.latitude,
+                        locationResult.lastLocation.longitude
+                    )
+                }
             }
         }
 
@@ -640,9 +642,11 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
             if (data != null) {
                 moveMap(getLatLng(data.latitude, data.longitude))
                 viewModel.getDistrictData(data.latitude, data.longitude)
-                LocationDetectorHelper(requireContext()).saveToCache(
-                    data.latitude, data.longitude
-                )
+                context?.let { ctx ->
+                    LocationDetectorHelper(ctx).saveToCache(
+                        data.latitude, data.longitude
+                    )
+                }
             } else {
                 fusedLocationClient?.requestLocationUpdates(
                     AddNewAddressUtils.getLocationRequest(),
