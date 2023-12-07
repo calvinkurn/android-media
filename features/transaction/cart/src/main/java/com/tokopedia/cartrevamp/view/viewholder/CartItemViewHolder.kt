@@ -88,7 +88,7 @@ class CartItemViewHolder(
             expandState.value = true
             enableManualInput.value = true
             configState.value = configState.value.copy(
-                qtyField = QtyField(cursorColor = unifyprinciplesR.color.Unify_RN500)
+                qtyField = QtyField(cursorColor = unifyprinciplesR.color.Unify_NN1000)
             )
         }
     }
