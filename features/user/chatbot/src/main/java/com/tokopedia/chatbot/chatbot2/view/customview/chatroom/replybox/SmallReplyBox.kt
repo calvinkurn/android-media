@@ -4,17 +4,14 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.SlowModeSendButton
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener
-import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
@@ -22,18 +19,21 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
 
     private var replyBox: ConstraintLayout? = null
-    private var replyBubbleContainer: ReplyBubbleAreaMessage? = null
-    private var commentContainer: LinearLayout? = null
+    var replyBubbleContainer: ReplyBubbleAreaMessage? = null
+        private set
     var commentEditText: TextAreaUnify2? = null
-    private var addAttachmentMenu: ImageView? = null
-    private var guideline: Guideline? = null
+        private set
+    var addAttachmentMenu: ImageView? = null
+        private set
+    var guideline: Guideline? = null
+        private set
     var sendButton: SlowModeSendButton? = null
+        private set
     var replyBoxClickListener: ReplyBoxClickListener? = null
 
     private var textWatcher: TextWatcher? = null
@@ -46,22 +46,6 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
 
     fun getMessageView(): EditText? {
         return commentEditText?.editText
-    }
-
-    fun getReplyBubbleContainer(): ReplyBubbleAreaMessage? {
-        return replyBubbleContainer
-    }
-
-    fun getGuidelineForReplyBubble(): Guideline? {
-        return guideline
-    }
-
-    fun getSmallReplyBoxSendButton(): SlowModeSendButton? {
-        return sendButton
-    }
-
-    fun getAddAttachmentMenu(): ImageView? {
-        return addAttachmentMenu
     }
 
     private fun initViewBindings() {
@@ -118,27 +102,6 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
 
     fun removeTextChangedListener() {
         commentEditText?.editText?.removeTextChangedListener(textWatcher)
-    }
-
-    fun bindCommentTextBackground() {
-        val replyEditTextBg = ViewUtil.generateBackgroundWithShadow(
-            commentContainer,
-            R.color.chatbot_dms_left_message_bg,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            unifyprinciplesR.color.Unify_NN950_20,
-            R.dimen.dp_chatbot_2,
-            R.dimen.dp_chatbot_1,
-            Gravity.CENTER
-        )
-        val paddingStart = context?.resources?.getDimension(unifyprinciplesR.dimen.spacing_lvl4)?.toInt() ?: 16
-        val paddingEnd = context?.resources?.getDimension(unifyprinciplesR.dimen.spacing_lvl8)?.toInt() ?: 48
-        val paddingTop = context?.resources?.getDimension(R.dimen.dp_chatbot_11)?.toInt() ?: 11
-        val paddingBottom = context?.resources?.getDimension(R.dimen.dp_chatbot_10)?.toInt() ?: 10
-        commentContainer?.background = replyEditTextBg
-        commentContainer?.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
     }
 
     fun getMessage(): String {

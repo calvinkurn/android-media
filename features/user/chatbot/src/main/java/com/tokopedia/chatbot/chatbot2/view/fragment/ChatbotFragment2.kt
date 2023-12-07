@@ -697,13 +697,13 @@ class ChatbotFragment2 :
 
         smallReplyBox = getBindingView().smallReplyBox
         bigReplyBox = getBindingView().bigReplyBox
-        guideline = smallReplyBox?.getGuidelineForReplyBubble()
+        guideline = smallReplyBox?.guideline
         smallReplyBox?.replyBoxClickListener = this
 
-        replyBubbleContainer = smallReplyBox?.getReplyBubbleContainer()
+        replyBubbleContainer = smallReplyBox?.replyBubbleContainer
 
         setUpBigReplyBoxListeners()
-        replyBubbleContainer = smallReplyBox?.getReplyBubbleContainer()
+        replyBubbleContainer = smallReplyBox?.replyBubbleContainer
         replyBubbleOnBoardingHasBeenShow = replyBubbleOnBoarding.hasBeenShown()
         videoUploadOnBoardingHasBeenShow = videoUploadOnBoarding.hasBeenShown()
         setUpFloatingInvoiceListeners()
@@ -1034,13 +1034,13 @@ class ChatbotFragment2 :
 
     private fun handleAddAttachmentButtonViewState(toShow: Boolean) {
         showAddAttachmentMenu = toShow
-        getBindingView().smallReplyBox.getAddAttachmentMenu()?.showWithCondition(
+        getBindingView().smallReplyBox.addAttachmentMenu?.showWithCondition(
             showAddAttachmentMenu
         )
         bigReplyBox?.handleAddAttachmentButton(toShow)
         bigReplyBoxBottomSheet?.hideAddAttachmentButton(toShow)
         if (showAddAttachmentMenu) {
-            getBindingView().smallReplyBox.getMessageView()?.apply {
+            getBindingView().smallReplyBox.commentEditText?.editText?.apply {
                 if (!isConnectedToAgent) {
                     setImageUploadDataInReplyBox()
                 } else {
@@ -1814,7 +1814,7 @@ class ChatbotFragment2 :
                 )
             }
         }
-        getBindingView().smallReplyBox.getMessageView()?.apply {
+        getBindingView().smallReplyBox.commentEditText?.editText?.apply {
             setDefaultDataInReplyBox()
         }
     }
