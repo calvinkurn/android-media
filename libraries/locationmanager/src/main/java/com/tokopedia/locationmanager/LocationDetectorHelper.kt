@@ -165,7 +165,7 @@ class LocationDetectorHelper(ctx: Context) {
             PARAM_CACHE_DEVICE_LOCATION, DeviceLocation::class
                 .java, DeviceLocation()
         )
-        return if (location == null) {
+        return if (location == null || !location.hasLocation()) {
             // Previously saved into shared Preference.
             // TODO will be removed after several releases
             val latLegacy = LocationCache.getLatitudeCache(context)

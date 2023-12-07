@@ -47,6 +47,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.coroutines.CoroutineContext
@@ -141,7 +142,9 @@ object FingerprintModelGenerator : CoroutineScope {
     }
 
     fun expireFingerprint() {
-        fingerprintLastTs = 0
+        // put time stamp 2 seconds just before it is expired.
+        // This is to prevent bursting expire fingerprint at the same time
+        fingerprintLastTs = (System.currentTimeMillis() / 1000) - FINGERPRINT_EXPIRED_TIME + 2
     }
 
     private fun generateFingerprintData(context: Context): FingerPrint {
@@ -314,14 +317,14 @@ object FingerprintModelGenerator : CoroutineScope {
                 PersistentCacheManager(
                     context,
                     LOCATION_CACHE
-                ).getFlow(LocationDetectorHelper.PARAM_CACHE_DEVICE_LOCATION).also {
+                ).getFlow(LocationDetectorHelper.PARAM_CACHE_DEVICE_LOCATION).also { it ->
                     locationFlow = it
                     // to be safe, we cancel previous job to make sure only 1 job exists
                     if (locationFlowJob != null) {
                         locationFlowJob?.cancel()
                     }
                     locationFlowJob = launch {
-                        it.collect {
+                        it.distinctUntilChanged().collect {
                             if (it?.isNotEmpty() == true) {
                                 expireFingerprint()
                             }

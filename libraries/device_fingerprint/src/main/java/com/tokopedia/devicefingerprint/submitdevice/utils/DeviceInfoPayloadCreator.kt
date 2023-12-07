@@ -25,6 +25,7 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSessionInterface
+import okhttp3.internal.toLongOrDefault
 import timber.log.Timber
 import java.io.File
 import java.lang.reflect.Field
@@ -71,7 +72,7 @@ class DeviceInfoPayloadCreator @Inject constructor(
                 appVersion = Build.VERSION.RELEASE,
                 isFromPlayStore = isFromPlayStore(),
                 uuid = DeviceInfo.getUUID(context),
-                userId = userSession.userId.toLong(),
+                userId = userSession.userId.toLongOrDefault(0L),
                 deviceModel = Build.MODEL,
                 deviceManufacturer = Build.MANUFACTURER,
                 timezone = TimeZone.getDefault().displayName,
