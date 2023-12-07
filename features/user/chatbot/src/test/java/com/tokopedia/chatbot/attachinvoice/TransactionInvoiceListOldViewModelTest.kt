@@ -2,7 +2,6 @@ package com.tokopedia.chatbot.attachinvoice
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.chatbot.attachinvoice.domain.usecase.GetFilteredInvoiceListUseCase
-import com.tokopedia.chatbot.attachinvoice.view.viewmodel.TransactionInvoiceListViewModel
 import com.tokopedia.chatbot.domain.pojo.invoicelist.api.Attributes
 import com.tokopedia.chatbot.domain.pojo.invoicelist.api.GetInvoiceList
 import com.tokopedia.chatbot.domain.pojo.invoicelist.api.GetInvoiceListPojo
