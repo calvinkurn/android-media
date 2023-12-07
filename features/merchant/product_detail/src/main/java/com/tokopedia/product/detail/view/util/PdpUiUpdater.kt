@@ -47,7 +47,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
@@ -108,8 +108,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productDiscussionMostHelpfulMap: ProductDiscussionMostHelpfulDataModel?
         get() = mapOfData[ProductDetailConstant.DISCUSSION_FAQ] as? ProductDiscussionMostHelpfulDataModel
 
-    val productReviewMap: ProductMostHelpfulReviewDataModel?
-        get() = mapOfData[ProductDetailConstant.REVIEW] as? ProductMostHelpfulReviewDataModel
+    val productReviewMap: ProductMostHelpfulReviewUiModel?
+        get() = mapOfData[ProductDetailConstant.REVIEW] as? ProductMostHelpfulReviewUiModel
 
     val fintechWidgetMap: FintechWidgetDataModel?
         get() = mapOfData[ProductDetailConstant.FINTECH_WIDGET_NAME] as? FintechWidgetDataModel
@@ -276,7 +276,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
     }
-
 
     private fun DynamicProductInfoP1.createProductContentData() = createContentMainData()
     private fun DynamicProductInfoP1.createOngoingCampaignData() = createContentMainData()
@@ -541,13 +540,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             )
             updateDataTradein(context, it.validateTradeIn)
             updateData(ProductDetailConstant.REVIEW) {
-                productReviewMap?.run {
-                    review = it.helpfulReviews?.firstOrNull()
-                    mediaThumbnails = it.imageReview.reviewMediaThumbnails
-                    formattedRating = it.rating.ratingScore
-                    totalRatingCount = it.rating.totalRating
-                    totalReviewCount = it.rating.totalReviewTextAndImage
-                }
+                productReviewMap?.setData(
+                    reviews = it.helpfulReviews.orEmpty(),
+                    reviewImage = it.imageReview,
+                    rating = it.rating
+                )
             }
 
             if (it.ticker.tickerInfo.isEmpty()) {
@@ -841,7 +838,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             removeComponent(ProductDetailConstant.ORDER_PRIORITY)
         }
 
-        if (!it.rating.showRatingReview) {
+        if (!it.rating.show) {
             removeComponent(ProductDetailConstant.REVIEW)
         }
 
@@ -1343,7 +1340,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateAPlusContentMediaOnExpandedStateChange(aPlusContentExpanded: Boolean) {
         val lastShowedAPlusMediaName = findLastShowedAPlusMediaName(aPlusContentExpanded)
-        mapOfData.forEach { (key, _) ->
+        mapOfData.asSequence().filter { it.value is APlusImageUiModel }.forEach { (key, _) ->
             updateData(key, false) {
                 (mapOfData[key] as? APlusImageUiModel)?.apply {
                     expanded = aPlusContentExpanded

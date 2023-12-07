@@ -9,6 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -33,6 +34,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
 
     private var idCardObj = ""
     private var selfieObj = ""
+    private var isFromScpVerification = false
 
     override fun initView() {
         showThumbnailLayout()
@@ -64,7 +66,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
     }
 
     private fun goToVerification(phoneNumber: String) {
-        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.COTP)
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.COTP, InactivePhoneConstant.SQCP_OTP_TYPE.toString())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
         intent.putExtra(
             ApplinkConstInternalGlobal.PARAM_OTP_TYPE,
@@ -74,76 +76,89 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
     }
 
     override fun initObserver() {
-        viewModel.phoneValidation.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data.validation.isSuccess) {
-                        goToVerification(viewBinding?.textPhoneNumber?.text.orEmpty())
-                    } else {
+        viewModel.phoneValidation.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (it.data.validation.isSuccess) {
+                            hideLoading()
+                            goToVerification(viewBinding?.textPhoneNumber?.text.orEmpty())
+                        } else {
+                            hideLoading()
+                            onError(MessageErrorException(it.data.validation.error))
+                        }
+                    }
+
+                    is Fail -> {
                         hideLoading()
-                        onError(MessageErrorException(it.data.validation.error))
-                    }
-                }
-
-                is Fail -> {
-                    hideLoading()
-                    onError(it.throwable)
-                }
-            }
-        })
-
-        viewModel.imageUpload.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data.source == ID_CARD) {
-                        idCardObj = it.data.data.pictureObject
-                        doUploadImage(FileType.SELFIE, SELFIE)
-                    } else if (it.data.source == SELFIE) {
-                        selfieObj = it.data.data.pictureObject
-
-                        inactivePhoneUserDataModel?.let { userData ->
-                            userData.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
-                            viewModel.submitForm(SubmitDataModel(
-                                email = userData.email,
-                                oldPhone = userData.oldPhoneNumber,
-                                newPhone = userData.newPhoneNumber,
-                                userIndex = userData.userIndex,
-                                idCardImage = idCardObj,
-                                selfieImage = selfieObj,
-                                validateToken = userData.validateToken
-                            ))
-                        }
-                    }
-                }
-
-                is Fail -> {
-                    hideLoading()
-                    onError(it.throwable)
-                }
-            }
-        })
-
-        viewModel.submitData.observe(this, Observer {
-            hideLoading()
-            when (it) {
-                is Success -> {
-                    if (it.data.status.isSuccess) {
-                        gotoSuccessPage(InactivePhoneConstant.REGULAR)
-                    } else {
-                        view?.let { v ->
-                            Toaster.build(v, it.data.status.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-                        }
-                    }
-                }
-                is Fail -> {
-                    if (it.throwable.message == getString(R.string.error_new_phone_already_registered)) {
-                        viewBinding?.textPhoneNumber?.error = getString(R.string.error_input_another_phone)
-                    } else {
                         onError(it.throwable)
                     }
                 }
             }
-        })
+        )
+
+        viewModel.imageUpload.observe(
+            this,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (it.data.source == ID_CARD) {
+                            idCardObj = it.data.data.pictureObject
+                            doUploadImage(FileType.SELFIE, SELFIE)
+                        } else if (it.data.source == SELFIE) {
+                            selfieObj = it.data.data.pictureObject
+
+                            inactivePhoneUserDataModel?.let { userData ->
+                                userData.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
+                                viewModel.submitForm(
+                                    SubmitDataModel(
+                                        email = userData.email,
+                                        oldPhone = userData.oldPhoneNumber,
+                                        newPhone = userData.newPhoneNumber,
+                                        userIndex = userData.userIndex,
+                                        idCardImage = idCardObj,
+                                        selfieImage = selfieObj,
+                                        validateToken = userData.validateToken,
+                                        isScpToken = isFromScpVerification
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+                    is Fail -> {
+                        hideLoading()
+                        onError(it.throwable)
+                    }
+                }
+            }
+        )
+
+        viewModel.submitData.observe(
+            this,
+            Observer {
+                hideLoading()
+                when (it) {
+                    is Success -> {
+                        if (it.data.status.isSuccess) {
+                            gotoSuccessPage(InactivePhoneConstant.REGULAR)
+                        } else {
+                            view?.let { v ->
+                                Toaster.build(v, it.data.status.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                            }
+                        }
+                    }
+                    is Fail -> {
+                        if (it.throwable.message == getString(R.string.error_new_phone_already_registered)) {
+                            viewBinding?.textPhoneNumber?.error = getString(R.string.error_input_another_phone)
+                        } else {
+                            onError(it.throwable)
+                        }
+                    }
+                }
+            }
+        )
     }
 
     override fun onSubmit() {
@@ -194,12 +209,13 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 InactivePhoneConstant.REQUEST_SQCP_OTP_VERIFICATION -> {
-                    if(data?.extras != null) {
+                    if (data?.extras != null) {
+                        val isScpToken = data.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP).orFalse()
                         val validateToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
+                        isFromScpVerification = isScpToken
                         onOtpSuccess(validateToken)
                     }
                 }
@@ -215,10 +231,11 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
 
     private fun setImage(imageView: ThumbnailFileView, type: Int) {
         val path = context?.let { filePath(it, type) }
-        if (path?.isNotEmpty() == true)
+        if (path?.isNotEmpty() == true) {
             imageView.apply {
                 setImage(path)
             }
+        }
     }
 
     override fun dialogOnBackPressed() {

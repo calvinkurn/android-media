@@ -4,6 +4,7 @@ import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetDataResponse
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
+import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -13,7 +14,9 @@ import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.inbox.universalinbox.util.Result as Result
 
-class UniversalInboxWidgetMetaMapper @Inject constructor() {
+class UniversalInboxWidgetMetaMapper @Inject constructor(
+    private val abTestPlatform: UniversalInboxAbPlatform
+) {
 
     private val driver = "driver"
 
@@ -116,9 +119,14 @@ class UniversalInboxWidgetMetaMapper @Inject constructor() {
                 val driverMember = channel.members.find {
                     it.ownerType == driver
                 }
-                if (channel.expiresAt > System.currentTimeMillis() && driverMember != null) {
-                    activeChannel++
-                    unreadTotal += channel.unreadCount
+                if ((channel.expiresAt > System.currentTimeMillis() || channel.expiresAt == 0L) && // Expires At should not be 0, If 0 then SDK initialize the chat and the data is still being fetch
+                    driverMember != null
+                ) {
+                    val serviceType = channel.metadata?.orderInfo?.serviceType ?: 0
+                    if (isChatTokofood(serviceType) || isTokoChatLogisticEnabled()) {
+                        activeChannel++
+                        unreadTotal += channel.unreadCount
+                    }
                 }
             }
             if (unreadTotal >= 0) {
@@ -130,5 +138,23 @@ class UniversalInboxWidgetMetaMapper @Inject constructor() {
             Timber.d(throwable)
             Pair(0, 0) // Default
         }
+    }
+
+    private fun isTokoChatLogisticEnabled(): Boolean {
+        return abTestPlatform.getString(
+            ROLLENCE_LOGISTIC_CHAT,
+            ""
+        ) == ROLLENCE_LOGISTIC_CHAT
+    }
+
+    private fun isChatTokofood(serviceType: Int): Boolean {
+        return serviceType == TOKOFOOD_SERVICE_TYPE
+    }
+
+    companion object {
+        const val ROLLENCE_LOGISTIC_CHAT = "gosend_chat_an"
+        private const val GOSEND_INSTANT_SERVICE_TYPE = 14
+        private const val GOSEND_SAMEDAY_SERVICE_TYPE = 23
+        private const val TOKOFOOD_SERVICE_TYPE = 5
     }
 }

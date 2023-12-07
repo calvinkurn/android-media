@@ -6,7 +6,7 @@ import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationVisitable
 import timber.log.Timber

@@ -283,8 +283,8 @@ public class RemoteConfigKey {
     public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
 
     public static final String MAINAPP_DISABLED_STORIES_ENTRY_POINTS = "android_main_app_disabled_stories_entry_points";
-
     public static final String SELLERAPP_DISABLED_STORIES_ENTRY_POINTS = "android_seller_app_disabled_stories_entry_points";
+    public static final String APP_CONTENT_CREATION_STORIES_CONFIG = "android_app_content_creation_stories_config";
 
     public static final String ANDROID_SET_VISIBLE_PRODUCT_COUNTER_OLP = "android_set_visible_product_counter_olp";
 
@@ -311,4 +311,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_WEBVIEW_BACK_PRESSED = "android_webview_enable_override_back_pressed";
 
     public static final String ANDROID_MAIN_APP_ENABLE_DISCO_SHOP_OFFER_HERO_BRAND = "android_main_app_enable_disco_shop_offer_hero_brand";
+
+    public static final String ANDROID_ENABLE_AUTO_TOPADS_WD_RECOMMENDATION = "android_enable_auto_topads_wd_recommendation";
+
+    public static final String ANDROID_SALDO_ENABLE_AUTO_WD_INIT_GQL = "android_saldo_enable_auto_wd_init_gql";
 }

@@ -1,0 +1,25 @@
+{
+  "data": {
+    "partial_order_fulfillment_request_estimate": {
+      "order_id": 167756654,
+      "detail_info": [],
+      "pof_summary": [
+        {
+          "label": "Total harga awal (5 barang)",
+          "value_num": 400000,
+          "value_string": "Rp400.000"
+        }
+      ],
+      "pof_final_estimation": {
+        "label": "Total Harga Baru",
+        "value_num": 400000,
+        "value_string": "Rp400.000",
+        "tooltip": "Total harga barang tidak tersedia.\nBelum termasuk biaya ongkir, cashback, dan pengembalian dana dari Pusat Resolusi."
+      },
+      "pof_info": {
+        "has_info": false,
+        "text": ""
+      }
+    }
+  }
+}
