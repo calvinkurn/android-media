@@ -28,10 +28,15 @@ class AppDownloadManagerHelper(
         launch {
             if (isEnableShowBottomSheet()) {
                 if (updateAppVersionDialog == null) {
-                     updateAppVersionDialog = AppUpdateVersionDialog(activityRef)
-                }
-                appVersionBetaInfoModel?.let {
-                    updateAppVersionDialog?.showDialog(it, ::onSuccessDownloaded, ::onFailedDownload)
+                    appVersionBetaInfoModel?.let {
+                        updateAppVersionDialog = AppUpdateVersionDialog(
+                            activityRef,
+                            it,
+                            ::onSuccessDownloaded,
+                            ::onFailDownloaded
+                        )
+                    }
+                    updateAppVersionDialog?.showDialog()
                 }
             }
         }
@@ -39,6 +44,15 @@ class AppDownloadManagerHelper(
 
     override fun onSuccessDownloaded(fileName: String) {
         installApk(fileName)
+    }
+
+    fun startDownloadApk() {
+        val apkUrl =
+            APK_URL.format(appVersionBetaInfoModel?.versionName, appVersionBetaInfoModel?.versionCode)
+
+        updateAppVersionDialog?.let {
+            it.downloadManagerService.startDownload(apkUrl, it.downloadManagerListener)
+        }
     }
 
     private fun installApk(fileName: String) {
@@ -68,7 +82,7 @@ class AppDownloadManagerHelper(
         }
     }
 
-    private fun onFailedDownload(reason: String, statusColumn: Int) {
+    private fun onFailDownloaded(reason: String, statusColumn: Int) {
         showErrorToaster(reason)
     }
 

@@ -11,12 +11,11 @@ import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownl
 import com.tokopedia.appdownloadmanager_common.presentation.dialog.AppFileManagerDialog
 import com.tokopedia.appdownloadmanager_common.presentation.listener.DownloadManagerSuccessListener
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper
-import java.lang.ref.WeakReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.io.File
+import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 
 class AppDownloadManagerHelper(
@@ -47,12 +46,17 @@ class AppDownloadManagerHelper(
 
     override fun onSuccessDownloaded(fileName: String) {
         activityRef.get()?.let {
-            AppFileManagerDialog.showDialog(it, fileName,
+            AppFileManagerDialog.showDialog(
+                it,
+                fileName,
                 onSuccessDownload = {
                     openDownloadDir()
                 }
             )
         }
+    }
+
+    fun startDownloadApk() {
     }
 
     private fun openDownloadDir() {

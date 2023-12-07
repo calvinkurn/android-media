@@ -56,6 +56,7 @@ import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.appdownloadmanager.AppDownloadManagerHelper;
+import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadManagerPermission;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkDFMapper;
@@ -121,10 +122,13 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import rx.android.BuildConfig;
 
 /**
@@ -776,12 +780,6 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void showDownloadManagerBottomSheet() {
-        if (appDownloadManagerHelper != null) {
-            appDownloadManagerHelper.showAppDownloadManagerBottomSheet();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         AppUpdateManagerWrapper.onActivityResult(this, requestCode, resultCode);
@@ -817,8 +815,32 @@ public class MainParentActivity extends BaseActivity implements
         if (appDownloadManagerHelper != null) {
             appDownloadManagerHelper.getActivityRef().clear();
         }
+        appDownloadManagerHelper = null;
         if (presenter != null)
             presenter.get().onDestroy();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        checkWritePermissionResultAndInstallApk(requestCode, grantResults);
+    }
+
+    private void checkWritePermissionResultAndInstallApk(int requestCode, @NonNull int[] grantResults) {
+        AppDownloadManagerPermission.checkRequestPermissionResult(requestCode, grantResults, hasPermission -> {
+            if (hasPermission) {
+                if (appDownloadManagerHelper != null) {
+                    appDownloadManagerHelper.startDownloadApk();
+                }
+            }
+            return null;
+        });
+    }
+
+    private void showDownloadManagerBottomSheet() {
+        if (appDownloadManagerHelper != null) {
+            appDownloadManagerHelper.showAppDownloadManagerBottomSheet();
+        }
     }
 
     private void reloadPage(int position, boolean isJustLoggedIn) {
