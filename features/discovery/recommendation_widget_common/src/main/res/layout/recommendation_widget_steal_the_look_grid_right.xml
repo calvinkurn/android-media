@@ -35,7 +35,7 @@
         android:layout_height="30dp"
         android:layout_marginTop="3dp"
         android:scaleType="fitXY"
-        android:src="@drawable/recom_ribbon_arch_red"
+        app:srcCompat="@drawable/recom_ribbon_arch_red"
         app:layout_constraintHorizontal_bias="1"
         android:contentDescription="@string/product_card_content_desc_ribbon"
         app:layout_constraintLeft_toLeftOf="parent"
