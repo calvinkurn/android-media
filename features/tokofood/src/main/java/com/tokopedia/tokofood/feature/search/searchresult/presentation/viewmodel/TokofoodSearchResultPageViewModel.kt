@@ -577,7 +577,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                 val result = withContext(dispatcher.io) {
                     keroEditAddressUseCase(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
                 }
-                if (result.isSuccess == 1) {
+                if (result.success) {
                     _uiEventFlow.tryEmit(
                         TokofoodSearchUiEvent(
                             state = TokofoodSearchUiEvent.EVENT_SUCCESS_EDIT_PINPOINT,

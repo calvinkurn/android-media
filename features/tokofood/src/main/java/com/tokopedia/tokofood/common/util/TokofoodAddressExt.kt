@@ -10,7 +10,7 @@ object TokofoodAddressExt {
     fun KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse.updateLocalChosenAddressPinpoint(
         context: Context
     ) {
-        if (this.isSuccess == 1) {
+        if (this.success) {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                 context = context,
                 addressId = this.chosenAddressData.addressId.toString(),
