@@ -134,7 +134,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         ePharmacyCheckoutViewModel?.ePharmacyCheckoutData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    onSuccessCartCheckout(it)
+                    onSuccessCartCheckout(it.data)
                 }
                 is Fail -> {
                     onFailCartCheckout()
@@ -255,13 +255,12 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         ePharmacyCheckoutViewModel?.getEPharmacyCheckoutData(EPharmacyUtils.createCheckoutGeneralParams(ePharmacyCheckoutParams))
     }
 
-    private fun onSuccessCartCheckout(result: Success<EPharmacyCartGeneralCheckoutResponse>) {
-        when (result.data.checkout?.checkoutData?.success) {
+    private fun onSuccessCartCheckout(cartGeneralResponse: EPharmacyCartGeneralCheckoutResponse) {
+        when (cartGeneralResponse.checkout?.checkoutData?.success) {
             EPharmacyCartGeneralCheckoutResponse.ERROR -> {
-                sendViewCheckoutErrorEvent("$enablerName - $groupId - $tConsultationId")
-                showToast(TYPE_ERROR, result.data.checkout?.checkoutData?.message.orEmpty())
+                showToast(TYPE_ERROR, cartGeneralResponse.checkout.checkoutData.message.orEmpty())
             }
-            EPharmacyCartGeneralCheckoutResponse.SUCCESS -> successCheckout(result.data.checkout?.checkoutData?.cartGeneralResponse)
+            EPharmacyCartGeneralCheckoutResponse.SUCCESS -> successCheckout(cartGeneralResponse.checkout.checkoutData.cartGeneralResponse)
         }
     }
 
@@ -321,19 +320,6 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
             .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOkTER_CHECKOUT_PAGE)
             .setEventLabel(eventLabel)
             .setCustomProperty(EventKeys.TRACKER_ID, "45866")
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .build()
-            .send()
-    }
-
-    private fun sendViewCheckoutErrorEvent(eventLabel: String) {
-        Tracker.Builder()
-            .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
-            .setEventAction("view checkout error")
-            .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOkTER_CHECKOUT_PAGE)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45870")
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()

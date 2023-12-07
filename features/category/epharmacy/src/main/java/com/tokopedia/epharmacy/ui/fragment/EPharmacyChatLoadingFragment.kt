@@ -19,7 +19,7 @@ import com.tokopedia.epharmacy.utils.CategoryKeys
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.IS_SINGLE_CONSUL_FLOW
 import com.tokopedia.epharmacy.utils.WEB_LINK_PREFIX
-import com.tokopedia.epharmacy.viewmodel.EPharmacyLoadingViewModel
+import com.tokopedia.epharmacy.viewmodel.EPharmacyChatLoadingViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
@@ -50,11 +50,11 @@ class EPharmacyChatLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val ePharmacyLoadingViewModel: EPharmacyLoadingViewModel by lazy(
+    private val ePharmacyChatLoadingViewModel: EPharmacyChatLoadingViewModel by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider[EPharmacyLoadingViewModel::class.java]
+        viewModelProvider[EPharmacyChatLoadingViewModel::class.java]
     }
 
     private var binding by autoClearedNullable<EpharmacyReminderScreenBottomSheetBinding>()
@@ -95,7 +95,7 @@ class EPharmacyChatLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
             illustrationImage = findViewById(R.id.ep_illustration_image)
         }
         verifyRunnable = Runnable {
-            ePharmacyLoadingViewModel.getVerifyConsultationOrder(tConsultationId, singleConsulFlow)
+            ePharmacyChatLoadingViewModel.getVerifyConsultationOrder(tConsultationId, singleConsulFlow)
         }
     }
 
@@ -108,7 +108,7 @@ class EPharmacyChatLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun observerVerifyConsultationOrder() {
-        ePharmacyLoadingViewModel.ePharmacyVerifyConsultationData.observe(viewLifecycleOwner) {
+        ePharmacyChatLoadingViewModel.ePharmacyVerifyConsultationData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     onSuccessData(it)
