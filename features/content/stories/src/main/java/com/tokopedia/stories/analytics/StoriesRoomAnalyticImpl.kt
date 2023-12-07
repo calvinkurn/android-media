@@ -464,10 +464,9 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .send()
     }
 
-
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 47951
-    override fun sendClickReportReasonList(
+    override fun sendClickReportReason(
         storiesId: String,
         contentType: StoriesDetailItem.StoriesItemContentType,
         reportReason: String
