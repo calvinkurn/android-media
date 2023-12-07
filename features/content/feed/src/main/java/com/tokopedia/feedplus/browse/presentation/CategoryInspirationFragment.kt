@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -33,7 +34,7 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 21/09/23
  */
 internal class CategoryInspirationFragment @Inject constructor(
-    viewModelFactory: ViewModelProvider.Factory,
+    categoryInspirationViewModelFactory: CategoryInspirationViewModel.Factory,
     private val router: Router,
     private val tracker: FeedBrowseTracker
 ) : TkpdBaseV4Fragment() {
@@ -92,7 +93,19 @@ internal class CategoryInspirationFragment @Inject constructor(
         CategoryInspirationAdapter(chipsListener, inspirationCardListener)
     }
 
-    private val viewModel by viewModels<CategoryInspirationViewModel> { viewModelFactory }
+    private val viewModel by viewModels<CategoryInspirationViewModel> {
+        object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val source = arguments?.getString(ARGS_SOURCE)
+                    ?: error("Sources not found, please call CategoryInspirationFragment#createParams and set that as the arguments")
+
+                return categoryInspirationViewModelFactory.create(
+                    source = source
+                ) as T
+            }
+        }
+    }
 
     override fun getScreenName(): String {
         return "Feed Browse Inspiration"
@@ -153,6 +166,8 @@ internal class CategoryInspirationFragment @Inject constructor(
             viewModel.uiState
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collectLatest { state ->
+                    binding.header.headerTitle = state.title
+
                     adapter.setList(state.state, state.items, state.selectedMenuId) {
                         binding.rvCategoryInspiration.invalidateItemDecorations()
                     }
@@ -161,6 +176,16 @@ internal class CategoryInspirationFragment @Inject constructor(
     }
 
     companion object {
+        private const val ARGS_SOURCE = "args_source"
+
         private const val LOAD_PAGE_THRESHOLD = 2
+
+        fun createParams(
+            source: String
+        ): Bundle {
+            return Bundle().apply {
+                putString(ARGS_SOURCE, source)
+            }
+        }
     }
 }

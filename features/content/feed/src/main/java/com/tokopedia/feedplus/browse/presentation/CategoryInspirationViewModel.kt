@@ -14,18 +14,26 @@ import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
 import com.tokopedia.feedplus.browse.presentation.model.isLoading
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * Created by kenny.hadisaputra on 30/10/23
  */
-internal class CategoryInspirationViewModel @Inject constructor(
+internal class CategoryInspirationViewModel @AssistedInject constructor(
+    @Assisted private val source: String,
     private val repository: FeedBrowseRepository
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(source: String): CategoryInspirationViewModel
+    }
 
     private val _uiState = MutableStateFlow(
         CategoryInspirationUiState.empty(ResultState.Loading)
@@ -42,6 +50,7 @@ internal class CategoryInspirationViewModel @Inject constructor(
     }
 
     private fun onInit() {
+        fetchTitle()
         viewModelScope.launch {
             _uiState.update { it.copy(state = ResultState.Loading) }
 
@@ -53,6 +62,15 @@ internal class CategoryInspirationViewModel @Inject constructor(
             )
 
             _uiState.update { it.copy(state = ResultState.Success) }
+        }
+    }
+
+    private fun fetchTitle() {
+        viewModelScope.launch {
+            val title = repository.getCategoryInspirationTitle(source)
+            _uiState.update {
+                it.copy(title = title)
+            }
         }
     }
 

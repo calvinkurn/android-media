@@ -31,9 +31,6 @@ class FeedBrowseItemDecoration(
     private val offset16 = resources.getDimensionPixelOffset(
         unifyprinciplesR.dimen.spacing_lvl4
     )
-    private val offset24 = resources.getDimensionPixelOffset(
-        unifyprinciplesR.dimen.spacing_lvl5
-    )
 
     override fun getItemOffsets(
         outRect: Rect,

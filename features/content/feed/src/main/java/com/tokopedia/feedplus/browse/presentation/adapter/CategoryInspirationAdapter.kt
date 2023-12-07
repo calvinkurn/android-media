@@ -174,10 +174,10 @@ internal class CategoryInspirationAdapter(
     }
 
     companion object {
-        private const val TYPE_CHIPS = 0
-        private const val TYPE_TITLE = 1
-        private const val TYPE_INSPIRATION_CARD = 2
-        private const val TYPE_INSPIRATION_CARD_PLACEHOLDER = 3
-        private const val TYPE_LOADING = 4
+        const val TYPE_CHIPS = 0
+        const val TYPE_TITLE = 1
+        const val TYPE_INSPIRATION_CARD = 2
+        const val TYPE_INSPIRATION_CARD_PLACEHOLDER = 3
+        const val TYPE_LOADING = 4
     }
 }

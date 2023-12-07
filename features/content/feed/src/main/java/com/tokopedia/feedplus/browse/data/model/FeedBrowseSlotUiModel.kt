@@ -34,14 +34,14 @@ internal sealed interface FeedBrowseSlotUiModel {
         override val slotId: String,
         override val title: String,
         val identifier: String,
-        val bannerList: List<BannerWidgetModel>,
+        val bannerList: List<BannerWidgetModel>
     ) : FeedBrowseSlotUiModel
 
     data class Authors(
         override val slotId: String,
         override val title: String,
         val identifier: String,
-        val authorList: List<AuthorWidgetModel>,
+        val authorList: List<AuthorWidgetModel>
     ) : FeedBrowseSlotUiModel
 }
 
@@ -78,5 +78,5 @@ internal data class AuthorWidgetModel(
     val coverUrl: String,
     val totalViewFmt: String,
     val appLink: String,
-    val contentAppLink: String,
+    val contentAppLink: String
 )

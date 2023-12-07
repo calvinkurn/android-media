@@ -4,14 +4,10 @@ import android.content.res.Resources
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.content.common.producttag.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
-import com.tokopedia.feedplus.presentation.util.findViewHolderByPositionInfo
-import com.tokopedia.feedplus.presentation.util.getChildValidPositionInfo
+import com.tokopedia.feedplus.browse.presentation.adapter.CategoryInspirationAdapter
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
@@ -44,57 +40,45 @@ internal class CategoryInspirationItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        when (parent.findContainingViewHolder(view)) {
-            is ChipsViewHolder -> {
-                outRect.itemOffsetsChips(parent, view, state)
-            }
-            is InspirationCardViewHolder.Item,
-            is InspirationCardViewHolder.Placeholder -> {
-                outRect.itemOffsetsInspirationCard(parent, view, state)
-            }
-            is LoadingViewHolder -> {
-                outRect.itemOffsetsLoading()
-            }
-            else -> {
-                outRect.itemOffsetsElse()
-            }
-        }
+        val layoutPosition = parent.getChildLayoutPosition(view)
+        if (layoutPosition == RecyclerView.NO_POSITION || layoutPosition >= state.itemCount) return
 
-        outRect.itemOffsetsBottom(parent, view, state)
+        val adapter = parent.adapter as? ListAdapter<*, *> ?: return
+        try {
+            when (adapter.getItemViewType(layoutPosition)) {
+                CategoryInspirationAdapter.TYPE_CHIPS -> {
+                    outRect.itemOffsetsChips()
+                }
+                CategoryInspirationAdapter.TYPE_INSPIRATION_CARD,
+                CategoryInspirationAdapter.TYPE_INSPIRATION_CARD_PLACEHOLDER -> {
+                    outRect.itemOffsetsInspirationCard(parent, view, adapter)
+                }
+                CategoryInspirationAdapter.TYPE_LOADING -> {
+                    outRect.itemOffsetsLoading()
+                }
+                else -> {
+                    outRect.itemOffsetsElse()
+                }
+            }
+
+            outRect.itemOffsetsBottom(parent, view, state)
+        } catch (_: Exception) { }
     }
 
-    private fun Rect.itemOffsetsChips(
-        parent: RecyclerView,
-        child: View,
-        state: RecyclerView.State
-    ) {
-        val viewHolder = parent.getChildViewHolder(child)
-        val lParams = viewHolder.itemView.layoutParams as? GridLayoutManager.LayoutParams ?: return
-        val spanIndex = lParams.spanIndex
-
-        val positionInfo = parent.getChildValidPositionInfo(child, state)
-        val currPosition = positionInfo.position
-
-        val prevSpanRowPosition = currPosition - spanIndex - 1
-        if (prevSpanRowPosition < 0) return
-
-        top = when (parent.findViewHolderByPositionInfo(positionInfo)) {
-            is FeedBrowseTitleViewHolder -> offset12
-            else -> offset8
-        }
+    private fun Rect.itemOffsetsChips() {
+        top = offset8
     }
 
     private fun Rect.itemOffsetsInspirationCard(
         parent: RecyclerView,
         child: View,
-        state: RecyclerView.State
+        adapter: ListAdapter<*, *>
     ) {
         val viewHolder = parent.getChildViewHolder(child)
         val lParams = viewHolder.itemView.layoutParams as? GridLayoutManager.LayoutParams ?: return
         val spanIndex = lParams.spanIndex
 
-        val positionInfo = parent.getChildValidPositionInfo(child, state)
-        val currPosition = positionInfo.position
+        val currPosition = parent.getChildLayoutPosition(child)
 
         left = if (spanIndex == 0) offset16 else offset4
         right = if (spanIndex == spanCount - 1) offset16 else offset4
@@ -102,9 +86,9 @@ internal class CategoryInspirationItemDecoration(
         val prevSpanRowPosition = currPosition - spanIndex - 1
         if (prevSpanRowPosition < 0) return
 
-        top = when (parent.findViewHolderByPositionInfo(positionInfo)) {
-            is InspirationCardViewHolder.Item,
-            is InspirationCardViewHolder.Placeholder -> {
+        top = when (adapter.getItemViewType(prevSpanRowPosition)) {
+            CategoryInspirationAdapter.TYPE_INSPIRATION_CARD,
+            CategoryInspirationAdapter.TYPE_INSPIRATION_CARD_PLACEHOLDER -> {
                 offset24
             }
             else -> {

@@ -13,7 +13,6 @@ import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListSta
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -90,7 +89,6 @@ internal class FeedBrowseViewModel @Inject constructor(
     private fun handleFetchSlots() {
         viewModelScope.launch {
             try {
-                delay(2000)
                 val slots = repository.getSlots()
                 _widgets.value = slots.associate {
                     it.slotId to FeedBrowseStatefulModel(ResultState.Loading, it)

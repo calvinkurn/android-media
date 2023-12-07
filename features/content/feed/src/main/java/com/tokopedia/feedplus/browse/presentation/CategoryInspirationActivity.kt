@@ -5,9 +5,11 @@ import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.commit
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.browse.di.DaggerFeedBrowseComponent
 import com.tokopedia.feedplus.databinding.ActivityFragmentOnlyBinding
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by kenny.hadisaputra on 20/09/23
@@ -17,6 +19,12 @@ class CategoryInspirationActivity : BaseActivity() {
     @Inject lateinit var fragmentFactory: FragmentFactory
 
     private lateinit var binding: ActivityFragmentOnlyBinding
+
+    private val sourceType: String
+        get() = intent?.data?.getQueryParameter(QUERY_SOURCE_TYPE) ?: "Source type paramater not found"
+
+    private val entryPoint: String
+        get() = intent?.data?.getQueryParameter(QUERY_ENTRYPOINT) ?: "Entrypoint parameter not found"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -37,17 +45,25 @@ class CategoryInspirationActivity : BaseActivity() {
     }
 
     private fun setupView() {
+        window.statusBarColor = MethodChecker.getColor(
+            this,
+            unifyprinciplesR.color.Unify_Background
+        )
+
         supportFragmentManager.commit {
             replace(
                 binding.root.id,
                 CategoryInspirationFragment::class.java,
-                null,
+                CategoryInspirationFragment.createParams(sourceType),
                 CATEGORY_INSPIRATION_TAG
             )
         }
     }
 
     companion object {
+        private const val QUERY_SOURCE_TYPE = "source_type"
+        private const val QUERY_ENTRYPOINT = "entrypoint"
+
         private const val CATEGORY_INSPIRATION_TAG = "cat_inspiration"
     }
 }

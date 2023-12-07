@@ -45,6 +45,30 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCategoryInspirationTitle(source: String): String {
+        return withContext(dispatchers.io) {
+            try {
+                feedXHeaderUseCase.setRequestParams(
+                    FeedXHeaderUseCase.createParam(
+                        listOf(
+                            FeedXHeaderRequestFields.DETAIL.value
+                        ),
+                        listOf(
+                            mapOf(
+                                "sourcesRequestType" to "cdp-pagename",
+                                "sourcesRequestID" to source
+                            )
+                        )
+                    )
+                )
+                val response = feedXHeaderUseCase.executeOnBackground()
+                response.feedXHeaderData.data.detail.title
+            } catch (_: Throwable) {
+                ""
+            }
+        }
+    }
+
     override suspend fun getSlots(): List<FeedBrowseSlotUiModel> {
         return withContext(dispatchers.io) {
             val response = feedXHomeUseCase(
@@ -56,17 +80,29 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                     slotId = "item.id",
                     title = "Ini Banner",
                     identifier = "content_browse_inspirational",
-                    bannerList = emptyList(),
+                    bannerList = emptyList()
                 ),
                 FeedBrowseSlotUiModel.Authors(
                     slotId = "random.slot.id",
                     title = "Video asik dari kreator ",
                     identifier = "content_browse_ugc",
-                    authorList = emptyList(),
+                    authorList = emptyList()
                 )
             ) + mapper.mapSlotsResponse(response).ifEmpty {
                 throw IllegalStateException("no slots available")
             }
+        }
+    }
+
+    override suspend fun getCategoryInspirationTemplate(
+        source: String,
+        entryPoint: String
+    ): List<FeedBrowseSlotUiModel> {
+        return withContext(dispatchers.io) {
+            val response = feedXHomeUseCase(
+                feedXHomeUseCase.createParams(source = source, entryPoint = entryPoint)
+            )
+            mapper.mapSlotsResponse(response)
         }
     }
 
