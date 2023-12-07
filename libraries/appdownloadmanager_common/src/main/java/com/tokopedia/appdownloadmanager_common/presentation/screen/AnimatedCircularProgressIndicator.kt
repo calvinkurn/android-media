@@ -1,4 +1,4 @@
-package com.tokopedia.appdownloadmanager_common.screen
+package com.tokopedia.appdownloadmanager_common.presentation.screen
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -42,7 +42,7 @@ fun AnimatedCircularProgressIndicator(
     }
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        ProgressStatus(
+        CircularProgressStatus(
             downloadingProgressUiModel = downloadingProgressUiModel,
             modifier = modifier
         )
@@ -76,7 +76,7 @@ fun AnimatedCircularProgressIndicator(
 }
 
 @Composable
-fun ProgressStatus(
+fun CircularProgressStatus(
     downloadingProgressUiModel: DownloadingProgressUiModel,
     modifier: Modifier = Modifier
 ) {

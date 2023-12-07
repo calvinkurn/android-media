@@ -1,4 +1,4 @@
-package com.tokopedia.appdownloadmanager_common.screen
+package com.tokopedia.appdownloadmanager_common.presentation.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
