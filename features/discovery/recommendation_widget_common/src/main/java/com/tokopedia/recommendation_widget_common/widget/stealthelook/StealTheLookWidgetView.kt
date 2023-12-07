@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,8 +21,7 @@ import com.tokopedia.recommendation_widget_common.R as recommendation_widget_com
 class StealTheLookWidgetView :
     ConstraintLayout,
     IRecommendationWidgetView<StealTheLookWidgetModel>,
-    RecommendationHeaderListener,
-    DefaultLifecycleObserver {
+    RecommendationHeaderListener {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -51,15 +49,6 @@ class StealTheLookWidgetView :
 
     override val layoutId: Int
         get() = LAYOUT
-
-    init {
-        (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
-    }
-
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
-        trackingQueue.sendAll()
-    }
 
     override fun bind(model: StealTheLookWidgetModel) {
         setupHeader(model.widget)
