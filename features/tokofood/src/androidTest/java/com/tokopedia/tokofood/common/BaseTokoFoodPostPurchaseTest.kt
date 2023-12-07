@@ -11,6 +11,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.DriverPhoneNumberResponse
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
 import com.tokopedia.tokofood.stub.common.graphql.repository.GraphqlRepositoryStub
@@ -25,13 +27,11 @@ import com.tokopedia.tokofood.stub.postpurchase.domain.mapper.TokoFoodOrderStatu
 import com.tokopedia.tokofood.stub.postpurchase.domain.usecase.GetDriverPhoneNumberUseCaseStub
 import com.tokopedia.tokofood.stub.postpurchase.domain.usecase.GetTokoFoodOrderDetailUseCaseStub
 import com.tokopedia.tokofood.stub.postpurchase.domain.usecase.GetTokoFoodOrderStatusUseCaseStub
-import com.tokopedia.tokofood.stub.postpurchase.domain.usecase.GetUnreadChatCountUseCaseStub
-import com.tokopedia.tokofood.stub.postpurchase.domain.usecase.TokoChatConfigGroupBookingUseCaseStub
 import com.tokopedia.tokofood.stub.postpurchase.presentation.activity.TokoFoodOrderTrackingActivityStub
-import com.tokopedia.unifycomponents.R
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 abstract class BaseTokoFoodPostPurchaseTest {
 
@@ -46,8 +46,8 @@ abstract class BaseTokoFoodPostPurchaseTest {
     protected lateinit var getDriverPhoneNumberUseCaseStub: GetDriverPhoneNumberUseCaseStub
     protected lateinit var getTokoFoodOrderDetailUseCaseStub: GetTokoFoodOrderDetailUseCaseStub
     protected lateinit var getTokoFoodOrderStatusUseCaseStub: GetTokoFoodOrderStatusUseCaseStub
-    protected lateinit var getUnreadChatCountUseCaseStub: GetUnreadChatCountUseCaseStub
-    protected lateinit var tokoChatConfigGroupBookingUseCaseStub: TokoChatConfigGroupBookingUseCaseStub
+    protected lateinit var getTokoChatCounterUseCaseStub: TokoChatCounterUseCase
+    protected lateinit var getTokoChatGroupBookingUseCase: TokoChatGroupBookingUseCase
     protected lateinit var driverPhoneNumberMapperStub: DriverPhoneNumberMapperStub
     protected lateinit var tokoFoodOrderDetailMapperStub: TokoFoodOrderDetailMapperStub
     protected lateinit var tokofoodOrderStatusMapperStub: TokoFoodOrderStatusMapperStub
@@ -55,7 +55,6 @@ abstract class BaseTokoFoodPostPurchaseTest {
 
     protected val applicationContext: Context = ApplicationProvider.getApplicationContext()
     protected val targetContext: Context = InstrumentationRegistry.getInstrumentation().targetContext
-
 
     protected val getTokoFoodOrderTrackingComponentStub by lazy {
         TokoFoodOrderTrackingComponentStubInstance.getTokoFoodOrderTrackingComponentStub(
@@ -81,7 +80,6 @@ abstract class BaseTokoFoodPostPurchaseTest {
             TokoFoodOrderDetailResponse::class.java
         )!!
 
-
     @Before
     open fun setup() {
         graphqlRepositoryStub =
@@ -94,10 +92,9 @@ abstract class BaseTokoFoodPostPurchaseTest {
             getTokoFoodOrderTrackingComponentStub.getTokoFoodOrderDetailUseCaseStub() as GetTokoFoodOrderDetailUseCaseStub
         getTokoFoodOrderStatusUseCaseStub =
             getTokoFoodOrderTrackingComponentStub.getTokoFoodOrderStatusUseCaseStub() as GetTokoFoodOrderStatusUseCaseStub
-        getUnreadChatCountUseCaseStub =
-            getTokoFoodOrderTrackingComponentStub.getUnreadChatCountUseCaseStub() as GetUnreadChatCountUseCaseStub
-        tokoChatConfigGroupBookingUseCaseStub =
-            getTokoFoodOrderTrackingComponentStub.getTokoChatConfigGroupBookingUseCaseStub() as TokoChatConfigGroupBookingUseCaseStub
+        getTokoChatCounterUseCaseStub = getTokoFoodOrderTrackingComponentStub.getTokoChatCounterUseCaseStub()
+        getTokoChatGroupBookingUseCase =
+            getTokoFoodOrderTrackingComponentStub.getTokoChatGroupBookingUseCaseStub()
         driverPhoneNumberMapperStub =
             getTokoFoodOrderTrackingComponentStub.driverPhoneNumberMapperStub() as DriverPhoneNumberMapperStub
         tokoFoodOrderDetailMapperStub =
@@ -121,7 +118,7 @@ abstract class BaseTokoFoodPostPurchaseTest {
     }
 
     protected fun closeBottomSheet() {
-        onIdView(com.tokopedia.unifycomponents.R.id.bottom_sheet_close).onClick()
+        onIdView(unifycomponentsR.id.bottom_sheet_close).onClick()
     }
 
     protected fun intendingIntent() {

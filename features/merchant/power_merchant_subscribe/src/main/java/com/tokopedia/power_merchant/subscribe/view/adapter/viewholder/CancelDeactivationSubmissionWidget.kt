@@ -26,7 +26,7 @@ class CancelDeactivationSubmissionWidget(
     override fun bind(element: WidgetCancelDeactivationSubmissionUiModel) {
         binding?.run {
             tvPmQuitPmMessage.text = root.context.getString(
-                R.string.pm_deactivate_power_merchant_pro_message_info,
+                element.messageRes,
                 element.deactivatedStatusName,
                 element.expiredTime
             ).parseAsHtml()

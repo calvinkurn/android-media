@@ -21,7 +21,8 @@
       "channelId": ".*",
       "trackerId": "31870",
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "hits_time": ".*"
     },
     {
       "event": "select_content",

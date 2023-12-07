@@ -57,6 +57,7 @@
     <string name="applink_choose_account">/choose-account</string>
 
     <string name="applink_scp_login">/scp-login</string>
+    <string name="applink_scp_otp">/scp-otp</string>
 
     <string name="applink_account_setting_fingerprint">/biometric-setting</string>
     <string name="applink_account_verify_fingerprint">/verify-fingerprint</string>

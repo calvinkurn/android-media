@@ -1,6 +1,6 @@
 package com.tokopedia.tokochat.common.view.chatroom.uimodel.base
 
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
 
 /**
  * Primary constructor, use [Builder] class to create this instance.
@@ -14,19 +14,19 @@ open class TokoChatSendableBaseUiModel constructor(
     val isSender: Boolean = builder.isSender
 
     fun isRead(): Boolean {
-        return messageStatus == TokoChatValueUtil.READ_VALUE
+        return messageStatus == TokoChatCommonValueUtil.READ_VALUE
     }
 
     fun isDummy(): Boolean {
-        return messageStatus == TokoChatValueUtil.PENDING_VALUE
+        return messageStatus == TokoChatCommonValueUtil.PENDING_VALUE
     }
 
     fun isSent(): Boolean {
-        return messageStatus == TokoChatValueUtil.SENT_VALUE
+        return messageStatus == TokoChatCommonValueUtil.SENT_VALUE
     }
 
     fun isFailed(): Boolean {
-        return messageStatus == TokoChatValueUtil.FAILED_VALUE
+        return messageStatus == TokoChatCommonValueUtil.FAILED_VALUE
     }
 
     abstract class Builder<
@@ -34,7 +34,7 @@ open class TokoChatSendableBaseUiModel constructor(
         out UI : TokoChatSendableBaseUiModel
         > : TokoChatBaseUiModel.Builder<B, UI>() {
 
-        internal var messageStatus: Int = TokoChatValueUtil.PENDING_VALUE
+        internal var messageStatus: Int = TokoChatCommonValueUtil.PENDING_VALUE
         internal var isSender: Boolean = true
 
         fun withMessageStatus(messageStatus: Int): B {

@@ -566,7 +566,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
     @Test
     fun `when getTickerDataAsync error should return null`() {
         runTest {
-            onGetTickerDataAsync_thenReturn(NullPointerException())
+            onGetTickerDataAsync_thenReturn(Exception(), warehouseId = "1", page = "1")
 
             val actualResult = viewModel
                 .getTickerDataAsync(warehouseId = "1", page = "1").await()

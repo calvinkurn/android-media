@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.model
 
+import androidx.annotation.StringRes
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
 
 /**
@@ -8,7 +9,8 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
 
 data class WidgetCancelDeactivationSubmissionUiModel(
         val expiredTime: String,
-        val deactivatedStatusName: String
+        val deactivatedStatusName: String,
+        @StringRes val messageRes: Int
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

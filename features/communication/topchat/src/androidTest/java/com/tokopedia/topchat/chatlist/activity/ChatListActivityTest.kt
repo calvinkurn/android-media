@@ -32,6 +32,7 @@ class ChatListActivityTest : ChatListTest() {
         // Given
         (userSession as UserSessionStub).hasShopStub = false
         chatListUseCase.response = exEmptyChatListPojo
+        setLastSeenTab(isSellerTab = false)
 
         // When
         startChatListActivity()
@@ -52,6 +53,7 @@ class ChatListActivityTest : ChatListTest() {
         // Given
         (userSession as UserSessionStub).hasShopStub = false
         chatListUseCase.response = exSize2ChatListPojo
+        setLastSeenTab(isSellerTab = false)
 
         // When
         startChatListActivity()
@@ -89,6 +91,7 @@ class ChatListActivityTest : ChatListTest() {
         // Given
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = true)
 
         // When
         startChatListActivity()
@@ -103,6 +106,7 @@ class ChatListActivityTest : ChatListTest() {
         // Given
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = true)
 
         // When
         startChatListActivity()
@@ -121,6 +125,7 @@ class ChatListActivityTest : ChatListTest() {
             this.chatWhitelistFeature.isWhitelist = true
         }
         userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = true)
 
         // When
         startChatListActivity()
@@ -136,6 +141,7 @@ class ChatListActivityTest : ChatListTest() {
         // Given
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = false)
 
         // When
         startChatListActivity()
@@ -157,7 +163,7 @@ class ChatListActivityTest : ChatListTest() {
         startChatListActivity()
 
         // Then
-        BroadcastResult.assertMVCVoucherVisible(isVisible = true)
+        BroadcastResult.assertMVCVoucherVisible(indexTab = 1, isVisible = true)
     }
 
     @Test
@@ -174,7 +180,7 @@ class ChatListActivityTest : ChatListTest() {
         startChatListActivity()
 
         // Then
-        BroadcastResult.assertMVCVoucherVisible(isVisible = false)
+        BroadcastResult.assertMVCVoucherVisible(indexTab = 1, isVisible = false)
     }
 
     @Test
@@ -189,7 +195,7 @@ class ChatListActivityTest : ChatListTest() {
 
         // Then
         Thread.sleep(500)
-        BroadcastResult.assertMVCVoucherVisible(isVisible = false)
+        BroadcastResult.assertMVCVoucherVisible(indexTab = 0, isVisible = false)
     }
 
     @Test

@@ -6,12 +6,12 @@ import android.util.AttributeSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.tokochat_common.R
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
 import com.tokopedia.tokochat.common.view.chatroom.adapter.AttachmentMenuAdapter
 import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatAttachmentMenuListener
 import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatAttachmentMenuUiModel
 import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatAttachmentType
+import com.tokopedia.tokochat_common.R
 
 /**
  * Custom RecyclerView for TokoChat Menu Attachment
@@ -54,7 +54,7 @@ class TokoChatMenuAttachmentRecyclerView : RecyclerView {
 
     private fun getImageAttachmentMenu(): TokoChatAttachmentMenuUiModel {
         return TokoChatAttachmentMenuUiModel(
-            title = TokoChatValueUtil.ATTACHMENT_IMAGE,
+            title = TokoChatCommonValueUtil.ATTACHMENT_IMAGE,
             icon = R.drawable.tokochat_ic_attachment_menu_image,
             type = TokoChatAttachmentType.IMAGE_ATTACHMENT
         )

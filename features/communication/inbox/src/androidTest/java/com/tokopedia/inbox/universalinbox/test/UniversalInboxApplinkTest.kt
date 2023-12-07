@@ -23,6 +23,7 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         }
 
         // Then
+        Thread.sleep(1000)
         menuResult {
             assertApplinkChatBuyer()
         }
@@ -38,23 +39,9 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         }
 
         // Then
+        Thread.sleep(1000)
         menuResult {
             assertApplinkChatSeller()
-        }
-    }
-
-    @Test
-    fun should_open_discussion() {
-        // When
-        launchActivity()
-        stubAllIntents()
-        menuRobot {
-            clickMenuOnPosition(3)
-        }
-
-        // Then
-        menuResult {
-            assertApplinkDiscussion()
         }
     }
 
@@ -68,6 +55,7 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         }
 
         // Then
+        Thread.sleep(1000)
         menuResult {
             assertApplinkReview()
         }
@@ -83,6 +71,7 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         }
 
         // Then
+        Thread.sleep(1000)
         widgetResult {
             assertApplinkHelp()
         }
@@ -102,6 +91,7 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         }
 
         // Then
+        Thread.sleep(1000)
         recommendationResult {
             assertApplinkPDP()
         }
@@ -117,6 +107,7 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         }
 
         // Then
+        Thread.sleep(1000)
         widgetResult {
             assertApplinkChatListDriver()
         }

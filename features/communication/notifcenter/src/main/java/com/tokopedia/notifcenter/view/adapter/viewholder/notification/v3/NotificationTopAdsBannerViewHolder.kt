@@ -21,7 +21,9 @@ class NotificationTopAdsBannerViewHolder constructor(
 
         if (!tdnBannerList.isNullOrEmpty()) {
             adView?.renderTdnBanner(tdnBannerList.first(), 8.toPx(), onTdnBannerClicked = {
-                if (it.isNotEmpty()) RouteManager.route(adView.context, it)
+                if (!it.applink.isNullOrBlank()) {
+                    RouteManager.route(adView.context, it.applink)
+                }
             })
         }
     }

@@ -9,9 +9,9 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 object ApplinkConstInternalGlobal {
 
     const val HOST_GLOBAL = "global"
-    const val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
+    const val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_GLOBAL"
 
-    //Extras
+    // Extras
     const val PARAM_UUID = "uuid"
     const val PARAM_MSISDN = "msisdn"
     const val PARAM_PHONE = "phone"
@@ -19,6 +19,7 @@ object ApplinkConstInternalGlobal {
     const val PARAM_SOURCE = "source"
     const val PARAM_NAME = "name"
     const val PARAM_TOKEN = "token"
+    const val PARAM_IS_FROM_SCP = "is_from_scp"
     const val PARAM_ACTION = "action"
     const val PARAM_IS_SMART_LOGIN = "isSmartLogin"
     const val PARAM_IS_SMART_REGISTER = "isSmartRegister"
@@ -56,10 +57,10 @@ object ApplinkConstInternalGlobal {
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw
     const val WITHDRAW = "$INTERNAL_GLOBAL/withdraw"
+
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw
     const val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
-
 
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk
@@ -81,6 +82,7 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://talk/reply-talk
     @JvmField
     val TALK_REPLY_BASE = "$INTERNAL_GLOBAL/reply-talk/"
+
     @JvmField
     val TALK_REPLY = "$TALK_REPLY_BASE{question_id}/"
 
@@ -88,11 +90,12 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/detail-talk
     @JvmField
     val DETAIL_TALK_BASE = "$INTERNAL_GLOBAL/detail-talk/"
+
     @JvmField
     val DETAIL_TALK = "$DETAIL_TALK_BASE{talk_id}/?" +
-            "shop_id={shop_id}&" +
-            "comment_id={comment_id}&" +
-            "source={source}"
+        "shop_id={shop_id}&" +
+        "comment_id={comment_id}&" +
+        "source={source}"
 
     // AddTalkActivity
     // tokopedia-android-internal://global/add-talk
@@ -167,23 +170,22 @@ object ApplinkConstInternalGlobal {
 
     const val DISCOVERY = "$INTERNAL_GLOBAL/discovery"
 
-
     const val PARAM_ACCOUNT_ID = "account_id"
     const val PARAM_ACCOUNT_NAME = "account_name"
     const val PARAM_ACCOUNT_NO = "account_number"
     const val PARAM_BANK_ID = "bank_id"
     const val PARAM_BANK_NAME = "bank_name"
 
-    const val DYNAMIC_FEATURE_INSTALL_BASE= "$INTERNAL_GLOBAL/dynamic-features-install/"
+    const val DYNAMIC_FEATURE_INSTALL_BASE = "$INTERNAL_GLOBAL/dynamic-features-install/"
 
     // DFInstallerActivity
     // tokopedia-android-internal://global/dynamic-features-install/hotel/?
     // auto = true will download when activity is open
     // applink, if provided will launch the applink after the module is installed
     // imageUrl, is the placeholder for the background
-    const val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
+    const val DYNAMIC_FEATURE_INSTALL = DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
         "dfapplink={encodedApplink}&" +
-        DFFALLBACKURL_KEY +"={fallbackUrl}"
+        DFFALLBACKURL_KEY + "={fallbackUrl}"
 
     /** for param term privacy */
     const val PAGE_TERM_AND_CONDITION = "term-condition"
@@ -208,8 +210,7 @@ object ApplinkConstInternalGlobal {
      */
     const val TOPCHAT_ROOM = "$INTERNAL_GLOBAL/topchat/{message_id}"
 
-
-    //ReferralPhoneNumberVerificationActivity
+    // ReferralPhoneNumberVerificationActivity
     // tokopedia-android-internal://global/setting-referral-phone-verification
     const val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
 
@@ -233,10 +234,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/account-home-old
     const val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/old-home-account"
 
-    //SeamlessActivity
-    const val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
+    // SeamlessActivity
+    const val SEAMLESS_LOGIN = "$INTERNAL_GLOBAL/login-seamless"
 
-    //FeedbackPageActivity
+    // FeedbackPageActivity
     const val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
 
     // GlobalSharingActivity
@@ -245,25 +246,28 @@ object ApplinkConstInternalGlobal {
 
     const val DEEPLINK_NOT_FOUND = "$INTERNAL_GLOBAL/deeplink-not-found"
 
-    //TkpdYoutubeVideoActivity
+    // TkpdYoutubeVideoActivity
     const val YOUTUBE_VIDEO = "$INTERNAL_GLOBAL/youtube-video"
 
-    //DataExplorerActivity
+    // DataExplorerActivity
     const val DATA_EXPLORER = "$INTERNAL_GLOBAL/data-explorer"
 
     const val COMMISSION_BREAKDOWN = "$INTERNAL_GLOBAL/transaction-fee-download"
 
-    //LoginHelperActivity
+    // LoginHelperActivity
     const val LOGIN_HELPER = "$INTERNAL_GLOBAL/login-helper"
 
-    //LoginHelperAccountSettingsActivity
+    // LoginHelperAccountSettingsActivity
     const val LOGIN_HELPER_ACCOUNTS_SETTINGS = "$INTERNAL_GLOBAL/login-helper-accounts-settings"
 
-    //LoginHelperAddEditAccountActivity
+    // LoginHelperAddEditAccountActivity
     const val LOGIN_HELPER_ADD_EDIT_ACCOUNT = "$INTERNAL_GLOBAL/login-helper-add-edit-account"
 
-    //LoginHelperSearchActivity
+    // LoginHelperSearchActivity
     const val LOGIN_HELPER_SEARCH_ACCOUNT = "$INTERNAL_GLOBAL/login-helper-search-account"
 
     const val BMGM_MINI_CART = "$INTERNAL_GLOBAL/bmgm-mini-cart"
+
+    //tokopedia-android-internal://global/dark-mode-config
+    const val DARK_MODE_CONFIG = "$INTERNAL_GLOBAL/dark-mode-config"
 }

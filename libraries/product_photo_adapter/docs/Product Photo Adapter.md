@@ -27,13 +27,13 @@ For now, library is only used at Product Add Edit module, but actually it can be
 2. Scroll to see all preview of each image.
 3. The image can be rearranged by holding tap and swipe between preview image.
 
-![](res/Screen%20Shot%202023-02-02%20at%2017.56.50.png)
+![](https://docs-android.tokopedia.net/images/docs/product_photo_adapter/Screen%20Shot%202023-02-02%20at%2017.56.50.png)
 
 ## Flow Diagram
 
 This diagram shows this library works.
 
-![](res/Untitled%20Diagram.png)
+![](https://docs-android.tokopedia.net/images/docs/product_photo_adapter/Untitled%20Diagram.png)
 
 ## How-to
 
