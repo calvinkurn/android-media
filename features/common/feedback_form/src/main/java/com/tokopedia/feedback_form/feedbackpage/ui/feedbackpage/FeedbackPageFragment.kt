@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -49,6 +50,8 @@ import com.tokopedia.feedback_form.feedbackpage.ui.listener.ImageClickListener
 import com.tokopedia.feedback_form.feedbackpage.ui.preference.Preferences
 import com.tokopedia.feedback_form.feedbackpage.util.*
 import com.tokopedia.imagepicker.common.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -64,6 +67,7 @@ import rx.subscriptions.CompositeSubscription
 import java.io.File
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.log
 
 
 class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, ImageClickListener, PageItemAdapter.OnPageMenuSelected {
@@ -174,6 +178,18 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         }
     }
 
+    override fun hideLoadingFrame() {
+        frameLoader.gone()
+        frame_button.visible()
+        svFeedbackForm.visible()
+    }
+
+    override fun showLoadingFrame() {
+        frameLoader.visible()
+        frame_button.gone()
+        svFeedbackForm.gone()
+    }
+
     override fun setSubmitFlag() {
         myPreferences?.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
     }
@@ -215,6 +231,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     override fun showError(throwable: Throwable) {
         Toast.makeText(activity, throwable.toString(), Toast.LENGTH_SHORT).show()
+        logException(throwable)
     }
 
     override fun addImageClick() {
@@ -557,6 +574,14 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
         fragmentManager?.let {
             bottomSheetPage?.show(it, "show")
+        }
+    }
+
+    private fun logException(t: Throwable) {
+        if (!GlobalConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(t)
+        } else {
+            t.printStackTrace()
         }
     }
 

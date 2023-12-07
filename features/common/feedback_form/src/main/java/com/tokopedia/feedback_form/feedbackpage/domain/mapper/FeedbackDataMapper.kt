@@ -10,10 +10,14 @@ import javax.inject.Inject
 
 class FeedbackDataMapper @Inject constructor() {
 
-    fun mapData(data: FeedbackDataResponse) : FeedbackModel {
-        return FeedbackModel().apply {
-            categories = data.categories.map(categoriesItemMapper)
-            labels = data.labels.map(labelsItemMapper)
+    fun updateData(data: FeedbackDataResponse, pageModel: FeedbackModel) : FeedbackModel {
+        return pageModel.apply {
+            if (data.categories.isNotEmpty()) {
+                categories = data.categories.map(categoriesItemMapper)
+            }
+            if (data.labels.isNotEmpty()) {
+                labels = data.labels.map(labelsItemMapper)
+            }
         }
     }
 

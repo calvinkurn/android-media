@@ -10,12 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
-import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.feedback_form.R
 import com.tokopedia.feedback_form.feedbackpage.analytics.FeedbackPageAnalytics
 import com.tokopedia.feedback_form.feedbackpage.util.EXTRA_IS_TICKET_LINK
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -23,7 +24,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class TicketCreatedFragment: Fragment() {
 
-    private lateinit var imageCreated: DeferredImageView
+    private lateinit var imageCreated: AppCompatImageView
     private lateinit var ticketText1: Typography
     private lateinit var ticketText2: Typography
     private lateinit var tickerLink: Typography
@@ -46,7 +47,7 @@ class TicketCreatedFragment: Fragment() {
 
         val issueUrl = arguments?.getString(EXTRA_IS_TICKET_LINK)
 
-        imageCreated.loadRemoteImageDrawable(ADDRESS_INVALID)
+        imageCreated.loadImage(TICKET_CREATED_THANK_YOU)
         ticketText1.text = getString(R.string.ticket_text_1)
         ticketText2.text = context?.let { HtmlLinkHelper(it, getString(R.string.ticket_text_2)).spannedString }
         tickerLink.text = issueUrl
@@ -81,7 +82,7 @@ class TicketCreatedFragment: Fragment() {
             }
         }
 
-        private const val ADDRESS_INVALID = "ic_thankyou_feedback.png"
+        private const val TICKET_CREATED_THANK_YOU = "ic_thankyou_feedback.png"
     }
 
 }
