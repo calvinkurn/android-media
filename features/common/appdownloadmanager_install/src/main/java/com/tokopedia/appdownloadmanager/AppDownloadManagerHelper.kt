@@ -31,6 +31,7 @@ class AppDownloadManagerHelper(
                     appVersionBetaInfoModel?.let {
                         updateAppVersionDialog = AppUpdateVersionDialog(
                             activityRef,
+                            downloadManagerUpdateModel,
                             it,
                             ::onSuccessDownloaded,
                             ::onFailDownloaded

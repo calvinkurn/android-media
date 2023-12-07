@@ -9,6 +9,7 @@ import com.tokopedia.appdownloadmanager_common.di.component.DaggerDownloadManage
 import com.tokopedia.appdownloadmanager_common.di.component.DownloadManagerComponent
 import com.tokopedia.appdownloadmanager_common.domain.model.AppVersionBetaInfoModel
 import com.tokopedia.appdownloadmanager_common.domain.service.DownloadManagerService
+import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadManagerUpdateModel
 import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingProgressUiModel
 import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadManagerPermission
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.APK_URL
@@ -19,6 +20,7 @@ import com.tokopedia.appdownloadmanager_common.R as appdownloadmanager_commonR
 
 class AppUpdateVersionDialog(
     val activityRef: WeakReference<Activity>,
+    val downloadManagerUpdateModel: DownloadManagerUpdateModel? = null,
     val appVersionBetaInfoModel: AppVersionBetaInfoModel? = null,
     val onSuccessDownload: (fileNamePath: String) -> Unit,
     val onFailDownload: (reason: String, statusColumn: Int) -> Unit,
@@ -72,22 +74,33 @@ class AppUpdateVersionDialog(
                 setCancelable(false)
                 setCanceledOnTouchOutside(false)
 
-                setTitle(
-                    it.getString(
-                        appdownloadmanager_commonR.string.dialog_update_app_version_title
-                    )
+                val title = downloadManagerUpdateModel?.dialogTitle ?: it.getString(
+                    appdownloadmanager_commonR.string.dialog_update_app_version_title
                 )
+
+                val description = downloadManagerUpdateModel?.dialogText?.format(apkName) ?: it.getString(
+                    appdownloadmanager_commonR.string.dialog_update_app_version_desc,
+                    apkName
+                )
+
+                val btnPrimaryText =
+                    downloadManagerUpdateModel?.dialogButtonPositive ?: it.getString(
+                        appdownloadmanager_commonR.string.dialog_update_app_version_btn_primary
+                    )
+
+                val btnSecondaryText =
+                    downloadManagerUpdateModel?.dialogButtonNegative
+                        ?: it.getString(appdownloadmanager_commonR.string.dialog_update_app_version_btn_secondary)
+
+                setTitle(title)
                 setDescription(
                     MethodChecker.fromHtml(
-                        it.getString(
-                            appdownloadmanager_commonR.string.dialog_update_app_version_desc,
-                            apkName
-                        )
+                        description
                     )
                 )
 
-                setPrimaryCTAText(it.getString(appdownloadmanager_commonR.string.dialog_update_app_version_btn_primary))
-                setSecondaryCTAText(it.getString(appdownloadmanager_commonR.string.dialog_update_app_version_btn_secondary))
+                setPrimaryCTAText(btnPrimaryText)
+                setSecondaryCTAText(btnSecondaryText)
 
                 setPrimaryCTAClickListener {
                     AppDownloadManagerPermission.checkAndRequestPermission(it) { hasGrantPermission ->
