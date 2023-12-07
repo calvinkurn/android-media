@@ -178,7 +178,7 @@ object DynamicProductDetailMapper {
                             name = component.componentName,
                             position = index,
                             queryParam = componentData?.queryParam.orEmpty(),
-                            thematicId = componentData?.thematicId.orEmpty()
+                            thematicId = componentData?.thematicId.orEmpty(),
                         )
                     )
                 }
@@ -1071,7 +1071,8 @@ object DynamicProductDetailMapper {
             pageName = component.componentName,
             pageType = component.type,
             queryParam = data?.queryParam.orEmpty(),
-            criteriaThematicIDs = thematicIds
+            criteriaThematicIDs = thematicIds,
+            productIds = listOf(dynamicProductInfoP1.basic.productID),
         )
         val trackingModel = RecommendationWidgetTrackingModel(
             androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
