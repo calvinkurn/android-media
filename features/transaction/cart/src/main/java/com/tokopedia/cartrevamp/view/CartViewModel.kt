@@ -51,6 +51,7 @@ import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
+import com.tokopedia.cartrevamp.view.uimodel.CartDeleteItemData
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
@@ -2432,42 +2433,31 @@ class CartViewModel @Inject constructor(
         group.boCode = ""
     }
 
-    fun processDeleteCartItem(
-        removedCartItems: List<CartItemHolderData>,
-        addWishList: Boolean,
-        forceExpandCollapsedUnavailableItems: Boolean = false,
-        isFromGlobalCheckbox: Boolean = false,
-        isFromEditBundle: Boolean = false,
-        listCartStringOrderAndBmGmOfferId: ArrayList<String> = arrayListOf()
-    ) {
+    fun processDeleteCartItem(cartDeleteItemData: CartDeleteItemData) {
         _cartProgressLoading.value = true
         val allCartItemData = CartDataHelper.getAllCartItemData(
             cartDataList.value,
             cartModel
         )
 
-        val removeAllItems = allCartItemData.size == removedCartItems.size
+        val removeAllItems = allCartItemData.size == cartDeleteItemData.removedCartItems.size
         val toBeDeletedCartIds = ArrayList<String>()
-        for (cartItemData in removedCartItems) {
+        for (cartItemData in cartDeleteItemData.removedCartItems) {
             toBeDeletedCartIds.add(cartItemData.cartId)
         }
 
-        deleteCartUseCase.setParams(toBeDeletedCartIds, addWishList)
+        deleteCartUseCase.setParams(toBeDeletedCartIds, cartDeleteItemData.addWishList)
         deleteCartUseCase.execute(
             onSuccess = {
                 _deleteCartEvent.value = DeleteCartEvent.Success(
                     toBeDeletedCartIds,
                     removeAllItems,
-                    forceExpandCollapsedUnavailableItems,
-                    addWishList,
-                    isFromGlobalCheckbox,
-                    isFromEditBundle,
-                    listCartStringOrderAndBmGmOfferId
+                    cartDeleteItemData
                 )
             },
             onError = { throwable ->
                 _deleteCartEvent.value = DeleteCartEvent.Failed(
-                    forceExpandCollapsedUnavailableItems,
+                    cartDeleteItemData.forceExpandCollapsedUnavailableItems,
                     throwable
                 )
             }
