@@ -17,14 +17,19 @@ import com.tokopedia.locationmanager.legacy.LocationCache.DEFAULT_LATITUDE
 import com.tokopedia.locationmanager.legacy.LocationCache.DEFAULT_LONGITUDE
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Date
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 
 /**
  * @author by nisie on 25/01/19.
  */
-class LocationDetectorHelper(ctx: Context) {
+class LocationDetectorHelper(ctx: Context): CoroutineScope {
 
     private var fusedLocationProvider: FusedLocationProviderClient? = null
     private val context: Context
@@ -390,8 +395,13 @@ class LocationDetectorHelper(ctx: Context) {
         onGetLocation?.invoke(deviceLocation)
     }
 
-    fun saveToCache(deviceLocation: DeviceLocation) {
-        cacheManager.put(PARAM_CACHE_DEVICE_LOCATION, deviceLocation)
+    private fun saveToCache(deviceLocation: DeviceLocation) {
+        launch {
+            cacheManager.put(PARAM_CACHE_DEVICE_LOCATION, deviceLocation)
+        }
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + CoroutineExceptionHandler { _, _ -> }
 
 }
