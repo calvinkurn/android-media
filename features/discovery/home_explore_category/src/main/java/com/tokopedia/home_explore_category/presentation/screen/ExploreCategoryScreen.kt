@@ -2,19 +2,15 @@ package com.tokopedia.home_explore_category.presentation.screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -95,7 +91,7 @@ fun ExploreCategoryListGrid(
     modifier: Modifier = Modifier,
     exploreCategoryResultUiModel: ExploreCategoryResultUiModel,
     uiEvent: (ExploreCategoryUiEvent) -> Unit = {},
-    lazyListState: LazyListState = rememberLazyListState(),
+    lazyListState: LazyListState = rememberLazyListState()
 ) {
     // Chunk the list into rows of three items for the grid layout
     val categories = exploreCategoryResultUiModel.exploreCategoryList.chunked(GRID_COLUMN)
@@ -116,7 +112,7 @@ fun ExploreCategoryListGrid(
                 AnimatedVisibility(
                     visible = it.isSelected,
                     enter = enterExpandVertical,
-                    exit = exitShrinkVertical,
+                    exit = exitShrinkVertical
                 ) {
                     NestCard(
                         modifier = Modifier
@@ -124,11 +120,14 @@ fun ExploreCategoryListGrid(
                         type = NestCardType.NoBorder
                     ) {
                         Column {
-                            it.subExploreCategoryList.forEach { subcategory ->
+                            it.subExploreCategoryList.forEachIndexed { index, subcategory ->
+                                // example position = ((groupIndex = 2) * 3) + (index = 2) = 8
+                                val actualPosition = (groupIndex * GRID_COLUMN) + index
                                 SubExploreCategoryItem(
                                     modifier = Modifier,
                                     subExploreCategoryUiModel = subcategory,
-                                    onUiEvent = uiEvent
+                                    onUiEvent = uiEvent,
+                                    actualPosition = actualPosition
                                 )
                             }
                         }
@@ -144,7 +143,7 @@ fun CategoryRowItem(
     categories: List<List<ExploreCategoryUiModel>>,
     row: List<ExploreCategoryUiModel>,
     uiEvent: (ExploreCategoryUiEvent) -> Unit,
-    lazyListState: LazyListState,
+    lazyListState: LazyListState
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -182,13 +181,14 @@ fun CategoryRowItem(
                     onClick = {
                         uiEvent(
                             ExploreCategoryUiEvent.OnExploreCategoryItemClicked(
-                                category.id
+                                category
                             )
                         )
 
                         if (isNotCategoryWithinViewport) {
                             scrollToCategoryItemClicked(
-                                category.id, categories,
+                                category.id,
+                                categories,
                                 lazyListState,
                                 coroutineScope
                             )
@@ -200,7 +200,7 @@ fun CategoryRowItem(
                         }
                         .onSizeChanged {
                             sizeInPx = it
-                        },
+                        }
                 )
             }
         }
@@ -220,7 +220,6 @@ fun scrollToCategoryItemClicked(
     val categoryIndex = getGroupIndexToScrollTo(categories, categoryId)
     if (categoryIndex != -1) {
         coroutineScope.launch(Dispatchers.Main) {
-
             lazyListState.scrollToItem(categoryIndex)
         }
     }
@@ -240,7 +239,7 @@ fun getGroupIndexToScrollTo(rows: List<List<ExploreCategoryUiModel>>, categoryId
 fun ExploreCategoryItem(
     exploreCategoryUiModel: ExploreCategoryUiModel,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val nestCardType = remember(exploreCategoryUiModel.isSelected) {
         if (exploreCategoryUiModel.isSelected) {
@@ -289,7 +288,7 @@ fun ExploreCategoryItem(
             NestImage(
                 source = ImageSource.Remote(
                     source = exploreCategoryUiModel.categoryImageUrl,
-                    shouldRetried = true,
+                    shouldRetried = true
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -305,7 +304,8 @@ fun ExploreCategoryItem(
 fun SubExploreCategoryItem(
     modifier: Modifier = Modifier,
     subExploreCategoryUiModel: ExploreCategoryUiModel.SubExploreCategoryUiModel,
-    onUiEvent: (ExploreCategoryUiEvent) -> Unit
+    onUiEvent: (ExploreCategoryUiEvent) -> Unit,
+    actualPosition: Int
 ) {
     Row(
         modifier = modifier
@@ -313,7 +313,8 @@ fun SubExploreCategoryItem(
             .clickable {
                 onUiEvent(
                     ExploreCategoryUiEvent.OnSubExploreCategoryItemClicked(
-                        subExploreCategoryUiModel
+                        subExploreCategoryUiModel,
+                        position = actualPosition
                     )
                 )
             }
@@ -323,7 +324,7 @@ fun SubExploreCategoryItem(
         NestImage(
             source = ImageSource.Remote(
                 subExploreCategoryUiModel.imageUrl,
-                shouldRetried = true,
+                shouldRetried = true
             ),
             type = NestImageType.Rect(12.dp),
             modifier = Modifier.size(42.dp),
@@ -402,7 +403,11 @@ fun ExploreCategoryScreenPreview() {
             )
         ) {
             itemsIndexed(subExploreCategoryList) { index, item ->
-                SubExploreCategoryItem(subExploreCategoryUiModel = item) {}
+                SubExploreCategoryItem(
+                    subExploreCategoryUiModel = item,
+                    onUiEvent = {},
+                    actualPosition = 0
+                )
             }
         }
     }

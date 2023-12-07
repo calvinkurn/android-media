@@ -12,6 +12,8 @@ class ExploreCategoryConstants {
         const val LAYANAN_SCREEN = "/semua-kategori"
         const val DEFAULT_SCREEN = "/kategori-belanja"
 
+        const val SELECT_CONTENT = "select_content"
+
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
         const val KEY_SCREEN_NAME = "screenName"
@@ -23,7 +25,12 @@ class ExploreCategoryConstants {
         const val ALL_CATEGORY_PAGE = "semua kategori page"
         const val HOME_AND_BROWSE = "home & browse"
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+        const val CLICK_BACK_BUTTON = "click back button"
+
+        const val CREATIVE_NAME = "creative_name"
 
         const val TRACKER_ID_47052 = "47052"
+        const val TRACKER_ID_47054 = "47054"
+        const val TRACKER_ID_47058 = "47058"
     }
 }

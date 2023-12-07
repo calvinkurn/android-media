@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.home_explore_category.analytic.ExploreCategoryAnalytics
 import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.EXTRA_TITLE
 import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.EXTRA_TYPE
 import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.TYPE_LAYANAN
@@ -42,6 +43,9 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var exploreCategoryAnalytics: ExploreCategoryAnalytics
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -107,6 +111,20 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
         fetchAllCategories()
     }
 
+    override fun getScreenName(): String = ""
+
+    override fun getComponent(): ExploreCategoryComponent {
+        return DaggerExploreCategoryComponent
+            .builder()
+            .baseAppComponent((application as? BaseMainApplication)?.baseAppComponent)
+            .build()
+    }
+
+    override fun onBackPressed() {
+        exploreCategoryAnalytics.sendBackButtonClicked()
+        super.onBackPressed()
+    }
+
     private fun initInjector() {
         component.inject(this)
     }
@@ -118,11 +136,19 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
     private fun onUiEvent(uiEvent: ExploreCategoryUiEvent) {
         when (uiEvent) {
             is ExploreCategoryUiEvent.OnExploreCategoryItemClicked -> {
-                viewModel.toggleSelectedCategory(uiEvent.categoryId)
+                exploreCategoryAnalytics.sendCategoryItemClicked(uiEvent.categoryUiModel.categoryTitle)
+                viewModel.toggleSelectedCategory(uiEvent.categoryUiModel.id)
             }
 
             is ExploreCategoryUiEvent.OnSubExploreCategoryItemClicked -> {
+                exploreCategoryAnalytics.sendSubCategoryItemClicked(
+                    uiEvent.subExploreCategoryUiModel,
+                    uiEvent.position
+                )
                 RouteManager.route(this, uiEvent.subExploreCategoryUiModel.appLink)
+            }
+
+            is ExploreCategoryUiEvent.OnSubExploreCategoryItemImpressed -> {
             }
 
             is ExploreCategoryUiEvent.OnPrimaryButtonErrorClicked -> {
@@ -148,15 +174,6 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
                 title = TITLE_LAYANAN
             }
         }
-    }
-
-    override fun getScreenName(): String = ""
-
-    override fun getComponent(): ExploreCategoryComponent {
-        return DaggerExploreCategoryComponent
-            .builder()
-            .baseAppComponent((application as? BaseMainApplication)?.baseAppComponent)
-            .build()
     }
 
     companion object {
