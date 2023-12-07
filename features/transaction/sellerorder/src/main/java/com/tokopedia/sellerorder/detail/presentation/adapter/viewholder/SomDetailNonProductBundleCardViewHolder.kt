@@ -68,8 +68,8 @@ class SomDetailNonProductBundleCardViewHolder(
         actionListener?.onAddOnsBmgmExpand(isExpand, addOnsIdentifier)
     }
 
-    override fun onAddOnsInfoLinkClicked(infoLink: String) {
-        actionListener?.onAddOnsInfoLinkClicked(infoLink)
+    override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+        actionListener?.onAddOnsInfoLinkClicked(infoLink, type)
     }
 
     private fun setupAddonSection(addOnSummaryUiModel: AddOnSummaryUiModel?) {
