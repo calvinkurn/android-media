@@ -15,7 +15,7 @@ object AppFileManagerDialog {
         onSuccessDownload: () -> Unit
     ) {
         val fileUri = Uri.parse(fileNamePath)
-        val apkName = "${fileUri.lastPathSegment?.split("-")?.firstOrNull().orEmpty()}.apk"
+        val apkName = fileUri.lastPathSegment
 
         val dialog = DialogUnify(
             context,
