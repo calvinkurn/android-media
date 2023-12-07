@@ -127,11 +127,11 @@ class CircleAnimation @JvmOverloads constructor(
         invalidate()
     }
 
-    fun loading(durationInMillis: Long) {
+    fun loading(durationInSec: Int) {
         state = STATE_LOADING
         valueAnimator.apply {
             this.repeatCount = 0
-            this.duration = durationInMillis
+            this.duration = (durationInSec * 1000).toLong()
             this.start()
         }
         invalidate()

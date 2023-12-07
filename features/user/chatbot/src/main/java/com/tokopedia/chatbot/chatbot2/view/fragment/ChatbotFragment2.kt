@@ -1085,9 +1085,8 @@ class ChatbotFragment2 :
         topBotResponse: TopBotNewSessionResponse.TopBotGetNewSession
     ) {
         val isNewSession = topBotResponse.isNewSession
-        val isTypingBlocked = topBotResponse.isTypingBlocked
         handleNewSession(isNewSession)
-        handleReplyBox(!isTypingBlocked)
+        handleReplyBox(topBotResponse)
     }
 
     private fun handleTopBotNewSessionFailure() {
@@ -1147,6 +1146,24 @@ class ChatbotFragment2 :
         } else {
             smallReplyBox?.hide()
             bigReplyBox?.show()
+        }
+    }
+
+    private fun handleReplyBox(topBotResponse: TopBotNewSessionResponse.TopBotGetNewSession) {
+        val isTypingBlocked = topBotResponse.isTypingBlocked
+        handleReplyBox(!isTypingBlocked)
+
+        // Todo : remove hardcode
+        topBotResponse.isSlowMode = true
+        topBotResponse.slowModeDurationInSeconds = 3
+
+        smallReplyBox?.sendButton?.apply {
+            isSlowModeEnabled = topBotResponse.isSlowMode
+            slowModeDurationInSecond = topBotResponse.slowModeDurationInSeconds
+        }
+        bigReplyBox?.sendButton?.apply {
+            isSlowModeEnabled = topBotResponse.isSlowMode
+            slowModeDurationInSecond = topBotResponse.slowModeDurationInSeconds
         }
     }
 
@@ -1865,12 +1882,14 @@ class ChatbotFragment2 :
     }
 
     override fun prepareListener() {
-        smallReplyBox?.getSmallReplyBoxSendButton()?.setOnClickListener {
+        smallReplyBox?.sendButton?.setOnClickListener {
             if (isSendButtonActivated) {
                 if (isFloatingSendButton) {
                     onSendFloatingInvoiceClicked()
                 } else {
-                    onSendButtonClicked()
+                    if (smallReplyBox?.sendButton?.isSlowModeRunning == false) {
+                        onSendButtonClicked()
+                    }
                 }
             } else {
                 getBindingView().footer.showToaster(
@@ -1934,6 +1953,12 @@ class ChatbotFragment2 :
                     parentReply
                 )
                 getViewState()?.scrollToBottom()
+            }
+
+            if (smallReplyBox?.isVisible == true) {
+                smallReplyBox?.sendButton?.startSlowDown()
+            } else if (bigReplyBox?.isVisible == true) {
+                bigReplyBox?.sendButton?.startSlowDown()
             }
         }
     }

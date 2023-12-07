@@ -15,7 +15,6 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.SlowModeSendButton
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.util.ViewUtil
-import com.tokopedia.chatbot.view.customview.chatroom.CircleAnimation
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener

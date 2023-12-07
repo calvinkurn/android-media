@@ -20,6 +20,10 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
     private lateinit var iconSend: IconUnify
     private var countDownTimer: CountDownTimer? = null
 
+    var isSlowModeEnabled: Boolean = false
+    var slowModeDurationInSecond: Int = 0
+    var isSlowModeRunning: Boolean = false
+
     init {
         inflateLayout()
     }
@@ -29,14 +33,10 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
         circleAnimation = view.findViewById(R.id.circle_animation)
         textTimer = view.findViewById(R.id.text_timer)
         iconSend = view.findViewById(R.id.icon_send)
-
-//        startSlowDown(3000)
-//        enableSendButton()
-//        disableSendButton()
     }
 
-    private fun initCountDownTimer(durationInMillis: Long) {
-        countDownTimer = object : CountDownTimer(durationInMillis, 1000) {
+    private fun initCountDownTimer() {
+        countDownTimer = object : CountDownTimer((slowModeDurationInSecond * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val text = (millisUntilFinished / 1000) + 1
                 textTimer.text = text.toString()
@@ -46,30 +46,37 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
                 enableSendButton()
             }
         }
+        countDownTimer?.start()
     }
 
     fun enableSendButton() {
+        isSlowModeRunning = false
         circleAnimation.enable()
         iconSend.show()
         textTimer.gone()
     }
 
     fun disableSendButton() {
+        isSlowModeRunning = false
         circleAnimation.disable()
         iconSend.show()
         textTimer.gone()
     }
 
-    fun startSlowDown(durationInMillis: Long) {
-        circleAnimation.loading(durationInMillis)
-        iconSend.gone()
-        textTimer.show()
-        initCountDownTimer(durationInMillis)
-        countDownTimer?.start()
+    fun startSlowDown() {
+        if (isSlowModeEnabled) {
+            isSlowModeRunning = true
+            circleAnimation.loading(slowModeDurationInSecond)
+            iconSend.gone()
+            textTimer.show()
+            initCountDownTimer()
+        }
     }
 
     fun cancelSlowDown() {
-        countDownTimer?.cancel()
+        if (isSlowModeEnabled) {
+            countDownTimer?.cancel()
+        }
     }
 
     companion object {

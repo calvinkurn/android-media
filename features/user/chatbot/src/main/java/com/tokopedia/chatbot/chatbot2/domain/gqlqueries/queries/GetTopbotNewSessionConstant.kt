@@ -7,3 +7,7 @@ const val GQL_GET_TOP_BOT_NEW_SESSION =
         isTypingBlocked
   }
 }"""
+
+// isSlowMode
+// slowModeDurationInSeconds
+// Todo: add the field if already in prod

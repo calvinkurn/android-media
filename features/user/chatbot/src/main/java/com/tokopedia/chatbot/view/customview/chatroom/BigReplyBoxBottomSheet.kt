@@ -8,12 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.databinding.BottomsheetChatbotBigReplyBoxBinding
 import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
@@ -61,7 +61,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             editText.setHintTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                    unifyprinciplesR.color.Unify_NN400
                 )
             )
         }
@@ -112,12 +112,12 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     }
 
     override fun disableSendButton() {
-        getBindingView().sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
+        getBindingView().sendButton.disableSendButton()
         isSendButtonActivated = false
     }
 
     override fun enableSendButton() {
-        getBindingView().sendButton.setImageResource(R.drawable.ic_chatbot_send)
+        getBindingView().sendButton.enableSendButton()
         isSendButtonActivated = true
     }
 
