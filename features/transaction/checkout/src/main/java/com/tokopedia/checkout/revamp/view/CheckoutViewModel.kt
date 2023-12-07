@@ -339,13 +339,25 @@ class CheckoutViewModel @Inject constructor(
 
                         val buttonPayment = CheckoutButtonPaymentModel("")
 
+                        val itemsWithLoadingState = items.map {
+                            if (it is CheckoutOrderModel && loadCourierState(
+                                    it,
+                                    address.recipientAddressModel
+                                )
+                            ) {
+                                it.copy(shipment = it.shipment.copy(isLoading = true))
+                            } else {
+                                it
+                            }
+                        }
+
                         withContext(dispatchers.main) {
                             listData.value = listOf(
                                 tickerError,
                                 ticker,
                                 address,
                                 upsell
-                            ) + items + listOf(
+                            ) + itemsWithLoadingState + listOf(
                                 epharmacy,
                                 promo,
                                 cost,
