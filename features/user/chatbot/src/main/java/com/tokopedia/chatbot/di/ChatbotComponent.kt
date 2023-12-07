@@ -1,9 +1,7 @@
 package com.tokopedia.chatbot.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.chatbot.view.activity.ChatbotOnboardingActivity
 import com.tokopedia.chatbot.view.activity.ContactUsMigrationActivity
-import com.tokopedia.chatbot.view.fragment.ChatBotProvideRatingFragment
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import dagger.Component
 
@@ -22,8 +20,4 @@ import dagger.Component
 interface ChatbotComponent {
 
     fun inject(contactUsMigrationActivity: ContactUsMigrationActivity)
-
-    fun inject(chatbotProvideRatingFragment : ChatBotProvideRatingFragment)
-
-    fun inject(chatbotOnboardingActivity: ChatbotOnboardingActivity)
 }
