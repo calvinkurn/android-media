@@ -827,14 +827,16 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void checkWritePermissionResultAndInstallApk(int requestCode, @NonNull int[] grantResults) {
-        AppDownloadManagerPermission.checkRequestPermissionResult(requestCode, grantResults, hasPermission -> {
-            if (hasPermission) {
-                if (appDownloadManagerHelper != null) {
-                    appDownloadManagerHelper.startDownloadApk();
+        if (GlobalConfig.IS_NAKAMA_VERSION) {
+            AppDownloadManagerPermission.checkRequestPermissionResult(requestCode, grantResults, hasPermission -> {
+                if (hasPermission) {
+                    if (appDownloadManagerHelper != null) {
+                        appDownloadManagerHelper.startDownloadApk();
+                    }
                 }
-            }
-            return null;
-        });
+                return null;
+            });
+        }
     }
 
     private void showDownloadManagerBottomSheet() {
