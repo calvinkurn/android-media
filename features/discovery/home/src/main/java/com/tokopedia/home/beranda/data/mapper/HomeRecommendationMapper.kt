@@ -1,15 +1,14 @@
 package com.tokopedia.home.beranda.data.mapper
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.gql.feed.Banner
 import com.tokopedia.home.beranda.domain.gql.feed.GetHomeRecommendationContent
 import com.tokopedia.home.beranda.domain.gql.feed.Product
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BaseHomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.LAYOUT_NAME_LIST
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.productcard.ProductCardModel
 import java.util.*
 
@@ -20,7 +19,7 @@ class HomeRecommendationMapper {
         pageNumber: Int
     ): HomeRecommendationDataModel {
         val recommendationProduct = graphqlResponse.recommendationProduct
-        val visitables = mutableListOf<Visitable<HomeRecommendationTypeFactoryImpl>>()
+        val visitables = mutableListOf<BaseHomeRecommendationVisitable>()
         val productStack = Stack<HomeRecommendationItemDataModel>()
         // reverse stack because to get the first in
         Collections.reverse(productStack)
@@ -51,7 +50,7 @@ class HomeRecommendationMapper {
                     visitables.add(HomeRecommendationBannerTopAdsOldDataModel(position = index, bannerType = TYPE_BANNER_ADS))
                 }
                 TYPE_VERTICAL_BANNER_ADS -> {
-                    if(recommendationProduct.layoutName != LAYOUT_NAME_LIST) {
+                    if (recommendationProduct.layoutName != LAYOUT_NAME_LIST) {
                         visitables.add(HomeRecommendationBannerTopAdsOldDataModel(position = index, bannerType = TYPE_VERTICAL_BANNER_ADS))
                     }
                 }

@@ -44,6 +44,9 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private val scrollToCurrentTabPositionHandler = Handler(Looper.getMainLooper())
     private var scrollToCurrentTabPositionRunnable: Runnable? = null
 
+    private val mFragment: DiscoveryFragment
+        by lazy { fragment as DiscoveryFragment }
+
     private val tabsHandler = Handler(Looper.getMainLooper())
     private val tabsRunnable = Runnable {
         tabsHolder.show()
@@ -203,6 +206,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         if (!isFromCategory) {
             scrollToCurrentTabPositionRunnable = Runnable {
                 tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
+                tabsViewModel?.switchThematicHeaderData(selectedPosition.inc())
             }
             scrollToCurrentTabPositionRunnable?.apply {
                 scrollToCurrentTabPositionHandler.removeCallbacks(this)
@@ -273,15 +277,15 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             if (tabsViewModel.setSelectedState(tab.position, true)) {
                 if (tabsViewModel.isFromCategory()) {
                     tabsViewModel.components.getComponentsItem()?.get(tab.position).apply {
-                        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                            .setOldTabPageIdentifier(this?.data?.firstOrNull()?.id ?: "")
-                        fragment.discoveryViewModel.pageIdentifier =
-                            this?.data?.firstOrNull()?.id ?: ""
+                        mFragment.getDiscoveryAnalytics().setOldTabPageIdentifier(this?.data?.firstOrNull()?.id ?: "")
+                        mFragment.discoveryViewModel.pageIdentifier = this?.data?.firstOrNull()?.id ?: ""
                     }
                 }
                 tabsViewModel.onTabClick()
-                (fragment as DiscoveryFragment).currentTabPosition = tab.position + 1
+                val tabPosition = tab.position.inc()
+                mFragment.currentTabPosition = tabPosition
                 trackTabsGTMStatus(tab)
+                tabsViewModel.switchThematicHeaderData(tabPosition)
             }
             if (tab.customView != null && tab.customView is CustomViewCreator) {
                 setSelectedTabItem(tabsViewModel, tab, true)
@@ -316,6 +320,14 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
 
     override fun onTabReselected(tab: TabLayout.Tab) {
         selectedTab = tab
+    }
+
+    private fun TabsViewModel.switchThematicHeaderData(
+        tabPosition: Int
+    ) {
+        if (isPlainTab()) {
+            mFragment.setTabPosition(tabPosition)
+        }
     }
 
     private fun trackTabsGTMStatus(tab: TabLayout.Tab) {

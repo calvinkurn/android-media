@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="os_tab_min_height">44dp</dimen>
-    <dimen name="product_card_carousel_item_width">140dp</dimen>
-    <dimen name="transparent_product_card_carousel_item_width">150dp</dimen>
-</resources>
