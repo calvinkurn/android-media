@@ -2,11 +2,14 @@ package com.tokopedia.checkout.revamp.view.adapter
 
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -87,9 +90,40 @@ interface CheckoutAdapterListener {
 
     fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel)
 
+    fun onClickReloadPromoWidget()
+
     fun onSendAnalyticsClickPromoCheckout(isApplied: Boolean, listAllPromoCodes: List<String>)
 
     fun onSendAnalyticsViewPromoCheckoutApplied()
+
+    fun sendImpressionUserSavingTotalSubsidyEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    )
+
+    fun sendClickUserSavingAndPromoEntryPointEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    )
+
+    fun sendImpressionUserSavingDetailTotalSubsidyEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    )
+
+    fun sendClickUserSavingDetailTotalSubsidyEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    )
+
+    fun sendImpressionPromoEntryPointErrorEvent(
+        errorMessage: String,
+        lastApply: LastApplyUiModel
+    )
 
     fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel)
 
@@ -97,13 +131,37 @@ interface CheckoutAdapterListener {
 
     fun onCrossSellItemChecked(checked: Boolean, crossSellModel: CheckoutCrossSellModel)
 
-    fun onEgoldChecked(checked: Boolean)
+    fun onEgoldChecked(checked: Boolean, egoldModel: CheckoutEgoldModel)
 
-    fun onDonationChecked(checked: Boolean)
+    fun onDonationChecked(checked: Boolean, checkoutDonationModel: CheckoutDonationModel)
 
     fun checkPlatformFee()
 
     fun onInsuranceTncClicked()
 
     fun onProcessToPayment()
+
+    fun onClickBmgmInfoIcon(
+        offerId: String,
+        shopId: String
+    )
+
+    fun onPaymentLevelAddOnsImpressed(
+        categoryName: String,
+        crossSellProductId: String
+    )
+
+    fun showDropshipInfoBottomSheet()
+
+    fun showDropshipToasterErrorProtectionUsage()
+
+    fun checkLatestProtectionOptIn(cartStringGroup: String): Boolean
+
+    fun onCheckChangedDropship(isChecked: Boolean, position: Int)
+
+    fun setValidationDropshipName(name: String, isValid: Boolean, position: Int)
+
+    fun setValidationDropshipPhone(phone: String, isValid: Boolean, position: Int)
+
+    fun onSendImpressionDropshipWidgetAnalytics()
 }

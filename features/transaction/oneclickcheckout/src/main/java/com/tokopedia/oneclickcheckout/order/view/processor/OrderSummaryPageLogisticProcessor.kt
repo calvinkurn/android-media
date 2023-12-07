@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressFromAddressUseCase
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
@@ -21,8 +21,6 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
-import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
@@ -51,24 +49,27 @@ import javax.inject.Inject
 class OrderSummaryPageLogisticProcessor @Inject constructor(
     private val ratesUseCase: GetRatesUseCase,
     private val ratesResponseStateConverter: RatesResponseStateConverter,
-    private val chooseAddressRepository: Lazy<ChooseAddressRepository>,
     private val chooseAddressMapper: Lazy<ChooseAddressMapper>,
     private val editAddressUseCase: UpdatePinpointUseCase,
     private val orderSummaryAnalytics: OrderSummaryAnalytics,
+    private val setStateChosenAddressUseCase: SetStateChosenAddressFromAddressUseCase,
     private val executorDispatchers: CoroutineDispatchers
 ) {
 
-    private fun generateRatesParam(
+    fun generateRatesParam(
         orderCart: OrderCart,
         orderProfile: OrderProfile,
         orderCost: OrderCost,
-        listShopShipment: List<ShopShipment>
+        listShopShipment: List<ShopShipment>,
+        orderShipment: OrderShipment
     ): Pair<RatesParam?, Double> {
         val (shipping, overweight) = generateShippingParam(orderCart, orderProfile, orderCost)
         if (shipping == null) return null to overweight
         return RatesParam.Builder(listShopShipment, shipping)
             .warehouseId(orderCart.shop.warehouseId)
             .cartData(orderCart.cartData)
+            .groupMetadata(orderCart.groupMetadata)
+            .promoCode(orderShipment.promoCode)
             .build()
             .apply {
                 occ = "1"
@@ -142,73 +143,6 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         } to 0.0
     }
 
-    fun generateShippingBottomsheetParam(
-        orderCart: OrderCart,
-        orderProfile: OrderProfile,
-        orderCost: OrderCost
-    ): Pair<ShipmentDetailData?, ArrayList<Product>> {
-        val address = orderProfile.address
-        val orderShop = orderCart.shop
-        val orderProducts = orderCart.products
-        val orderKero = orderCart.kero
-
-        var totalWeight = 0.0
-        var totalWeightActual = 0.0
-        var productFInsurance = 0
-        var preOrder = false
-        var productPreOrderDuration = 0
-        val productList: ArrayList<Product> = ArrayList()
-        val categoryList: ArrayList<String> = ArrayList()
-        orderProducts.forEach {
-            if (!it.isError) {
-                totalWeight += it.orderQuantity * it.weight
-                totalWeightActual += if (it.weightActual > 0) {
-                    it.orderQuantity * it.weightActual
-                } else {
-                    it.orderQuantity * it.weight
-                }
-                if (it.productFinsurance == 1) {
-                    productFInsurance = 1
-                }
-                preOrder = it.isPreOrder != 0
-                productPreOrderDuration = it.preOrderDuration
-                categoryList.add(it.categoryId)
-                productList.add(Product(it.productId.toLongOrZero(), it.isFreeOngkir, it.isFreeOngkirExtra))
-            }
-        }
-        if (orderShop.shouldValidateWeight() && totalWeight > orderShop.maximumWeight) {
-            // overweight
-            return null to productList
-        }
-        return ShipmentDetailData().apply {
-            shopId = orderShop.shopId
-            preorder = preOrder
-            addressId = address.addressId
-            shipmentCartData = ShipmentCartData(
-                originDistrictId = orderShop.districtId,
-                originPostalCode = orderShop.postalCode,
-                originLatitude = orderShop.latitude,
-                originLongitude = orderShop.longitude,
-                weight = totalWeight,
-                weightActual = totalWeightActual,
-                shopTier = orderShop.shopTier,
-                token = orderKero.keroToken,
-                ut = orderKero.keroUT,
-                insurance = 1,
-                productInsurance = productFInsurance,
-                orderValue = orderCost.totalItemPrice.toLong(),
-                categoryIds = categoryList.joinToString(","),
-                preOrderDuration = productPreOrderDuration,
-                isFulfillment = orderShop.isFulfillment,
-                boMetadata = orderShop.boMetadata,
-                destinationDistrictId = address.districtId,
-                destinationPostalCode = address.postalCode,
-                destinationLatitude = address.latitude,
-                destinationLongitude = address.longitude
-            )
-        } to productList
-    }
-
     private fun mapShippingRecommendationData(
         shippingRecommendationData: ShippingRecommendationData,
         orderShipment: OrderShipment,
@@ -236,7 +170,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                     orderCart,
                     orderProfile,
                     orderCost,
-                    listShopShipment
+                    listShopShipment,
+                    orderShipment
                 )
                 if (param == null) {
                     // overweight
@@ -1001,8 +936,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val stateChosenAddressFromAddress =
-                    chooseAddressRepository.get().setStateChosenAddressFromAddress(address)
+                val stateChosenAddressFromAddress = setStateChosenAddressUseCase(address)
                 chooseAddressMapper.get()
                     .mapSetStateChosenAddress(stateChosenAddressFromAddress.response)
             } catch (t: Throwable) {

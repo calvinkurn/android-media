@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -35,51 +34,26 @@ import com.tokopedia.people.views.adapter.listener.UserFollowListener
 import com.tokopedia.people.views.uimodel.FollowResultUiModel
 import com.tokopedia.people.views.uimodel.PeopleUiModel
 import com.tokopedia.unifycomponents.LocalLoad
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.people.R as peopleR
 
 class FollowerListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val userProfileTracker: UserProfileTracker,
+    private val userSession: UserSessionInterface,
     private val router: Router
 ) : TkpdBaseV4Fragment(), AdapterCallback, UserFollowListener {
-
-    companion object {
-        const val PAGE_CONTENT = 0
-        const val PAGE_ERROR = 2
-        const val PAGE_LOADING = 1
-        const val PAGE_EMPTY = 3
-
-        private const val TAG = "FollowerListingFragment"
-
-        fun getFragment(
-            fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
-            bundle: Bundle
-        ): FollowerListingFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowerListingFragment
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
-                classLoader,
-                FollowerListingFragment::class.java.name
-            ).apply {
-                arguments = bundle
-            } as FollowerListingFragment
-        }
-    }
 
     private var followersContainer: ViewFlipper? = null
     private var globalError: LocalLoad? = null
     private var isLoggedIn: Boolean = false
     private var isSwipeRefresh: Boolean? = null
 
-    val userSessionInterface: UserSession by lazy {
-        UserSession(context)
-    }
-
     private val viewModel: FollowerFollowingViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
+        ViewModelProviders.of(this, viewModelFactory)[FollowerFollowingViewModel::class.java]
     }
 
     private val mAdapter: ProfileFollowersAdapter by lazy {
@@ -95,7 +69,7 @@ class FollowerListingFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        isLoggedIn = userSessionInterface.isLoggedIn
+        isLoggedIn = userSession.isLoggedIn
         return inflater.inflate(R.layout.up_fragment_psger_item, container, false)
     }
 
@@ -114,8 +88,6 @@ class FollowerListingFragment @Inject constructor(
     }
 
     private fun initMainUi() {
-        viewModel.username = arguments?.getString(UserProfileFragment.EXTRA_USER_ID).orEmpty()
-
         val rvFollowers = view?.findViewById<RecyclerView>(R.id.rv_followers)
         rvFollowers?.adapter = mAdapter
         mAdapter.resetAdapter()
@@ -128,8 +100,6 @@ class FollowerListingFragment @Inject constructor(
         }
     }
 
-    // todo: get response from followResult, show result, if its error then show error
-
     private fun refreshMainUi() {
         mAdapter.resetAdapter()
         mAdapter.lastCursor = ""
@@ -138,92 +108,94 @@ class FollowerListingFragment @Inject constructor(
 
     @SuppressLint("NotifyDataSetChanged")
     private fun addListObserver() =
-        viewModel.profileFollowersListLiveData.observe(
-            viewLifecycleOwner,
-            Observer {
-                it?.let {
-                    when (it) {
-                        is Loading -> {
-                            mAdapter.resetAdapter()
-                            mAdapter.notifyDataSetChanged()
-                        }
-                        is Success -> {
-                            if (isSwipeRefresh == true) {
-                                view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
-                                    false
-                                isSwipeRefresh = !isSwipeRefresh!!
-                                mAdapter.resetAdapter()
-                            }
+        viewModel.profileFollowersListLiveData.observe(viewLifecycleOwner) {
+            it?.let {
+                when (it) {
+                    is Loading -> {
+                        mAdapter.resetAdapter()
+                        mAdapter.notifyDataSetChanged()
+                    }
 
-                            mAdapter.onSuccess(it.data.followers, it.data.nextCursor)
+                    is Success -> {
+                        if (isSwipeRefresh == true) {
+                            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
+                                false
+                            isSwipeRefresh = !isSwipeRefresh!!
+                            mAdapter.resetAdapter()
                         }
-                        is ErrorMessage -> {
-                            mAdapter.onError()
-                        }
+
+                        mAdapter.onSuccess(it.data.followers, it.data.nextCursor)
+                    }
+
+                    is ErrorMessage -> {
+                        mAdapter.onError()
                     }
                 }
             }
-        )
+        }
 
     private fun addFollowersErrorObserver() =
-        viewModel.followersErrorLiveData.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (isSwipeRefresh == true) {
-                    view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
-                        false
-                    isSwipeRefresh = !isSwipeRefresh!!
-                } else {
-                    // Hide shimmer
-                }
+        viewModel.followersErrorLiveData.observe(viewLifecycleOwner) {
+            if (isSwipeRefresh == true) {
+                view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
+                    false
+                isSwipeRefresh = !isSwipeRefresh!!
+            } else {
+                // Hide shimmer
+            }
 
-                it?.let {
-                    when (it) {
-                        is UnknownHostException, is SocketTimeoutException -> {
-                            followersContainer?.displayedChild = PAGE_ERROR
+            mAdapter.onError()
 
-                            globalError?.refreshBtn?.setOnClickListener {
-                                followersContainer?.displayedChild = PAGE_LOADING
-                                refreshMainUi()
-                            }
+            it?.let {
+                when (it) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        followersContainer?.displayedChild = PAGE_ERROR
+
+                        globalError?.refreshBtn?.setOnClickListener {
+                            followersContainer?.displayedChild = PAGE_LOADING
+                            refreshMainUi()
                         }
-                        is IllegalStateException -> {
-                            followersContainer?.displayedChild = PAGE_ERROR
+                    }
 
-                            globalError?.refreshBtn?.setOnClickListener {
-                                followersContainer?.displayedChild = PAGE_LOADING
-                                refreshMainUi()
-                            }
+                    is IllegalStateException -> {
+                        followersContainer?.displayedChild = PAGE_ERROR
+
+                        globalError?.refreshBtn?.setOnClickListener {
+                            followersContainer?.displayedChild = PAGE_LOADING
+                            refreshMainUi()
                         }
-                        is RuntimeException -> {
-                            when (it.localizedMessage?.toIntOrNull()) {
-                                ReponseStatus.NOT_FOUND -> {
-                                    followersContainer?.displayedChild = PAGE_ERROR
-                                    globalError?.refreshBtn?.setOnClickListener {
-                                        followersContainer?.displayedChild = PAGE_LOADING
-                                        refreshMainUi()
-                                    }
+                    }
+
+                    is RuntimeException -> {
+                        when (it.localizedMessage?.toIntOrNull()) {
+                            ReponseStatus.NOT_FOUND -> {
+                                followersContainer?.displayedChild = PAGE_ERROR
+                                globalError?.refreshBtn?.setOnClickListener {
+                                    followersContainer?.displayedChild = PAGE_LOADING
+                                    refreshMainUi()
                                 }
-                                ReponseStatus.INTERNAL_SERVER_ERROR -> {
-                                    followersContainer?.displayedChild = PAGE_ERROR
-                                    globalError?.refreshBtn?.setOnClickListener {
-                                        followersContainer?.displayedChild = PAGE_LOADING
-                                        refreshMainUi()
-                                    }
+                            }
+
+                            ReponseStatus.INTERNAL_SERVER_ERROR -> {
+                                followersContainer?.displayedChild = PAGE_ERROR
+                                globalError?.refreshBtn?.setOnClickListener {
+                                    followersContainer?.displayedChild = PAGE_LOADING
+                                    refreshMainUi()
                                 }
-                                else -> {
-                                    followersContainer?.displayedChild = PAGE_ERROR
-                                    globalError?.refreshBtn?.setOnClickListener {
-                                        followersContainer?.displayedChild = PAGE_LOADING
-                                        refreshMainUi()
-                                    }
+                            }
+
+                            else -> {
+                                followersContainer?.displayedChild = PAGE_ERROR
+                                globalError?.refreshBtn?.setOnClickListener {
+                                    followersContainer?.displayedChild = PAGE_LOADING
+                                    refreshMainUi()
                                 }
                             }
                         }
                     }
                 }
             }
-        )
+        }
 
     private fun observeFollowResult() {
         viewModel.followResult.observe(viewLifecycleOwner) { result ->
@@ -231,14 +203,15 @@ class FollowerListingFragment @Inject constructor(
                 is FollowResultUiModel.Fail -> {
                     val errMessage = result.message.ifBlank {
                         if (result.isFollowed) {
-                            getString(com.tokopedia.people.R.string.up_error_unfollow)
+                            getString(peopleR.string.up_error_unfollow)
                         } else {
-                            getString(com.tokopedia.people.R.string.up_error_follow)
+                            getString(peopleR.string.up_error_follow)
                         }
                     }
                     requireView().showErrorToast(errMessage)
                     updateItemPerPosition(result.itemPosition)
                 }
+
                 is FollowResultUiModel.Success -> {
                     if (result.message.isNotBlank()) requireView().showToast(result.message)
                 }
@@ -246,23 +219,21 @@ class FollowerListingFragment @Inject constructor(
         }
     }
 
-    override fun getScreenName(): String {
-        return ""
-    }
+    override fun getScreenName() = TAG
 
     override fun onResume() {
         super.onResume()
 
-        if (isLoggedIn != userSessionInterface.isLoggedIn) {
+        if (isLoggedIn != userSession.isLoggedIn) {
             refreshMainUi()
-            isLoggedIn = userSessionInterface.isLoggedIn
+            isLoggedIn = userSession.isLoggedIn
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW && resultCode == Activity.RESULT_OK) {
-            isLoggedIn = userSessionInterface.isLoggedIn
+            isLoggedIn = userSession.isLoggedIn
             refreshMainUi()
         } else if (requestCode == UserProfileFragment.REQUEST_CODE_USER_PROFILE) {
             val position = data?.getIntExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, -1)
@@ -289,14 +260,13 @@ class FollowerListingFragment @Inject constructor(
         val textTitle = view?.findViewById<TextView>(R.id.text_error_empty_title)
         val textDescription = view?.findViewById<TextView>(R.id.text_error_empty_desc)
 
-        val currentUserId = arguments?.getString(UserProfileFragment.EXTRA_USER_ID)
-        if (currentUserId == userSessionInterface.userId) {
-            textTitle?.text = getString(com.tokopedia.people.R.string.up_empty_page_my_follower_title)
+        if (viewModel.userId == userSession.userId) {
+            textTitle?.text = getString(peopleR.string.up_empty_page_my_follower_title)
         } else {
-            textTitle?.text = getString(com.tokopedia.people.R.string.up_empty_page_follower_title)
+            textTitle?.text = getString(peopleR.string.up_empty_page_follower_title)
         }
-        textDescription?.showWithCondition(currentUserId == userSessionInterface.userId)
-        textDescription?.text = getString(com.tokopedia.people.R.string.up_empty_page_my_follower_desc)
+        textDescription?.showWithCondition(viewModel.userId == userSession.userId)
+        textDescription?.text = getString(peopleR.string.up_empty_page_my_follower_desc)
     }
 
     override fun onStartFirstPageLoad() {
@@ -362,7 +332,7 @@ class FollowerListingFragment @Inject constructor(
     private fun doFollowAction(isFollowed: Boolean, callNetworkRequest: () -> Unit) {
         if (!isInternetAvailable(isFollowed)) return
 
-        if (!userSessionInterface.isLoggedIn) {
+        if (!userSession.isLoggedIn) {
             val requestCode = FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
             startActivityForResult(
                 router.getIntent(context, ApplinkConst.LOGIN),
@@ -389,6 +359,7 @@ class FollowerListingFragment @Inject constructor(
                 mAdapter.items[position] = item.copy(
                     isFollowed = !item.isFollowed
                 )
+
             is PeopleUiModel.UserUiModel ->
                 mAdapter.items[position] = item.copy(
                     isFollowed = !item.isFollowed
@@ -402,12 +373,32 @@ class FollowerListingFragment @Inject constructor(
             true
         } else {
             val errorMessage = if (isFollowed) {
-                getString(com.tokopedia.people.R.string.up_error_unfollow)
+                getString(peopleR.string.up_error_unfollow)
             } else {
-                getString(com.tokopedia.people.R.string.up_error_follow)
+                getString(peopleR.string.up_error_follow)
             }
             requireView().showErrorToast(errorMessage)
             false
+        }
+    }
+
+    companion object {
+        const val PAGE_CONTENT = 0
+        const val PAGE_LOADING = 1
+        const val PAGE_ERROR = 2
+        const val PAGE_EMPTY = 3
+
+        private const val TAG = "FollowerListingFragment"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader
+        ): FollowerListingFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowerListingFragment
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                FollowerListingFragment::class.java.name
+            ) as FollowerListingFragment
         }
     }
 }

@@ -12,6 +12,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.carouselproductcard.CarouselViewAllCardData
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifyprinciples.Typography
 
 
 internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
@@ -19,6 +20,8 @@ internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.carousel_product_card_activity_test_layout)
+
+        Typography.isFontTypeOpenSauceOne = true
 
         val recyclerView = findViewById<RecyclerView>(R.id.carouselProductCardRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)

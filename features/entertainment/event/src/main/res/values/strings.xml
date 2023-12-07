@@ -74,7 +74,11 @@
     <string name="ent_event_checkout_submit_name">Isi %s dulu ya, biar kamu bisa lanjut pesan tiket ini.</string>
     <string name="ent_event_checkout_submit_login">Anda Belum Login</string>
     <string name="ent_event_checkout_passenger_new_title">Rincian Kontak</string>
-
+    <string name="ent_event_checkout_countdown_title">Selesaikan pesanan dalam</string>
+    <string name="ent_event_checkout_softbook_ended_title">Batas Waktu Pemesanan Habis</string>
+    <string name="ent_event_checkout_softbook_ended_desc">Pemesanan belum diproses. Segera cek tiket &amp; isi data lagi, ya supaya ngga kehabisan tiket.</string>
+    <string name="ent_event_checkout_softbook_ended_button">Cek Tiket</string>
+    <string name="ent_event_checkout_softbook_ended_bottom_sheet_title">Sesi Pemesanan Habis</string>
 
     <string name="ent_pdp_form_ticker_warn_text">Pastikan data pemesan sudah benar. E-tiket bisa dicek lewat halaman Daftar Transaksi dan akan dikirimkan ke email yang terdaftar di akun Tokopedia.</string>
     <string name="ent_pdp_form_ticket_submit_text">Simpan</string>
@@ -126,6 +130,7 @@
     <string name="ent_redeem_revamp_ticket">Jenis Tiket</string>
     <string name="ent_redeem_revamp_date">Tanggal Acara</string>
     <string name="ent_redeem_revamp_sum_product">Jumlah Tiket</string>
+    <string name="ent_redeem_revamp_seating_number">Nomor Kursi</string>
     <string name="ent_redeem_revamp_sum_product_error">Pilih Jumlah Tiket</string>
     <string name="ent_redeem_revamp_redeem_button">Redeem</string>
     <string name="ent_redeem_revamp_redeem_title">Redeem Tiket</string>

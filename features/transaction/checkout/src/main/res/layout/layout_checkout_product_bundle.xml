@@ -71,7 +71,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
-        android:background="@color/Unify_NN50"
+        android:background="@drawable/checkout_v_bunding_separator"
         android:fillViewport="true"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -187,5 +187,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/v_bundling_product_separator"
         app:layout_constraintTop_toBottomOf="@id/tv_product_add_ons_section_title_bundle" />
+
+    <com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingView
+        android:id="@+id/button_gifting_addon_product_bundle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/v_bundling_product_separator"
+        app:layout_constraintTop_toBottomOf="@id/ll_addon_product_items_bundle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

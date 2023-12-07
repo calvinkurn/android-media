@@ -25,7 +25,6 @@ object MCCMQuery {
                 id
                 title
                 mediaURL
-                mediaUrlType
                 mediaURLDarkMode
                 label1
                 label2

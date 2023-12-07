@@ -14,8 +14,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.shopwidget.shopcard.ShopCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardView
 import com.tokopedia.topads.sdk.R
+import com.tokopedia.topads.sdk.TopAdsConstants
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_8
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_9
 import com.tokopedia.topads.sdk.base.adapter.Item
@@ -32,9 +34,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductU
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel
 import com.tokopedia.topads.sdk.view.reimagine.BannerAdsAdapterTypeFactoryReimagine
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
-import kotlinx.android.synthetic.main.layout_ads_banner_shop_a_pager.view.*
-import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
+import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 class TopAdsBannerViewReimagine : TopAdsBannerView {
@@ -69,7 +69,6 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             list.adapter = bannerAdsAdapter
             list.addItemDecoratorShopAdsReimagine()
 
-            list.addOnScrollListener(CustomScrollListener(back_view))
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
 
@@ -87,9 +86,11 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
         val container = findViewById<View>(R.id.topAdsContainer)
         val cpmData = cpmModel?.data?.getOrNull(index)
         val shopAdsWithThreeProducts = findViewById<ShopAdsWithThreeProducts>(R.id.shopAdsWithThreeProducts)
+        val shopAdsWithSingleProductHorizontal = findViewById<ShopAdsSingleItemHorizontalLayout>(R.id.shopAdsWithSingleProductHorizontal)
+        val shopAdsWithSingleProductVertical = findViewById<ShopAdsSingleItemVerticalLayout>(R.id.shopAdsWithSingleProductVertical)
         linearLayoutMerchantVoucher = findViewById(R.id.topAdsLinearLayoutMerchantVoucher)
 
-        if (cpmData?.cpm?.layout != LAYOUT_6 && cpmData?.cpm?.layout != LAYOUT_5 && cpmData?.cpm?.layout != LAYOUT_8 && cpmData?.cpm?.layout != LAYOUT_9) {
+        if (cpmData?.cpm?.layout != LAYOUT_6 && cpmData?.cpm?.layout != LAYOUT_5 && cpmData?.cpm?.layout != LAYOUT_8 && cpmData?.cpm?.layout != LAYOUT_9 && cpmData?.cpm?.layout != TopAdsConstants.LAYOUT_10 && cpmData?.cpm?.layout != TopAdsConstants.LAYOUT_11) {
             if (isEligible(cpmData)) {
                 if (cpmData != null && (cpmData.cpm.layout == LAYOUT_2)) {
                     list?.gone()
@@ -97,7 +98,6 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                     topAdsCarousel.hide()
                     shopAdsProductView.hide()
                     adsBannerShopCardView?.visible()
-                    adsBannerShopCardView?.setCardUnifyStyle(true)
                     shopAdsWithThreeProducts.hide()
                     container?.setBackgroundResource(0)
                     (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 4.toPx(), 0, 0)
@@ -122,8 +122,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                             shop_badge.hide()
                         }
                     }
-                    shop_name?.text = MethodChecker.fromHtml(cpmData.cpm.cpmShop.name)
-                    description?.text = cpmData.cpm.cpmShop.slogan
+                    findViewById<TextView>(R.id.topAdsShopName)?.text = MethodChecker.fromHtml(cpmData.cpm.cpmShop.name)
+                    findViewById<Typography>(R.id.description)?.text = cpmData.cpm.cpmShop.slogan
 
                     shopDetail.setOnClickListener {
                         if (topAdsBannerViewClickListener != null) {
@@ -206,7 +206,60 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             shopAdsWithThreeProducts.show()
             list?.hide()
             setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerViewClickListener, hasAddProductToCartButton)
+        } else if(cpmData?.cpm?.layout == TopAdsConstants.LAYOUT_10){
+            topAdsCarousel.hide()
+            shopDetail?.hide()
+            shopAdsProductView.hide()
+            adsBannerShopCardView?.hide()
+            shopAdsWithThreeProducts.hide()
+            list?.hide()
+            shopAdsWithSingleProductHorizontal.show()
+            shopAdsWithSingleProductVertical.hide()
+            shopAdsWithSingleProductHorizontal.setShopProductModel(getSingleAdsProductModel(cpmData, appLink, adsClickUrl, topAdsBannerViewClickListener, hasAddProductToCartButton))
+        } else if(cpmData?.cpm?.layout == TopAdsConstants.LAYOUT_11){
+            topAdsCarousel.hide()
+            shopDetail?.hide()
+            shopAdsProductView.hide()
+            adsBannerShopCardView?.hide()
+            shopAdsWithThreeProducts.hide()
+            list?.hide()
+            shopAdsWithSingleProductHorizontal.hide()
+            shopAdsWithSingleProductVertical.show()
+            shopAdsWithSingleProductVertical.setShopProductModel(getSingleAdsProductModel(cpmData, appLink, adsClickUrl, topAdsBannerViewClickListener, hasAddProductToCartButton))
         }
+    }
+
+    private fun getSingleAdsProductModel(
+        cpmData: CpmData,
+        appLink: String,
+        adsClickUrl: String,
+        topAdsBannerClickListener: TopAdsBannerClickListener?,
+        hasAddProductToCartButton: Boolean,
+    ): ShopAdsWithSingleProductModel {
+        return ShopAdsWithSingleProductModel(
+            isOfficial = cpmData.cpm.cpmShop.isOfficial,
+            isPMPro = cpmData.cpm.cpmShop.isPMPro,
+            isPowerMerchant = cpmData.cpm.cpmShop.isPowerMerchant,
+            shopBadge = cpmData.cpm.badges.firstOrNull()?.imageUrl ?: "",
+            shopName = cpmData.cpm.cpmShop.name,
+            shopImageUrl = cpmData.cpm.cpmImage.fullEcs,
+            slogan = cpmData.cpm.cpmShop.slogan,
+            shopWidgetImageUrl = cpmData.cpm.widgetImageUrl,
+            merchantVouchers = cpmData.cpm.cpmShop.merchantVouchers,
+            listItem = cpmData.cpm.cpmShop.products.firstOrNull(),
+            shopApplink = appLink,
+            adsClickUrl = adsClickUrl,
+            hasAddToCartButton = hasAddProductToCartButton,
+            variant = cpmData.cpm.layout,
+            topAdsBannerClickListener = topAdsBannerClickListener,
+            impressionListener = impressionListener,
+            cpmData = cpmData,
+            impressHolder = cpmData.cpm.cpmShop.imageShop
+        )
+    }
+
+    override fun mapToShopCardModel(cpmData: CpmData): ShopCardModel {
+        return super.mapToShopCardModel(cpmData).copy(isReimagine = true)
     }
 
     private fun renderHeaderSeeMore(cpmData: CpmData, appLink: String, adsClickUrl: String) {

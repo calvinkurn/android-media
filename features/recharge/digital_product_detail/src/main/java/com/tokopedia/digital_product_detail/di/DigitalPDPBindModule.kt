@@ -20,6 +20,8 @@ import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogOpe
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPrefixSelectRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogProductInputMultiTabRepository
 import com.tokopedia.common.topupbills.favoritepdp.domain.repository.RechargeFavoriteNumberRepository
+import com.tokopedia.digital_product_detail.data.repository.RechargeCheckBalanceRepositoryImpl
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCheckBalanceRepository
 import com.tokopedia.digital_product_detail.data.repository.RechargeMCCMProductsRepositoryImpl
 import com.tokopedia.digital_product_detail.domain.repository.RechargeInquiryRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeMCCMProductsRepository
@@ -80,4 +82,8 @@ abstract class DigitalPDPBindModule {
     @Binds
     @DigitalPDPScope
     abstract fun bindDigitalPDPTagihanListrikRepository(repo: DigitalPDPTagihanListrikRepositoryImpl): DigitalPDPTagihanListrikRepository
+
+    @Binds
+    @DigitalPDPScope
+    abstract fun bindRechargeCheckBalanceRepository(repo: RechargeCheckBalanceRepositoryImpl): RechargeCheckBalanceRepository
 }

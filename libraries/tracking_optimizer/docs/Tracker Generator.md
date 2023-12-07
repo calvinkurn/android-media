@@ -45,7 +45,7 @@ Download the plugin from [here](https://drive.google.com/file/d/1w0kfjCrsU5DSk4f
 1. Open Android Studio Preferences > Search “Plugins” > Install Plugin From Disk
 2. Then, click OK (You may need to restart Android Studio)
 
-![](res/tracker_generator_illustration_1.png)
+![](https://docs-android.tokopedia.net/images/docs/tracking_optimizer/tracker_generator_illustration_1.png)
 
 ### Usage
 
@@ -56,9 +56,9 @@ Download the plugin from [here](https://drive.google.com/file/d/1w0kfjCrsU5DSk4f
 5. Optional - update your function name.
 6. Optional - override your event name like from MyNakama.
 
-![](res/tracker_generator_illustration_2.png)
+![](https://docs-android.tokopedia.net/images/docs/tracking_optimizer/tracker_generator_illustration_2.png)
 
-![](res/tracker_generator_illustration_3.png)
+![](https://docs-android.tokopedia.net/images/docs/tracking_optimizer/tracker_generator_illustration_3.png)
 
 ### Clean Up
 

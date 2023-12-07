@@ -26,10 +26,14 @@ class HomeMissionWidgetUseCase @Inject constructor(
                         GetMissionWidget.BANNER_LOCATION_PARAM,
                         homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
                     )
+                    putString(
+                        GetMissionWidget.PARAM,
+                        currentMissionWidgetListDataModel.widgetParam
+                    )
                 }
             )
             val resultList =
-                LazyLoadDataMapper.mapMissionWidgetData(results.getHomeMissionWidget.missions)
+                LazyLoadDataMapper.mapMissionWidgetData(results.getHomeMissionWidget.missions, false)
             currentMissionWidgetListDataModel.copy(
                 header = results.getHomeMissionWidget.header.getAsHomeComponentHeader(),
                 missionWidgetList = resultList,

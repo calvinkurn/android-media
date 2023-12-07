@@ -30,4 +30,26 @@ sealed class FintechWidgetAnalyticsEvent {
         val promoName: String?,
         val subtitle: String,
     ): FintechWidgetAnalyticsEvent()
+
+    data class BnplWidgetClick(
+        val usecaseRank: String,
+        val linkingStatus: String,
+        val userState: String,
+        val widgetType: String,
+        val productId: String,
+        val productPrice: String,
+        val installmentAmt: String,
+        val partner: String,
+    ): FintechWidgetAnalyticsEvent()
+
+    data class BnplWidgetImpression(
+        val usecaseRank: String,
+        val linkingStatus: String,
+        val userState: String,
+        val widgetType: String,
+        val productId: String,
+        val productPrice: String,
+        val installmentAmt: String,
+        val partner: String,
+    ): FintechWidgetAnalyticsEvent()
 }

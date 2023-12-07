@@ -6,11 +6,15 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.LABEL_FULFILLMENT
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToChannelGrid
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToTrackingAttributionModel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
+import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_PADDING
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
@@ -18,12 +22,14 @@ import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.util.HomeComponentRemoteConfigController
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
+import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampItemDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
-import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.user.session.UserSessionInterface
 
 class HomeDynamicChannelVisitableFactoryImpl(
@@ -192,8 +198,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_VPS_WIDGET -> {
                     createVpsWidget(channel, position)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET -> {
-                    createMissionWidgetChannel(channel, position)
+                DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET,
+                DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET_V2 -> {
+                    createMissionWidgetChannel(channel, position, channel.layout)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_PRODUCT -> {
                     createLego4Product(channel, position)
@@ -407,7 +414,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                         serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(
                             channel.header.serverTimeUnix
                         ),
-                        headerType = BestSellerMapper.getHeaderType()
+                        headerType = ChannelHeader.HeaderType.CHEVRON,
                     )
                 )
             )
@@ -769,6 +776,22 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 channel,
                 verticalPosition
             ),
+            specialReleaseItems = channel.grids.mapIndexed { index, it ->
+                val channelGrid = it.mapToChannelGrid(index, useDtAsShopBadge = true)
+                SpecialReleaseRevampItemDataModel(
+                    channelGrid,
+                    ChannelModelMapper.mapToProductCardModel(
+                        channelGrid = channelGrid,
+                        animateOnPress = CardUnify2.ANIMATE_NONE,
+                        cardType = CardUnify2.TYPE_CLEAR,
+                        productCardListType = ProductCardModel.ProductListType.BEST_SELLER,
+                        excludeShop = true,
+                        excludeLabelGroup = listOf(LABEL_FULFILLMENT)
+                    ),
+                    channel.mapToTrackingAttributionModel(verticalPosition),
+                    cardInteraction = CardUnify2.ANIMATE_NONE,
+                )
+            },
             isCache = isCache,
             cardInteraction = false
         )
@@ -776,20 +799,28 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createMissionWidgetChannel(
         channel: DynamicHomeChannel.Channels,
-        verticalPosition: Int
+        verticalPosition: Int,
+        layout: String
     ) {
-        if (!isCache) {
-            visitableList.add(
-                MissionWidgetListDataModel(
-                    id = channel.id,
-                    name = channel.name,
-                    verticalPosition = verticalPosition,
-                    status = MissionWidgetListDataModel.STATUS_LOADING,
-                    showShimmering = channel.isShimmer,
-                    source = MissionWidgetListDataModel.SOURCE_DC,
-                )
+        visitableList.add(
+            MissionWidgetListDataModel(
+                id = channel.id,
+                name = channel.name,
+                verticalPosition = verticalPosition,
+                status = MissionWidgetListDataModel.STATUS_LOADING,
+                showShimmering = channel.isShimmer,
+                source = MissionWidgetListDataModel.SOURCE_DC,
+                type = getMissionWidgetType(layout),
+                widgetParam = channel.widgetParam,
             )
-        }
+        )
+    }
+
+    private fun getMissionWidgetType(layout: String): MissionWidgetListDataModel.Type {
+        return if(layout == DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET_V2)
+            MissionWidgetListDataModel.Type.CLEAR
+        else
+            MissionWidgetListDataModel.Type.CARD
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {

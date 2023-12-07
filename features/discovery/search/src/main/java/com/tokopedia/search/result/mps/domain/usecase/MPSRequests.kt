@@ -24,6 +24,7 @@ private const val MPS_GQL_QUERY = """
         header {
           total_data
           treatment_code
+          response_code
         }
         data {
           id

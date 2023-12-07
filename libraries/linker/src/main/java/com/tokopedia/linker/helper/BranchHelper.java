@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.LinkerData;
@@ -72,6 +73,8 @@ public class BranchHelper {
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_TITLE, LinkerUtils.getOgTitle(data));
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_IMAGE_URL, LinkerUtils.getOgImage(data));
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_DESC, LinkerUtils.getOgDesc(data));
+        linkProperties.addControlParameter(LinkerConstants.KEY_MIN_ANDROID_VERSION, data.getMinVersionAndroid());
+        linkProperties.addControlParameter(LinkerConstants.KEY_MIN_IOS_VERSION, data.getMinVersionIOS());
 
         // if uri host equals UNSAFE_TOKOPEDIA_HOST it will fail to generate the branch link
         if (isUnsafeDesktopUrl(data.renderShareUri())) {
@@ -94,6 +97,7 @@ public class BranchHelper {
                                         .setProductName(product.get(LinkerConstants.NAME))
                                         .setQuantity(LinkerUtils.convertStringToDouble(product.get(LinkerConstants.QTY)))
                                         .setSku(product.get(LinkerConstants.ID))
+                                        .setProductBrand(product.get(LinkerConstants.PRODUCT_BRAND))
                                         .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
                                         .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(product.get(LinkerConstants.CATEGORY))));
 
@@ -179,6 +183,7 @@ public class BranchHelper {
                                 .setProductName(linkerData.getProductName())
                                 .setQuantity(LinkerUtils.convertToDouble(linkerData.getQuantity(), "Product quantity-ITEM_VIEW"))
                                 .setSku(linkerData.getSku())
+                                .setProductBrand(linkerData.getShopName())
                                 .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
                                 .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(linkerData.getLevel3Name())));
         BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
@@ -272,7 +277,9 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.KEY_PRODUCTTYPE, branchIOPayment.getProductType())
                 .addCustomDataProperty(LinkerConstants.KEY_USERID, userId)
                 .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
-                .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
+                .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
+                .addCustomDataProperty(LinkerConstants.KEY_GA_ID, DeviceInfo.getAdsId(context));
+
         branchEvent.logEvent(context);
         saveBranchEvent(branchEvent);
     }
@@ -300,7 +307,8 @@ public class BranchHelper {
                     .addCustomDataProperty(LinkerConstants.KEY_CLIENT_TIME_STAMP, currentDateTime)
                     .addCustomDataProperty(LinkerConstants.KEY_AMOUNT, branchIOPayment.revenue)
                     .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
-                    .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
+                    .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
+                    .addCustomDataProperty(LinkerConstants.KEY_GA_ID, DeviceInfo.getAdsId(context));
             branchEvent.logEvent(context);
             saveBranchEvent(branchEvent);
         }

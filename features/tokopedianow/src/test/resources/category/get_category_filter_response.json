@@ -1,0 +1,110 @@
+{
+  "data": {
+    "filter": [
+      {
+        "title": "Kategori",
+        "subTitle": "",
+        "search": {
+          "searchable": 0,
+          "placeholder": ""
+        },
+        "isNew": false,
+        "filter_attribute_detail": "",
+        "template_name": "template_category_tokonow",
+        "options": [
+          {
+            "name": "Sayur",
+            "key": "sc",
+            "icon": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/a80f19e4-9a7e-4dae-8be4-732d0353fd6d.png",
+            "Description": "",
+            "value": "4859",
+            "inputType": "checkbox",
+            "totalData": "72",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Buah",
+            "key": "sc",
+            "icon": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/e9e12971-6999-422d-9543-3a10e01812c7.png",
+            "Description": "",
+            "value": "4860",
+            "inputType": "checkbox",
+            "totalData": "70",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Tahu \u0026 Tempe",
+            "key": "sc",
+            "icon": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/17f9a6c8-0c17-48de-b0fe-6c588a9cf2d8.png",
+            "Description": "",
+            "value": "4864",
+            "inputType": "checkbox",
+            "totalData": "7",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Jamur",
+            "key": "sc",
+            "icon": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/8d9ebb5a-116d-4d25-9850-2e68ecf443db.png",
+            "Description": "",
+            "value": "4863",
+            "inputType": "checkbox",
+            "totalData": "6",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Paket Sayur",
+            "key": "sc",
+            "icon": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/5a47d6eb-1db4-4719-94ff-a010df3eb29b.png",
+            "Description": "",
+            "value": "4865",
+            "inputType": "checkbox",
+            "totalData": "2",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Bawang ",
+            "key": "sc",
+            "icon": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/756050bc-045b-46d9-9994-ded115f6b534.png",
+            "Description": "",
+            "value": "4826",
+            "inputType": "checkbox",
+            "totalData": "1",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      }
+    ],
+    "sort": []
+  }
+}

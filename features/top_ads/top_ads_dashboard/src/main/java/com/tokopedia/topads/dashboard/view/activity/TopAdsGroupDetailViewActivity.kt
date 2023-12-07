@@ -65,7 +65,6 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.MIN_
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NAME_EDIT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NEG_KATA_KUNCI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUK
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SOURCE_ANDROID_HEADLINE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SOURCE_PRODUCT_GROUP_DETAIL_PAGE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SUGGESTION_BID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -76,6 +75,7 @@ import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTracker
 import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.*
@@ -378,6 +378,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                     ?: Int.ZERO)
                 entryPointProductGroup?.show()
                 entryPointProductGroup?.binding?.widgetCTAButton?.setOnClickListener {
+                    RecommendationTracker.clickLihatSelengkapnyaIklanProduk()
                     val bundle = Bundle()
                     bundle.putString(RecommendationConstants.AD_GROUP_TYPE_KEY, RecommendationConstants.PRODUCT_KEY)
                     bundle.putString(RecommendationConstants.AD_GROUP_NAME_KEY, groupName)
@@ -555,7 +556,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         groupStatus = data.status
         groupName = data.groupName
         groupTotal = data.groupTotal.toIntOrZero()
-        priceDaily = data.daiyBudget
+        priceDaily = data.dailyBudget
 
         editRekomendasiBudget?.visibility = View.VISIBLE
         perClickRekomendasi?.visibility = View.VISIBLE

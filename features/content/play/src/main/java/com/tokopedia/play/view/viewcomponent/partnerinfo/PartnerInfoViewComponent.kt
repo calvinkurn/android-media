@@ -14,16 +14,17 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.content.common.R as contentcommonR
 
 class PartnerInfoViewComponent(
     container: ViewGroup,
     private val listener: Listener
 ) : ViewComponent(container, R.id.view_partner_info) {
 
-    private val ivIcon: ImageUnify = findViewById(R.id.iv_icon)
-    private val ivBadge: ImageUnify = findViewById(R.id.iv_badge)
-    private val tvPartnerName: Typography = findViewById(R.id.tv_partner_name)
-    private val btnFollow: UnifyButton = findViewById(R.id.btn_follow)
+    private val ivIcon: ImageUnify = findViewById(contentcommonR.id.iv_icon)
+    private val ivBadge: ImageUnify = findViewById(contentcommonR.id.iv_badge)
+    private val tvPartnerName: Typography = findViewById(contentcommonR.id.tv_partner_name)
+    private val btnFollow: UnifyButton = findViewById(contentcommonR.id.btn_follow)
 
     init {
         btnFollow.setOnClickListener {

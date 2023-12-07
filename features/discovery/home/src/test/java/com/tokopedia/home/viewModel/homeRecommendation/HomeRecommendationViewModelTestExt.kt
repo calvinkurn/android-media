@@ -1,6 +1,7 @@
 package com.tokopedia.home.viewModel.homeRecommendation
 
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendationCardUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
@@ -14,17 +15,17 @@ import java.util.concurrent.TimeoutException
  */
 
 fun GetHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel: HomeRecommendationDataModel) {
-    setParams("", 0, 10, 0, sourceType = "")
+    setParams("", 0, 10, 0, "", sourceType = "")
     coEvery { executeOnBackground() } returns homeRecommendationDataModel
 }
 
 fun GetHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel: HomeRecommendationDataModel, nextReturnData: HomeRecommendationDataModel) {
-    setParams("", 0, 10, 0, sourceType = "")
+    setParams("", 0, 10, 0, "", sourceType = "")
     coEvery { executeOnBackground() } returns homeRecommendationDataModel andThen nextReturnData
 }
 
 fun GetHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel: HomeRecommendationDataModel, exception: Exception) {
-    setParams("", 0, 10, 0, sourceType = "")
+    setParams("", 0, 10, 0, "", sourceType = "")
     coEvery { executeOnBackground() } returns homeRecommendationDataModel andThenThrows exception
 }
 
@@ -52,4 +53,26 @@ fun GetTopAdsHeadlineUseCase.givenDataReturn(
     data: TopAdsHeadlineResponse
 ) {
     coEvery { executeOnBackground() } returns data
+}
+
+fun GetHomeRecommendationCardUseCase.givenDataReturn(
+    homeRecommendationDataModel: HomeRecommendationDataModel,
+    productPage: Int
+) {
+    coEvery {
+        execute(productPage, "", "", "")
+    } coAnswers { homeRecommendationDataModel }
+}
+
+fun GetHomeRecommendationCardUseCase.givenDataReturnMatch(
+    homeRecommendationDataModel: HomeRecommendationDataModel,
+    productPage: Int
+) {
+    coEvery {
+        execute(match { it == productPage }, "", "", "")
+    } coAnswers { homeRecommendationDataModel }
+}
+
+fun GetHomeRecommendationCardUseCase.givenThrows(exception: Throwable, productPage: Int) {
+    coEvery { execute(productPage, "", "", "") } throws exception
 }

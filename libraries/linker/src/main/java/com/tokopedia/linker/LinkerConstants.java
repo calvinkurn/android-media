@@ -54,6 +54,7 @@ public interface LinkerConstants {
     String VARIANT = "variant";
     String QTY = "qty";
     String CATEGORY = "category";
+    String PRODUCT_BRAND = "product_brand";
 
     int EVENT_COMMERCE_VAL = 1;
     int EVENT_LOGIN_VAL = 2;
@@ -98,6 +99,11 @@ public interface LinkerConstants {
     String KEY_ITEM_ID = "item_id";
     String KEY_CLIENT_TIME_STAMP = "client_timestamp";
     String KEY_AMOUNT = "amount";
+
+    String KEY_MIN_ANDROID_VERSION = "an_min_version";
+    String KEY_MAX_ANDROID_VERSION = "an_max_version";
+    String KEY_MIN_IOS_VERSION = "ios_min_version";
+    String KEY_MAX_IOS_VERSION = "ios_max_version";
 
     String LABEL_SHARING = "sharing";
     String EMAIL_LABLE = "email";
@@ -176,4 +182,5 @@ public interface LinkerConstants {
     String QUERY_INITIATOR = "?";
     String QUERY_PARAM_SEGREGATOR = "&";
 
+    String KEY_GA_ID = "gaid";
 }

@@ -6,6 +6,7 @@ import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import okhttp3.Request
 import okhttp3.Response
 import kotlin.coroutines.CoroutineContext
 
@@ -42,13 +43,17 @@ internal object CdnTracker : CoroutineScope {
     @JvmStatic
     fun log(
         context: Context,
-        response: Response
+        request: Request,
+        response: Response,
+        cost: Long
     ) {
         ServerLogger.log(
             priority = Priority.P1,
             tag = TAG_ANALYTIC,
             message = response.mapping(context).apply {
+                put("cname", request.header("cname").toString())
                 put("error_description", response.message)
+                put("response_time_total", cost.toString())
             }
         )
     }

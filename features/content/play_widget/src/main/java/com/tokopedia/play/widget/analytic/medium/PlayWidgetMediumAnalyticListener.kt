@@ -67,7 +67,8 @@ interface PlayWidgetMediumAnalyticListener {
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
-        isRemindMe: Boolean
+        isRemindMe: Boolean,
+        config: PlayWidgetConfigUiModel,
     ) {}
 
     /**

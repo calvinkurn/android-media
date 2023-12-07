@@ -233,6 +233,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
 
     private fun openChatPageWithoutProduct(shopId: String) {
         val intent = RouteManager.getIntent(mContext, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId)
+        intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.Source.SOURCE_PDP)
         mContext?.startActivity(intent)
     }
 
@@ -244,6 +245,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
         val intent = RouteManager.getIntent(mContext, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId)
         val stringProductPreviews = CommonUtil.toJson(productIds)
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
+        intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.Source.SOURCE_PDP)
         mContext?.startActivity(intent)
     }
 

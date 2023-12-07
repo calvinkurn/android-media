@@ -29,6 +29,7 @@ jobs:
   analyze:
     name: Analyze
     runs-on: [runnerset=code-scanning-runners]
+    if: ${{ github.actor != 'dependabot[bot]' }}
     permissions: write-all
     env: 
       CODEQL_RAM: 8192

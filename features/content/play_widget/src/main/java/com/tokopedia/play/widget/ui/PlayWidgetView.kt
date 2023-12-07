@@ -15,6 +15,7 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.error.InflateErrorException
 
 /**
  * Created by jegul on 08/10/20
@@ -52,6 +53,9 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         when (child) {
             is PlayWidgetSmallView -> child.setAnalyticListener(null)
             is PlayWidgetMediumView -> child.setAnalyticListener(null)
+            is PlayWidgetLargeView -> child.setAnalyticListener(null)
+            is PlayWidgetJumboView -> child.setAnalyticListener(null)
+            is PlayWidgetCarouselView -> child.setAnalyticListener(null)
         }
         super.onViewRemoved(child)
     }
@@ -100,7 +104,10 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             PlayWidgetType.Large -> addLargeView(state.model)
             PlayWidgetType.Jumbo -> addJumboView(state.model)
             PlayWidgetType.Carousel -> addCarouselView(state.model)
-            else -> {}
+            else -> {
+                removeCurrentView()
+                mWidgetListener?.onWidgetError(this, InflateErrorException())
+            }
         }
     }
 
@@ -111,6 +118,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             is PlayWidgetMediumView -> child.setAnalyticListener(listener)
             is PlayWidgetLargeView -> child.setAnalyticListener(listener)
             is PlayWidgetJumboView -> child.setAnalyticListener(listener)
+            is PlayWidgetCarouselView -> child.setAnalyticListener(listener)
         }
     }
 
@@ -162,6 +170,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             widgetView.show()
             widgetView.setData(model)
             widgetView.setWidgetListener(mWidgetListener)
+            widgetView.setWidgetInternalListener(mWidgetInternalListener)
             widgetView.setAnalyticListener(mAnalyticListener)
         }
     }
@@ -174,6 +183,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             widgetView.show()
             widgetView.setData(model)
             widgetView.setWidgetListener(mWidgetListener)
+            widgetView.setWidgetInternalListener(mWidgetInternalListener)
             widgetView.setAnalyticListener(mAnalyticListener)
         }
     }
@@ -208,7 +218,9 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
                 addView(widget)
 
                 widget
-            } else firstChild
+            } else {
+                firstChild
+            }
         } catch (e: Exception) {
             null
         }

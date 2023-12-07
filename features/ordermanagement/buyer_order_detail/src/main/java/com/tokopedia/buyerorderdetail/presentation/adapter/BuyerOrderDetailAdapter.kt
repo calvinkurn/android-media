@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.buyerorderdetail.presentation.adapter.CourierActionButtonAdapter.ViewHolder.Companion.CHAT_DRIVER
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.BuyerOrderDetailDiffUtilCallback
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
@@ -29,6 +30,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
 
 @Suppress("UNCHECKED_CAST")
@@ -96,6 +98,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         addProductListHeaderSection(context, productListUiModel.productListHeaderUiModel)
         addTickerDetailsSection(context, productListUiModel.tickerInfo)
         addPofHeaderSection(context, productListUiModel.productFulfilledHeaderLabel)
+        addProductBmgmListSection(productListUiModel.productBmgmList)
         addProductBundlingListSection(productListUiModel.productBundlingList)
         addProductListSection(context, productListUiModel.productList)
         addAddonsListSection(productListUiModel.addonsListUiModel)
@@ -285,6 +288,12 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         if (courierInfoUiModel.shouldShow(context)) add(courierInfoUiModel)
     }
 
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBmgmListSection(
+        productBmgmList: List<ProductBmgmSectionUiModel>
+    ) {
+        (productBmgmList as? List<Visitable<BuyerOrderDetailTypeFactory>>)?.let { addAll(it) }
+    }
+
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBundlingListSection(
         productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>
     ) {
@@ -442,5 +451,24 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
 
     fun getBaseVisitableUiModels(): List<BaseVisitableUiModel> {
         return visitables.filterIsInstance<BaseVisitableUiModel>()
+    }
+
+    fun updateCourierCounter(counter: Int) {
+        val position = visitables.indexOfFirst { it is ShipmentInfoUiModel.CourierDriverInfoUiModel }
+        if (position >= 0) {
+            val driverUiModel = visitables[position] as ShipmentInfoUiModel.CourierDriverInfoUiModel
+            val chatDriverButton = driverUiModel.buttonList.find { it.key == CHAT_DRIVER }
+
+            chatDriverButton?.let {
+                val updatedButton = it.copy(counter = counter)
+                val updatedButtonList = driverUiModel.buttonList.map { button ->
+                    if (button == it) updatedButton else button
+                }
+
+                val updatedDriverUiModel = driverUiModel.copy(buttonList = updatedButtonList)
+                visitables[position] = updatedDriverUiModel
+                notifyItemChanged(position)
+            }
+        }
     }
 }

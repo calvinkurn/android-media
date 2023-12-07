@@ -35,6 +35,7 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
             searchProductTopAdsUseCase,
             { performanceMonitoring },
             testSchedulersProvider,
+            reimagineRollence,
         )
     override val searchLoadMoreUseCase: UseCase<SearchProductModel>
         get() = SearchProductTypoCorrectionUseCase(
@@ -42,6 +43,7 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
             searchProductTopAdsUseCase,
             { performanceMonitoring },
             testSchedulersProvider,
+            reimagineRollence,
         )
 
     @Test
@@ -69,9 +71,9 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
         `Then verify view will add product list`()
         val topAdsIndexStart = typoCorrectedTopAdsFirstPage.data.size
         `Then verify topAds products is replaced with typo correction`(
-            searchProductModelFirstPage,
             expectedTopAds,
-            topAdsIndexStart
+            topAdsIndexStart,
+            searchProductModelFirstPage.searchProduct.header.meta.productListType,
         )
     }
 
@@ -133,9 +135,9 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
     }
 
     private fun `Then verify topAds products is replaced with typo correction`(
-        searchProductModel: SearchProductModel,
         expectedTopAds: TopAdsModel,
         topAdsPositionStart: Int = 0,
+        expectedProductListType: String = "",
     ) {
         visitableList.filter { it is ProductItemDataView && it.isTopAds }
             .forEachIndexed { index, visitable ->
@@ -143,8 +145,7 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
                 visitable.assertTopAdsProduct(
                     expectedTopAds.data[index],
                     position,
-                    searchProductModel.getProductListType(),
-                    searchProductModel.isShowButtonAtc,
+                    expectedProductListType,
                 )
             }
     }

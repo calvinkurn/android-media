@@ -59,11 +59,13 @@ internal object AceSearchProduct: GqlQueryInterface {
                 name
                 price
                 priceInt
+                categoryBreadcrumb
                 discountPercentage
                 originalPrice
                 childs
                 parentId
                 maxOrder
+                warehouseIdDefault
                 ratingAverage
                 minOrder
                 stock
@@ -73,6 +75,8 @@ internal object AceSearchProduct: GqlQueryInterface {
                 shop {
                   id
                   name
+                  isOfficial
+                  isPowerBadge
                 }
                 labelGroups {
                   url

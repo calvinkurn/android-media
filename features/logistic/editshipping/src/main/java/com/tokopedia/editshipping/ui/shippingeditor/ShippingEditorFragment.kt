@@ -50,12 +50,15 @@ import com.tokopedia.editshipping.ui.shippingeditor.adapter.WarehouseInactiveAda
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -145,7 +148,9 @@ class ShippingEditorFragment :
     private fun initViews() {
         renderTickerOnDemand()
         renderTextDetailCourier()
-        binding?.btnSaveShipper?.setOnClickListener { saveButtonShippingEditor() }
+        binding?.run {
+            btnSaveShipper.setOnClickListener { saveButtonShippingEditor() }
+        }
     }
 
     private fun renderTickerOnDemand() {
@@ -204,9 +209,12 @@ class ShippingEditorFragment :
         ) {
             when (it) {
                 is ShippingEditorState.Success -> {
+                    showSuccessLayout()
                     updateData(it.data.shippers)
                     renderTicker(it.data.ticker)
                     checkWhitelabelCoachmarkState()
+                    renderDropOffButton(binding?.buttonDropOff, it.data.dropOffMapsUrl)
+                    updateHeaderTickerData(it.data.tickerHeader)
                 }
 
                 is ShippingEditorState.Fail -> {
@@ -220,24 +228,6 @@ class ShippingEditorFragment :
                     binding?.shippingEditorLayout?.gone()
                     binding?.btnSaveShipper?.gone()
                     binding?.swipeRefresh?.isRefreshing = true
-                }
-            }
-        }
-
-        viewModel.shipperTickerList.observe(
-            viewLifecycleOwner
-        ) {
-            when (it) {
-                is ShippingEditorState.Success -> {
-                    binding?.swipeRefresh?.isRefreshing = false
-                    binding?.shippingEditorLayout?.visible()
-                    binding?.btnSaveShipper?.visible()
-                    binding?.globalError?.gone()
-                    updateHeaderTickerData(it.data.headerTicker)
-                }
-
-                else -> {
-                    // no-op
                 }
             }
         }
@@ -292,6 +282,27 @@ class ShippingEditorFragment :
                     showToaster(it.errorMessage, Toaster.TYPE_ERROR)
                 }
                 else -> binding?.swipeRefresh?.isRefreshing = true
+            }
+        }
+    }
+
+    private fun showSuccessLayout() {
+        binding?.swipeRefresh?.isRefreshing = false
+        binding?.shippingEditorLayout?.visible()
+        binding?.btnSaveShipper?.visible()
+        binding?.globalError?.gone()
+    }
+
+    private fun renderDropOffButton(button: UnifyButton?, dropOffMapsUrl: String) {
+        button?.run {
+            if (dropOffMapsUrl.isNotEmpty()) {
+                setDrawable(getIconUnifyDrawable(context, IconUnify.LOCATION))
+                setOnClickListener {
+                    RouteManager.route(context, generateWebviewApplink(dropOffMapsUrl, showHeader = true))
+                }
+                visible()
+            } else {
+                gone()
             }
         }
     }
@@ -418,8 +429,8 @@ class ShippingEditorFragment :
         }
     }
 
-    private fun convertFeatureIdToString(featureId: List<Long>?): String? {
-        return featureId?.joinToString(separator = ",")
+    private fun convertFeatureIdToString(featureId: List<Long>?): String {
+        return featureId?.joinToString(separator = ",").orEmpty()
     }
 
     private fun openBottomSheetWarehouseInactive(
@@ -547,8 +558,8 @@ class ShippingEditorFragment :
         }
     }
 
-    private fun generateWebviewApplink(url: String): String {
-        return "${ApplinkConst.WEBVIEW}?titlebar=false&url=$url"
+    private fun generateWebviewApplink(url: String, showHeader: Boolean = false): String {
+        return "${ApplinkConst.WEBVIEW}?titlebar=$showHeader&url=$url"
     }
 
     private fun setupChildCourierInactive(
@@ -815,18 +826,9 @@ class ShippingEditorFragment :
     }
 
     private fun getWhitelabelView(): View? {
-        val whitelabelServiceIndex = shippingEditorOnDemandAdapter.getWhitelabelServicePosition()
+        val whitelabelServiceIndex = shippingEditorOnDemandAdapter.getSamedayServicePosition()
         return if (whitelabelServiceIndex != RecyclerView.NO_POSITION) {
             binding?.rvOnDemand?.findViewHolderForAdapterPosition(whitelabelServiceIndex)?.itemView
-        } else {
-            null
-        }
-    }
-
-    private fun getNormalServiceView(): View? {
-        val normalServiceIndex = shippingEditorOnDemandAdapter.getFirstNormalServicePosition()
-        return if (normalServiceIndex != RecyclerView.NO_POSITION) {
-            binding?.rvOnDemand?.findViewHolderForAdapterPosition(normalServiceIndex)?.itemView
         } else {
             null
         }
@@ -847,9 +849,7 @@ class ShippingEditorFragment :
         context?.let {
             val whitelabelView = getWhitelabelView()
             if (whitelabelView != null) {
-                val normalServiceView = getNormalServiceView()
-                val coachMarkItems =
-                    generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
+                val coachMarkItems = generateOnBoardingCoachMark(it, whitelabelView)
 
                 CoachMark2(it).apply {
                     setOnBoardingListener(coachMarkItems)
@@ -862,27 +862,16 @@ class ShippingEditorFragment :
 
     private fun generateOnBoardingCoachMark(
         context: Context,
-        normalService: View?,
         whitelabelService: View
     ): ArrayList<CoachMark2Item> {
         val coachMarkItems = ArrayList<CoachMark2Item>()
-        normalService?.let { view ->
-            coachMarkItems.add(
-                CoachMark2Item(
-                    view,
-                    context.getString(R.string.whitelabel_onboarding_title_coachmark),
-                    context.getString(R.string.whitelabel_onboarding_description_coachmark),
-                    CoachMark2.POSITION_TOP
-                )
-            )
-        }
 
         whitelabelService.let { view ->
             coachMarkItems.add(
                 CoachMark2Item(
                     view,
-                    context.getString(R.string.whitelabel_instan_title_coachmark),
-                    context.getString(R.string.whitelabel_instan_description_coachmark),
+                    context.getString(R.string.whitelabel_sameday_title_coachmark),
+                    context.getString(R.string.whitelabel_sameday_description_coachmark),
                     CoachMark2.POSITION_TOP
                 )
             )

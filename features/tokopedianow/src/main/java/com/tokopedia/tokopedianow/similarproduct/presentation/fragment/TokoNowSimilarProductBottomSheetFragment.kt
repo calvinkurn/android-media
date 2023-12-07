@@ -60,6 +60,8 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
     private val productIdTriggered: String
         get() = arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "").orEmpty()
 
+    var finishActivityOnDismiss: Boolean = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -155,6 +157,7 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
                 productIdTriggered = productIdTriggered
             )
         }
+        bottomSheet?.finishActivityOnDismiss = finishActivityOnDismiss
         bottomSheet?.show(childFragmentManager)
         bottomSheet?.setListener(listener)
     }

@@ -66,10 +66,19 @@ class CartGroupViewHolder(
         renderCheckBox(cartGroupHolderData)
         renderFulfillment(cartGroupHolderData)
         renderFreeShipping(cartGroupHolderData)
+        renderIconPin(cartGroupHolderData)
         renderMaximumWeight(cartGroupHolderData)
         renderCartShopGroupTicker(cartGroupHolderData)
         validateGroupConstraintLayout(cartGroupHolderData)
         validateProductPoliciesMargin(cartGroupHolderData)
+    }
+
+    private fun renderIconPin(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.isShowPin) {
+            binding.iconPin.show()
+        } else {
+            binding.iconPin.gone()
+        }
     }
 
     private fun renderDivider(cartGroupHolderData: CartGroupHolderData) {
@@ -430,7 +439,7 @@ class CartGroupViewHolder(
     }
 
     private fun renderCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
-        binding.itemCartBasketBuilding.vBmgmProductSeparator.gone()
+        binding.itemCartBasketBuilding.vBmgmSeparator.gone()
         if (cartGroupHolderData.hasSelectedProduct && !cartGroupHolderData.isError &&
             cartGroupHolderData.cartShopGroupTicker.enableCartAggregator &&
             !cartGroupHolderData.isOverweight
@@ -480,6 +489,7 @@ class CartGroupViewHolder(
                             } else {
                                 iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
                             }
+                            iuTickerRightIcon.show()
                         } else {
                             iuTickerRightIcon.gone()
                         }

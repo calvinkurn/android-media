@@ -7,18 +7,25 @@ import com.tokopedia.url.TokopediaUrl
 object ApplinkConstInternalContent {
 
     const val HOST_CONTENT = "content"
+    const val HOST_PLAY = "play"
     const val HOST_AFFILIATE = "affiliate"
-    private const val HOST_PLAY = "play"
     private const val HOST_FEED = "feed"
     const val HOST_PLAY_BROADCASTER = "play-broadcaster"
     const val HOST_PLAY_SHORTS = "play-shorts"
+    const val HOST_STORIES = "stories"
+
+    const val PATH_STORIES_CREATION = "/creation"
 
     const val INTERNAL_CONTENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CONTENT"
     const val INTERNAL_PLAY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY"
     const val INTERNAL_FEED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FEED"
+    const val INTERNAL_FEED_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FEED/detail/"
     const val INTERNAL_PLAY_BROADCASTER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_BROADCASTER"
     const val INTERNAL_PLAY_SHORTS = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_SHORTS"
     const val INTERNAL_AFFILIATE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_AFFILIATE"
+    const val INTERNAL_STORIES = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_STORIES"
+    const val INTERNAL_STORIES_SHOP = "$INTERNAL_STORIES/shop"
+    const val INTERNAL_STORIES_CREATION = "$INTERNAL_STORIES$PATH_STORIES_CREATION"
 
     const val INTERNAL_AFFILIATE_CREATE_POST_V2 = "$INTERNAL_CONTENT/create_post_v2/"
     const val INTERNAL_PRODUCT_PICKER_FROM_SHOP = "$INTERNAL_CONTENT/productpickerfromshop/"
@@ -54,6 +61,13 @@ object ApplinkConstInternalContent {
     const val ARGS_FEED_VIDEO_TAB_SELECT_CHIP = "tab"
 
     /**
+     * Query
+     */
+    const val SOURCE_TYPE = "source_type"
+    const val SOURCE_TYPE_HOME = "HOME"
+    const val ENTRY_POINT = "entrypoint"
+
+    /**
      * Unified Feed
      */
     const val UF_TAB_POSITION_FOR_YOU = 0
@@ -63,6 +77,7 @@ object ApplinkConstInternalContent {
     const val UF_EXTRA_FEED_TAB_NAME = "ARGS_FEED_TAB_NAME"
     const val UF_EXTRA_FEED_IS_JUST_LOGGED_IN = "FEED_IS_JUST_LOGGED_IN"
     const val UF_EXTRA_FEED_ENTRY_POINT = "ARGS_FEED_ENTRY_POINT"
+    const val UF_EXTRA_FEED_WIDGET_ID = "ARGS_FEED_WIDGET_ID"
 
     const val NAV_BUTTON_ENTRY_POINT = "Nav button"
 

@@ -153,6 +153,9 @@ class CheckoutLogisticProcessor @Inject constructor(
                 } else {
                     orderValue += (it.quantity * it.price).toLong()
                 }
+                if (it.isBMGMItem && it.bmgmItemPosition == ShipmentMapper.BMGM_ITEM_HEADER) {
+                    orderValue -= it.bmgmTotalDiscount.toLong()
+                }
                 totalWeight += it.quantity * it.weight
                 totalWeightActual += if (it.weightActual > 0) {
                     it.quantity * it.weightActual
@@ -283,6 +286,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             .promoCode(pslCode)
             .cartData(cartDataForRates)
             .warehouseId(orderModel.fulfillmentId.toString())
+            .groupMetadata(orderModel.groupMetadata)
         if (useMvc) {
             ratesParamBuilder.mvc(generateRatesMvcParam(orderModel.cartStringGroup, promo))
         }

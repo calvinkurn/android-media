@@ -21,7 +21,8 @@ class ShopProductItemListViewHolder(
     private val shopProductClickedListener: ShopProductClickedListener?,
     private val shopProductImpressionListener: ShopProductImpressionListener?,
     private val shopTrackType: Int,
-    private val isShowTripleDot: Boolean
+    private val isShowTripleDot: Boolean,
+    private val isOverrideTheme: Boolean
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
 
     companion object {
@@ -46,7 +47,8 @@ class ShopProductItemListViewHolder(
         val productCardModel = ShopPageProductListMapper.mapToProductCardModel(
             shopProductUiModel = shopProductUiModel,
             isWideContent = false,
-            isShowThreeDots = isShowTripleDot
+            isShowThreeDots = isShowTripleDot,
+            isForceLightMode = isOverrideTheme
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )

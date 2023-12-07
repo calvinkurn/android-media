@@ -13,6 +13,7 @@ class ProductBundleSingleAdapter: RecyclerView.Adapter<ProductBundleSinglePackag
     private var bundleDetails: List<BundleDetailUiModel> = listOf()
     private var lastSelectedPosition = 0
     private var onSelectedChangeListener: (BundleDetailUiModel) -> Unit = {}
+    private var isOverrideWidgetTheme = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductBundleSinglePackageViewHolder {
         return ProductBundleSinglePackageViewHolder(
@@ -26,7 +27,7 @@ class ProductBundleSingleAdapter: RecyclerView.Adapter<ProductBundleSinglePackag
 
     override fun onBindViewHolder(holder: ProductBundleSinglePackageViewHolder, position: Int) {
         val currentBundle = bundleDetails.getOrNull(position) ?: BundleDetailUiModel()
-        holder.bind(currentBundle)
+        holder.bind(currentBundle, isOverrideWidgetTheme = isOverrideWidgetTheme)
         holder.itemView.apply {
             setOnClickListener {
                 // deselect last selected bundle
@@ -85,6 +86,10 @@ class ProductBundleSingleAdapter: RecyclerView.Adapter<ProductBundleSinglePackag
 
     fun setSelectionListener(listener: (BundleDetailUiModel) -> Unit) {
         onSelectedChangeListener = listener
+    }
+
+    fun setIsOverrideWidgetTheme(isOverrideWidgetTheme: Boolean) {
+        this.isOverrideWidgetTheme = isOverrideWidgetTheme
     }
 
 }

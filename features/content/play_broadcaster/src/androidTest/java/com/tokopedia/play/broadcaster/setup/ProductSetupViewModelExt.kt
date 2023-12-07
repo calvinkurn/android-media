@@ -8,10 +8,10 @@ import com.tokopedia.content.common.producttag.util.preference.ProductTagPrefere
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 
@@ -24,22 +24,24 @@ fun productSetupViewModel(
     productSectionList: List<ProductTagSectionUiModel> = emptyList(),
     handle: SavedStateHandle = SavedStateHandle(),
     isEligibleForPin: Boolean = false,
-    repo: PlayBroadcastRepository = mockk(relaxed = true),
+    repo: ContentProductPickerSellerRepository = mockk(relaxed = true),
+    commonRepo: ProductPickerSellerCommonRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     dispatchers: CoroutineDispatchers = CoroutineDispatchersProvider,
-    source: PlayBroPageSource = PlayBroPageSource.Live,
+    isNumerationShown: Boolean = true,
     fetchCommissionProduct: Boolean = false,
-): PlayBroProductSetupViewModel {
-    return PlayBroProductSetupViewModel(
+): ContentProductPickerSellerViewModel {
+    return ContentProductPickerSellerViewModel(
         creationId = creationId,
         maxProduct = maxProduct,
         productSectionList = productSectionList,
         savedStateHandle = handle,
         isEligibleForPin = isEligibleForPin,
         repo = repo,
+        commonRepo = commonRepo,
         userSession = userSession,
         dispatchers = dispatchers,
-        source = source,
+        isNumerationShown = isNumerationShown,
         fetchCommissionProduct = fetchCommissionProduct,
     )
 }

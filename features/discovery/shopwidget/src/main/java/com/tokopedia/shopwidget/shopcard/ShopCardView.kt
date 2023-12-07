@@ -113,9 +113,10 @@ class ShopCardView : BaseCustomView {
         View.inflate(context, R.layout.shopwidget_shop_card_layout, this)
     }
 
-    fun setShopCardModel(shopCardModel: ShopCardModel?, shopCardListener: ShopCardListener, isReimagine: Boolean= false) {
+    fun setShopCardModel(shopCardModel: ShopCardModel?, shopCardListener: ShopCardListener) {
         shopCardModel ?: return
-
+        val isReimagine = shopCardModel.isReimagine
+        initCardStyle(isReimagine)
         initCardViewShopCard(shopCardListener)
         initImageShopAvatar(shopCardModel, shopCardListener)
         initImageShopBadge(shopCardModel, isReimagine)
@@ -129,6 +130,13 @@ class ShopCardView : BaseCustomView {
         initShopAdsText(isReimagine)
     }
 
+    private fun initCardStyle(isReimagine: Boolean) {
+        if (isReimagine) {
+            renderShopCardReimagine()
+        } else {
+            renderShopCardControl()
+        }
+    }
     private fun initCardViewShopCard(shopCardListener: ShopCardListener) {
         shopWidgetCardViewShopCard?.setOnClickListener {
             shopCardListener.onItemClicked()
@@ -391,14 +399,6 @@ class ShopCardView : BaseCustomView {
     fun getMaxCardElevation() = shopWidgetCardViewShopCard?.maxCardElevation ?: 0f
 
     fun getRadius() = shopWidgetCardViewShopCard?.radius ?: 0f
-
-    fun setCardUnifyStyle(isReimagine: Boolean = false) {
-        if (isReimagine) {
-            renderShopCardReimagine()
-        } else {
-            renderShopCardControl()
-        }
-    }
 
     private fun renderShopCardReimagine() {
         shopWidgetCardViewShopCard?.apply {

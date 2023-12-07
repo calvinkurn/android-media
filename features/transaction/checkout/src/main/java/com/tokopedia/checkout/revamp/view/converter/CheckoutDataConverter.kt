@@ -202,6 +202,7 @@ class CheckoutDataConverter @Inject constructor() {
                 groupInfoBadgeUrl = groupShop.groupInfoBadgeUrl,
                 groupInfoDescription = groupShop.groupInfoDescription,
                 groupInfoDescriptionBadgeUrl = groupShop.groupInfoDescriptionBadgeUrl,
+                groupMetadata = groupShop.groupMetadata,
                 isBlackbox = cartShipmentAddressFormData.isBlackbox,
                 isHidingCourier = cartShipmentAddressFormData.isHidingCourier,
                 addressId = cartShipmentAddressFormData.groupAddress[0].userAddress.addressId,
@@ -235,8 +236,9 @@ class CheckoutDataConverter @Inject constructor() {
                 spId = groupShop.spId,
                 boCode = groupShop.boCode,
                 boUniqueId = groupShop.boUniqueId,
-                dropshiperName = groupShop.dropshipperName,
-                dropshiperPhone = groupShop.dropshipperPhone,
+                isDropshipperDisabled = cartShipmentAddressFormData.isDropshipperDisable,
+                dropshipName = groupShop.dropshipperName,
+                dropshipPhone = groupShop.dropshipperPhone,
                 isInsurance = groupShop.isUseInsurance,
                 hasPromoList = groupShop.isHasPromoList,
                 isSaveStateFlag = groupShop.isSaveStateFlag,
@@ -253,7 +255,8 @@ class CheckoutDataConverter @Inject constructor() {
                 ratesValidationFlow = groupShop.ratesValidationFlow,
                 addOnDefaultTo = receiverName,
                 isProductFcancelPartial = fobject.isFcancelPartial == 1,
-                products = products,
+                finalCheckoutProducts = products,
+                orderProductIds = products.map { it.productId.toString() },
                 isProductIsPreorder = fobject.isPreOrder == 1,
                 preOrderDurationDay = products.first().preOrderDurationDay,
                 isTokoNow = shop.isTokoNow,
@@ -279,7 +282,7 @@ class CheckoutDataConverter @Inject constructor() {
             if (groupShop.isFulfillment) {
                 order.shopLocation = groupShop.fulfillmentName
             }
-            setCartItemModelError(order)
+            setCartItemModelError(order, products)
             if (order.isFreeShippingPlus && !isFirstPlusProductHasPassed) {
                 val coachmarkPlusData = CoachmarkPlusData(
                     cartShipmentAddressFormData.coachmarkPlus.isShown,
@@ -304,9 +307,12 @@ class CheckoutDataConverter @Inject constructor() {
         return mapSubtotal
     }
 
-    private fun setCartItemModelError(order: CheckoutOrderModel) {
+    private fun setCartItemModelError(
+        order: CheckoutOrderModel,
+        products: ArrayList<CheckoutProductModel>
+    ) {
         if (order.isAllItemError) {
-            for (cartItemModel in order.products) {
+            for (cartItemModel in products) {
                 cartItemModel.isError = true
                 cartItemModel.isShopError = true
             }
@@ -462,7 +468,17 @@ class CheckoutDataConverter @Inject constructor() {
             groupPreOrderInfo = if (groupShop.shipmentInformationData.preorder.isPreorder) groupShop.shipmentInformationData.preorder.duration else "",
             freeShippingBadgeUrl = groupShop.shipmentInformationData.freeShippingGeneral.badgeUrl,
             isFreeShippingPlus = groupShop.shipmentInformationData.freeShippingGeneral.isBoTypePlus(),
-            shouldShowGroupInfo = index == 0
+            shouldShowGroupInfo = index == 0,
+            isBMGMItem = product.isBmgmItem,
+            bmgmOfferId = product.bmgmOfferId,
+            bmgmOfferName = product.bmgmOfferName,
+            bmgmOfferMessage = product.bmgmOfferMessage,
+            bmgmOfferStatus = product.bmgmOfferStatus,
+            bmgmItemPosition = product.bmgmItemPosition,
+            bmgmIconUrl = product.bmgmIconUrl,
+            bmgmTotalDiscount = product.bmgmTotalDiscount,
+            bmgmTierProductList = product.bmgmTierProductList,
+            shouldShowBmgmInfo = product.bmgmItemPosition == BMGM_ITEM_HEADER
         )
     }
 
@@ -475,5 +491,9 @@ class CheckoutDataConverter @Inject constructor() {
     companion object {
         private const val ACTIVE_ADDRESS = 1
         private const val PRIME_ADDRESS = 2
+        private const val MERCHANT_VOUCHER_TYPE = "merchant"
+        private const val LOGISTIC_VOUCHER_TYPE = "logistic"
+
+        private const val BMGM_ITEM_HEADER = 1
     }
 }

@@ -44,6 +44,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
@@ -59,6 +60,7 @@ import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promousage.util.PromoUsageRollenceManager
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
@@ -163,6 +165,11 @@ class CheckoutViewModel @Inject constructor(
     // list summary default
     private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
 
+    private var isPromoRevamp: Boolean? = null
+
+    var isCartCheckoutRevamp: Boolean = false
+    var usePromoEntryPointNewInterface: Boolean = false
+
     fun stopEmbraceTrace() {
         val emptyMap: Map<String, Any> = HashMap()
         EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_BUY, null, emptyMap)
@@ -173,6 +180,7 @@ class CheckoutViewModel @Inject constructor(
         skipUpdateOnboardingState: Boolean,
         isReloadAfterPriceChangeHigher: Boolean
     ) {
+        promoProcessor.isCartCheckoutRevamp = isCartCheckoutRevamp
         viewModelScope.launch(dispatchers.io) {
             withContext(dispatchers.main) {
                 pageState.value = CheckoutPageState.Loading
@@ -255,9 +263,14 @@ class CheckoutViewModel @Inject constructor(
                             epharmacy = uploadPrescriptionUiModel
                         )
 
+                        isPromoRevamp = PromoUsageRollenceManager()
+                            .isRevamp(saf.cartShipmentAddressFormData.lastApplyData.userGroupMetadata)
                         val promo = CheckoutPromoModel(
                             isEnable = !tickerError.isError,
-                            promo = saf.cartShipmentAddressFormData.lastApplyData
+                            promo = saf.cartShipmentAddressFormData.lastApplyData,
+                            isPromoRevamp = isPromoRevamp ?: false,
+                            isLoading = isPromoRevamp ?: false,
+                            enableNewInterface = usePromoEntryPointNewInterface
                         )
                         if (promo.isEnable && saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
                             PromoRevampAnalytics.eventCartViewPromoMessage(saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message)
@@ -265,18 +278,16 @@ class CheckoutViewModel @Inject constructor(
 
                         val cost = CheckoutCostModel()
 
-                        val crossSellList = arrayListOf<CheckoutCrossSellItem>()
+                        val paymentLevelAddOnsMap = mutableMapOf<Long, CheckoutCrossSellItem>()
                         if (!tickerError.isError) {
                             val crossSellModel =
                                 saf.cartShipmentAddressFormData.crossSell.firstOrNull()
                             if (crossSellModel != null && !crossSellModel.checkboxDisabled) {
-                                crossSellList.add(
-                                    CheckoutCrossSellModel(
-                                        crossSellModel,
-                                        crossSellModel.isChecked,
-                                        !crossSellModel.checkboxDisabled,
-                                        0
-                                    )
+                                paymentLevelAddOnsMap[DG_ID] = CheckoutCrossSellModel(
+                                    crossSellModel,
+                                    crossSellModel.isChecked,
+                                    !crossSellModel.checkboxDisabled,
+                                    0
                                 )
                                 if (crossSellModel.isChecked) {
                                     val digitalCategoryName = crossSellModel.orderSummary.title
@@ -292,20 +303,16 @@ class CheckoutViewModel @Inject constructor(
                                 }
                             }
                             if (saf.cartShipmentAddressFormData.egoldAttributes != null && saf.cartShipmentAddressFormData.egoldAttributes!!.isEnabled && saf.cartShipmentAddressFormData.egoldAttributes!!.isEligible) {
-                                crossSellList.add(
-                                    CheckoutEgoldModel(
-                                        saf.cartShipmentAddressFormData.egoldAttributes!!,
-                                        saf.cartShipmentAddressFormData.egoldAttributes!!.isChecked,
-                                        saf.cartShipmentAddressFormData.egoldAttributes!!.buyEgoldValue
-                                    )
+                                paymentLevelAddOnsMap[EGOLD_ID] = CheckoutEgoldModel(
+                                    saf.cartShipmentAddressFormData.egoldAttributes!!,
+                                    saf.cartShipmentAddressFormData.egoldAttributes!!.isChecked,
+                                    saf.cartShipmentAddressFormData.egoldAttributes!!.buyEgoldValue
                                 )
                             }
                             if (saf.cartShipmentAddressFormData.donation != null && saf.cartShipmentAddressFormData.donation!!.title.isNotEmpty() && saf.cartShipmentAddressFormData.donation!!.nominal != 0) {
-                                crossSellList.add(
-                                    CheckoutDonationModel(
-                                        saf.cartShipmentAddressFormData.donation!!,
-                                        saf.cartShipmentAddressFormData.donation!!.isChecked
-                                    )
+                                paymentLevelAddOnsMap[DONATION_ID] = CheckoutDonationModel(
+                                    saf.cartShipmentAddressFormData.donation!!,
+                                    saf.cartShipmentAddressFormData.donation!!.isChecked
                                 )
                                 if (saf.cartShipmentAddressFormData.donation!!.isChecked) {
                                     mTrackerShipment.eventViewAutoCheckDonation(
@@ -314,6 +321,14 @@ class CheckoutViewModel @Inject constructor(
                                 }
                             }
                         }
+                        val crossSellList = arrayListOf<CheckoutCrossSellItem>()
+                        saf.cartShipmentAddressFormData.paymentLevelAddOnsPositions.forEach {
+                            val crossSellItem = paymentLevelAddOnsMap[it]
+                            if (crossSellItem != null) {
+                                crossSellList.add(crossSellItem)
+                            }
+                        }
+
                         val crossSellGroup =
                             CheckoutCrossSellGroupModel(crossSellList = crossSellList)
 
@@ -541,8 +556,14 @@ class CheckoutViewModel @Inject constructor(
                     enhancedECommerceProductCartMapData.setDimension136(
                         cartItemModel.cartStringGroup
                     )
+                    enhancedECommerceProductCartMapData.setDimension137(
+                        cartItemModel.bmgmOfferId.toString()
+                    )
                     enhancedECommerceCheckout.addProduct(
                         enhancedECommerceProductCartMapData.getProduct()
+                    )
+                    enhancedECommerceProductCartMapData.setDimension136(
+                        cartItemModel.bmgmOfferId.toString()
                     )
                 }
             }
@@ -600,9 +621,7 @@ class CheckoutViewModel @Inject constructor(
                         fetchEpharmacyData()
                     }
                     if (checkoutItem is CheckoutPromoModel) {
-                        if (listData.value.any { it is CheckoutOrderModel && it.shipment.courierItemData != null }) {
-                            validatePromo()
-                        }
+                        validatePromo()
                     }
                 }
             }
@@ -732,6 +751,72 @@ class CheckoutViewModel @Inject constructor(
             pageState.value = CheckoutPageState.EpharmacyCoachMark
             calculateTotal()
         }
+    }
+
+    private fun cleanPromoFromPromoRequest(promoRequest: PromoRequest): PromoRequest {
+        return promoRequest.copy(
+            codes = arrayListOf(),
+            orders = promoRequest.orders.map {
+                return@map it.copy(codes = mutableListOf())
+            }
+        )
+    }
+
+    private suspend fun getEntryPointInfo(
+        checkoutItems: List<CheckoutItem>,
+        oldCheckoutItems: List<CheckoutItem>
+    ): List<CheckoutItem> {
+        if (isPromoRevamp == true) {
+            val checkoutModel =
+                checkoutItems.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
+            val oldCheckoutModel =
+                oldCheckoutItems.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
+
+            if (checkoutModel != null && oldCheckoutModel != null) {
+                val entryPointInfo = promoProcessor
+                    .getEntryPointInfo(
+                        cleanPromoFromPromoRequest(
+                            generateCouponListRecommendationRequestWithListData(checkoutItems)
+                        )
+                    )
+                return checkoutItems.map { model ->
+                    if (model is CheckoutPromoModel) {
+                        return@map model.copy(
+                            entryPointInfo = entryPointInfo,
+                            isLoading = false,
+                            isAnimateWording = shouldAnimateEntryPointWording(
+                                checkoutModel.promo,
+                                oldCheckoutModel.promo
+                            )
+                        )
+                    } else {
+                        return@map model
+                    }
+                }
+            }
+        }
+        return checkoutItems
+    }
+
+    fun reloadEntryPointInfo() {
+        viewModelScope.launch(dispatchers.immediate) {
+            val data = listData.value
+            val newData = getEntryPointInfo(data, data)
+            withContext(dispatchers.main) {
+                listData.value = newData
+            }
+        }
+    }
+
+    fun shouldAnimateEntryPointWording(
+        newLastApply: LastApplyUiModel,
+        oldLastApply: LastApplyUiModel
+    ): Boolean {
+        val oldTotalPromoAmount =
+            oldLastApply.additionalInfo.usageSummaries.sumOf { it.amount }
+        val newTotalPromoAmount =
+            newLastApply.additionalInfo.usageSummaries.sumOf { it.amount }
+        return oldTotalPromoAmount in (1 until newTotalPromoAmount)
     }
 
     fun setPrescriptionIds(prescriptionIds: ArrayList<String>) {
@@ -936,6 +1021,7 @@ class CheckoutViewModel @Inject constructor(
         if (orderModel != null) {
             if (result?.courier != null) {
                 val courierItemData = result.courier
+                orderModel.validationMetadata = order.validationMetadata
                 val shouldValidatePromo =
                     courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                 if (shouldValidatePromo) {
@@ -1003,7 +1089,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value = list
             cartProcessor.processSaveShipmentState(
                 newOrderModel,
-                listData.value.address()!!.recipientAddressModel
+                listData.value.address()!!.recipientAddressModel,
+                listData.value
             )
             calculateTotal()
             sendEEStep3()
@@ -1135,7 +1222,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value = list
             cartProcessor.processSaveShipmentState(
                 newOrderModel,
-                listData.value.address()!!.recipientAddressModel
+                listData.value.address()!!.recipientAddressModel,
+                listData.value
             )
             calculateTotal()
             sendEEStep3()
@@ -1156,16 +1244,13 @@ class CheckoutViewModel @Inject constructor(
                 it.isSelected = it.productData.shipperProductId == courierItemData.shipperProductId
             }
             if (shipment.courierItemData?.selectedShipper?.logPromoCode?.isNotEmpty() == true) {
-                val newShipment = shipment.copy(
-                    isLoading = true,
-                    courierItemData = courierItemData,
-                    shippingCourierUiModels = shippingCourierUiModels,
-                    insurance = generateCheckoutOrderInsuranceFromCourier(courierItemData, checkoutOrderModel)
+                checkoutItems[cartPosition] = checkoutOrderModel.copy(
+                    shipment = shipment.copy(
+                        isLoading = true
+                    )
                 )
-                val newOrder = checkoutOrderModel.copy(shipment = newShipment)
-                checkoutItems[cartPosition] = newOrder
                 listData.value = checkoutItems
-                val shouldClearPromoBenefit = promoProcessor.clearPromo(
+                val success = promoProcessor.clearPromoValidate(
                     ClearPromoOrder(
                         checkoutOrderModel.boUniqueId,
                         checkoutOrderModel.boMetadata.boType,
@@ -1177,11 +1262,17 @@ class CheckoutViewModel @Inject constructor(
                         checkoutOrderModel.cartStringGroup
                     )
                 )
-                if (shouldClearPromoBenefit) {
-                    val list = listData.value.toMutableList()
-                    val newPromo = list.promo()!!.copy(promo = LastApplyUiModel())
-                    list[list.size - 4] = newPromo
-                    listData.value = list
+                if (!success) {
+                    val items = listData.value.toMutableList()
+                    val newShipment = shipment.copy(
+                        isLoading = false
+                    )
+                    val newOrder = checkoutOrderModel.copy(shipment = newShipment)
+                    items[cartPosition] = newOrder
+                    listData.value = items
+                    pageState.value = CheckoutPageState.Normal
+                    toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR))
+                    return@launch
                 }
             }
             val list = listData.value.toMutableList()
@@ -1197,7 +1288,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value = list
             cartProcessor.processSaveShipmentState(
                 newOrder,
-                listData.value.address()!!.recipientAddressModel
+                listData.value.address()!!.recipientAddressModel,
+                listData.value
             )
             validatePromo()
             pageState.value = CheckoutPageState.Normal
@@ -1236,9 +1328,27 @@ class CheckoutViewModel @Inject constructor(
         )
     }
 
+    fun generateValidateUsePromoRequestForPromoUsage(): ValidateUsePromoRequest {
+        return promoProcessor.generateValidateUsePromoRequestForPromoUsage(
+            listData.value,
+            isTradeIn,
+            isTradeInByDropOff,
+            isOneClickShipment
+        )
+    }
+
     fun generateCouponListRecommendationRequest(): PromoRequest {
         return promoProcessor.generateCouponListRecommendationRequest(
             listData.value,
+            isTradeIn,
+            isTradeInByDropOff,
+            isOneClickShipment
+        )
+    }
+
+    fun generateCouponListRecommendationRequestWithListData(newListData: List<CheckoutItem>): PromoRequest {
+        return promoProcessor.generateCouponListRecommendationRequest(
+            newListData,
             isTradeIn,
             isTradeInByDropOff,
             isOneClickShipment
@@ -1274,7 +1384,7 @@ class CheckoutViewModel @Inject constructor(
 
     private suspend fun validatePromo() {
         val checkoutItems = listData.value.toMutableList()
-        val newItems = promoProcessor.validateUse(
+        var newItems = promoProcessor.validateUse(
             promoProcessor.generateValidateUsePromoRequest(
                 checkoutItems,
                 isTradeIn,
@@ -1286,6 +1396,7 @@ class CheckoutViewModel @Inject constructor(
             isTradeIn,
             isTradeInByDropOff
         )
+        newItems = getEntryPointInfo(newItems, checkoutItems)
         listData.value = newItems
         calculateTotal()
         sendEEStep3()
@@ -1327,7 +1438,11 @@ class CheckoutViewModel @Inject constructor(
                     }
                 }
             }
-            removeInvalidBoCodeFromPromoRequest(shipmentCartItemModel, listData.value, validateUsePromoRequest)
+            removeInvalidBoCodeFromPromoRequest(
+                shipmentCartItemModel,
+                listData.value,
+                validateUsePromoRequest
+            )
             for (ordersItem in validateUsePromoRequest.orders) {
                 if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
                     ordersItem.spId = courierItemData.shipperProductId
@@ -1370,7 +1485,7 @@ class CheckoutViewModel @Inject constructor(
                 )
             listData.value = checkoutItems
         }
-        val newItems = promoProcessor.validateUseLogisticPromo(
+        var newItems = promoProcessor.validateUseLogisticPromo(
             validateUsePromoRequest,
             cartString,
             promoCode,
@@ -1380,6 +1495,7 @@ class CheckoutViewModel @Inject constructor(
             isTradeIn,
             isTradeInByDropOff
         )
+        newItems = getEntryPointInfo(newItems, listData.value)
         listData.value = newItems
         cartProcessor.processSaveShipmentState(
             listData.value,
@@ -1475,10 +1591,14 @@ class CheckoutViewModel @Inject constructor(
                 ordersItem.benefitClass = selectedShipper.benefitClass
                 ordersItem.shippingPrice = selectedShipper.shippingRate.toDouble()
                 ordersItem.etaText = selectedShipper.etaText!!
-                ordersItem.validationMetadata = order.validationMetadata
+                ordersItem.validationMetadata = if (scheduleDeliveryUiModel.isSelected) {
+                    scheduleDeliveryUiModel.deliveryProduct.validationMetadata
+                } else {
+                    ""
+                }
             }
         }
-        val newItems = promoProcessor.validateUseLogisticPromo(
+        var newItems = promoProcessor.validateUseLogisticPromo(
             validateUsePromoRequest,
             order.cartStringGroup,
             newCourierItemData.selectedShipper.logPromoCode!!,
@@ -1501,6 +1621,7 @@ class CheckoutViewModel @Inject constructor(
                 newOrder.validationMetadata = ""
             }
         }
+        newItems = getEntryPointInfo(newItems, listData.value)
         listData.value = newItems
         cartProcessor.processSaveShipmentState(
             listData.value,
@@ -1572,7 +1693,8 @@ class CheckoutViewModel @Inject constructor(
         listData.value = list
         cartProcessor.processSaveShipmentState(
             newOrder1,
-            listData.value.address()!!.recipientAddressModel
+            listData.value.address()!!.recipientAddressModel,
+            listData.value
         )
         validatePromo()
         pageState.value = CheckoutPageState.Normal
@@ -1610,7 +1732,8 @@ class CheckoutViewModel @Inject constructor(
         listData.value = checkoutItems
         cartProcessor.processSaveShipmentState(
             newOrder,
-            listData.value.address()!!.recipientAddressModel
+            listData.value.address()!!.recipientAddressModel,
+            listData.value
         )
         validatePromo()
         pageState.value = CheckoutPageState.Normal
@@ -1689,7 +1812,13 @@ class CheckoutViewModel @Inject constructor(
                 if (checkoutItem is CheckoutEpharmacyModel) {
                     if (isPrescriptionFrontEndValidationError) {
                         items[index] =
-                            checkoutItem.copy(epharmacy = checkoutItem.epharmacy.copy(isError = true, productErrorCount = productErrorPrescriptionCount, isIncompletePrescriptionError = productSuccessPrescriptionCount > 0))
+                            checkoutItem.copy(
+                                epharmacy = checkoutItem.epharmacy.copy(
+                                    isError = true,
+                                    productErrorCount = productErrorPrescriptionCount,
+                                    isIncompletePrescriptionError = productSuccessPrescriptionCount > 0
+                                )
+                            )
                     }
                 }
             }
@@ -1727,6 +1856,43 @@ class CheckoutViewModel @Inject constructor(
                 pageState.value = CheckoutPageState.Normal
                 return@launch
             }
+
+            // validate dropship
+            var checkoutWithDropship = false
+            val itemList = listData.value.toMutableList()
+            for ((index, checkoutOrderModel) in itemList.withIndex()) {
+                if (checkoutOrderModel is CheckoutOrderModel) {
+                    if (checkoutOrderModel.isEnableDropship &&
+                        checkoutOrderModel.useDropship && (
+                            checkoutOrderModel.dropshipName.isEmpty() ||
+                                checkoutOrderModel.dropshipPhone.isEmpty() || !checkoutOrderModel.isDropshipNameValid ||
+                                !checkoutOrderModel.isDropshipPhoneValid
+                            )
+                    ) {
+                        itemList[index] = checkoutOrderModel.copy(
+                            stateDropship = CheckoutDropshipWidget.State.ERROR
+                        )
+                        listData.value = itemList
+                        commonToaster.emit(
+                            CheckoutPageToaster(
+                                Toaster.TYPE_NORMAL,
+                                "Pastikan Anda telah melengkapi informasi tambahan."
+                            )
+                        )
+                        pageState.value = CheckoutPageState.Normal
+                        pageState.value = CheckoutPageState.ScrollTo(index)
+                        return@launch
+                    } else if (checkoutOrderModel.isEnableDropship && checkoutOrderModel.useDropship &&
+                        checkoutOrderModel.dropshipName.isNotEmpty() && checkoutOrderModel.dropshipPhone.isNotEmpty() &&
+                        checkoutOrderModel.isDropshipNameValid && checkoutOrderModel.isDropshipPhoneValid
+                    ) {
+                        checkoutWithDropship = true
+                    }
+                }
+            }
+
+            if (checkoutWithDropship) mTrackerShipment.eventClickPilihPembayaranWithDropshipEnabled()
+
             val validateUsePromoRevampUiModel = promoProcessor.finalValidateUse(
                 promoProcessor.generateValidateUsePromoRequest(
                     listData.value,
@@ -2029,7 +2195,8 @@ class CheckoutViewModel @Inject constructor(
                     checkoutItems[index] = checkoutItem.copy(
                         promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
                             promoUiModel
-                        )
+                        ),
+                        isLoading = true
                     )
                 }
             }
@@ -2069,11 +2236,14 @@ class CheckoutViewModel @Inject constructor(
 
             val list = listData.value.toMutableList()
             val promoUiModel =
-                validateUsePromoRevampUiModel.promoUiModel.copy(voucherOrderUiModels = validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels.filter { !it.isTypeLogistic() })
+                validateUsePromoRevampUiModel.promoUiModel
+                    .copy(voucherOrderUiModels = validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels.filter { !it.isTypeLogistic() })
+            val oldLastApply = list.promo()!!.promo
+            val newLastApply = LastApplyUiMapper
+                .mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
             val newPromo = list.promo()!!.copy(
-                promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
-                    promoUiModel
-                )
+                promo = newLastApply,
+                isAnimateWording = shouldAnimateEntryPointWording(newLastApply, oldLastApply)
             )
             list[list.size - 4] = newPromo
             listData.value = list
@@ -2257,7 +2427,8 @@ class CheckoutViewModel @Inject constructor(
         var firstScrollIndex = -1
         for ((index, shipmentCartItemModel) in checkoutItems.withIndex()) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
-                val logPromoCode = shipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode
+                val logPromoCode =
+                    shipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode
                 if (!logPromoCode.isNullOrEmpty() &&
                     unprocessedUniqueIds.contains(shipmentCartItemModel.cartStringGroup)
                 ) {
@@ -2303,6 +2474,39 @@ class CheckoutViewModel @Inject constructor(
     ) {
         val checkoutItems = listData.value.toMutableList()
         val checkoutProductModel = checkoutItems[position] as CheckoutProductModel
+
+        val indexOrder = listData.value.indexOfFirst {
+            it is CheckoutOrderModel &&
+                it.cartStringGroup == checkoutProductModel.cartStringGroup
+        }
+
+        if (indexOrder > 0) {
+            val order = checkoutItems[indexOrder] as CheckoutOrderModel
+            val newStateDropship: CheckoutDropshipWidget.State
+            if (checked && order.shipment.courierItemData?.isSelected == true && order.useDropship) {
+                newStateDropship = CheckoutDropshipWidget.State.DISABLED
+                viewModelScope.launch(dispatchers.immediate) {
+                    commonToaster.emit(
+                        CheckoutPageToaster(
+                            Toaster.TYPE_NORMAL,
+                            "Fitur dropshipper tidak dapat digunakan ketika menggunakan layanan tambahan"
+                        )
+                    )
+                }
+                val newOrder = order.copy(
+                    stateDropship = newStateDropship,
+                    useDropship = false
+                )
+                checkoutItems[indexOrder] = newOrder
+            } else {
+                newStateDropship = CheckoutDropshipWidget.State.INIT
+                val newOrder = order.copy(
+                    stateDropship = newStateDropship
+                )
+                checkoutItems[indexOrder] = newOrder
+            }
+        }
+
         val oldList = checkoutProductModel.addOnProduct.listAddOnProductData
         val newProduct = checkoutProductModel.copy(
             addOnProduct = checkoutProductModel.addOnProduct.copy(
@@ -2383,8 +2587,57 @@ class CheckoutViewModel @Inject constructor(
         calculateTotal()
     }
 
+    fun setDropshipSwitch(isChecked: Boolean, position: Int) {
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
+        if (isChecked && checkoutProcessor.checkProtectionAddOnOptIn(getOrderProducts(checkoutOrderModel.cartStringGroup))) {
+            viewModelScope.launch(dispatchers.immediate) {
+                commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_NORMAL,
+                        "Fitur dropshipper tidak dapat digunakan ketika menggunakan layanan tambahan"
+                    )
+                )
+            }
+            val newOrder = checkoutOrderModel.copy(stateDropship = CheckoutDropshipWidget.State.DISABLED)
+            checkoutItems[position] = newOrder
+            listData.value = checkoutItems
+        } else {
+            if (!isChecked) {
+                val newOrder = checkoutOrderModel.copy(
+                    stateDropship = CheckoutDropshipWidget.State.INIT,
+                    useDropship = false
+                )
+                checkoutItems[position] = newOrder
+                listData.value = checkoutItems
+            } else {
+                val newOrder = checkoutOrderModel.copy(useDropship = isChecked)
+                checkoutItems[position] = newOrder
+                listData.value = checkoutItems
+            }
+        }
+    }
+
+    fun setValidationDropshipName(name: String, isValid: Boolean, position: Int) {
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
+        checkoutOrderModel.isDropshipNameValid = isValid
+        checkoutOrderModel.dropshipName = name
+    }
+
+    fun setValidationDropshipPhone(phone: String, isValid: Boolean, position: Int) {
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
+        checkoutOrderModel.isDropshipPhoneValid = isValid
+        checkoutOrderModel.dropshipPhone = phone
+    }
+
     fun getOrderProducts(cartStringGroup: String): List<CheckoutProductModel> {
         return helper.getOrderProducts(listData.value, cartStringGroup)
+    }
+
+    fun getProductCatIds(): List<Long> {
+        return helper.getAllProductCategoryIds(listData.value)
     }
 
     fun cancelUpsell(
@@ -2438,8 +2691,45 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
+    fun useNewPromoPage(): Boolean {
+        return isPromoRevamp == true
+    }
+
+    fun generatePaymentLevelAddOnsAnalyticData(): List<Pair<String, String>> {
+        val result = mutableListOf<Pair<String, String>>()
+        val crossSellGroup = listData.value.crossSellGroup()
+        val eGoldAttribute =
+            crossSellGroup?.crossSellList?.firstOrNullInstanceOf(CheckoutEgoldModel::class.java)
+        if (eGoldAttribute != null && eGoldAttribute.egoldAttributeModel.isEligible && eGoldAttribute.egoldAttributeModel.isChecked) {
+            result.add(Pair(eGoldAttribute.getCategoryName(), eGoldAttribute.getCrossSellProductId()))
+        }
+        val listShipmentCrossSellModel =
+            crossSellGroup?.crossSellList?.filterIsInstance(CheckoutCrossSellModel::class.java)
+                ?: emptyList()
+        if (listShipmentCrossSellModel.isNotEmpty()) {
+            for (crossSellModel in listShipmentCrossSellModel) {
+                if (crossSellModel.isChecked) {
+                    result.add(Pair(crossSellModel.getCategoryName(), crossSellModel.getCrossSellProductId()))
+                }
+            }
+        }
+        val donationModel = crossSellGroup?.crossSellList?.firstOrNullInstanceOf(CheckoutDonationModel::class.java)
+        if (donationModel != null && donationModel.donation.isChecked) {
+            result.add(Pair(donationModel.getCategoryName(), donationModel.getCrossSellProductId()))
+        }
+        return result
+    }
+
+    fun isAnyProtectionAddonOptIn(cartStringGroup: String): Boolean {
+        return checkoutProcessor.checkProtectionAddOnOptIn(getOrderProducts(cartStringGroup))
+    }
+
     companion object {
         const val PLATFORM_FEE_CODE = "platform_fee"
+
+        const val EGOLD_ID = 1L
+        const val DG_ID = 2L
+        const val DONATION_ID = 3L
     }
 }
 

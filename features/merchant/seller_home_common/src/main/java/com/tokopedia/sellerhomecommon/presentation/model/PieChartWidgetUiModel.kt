@@ -9,6 +9,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 
 data class PieChartWidgetUiModel(
     override val id: String,
+    override val sectionId: String,
     override val widgetType: String,
     override val title: String,
     override val subtitle: String,
@@ -28,6 +29,7 @@ data class PieChartWidgetUiModel(
     override var showLoadingState: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
     override var useRealtime: Boolean = false,
+    var isMultiComponentWidget: Boolean = false
 ) : BaseWidgetUiModel<PieChartDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

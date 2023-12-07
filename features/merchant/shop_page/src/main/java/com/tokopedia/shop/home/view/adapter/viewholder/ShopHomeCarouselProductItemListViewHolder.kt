@@ -24,6 +24,7 @@ class ShopHomeCarouselProductItemListViewHolder(
     private val carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener?,
     private val carouselProductCardOnItemATCNonVariantClickListener: CarouselProductCardListener.OnATCNonVariantClickListener?,
     private val carouselProductCardOnItemAddVariantClickListener: CarouselProductCardListener.OnAddVariantClickListener?,
+    private val isOverrideWidgetTheme: Boolean
 ) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
 
     private val viewBinding: ItemShopCarouselProductCardListBinding? by viewBinding()
@@ -112,7 +113,7 @@ class ShopHomeCarouselProductItemListViewHolder(
     }
 
     private fun setProductData() {
-        productCardModel = getProductCardModel()
+        productCardModel = getProductCardModel()?.copy(forceLightModeColor = isOverrideWidgetTheme)
         productCardModel?.let {
             viewBinding?.productCard?.setProductModel(it)
         }

@@ -79,8 +79,8 @@ dependencies {
     //Merchant
 //    implementation projectOrAar(rootProject.ext.features.report)
 //    implementation projectOrAar(rootProject.ext.features.shopOpen)
-    implementation projectOrAar(rootProject.ext.features.productDetail)
-    implementation projectOrAar(rootProject.ext.features.productDetailAdditionalInfo)
+//    implementation projectOrAar(rootProject.ext.features.productDetail)
+//    implementation projectOrAar(rootProject.ext.features.productDetailAdditionalInfo)
     implementation projectOrAar(rootProject.ext.features.review)
 
     //User
@@ -127,4 +127,5 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.tokomemberUiCommon)
     implementation projectOrAar(rootProject.ext.features.centralizedPromo)
     implementation projectOrAar(rootProject.ext.features.powerMerchantSubscribe)
+    implementation projectOrAar(rootProject.ext.features.scpAuth)
 }

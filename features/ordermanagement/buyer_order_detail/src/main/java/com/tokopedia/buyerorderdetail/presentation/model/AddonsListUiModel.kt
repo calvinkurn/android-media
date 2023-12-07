@@ -7,7 +7,7 @@ data class AddonsListUiModel(
     val totalPriceText: String,
     val addonsLogoUrl: String,
     val addonsTitle: String,
-    val addonsItemList: List<AddonItemUiModel>,
+    val addonsItemList: List<AddonItemUiModel>
 ) : Visitable<BuyerOrderDetailTypeFactory> {
 
     override fun type(typeFactory: BuyerOrderDetailTypeFactory): Int {
@@ -23,6 +23,7 @@ data class AddonsListUiModel(
         val addOnsThumbnailUrl: String,
         val toStr: String,
         val fromStr: String,
-        val message: String
+        val message: String,
+        val providedByShopItself: Boolean
     )
 }

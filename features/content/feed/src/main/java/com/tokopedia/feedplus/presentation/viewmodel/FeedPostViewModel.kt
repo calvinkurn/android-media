@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
@@ -23,8 +22,8 @@ import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
-import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
 import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
@@ -50,6 +49,7 @@ import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
+import com.tokopedia.feedplus.presentation.model.FeedProductActionModel
 import com.tokopedia.feedplus.presentation.model.FeedReminderResultModel
 import com.tokopedia.feedplus.presentation.model.FollowShopModel
 import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
@@ -148,8 +148,8 @@ class FeedPostViewModel @Inject constructor(
     val reminderResult: LiveData<Result<FeedReminderResultModel>>
         get() = _reminderResult
 
-    private val _feedTagProductList = MutableLiveData<Result<List<FeedTaggedProductUiModel>>?>()
-    val feedTagProductList: LiveData<Result<List<FeedTaggedProductUiModel>>?>
+    private val _feedTagProductList = MutableLiveData<Result<List<ContentTaggedProductUiModel>>?>()
+    val feedTagProductList: LiveData<Result<List<ContentTaggedProductUiModel>>?>
         get() = _feedTagProductList
 
     private val _followRecommendationResult = MutableLiveData<Result<String>>()
@@ -176,6 +176,8 @@ class FeedPostViewModel @Inject constructor(
     val uiEvent: Flow<FeedPostEvent?>
         get() = uiEventManager.event
 
+    private var mSavedPostPosition: Int? = null
+
     private val _userReport = MutableLiveData<Result<List<PlayUserReportReasoningUiModel>>>()
     val userReportList
         get() =
@@ -185,6 +187,24 @@ class FeedPostViewModel @Inject constructor(
     val selectedReport get() = _selectedReport.value
     private val _isReported = MutableLiveData<Result<Unit>>()
     val isReported: LiveData<Result<Unit>> get() = _isReported
+
+    private var mIsInitiallyLoggedIn: Boolean = userSession.isLoggedIn
+
+    fun shouldFetchInitialPost(): Boolean {
+        return !isJustLoggedIn() || feedHome.value?.items.orEmpty().isEmpty()
+    }
+
+    private fun isJustLoggedIn(): Boolean {
+        return !mIsInitiallyLoggedIn && userSession.isLoggedIn
+    }
+
+    fun saveScrollPosition(position: Int) {
+        mSavedPostPosition = position
+    }
+
+    fun getScrollPosition(): Int? {
+        return mSavedPostPosition
+    }
 
     fun fetchFeedPosts(
         source: String,
@@ -447,10 +467,11 @@ class FeedPostViewModel @Inject constructor(
             if (it is Success) {
                 val followRecomData = it.data.items.getOrNull(position)
 
-                if (followRecomData is FeedFollowRecommendationModel)
+                if (followRecomData is FeedFollowRecommendationModel) {
                     viewModelScope.launch {
                         fetchFollowRecommendation(followRecomData.id)
                     }
+                }
             }
         }
     }
@@ -764,7 +785,7 @@ class FeedPostViewModel @Inject constructor(
         val detailId = if (postSourceModel?.source == FeedBaseFragment.TAB_TYPE_CDP) postSourceModel.id else ""
 
         while (response.items.isEmpty() && --thresholdGet >= 0) {
-            response = repository.getPost(source, nextCursor, detailId = detailId)
+            response = repository.getPost(source, nextCursor, detailId = detailId, entryPoint = postSourceModel?.entryPoint.orEmpty())
             nextCursor = response.pagination.cursor
         }
 
@@ -944,22 +965,22 @@ class FeedPostViewModel @Inject constructor(
     /**
      * Add to Cart & Buy
      */
-    val observeAddProductToCart: LiveData<Result<AddToCartDataModel>>
+    val observeAddProductToCart: LiveData<Result<FeedProductActionModel>>
         get() = _observeAddProductToCart
-    private val _observeAddProductToCart = MutableLiveData<Result<AddToCartDataModel>>()
+    private val _observeAddProductToCart = MutableLiveData<Result<FeedProductActionModel>>()
 
-    val observeBuyProduct: LiveData<Result<AddToCartDataModel>>
+    val observeBuyProduct: LiveData<Result<FeedProductActionModel>>
         get() = _observeBuyProduct
-    private val _observeBuyProduct = MutableLiveData<Result<AddToCartDataModel>>()
+    private val _observeBuyProduct = MutableLiveData<Result<FeedProductActionModel>>()
 
-    private val _suspendedAddProductToCartData = MutableLiveData<FeedTaggedProductUiModel>()
-    private val _suspendedBuyProductData = MutableLiveData<FeedTaggedProductUiModel>()
+    private val _suspendedAddProductToCartData = MutableLiveData<ContentTaggedProductUiModel>()
+    private val _suspendedBuyProductData = MutableLiveData<ContentTaggedProductUiModel>()
 
-    fun suspendAddProductToCart(product: FeedTaggedProductUiModel) {
+    fun suspendAddProductToCart(product: ContentTaggedProductUiModel) {
         _suspendedAddProductToCartData.value = product
     }
 
-    fun suspendBuyProduct(product: FeedTaggedProductUiModel) {
+    fun suspendBuyProduct(product: ContentTaggedProductUiModel) {
         _suspendedBuyProductData.value = product
     }
 
@@ -975,35 +996,35 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    fun addProductToCart(product: FeedTaggedProductUiModel) {
+    fun addProductToCart(product: ContentTaggedProductUiModel) {
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
                 _observeAddProductToCart.value =
                     Fail(ResponseErrorException(response.getAtcErrorMessage()))
             } else {
-                _observeAddProductToCart.value = Success(response)
+                _observeAddProductToCart.value = Success(FeedProductActionModel(cartId = response.data.cartId, product = product))
             }
         }) {
             _observeAddProductToCart.value = Fail(it)
         }
     }
 
-    fun buyProduct(product: FeedTaggedProductUiModel) {
+    fun buyProduct(product: ContentTaggedProductUiModel) {
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
                 _observeBuyProduct.value =
                     Fail(ResponseErrorException(response.getAtcErrorMessage()))
             } else {
-                _observeBuyProduct.value = Success(response)
+                _observeBuyProduct.value = Success(FeedProductActionModel(cartId = response.data.cartId, product = product))
             }
         }) {
             _observeBuyProduct.value = Fail(it)
         }
     }
 
-    private suspend fun addToCart(product: FeedTaggedProductUiModel) = withContext(dispatchers.io) {
+    private suspend fun addToCart(product: ContentTaggedProductUiModel) = withContext(dispatchers.io) {
         product.affiliate.let { affiliate ->
             if (affiliate.id.isNotEmpty() && affiliate.channel.isNotEmpty()) {
                 affiliateCookieHelper.initCookie(
@@ -1101,7 +1122,7 @@ class FeedPostViewModel @Inject constructor(
                     timestamp = timestamp,
                     reportDesc = desc,
                     partnerId = item.author.id.toLongOrZero(),
-                    partnerType = PostUserReportUseCase.PartnerType.getTypeFromFeed(item.author.type.value),
+                    partnerType = PostUserReportUseCase.PartnerType.getTypeValue(item.author.type.value),
                     reporterId = userSession.userId.toLongOrZero()
                 )
                 postReportUseCase.setRequestParams(request.parameters)
@@ -1176,14 +1197,14 @@ class FeedPostViewModel @Inject constructor(
 
     fun fetchFeedProduct(
         activityId: String,
-        products: List<FeedTaggedProductUiModel>,
-        sourceType: FeedTaggedProductUiModel.SourceType
+        products: List<ContentTaggedProductUiModel>,
+        sourceType: ContentTaggedProductUiModel.SourceType
     ) {
         viewModelScope.launch {
             try {
                 _feedTagProductList.value = null
 
-                val currentList: List<FeedTaggedProductUiModel> = when {
+                val currentList: List<ContentTaggedProductUiModel> = when {
                     products.isNotEmpty() -> products
                     else -> emptyList()
                 }
@@ -1215,10 +1236,11 @@ class FeedPostViewModel @Inject constructor(
      */
     fun removeProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
         viewModelScope.launch {
-            val feedHome = if (_feedHome.value != null && _feedHome.value is Success)
+            val feedHome = if (_feedHome.value != null && _feedHome.value is Success) {
                 _feedHome.value
-            else
+            } else {
                 return@launch
+            }
 
             if (feedHome == null) return@launch
 
@@ -1239,6 +1261,16 @@ class FeedPostViewModel @Inject constructor(
                     pagination = feedHome.pagination
                 )
             )
+        }
+    }
+
+    fun determinePostDataEligibilityForOnboarding(isFollowingTab: Boolean): Boolean {
+        val postItems = _feedHome.value?.items ?: return false
+
+        return if (isFollowingTab) {
+            postItems.firstOrNull() !is FeedFollowRecommendationModel
+        } else {
+            postItems.isNotEmpty()
         }
     }
 

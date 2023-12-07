@@ -100,11 +100,23 @@ data class CartItemHolderData(
     var wholesalePriceFormatted: String? = null,
 
     // AddOns Product
-    var addOnsProduct: CartAddOnData = CartAddOnData()
+    var addOnsProduct: CartAddOnData = CartAddOnData(),
+
+    // BMGM
+    var cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData(),
+    var showBmGmBottomDivider: Boolean = false
 ) : ImpressHolder() {
     companion object {
         const val BUNDLING_ITEM_DEFAULT = 0
         const val BUNDLING_ITEM_HEADER = 1
         const val BUNDLING_ITEM_FOOTER = 2
+    }
+
+    fun getSwipeLayoutBundlingId(): String {
+        return "$cartId|$bundleId"
+    }
+
+    fun getSwipeLayoutId(): String {
+        return cartId
     }
 }

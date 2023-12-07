@@ -120,6 +120,10 @@ class SomListGetOrderListUseCase @Inject constructor(
                         color
                         type
                       }
+                     template {
+                        code
+                        params
+                      }
                     }
                   }
                   have_product_bundle

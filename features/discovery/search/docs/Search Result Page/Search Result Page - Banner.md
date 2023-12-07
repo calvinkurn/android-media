@@ -26,11 +26,11 @@ labels:
 ### Project Description
 Search Result Page can show banner depending on the position configured from BE. The banner is an image, and will redirect with applink to another page when clicked.
 
-![image](../res/banner/description.png)
+![image](https://docs-android.tokopedia.net/images/docs/search/banner/description.png)
 
 
 ## Flow Diagram
-![image](../res/banner/diagram.png)
+![image](https://docs-android.tokopedia.net/images/docs/search/banner/diagram.png)
 
 
 ## Useful Links

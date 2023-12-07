@@ -2,6 +2,9 @@ package com.tokopedia.shop.home.view.adapter
 
 import android.os.Parcelable
 import android.view.ViewGroup
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -11,14 +14,16 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil.setElement
-import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.view.adapter.viewholder.*
+import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerViewHolder
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -27,6 +32,7 @@ import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 import com.tokopedia.shop_widget.common.util.WidgetState
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 
 /**
@@ -41,6 +47,7 @@ open class ShopHomeAdapter(
     companion object {
         private const val INVALID_INDEX = -1
         private const val ALL_PRODUCT_STRING = "Semua Produk"
+        private const val DEFAULT_MARGIN_ON_FESTIVITY_BORDER = 12
     }
 
     override val stickyHeaderPosition: Int
@@ -62,10 +69,16 @@ open class ShopHomeAdapter(
         if (holder is ShopHomeSliderBannerViewHolder) {
             holder.resumeTimer()
         }
+        else if (holder is ShopHomeDisplayAdvanceCarouselBannerViewHolder) {
+            holder.resumeTimer()
+        }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         if (holder is ShopHomeSliderBannerViewHolder) {
+            holder.pauseTimer()
+        }
+        else if(holder is ShopHomeDisplayAdvanceCarouselBannerViewHolder){
             holder.pauseTimer()
         }
         super.onViewDetachedFromWindow(holder)
@@ -81,7 +94,25 @@ open class ShopHomeAdapter(
                     getItemViewType(position) == LoadingMoreViewHolder.LAYOUT
                 )
         }
+        addTopMarginOnFirstWidgetAfterFestivity(holder, position)
         super.onBindViewHolder(holder, position)
+    }
+
+    /**
+     * Add top margin on first widget after festivity
+     */
+    private fun addTopMarginOnFirstWidgetAfterFestivity(
+        holder: AbstractViewHolder<*>,
+        position: Int
+    ) {
+        if(anyFestivityOnShopHomeWidget() && data.getOrNull(position) == firstNonFestivityUiModel()){
+            holder.itemView.setMargin(
+                holder.itemView.marginLeft,
+                DEFAULT_MARGIN_ON_FESTIVITY_BORDER.toPx(),
+                holder.itemView.marginRight,
+                holder.itemView.marginBottom
+            )
+        }
     }
 
     override fun clearAllElements() {
@@ -99,8 +130,9 @@ open class ShopHomeAdapter(
 
     fun setProductListEmptyState(isOwner: Boolean) {
         val newList = getNewVisitableItems()
-        if (!newList.contains(ShopHomeProductListEmptyUiModel(isOwner)))
+        if (!newList.contains(ShopHomeProductListEmptyUiModel(isOwner))) {
             newList.add(ShopHomeProductListEmptyUiModel(isOwner))
+        }
         submitList(newList)
     }
 
@@ -296,19 +328,21 @@ open class ShopHomeAdapter(
 
     fun pauseSliderBannerAutoScroll() {
         val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
-            it.name == WidgetName.SLIDER_BANNER
+            it.name == WidgetNameEnum.SLIDER_BANNER.value || it.name == WidgetNameEnum.BMGM_BANNER.value
         }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.pauseTimer()
+            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeDisplayAdvanceCarouselBannerViewHolder)?.pauseTimer()
         }
     }
 
     fun resumeSliderBannerAutoScroll() {
         val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
-            it.name == WidgetName.SLIDER_BANNER
+            it.name == WidgetNameEnum.SLIDER_BANNER.value || it.name == WidgetNameEnum.BMGM_BANNER.value
         }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.resumeTimer()
+            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeDisplayAdvanceCarouselBannerViewHolder)?.resumeTimer()
         }
     }
 
@@ -380,10 +414,11 @@ open class ShopHomeAdapter(
                 isRemindMe?.let { isRemindMe ->
                     it.isRemindMe = isRemindMe
                     if (isClickRemindMe) {
-                        if (isRemindMe)
+                        if (isRemindMe) {
                             ++it.totalNotify
-                        else
+                        } else {
                             --it.totalNotify
+                        }
                     }
                 }
                 it.showRemindMeLoading = false
@@ -404,10 +439,11 @@ open class ShopHomeAdapter(
                 isRemindMe?.let { isRemindMe ->
                     it.isRemindMe = isRemindMe
                     if (isClickRemindMe) {
-                        if (isRemindMe)
+                        if (isRemindMe) {
                             ++it.totalNotify
-                        else
+                        } else {
                             --it.totalNotify
+                        }
                     }
                 }
                 flashSaleCampaignUiModel.isNewData = true
@@ -446,6 +482,18 @@ open class ShopHomeAdapter(
         }
         submitList(newList)
     }
+
+    // ========== Shop Home Revamp V4 ============== //
+    fun getTerlarisWidgetUiModel(): ShopHomeV4TerlarisUiModel? {
+        return visitables.filterIsInstance<ShopHomeV4TerlarisUiModel>().firstOrNull()
+    }
+
+    fun setTerlarisWidgetData(uiModel: ShopHomeV4TerlarisUiModel) {
+        val newList = getNewVisitableItems()
+        submitList(newList)
+    }
+
+    // ========== Shop Home Revamp V4 ============== //
 
     fun getNplCampaignUiModel(campaignId: String): ShopHomeNewProductLaunchCampaignUiModel? {
         return visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().firstOrNull {
@@ -707,5 +755,25 @@ open class ShopHomeAdapter(
 
     fun getShopHomeWidgetData(): List<BaseShopHomeWidgetUiModel> {
         return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>()
+    }
+
+    fun anyFestivityOnShopHomeWidget(): Boolean {
+        return visitables.filterIsInstance<Visitable<*>>().any {
+            when (it) {
+                is BaseShopHomeWidgetUiModel -> it.isFestivity
+                is ThematicWidgetUiModel -> it.isFestivity
+                else -> false
+            }
+        }
+    }
+
+    private fun firstNonFestivityUiModel(): Visitable<*>? {
+        return visitables.filterIsInstance<Visitable<*>>().firstOrNull {
+            when (it) {
+                is BaseShopHomeWidgetUiModel -> !it.isFestivity
+                is ThematicWidgetUiModel -> !it.isFestivity
+                else -> false
+            }
+        }
     }
 }

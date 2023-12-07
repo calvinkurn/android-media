@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.Constant.ClaimCouponConstant.HABIS
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.KLAIM
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.NOT_LOGGEDIN
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.analytics.CouponTrackingMapper.toTrackingProperties
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.di.getSubComponent
@@ -21,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import timber.log.Timber
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) :
@@ -38,13 +40,12 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         claimCouponItemViewModel?.let {
             getSubComponent().inject(it)
         }
-        claimCouponItemViewModel?.getComponentData()
-            ?.observe(fragment.viewLifecycleOwner) {
-                this.componentItem = it
-                claimCouponItemViewModel?.let { it1 ->
-                    setData(it1.getClaimCouponData(), it1.getIsDouble())
-                }
+        claimCouponItemViewModel?.getComponentData()?.observe(fragment.viewLifecycleOwner) {
+            this.componentItem = it
+            claimCouponItemViewModel?.let { it1 ->
+                setData(it1.getClaimCouponData(), it1.getIsDouble())
             }
+        }
     }
 
     private fun setData(claimCouponItem: CatalogWithCouponList?, isDouble: Boolean) {
@@ -61,11 +62,8 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         setBtn(claimCouponItem?.status, isDouble)
         itemView.setOnClickListener {
             claimCouponItemViewModel?.setClick(itemView.context, claimCouponItem?.status)
-            componentItem?.let {
-                (fragment as DiscoveryFragment)
-                    .getDiscoveryAnalytics()
-                    .trackEventClickCoupon(it, adapterPosition, isDouble)
-            }
+
+            claimCouponItem?.run { trackClickEvent(this) }
         }
 
         claimBtn.setOnClickListener {
@@ -103,21 +101,36 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
                                 actionText = itemView.context.getString(R.string.claim_coupon_lihat_text)
                             ) {
                                 claimCouponItemViewModel?.getCouponAppLink()?.let { appLink ->
-                                    claimCouponItemViewModel?.navigate(
-                                        itemView.context,
-                                        appLink
-                                    )
+                                    claimCouponItemViewModel?.navigate(itemView.context, appLink)
                                 }
-                            }
-                                .show()
+                            }.show()
                         }
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        Timber.e(e)
                     }
                 }
 
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                .trackClickClaimCoupon(claimCouponItem?.title, claimCouponItem?.baseCode)
+            claimCouponItem?.run { trackClaimEvent(this) }
+        }
+    }
+
+    private fun trackClickEvent(claimCouponItem: CatalogWithCouponList) {
+        componentItem?.let { component ->
+
+            val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+            val properties = component.toTrackingProperties(claimCouponItem)
+
+            analytics?.trackCouponClickEvent(properties)
+        }
+    }
+
+    private fun trackClaimEvent(claimCouponItem: CatalogWithCouponList) {
+        componentItem?.let { component ->
+
+            val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+            val properties = component.toTrackingProperties(claimCouponItem)
+
+            analytics?.trackCouponCTAClickEvent(properties)
         }
     }
 

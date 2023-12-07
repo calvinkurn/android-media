@@ -8,7 +8,3 @@ interface AccountItemListener {
     fun onLinkAccountClicked()
     fun onViewAccountClicked()
 }
-
-interface PrivacyAccountListener {
-    fun onConsentGroupClicked(id: String)
-}

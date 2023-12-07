@@ -1,6 +1,8 @@
 package com.tokopedia.purchase_platform.common.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel.TOGGLE_OFF
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel.TOGGLE_ON
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.track.TrackApp
@@ -971,6 +973,58 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         sendGeneralEvent(gtmData)
     }
 
+    fun eventViewDropshipWidget() {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.IMPRESSION_DROPSHIP_WIDGET,
+            ""
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.IMPRESSION_DROPSHIP_WIDGET
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickInfoDropshipWidget() {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.CLICK_INFO_DROPSHIP_WIDGET,
+            ""
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_INFO_DROPSHIP_WIDGET
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickToggleDropshipWidget(isChecked: Boolean) {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.CLICK_TOGGLE_DROPSHIP_WIDGET,
+            if (isChecked) TOGGLE_ON else TOGGLE_OFF
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_TOGGLE_DROPSHIP_WIDGET
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickPilihPembayaranWithDropshipEnabled() {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.CLICK_PILIH_PEMBAYARAN_WITH_DROPSHIP_ENABLED,
+            ""
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_PILIH_PEMBAYARAN_WITH_DROPSHIP_ENABLED
+        sendGeneralEvent(gtmData)
+    }
+
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4210
     // Tracker ID: 46930
     fun sendClickSnkAsuransiDanProteksiEvent() {
@@ -997,6 +1051,27 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
             .setCustomProperty("trackerId", "46931")
             .setBusinessUnit("purchase platform")
             .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46781
+    fun sendClickSnkBmgmEvent(
+        offerId: String,
+        shopId: String,
+        userId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PG)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.CLICK_SNK_BMGM)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION)
+            .setEventLabel(offerId)
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.CLICK_SNK_BMGM)
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setShopId(shopId)
+            .setUserId(userId)
             .build()
             .send()
     }

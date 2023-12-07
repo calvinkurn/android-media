@@ -27,6 +27,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -34,8 +35,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
+import com.tokopedia.checkout.analytics.CheckoutPaymentAddOnsAnalytics
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.CornerAnalytics
+import com.tokopedia.checkout.databinding.BottomSheetDropshipBinding
 import com.tokopedia.checkout.databinding.BottomSheetPlatformFeeInfoBinding
 import com.tokopedia.checkout.databinding.FragmentCheckoutBinding
 import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
@@ -51,6 +54,8 @@ import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
 import com.tokopedia.checkout.revamp.view.processor.CheckoutResult
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
@@ -77,6 +82,7 @@ import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultation
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.fingerprint.util.FingerPrintUtil
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -104,6 +110,11 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
+import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
+import com.tokopedia.promousage.domain.entity.list.PromoItem
+import com.tokopedia.promousage.util.analytics.PromoUsageEntryPointAnalytics
+import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -142,10 +153,13 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearprom
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
+import com.tokopedia.purchase_platform.common.revamp.PromoEntryPointImprovementRollenceManager
 import com.tokopedia.purchase_platform.common.utils.animateGone
 import com.tokopedia.purchase_platform.common.utils.animateShow
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -163,7 +177,8 @@ class CheckoutFragment :
     CheckoutAdapterListener,
     ShippingDurationBottomsheetListener,
     ShippingCourierBottomsheetListener,
-    ExpireTimeDialogListener {
+    ExpireTimeDialogListener,
+    PromoUsageBottomSheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -187,10 +202,16 @@ class CheckoutFragment :
     lateinit var checkoutEgoldAnalytics: CheckoutEgoldAnalytics
 
     @Inject
+    lateinit var paymentAddOnsAnalytics: CheckoutPaymentAddOnsAnalytics
+
+    @Inject
     lateinit var shippingCourierConverter: ShippingCourierConverter
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
+
+    @Inject
+    lateinit var promoEntryPointAnalytics: PromoUsageEntryPointAnalytics
 
     private val viewModel: CheckoutViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[CheckoutViewModel::class.java]
@@ -388,6 +409,12 @@ class CheckoutFragment :
     }
 
     private fun initViewModel() {
+        viewModel.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
+            RemoteConfigInstance.getInstance().abTestPlatform
+        ).isRevamp()
+        viewModel.usePromoEntryPointNewInterface = PromoEntryPointImprovementRollenceManager(
+            RemoteConfigInstance.getInstance().abTestPlatform
+        ).enableNewInterface()
         viewModel.isOneClickShipment = isOneClickShipment
         viewModel.isTradeIn = isTradeIn
         viewModel.deviceId = deviceId
@@ -674,7 +701,47 @@ class CheckoutFragment :
             }
 
             REQUEST_CODE_PROMO -> {
-                onResultFromPromo(resultCode, data)
+                onActivityResultFromPromo(resultCode, data)
+            }
+
+            PaymentConstant.REQUEST_CODE -> {
+                onResultFromPayment(resultCode, data)
+            }
+        }
+    }
+
+    private fun onResultFromPayment(resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            PaymentConstant.PAYMENT_FAILED, PaymentConstant.PAYMENT_CANCELLED -> {
+                if (data != null && data.getBooleanExtra(
+                        PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
+                        false
+                    )
+                ) {
+                    viewModel.loadSAF(
+                        isReloadData = true,
+                        skipUpdateOnboardingState = true,
+                        isReloadAfterPriceChangeHigher = false
+                    )
+                }
+                if (data != null && data.getBooleanExtra(
+                        PaymentConstant.EXTRA_PAGE_TIME_OUT,
+                        false
+                    )
+                ) {
+                    view?.let { v ->
+                        Toaster.build(
+                            v,
+                            getString(R.string.checkout_label_payment_try_again),
+                            type = Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
+            }
+
+            else -> {
+                val activity: Activity? = activity
+                activity?.finish()
             }
         }
     }
@@ -1793,24 +1860,43 @@ class CheckoutFragment :
 
     override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel) {
         if (!viewModel.isLoading()) {
-            val validateUseRequestParam = viewModel.generateValidateUsePromoRequest()
             val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
-            val intent =
-                RouteManager.getIntent(
-                    activity,
-                    ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
+            if (viewModel.useNewPromoPage()) {
+                val validateUseRequestParam =
+                    viewModel.generateValidateUsePromoRequestForPromoUsage()
+                val totalAmount = viewModel.listData.value.buttonPayment()!!.totalPriceNum
+                val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
+                    entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,
+                    promoRequest = promoRequestParam,
+                    validateUsePromoRequest = validateUseRequestParam,
+                    boPromoCodes = viewModel.getBboPromoCodes(),
+                    totalAmount = totalAmount,
+                    listener = this@CheckoutFragment
                 )
-            intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
-            intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
-            intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
-            intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.getBboPromoCodes())
-            setChosenAddressForTradeInDropOff(intent)
-            setPromoExtraMvcLockCourierFlow(intent)
-            startActivityForResult(intent, REQUEST_CODE_PROMO)
-            if (isTradeIn) {
-                checkoutTradeInAnalytics.eventTradeInClickPromo(viewModel.isTradeInByDropOff)
+                bottomSheetPromo.show(childFragmentManager)
+            } else {
+                val validateUseRequestParam = viewModel.generateValidateUsePromoRequest()
+                val intent =
+                    RouteManager.getIntent(
+                        activity,
+                        ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
+                    )
+                intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
+                intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
+                intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
+                intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.getBboPromoCodes())
+                setChosenAddressForTradeInDropOff(intent)
+                setPromoExtraMvcLockCourierFlow(intent)
+                startActivityForResult(intent, REQUEST_CODE_PROMO)
+                if (isTradeIn) {
+                    checkoutTradeInAnalytics.eventTradeInClickPromo(viewModel.isTradeInByDropOff)
+                }
             }
         }
+    }
+
+    override fun onClickReloadPromoWidget() {
+        viewModel.reloadEntryPointInfo()
     }
 
     private fun setChosenAddressForTradeInDropOff(intent: Intent) {
@@ -1894,6 +1980,79 @@ class CheckoutFragment :
         PromoRevampAnalytics.eventCheckoutViewPromoAlreadyApplied()
     }
 
+    override fun sendImpressionUserSavingTotalSubsidyEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    ) {
+        promoEntryPointAnalytics
+            .sendImpressionUserSavingTotalSubsidyEvent(
+                userSessionInterface.userId,
+                PromoPageEntryPoint.CHECKOUT_PAGE,
+                entryPointMessages,
+                entryPointInfo,
+                lastApply
+            )
+    }
+
+    override fun sendClickUserSavingAndPromoEntryPointEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    ) {
+        promoEntryPointAnalytics
+            .sendClickUserSavingAndPromoEntryPointEvent(
+                userSessionInterface.userId,
+                PromoPageEntryPoint.CHECKOUT_PAGE,
+                entryPointMessages,
+                entryPointInfo,
+                lastApply
+            )
+    }
+
+    override fun sendImpressionUserSavingDetailTotalSubsidyEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    ) {
+        promoEntryPointAnalytics
+            .sendImpressionUserSavingDetailTotalSubsidyEvent(
+                userSessionInterface.userId,
+                PromoPageEntryPoint.CHECKOUT_PAGE,
+                entryPointMessages,
+                entryPointInfo,
+                lastApply
+            )
+    }
+
+    override fun sendClickUserSavingDetailTotalSubsidyEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    ) {
+        promoEntryPointAnalytics
+            .sendClickUserSavingDetailTotalSubsidyEvent(
+                userSessionInterface.userId,
+                PromoPageEntryPoint.CHECKOUT_PAGE,
+                entryPointMessages,
+                entryPointInfo,
+                lastApply
+            )
+    }
+
+    override fun sendImpressionPromoEntryPointErrorEvent(
+        errorMessage: String,
+        lastApply: LastApplyUiModel
+    ) {
+        promoEntryPointAnalytics
+            .sendImpressionPromoEntryPointErrorEvent(
+                userId = userSessionInterface.userId,
+                entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,
+                errorMessage = errorMessage,
+                lastApply = lastApply
+            )
+    }
+
     override fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel) {
         val bottomSheetPlatformFeeInfoBinding =
             BottomSheetPlatformFeeInfoBinding.inflate(LayoutInflater.from(context))
@@ -1927,6 +2086,20 @@ class CheckoutFragment :
         val digitalProductId = crossSellModel.crossSellModel.id
         val eventLabel = "$digitalCategoryName - $digitalProductId"
         val digitalProductName = crossSellModel.crossSellModel.info.title
+        val productCatIds = viewModel.getProductCatIds()
+        if (checked) {
+            paymentAddOnsAnalytics.eventCheckCrossSellIcon(
+                digitalCategoryName,
+                digitalProductId,
+                productCatIds
+            )
+        } else {
+            paymentAddOnsAnalytics.eventUncheckCrossSellIcon(
+                digitalCategoryName,
+                digitalProductId,
+                productCatIds
+            )
+        }
         checkoutAnalyticsCourierSelection.eventClickCheckboxCrossSell(
             checked,
             userSessionInterface.userId,
@@ -1937,7 +2110,7 @@ class CheckoutFragment :
         )
     }
 
-    override fun onEgoldChecked(checked: Boolean) {
+    override fun onEgoldChecked(checked: Boolean, egoldModel: CheckoutEgoldModel) {
         viewModel.updateEgold(checked)
         checkoutEgoldAnalytics.eventClickEgoldRoundup(checked)
         if (isTradeIn) {
@@ -1946,12 +2119,38 @@ class CheckoutFragment :
                 checked
             )
         }
+        val productCatIds = viewModel.getProductCatIds()
+        if (checked) {
+            paymentAddOnsAnalytics.eventCheckCrossSellIcon(
+                egoldModel.getCategoryName(),
+                egoldModel.getCrossSellProductId(),
+                productCatIds
+            )
+        } else {
+            paymentAddOnsAnalytics.eventUncheckCrossSellIcon(
+                egoldModel.getCategoryName(),
+                egoldModel.getCrossSellProductId(),
+                productCatIds
+            )
+        }
     }
 
-    override fun onDonationChecked(checked: Boolean) {
+    override fun onDonationChecked(checked: Boolean, checkoutDonationModel: CheckoutDonationModel) {
         viewModel.updateDonation(checked)
+        val productCatIds = viewModel.getProductCatIds()
         if (checked) {
             checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickTopDonasi()
+            paymentAddOnsAnalytics.eventCheckCrossSellIcon(
+                checkoutDonationModel.getCategoryName(),
+                checkoutDonationModel.getCrossSellProductId(),
+                productCatIds
+            )
+        } else {
+            paymentAddOnsAnalytics.eventUncheckCrossSellIcon(
+                checkoutDonationModel.getCategoryName(),
+                checkoutDonationModel.getCrossSellProductId(),
+                productCatIds
+            )
         }
         checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked)
         if (isTradeIn) {
@@ -1992,7 +2191,17 @@ class CheckoutFragment :
             viewModel.checkout(publicKey, { onTriggerEpharmacyTracker(it) }) {
                 onSuccessCheckout(it)
             }
+            sendProcessToPaymentAnalytic()
         }
+    }
+
+    override fun onClickBmgmInfoIcon(offerId: String, shopId: String) {
+        checkoutAnalyticsCourierSelection.sendClickSnkBmgmEvent(
+            offerId,
+            shopId,
+            userSessionInterface.userId
+        )
+        RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
     }
 
     private fun onTriggerEpharmacyTracker(showErrorToaster: Boolean) {
@@ -2313,7 +2522,7 @@ class CheckoutFragment :
     }
     // endregion
 
-    private fun onResultFromPromo(resultCode: Int, data: Intent?) {
+    private fun onActivityResultFromPromo(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (data!!.getStringExtra(ARGS_PROMO_ERROR) != null && data.getStringExtra(
                     ARGS_PROMO_ERROR
@@ -2323,39 +2532,47 @@ class CheckoutFragment :
             } else {
                 val validateUsePromoRequest =
                     data.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)
-                if (validateUsePromoRequest != null) {
-                    val validateUsePromoRevampUiModel =
-                        data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
-                            ARGS_VALIDATE_USE_DATA_RESULT
-                        )
-                    if (validateUsePromoRevampUiModel != null) {
-                        for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
-                            for (order in validateUsePromoRequest.orders) {
-                                if (voucherOrdersItemUiModel.uniqueId == order.uniqueId && voucherOrdersItemUiModel.isTypeLogistic()) {
-                                    order.codes.remove(voucherOrdersItemUiModel.code)
-                                    order.boCode = ""
-                                }
-                            }
-                        }
-                    }
-                }
                 val validateUsePromoRevampUiModel =
                     data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
                         ARGS_VALIDATE_USE_DATA_RESULT
                     )
-                if (validateUsePromoRevampUiModel != null) {
-                    viewModel.validateBoPromo(validateUsePromoRevampUiModel)
-                }
                 val clearPromoUiModel =
                     data.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
-                if (clearPromoUiModel != null) {
-                    val promoUiModel = PromoUiModel()
-                    promoUiModel.titleDescription =
-                        clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
-                    if (validateUsePromoRequest != null) {
-                        viewModel.validateClearAllBoPromo(validateUsePromoRequest, promoUiModel)
+                onResultFromPromo(
+                    validateUsePromoRequest,
+                    validateUsePromoRevampUiModel,
+                    clearPromoUiModel
+                )
+            }
+        }
+    }
+
+    private fun onResultFromPromo(
+        validateUsePromoRequest: ValidateUsePromoRequest?,
+        validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?,
+        clearPromoUiModel: ClearPromoUiModel?
+    ) {
+        if (validateUsePromoRequest != null) {
+            if (validateUsePromoRevampUiModel != null) {
+                for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+                    for (order in validateUsePromoRequest.orders) {
+                        if (voucherOrdersItemUiModel.uniqueId == order.uniqueId && voucherOrdersItemUiModel.isTypeLogistic()) {
+                            order.codes.remove(voucherOrdersItemUiModel.code)
+                            order.boCode = ""
+                        }
                     }
                 }
+            }
+        }
+        if (validateUsePromoRevampUiModel != null) {
+            viewModel.validateBoPromo(validateUsePromoRevampUiModel)
+        }
+        if (clearPromoUiModel != null) {
+            val promoUiModel = PromoUiModel()
+            promoUiModel.titleDescription =
+                clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
+            if (validateUsePromoRequest != null) {
+                viewModel.validateClearAllBoPromo(validateUsePromoRequest, promoUiModel)
             }
         }
     }
@@ -2372,5 +2589,129 @@ class CheckoutFragment :
             viewModel.clearAllBoOnTemporaryUpsell()
             activity?.finish()
         }
+    }
+
+    override fun onClosePageWithApplyPromo(
+        entryPoint: PromoPageEntryPoint,
+        validateUse: ValidateUsePromoRevampUiModel,
+        lastValidateUsePromoRequest: ValidateUsePromoRequest
+    ) {
+        onResultFromPromo(
+            validateUsePromoRequest = lastValidateUsePromoRequest,
+            validateUsePromoRevampUiModel = validateUse,
+            clearPromoUiModel = null
+        )
+    }
+
+    override fun onClosePageWithClearPromo(
+        entryPoint: PromoPageEntryPoint,
+        clearPromo: ClearPromoUiModel,
+        lastValidateUsePromoRequest: ValidateUsePromoRequest,
+        isFlowMvcLockToCourier: Boolean,
+        clearedPromos: List<PromoItem>
+    ) {
+        onResultFromPromo(
+            validateUsePromoRequest = lastValidateUsePromoRequest,
+            validateUsePromoRevampUiModel = null,
+            clearPromoUiModel = clearPromo
+        )
+    }
+
+    override fun onClosePageWithNoAction() {
+        // no-op
+    }
+
+    override fun onApplyPromo(
+        entryPoint: PromoPageEntryPoint,
+        validateUse: ValidateUsePromoRevampUiModel,
+        lastValidateUsePromoRequest: ValidateUsePromoRequest
+    ) {
+        onResultFromPromo(
+            validateUsePromoRequest = lastValidateUsePromoRequest,
+            validateUsePromoRevampUiModel = validateUse,
+            clearPromoUiModel = null
+        )
+    }
+
+    override fun onApplyPromoNoAction() {
+        // no-op
+    }
+
+    override fun onApplyPromoFailed(throwable: Throwable) {
+        showToast(throwable.message)
+    }
+
+    override fun onClearPromoSuccess(
+        entryPoint: PromoPageEntryPoint,
+        clearPromo: ClearPromoUiModel,
+        lastValidateUsePromoRequest: ValidateUsePromoRequest,
+        isFlowMvcLockToCourier: Boolean
+    ) {
+        onResultFromPromo(
+            validateUsePromoRequest = lastValidateUsePromoRequest,
+            validateUsePromoRevampUiModel = null,
+            clearPromoUiModel = clearPromo
+        )
+    }
+
+    override fun onClearPromoFailed(throwable: Throwable) {
+        showToast(throwable.message)
+    }
+
+    override fun onPaymentLevelAddOnsImpressed(categoryName: String, crossSellProductId: String) {
+        val productCatIds = viewModel.getProductCatIds()
+        paymentAddOnsAnalytics.eventImpressCrossSellIcon(
+            categoryName,
+            crossSellProductId,
+            productCatIds
+        )
+    }
+
+    private fun sendProcessToPaymentAnalytic() {
+        val productCatIds = viewModel.getProductCatIds()
+        val paymentAddOnsAnalyticData = viewModel.generatePaymentLevelAddOnsAnalyticData()
+        paymentAddOnsAnalytics.eventClickPaymentMethodWithCrossSell(
+            paymentAddOnsAnalyticData,
+            productCatIds
+        )
+    }
+
+    override fun showDropshipInfoBottomSheet() {
+        checkoutAnalyticsCourierSelection.eventClickInfoDropshipWidget()
+        val bottomSheetDropshipBinding =
+            BottomSheetDropshipBinding.inflate(LayoutInflater.from(context))
+        val bottomSheetUnify = BottomSheetUnify()
+        bottomSheetUnify.setTitle(
+            getString(R.string.dropship_bottomsheet_title)
+        )
+        bottomSheetUnify.showCloseIcon = false
+        bottomSheetUnify.showKnob = true
+        bottomSheetUnify.setChild(bottomSheetDropshipBinding.root)
+        bottomSheetUnify.show(childFragmentManager, null)
+    }
+
+    override fun showDropshipToasterErrorProtectionUsage() {
+        Toaster.build(binding.root, getString(R.string.dropship_error_protection_usage), type = Toaster.TYPE_ERROR).show()
+    }
+
+    override fun checkLatestProtectionOptIn(cartStringGroup: String): Boolean {
+        return viewModel.isAnyProtectionAddonOptIn(cartStringGroup)
+    }
+
+    override fun onCheckChangedDropship(isChecked: Boolean, position: Int) {
+        checkoutAnalyticsCourierSelection.eventClickToggleDropshipWidget(isChecked)
+        viewModel.setDropshipSwitch(isChecked, position)
+    }
+
+    override fun setValidationDropshipName(name: String, isValid: Boolean, position: Int) {
+        viewModel.setValidationDropshipName(name, isValid, position)
+    }
+
+    override fun setValidationDropshipPhone(phone: String, isValid: Boolean, position: Int) {
+        viewModel.setValidationDropshipPhone(phone, isValid, position)
+    }
+
+    override fun onSendImpressionDropshipWidgetAnalytics() {
+        checkoutAnalyticsCourierSelection.eventViewDropshipWidget()
     }
 }

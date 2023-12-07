@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.os.Trace
+import android.util.Log
 import android.view.Choreographer
 import android.view.View
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -34,6 +35,7 @@ class BlocksPerformanceTrace(
     val traceName: String,
     scope: LifecycleCoroutineScope,
     val touchListenerActivity: TouchListenerActivity?,
+    val onPerformanceTraceCancelled: ((state: BlocksPerfState) -> Unit)? = null,
     onLaunchTimeFinished: ((summaryModel: BlocksSummaryModel, capturedBlocks: Set<String>) -> Unit)? = null
 ) {
     companion object {
@@ -45,6 +47,9 @@ class BlocksPerformanceTrace(
         const val FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD = 3
 
         const val ANDROID_TRACE_FULLY_DRAWN = "reportFullyDrawn() for %s"
+
+        const val COOKIE_TTFL = 77
+        const val COOKIE_TTIL = 78
     }
 
     private var startCurrentTimeMillis = 0L
@@ -64,14 +69,20 @@ class BlocksPerformanceTrace(
     private var isPerformanceTraceEnabled = true
 
     private var performanceBlocks = mutableSetOf<String>()
+    private var atomicPerformanceBlocks = AtomicReference(performanceBlocks)
 
     private var inputFlow =
         MutableSharedFlow<Set<String>>(1, onBufferOverflow = BufferOverflow.SUSPEND)
 
     private var perfBlockFlow = inputFlow.transform {
-        performanceBlocks.addAll(it)
-        emit(performanceBlocks.size)
+        val performanceBlocksTemp = atomicPerformanceBlocks.get()
+        performanceBlocksTemp.addAll(it)
+        atomicPerformanceBlocks.set(performanceBlocksTemp)
+
+        emit(performanceBlocksTemp.size)
     }.stateIn(scope, SharingStarted.WhileSubscribed(5000), 0)
+
+    var onBlocksRendered: ((summaryModel: BlocksSummaryModel, capturedBlocks: Set<String>, elapsedTime: Long, identifier: String) -> Unit)? = null
 
     enum class BlocksPerfState {
         STATE_ERROR,
@@ -91,6 +102,7 @@ class BlocksPerformanceTrace(
             )
         }
         initialize(context, scope, onLaunchTimeFinished)
+        Log.d("BlocksTrace", "Start...")
     }
 
     private fun initialize(
@@ -110,18 +122,30 @@ class BlocksPerformanceTrace(
 
         if (isPerformanceTraceEnabled) {
             startCurrentTimeMillis = System.currentTimeMillis()
+            beginAsyncSystraceSection(
+                "PageLoadTime.AsyncTTFL$traceName",
+                COOKIE_TTFL
+            )
+            beginAsyncSystraceSection(
+                "PageLoadTime.AsyncTTIL$traceName",
+                COOKIE_TTIL
+            )
             TTFLperformanceMonitoring?.startTrace("ttfl_perf_trace_$traceName")
             TTILperformanceMonitoring?.startTrace("ttil_perf_trace_$traceName")
 
             performanceTraceJob = scope.launch(Dispatchers.IO) {
                 perfBlockFlow.collect {
                     if (!ttflMeasured && TTFLperformanceMonitoring != null && it >= FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD) {
-                        measureTTFL(performanceBlocks)
+                        measureTTFL(atomicPerformanceBlocks.get())
+                        endAsyncSystraceSection("PageLoadTime.AsyncTTFL$traceName", COOKIE_TTFL)
                     }
 
                     if (!ttilMeasured && TTILperformanceMonitoring != null && it >= FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD) {
-                        measureTTIL(performanceBlocks)
-                        putFullyDrawnTrace(traceName)
+                        measureTTIL(atomicPerformanceBlocks.get())
+                        endAsyncSystraceSection("PageLoadTime.AsyncTTIL$traceName", COOKIE_TTIL)
+                        scope.launch(Dispatchers.Main) {
+                            putFullyDrawnTrace(traceName)
+                        }
                     }
                 }
             }
@@ -134,6 +158,18 @@ class BlocksPerformanceTrace(
                 }
             }
             this.onLaunchTimeFinished = onLaunchTimeFinished
+        }
+    }
+
+    fun beginAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Trace.beginAsyncSection(methodName, cookie)
+        }
+    }
+
+    fun endAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Trace.endAsyncSection(methodName, cookie)
         }
     }
 
@@ -167,27 +203,40 @@ class BlocksPerformanceTrace(
 
     fun addViewPerformanceBlocks(view: View?) {
         view?.let {
-            performanceBlocks.addPerformanceBlocks(view) {
-                inputFlow.tryEmit(performanceBlocks)
+            atomicPerformanceBlocks.get().addPerformanceBlocks(view) {
+                inputFlow.tryEmit(atomicPerformanceBlocks.get())
             }
         }
     }
 
-    fun setBlock(list: List<Any>) {
-        if (list.allLoadableComponentFinished()) {
+    fun setBlock(list: List<Any>, identifier: String = "", blockLimit: Int = 0) {
+        if (list.allLoadableComponentFinished() && list.size >= blockLimit) {
             setLoadableComponentListPerformanceBlocks(
                 list.getFinishedLoadableComponent()
+            )
+        }
+        val allFinishedLoadableComponent = list.filter { it is LoadableComponent && !it.isLoading() }
+        viewHierarchyInUsableState {
+            val currentElapsedTime = System.currentTimeMillis() - startCurrentTimeMillis
+            onBlocksRendered?.invoke(
+                summaryModel.get(),
+                allFinishedLoadableComponent.map {
+                    (it as? LoadableComponent)?.name() ?: ""
+                }.toSet(),
+                currentElapsedTime,
+                identifier
             )
         }
     }
 
     private fun setLoadableComponentListPerformanceBlocks(listOfLoadableComponent: List<String>) {
         viewHierarchyInUsableState {
-            val tempBlocks = performanceBlocks
+            val tempBlocks = atomicPerformanceBlocks.get()
             tempBlocks.addAll(listOfLoadableComponent.toSet())
 
-            performanceBlocks = tempBlocks
-            inputFlow.tryEmit(performanceBlocks)
+            atomicPerformanceBlocks.set(tempBlocks)
+
+            inputFlow.tryEmit(tempBlocks)
         }
     }
 
@@ -205,17 +254,21 @@ class BlocksPerformanceTrace(
             ATTR_CONDITION,
             state.name
         )
+        val setOfLoadableComponent = listOfFinishedLoadableComponent.toMutableSet()
+        val attr = setOfLoadableComponent.map { it }.joinToString(
+            prefix = "[",
+            separator = ", ",
+            postfix = "]",
+            truncated = "..."
+        )
+
         targetPerfMonitoring?.putCustomAttribute(
             ATTR_BLOCKS,
-            listOfFinishedLoadableComponent.map { it }.joinToString(
-                prefix = "[",
-                separator = ", ",
-                postfix = "]",
-                truncated = "..."
-            )
+            attr
         )
         targetPerfMonitoring?.stopTrace()
 
+        onPerformanceTraceCancelled?.invoke(state)
         if (summaryModel.get().timeToInitialLayout != null) {
             PerformanceTraceDebugger.logTrace(
                 "Performance TTFL trace finished."
@@ -247,13 +300,14 @@ class BlocksPerformanceTrace(
         validateTTIL(blocksModel)
         onLaunchTimeFinished?.invoke(
             summaryModel.get(),
-            performanceBlocks
+            atomicPerformanceBlocks.get()
         )
         finishTTIL(BlocksPerfState.STATE_SUCCESS, listOfLoadableComponent)
         trackIris()
         this.onLaunchTimeFinished = null
         TTILperformanceMonitoring = null
         performanceTraceJob?.cancel()
+        Log.d("BlocksTrace", "TTIL: " + summaryModel.get().ttil())
     }
 
     private fun trackIris() {
@@ -272,7 +326,7 @@ class BlocksPerformanceTrace(
         validateTTFL(blocksModel)
         onLaunchTimeFinished?.invoke(
             summaryModel.get(),
-            performanceBlocks
+            atomicPerformanceBlocks.get()
         )
         finishTTFL(BlocksPerfState.STATE_SUCCESS, listOfLoadableComponent)
         TTFLperformanceMonitoring = null
@@ -290,7 +344,7 @@ class BlocksPerformanceTrace(
 
     private fun createBlocksPerformanceModel() = BlocksPerformanceModel(
         inflateTime = System.currentTimeMillis() - startCurrentTimeMillis,
-        capturedBlocks = performanceBlocks
+        capturedBlocks = atomicPerformanceBlocks.get()
     )
 
     private fun validateTTFL(blocksPerformanceModel: BlocksPerformanceModel?) {

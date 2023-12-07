@@ -57,6 +57,7 @@ object KYCConstant {
     const val collectionIdGotoKycNonProgressiveProduction = "23d6102a-a625-4036-964a-aa039198605a"
 
     const val PROJECT_ID_ACCOUNT = "7"
+    const val PARAM_BLOCKED_IS_MULTIPLE_ACCOUNT = "blocked_is_multiple_account"
 
     object SharedPreference {
         /*
@@ -87,5 +88,7 @@ object KYCConstant {
         const val RESULT_FINISH = 99
         const val RELOAD = 98
         const val LAUNCH_CALLBACK = 97
+        const val LAUNCH_TOKO_KYC = 96
+        const val BLOCKED_KYC = 95
     }
 }

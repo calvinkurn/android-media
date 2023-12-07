@@ -50,6 +50,9 @@ public class PaymentPassData implements Parcelable {
     }
 
     public String getTransactionId() {
+        if (transactionId == null) {
+            transactionId = "";
+        }
         return transactionId;
     }
 

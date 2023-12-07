@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.viewmodel.websocket
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.content.product.picker.seller.util.PriceFormatUtil
 import com.tokopedia.play.broadcaster.domain.model.GetSocketCredentialResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
@@ -47,6 +48,8 @@ class PlayBroWebSocketViewModelTest {
     private val mockLogger: PlayLogger = mockk(relaxed = true)
     private val mockInteractiveMapper: PlayInteractiveMapper = mockk(relaxed = true)
     private val fakePlayWebSocket = FakePlayWebSocket(testDispatcher)
+
+    private val productUiMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(PriceFormatUtil())
 
     private val uiModelBuilder = UiModelBuilder()
     private val webSocketUiModelBuilder = WebSocketUiModelBuilder()
@@ -227,7 +230,7 @@ class PlayBroWebSocketViewModelTest {
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             logger = mockLogger,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastWebSocket = fakePlayWebSocket,
         )
 
@@ -251,7 +254,7 @@ class PlayBroWebSocketViewModelTest {
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             logger = mockLogger,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playBroadcastWebSocket = fakePlayWebSocket,
         )
 
@@ -321,7 +324,7 @@ class PlayBroWebSocketViewModelTest {
                 fakePlayWebSocket.fakeEmitMessage(mockChannelInteractiveString)
             }
 
-            Assertions.assertThat(events.first()).isInstanceOf(PlayBroadcastEvent.ShowInteractiveGameResultWidget::class.java)
+            Assertions.assertThat(events[1]).isInstanceOf(PlayBroadcastEvent.ShowInteractiveGameResultWidget::class.java) //first always init brodcast config
             Assertions.assertThat(events.last()).isInstanceOf(PlayBroadcastEvent.DismissGameResultCoachMark::class.java)
         }
     }

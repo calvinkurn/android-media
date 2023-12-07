@@ -77,6 +77,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_pin"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical"
+            app:icon_color_light_enable="@color/Unify_NN900"
+            app:icon_color_night_enable="@color/Unify_NN900"
+            app:icon_name="PUSH_PIN"
+            app:layout_constraintBottom_toBottomOf="@id/tv_group_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_group_name" />
+
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/rl_product_policies_layout"
             android:layout_width="0dp"

@@ -10,9 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tvDescription"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="paragraph_2"
         app:typographyWeight="bold" />
 
@@ -22,9 +22,9 @@
         android:layout_height="16dp"
         android:layout_marginHorizontal="4dp"
         app:icon_name="COPY"
+        app:layout_constraintBottom_toBottomOf="@id/tvInvoiceNumber"
         app:layout_constraintStart_toEndOf="@id/tvInvoiceNumber"
-        app:layout_constraintTop_toTopOf="@id/tvInvoiceNumber"
-        app:layout_constraintBottom_toBottomOf="@id/tvInvoiceNumber"  />
+        app:layout_constraintTop_toTopOf="@id/tvInvoiceNumber" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDescription"
@@ -46,8 +46,8 @@
         app:layout_constraintBottom_toTopOf="@id/btn_cancel"
         app:layout_constraintStart_toStartOf="@id/tvInvoiceNumber"
         app:timer_unify_single_textWidth="full_radius"
-        app:timer_unify_single_variant="informative"
-        app:timer_unify_single_type="minute"/>
+        app:timer_unify_single_type="minute"
+        app:timer_unify_single_variant="informative" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -87,7 +87,7 @@
         android:id="@+id/view_toaster"
         android:layout_width="match_parent"
         android:layout_height="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/grup_btn_and_invoice"
@@ -111,7 +111,7 @@
         app:layout_constraintStart_toStartOf="@id/btn_cancel"
         app:layout_constraintTop_toTopOf="@id/btn_cancel"
         app:loader_corner_radius="8dp"
-        app:loader_type="rect"/>
+        app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_btn_finding"

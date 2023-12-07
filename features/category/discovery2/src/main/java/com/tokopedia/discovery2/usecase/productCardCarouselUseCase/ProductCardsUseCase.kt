@@ -16,18 +16,22 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import javax.inject.Inject
 
 class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
     companion object {
-        private const val PRODUCT_PER_PAGE = 20
+        const val NO_PRODUCT_PER_PAGE = -1
+
+        const val PRODUCT_PER_PAGE = 20
         private const val RPC_FILTER_KEU = "rpc_"
         private const val PAGE_START = 1
         private const val RPC_PAGE_NUMBER = "rpc_page_number"
         private const val RPC_NEXT_PAGE = "rpc_next_page"
         private const val RPC_PAGE__SIZE = "rpc_page_size"
+        private const val RPC_WAREHOUSE_TCO = "rpc_warehouse_tco"
     }
 
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
@@ -51,7 +55,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             it.nextPageKey,
                             it.recomQueryProdId,
                             paramWithoutRpc,
-                            it.userAddressData),
+                            it.userAddressData,
+                            component.properties?.warehouseTco
+                        ),
                     pageEndPoint, it.name)
             it.showVerticalLoader = productListData.isNotEmpty()
             it.setComponentsItem(productListData, component.tabName)
@@ -89,7 +95,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             component1.nextPageKey,
                             component1.recomQueryProdId,
                             paramWithoutRpc,
-                            component.userAddressData),
+                            component.userAddressData,
+                            component.properties?.warehouseTco
+                    ),
                     pageEndPoint,
                     component1.name)
             component1.nextPageKey = additionalInfo?.nextPage
@@ -131,7 +139,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             it.nextPageKey,
                             it.recomQueryProdId,
                             paramWithoutRpc,
-                            it.userAddressData),
+                            it.userAddressData,
+                            component.properties?.warehouseTco
+                    ),
                     pageEndPoint,
                     it.name)
             component.nextPageKey = additionalInfo?.nextPage
@@ -157,11 +167,12 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                                      nextPageKey : String?,
                                      recomProdId: String?,
                                      queryParameterMapWithoutRpc: Map<String, String>?,
-                                     userAddressData: LocalCacheModel?): MutableMap<String, Any> {
+                                     userAddressData: LocalCacheModel?,
+                                     warehouseTco: String?): MutableMap<String, Any> {
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
-        queryParameterMap[RPC_PAGE__SIZE] = productsPerPage.toString()
+        queryParameterMap[RPC_PAGE__SIZE] = if (productsPerPage == NO_PRODUCT_PER_PAGE) String.EMPTY else productsPerPage
         queryParameterMap[RPC_PAGE_NUMBER] = pageNumber.toString()
 
         chipSelectionData?.let {
@@ -209,6 +220,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             queryParameterMap[RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
         if (!recomProdId.isNullOrEmpty())
             queryParameterMap[RPC_PRODUCT_ID] = recomProdId
+        if (!warehouseTco.isNullOrEmpty())
+            queryParameterMap[RPC_WAREHOUSE_TCO] = warehouseTco
         queryParameterMapWithoutRpc?.let {
             queryParameterMap.putAll(it)
         }

@@ -147,6 +147,14 @@
             app:layout_constraintTop_toTopOf="@id/label_selected_shipping_courier"
             tools:visibility="visible" />
 
+        <View
+            android:id="@+id/view_space_normal_shipping_courier"
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            app:layout_constraintStart_toEndOf="@id/lbl_cod_available"
+            app:layout_constraintEnd_toStartOf="@id/icon_chevron_choose_courier"
+            app:layout_constraintTop_toTopOf="@id/label_selected_shipping_courier" />
+
 
         <!--duration in eta, price in old view-->
         <com.tokopedia.unifyprinciples.Typography

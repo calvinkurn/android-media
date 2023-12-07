@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="stories_onboard_tap_anim">https://assets.tokopedia.net/asts/content/stories/tap.json</string>
+    <string name="stories_onboard_swipe_anim">https://assets.tokopedia.net/asts/content/stories/swipe.json</string>
+</resources>

@@ -127,9 +127,11 @@ class FeedPostLiveViewHolder(
             val newPayloads = mutableListOf<Any>().apply {
                 addAll(payloads)
                 if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
-                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(
-                    scrollingPayload
-                )
+                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) {
+                    add(
+                        scrollingPayload
+                    )
+                }
             }
             bind(item.data as FeedCardLivePreviewContentModel, newPayloads)
         }
@@ -175,7 +177,8 @@ class FeedPostLiveViewHolder(
             absoluteAdapterPosition
         )
 
-        mVideoPlayer?.resume(shouldReset = false)
+        mVideoPlayer?.toggleVideoVolume(listener.isMuted())
+        if (listener.isAllowedToPlayVideo()) mVideoPlayer?.resume(shouldReset = false)
         onScrolling(false)
     }
 

@@ -30,16 +30,6 @@ internal class DoubleLineLayoutStrategyControl : DoubleLineLayoutStrategy {
         dotImage.hide()
     }
 
-    override fun bindTitle(
-        titleView: Typography,
-    ) {
-        titleView.changeTypeToDisplay2()
-    }
-
-    private fun Typography.changeTypeToDisplay2() {
-        this.setType(Typography.DISPLAY_2)
-    }
-
     override fun bindIconImage(
         iconImage: AppCompatImageView,
         item: SuggestionDoubleLineDataDataView

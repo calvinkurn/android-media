@@ -7,4 +7,6 @@
     <color name="discovery2_dms_clr_2E3137B2">@color/Unify_NN900_70</color>
     <color name="discovery2_dms_clr_FFCCD9">#FFCCD9</color>
     <color name="discovery2_dms_clr_C9FDE0">#C9FDE0</color>
+    <color name="discovery2_dms_ph_stock_bar_start">#602933</color>
+    <color name="discovery2_dms_ph_stock_bar_end">#9E2E43</color>
 </resources>

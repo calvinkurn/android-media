@@ -147,4 +147,12 @@
     <string name="search_mps_empty_state_filter_reset_button_text">Reset Filter</string>
 
     <string name="search_inspiration_keyword_match_title">Banyak juga yang mencari</string>
+
+    <string name="search_mps_restricted_response_state_learn_button_text">Pelajari Selengkapnya</string>
+
+    <string name="search_mps_blacklist_response_state_title">Oops, ada barang yang nggak bisa dibeli</string>
+    <string name="search_mps_blacklist_response_state_description">Coba cari barang yang lain, atau pelajari dulu selengkapnya, ya.</string>
+    <string name="search_mps_banned_tobacco_state_title">Oops, barang ini nggak bisa dibeli di Android</string>
+    <string name="search_mps_banned_tobacco_state_description">Silahkan cari barangnya di Tokopedia di HP atau komputer, ya.</string>
+
 </resources>

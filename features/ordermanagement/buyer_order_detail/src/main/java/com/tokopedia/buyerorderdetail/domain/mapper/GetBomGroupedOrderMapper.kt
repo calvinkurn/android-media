@@ -311,7 +311,8 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                     addOnsThumbnailUrl = it.imageUrl,
                     toStr = String.EMPTY,
                     fromStr = String.EMPTY,
-                    message = String.EMPTY
+                    message = String.EMPTY,
+                    providedByShopItself = false
                 )
             }.orEmpty()
         )

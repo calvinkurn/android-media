@@ -307,6 +307,13 @@ class ShippingDurationViewModelTest {
         verify {
             analyticState.onChanged(
                 match {
+                    it == ShippingDurationAnalyticState.AnalyticShippingDuration(
+                        shippingRecommendationData.shippingDurationUiModels
+                    )
+                }
+            )
+            analyticState.onChanged(
+                match {
                     it == ShippingDurationAnalyticState.AnalyticCourierPromo(
                         shippingRecommendationData.shippingDurationUiModels
                     )

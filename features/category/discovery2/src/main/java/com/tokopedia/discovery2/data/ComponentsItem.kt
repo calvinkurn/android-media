@@ -2,12 +2,16 @@ package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery2.Constant.LABEL_FULFILLMENT
 import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.data.mycoupon.MyCoupon
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import java.util.*
@@ -111,7 +115,8 @@ data class ComponentsItem(
     var myCouponList: List<MyCoupon>? = null,
     var claimCouponList: List<CatalogWithCouponList>? = null,
     var isFirstShown: Boolean = true,
-    var itemPosition: Int = 0
+    var itemPosition: Int = 0,
+    var isBackgroundPresent: Boolean = false
 ) {
 
     private var componentsItem: List<ComponentsItem>? = null
@@ -135,4 +140,18 @@ data class ComponentsItem(
     fun reInitComponentItems() {
         componentsItem = null
     }
+
+    fun getComponentItem(position: Int): ComponentsItem? = getComponentsItem()?.getOrNull(position)
+
+    fun getPropertyRows(): Int = properties?.rows.toIntSafely()
+
+    fun getPropertyHeader(): Properties.Header? = properties?.header
+
+    fun getComponentsItemSize(): Int = getComponentsItem()?.size.orZero()
+
+    fun isFulfillment(dataItem: DataItem?): Boolean = dataItem?.labelsGroupList?.any { it.position == LABEL_FULFILLMENT }.orFalse()
+
+    fun getWarehouseId(dataItem: DataItem?): Long = dataItem?.warehouseId.orZero()
+
+    fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = getComponentsItem()?.firstOrNull()?.compAdditionalInfo
 }

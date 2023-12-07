@@ -1,0 +1,19 @@
+{
+  "getProductV3": {
+    "productID": "10041398011",
+    "productName": "Kardus_Coklat_Polos",
+    "price": 15000,
+    "description": "this is a test product",
+    "stock": 22,
+    "status": "ACTIVE",
+    "url": "https://www.tokopedia.com/10973808-serba-olahraga/kardus-coklat-polos",
+    "pictures": [
+      {
+        "urlOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2023/6/9/0e2076ff-59af-4df5-a849-47a937405bc8.jpg"
+      }
+    ],
+    "shop": {
+      "name": ""
+    }
+  }
+}

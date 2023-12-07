@@ -1,6 +1,7 @@
 package com.tokopedia.minicart.common.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.minicart.bmgm.domain.mapper.BmgmMiniCartDataMapper
 import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -17,7 +18,9 @@ import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
 import kotlin.math.min
 
-class MiniCartSimplifiedMapper @Inject constructor() {
+class MiniCartSimplifiedMapper @Inject constructor(
+    private val bmgmMapper: BmgmMiniCartDataMapper
+) {
 
     fun mapMiniCartSimplifiedData(miniCartData: MiniCartData): MiniCartSimplifiedData {
         return MiniCartSimplifiedData().apply {
@@ -25,6 +28,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
             isShowMiniCartWidget = miniCartItems.isNotEmpty()
             miniCartWidgetData = mapMiniCartWidgetData(miniCartData)
             shoppingSummaryBottomSheetData = mapShoppingSummaryData(miniCartData)
+            bmgmData = bmgmMapper.mapToUiModel(miniCartData)
         }
     }
 
@@ -40,6 +44,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
         return MiniCartWidgetData().apply {
             totalProductCount = totalQty
             totalProductPrice = miniCartData.data.totalProductPrice
+            totalProductOriginalPrice = miniCartData.data.shoppingSummary.totalOriginalValue
             totalProductError = miniCartData.data.totalProductError
             containsOnlyUnavailableItems = miniCartData.data.availableSection.availableGroup.isEmpty() && miniCartData.data.unavailableSection.isNotEmpty()
             unavailableItemsCount = miniCartData.data.totalProductError

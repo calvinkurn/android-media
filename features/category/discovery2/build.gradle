@@ -54,6 +54,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
     api projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.features.productDetailCommon)
@@ -61,6 +62,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.questWidget)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
+    implementation projectOrAar(rootProject.ext.features.carouselProductCard)
 
     // Libraries Dependency
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -75,6 +77,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
@@ -90,6 +93,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.viewAllCard
 
     // tkpdInternalLibDependencies Dependency
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
@@ -123,6 +127,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.firebase.crashlytics
 
 }

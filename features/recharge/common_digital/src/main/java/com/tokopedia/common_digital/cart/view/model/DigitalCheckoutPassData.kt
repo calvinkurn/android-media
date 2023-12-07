@@ -234,6 +234,7 @@ class DigitalCheckoutPassData() : Parcelable {
         val UTM_MEDIUM_WIDGET = "widget"
         val PARAM_FIELD_LABEL_PREFIX = "field_"
         val PARAM_ATC_SOURCE = "atc_source"
+        val PARAM_ATC_MULTICHECKOUT = "pdp_to_multi_checkout"
         val DEFAULT_DEVICE_ID = 5
 
         @JvmField

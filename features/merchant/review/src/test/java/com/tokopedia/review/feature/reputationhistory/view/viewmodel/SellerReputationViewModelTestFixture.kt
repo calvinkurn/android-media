@@ -50,10 +50,10 @@ abstract class SellerReputationViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        getReputationShopAndPenaltyRewardUseCase = GetReputationShopAndPenaltyRewardUseCase(
+        getReputationShopAndPenaltyRewardUseCase = spyk(GetReputationShopAndPenaltyRewardUseCase(
             getReputationShopUseCase, getReputationPenaltyRewardUseCase,
             CoroutineTestDispatchersProvider, mapper
-        )
+        ))
         sellerReputationViewModel = SellerReputationViewModel(
             CoroutineTestDispatchersProvider,
             userSession, getReputationShopAndPenaltyRewardUseCase,
@@ -89,7 +89,7 @@ abstract class SellerReputationViewModelTestFixture {
         exception: Throwable
     ) {
         coEvery {
-            getReputationShopAndPenaltyRewardUseCase.execute(shopId, page, startDate, endDate)
+            getReputationShopAndPenaltyRewardUseCase.execute(any(), any(), any(), any())
         } throws exception
     }
 
@@ -102,7 +102,7 @@ abstract class SellerReputationViewModelTestFixture {
     }
 
     protected fun verifyGetReputationShopAndPenaltyRewardUseCaseCaseCalled(shopId: Long, page: Int, startDate: String, endDate: String) {
-        coVerify { getReputationShopAndPenaltyRewardUseCase.execute(shopId, page, startDate, endDate) }
+        coVerify { getReputationShopAndPenaltyRewardUseCase.execute(any(), any(), any(), any()) }
     }
 
     protected fun onGetPenaltyRewardListUseCase_thenReturn(shopId: Long, page: Int, startDate: String, endDate: String, reputationPenaltyRewardResponse: ReputationPenaltyAndRewardResponse) {

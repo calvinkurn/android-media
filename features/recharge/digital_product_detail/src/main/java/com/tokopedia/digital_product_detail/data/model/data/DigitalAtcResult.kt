@@ -7,5 +7,6 @@ data class DigitalAtcResult (
     val categoryId: String = "",
     val priceProduct: String = "",
     val channelId: String = "",
+    val redirectUrl: String = "",
     val errorAtc: ErrorAtc? = null
 )

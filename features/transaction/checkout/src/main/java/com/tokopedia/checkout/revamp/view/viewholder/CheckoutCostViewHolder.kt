@@ -51,6 +51,8 @@ class CheckoutCostViewHolder(
 
     private fun renderShippingPrice(cost: CheckoutCostModel) {
         if (cost.finalShippingFee < cost.originalShippingFee) {
+            binding.tvCheckoutCostShippingTitle.isVisible = true
+            binding.tvCheckoutCostShippingValue.isVisible = true
             binding.tvCheckoutCostShippingSlashedValue.setTextAndContentDescription(
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     cost.originalShippingFee,
@@ -69,18 +71,20 @@ class CheckoutCostViewHolder(
                 ).removeDecimalSuffix(),
                 R.string.content_desc_tv_shipping_fee_summary
             )
+        } else if (cost.originalShippingFee == 0.0 && !cost.hasSelectAllShipping) {
+            binding.tvCheckoutCostShippingTitle.isVisible = false
+            binding.tvCheckoutCostShippingSlashedValue.isVisible = false
+            binding.tvCheckoutCostShippingValue.isVisible = false
         } else {
+            binding.tvCheckoutCostShippingTitle.isVisible = true
+            binding.tvCheckoutCostShippingValue.isVisible = true
             binding.tvCheckoutCostShippingSlashedValue.isVisible = false
             binding.tvCheckoutCostShippingValue.setTextColorCompat(unifyprinciplesR.color.Unify_NN950)
             binding.tvCheckoutCostShippingValue.setTextAndContentDescription(
-                if (cost.originalShippingFee == 0.0 && !cost.hasSelectAllShipping) {
-                    "-"
-                } else {
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        cost.originalShippingFee,
-                        false
-                    ).removeDecimalSuffix()
-                },
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    cost.originalShippingFee,
+                    false
+                ).removeDecimalSuffix(),
                 R.string.content_desc_tv_shipping_fee_summary
             )
         }

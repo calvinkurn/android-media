@@ -27,6 +27,7 @@ data class TokoNowRepurchaseProductUiModel(
     val isWishlistShown: Boolean = false,
     val isVariant: Boolean = false,
     val needToShowQuantityEditor: Boolean = false,
+    val blockAddToCart: Boolean,
     val labelGroupList: List<LabelGroup> = listOf(),
     val needToChangeMaxLinesName: Boolean = false,
     val originalPosition: Int = 0,

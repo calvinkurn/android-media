@@ -21,7 +21,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
+import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
+import com.tokopedia.cartrevamp.view.BmGmWidgetView
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
+import com.tokopedia.cartrevamp.view.customview.CartSwipeRevealLayout
+import com.tokopedia.cartrevamp.view.customview.CartViewBinderHelper
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_HEADER
@@ -42,10 +46,12 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -60,7 +66,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class CartItemViewHolder constructor(
     private val binding: ItemCartProductRevampBinding,
     private var actionListener: CartItemAdapter.ActionListener?,
-    private var mainCoachMark: CartMainCoachMarkUiModel
+    private var mainCoachMark: CartMainCoachMarkUiModel,
+    private val binderHelper: CartViewBinderHelper
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var viewHolderListener: ViewHolderListener? = null
@@ -72,6 +79,7 @@ class CartItemViewHolder constructor(
     private var informationLabel: MutableList<String> = mutableListOf()
     private var qtyTextWatcher: TextWatcher? = null
     private var lastQty: Int = 0
+    private var isDeleteFromDoneImeButton: Boolean = false
 
     @SuppressLint("ClickableViewAccessibility")
     fun clear() {
@@ -83,9 +91,14 @@ class CartItemViewHolder constructor(
         qtyTextWatcher = null
     }
 
-    fun bindData(data: CartItemHolderData, viewHolderListener: ViewHolderListener?, dataSize: Int) {
+    fun bindData(
+        data: CartItemHolderData,
+        viewHolderListener: ViewHolderListener?,
+        dataSize: Int
+    ) {
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
+        this.isDeleteFromDoneImeButton = false
 
         itemView.addOnImpressionListener(data, onView = {
             if (!data.isError) {
@@ -93,6 +106,7 @@ class CartItemViewHolder constructor(
             }
         })
 
+        initSwipeLayout(data)
         initCoachMark()
         setNoteAnimationResource()
         renderAlpha(data)
@@ -103,6 +117,125 @@ class CartItemViewHolder constructor(
         renderProductInfo(data)
         renderQuantity(data, viewHolderListener)
         renderProductAction(data)
+        renderBmGmOfferTicker(data)
+    }
+
+    private fun initSwipeLayout(data: CartItemHolderData) {
+        binderHelper.bind(binding.swipeLayout, data.getSwipeLayoutId())
+        if (data.isError) {
+            binderHelper.lockSwipe(data.getSwipeLayoutId())
+        }
+        if (data.isBundlingItem) {
+            binderHelper.bind(binding.swipeLayoutBundling, data.getSwipeLayoutBundlingId())
+            if (data.isMultipleBundleProduct) {
+                binderHelper.lockSwipe(data.getSwipeLayoutId())
+            }
+            if (data.isError || !data.isMultipleBundleProduct) {
+                binderHelper.lockSwipe(data.getSwipeLayoutBundlingId())
+            }
+        }
+        if (shouldLockSwipeLayout()) {
+            binderHelper.lockSwipe(data.getSwipeLayoutId())
+        }
+        if (shouldLockBundlingSwipeLayout() && data.isBundlingItem) {
+            binderHelper.lockSwipe(data.getSwipeLayoutBundlingId())
+        }
+        setSwipeLayoutColor()
+        setSwipeLayoutSwipeListener(data)
+        setSwipeLayoutClickListener(data)
+    }
+
+    private fun setSwipeLayoutColor() {
+        // Icon Delete Color for Light & Dark
+        val rn500Color = ResourcesCompat.getColor(
+            itemView.context.resources,
+            unifyprinciplesR.color.Unify_RN500,
+            null
+        )
+        val rn700Color = ResourcesCompat.getColor(
+            itemView.context.resources,
+            unifyprinciplesR.color.Unify_RN700,
+            null
+        )
+
+        // Swipe Delete Background for Light & Dark
+        val rn100Color = ResourcesCompat.getColor(
+            itemView.context.resources,
+            unifyprinciplesR.color.Unify_RN100,
+            null
+        )
+        val rn300Color = ResourcesCompat.getColor(
+            itemView.context.resources,
+            unifyprinciplesR.color.Unify_RN300,
+            null
+        )
+
+        binding.apply {
+            btnSwipeDelete.setImage(
+                null,
+                rn500Color,
+                null,
+                rn700Color,
+                null
+            )
+            btnSwipeDeleteBundling.setImage(
+                null,
+                rn500Color,
+                null,
+                rn700Color,
+                null
+            )
+            if (itemView.context.isDarkMode()) {
+                flSwipeDelete.setBackgroundColor(rn300Color)
+                flSwipeDeleteBundling.setBackgroundColor(rn300Color)
+            } else {
+                flSwipeDelete.setBackgroundColor(rn100Color)
+                flSwipeDeleteBundling.setBackgroundColor(rn100Color)
+            }
+        }
+    }
+
+    private fun setSwipeLayoutSwipeListener(data: CartItemHolderData) {
+        binding.apply {
+            swipeLayout.setSwipeListener(object : CartSwipeRevealLayout.SwipeListener {
+                override fun onClosed(view: CartSwipeRevealLayout?) {
+                    actionListener?.onSwipeToDeleteClosed(data.productId)
+                }
+
+                override fun onOpened(view: CartSwipeRevealLayout?) {
+                    // no-op
+                }
+
+                override fun onSlide(view: CartSwipeRevealLayout?, slideOffset: Float) {
+                    // no-op
+                }
+            })
+        }
+    }
+
+    private fun setSwipeLayoutClickListener(data: CartItemHolderData) {
+        binding.apply {
+            flSwipeDelete.setOnClickListener {
+                if (swipeLayout.isOpen()) {
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.SwipeToDelete)
+                    binderHelper.closeAll()
+                }
+            }
+            flSwipeDeleteBundling.setOnClickListener {
+                if (swipeLayoutBundling.isOpen()) {
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.SwipeToDelete)
+                    binderHelper.closeAll()
+                }
+            }
+        }
+    }
+
+    private fun shouldLockSwipeLayout(): Boolean {
+        return false
+    }
+
+    private fun shouldLockBundlingSwipeLayout(): Boolean {
+        return false
     }
 
     private fun initCoachMark() {
@@ -149,7 +282,8 @@ class CartItemViewHolder constructor(
                 } else {
                     BUNDLING_SEPARATOR_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 }
-                val marginErrorBundling = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+                val marginErrorBundling =
+                    IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 if (data.isError) {
@@ -185,13 +319,14 @@ class CartItemViewHolder constructor(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.END,
                         R.id.checkbox_anchor,
-                        ConstraintSet.END
+                        ConstraintSet.END,
+                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
                 }
                 constraintSet.connect(
                     R.id.fl_image_product,
                     ConstraintSet.TOP,
-                    R.id.product_bundling_info,
+                    R.id.swipe_layout_bundling,
                     ConstraintSet.BOTTOM
                 )
                 constraintSet.applyTo(containerProductInformation)
@@ -281,7 +416,7 @@ class CartItemViewHolder constructor(
     private fun renderActionDelete(data: CartItemHolderData) {
         binding.buttonDeleteCart.setOnClickListener {
             if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                actionListener?.onCartItemDeleteButtonClicked(data, true)
+                actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
             }
         }
         binding.buttonDeleteCart.show()
@@ -302,7 +437,7 @@ class CartItemViewHolder constructor(
         checkboxProduct.skipAnimation()
 
         var prevIsChecked: Boolean = checkboxProduct.isChecked
-        checkboxProduct.setOnCheckedChangeListener { _, isChecked ->
+        checkboxProduct.setOnCheckedChangeListener { compoundButton, isChecked ->
             if (isChecked != prevIsChecked) {
                 prevIsChecked = isChecked
 
@@ -319,6 +454,22 @@ class CartItemViewHolder constructor(
                                 )
                             }
                         }
+                    }
+                }
+            }
+
+            if (compoundButton.isPressed) {
+                if (!data.isError) {
+                    if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                        actionListener?.onCartItemCheckboxClickChanged(
+                            bindingAdapterPosition,
+                            data,
+                            isChecked
+                        )
+                        viewHolderListener?.onNeedToRefreshSingleShop(
+                            data,
+                            bindingAdapterPosition
+                        )
                     }
                 }
             }
@@ -414,19 +565,24 @@ class CartItemViewHolder constructor(
 
     private fun renderBundlingInfo(data: CartItemHolderData) {
         if (data.isBundlingItem && data.bundlingItemPosition == BUNDLING_ITEM_HEADER) {
+            binding.swipeLayoutBundling.show()
             binding.productBundlingInfo.show()
             if (data.isError) {
-                val productBundlingInfoParams = binding.productBundlingInfo.layoutParams as MarginLayoutParams
+                val productBundlingInfoParams =
+                    binding.productBundlingInfo.layoutParams as MarginLayoutParams
                 productBundlingInfoParams.marginStart = 0
                 binding.checkboxBundle.gone()
             } else {
-                val productBundlingInfoParams = binding.productBundlingInfo.layoutParams as MarginLayoutParams
-                productBundlingInfoParams.marginStart = IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
+                val productBundlingInfoParams =
+                    binding.productBundlingInfo.layoutParams as MarginLayoutParams
+                productBundlingInfoParams.marginStart =
+                    IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
                 binding.checkboxBundle.show()
             }
 
             renderBundlingInfoDetail(data)
         } else {
+            binding.swipeLayoutBundling.gone()
             binding.productBundlingInfo.gone()
             binding.checkboxBundle.gone()
         }
@@ -576,7 +732,7 @@ class CartItemViewHolder constructor(
     }
 
     private fun adjustProductVerticalSeparatorConstraint(data: CartItemHolderData) {
-        if (!data.isBundlingItem) {
+        if (!data.isBundlingItem && !data.cartBmGmTickerData.isShowBmGmDivider) {
             binding.vBundlingProductSeparator.gone()
             return
         }
@@ -586,61 +742,81 @@ class CartItemViewHolder constructor(
             clone(binding.containerProductInformation)
 
             // Top
-            if (data.isMultipleBundleProduct) {
-                if (data.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
-                    connect(
-                        R.id.v_bundling_product_separator,
-                        ConstraintSet.TOP,
-                        ConstraintSet.PARENT_ID,
-                        ConstraintSet.TOP,
-                        0
-                    )
+            if (data.cartBmGmTickerData.isShowBmGmDivider) {
+                connect(
+                    R.id.v_bundling_product_separator,
+                    ConstraintSet.TOP,
+                    R.id.checkbox_product,
+                    ConstraintSet.BOTTOM,
+                    IMAGE_PRODUCT_MARGIN_START_6.dpToPx(itemView.resources.displayMetrics)
+                )
+            } else {
+                if (data.isMultipleBundleProduct) {
+                    if (data.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
+                        connect(
+                            R.id.v_bundling_product_separator,
+                            ConstraintSet.TOP,
+                            ConstraintSet.PARENT_ID,
+                            ConstraintSet.TOP,
+                            0
+                        )
+                    } else {
+                        connect(
+                            R.id.v_bundling_product_separator,
+                            ConstraintSet.TOP,
+                            if (data.isError) R.id.swipe_layout_bundling else R.id.checkbox_anchor,
+                            ConstraintSet.BOTTOM,
+                            MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
+                        )
+                    }
                 } else {
                     connect(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.TOP,
-                        if (data.isError) R.id.product_bundling_info else R.id.checkbox_bundle,
+                        if (data.isError) R.id.swipe_layout_bundling else R.id.checkbox_anchor,
                         ConstraintSet.BOTTOM,
                         MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
                 }
-            } else {
-                connect(
-                    R.id.v_bundling_product_separator,
-                    ConstraintSet.TOP,
-                    if (data.isError) R.id.product_bundling_info else R.id.checkbox_bundle,
-                    ConstraintSet.BOTTOM,
-                    MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
-                )
             }
 
             // Bottom
-            if (data.isMultipleBundleProduct) {
-                if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
+            if (data.cartBmGmTickerData.isShowBmGmDivider) {
+                connect(
+                    R.id.v_bundling_product_separator,
+                    ConstraintSet.BOTTOM,
+                    ConstraintSet.PARENT_ID,
+                    ConstraintSet.BOTTOM,
+                    IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
+                )
+            } else {
+                if (data.isMultipleBundleProduct) {
+                    if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
+                        connect(
+                            R.id.v_bundling_product_separator,
+                            ConstraintSet.BOTTOM,
+                            R.id.fl_image_product,
+                            ConstraintSet.BOTTOM,
+                            0
+                        )
+                    } else {
+                        connect(
+                            R.id.v_bundling_product_separator,
+                            ConstraintSet.BOTTOM,
+                            ConstraintSet.PARENT_ID,
+                            ConstraintSet.BOTTOM,
+                            0
+                        )
+                    }
+                } else {
                     connect(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.BOTTOM,
                         R.id.fl_image_product,
                         ConstraintSet.BOTTOM,
-                        0
-                    )
-                } else {
-                    connect(
-                        R.id.v_bundling_product_separator,
-                        ConstraintSet.BOTTOM,
-                        ConstraintSet.PARENT_ID,
-                        ConstraintSet.BOTTOM,
-                        0
+                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
                 }
-            } else {
-                connect(
-                    R.id.v_bundling_product_separator,
-                    ConstraintSet.BOTTOM,
-                    R.id.fl_image_product,
-                    ConstraintSet.BOTTOM,
-                    MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
-                )
             }
 
             applyTo(binding.containerProductInformation)
@@ -790,13 +966,19 @@ class CartItemViewHolder constructor(
             binding.iuImageProduct.layoutParams.height =
                 80.dpToPx(binding.root.resources.displayMetrics)
         }
+
+        /*if (data.cartBmGmTickerData.isShowBmGmDivider) {
+            val imageProductLayoutParam = binding.iuImageProduct.layoutParams as MarginLayoutParams
+            imageProductLayoutParam.bottomMargin = BOTTOM_DIVIDER_MARGIN_START.dpToPx(binding.root.resources.displayMetrics)
+        }*/
     }
 
     private fun renderProductAddOns(data: CartItemHolderData) {
-        if (data.addOnsProduct.listData.isNotEmpty() && data.addOnsProduct.widget.wording.isNotEmpty()) {
+        if (data.addOnsProduct.listData.isNotEmpty() && data.addOnsProduct.widget.title.isNotEmpty()) {
             binding.itemAddonCart.apply {
                 root.show()
-                this.descAddon.text = MethodChecker.fromHtml(data.addOnsProduct.widget.wording)
+                this.descAddon.text = MethodChecker.fromHtml(data.addOnsProduct.widget.title)
+                this.priceAddon.text = MethodChecker.fromHtml(data.addOnsProduct.widget.price)
                 val addOnType = data.addOnsProduct.listData.firstOrNull()?.type ?: 0
                 root.setOnClickListener {
                     actionListener?.onProductAddOnClicked(data)
@@ -1079,7 +1261,11 @@ class CartItemViewHolder constructor(
                         if (data.isBundlingItem) data.bundleQuantity else data.quantity
                     if (isActive && previousQuantity != newValue) {
                         if (!qtyEditorProduct.editText.isFocused) {
-                            validateQty(newValue, data)
+                            if (isDeleteFromDoneImeButton) {
+                                isDeleteFromDoneImeButton = false
+                            } else {
+                                validateQty(newValue, data)
+                            }
                             if (isActive && newValue != 0) {
                                 actionListener?.onCartItemQuantityChanged(data, newValue)
                                 handleRefreshType(data, viewHolderListener)
@@ -1099,7 +1285,7 @@ class CartItemViewHolder constructor(
                     if (data.isBundlingItem) data.bundleQuantity else data.quantity
                 if ((currentQuantity == 1 && data.minOrder == 1) || (currentQuantity == data.minOrder && data.isAlreadyShowMinimumQuantityPurchasedError)) {
                     delayChangeQty?.cancel()
-                    actionListener?.onCartItemDeleteButtonClicked(data, false)
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
                     actionListener?.sendRemoveCartFromSubtractButtonAnalytic(data)
                 }
                 actionListener?.onCartItemQuantityMinusButtonClicked()
@@ -1121,8 +1307,11 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.DropKeyboard(qtyEditorProduct.editText.context, itemView)
-                if (qtyEditorProduct.editText.text.toString() == "0") {
-                    actionListener?.onCartItemDeleteButtonClicked(data, true)
+                val isDeletion = qtyEditorProduct.editText.text.toString() == "0"
+                isDeleteFromDoneImeButton = isDeletion
+                if (isDeletion) {
+                    delayChangeQty?.cancel()
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.QuantityEditorImeAction)
                 }
                 if (lastQty > data.maxOrder) {
                     binding.labelQuantityError.text = String.format(
@@ -1154,7 +1343,7 @@ class CartItemViewHolder constructor(
         }
         if (newValue < element.minOrder) {
             if (element.minOrder <= 1) {
-                actionListener?.onCartItemDeleteButtonClicked(element, false)
+                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.TrashBin)
                 return
             }
             binding.labelQuantityError.show()
@@ -1167,7 +1356,7 @@ class CartItemViewHolder constructor(
                 element.isAlreadyShowMinimumQuantityPurchasedError = true
             } else {
                 element.isAlreadyShowMinimumQuantityPurchasedError = false
-                actionListener?.onCartItemDeleteButtonClicked(element, false)
+                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.TrashBin)
             }
         }
         qtyEditorCart.addButton.isEnabled = true
@@ -1271,15 +1460,19 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderActionSimilarProduct(action: Action, data: CartItemHolderData) {
-        binding.textProductUnavailableAction.apply {
-            text = action.message
-            setOnClickListener {
-                if (data.selectedUnavailableActionLink.isNotBlank()) {
-                    actionListener?.onSimilarProductUrlClicked(data)
+        if (data.isBundlingItem) {
+            binding.textProductUnavailableAction.gone()
+        } else {
+            binding.textProductUnavailableAction.apply {
+                text = action.message
+                setOnClickListener {
+                    if (data.selectedUnavailableActionLink.isNotBlank()) {
+                        actionListener?.onSimilarProductUrlClicked(data)
+                    }
                 }
+                actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
+                show()
             }
-            actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
-            show()
         }
     }
 
@@ -1350,16 +1543,40 @@ class CartItemViewHolder constructor(
             }
         } else {
             layoutParamsFlImageProduct.topMargin = 0
-            layoutParams.bottomMargin =
-                PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+
+            if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM &&
+                !cartItemHolderData.cartBmGmTickerData.isShowBmGmDivider
+            ) {
+                binding.bmgmHelperView1.visible()
+                binding.bmgmHelperView2.visible()
+
+                if (cartItemHolderData.cartBmGmTickerData.isShowBmGmHorizontalDivider) {
+                    binding.bottomDivider.visible()
+                } else {
+                    binding.bottomDivider.gone()
+                }
+            } else {
+                if (cartItemHolderData.cartBmGmTickerData.isShowTickerBmGm || cartItemHolderData.cartBmGmTickerData.isShowBmGmDivider) {
+                    layoutParams.bottomMargin =
+                        IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
+                    binding.bmgmHelperView1.visible()
+                    binding.bmgmHelperView2.visible()
+                } else {
+                    layoutParams.bottomMargin =
+                        PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                    binding.bmgmHelperView1.gone()
+                    binding.bmgmHelperView2.gone()
+                }
+                binding.bottomDivider.gone()
+            }
         }
     }
 
     private fun renderDivider(cartItemHolderData: CartItemHolderData) {
+        val layoutParams = binding.bottomDivider.layoutParams as MarginLayoutParams
         if (cartItemHolderData.showErrorBottomDivider) {
             binding.bottomDivider.layoutParams.height =
                 DEFAULT_DIVIDER_HEIGHT.dpToPx(itemView.resources.displayMetrics)
-            val layoutParams = binding.bottomDivider.layoutParams as MarginLayoutParams
             if (cartItemHolderData.shouldDivideHalfErrorBottomDivider) {
                 layoutParams.marginStart =
                     BOTTOM_DIVIDER_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
@@ -1367,8 +1584,82 @@ class CartItemViewHolder constructor(
                 layoutParams.marginStart = 0
             }
             binding.bottomDivider.visible()
+        } else if (cartItemHolderData.showBmGmBottomDivider) {
+            layoutParams.marginStart =
+                BOTTOM_DIVIDER_BMGM_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+            layoutParams.bottomMargin =
+                PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+            binding.bottomDivider.visible()
         } else {
             binding.bottomDivider.gone()
+        }
+    }
+
+    private fun renderBmGmOfferTicker(data: CartItemHolderData) {
+        if (data.cartBmGmTickerData.isShowTickerBmGm) {
+            binding.itemCartBmgm.root.visible()
+            when (data.cartBmGmTickerData.stateTickerBmGm) {
+                0 -> {
+                    binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.LOADING
+                }
+
+                1 -> {
+                    binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.ACTIVE
+                    binding.itemCartBmgm.bmgmWidgetView.title =
+                        data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.joinToString(
+                            " • "
+                        )
+                    binding.itemCartBmgm.bmgmWidgetView.urlLeftIcon =
+                        data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerIcon
+                    binding.itemCartBmgm.bmgmWidgetView.offerId =
+                        data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
+                    binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
+                        actionListener?.onBmGmChevronRightClicked(
+                            data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerLandingPageLink,
+                            data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
+                            data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.joinToString(
+                                " • "
+                            ),
+                            data.shopHolderData.shopId
+                        )
+                    }
+
+                    actionListener?.onCartViewBmGmTicker(
+                        data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
+                        data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.joinToString(
+                            " • "
+                        ),
+                        data.shopHolderData.shopId
+                    )
+                }
+
+                2 -> {
+                    binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.INACTIVE
+                    binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
+                        actionListener?.onBmGmTickerReloadClicked()
+                    }
+                }
+            }
+        } else {
+            binding.itemCartBmgm.root.gone()
+        }
+    }
+
+    private fun validateErrorView(typography: Typography, isError: Boolean) {
+        if (isError) {
+            typography.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN400
+                )
+            )
+        } else {
+            typography.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN600
+                )
+            )
         }
     }
 
@@ -1406,6 +1697,8 @@ class CartItemViewHolder constructor(
         private const val PRODUCT_ACTION_MARGIN = 16
         private const val BUNDLING_SEPARATOR_MARGIN_START = 38
         private const val BOTTOM_DIVIDER_MARGIN_START = 114
+        private const val IMAGE_PRODUCT_MARGIN_START_6 = 6
+        private const val BOTTOM_DIVIDER_BMGM_MARGIN_START = 52
 
         private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
     }

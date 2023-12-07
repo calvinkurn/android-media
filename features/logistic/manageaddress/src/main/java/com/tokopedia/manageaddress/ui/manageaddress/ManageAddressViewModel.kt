@@ -7,18 +7,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.GetChosenAddressParam
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetStateChosenAddressUseCase
+import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressFromAddressUseCase
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
-import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.convertTargetedTickerToUiModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
-import com.tokopedia.logisticCommon.domain.model.TickerModel
-import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
 import com.tokopedia.manageaddress.domain.model.DeleteAddressParam
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
@@ -52,12 +50,12 @@ class ManageAddressViewModel @Inject constructor(
     private val getPeopleAddressUseCase: GetAddressCornerUseCase,
     private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase,
     private val setDefaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase,
-    private val chooseAddressRepo: ChooseAddressRepository,
     private val chooseAddressMapper: ChooseAddressMapper,
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,
-    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
-    private val getUserConsentCollection: GetConsentCollectionUseCase
+    private val getUserConsentCollection: GetConsentCollectionUseCase,
+    private val setStateChosenAddressFromAddressUseCase: SetStateChosenAddressFromAddressUseCase,
+    private val getStateChosenAddressUseCase: GetStateChosenAddressUseCase
 ) : ViewModel() {
 
     companion object {
@@ -108,10 +106,6 @@ class ManageAddressViewModel @Inject constructor(
     private val _validateShareAddressState = MutableLiveData<ValidateShareAddressState>()
     val validateShareAddressState: LiveData<ValidateShareAddressState>
         get() = _validateShareAddressState
-
-    private val _tickerState = MutableLiveData<Result<TickerModel>>()
-    val tickerState: LiveData<Result<TickerModel>>
-        get() = _tickerState
 
     val deleteCollectionId: String
         get() = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
@@ -269,7 +263,7 @@ class ManageAddressViewModel @Inject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val defaultAddressParam =
-                    DefaultAddressParam(id.toLong(), setAsStateChosenAddress, true)
+                    DefaultAddressParam(inputAddressId = id.toLong(), setAsStateChosenAddress = setAsStateChosenAddress, isTokonowRequest = true)
                 val resultDefaultAddress = setDefaultPeopleAddressUseCase(defaultAddressParam)
                 if (
                     resultDefaultAddress.response.status.equals(
@@ -295,7 +289,7 @@ class ManageAddressViewModel @Inject constructor(
 
     fun getStateChosenAddress(source: String) {
         viewModelScope.launch(onErrorGetStateChosenAddress) {
-            val getStateChosenAddress = chooseAddressRepo.getStateChosenAddress(source, true)
+            val getStateChosenAddress = getStateChosenAddressUseCase(GetChosenAddressParam(source = source, isTokonow = true))
             _getChosenAddress.value =
                 Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
         }
@@ -303,7 +297,7 @@ class ManageAddressViewModel @Inject constructor(
 
     fun setStateChosenAddress(model: RecipientAddressModel) {
         viewModelScope.launch(onErrorSetStateChosenAddress) {
-            val setStateChosenAddress = chooseAddressRepo.setStateChosenAddressFromAddress(model)
+            val setStateChosenAddress = setStateChosenAddressFromAddressUseCase(model)
             _setChosenAddress.value =
                 Success(chooseAddressMapper.mapSetStateChosenAddress(setStateChosenAddress.response))
         }
@@ -373,30 +367,5 @@ class ManageAddressViewModel @Inject constructor(
         } else {
             source
         }
-    }
-
-    fun getTargetedTicker(firstTickerContent: String? = null) {
-        viewModelScope.launchCatchError(
-            block = {
-                val response = getTargetedTickerUseCase(GetTargetedTickerParam.ADDRESS_LIST_NON_OCC)
-                _tickerState.value = Success(
-                    convertTargetedTickerToUiModel(
-                        targetedTickerData = response.getTargetedTickerData,
-                        firstTickerContent = firstTickerContent
-                    )
-                )
-            },
-            onError = {
-                if (firstTickerContent?.isNotBlank() == true) {
-                    _tickerState.value = Success(
-                        convertTargetedTickerToUiModel(
-                            firstTickerContent = firstTickerContent
-                        )
-                    )
-                } else {
-                    _tickerState.value = Fail(it)
-                }
-            }
-        )
     }
 }

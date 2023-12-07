@@ -48,7 +48,7 @@ class HomeDataMapper(
             context,
             homeDynamicChannelDataMapper
         )
-            .addHomeHeaderOvo()
+            .addHomeHeader()
             .addAtfComponentVisitable(processingAtf, isCache)
 
         if (!processingDynamicChannel && !isLoadingAtf) {
@@ -62,6 +62,41 @@ class HomeDataMapper(
             mutableVisitableList.add(ShimmeringChannelDataModel(SHIMMERING_CHANNEL_ID_0))
             mutableVisitableList.add(ShimmeringChannelDataModel(SHIMMERING_CHANNEL_ID_1))
         }
+
+        return HomeDynamicChannelModel(
+            list = mutableVisitableList,
+            isCache = isCache,
+            isFirstPage = firstPage,
+            homeChooseAddressData = HomeChooseAddressData(true),
+            flowCompleted = false
+        )
+    }
+
+    /**
+     * for the new atf mechanism.
+     * this function only map dynamic channel, ignoring header & atf
+     */
+    fun mapDynamicChannel(homeData: HomeData?, isCache: Boolean): HomeDynamicChannelModel {
+        if (homeData == null) return HomeDynamicChannelModel(isCache = isCache, flowCompleted = true)
+        var processingDynamicChannel = homeData.isProcessingDynamicChannel
+
+        if (isCache) {
+            processingDynamicChannel = false
+        }
+        val firstPage = homeData.token.isNotEmpty()
+        val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
+            homeData,
+            isCache,
+            trackingQueue,
+            context,
+            homeDynamicChannelDataMapper
+        )
+
+        if (!processingDynamicChannel) {
+            factory.addDynamicChannelVisitable(firstPage, true)
+                .build()
+        }
+        val mutableVisitableList = factory.build().toMutableList()
 
         return HomeDynamicChannelModel(
             list = mutableVisitableList,

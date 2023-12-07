@@ -35,11 +35,6 @@ interface PlayTagItemsAnalytic {
 
     fun scrollMerchantVoucher(lastPositionViewed: Int)
 
-    fun clickActionProductWithVariant(
-        productId: String,
-        productAction: ProductAction,
-    )
-
     fun clickProductAction(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,

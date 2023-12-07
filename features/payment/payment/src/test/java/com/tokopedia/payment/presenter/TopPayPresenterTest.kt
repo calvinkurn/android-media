@@ -6,6 +6,7 @@ import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint
 import com.tokopedia.payment.fingerprint.domain.GetPostDataOtpUseCase
 import com.tokopedia.payment.fingerprint.domain.PaymentFingerprintUseCase
 import com.tokopedia.payment.fingerprint.domain.SaveFingerPrintUseCase
+import com.tokopedia.payment.utils.PaymentFingerprintDataLogger
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.Ordering
 import io.mockk.every
@@ -27,6 +28,7 @@ class TopPayPresenterTest {
     private lateinit var paymentFingerprintUseCase: PaymentFingerprintUseCase
     private lateinit var getPostDataOtpUseCase: GetPostDataOtpUseCase
     private lateinit var userSession: UserSessionInterface
+    private lateinit var logger: PaymentFingerprintDataLogger
 
     private lateinit var view: TopPayContract.View
 
@@ -36,6 +38,7 @@ class TopPayPresenterTest {
         paymentFingerprintUseCase = mockk(relaxed = true)
         getPostDataOtpUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
+        logger = mockk(relaxed = true)
 
         view = mockk(relaxed = true)
 
@@ -54,7 +57,7 @@ class TopPayPresenterTest {
 
         // When
         presenter.attachView(view)
-        presenter.processUriPayment()
+        presenter.processUriPayment(logger)
 
         // Then
         verify(exactly = 1) {
@@ -72,7 +75,7 @@ class TopPayPresenterTest {
 
         // When
         presenter.attachView(view)
-        presenter.processUriPayment()
+        presenter.processUriPayment(logger)
 
         // Then
         verify(exactly = 1) {
@@ -91,11 +94,12 @@ class TopPayPresenterTest {
             queryString = ""
             redirectUrl = mockUrl
             method = PaymentPassData.METHOD_GET
+            transactionId = "1"
         }
 
         // When
         presenter.attachView(view)
-        presenter.processUriPayment()
+        presenter.processUriPayment(logger)
 
         // Then
         verify(exactly = 1) {
@@ -114,11 +118,12 @@ class TopPayPresenterTest {
             queryString = ""
             redirectUrl = mockUrl
             method = PaymentPassData.METHOD_POST
+            transactionId = "1"
         }
 
         // When
         presenter.attachView(view)
-        presenter.processUriPayment()
+        presenter.processUriPayment(logger)
 
         // Then
         verify(exactly = 1) {
@@ -136,11 +141,12 @@ class TopPayPresenterTest {
         every { view.paymentPassData } returns PaymentPassData().apply {
             queryString = ""
             redirectUrl = mockUrl
+            transactionId = "1"
         }
 
         // When
         presenter.attachView(view)
-        presenter.processUriPayment()
+        presenter.processUriPayment(logger)
 
         // Then
         verify(exactly = 1) {
@@ -157,7 +163,7 @@ class TopPayPresenterTest {
         every { view.paymentPassData } returns PaymentPassData()
 
         // When
-        presenter.processUriPayment()
+        presenter.processUriPayment(logger)
 
         // Then
         verify(inverse = true) {
@@ -468,8 +474,8 @@ class TopPayPresenterTest {
     fun `When get otp success Then should show success`() {
         // Given
         val result = hashMapOf(
-                "query" to "value",
-                "asdf" to "qwerty"
+            "query" to "value",
+            "asdf" to "qwerty"
         )
         every { getPostDataOtpUseCase.execute(any(), any()) } answers {
             (secondArg() as Subscriber<HashMap<String, String>?>).onNext(result)
@@ -533,8 +539,8 @@ class TopPayPresenterTest {
     fun `When get otp success without view Then should not show success`() {
         // Given
         val result = hashMapOf(
-                "query" to "value",
-                "asdf" to "qwerty"
+            "query" to "value",
+            "asdf" to "qwerty"
         )
         every { getPostDataOtpUseCase.execute(any(), any()) } answers {
             presenter.detachView()
@@ -635,9 +641,11 @@ class TopPayPresenterTest {
         // When
         presenter.attachView(view)
         var result = 0L
-        presenter.addTimeoutSubscription(t.subscribe {
-            result += it
-        })
+        presenter.addTimeoutSubscription(
+            t.subscribe {
+                result += it
+            }
+        )
 
         t.onNext(10)
 
@@ -653,9 +661,11 @@ class TopPayPresenterTest {
         // When
         presenter.attachView(view)
         var result = 0L
-        presenter.addTimeoutSubscription(t.subscribe {
-            result += it
-        })
+        presenter.addTimeoutSubscription(
+            t.subscribe {
+                result += it
+            }
+        )
         presenter.clearTimeoutSubscription()
 
         t.onNext(10)

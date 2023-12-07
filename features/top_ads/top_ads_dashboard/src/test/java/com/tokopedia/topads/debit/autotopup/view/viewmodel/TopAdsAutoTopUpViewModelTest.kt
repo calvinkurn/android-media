@@ -4,10 +4,7 @@ import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.topads.common.data.model.WhiteListUserResponse
 import com.tokopedia.topads.common.data.response.Error
-import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.DataCredit
 import com.tokopedia.topads.dashboard.data.model.TkpdProducts
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -44,7 +41,6 @@ class TopAdsAutoTopUpViewModelTest {
     private var saveSelectionUseCase: TopAdsSaveSelectionUseCase = mockk(relaxed = true)
     private var useCase: GraphqlUseCase<TkpdProducts> = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val whiteListedUserUseCase: GetWhiteListedUserUseCase = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -54,7 +50,6 @@ class TopAdsAutoTopUpViewModelTest {
             autoTopUpUSeCase,
             saveSelectionUseCase,
             userSession,
-            whiteListedUserUseCase,
             rule.dispatchers
         )
         every { userSession.shopId } returns "123"
@@ -190,56 +185,6 @@ class TopAdsAutoTopUpViewModelTest {
         viewModel.populateCreditList() {}
 
         verify(exactly = 1) { actual.printStackTrace() }
-    }
-
-    @Test
-    fun `test success in getWhiteListedUser when credit performance is IS_TOP_UP_CREDIT_NEW_UI`() {
-        val actual = WhiteListUserResponse.TopAdsGetShopWhitelistedFeature(
-            listOf(
-                WhiteListUserResponse.TopAdsGetShopWhitelistedFeature.Data(featureName = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_TOP_UP_CREDIT_NEW_UI)
-            )
-        )
-        every { whiteListedUserUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            firstArg<(WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) -> Unit>().invoke(
-                actual
-            )
-        }
-        viewModel.getWhiteListedUser()
-
-        Assert.assertTrue((viewModel.isUserWhitelisted.value as Success).data)
-    }
-
-    @Test
-    fun `test success in getWhiteListedUser when credit performance is not IS_TOP_UP_CREDIT_NEW_UI`() {
-        val actual = WhiteListUserResponse.TopAdsGetShopWhitelistedFeature(
-            listOf(
-                WhiteListUserResponse.TopAdsGetShopWhitelistedFeature.Data()
-            )
-        )
-        every { whiteListedUserUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            firstArg<(WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) -> Unit>().invoke(
-                actual
-            )
-        }
-        viewModel.getWhiteListedUser()
-
-        Assert.assertFalse((viewModel.isUserWhitelisted.value as Success).data)
-    }
-
-    @Test
-    fun `test Fail in getWhiteListedUser `() {
-        val actual = Throwable("my exception")
-        every { whiteListedUserUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(
-                actual
-            )
-        }
-        viewModel.getWhiteListedUser()
-
-        Assert.assertEquals(
-            (viewModel.isUserWhitelisted.value as Fail).throwable.message,
-            actual.message
-        )
     }
 
     @Test

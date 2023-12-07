@@ -50,7 +50,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                         for (prescription in prescriptions!!) {
                             prescriptionIds.add(prescription!!.prescriptionId!!)
                         }
-                        setPrescriptionIds(prescriptionIds, listData)
+                        setPrescriptionIds(prescriptionIds, listData, uploadPrescriptionUiModel)
                         uploadPrescriptionUiModel.isError = false
                     }
                 } catch (e: Throwable) {
@@ -99,7 +99,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                         if (shipmentCartItemModel.hasEthicalProducts) {
                             shopIds.add(shipmentCartItemModel.shopId.toString())
                             enablerNames.add(shipmentCartItemModel.enablerLabel)
-                            for (cartItemModel in shipmentCartItemModel.products) {
+                            for (cartItemModel in tempProductMap.values) {
                                 if (cartItemModel.ethicalDrugDataModel.needPrescription) {
                                     cartIds.add(cartItemModel.cartId.toString())
                                 }
@@ -162,7 +162,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                                                                                 )
                                                                         }
                                                                         shipmentCartItemModel.errorTitle =
-                                                                            "Yaah, ada ${shipmentCartItemModel.products.size} barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain."
+                                                                            "Yaah, ada ${tempProductMap.size} barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain."
                                                                         shipmentCartItemModel.isCustomEpharmacyError =
                                                                             true
                                                                         shipmentCartItemModel.spId =
@@ -276,6 +276,15 @@ class CheckoutAddOnProcessor @Inject constructor(
         uploadPrescriptionUiModel.uploadedImageCount = prescriptionIds.size
     }
 
+    fun setPrescriptionIds(prescriptionIds: ArrayList<String>, listData: List<CheckoutItem>, uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
+        for (shipmentCartItemModel in listData) {
+            if (shipmentCartItemModel is CheckoutOrderModel && !shipmentCartItemModel.isError && shipmentCartItemModel.hasEthicalProducts) {
+                shipmentCartItemModel.prescriptionIds = prescriptionIds
+            }
+        }
+        uploadPrescriptionUiModel.uploadedImageCount = prescriptionIds.size
+    }
+
     fun setMiniConsultationResult(
         results: ArrayList<EPharmacyMiniConsultationResult>,
         listData: List<CheckoutItem>
@@ -299,7 +308,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                 if (shipmentCartItemModel.hasEthicalProducts) {
                     shopIds.add(shipmentCartItemModel.shopId.toString())
                     enablerNames.add(shipmentCartItemModel.enablerLabel)
-                    for (cartItemModel in shipmentCartItemModel.products) {
+                    for (cartItemModel in tempProductMap.values) {
                         if (cartItemModel.ethicalDrugDataModel.needPrescription) {
                             cartIds.add(cartItemModel.cartId.toString())
                         }
@@ -363,7 +372,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                                                                         )
                                                                 }
                                                                 shipmentCartItemModel.errorTitle =
-                                                                    "Yaah, ada ${shipmentCartItemModel.products.size} barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain."
+                                                                    "Yaah, ada ${tempProductMap.size} barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain."
                                                                 shipmentCartItemModel.isCustomEpharmacyError =
                                                                     true
                                                                 shipmentCartItemModel.spId =

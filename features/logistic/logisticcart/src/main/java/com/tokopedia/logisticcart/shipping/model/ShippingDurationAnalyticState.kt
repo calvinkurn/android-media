@@ -4,6 +4,9 @@ sealed interface ShippingDurationAnalyticState {
     data class AnalyticCourierPromo(val shippingDurationUiModelList: List<ShippingDurationUiModel>) :
         ShippingDurationAnalyticState
 
+    data class AnalyticShippingDuration(val shippingDurationUiModelList: List<ShippingDurationUiModel>) :
+        ShippingDurationAnalyticState
+
     data class AnalyticPromoLogistic(val promoViewModelList: List<LogisticPromoUiModel>) :
         ShippingDurationAnalyticState
 }

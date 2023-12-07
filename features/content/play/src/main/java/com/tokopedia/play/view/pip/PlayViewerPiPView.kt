@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
+import com.tokopedia.play.PLAY_KEY_PAGE_SOURCE_NAME
 import com.tokopedia.play.PLAY_KEY_SOURCE_ID
 import com.tokopedia.play.PLAY_KEY_SOURCE_TYPE
 import com.tokopedia.play.R
@@ -208,6 +209,7 @@ class PlayViewerPiPView : ConstraintLayout {
         val map = mutableMapOf<String, Any>().apply {
             if (pipInfo.source.id.isNotEmpty()) this[PLAY_KEY_SOURCE_ID] = pipInfo.source.id
             if (pipInfo.source.type.isNotEmpty()) this[PLAY_KEY_SOURCE_TYPE] = pipInfo.source.type
+            if (pipInfo.pageSourceName.isNotEmpty()) this[PLAY_KEY_PAGE_SOURCE_NAME] = pipInfo.pageSourceName
         }
 
         return UriUtil.buildUriAppendParams(

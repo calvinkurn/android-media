@@ -39,7 +39,7 @@ class DigitalSignalClientNumberWidget : DigitalClientNumberWidget {
 
         btnCheckout.setOnClickListener {
             if (btnCheckout.isClickable) {
-                postpaidListener.enquiryNumber()
+                postpaidListener.mainButtonClick()
             }
         }
     }

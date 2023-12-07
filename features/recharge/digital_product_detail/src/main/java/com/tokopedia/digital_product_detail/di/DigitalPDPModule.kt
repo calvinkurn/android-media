@@ -6,11 +6,13 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.digital_product_detail.presentation.monitoring.DigitalPDPPulsaPerformanceCallback
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -78,6 +80,12 @@ class DigitalPDPModule {
         return CommonTopupBillsAnalytics()
     }
 
+    @DigitalPDPScope
+    @Provides
+    fun provideAnalyticsCommonMultiCheckout(): CommonMultiCheckoutAnalytics {
+        return CommonMultiCheckoutAnalytics()
+    }
+
     @Provides
     @DigitalPDPScope
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
@@ -132,5 +140,11 @@ class DigitalPDPModule {
         listInterceptor.add(digitalInterceptor)
         listInterceptor.add(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
         return listInterceptor
+    }
+
+    @Provides
+    @DigitalPDPScope
+    fun provideDigitalPDPPulsaPerformanceCallback(): DigitalPDPPulsaPerformanceCallback {
+        return DigitalPDPPulsaPerformanceCallback()
     }
 }

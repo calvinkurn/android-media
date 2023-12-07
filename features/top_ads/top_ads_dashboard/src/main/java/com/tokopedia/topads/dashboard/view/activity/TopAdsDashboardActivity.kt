@@ -63,6 +63,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.SARAN_TOPADS_EDUCATIONAL_INFO_ARTICLE_LINK
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_LINK
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_THUMBNAIL
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTracker
 import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardBerandaFragment
@@ -227,6 +228,7 @@ class TopAdsDashboardActivity :
                                     getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)
                                 checkVisibility()
                             }
+                            RecommendationTracker.clickTabSaranTopads()
                             setMultiActionButtonEnabled(insightMultiActionButtonEnabled)
                             bottom?.hide()
                             hideButton(true)

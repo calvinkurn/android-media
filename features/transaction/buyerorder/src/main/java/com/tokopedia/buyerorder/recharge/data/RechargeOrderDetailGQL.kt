@@ -104,6 +104,7 @@ class RechargeOrderDetailGQL {
                 detail {
                   label
                   value
+                  copyable
                 }
                 paymentData {
                   label

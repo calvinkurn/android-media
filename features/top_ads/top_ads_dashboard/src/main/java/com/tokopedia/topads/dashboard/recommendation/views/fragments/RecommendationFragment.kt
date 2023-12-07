@@ -34,6 +34,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightCountUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsGetShopInfoUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTracker
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.RecommendationViewModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.EmptyStatePagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
@@ -184,10 +185,12 @@ class RecommendationFragment : BaseDaggerFragment() {
         }
 
         potentialProductCard?.setOnClickListener {
+            RecommendationTracker.clickProductRecommendation()
             RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_PRODUCT_RECOMMENDATION)
         }
 
         productOutOfStockCard?.setOnClickListener {
+            RecommendationTracker.clickProductOOS()
             RouteManager.route(activity, "${ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST}?filter=isEmptyStockOnly")
         }
     }

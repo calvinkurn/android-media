@@ -2,7 +2,7 @@ package com.tokopedia.topads.common.view.adapter.tips.viewmodel
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class TipsUiRowModel(@StringRes val rowText: Int = 0,

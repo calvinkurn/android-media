@@ -32,16 +32,6 @@ internal class DoubleLineLayoutStrategyReimagine : DoubleLineLayoutStrategy {
         dotImage.showWithCondition(isAds)
     }
 
-    override fun bindTitle(
-        titleView: Typography,
-    ) {
-        titleView.changeTypeToDisplay3()
-    }
-
-    private fun Typography.changeTypeToDisplay3() {
-        this.setType(Typography.DISPLAY_3)
-    }
-
     override fun bindIconImage(
         iconImage: AppCompatImageView,
         item: SuggestionDoubleLineDataDataView

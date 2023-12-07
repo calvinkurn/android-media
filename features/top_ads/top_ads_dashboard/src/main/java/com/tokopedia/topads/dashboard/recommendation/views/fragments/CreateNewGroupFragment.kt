@@ -32,6 +32,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecomme
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.MAXIMUM_DAILY_BUDGET_DEFAULT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.MINIMUM_DAILY_BUDGET_DEFAULT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTracker
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.unifycomponents.Toaster
@@ -267,6 +268,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
 
         binding?.btnSubmit?.setOnClickListener {
             if (binding?.btnSubmit?.isLoading != null && !(binding?.btnSubmit?.isLoading!!)) {
+                RecommendationTracker.clickSubmitProductRecommendationNewGroup()
                 binding?.btnSubmit?.isLoading = true
                 viewModel?.topAdsCreateGroup(
                     getSelectedProductIds(),

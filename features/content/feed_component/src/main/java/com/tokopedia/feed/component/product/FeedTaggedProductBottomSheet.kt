@@ -9,6 +9,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
+import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.databinding.BottomSheetFeedTaggedProductBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
@@ -44,34 +47,34 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         (getScreenHeight() * MIN_HEIGHT_PERCENT).roundToInt()
     }
 
-    private val mAdapterListener = object : FeedTaggedProductBottomSheetViewHolder.Listener {
-        override fun onProductCardClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
+    private val mAdapterListener = object : ContentTaggedProductBottomSheetViewHolder.Listener {
+        override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
             listener?.onProductCardClicked(product, itemPosition)
         }
 
         override fun onAddToCartProductButtonClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         ) {
             listener?.onAddToCartProductButtonClicked(product, itemPosition)
         }
 
         override fun onBuyProductButtonClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         ) {
             listener?.onBuyProductButtonClicked(product, itemPosition)
         }
     }
 
-    private val mAdapter: FeedTaggedProductBottomSheetAdapter by lazy {
-        FeedTaggedProductBottomSheetAdapter(mAdapterListener)
+    private val mAdapter: ContentTaggedProductBottomSheetAdapter by lazy {
+        ContentTaggedProductBottomSheetAdapter(mAdapterListener)
     }
 
     var listener: Listener? = null
     var tracker: MvcTrackerImpl = DefaultMvcTrackerImpl()
 
-    private val productListObserver = Observer<Result<List<FeedTaggedProductUiModel>>?> {
+    private val productListObserver = Observer<Result<List<ContentTaggedProductUiModel>>?> {
         when (it) {
             is Success -> {
                 hideLoading()
@@ -222,24 +225,24 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun onProductCardClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         )
 
         fun onAddToCartProductButtonClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         )
 
         fun onBuyProductButtonClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         )
 
         fun sendMvcImpressionTracker(mvcList: List<AnimatedInfos?>)
 
         val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
-        val productListLiveData: LiveData<Result<List<FeedTaggedProductUiModel>>?>
+        val productListLiveData: LiveData<Result<List<ContentTaggedProductUiModel>>?>
     }
 
     companion object {

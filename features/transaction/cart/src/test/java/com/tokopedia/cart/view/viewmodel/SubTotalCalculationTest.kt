@@ -2,9 +2,9 @@ package com.tokopedia.cart.view.viewmodel
 
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.WholesalePrice
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.SubTotalState
 import io.mockk.every
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -112,8 +112,8 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            CartGlobalEvent.SubTotalUpdated(0.0, "0", 0.0, false),
-            cartViewModel.globalEvent.value
+            SubTotalState(0.0, "0", 0.0, false),
+            cartViewModel.subTotalState.value
         )
     }
 
@@ -130,8 +130,8 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
         cartViewModel.reCalculateSubTotal()
 
         assertEquals(
-            CartGlobalEvent.SubTotalUpdated(100.0, "5", 1004.0, false),
-            cartViewModel.globalEvent.value
+            SubTotalState(100.0, "5", 1004.0, false),
+            cartViewModel.subTotalState.value
         )
     }
 
@@ -152,8 +152,8 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            CartGlobalEvent.SubTotalUpdated(100.0, "10", 1684.0, false),
-            cartViewModel.globalEvent.value
+            SubTotalState(100.0, "10", 1684.0, false),
+            cartViewModel.subTotalState.value
         )
     }
 
@@ -178,8 +178,8 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            CartGlobalEvent.SubTotalUpdated(100.0, "19", 1684.0, false),
-            cartViewModel.globalEvent.value
+            SubTotalState(100.0, "19", 1684.0, false),
+            cartViewModel.subTotalState.value
         )
     }
 
@@ -203,8 +203,8 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            CartGlobalEvent.SubTotalUpdated(100.0, "10", 1684.0, false),
-            cartViewModel.globalEvent.value
+            SubTotalState(100.0, "10", 1684.0, false),
+            cartViewModel.subTotalState.value
         )
     }
 
@@ -229,8 +229,8 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            CartGlobalEvent.SubTotalUpdated(160.0, "10", 1684.0, false),
-            cartViewModel.globalEvent.value
+            SubTotalState(160.0, "10", 1684.0, false),
+            cartViewModel.subTotalState.value
         )
     }
 
@@ -266,8 +266,8 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            CartGlobalEvent.SubTotalUpdated(400.0, "6", 4300.0, false),
-            cartViewModel.globalEvent.value
+            SubTotalState(400.0, "6", 4300.0, false),
+            cartViewModel.subTotalState.value
         )
     }
 
@@ -303,8 +303,8 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            CartGlobalEvent.SubTotalUpdated(600.0, "8", 6300.0, false),
-            cartViewModel.globalEvent.value
+            SubTotalState(600.0, "8", 6300.0, false),
+            cartViewModel.subTotalState.value
         )
     }
 
@@ -330,8 +330,8 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            CartGlobalEvent.SubTotalUpdated(100.0, "12", 101684.0, false),
-            cartViewModel.globalEvent.value
+            SubTotalState(100.0, "12", 101684.0, false),
+            cartViewModel.subTotalState.value
         )
     }
 
@@ -349,8 +349,8 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
         cartViewModel.reCalculateSubTotal()
 
         assertEquals(
-            CartGlobalEvent.SubTotalUpdated(100.0, "5", 1004.0, false),
-            cartViewModel.globalEvent.value
+            SubTotalState(100.0, "5", 1004.0, false),
+            cartViewModel.subTotalState.value
         )
     }
 }

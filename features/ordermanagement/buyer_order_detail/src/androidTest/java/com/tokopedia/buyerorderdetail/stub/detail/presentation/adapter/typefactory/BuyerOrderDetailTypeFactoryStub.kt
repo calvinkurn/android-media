@@ -1,9 +1,11 @@
 package com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.typefactory
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.CourierButtonListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierDriverInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
@@ -21,6 +23,7 @@ import com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.viewholde
 import com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.viewholder.PgRecommendationViewHolderStub
 import com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.viewholder.ProductViewHolderStub
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
+import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder.ScpRewardsMedalTouchPointWidgetViewHolder
 
 class BuyerOrderDetailTypeFactoryStub(
@@ -33,11 +36,14 @@ class BuyerOrderDetailTypeFactoryStub(
     scpRewardsMedalTouchPointWidgetListener: ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     pofRefundInfoListener: PofRefundInfoViewHolder.Listener,
     owocInfoListener: OwocInfoViewHolder.Listener,
+    bmgmListener: BmgmSectionViewHolder.Listener,
     productViewListener: PartialProductItemViewHolder.ProductViewListener,
     bottomSheetListener: PartialProductItemViewHolder.ShareProductBottomSheetListener,
     navigator: BuyerOrderDetailNavigator,
     buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
-    orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener
+    orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
+    recyclerViewSharedPool: RecyclerView.RecycledViewPool,
+    courierButtonListener: CourierButtonListener
 ) : BuyerOrderDetailTypeFactory(
     productBundlingViewListener,
     tickerViewHolderListener,
@@ -48,15 +54,18 @@ class BuyerOrderDetailTypeFactoryStub(
     pofRefundInfoListener,
     scpRewardsMedalTouchPointWidgetListener,
     owocInfoListener,
+    bmgmListener,
     productViewListener,
     bottomSheetListener,
     navigator,
     buyerOrderDetailBindRecomWidgetListener,
-    orderResolutionListener
+    orderResolutionListener,
+    recyclerViewSharedPool,
+    courierButtonListener
 ) {
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolderStub(parent, navigator)
+            CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolderStub(parent, navigator, courierButtonListener)
             ProductViewHolder.LAYOUT -> ProductViewHolderStub(parent, productViewListener, bottomSheetListener, navigator)
             PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolderStub(parent, buyerOrderDetailBindRecomWidgetListener)
             else -> super.createViewHolder(parent, type)

@@ -15,7 +15,7 @@
 
 <!--toc-->
 
-![image](../../res/recipe_auto_complete_page.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/recipe_auto_complete_page.png)
 
 ## **Description**
 
