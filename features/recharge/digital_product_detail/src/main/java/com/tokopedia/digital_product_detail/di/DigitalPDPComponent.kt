@@ -1,6 +1,7 @@
 package com.tokopedia.digital_product_detail.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPDataPlanActivity
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPDataPlanFragment
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPPulsaFragment
@@ -23,6 +24,7 @@ interface DigitalPDPComponent {
     fun inject(digitalPDPTokenListrikFragment: DigitalPDPTokenListrikFragment)
     fun inject(digitalPDPTagihanFragment: DigitalPDPTagihanFragment)
     fun inject(digitalPDPPulsaActivity: DigitalPDPPulsaActivity)
+    fun inject(digitalPDPDataPlanActivity: DigitalPDPDataPlanActivity)
 
     /** Macrobenchmark */
     fun inject(digitalPDPPulsaTestSetupActivity: DigitalPDPPulsaTestSetupActivity)

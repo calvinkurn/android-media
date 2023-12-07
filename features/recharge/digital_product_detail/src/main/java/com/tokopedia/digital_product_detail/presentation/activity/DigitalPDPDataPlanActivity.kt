@@ -17,10 +17,12 @@ import com.tokopedia.digital_product_detail.di.DaggerDigitalPDPComponent
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPDataPlanFragment
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
+import com.tokopedia.digital_product_detail.presentation.monitoring.DigitalPDPDataPlanPerformanceCallback
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil.DEFAULT_MENU_ID_TELCO
 import com.tokopedia.digital_product_detail.presentation.utils.setupOrderListIcon
 import com.tokopedia.header.HeaderUnify
 import java.lang.ref.WeakReference
+import javax.inject.Inject
 
 /**
  * @author by firmanda on 04/01/22
@@ -29,7 +31,10 @@ import java.lang.ref.WeakReference
  * access internal applink tokopedia-android-internal://digital/pdp_paket_data
  */
 
-class DigitalPDPDataPlanActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComponent> {
+class DigitalPDPDataPlanActivity : BaseSimpleActivity(), HasComponent<DigitalPDPComponent> {
+
+    @Inject
+    lateinit var performanceMonitoring: DigitalPDPDataPlanPerformanceCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +42,9 @@ class DigitalPDPDataPlanActivity: BaseSimpleActivity(), HasComponent<DigitalPDPC
     }
 
     override fun getComponent(): DigitalPDPComponent {
-        return DaggerDigitalPDPComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
+        getDaggerComponent().inject(this)
+        startPageMonitoring()
+        return getDaggerComponent()
     }
 
     override fun getNewFragment(): Fragment {
@@ -75,5 +80,16 @@ class DigitalPDPDataPlanActivity: BaseSimpleActivity(), HasComponent<DigitalPDPC
 
     private fun setupAppBar() {
         (toolbar as HeaderUnify).transparentMode = true
+    }
+
+    private fun getDaggerComponent(): DigitalPDPComponent =
+        DaggerDigitalPDPComponent
+            .builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
+
+    private fun startPageMonitoring() {
+        performanceMonitoring.startPerformanceMonitoring()
+        performanceMonitoring.startPreparePagePerformanceMonitoring()
     }
 }
