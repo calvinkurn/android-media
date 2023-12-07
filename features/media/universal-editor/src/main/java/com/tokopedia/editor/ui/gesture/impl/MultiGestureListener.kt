@@ -50,6 +50,8 @@ class MultiGestureListener constructor(
     }
 
     override fun onTouch(view: View, event: MotionEvent): Boolean {
+        view.performClick()
+
         // invoke other gestures
         scaleGestureDetector.onTouchEvent(view, event)
         gestureDetector.onTouchEvent(event)
