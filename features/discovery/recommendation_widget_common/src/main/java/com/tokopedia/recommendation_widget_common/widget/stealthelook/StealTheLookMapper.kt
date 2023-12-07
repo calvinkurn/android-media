@@ -31,7 +31,6 @@ object StealTheLookMapper {
                 mapToStyleModel(
                     stylePosition = index,
                     recommendationItems = recommendationItems,
-                    recommendationWidget = recommendationWidget,
                     tracking = tracking,
                 )
             }
@@ -40,7 +39,6 @@ object StealTheLookMapper {
     private fun mapToStyleModel(
         stylePosition: Int,
         recommendationItems: List<RecommendationItem>,
-        recommendationWidget: RecommendationWidget,
         tracking: StealTheLookTracking?
     ): StealTheLookStyleModel {
         return StealTheLookStyleModel(
@@ -50,11 +48,8 @@ object StealTheLookMapper {
                     stylePosition,
                     index,
                     recommendationItem,
-                    recommendationWidget,
-                    tracking
                 )
             },
-            recommendationWidget = recommendationWidget,
             tracking = tracking
         )
     }

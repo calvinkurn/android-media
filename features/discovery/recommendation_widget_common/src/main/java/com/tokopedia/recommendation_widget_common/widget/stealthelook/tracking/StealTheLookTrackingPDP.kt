@@ -64,7 +64,7 @@ class StealTheLookTrackingPDP(
             TrackerConstant.BUSINESS_UNIT to RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_HOME,
             TrackerConstant.CURRENT_SITE to RecommendationTrackingConstants.Tracking.CURRENT_SITE_MP,
             ITEM_LIST to LIST_FORMAT.format(
-                model.recommendationWidget.pageName,
+                widget.pageName,
                 anchorItem?.recommendationType.orEmpty(),
                 if(anchorItem?.isTopAds == true) VALUE_IS_TOPADS else DEFAULT_VALUE,
                 widget.layoutType,
@@ -80,7 +80,7 @@ class StealTheLookTrackingPDP(
                     val item = it.recommendationItem
                     mapOf(
                         DIMENSION_40 to LIST_FORMAT.format(
-                            model.recommendationWidget.pageName,
+                            widget.pageName,
                             item.recommendationType,
                             if(item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
                             widget.layoutType,
@@ -108,7 +108,7 @@ class StealTheLookTrackingPDP(
         val item = model.recommendationItem
         val stylePosition = model.stylePosition + 1
         val list = LIST_FORMAT.format(
-            model.recommendationWidget.pageName,
+            widget.pageName,
             item.recommendationType,
             if(item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
             widget.layoutType,

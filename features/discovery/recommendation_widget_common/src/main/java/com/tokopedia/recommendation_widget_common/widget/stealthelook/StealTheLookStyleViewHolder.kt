@@ -14,6 +14,7 @@ import com.tokopedia.recommendation_widget_common.R as recommendation_widget_com
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetStealTheLookPageBinding
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.stealthelook.tracking.StealTheLookTracking
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifyprinciples.Typography
@@ -48,7 +49,7 @@ class StealTheLookStyleViewHolder(
         val ribbonTextView = binding.stlItemLeftGrid.stlItemRibbonText
         val reloadView = binding.stlItemLeftGrid.stlReload.root
         renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadView)
-        imageView.setGridClickListener(grid)
+        imageView.setGridClickListener(grid, model.tracking)
     }
 
     private fun renderTopRightGrid(model: StealTheLookStyleModel) {
@@ -59,7 +60,7 @@ class StealTheLookStyleViewHolder(
         val ribbonTextView = binding.stlItemTopRightGrid.stlItemRibbonText
         val reloadView = binding.stlItemTopRightGrid.stlReload.root
         renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadView)
-        imageView.setGridClickListener(grid)
+        imageView.setGridClickListener(grid, model.tracking)
     }
 
     private fun renderBottomRightGrid(model: StealTheLookStyleModel) {
@@ -70,7 +71,7 @@ class StealTheLookStyleViewHolder(
         val ribbonTextView = binding.stlItemBottomRightGrid.stlItemRibbonText
         val reloadView = binding.stlItemBottomRightGrid.stlReload.root
         renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadView)
-        imageView.setGridClickListener(grid)
+        imageView.setGridClickListener(grid, model.tracking)
     }
 
     private fun renderGrid(
@@ -135,14 +136,17 @@ class StealTheLookStyleViewHolder(
         }
     }
 
-    private fun View.setGridClickListener(model: StealTheLookGridModel?) {
+    private fun View.setGridClickListener(
+        model: StealTheLookGridModel?,
+        tracking: StealTheLookTracking?
+    ) {
         if(model == null) return
         if(model.recommendationItem.appUrl.isBlank()) return
 
         setOnClickListener {
             if(model.recommendationItem.appUrl.isNotEmpty()) {
                 sendTopAdsClickTracker(model.recommendationItem)
-                model.tracking?.sendEventItemClick(model)
+                tracking?.sendEventItemClick(model)
                 RouteManager.route(context, model.recommendationItem.appUrl)
             }
         }
