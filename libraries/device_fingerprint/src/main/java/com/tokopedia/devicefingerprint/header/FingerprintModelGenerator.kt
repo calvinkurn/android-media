@@ -3,6 +3,7 @@ package com.tokopedia.devicefingerprint.header
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -34,6 +35,7 @@ import com.tokopedia.devicefingerprint.header.model.FingerPrintNew
 import com.tokopedia.devicefingerprint.location.LocationCache.DEFAULT_LATITUDE
 import com.tokopedia.devicefingerprint.location.LocationCache.DEFAULT_LONGITUDE
 import com.tokopedia.encryption.security.toBase64
+import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.locationmanager.LocationDetectorHelper.Companion.LOCATION_CACHE
 import com.tokopedia.network.data.model.FingerprintModel
@@ -48,6 +50,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.coroutines.CoroutineContext
@@ -67,7 +71,7 @@ object FingerprintModelGenerator : CoroutineScope {
     @SuppressLint("StaticFieldLeak")
     private var locationDetectorHelper: LocationDetectorHelper? = null
 
-    private var locationFlow: Flow<String?>? = null
+    private var locationFlow: Flow<DeviceLocation?>? = null
     var locationFlowJob: Job? = null
 
     @JvmStatic
@@ -317,22 +321,28 @@ object FingerprintModelGenerator : CoroutineScope {
                 PersistentCacheManager(
                     context,
                     LOCATION_CACHE
-                ).getFlow(LocationDetectorHelper.PARAM_CACHE_DEVICE_LOCATION).also { it ->
+                ).getFlow(
+                    LocationDetectorHelper.PARAM_CACHE_DEVICE_LOCATION,
+                    DeviceLocation::class.java,
+                    DeviceLocation()
+                ).also { it ->
                     locationFlow = it
                     // to be safe, we cancel previous job to make sure only 1 job exists
                     if (locationFlowJob != null) {
                         locationFlowJob?.cancel()
                     }
                     locationFlowJob = launch {
-                        it.distinctUntilChanged().collect {
-                            if (it?.isNotEmpty() == true) {
-                                expireFingerprint()
-                            }
+                        it.filter { it != null && it.hasLocation() }.map {
+                            (it?.latitude ?: 0) to ((it?.longitude) ?: 0)
+                        }.distinctUntilChanged().collect {
+                            expireFingerprint()
                         }
                     }
                 }
             }
-        } catch (ignored: Exception) { }
+        } catch (ex: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(ex)
+        }
     }
 
     private fun getLocationHelper(ctx: Context): LocationDetectorHelper {
