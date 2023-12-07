@@ -73,6 +73,9 @@ object RollenceKey {
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
 
+    // For You Rollence
+    const val FOR_YOU_FEATURE_FLAG = "foryou_feature_flag"
+
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"

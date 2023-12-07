@@ -1,51 +1,67 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
-import android.content.Context
 import android.view.View
-import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
+import com.tokopedia.home.databinding.HomeFeedBannerBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
-import com.tokopedia.smart_recycler_helper.SmartListener
+import com.tokopedia.topads.sdk.R as topadssdkR
 
-class HomeBannerFeedViewHolder(itemView: View) : SmartAbstractViewHolder<BannerRecommendationDataModel>(itemView) {
+class HomeBannerFeedViewHolder(
+    itemView: View,
+    private val homeRecommendationListener: HomeRecommendationListener
+) : BaseRecommendationForYouViewHolder<BannerRecommendationDataModel>(
+    itemView,
+    BannerRecommendationDataModel::class.java
+) {
 
-    private val context: Context by lazy { itemView.context }
+    private val binding = HomeFeedBannerBinding.bind(itemView)
 
-    private val bannerImageView: ImageView by lazy { itemView.findViewById<ImageView>(R.id.bannerImageView) }
+    override fun bind(element: BannerRecommendationDataModel) {
+        setBannerImageUrl(element.imageUrl)
+        setBannerOnClickListener(element)
+        setBannerImpression(element)
+    }
 
-
-    override fun bind(element: BannerRecommendationDataModel, listener: SmartListener) {
-        bannerImageView.setOnClickListener {
+    private fun setBannerOnClickListener(element: BannerRecommendationDataModel) {
+        binding.bannerImageView.setOnClickListener {
             HomePageTracking.eventClickOnBannerFeed(
-                    element, element.tabName
+                element,
+                element.tabName
             )
-            RouteManager.route(context, element.applink)
+            RouteManager.route(itemView.context, element.applink)
         }
+    }
 
-        Glide.with(context)
-                .asBitmap()
-                .load(element.imageUrl)
-                .dontAnimate()
-                .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .into(bannerImageView)
+    private fun setBannerImpression(
+        element: BannerRecommendationDataModel
+    ) {
+        binding.bannerImageView.addOnImpressionListener(
+            element,
+            object : ViewHintListener {
+                override fun onViewHint() {
+                    homeRecommendationListener.onBannerImpression(element)
+                }
+            }
+        )
+    }
 
-        bannerImageView.addOnImpressionListener(element,
-                object : ViewHintListener{
-                    override fun onViewHint() {
-                        (listener as HomeRecommendationListener).onBannerImpression(element)
-                    }
-
-                })
+    private fun setBannerImageUrl(
+        imageUrl: String
+    ) {
+        Glide.with(binding.root.context)
+            .asBitmap()
+            .load(imageUrl)
+            .dontAnimate()
+            .placeholder(topadssdkR.drawable.loading_page)
+            .error(R.drawable.error_drawable)
+            .into(binding.bannerImageView)
     }
 
     companion object {

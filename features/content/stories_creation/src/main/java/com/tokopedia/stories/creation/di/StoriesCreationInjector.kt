@@ -13,7 +13,7 @@ object StoriesCreationInjector {
 
     fun get(context: Context): StoriesCreationComponent = synchronized(this) {
         if (component == null) {
-            component = DaggerStoriesCreationComponent.factory()
+            return DaggerStoriesCreationComponent.factory()
                 .create(
                     baseAppComponent = (context.applicationContext as BaseMainApplication).baseAppComponent,
                     creationUploaderComponent = CreationUploaderComponentProvider.get(context),
