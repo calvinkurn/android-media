@@ -34,7 +34,7 @@ class AppDownloadManagerHelper(
                             it,
                             ::onSuccessDownloaded,
                             ::onFailDownloaded
-                        )
+                        ) { setCacheExpire() }
                     }
                     updateAppVersionDialog?.showDialog()
                 }

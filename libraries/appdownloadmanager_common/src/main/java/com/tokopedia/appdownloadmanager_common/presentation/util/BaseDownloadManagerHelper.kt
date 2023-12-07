@@ -41,29 +41,29 @@ abstract class BaseDownloadManagerHelper(
 
     abstract fun showAppDownloadManagerBottomSheet()
 
-    open suspend fun isEnableShowBottomSheet(): Boolean {
+    suspend fun isEnableShowBottomSheet(): Boolean {
         val canShowToday = isExpired()
-//        return canShowToday && isBetaNetwork() && isWhitelistByRollence()
 
         return isAppDownloadingBottomSheetNotShow() && isNeedToUpgradeVersion() &&
-            downloadManagerUpdateModel?.isEnabled == true
+            downloadManagerUpdateModel?.isEnabled == true && isWhitelistByRollence() &&
+            canShowToday
     }
 
-    open fun isExpired(): Boolean {
+    fun isExpired(): Boolean {
         val interval = sharePref?.getInt(DOWNLOAD_MANAGER_EXPIRED_TIME, 0) ?: 0
         val time = sharePref?.getLong(DOWNLOAD_MANAGER_TIMESTAMP, 0) ?: 0L
         val currTime = System.currentTimeMillis() / 1000
         return currTime - time > interval
     }
 
-    open fun isWhitelistByRollence(): Boolean {
+    fun isWhitelistByRollence(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
             RollenceKey.ANDROID_INTERNAL_TEST,
             ""
         ) == RollenceKey.ANDROID_INTERNAL_TEST
     }
 
-    open fun setCacheExpire() {
+    fun setCacheExpire() {
         val expireTime = downloadManagerUpdateModel?.expireTime.orZero()
 
         val sharePrefEditor = sharePref?.edit()
@@ -80,7 +80,7 @@ abstract class BaseDownloadManagerHelper(
         sharePrefEditor?.apply()
     }
 
-    open fun isBetaNetwork(): Boolean {
+    fun isBetaNetwork(): Boolean {
         return activityRef.get()?.let { BannerEnvironmentInterceptor.isBeta(it) } == true
     }
 

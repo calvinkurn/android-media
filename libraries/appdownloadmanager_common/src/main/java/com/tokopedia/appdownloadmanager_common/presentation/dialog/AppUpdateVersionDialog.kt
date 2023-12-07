@@ -21,7 +21,8 @@ class AppUpdateVersionDialog(
     val activityRef: WeakReference<Activity>,
     val appVersionBetaInfoModel: AppVersionBetaInfoModel? = null,
     val onSuccessDownload: (fileNamePath: String) -> Unit,
-    val onFailDownload: (reason: String, statusColumn: Int) -> Unit
+    val onFailDownload: (reason: String, statusColumn: Int) -> Unit,
+    val setCacheExpire: () -> Unit
 ) : HasComponent<DownloadManagerComponent> {
 
     @Inject
@@ -96,6 +97,7 @@ class AppUpdateVersionDialog(
                             }
                         }
                     }
+                    setCacheExpire()
                     dismiss()
                 }
 
