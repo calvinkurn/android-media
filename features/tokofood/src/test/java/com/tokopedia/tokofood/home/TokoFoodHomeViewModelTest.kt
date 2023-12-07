@@ -123,7 +123,7 @@ class TokoFoodHomeViewModelTest : TokoFoodHomeViewModelTestFixture() {
         }
 
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
-        Assert.assertTrue((actualResponse as Success).data.isSuccess == 1)
+        Assert.assertTrue((actualResponse as Success).data.success)
         Assert.assertTrue((actualResponse as Success).data.chosenAddressData.latitude == latitude)
         Assert.assertTrue((actualResponse as Success).data.chosenAddressData.longitude == longitude)
     }
@@ -145,8 +145,8 @@ class TokoFoodHomeViewModelTest : TokoFoodHomeViewModelTestFixture() {
             collectorJob.cancel()
         }
 
-        Assert.assertEquals(expectedResponse, (actualResponse as Success).data.isSuccess == 1)
-        Assert.assertFalse((actualResponse as Success).data.isSuccess == 1)
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data.success)
+        Assert.assertFalse((actualResponse as Success).data.success)
     }
 
     @Test

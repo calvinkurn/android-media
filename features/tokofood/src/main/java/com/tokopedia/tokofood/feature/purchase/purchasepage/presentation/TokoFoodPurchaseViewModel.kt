@@ -501,7 +501,7 @@ open class TokoFoodPurchaseViewModel @Inject constructor(
                         val result = withContext(dispatcher.io) {
                             keroEditAddressUseCase.get()(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
                         }
-                        if (result.isSuccess == 1) {
+                        if (result.success) {
                             _isAddressHasPinpoint.value = addressId to (latitude.isNotEmpty() && longitude.isNotEmpty())
                             _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT, data = result)
                         } else {
