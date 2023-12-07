@@ -612,6 +612,11 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             toggleDfConfig()
             launch(Dispatchers.Main) {
                 delay(500)
+                val errorCodeTemp =
+                    ErrorUtils.getValidatedErrorCode(this@DFInstallerActivity,
+                        errorString,
+                        freeInternalStorageBeforeDownload)
+                errorList.add(errorCodeTemp)
                 downloadFeature()
             }
         } else {
