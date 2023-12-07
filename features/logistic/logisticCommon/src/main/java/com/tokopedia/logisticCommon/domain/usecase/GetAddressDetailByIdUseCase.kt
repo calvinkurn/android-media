@@ -7,6 +7,11 @@ import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
 import javax.inject.Inject
 
+/*
+* Use case for getting saved address's detail
+* This use case receives one address id and returns address detail for respective address id
+* if no address detail match with the given address id, then will return `DetailAddressResponse` with addrId == 0
+*/
 open class GetAddressDetailByIdUseCase @Inject constructor(
     private val getAddressDetailUseCase: GetAddressDetailUseCase,
     dispatcher: CoroutineDispatchers

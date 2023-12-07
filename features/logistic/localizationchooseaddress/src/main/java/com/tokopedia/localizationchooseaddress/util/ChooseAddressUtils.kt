@@ -22,7 +22,6 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Compan
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.LCA_VERSION
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
 
 object ChooseAddressUtils {
 
@@ -396,7 +395,6 @@ object ChooseAddressUtils {
             this.toLong()
             this
         } catch (t: Throwable) {
-            Timber.d(t)
             ChooseAddressLogger.logOnLocalizing(t, key, this)
             ""
         }

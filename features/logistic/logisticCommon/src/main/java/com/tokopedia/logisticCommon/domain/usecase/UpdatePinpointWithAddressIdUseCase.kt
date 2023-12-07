@@ -11,6 +11,12 @@ import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
 import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
 import javax.inject.Inject
 
+/*
+* Use case for update pinpoint to existing address by giving address ID
+* This use case combine two use cases
+* First, this use case hits `GetAddressDetailByIdUseCase` to retrieve full address detail for edit address param
+* Second, will hit `UpdatePinpointUseCase` with address detail along with the new latitude and longitude
+*/
 open class UpdatePinpointWithAddressIdUseCase @Inject constructor(
     private val getAddressDetailUseCase: GetAddressDetailByIdUseCase,
     private val updatePinpointUseCase: UpdatePinpointUseCase,
