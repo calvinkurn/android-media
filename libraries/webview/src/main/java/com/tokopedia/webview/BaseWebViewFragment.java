@@ -139,6 +139,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String BRANCH_IO_HOST = "tokopedia.link";
     private static final String FDL_HOST = "tkpd.page.link";
     private static String ENABLE_FDL_HOST_WEBVIEW = "android_enable_fdl_host_webview";
+    private static String ENABLE_WEBVIEW_REFRESH_TOKEN_FLOW = "android_enable_webview_refresh_token";
+
     private static final String SCHEME_INTENT = "intent";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
@@ -1058,7 +1060,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private void gotoLoginPage() {
         Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
-        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_FROM_WEBVIEW, true);
+        if (remoteConfig.getBoolean(ENABLE_WEBVIEW_REFRESH_TOKEN_FLOW, false)) {
+            intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_FROM_WEBVIEW, true);
+        }
         startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }
 
