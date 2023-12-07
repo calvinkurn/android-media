@@ -123,7 +123,7 @@ class GWPViewHolder(
             name = mElement.impressionKey()
         ) {
             val trackerData = getComponentTrackData(element = mElement)
-            callback.event(BasicComponentEvent.OnImpresseComponent(trackData = trackerData))
+            callback.event(BasicComponentEvent.OnImpressComponent(trackData = trackerData))
         }
     }
 

@@ -10,8 +10,8 @@ import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.view.componentization.ComponentCallback
 import com.tokopedia.product.detail.view.componentization.ComponentEvent
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
+import com.tokopedia.product.detail.view.viewholder.ActionUiModel
 import timber.log.Timber
-import java.util.Locale
 
 /**
  * Created by yovi.putra on 14/11/23"
@@ -40,20 +40,39 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
     val isRemoteCacheableActive
         get() = viewModel.getDynamicProductInfoP1?.cacheState?.remoteCacheableActive.orFalse()
 
+    @Suppress("UNCHECKED_CAST")
     override fun event(event: ComponentEvent) {
         Timber.tag("pdp_event").d(event.toString())
-        when (event) {
-            is BasicComponentEvent.OnImpresseComponent -> onImpressComponent(trackData = event.trackData)
-
-            is BasicComponentEvent.GoToAppLink -> goToAppLink(appLink = event.appLink)
-
-            is BasicComponentEvent.GoToWebView -> goToWebView(link = event.link)
-
-            else -> componentEvent(event = event)
-        }
+        extractBasicEventForTracking(event = event)
+        extractBasicEventForEvent(event = event)
     }
 
     protected abstract fun onEvent(event: Event)
+
+    protected abstract fun onTracking(event: Event)
+
+    @Suppress("UNCHECKED_CAST")
+    private fun extractBasicEventForTracking(event: ComponentEvent) {
+        when (event) {
+            is BasicComponentEvent.OnImpressComponent -> onImpressComponent(trackData = event.trackData)
+            else -> runCatching { event as Event }
+                .onSuccess { onTracking(event = it) }
+                .onFailure { Timber.e(it) }
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun extractBasicEventForEvent(event: ComponentEvent) {
+        when (event) {
+            is BasicComponentEvent.OnImpressComponent -> {
+                // no-ops
+            }
+
+            else -> runCatching { event as Event }
+                .onSuccess { onEvent(event = it) }
+                .onFailure { Timber.e(it) }
+        }
+    }
 
     private fun onImpressComponent(trackData: ComponentTrackDataModel) {
         if (viewModel.getDynamicProductInfoP1?.cacheState?.isPrefetch == true) return
@@ -97,19 +116,14 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
     }
 
     private fun goToWebView(link: String) {
-        RouteManager.route(
-            context,
-            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, link)
-        )
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun componentEvent(event: ComponentEvent) {
-        val mEvent = event as? Event
-
-        if (mEvent != null) {
-            onEvent(event = mEvent)
+        val webViewStartsWith = "${ApplinkConst.WEBVIEW}?url="
+        val appLink = if (link.startsWith(webViewStartsWith)) {
+            link
+        } else {
+            "$webViewStartsWith$link"
         }
+
+        RouteManager.route(context, appLink)
     }
 
     protected fun ComponentTrackDataModel.asCommonTracker(): CommonTracker? {
@@ -119,5 +133,13 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
             userId = viewModel.userId,
             componentTracker = this
         )
+    }
+
+    protected fun ActionUiModel.navigate(others: ActionUiModel.() -> Unit = {}) {
+        when (type) {
+            ActionUiModel.WEBVIEW -> goToWebView(link = link)
+            ActionUiModel.APPLINK -> goToAppLink(appLink = link)
+            else -> others()
+        }
     }
 }

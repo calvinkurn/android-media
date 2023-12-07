@@ -24,6 +24,9 @@ class ReviewCallback(
         }
     }
 
+    override fun onTracking(event: ReviewComponentEvent) {
+    }
+
     // region rating keyword
     private fun onKeywordImpressed(event: ReviewComponentEvent.OnKeywordImpressed) {
         val tracker = event.trackerData.asCommonTracker() ?: return
