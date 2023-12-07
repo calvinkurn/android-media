@@ -70,10 +70,12 @@ private fun String.generateSecureUrl(
 
 internal fun Properties.generateUrl(): Any {
     val data = data.toString()
+    val extension = MimeTypeMap.getFileExtensionFromUrl(data)
 
-    // we only need to send the webp converter for non-webp extension file type,
-    // which allows reduce the unnecessary process in the BE part.
-    val isNotWebpImageUrl = MimeTypeMap.getFileExtensionFromUrl(data) != "webp"
+    // we only need to send the webp converter for *non-webp* url image extension,
+    // which reducing the unnecessary process in the BE part. So, if we got already webp url,
+    // thus we don't have to send the [X-Tkp-Fmt] into the backend to do converter process.
+    val isNotWebpImageUrl = extension != "webp"
 
     // secure image loader
     if (isSecure) return data.generateSecureUrl(userId, accessToken)
