@@ -43,7 +43,6 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
-import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
@@ -83,7 +82,6 @@ import com.tokopedia.product.detail.usecase.GetProductInfoP2LoginUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
-import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
@@ -223,10 +221,6 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
-
-    private val _singleVariantData = MutableLiveData<VariantCategory?>()
-    val singleVariantData: LiveData<VariantCategory?>
-        get() = _singleVariantData
 
     private val _toggleTeaserNotifyMe = MutableLiveData<Result<NotifyMeUiData>>()
     val toggleTeaserNotifyMe: LiveData<Result<NotifyMeUiData>>
@@ -492,20 +486,6 @@ class DynamicProductDetailViewModel @Inject constructor(
         return p2Data.nearestWarehouseInfo[p1Data.basic.productID] ?: WarehouseInfo()
     }
 
-    fun processVariant(
-        data: ProductVariant,
-        mapOfSelectedVariant: Map<String, String>
-    ) {
-        runCatching {
-            ProductDetailVariantLogic.determineVariant(
-                mapOfSelectedOptionIds = mapOfSelectedVariant,
-                productVariant = data
-            )
-        }.onSuccess {
-            _singleVariantData.postValue(it)
-        }
-    }
-
     fun getProductP1(
         productParams: ProductParams,
         refreshPage: Boolean = false,
@@ -594,17 +574,15 @@ class DynamicProductDetailViewModel @Inject constructor(
          */
         var p1 = getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         val isWishlist = p1.data.isWishlist.orFalse()
+
+        parentProductId = pdpLayout.layoutData.parentProductId
         getDynamicProductInfoP1 = pdpLayout.layoutData.let {
             listOfParentMedia = it.data.media.toMutableList()
             it.copy(data = it.data.copy(isWishlist = isWishlist))
         }.also { p1 = it }
 
-        variantData = if (!p1.isProductVariant()) {
-            null
-        } else {
-            pdpLayout.variantData
-        }
-        parentProductId = pdpLayout.layoutData.parentProductId
+        // process variant
+        processInitialVariant(pdpLayout = pdpLayout)
 
         // Remove all component that can be remove by using p1 data
         // So we don't have to inflate to UI
@@ -619,6 +597,12 @@ class DynamicProductDetailViewModel @Inject constructor(
         _productLayout.value = processedList.asSuccess()
 
         return p1
+    }
+
+    private fun processInitialVariant(pdpLayout: ProductDetailDataModel) {
+        variantData = pdpLayout.variantData.takeIf {
+            pdpLayout.layoutData.isProductVariant()
+        } ?: return
     }
 
     fun addToCart(atcParams: Any) {

@@ -291,7 +291,6 @@ import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTracking
 import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
@@ -747,7 +746,6 @@ open class DynamicProductDetailFragment :
         observeToggleNotifyMe()
         observeRecommendationProduct()
         observeAddToCart()
-        observeSingleVariantData()
         observeOnThumbnailVariantSelected()
         observeATCRecomData()
         observeATCTokonowResetCard()
@@ -2880,25 +2878,6 @@ open class DynamicProductDetailFragment :
         showOrHideButton()
     }
 
-    private fun observeSingleVariantData() {
-        viewLifecycleOwner.observe(viewModel.singleVariantData) { variantCategory ->
-            if (variantCategory == null) {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
-                updateUi()
-                return@observe
-            }
-            val listOfVariantLevelOne = listOf(variantCategory)
-            val landingSubText = viewModel.variantData?.landingSubText.ifNullOrBlank {
-                getVariantString()
-            }
-            pdpUiUpdater?.updateVariantData(
-                title = landingSubText,
-                processedVariant = listOfVariantLevelOne
-            )
-            updateUi()
-        }
-    }
-
     private fun observeAddToCart() {
         viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
             hideProgressDialog()
@@ -3852,7 +3831,21 @@ open class DynamicProductDetailFragment :
         } else {
             // ignore auto-select variant when first load pdp in thumbnail variant
             val selectedOptionIds = determineInitialOptionId(productId)
-            viewModel.processVariant(data, selectedOptionIds)
+            val variantOneLevel = ProductDetailVariantLogic.determineVariant(
+                mapOfSelectedOptionIds = selectedOptionIds,
+                productVariant = data
+            )
+            if (variantOneLevel == null) {
+                pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
+                return
+            }
+            val landingSubText = viewModel.variantData?.landingSubText.ifNullOrBlank {
+                getVariantString()
+            }
+            pdpUiUpdater?.updateVariantData(
+                title = landingSubText,
+                processedVariant = listOf(variantOneLevel)
+            )
         }
     }
 
