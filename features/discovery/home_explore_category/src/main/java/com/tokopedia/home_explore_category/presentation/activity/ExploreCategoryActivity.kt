@@ -9,7 +9,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,9 +22,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.home_explore_category.analytic.ECConstants.Companion.EXTRA_TITLE
-import com.tokopedia.home_explore_category.analytic.ECConstants.Companion.EXTRA_TYPE
-import com.tokopedia.home_explore_category.analytic.ECConstants.Companion.TYPE_LAYANAN
+import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.EXTRA_TITLE
+import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.EXTRA_TYPE
+import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.TYPE_LAYANAN
 import com.tokopedia.home_explore_category.di.DaggerExploreCategoryComponent
 import com.tokopedia.home_explore_category.di.ExploreCategoryComponent
 import com.tokopedia.home_explore_category.presentation.screen.ExploreCategoryAppBar
@@ -71,10 +70,6 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
                     NestNN.light._50
                 }
 
-                LaunchedEffect(key1 = Unit, block = {
-                    collectUiEffect()
-                })
-
                 Scaffold(
                     topBar = {
                         ExploreCategoryAppBar(
@@ -94,7 +89,7 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
                     ExploreCategoryScreen(
                         modifier = Modifier.padding(padding),
                         uiState = uiState,
-                        uiEvent = viewModel::onExploreCategoryUiEvent
+                        uiEvent = ::onUiEvent
                     )
                 }
 
@@ -120,24 +115,22 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
         viewModel.fetchExploreCategory()
     }
 
-    private suspend fun collectUiEffect() {
-        viewModel.exploreCategoryUiEvent.collect {
-            when (it) {
-                is ExploreCategoryUiEvent.OnSubExploreCategoryItemClicked -> {
-                    RouteManager.route(this, it.subExploreCategoryUiModel.appLink)
-                }
+    private fun onUiEvent(uiEvent: ExploreCategoryUiEvent) {
+        when (uiEvent) {
+            is ExploreCategoryUiEvent.OnExploreCategoryItemClicked -> {
+                viewModel.toggleSelectedCategory(uiEvent.categoryId)
+            }
 
-                is ExploreCategoryUiEvent.OnPrimaryButtonErrorClicked -> {
-                    fetchAllCategories()
-                }
+            is ExploreCategoryUiEvent.OnSubExploreCategoryItemClicked -> {
+                RouteManager.route(this, uiEvent.subExploreCategoryUiModel.appLink)
+            }
 
-                is ExploreCategoryUiEvent.OnSecondaryButtonErrorClicked -> {
-                    goToNetworkSetting()
-                }
+            is ExploreCategoryUiEvent.OnPrimaryButtonErrorClicked -> {
+                fetchAllCategories()
+            }
 
-                else -> {
-                    // no op
-                }
+            is ExploreCategoryUiEvent.OnSecondaryButtonErrorClicked -> {
+                goToNetworkSetting()
             }
         }
     }
