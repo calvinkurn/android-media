@@ -342,7 +342,8 @@ class CheckoutViewModel @Inject constructor(
                         val itemsWithLoadingState = items.map {
                             if (it is CheckoutOrderModel && loadCourierState(
                                     it,
-                                    address.recipientAddressModel
+                                    address.recipientAddressModel,
+                                    false
                                 )
                             ) {
                                 it.copy(shipment = it.shipment.copy(isLoading = true))
@@ -620,6 +621,19 @@ class CheckoutViewModel @Inject constructor(
         mTrackerShipment.flushEnhancedECommerceCheckout()
     }
 
+    internal fun shouldAutoLoadCourier(
+        shipmentCartItemModel: CheckoutOrderModel,
+        recipientAddressModel: RecipientAddressModel?
+    ): Boolean {
+        return recipientAddressModel != null && (
+            (recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex != 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !recipientAddressModel.dropOffAddressName.isNullOrEmpty()) ||
+                (recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex == 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !recipientAddressModel.provinceName.isNullOrEmpty()) ||
+                (!recipientAddressModel.isTradeIn && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !recipientAddressModel.provinceName.isNullOrEmpty()) ||
+                (!recipientAddressModel.isTradeIn && shipmentCartItemModel.boCode.isNotEmpty() && !recipientAddressModel.provinceName.isNullOrEmpty()) || // normal address auto apply BO
+                shipmentCartItemModel.isAutoCourierSelection // tokopedia now
+            )
+    }
+
     fun prepareFullCheckoutPage() {
         viewModelScope.launch(dispatchers.immediate) {
             val checkoutItems = listData.value
@@ -645,29 +659,17 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    internal fun shouldAutoLoadCourier(
-        shipmentCartItemModel: CheckoutOrderModel,
-        recipientAddressModel: RecipientAddressModel?
-    ): Boolean {
-        return recipientAddressModel != null && (
-            (recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex != 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !recipientAddressModel.dropOffAddressName.isNullOrEmpty()) ||
-                (recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex == 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !recipientAddressModel.provinceName.isNullOrEmpty()) ||
-                (!recipientAddressModel.isTradeIn && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !recipientAddressModel.provinceName.isNullOrEmpty()) ||
-                (!recipientAddressModel.isTradeIn && shipmentCartItemModel.boCode.isNotEmpty() && !recipientAddressModel.provinceName.isNullOrEmpty()) || // normal address auto apply BO
-                shipmentCartItemModel.isAutoCourierSelection // tokopedia now
-            )
-    }
-
     private fun loadCourierState(
         shipmentCartItemModel: CheckoutOrderModel,
-        recipientAddressModel: RecipientAddressModel?
+        recipientAddressModel: RecipientAddressModel?,
+        setHasLoadCourierState: Boolean = true
     ): Boolean {
         if (!shipmentCartItemModel.isCustomPinpointError && !shipmentCartItemModel.isStateHasLoadCourierState && shouldAutoLoadCourier(
                 shipmentCartItemModel,
                 recipientAddressModel
             )
         ) {
-            shipmentCartItemModel.isStateHasLoadCourierState = true
+            shipmentCartItemModel.isStateHasLoadCourierState = setHasLoadCourierState
             return true
         }
         return false
