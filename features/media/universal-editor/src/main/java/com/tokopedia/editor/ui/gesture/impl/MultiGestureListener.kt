@@ -16,9 +16,9 @@ class MultiGestureListener constructor(
     view: View,
     private val onMultiTouchListener: OnMultiTouchListener?,
     private val onGestureControl: OnGestureControl?,
-) : View.OnTouchListener
-    , GridGuidelineControl by GridGuidelineControlImpl()
-    , DeletionViewControl by DeletionViewControlImpl() {
+) : View.OnTouchListener,
+    GridGuidelineControl by GridGuidelineControlImpl(),
+    DeletionViewControl by DeletionViewControlImpl() {
 
     private val gestureDetector = GestureDetector(view.context, GestureListener())
     private val scaleGestureDetector = ScaleGestureDetector(SetScaleGestureListener(this))
@@ -228,11 +228,13 @@ class MultiGestureListener constructor(
         // force snap the view horizontal alignment
         if (isNearestThresholdAlignCenterX(view)) {
             view.x = containerCenterX - view.width / 2
+            hapticFeedback(view)
         }
 
         // force snap the view vertical alignment
         if (isNearestThresholdAlignCenterY(view)) {
             view.y = containerCenterY - view.height / 2
+            hapticFeedback(view)
         }
     }
 
@@ -278,7 +280,7 @@ class MultiGestureListener constructor(
         activePointerId = INVALID_POINTER_ID
     }
 
-    private fun shouldPointerInvokeTextView(x: Int, y: Int): Boolean =
+    private fun shouldPointerInvokeTextView(x: Int, y: Int) =
         abs(lastPositionX - x) < VIEW_MOVE_THRESHOLD && abs(lastPositionY - y) < VIEW_MOVE_THRESHOLD
 
     inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
