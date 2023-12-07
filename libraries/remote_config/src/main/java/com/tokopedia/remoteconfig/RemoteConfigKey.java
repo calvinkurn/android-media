@@ -314,4 +314,9 @@ public class RemoteConfigKey {
     public static final String ANDROID_SALDO_ENABLE_AUTO_WD_INIT_GQL = "android_saldo_enable_auto_wd_init_gql";
 
     public static final String ANDROID_INTERNAL_TEST_UPDATE_CONFIG = "android_internal_test_update_config";
+
+    public static final String ANDROID_INTERNAL_PUBLIC_VERSION_DIALOG_CONFIG = "android_internal_public_version_dialog_config";
+
+    public static final String ANDROID_INTERNAL_NAKAMA_VERSION_DIALOG_CONFIG = "android_internal_nakama_version_dialog_config";
+
 }

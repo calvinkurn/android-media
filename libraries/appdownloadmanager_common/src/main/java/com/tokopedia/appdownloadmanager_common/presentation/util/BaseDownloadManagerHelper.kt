@@ -111,8 +111,9 @@ abstract class BaseDownloadManagerHelper(
     }
 
     private fun initDownloadManagerUpdateConfig() {
+        val configKey = if (GlobalConfig.IS_NAKAMA_VERSION) RemoteConfigKey.ANDROID_INTERNAL_NAKAMA_VERSION_DIALOG_CONFIG else RemoteConfigKey.ANDROID_INTERNAL_PUBLIC_VERSION_DIALOG_CONFIG
         val internalTestConfigJson =
-            remoteConfig.getString(RemoteConfigKey.ANDROID_INTERNAL_TEST_UPDATE_CONFIG)
+            remoteConfig.getString(configKey)
 
         if (internalTestConfigJson.isNotBlank()) {
             try {
