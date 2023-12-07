@@ -6,6 +6,7 @@ sealed class ExploreCategoryUiEvent {
         ExploreCategoryUiEvent()
 
     data class OnSubExploreCategoryItemClicked(
+        val categoryName: String,
         val subExploreCategoryUiModel: ExploreCategoryUiModel.SubExploreCategoryUiModel,
         val position: Int
     ) : ExploreCategoryUiEvent()

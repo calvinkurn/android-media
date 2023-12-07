@@ -102,7 +102,13 @@ fun ExploreCategoryListGrid(
     ) {
         itemsIndexed(categories) { groupIndex, row ->
 
-            CategoryRowItem(categories, row, uiEvent, lazyListState)
+            var categoryName by remember {
+                mutableStateOf("")
+            }
+
+            CategoryRowItem(categories, row, uiEvent, lazyListState, categoryName = {
+                categoryName = it
+            })
 
             val selectedCategory = remember(row) {
                 row.find { it.isSelected }
@@ -127,7 +133,8 @@ fun ExploreCategoryListGrid(
                                     modifier = Modifier,
                                     subExploreCategoryUiModel = subcategory,
                                     onUiEvent = uiEvent,
-                                    actualPosition = actualPosition
+                                    actualPosition = actualPosition,
+                                    categoryName = categoryName
                                 )
                             }
                         }
@@ -143,7 +150,8 @@ fun CategoryRowItem(
     categories: List<List<ExploreCategoryUiModel>>,
     row: List<ExploreCategoryUiModel>,
     uiEvent: (ExploreCategoryUiEvent) -> Unit,
-    lazyListState: LazyListState
+    lazyListState: LazyListState,
+    categoryName: (String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -153,6 +161,8 @@ fun CategoryRowItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         row.forEachIndexed { index, category ->
+
+            categoryName.invoke(category.categoryTitle)
 
             val stateKey = "category_${category.id}"
 
@@ -305,7 +315,8 @@ fun SubExploreCategoryItem(
     modifier: Modifier = Modifier,
     subExploreCategoryUiModel: ExploreCategoryUiModel.SubExploreCategoryUiModel,
     onUiEvent: (ExploreCategoryUiEvent) -> Unit,
-    actualPosition: Int
+    actualPosition: Int,
+    categoryName: String = ""
 ) {
     Row(
         modifier = modifier
@@ -313,8 +324,9 @@ fun SubExploreCategoryItem(
             .clickable {
                 onUiEvent(
                     ExploreCategoryUiEvent.OnSubExploreCategoryItemClicked(
-                        subExploreCategoryUiModel,
-                        position = actualPosition
+                        subExploreCategoryUiModel = subExploreCategoryUiModel,
+                        position = actualPosition,
+                        categoryName = categoryName
                     )
                 )
             }

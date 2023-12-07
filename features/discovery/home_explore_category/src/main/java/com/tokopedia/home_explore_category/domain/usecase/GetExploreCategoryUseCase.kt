@@ -3,42 +3,42 @@ package com.tokopedia.home_explore_category.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.home_explore_category.domain.mapper.ExploreCategoryMapper
-import com.tokopedia.home_explore_category.domain.model.GetExploreCategoryResponse
+import com.tokopedia.home_explore_category.domain.model.GetHomeExploreCategoryResponse
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryResultUiModel
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 const val GET_EXPLORE_CATEGORY_QUERY = """
-    query dynamicHomeIcon(${'$'}type: Int!, ${'$'}page: String!) {
-        dynamicHomeIcon {
-            categoryGroup(types:${'$'}type, page:${'$'}page){
-              id
-              title
-              imageUrl
-              desc
-              categoryRows{
-                id
-                name
-                url
-                imageUrl
-                applinks
-                categoryLabel
-                bu_identifier
-              }
-            }
+    query getHomeCategoryV2(${'$'}types: Int, ${'$'}page: String) {
+      getHomeCategoryV2(types: ${'$'}types, page: ${'$'}page) {
+        categories {
+          id
+          title
+          imageUrl
+          desc
+          categoryRows {
+            id
+            name
+            url
+            imageUrl
+            applinks
+            categoryLabel
+            buIdentifier
           }
+        }
+      }
     }
 """
 
 @GqlQuery("GetExploreCategoryQuery", GET_EXPLORE_CATEGORY_QUERY)
 class GetExploreCategoryUseCase @Inject constructor(
-    private val graphqlUseCase: GraphqlUseCase<GetExploreCategoryResponse>,
+    private val graphqlUseCase: GraphqlUseCase<GetHomeExploreCategoryResponse>,
     private val exploreCategoryMapper: ExploreCategoryMapper
 ) {
 
     init {
         graphqlUseCase.setGraphqlQuery(GetExploreCategoryQuery())
-        graphqlUseCase.setTypeClass(GetExploreCategoryResponse::class.java)
+        graphqlUseCase.setTypeClass(GetHomeExploreCategoryResponse::class.java)
     }
 
     suspend fun execute(): ExploreCategoryResultUiModel {

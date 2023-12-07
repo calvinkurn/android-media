@@ -13,6 +13,7 @@ class ExploreCategoryConstants {
         const val DEFAULT_SCREEN = "/kategori-belanja"
 
         const val SELECT_CONTENT = "select_content"
+        const val VIEW_ITEM = "view_item"
 
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
@@ -30,6 +31,7 @@ class ExploreCategoryConstants {
         const val CREATIVE_NAME = "creative_name"
 
         const val TRACKER_ID_47052 = "47052"
+        const val TRACKER_ID_47053 = "47053"
         const val TRACKER_ID_47054 = "47054"
         const val TRACKER_ID_47058 = "47058"
     }

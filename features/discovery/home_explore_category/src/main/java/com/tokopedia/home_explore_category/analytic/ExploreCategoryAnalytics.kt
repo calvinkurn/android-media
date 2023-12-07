@@ -14,6 +14,7 @@ import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Com
 import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.SELECT_CONTENT
 import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.TRACKER_ID_47052
+import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.TRACKER_ID_47053
 import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.TRACKER_ID_47054
 import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.TRACKER_ID_47058
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiModel
@@ -23,7 +24,9 @@ import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
+import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.track.builder.util.BaseTrackerConst.Ecommerce.PROMO_VIEW
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -78,13 +81,13 @@ class ExploreCategoryAnalytics @Inject constructor(
     }
 
     fun sendSubCategoryItemClicked(
-        subExploreCategory:
-            ExploreCategoryUiModel.SubExploreCategoryUiModel,
+        categoryName: String,
+        subExploreCategory: ExploreCategoryUiModel.SubExploreCategoryUiModel,
         position: Int
     ) {
         val bundle = Bundle().apply {
             putString(EVENT, SELECT_CONTENT)
-            putString(EVENT_ACTION, CLICK_BACK_BUTTON)
+            putString(EVENT_ACTION, "click - $categoryName")
             putString(EVENT_CATEGORY, ALL_CATEGORY_PAGE)
             putString(
                 EVENT_LABEL,
@@ -116,7 +119,7 @@ class ExploreCategoryAnalytics @Inject constructor(
                         it.putString(BaseTrackerConst.Promotion.ITEM_ID, subExploreCategory.id)
                         it.putString(
                             BaseTrackerConst.Promotion.ITEM_NAME,
-                            subExploreCategory.name
+                            categoryName
                         )
                     }
                 )
@@ -128,5 +131,38 @@ class ExploreCategoryAnalytics @Inject constructor(
             SELECT_CONTENT,
             bundle
         )
+    }
+
+    fun sendSubCategoryItemImpressed(
+        categoryName: String,
+        subExploreCategory: ExploreCategoryUiModel.SubExploreCategoryUiModel,
+        position: Int
+    ): Map<String, Any> {
+        val trackingBuilder = BaseTrackerBuilder()
+        val creativeSlot = (position + Int.ONE).toString()
+
+        val listPromotions = arrayListOf(
+            BaseTrackerConst.Promotion(
+                creative = subExploreCategory.name,
+                position = creativeSlot,
+                id = subExploreCategory.id,
+                name = categoryName
+            )
+        )
+
+        return trackingBuilder.constructBasicPromotionView(
+            event = PROMO_VIEW,
+            eventCategory = "impression ${subExploreCategory.name}",
+            eventAction = ALL_CATEGORY_PAGE,
+            eventLabel = subExploreCategory.id,
+            promotions = listPromotions
+        ).appendBusinessUnit(
+            HOME_AND_BROWSE
+        ).appendCurrentSite(
+            TOKOPEDIA_MARKETPLACE
+        ).appendUserId(userSession.userId).appendCustomKeyValue(
+            KEY_TRACKER_ID,
+            TRACKER_ID_47053
+        ).build()
     }
 }

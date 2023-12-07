@@ -142,6 +142,7 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
 
             is ExploreCategoryUiEvent.OnSubExploreCategoryItemClicked -> {
                 exploreCategoryAnalytics.sendSubCategoryItemClicked(
+                    uiEvent.categoryName,
                     uiEvent.subExploreCategoryUiModel,
                     uiEvent.position
                 )
