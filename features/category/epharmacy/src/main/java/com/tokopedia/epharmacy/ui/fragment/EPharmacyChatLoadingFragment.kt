@@ -111,7 +111,7 @@ class EPharmacyChatLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
         ePharmacyChatLoadingViewModel.ePharmacyVerifyConsultationData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    onSuccessData(it)
+                    onSuccessData(it.data)
                 }
                 is Fail -> {
                     onFailData(it)
@@ -120,15 +120,19 @@ class EPharmacyChatLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
         }
     }
 
-    private fun onSuccessData(it: Success<EPharmacyVerifyConsultationResponse>) {
-        it.data.verifyConsultationOrder?.verifyConsultationOrderData?.pwaLink?.let { pwaLink ->
-            if (pwaLink.isNotBlank()) {
-                activity?.finish()
-                routeAction(pwaLink)
-            } else {
+    private fun onSuccessData(response: EPharmacyVerifyConsultationResponse) {
+        if (response.verifyConsultationOrder?.verifyConsultationOrderData?.isOrderCreated.orFalse()) {
+            response.verifyConsultationOrder?.verifyConsultationOrderData?.pwaLink?.let { pwaLink ->
+                if (pwaLink.isNotBlank()) {
+                    activity?.finish()
+                    routeAction(pwaLink)
+                } else {
+                    handleFail()
+                }
+            } ?: kotlin.run {
                 handleFail()
             }
-        } ?: kotlin.run {
+        } else {
             handleFail()
         }
     }
