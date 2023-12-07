@@ -350,6 +350,7 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.system.measureTimeMillis
 
 /**
  * Separator Rule
@@ -2950,7 +2951,10 @@ open class DynamicProductDetailFragment :
                 firstOpenPage = false
                 pdpUiUpdater = PdpUiUpdater(DynamicProductDetailMapper.hashMapLayout(it.data))
                 viewModel.getDynamicProductInfoP1?.let { dataP1 ->
-                    onSuccessGetDataP1(dataP1)
+                    val time = measureTimeMillis {
+                        onSuccessGetDataP1(dataP1)
+                    }
+                    Timber.tag("pdp-measure").d("process p1-view $time")
                     ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
                         isSuccess = true,
                         cacheState = viewModel.getDynamicProductInfoP1?.cacheState,

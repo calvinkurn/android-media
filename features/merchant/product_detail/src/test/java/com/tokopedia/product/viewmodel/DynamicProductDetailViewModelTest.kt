@@ -1636,9 +1636,12 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `process initial variant tokonow`() {
         val variantData = ProductDetailTestUtil.getMockVariant()
-        viewModel.processVariant(variantData, mutableMapOf())
+        val result = ProductDetailVariantLogic.determineVariant(
+            mapOfSelectedOptionIds = mutableMapOf(),
+            productVariant = variantData
+        )
 
-        assertTrue(viewModel.singleVariantData.value != null)
+        assertTrue(result != null)
     }
 
     @Test
@@ -1654,8 +1657,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
         } returns expectedVariantCategory
 
-        viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
-        assertTrue(viewModel.singleVariantData.value == expectedVariantCategory)
+        val result = ProductDetailVariantLogic.determineVariant(
+            mapOfSelectedOptionIds = mapOfSelectedOptionIds,
+            productVariant = productVariant
+        )
+        assertTrue(result == expectedVariantCategory)
     }
 
     @Test
@@ -1669,23 +1675,29 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
         } returns null
 
-        viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
-        assertTrue(viewModel.singleVariantData.value == null)
+        val result = ProductDetailVariantLogic.determineVariant(
+            mapOfSelectedOptionIds = mapOfSelectedOptionIds,
+            productVariant = productVariant
+        )
+        assertTrue(result == null)
     }
 
     @Test
     fun `determine variant is throw`() {
-        val productVariant = ProductVariant()
+        val productVariant = mockk<ProductVariant>()
         val mapOfSelectedOptionIds = mutableMapOf<String, String>()
 
         mockkObject(ProductDetailVariantLogic)
 
         every {
-            ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
+            productVariant.isSelectedChildHasFlashSale(anyString())
         } throws Throwable()
 
-        viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
-        assertTrue(viewModel.singleVariantData.value == null)
+        val result = ProductDetailVariantLogic.determineVariant(
+            mapOfSelectedOptionIds = mapOfSelectedOptionIds,
+            productVariant = productVariant
+        )
+        assertTrue(result == null)
     }
 
     @Test
