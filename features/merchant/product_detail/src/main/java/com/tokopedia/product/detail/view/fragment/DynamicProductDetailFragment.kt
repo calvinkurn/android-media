@@ -4425,9 +4425,7 @@ open class DynamicProductDetailFragment :
             lcaWarehouseId = getLcaWarehouseId(),
             campaignId = campaignId,
             variantId = variantId,
-            offerId = viewModel.getP2()?.bmgm?.data?.firstOrNull {
-                it.productIDs.contains(productId)
-            }?.offerId.orEmpty(),
+            offerId = viewModel.getP2()?.getOfferIdPriority(pid = productId).orEmpty(),
             nearestWarehouseId = viewModel.getMultiOriginByProductId().id
         )
     }

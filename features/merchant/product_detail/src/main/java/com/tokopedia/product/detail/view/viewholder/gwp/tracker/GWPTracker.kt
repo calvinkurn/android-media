@@ -5,4 +5,14 @@ package com.tokopedia.product.detail.view.viewholder.gwp.tracker
  * Project name: android-tokopedia-core
  **/
 
-object GWPTracker
+object GWPTracker {
+
+    fun onClickOtherOffer() {
+    }
+
+    fun onImpressProductCard() {
+    }
+
+    fun onClickProductCard() {
+    }
+}

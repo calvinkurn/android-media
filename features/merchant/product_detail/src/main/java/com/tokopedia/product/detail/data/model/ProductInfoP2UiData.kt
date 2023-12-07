@@ -75,6 +75,7 @@ data class ProductInfoP2UiData(
     var bmgm: BMGMData = BMGMData(),
     var gwp: GWPData = GWPData()
 ) {
+
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {
             productId in it.productIDs
@@ -96,5 +97,11 @@ data class ProductInfoP2UiData(
 
     fun getRatesProductMetadata(productId: String): String {
         return ratesEstimate.firstOrNull { productId in it.listfProductId }?.productMetadata?.firstOrNull { it.productId == productId }?.value ?: ""
+    }
+
+    fun getOfferIdPriority(pid: String?): String {
+        val gwpOfferId = gwp.data.firstOrNull { it.productIDs.contains(pid) }?.offerId.orEmpty()
+        val bmgmOfferId = bmgm.data.firstOrNull { it.productIDs.contains(pid) }?.offerId.orEmpty()
+        return gwpOfferId.ifBlank { bmgmOfferId }
     }
 }
