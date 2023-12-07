@@ -2,9 +2,9 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.PartialItemBuyerOrderDetailAddonsBinding
 import com.tokopedia.buyerorderdetail.presentation.adapter.AddonsItemAdapter
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder.ProductViewListener
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -14,9 +14,8 @@ import com.tokopedia.order_management_common.util.rotateBackIcon
 import com.tokopedia.order_management_common.util.rotateIcon
 
 class PartialProductAddonViewHolder(
-    private val listener: PartialProductItemViewHolder.ProductViewListener,
-    private val partialItemBuyerOrderDetailAddonsBinding: PartialItemBuyerOrderDetailAddonsBinding,
-    private val navigator: BuyerOrderDetailNavigator
+    private val listener: ProductViewListener,
+    private val partialItemBuyerOrderDetailAddonsBinding: PartialItemBuyerOrderDetailAddonsBinding
 ) {
 
     fun bindViews(element: AddonsListUiModel) {
@@ -85,7 +84,7 @@ class PartialProductAddonViewHolder(
     private fun setupAddonList(element: AddonsListUiModel) {
         partialItemBuyerOrderDetailAddonsBinding.run {
             rvAddonsList.layoutManager = LinearLayoutManager(root.context)
-            rvAddonsList.adapter = AddonsItemAdapter(element.addonsItemList, navigator)
+            rvAddonsList.adapter = AddonsItemAdapter(element.addonsItemList, listener)
         }
     }
 }

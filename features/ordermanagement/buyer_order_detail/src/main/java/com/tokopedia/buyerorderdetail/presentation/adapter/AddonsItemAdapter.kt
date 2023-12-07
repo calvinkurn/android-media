@@ -8,9 +8,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailAddonsListBinding
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder.ProductViewListener
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel.AddonItemUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
@@ -22,8 +23,8 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
 class AddonsItemAdapter(
-    private val addonsItemList: List<AddonsListUiModel.AddonItemUiModel>,
-    private val navigator: BuyerOrderDetailNavigator?
+    private val addonsItemList: List<AddonItemUiModel>,
+    private val listener: ProductViewListener
 ) :
     RecyclerView.Adapter<AddonsItemAdapter.ViewHolder>() {
 
@@ -53,14 +54,17 @@ class AddonsItemAdapter(
                 setupDividerAddon()
                 setDataViews(item)
                 setupAddNoteViews(item)
-                setupInfoLink(item.infoLink)
+                setupInfoLink(item.infoLink, item.type)
             }
         }
 
-        private fun ItemBuyerOrderDetailAddonsListBinding.setupInfoLink(infoLink: String) {
+        private fun ItemBuyerOrderDetailAddonsListBinding.setupInfoLink(
+            infoLink: String,
+            type: String
+        ) {
             icBomDetailAddonsInfo.showIfWithBlock(infoLink.isNotEmpty()) {
                 setOnClickListener {
-                    navigator?.openAppLink(infoLink, false)
+                    listener.onAddOnsInfoClickedNonBundle(infoLink, type)
                 }
             }
         }
