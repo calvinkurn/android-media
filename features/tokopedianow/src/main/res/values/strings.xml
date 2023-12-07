@@ -119,6 +119,7 @@
     <string name="tokopedianow_quest_widget_all_claimed_desc">Cek Hadiah Saya</string>
     <string name="tokopedianow_quest_sequence_widget_title">Penawaran spesial untukmu</string>
     <string name="tokopedianow_quest_sequence_widget_see_all">Lihat Detail</string>
+    <string name="tokopedianow_quest_finished_widget">Kamu sudah dapat kupon total </string>
 
     <!-- Content Description -->
     <string name="tokopedianow_header_background_content_description">Header Background</string>

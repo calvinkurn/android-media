@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.CourierButtonListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.AddonsViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.AwbInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CopyableKeyValueViewHolder
@@ -79,16 +80,21 @@ open class BuyerOrderDetailTypeFactory(
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     protected val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
-    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool,
+    protected val courierButtonListener: CourierButtonListener
 ) : BaseAdapterTypeFactory(),
-    ScpRewardsMedalTouchPointWidgetTypeFactory, BuyMoreGetMoreTypeFactory
-{
+    ScpRewardsMedalTouchPointWidgetTypeFactory,
+    BuyMoreGetMoreTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
             CopyableKeyValueViewHolder.LAYOUT -> CopyableKeyValueViewHolder(parent)
-            CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(parent, navigator)
+            CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(
+                parent,
+                navigator,
+                courierButtonListener
+            )
             CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(
                 parent,
                 courierInfoViewHolderListener,

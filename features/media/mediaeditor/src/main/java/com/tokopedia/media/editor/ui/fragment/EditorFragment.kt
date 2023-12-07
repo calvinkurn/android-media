@@ -65,13 +65,18 @@ class EditorFragment @Inject constructor(
     }
 
     override fun onPause() {
-        viewBinding?.viewPager?.releaseImage()
+        viewBinding?.viewPager?.releaseImageVideo()
         super.onPause()
     }
 
     override fun onResume() {
-        viewBinding?.viewPager?.reloadImage()
+        viewBinding?.viewPager?.reloadImageVideo()
         super.onResume()
+    }
+
+    override fun onDestroyView() {
+        viewBinding?.viewPager?.clearPlayer()
+        super.onDestroyView()
     }
 
     override fun onCreateView(
@@ -96,9 +101,7 @@ class EditorFragment @Inject constructor(
         viewBinding?.btnRedo?.setOnClickListener {
             forwardState()
         }
-    }
 
-    private fun startAutoCrop() {
         loader = LoaderDialog(requireContext()).apply {
             setLoadingText("")
             customView = View.inflate(
@@ -108,7 +111,9 @@ class EditorFragment @Inject constructor(
             ) as LinearLayout
             show()
         }
+    }
 
+    private fun startAutoCrop() {
         autoCropStartTime = System.nanoTime()
         iterateCrop(viewModel.editStateList.values.toList(), 0)
     }
@@ -181,7 +186,6 @@ class EditorFragment @Inject constructor(
     override fun initObserver() {
         observeEditorParam()
         observeUpdateIndex()
-        observeEditorResult()
     }
 
     private fun imageCrop(bitmap: Bitmap, originalPath: String) {
@@ -376,6 +380,20 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
+            viewModel.compressImage(it) { // on compress done
+                thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
+
+                if (it.autoCropRatio() != null) {
+                    startAutoCrop()
+                } else {
+                    viewBinding?.viewPager?.apply {
+                        setAdapter(viewModel.editStateList.values.toList())
+                        setPagerPageChangeListener(this)
+                    }
+                    loader?.dismiss()
+                }
+            }
+
             // show/hide add logo base on rollence
             if (!viewModel.isShopAvailable()) {
                 it.editorToolsList().apply {
@@ -393,16 +411,6 @@ class EditorFragment @Inject constructor(
             }
 
             editorToolComponent.setupView(it.editorToolsList())
-            thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
-
-            if (it.autoCropRatio() != null) {
-                startAutoCrop()
-            } else {
-                viewBinding?.viewPager?.apply {
-                    setAdapter(viewModel.editStateList.values.toList())
-                    setPagerPageChangeListener(this)
-                }
-            }
         }
     }
 
@@ -430,20 +438,6 @@ class EditorFragment @Inject constructor(
                     overlayImageUrl = editorUiModel.getOverlayLogoValue()?.overlayLogoUrl ?: "",
                     overlaySecondaryImageUrl = editorUiModel.getOverlayTextValue()?.textImagePath ?: ""
                 )
-            }
-        }
-    }
-
-    // need to stop all video when editor trigger finish
-    private fun observeEditorResult() {
-        viewModel.isVideoStop.observe(viewLifecycleOwner) {
-            if (it) {
-                viewBinding?.viewPager?.let {
-                    val totalItem = it.adapter?.count ?: -1
-                    for (i in 0 until totalItem) {
-                        it.stopVideoPlayer(i)
-                    }
-                }
             }
         }
     }

@@ -6,10 +6,10 @@ import androidx.fragment.app.FragmentActivity
 import com.gojek.pin.Cancelled
 import com.gojek.pin.CtaClicked
 import com.gojek.pin.Failed
-import com.gojek.pin.PinManager
 import com.gojek.pin.PinParam
 import com.gojek.pin.Success
 import com.gojek.pin.viewmodel.state.PinFlowType
+import com.scp.auth.GotoSdk
 import com.scp.auth.common.utils.ScpConstants
 import com.scp.auth.common.utils.TkpdAdditionalHeaders
 import com.scp.auth.common.utils.goToChangePIN
@@ -26,9 +26,9 @@ import com.scp.verification.core.domain.common.listener.PinListener
 import com.scp.verification.core.domain.common.listener.VerificationListener
 import com.scp.verification.features.gotopin.CVPinManager
 
-class ScpVerificationManager(private val pinManager: PinManager) {
+object ScpVerificationManager {
 
-    val cvSdkInstance = VerificationSdk.CVSDKINSTANCE
+    private val pinManager = GotoSdk.getGotopinInstance()
 
     fun startVerification(
         activity: AppCompatActivity,
@@ -37,6 +37,7 @@ class ScpVerificationManager(private val pinManager: PinManager) {
         onSuccess: (token: String) -> Unit,
         onFailed: (CVError) -> Unit
     ) {
+        val cvSdkInstance = VerificationSdk.getInstance(activity.application)
         cvSdkInstance?.initiateVerification(
             activity = activity,
             verificationData = verificationData,
@@ -46,6 +47,7 @@ class ScpVerificationManager(private val pinManager: PinManager) {
             ),
             verificationListener = object : VerificationListener {
                 override fun verificationFailed(error: CVError) {
+                    cvSdkInstance.closeScreenAndExit()
                     onFailed.invoke(error)
                 }
 
@@ -61,7 +63,7 @@ class ScpVerificationManager(private val pinManager: PinManager) {
             },
             pinListener = object : PinListener {
                 override fun openPinFlow(challengeId: String, onSuccessValidation: OnSuccessValidation, failure: (CVError) -> Unit, onCtaClicked: (activity: FragmentActivity, type: String, value: String, ctaClickHandledByClient: (deeplink: String) -> Unit) -> Unit, mapEvent: (String, Map<String, Any?>) -> Unit) {
-                    pinManager.manage(
+                    pinManager?.manage(
                         launchContext = activity,
                         param = PinParam(
                             source = source,

@@ -36,4 +36,5 @@
     <color name="search_text_view_color">@color/Unify_NN950_96</color>
 
     <color name="search_dms_same_session_recommendation_widget_gradient_start_color">#00FFFFFF</color>
+    <color name="search_dms_inspiration_keyword_image_overlay">#08000000</color>
 </resources>

@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateUtil
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.databinding.ActivityDeeplinkIsNotFoundBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -50,12 +51,16 @@ class DeeplinkNotFoundActivity : BaseActivity() {
                             )
                         )
                     } catch (anfe: ActivityNotFoundException) {
-                        startActivity(
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(URL_PLAYSTORE + packageName)
+                        try {
+                            startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(URL_PLAYSTORE + packageName)
+                                )
                             )
-                        )
+                        } catch (anfe: ActivityNotFoundException) {
+                            RouteManager.route(this, URL_PLAYSTORE + packageName)
+                        }
                     }
                     if (source == TYPE_SHARE) {
                         TrackUtil.sendClickUpdateAppEvent(intent?.data)
@@ -88,6 +93,4 @@ class DeeplinkNotFoundActivity : BaseActivity() {
         const val TYPE_UPDATE = "update"
         const val TYPE_SHARE = "share"
     }
-
-
 }

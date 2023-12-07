@@ -64,7 +64,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
-
+    implementation projectOrAar(rootProject.ext.features.targetedticker)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

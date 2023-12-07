@@ -61,14 +61,14 @@ class BmgmAddOnViewHolder(
             setupAddOnName(addOnUiModel.type, addOnUiModel.addOnsName)
             setupAddOnPrice(addOnUiModel.quantity, addOnUiModel.priceText)
             setupAddOnDescriptions(addOnUiModel)
-            setupInfoLink(addOnUiModel.infoLink)
+            setupInfoLink(addOnUiModel.infoLink, addOnUiModel.type)
         }
     }
 
-    private fun ItemBmgmDetailAddOnBinding.setupInfoLink(infoLink: String) {
+    private fun ItemBmgmDetailAddOnBinding.setupInfoLink(infoLink: String, type: String) {
         icBomDetailBmgmAddonsInfo.showIfWithBlock(infoLink.isNotEmpty()) {
             setOnClickListener {
-                listener.onAddOnsInfoLinkClicked(infoLink)
+                listener.onAddOnsInfoLinkClicked(infoLink, type)
             }
         }
     }
@@ -128,7 +128,7 @@ class BmgmAddOnViewHolder(
     interface Listener {
         fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence)
         fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)
-        fun onAddOnsInfoLinkClicked(infoLink: String)
+        fun onAddOnsInfoLinkClicked(infoLink: String, type: String)
         fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel)
     }
 }

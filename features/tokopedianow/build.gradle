@@ -18,6 +18,10 @@ android {
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         }
     }
+
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 buildscript {
@@ -121,7 +125,16 @@ dependencies {
 
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.okhttpIdlingResource
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebserver
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {

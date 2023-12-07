@@ -109,8 +109,8 @@ class BmgmSectionViewHolder(
         }
     }
 
-    override fun onAddOnsInfoLinkClicked(infoLink: String) {
-        listener.onAddOnsInfoLinkClicked(infoLink)
+    override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+        listener.onAddOnsInfoLinkClicked(infoLink, type)
     }
 
     override fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String) {
@@ -216,7 +216,7 @@ class BmgmSectionViewHolder(
     }
 
     interface Listener {
-        fun onAddOnsInfoLinkClicked(infoLink: String)
+        fun onAddOnsInfoLinkClicked(infoLink: String, type: String)
         fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)
         fun onCopyAddOnDescription(label: String, description: CharSequence)
         fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel)

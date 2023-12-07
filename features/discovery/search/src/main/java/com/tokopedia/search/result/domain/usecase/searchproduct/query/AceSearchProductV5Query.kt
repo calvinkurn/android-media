@@ -118,7 +118,6 @@ object AceSearchProductV5Query {
                 headerText
                 descriptionText
                 imageURL
-                ctaURL
                 ctaApplink
                 buttonText
                 buttonType

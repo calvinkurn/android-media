@@ -29,8 +29,7 @@ class AddonsViewHolder(
         partialProductAddonViewHolder =
             PartialProductAddonViewHolder(
                 productViewListener,
-                partialItemBuyerOrderDetailAddonsBinding,
-                navigator
+                partialItemBuyerOrderDetailAddonsBinding
             )
         partialProductAddonViewHolder?.bindViews(element)
     }

@@ -69,8 +69,8 @@ class SomDetailAddOnsOrderLevelViewHolder(
         actionListener.onAddOnsBmgmExpand(isExpand, addOnsIdentifier)
     }
 
-    override fun onAddOnsInfoLinkClicked(infoLink: String) {
-        actionListener.onAddOnsInfoLinkClicked(infoLink)
+    override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+        actionListener.onAddOnsInfoLinkClicked(infoLink, type)
     }
 
     override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {}

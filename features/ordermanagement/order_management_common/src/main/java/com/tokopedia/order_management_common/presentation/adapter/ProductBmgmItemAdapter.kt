@@ -230,14 +230,14 @@ class ProductBmgmItemAdapter(
             listener.onAddOnsBmgmExpand(isExpand, addOnsIdentifier)
         }
 
-        override fun onAddOnsInfoLinkClicked(infoLink: String) {
-            listener.onAddOnsInfoLinkClicked(infoLink)
+        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+            listener.onAddOnsInfoLinkClicked(infoLink, type)
         }
 
         override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {}
 
         interface Listener {
-            fun onAddOnsInfoLinkClicked(infoLink: String)
+            fun onAddOnsInfoLinkClicked(infoLink: String, type: String)
             fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)
             fun onCopyAddOnDescription(label: String, description: CharSequence)
             fun onBmgmItemClicked(item: ProductBmgmSectionUiModel.ProductUiModel)

@@ -135,6 +135,14 @@ inline fun ImageView.loadImageWithoutPlaceholder(
     .apply(properties)
     .setPlaceHolder(-1))
 
+inline fun ImageView.loadImageWithoutPlaceholderAndError(
+    url: String?,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(url, Properties()
+    .apply(properties)
+    .setPlaceHolder(-1)
+    .setErrorDrawable(-1))
+
 inline fun ImageView.loadImageCircle(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}
