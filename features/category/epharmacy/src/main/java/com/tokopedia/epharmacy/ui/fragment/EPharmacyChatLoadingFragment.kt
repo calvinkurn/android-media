@@ -121,17 +121,13 @@ class EPharmacyChatLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun onSuccessData(response: EPharmacyVerifyConsultationResponse) {
-        if (response.verifyConsultationOrder?.verifyConsultationOrderData?.isOrderCreated.orFalse()) {
-            response.verifyConsultationOrder?.verifyConsultationOrderData?.pwaLink?.let { pwaLink ->
-                if (pwaLink.isNotBlank()) {
-                    activity?.finish()
-                    routeAction(pwaLink)
-                } else {
-                    handleFail()
-                }
-            } ?: kotlin.run {
-                handleFail()
-            }
+        val orderData = response.verifyConsultationOrder?.verifyConsultationOrderData
+
+        if (orderData?.isOrderCreated == true) {
+            orderData.pwaLink?.takeIf { it.isNotBlank() }?.let { pwaLink ->
+                activity?.finish()
+                routeAction(pwaLink)
+            } ?: handleFail()
         } else {
             handleFail()
         }
