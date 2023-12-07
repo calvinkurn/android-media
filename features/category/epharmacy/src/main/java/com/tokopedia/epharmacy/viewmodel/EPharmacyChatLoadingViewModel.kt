@@ -12,7 +12,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class EPharmacyLoadingViewModel @Inject constructor(
+class EPharmacyChatLoadingViewModel @Inject constructor(
     private val ePharmacyVerifyConsultationOrderUseCase: EPharmacyVerifyConsultationOrderUseCase,
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
 ) : BaseViewModel(dispatcherBackground) {

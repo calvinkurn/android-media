@@ -43,6 +43,7 @@ class EPharmacyCheckoutActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
             setSupportActionBar(toolbar)
             setNavigationOnClickListener {
                 sendClickBackEvent("$enablerId - $groupId - $tokoConsultationId")
+                finish()
             }
             supportActionBar?.let {
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
