@@ -1,5 +1,6 @@
 package com.tokopedia.analytics.performance.perf.performanceTracing
 
+//noinspection SuspiciousImport,MissingResourceImportAlias
 import android.R
 import android.app.Activity
 import android.app.Application
@@ -69,25 +70,26 @@ class AppPerformanceTrace {
                             activity
                         )
                     }
-                    
+
                     onPerformanceTraceStarted.invoke(activity)
 
                     currentAppPerformanceDevState = DevState(
                         activityName = activity.javaClass.simpleName,
                         state = State.PERF_MEASURING
                     )
-                    
+
                     perfNotes = ""
 
                     val activityName = activity.javaClass.simpleName
                     val traceConfig = getTraceConfig(activityName)
 
                     currentCreatedActivity = activityName
-                    
+
                     if (traceConfig != null) {
                         if (traceConfig.fragmentConfigs.isNotEmpty()) {
                             startFragmentPerformanceTrace(
-                                activity = activity, traceConfig = traceConfig
+                                activity = activity,
+                                traceConfig = traceConfig
                             )
                         } else {
                             startActivityPerformanceTrace(
@@ -101,7 +103,6 @@ class AppPerformanceTrace {
                             state = State.PERF_DISABLED
                         )
                     }
-                    
                 }
 
                 override fun onActivityStarted(activity: Activity) {

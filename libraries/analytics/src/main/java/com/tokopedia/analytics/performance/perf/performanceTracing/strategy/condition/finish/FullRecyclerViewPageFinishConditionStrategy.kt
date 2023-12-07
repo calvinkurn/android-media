@@ -6,7 +6,7 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.View
 class FullRecyclerViewPageFinishConditionStrategy : FinishConditionStrategyConfig<View> {
     override fun isLayoutFinished(rootView: View, views: ViewInfo): LayoutStatus {
         if (rootView.height == 0) return LayoutStatus(false, "RootView height is 0")
-        
+
         val visibleLoadableView = containsLoader(views)
         val fullRecyclerView = getFullRecyclerView(views, rootView)
         val layoutFinished = !visibleLoadableView && fullRecyclerView != null
@@ -17,21 +17,21 @@ class FullRecyclerViewPageFinishConditionStrategy : FinishConditionStrategyConfi
         return "err: Parsing Timeout. No recyclerview with full height detected, try changing " +
             "different finish condition strategy for your page."
     }
-    
+
     private fun generateLayoutSummary(
-        fullRecyclerView: ViewInfo?, 
+        fullRecyclerView: ViewInfo?,
         rootView: View
     ): String {
         var summary = "" +
             "Perf trace finished, full recyclerview detected:\n" +
-            "Id: ${fullRecyclerView?.resourceIdString}\n" +
+            "Id: ${fullRecyclerView?.tag}\n" +
             "Height: ${fullRecyclerView?.height} (Viewport height: ${rootView.height})\n\n" +
             "Visible item: ${fullRecyclerView?.directChilds?.filter { it.isVisible }?.size}\n\n" +
             "List of view shown in full recyclerview: "
 
         fullRecyclerView?.directChilds?.forEach {
             if (it.isVisible) {
-                val desc = "\n - ${it.name}, res: ${it.resourceIdString}"
+                val desc = "\n - ${it.name}, tag: ${it.tag}"
                 summary += limitAndAddEllipsis(desc)
             }
         }
@@ -80,5 +80,3 @@ class FullRecyclerViewPageFinishConditionStrategy : FinishConditionStrategyConfi
         return null
     }
 }
-
-

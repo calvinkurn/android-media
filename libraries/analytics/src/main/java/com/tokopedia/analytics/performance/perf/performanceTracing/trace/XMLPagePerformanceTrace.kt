@@ -2,7 +2,6 @@ package com.tokopedia.analytics.performance.perf.performanceTracing.trace
 
 import android.util.Log
 import android.view.View
-import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.analytics.performance.perf.performanceTracing.data.BlocksModel
 import com.tokopedia.analytics.performance.perf.performanceTracing.data.PerformanceTraceData
@@ -50,7 +49,6 @@ class XMLPagePerformanceTrace(
     var isPerformanceTraceFinished = false
     var perfParsingJob: Job? = null
     var startTime = System.currentTimeMillis()
-    
 
     override fun traceId(): String {
         return trace_id
@@ -141,6 +139,7 @@ class XMLPagePerformanceTrace(
         }
     }
 
+    @Suppress("SwallowedException")
     private fun observeXMLPagePerformance(rootView: View) {
         parsingStrategy.getViewCallbackStrategy().registerCallback {
             if (isPerformanceTraceFinished) {
@@ -159,7 +158,7 @@ class XMLPagePerformanceTrace(
             Log.d("PerfThread", "Frame Callback Received")
 
             perfParsingJob = scope.launch(
-                Dispatchers.Default + CoroutineName("PerfParse"), 
+                Dispatchers.Default + CoroutineName("PerfParse")
             ) {
                 val threadName = "${Thread.currentThread().name}"
                 Log.d("PerfThread", "Starting parse job in thread $threadName")

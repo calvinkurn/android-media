@@ -147,6 +147,7 @@ public class MyApplication extends BaseMainApplication
                                 ((TouchListenerActivity) activity).addListener(
                                         new DispatchTouchListener() {
                                             @Override
+                    
                                             public void onDispatchTouch(MotionEvent ev) {
                                                 AppPerformanceTrace.Companion.cancelPerformanceTracing(
                                                         new Error("err: User Touch. Performance trace cancelled"),

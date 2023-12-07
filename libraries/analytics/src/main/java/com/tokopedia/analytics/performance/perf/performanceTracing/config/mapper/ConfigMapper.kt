@@ -8,7 +8,7 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.Perf
 import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.RecyclerViewPageParsingStrategy
 
 object ConfigMapper {
-
+    @Suppress("SwallowedException")
     fun updatePerfConfig(json: String) {
         try {
             val list = mapToConfig(json)
