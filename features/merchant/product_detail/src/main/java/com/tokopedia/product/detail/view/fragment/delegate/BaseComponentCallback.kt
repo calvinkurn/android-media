@@ -43,31 +43,15 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
     @Suppress("UNCHECKED_CAST")
     override fun event(event: ComponentEvent) {
         Timber.tag("pdp_event").d(event.toString())
-        extractBasicEventForTracking(event = event)
-        extractBasicEventForEvent(event = event)
+        extractBasicEvent(event = event)
     }
 
     protected abstract fun onEvent(event: Event)
 
-    protected abstract fun onTracking(event: Event)
-
     @Suppress("UNCHECKED_CAST")
-    private fun extractBasicEventForTracking(event: ComponentEvent) {
+    private fun extractBasicEvent(event: ComponentEvent) {
         when (event) {
             is BasicComponentEvent.OnImpressComponent -> onImpressComponent(trackData = event.trackData)
-            else -> runCatching { event as Event }
-                .onSuccess { onTracking(event = it) }
-                .onFailure { Timber.e(it) }
-        }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun extractBasicEventForEvent(event: ComponentEvent) {
-        when (event) {
-            is BasicComponentEvent.OnImpressComponent -> {
-                // no-ops
-            }
-
             else -> runCatching { event as Event }
                 .onSuccess { onEvent(event = it) }
                 .onFailure { Timber.e(it) }
@@ -126,13 +110,9 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
         RouteManager.route(context, appLink)
     }
 
-    protected fun ComponentTrackDataModel.asCommonTracker(): CommonTracker? {
+    protected fun getCommonTracker(): CommonTracker? {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return null
-        return CommonTracker(
-            productInfo = productInfo,
-            userId = viewModel.userId,
-            componentTracker = this
-        )
+        return CommonTracker(productInfo = productInfo, userId = viewModel.userId)
     }
 
     protected fun ActionUiModel.navigate(others: ActionUiModel.() -> Unit = {}) {
