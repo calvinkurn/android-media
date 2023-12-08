@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +35,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
-import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By : Muhammad Furqan on 16/03/23
@@ -69,6 +70,16 @@ class FeedCampaignRibbonView(
     private val animationStateList = mutableListOf<Int>()
     private val animationTextList = mutableListOf<String>()
 
+    private val defaultBg by lazyThreadSafetyNone {
+        val drawable = MethodChecker.getDrawable(
+            binding.root.context,
+            R.drawable.feed_tag_product_background
+        ) as GradientDrawable
+        drawable.mutate()
+        drawable.cornerRadius = CORNER_RADIUS
+        drawable
+    }
+
     fun bindData(
         modelType: String,
         campaign: FeedCardCampaignModel,
@@ -98,10 +109,7 @@ class FeedCampaignRibbonView(
             mIsFollowing = isFollowing
             feedPosition = positionInFeed
 
-            root.background = MethodChecker.getDrawable(
-                root.context,
-                R.drawable.feed_tag_product_background
-            )
+            root.background = defaultBg
 
             val shouldHideRibbon =
                 campaign.shortName.isEmpty() && ctaModel.texts.isEmpty()
@@ -129,10 +137,7 @@ class FeedCampaignRibbonView(
     fun resetView() {
         animationJob?.cancel()
         with(binding) {
-            root.background = MethodChecker.getDrawable(
-                root.context,
-                R.drawable.feed_tag_product_background
-            )
+            root.background = defaultBg
             buildRibbonBasedOnType()
         }
     }
@@ -166,7 +171,7 @@ class FeedCampaignRibbonView(
                 )
             )
             val stockBarColor =
-                ContextCompat.getColor(root.context, unifyR.color.Unify_Static_White)
+                ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_Static_White)
             pbFeedCampaignRibbon.progressBarColor = intArrayOf(stockBarColor, stockBarColor)
         }
     }
@@ -199,6 +204,7 @@ class FeedCampaignRibbonView(
 
                         val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
                         root.background = transitionDrawable
+                        transitionDrawable.isCrossFadeEnabled = true
                         transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                     }
                 }
@@ -210,6 +216,7 @@ class FeedCampaignRibbonView(
 
                     val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
                     root.background = transitionDrawable
+                    transitionDrawable.isCrossFadeEnabled = true
                     transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                 }
                 (type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING) && mCta?.colorGradient.isNullOrEmpty() -> {
@@ -220,6 +227,7 @@ class FeedCampaignRibbonView(
 
                     val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
                     root.background = transitionDrawable
+                    transitionDrawable.isCrossFadeEnabled = true
                     transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                 }
                 (type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING || type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING) && mCta?.colorGradient.isNullOrEmpty() -> {
@@ -230,6 +238,7 @@ class FeedCampaignRibbonView(
 
                     val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
                     root.background = transitionDrawable
+                    transitionDrawable.isCrossFadeEnabled = true
                     transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                 }
                 else -> {}

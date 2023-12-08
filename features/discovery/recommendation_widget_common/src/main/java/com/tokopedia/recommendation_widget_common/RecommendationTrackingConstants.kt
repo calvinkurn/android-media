@@ -54,8 +54,11 @@ object RecommendationTrackingConstants {
 
         fun String.convertToWidgetType(): String = replace("-", " ")
 
+        const val CLICK_PDP = "clickPDP"
         const val CLICK_HOMEPAGE = "clickHomepage"
         const val CLICK_PG = "clickPG"
+
+        const val CLICK_SEE_MORE_WIDGET = "click - see more on widget %s"
     }
 
     object Action {

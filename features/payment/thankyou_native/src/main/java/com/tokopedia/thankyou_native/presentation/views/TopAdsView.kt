@@ -61,8 +61,8 @@ class TopAdsView @JvmOverloads constructor(
         }
     }
 
-    private fun onTdnBannerClicked(applink: String) {
-        if (applink.isNotEmpty()) RouteManager.route(tdnBannerView.context, applink)
+    private fun onTdnBannerClicked(imageData: TopAdsImageViewModel) {
+        if (!imageData.applink.isNullOrBlank()) RouteManager.route(tdnBannerView.context, imageData.applink)
     }
 
     companion object {

@@ -25,7 +25,6 @@
 /features/discovery/carousel_productcard                @tokopedia/android-miniondave-dev
 /features/discovery/productcard_options                 @tokopedia/android-miniondave-dev
 /features/discovery/home_page_banner                    @tokopedia/android-miniondave-dev
-/features/merchant/official_store/                      @tokopedia/android-miniondave-dev
 /features/merchant/brandlist/                           @tokopedia/android-miniondave-dev
 /features/discovery/video_widget/             @tokopedia/android-miniondave-dev
 /features/user/fcm_common/                              @tokopedia/android-miniondave-dev
@@ -44,6 +43,7 @@
 /features/common/qr_scanner                   	        @tokopedia/android-core-dev
 /features/common/feedback_form                          @tokopedia/android-core-dev
 /features/common/internal_review/                       @tokopedia/android-core-dev
+/features/common/dark_mode_config/                      @tokopedia/android-core-dev @tokopedia/android-minionstuart-dev
 
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_common/                @tokopedia/android-minionstuart-dev
@@ -138,6 +138,7 @@
 /features/content/content_test/                         @tokopedia/android-minionlance-dev
 /features/content/createpost/           				@tokopedia/android-minionlance-dev
 /features/content/createpost_common/           			@tokopedia/android-minionlance-dev
+/features/content/creation_common/                      @tokopedia/android-minionlance-dev
 /features/content/explore/              				@tokopedia/android-minionlance-dev
 /features/content/feed/                 				@tokopedia/android-minionlance-dev
 /features/content/feed_component/       				@tokopedia/android-minionlance-dev
@@ -150,6 +151,7 @@
 /features/content/play_widget/                          @tokopedia/android-minionlance-dev
 /features/content/product_picker/                       @tokopedia/android-minionlance-dev
 /features/content/stories/                              @tokopedia/android-minionlance-dev
+/features/content/stories_creation/                     @tokopedia/android-minionlance-dev
 /features/content/stories_internal/                     @tokopedia/android-minionlance-dev
 /features/content/stories_widget/                       @tokopedia/android-minionlance-dev
 /features/media/live-broadcaster/                       @tokopedia/android-minionlance-dev
@@ -214,6 +216,7 @@
 /features/logistic/localizationchooseaddress_common/    @tokopedia/android-minionbob-dev
 /features/logistic/logisticseller/                      @tokopedia/android-minionbob-dev
 /features/logistic/dilayanitokopedia/                   @tokopedia/android-minionbob-dev
+/features/logistic/targetedticker/                      @tokopedia/android-minionbob-dev
 /features/promo/promo-usage/                            @tokopedia/android-minionbob-dev
 
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev

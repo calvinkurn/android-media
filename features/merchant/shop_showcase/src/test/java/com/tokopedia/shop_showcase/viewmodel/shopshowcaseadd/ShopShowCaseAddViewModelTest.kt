@@ -5,7 +5,7 @@ import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.AppendShopSh
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.RemoveShopShowcaseProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.UpdateShopShowcaseUseCase
-import com.tokopedia.shop_showcase.shop_showcase_product_add.data.model.Product
+import com.tokopedia.shop_showcase.shop_showcase_product_add.data.model.ProductListResponse
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.mapper.ProductMapper
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.usecase.GetProductListUseCase
@@ -209,7 +209,7 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
     }
 
     private fun onGetSelectedProductList_thenReturn() {
-        val productList = listOf<Product>()
+        val productList = listOf<ProductListResponse.ProductList.Data>()
         val productMapper = ProductMapper()
         val showCaseProductList = productMapper.mapToUIModel(productList)
         coEvery { getProductListUseCase.executeOnBackground() } returns showCaseProductList

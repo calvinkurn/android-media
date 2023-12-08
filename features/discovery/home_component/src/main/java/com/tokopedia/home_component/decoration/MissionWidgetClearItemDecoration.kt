@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.R as home_componentR
 
 /**
  * Created by frenzel
@@ -11,8 +12,7 @@ import com.tokopedia.home_component.util.toDpInt
 class MissionWidgetClearItemDecoration : RecyclerView.ItemDecoration() {
     companion object {
         private const val FIRST_POSITION = 0
-        private var OUTSIDE_MARGIN = 12f.toDpInt()
-        private var INNER_MARGIN = 0f.toDpInt()
+        private val INNER_MARGIN = 0f.toDpInt()
     }
 
     override fun getItemOffsets(
@@ -21,14 +21,15 @@ class MissionWidgetClearItemDecoration : RecyclerView.ItemDecoration() {
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
+        val horizontalMargin = view.context.resources.getDimensionPixelSize(home_componentR.dimen.home_mission_widget_clear_horizontal_padding)
         when (parent.getChildAdapterPosition(view)) {
             FIRST_POSITION -> {
-                outRect.left = OUTSIDE_MARGIN
+                outRect.left = horizontalMargin
                 outRect.right = INNER_MARGIN
             }
             //last position of card
             state.itemCount - 1 -> {
-                outRect.right = OUTSIDE_MARGIN
+                outRect.right = horizontalMargin
                 outRect.left = INNER_MARGIN
             }
             //card between first and last
@@ -37,5 +38,6 @@ class MissionWidgetClearItemDecoration : RecyclerView.ItemDecoration() {
                 outRect.left = INNER_MARGIN
             }
         }
+        outRect.bottom = view.context.resources.getDimensionPixelSize(home_componentR.dimen.home_mission_widget_clear_bottom_padding)
     }
 }

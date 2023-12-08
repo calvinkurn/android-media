@@ -42,10 +42,11 @@ class RecommendationVerticalSeeMoreViewHolder(
     }
 
     private fun setupListener(element: RecommendationVerticalSeeMoreModel) {
-        binding.root.setOnClickListener { onSeeMoreClicked(element) }
+        binding.recomVerticalSeeMore.setOnClickListener { onSeeMoreClicked(element) }
     }
 
     private fun onSeeMoreClicked(element: RecommendationVerticalSeeMoreModel) {
+        element.widgetTracking?.sendEventSeeMoreClick()
         RouteManager.route(binding.root.context, element.recomWidget.seeMoreAppLink)
     }
 }

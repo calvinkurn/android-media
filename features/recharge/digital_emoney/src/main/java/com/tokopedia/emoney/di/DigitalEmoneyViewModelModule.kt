@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.emoney.viewmodel.BCABalanceViewModel
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import com.tokopedia.emoney.viewmodel.JakCardBalanceViewModel
 import com.tokopedia.emoney.viewmodel.TapcashBalanceViewModel
@@ -32,4 +33,9 @@ abstract class DigitalEmoneyViewModelModule {
     @IntoMap
     @ViewModelKey(JakCardBalanceViewModel::class)
     internal abstract fun jakcardBalanceViewModel(customViewModel: JakCardBalanceViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BCABalanceViewModel::class)
+    internal abstract fun bcaBalanceViewModel(customViewModel: BCABalanceViewModel): ViewModel
 }

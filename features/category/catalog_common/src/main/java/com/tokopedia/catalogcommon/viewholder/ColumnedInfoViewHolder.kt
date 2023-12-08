@@ -17,7 +17,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ColumnedInfoViewHolder(
     itemView: View,
     private val columnedInfoListener: ColumnedInfoListener? = null
-): AbstractViewHolder<ColumnedInfoUiModel>(itemView) {
+) : AbstractViewHolder<ColumnedInfoUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -42,5 +42,6 @@ class ColumnedInfoViewHolder(
                 btnSeeMore.applyColorMode(ColorMode.LIGHT_MODE)
             }
         }
+        columnedInfoListener?.onColumnedInfoImpression(element)
     }
 }

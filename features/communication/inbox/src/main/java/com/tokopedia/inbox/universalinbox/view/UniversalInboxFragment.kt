@@ -37,11 +37,11 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadli
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUser
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
-import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactory
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactoryImpl
+import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationProductViewHolder
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxEndlessScrollListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
@@ -86,8 +86,7 @@ class UniversalInboxFragment @Inject constructor(
     var topAdsHeadlineViewModel: TopAdsHeadlineViewModel,
     var analytics: UniversalInboxAnalytics,
     var topAdsAnalytic: UniversalInboxTopAdsAnalytic,
-    var userSession: UserSessionInterface,
-    var abTestPlatform: UniversalInboxAbPlatform
+    var userSession: UserSessionInterface
 ) :
     BaseDaggerFragment(),
     UniversalInboxEndlessScrollListener.Listener,
@@ -228,6 +227,12 @@ class UniversalInboxFragment @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                observeAutoScrollUiState()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 observeError()
             }
         }
@@ -285,13 +290,21 @@ class UniversalInboxFragment @Inject constructor(
 
     private suspend fun observeInboxNavigation() {
         viewModel.inboxNavigationUiState.collectLatest {
+            val resultLauncher = when (it.requestType) {
+                UniversalInboxRequestType.REQUEST_GENERAL -> {
+                    inboxMenuResultLauncher
+                }
+                UniversalInboxRequestType.REQUEST_WITH_PRODUCT_RECOMMENDATION -> {
+                    inboxProductRecommendationResultLauncher
+                }
+            }
             when {
                 (it.intent != null) -> {
-                    inboxMenuResultLauncher.launch(it.intent)
+                    resultLauncher.launch(it.intent)
                 }
                 (it.applink.isNotBlank() && context != null) -> {
                     val intent = RouteManager.getIntent(context, it.applink)
-                    inboxMenuResultLauncher.launch(intent)
+                    resultLauncher.launch(intent)
                 }
             }
         }
@@ -311,7 +324,7 @@ class UniversalInboxFragment @Inject constructor(
     private suspend fun observeProductRecommendation() {
         viewModel.productRecommendationUiState.collectLatest {
             // Scroll to top when it is loading & empty product list
-            // It means refresh / re-shuffle products
+            // It means refresh
             if (it.isLoading && it.productRecommendation.isEmpty()) {
                 adapter.getMenuSeparatorPosition()?.let { position ->
                     binding?.inboxRv?.scrollToPosition(position)
@@ -347,6 +360,19 @@ class UniversalInboxFragment @Inject constructor(
         setHeadlineAndBannerExperiment(editedNewList)
         adapter.tryUpdateProductRecommendations(title, editedNewList)
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+    }
+
+    private suspend fun observeAutoScrollUiState() {
+        viewModel.autoScrollUiState.collectLatest {
+            if (it.shouldScroll) {
+                binding?.inboxRv?.let { recyclerView ->
+                    // Scroll one screen away
+                    recyclerView.smoothScrollBy(0, recyclerView.height)
+                }
+                // Reset after scroll
+                viewModel.processAction(UniversalInboxAction.ResetUserScrollState)
+            }
+        }
     }
 
     private suspend fun observeError() {
@@ -511,7 +537,12 @@ class UniversalInboxFragment @Inject constructor(
                 )
             }
         }
-        viewModel.processAction(UniversalInboxAction.NavigateToPage(item.applink))
+        viewModel.processAction(
+            UniversalInboxAction.NavigateToPage(
+                item.applink,
+                UniversalInboxRequestType.REQUEST_GENERAL
+            )
+        )
     }
 
     override fun onRefreshWidgetMeta() {
@@ -599,7 +630,12 @@ class UniversalInboxFragment @Inject constructor(
             }
             else -> Unit // no-op
         }
-        viewModel.processAction(UniversalInboxAction.NavigateToPage(item.applink))
+        viewModel.processAction(
+            UniversalInboxAction.NavigateToPage(
+                item.applink,
+                UniversalInboxRequestType.REQUEST_GENERAL
+            )
+        )
     }
 
     override fun onNotificationIconClicked(counter: String) {
@@ -609,7 +645,12 @@ class UniversalInboxFragment @Inject constructor(
             shopId = getShopIdTracker(userSession),
             notifCenterCounter = counter
         )
-        viewModel.processAction(UniversalInboxAction.NavigateToPage(ApplinkConst.NOTIFICATION))
+        viewModel.processAction(
+            UniversalInboxAction.NavigateToPage(
+                ApplinkConst.NOTIFICATION,
+                UniversalInboxRequestType.REQUEST_GENERAL
+            )
+        )
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -672,7 +713,12 @@ class UniversalInboxFragment @Inject constructor(
         if (position.isNotEmpty()) {
             intent.putExtra(PDP_EXTRA_UPDATED_POSITION, position[Int.ZERO])
         }
-        viewModel.processAction(UniversalInboxAction.NavigateWithIntent(intent))
+        viewModel.processAction(
+            UniversalInboxAction.NavigateWithIntent(
+                intent,
+                UniversalInboxRequestType.REQUEST_WITH_PRODUCT_RECOMMENDATION
+            )
+        )
     }
 
     private fun onClickTopAds(item: RecommendationItem) {
@@ -812,6 +858,13 @@ class UniversalInboxFragment @Inject constructor(
         viewModel.processAction(UniversalInboxAction.RefreshCounter)
     }
 
+    private val inboxProductRecommendationResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        viewModel.processAction(UniversalInboxAction.RefreshCounter)
+        viewModel.processAction(UniversalInboxAction.AutoScrollRecommendation)
+    }
+
     private fun showSuccessAddWishlistV2(
         wishlistAddResult: AddToWishlistV2Response.Data.WishlistAddV2? = null,
         wishlistResult: ProductCardOptionsModel.WishlistResult? = null
@@ -882,8 +935,28 @@ class UniversalInboxFragment @Inject constructor(
         }
     }
 
+    private fun getUserCurrentProductRecommendationPosition(): Int {
+        var result = -1
+        val layoutManager = binding?.inboxRv?.layoutManager as? StaggeredGridLayoutManager
+        layoutManager?.let { lm ->
+            val spanArray = IntArray(lm.spanCount)
+            val firstVisiblePosition = lm.findFirstVisibleItemPositions(spanArray).minOrNull() ?: -1
+            val lastVisiblePosition = lm.findLastVisibleItemPositions(spanArray).minOrNull() ?: -1
+
+            for (position in firstVisiblePosition..lastVisiblePosition) {
+                val viewHolder = binding?.inboxRv?.findViewHolderForAdapterPosition(position)
+                if (viewHolder is UniversalInboxRecommendationProductViewHolder) {
+                    result = position
+                    break
+                }
+            }
+        }
+        return result
+    }
+
     companion object {
         private const val TAG = "UniversalInboxFragment"
+        private const val RV_SCROLL_OFFSET = 8
 
         fun getFragment(
             fragmentManager: FragmentManager,
