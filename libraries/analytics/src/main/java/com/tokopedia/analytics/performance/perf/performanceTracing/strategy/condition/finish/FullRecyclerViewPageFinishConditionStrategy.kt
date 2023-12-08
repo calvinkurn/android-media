@@ -64,8 +64,7 @@ class FullRecyclerViewPageFinishConditionStrategy : FinishConditionStrategyConfi
     fun getFullRecyclerView(viewInfo: ViewInfo, rootView: View): ViewInfo? {
         if (viewInfo.name.contains("RecyclerView", ignoreCase = true) &&
             viewInfo.isVisible &&
-            viewInfo.height >= (rootView.height * 0.8) &&
-            viewInfo.directChilds.size >= 4
+            viewInfo.height >= (rootView.height * 0.8)
         ) {
             return viewInfo
         }
