@@ -255,7 +255,6 @@ open class SellerHomeActivity :
         navigator = null
         binding = null
         otherMenuFragmentChangeCallback = null
-        sellerHomeFragmentChangeCallback = null
         super.onDestroy()
     }
 
