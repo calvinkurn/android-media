@@ -791,7 +791,7 @@ class ShopPageHeaderFragment :
                             isFollowing = this?.status?.userIsFollowing == true
                         }
 
-                        setActivityResult()
+                        setFollowActivityResult()
                     }
 
                     else -> {
@@ -815,7 +815,7 @@ class ShopPageHeaderFragment :
                     is Success -> {
                         it.data.followShop?.let { followShop ->
                             onSuccessUpdateFollowStatus(followShop)
-                            setActivityResult()
+                            setFollowActivityResult()
                         }
                     }
 
@@ -3838,10 +3838,14 @@ class ShopPageHeaderFragment :
     /**
      * Set activity result
      */
-    private fun setActivityResult() {
+    private fun setFollowActivityResult() {
         requireActivity().setResult(
             RESULT_OK,
-            ShopPageActivityResult.createResult(shopId, isFollowing)
+            ShopPageActivityResult.createResult(
+                shopId = shopId,
+                isFollow = isFollowing,
+                existingIntentBundle = intentData,
+            )
         )
     }
 }
