@@ -27,7 +27,7 @@
             app:layout_constraintVertical_bias="0"
             >
 
-            <com.tokopedia.unifycomponents.ImageUnify
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/img_cover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -84,14 +84,14 @@
             app:layout_constraintTop_toBottomOf="@id/tv_title"
             >
 
-            <com.tokopedia.unifycomponents.ImageUnify
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/img_avatar"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 app:unify_image_type="circle"
                 />
 
-            <com.tokopedia.unifycomponents.ImageUnify
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/img_badge"
                 android:layout_width="12dp"
                 android:layout_height="12dp"

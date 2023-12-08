@@ -17,6 +17,7 @@ import com.tokopedia.feedplus.browse.presentation.model.isLoading
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -57,7 +58,8 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
             loadContent(
                 WidgetMenuModel.Empty.copy(
 //                group = "browse_channel_slot_channelBlock:content_browse_promo",
-                    group = "browse_channel_slot_tabMenu:content_browse_category"
+//                    group = "browse_channel_slot_tabMenu:content_browse_category"
+                    group = source,
                 )
             )
 
@@ -114,6 +116,8 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
                 }
             )
         }
+
+        delay(2000)
 
         val nextCursor = data?.items?.nextCursor.orEmpty()
         when (val response = repository.getWidgetContentSlot(menu.toRequest(nextCursor))) {

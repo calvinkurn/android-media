@@ -2,11 +2,14 @@ package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseInspirationCardBinding
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseInspirationPlaceholderBinding
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.CardUnify2
 
 /**
@@ -26,11 +29,15 @@ internal class InspirationCardViewHolder private constructor() {
         fun bind(item: FeedBrowseItemListModel.InspirationCard.Item) {
             binding.tvTitle.text = item.item.title
             binding.totalView.setTotalWatch(item.item.totalView.totalViewFmt)
-            binding.imgCover.setImageUrl(item.item.video.coverUrl)
+
+            binding.imgCover.scaleType = ImageView.ScaleType.FIT_CENTER
+            binding.imgCover.loadImage(item.item.video.coverUrl) {
+                binding.imgCover.scaleType = ImageView.ScaleType.CENTER_CROP
+            }
 
             binding.tvPartnerName.text = item.item.partner.name
-            binding.imgAvatar.setImageUrl(item.item.partner.avatarUrl)
-            binding.imgBadge.setImageUrl(item.item.partner.badgeUrl)
+            binding.imgAvatar.loadImageCircle(item.item.partner.avatarUrl)
+            binding.imgBadge.loadImage(item.item.partner.badgeUrl)
             binding.imgBadge.showWithCondition(item.item.partner.badgeUrl.isNotBlank())
 
             binding.root.setOnClickListener {
