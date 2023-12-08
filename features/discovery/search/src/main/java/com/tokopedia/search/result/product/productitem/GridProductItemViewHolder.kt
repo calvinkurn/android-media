@@ -3,14 +3,12 @@ package com.tokopedia.search.result.product.productitem
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.productcard.reimagine.ProductCardGridView
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardReimagineGridBinding
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.search.result.presentation.view.listener.ProductSafeListener
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.video_widget.VideoPlayer
 import com.tokopedia.video_widget.VideoPlayerProvider
@@ -19,7 +17,6 @@ class GridProductItemViewHolder(
     itemView: View,
     protected val productListener: ProductListener,
     override val isAutoplayEnabled: Boolean,
-    protected val productSafeListener: ProductSafeListener,
 ): AbstractViewHolder<ProductItemDataView>(itemView),
     VideoPlayerProvider {
     
@@ -45,19 +42,6 @@ class GridProductItemViewHolder(
                 productListener.onProductImpressed(productItemData, bindingAdapterPosition)
             }
 
-            setOnClickListener(productItemData)
-        }
-    }
-
-    fun ProductCardGridView.setOnClickListener(productItemData: ProductItemDataView){
-        if(productItemData.isImageBlurred) {
-            setProductSafeOnClickListener {
-                productSafeListener.onSafeProductClickInfo(
-                    productItemData,
-                    bindingAdapterPosition
-                )
-            }
-        } else {
             setOnClickListener {
                 productListener.onItemClicked(productItemData, bindingAdapterPosition)
             }
@@ -78,7 +62,7 @@ class GridProductItemViewHolder(
             freeShipping = freeShipping(element),
             videoUrl = element.customVideoURL,
             hasThreeDots = true,
-            isImageBlurred = element.isImageBlurred
+            isSafeProduct = element.isImageBlurred
         )
 
     private fun labelGroupList(element: ProductItemDataView) =

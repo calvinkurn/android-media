@@ -16,7 +16,7 @@ data class ProductCardModel(
     val videoUrl: String = "",
     val hasThreeDots: Boolean = false,
     val stockInfo: StockInfo = StockInfo(),
-    val isImageBlurred: Boolean = false,
+    val isSafeProduct: Boolean = false,
 ) {
 
     fun labelBenefit(): LabelGroup? =

@@ -1,7 +1,9 @@
 package com.tokopedia.productcard.test.reimagine
 
 import android.view.View
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_BENEFIT
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
@@ -421,7 +423,7 @@ private fun imageBlurred(): ProductCardReimagineMatcher {
         freeShipping = FreeShipping(
             imageUrl = freeOngkirImageUrl,
         ),
-        isImageBlurred = true
+        isSafeProduct = true
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -440,12 +442,12 @@ private fun imageBlurred(): ProductCardReimagineMatcher {
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
         R.id.productCardFreeShipping to isDisplayed(),
-        R.id.productCardSafeContainer to isDisplayed(),
         R.id.productCardSafeDivider to isDisplayed(),
         R.id.productCardSafeIcon to isDisplayed(),
         R.id.productCardSafeTitle to isDisplayed(),
         R.id.productCardSafeDescription to isDisplayed(),
         R.id.productCardSafeCheckInfo to isDisplayed(),
+        R.id.productCardSafeContainer to withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE),
         )
 
     return Triple(model, matcher, "Image is blurred")

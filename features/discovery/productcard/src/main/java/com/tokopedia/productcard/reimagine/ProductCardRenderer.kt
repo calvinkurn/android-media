@@ -5,6 +5,7 @@ import android.graphics.PorterDuff
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
@@ -21,6 +22,7 @@ import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.T
 import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.loadImageRoundedBlurred
 import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.CoroutineScope
@@ -53,6 +55,8 @@ internal class ProductCardRenderer(
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
     private val freeShippingImage by view.lazyView<ImageView?>(R.id.productCardFreeShipping)
     private val ribbon = ProductCardRibbon(view)
+    private val productCardSafeContainer by view.lazyView<Group?>(R.id.productCardSafeContainer)
+
 
     fun setProductModel(productCardModel: ProductCardModel) {
         renderImage(productCardModel)
@@ -67,6 +71,7 @@ internal class ProductCardRenderer(
         renderShopSection(productCardModel)
         renderFreeShipping(productCardModel)
         ribbon.render(productCardModel.ribbon())
+        renderSafeContainer(productCardModel)
     }
 
     private fun renderImage(productCardModel: ProductCardModel) {
@@ -89,7 +94,7 @@ internal class ProductCardRenderer(
         cornerType: RoundedCornersTransformation.CornerType,
     ) {
 
-        if(productCardModel.isImageBlurred) {
+        if(productCardModel.isSafeProduct) {
             imageBlurredImage(productCardModel, cornerType)
         } else {
             imageRounded(
@@ -134,7 +139,7 @@ internal class ProductCardRenderer(
             )
             it.maxLines = maxLinesName(productCardModel)
 
-            if (productCardModel.isImageBlurred) {
+            if (productCardModel.isSafeProduct) {
                 renderBlurredText()
             } else {
                 renderNonBlurredText()
@@ -149,7 +154,6 @@ internal class ProductCardRenderer(
     }
 
     private fun renderNonBlurredText() {
-        val radius: Float = nameText?.textSize.orZero() / 3
         nameText?.paint?.maskFilter = null
     }
 
@@ -282,5 +286,9 @@ internal class ProductCardRenderer(
         freeShippingImage?.shouldShowWithAction(freeShippingImageUrl.isNotEmpty()) {
             it.loadIcon(freeShippingImageUrl)
         }
+    }
+
+    private fun renderSafeContainer(productCardModel: ProductCardModel){
+        productCardSafeContainer?.showWithCondition(productCardModel.isSafeProduct)
     }
 }

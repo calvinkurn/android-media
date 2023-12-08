@@ -47,6 +47,7 @@ import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
@@ -70,7 +71,6 @@ import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.search.result.presentation.view.listener.ProductSafeListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
@@ -151,8 +151,7 @@ class ProductListFragment: BaseDaggerFragment(),
     FragmentProvider,
     ClassNameProvider,
     ScreenNameProvider,
-    BackToTopView,
-    ProductSafeListener {
+    BackToTopView {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -528,7 +527,6 @@ class ProductListFragment: BaseDaggerFragment(),
             ),
             reimagineSearch2Component = reimagineRollence.search2Component(),
             reimagineSearch3ProductCard = reimagineRollence.search3ProductCard(),
-            productSafeListener = this,
         )
     }
 
@@ -814,7 +812,11 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onItemClicked(item: ProductItemDataView?, adapterPosition: Int) {
-        presenter?.onProductClick(item, adapterPosition)
+        if(item?.isImageBlurred.orFalse()) {
+            onSafeProductClickInfo(item)
+        } else {
+            presenter?.onProductClick(item, adapterPosition)
+        }
     }
 
     override fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView) {
@@ -1472,7 +1474,8 @@ class ProductListFragment: BaseDaggerFragment(),
         searchNavigationListener?.updateSearchBarNotification()
     }
 
-    override fun onSafeProductClickInfo(itemProduct: ProductItemDataView, adapterPosition: Int) {
+    private fun onSafeProductClickInfo(itemProduct: ProductItemDataView?) {
+        if(itemProduct == null) return
         presenter?.trackProductClick(itemProduct)
         presenter?.showBottomSheetInappropriate(itemProduct)
     }

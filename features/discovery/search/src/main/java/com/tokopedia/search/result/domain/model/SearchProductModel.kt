@@ -53,7 +53,7 @@ data class SearchProductModel(
     val lastFilter: LastFilter = LastFilter(),
 
     @SerializedName("userProfileDob")
-    var userDOB: UserDOB = UserDOB(),
+    val userDOB: UserDOB = UserDOB(),
 
     ) {
 

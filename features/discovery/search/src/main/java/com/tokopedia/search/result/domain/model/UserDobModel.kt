@@ -7,16 +7,16 @@ import com.google.gson.annotations.SerializedName
 data class UserProfileDobModel(
     @SerializedName("userProfileDob")
     @Expose
-    var userDOB: UserDOB = UserDOB(),
+    val userDOB: UserDOB = UserDOB(),
 )
 
 data class UserDOB(
         @SerializedName("isAdult")
         @Expose
-        var isAdult: Boolean = false,
+        val isAdult: Boolean = false,
         @SerializedName("isDobVerified")
         @Expose
-        var isDobVerified: Boolean = false,
+        val isDobVerified: Boolean = false,
 ) {
 
     fun isAdultAndVerify() = isAdult && isDobVerified
