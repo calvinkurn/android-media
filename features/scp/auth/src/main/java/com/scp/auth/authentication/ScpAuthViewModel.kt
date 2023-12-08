@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.scp.auth.GotoSdk
 import com.scp.auth.common.analytics.AuthAnalyticsMapper
 import com.scp.auth.common.utils.ScpUtils
-import com.scp.login.core.domain.accountlist.entities.GeneralAccountDetails
 import com.scp.auth.domain.StatusUseCase
+import com.scp.login.core.domain.accountlist.entities.GeneralAccountDetails
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -94,7 +94,7 @@ class ScpAuthViewModel @Inject constructor(
             try {
                 statusUseCase(Unit)
                 _onRefreshSuccess.postValue(true)
-            } catch (e: Exception) {
+            } catch (ignored: Exception) {
                 _onRefreshSuccess.postValue(false)
             }
         }
