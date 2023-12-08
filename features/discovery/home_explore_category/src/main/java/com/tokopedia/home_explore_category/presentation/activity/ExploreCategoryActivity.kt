@@ -28,12 +28,13 @@ import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Com
 import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.TYPE_LAYANAN
 import com.tokopedia.home_explore_category.di.DaggerExploreCategoryComponent
 import com.tokopedia.home_explore_category.di.ExploreCategoryComponent
-import com.tokopedia.home_explore_category.presentation.screen.ExploreCategoryAppBar
-import com.tokopedia.home_explore_category.presentation.screen.ExploreCategoryScreen
+import com.tokopedia.home_explore_category.presentation.compose.ExploreCategoryAppBar
+import com.tokopedia.home_explore_category.presentation.compose.ExploreCategoryScreen
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiEvent
 import com.tokopedia.home_explore_category.presentation.viewmodel.ExploreCategoryViewModel
 import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.resources.isDarkMode
 import javax.inject.Inject
@@ -46,6 +47,9 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
 
     @Inject
     lateinit var exploreCategoryAnalytics: ExploreCategoryAnalytics
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -150,6 +154,13 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
             }
 
             is ExploreCategoryUiEvent.OnSubExploreCategoryItemImpressed -> {
+                trackingQueue.putEETracking(
+                    exploreCategoryAnalytics.getSubCategoryItemImpressed(
+                        uiEvent.categoryName,
+                        uiEvent.subExploreCategoryUiModel,
+                        uiEvent.position
+                    )
+                )
             }
 
             is ExploreCategoryUiEvent.OnPrimaryButtonErrorClicked -> {

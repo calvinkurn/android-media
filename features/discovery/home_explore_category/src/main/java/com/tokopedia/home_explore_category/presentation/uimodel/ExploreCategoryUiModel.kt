@@ -1,6 +1,7 @@
 package com.tokopedia.home_explore_category.presentation.uimodel
 
 import androidx.compose.runtime.Stable
+import com.tokopedia.nest.principles.utils.ImpressionHolder
 
 @Stable
 data class ExploreCategoryUiModel(
@@ -18,5 +19,7 @@ data class ExploreCategoryUiModel(
         val appLink: String,
         val categoryLabel: String,
         val buIdentifier: String
-    )
+    ) {
+        val impressHolderCompose: ImpressionHolder = ImpressionHolder()
+    }
 }

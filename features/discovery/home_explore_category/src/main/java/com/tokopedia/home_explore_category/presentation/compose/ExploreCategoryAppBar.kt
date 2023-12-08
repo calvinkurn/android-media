@@ -1,4 +1,4 @@
-package com.tokopedia.home_explore_category.presentation.screen
+package com.tokopedia.home_explore_category.presentation.compose
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth

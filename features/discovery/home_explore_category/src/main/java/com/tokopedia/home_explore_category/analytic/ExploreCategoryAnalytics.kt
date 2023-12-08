@@ -133,11 +133,11 @@ class ExploreCategoryAnalytics @Inject constructor(
         )
     }
 
-    fun sendSubCategoryItemImpressed(
+    fun getSubCategoryItemImpressed(
         categoryName: String,
         subExploreCategory: ExploreCategoryUiModel.SubExploreCategoryUiModel,
         position: Int
-    ): Map<String, Any> {
+    ): HashMap<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         val creativeSlot = (position + Int.ONE).toString()
 
@@ -163,6 +163,6 @@ class ExploreCategoryAnalytics @Inject constructor(
         ).appendUserId(userSession.userId).appendCustomKeyValue(
             KEY_TRACKER_ID,
             TRACKER_ID_47053
-        ).build()
+        ).build() as HashMap<String, Any>
     }
 }

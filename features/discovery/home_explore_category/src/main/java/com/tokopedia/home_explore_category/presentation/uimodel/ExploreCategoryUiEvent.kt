@@ -12,7 +12,9 @@ sealed class ExploreCategoryUiEvent {
     ) : ExploreCategoryUiEvent()
 
     data class OnSubExploreCategoryItemImpressed(
-        val subExploreCategoryUiModel: ExploreCategoryUiModel.SubExploreCategoryUiModel
+        val categoryName: String,
+        val subExploreCategoryUiModel: ExploreCategoryUiModel.SubExploreCategoryUiModel,
+        val position: Int
     ) : ExploreCategoryUiEvent()
 
     object OnPrimaryButtonErrorClicked : ExploreCategoryUiEvent()
