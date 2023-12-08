@@ -21,6 +21,7 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_VARIANT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.KEY_INDEX
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.PRICE
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.PRODUCT_ID
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.TRACKER_ID
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.VALUE_IS_TOPADS
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.VALUE_NONE_OTHER
@@ -53,7 +54,7 @@ class StealTheLookTrackingPDP(
         trackingQueue: TrackingQueue,
         model: StealTheLookStyleModel
     ) {
-        val anchorItem = model.grids.firstOrNull { it.recommendationItem.productId.toString() == source.anchorProductId }?.recommendationItem
+        val anchorItem = model.grids.firstOrNull()?.recommendationItem
         val stylePosition = model.stylePosition + 1
         trackingQueue.putEETracking(hashMapOf(
             TrackAppUtils.EVENT to RecommendationTrackingConstants.Action.PRODUCT_VIEW,
@@ -61,8 +62,9 @@ class StealTheLookTrackingPDP(
             TrackAppUtils.EVENT_ACTION to EVENT_ACTION_IMPRESSION,
             TrackAppUtils.EVENT_LABEL to "${widget.title} - ${source.anchorProductId}",
             TRACKER_ID to TRACKER_ID_IMPRESSION,
-            TrackerConstant.BUSINESS_UNIT to RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_HOME,
-            TrackerConstant.CURRENT_SITE to RecommendationTrackingConstants.Tracking.CURRENT_SITE_MP,
+            PRODUCT_ID to source.anchorProductId,
+            TrackerConstant.BUSINESS_UNIT to BUSINESS_UNIT_HOME,
+            TrackerConstant.CURRENT_SITE to CURRENT_SITE_MP,
             ITEM_LIST to LIST_FORMAT.format(
                 widget.pageName,
                 anchorItem?.recommendationType.orEmpty(),
@@ -71,7 +73,7 @@ class StealTheLookTrackingPDP(
                 stylePosition,
                 anchorItem?.position?.let { it + 1 }.orZero(),
                 anchorItem?.departmentId.orZero(),
-                source.anchorProductId
+                anchorItem?.productId
             ),
             TrackerConstant.USERID to userId,
             RecommendationTrackingConstants.Tracking.ECOMMERCE to mapOf(
@@ -87,7 +89,7 @@ class StealTheLookTrackingPDP(
                             stylePosition,
                             it.position + 1,
                             item.departmentId,
-                            source.anchorProductId
+                            item.productId
                         ),
                         DIMENSION_56 to item.warehouseId.toString(),
                         DIMENSION_58 to item.labelGroupList.hasLabelGroupFulfillment().toString(),
@@ -113,9 +115,9 @@ class StealTheLookTrackingPDP(
             if(item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
             widget.layoutType,
             stylePosition,
-            model.position,
+            model.position + 1,
             item.departmentId,
-            source.anchorProductId
+            item.productId
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             SELECT_CONTENT,
@@ -126,6 +128,7 @@ class StealTheLookTrackingPDP(
                 putString(TrackAppUtils.EVENT_LABEL, "${widget.title} - ${source.anchorProductId}")
                 putString(ITEM_LIST, list)
                 putString(TRACKER_ID, TRACKER_ID_CLICK)
+                putString(PRODUCT_ID, source.anchorProductId)
                 putString(TrackerConstant.BUSINESS_UNIT, BUSINESS_UNIT_HOME)
                 putString(TrackerConstant.CURRENT_SITE, CURRENT_SITE_MP)
                 putParcelableArrayList(ITEMS, arrayListOf(

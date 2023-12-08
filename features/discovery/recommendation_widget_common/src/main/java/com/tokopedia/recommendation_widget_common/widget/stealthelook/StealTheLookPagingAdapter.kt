@@ -15,7 +15,6 @@ internal class StealTheLookPagingAdapter(
         viewType: Int
     ): StealTheLookStyleViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(recommendation_widget_commonR.layout.recommendation_widget_steal_the_look_page, parent, false)
-
         return StealTheLookStyleViewHolder(view, trackingQueue)
     }
 
@@ -26,10 +25,5 @@ internal class StealTheLookPagingAdapter(
 
     override fun onViewRecycled(holder: StealTheLookStyleViewHolder) {
         holder.onViewRecycled()
-    }
-
-    fun getItemAt(position: Int): StealTheLookStyleModel? {
-        if (position !in currentList.indices) return null
-        return getItem(position)
     }
 }

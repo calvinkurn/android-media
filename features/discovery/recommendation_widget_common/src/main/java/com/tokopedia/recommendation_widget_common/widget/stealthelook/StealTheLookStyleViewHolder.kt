@@ -153,7 +153,7 @@ class StealTheLookStyleViewHolder(
     }
 
     private fun sendViewportImpression(model: StealTheLookStyleModel) {
-        binding.root.addOnImpressionListener(model) {
+        binding.stlLayout.addOnImpressionListener(model) {
             sendTopadsImpressionTracker(model)
             model.tracking?.sendEventViewportImpression(trackingQueue, model)
         }

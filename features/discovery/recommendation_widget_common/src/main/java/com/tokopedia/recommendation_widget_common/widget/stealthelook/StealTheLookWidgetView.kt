@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.helper.StartPagerSnapHelper
@@ -65,7 +64,9 @@ class StealTheLookWidgetView :
 
     private fun setupRecyclerView(model: StealTheLookWidgetModel) {
         with(binding.rvStealTheLook) {
-            layoutManager = this@StealTheLookWidgetView.layoutManager
+            if(layoutManager != this@StealTheLookWidgetView.layoutManager) {
+                layoutManager = this@StealTheLookWidgetView.layoutManager
+            }
             snapHelper.attachToRecyclerView(this)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
