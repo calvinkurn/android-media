@@ -447,12 +447,17 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun getP2RatesEstimateByProductId(): P2RatesEstimate? {
-        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
-        var result: P2RatesEstimate? = null
-        p2Data.value?.ratesEstimate?.forEach {
-            if (productId in it.listfProductId) result = it
+        val p1 = getDynamicProductInfoP1 ?: return null
+        val p2 = p2Data.value ?: return null
+        val productId = p1.basic.productID
+
+        p2.ratesEstimate.forEach {
+            if (productId in it.listfProductId) {
+                return it
+            }
         }
-        return result
+
+        return null
     }
 
     fun getP2RatesEstimateDataByProductId(): P2RatesEstimateData? {
@@ -468,13 +473,12 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun getBebasOngkirDataByProductId(): BebasOngkirImage {
-        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
-        val boType =
-            p2Data.value?.bebasOngkir?.boProduct?.firstOrNull { it.productId == productId }?.boType
-                ?: 0
-        val image = p2Data.value?.bebasOngkir?.boImages?.firstOrNull { it.boType == boType }
-            ?: BebasOngkirImage()
-        return image
+        val p1 = getDynamicProductInfoP1 ?: return BebasOngkirImage()
+        val p2 = p2Data.value ?: return BebasOngkirImage()
+
+        val productId = p1.basic.productID
+        val boType = p2.bebasOngkir.boProduct.firstOrNull { it.productId == productId }?.boType ?: 0
+        return p2.bebasOngkir.boImages.firstOrNull { it.boType == boType } ?: BebasOngkirImage()
     }
 
     /**

@@ -529,6 +529,16 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val data = spykViewModel.getP2RatesEstimateDataByProductId()
         Assert.assertNull(data)
     }
+
+    @Test
+    fun `getP2RatesEstimateByProductId resolved jacoco`() {
+        spykViewModel.getDynamicProductInfoP1 = null
+        Assert.assertNull(spykViewModel.getP2RatesEstimateDataByProductId())
+
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every { spykViewModel.p2Data.value } returns null
+        Assert.assertNull(spykViewModel.getP2RatesEstimateDataByProductId())
+    }
     //endregion
 
     //region getP2ShipmentPlusByProductId
@@ -641,6 +651,22 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val data = spykViewModel.getBebasOngkirDataByProductId()
         assertTrue(data.imageURL == "")
+        assertTrue(data.boType == 0)
+    }
+
+    @Test
+    fun `getBebasOngkirDataByProductId resolved jacoco`() {
+        // p1 is null
+        spykViewModel.getDynamicProductInfoP1 = null
+        var data = spykViewModel.getBebasOngkirDataByProductId()
+        assertTrue(data.imageURL.isEmpty())
+        assertTrue(data.boType == 0)
+
+        // basic info is null
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every { spykViewModel.p2Data.value } returns null
+        data = spykViewModel.getBebasOngkirDataByProductId()
+        assertTrue(data.imageURL.isEmpty())
         assertTrue(data.boType == 0)
     }
     //endregion
