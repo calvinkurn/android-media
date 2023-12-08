@@ -5,9 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
-import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
+import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
 import com.tokopedia.tokofood.feature.merchant.domain.usecase.CheckDeliveryCoverageUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -17,19 +18,17 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ManageLocationViewModel @Inject constructor(
-    private val keroEditAddressUseCase: KeroEditAddressUseCase,
-    private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
+    private val keroEditAddressUseCase: UpdatePinpointWithAddressIdUseCase,
     private val checkDeliveryCoverageUseCase: CheckDeliveryCoverageUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     var merchantId: String = ""
 
-    private val _updatePinPointState = MutableLiveData<Boolean>()
-    val updatePinPointState: LiveData<Boolean> get() = _updatePinPointState
+    private val _updatePinPointState =
+        MutableLiveData<KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse>()
+    val updatePinPointState: LiveData<KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse> get() = _updatePinPointState
 
-    private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
-    val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>> get() = _chooseAddress
     private val _checkDeliveryCoverageResult = MutableLiveData<Result<GetMerchantDataResponse>>()
     val checkDeliveryCoverageResult: LiveData<Result<GetMerchantDataResponse>> get() = _checkDeliveryCoverageResult
 
@@ -39,20 +38,18 @@ class ManageLocationViewModel @Inject constructor(
     fun updatePinPoint(addressId: String, latitude: String, longitude: String) {
         launchCatchError(block = {
             val isSuccess = withContext(dispatchers.io) {
-                keroEditAddressUseCase.execute(addressId, latitude, longitude)
+                keroEditAddressUseCase(
+                    KeroEditAddressParam(
+                        addressId,
+                        latitude,
+                        longitude,
+                        ManageAddressSource.TOKOFOOD
+                    )
+                )
             }
             _updatePinPointState.postValue(isSuccess)
         }) {
             _errorMessage.postValue(it.message)
-        }
-    }
-
-    fun getChooseAddress(source: String) {
-        launchCatchError(block = {
-            val data = getChooseAddressWarehouseLocUseCase(source)
-            _chooseAddress.postValue(Success(data))
-        }) {
-            _chooseAddress.postValue(Fail(it))
         }
     }
 
