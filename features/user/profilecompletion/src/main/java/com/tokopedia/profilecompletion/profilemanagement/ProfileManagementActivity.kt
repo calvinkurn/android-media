@@ -85,6 +85,12 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
                 R.color.dms_profile_management_black_static
             )
         )
+        binding?.toolbar?.setBackgroundColor(
+            ContextCompat.getColor(
+                this,
+                R.color.dms_profile_management_toolbar
+            )
+        )
         WindowInsetsControllerCompat(window, findRootView(this)).isAppearanceLightStatusBars = true
 
         binding?.globalError?.errorTitle?.setTextColor(
