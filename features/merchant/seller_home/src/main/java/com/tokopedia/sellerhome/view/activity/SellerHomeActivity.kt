@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.view.activity
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
@@ -26,13 +25,16 @@ import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.internal_review.factory.createReviewHelper
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -68,6 +70,7 @@ import com.tokopedia.sellerhome.view.viewhelper.SellerHomeOnApplyInsetsListener
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickListener
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -75,6 +78,7 @@ import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationLis
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -86,8 +90,6 @@ open class SellerHomeActivity :
     HasComponent<HomeDashboardComponent> {
 
     companion object {
-        @JvmStatic
-        fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
 
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
         private const val BOTTOM_NAV_ENTER_ANIM_DURATION = 4f
@@ -115,7 +117,7 @@ open class SellerHomeActivity :
 
     private val sellerReviewHelper by lazy { createReviewHelper(applicationContext) }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
+    private val homeViewModel by lazy { viewModelProvider[SellerHomeActivityViewModel::class.java] }
     private val sellerHomeRouter by lazy { applicationContext as? SellerHomeRouter }
 
     private val menu = mutableListOf<BottomMenu>()
@@ -131,7 +133,6 @@ open class SellerHomeActivity :
     }
 
     private var statusBarCallback: StatusBarCallback? = null
-    private var sellerHomeFragmentChangeCallback: FragmentChangeCallback? = null
     private var otherMenuFragmentChangeCallback: FragmentChangeCallback? = null
     private var binding: ActivitySahSellerHomeBinding? = null
     private val wearSharedPreference: SharedPreferences by lazy {
@@ -207,6 +208,11 @@ open class SellerHomeActivity :
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         handleAppLink(intent)
+
+        if (navigator?.isHomePageSelected().orFalse()) {
+            handleSellerPersona(intent)
+            handleToaster(intent)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -245,10 +251,12 @@ open class SellerHomeActivity :
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         navigator?.cleanupNavigator()
+        navigator = null
+        binding = null
         otherMenuFragmentChangeCallback = null
         sellerHomeFragmentChangeCallback = null
+        super.onDestroy()
     }
 
     override fun menuClicked(position: Int, id: Int): Boolean {
@@ -295,10 +303,6 @@ open class SellerHomeActivity :
 
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
-    }
-
-    fun attachSellerHomeFragmentChangeCallback(callback: FragmentChangeCallback) {
-        sellerHomeFragmentChangeCallback = callback
     }
 
     fun attachOtherMenuFragmentChangeCallback(callback: FragmentChangeCallback) {
@@ -481,7 +485,6 @@ open class SellerHomeActivity :
     }
 
     private fun setCurrentFragmentType(@FragmentType pageType: Int) {
-        sellerHomeFragmentChangeCallback?.setCurrentFragmentType(pageType)
         otherMenuFragmentChangeCallback?.setCurrentFragmentType(pageType)
     }
 
@@ -770,5 +773,35 @@ open class SellerHomeActivity :
             DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER
         )
         DFInstaller.installOnBackground(this.application, moduleNameList, "Seller Home")
+    }
+
+    private fun handleToaster(intent: Intent?) {
+        val uri = intent?.data ?: return
+        val message = uri.getQueryParameter(
+            SellerHomeApplinkConst.TOASTER_MESSAGE
+        ).orEmpty()
+        val actionText = uri.getQueryParameter(SellerHomeApplinkConst.TOASTER_CTA)
+            .orEmpty()
+        if (message.isBlank()) return
+
+        val view = binding?.sahContainer ?: return
+        Handler(Looper.getMainLooper()).postDelayed({
+            Toaster.toasterCustomBottomHeight = dpToPx(88).toInt()
+            Toaster.build(
+                view,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                actionText
+            ).show()
+        }, TimeUnit.SECONDS.toMillis(1))
+    }
+
+    private fun handleSellerPersona(intent: Intent?) {
+        val uri = intent?.data ?: return
+        val checkPersonaBtmSheet = uri.getBooleanQueryParameter(SellerHomeApplinkConst.IS_PERSONA, false)
+        if (checkPersonaBtmSheet.orFalse()) {
+            navigator?.getHomeFragment()?.refreshPersona()
+        }
     }
 }
