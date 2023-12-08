@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.PagerSnapHelper
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
@@ -36,6 +37,8 @@ class ReviewFragment @Inject constructor(
         ReviewParentAdapter()
     }
 
+    private val snapHelper = PagerSnapHelper() //TODO: adjust pager snap helper
+
     override fun getScreenName() = TAG
 
     override fun onCreateView(
@@ -61,6 +64,7 @@ class ReviewFragment @Inject constructor(
 
     private fun setupView() {
         binding.rvReview.adapter = reviewAdapter
+        snapHelper.attachToRecyclerView(binding.rvReview)
     }
 
     private fun observeReview() {
