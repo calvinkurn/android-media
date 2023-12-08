@@ -834,7 +834,7 @@ open class TokoChatFragment @Inject constructor(
     private fun observeLiveChannel() {
         viewModel.getLiveChannel(viewModel.channelId)?.observe(viewLifecycleOwner) {
             it?.let { channel ->
-                if (expiresAt > 0) {
+                if (channel.expiresAt > 0) {
                     expiresAt = channel.expiresAt
                 }
                 channel.readModeStartsAt?.let { readModeTime ->
