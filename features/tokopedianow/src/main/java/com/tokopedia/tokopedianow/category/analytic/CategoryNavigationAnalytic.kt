@@ -25,7 +25,7 @@ class CategoryNavigationAnalytic {
     fun sendImpressionCategoryNavigationEvent (
         categoryIdL1: String,
         categoryIdL2: String,
-        warehouseId: String
+        warehouseIds: String
     ) {
         Tracker.Builder()
             .setEvent(EVENT_VIEW_GROCERIES)
@@ -33,7 +33,7 @@ class CategoryNavigationAnalytic {
             .setEventCategory(EVENT_CATEGORY_PAGE_L1)
             .setEventLabel(joinDash(categoryIdL1, categoryIdL2, NULL))
             .setCustomProperty(KEY_TRACKER_ID, ID_IMPRESS_CATEGORY_L2)
-            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseIds)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()
@@ -44,7 +44,7 @@ class CategoryNavigationAnalytic {
     fun sendClickCategoryNavigationEvent (
         categoryIdL1: String,
         categoryIdL2: String,
-        warehouseId: String
+        warehouseIds: String
     ) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)
@@ -52,7 +52,7 @@ class CategoryNavigationAnalytic {
             .setEventCategory(EVENT_CATEGORY_PAGE_L1)
             .setEventLabel(joinDash(categoryIdL1, categoryIdL2, NULL))
             .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_CATEGORY_L2)
-            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseIds)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()
