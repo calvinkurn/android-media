@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.repurchase.analytic
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -29,6 +30,9 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CATEGORY_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_40
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_56
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_98
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_INDEX
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEMS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_BRAND
@@ -274,7 +278,8 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
     }
 
     fun onClickProduct(userId: String, model: RepurchaseProductUiModel) {
-        val item = ecommerceDataLayerProductClicked(model, model.position)
+        val itemList = "/tokonow - repurchase - ${model.productCardModel.productId}"
+        val item = ecommerceDataLayerProductClicked(model, model.position, itemList)
 
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_SELECT_CONTENT,
@@ -284,7 +289,8 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
             trackerId = TRACKER_ID_CLICK_PRODUCT,
             items = arrayListOf(item)
         )
-        dataLayer.putString(KEY_ITEM_LIST, "")
+
+        dataLayer.putString(KEY_ITEM_LIST, itemList)
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
@@ -318,8 +324,11 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
         }
     }
 
-    private fun ecommerceDataLayerProductClicked(model: RepurchaseProductUiModel, position: Int): Bundle {
+    private fun ecommerceDataLayerProductClicked(model: RepurchaseProductUiModel, position: Int, itemList: String): Bundle {
         return Bundle().apply {
+            putString(KEY_DIMENSION_40, itemList)
+            putString(KEY_DIMENSION_56, String.EMPTY)
+            putString(KEY_DIMENSION_98, (!model.productCardModel.isOos()).toString())
             putString(KEY_INDEX, position.toString())
             putString(KEY_ITEM_BRAND, "")
             putString(KEY_ITEM_CATEGORY, model.category)
@@ -539,7 +548,9 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
         userId: String,
         model: RepurchaseProductUiModel
     ) {
-        val item = ecommerceDataLayerProductClicked(model, model.position)
+        val itemList = "/tokonow - repurchase - ${model.productCardModel.productId}"
+        val item = ecommerceDataLayerProductClicked(model, model.position, itemList)
+
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_VIEW_ITEM_LIST,
             action = EVENT_ACTION_IMPRESSION_PRODUCT,
@@ -548,7 +559,8 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
             trackerId = TRACKER_ID_IMPRESSION_PRODUCT_ID,
             items = arrayListOf(item)
         )
-        dataLayer.putString(KEY_ITEM_LIST, "")
+
+        dataLayer.putString(KEY_ITEM_LIST, itemList)
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
     }
 
