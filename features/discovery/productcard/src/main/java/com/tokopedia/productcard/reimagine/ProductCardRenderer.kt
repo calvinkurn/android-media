@@ -94,7 +94,7 @@ internal class ProductCardRenderer(
         cornerType: RoundedCornersTransformation.CornerType,
     ) {
 
-        if(productCardModel.isSafeProduct) {
+        if (productCardModel.isSafeProduct) {
             imageBlurredImage(productCardModel, cornerType)
         } else {
             imageRounded(

@@ -9,7 +9,6 @@
         android:id="@+id/searchInappropriateImage"
         android:layout_width="220dp"
         android:layout_height="165dp"
-        app:srcCompat="@drawable/search_result_product_inappropriate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

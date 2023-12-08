@@ -9,6 +9,7 @@ import android.renderscript.ScriptIntrinsicBlur
 import androidx.annotation.FloatRange
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.Closeable
 
 class ImageBlurUtil(context: Context) : Closeable {
@@ -32,6 +33,7 @@ class ImageBlurUtil(context: Context) : Closeable {
             outputAllocation.copyTo(outputBitmap)
             outputBitmap
         } catch (ex: Exception) {
+            Timber.d(ex)
             outputBitmap.recycle()
             src
         }
