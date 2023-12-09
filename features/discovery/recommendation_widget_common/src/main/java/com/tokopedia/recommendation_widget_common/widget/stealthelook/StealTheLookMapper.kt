@@ -43,11 +43,10 @@ object StealTheLookMapper {
     ): StealTheLookStyleModel {
         return StealTheLookStyleModel(
             stylePosition = stylePosition,
-            grids = recommendationItems.mapIndexed { index, recommendationItem ->
+            grids = recommendationItems.map {
                 StealTheLookGridModel(
                     stylePosition,
-                    index,
-                    recommendationItem,
+                    it,
                 )
             },
             tracking = tracking

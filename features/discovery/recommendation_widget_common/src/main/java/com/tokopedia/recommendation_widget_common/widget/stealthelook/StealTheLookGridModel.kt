@@ -4,6 +4,5 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 data class StealTheLookGridModel(
     val stylePosition: Int,
-    val position: Int,
     val recommendationItem: RecommendationItem,
 )

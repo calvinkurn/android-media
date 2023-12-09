@@ -14,7 +14,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.viewutil.NpaLinearLayoutManager
 import com.tokopedia.recommendation_widget_common.widget.global.IRecommendationWidgetView
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 
 class StealTheLookWidgetView :
@@ -30,14 +29,12 @@ class StealTheLookWidgetView :
         defStyleAttr
     )
 
-    private val trackingQueue: TrackingQueue = TrackingQueue(context)
-
     private val binding by lazyThreadSafetyNone {
         RecommendationWidgetStealTheLookBinding.inflate(LayoutInflater.from(context), this)
     }
 
     private val stealTheLookAdapter by lazyThreadSafetyNone {
-        StealTheLookPagingAdapter(trackingQueue)
+        StealTheLookPagingAdapter()
     }
 
     private val layoutManager by lazy { NpaLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL) }

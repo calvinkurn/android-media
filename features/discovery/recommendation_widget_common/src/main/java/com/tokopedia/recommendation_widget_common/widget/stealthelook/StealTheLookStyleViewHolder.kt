@@ -10,18 +10,17 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.recommendation_widget_common.databinding.RecommendationImageReloadBinding
 import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetStealTheLookPageBinding
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.stealthelook.tracking.StealTheLookTracking
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifyprinciples.Typography
 
 class StealTheLookStyleViewHolder(
     itemView: View,
-    private val trackingQueue: TrackingQueue
 ) : RecyclerView.ViewHolder(itemView) {
     companion object {
         val LAYOUT = recommendation_widget_commonR.layout.recommendation_widget_steal_the_look_page
@@ -47,8 +46,8 @@ class StealTheLookStyleViewHolder(
         val ribbonArchView = binding.stlItemLeftGrid.stlItemRibbonArch
         val ribbonContentView = binding.stlItemLeftGrid.stlItemRibbonContent
         val ribbonTextView = binding.stlItemLeftGrid.stlItemRibbonText
-        val reloadView = binding.stlItemLeftGrid.stlReload.root
-        renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadView)
+        val reloadLayout = binding.stlItemLeftGrid.stlReload
+        renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadLayout)
         imageView.setGridClickListener(grid, model.tracking)
     }
 
@@ -58,8 +57,8 @@ class StealTheLookStyleViewHolder(
         val ribbonArchView = binding.stlItemTopRightGrid.stlItemRibbonArch
         val ribbonContentView = binding.stlItemTopRightGrid.stlItemRibbonContent
         val ribbonTextView = binding.stlItemTopRightGrid.stlItemRibbonText
-        val reloadView = binding.stlItemTopRightGrid.stlReload.root
-        renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadView)
+        val reloadLayout = binding.stlItemTopRightGrid.stlReload
+        renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadLayout)
         imageView.setGridClickListener(grid, model.tracking)
     }
 
@@ -69,8 +68,8 @@ class StealTheLookStyleViewHolder(
         val ribbonArchView = binding.stlItemBottomRightGrid.stlItemRibbonArch
         val ribbonContentView = binding.stlItemBottomRightGrid.stlItemRibbonContent
         val ribbonTextView = binding.stlItemBottomRightGrid.stlItemRibbonText
-        val reloadView = binding.stlItemBottomRightGrid.stlReload.root
-        renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadView)
+        val reloadLayout = binding.stlItemBottomRightGrid.stlReload
+        renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadLayout)
         imageView.setGridClickListener(grid, model.tracking)
     }
 
@@ -80,37 +79,33 @@ class StealTheLookStyleViewHolder(
         ribbonArchView: View,
         ribbonContentView: View,
         ribbonTextView: Typography,
-        reloadView: ViewGroup,
+        reloadLayout: RecommendationImageReloadBinding,
     ) {
         val item = model?.recommendationItem
-        renderImage(item?.imageUrl.orEmpty(), imageView, reloadView)
+        renderImage(item?.imageUrl, imageView, reloadLayout)
         renderRibbon(item?.discountPercentage.orEmpty(), ribbonArchView, ribbonContentView, ribbonTextView)
     }
 
     private fun renderImage(
-        imageUrl: String,
+        imageUrl: String?,
         imageView: ImageView,
-        reloadView: ViewGroup,
+        reloadLayout: RecommendationImageReloadBinding,
     ) {
         imageView.loadImage(imageUrl) {
             listener(
-                onSuccess = { bitmap, mediaDataSource ->
-                    reloadView.hide()
+                onSuccess = { _, _ ->
+                    reloadLayout.recomReloadLoader.hide()
+                    reloadLayout.recomReloadLayout.hide()
                 },
                 onError = {
-                    imageView.loadImage(
-                        ContextCompat.getDrawable(
-                            imageView.context,
-                            unifyprinciplesR.color.Unify_NN100
-                        )
-                    )
-                    if(imageUrl.isEmpty()) {
-                        reloadView.hide()
+                    if(imageUrl.isNullOrEmpty()) {
+                        reloadLayout.recomReloadLayout.hide()
                     } else {
-                        reloadView.show()
-                        reloadView.setOnClickListener {
-                            reloadView.hide()
-                            renderImage(imageUrl, imageView, reloadView)
+                        reloadLayout.recomReloadLayout.show()
+                        reloadLayout.recomIcReload.setOnClickListener {
+                            reloadLayout.recomReloadLayout.hide()
+                            reloadLayout.recomReloadLoader.show()
+                            renderImage(imageUrl, imageView, reloadLayout)
                         }
                     }
                 }
@@ -155,7 +150,7 @@ class StealTheLookStyleViewHolder(
     private fun sendViewportImpression(model: StealTheLookStyleModel) {
         binding.stlLayout.addOnImpressionListener(model) {
             sendTopadsImpressionTracker(model)
-            model.tracking?.sendEventViewportImpression(trackingQueue, model)
+            model.tracking?.sendEventViewportImpression(model)
         }
     }
 

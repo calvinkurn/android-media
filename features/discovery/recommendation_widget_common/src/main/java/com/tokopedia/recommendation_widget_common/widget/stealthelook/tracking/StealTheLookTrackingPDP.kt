@@ -51,12 +51,11 @@ class StealTheLookTrackingPDP(
     }
 
     override fun sendEventViewportImpression(
-        trackingQueue: TrackingQueue,
         model: StealTheLookStyleModel
     ) {
         val anchorItem = model.grids.firstOrNull()?.recommendationItem
         val stylePosition = model.stylePosition + 1
-        trackingQueue.putEETracking(hashMapOf(
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(hashMapOf(
             TrackAppUtils.EVENT to RecommendationTrackingConstants.Action.PRODUCT_VIEW,
             TrackAppUtils.EVENT_CATEGORY to source.eventCategory,
             TrackAppUtils.EVENT_ACTION to EVENT_ACTION_IMPRESSION,
@@ -71,14 +70,14 @@ class StealTheLookTrackingPDP(
                 if(anchorItem?.isTopAds == true) VALUE_IS_TOPADS else DEFAULT_VALUE,
                 widget.layoutType,
                 stylePosition,
-                anchorItem?.position?.let { it + 1 }.orZero(),
+                anchorItem?.gridPosition,
                 anchorItem?.departmentId.orZero(),
                 anchorItem?.productId
             ),
             TrackerConstant.USERID to userId,
             RecommendationTrackingConstants.Tracking.ECOMMERCE to mapOf(
                 CURRENCY_CODE to RecommendationTrackingConstants.Tracking.IDR,
-                IMPRESSIONS to model.grids.filter { it.recommendationItem.appUrl.isNotEmpty() }.map {
+                IMPRESSIONS to model.grids.map {
                     val item = it.recommendationItem
                     mapOf(
                         DIMENSION_40 to LIST_FORMAT.format(
@@ -87,13 +86,13 @@ class StealTheLookTrackingPDP(
                             if(item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
                             widget.layoutType,
                             stylePosition,
-                            it.position + 1,
+                            item.gridPosition,
                             item.departmentId,
                             item.productId
                         ),
                         DIMENSION_56 to item.warehouseId.toString(),
                         DIMENSION_58 to item.labelGroupList.hasLabelGroupFulfillment().toString(),
-                        KEY_INDEX to (it.position + 1).toString(),
+                        KEY_INDEX to (item.position + 1).toString(),
                         ITEM_BRAND to VALUE_NONE_OTHER,
                         ITEM_CATEGORY to item.categoryBreadcrumbs,
                         ITEM_ID to item.productId,
@@ -115,7 +114,7 @@ class StealTheLookTrackingPDP(
             if(item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
             widget.layoutType,
             stylePosition,
-            model.position + 1,
+            item.gridPosition,
             item.departmentId,
             item.productId
         )
@@ -136,7 +135,7 @@ class StealTheLookTrackingPDP(
                         putString(DIMENSION_40, list)
                         putString(DIMENSION_56, item.warehouseId.toString())
                         putString(DIMENSION_58, item.labelGroupList.hasLabelGroupFulfillment().toString())
-                        putString(KEY_INDEX, (model.position + 1).toString())
+                        putString(KEY_INDEX, (item.position + 1).toString())
                         putString(ITEM_BRAND, VALUE_NONE_OTHER)
                         putString(ITEM_CATEGORY, item.categoryBreadcrumbs)
                         putString(ITEM_ID, item.productId.toString())

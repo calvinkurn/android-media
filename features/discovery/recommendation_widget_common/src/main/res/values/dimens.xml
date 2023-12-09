@@ -43,6 +43,6 @@
     <dimen name="steal_the_look_outer_right_padding">16dp</dimen>
     <dimen name="steal_the_look_inner_padding">8dp</dimen>
     <dimen name="steal_the_look_inner_padding_half">4dp</dimen>
-    <dimen name="steal_the_look_ic_reload_size">18dp</dimen>
-    <dimen name="steal_the_look_circle_reload_size">24dp</dimen>
+    <dimen name="steal_the_look_ic_reload_size">24dp</dimen>
+    <dimen name="steal_the_look_circle_reload_size">32dp</dimen>
 </resources>

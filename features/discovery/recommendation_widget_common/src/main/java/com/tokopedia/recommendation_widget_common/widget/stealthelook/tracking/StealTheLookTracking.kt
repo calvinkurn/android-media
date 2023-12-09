@@ -8,10 +8,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 
 interface StealTheLookTracking {
 
-    fun sendEventViewportImpression(
-        trackingQueue: TrackingQueue,
-        model: StealTheLookStyleModel,
-    )
+    fun sendEventViewportImpression(model: StealTheLookStyleModel)
 
     fun sendEventItemClick(model: StealTheLookGridModel)
 
