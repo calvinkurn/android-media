@@ -1,7 +1,6 @@
 package com.tokopedia.home_explore_category.presentation.compose
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,28 +18,19 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntRect
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.tokopedia.globalerror.compose.NestGlobalErrorType
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryResultUiModel
@@ -49,23 +39,21 @@ import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryU
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiModel
 import com.tokopedia.home_explore_category.presentation.util.enterExpandVertical
 import com.tokopedia.home_explore_category.presentation.util.exitShrinkVertical
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.nest.components.NestImage
-import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.components.card.NestCard
 import com.tokopedia.nest.components.card.NestCardType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.addImpression
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 const val GRID_COLUMN = 3
+const val MINIMUM_3_SUB_CAT = 3
+const val DELAY_SCROLL_SUB_CAT = 200L
 
 @Composable
 fun ExploreCategoryScreen(
@@ -133,10 +121,6 @@ fun ExploreCategoryListGrid(
         mutableStateOf(-1)
     }
 
-    var subCategoryItemHeightInPx by remember {
-        mutableStateOf(0f)
-    }
-
     LazyColumn(
         state = lazyListState,
         modifier = modifier
@@ -147,15 +131,21 @@ fun ExploreCategoryListGrid(
             groupIndex
         }) { groupIndex, row ->
 
+            var nestCardDimensions by remember { mutableStateOf(Pair(0f, 0f)) }
+            var subCategoryItemDimensions by remember { mutableStateOf(Pair(0f, 0f)) }
+
+            val (subCategoryItemTop, subCategoryItemBottom) = subCategoryItemDimensions
+            val (nestCardTop, nestCardBottom) = nestCardDimensions
+
             var categoryName by remember {
                 mutableStateOf("")
             }
 
-            var isEligibleSelected by remember {
+            var isEligibleScrollToGroupIndex by remember {
                 mutableStateOf(false)
             }
 
-            var isNestCardVisible by remember {
+            var isCategorySelected by remember {
                 mutableStateOf(false)
             }
 
@@ -175,85 +165,95 @@ fun ExploreCategoryListGrid(
                 }
             }
 
-            val subItemHeights = remember(selectedCategory) {
-                val sizeItems = selectedCategory?.subExploreCategoryList?.take(3)?.size.orZero()
-                (subCategoryItemHeightInPx * sizeItems)
-            }
+            val isNestCardVisible by remember(nestCardTop, nestCardBottom) {
+                derivedStateOf {
+                    val layoutInfo = lazyListState.layoutInfo
+                    val viewportTop = layoutInfo.viewportStartOffset
+                    val viewportBottom = layoutInfo.viewportEndOffset
 
-            LaunchedEffect(isEligibleSelected) {
-                if (isEligibleSelected) {
-                    if (categoryIndex != -1) {
-                        lazyListState.animateScrollToItem(categoryIndex)
-                    }
-                } else {
-                    if (isNestCardVisible) {
-                        lazyListState.scrollBy(subItemHeights)
-                    }
+                    nestCardTop < viewportBottom && nestCardBottom > viewportTop
                 }
             }
 
-            CategoryRowItem(row, groupIndex = groupIndex,
-                uiEvent = uiEvent, categoryName = {
-                    categoryName = it
-                }, onExploreCategoryItemClicked = { isSelected ->
-                    isEligibleSelected =
-                        isNotVisible && !isSelected && oldCategoryGroupIndex != groupIndex
-                    oldCategoryGroupIndex = groupIndex
-                })
+            LaunchedEffect(isEligibleScrollToGroupIndex) {
+                if (isEligibleScrollToGroupIndex && categoryIndex != -1) {
+                    lazyListState.animateScrollToItem(categoryIndex)
+                }
+            }
 
-            if (selectedCategory != null) {
+            LaunchedEffect(isCategorySelected, nestCardTop, nestCardBottom) {
+                if (!isCategorySelected && !isNestCardVisible) {
+                    // need to set delay to waiting until finished animateScrollToItem
+                    delay(DELAY_SCROLL_SUB_CAT)
 
-                selectedCategory.let {
+                    val nestCardHeight = nestCardBottom - nestCardTop
+                    val subCategoryItemHeight = subCategoryItemBottom - subCategoryItemTop
 
-                    AnimatedVisibility(
-                        visible = it.isSelected,
-                        enter = enterExpandVertical,
-                        exit = exitShrinkVertical
+                    val remainSubItemsHeight =
+                        Math.abs(nestCardHeight - (MINIMUM_3_SUB_CAT * subCategoryItemHeight))
+
+                    lazyListState.scrollBy(remainSubItemsHeight)
+                }
+            }
+
+            CategoryRowItem(row, uiEvent, categoryName = { categoryName = it }) { isSelected ->
+                isEligibleScrollToGroupIndex = isNotVisible && !isSelected && oldCategoryGroupIndex != groupIndex
+                isCategorySelected = isSelected
+                oldCategoryGroupIndex = groupIndex
+            }
+
+            selectedCategory?.let {
+                AnimatedVisibility(
+                    visible = it.isSelected,
+                    enter = enterExpandVertical,
+                    exit = exitShrinkVertical
+                ) {
+                    NestCard(
+                        modifier = Modifier
+                            .onGloballyPositioned { layoutCoordinates ->
+                                val localPosition = layoutCoordinates.localToRoot(Offset(0f, 0f))
+                                val nestCardTop = localPosition.y
+                                nestCardDimensions = Pair(nestCardTop, nestCardTop + layoutCoordinates.size.height)
+                            }
+                            .fillMaxWidth(),
+                        type = NestCardType.NoBorder
                     ) {
-
-                        NestCard(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            type = NestCardType.NoBorder
-                        ) {
-
-                            isNestCardVisible = !isNotVisible
-
-                            Column {
-                                it.subExploreCategoryList.forEachIndexed { index, subcategory ->
-                                    key(subcategory) {
-                                        SubExploreCategoryItem(
-                                            modifier = Modifier
-                                                .onGloballyPositioned { layoutCoordinates ->
-                                                    subCategoryItemHeightInPx =
-                                                        layoutCoordinates.size.height.toFloat()
-                                                }
-                                                .addImpression(
-                                                    uniqueIdentifier = subcategory.name + index.toString(),
-                                                    impressionState = subcategory.impressHolderCompose,
-                                                    state = lazyListState,
-                                                    onItemViewed = {
-                                                        uiEvent.invoke(
-                                                            ExploreCategoryUiEvent.OnSubExploreCategoryItemImpressed(
-                                                                categoryName, subcategory, index
-                                                            )
+                        Column {
+                            it.subExploreCategoryList.forEachIndexed { index, subcategory ->
+                                key(subcategory) {
+                                    SubExploreCategoryItem(
+                                        modifier = Modifier
+                                            .onGloballyPositioned { layoutCoordinates ->
+                                                val localPosition =
+                                                    layoutCoordinates.localToRoot(Offset(0f, 0f))
+                                                val subCategoryItemTop = localPosition.y
+                                                subCategoryItemDimensions = Pair(subCategoryItemTop, subCategoryItemTop + layoutCoordinates.size.height)
+                                            }
+                                            .addImpression(
+                                                uniqueIdentifier = subcategory.name + index.toString(),
+                                                impressionState = subcategory.impressHolderCompose,
+                                                state = lazyListState,
+                                                onItemViewed = {
+                                                    uiEvent.invoke(
+                                                        ExploreCategoryUiEvent.OnSubExploreCategoryItemImpressed(
+                                                            categoryName,
+                                                            subcategory,
+                                                            index
                                                         )
-                                                    },
-                                                    impressInterval = 0L
-                                                ),
-                                            subExploreCategoryUiModel = subcategory,
-                                            onUiEvent = uiEvent,
-                                            categoryName = categoryName,
-                                            actualPosition = index
-                                        )
-                                    }
+                                                    )
+                                                },
+                                                impressInterval = 0L
+                                            ),
+                                        subExploreCategoryUiModel = subcategory,
+                                        onUiEvent = uiEvent,
+                                        categoryName = categoryName,
+                                        actualPosition = index
+                                    )
                                 }
                             }
                         }
                     }
                 }
-            } else {
-                isNestCardVisible = false
             }
         }
     }
@@ -262,19 +262,16 @@ fun ExploreCategoryListGrid(
 @Composable
 fun CategoryRowItem(
     row: List<ExploreCategoryUiModel>,
-    groupIndex: Int,
     uiEvent: (ExploreCategoryUiEvent) -> Unit,
     categoryName: (String) -> Unit,
-    onExploreCategoryItemClicked: (isSelected: Boolean) -> Unit,
+    onExploreCategoryItemClicked: (isSelected: Boolean) -> Unit
 ) {
-
     Row(
         modifier = Modifier.padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        row.forEachIndexed { index, category ->
-
+        row.forEach { category ->
             categoryName.invoke(category.categoryTitle)
 
             Box(
@@ -283,13 +280,7 @@ fun CategoryRowItem(
                 ExploreCategoryItem(
                     exploreCategoryUiModel = category,
                     onClick = {
-
-                        uiEvent(
-                            ExploreCategoryUiEvent.OnExploreCategoryItemClicked(
-                                category
-                            )
-                        )
-
+                        uiEvent(ExploreCategoryUiEvent.OnExploreCategoryItemClicked(category))
                         onExploreCategoryItemClicked(category.isSelected)
                     },
                     modifier = Modifier
@@ -298,24 +289,7 @@ fun CategoryRowItem(
         }
 
         repeat(GRID_COLUMN - row.size) {
-            val actualPosition = (groupIndex * GRID_COLUMN) + it
-            key(actualPosition) {
-                Spacer(modifier = Modifier.weight(1f))
-            }
-        }
-    }
-}
-
-fun scrollToCategoryItemClicked(
-    categoryId: String,
-    categories: List<List<ExploreCategoryUiModel>>,
-    lazyListState: LazyListState,
-    coroutineScope: CoroutineScope
-) {
-    val categoryIndex = getGroupIndexToScrollTo(categories, categoryId)
-    if (categoryIndex != -1) {
-        coroutineScope.launch {
-            lazyListState.animateScrollToItem(categoryIndex)
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
@@ -395,79 +369,6 @@ fun ExploreCategoryItem(
     }
 }
 
-@Composable
-fun SubExploreCategoryItem(
-    modifier: Modifier = Modifier,
-    subExploreCategoryUiModel: ExploreCategoryUiModel.SubExploreCategoryUiModel,
-    onUiEvent: (ExploreCategoryUiEvent) -> Unit,
-    actualPosition: Int,
-    categoryName: String = ""
-) {
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable {
-                onUiEvent(
-                    ExploreCategoryUiEvent.OnSubExploreCategoryItemClicked(
-                        subExploreCategoryUiModel = subExploreCategoryUiModel,
-                        position = actualPosition,
-                        categoryName = categoryName
-                    )
-                )
-            }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        NestImage(
-            source = ImageSource.Remote(
-                subExploreCategoryUiModel.imageUrl,
-                shouldRetried = true
-            ),
-            type = NestImageType.Rect(12.dp),
-            modifier = Modifier.size(42.dp),
-            contentDescription = null
-        )
-        NestTypography(
-            text = subExploreCategoryUiModel.name,
-            textStyle = NestTheme.typography.display3,
-            modifier = Modifier.padding(start = 8.dp)
-        )
-    }
-}
-
-// Function to check if a rect is fully visible in the viewport
-fun isRectFullyVisibleInViewport(rect: Rect, viewportHeight: Float): Boolean {
-    return rect.top >= 0 && rect.bottom <= viewportHeight
-}
-
-// Function to get the visible rect of a composable in the LazyColumn
-fun getVisibleRectInViewport(
-    lazyListState: LazyListState,
-    composableIndex: Int
-): Rect {
-    val layoutInfo = lazyListState.layoutInfo
-    val composableInfo = layoutInfo.visibleItemsInfo[composableIndex]
-    return Rect(
-        left = 0f,
-        top = composableInfo.offset.toFloat(),
-        right = layoutInfo.viewportEndOffset.toFloat(),
-        bottom = (composableInfo.offset + composableInfo.size).toFloat()
-    )
-}
-
-fun isSubExploreCategoryItemVisible(
-    lazyListState: LazyListState,
-    groupIndex: Int,
-    itemIndex: Int
-): Boolean {
-    val visibleRect = getVisibleRectInViewport(lazyListState, groupIndex)
-    val itemRect = getVisibleRectInViewport(lazyListState, itemIndex)
-    val viewportHeight = lazyListState.layoutInfo.viewportEndOffset
-
-    return isRectFullyVisibleInViewport(itemRect, viewportHeight.toFloat())
-}
-
 @Preview(showBackground = true)
 @Composable
 fun ExploreCategoryScreenPreview() {
@@ -536,7 +437,7 @@ fun ExploreCategoryScreenPreview() {
                 SubExploreCategoryItem(
                     subExploreCategoryUiModel = item,
                     onUiEvent = {},
-                    actualPosition = 0,
+                    actualPosition = 0
                 )
             }
         }
