@@ -183,7 +183,7 @@ fun ExploreCategoryListGrid(
 
             LaunchedEffect(isCategorySelected, nestCardTop, nestCardBottom) {
                 if (!isCategorySelected && !isNestCardVisible) {
-                    // need to set delay to waiting until finished animateScrollToItem
+                    // we need to set delay to wait until animateScrollToItem has finished
                     delay(DELAY_SCROLL_SUB_CAT)
 
                     val nestCardHeight = nestCardBottom - nestCardTop
