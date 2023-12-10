@@ -14,7 +14,7 @@ interface DeletionViewControl {
     fun hasPointerLocationWithinView(x: Int, y: Int): Boolean
 }
 
-class DeletionViewControlImpl : DeletionViewControl {
+internal class DeletionViewControlImpl : DeletionViewControl {
 
     private var deletionView: View? = null
 

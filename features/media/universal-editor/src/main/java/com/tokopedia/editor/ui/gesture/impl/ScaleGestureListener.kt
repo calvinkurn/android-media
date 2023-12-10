@@ -7,7 +7,7 @@ import com.tokopedia.editor.ui.gesture.util.Vector2D
 import com.tokopedia.editor.ui.gesture.util.VectorAngle
 import com.tokopedia.editor.ui.model.AddTextModel
 
-class SetScaleGestureListener constructor(
+internal class ScaleGestureListener constructor(
     private val multiGestureListener: MultiGestureListener
 ) : OnScaleGestureListener {
 

@@ -7,6 +7,7 @@ import android.view.View
 import com.tokopedia.editor.ui.gesture.api.ScaleGestureDetector
 import com.tokopedia.editor.ui.gesture.listener.OnGestureControl
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener
+import com.tokopedia.editor.ui.gesture.util.animationScale
 import com.tokopedia.editor.ui.model.AddTextModel
 import kotlin.math.abs
 import kotlin.math.max
@@ -21,7 +22,7 @@ class MultiGestureListener constructor(
     DeletionViewControl by DeletionViewControlImpl() {
 
     private val gestureDetector = GestureDetector(view.context, GestureListener())
-    private val scaleGestureDetector = ScaleGestureDetector(SetScaleGestureListener(this))
+    private val scaleGestureDetector = ScaleGestureDetector(ScaleGestureListener(this))
 
     // container which refer to [DynamicTextCanvasLayout]
     private val container by lazy(LazyThreadSafetyMode.NONE) { view.parent as View }
@@ -254,14 +255,14 @@ class MultiGestureListener constructor(
         if (hasPointerLocationWithinView(x, y)) {
             if (!isSelectedViewDraggedToTrash) {
                 isSelectedViewDraggedToTrash = true
-                TextViewScaleAnim.anim(view, SCALE_DOWN_ANIM_REMOVAL, SCALE_DOWN_ANIM_REMOVAL)
+                view.animationScale(SCALE_DOWN_ANIM_REMOVAL, SCALE_DOWN_ANIM_REMOVAL)
                 hapticFeedback(view)
                 return true
             }
         } else {
             if (isSelectedViewDraggedToTrash) {
                 isSelectedViewDraggedToTrash = false
-                TextViewScaleAnim.anim(view, originalScaleX, originalScaleY)
+                view.animationScale(originalScaleX, originalScaleY)
                 return true
             }
         }

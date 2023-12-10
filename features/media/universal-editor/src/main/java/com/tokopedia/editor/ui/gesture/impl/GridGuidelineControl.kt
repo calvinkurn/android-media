@@ -11,7 +11,7 @@ interface GridGuidelineControl {
     fun shouldShowHorizontalLine(visible: Boolean)
 }
 
-class GridGuidelineControlImpl : GridGuidelineControl {
+internal class GridGuidelineControlImpl : GridGuidelineControl {
 
     private var gridGuidelineView: GridGuidelineView? = null
 

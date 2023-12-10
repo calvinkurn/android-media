@@ -3,7 +3,6 @@ package com.tokopedia.editor.ui.gesture.api;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.tokopedia.editor.ui.gesture.impl.SetScaleGestureListener;
 import com.tokopedia.editor.ui.gesture.listener.OnScaleGestureListener;
 import com.tokopedia.editor.ui.gesture.util.Vector2D;
 
@@ -47,14 +46,7 @@ public class ScaleGestureDetector {
     private int activeId1;
     private boolean active0MostRecent;
 
-    // java based, soon will be deprecated
     public ScaleGestureDetector(OnScaleGestureListener listener) {
-        this.listener = listener;
-        currSpanVector = new Vector2D();
-    }
-
-    // new api (kt)
-    public ScaleGestureDetector(SetScaleGestureListener listener) {
         this.listener = listener;
         currSpanVector = new Vector2D();
     }
