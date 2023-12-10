@@ -4,17 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.home_account.account_settings.data.model.AccountSettingConfig
 import com.tokopedia.home_account.account_settings.data.model.AccountSettingConfigResponse
-import com.tokopedia.home_account.account_settings.domain.GetAccountSettingConfigUseCase
+import com.tokopedia.home_account.domain.usecase.GetAccountSettingUseCase
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
-import rx.Subscriber
 import javax.inject.Inject
 
 class AccountSettingViewModel @Inject constructor(
-    private val getAccountSettingConfig: GetAccountSettingConfigUseCase
+    private val getAccountSetting: GetAccountSettingUseCase
 ) : ViewModel() {
 
     private val _state: MutableLiveData<AccountSettingUiModel> = MutableLiveData()
@@ -32,26 +29,15 @@ class AccountSettingViewModel @Inject constructor(
     fun fetch() {
         _state.value = AccountSettingUiModel.Loading
         viewModelScope.launch {
-            getAccountSettingConfig.execute(
-                GetAccountSettingConfigUseCase.getRequestParam(),
-                object : Subscriber<GraphqlResponse>() {
-                    override fun onCompleted() {
-                        // no op
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        _state.value = AccountSettingUiModel.Display()
-                        _errorToast.value = e ?: Throwable()
-                    }
-
-                    override fun onNext(response: GraphqlResponse?) {
-                        val result =
-                            response?.getData<AccountSettingConfig>(AccountSettingConfig::class.java)?.accountSettingConfig
-                        _state.value =
-                            AccountSettingUiModel.Display(result ?: AccountSettingConfigResponse())
-                    }
+            launch {
+                try {
+                    val result = getAccountSetting(Unit)
+                    _state.value = AccountSettingUiModel.Display(result)
+                } catch (e: Exception) {
+                    _state.value = AccountSettingUiModel.Display()
+                    _errorToast.value = e
                 }
-            )
+            }
         }
     }
 }
