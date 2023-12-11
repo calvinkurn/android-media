@@ -72,7 +72,10 @@ internal object MediaLoaderApi {
     }
 
     fun loadGifImage(imageView: ImageView, source: Int, properties: Properties) {
-        val context = imageView.context.applicationContext
+        var context = imageView.context
+        if (!context.isValid()) {
+            context = imageView.context.applicationContext
+        }
 
         if (context.isValid()) {
             GlideApp
