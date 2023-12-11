@@ -13,7 +13,7 @@ import com.tokopedia.imageassets.TokopediaImageUrl.FEEDBACK_TICKET_CREATED_THANK
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
 
-class TicketCreatedFragment: Fragment() {
+class TicketCreatedFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(extra: Bundle): TicketCreatedFragment {
@@ -29,10 +29,17 @@ class TicketCreatedFragment: Fragment() {
     private lateinit var ticketText1: Typography
     private lateinit var backButton: View
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val mainView = inflater.inflate(R.layout.fragment_ticket_result, container, false)
-        initView(mainView)
-        return  mainView
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_ticket_result, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView(view)
     }
 
     private fun initView(mainView: View) {
