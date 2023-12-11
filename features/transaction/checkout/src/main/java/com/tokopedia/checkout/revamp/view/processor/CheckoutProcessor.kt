@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -438,6 +439,19 @@ class CheckoutProcessor @Inject constructor(
             userSessionInterface.userId,
             productList
         )
+    }
+
+    fun checkProtectionAddOnOptIn(listProduct: List<CheckoutProductModel>): Boolean {
+        var isAnyAddOnProtectionOptIn = false
+        listProduct.forEach { product ->
+            product.addOnProduct.listAddOnProductData.forEach { addon ->
+                if (addon.type == AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE &&
+                        addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                    isAnyAddOnProtectionOptIn = true
+                }
+            }
+        }
+        return isAnyAddOnProtectionOptIn
     }
 }
 

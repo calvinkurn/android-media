@@ -1,5 +1,6 @@
 package com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,11 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.tokochat_common.databinding.TokochatMaskingPhoneNumberBottomsheetBinding
 import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IV_MASKING_PHONE_NUMBER
+import com.tokopedia.tokochat_common.databinding.TokochatMaskingPhoneNumberBottomsheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
+import com.tokopedia.tokochat_common.R as tokochat_commonR
 
 class MaskingPhoneNumberBottomSheet : BottomSheetUnify() {
 
@@ -28,7 +30,7 @@ class MaskingPhoneNumberBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            com.tokopedia.tokochat_common.R.layout.tokochat_masking_phone_number_bottomsheet,
+            tokochat_commonR.layout.tokochat_masking_phone_number_bottomsheet,
             container,
             false
         )
@@ -96,6 +98,11 @@ class MaskingPhoneNumberBottomSheet : BottomSheetUnify() {
     interface AnalyticsListener {
         fun onCloseMaskingPhoneNumberBottomSheet()
         fun onConfirmCallOnBottomSheetCallDriver()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        this.analyticsListener = null
     }
 
     companion object {

@@ -51,7 +51,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     shopId = 5,
                     name = "Tahu Bulat",
                     categoryBreadcrumbs = "Bahan Masak/Sayur",
-                    appUrl = "tokopedia://product/detail/1"
+                    appUrl = "tokopedia://product/detail/1",
+                    warehouseId = 15024905
                 )
             )
 
@@ -126,7 +127,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                         name = "Tahu Bulat",
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15024905"
                     ),
                     parentId = "0"
                 )
@@ -209,7 +211,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     shopId = 2,
                     name = "Tahu Bulat",
                     quantity = 2,
-                    categoryBreadcrumbs = "Bahan Masak/Sayur"
+                    categoryBreadcrumbs = "Bahan Masak/Sayur",
+                    warehouseId = 15024905
                 )
             )
 
@@ -312,7 +315,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                         isVariant = true,
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15024905"
                     )
                 )
             )
@@ -393,7 +397,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     productId = 5,
                     shopId = 5,
                     name = "Tahu Bulat",
-                    categoryBreadcrumbs = "Bahan Masak/Sayur"
+                    categoryBreadcrumbs = "Bahan Masak/Sayur",
+                    warehouseId = 15024905
                 )
             )
 
@@ -476,7 +481,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                         name = "Tahu Bulat",
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15024905"
                     ),
                     parentId = "0"
                 )

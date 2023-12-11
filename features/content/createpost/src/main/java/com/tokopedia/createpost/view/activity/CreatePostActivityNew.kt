@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.MimeTypeMap
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -35,7 +36,13 @@ import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
+import com.tokopedia.createpost.common.TYPE_AFFILIATE
+import com.tokopedia.createpost.common.TYPE_CONTENT_USER
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
+import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -54,6 +61,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     @Inject
     lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
+
+    @Inject
+    lateinit var creationUploader: CreationUploader
 
     var selectedContentAccount: ContentAccountUiModel = ContentAccountUiModel.Empty
     var isOpenFrom: String = ""
@@ -141,6 +151,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         DaggerCreatePostComponent.factory()
             .create(
                 baseAppComponent = (applicationContext as BaseMainApplication).baseAppComponent,
+                creationUploaderComponent = CreationUploaderComponentProvider.get(this),
                 context = this
             )
             .inject(this)
@@ -282,24 +293,46 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     override fun postFeed() {
         createPostAnalytics.eventClickPostOnPreviewPage()
         KeyboardHandler.hideSoftKeyboard(this)
+
         val cacheManager = SaveInstanceCacheManager(this, true)
         val createPostViewModel = (fragment as? BaseCreatePostFragmentNew)?.getLatestCreatePostData()
         createPostViewModel?.authorType = selectedContentAccount.type
+
         cacheManager.put(
             CreatePostViewModel.TAG,
             createPostViewModel,
             TimeUnit.DAYS.toMillis(DEFAULT_CACHE_DURATION)
         )
+
+        if (createPostViewModel == null) return
+
         cacheManager.id?.let { draftId ->
-            SubmitPostService.startService(applicationContext, draftId)
+            lifecycleScope.launch {
+                val uploadData = CreationUploadData.buildForPost(
+                    creationId = createPostViewModel.postId,
+                    coverUri = createPostViewModel.completeImageList.firstOrNull()?.path.orEmpty(),
+                    authorId = if (isTypeAffiliate(createPostViewModel.authorType) || isTypeBuyer(createPostViewModel.authorType)) {
+                        userSession.userId
+                    } else {
+                        userSession.shopId
+                    },
+                    authorType = createPostViewModel.authorType,
+                    draftId = draftId
+                )
+
+                creationUploader.upload(uploadData)
+            }
         }
 
         when (isOpenFrom) {
             BundleData.VALUE_IS_OPEN_FROM_USER_PROFILE -> goToUserProfile()
             BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE -> goToShopPage()
-            else -> createPostViewModel?.let { goToFeed(it) }
+            else -> goToFeed(createPostViewModel)
         }
     }
+
+    private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
+    private fun isTypeBuyer(authorType: String) = authorType == TYPE_CONTENT_USER
 
     private fun goToFeed(createPostViewModel: CreatePostViewModel) {
         this.let {

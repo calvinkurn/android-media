@@ -32,6 +32,7 @@ class AddNamePresenterTest {
 
     private var name = "Yoris Prayogo"
     private var phoneNo = "081201203123123"
+    val dummyToken = "1231231323"
 
     val throwable = mockk<Throwable>(relaxed = true)
 
@@ -43,11 +44,11 @@ class AddNamePresenterTest {
 
     @Test
     fun `on registerPhoneNumberAndName executed`() {
-        presenter.registerPhoneNumberAndName(name, phoneNo)
-        val mockParam = RegisterUseCase.generateParamRegisterPhone(name, phoneNo)
+        presenter.registerPhoneNumberAndName(name, phoneNo, dummyToken)
+        val mockParam = RegisterUseCase.generateParamRegisterPhone(name, phoneNo, dummyToken)
 
         verify {
-            RegisterUseCase.generateParamRegisterPhone(name, phoneNo)
+            RegisterUseCase.generateParamRegisterPhone(name, phoneNo, dummyToken)
             view.showLoading()
             registerUseCase.execute(mockParam, any())
         }
@@ -59,7 +60,7 @@ class AddNamePresenterTest {
 
     @Test
     fun `on registerPhoneNumberAndName Success`() {
-        val mockParam = RegisterUseCase.generateParamRegisterPhone(name, phoneNo)
+        val mockParam = RegisterUseCase.generateParamRegisterPhone(name, phoneNo, dummyToken)
 
         every { graphqlResponse.getData<RegisterPojo>(any()) } returns registerPojo
 
@@ -67,7 +68,26 @@ class AddNamePresenterTest {
             (secondArg() as Subscriber<GraphqlResponse>).onNext(graphqlResponse)
         }
 
-        presenter.registerPhoneNumberAndName(name, phoneNo)
+        presenter.registerPhoneNumberAndName(name, phoneNo, dummyToken)
+
+        verify {
+            view.showLoading()
+            registerUseCase.execute(mockParam, any())
+            view.onSuccessRegister(registerPojo.register)
+        }
+    }
+
+    @Test
+    fun `on registerPhoneNumberAndName with scp token Success`() {
+        val mockParam = RegisterUseCase.generateParamRegisterPhone(name, phoneNo, dummyToken, isScpToken = true)
+
+        every { graphqlResponse.getData<RegisterPojo>(any()) } returns registerPojo
+
+        every { registerUseCase.execute(any(), any()) } answers {
+            (secondArg() as Subscriber<GraphqlResponse>).onNext(graphqlResponse)
+        }
+
+        presenter.registerPhoneNumberAndName(name, phoneNo, dummyToken, isScpToken = true)
 
         verify {
             view.showLoading()
@@ -78,7 +98,7 @@ class AddNamePresenterTest {
 
     @Test
     fun `on registerPhoneNumberAndName Success but errors not empty`() {
-        val mockParam = RegisterUseCase.generateParamRegisterPhone(name, phoneNo)
+        val mockParam = RegisterUseCase.generateParamRegisterPhone(name, phoneNo, dummyToken)
         registerPojo.register.errors = arrayListOf(Error(message = "Error"))
 
         every { graphqlResponse.getData<RegisterPojo>(any()) } returns registerPojo
@@ -87,7 +107,7 @@ class AddNamePresenterTest {
             (secondArg() as Subscriber<GraphqlResponse>).onNext(graphqlResponse)
         }
 
-        presenter.registerPhoneNumberAndName(name, phoneNo)
+        presenter.registerPhoneNumberAndName(name, phoneNo, dummyToken)
 
         verify {
             view.showLoading()
@@ -98,13 +118,13 @@ class AddNamePresenterTest {
 
     @Test
     fun `on registerPhoneNumberAndName Error`() {
-        val mockParam = RegisterUseCase.generateParamRegisterPhone(name, phoneNo)
+        val mockParam = RegisterUseCase.generateParamRegisterPhone(name, phoneNo, dummyToken)
 
         every { registerUseCase.execute(any(), any()) } answers {
             (secondArg() as Subscriber<GraphqlResponse>).onError(throwable)
         }
 
-        presenter.registerPhoneNumberAndName(name, phoneNo)
+        presenter.registerPhoneNumberAndName(name, phoneNo, dummyToken)
 
         verify {
             view.showLoading()
@@ -112,5 +132,4 @@ class AddNamePresenterTest {
             view.onErrorRegister(throwable)
         }
     }
-
 }

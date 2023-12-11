@@ -15,6 +15,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.view.adapter.CaptionPagePreviewImageAdapter
 import com.tokopedia.createpost.view.util.widget.ClearFocusEditText
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
@@ -46,6 +47,7 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         DaggerCreatePostComponent.factory()
             .create(
                 baseAppComponent = (requireContext().applicationContext as BaseMainApplication).baseAppComponent,
+                creationUploaderComponent = CreationUploaderComponentProvider.get(requireContext()),
                 context = requireContext()
             )
             .inject(this)

@@ -17,6 +17,7 @@ import com.tokopedia.developer_options.presentation.model.FakeResponseActivityUi
 import com.tokopedia.developer_options.presentation.model.ForceCrashUiModel
 import com.tokopedia.developer_options.presentation.model.ForceDarkModeUiModel
 import com.tokopedia.developer_options.presentation.model.ForceLogoutUiModel
+import com.tokopedia.developer_options.presentation.model.ForceScpLoginUiModel
 import com.tokopedia.developer_options.presentation.model.FpiMonitoringUiModel
 import com.tokopedia.developer_options.presentation.model.FpmLogOnFileUiModel
 import com.tokopedia.developer_options.presentation.model.FpmLogOnNotificationUiModel
@@ -79,6 +80,7 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ViewNetworkLogUiModel): Int
     fun type(uiModel: DeviceIdUiModel): Int
     fun type(uiModel: ForceDarkModeUiModel): Int
+    fun type(uiModel: ForceScpLoginUiModel): Int
     fun type(uiModel: TopAdsLogOnNotificationUiModel): Int
     fun type(uiModel: ViewTopAdsLogUiModel): Int
     fun type(uiModel: ApplinkLogOnNotificationUiModel): Int

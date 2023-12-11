@@ -9,4 +9,6 @@ object WithdrawalDomainConstant {
 
     const val GQL_QUERY_WITHDRAWAL_BANNER = "gql_query_withdrawal_banner"
     const val GQL_JOIN_REKE_PREM_TNC_QUERY = "gql_join_reke_prem_tnc_query"
+
+    const val GQL_TOPADS_AUTO_TOPUP_WITHDRAW_RECOM = "gql_topads_auto_topup_withdraw_recom"
 }

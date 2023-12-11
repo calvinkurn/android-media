@@ -17,7 +17,8 @@ import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepos
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -58,6 +59,7 @@ class PlayShortsTestModule(
     private val mockProductTagRepo: ProductTagRepository,
     private val mockUgcOnboardingRepo: UGCOnboardingRepository,
     private val mockContentProductPickerSGCRepo: ContentProductPickerSellerRepository,
+    private val mockContentProductPickerSGCCommonRepo: ProductPickerSellerCommonRepository,
     private val mockDataStore: PlayBroadcastDataStore,
     private val mockUserSession: UserSessionInterface,
     private val mockAccountManager: PlayShortsAccountManager,
@@ -87,6 +89,10 @@ class PlayShortsTestModule(
     @Provides
     @PlayShortsScope
     fun provideContentProductPickerSGCRepository(): ContentProductPickerSellerRepository = mockContentProductPickerSGCRepo
+
+    @Provides
+    @PlayShortsScope
+    fun provideProductPickerSellerCommonRepository(): ProductPickerSellerCommonRepository = mockContentProductPickerSGCCommonRepo
 
     @Provides
     fun provideDataStore(): PlayBroadcastDataStore = mockDataStore

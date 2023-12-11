@@ -39,6 +39,7 @@ object ApplinkConstInternalOrder {
     const val PARAM_FILTER_ID = "filter_id"
     const val PARAM_ORDER_LIST = "order_list"
     const val PARAM_ORDER_ID = "order_id"
+    const val PARAM_POF_STATUS = "pof_status"
     const val KEY_LABEL = "orderCategory"
     const val PAGE = "Page"
     const val PER_PAGE = "PerPage"
@@ -78,6 +79,7 @@ object ApplinkConstInternalOrder {
     const val PATH_BUYER_ORDER_EXTENSION = "buyer-order-extension"
 
     const val PATH_BUYER_PARTIAL_ORDER_FULFILLMENT = "buyer-partial-order-fulfillment"
+    const val PATH_SELLER_PARTIAL_ORDER_FULFILLMENT = "seller-partial-order-fulfillment"
 
     const val INTERNAL_SELLER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_SELLER"
 
@@ -190,6 +192,7 @@ object ApplinkConstInternalOrder {
     const val MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$PATH_BUYER_ORDER_EXTENSION"
 
     const val MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$PATH_BUYER_PARTIAL_ORDER_FULFILLMENT"
+    const val MARKETPLACE_INTERNAL_PARTIAL_ORDER_FULFILLMENT = "$INTERNAL_SELLER/$PATH_SELLER_PARTIAL_ORDER_FULFILLMENT"
 
     const val ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_ORDER_LIST"
 
