@@ -29,7 +29,7 @@ class ReviewFragment @Inject constructor(
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
         viewModelFactory.create(
-            EntrySource(productId = "4937529690") //Testing purpose
+            EntrySource(productId = "4937529690") //TODO: Testing purpose, change from arguments
         )
     }
 

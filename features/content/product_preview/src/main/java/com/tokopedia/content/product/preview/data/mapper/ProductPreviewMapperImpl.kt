@@ -65,6 +65,6 @@ class ProductPreviewMapperImpl @Inject constructor(private val userSession: User
         }
 
     private fun isOwner(author: MediaReviewResponse.ReviewerUserInfo): Boolean =
-        author.userId == userSession.shopId
+        author.userId == userSession.userId
 
 }
