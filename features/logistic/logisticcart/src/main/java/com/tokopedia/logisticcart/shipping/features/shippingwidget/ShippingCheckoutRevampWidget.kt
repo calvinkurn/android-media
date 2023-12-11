@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
 import com.tokopedia.logisticcart.databinding.ItemShipmentShippingExperienceCheckoutRevampBinding
 import com.tokopedia.logisticcart.scheduledelivery.view.ShippingScheduleRevampWidget
@@ -80,21 +79,15 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
 
     interface ShippingWidgetListener {
 
-        fun onChangeDurationClickListener(
-            currentAddress: RecipientAddressModel
-        )
+        fun onChangeDurationClickListener()
 
-        fun onChangeCourierClickListener(
-            currentAddress: RecipientAddressModel
-        )
+        fun onChangeCourierClickListener()
 
         fun onOnTimeDeliveryClicked(url: String)
 
         fun onClickSetPinpoint()
 
-        fun onClickLayoutFailedShipping(
-            recipientAddressModel: RecipientAddressModel
-        )
+        fun onClickLayoutFailedShipping()
 
         fun onViewErrorInCourierSection(logPromoDesc: String)
 
@@ -201,7 +194,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutShipmentInsurance.gone()
             layoutStateNoSelectedShipping.gone()
             layoutStateHasSelectedFreeShipping.setOnClickListener {
-                mListener?.onChangeDurationClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeDurationClickListener()
             }
         }
     }
@@ -262,7 +255,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateFailedShipping.gone()
             layoutShipmentInsurance.gone()
             layoutStateNoSelectedShipping.setOnClickListener {
-                mListener?.onChangeDurationClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeDurationClickListener()
             }
             containerShippingExperience.visible()
         }
@@ -306,7 +299,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutShipmentInsurance.gone()
 
             layoutStateFailedShipping.setOnClickListener {
-                mListener?.onClickLayoutFailedShipping(shippingWidgetUiModel.currentAddress)
+                mListener?.onClickLayoutFailedShipping()
             }
         }
     }
@@ -345,7 +338,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateNoSelectedShipping.gone()
             layoutStateHasSelectedWhitelabelShipping.visible()
             layoutStateHasSelectedWhitelabelShipping.setOnClickListener {
-                mListener?.onChangeDurationClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeDurationClickListener()
             }
             if (shippingWidgetUiModel.estimatedTimeDelivery.isNotEmpty()) {
                 val titleText = "${shippingWidgetUiModel.estimatedTimeDelivery} (${
@@ -668,26 +661,26 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             )
 
             labelSelectedShippingDuration.setOnClickListener {
-                mListener?.onChangeDurationClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeDurationClickListener()
             }
 
             iconChevronChooseDuration.setOnClickListener {
-                mListener?.onChangeDurationClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeDurationClickListener()
             }
 
             labelSelectedShippingPriceOrDuration.setOnClickListener {
-                mListener?.onChangeCourierClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeCourierClickListener()
             }
 
             labelSelectedShippingCourier.setOnClickListener {
-                mListener?.onChangeCourierClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeCourierClickListener()
             }
 
             iconChevronChooseCourier.setOnClickListener {
-                mListener?.onChangeCourierClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeCourierClickListener()
             }
             viewSpaceNormalShippingCourier.setOnClickListener {
-                mListener?.onChangeCourierClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeCourierClickListener()
             }
         }
     }

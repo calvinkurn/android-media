@@ -1,7 +1,5 @@
 package com.tokopedia.logisticcart.shipping.model
 
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-
 data class ShippingWidgetUiModel(
     // renderErrorCourierState - shipmentCartItemModel.courierSelectionErrorTitle
     val courierErrorTitle: String = "",
@@ -29,7 +27,6 @@ data class ShippingWidgetUiModel(
     var isHasShownCourierError: Boolean = false,
 
     // showNormalShippingCourier
-    val currentAddress: RecipientAddressModel,
     // CourierItemData.estimatedTimeDelivery
     val estimatedTimeDelivery: String = "",
 

@@ -15,7 +15,6 @@ import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companio
 import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companion.DROPSHIPPER_MIN_PHONE_LENGTH
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
 import com.tokopedia.logisticcart.shipping.model.InsuranceWidgetUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
@@ -89,7 +88,6 @@ class CheckoutOrderViewHolder(
         if (order.isError) {
             binding.shippingWidget.renderErrorCourierState(
                 ShippingWidgetUiModel(
-                    currentAddress = RecipientAddressModel(),
                     courierErrorTitle = order.courierSelectionErrorTitle
                 )
             )
@@ -106,15 +104,11 @@ class CheckoutOrderViewHolder(
                     renderErrorPinpointCourier()
                 } else if (order.isDisableChangeCourier && order.hasGeolocation) {
                     binding.shippingWidget.showLayoutStateFailedShipping(
-                        ShippingWidgetUiModel(
-                            currentAddress = RecipientAddressModel()
-                        )
+                        ShippingWidgetUiModel()
                     )
                 } else {
                     binding.shippingWidget.showLayoutNoSelectedShipping(
-                        ShippingWidgetUiModel(
-                            currentAddress = RecipientAddressModel()
-                        )
+                        ShippingWidgetUiModel()
                     )
                     showMultiplePlusOrderCoachmark(
                         order,
@@ -139,8 +133,6 @@ class CheckoutOrderViewHolder(
                         courierName = courierItemData.name ?: "",
                         // CourierItemData.shipperPrice
                         courierShipperPrice = courierItemData.shipperPrice,
-
-                        currentAddress = RecipientAddressModel(),
 
                         scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel,
                         insuranceData = InsuranceWidgetUiModel(
@@ -172,7 +164,6 @@ class CheckoutOrderViewHolder(
                         // CourierItemData.shipperPrice
                         courierShipperPrice = courierItemData.shipperPrice,
 
-                        currentAddress = RecipientAddressModel(),
                         insuranceData = InsuranceWidgetUiModel(
                             useInsurance = insurance.isCheckInsurance,
                             insuranceType = courierItemData.selectedShipper.insuranceType,
@@ -188,9 +179,7 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.hideShippingStateLoading()
                 binding.shippingWidget.showContainerShippingExperience()
                 binding.shippingWidget.showLayoutFreeShippingCourier(
-                    ShippingWidgetUiModel(
-                        currentAddress = RecipientAddressModel()
-                    )
+                    ShippingWidgetUiModel()
                 )
                 if (order.isError) {
                     if (bindingAdapterPosition > RecyclerView.NO_POSITION) {
@@ -214,7 +203,6 @@ class CheckoutOrderViewHolder(
                         freeShippingLogo = courierItemData.freeShippingChosenImage,
 
                         // showNormalShippingCourier
-                        currentAddress = RecipientAddressModel(),
                         cashOnDelivery = courierItemData.codProductData,
 
                         insuranceData = InsuranceWidgetUiModel(
@@ -234,7 +222,6 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.renderWhitelabelKurirRekomendasiService(
                     ShippingWidgetUiModel(
                         // showNormalShippingCourier
-                        currentAddress = RecipientAddressModel(),
                         // CourierItemData.estimatedTimeDelivery
                         estimatedTimeDelivery = courierItemData.estimatedTimeDelivery ?: "",
 
@@ -268,7 +255,6 @@ class CheckoutOrderViewHolder(
                         estimatedTimeArrival = courierItemData.etaText ?: "",
 
                         // showNormalShippingCourier
-                        currentAddress = RecipientAddressModel(),
                         // CourierItemData.estimatedTimeDelivery
                         estimatedTimeDelivery = courierItemData.estimatedTimeDelivery ?: "",
 
@@ -302,8 +288,7 @@ class CheckoutOrderViewHolder(
         binding.shippingWidget.renderShippingVibrationAnimation(
             ShippingWidgetUiModel(
                 isShippingBorderRed = order.isShippingBorderRed,
-                isTriggerShippingVibrationAnimation = order.isTriggerShippingVibrationAnimation,
-                currentAddress = RecipientAddressModel()
+                isTriggerShippingVibrationAnimation = order.isTriggerShippingVibrationAnimation
             )
         )
         order.isTriggerShippingVibrationAnimation = false
@@ -357,13 +342,13 @@ class CheckoutOrderViewHolder(
         val VIEW_TYPE = R.layout.item_checkout_order
     }
 
-    override fun onChangeDurationClickListener(currentAddress: RecipientAddressModel) {
+    override fun onChangeDurationClickListener() {
         order?.let {
             listener.onChangeShippingDuration(it, bindingAdapterPosition)
         }
     }
 
-    override fun onChangeCourierClickListener(currentAddress: RecipientAddressModel) {
+    override fun onChangeCourierClickListener() {
         order?.let {
             listener.onChangeShippingCourier(it, bindingAdapterPosition)
         }
@@ -377,7 +362,7 @@ class CheckoutOrderViewHolder(
         listener.onClickSetPinpoint(bindingAdapterPosition)
     }
 
-    override fun onClickLayoutFailedShipping(recipientAddressModel: RecipientAddressModel) {
+    override fun onClickLayoutFailedShipping() {
         order?.let {
             listener.onLoadShippingState(it, bindingAdapterPosition)
             listener.onClickRefreshErrorLoadCourier()
