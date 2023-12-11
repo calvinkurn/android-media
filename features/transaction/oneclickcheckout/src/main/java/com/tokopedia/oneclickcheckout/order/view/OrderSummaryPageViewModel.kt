@@ -1508,7 +1508,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderCost.totalPriceWithoutPaymentFees <= payment.walletAmount
         ) {
             val dynamicPaymentFee =
-                paymentProcessor.get().getPaymentFee(orderPayment.value, , generatePaymentRequest(orderCost))
+                paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost, generatePaymentRequest(orderCost))
             val newOrderPayment = orderPayment.value
             orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
             if (dynamicPaymentFee == null) {
