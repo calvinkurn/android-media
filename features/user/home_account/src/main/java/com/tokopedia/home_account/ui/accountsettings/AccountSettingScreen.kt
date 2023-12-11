@@ -51,7 +51,7 @@ fun AccountSettingScreen(
                     text = stringResource(R.string.header_privacy_account_setting),
                     textStyle = NestTheme.typography.heading4.copy(fontWeight = FontWeight.Bold)
                 )
-                if (state.config.isPasswordEnabled) {
+                if (state.config.ubahKataSandi) {
                     ItemSetting(
                         stringResource(R.string.title_password_setting),
                         SettingConstant.SETTING_ACCOUNT_PASS_ID,
@@ -74,7 +74,7 @@ fun AccountSettingScreen(
                     )
                     ItemDivider()
                 }
-                if (state.config.isIdentityEnabled) {
+                if (state.config.dokumenDataDiri) {
                     ItemSetting(
                         stringResource(R.string.title_kyc_setting),
                         SettingConstant.SETTING_ACCOUNT_KYC_ID,

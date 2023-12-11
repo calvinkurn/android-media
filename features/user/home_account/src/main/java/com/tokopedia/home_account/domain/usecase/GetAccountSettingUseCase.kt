@@ -5,18 +5,17 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.home_account.account_settings.data.model.AccountSettingConfig
-import com.tokopedia.home_account.account_settings.data.model.AccountSettingConfigResponse
+import com.tokopedia.home_account.account_settings.data.model.AccountSettingResponse
 import javax.inject.Inject
 
 class GetAccountSettingUseCase @Inject constructor(
     @ApplicationContext private val gqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Unit, AccountSettingConfigResponse>(dispatcher.io) {
+) : CoroutineUseCase<Unit, AccountSettingResponse.AccountSettingConfig>(dispatcher.io) {
 
-    override suspend fun execute(params: Unit): AccountSettingConfigResponse {
+    override suspend fun execute(params: Unit): AccountSettingResponse.AccountSettingConfig {
         val param = mapOf("type" to TYPE_CUSTOMER_APP)
-        val response: AccountSettingConfig = gqlRepository.request(graphqlQuery(), param)
+        val response: AccountSettingResponse = gqlRepository.request(graphqlQuery(), param)
         return response.accountSettingConfig
     }
 

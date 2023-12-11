@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.home_account.account_settings.data.model.AccountSettingConfigResponse
+import com.tokopedia.home_account.account_settings.data.model.AccountSettingResponse
 import com.tokopedia.home_account.domain.usecase.GetAccountSettingUseCase
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
@@ -44,6 +44,6 @@ class AccountSettingViewModel @Inject constructor(
 
 interface AccountSettingUiModel {
     object Loading : AccountSettingUiModel
-    data class Display(val config: AccountSettingConfigResponse = AccountSettingConfigResponse()) :
+    data class Display(val config: AccountSettingResponse.AccountSettingConfig = AccountSettingResponse.AccountSettingConfig()) :
         AccountSettingUiModel
 }
