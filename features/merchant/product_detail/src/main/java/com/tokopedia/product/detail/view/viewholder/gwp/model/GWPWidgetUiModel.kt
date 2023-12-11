@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.view.viewholder.gwp.model
 
 import android.view.ViewGroup
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.Separator
 import com.tokopedia.product.detail.view.viewholder.ActionUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.adapter.GWPCardOfProductViewHolder
@@ -25,6 +27,7 @@ data class GWPWidgetUiModel(
     sealed interface Card {
         val id: Int
         val action: ActionUiModel
+        val trackData: CardTrackData
 
         data class Product(
             val title: String,
@@ -32,7 +35,8 @@ data class GWPWidgetUiModel(
             val subTitle: String,
             val images: List<Images> = emptyList(),
             val width: Int = ViewGroup.LayoutParams.MATCH_PARENT,
-            override val action: ActionUiModel = ActionUiModel()
+            override val action: ActionUiModel = ActionUiModel(),
+            override val trackData: CardTrackData = CardTrackData()
         ) : Card {
             override val id: Int
                 get() = GWPCardOfProductViewHolder.ID
@@ -42,11 +46,22 @@ data class GWPWidgetUiModel(
 
         data class LoadMore(
             val title: String,
-            override val action: ActionUiModel = ActionUiModel()
+            override val action: ActionUiModel = ActionUiModel(),
+            override val trackData: CardTrackData = CardTrackData()
         ) : Card {
             override val id: Int
                 get() = GWPCardOfShowMoreViewHolder.ID
         }
+    }
+
+    data class CardTrackData(
+        val creativeName: String = "",
+        val offerId: String = "",
+        val offerIds: String = "",
+        val position: Int = -Int.ONE
+    ) {
+
+        lateinit var parentTrackData: ComponentTrackDataModel
     }
 
     val showSeparatorBottom

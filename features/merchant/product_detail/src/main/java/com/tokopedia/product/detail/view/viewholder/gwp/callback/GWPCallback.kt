@@ -1,8 +1,10 @@
 package com.tokopedia.product.detail.view.viewholder.gwp.callback
 
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 import com.tokopedia.product.detail.view.fragment.delegate.BaseComponentCallback
 import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPEvent
+import com.tokopedia.product.detail.view.viewholder.gwp.tracker.GWPTracker
 
 /**
  * Created by yovi.putra on 30/11/23"
@@ -13,33 +15,28 @@ class GWPCallback(
     mediator: PdpComponentCallbackMediator
 ) : BaseComponentCallback<GWPEvent>(mediator = mediator) {
 
-    override fun onEvent(event: GWPEvent) {
-        when (event) {
-            is GWPEvent.OnClickComponent -> {
-                event.data.action.navigate()
-            }
-            is GWPEvent.OnClickProduct -> {
-                event.data.action.navigate()
-            }
-            is GWPEvent.OnClickShowMore -> {
-                event.data.action.navigate()
-            }
-
-            else -> {
-                // no-ops
-            }
-        }
+    private val tracker by lazyThreadSafetyNone {
+        GWPTracker(trackingQueue = queueTracker)
     }
 
-    override fun onTracking(event: GWPEvent) {
+    override fun onEvent(event: GWPEvent) {
+        tracker.tracking(event = event)
+
         when (event) {
             is GWPEvent.OnClickComponent -> {
+                event.data.action.navigate()
             }
+
             is GWPEvent.OnClickProduct -> {
+                event.data.action.navigate()
             }
+
             is GWPEvent.OnClickShowMore -> {
+                event.data.action.navigate()
             }
+
             is GWPEvent.OnCardImpress -> {
+                // no-ops
             }
         }
     }

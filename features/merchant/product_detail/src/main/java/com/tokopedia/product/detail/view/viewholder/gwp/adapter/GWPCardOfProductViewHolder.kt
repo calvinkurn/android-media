@@ -9,6 +9,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.common.utils.extensions.addOnPdpImpressionListener
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.databinding.GwpCardItemBinding
 import com.tokopedia.product.detail.databinding.GwpProductImageBinding
 import com.tokopedia.product.detail.databinding.GwpProductImageCountBinding
@@ -26,7 +27,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class GWPCardOfProductViewHolder(
     private val binding: GwpCardItemBinding,
-    private val callback: GWPCallback
+    private val callback: GWPCallback,
+    private val getParentTrackData: () -> ComponentTrackDataModel
 ) : GWPCardViewHolder<GWPWidgetUiModel.Card.Product>(binding.root) {
 
     init {
@@ -144,10 +146,18 @@ class GWPCardOfProductViewHolder(
         val ID = productdetailR.layout.gwp_card_item
         private val PRODUCT_IMAGE_MARGIN_END = 4.toPx()
 
-        fun create(parent: ViewGroup, callback: GWPCallback): GWPCardOfProductViewHolder {
+        fun create(
+            parent: ViewGroup,
+            callback: GWPCallback,
+            getParentTrackData: () -> ComponentTrackDataModel
+        ): GWPCardOfProductViewHolder {
             val inflater = LayoutInflater.from(parent.context)
             val view = GwpCardItemBinding.inflate(inflater)
-            return GWPCardOfProductViewHolder(binding = view, callback = callback)
+            return GWPCardOfProductViewHolder(
+                binding = view,
+                callback = callback,
+                getParentTrackData = getParentTrackData
+            )
         }
     }
 }

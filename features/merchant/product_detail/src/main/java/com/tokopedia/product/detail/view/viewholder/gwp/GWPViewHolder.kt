@@ -53,8 +53,9 @@ class GWPViewHolder(
     private val rootView get() = binding.root
 
     private val cardAdapter by lazyThreadSafetyNone {
-        GWPCardAdapter(callback = callback)
-            .also(::setupCardRecyclerView)
+        GWPCardAdapter(callback = callback, getParentTrackData = {
+            getComponentTrackData(element = mElement)
+        }).also(::setupCardRecyclerView)
     }
 
     private fun setupCardRecyclerView(cardAdapter: GWPCardAdapter) =

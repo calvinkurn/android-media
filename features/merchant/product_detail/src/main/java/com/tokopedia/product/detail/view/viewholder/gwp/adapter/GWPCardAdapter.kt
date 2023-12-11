@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.view.viewholder.gwp.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.view.viewholder.gwp.callback.GWPCallback
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 
@@ -12,9 +14,9 @@ import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
  **/
 
 class GWPCardAdapter(
-    private val callback: GWPCallback
-) :
-    ListAdapter<GWPWidgetUiModel.Card, GWPCardViewHolder<GWPWidgetUiModel.Card>>(DIFF_ITEMS) {
+    private val callback: GWPCallback,
+    private val getParentTrackData: () -> ComponentTrackDataModel
+) : ListAdapter<GWPWidgetUiModel.Card, GWPCardViewHolder<GWPWidgetUiModel.Card>>(DIFF_ITEMS) {
 
     companion object {
         private val DIFF_ITEMS = object : DiffUtil.ItemCallback<GWPWidgetUiModel.Card>() {
@@ -36,8 +38,18 @@ class GWPCardAdapter(
         viewType: Int
     ): GWPCardViewHolder<GWPWidgetUiModel.Card> {
         val viewHolder = when (viewType) {
-            GWPCardOfProductViewHolder.ID -> GWPCardOfProductViewHolder.create(parent, callback)
-            GWPCardOfShowMoreViewHolder.ID -> GWPCardOfShowMoreViewHolder.create(parent, callback)
+            GWPCardOfProductViewHolder.ID -> GWPCardOfProductViewHolder.create(
+                parent,
+                callback,
+                getParentTrackData
+            )
+
+            GWPCardOfShowMoreViewHolder.ID -> GWPCardOfShowMoreViewHolder.create(
+                parent,
+                callback,
+                getParentTrackData
+            )
+
             else -> {
                 throw IllegalAccessException("viewType unresolved...")
             }
@@ -47,7 +59,7 @@ class GWPCardAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val product = currentList.getOrNull(position) ?: return -1
+        val product = currentList.getOrNull(position) ?: return -Int.ONE
         return product.id
     }
 

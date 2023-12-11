@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.setLayoutWidth
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.common.utils.extensions.addOnPdpImpressionListener
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.view.viewholder.gwp.callback.GWPCallback
 import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPEvent
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
@@ -22,7 +23,8 @@ import com.tokopedia.viewallcard.R as viewallcardR
 
 class GWPCardOfShowMoreViewHolder(
     private val binding: ViewAllCard,
-    private val callback: GWPCallback
+    private val callback: GWPCallback,
+    private val getParentTrackData: () -> ComponentTrackDataModel
 ) : GWPCardViewHolder<GWPWidgetUiModel.Card.LoadMore>(binding.rootView) {
 
     init {
@@ -74,10 +76,15 @@ class GWPCardOfShowMoreViewHolder(
 
         fun create(
             parent: ViewGroup,
-            callback: GWPCallback
+            callback: GWPCallback,
+            getParentTrackData: () -> ComponentTrackDataModel
         ): GWPCardOfShowMoreViewHolder {
             val viewAllCard = ViewAllCard(parent.context)
-            return GWPCardOfShowMoreViewHolder(binding = viewAllCard, callback = callback)
+            return GWPCardOfShowMoreViewHolder(
+                binding = viewAllCard,
+                callback = callback,
+                getParentTrackData = getParentTrackData
+            )
         }
     }
 }

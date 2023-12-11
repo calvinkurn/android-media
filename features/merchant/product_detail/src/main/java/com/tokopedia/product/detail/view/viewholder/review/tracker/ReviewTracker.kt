@@ -42,7 +42,7 @@ object ReviewTracker {
     fun onKeywordClicked(
         queueTracker: TrackingQueue,
         commonTracker: CommonTracker,
-        componentTracker: ComponentTrackDataModel
+        componentTracker: ComponentTrackDataModel,
         count: Int
     ) {
         val action = "click - review chips filter"
@@ -108,7 +108,7 @@ object ReviewTracker {
     fun onKeywordImpressed(
         queueTracker: TrackingQueue,
         commonTracker: CommonTracker,
-        componentTracker: ComponentTrackDataModel
+        componentTracker: ComponentTrackDataModel,
         count: Int
     ) {
         val action = "impression - review chips filter"
