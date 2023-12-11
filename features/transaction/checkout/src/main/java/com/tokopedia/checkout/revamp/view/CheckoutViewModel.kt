@@ -1080,11 +1080,6 @@ class CheckoutViewModel @Inject constructor(
                                 orderModel.validationMetadata
                         }
                     }
-                    removeInvalidBoCodeFromPromoRequest(
-                        orderModel,
-                        list,
-                        validateUsePromoRequest
-                    )
                     doValidateUseLogisticPromo(
                         cartPosition,
                         orderModel.cartStringGroup,
