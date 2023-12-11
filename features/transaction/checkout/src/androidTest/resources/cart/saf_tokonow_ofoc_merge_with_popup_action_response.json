@@ -1421,6 +1421,28 @@
                       ]
                     }
                   ],
+                  "shipment_action": [
+                    {
+                      "sp_id": "28",
+                      "action": "split",
+                      "popup": {
+                        "title": "Pesananmu akan dikirim terpisah",
+                        "body": "Ada beberapa produk dikirim dari lokasi  berbeda, dan tidak bisa 2 jam tiba. ",
+                        "button_ok": "Oke, Lanjutkan",
+                        "button_cancel": "Kembali"
+                      }
+                    },
+                    {
+                      "sp_id": "59",
+                      "action": "merge",
+                      "popup": {
+                        "title": "",
+                        "body": "",
+                        "button_ok": "",
+                        "button_cancel": ""
+                      }
+                    }
+                  ],
                   "dropshipper": {
                     "name": "",
                     "telp_no": ""

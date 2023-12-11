@@ -1421,6 +1421,16 @@
                       ]
                     }
                   ],
+                  "shipment_action": [
+                    {
+                      "sp_id": "28",
+                      "action": "split"
+                    },
+                    {
+                      "sp_id": "59",
+                      "action": "merge"
+                    }
+                  ],
                   "dropshipper": {
                     "name": "",
                     "telp_no": ""
