@@ -186,7 +186,7 @@
 /dynamic-features-customerapp_pro/travel                @tokopedia/android-minionkevin-dev
 /dynamic-features/travel                                @tokopedia/android-minionkevin-dev
 
-/libraries/travel_calendar                              @tokopedia/android-minionmark-dev
+/libraries/travel_calendar                              @tokopedia/android-minionkevin-dev
 
 /features/promo/promo_checkout/                 		@tokopedia/android-minionkevin-dev
 /features/promo/promo_checkout_common/          		@tokopedia/android-minionkevin-dev
