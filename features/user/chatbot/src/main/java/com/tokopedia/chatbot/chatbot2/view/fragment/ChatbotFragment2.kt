@@ -1153,10 +1153,6 @@ class ChatbotFragment2 :
         val isTypingBlocked = topBotResponse.isTypingBlocked
         handleReplyBox(!isTypingBlocked)
 
-        // Todo : remove hardcode
-        topBotResponse.isSlowMode = true
-        topBotResponse.slowModeDurationInSeconds = 5
-
         smallReplyBox?.sendButton?.apply {
             isSlowModeEnabled = topBotResponse.isSlowMode
             slowModeDurationInSecond = topBotResponse.slowModeDurationInSeconds
@@ -1954,9 +1950,6 @@ class ChatbotFragment2 :
                 )
                 getViewState()?.scrollToBottom()
             }
-
-            smallReplyBox?.hide()
-            bigReplyBox?.show()
 
             if (smallReplyBox?.isVisible == true) {
                 smallReplyBox?.sendButton?.startSlowDown()
