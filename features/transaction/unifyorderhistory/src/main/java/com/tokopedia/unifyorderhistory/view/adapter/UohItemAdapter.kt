@@ -83,9 +83,15 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         )
         fun onChevronBuyAgainWidgetClicked(applink: String)
 
-        fun onProductCardClicked(pdpApplink: String)
+        fun onSeeAllCardClicked(applink: String)
 
-        fun onBuyAgainWidgetButtonClicked(recommendationItem: RecommendationItem)
+        fun onProductCardClicked(recommendationItem: RecommendationItem, index: Int)
+
+        fun onBuyAgainWidgetButtonClicked(recommendationItem: RecommendationItem, index: Int)
+
+        fun onBuyAgainItemScrolled(recommendationItem: RecommendationItem, index: Int)
+
+        fun onImpressBuyAgainWidget()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

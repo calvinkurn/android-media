@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -123,6 +124,7 @@ class UohOrderListViewHolder(
                 binding.tvUohProductDesc.text = item.dataObject.metadata.products.first().inline1.label
                 if (item.dataObject.metadata.products.first().imageURL.isNotEmpty()) {
                     binding.ivUohProduct.visible()
+                    binding.ivUohProduct.clearImage()
                     binding.ivUohProduct.loadProductImage(
                         url = item.dataObject.metadata.products.firstOrNull()?.imageURL.orEmpty(),
                         archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL,

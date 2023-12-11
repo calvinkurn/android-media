@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -25,6 +26,7 @@ import com.tokopedia.unifyorderhistory.data.model.PmsNotification
 import com.tokopedia.unifyorderhistory.data.model.RechargeSetFailData
 import com.tokopedia.unifyorderhistory.data.model.TrainResendEmail
 import com.tokopedia.unifyorderhistory.data.model.TrainResendEmailParam
+import com.tokopedia.unifyorderhistory.data.model.UohAtcBuyAgainWidgetData
 import com.tokopedia.unifyorderhistory.data.model.UohFilterCategory
 import com.tokopedia.unifyorderhistory.data.model.UohFinishOrder
 import com.tokopedia.unifyorderhistory.data.model.UohFinishOrderParam
@@ -130,8 +132,8 @@ class UohListViewModel @Inject constructor(
     val buyAgainWidgetResult: LiveData<Result<List<RecommendationWidget>>>
         get() = _buyAgainWidgetResult
 
-    private val _atcBuyAgainResult = MutableLiveData<Result<AtcMultiData>>()
-    val atcBuyAgainResult: LiveData<Result<AtcMultiData>>
+    private val _atcBuyAgainResult = MutableLiveData<UohAtcBuyAgainWidgetData>()
+    val atcBuyAgainResult: LiveData<UohAtcBuyAgainWidgetData>
         get() = _atcBuyAgainResult
 
     fun loadOrderList(paramOrder: UohListParam) {
@@ -267,11 +269,17 @@ class UohListViewModel @Inject constructor(
         }
     }
 
-    fun doAtcBuyAgain(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>) {
+    fun doAtcBuyAgain(
+        userId: String,
+        atcMultiQuery: String,
+        listParam: ArrayList<AddToCartMultiParam>,
+        recommItem: RecommendationItem,
+        index: Int
+    ) {
         UohIdlingResource.increment()
         launch {
             val result = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
-            _atcBuyAgainResult.value = result
+            _atcBuyAgainResult.value = UohAtcBuyAgainWidgetData(recommItem, index, result)
             UohIdlingResource.decrement()
         }
     }

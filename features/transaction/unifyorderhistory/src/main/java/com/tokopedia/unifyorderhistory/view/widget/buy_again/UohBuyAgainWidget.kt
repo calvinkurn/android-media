@@ -11,11 +11,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -99,9 +103,13 @@ fun BuyAgainPreview() {
 fun UohBuyAgainWidget(
     recom: RecommendationWidget,
     onChevronClicked: () -> Unit = {},
-    onProductCardClick: (pdpApplink: String) -> Unit,
-    onButtonBuyAgainClick: (recommItem: RecommendationItem) -> Unit
+    onProductCardClick: (recommItem: RecommendationItem, index: Int) -> Unit,
+    onButtonBuyAgainClick: (recommItem: RecommendationItem, index: Int) -> Unit,
+    onSeeAllCardClick: () -> Unit,
+    onItemScrolled: (recommItem: RecommendationItem, index: Int) -> Unit,
+    onWidgetImpressed: () -> Unit
 ) {
+    onWidgetImpressed()
     val backgroundImg = "https://images.tokopedia.net/img/android/uoh/buy_again_bg.png"
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
         val (
@@ -171,6 +179,7 @@ fun UohBuyAgainWidget(
 
         if (recom.recommendationItemList.size == 1) {
             UohBuyAgainCard(
+                index = 0,
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(uohCard) {
@@ -180,8 +189,9 @@ fun UohBuyAgainWidget(
                         bottom.linkTo(bottomDivider.top, margin = 10.dp)
                     },
                 recommItem = recom.recommendationItemList[0],
-                onProductCardClick = { onProductCardClick.invoke(recom.recommendationItemList[0].appUrl) },
-                onBuyAgainButtonClicked = { onButtonBuyAgainClick.invoke(recom.recommendationItemList[0]) }
+                onProductCardClick = onProductCardClick,
+                onBuyAgainButtonClicked = onButtonBuyAgainClick,
+                onItemScrolled = onItemScrolled
             )
         } else {
             UohBuyAgainList(
@@ -192,7 +202,9 @@ fun UohBuyAgainWidget(
                     bottom.linkTo(bottomDivider.top, margin = 10.dp)
                 },
                 onProductCardClick = onProductCardClick,
-                onButtonBuyAgainClick = onButtonBuyAgainClick
+                onButtonBuyAgainClick = onButtonBuyAgainClick,
+                onSeeAllCardClick = { onSeeAllCardClick.invoke() },
+                onItemScrolled = onItemScrolled
             )
         }
 
@@ -212,8 +224,10 @@ fun UohBuyAgainWidget(
 fun UohBuyAgainList(
     listBuyAgain: List<RecommendationItem> = emptyList(),
     modifier: Modifier = Modifier,
-    onProductCardClick: (pdpApplink: String) -> Unit,
-    onButtonBuyAgainClick: (recommItem: RecommendationItem) -> Unit
+    onProductCardClick: (recommItem: RecommendationItem, index: Int) -> Unit,
+    onButtonBuyAgainClick: (recommItem: RecommendationItem, index: Int) -> Unit,
+    onSeeAllCardClick: () -> Unit,
+    onItemScrolled: (recommItem: RecommendationItem, index: Int) -> Unit
 ) {
     LazyRow(
         modifier = modifier,
@@ -222,19 +236,23 @@ fun UohBuyAgainList(
         itemsIndexed(listBuyAgain) { index, item ->
             if (index < 3) {
                 UohBuyAgainCard(
+                    index = index,
                     recommItem = listBuyAgain[index],
-                    onProductCardClick = { onProductCardClick.invoke(listBuyAgain[index].appUrl) },
-                    onBuyAgainButtonClicked = onButtonBuyAgainClick
+                    onProductCardClick = onProductCardClick,
+                    onBuyAgainButtonClicked = onButtonBuyAgainClick,
+                    onItemScrolled = onItemScrolled
                 )
             } else if (index == 3) {
                 NestViewAllCard(
                     modifier = modifier
                         .height(62.dp)
+                        .width(130.dp)
                         .padding(start = 6.dp, top = 6.dp),
                     enableCta = true,
                     ctaText = "Lihat Semua",
-                    subtitle = " "
-                ) {}
+                    subtitle = " ",
+                    onClick = onSeeAllCardClick
+                )
                 /*ViewAllCard(modifier = modifier,
                         onButtonBuyAgainClick = {})*/
             }
@@ -244,18 +262,22 @@ fun UohBuyAgainList(
 
 @Composable
 fun UohBuyAgainCard(
+    index: Int,
     recommItem: RecommendationItem,
     modifier: Modifier = Modifier,
-    onProductCardClick: () -> Unit,
-    onBuyAgainButtonClicked: (RecommendationItem) -> Unit
+    onProductCardClick: (RecommendationItem, Int) -> Unit,
+    onBuyAgainButtonClicked: (RecommendationItem, Int) -> Unit,
+    onItemScrolled: (RecommendationItem, Int) -> Unit
 ) {
+    onItemScrolled(recommItem, index)
+
     NestCard(
         modifier = modifier
             .heightIn(min = 56.dp)
             .widthIn(max = 315.dp)
             .padding(start = 6.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
         type = NestCardType.Shadow,
-        onClick = onProductCardClick
+        onClick = { onProductCardClick.invoke(recommItem, index) }
     ) {
         Row {
             ImageProduct(
@@ -309,7 +331,7 @@ fun UohBuyAgainCard(
             }
             NestButton(
                 text = "Beli Lagi",
-                onClick = { onBuyAgainButtonClicked.invoke(recommItem) },
+                onClick = { onBuyAgainButtonClicked.invoke(recommItem, index) },
                 variant = ButtonVariant.GHOST,
                 size = ButtonSize.MICRO,
                 modifier = Modifier
@@ -336,6 +358,26 @@ private fun ImageProduct(imageSource: ImageSource, modifier: Modifier) {
                 .align(Alignment.Center),
             contentDescription = null
         )
+    }
+}
+
+@Composable
+fun ItemImpression(key: Long, lazyListState: LazyListState, onItemViewed: () -> Unit) {
+    /*val isItemWithKeyInView by remember {
+        derivedStateOf {
+            lazyListState.layoutInfo
+                    .visibleItemsInfo
+                    .any { it.key == key }
+        }
+    }
+
+    if (isItemWithKeyInView) {
+        LaunchedEffect(Unit) {
+            onItemViewed()
+        }
+    }*/
+    LaunchedEffect(Unit) {
+        onItemViewed()
     }
 }
 

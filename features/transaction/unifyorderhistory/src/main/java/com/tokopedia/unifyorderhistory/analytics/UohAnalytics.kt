@@ -18,6 +18,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohConsts.BUSINESS_UNIT_REPLACEE
 import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_LIST_TOPADS_TRACK
 import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_LIST_TRACK
+import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_TYPE_REPLACEE
 import com.tokopedia.unifyorderhistory.util.UohConsts.SHOP_ID
 
 /**
@@ -124,16 +125,44 @@ object UohAnalytics {
     const val ULAS_TYPE_STAR = "type: star"
     const val ULAS_TYPE_BUTTON = "type: button"
 
+    // buy again widget
+    private const val CATEGORY_ID = "category_id"
+    private const val SHOP_ID = "shop_id"
+    private const val SHOP_NAME = "shop_name"
+    private const val SHOP_TYPE = "shop_type"
+    private const val VIEW_BUY_AGAIN_WIDGET = "view buy again widget on order list"
+    private const val CLICK_LIHAT_SEMUA_ARROW_BUTTON_ON_BUY_AGAIN_WIDGET = "click lihat semua arrow button on buy again widget"
+    private const val CLICK_LIHAT_SEMUA_BUTTON_ON_BUY_AGAIN_WIDGET = "click lihat semua button on buy again widget"
+    private const val IMPRESSION_BUY_AGAIN_WIDGET = "impression product on buy again widget"
+    private const val CLICK_PRODUCT_ON_BUY_AGAIN_WIDGET = "click product on buy again widget"
+    private const val CLICK_BELI_LAGI_BUTTON_ON_BUY_AGAIN_WIDGET = "click beli lagi button on buy again widget"
+    private const val HOME_AND_BROWSE = "home & browse"
+    private const val ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE = "/order list - rekomendasi untuk anda - {recommendation_type}"
+    private const val VIEW_HOME_PAGE_IRIS = "viewHomepageIris"
+    private const val CLICK_HOME_PAGE = "clickHomepage"
+
     // tracker id
     private const val VIEW_BELI_LAGI_BUTTON_TRACKER_ID = "40123"
     private const val CLICK_BELI_LAGI_BUTTON_TRACKER_ID = "40124"
     private const val VIEW_ERROR_TOASTER_BELI_LAGI_TRACKER_ID = "40125"
     private const val VIEW_BERI_ULASAN_BUTTON_TRACKER_ID = "40126"
     private const val CLICK_PRIMARY_BUTTON = "15422"
+    private const val VIEW_BUY_AGAIN_WIDGET_TRACKER_ID = "48461"
+    private const val IMPRESSION_BUY_AGAIN_WIDGET_TRACKER_ID = "48462"
+    private const val CLICK_PRODUCT_ON_BUY_AGAIN_WIDGET_TRACKER_ID = "48463"
+    private const val CLICK_BELI_LAGI_BUTTON_ON_BUY_AGAIN_WIDGET_TRACKER_ID = "48464"
+    private const val CLICK_LIHAT_SEMUA_ARROW_BUTTON_ON_BUY_AGAIN_WIDGET_TRACKER_ID = "48465"
+    private const val CLICK_LIHAT_SEMUA_BUTTON_ON_BUY_AGAIN_WIDGET_TRACKER_ID = "48466"
 
     private fun uohTrackerBuilder(): Tracker.Builder {
         return Tracker.Builder()
             .setBusinessUnit(PURCHASE_PLATFORM)
+            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
+    }
+
+    private fun homeBrowseTrackerBuilder(): Tracker.Builder {
+        return Tracker.Builder()
+            .setBusinessUnit(HOME_AND_BROWSE)
             .setCurrentSite(TOKOPEDIA_MARKETPLACE)
     }
 
@@ -776,6 +805,148 @@ object UohAnalytics {
             .setEventCategory(ORDER_LIST_EVENT_CATEGORY)
             .setEventLabel(eventLabel)
             .setCustomProperty(TRACKER_ID, VIEW_BERI_ULASAN_BUTTON_TRACKER_ID)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4366
+    // Tracker ID: 48461
+    fun sendViewBuyAgainWidgetOnOrderListEvent() {
+        homeBrowseTrackerBuilder()
+            .setEvent(VIEW_HOME_PAGE_IRIS)
+            .setEventAction(VIEW_BUY_AGAIN_WIDGET)
+            .setEventCategory(ORDER_LIST_EVENT_CATEGORY)
+            .setEventLabel("")
+            .setCustomProperty(TRACKER_ID, VIEW_BUY_AGAIN_WIDGET_TRACKER_ID)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4366
+    // Tracker ID: 48462
+    fun sendImpressionProductOnBuyAgainWidgetEvent(
+        recommItem: RecommendationItem,
+        userId: String,
+        index: Int
+    ) {
+        val bundleProduct = Bundle().apply {
+            putString(DIMENSION40, ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE.replace(RECOMMENDATION_TYPE_REPLACEE, recommItem.recommendationType))
+            putString(INDEX, index.toString())
+            putString(ITEM_NAME, recommItem.name)
+            putString(ITEM_ID, recommItem.productId.toString())
+            putString(PRICE, recommItem.price)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, recommItem.categoryBreadcrumbs)
+            putString(ITEM_VARIANT, "")
+        }
+
+        val bundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM_LIST)
+            putString(EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY)
+            putString(EVENT_ACTION, IMPRESSION_BUY_AGAIN_WIDGET)
+            putString(EVENT_LABEL, "")
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(TRACKER_ID, IMPRESSION_BUY_AGAIN_WIDGET_TRACKER_ID)
+            putString(USER_ID, userId)
+            putString(BUSINESS_UNIT, HOME_AND_BROWSE)
+            putParcelableArrayList(ITEMS, arrayListOf(bundleProduct))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, bundle)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4366
+    // Tracker ID: 48463
+    fun sendClickProductOnBuyAgainWidgetEvent(
+        recommItem: RecommendationItem,
+        userId: String,
+        index: Int
+    ) {
+        val bundleProduct = Bundle().apply {
+            putString(DIMENSION40, ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE.replace(RECOMMENDATION_TYPE_REPLACEE, recommItem.recommendationType))
+            putString(INDEX, index.toString())
+            putString(ITEM_NAME, recommItem.name)
+            putString(ITEM_ID, recommItem.productId.toString())
+            putString(PRICE, recommItem.price)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, recommItem.categoryBreadcrumbs)
+            putString(ITEM_VARIANT, "")
+        }
+
+        val bundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY)
+            putString(EVENT_ACTION, CLICK_PRODUCT_ON_BUY_AGAIN_WIDGET)
+            putString(EVENT_LABEL, "")
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(TRACKER_ID, CLICK_PRODUCT_ON_BUY_AGAIN_WIDGET_TRACKER_ID)
+            putString(USER_ID, userId)
+            putString(BUSINESS_UNIT, HOME_AND_BROWSE)
+            putParcelableArrayList(ITEMS, arrayListOf(bundleProduct))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, bundle)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4366
+    // Tracker ID: 48464
+    fun sendClickBeliLagiButtonOnBuyAgainWidgetEvent(
+        recommItem: RecommendationItem,
+        userId: String,
+        index: Int,
+        cartId: String
+    ) {
+        val bundleProduct = Bundle().apply {
+            putString(DIMENSION40, ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE.replace(RECOMMENDATION_TYPE_REPLACEE, recommItem.recommendationType))
+            putString(DIMENSION45, cartId)
+            putString(CATEGORY_ID, recommItem.departmentId.toString())
+            putString(INDEX, index.toString())
+            putString(ITEM_NAME, recommItem.name)
+            putString(ITEM_ID, recommItem.productId.toString())
+            putString(PRICE, recommItem.price)
+            putString(QUANTITY, recommItem.minOrder.toString())
+            putString(SHOP_ID, recommItem.shopId.toString())
+            putString(SHOP_NAME, recommItem.shopName)
+            putString(SHOP_TYPE, recommItem.shopType)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, recommItem.categoryBreadcrumbs)
+            putString(ITEM_VARIANT, "")
+        }
+
+        val bundle = Bundle().apply {
+            putString(EVENT, ADD_TO_CART_V5)
+            putString(EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY)
+            putString(EVENT_ACTION, CLICK_BELI_LAGI_BUTTON_ON_BUY_AGAIN_WIDGET)
+            putString(EVENT_LABEL, "")
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(TRACKER_ID, CLICK_BELI_LAGI_BUTTON_ON_BUY_AGAIN_WIDGET_TRACKER_ID)
+            putString(USER_ID, userId)
+            putString(BUSINESS_UNIT, HOME_AND_BROWSE)
+            putParcelableArrayList(ITEMS, arrayListOf(bundleProduct))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, bundle)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4366
+    // Tracker ID: 48465
+    fun sendClickLihatSemuaArrowButtonOnBuyAgainWidgetEvent() {
+        homeBrowseTrackerBuilder()
+            .setEvent(CLICK_HOME_PAGE)
+            .setEventAction(CLICK_LIHAT_SEMUA_ARROW_BUTTON_ON_BUY_AGAIN_WIDGET)
+            .setEventCategory(ORDER_LIST_EVENT_CATEGORY)
+            .setEventLabel("")
+            .setCustomProperty(TRACKER_ID, CLICK_LIHAT_SEMUA_ARROW_BUTTON_ON_BUY_AGAIN_WIDGET_TRACKER_ID)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4366
+    // Tracker ID: 48466
+    fun sendClickLihatSemuaButtonOnBuyAgainWidgetEvent() {
+        homeBrowseTrackerBuilder()
+            .setEvent(CLICK_HOME_PAGE)
+            .setEventAction(CLICK_LIHAT_SEMUA_BUTTON_ON_BUY_AGAIN_WIDGET)
+            .setEventCategory(ORDER_LIST_EVENT_CATEGORY)
+            .setEventLabel("")
+            .setCustomProperty(TRACKER_ID, CLICK_LIHAT_SEMUA_BUTTON_ON_BUY_AGAIN_WIDGET_TRACKER_ID)
             .build()
             .send()
     }

@@ -284,6 +284,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private var _buttonAction = ""
     private var _atcOccParams: AddToCartOccMultiRequestParams? = null
     private val impressedUUIDs = mutableListOf<String>()
+    private val impressedBuyAgainItems = mutableListOf<String>()
+    private var isBuyAgainWidgetImpressed = false
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
@@ -762,7 +764,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         globalErrorUoh.gone()
                         rvOrderList.visible()
                     }
-                    if (currPage == 1) impressedUUIDs.clear()
+                    if (currPage == 1) {
+                        impressedUUIDs.clear()
+                        impressedBuyAgainItems.clear()
+                        isBuyAgainWidgetImpressed = false
+                    }
                     refreshHandler?.finishRefresh()
                     orderList = it.data
                     if (orderList.orders.isNotEmpty()) {
@@ -1016,13 +1022,19 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     private fun observingAtcBuyAgain() {
         uohListViewModel.atcBuyAgainResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
+            when (result.atcResponse) {
                 is Success -> {
-                    if (result.data.atcMulti.buyAgainData.success == 1) {
-                        val product = result.data.atcMulti.buyAgainData.listProducts.getOrNull(0)
+                    if (result.atcResponse.data.atcMulti.buyAgainData.success == 1) {
+                        val product = result.atcResponse.data.atcMulti.buyAgainData.listProducts.getOrNull(0)
                         val intent = RouteManager.getIntent(context, ApplinkConst.CART)
                         product?.cartId?.let { cartId ->
-                            intent.putExtra(Transaction.EXTRA_CART_ID, cartId.toString())
+                            intent.putExtra(Transaction.EXTRA_CART_ID, cartId)
+                            UohAnalytics.sendClickBeliLagiButtonOnBuyAgainWidgetEvent(
+                                result.recommItem,
+                                userSession.userId ?: "",
+                                result.index,
+                                cartId
+                            )
                         }
                         startActivity(intent)
                     }
@@ -2589,15 +2601,32 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     override fun onChevronBuyAgainWidgetClicked(applink: String) {
+        UohAnalytics.sendClickLihatSemuaArrowButtonOnBuyAgainWidgetEvent()
         RouteManager.route(context, URLDecoder.decode(applink, UohConsts.UTF_8))
     }
 
-    override fun onProductCardClicked(pdpApplink: String) {
-        RouteManager.route(context, pdpApplink)
+    override fun onSeeAllCardClicked(applink: String) {
+        UohAnalytics.sendClickLihatSemuaButtonOnBuyAgainWidgetEvent()
+        RouteManager.route(context, URLDecoder.decode(applink, UohConsts.UTF_8))
     }
 
-    override fun onBuyAgainWidgetButtonClicked(recommendationItem: RecommendationItem) {
-        atcBuyAgainWidget(recommendationItem)
+    override fun onProductCardClicked(recommendationItem: RecommendationItem, index: Int) {
+        UohAnalytics.sendClickProductOnBuyAgainWidgetEvent(recommendationItem, userSession.userId ?: "", index)
+        RouteManager.route(context, recommendationItem.appUrl)
+    }
+
+    override fun onBuyAgainWidgetButtonClicked(recommendationItem: RecommendationItem, index: Int) {
+        atcBuyAgainWidget(recommendationItem, index)
+    }
+
+    override fun onBuyAgainItemScrolled(recommendationItem: RecommendationItem, index: Int) {
+        if (!isBuyAgainProductImpressed(recommendationItem.productId.toString())) {
+            UohAnalytics.sendImpressionProductOnBuyAgainWidgetEvent(recommendationItem, userSession.userId ?: "", index)
+        }
+    }
+
+    override fun onImpressBuyAgainWidget() {
+        if (!isBuyAgainWidgetImpressed) UohAnalytics.sendViewBuyAgainWidgetOnOrderListEvent()
     }
 
     private fun doChatSeller(appUrl: String, order: UohListOrder.UohOrders.Order) {
@@ -2666,7 +2695,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    private fun atcBuyAgainWidget(recommItem: RecommendationItem) {
+    private fun atcBuyAgainWidget(recommItem: RecommendationItem, index: Int) {
         uohListViewModel.doAtcBuyAgain(
             userSession.userId ?: "",
             GraphqlHelper.loadRawString(
@@ -2683,7 +2712,9 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     custId = userSession.userId ?: "",
                     warehouseId = recommItem.warehouseId.toString()
                 )
-            )
+            ),
+            recommItem,
+            index
         )
     }
 
@@ -2784,6 +2815,24 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             true
         } else {
             impressedUUIDs.add(orderUUID)
+            false
+        }
+    }
+
+    private fun isBuyAgainProductImpressed(productId: String): Boolean {
+        return if (impressedBuyAgainItems.contains(productId)) {
+            true
+        } else {
+            impressedBuyAgainItems.add(productId)
+            false
+        }
+    }
+
+    private fun isBuyAgainWidgetImpressed(): Boolean {
+        return if (!isBuyAgainWidgetImpressed) {
+            isBuyAgainWidgetImpressed = true
+            return true
+        } else {
             false
         }
     }
