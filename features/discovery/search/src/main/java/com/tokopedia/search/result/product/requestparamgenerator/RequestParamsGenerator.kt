@@ -3,7 +3,9 @@ package com.tokopedia.search.result.product.requestparamgenerator
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.network.authentication.AuthHelper
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.deduplication.Deduplication
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.utils.getUserId
@@ -15,10 +17,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
+@SearchScope
 class RequestParamsGenerator @Inject constructor(
     private val userSession: UserSessionInterface,
     private val pagination: Pagination,
     private val lastClickedProductIdProvider: LastClickedProductIdProvider,
+    private val deduplication: Deduplication,
 ) {
 
     private val userId: String

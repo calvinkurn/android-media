@@ -4,6 +4,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MINUS_IDS
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.POST_ATC_CATEGORY_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.POST_ATC_PRODUCT_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.POST_ATC_SHOP_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.POST_ATC_WAREHOUSE_ID
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -14,7 +19,10 @@ import com.tokopedia.search.result.product.inspirationcarousel.analytics.Inspira
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
+import com.tokopedia.usecase.RequestParams
 import io.mockk.*
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.Is.`is`
 import org.junit.Test
 import rx.Subscriber
 
@@ -93,6 +101,37 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         `When user click add to cart`(clickedProductAtc)
 
         `Then verify add to cart API will hit`()
+        `Then verify get post atc carousel is executed`(clickedProductAtc)
+    }
+
+    private fun `When user click add to cart`(clickedProduct: InspirationCarouselDataView.Option.Product) {
+        productListPresenter.onListAtcItemAddToCart(
+            clickedProduct,
+            expectedType
+        )
+    }
+
+    private fun `Then verify add to cart API will hit`() {
+        verify {
+            addToCartUseCase.execute(any(), any())
+        }
+    }
+
+    private fun `Then verify get post atc carousel is executed`(
+        clickedProductAtc: InspirationCarouselDataView.Option.Product,
+    ) {
+        val requestParamsSlot = slot<RequestParams>()
+
+        verify {
+            getPostATCCarouselUseCase.execute(capture(requestParamsSlot), any())
+        }
+
+        val parameters = requestParamsSlot.captured.parameters
+        assertThat(parameters[POST_ATC_SHOP_ID], `is`(clickedProductAtc.shopId))
+        assertThat(parameters[POST_ATC_CATEGORY_ID], `is`(clickedProductAtc.categoryID))
+//        assertThat(parameters[POST_ATC_PRODUCT_ID], `is`(""))
+//        assertThat(parameters[POST_ATC_WAREHOUSE_ID], `is`(""))
+//        assertThat(parameters[MINUS_IDS], `is`(""))
     }
 
     @Test
@@ -110,19 +149,6 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
 
         `Then verify variant bottomsheet will show`(clickedProductAtc)
         `Then Verify Track Add To Cart Variant`(clickedProductAtc)
-    }
-
-    private fun `When user click add to cart`(clickedProduct: InspirationCarouselDataView.Option.Product) {
-        productListPresenter.onListAtcItemAddToCart(
-            clickedProduct,
-            expectedType
-        )
-    }
-
-    private fun `Then verify add to cart API will hit`() {
-        verify {
-            addToCartUseCase.execute(any(), any())
-        }
     }
 
     private fun `Then verify variant bottomsheet will show`(clickedProduct: InspirationCarouselDataView.Option.Product) {

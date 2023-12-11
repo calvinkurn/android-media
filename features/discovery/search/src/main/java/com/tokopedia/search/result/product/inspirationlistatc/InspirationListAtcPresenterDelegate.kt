@@ -4,17 +4,33 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.POST_ATC_CATEGORY_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.POST_ATC_SHOP_ID
+import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_POST_ATC_CAROUSEL_USE_CASE
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.di.scope.SearchScope
+import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.product.SearchParameterProvider
+import com.tokopedia.search.result.product.deduplication.Deduplication
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper
+import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import rx.Subscriber
 import javax.inject.Inject
+import javax.inject.Named
 
 @SearchScope
 class InspirationListAtcPresenterDelegate @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
+    @param:Named(GET_POST_ATC_CAROUSEL_USE_CASE)
+    private val getPostATCCarouselUseCase: UseCase<SearchInspirationCarousel>,
+    private val requestParamsGenerator: RequestParamsGenerator,
     private val userSession: UserSessionInterface,
     private val inspirationListAtcView: InspirationListAtcView,
     searchParameterProvider: SearchParameterProvider,
@@ -37,6 +53,26 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
         } else {
             executeAtcCommon(product)
         }
+
+        getPostATCCarouselUseCase.execute(
+            RequestParams.create().apply {
+                putString(POST_ATC_SHOP_ID, product.shopId)
+//                putString(POST_ATC_CATEGORY_ID, product.categoryID)
+            },
+            object: Subscriber<SearchInspirationCarousel>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable?) {
+
+                }
+
+                override fun onNext(t: SearchInspirationCarousel?) {
+
+                }
+            }
+        )
     }
 
     private fun onAddToCartUseCaseSuccess(
