@@ -43,7 +43,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.design.R as designR
 
 class MiniCartProductViewHolder(
     private val viewBinding: ItemMiniCartProductBinding,
@@ -763,7 +762,7 @@ class MiniCartProductViewHolder(
                 constraintSet.connect(
                     R.id.text_notes,
                     ConstraintSet.BOTTOM,
-                    designR.id.delete_button,
+                    R.id.button_delete_cart,
                     ConstraintSet.TOP
                 )
                 constraintSet.applyTo(containerProduct)
