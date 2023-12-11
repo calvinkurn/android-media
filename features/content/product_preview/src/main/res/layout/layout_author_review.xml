@@ -29,8 +29,9 @@
         android:id="@+id/lbl_author_stats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginStart="8dp"
         android:visibility="gone"
-        app:labelType="general_light_grey"
+        app:labelType="highlight_dark_grey"
         tools:labelTitle="Juara Ulasan" />
 </LinearLayout>

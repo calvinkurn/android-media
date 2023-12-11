@@ -36,17 +36,11 @@ data class LikeUiState(
 
 data class AuthorUiModel(
     val name: String,
-    val type: ReviewerType,
+    val type: String,
     val id: String,
     val avatarUrl: String,
     val appLink: String,
-) {
-    enum class ReviewerType(val value: String) { //TODO need to adjust with backend
-        Complete("total-complete-review"),
-        Juara(""),
-        Unknown("");
-    }
-}
+)
 
 data class DescriptionUiModel(
     val stars: Int,

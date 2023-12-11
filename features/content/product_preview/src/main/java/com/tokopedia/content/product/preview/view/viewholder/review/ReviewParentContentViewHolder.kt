@@ -6,6 +6,7 @@ import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.DescriptionUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageCircle
 
 class ReviewParentContentViewHolder(
@@ -20,6 +21,8 @@ class ReviewParentContentViewHolder(
     private fun bindAuthor(author: AuthorUiModel) = with(binding.layoutAuthorReview) {
         tvAuthorName.text = author.name
         ivAuthor.loadImageCircle(url = author.avatarUrl)
+        lblAuthorStats.setLabel(author.type)
+        lblAuthorStats.showWithCondition(author.type.isNotBlank())
     }
 
     private fun bindDescription(description: DescriptionUiModel) = with(binding) {

@@ -30,7 +30,7 @@ class ProductPreviewMapperImpl @Inject constructor(private val userSession: User
                 ),
                 author = AuthorUiModel(
                     name = it.user.fullName,
-                    type = AuthorUiModel.ReviewerType.Unknown, //TODO: map it later
+                    type = it.user.label,
                     id = it.user.userId,
                     avatarUrl = it.user.image,
                     appLink = it.user.url,
