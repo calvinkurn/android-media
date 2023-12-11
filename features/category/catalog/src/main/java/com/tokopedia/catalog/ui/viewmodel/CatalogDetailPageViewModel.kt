@@ -71,13 +71,13 @@ class CatalogDetailPageViewModel @Inject constructor(
         )
     }
 
-    fun getProductCatalogComparisons(catalogId: String, comparedCatalogId: String) {
+    fun getProductCatalogComparisons(catalogId: String, comparedCatalogIds: List<String>) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val result = catalogDetailUseCase.getCatalogDetailV4Comparison(
                     catalogId,
-                    comparedCatalogId
+                    comparedCatalogIds
                 )
                 _comparisonUiModel.postValue(result)
             },

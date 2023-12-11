@@ -122,8 +122,6 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.oldcatalog.listener.CatalogDetailListener
-import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogComponentBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -150,7 +148,6 @@ class CatalogDetailPageFragment :
     TopFeatureListener,
     DoubleBannerListener,
     ComparisonViewHolder.ComparisonItemListener,
-    CatalogDetailListener,
     ColumnedInfoListener,
     VideoListener {
 
@@ -203,8 +200,8 @@ class CatalogDetailPageFragment :
     private var catalogId = ""
     private var categoryId = ""
     private var catalogUrl = ""
-    private var compareCatalogId = ""
     private var selectNavigationFromScroll = true
+    private var retriedCompareCatalogIds = listOf<String>()
     private val seenTracker = mutableListOf<String>()
 
     private val userSession: UserSession by lazy {
@@ -295,7 +292,7 @@ class CatalogDetailPageFragment :
             viewModel.refreshNotification()
         }
         if (requestCode == CATALOG_COMPARE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val comparedCatalogId = data?.getStringExtra(ARG_PARAM_COMPARE_CATALOG_ID)
+            val comparedCatalogId = data?.getStringArrayListExtra(ARG_PARAM_COMPARE_CATALOG_ID)
             if (!comparedCatalogId.isNullOrEmpty()) changeComparison(comparedCatalogId)
         }
     }
@@ -394,7 +391,7 @@ class CatalogDetailPageFragment :
                 type = Toaster.TYPE_ERROR,
                 actionText = getString(R.string.catalog_retry_action)
             ) {
-                changeComparison(compareCatalogId)
+                changeComparison(retriedCompareCatalogIds)
             }.show()
         }
         viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
@@ -807,11 +804,9 @@ class CatalogDetailPageFragment :
     }
 
     override fun onComparisonSwitchButtonClicked(
-        position: Int,
-        item: ComparisonUiModel.ComparisonContent
+        items: List<ComparisonUiModel.ComparisonContent>
     ) {
-        compareCatalogId = item.id
-        val label = "$catalogId | compared catalog id: $compareCatalogId"
+        val label = "$catalogId | compared catalog id: ${items.joinToString { it.id }}"
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_CLICK_PG,
             action = EVENT_CLICK_CHANGE_COMPARISON,
@@ -819,6 +814,8 @@ class CatalogDetailPageFragment :
             labels = label,
             trackerId = TRACKER_ID_CHANGE_COMPARISON
         )
+        /*
+        TODO: implement redirection to switch catalog activity
         CatalogComponentBottomSheet.newInstance(
             "",
             catalogId,
@@ -827,11 +824,13 @@ class CatalogDetailPageFragment :
             compareCatalogId,
             CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
             this
-        ).show(childFragmentManager, "")
+        ).show(childFragmentManager, "")*/
     }
 
-    override fun onComparisonSeeMoreButtonClicked() {
-        val label = "$catalogId | compared catalog id: $compareCatalogId"
+    override fun onComparisonSeeMoreButtonClicked(
+        items: List<ComparisonUiModel.ComparisonContent>
+    ) {
+        val label = "$catalogId | compared catalog id: ${items.joinToString { it.id }}"
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_CLICK_PG,
             action = EVENT_CLICK_SEE_MORE_COMPARISON,
@@ -843,7 +842,7 @@ class CatalogDetailPageFragment :
         Intent(activity ?: return, CatalogComparisonDetailActivity::class.java).apply {
             putExtra(ARG_PARAM_CATALOG_ID, catalogId)
             putExtra(ARG_PARAM_CATEGORY_ID, categoryId)
-            putExtra(ARG_PARAM_COMPARE_CATALOG_ID, compareCatalogId)
+            putStringArrayListExtra(ARG_PARAM_COMPARE_CATALOG_ID, ArrayList(items.map { it.id }))
             startActivityForResult(this, CATALOG_COMPARE_REQUEST_CODE)
         }
     }
@@ -859,7 +858,6 @@ class CatalogDetailPageFragment :
     }
 
     override fun onComparisonImpression(id: String) {
-        compareCatalogId = id
         val label = "$catalogId | compared catalog id: $id"
 
         sendOnTimeImpression(TRACKER_ID_IMPRESSION_COMPARISON) {
@@ -873,9 +871,9 @@ class CatalogDetailPageFragment :
         }
     }
 
-    override fun changeComparison(selectedComparedCatalogId: String) {
-        compareCatalogId = selectedComparedCatalogId
-        viewModel.getProductCatalogComparisons(catalogId, compareCatalogId)
+    private fun changeComparison(compareCatalogIds: List<String>) {
+        retriedCompareCatalogIds = compareCatalogIds
+        viewModel.getProductCatalogComparisons(catalogId, compareCatalogIds)
     }
 
     override fun onColumnedInfoSeeMoreClicked(

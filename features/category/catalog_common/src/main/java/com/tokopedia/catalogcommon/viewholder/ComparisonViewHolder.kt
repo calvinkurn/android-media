@@ -29,10 +29,9 @@ class ComparisonViewHolder(
 
     interface ComparisonItemListener {
         fun onComparisonSwitchButtonClicked(
-            position: Int,
-            item: ComparisonUiModel.ComparisonContent
+            items: List<ComparisonUiModel.ComparisonContent>
         )
-        fun onComparisonSeeMoreButtonClicked()
+        fun onComparisonSeeMoreButtonClicked(items: List<ComparisonUiModel.ComparisonContent>)
         fun onComparisonProductClick(id: String)
 
         fun onComparisonImpression(id: String)
@@ -48,10 +47,14 @@ class ComparisonViewHolder(
     }
 
     private val binding by viewBinding<WidgetItemComparisonBinding>()
+    private var comparisonContents: List<ComparisonUiModel.ComparisonContent> = emptyList()
 
     init {
         binding?.btnSeeMore?.setOnClickListener {
-            comparisonItemListener?.onComparisonSeeMoreButtonClicked()
+            comparisonItemListener?.onComparisonSeeMoreButtonClicked(comparisonContents)
+        }
+        binding?.tfCatalogAction?.setOnClickListener {
+            comparisonItemListener?.onComparisonSwitchButtonClicked(comparisonContents)
         }
     }
 
@@ -67,6 +70,7 @@ class ComparisonViewHolder(
                 comparisonItemListener
             )
         }
+        comparisonContents = contents
     }
 
     private fun WidgetItemComparisonBinding.setupLayoutComparison(
