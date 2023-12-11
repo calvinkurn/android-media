@@ -294,7 +294,6 @@
 /features/promo/gamification            				@tokopedia/android-minionsolo-dev
 /features/kyc                           				@tokopedia/android-minionyoda-dev
 
-/features/tokopedianow/                                 @tokopedia/android-minionsolo-dev
 /features/promo/promo_gamification_common               @tokopedia/android-minionsolo-dev
 /features/promo/loyalty                                 @tokopedia/android-minionsolo-dev
 /features/promo/loyalty_common                          @tokopedia/android-minionsolo-dev
@@ -320,6 +319,8 @@
 /features/payment/payment_setting/              		@tokopedia/android-minionmark-dev
 /features/payment/pms/                          		@tokopedia/android-minionmark-dev
 /features/payment/gopay.kyc/                          	@tokopedia/android-minionmark-dev
+
+/features/tokopedianow/                                 @tokopedia/android-minionmark-dev
 
 /libraries/adapter_delegate/							@tokopedia/android-core-dev
 /libraries/akamai_bot_lib/							    @tokopedia/android-core-dev
